@@ -2,99 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C035A12BE
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 15:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4267E5A159B
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 17:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239191AbiHYNwX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 09:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
+        id S241626AbiHYPYa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 11:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241378AbiHYNwT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 09:52:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AC51A3BE;
-        Thu, 25 Aug 2022 06:52:17 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0399F20AE5;
-        Thu, 25 Aug 2022 13:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661435536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SG8vYYGWMAWN9Mvff6IMP73eu6yuDvbm1ewu/sn138A=;
-        b=RWOYQ/ofWltretqyG242UAx8o2hrUiuG20EgcZ3u0Xj78uaymJk52azJltrCnl9SXU58ks
-        BmzGVXICuo8hjW4wGGnFig3EsszDCY1sY5nFEruoVPfGvjNdeBi9DP/CnR/4HqQ/zFX7mc
-        d9gQv3u/qcznWqjn8R08buVVTot4t0Q=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5377D2C141;
-        Thu, 25 Aug 2022 13:52:14 +0000 (UTC)
-Date:   Thu, 25 Aug 2022 15:52:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
-Message-ID: <Ywd+jrlh+6ZJw7u5@alley>
-References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
- <YwdAknZFyKxCXZuL@alley>
- <YwdtunymYd4VO83D@shikoro>
+        with ESMTP id S241669AbiHYPYR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 11:24:17 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9746B99C7
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 08:24:15 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o4so716448pjp.4
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 08:24:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=Sjxu1KZYU3KDG78+cZAn5+zrZMruhm46V6F/elCTC6I=;
+        b=cgdSCg/G5MIqnMdtGF27PjSCoHoxA2BsgT02jo7Ty55H5CD+J3M0vHpW6lHr8NcHWU
+         X4d85j0jzRSVoQQ1MCpo3IQxt2FbpJcglk7ukGEyRJIhQszVQ9wx2i35z97DqqSPd8oC
+         VCP76agWwaX+4eMZ+QIx3J3v9Nver8Y2hT/qeJt1TMaAprapOxqq9WUzYpSdGmHshkAY
+         GfaP+h3+0CtF8cAYQQM3KgFAd8WHhKHivvxwKgX45zfRGdSEJ/wxeU6tfT/4yjg6gHiJ
+         kPNYCejF6P/dRAtVBxvPeyL9+3p/YImkl2YVTcNEsoYooOr0nt/CrL9psmY7f6J0bNqd
+         Y+dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=Sjxu1KZYU3KDG78+cZAn5+zrZMruhm46V6F/elCTC6I=;
+        b=3J/hAXLf64noV+yEF36aA/iD+qz94/9BzMMk1JwIO/vZsCmtbTgyWYSzwd0EWs3viq
+         iIttKTQh64t+Dj7KBCHNw1q2djreWZTHeXCneCA32vfBaIHLb5hBWjUBelY4+4SZXzXV
+         //4rJuQN08Ak1Aq4rpQuHWWzGULpX7AMFz7kmdDhB3FhkhG+dHhRSuZvMmhNBLeTl/EA
+         429Uxx4rxAcekkaR0pR0l06TEBBbX5eVscq2mmQNJ2p3KYOqqBnwBTWZNJjfONtUKtCR
+         548sUUTfOinD5uePDqjhkj30SOiQGnyM5M2ClNqhhai3uWkk1Au95X2THv4VQSPAM5vC
+         rwkA==
+X-Gm-Message-State: ACgBeo1eVOj6rFX/6THa2QDEakRdsJ0+U3edUmLRm562kIALUKZlgmVN
+        PRiVtZUfum9BN8PiuUxa24ywDzEQfpA9ImfFFIa3pw==
+X-Google-Smtp-Source: AA6agR47CCHMXIXPEnmUh5MEwo8eqnV5OkxhX40/DKDSoDxPq9qnYdSc5lDaOytVRTphX+pidszh2naGv0wE7nfCZh8=
+X-Received: by 2002:a17:90b:1d91:b0:1fb:4f7f:852e with SMTP id
+ pf17-20020a17090b1d9100b001fb4f7f852emr14163491pjb.126.1661441054986; Thu, 25
+ Aug 2022 08:24:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YwdtunymYd4VO83D@shikoro>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220825000506.239406-1-shakeelb@google.com> <20220825000506.239406-3-shakeelb@google.com>
+ <20220824173330.2a15bcda24d2c3c248bc43c7@linux-foundation.org>
+ <CALvZod6+Y1yvp8evMLTeEwKnQyoXJmzjO7xLN9w=EPcOUH6BHQ@mail.gmail.com> <20220824222150.61c516a83bfe0ecb6c9b5348@linux-foundation.org>
+In-Reply-To: <20220824222150.61c516a83bfe0ecb6c9b5348@linux-foundation.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 25 Aug 2022 08:24:02 -0700
+Message-ID: <CALvZod6tFce5Ld9rh-xt495S+A-vi4Curkja2YYyf0VizKw1tw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] mm: page_counter: rearrange struct page_counter fields
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 2022-08-25 14:40:26, Wolfram Sang wrote:
-> 
-> > > Generated by a coccinelle script.
-> ^ ^ ^
-> 
-> > You might want to use Coccinelle if a simple sed/awk gets too
-> > complicated. See
-> 
-> :)
-> 
-> So, I did a tree wide conversion and let Linus know that I have a branch
-> available. He didn't respond, so I assumed that individual patches is
-> the way to go.
+On Wed, Aug 24, 2022 at 10:21 PM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Wed, 24 Aug 2022 21:41:42 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+>
+> > > Did you evaluate the effects of using a per-cpu counter of some form?
+> >
+> > Do you mean per-cpu counter for usage or something else?
+>
+> percpu_counter, perhaps.  Or some hand-rolled thing if that's more suitable.
+>
+> > The usage
+> > needs to be compared against the limits and accumulating per-cpu is
+> > costly particularly on larger machines,
+>
+> Well, there are tricks one can play.  For example, only run
+> __percpu_counter_sum() when `usage' is close to its limit.
+>
+> I'd suggest flinging together a prototype which simply uses
+> percpu_counter_read() all the time.  If the performance testing results
+> are sufficiently promising, then look into the accuracy issues.
+>
 
-I am not sure when exactly you sent it. Linus is very busy during the
-merge window and might miss less important things.
-
-Also he might prefer to get the script that did the tree-wide change so
-that he knows what exactly has changed.
-
-Best Regards,
-Petr
+Thanks, I will take a stab at that in a week or so.
