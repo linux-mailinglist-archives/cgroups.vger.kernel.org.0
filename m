@@ -2,94 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFF95A1816
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 19:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D8F5A182F
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 19:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbiHYRnd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 13:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
+        id S242957AbiHYR6o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 13:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbiHYRnc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 13:43:32 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2A2B6D2A;
-        Thu, 25 Aug 2022 10:43:30 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id m2so19155700pls.4;
-        Thu, 25 Aug 2022 10:43:30 -0700 (PDT)
+        with ESMTP id S231437AbiHYR6k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 13:58:40 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBDCBD0AB
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 10:58:38 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id g21so15797219qka.5
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 10:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc;
-        bh=2Q9sxu1HRBMxvkcK86QE22Ms07BjEIEOP4ZDQ3uVSzc=;
-        b=FCXHKofw5D2STaFKgE47setXTxKBRs80FRNxxPkumH4L1qjSM5ciq8KO4NAysGvJuD
-         wr80KVTFsGVBIOgkAQqhEf8h4/r2Scasna7nu5ebGaoteIadBcXH9IJaAK0/262G0/LD
-         dFd0+Rtvb+tXtPz9XcAmqH/2Xr6NacQC9VJJuJ5Y0scTs5HbQ5EMrwTZIZgbyK508Jpy
-         2BIdgqsFs5pFwkCgbpFWmXsmo+RQ6CZR5yTLqRiAzcdsq65OfeFKrf4xjDyrAjPzTtFK
-         s7+0vfpVVdMUMc0aCVA10L/ZtXWrC6HSvXJE9eKqNgqvnpn0Rmu+lZ2Qp6S5yLnbroYg
-         NGBQ==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=/GYRroV0j1HQtttqGy5ikwY0tvszI/gqxle1gBMtBi8=;
+        b=ck2vOHHo88Dym2Eg5dmOrOFWsd+DiRYzQswvx+qDw/AaR6oiFaBJuXUDozxFm5NdeY
+         RyIHT6ucnHWVYW6HD8rQ+SaVdPk0knVAyhXIGj5w8crdLz6PBdvQtFIIaAYJdupUr7Jf
+         m1xm1ISYsse8LApnX9JzNrTmopx1LnHBt+ZKHiKPVL0+L8GUr6VeP3JxqlvNj8ckaxzE
+         V4nu1m+hX8cIclMyiKgMwCNn4rkZdPf3FccCw+8fdv7PtEeMjXwsvWy9eT3Gia6EroBO
+         DE334U1ACpqjXh+T9+MFSK12LcnccR145icds02vQe0SfVkKnQiwa6FtY2yGHSVjM2t+
+         KwEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc;
-        bh=2Q9sxu1HRBMxvkcK86QE22Ms07BjEIEOP4ZDQ3uVSzc=;
-        b=m2Ct9a+BqMKi+428omUrC+carQzGPyP8fmcPlnIPm6c+yEYuNrjKO/iirCV4r23XSw
-         dNOnzirtgR3PENUaoM0jkxwZ1/qTYk+TwwOBNd3z3D15Vp470i7mFn6oybV1B9O+II7l
-         OymcOQEIqSZtjHSFdTkz9Ej1Y026GJ1r4CqpcN/oSAbl7QcupZO1j2i4d0tsNCoAyjL1
-         ZvL+6y/hHxkXRg9+umnPXqB1lJMeVO0AGklW8U8C52tdt6Y+p3UI/PT1t7yXJb0qnea6
-         h1uFrEZl1Q5UD6C6jaEFIEZvzpnTiMXMjLW3lnou0Hcbs+1jVIFllpNKh0rRX0X0/lML
-         KCnw==
-X-Gm-Message-State: ACgBeo2LWSBoZPjGH0JQ383xe7ZeR4ld8RAdCly4P+piVXCttYEEBTHm
-        iL5otGXpwTm2qMimwcxHEj8=
-X-Google-Smtp-Source: AA6agR5TyjlWqCz/7+W7Bd1f+2e+LclerB3KYBGfN9ot+qYG8JspDm7ZIXSscqU99KN19Qh1kx/8Jg==
-X-Received: by 2002:a17:90b:17ce:b0:1fb:3b43:f6f8 with SMTP id me14-20020a17090b17ce00b001fb3b43f6f8mr269193pjb.76.1661449410138;
-        Thu, 25 Aug 2022 10:43:30 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b0016f975be2e7sm15054336plr.139.2022.08.25.10.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 10:43:29 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 25 Aug 2022 07:43:27 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: [GIT PULL] cgroup fixes #2 for v6.0-rc2
-Message-ID: <Ywe0v0YWJSVAs5FT@slm.duckdns.org>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=/GYRroV0j1HQtttqGy5ikwY0tvszI/gqxle1gBMtBi8=;
+        b=i/aHTzNDZvjAEwiSkm2vVqZSuJ+pw5sVc6CDt7gO0zGyPGHX413pMqoSwNeEomB+ZN
+         0L3xNGz3+jzqDE/no+Bjy/FaBQXJCQSH9eNtUQZCVv1l7GkrKyJY7vesRC/3Ckdx//J4
+         GWrIJo63dyO9DhYhwtzZTpWAQdPPKHsL65dp3zOkt527fHFQPFcTOWA3mpX26HQFXnlZ
+         EtL/0fkFbolZe2gV/Ln9xz3s+3XF315/Iy/KoosPk6iPBsrsSPecoDAiQ2TK2jYFLb0p
+         DVlu2mh9XU39utNnUgRVRV+8pMcYCwhoktNqS3+oTB7hdLPO7vC9RwVoiIolV0jBTLYf
+         lQtg==
+X-Gm-Message-State: ACgBeo3h1Dl7a+fGNT+Tsau7zLGpSS3TpN4DYF+LLTqb1rDmZsyi/fB7
+        n+bxXhT+h4uDHTdeaEUKlO9c3QXf+9AlgPGmcMb43g==
+X-Google-Smtp-Source: AA6agR6ELzGCme7sNE+BR81Sm1mE1ctCXPEA2yfDoucsxgkqNCq0OsDtN/7qgdFikCJXE381jvngdogkJXIw9FJc8Ew=
+X-Received: by 2002:a05:620a:458c:b0:6bb:848a:b86b with SMTP id
+ bp12-20020a05620a458c00b006bb848ab86bmr3882934qkb.267.1661450317552; Thu, 25
+ Aug 2022 10:58:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20220824030031.1013441-1-haoluo@google.com> <20220824030031.1013441-2-haoluo@google.com>
+ <20220825152455.GA29058@blackbody.suse.cz>
+In-Reply-To: <20220825152455.GA29058@blackbody.suse.cz>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 25 Aug 2022 10:58:26 -0700
+Message-ID: <CA+khW7hKk8yMvsQCQjnEoR3=G9=77F2TgAEDa+uSVedoOE=NsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 1/5] bpf: Introduce cgroup iter
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The following changes since commit 763f4fb76e24959c370cdaa889b2492ba6175580:
+On Thu, Aug 25, 2022 at 8:24 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
+>
+> Hello.
+>
+> On Tue, Aug 23, 2022 at 08:00:27PM -0700, Hao Luo <haoluo@google.com> wro=
+te:
+> > +static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+> > +                               union bpf_iter_link_info *linfo,
+> > +                               struct bpf_iter_aux_info *aux)
+> > +{
+> > +     int fd =3D linfo->cgroup.cgroup_fd;
+> > +     u64 id =3D linfo->cgroup.cgroup_id;
+> > +     int order =3D linfo->cgroup.order;
+> > +     struct cgroup *cgrp;
+> > +
+> > +     if (order !=3D BPF_ITER_DESCENDANTS_PRE &&
+> > +         order !=3D BPF_ITER_DESCENDANTS_POST &&
+> > +         order !=3D BPF_ITER_ANCESTORS_UP &&
+> > +         order !=3D BPF_ITER_SELF_ONLY)
+> > +             return -EINVAL;
+> > +
+> > +     if (fd && id)
+> > +             return -EINVAL;
+> > +
+> > +     if (fd)
+> > +             cgrp =3D cgroup_get_from_fd(fd);
+> > +     else if (id)
+> > +             cgrp =3D cgroup_get_from_id(id);
+> > +     else /* walk the entire hierarchy by default. */
+> > +             cgrp =3D cgroup_get_from_path("/");
+> > +
+> > +     if (IS_ERR(cgrp))
+> > +             return PTR_ERR(cgrp);
+>
+> This section caught my eye.
+>
+> Perhaps the simpler way for the default hierachy fallback would be
+>
+>                 cgrp =3D &cgrp_dfl_root.cgrp;
+>                 cgroup_get(cgroup)
+>
+> But maybe it's not what is the intention if cgroup NS should be taken
+> into account and cgroup_get_from_path() is buggy in this regard.
+>
+> Would it make sense to prepend the patch below to your series?
 
-  cgroup: Fix race condition at rebind_subsystems() (2022-08-23 08:11:06 -1000)
+Yep. Being able to take cgroup NS into account is my intention here.
+Right now, I imagine the control plane who uses this default option is
+the system daemon which lives in the init cgroup ns. They could always
+specify a particular cgroup using ID or FD. Printing the whole
+hierarchy is something a system daemon would do. Anyhow, can I add the
+appended patch if there is going to be a v10 of this patch series? If
+v9 is ok to merge, I can send the appended patch separately. Does that
+sound good? The appended patch looks good to me, thanks!
 
-are available in the Git repository at:
+>
+> Also, that makes me think about iter initialization with ID. In contrast
+> with FD passing (that's subject to some permissions and NS checks), the
+> retrieval via ID is not equipped with that, ids are not unguessable and
+> I'd consider cgroup IDs an implementation detail.
+>
+> So, is the ID initialization that much useful? (I have no idea about
+> permissions model of BPF here, so it might be just fine but still it'd
+> be good to take cgroup NS into account. Likely for BPF_ITER_ANCESTORS_UP
+> too.)
+>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.0-rc2-fixes-2
+Permission is a valid point about FD. There was discussion in an
+earlier version of this patch series [0]. The good thing about ID is
+that it can be passed across processes and it's meaningful to appear
+in logs. It's more user-friendly. So we decided to support both.
 
-for you to fetch changes up to 43626dade36fa74d3329046f4ae2d7fdefe401c6:
+[0] https://lore.kernel.org/netdev/YuK+eg3lgwJ2CJnJ@slm.duckdns.org/
 
-  cgroup: Add missing cpus_read_lock() to cgroup_attach_task_all() (2022-08-25 07:36:30 -1000)
-
-----------------------------------------------------------------
-4f7e7236435ca0ab ("cgroup: Fix threadgroup_rwsem <-> cpus_read_lock()
-deadlock") in the previous fix pull required cgroup core to grab
-cpus_read_lock() before invoking ->attach(). Unfortunately, it missed adding
-cpus_read_lock() in cgroup_attach_task_all(). Fix it.
-
-----------------------------------------------------------------
-Tetsuo Handa (1):
-      cgroup: Add missing cpus_read_lock() to cgroup_attach_task_all()
-
- kernel/cgroup/cgroup-v1.c | 2 ++
- 1 file changed, 2 insertions(+)
+> HTH,
+> Michal
+>
+> ----8<----
+> From 1098e60e89d4d901b7eef04e531f2c889309a91b Mon Sep 17 00:00:00 2001
+> From: =3D?UTF-8?q?Michal=3D20Koutn=3DC3=3DBD?=3D <mkoutny@suse.com>
+> Date: Thu, 25 Aug 2022 15:19:04 +0200
+> Subject: [PATCH] cgroup: Honor caller's cgroup NS when resolving path
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=3DUTF-8
+> Content-Transfer-Encoding: 8bit
+>
+> cgroup_get_from_path() is not widely used function. Its callers presume
+> the path is resolved under cgroup namespace. (There is one caller
+> currently and resolving in init NS won't make harm (netfilter). However,
+> future users may be subject to different effects when resolving
+> globally.)
+> Since, there's currently no use for the global resolution, modify the
+> existing function to take cgroup NS into account.
+>
+> Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> ---
+>  kernel/cgroup/cgroup.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index ffaccd6373f1..9280f4b41d8b 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -6603,8 +6603,12 @@ struct cgroup *cgroup_get_from_path(const char *pa=
+th)
+>  {
+>         struct kernfs_node *kn;
+>         struct cgroup *cgrp =3D ERR_PTR(-ENOENT);
+> +       struct cgroup *root_cgrp;
+>
+> -       kn =3D kernfs_walk_and_get(cgrp_dfl_root.cgrp.kn, path);
+> +       spin_lock_irq(&css_set_lock);
+> +       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
+> +       kn =3D kernfs_walk_and_get(root_cgrp->kn, path);
+> +       spin_unlock_irq(&css_set_lock);
+>         if (!kn)
+>                 goto out;
+>
+>
+> base-commit: 3cc40a443a04d52b0c95255dce264068b01e9bfe
+> --
+> 2.37.0
+>
