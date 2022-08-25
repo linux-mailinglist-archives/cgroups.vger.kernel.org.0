@@ -2,103 +2,183 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4267E5A159B
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 17:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B2D5A15A5
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 17:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241626AbiHYPYa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 11:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
+        id S242704AbiHYPZO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 11:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241669AbiHYPYR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 11:24:17 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9746B99C7
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 08:24:15 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o4so716448pjp.4
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 08:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Sjxu1KZYU3KDG78+cZAn5+zrZMruhm46V6F/elCTC6I=;
-        b=cgdSCg/G5MIqnMdtGF27PjSCoHoxA2BsgT02jo7Ty55H5CD+J3M0vHpW6lHr8NcHWU
-         X4d85j0jzRSVoQQ1MCpo3IQxt2FbpJcglk7ukGEyRJIhQszVQ9wx2i35z97DqqSPd8oC
-         VCP76agWwaX+4eMZ+QIx3J3v9Nver8Y2hT/qeJt1TMaAprapOxqq9WUzYpSdGmHshkAY
-         GfaP+h3+0CtF8cAYQQM3KgFAd8WHhKHivvxwKgX45zfRGdSEJ/wxeU6tfT/4yjg6gHiJ
-         kPNYCejF6P/dRAtVBxvPeyL9+3p/YImkl2YVTcNEsoYooOr0nt/CrL9psmY7f6J0bNqd
-         Y+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Sjxu1KZYU3KDG78+cZAn5+zrZMruhm46V6F/elCTC6I=;
-        b=3J/hAXLf64noV+yEF36aA/iD+qz94/9BzMMk1JwIO/vZsCmtbTgyWYSzwd0EWs3viq
-         iIttKTQh64t+Dj7KBCHNw1q2djreWZTHeXCneCA32vfBaIHLb5hBWjUBelY4+4SZXzXV
-         //4rJuQN08Ak1Aq4rpQuHWWzGULpX7AMFz7kmdDhB3FhkhG+dHhRSuZvMmhNBLeTl/EA
-         429Uxx4rxAcekkaR0pR0l06TEBBbX5eVscq2mmQNJ2p3KYOqqBnwBTWZNJjfONtUKtCR
-         548sUUTfOinD5uePDqjhkj30SOiQGnyM5M2ClNqhhai3uWkk1Au95X2THv4VQSPAM5vC
-         rwkA==
-X-Gm-Message-State: ACgBeo1eVOj6rFX/6THa2QDEakRdsJ0+U3edUmLRm562kIALUKZlgmVN
-        PRiVtZUfum9BN8PiuUxa24ywDzEQfpA9ImfFFIa3pw==
-X-Google-Smtp-Source: AA6agR47CCHMXIXPEnmUh5MEwo8eqnV5OkxhX40/DKDSoDxPq9qnYdSc5lDaOytVRTphX+pidszh2naGv0wE7nfCZh8=
-X-Received: by 2002:a17:90b:1d91:b0:1fb:4f7f:852e with SMTP id
- pf17-20020a17090b1d9100b001fb4f7f852emr14163491pjb.126.1661441054986; Thu, 25
- Aug 2022 08:24:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220825000506.239406-1-shakeelb@google.com> <20220825000506.239406-3-shakeelb@google.com>
- <20220824173330.2a15bcda24d2c3c248bc43c7@linux-foundation.org>
- <CALvZod6+Y1yvp8evMLTeEwKnQyoXJmzjO7xLN9w=EPcOUH6BHQ@mail.gmail.com> <20220824222150.61c516a83bfe0ecb6c9b5348@linux-foundation.org>
-In-Reply-To: <20220824222150.61c516a83bfe0ecb6c9b5348@linux-foundation.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 25 Aug 2022 08:24:02 -0700
-Message-ID: <CALvZod6tFce5Ld9rh-xt495S+A-vi4Curkja2YYyf0VizKw1tw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] mm: page_counter: rearrange struct page_counter fields
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S241644AbiHYPZB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 11:25:01 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB3365836;
+        Thu, 25 Aug 2022 08:25:00 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9BEC533F2A;
+        Thu, 25 Aug 2022 15:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1661441098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZxGr3EJuIrdktJcj6rqi0sQ+aGd1Ypmw1/Whqwd5Z6M=;
+        b=KlyxheLvPhb35mhUe6o65ZtCuyxtUnup4XT0WXWnOhRRyiBYHQNoMyxbDAQKpldAvy8HTI
+        VTUhgQqvcD6Xnx7r4TA10dDXC1rc04BurgKLEmEkeqF1BRhyqTrTw/9cetePdYDkBvHtVf
+        AyLXvkT0Y1HGv5E1NcG8RV2ARcHqJTY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7F1A13A8E;
+        Thu, 25 Aug 2022 15:24:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NkQ7M0mUB2NCZQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 25 Aug 2022 15:24:57 +0000
+Date:   Thu, 25 Aug 2022 17:24:55 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Hao Luo <haoluo@google.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH bpf-next v9 1/5] bpf: Introduce cgroup iter
+Message-ID: <20220825152455.GA29058@blackbody.suse.cz>
+References: <20220824030031.1013441-1-haoluo@google.com>
+ <20220824030031.1013441-2-haoluo@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220824030031.1013441-2-haoluo@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 10:21 PM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Wed, 24 Aug 2022 21:41:42 -0700 Shakeel Butt <shakeelb@google.com> wrote:
->
-> > > Did you evaluate the effects of using a per-cpu counter of some form?
-> >
-> > Do you mean per-cpu counter for usage or something else?
->
-> percpu_counter, perhaps.  Or some hand-rolled thing if that's more suitable.
->
-> > The usage
-> > needs to be compared against the limits and accumulating per-cpu is
-> > costly particularly on larger machines,
->
-> Well, there are tricks one can play.  For example, only run
-> __percpu_counter_sum() when `usage' is close to its limit.
->
-> I'd suggest flinging together a prototype which simply uses
-> percpu_counter_read() all the time.  If the performance testing results
-> are sufficiently promising, then look into the accuracy issues.
->
+Hello.
 
-Thanks, I will take a stab at that in a week or so.
+On Tue, Aug 23, 2022 at 08:00:27PM -0700, Hao Luo <haoluo@google.com> wrote:
+> +static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+> +				  union bpf_iter_link_info *linfo,
+> +				  struct bpf_iter_aux_info *aux)
+> +{
+> +	int fd = linfo->cgroup.cgroup_fd;
+> +	u64 id = linfo->cgroup.cgroup_id;
+> +	int order = linfo->cgroup.order;
+> +	struct cgroup *cgrp;
+> +
+> +	if (order != BPF_ITER_DESCENDANTS_PRE &&
+> +	    order != BPF_ITER_DESCENDANTS_POST &&
+> +	    order != BPF_ITER_ANCESTORS_UP &&
+> +	    order != BPF_ITER_SELF_ONLY)
+> +		return -EINVAL;
+> +
+> +	if (fd && id)
+> +		return -EINVAL;
+> +
+> +	if (fd)
+> +		cgrp = cgroup_get_from_fd(fd);
+> +	else if (id)
+> +		cgrp = cgroup_get_from_id(id);
+> +	else /* walk the entire hierarchy by default. */
+> +		cgrp = cgroup_get_from_path("/");
+> +
+> +	if (IS_ERR(cgrp))
+> +		return PTR_ERR(cgrp);
+
+This section caught my eye.
+
+Perhaps the simpler way for the default hierachy fallback would be
+
+		cgrp = &cgrp_dfl_root.cgrp;
+		cgroup_get(cgroup)
+
+But maybe it's not what is the intention if cgroup NS should be taken
+into account and cgroup_get_from_path() is buggy in this regard.
+
+Would it make sense to prepend the patch below to your series?
+
+Also, that makes me think about iter initialization with ID. In contrast
+with FD passing (that's subject to some permissions and NS checks), the
+retrieval via ID is not equipped with that, ids are not unguessable and
+I'd consider cgroup IDs an implementation detail.
+
+So, is the ID initialization that much useful? (I have no idea about
+permissions model of BPF here, so it might be just fine but still it'd
+be good to take cgroup NS into account. Likely for BPF_ITER_ANCESTORS_UP
+too.)
+
+HTH,
+Michal
+
+----8<----
+From 1098e60e89d4d901b7eef04e531f2c889309a91b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Date: Thu, 25 Aug 2022 15:19:04 +0200
+Subject: [PATCH] cgroup: Honor caller's cgroup NS when resolving path
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+cgroup_get_from_path() is not widely used function. Its callers presume
+the path is resolved under cgroup namespace. (There is one caller
+currently and resolving in init NS won't make harm (netfilter). However,
+future users may be subject to different effects when resolving
+globally.)
+Since, there's currently no use for the global resolution, modify the
+existing function to take cgroup NS into account.
+
+Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cgroup.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index ffaccd6373f1..9280f4b41d8b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6603,8 +6603,12 @@ struct cgroup *cgroup_get_from_path(const char *path)
+ {
+ 	struct kernfs_node *kn;
+ 	struct cgroup *cgrp = ERR_PTR(-ENOENT);
++	struct cgroup *root_cgrp;
+ 
+-	kn = kernfs_walk_and_get(cgrp_dfl_root.cgrp.kn, path);
++	spin_lock_irq(&css_set_lock);
++	root_cgrp = current_cgns_cgroup_from_root(&cgrp_dfl_root);
++	kn = kernfs_walk_and_get(root_cgrp->kn, path);
++	spin_unlock_irq(&css_set_lock);
+ 	if (!kn)
+ 		goto out;
+ 
+
+base-commit: 3cc40a443a04d52b0c95255dce264068b01e9bfe
+-- 
+2.37.0
+
