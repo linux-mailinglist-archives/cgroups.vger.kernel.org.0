@@ -2,136 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F495A10C3
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 14:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1751F5A11D9
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 15:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242010AbiHYMkz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 08:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S241582AbiHYNUt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 09:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241985AbiHYMkv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 08:40:51 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E32C4BA4C
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 05:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=aZqNW6W08ih6JS2IUvIIZiIqCV3W
-        gHPNwpTFgHstyik=; b=m2WPERIsCK59vBzWco9kmFaJ/EdlAkSDaOmQX21n+pUB
-        hY77VM8gyKz77N60QfRJXv+nVVZTH7hJ2o86ZUFrXv0a3Rr1uHAgMa3by4QVdlVX
-        IyUWRuZwcj0lfbdsiCZB/p6+2IOScAleePiChPOJEQTOOwHUaYYjG8RzipR6m8s=
-Received: (qmail 2687725 invoked from network); 25 Aug 2022 14:40:29 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 25 Aug 2022 14:40:29 +0200
-X-UD-Smtp-Session: l3s3148p1@UcMaGhDnZNcgAwDtxwoDABxA2q3xYuRb
-Date:   Thu, 25 Aug 2022 14:40:26 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
-Message-ID: <YwdtunymYd4VO83D@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
- <YwdAknZFyKxCXZuL@alley>
+        with ESMTP id S239700AbiHYNUs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 09:20:48 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9489C1EC
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 06:20:46 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id w20so10325727edd.10
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 06:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=tGI/HgI5RJ0IOQ7oCC9l+UoRS3M/KBpS5rSBAd3MZgo=;
+        b=whhwMf11JScRmGvZpTzi4pm8aQUE+LI1b+HFpqXieLoJb6OwFEWMMa+Y/SI3hiRfSa
+         JVJvBQuNwEbjYGDBjUlhLzIqA8xnjXhvYDwpro7ItADA2pIOZ4lUne38Gc06R0mw4ydw
+         4UAEy9/ZJ1W3J0CXMP6jJo9Ou6s22HAdt12AOj0xjT5d04mLaOjV30rQy9Mzd1ffVcmr
+         4U6pSbwSpLZQy12eWKyJ/eyJUQn67mpFP0t6UmF6CMmAk9GR1k2VTGeSIfOAfAF0BJ6w
+         MaWFv/K4v+A18UkkelXRxiWWvHCgEqeGL05vBTUHARhmihHnqcnkXCImasUJj5pFMN0c
+         oocg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=tGI/HgI5RJ0IOQ7oCC9l+UoRS3M/KBpS5rSBAd3MZgo=;
+        b=BEY9qOUAvzLcXUYcc8+lJF5p+/v0gySD9ZFfyKKoUSziHpBVhH6W2R8APLbtluQn7Y
+         Gei8o5tD81kNEWAFuF1ITCBNzmdndn/E5euTDwdBtsKwdwoJfeaGMeFlsEhchaxcpd0b
+         RA73Me3gPEGTeS01/HPVKgIEgii8CEbRjzzTDDvR14jqagnXBFqjsYTnmvNHBA2K+ShE
+         vUFaStW/M8cuzpMGaNTfdl3G6FRvXxWVtKrCNXbB0U2mktDUVCazwUFpzB4X2PQuy+4j
+         DuvqyoLru9mxLPWmBrI5HThdO8+rYJHVcluNTXQkG5zrM0hpE72EvoWEJyOsfWHO4/RC
+         lGew==
+X-Gm-Message-State: ACgBeo1XhJ6SOeLxN7dmQDp8w/qrRqFFpkh5Qfs8DNxpHlqzr1qbN3Bw
+        fMcyK4L2E+7jay2xtSzpEMkxEbhx2rljdS3qdWiJXw==
+X-Google-Smtp-Source: AA6agR6BOF6YHOTMnMPROJdUE9tUsTOtPD6FHwfwYHiTakQgV+VT68NMf0ZjE2YrASDCSQ8PdivlLw==
+X-Received: by 2002:aa7:cb06:0:b0:446:7668:2969 with SMTP id s6-20020aa7cb06000000b0044676682969mr3214524edt.206.1661433645579;
+        Thu, 25 Aug 2022 06:20:45 -0700 (PDT)
+Received: from localhost (ip-109-192-149-028.um38.pools.vodafone-ip.de. [109.192.149.28])
+        by smtp.gmail.com with ESMTPSA id u16-20020aa7d0d0000000b004477c582ffdsm2874284edo.80.2022.08.25.06.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Aug 2022 06:20:44 -0700 (PDT)
+Date:   Thu, 25 Aug 2022 09:20:43 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, surenb@google.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net, mingo@redhat.com,
+        peterz@infradead.org, songmuchun@bytedance.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 10/10] sched/psi: per-cgroup PSI accounting
+ disable/re-enable interface
+Message-ID: <Ywd3K1+5blotUEtU@cmpxchg.org>
+References: <20220824081829.33748-1-zhouchengming@bytedance.com>
+ <20220824081829.33748-11-zhouchengming@bytedance.com>
+ <YwX2jC2UQ/zeY2E8@cmpxchg.org>
+ <324b1d0f-42e5-8947-68cb-a3d20135f2c6@bytedance.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QWwBO+hWQkYuUjLm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YwdAknZFyKxCXZuL@alley>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <324b1d0f-42e5-8947-68cb-a3d20135f2c6@bytedance.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Aug 25, 2022 at 08:28:39PM +0800, Chengming Zhou wrote:
+> On 2022/8/24 17:59, Johannes Weiner wrote:
+> > Hi Chengming,
+> > 
+> > Thanks for incorporating all the feedback. I have a few nitpicks
+> > below, but with those considered, please add:
+> > 
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > 
+> > On Wed, Aug 24, 2022 at 04:18:29PM +0800, Chengming Zhou wrote:
+> >> @@ -5171,12 +5220,19 @@ static struct cftype cgroup_base_files[] = {
+> >>  	{
+> >>  		.name = "irq.pressure",
+> >>  		.flags = CFTYPE_PRESSURE,
+> >> +		.file_offset = offsetof(struct cgroup, psi_files[PSI_IRQ]),
+> >>  		.seq_show = cgroup_irq_pressure_show,
+> >>  		.write = cgroup_irq_pressure_write,
+> >>  		.poll = cgroup_pressure_poll,
+> >>  		.release = cgroup_pressure_release,
+> >>  	},
+> >>  #endif
+> >> +	{
+> >> +		.name = "cgroup.pressure",
+> >> +		.flags = CFTYPE_PRESSURE,
+> >> +		.seq_show = cgroup_psi_show,
+> >> +		.write = cgroup_psi_write,
+> > 
+> > To match the naming convention, these should be called
+> > cgroup_pressure_show() and cgroup_pressure_write().
+> 
+> I just find cgroup_pressure_write() already exists, so I change the names
+> to cgroup_pressure_enable_show() and cgroup_pressure_enable_write(),
+> since this file name is simplified from "cgroup.pressure.enable".
 
---QWwBO+hWQkYuUjLm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-
-> > Generated by a coccinelle script.
-^ ^ ^
-
-> You might want to use Coccinelle if a simple sed/awk gets too
-> complicated. See
-
-:)
-
-So, I did a tree wide conversion and let Linus know that I have a branch
-available. He didn't respond, so I assumed that individual patches is
-the way to go.
-
-
---QWwBO+hWQkYuUjLm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmMHbbYACgkQFA3kzBSg
-KbZAYw/+NDqOY8g0Yuz+VlyR09k33L8XgacCAPbI3iIT3HWMPSLM5PILZvw4/KmS
-fbEWjJpCFWjSOoZSM5M+vw6MicaUqwjn7UXrJNLIR25RklM/Re8rfgmmo2iqqyb+
-UPAdKt3tapAX5Yb4BQWBRSNxp8+TOl+CiNtdZjec35ESDaSdAd2vDtHE6C6yxP43
-pY3tgKgjIwpI5jqMU/KxOLMCdQHy7TTr63qbeHZcPPpqeBkMMO55rqucIBrx8h26
-WtCE2di3Uzt4ma7Lo+7NJUiYdzvX17U+98XDxm0MxeeQpEstI6qK/zz0NE9pR1pH
-1AmJjRt72JxP0o7ryWvxcnXHOer2j1vEMI05kS8kmMjwCBeQWiV5/KvbxcA6S4dU
-vsUiHJQfJlzpYjjudEV7De6l3zKbrjf/jJQvhv8Poz4AkrFR8kUIGfvV5sRM06wq
-ASybvskRI+M+7BiyJC/KwHjRePkqsHsp/0FqtjOt+Ztejinu9mFc8xPcfqjiPAXx
-bTzqhvtmyUDn+vxJpfmGh59mBzyp3toKatWCH7Xwr6RYBgwBZLTucH6K64XJp7Gz
-4rb2ubLz8PZhLDCmi01R5z9E3nZD1Jpn8XV0/qYyrA+8zFqdV4iZSFKxMjwL+Csd
-LvvbPt0YRE8mmR9zwZqNoSi6xSDIx6KBrtQpUbs2lCw9H5riV50=
-=lWpT
------END PGP SIGNATURE-----
-
---QWwBO+hWQkYuUjLm--
+That makes two outliers instead of one. It's probably better to steal
+cgroup_pressure_write for cgroup.pressure, and rename the currently
+misnamed helper. How about do_pressure_write()? pressure_write()?
