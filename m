@@ -2,145 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9805A16E6
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 18:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56005A17CC
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 19:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242731AbiHYQmV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 12:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
+        id S233141AbiHYRQO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 13:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242791AbiHYQmF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 12:42:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3585B9FBA;
-        Thu, 25 Aug 2022 09:42:00 -0700 (PDT)
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1661445701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rBDIufscYHVsHmPufaPAl/Vqv2LLB/GPVe+GUwmXUq8=;
-        b=dwt4gAjuVE7mnQU8NsSY1OdNQ0rEZBIOo7TJBp+JnuKFR/KIJGimsOnnoMrAmxV7Ig+JT7
-        O249Q23IW3M+loKcYaWWeCCbHsG9iBRknQ60mgpEXPa4N+Eode7esLr9CsWoLpckIV1KzI
-        ayi8JaUVrbuLHKvfTbkZw3UEWBw409RJLoheWD5IzDo/LyyVLw6mJMQH2W1WsMcD3Dh2VU
-        y0AoX+D8MvMAnXdwKQNdlX2Uq1K1KYhECqVDrC126boDaX4wUq6U9kgnOZqzw/EZZ46Kw8
-        ahdSsDX24EgjlJ4uN9GjqVIcF/W2re4OGiNrAhu80st4X6zaYkG+ENS6mRRj9g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1661445701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rBDIufscYHVsHmPufaPAl/Vqv2LLB/GPVe+GUwmXUq8=;
-        b=/xWS01iGeCi7ocDyLNA4wcA1jGESk+49fcLFDvz6piEFCTHy/Cap5+B9ZdmwZa5+akYuxh
-        YMeWgbw07cXCjbBw==
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v2 5/8] mm/memcontrol: Replace the PREEMPT_RT conditionals
-Date:   Thu, 25 Aug 2022 18:41:28 +0200
-Message-Id: <20220825164131.402717-6-bigeasy@linutronix.de>
-In-Reply-To: <20220825164131.402717-1-bigeasy@linutronix.de>
-References: <20220825164131.402717-1-bigeasy@linutronix.de>
+        with ESMTP id S234877AbiHYRQN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 13:16:13 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66BD83B974
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 10:16:10 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id u15so32167048ejt.6
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 10:16:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=3kaoHrknD8P9F02t3vtvA1BMAXsONZRXU6MvhQ9cGm0=;
+        b=Kx3Dht7p+xMwF8txIAf16o45Jbd5BarQhl+hTLnStlK+dnLu8CQHK2RcIzo9QNnbV0
+         c4gNp7qmdE6YOchm2Gy+iMBaiQVOUufrpkH6vQ/g5W8LOb06aqEzTPQqYRVpm9jkNh1Q
+         pKL1ofb86P3CBoNgi9kLOEAga5m+GZYCXEisz54+F706FD11ImkP96ot3klNK/RKOwDP
+         g1Rp3pJ8PohBavZvYluu6a6WR2jA0Heg8yn0gy44KXBhLY5RlMCoFZxdnKx3/6Tgi3QF
+         I52eXYKkogKjti2J+zLJZSiwMpBbRBET5warOvEzaVmiiMqQqz8dUTwQejSwcp+Pu6ji
+         Z+8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=3kaoHrknD8P9F02t3vtvA1BMAXsONZRXU6MvhQ9cGm0=;
+        b=7Z9LbwO62rOfx72tY0Qz4UCU8Mzmpdi3B5cK7MmBijBI5HxfH8doOxAta4h2zMBIMr
+         1bvxpDShb6ySROOgEzDnr8tjNNFmC+98WoILNWf3+DvNIAyi8BG2azEd4jSckVL81XeO
+         an2FX591Re2qzL5y5hb6Amn2Hi9IrBsRCmlw9xC0rFu+I0gyiKYnRjJj2XDMbSLSRwMO
+         DU12Vrhc5WTym76G3yMA21z4Jb4qJTQD+F1SZcao9c8V2ci8W8eFqGASGa1THFtGMcBa
+         Ok12Y+q2mWF2otNB3/AB9Oe3GkmwmZIbK6krgjHonUPdey3GlusPySZNOUkqFu6jTL63
+         3yvA==
+X-Gm-Message-State: ACgBeo3mh8HF7PtMLxYF4IJU6CQoTG0mYzJka8iDubln0Qe1WV32vTd+
+        ijZzId/kAZKI3KOPgH6osDfx+A==
+X-Google-Smtp-Source: AA6agR7fz7MWmgqV3LHa4xD9Of7hPclEKmCl9zwQ1fZUtUga5upe1qXXPjZgXPBFV945Y5pwHN5Ozw==
+X-Received: by 2002:a17:907:72cf:b0:73d:d007:e249 with SMTP id du15-20020a17090772cf00b0073dd007e249mr2803387ejc.500.1661447768985;
+        Thu, 25 Aug 2022 10:16:08 -0700 (PDT)
+Received: from localhost ([2a02:8070:6389:a4c0:2ca9:6d59:782b:fff3])
+        by smtp.gmail.com with ESMTPSA id i15-20020a0564020f0f00b0043cab10f702sm5199485eda.90.2022.08.25.10.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Aug 2022 10:16:08 -0700 (PDT)
+Date:   Thu, 25 Aug 2022 13:16:07 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, surenb@google.com,
+        mingo@redhat.com, peterz@infradead.org, gregkh@linuxfoundation.org,
+        corbet@lwn.net, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
+Subject: Re: [PATCH v4 05/10] sched/psi: optimize task switch inside shared
+ cgroups again
+Message-ID: <YweuV/+G0DGn3ECV@cmpxchg.org>
+References: <20220825164111.29534-1-zhouchengming@bytedance.com>
+ <20220825164111.29534-6-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220825164111.29534-6-zhouchengming@bytedance.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Fri, Aug 26, 2022 at 12:41:06AM +0800, Chengming Zhou wrote:
+> Way back when PSI_MEM_FULL was accounted from the timer tick, task
+> switching could simply iterate next and prev to the common ancestor to
+> update TSK_ONCPU and be done.
+> 
+> Then memstall ticks were replaced with checking curr->in_memstall
+> directly in psi_group_change(). That meant that now if the task switch
+> was between a memstall and a !memstall task, we had to iterate through
+> the common ancestors at least ONCE to fix up their state_masks.
+> 
+> We added the identical_state filter to make sure the common ancestor
+> elimination was skipped in that case. It seems that was always a
+> little too eager, because it caused us to walk the common ancestors
+> *twice* instead of the required once: the iteration for next could
+> have stopped at the common ancestor; prev could have updated TSK_ONCPU
+> up to the common ancestor, then finish to the root without changing
+> any flags, just to get the new curr->in_memstall into the state_masks.
+> 
+> This patch recognizes this and makes it so that we walk to the root
+> exactly once if state_mask needs updating, which is simply catching up
+> on a missed optimization that could have been done in commit 7fae6c8171d2
+> ("psi: Use ONCPU state tracking machinery to detect reclaim") directly.
+> 
+> Apart from this, it's also necessary for the next patch "sched/psi: remove
+> NR_ONCPU task accounting". Suppose we walk the common ancestors twice:
+> 
+> (1) psi_group_change(.clear = 0, .set = TSK_ONCPU)
+> (2) psi_group_change(.clear = TSK_ONCPU, .set = 0)
+> 
+> We previously used tasks[NR_ONCPU] to record TSK_ONCPU, tasks[NR_ONCPU]++
+> in (1) then tasks[NR_ONCPU]-- in (2), so tasks[NR_ONCPU] still be correct.
+> 
+> The next patch change to use one bit in state mask to record TSK_ONCPU,
+> PSI_ONCPU bit will be set in (1), but then be cleared in (2), which cause
+> the psi_group_cpu has task running on CPU but without PSI_ONCPU bit set!
+> 
+> With this patch, we will never walk the common ancestors twice, so won't
+> have above problem.
+> 
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Use VM_WARN_ON_IRQS_ENABLED() and preempt_disable/enable_nested() to
-replace the CONFIG_PREEMPT_RT #ifdeffery.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- mm/memcontrol.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b69979c9ced5c..d35b6fa560f0a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -597,25 +597,18 @@ static u64 flush_next_time;
-  */
- static void memcg_stats_lock(void)
- {
--#ifdef CONFIG_PREEMPT_RT
--      preempt_disable();
--#else
--      VM_BUG_ON(!irqs_disabled());
--#endif
-+	preempt_disable_nested();
-+	VM_WARN_ON_IRQS_ENABLED();
- }
-=20
- static void __memcg_stats_lock(void)
- {
--#ifdef CONFIG_PREEMPT_RT
--      preempt_disable();
--#endif
-+	preempt_disable_nested();
- }
-=20
- static void memcg_stats_unlock(void)
- {
--#ifdef CONFIG_PREEMPT_RT
--      preempt_enable();
--#endif
-+	preempt_enable_nested();
- }
-=20
- static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
-@@ -715,7 +708,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
-um node_stat_item idx,
- 	 * interrupt context while other caller need to have disabled interrupt.
- 	 */
- 	__memcg_stats_lock();
--	if (IS_ENABLED(CONFIG_DEBUG_VM) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+	if (IS_ENABLED(CONFIG_DEBUG_VM)) {
- 		switch (idx) {
- 		case NR_ANON_MAPPED:
- 		case NR_FILE_MAPPED:
-@@ -725,7 +718,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
-um node_stat_item idx,
- 			WARN_ON_ONCE(!in_task());
- 			break;
- 		default:
--			WARN_ON_ONCE(!irqs_disabled());
-+			VM_WARN_ON_IRQS_ENABLED();
- 		}
- 	}
-=20
---=20
-2.37.2
-
