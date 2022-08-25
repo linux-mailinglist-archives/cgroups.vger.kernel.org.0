@@ -2,61 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CC65A18F5
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 20:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91025A1921
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 20:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbiHYSqM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 14:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S243485AbiHYSw6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 14:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbiHYSqL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 14:46:11 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194C65F210
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 11:46:09 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id bs25so25742458wrb.2
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 11:46:09 -0700 (PDT)
+        with ESMTP id S242713AbiHYSw6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 14:52:58 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AA8B276A
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 11:52:56 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id e28so15979924qts.1
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 11:52:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=nIUljFBkx0nexRnIBmlsCUVPOXret1NOSFaDab7BEyE=;
-        b=k6cregGwdCXEynRFHNQnjLAXb0RFMfFa3FMHdPuHUfi6T8dfpJl4HEIbDYqwcxOel3
-         ksJqS6FWaDJApbXU3uJcpWyQbkvpdQSW2R/rFtjn5aDhBWRsI99ESDf3XLfqeqwW+tVU
-         Dkv1FS2oCKmHJkt6wXRtQ4rv7corYV1o3nvyYOi0Gs9QqDDzvMk53+PNJ46oz+a9G95G
-         ZxvIoGSbblrukcDX0lGfen/S4JaEdakZONRpoX6cJ1lSdnDDIW33z3ifDMacL9p1qE16
-         M1JxwcDkSA6vcYd90XZDbW7UbSnga5SIddpxYn/3oewqT4QcarLSQIO36hnkUPHC7QqD
-         xiMg==
+        bh=iYkms9FOcVHRMQ8nnVym8avn1yHBqqPQKbrXBh8EpAg=;
+        b=ernArX/gsESCKDxGzFCn7QheTg6rO6ShblTP5Cc3wCPphLkfsifDo5R5ObXE3j6jZ4
+         ln6V0hLEnJTZPc8ImbAZswhYMmwAVOPk1VhxrwPwrpjsRZUzBoWEqKYiJmRDUONRvHv1
+         oUhM0dBrpZu53zByZiZy5ELiA4VPJiOaTveVlbCC2A4RzTkzwtZ6QiBQ0gmNlo/X+7Vr
+         M8Qk2OVc/daWcWg20LJQhUUV92x9lbQ7Qvm+sLlvEEnsl0LasLz+/E1lU7Fk6DhGIstt
+         9+n4V18u6y6H2Nu8/zRffL51gE2h6C5P6ukRD5JKMtmD4Ui1R3bfBRxoF/l821Pu46oc
+         7I3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=nIUljFBkx0nexRnIBmlsCUVPOXret1NOSFaDab7BEyE=;
-        b=hrmQVatRBzvPP1/0v1dEc5cb03CCKEpTHO3Dv2sjv8zNekUfqHYRZXFLrF7szXCRBW
-         rR7zpLdBogeug5fNxdXdcthaGzfrtC+j+hYQdsAShE/u4bHKvDYbXHpoI93Q8R2siU1R
-         Mx1DNjQac5/QkprMo1B8BaXzkC+66fvNKoVFejS0X9vXUudk0GTqnTz0oBPQYpGjoi6A
-         G7mMh83GP2N7+dBaHaRce5uWg9Iz3kzPOZxhh1DQrYM8AUdgB/RErweWaa4O9/scSmzX
-         /7C0Ote/kUtMZ4FQ6mkFFoV4agMPaROgklnR+BdQvOQm5fAjcr3902S8qcqq35GntiWf
-         8+Ig==
-X-Gm-Message-State: ACgBeo3eXVmhS+RbEjByGot5dtPoLe9K8pI8muOypJPA5I0JE8W3awdf
-        ZpDTBDcqlJ2e/8KwMSSahbtL396cCWK99zCIWOakJw==
-X-Google-Smtp-Source: AA6agR5LFET4yCFkQ8vwQbxb3eFWAptn2L9E3gpXGgxbfnZMZebQzL/ASi9e2kdBGAZQCqlaOF+AFzYG3fCODNNPjXs=
-X-Received: by 2002:adf:9ccf:0:b0:225:4934:53e3 with SMTP id
- h15-20020adf9ccf000000b00225493453e3mr3158455wre.210.1661453167369; Thu, 25
- Aug 2022 11:46:07 -0700 (PDT)
+        bh=iYkms9FOcVHRMQ8nnVym8avn1yHBqqPQKbrXBh8EpAg=;
+        b=RzTO3uOSzu0qLmbTz45WQU+g8vQwI22wbxtk8lZeOrLsGojdakI4f8BK9HNs95ZeO5
+         cI4BtTHdVUztDvOi0fJKXahLHSNwZvccryphrhV8++uO14mR3+BWUGda+nd9LTSP/E2Q
+         W2Tjhkrz62x0a8hS3YYPP21jIiVTPZQVCiXIa8vd0IT5c+wsfZ/brrJmtxevwE8sBQiJ
+         fg/XqId9UPXDLT4d16/j/JnfseXN/Y5GjkYFOYt0genL1DXDWUj1+mOc0rC7HlcNVr9I
+         xoEOfngrzJiAQaqh/mObCuIiloxjYvFXxbXj3GzmahMuUHN0tVrCbBne1bykYeIMEXsR
+         bKug==
+X-Gm-Message-State: ACgBeo0SgONDsq5KDXK1fs2muosxMBH3tLD5/XdqU9qdAfRWb/QT8qGV
+        c6gC6m5BVtaWPmEl2+4NDbFU99KfSJBahmScICXEXgLR1OYMSg==
+X-Google-Smtp-Source: AA6agR48ZvB5ActsSVjSq3vRtM4RfekkHdDEj6wknDLegitpHkTI1l0gJHvzsL78KJ1H+7AyvyZOIhoCN3zEWskpNYY=
+X-Received: by 2002:a05:622a:552:b0:342:f8c2:442 with SMTP id
+ m18-20020a05622a055200b00342f8c20442mr4912166qtx.478.1661453575766; Thu, 25
+ Aug 2022 11:52:55 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-6-haoluo@google.com>
  <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com>
  <CAJD7tkZGxkV8_3qNy_Q=k-DT2=aGknzT08WiVtESpzur1JxCwA@mail.gmail.com> <CAADnVQLD+PcyO1qmxaBxdK1_tLRfBEqth8kzxts_8f+nSqu+hA@mail.gmail.com>
 In-Reply-To: <CAADnVQLD+PcyO1qmxaBxdK1_tLRfBEqth8kzxts_8f+nSqu+hA@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 25 Aug 2022 11:45:31 -0700
-Message-ID: <CAJD7tkZDw278kApDYKUhnuz5wVcrx9D_k0LLUktT8jgrA5uj-w@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 25 Aug 2022 11:52:45 -0700
+Message-ID: <CA+khW7hKRk-=s=eOJAGqJ9bap17kZu8p+YU+Bx-BUg+WaU2q_A@mail.gmail.com>
 Subject: Re: [RESEND PATCH bpf-next v9 5/5] selftests/bpf: add a selftest for
  cgroup hierarchical stats collection
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, LKML <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -79,7 +79,7 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -162,4 +162,7 @@ On Thu, Aug 25, 2022 at 11:43 AM Alexei Starovoitov
 >
 > Anyway, pushed the set to bpf-next. Thanks everyone.
 
-Thanks Alexei!
+Really awesome! Thanks everyone for the code review and the helpful
+comments! Yosry and I can now start playing this new tool in our
+production kernel. We will monitor for bugs and continue making
+further improvements.
