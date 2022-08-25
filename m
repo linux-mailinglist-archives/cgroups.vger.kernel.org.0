@@ -2,186 +2,181 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BC95A15B3
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 17:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302485A170E
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 18:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241669AbiHYP1i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 11:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        id S243085AbiHYQnX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 12:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242812AbiHYP1M (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 11:27:12 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C5ABB6A2
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 08:26:03 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id f21so20677526pjt.2
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 08:26:03 -0700 (PDT)
+        with ESMTP id S243090AbiHYQnE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 12:43:04 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40209BB00D
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 09:42:35 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id c16-20020a17090aa61000b001fb3286d9f7so5833729pjq.1
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 09:42:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Zsqv9AykgJ+WV9feY4vZLdyL0HO37C5wC/zUOZBB/Rs=;
-        b=HWnl7UrUYlzNgRl6uEFPplyGVawiIDXFH7m8PBsKuwLAyY4wVOH5/4W+KHE3cm4dmy
-         4VKpGXbIOjUVTNJ5qTAEfFLY5j3Yf3cnEjwgexlgBZzwA/NZqy+OA837il6nxkXV5MZ8
-         bWeOe7RYnCeBZeCaEDApmwAvBPMIcLaY9ZVBN4TcWiNWpqvDtnBHm4rNi4l+iIhXSBbt
-         Vb5TpW9i3LVxD0fenWNvYo2kmlhk6MMD/fpNzQjOSsWwzJLxUQdlnEY1aV6QOjHMKsIC
-         o6Aj0pItiOXOcalFXaXlzd4qp/y4sLZ4X8K4ywWFjTAOSTa/Uzz4A9Ct6uhXYJn4n24B
-         gkOA==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=OtUK9OLMWdL6AUc3ZfpyXK1kgh1agdbXcj5hc+979G8=;
+        b=xHJiXgBT7PEkZdMevyBPSnrJlZZCDwl6ozciskiNf9lpSMP/BhlEA/uOVlntwEOMoP
+         8AsYSYGjz+lts4hRawuyJ6l6j1hjlPAVOBqnpGUKXbtEw9ZdqEkFmWYzCoRhk5hEVMqd
+         LookuDXfD+8p7qtuCBQ2Us57jbxcmrBlqm9sBNsMnW+PY5fnbQg7FmU8Pv54Ao1pZ+jO
+         Qlv7oV81DA9EYTvqlGNwLjuuhXOAJPyHxTpLFABwb7wAi1ZGz+PtCwoQyKk7qJ6TBCwf
+         YrTIDzukpS+oc/W+qzGWsltS5E3XkCXyR6vIOWTqg9xpCYf+3ygIVs+5KfRLmrQe7Qwx
+         altQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Zsqv9AykgJ+WV9feY4vZLdyL0HO37C5wC/zUOZBB/Rs=;
-        b=Qqc55LuCgDrvZ5cBM6F3jQGuR3XIELEnT3BDZ2ycpEedckiCPaTwjGzWhcRQ9yQgDU
-         Y9lQwPr/5QPJuXAe2vTPmLB0qFsTjFj+0abZb3qDZZJCqmpZAw/9WjEaWeyWCVbzJ6ML
-         mNwzzZ2BRHzGp16gkxbbxbYxEGaaSJ6Bl4fUnbuZkwZj1B9hEHSrlRHXUYzGKwgY+m0E
-         OynBlTvdFsKk93qmPoD8NSxIRgplexz+IotXrGoa1dUwZHYri1Ynz1kFobXA985N7awl
-         9uxEyVw5wON8d0F40OcqgFyViImI7TfVd5xpwcuHWwmLJWFflWmZladS/MvJ9TE6K3zG
-         KRIQ==
-X-Gm-Message-State: ACgBeo2tMOB456arv5uHeK40ggRlt5Dqa4+7E51G2wF2h0kNPko9vUCg
-        g4Svi/KY3ZMCeQZzT7XKN21l/YRQxngzr0XUcD6xdQ==
-X-Google-Smtp-Source: AA6agR7yKFRvtMiJWUoOhnBb6dODuZY59WJG0S4sLUXExTnTCnnQec25vcU6SQQtE/2OZn6xCtg2SViS0OjZjhqHnPQ=
-X-Received: by 2002:a17:902:d58f:b0:173:75b:6ad with SMTP id
- k15-20020a170902d58f00b00173075b06admr4194683plh.172.1661441150947; Thu, 25
- Aug 2022 08:25:50 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=OtUK9OLMWdL6AUc3ZfpyXK1kgh1agdbXcj5hc+979G8=;
+        b=3ChLLjM923l0jtKuGlpAarblz7YPcq8dGDQPJBI37T5yWlWMl5T734OGU42xx394pq
+         fURnHl7Frnrs/OgfxB8Ym5KUi9JCvUGIOl3MDArIOi1/HvFAz24WDvAfM5/p3Z8TYNmU
+         dkOp8mDWmVPeClcZlnkiYiRlrveQJE68Mqv3bBDqi90uDiwRknQTHTf+DLTmmSV6ODpW
+         XDXb5BkiXIpkJKGfPxw0zX8bD4Tse6oqcNmDHeuH/WWwLeFlwUtkj9F0BmrH3URS6eWi
+         P9GCLIkZHe65HOIJoL3C+IIbbFn/BpPeSSThbLDD1YPtKWIcSqNtMCMOOLDxJpUdnDMh
+         RO7Q==
+X-Gm-Message-State: ACgBeo0LnFxM6tz7H8Ez9ywHP/WS1gBnSY3tNRS76BqreH4Ev3IOs4ky
+        0Poqp71fwwv1HFbROFfUq6+i6SztIsbqQg==
+X-Google-Smtp-Source: AA6agR4gxE/7slArmuUtR05sZfHFLCh81St/simPA+TXbSjCOklqEF54v1qmnT+n3VjgviN6ahhCMg==
+X-Received: by 2002:a17:902:f70f:b0:171:2572:4f5e with SMTP id h15-20020a170902f70f00b0017125724f5emr4422269plo.40.1661445754247;
+        Thu, 25 Aug 2022 09:42:34 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.236])
+        by smtp.gmail.com with ESMTPSA id b18-20020a62a112000000b005362314bf80sm12779408pff.67.2022.08.25.09.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Aug 2022 09:42:33 -0700 (PDT)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     hannes@cmpxchg.org, tj@kernel.org, mkoutny@suse.com,
+        surenb@google.com
+Cc:     mingo@redhat.com, peterz@infradead.org, gregkh@linuxfoundation.org,
+        corbet@lwn.net, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [PATCH v4 00/10] sched/psi: some optimizations and extensions
+Date:   Fri, 26 Aug 2022 00:41:01 +0800
+Message-Id: <20220825164111.29534-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220825000506.239406-1-shakeelb@google.com> <20220825000506.239406-3-shakeelb@google.com>
- <Ywca/EqpyQDAWlE2@dhcp22.suse.cz>
-In-Reply-To: <Ywca/EqpyQDAWlE2@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 25 Aug 2022 08:25:38 -0700
-Message-ID: <CALvZod6mqtZ+iELhg2Q+SbdcicGSbY4piymzFCOPsy5UxvtbRg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] mm: page_counter: rearrange struct page_counter fields
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, lkp@lists.01.org,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 11:47 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 25-08-22 00:05:05, Shakeel Butt wrote:
-> > With memcg v2 enabled, memcg->memory.usage is a very hot member for
-> > the workloads doing memcg charging on multiple CPUs concurrently.
-> > Particularly the network intensive workloads. In addition, there is a
-> > false cache sharing between memory.usage and memory.high on the charge
-> > path. This patch moves the usage into a separate cacheline and move all
-> > the read most fields into separate cacheline.
-> >
-> > To evaluate the impact of this optimization, on a 72 CPUs machine, we
-> > ran the following workload in a three level of cgroup hierarchy.
-> >
-> >  $ netserver -6
-> >  # 36 instances of netperf with following params
-> >  $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
-> >
-> > Results (average throughput of netperf):
-> > Without (6.0-rc1)     10482.7 Mbps
-> > With patch            12413.7 Mbps (18.4% improvement)
-> >
-> > With the patch, the throughput improved by 18.4%.
-> >
-> > One side-effect of this patch is the increase in the size of struct
-> > mem_cgroup. For example with this patch on 64 bit build, the size of
-> > struct mem_cgroup increased from 4032 bytes to 4416 bytes. However for
-> > the performance improvement, this additional size is worth it. In
-> > addition there are opportunities to reduce the size of struct
-> > mem_cgroup like deprecation of kmem and tcpmem page counters and
-> > better packing.
-> >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Reviewed-by: Feng Tang <feng.tang@intel.com>
-> > Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-> > Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
->
+Hi all,
 
-Thanks.
+This patch series are some optimizations and extensions for PSI.
 
-> One nit below
->
-> > ---
-> > Changes since v1:
-> > - Updated the commit message
-> > - Make struct page_counter cache align.
-> >
-> >  include/linux/page_counter.h | 35 +++++++++++++++++++++++------------
-> >  1 file changed, 23 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> > index 679591301994..78a1c934e416 100644
-> > --- a/include/linux/page_counter.h
-> > +++ b/include/linux/page_counter.h
-> > @@ -3,15 +3,26 @@
-> >  #define _LINUX_PAGE_COUNTER_H
-> >
-> >  #include <linux/atomic.h>
-> > +#include <linux/cache.h>
-> >  #include <linux/kernel.h>
-> >  #include <asm/page.h>
-> >
-> > +#if defined(CONFIG_SMP)
-> > +struct pc_padding {
-> > +     char x[0];
-> > +} ____cacheline_internodealigned_in_smp;
-> > +#define PC_PADDING(name)     struct pc_padding name
-> > +#else
-> > +#define PC_PADDING(name)
-> > +#endif
-> > +
-> >  struct page_counter {
-> > +     /*
-> > +      * Make sure 'usage' does not share cacheline with any other field. The
-> > +      * memcg->memory.usage is a hot member of struct mem_cgroup.
-> > +      */
-> >       atomic_long_t usage;
-> > -     unsigned long min;
-> > -     unsigned long low;
-> > -     unsigned long high;
-> > -     unsigned long max;
-> > +     PC_PADDING(_pad1_);
-> >
-> >       /* effective memory.min and memory.min usage tracking */
-> >       unsigned long emin;
-> > @@ -23,18 +34,18 @@ struct page_counter {
-> >       atomic_long_t low_usage;
-> >       atomic_long_t children_low_usage;
-> >
-> > -     /* legacy */
-> >       unsigned long watermark;
-> >       unsigned long failcnt;
->
-> These two are also touched in the charging path so we could squeeze them
-> into the same cache line as usage.
->
-> 0-day machinery was quite good at hitting noticeable regression anytime
-> we have changed layout so let's see what they come up with after this
-> patch ;)
+patch 1/10 fix periodic aggregation shut off problem introduced by earlier
+commit 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups").
 
-I will try this locally first (after some cleanups) to see if there is
-any positive or negative impact and report here.
+patch 2-4 are some misc optimizations, so put them in front of this series.
 
-> --
-> Michal Hocko
-> SUSE Labs
+patch 5/10 optimize task switch inside shared cgroups when in_memstall status
+of prev task and next task are different.
+
+patch 6/10 remove NR_ONCPU task accounting to save 4 bytes in the first
+cacheline to be used by the following patch 7/10, which introduce new
+PSI resource PSI_IRQ to track IRQ/SOFTIRQ pressure stall information.
+
+patch 8-9 cache parent psi_group in struct psi_group to speed up the
+hot iteration path.
+
+patch 10/10 introduce a per-cgroup interface "cgroup.pressure" to disable
+or re-enable PSI in the cgroup level, and we implement hiding and unhiding
+the pressure files per Tejun's suggestion[1], which depends on his work[2].
+
+[1] https://lore.kernel.org/all/YvqjhqJQi2J8RG3X@slm.duckdns.org/
+[2] https://lore.kernel.org/all/20220820000550.367085-1-tj@kernel.org/
+
+Performance test using mmtests/config-scheduler-perfpipe in
+/user.slice/user-0.slice/session-4.scope:
+
+                                 next                patched       patched/only-leaf
+Min       Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+1st-qrtle Time        8.90 (   0.00%)        8.58 (   3.63%)        8.05 (   9.58%)
+2nd-qrtle Time        8.94 (   0.00%)        8.61 (   3.65%)        8.09 (   9.50%)
+3rd-qrtle Time        8.99 (   0.00%)        8.65 (   3.75%)        8.15 (   9.35%)
+Max-1     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+Max-5     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+Max-10    Time        8.84 (   0.00%)        8.55 (   3.20%)        8.04 (   9.05%)
+Max-90    Time        9.04 (   0.00%)        8.67 (   4.10%)        8.18 (   9.51%)
+Max-95    Time        9.04 (   0.00%)        8.68 (   4.03%)        8.20 (   9.26%)
+Max-99    Time        9.07 (   0.00%)        8.73 (   3.82%)        8.25 (   9.11%)
+Max       Time        9.12 (   0.00%)        8.89 (   2.54%)        8.27 (   9.29%)
+Amean     Time        8.95 (   0.00%)        8.62 *   3.67%*        8.11 *   9.43%*
+
+Big thanks to Johannes Weiner, Tejun Heo and Michal Koutný for your
+suggestions and review!
+
+
+Changes in v4:
+ - Collect Acked-by tags from Johannes Weiner.
+ - Add many clear comments and changelogs per Johannes Weiner.
+ - Replace for_each_psi_group() with better open-code.
+ - Change to use better names cgroup_pressure_show() and
+   cgroup_pressure_write().
+ - Change to use better name psi_cgroup_restart() and only
+   call it on enabling.
+
+Changes in v3:
+ - Rebase on linux-next and reorder patches to put misc optimizations
+   patches in the front of this series.
+ - Drop patch "sched/psi: don't change task psi_flags when migrate CPU/group"
+   since it caused a little performance regression and it's just
+   code refactoring, so drop it.
+ - Don't define PSI_IRQ and PSI_IRQ_FULL when !CONFIG_IRQ_TIME_ACCOUNTING,
+   in which case they are not used.
+ - Add patch 8/10 "sched/psi: consolidate cgroup_psi()" make cgroup_psi()
+   can handle all cgroups including root cgroup, make patch 9/10 simpler.
+ - Rename interface to "cgroup.pressure" and add some explanation
+   per Michal's suggestion.
+ - Hide and unhide pressure files when disable/re-enable cgroup PSI,
+   depends on Tejun's work.
+
+Changes in v2:
+ - Add Acked-by tags from Johannes Weiner. Thanks for review!
+ - Fix periodic aggregation wakeup for common ancestors in
+   psi_task_switch().
+ - Add patch 7/10 from Johannes Weiner, which remove NR_ONCPU
+   task accounting to save 4 bytes in the first cacheline.
+ - Remove "psi_irq=" kernel cmdline parameter in last version.
+ - Add per-cgroup interface "cgroup.psi" to disable/re-enable
+   PSI stats accounting in the cgroup level.
+
+
+Chengming Zhou (9):
+  sched/psi: fix periodic aggregation shut off
+  sched/psi: don't create cgroup PSI files when psi_disabled
+  sched/psi: save percpu memory when !psi_cgroups_enabled
+  sched/psi: move private helpers to sched/stats.h
+  sched/psi: optimize task switch inside shared cgroups again
+  sched/psi: add PSI_IRQ to track IRQ/SOFTIRQ pressure
+  sched/psi: consolidate cgroup_psi()
+  sched/psi: cache parent psi_group to speed up groups iterate
+  sched/psi: per-cgroup PSI accounting disable/re-enable interface
+
+Johannes Weiner (1):
+  sched/psi: remove NR_ONCPU task accounting
+
+ Documentation/admin-guide/cgroup-v2.rst |  23 ++
+ include/linux/cgroup-defs.h             |   3 +
+ include/linux/cgroup.h                  |   5 -
+ include/linux/psi.h                     |  12 +-
+ include/linux/psi_types.h               |  29 ++-
+ kernel/cgroup/cgroup.c                  | 106 ++++++++-
+ kernel/sched/core.c                     |   1 +
+ kernel/sched/psi.c                      | 280 +++++++++++++++++-------
+ kernel/sched/stats.h                    |   6 +
+ 9 files changed, 362 insertions(+), 103 deletions(-)
+
+-- 
+2.37.2
+
