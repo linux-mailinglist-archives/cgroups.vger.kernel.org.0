@@ -2,122 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B32DA5A08FE
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 08:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1875A0908
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 08:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbiHYGkz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 02:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        id S233406AbiHYGnw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 02:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235887AbiHYGkx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 02:40:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAB9E03F;
-        Wed, 24 Aug 2022 23:40:52 -0700 (PDT)
+        with ESMTP id S233141AbiHYGnv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 02:43:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A7AA0306;
+        Wed, 24 Aug 2022 23:43:49 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D76AE5BE15;
-        Thu, 25 Aug 2022 06:40:50 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B92545C871;
+        Thu, 25 Aug 2022 06:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661409650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1661409827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8tP0U7uO6jkjoWoaVJTMGffTLHsMTAeM7ZO+0Ttzpnc=;
-        b=Rlq2EbXz/KoWktPrNnKN7AIXIeIrydmCssc+ZXhRb8K/2E3gz3XlPnDJOGqi2IIcPcmtAO
-        /gA127K196XnzQb58YhLdftTVYTGJzLNuLnqgaP2dPun3n3mKuze7iKY/qiq73UzJvHzsO
-        XCPRI/PrCt8PtA7mhOsqkjocr6NW3hs=
+        bh=3Qj/G2DClTBDyDxLgwNY63LBJXmgLPhCgE3PiOW9WEs=;
+        b=pkOPSm7KZh7KiGtgBVxVig947gAUgLX0C96Gk0/bANJ02johnIDhHEuQe1pL0Ib271ELms
+        reO9MbRbZCMLkrpO2rT2xDlx/qU4ieZZfpALWCZY4NgAnw3/JYSRHnJSbr8pYoxulznjLs
+        f/m5yaMC6GaXOc1rCK9PXVNnuUvfWqo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B8D2C13A47;
-        Thu, 25 Aug 2022 06:40:50 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9245B13A47;
+        Thu, 25 Aug 2022 06:43:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SRPaKnIZB2OIOwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 25 Aug 2022 06:40:50 +0000
-Date:   Thu, 25 Aug 2022 08:40:50 +0200
+        id 1xVQISMaB2OKPAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 25 Aug 2022 06:43:47 +0000
+Date:   Thu, 25 Aug 2022 08:43:46 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Ke Wang <ke.wang@unisoc.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
-Message-ID: <YwcZctA2S3Sd0LBN@dhcp22.suse.cz>
-References: <YwRjyx6wFLk8WTDe@dhcp22.suse.cz>
- <CAGWkznGaYTv4u4kOo-rupfyWzDNJXNKTchwP6dbUK-=UXWm47w@mail.gmail.com>
- <YwSQ4APOu/H7lYGL@dhcp22.suse.cz>
- <CAGWkznGd6mgareABseMKY5p0f1=5dkfVkj=NS7_B6OkXBYSwyw@mail.gmail.com>
- <YwS/S9Sd1OWnT81Q@dhcp22.suse.cz>
- <CAGWkznGYLyF+njUB0gFF3JVdThnK9JaNsqxXYFhbdSwEQpCxvA@mail.gmail.com>
- <YwXYVjRpXQjQMsxr@dhcp22.suse.cz>
- <CAGWkznEqX3DwHW_owiK+HuuQ-HsUYK4vKmLhSxgzGn20Vzid2A@mail.gmail.com>
- <YwX89JCQCKMMYdG9@dhcp22.suse.cz>
- <CAGWkznF+dBjLzAxMMXWYSZ_5q3KA-ou0P7XM7jSYN7JSRp8N0w@mail.gmail.com>
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Oliver Sang <oliver.sang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, lkp@lists.01.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mm: page_counter: remove unneeded atomic ops for
+ low/min
+Message-ID: <YwcaIlJUtaYB7cKI@dhcp22.suse.cz>
+References: <20220825000506.239406-1-shakeelb@google.com>
+ <20220825000506.239406-2-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGWkznF+dBjLzAxMMXWYSZ_5q3KA-ou0P7XM7jSYN7JSRp8N0w@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220825000506.239406-2-shakeelb@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 25-08-22 08:43:52, Zhaoyang Huang wrote:
-> On Wed, Aug 24, 2022 at 6:27 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 24-08-22 17:34:42, Zhaoyang Huang wrote:
-[...]
-> > > IMHO, charging the pages which out of explicitly memory
-> > > enabled group to root could solve all of the above constraints with no
-> > > harm.
-> >
-> > This would break the hierarchical property of the controller. So a
-> > strong no no. Consider the following example
-> >
-> >        root
-> >         |
-> >         A
-> > controllers="memory"
-> > memory.max = 1G
-> > subtree_control=""
-> > |      |      |
-> > A1     A2     A3
-> >
-> > althought A1,2,3 do not have their memory controller enabled explicitly
-> > they are still constrained by the A memcg limit. If you just charge to
-> > the root because it doesn't have memory controller enabled explicitly
-> > then you just evade that constrain. I hope you understand why that is a
-> > problem.
-> IMO, A1-A3 should be explicitly enabled via echo "+memory" >
-> A/subtree_control since memory.max has been set.
+On Thu 25-08-22 00:05:04, Shakeel Butt wrote:
+> For cgroups using low or min protections, the function
+> propagate_protected_usage() was doing an atomic xchg() operation
+> irrespectively. We can optimize out this atomic operation for one
+> specific scenario where the workload is using the protection (i.e.
+> min > 0) and the usage is above the protection (i.e. usage > min).
+> 
+> This scenario is actually very common where the users want a part of
+> their workload to be protected against the external reclaim. Though this
+> optimization does introduce a race when the usage is around the
+> protection and concurrent charges and uncharged trip it over or under
+> the protection. In such cases, we might see lower effective protection
+> but the subsequent charge/uncharge will correct it.
 
-You seem to be missing the point I've triedy to make here. It is not
-about how the respective subtree should or shouldn't be configured. It
-is about the hierarchical behavior. Configuration at a higher level should be
-enforced under subtree no matter how that subtree decides to
-enabled/disable controllers. Such subtree might have beeb delegated
-and configured differently yet the constrain should be still applied.
-See the point?
+Thanks this is much more useful
 
-What you seem to be proposing is similar to cgroup v1 use_hierarchy
-configuration. It has been decided that this is undesirable very early
-in the cgroup v2 development because it make delegation impossible
-(among other reasons).
+> To evaluate the impact of this optimization, on a 72 CPUs machine, we
+> ran the following workload in a three level of cgroup hierarchy with top
+> level having min and low setup appropriately to see if this optimization
+> is effective for the mentioned case.
+> 
+>  $ netserver -6
+>  # 36 instances of netperf with following params
+>  $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
+> 
+> Results (average throughput of netperf):
+> Without (6.0-rc1)	10482.7 Mbps
+> With patch		14542.5 Mbps (38.7% improvement)
+> 
+> With the patch, the throughput improved by 38.7%
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+> Reviewed-by: Feng Tang <feng.tang@intel.com>
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
+> ---
+> Changes since v1:
+> - Commit message update with more detail on which scenario is getting
+>   optimized and possible race condition.
+> 
+>  mm/page_counter.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/page_counter.c b/mm/page_counter.c
+> index eb156ff5d603..47711aa28161 100644
+> --- a/mm/page_counter.c
+> +++ b/mm/page_counter.c
+> @@ -17,24 +17,23 @@ static void propagate_protected_usage(struct page_counter *c,
+>  				      unsigned long usage)
+>  {
+>  	unsigned long protected, old_protected;
+> -	unsigned long low, min;
+>  	long delta;
+>  
+>  	if (!c->parent)
+>  		return;
+>  
+> -	min = READ_ONCE(c->min);
+> -	if (min || atomic_long_read(&c->min_usage)) {
+> -		protected = min(usage, min);
+> +	protected = min(usage, READ_ONCE(c->min));
+> +	old_protected = atomic_long_read(&c->min_usage);
+> +	if (protected != old_protected) {
+>  		old_protected = atomic_long_xchg(&c->min_usage, protected);
+>  		delta = protected - old_protected;
+>  		if (delta)
+>  			atomic_long_add(delta, &c->parent->children_min_usage);
+>  	}
+>  
+> -	low = READ_ONCE(c->low);
+> -	if (low || atomic_long_read(&c->low_usage)) {
+> -		protected = min(usage, low);
+> +	protected = min(usage, READ_ONCE(c->low));
+> +	old_protected = atomic_long_read(&c->low_usage);
+> +	if (protected != old_protected) {
+>  		old_protected = atomic_long_xchg(&c->low_usage, protected);
+>  		delta = protected - old_protected;
+>  		if (delta)
+> -- 
+> 2.37.1.595.g718a3a8f04-goog
 
 -- 
 Michal Hocko
