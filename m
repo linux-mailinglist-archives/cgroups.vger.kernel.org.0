@@ -2,104 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECE75A1267
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 15:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C035A12BE
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 15:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241306AbiHYNfI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 09:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
+        id S239191AbiHYNwX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 09:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237455AbiHYNfE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 09:35:04 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7896FA0A
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 06:35:03 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id og21so2050338ejc.2
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 06:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=maHy+RdG1bfZFcMYc9WoBOBgcyZgJzrvT/br9of5/VU=;
-        b=ki59yMmI7FCk8x3aODpep64NKP8t1/4KYxMTUMMmwXZzS7FTFF7NyXtV3OQEzwBO8i
-         ixy2Ie3yBDN6MY9J6oh5ohKreOhyo4exnqAFtyDKyGIlmMEoYYKv5UvuVW3BpzpK3A8u
-         A+7XL429LMEIxpIIwyJTOz0NA8se0/inNDugUuas2ut7vqjWuB5zrL1DUwzw8tv87ahu
-         2nJ5bjWNidheTYWOAkK5DgmkK9F9z7cyBalUhH9epPhy73xf2ROJwaJA5xylPX1yvZrl
-         l+q1P0cdFMUVBHTnZXGgW0s8vq3N5rLVszPhTP+7mm1iaK128FV3V6UVbyj1gmG9ENDu
-         JRJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=maHy+RdG1bfZFcMYc9WoBOBgcyZgJzrvT/br9of5/VU=;
-        b=KEw2NOFYaRE3ZazTP+lE9JMHRZH626r0fsr8aBvMbbuizM4iW8EgtKYpt2Wa51+h05
-         R4HFmruBSA95MQ2233inL8LgRW5b/pSRg4E003S3yJFDCE/t/y00EukKWn92VS+EBA1z
-         zGwx7zvcVx1xFkHGB3mzN2UZOExYMfGBkhdbbi1U8Rqh9+u4MoHyBF1B6cIQUhCTZtmB
-         b/i0gxzksA/uQhvaZfBjx9sx4xuUwIPiFTcqud1hGoHHhLXaFVq5B56EATkkp8M4K6k5
-         ToBC1iruDkm0/KTmwYBGKIhdokOJ9ro8DhfZG6BsUujLbrKx0b0mEWtjLx7MPyRjK7Bn
-         StKQ==
-X-Gm-Message-State: ACgBeo2hD4TBLqMzq0uGIco5lg0aQev4KOL+SrXIY9LMSRPvskKPgtTx
-        bRxCwFJuo/TA+vKD/as49g13TQ==
-X-Google-Smtp-Source: AA6agR68Mc5Uo00qzU7ZBlI2Td38wWc8YYe05Y9uKw9yUI6KGPOGWg8b0eKy6paLME3n78tCMGxBlQ==
-X-Received: by 2002:a17:907:75d9:b0:73d:dda8:b6c with SMTP id jl25-20020a17090775d900b0073ddda80b6cmr397885ejc.319.1661434502051;
-        Thu, 25 Aug 2022 06:35:02 -0700 (PDT)
-Received: from localhost (ip-109-192-149-028.um38.pools.vodafone-ip.de. [109.192.149.28])
-        by smtp.gmail.com with ESMTPSA id l10-20020a1709060cca00b0073bf84be798sm2501321ejh.142.2022.08.25.06.35.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 06:35:01 -0700 (PDT)
-Date:   Thu, 25 Aug 2022 09:35:00 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Ke Wang <ke.wang@unisoc.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
-Message-ID: <Ywd6hN1Q9MtQWZCp@cmpxchg.org>
-References: <YwS/S9Sd1OWnT81Q@dhcp22.suse.cz>
- <CAGWkznGYLyF+njUB0gFF3JVdThnK9JaNsqxXYFhbdSwEQpCxvA@mail.gmail.com>
- <YwXYVjRpXQjQMsxr@dhcp22.suse.cz>
- <CAGWkznEqX3DwHW_owiK+HuuQ-HsUYK4vKmLhSxgzGn20Vzid2A@mail.gmail.com>
- <YwX89JCQCKMMYdG9@dhcp22.suse.cz>
- <CAGWkznF+dBjLzAxMMXWYSZ_5q3KA-ou0P7XM7jSYN7JSRp8N0w@mail.gmail.com>
- <YwcZctA2S3Sd0LBN@dhcp22.suse.cz>
- <CAGWkznH5gQXigdLx=fwdL0uqdGx4WE9QP8b8cbWFxr=Rdg-CZQ@mail.gmail.com>
- <Ywc34ci5XUMXOSYA@dhcp22.suse.cz>
- <CAGWkznHL_G3OoAc5gJ+iwxqxonr21-fU+F4T2gkpXH68keLpuQ@mail.gmail.com>
+        with ESMTP id S241378AbiHYNwT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 09:52:19 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AC51A3BE;
+        Thu, 25 Aug 2022 06:52:17 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0399F20AE5;
+        Thu, 25 Aug 2022 13:52:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1661435536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SG8vYYGWMAWN9Mvff6IMP73eu6yuDvbm1ewu/sn138A=;
+        b=RWOYQ/ofWltretqyG242UAx8o2hrUiuG20EgcZ3u0Xj78uaymJk52azJltrCnl9SXU58ks
+        BmzGVXICuo8hjW4wGGnFig3EsszDCY1sY5nFEruoVPfGvjNdeBi9DP/CnR/4HqQ/zFX7mc
+        d9gQv3u/qcznWqjn8R08buVVTot4t0Q=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5377D2C141;
+        Thu, 25 Aug 2022 13:52:14 +0000 (UTC)
+Date:   Thu, 25 Aug 2022 15:52:14 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
+Message-ID: <Ywd+jrlh+6ZJw7u5@alley>
+References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
+ <YwdAknZFyKxCXZuL@alley>
+ <YwdtunymYd4VO83D@shikoro>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGWkznHL_G3OoAc5gJ+iwxqxonr21-fU+F4T2gkpXH68keLpuQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YwdtunymYd4VO83D@shikoro>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 06:11:09PM +0800, Zhaoyang Huang wrote:
-> Sorry for any misunderstanding among the discussion. My purpose is
-> real and simple as I have stated from the very beginning that I would
-> like to have per-app cgroup hierarchy to charge memory to root if it
-> is not enabled explicitly for memory. The reason has also been stated
-> like reclaim and workingset regression in suren's report. I don't
-> think my proposal will do any harm to current v2's mechanism besides
-> asking for the admin echo "+memory" to their desire group.
+On Thu 2022-08-25 14:40:26, Wolfram Sang wrote:
+> 
+> > > Generated by a coccinelle script.
+> ^ ^ ^
+> 
+> > You might want to use Coccinelle if a simple sed/awk gets too
+> > complicated. See
+> 
+> :)
+> 
+> So, I did a tree wide conversion and let Linus know that I have a branch
+> available. He didn't respond, so I assumed that individual patches is
+> the way to go.
 
-It would permit children to escape parental control, completely
-breaking the hierarchy and delegation guarantees currently in
-place. That just isn't going to happen.
+I am not sure when exactly you sent it. Linus is very busy during the
+merge window and might miss less important things.
 
-Nacked-by: Johannes Weiner <hannes@cmpxchg.org>
+Also he might prefer to get the script that did the tree-wide change so
+that he knows what exactly has changed.
 
-I would suggest focusing on finding the root cause for the reclaim
-problem you are describing. It's possible all we need is a fix to
-reclaim or the workingset code.
+Best Regards,
+Petr
