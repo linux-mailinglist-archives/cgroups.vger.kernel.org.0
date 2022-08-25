@@ -2,165 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5515A053E
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 02:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFAE5A0546
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 02:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbiHYAmd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Aug 2022 20:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        id S230448AbiHYAo2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Aug 2022 20:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbiHYAmc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 20:42:32 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E308E0C5
-        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 17:42:30 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id b2so14046785qkh.12
-        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 17:42:30 -0700 (PDT)
+        with ESMTP id S230004AbiHYAoX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 20:44:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475738FD4E;
+        Wed, 24 Aug 2022 17:44:22 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id s6so14958295lfo.11;
+        Wed, 24 Aug 2022 17:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=Wpl+c4YfOpabx/QJ3AnuJKzBxyiE9VbZKz/xHkTKLAk=;
-        b=r7iSTSO5N8EX5GHy2qXheBkYDaCDsoumn505Dy+CVk71CvcADRVPavVRi4XQL41YpW
-         nddUiAQlihuhdYgf94AKk17bP/Lg4DS8ALSrWHJaU/mW2rCqXqPEHTnGcF9m9TMHdXX8
-         4ZdDcMEP7/0zTw+yec8Oo4ycG2RGwygPL66RjvWJ0nF+8FlQ21yYvGdhT+k5HKUjHdOp
-         eRaB7I5AEZq2x2O2rCKYAM4aqUXZ31HsS+FwTsQVkUZOt6S+cZ9sCZRUVTRdDhExxG4l
-         dP0IqFDo49hZ+tPyCYzcAt68UlxzNa6nqGWFhN7Qo8lNrdqTfwr8XombersmaWN+ksBW
-         GsPw==
+        bh=u5GpYKAPqiPXiVflxFFAVwYjhQ2xT4l31F3rdQnDD0o=;
+        b=A/Iio860rhP/v2AnpLJlwrYJYcXyV6DIv9JQx+170rEWmlIhMRzeZ9l+nUAUWh62JI
+         c7+HUkhuYDhePhYz0hBnDIf0kxXPYT4M/ZBV+H/mccKyYUoThe086rHM/Idvobh7usXz
+         aQ9wrACY0Z3JXJeCVGOVmQknpIZLf36WPkxiBD7fWy8VN+O7qbUFOBo3a44ClzdymCK8
+         cn9zOMWbhdyIyrwdxiUZa+HtMGxS+1GXqgQbAaeZcF6rDiKxojIsL57dVyKueIzEDW5i
+         YgPIUJJ32Dna6ii+VrXwF0fLGL78HBDUuiwmooSSuF5KJzA6EQ+rvmtMerH7qMgXror3
+         KaSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=Wpl+c4YfOpabx/QJ3AnuJKzBxyiE9VbZKz/xHkTKLAk=;
-        b=QGO56mcAxy/8/Z+/h69Cxkrq8rak37uEsg+gZ3N30Zv1p0szzbc56rDup1VD6dkJGm
-         1sR7xtfP1iMbyd+ooHdT+28HYp+hDA0LYB7p/BvxBaL858W8iRQBOiBzHac8puofjq/M
-         3lB7n5jqvt16/zuKzQ44NhHYJRIwK65vmw7kdFGv/T+cFWBxYvGgD+Ruhv+d9/UcPy4S
-         bAZQWrCi0jqYlCMGGZ9jlALllXSIOUTgUI+3+3OgCn662bBVS24lO7QP/hjHAcOoHUM/
-         pyWgtbgEZZXiSMbXPmlJkWRRMhymYGI4HKJvvVe1kXAS5vtms8UkClc/Y7O0aqlv79jc
-         szaA==
-X-Gm-Message-State: ACgBeo3pLp9JviEUJdtABx9UWDbN63PD2HAyGp2gQ9XPohvWwc/oNkCi
-        XPpvyrsZ0Kj5+5TUUX5eBBTYE+9aqFKuGop5xHz9kA==
-X-Google-Smtp-Source: AA6agR7knBbdeFoqDGkHsplIJWoJqzu7ZyrCa96vf+uBJ7VxVkfiTHoOoqQNmmSlaEL57z3V58dRrlcwl4ze9iPXBtQ=
-X-Received: by 2002:a37:e118:0:b0:6ba:e5ce:123b with SMTP id
- c24-20020a37e118000000b006bae5ce123bmr1382909qkm.221.1661388149595; Wed, 24
- Aug 2022 17:42:29 -0700 (PDT)
+        bh=u5GpYKAPqiPXiVflxFFAVwYjhQ2xT4l31F3rdQnDD0o=;
+        b=S0XtLs4W1HO+76qNE5dm70YENYqZiqH6JmerFzloE1d/Gpz+r9dbiQXZGywMpe9w/n
+         inbMqB2XCbB9tg7kSWznnCam1hEQFzORBOzECoE2UXsMc67W+BuU9TdgpTUVmTGwcj0F
+         irqtmBKiS+ZxeFU5ZJKxi/VJTpA/19QK2Y/nRwjJgq7lQD/gQ268mAbVCAdLQrGtRsKg
+         We2i5us6Ko15qhHq/kCzqNi0ftO67GxK078sf2fLhwBsDKJZrij/+mBBCqcJfrvwav2t
+         qpxg5RgJHTKbDQsb98VLSOAhGJwltHxmVrfhvx1DK4GhiD88x1cKXK/gaD3FZK9ulRfp
+         AGrA==
+X-Gm-Message-State: ACgBeo3xTwrFXXvq90BpSaeiaNFSDI8C5lEuG9QSr/GZ4FmlQvBbHhPo
+        GG5sy3ssYbmUxAo09onzuZvpw2lrIcvWJobj6KhNOgmD31+vSg==
+X-Google-Smtp-Source: AA6agR4sZ+jOQ3X+L+bTqjmbitY0TBSZsnZdxwNoCqHbQQL3VjTrTMF6ph0SwWt+X5NwBlfDz2Rm7C9UXN28W6P64Jc=
+X-Received: by 2002:a05:6512:1527:b0:48b:99:f3ff with SMTP id
+ bq39-20020a056512152700b0048b0099f3ffmr386714lfb.81.1661388260398; Wed, 24
+ Aug 2022 17:44:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824233117.1312810-1-haoluo@google.com> <CAADnVQLT3JE8LtOYrs30mL88PNs+NaSeXgQqAPEAup5LUC+BPQ@mail.gmail.com>
-In-Reply-To: <CAADnVQLT3JE8LtOYrs30mL88PNs+NaSeXgQqAPEAup5LUC+BPQ@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 24 Aug 2022 17:42:18 -0700
-Message-ID: <CA+khW7gQi+BK7Qy4Khk=Ro72nfNQaR2kNkwZemB9ELnDo4Nk3Q@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v9 0/5] bpf: rstat: cgroup hierarchical
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
+References: <YwNpI1ydy0yDnBH0@dhcp22.suse.cz> <CAGWkznEB+R0YBaBFBL7dPqs8R=qKC6+ixTWEGCYy2PaczXkaPA@mail.gmail.com>
+ <YwRjyx6wFLk8WTDe@dhcp22.suse.cz> <CAGWkznGaYTv4u4kOo-rupfyWzDNJXNKTchwP6dbUK-=UXWm47w@mail.gmail.com>
+ <YwSQ4APOu/H7lYGL@dhcp22.suse.cz> <CAGWkznGd6mgareABseMKY5p0f1=5dkfVkj=NS7_B6OkXBYSwyw@mail.gmail.com>
+ <YwS/S9Sd1OWnT81Q@dhcp22.suse.cz> <CAGWkznGYLyF+njUB0gFF3JVdThnK9JaNsqxXYFhbdSwEQpCxvA@mail.gmail.com>
+ <YwXYVjRpXQjQMsxr@dhcp22.suse.cz> <CAGWkznEqX3DwHW_owiK+HuuQ-HsUYK4vKmLhSxgzGn20Vzid2A@mail.gmail.com>
+ <YwX89JCQCKMMYdG9@dhcp22.suse.cz>
+In-Reply-To: <YwX89JCQCKMMYdG9@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Thu, 25 Aug 2022 08:43:52 +0800
+Message-ID: <CAGWkznF+dBjLzAxMMXWYSZ_5q3KA-ou0P7XM7jSYN7JSRp8N0w@mail.gmail.com>
+Subject: Re: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Ke Wang <ke.wang@unisoc.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 5:29 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Aug 24, 2022 at 6:27 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Wed, Aug 24, 2022 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > This patch series allows for using bpf to collect hierarchical cgroup
-> > stats efficiently by integrating with the rstat framework. The rstat
-> > framework provides an efficient way to collect cgroup stats percpu and
-> > propagate them through the cgroup hierarchy.
-> >
-> > The stats are exposed to userspace in textual form by reading files in
-> > bpffs, similar to cgroupfs stats by using a cgroup_iter program.
-> > cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
-> > - walking a cgroup's descendants in pre-order.
-> > - walking a cgroup's descendants in post-order.
-> > - walking a cgroup's ancestors.
-> > - process only a single object.
-> >
-> > When attaching cgroup_iter, one needs to set a cgroup to the iter_link
-> > created from attaching. This cgroup can be passed either as a file
-> > descriptor or a cgroup id. That cgroup serves as the starting point of
-> > the walk.
-> >
-> > One can also terminate the walk early by returning 1 from the iter
-> > program.
-> >
-> > Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
-> > program is called with cgroup_mutex held.
-> >
-> > ** Background on rstat for stats collection **
-> > (I am using a subscriber analogy that is not commonly used)
-> >
-> > The rstat framework maintains a tree of cgroups that have updates and
-> > which cpus have updates. A subscriber to the rstat framework maintains
-> > their own stats. The framework is used to tell the subscriber when
-> > and what to flush, for the most efficient stats propagation. The
-> > workflow is as follows:
-> >
-> > - When a subscriber updates a cgroup on a cpu, it informs the rstat
-> >   framework by calling cgroup_rstat_updated(cgrp, cpu).
-> >
-> > - When a subscriber wants to read some stats for a cgroup, it asks
-> >   the rstat framework to initiate a stats flush (propagation) by calling
-> >   cgroup_rstat_flush(cgrp).
-> >
-> > - When the rstat framework initiates a flush, it makes callbacks to
-> >   subscribers to aggregate stats on cpus that have updates, and
-> >   propagate updates to their parent.
-> >
-> > Currently, the main subscribers to the rstat framework are cgroup
-> > subsystems (e.g. memory, block). This patch series allow bpf programs to
-> > become subscribers as well.
-> >
-> > Patches in this series are organized as follows:
-> > * Patches 1-2 introduce cgroup_iter prog, and a selftest.
-> > * Patches 3-5 allow bpf programs to integrate with rstat by adding the
-> >   necessary hook points and kfunc. A comprehensive selftest that
-> >   demonstrates the entire workflow for using bpf and rstat to
-> >   efficiently collect and output cgroup stats is added.
-> >
-> > ---
-> > Changelog:
-> > v8 -> v9:
-> > - Make UNSPEC (an invalid option) as the default order for cgroup_iter.
-> > - Use enum for specifying cgroup_iter order, instead of u32.
-> > - Add BPF_ITER_RESHCED to cgroup_iter.
-> > - Add cgroup_hierarchical_stats to s390x denylist.
+> On Wed 24-08-22 17:34:42, Zhaoyang Huang wrote:
+> > On Wed, Aug 24, 2022 at 3:50 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Wed 24-08-22 10:23:14, Zhaoyang Huang wrote:
+> > > > On Tue, Aug 23, 2022 at 7:51 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > [...]
+> > > > > One way to achieve that would be shaping the hierarchy the following way
+> > > > >             root
+> > > > >         /         \
+> > > > > no_memcg[1]      memcg[2]
+> > > > > ||||||||         |||||
+> > > > > app_cgroups     app_cgroups
+> > > > >
+> > > > > with
+> > > > > no_memcg.subtree_control = ""
+> > > > > memcg.subtree_control = memory
+> > > > >
+> > > > > no?
+> > > > According to my understanding, No as there will be no no_memcg. All
+> > > > children groups under root would have its cgroup.controllers = memory
+> > > > as long as root has memory enabled.
+> > >
+> > > Correct
+> > >
+> > > > Under this circumstance, all
+> > > > descendants group under 'no_memcg' will charge memory to its parent
+> > > > group.
+> > >
+> > > Correct. And why is that a problem? I thought you main concern was a per
+> > > application LRUs. With the above configuration all app_cgroups which do
+> > > not require an explicit memory control will share the same (no_memcg)
+> > > LRU and they will be aged together.
+> > I can't agree since this indicates the processes want memory free
+> > depending on a specific hierarchy which could have been determined by
+> > other subsys.
 >
-> What 'RESEND' is for?
-> It seems to confuse patchwork and BPF CI.
+> I really fail to understand your requirements.
 >
-> The v9 series made it to patchwork...
+> > IMHO, charging the pages which out of explicitly memory
+> > enabled group to root could solve all of the above constraints with no
+> > harm.
 >
-> Please just bump the version to v10 next time.
-> Don't add things to subject, since automation cannot recognize
-> that yet.
+> This would break the hierarchical property of the controller. So a
+> strong no no. Consider the following example
+>
+>        root
+>         |
+>         A
+> controllers="memory"
+> memory.max = 1G
+> subtree_control=""
+> |      |      |
+> A1     A2     A3
+>
+> althought A1,2,3 do not have their memory controller enabled explicitly
+> they are still constrained by the A memcg limit. If you just charge to
+> the root because it doesn't have memory controller enabled explicitly
+> then you just evade that constrain. I hope you understand why that is a
+> problem.
+IMO, A1-A3 should be explicitly enabled via echo "+memory" >
+A/subtree_control since memory.max has been set. How should AA3
+achieve the goal of compete with AA4,A1,A2 for cpu but keep memory out
+of control under current policy?
+        root
+         |
+         A
+ controllers="memory,cpu"
+ memory.max = 1G
+ subtree_control="memory,cpu"
+ |      |      |
+ A1     A2     A3 subtree_control="cpu"
+                      |      |
+                    AA3   AA4 controllers="cpu"
 
-Sorry about that. I thought it was RESEND because no content has
-changed. It was just adding an entry in s390 denylist.
-
-Are we good now? Or I need to send a v10?
+> --
+> Michal Hocko
+> SUSE Labs
