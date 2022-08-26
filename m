@@ -2,123 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 690025A1F1D
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 04:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A99D5A1F61
+	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 05:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244898AbiHZCsp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 22:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S236722AbiHZDRO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 23:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbiHZCso (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 22:48:44 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B27CCE29
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 19:48:41 -0700 (PDT)
-Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 27Q2mUvE015509;
-        Fri, 26 Aug 2022 11:48:30 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
- Fri, 26 Aug 2022 11:48:30 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 27Q2mUHH015505
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 26 Aug 2022 11:48:30 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <5ea67858-cda6-bf8d-565e-d793b608e93c@I-love.SAKURA.ne.jp>
-Date:   Fri, 26 Aug 2022 11:48:29 +0900
+        with ESMTP id S236923AbiHZDRN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 23:17:13 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACC3CACA0;
+        Thu, 25 Aug 2022 20:17:12 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id g189so296611pgc.0;
+        Thu, 25 Aug 2022 20:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=MB6QLwte6A+FfeHZ7hhIAgqBcop3yV3R8qqmPiooMZw=;
+        b=kN4iQW7K22uT8HSAzCzZpNIGqTuTTg1AfRP4nSREd9XS7uXUVq/dVbFd/MvU4f+a3i
+         iSOIKmwEkNINjdmevNcLolUMggi9tuS6AbI9CAskuTUfzapjO9tZdbbMWFeyRBU9Ftyr
+         73akbvzVVGO1ZzhAtmDlv4RGK4oorSM97X+xKGrO2NPWU40UDk7ipTP005DdalS7QQ9Q
+         Shw90PYt66tMBnLYnjnRHI2xIqGaTVkMzlM5vN9fL+6RF8JY1lSS87GNd9SuplsLecUH
+         H1QSaIX7JbxLwxYtIEeeT8pNUEQmvpFT3jEQPUZmrngZePX2OC16YZSviQMBahljZcRR
+         9BWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=MB6QLwte6A+FfeHZ7hhIAgqBcop3yV3R8qqmPiooMZw=;
+        b=yw8Inn7MKjYr+mm3ReYM86423sphnfUol8lXViOYKskIqzaWnOzRDoKMQh29GwcZqQ
+         l9SErfd39yV+jOvSuGiKDtDynq+g3hSYCz2MpnNUd86QFv39RY4BLLsVqq6MeM3W8Kts
+         WZVwKYnhZuiXePV1RQritsI85DLg0TSfeIsIpucvglZoORm2Te4N6j/F1Tb7ngvTXAoY
+         z+58fVusPx3E2VIcVb9v5dNueB6YhlBIeS91LWvSJKAawny1BUcaaGbiBtWOBLz6s6Vb
+         RrKESv7+RTwHvuywyfvlSTMs1dpCywYdo5o7YG8pEv/tRmdrOwogq3gxOp1vc5viUUQb
+         i8Mw==
+X-Gm-Message-State: ACgBeo2WvqTcqD0zETi7flcYEzkDI1dSflib7CvBwSgyBIDtbS9Ujlr3
+        /lGY69oEEPLfERFOEgjvYOk=
+X-Google-Smtp-Source: AA6agR6smD2vHcE27Mia/GRY6ZNxBCiJ0gJvVyPZ10/qYTnr16EBtKTMJwW7445/0IulVP9EKlAkiQ==
+X-Received: by 2002:aa7:9486:0:b0:536:b212:172f with SMTP id z6-20020aa79486000000b00536b212172fmr1928223pfk.70.1661483831887;
+        Thu, 25 Aug 2022 20:17:11 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id x14-20020a170902a38e00b0015e8d4eb219sm316845pla.99.2022.08.25.20.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Aug 2022 20:17:11 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 25 Aug 2022 17:17:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Lu Jialin <lujialin4@huawei.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC 0/2] Introduce cgroup.top interface
+Message-ID: <Ywg7NcHtfjDKjwXR@slm.duckdns.org>
+References: <20220826011503.103894-1-lujialin4@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Cgroups <cgroups@vger.kernel.org>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] cgroup: Use cgroup_attach_{lock,unlock}() from
- cgroup_attach_task_all()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220826011503.103894-1-lujialin4@huawei.com>
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_RED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-No behavior changes; preparing for potential locking changes in future.
+Hello,
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- kernel/cgroup/cgroup-internal.h | 2 ++
- kernel/cgroup/cgroup-v1.c       | 6 ++----
- kernel/cgroup/cgroup.c          | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+On Fri, Aug 26, 2022 at 09:15:01AM +0800, Lu Jialin wrote:
+> Cgroup is used to organize and manage resource available processes.
+> Currently there are no handy tool for gathering reousrce usage
+> information for each and every child cgroups, makes it hard to detect
+> resource outage and debug resource issues.
+> 
+> To overcome this, we present the cgroup.top interface. Just like the
+> top command, user is able to easily gather resource usage information
+> , allowing user to detect and respond to resource outage in child
+> cgroups
 
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index 36b740cb3d59..2c7ecca226be 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -250,6 +250,8 @@ int cgroup_migrate(struct task_struct *leader, bool threadgroup,
- 
- int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
- 		       bool threadgroup);
-+void cgroup_attach_lock(bool lock_threadgroup);
-+void cgroup_attach_unlock(bool lock_threadgroup);
- struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
- 					     bool *locked)
- 	__acquires(&cgroup_threadgroup_rwsem);
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index ff6a8099eb2a..52bb5a74a23b 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -59,8 +59,7 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
- 	int retval = 0;
- 
- 	mutex_lock(&cgroup_mutex);
--	cpus_read_lock();
--	percpu_down_write(&cgroup_threadgroup_rwsem);
-+	cgroup_attach_lock(true);
- 	for_each_root(root) {
- 		struct cgroup *from_cgrp;
- 
-@@ -72,8 +71,7 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
- 		if (retval)
- 			break;
- 	}
--	percpu_up_write(&cgroup_threadgroup_rwsem);
--	cpus_read_unlock();
-+	cgroup_attach_unlock(true);
- 	mutex_unlock(&cgroup_mutex);
- 
- 	return retval;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e4bb5d57f4d1..5aee34bcf003 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2393,7 +2393,7 @@ EXPORT_SYMBOL_GPL(task_cgroup_path);
-  * write-locking cgroup_threadgroup_rwsem. This allows ->attach() to assume that
-  * CPU hotplug is disabled on entry.
-  */
--static void cgroup_attach_lock(bool lock_threadgroup)
-+void cgroup_attach_lock(bool lock_threadgroup)
- {
- 	cpus_read_lock();
- 	if (lock_threadgroup)
-@@ -2404,7 +2404,7 @@ static void cgroup_attach_lock(bool lock_threadgroup)
-  * cgroup_attach_unlock - Undo cgroup_attach_lock()
-  * @lock_threadgroup: whether to up_write cgroup_threadgroup_rwsem
-  */
--static void cgroup_attach_unlock(bool lock_threadgroup)
-+void cgroup_attach_unlock(bool lock_threadgroup)
- {
- 	if (lock_threadgroup)
- 		percpu_up_write(&cgroup_threadgroup_rwsem);
+I don't think this is something we want build into the kernel. Maybe what
+you want is something similar to below?
+
+  https://github.com/facebookincubator/below
+
+Thanks.
+
 -- 
-2.18.4
-
+tejun
