@@ -2,42 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11A15A2CCC
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 18:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733DA5A2CC8
+	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 18:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344661AbiHZQxB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Aug 2022 12:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S1344712AbiHZQxD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Aug 2022 12:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240638AbiHZQxA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 12:53:00 -0400
+        with ESMTP id S1344311AbiHZQxB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 12:53:01 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC922F22;
-        Fri, 26 Aug 2022 09:52:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C21CB3D;
+        Fri, 26 Aug 2022 09:53:00 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 84C471F938;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BE3A81F940;
         Fri, 26 Aug 2022 16:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1661532778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WiAwBHSULI+FTo4qfy3+3mhtUrcHKXxhKOkgtoN7B58=;
-        b=WSzyydoTKHO/jQ41DTq4QqKpX9wedu7wj+UBK86xB8hAMsH2xhxwmBDemrXNbNqMB5cVpP
-        B9jjLQ7d+HcXy0f6g0gbHQSA9Vc5mXoDqFV7DqPce9xNlmbD8kWI+aI/KqY7tcbHOu/cz1
-        mabZKKw6kXLtxviHnH+FIyGiykTHERE=
+        bh=pqsTghk3lUf2zHqs/aiods7p+Uf7TePr7J7612j6zrs=;
+        b=p34Dq3Vuy2HqGPFdeYH7O52fSFA8g/UAZmA7N24XfyIGdml3BtgZVdhx2Ej3Y+oAbrTlKY
+        Ex0mtRWCzPU8+v7ioOeQRhqkNknKuL4HiP1/msumCtrA/zMXjEFZl3H51bRZznXNrCWaPm
+        cepNDpurKY/9ucFIoDCyWyVnaQi/rus=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D52213A82;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86C8113A7E;
         Fri, 26 Aug 2022 16:52:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yMu5EWr6CGMofAAAMHmgww
+        id OL79H2r6CGMofAAAMHmgww
         (envelope-from <mkoutny@suse.com>); Fri, 26 Aug 2022 16:52:58 +0000
 From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc:     Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
         Muneendra Kumar <muneendra.kumar@broadcom.com>,
         Yosry Ahmed <yosryahmed@google.com>,
         Hao Luo <haoluo@google.com>
-Subject: [PATCH 1/4] cgroup: Honor caller's cgroup NS when resolving path
-Date:   Fri, 26 Aug 2022 18:52:35 +0200
-Message-Id: <20220826165238.30915-2-mkoutny@suse.com>
+Subject: [PATCH 2/4] cgroup: cgroup: Honor caller's cgroup NS when resolving cgroup id
+Date:   Fri, 26 Aug 2022 18:52:36 +0200
+Message-Id: <20220826165238.30915-3-mkoutny@suse.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220826165238.30915-1-mkoutny@suse.com>
 References: <20220826165238.30915-1-mkoutny@suse.com>
@@ -67,38 +67,68 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-cgroup_get_from_path() is not widely used function. Its callers presume
-the path is resolved under cgroup namespace. (There is one caller
-currently and resolving in init NS won't make harm (netfilter). However,
-future users may be subject to different effects when resolving
-globally.)
-Since, there's currently no use for the global resolution, modify the
-existing function to take cgroup NS into account.
+Cgroup ids are resolved in the global scope. That may be needed sometime
+(in future) but currently it violates virtual view provided through
+cgroup namespaces.
 
-Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+There are currently following users of the resolution:
+- fc_appid_store
+- bpf_iter_attach_cgroup
+- mem_cgroup_get_from_ino
+
+None of the is a called on behalf of kernel but the resolution is made
+with proper userspace context, hence the default to current->nsproxy
+makes sens. (This doesn't rule out cgroup_get_from_id with cgroup NS
+parameter in the future.)
+
+Since cgroup ids are defined on v2 hierarchy only, we simply check
+existence in the cgroup namespace by looking at ancestry on the default
+hierarchy.
+
+Fixes: 6b658c4863c1 ("scsi: cgroup: Add cgroup_get_from_id()")
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- kernel/cgroup/cgroup.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/cgroup/cgroup.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 5f4502aa2b3b..1a8b50d15ebf 100644
+index 1a8b50d15ebf..4ca90ee6b902 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -6598,8 +6598,12 @@ struct cgroup *cgroup_get_from_path(const char *path)
+@@ -6007,11 +6007,12 @@ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
+  * cgroup_get_from_id : get the cgroup associated with cgroup id
+  * @id: cgroup id
+  * On success return the cgrp, on failure return NULL
++ * Only cgroups within current task's cgroup NS are valid.
+  */
+ struct cgroup *cgroup_get_from_id(u64 id)
  {
  	struct kernfs_node *kn;
- 	struct cgroup *cgrp = ERR_PTR(-ENOENT);
-+	struct cgroup *root_cgrp;
+-	struct cgroup *cgrp = NULL;
++	struct cgroup *cgrp = NULL, *root_cgrp;
  
--	kn = kernfs_walk_and_get(cgrp_dfl_root.cgrp.kn, path);
+ 	kn = kernfs_find_and_get_node_by_id(cgrp_dfl_root.kf_root, id);
+ 	if (!kn)
+@@ -6024,8 +6025,18 @@ struct cgroup *cgroup_get_from_id(u64 id)
+ 		cgrp = NULL;
+ 
+ 	rcu_read_unlock();
+-
+ 	kernfs_put(kn);
++
++	if (!cgrp)
++		goto out;
++
 +	spin_lock_irq(&css_set_lock);
 +	root_cgrp = current_cgns_cgroup_from_root(&cgrp_dfl_root);
-+	kn = kernfs_walk_and_get(root_cgrp->kn, path);
 +	spin_unlock_irq(&css_set_lock);
- 	if (!kn)
- 		goto out;
- 
++	if (!cgroup_is_descendant(cgrp, root_cgrp)) {
++		cgroup_put(cgrp);
++		cgrp = NULL;
++	}
+ out:
+ 	return cgrp;
+ }
 -- 
 2.37.0
 
