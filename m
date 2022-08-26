@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE335A30B4
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 23:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5979D5A30CE
+	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 23:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344328AbiHZU70 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Aug 2022 16:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        id S242126AbiHZVII (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Aug 2022 17:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbiHZU7Z (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 16:59:25 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA408E1148;
-        Fri, 26 Aug 2022 13:59:23 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d12so2581771plr.6;
-        Fri, 26 Aug 2022 13:59:23 -0700 (PDT)
+        with ESMTP id S229676AbiHZVIH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 17:08:07 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03011DDB55;
+        Fri, 26 Aug 2022 14:08:07 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pm13so2688756pjb.5;
+        Fri, 26 Aug 2022 14:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:sender
          :from:to:cc;
-        bh=67ANL95e8WHpoIL2CvpIV5IPIXCkv/6nKh73FiYEZTk=;
-        b=biO0zryQaQSqyi8bDdtPfmAl9o+3iq97xCkOIKhxiVmKlGvcUduD2kqjuo/XihSovR
-         jCmir/sMxqgFpUwGE0+obcQBUwULaZx+7azsdItRHZpaTPWwHoqQW5eMacjDaFjAfulm
-         ZilurnwkbOupUHfy00vdLMFTXNYhvJbvdOcgwppj45evuV8NXTzcbaWHaFuIpvwS/xqh
-         v84gT+m6Ht6e1jIEl6ojwrMfk39vFIakBip0EtwK4Hje+CuVM777pW79+8i1tteTosDP
-         7k9qC/irsNCjfNM0i1se8cQZGpK+FwngOPznzHe73Te3w8eIJXnLeV6D/TFWuHnNkLfw
-         J7Iw==
+        bh=EL3E1bRaXeyNPnn48uCzkwQGEAza0WH8uE9MHfXwpc0=;
+        b=i3YwUXBW3Qx0me4zpUqZraIl74Huj1RpfYz7z+IuUhZo8SwtbtnxO3ywnqrwA6VEEO
+         feIkxua5CDvMVasxdksGBqUzDRYIiAaYLbtWBa6D75vAF7h0gmZWeySezUDeC55MqIgB
+         +V0QRRz0uVhmBgWK6PLMhtEq92jODckRFg69kOtFjBRz+s9YXljL56Q0RR9txGsoH8dN
+         Vm3ykAM4wFf+18yQuQC/iMGtcBtggjF7J3u/1UzVCGV54m58fi6wBclz6j2EQvFRJXJy
+         Lb9Mf154iT9BkCEsBWDJVC1DITZuDu6tNCp8A/yYJ16XO/Ht8U4lG2gfcCKY2ZrlluQN
+         mUog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:sender
          :x-gm-message-state:from:to:cc;
-        bh=67ANL95e8WHpoIL2CvpIV5IPIXCkv/6nKh73FiYEZTk=;
-        b=ybP0ifdsCfKJCsxIBYwb5lPv5YaglOj6iVsHdszpbuT2rIJHxZ9hsKiSsHO89gJ0V3
-         ISyyFYI0Ml3noA2vnuK6IT4sDRsDb4O2N1MVwpj6OTRB2ituV1lECvdfCvWW8QDNItyL
-         G2GCthQ2J1QH/DJ9McgTbHB7HD6mxgz/uMyE7xZuukUSSLSYVzFjs5KYuNAzvGP0z9xV
-         90ngPRMnC2GRfItex/67rvsvxmxF2AOygAQfEirI3TdYy6VyPGb4oBVsc/qJdDeir06z
-         +FBQsbX9CRIyg4sjP2yK+z3dP3aOs5EUsayYoF8PUmG5eU3/va+yBVFI8RzDl4U6ISzA
-         5Jvg==
-X-Gm-Message-State: ACgBeo0U3r22a9j1cK9/+aipPKIN0e+0O3z02WfGBeUddw83K/Vb9ZU0
-        aKZqViknhs2TduBFLndB5/A=
-X-Google-Smtp-Source: AA6agR55DguAWBXsemZkDggBZ/fx1IG7675VyXBOjG+uW3E7KIJl6oRC/GTFcRTOz0hqDODPflJBFQ==
-X-Received: by 2002:a17:90b:33d2:b0:1fb:971b:c5e9 with SMTP id lk18-20020a17090b33d200b001fb971bc5e9mr6111510pjb.90.1661547563042;
-        Fri, 26 Aug 2022 13:59:23 -0700 (PDT)
+        bh=EL3E1bRaXeyNPnn48uCzkwQGEAza0WH8uE9MHfXwpc0=;
+        b=atvdeda/eWyGtbX+9ITQ2vr1Ej33niCQEY9AChwpL31fzRYsungZ3wO7PQueobFS+O
+         nrxMjHZBBK06LQPNq9+yeZkanPFlxF8Z00PWADHCTibH0oxRUycgV8jRRXjkywmMBEPX
+         X0WhxpJPTRV1HGixKo8wFmd+3I8QJybaBUiySnz1Nrmp2hGbHYs398YsUNnbGDkJfWmk
+         ZD1I7s7Fl6y9rFYFWLKLGqJ6eOSJeY1qt6BrYJ9FA512WDiWKEHX3bNNB+35K8Vgz5xu
+         nA18BY5VD8t0NjTyNf2HfE0cCoy7QTCW1H/rLyRxtmSPYzZs+wEWpCwgGEgsxatL8rpV
+         iGrQ==
+X-Gm-Message-State: ACgBeo2EQ4qF5eA9K7E8mftWZkdfC3anxS17ll/6gDQzhwANXI7sUydg
+        aUubKvfHKhqfuJ7P/d3nrH8=
+X-Google-Smtp-Source: AA6agR4bTy7FuIuWRhLxNgLQmG/xUOoAmwZ9Ea+deM5ZF34lH23v6X64L3j11xCFX9Dc7/Sp3twVtw==
+X-Received: by 2002:a17:90b:1e08:b0:1f5:1f0d:3736 with SMTP id pg8-20020a17090b1e0800b001f51f0d3736mr6349175pjb.58.1661548086391;
+        Fri, 26 Aug 2022 14:08:06 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id x14-20020aa79a4e000000b00537cfbb2810sm1695129pfj.65.2022.08.26.13.59.21
+        by smtp.gmail.com with ESMTPSA id z62-20020a623341000000b0053670204aeasm2173398pfz.161.2022.08.26.14.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Aug 2022 13:59:22 -0700 (PDT)
+        Fri, 26 Aug 2022 14:08:05 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 26 Aug 2022 10:59:20 -1000
+Date:   Fri, 26 Aug 2022 11:08:04 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
@@ -62,7 +62,7 @@ Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Yosry Ahmed <yosryahmed@google.com>,
         Hao Luo <haoluo@google.com>
 Subject: Re: [PATCH 0/4] Honor cgroup namespace when resolving cgroup id
-Message-ID: <Ywk0KCmak/PsGfzL@slm.duckdns.org>
+Message-ID: <Ywk2NMwurnBYhU+D@slm.duckdns.org>
 References: <20220826165238.30915-1-mkoutny@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -80,18 +80,26 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
+
 On Fri, Aug 26, 2022 at 06:52:34PM +0200, Michal Koutný wrote:
 > Cgroup id is becoming a new way for userspace how to refer to cgroups it
 > wants to act upon. As opposed to cgroupfs (paths, opened FDs), the
 > current approach does not reflect limited view by (non-init) cgroup
 > namespaces.
-> 
+
+Looking at the code, I'm not quite sure we're actually plugging all holes in
+terms of lookup. I think cgroup_get_from_path() would allow walking up past
+the ns boundary. We aren't using kernfs ns support and I don't see anything
+preventing ..'ing past the boundary.
+
 > This patches don't aim to limit what a user can do (consider an uid=0 in
 > mere cgroup namespace) but to provide consistent view within a
 > namespace.
 
-Applied 1-3 to cgroup/for-6.1. The branch will be stable, so please feel
-free to pull from bpf/for-next.
+Considering userns and the fact that we try to isolate two separate sub
+hierarchies delegated to the same UID, I think we'd have to tighten down on
+the behaviors so that visiblity scope matches the permission scope.
 
 Thanks.
 
