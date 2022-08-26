@@ -2,29 +2,29 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 974415A1E0A
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 03:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E045A1E0C
+	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 03:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236695AbiHZBSi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 21:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S243728AbiHZBSl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 21:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbiHZBSh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 21:18:37 -0400
+        with ESMTP id S235416AbiHZBSk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 21:18:40 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2DEC9E87;
-        Thu, 25 Aug 2022 18:18:35 -0700 (PDT)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MDMM926bQzkWft;
-        Fri, 26 Aug 2022 09:15:01 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43E6C9E88;
+        Thu, 25 Aug 2022 18:18:39 -0700 (PDT)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MDMMF5WJbzkWgX;
+        Fri, 26 Aug 2022 09:15:05 +0800 (CST)
 Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 26 Aug 2022 09:18:33 +0800
+ 15.1.2375.24; Fri, 26 Aug 2022 09:18:38 +0800
 Received: from ubuntu1804.huawei.com (10.67.174.175) by
  kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 26 Aug 2022 09:18:32 +0800
+ 15.1.2375.24; Fri, 26 Aug 2022 09:18:37 +0800
 From:   Lu Jialin <lujialin4@huawei.com>
 To:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
         "Johannes Weiner" <hannes@cmpxchg.org>,
@@ -37,10 +37,12 @@ CC:     Lu Jialin <lujialin4@huawei.com>,
         Xiu Jianfeng <xiujianfeng@huawei.com>,
         <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>
-Subject: [RFC 0/2] Introduce cgroup.top interface
-Date:   Fri, 26 Aug 2022 09:15:01 +0800
-Message-ID: <20220826011503.103894-1-lujialin4@huawei.com>
+Subject: [RFC 1/2] cgroup: Introduce per-cgroup resource top show interface
+Date:   Fri, 26 Aug 2022 09:15:02 +0800
+Message-ID: <20220826011503.103894-2-lujialin4@huawei.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220826011503.103894-1-lujialin4@huawei.com>
+References: <20220826011503.103894-1-lujialin4@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.174.175]
@@ -56,53 +58,71 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Cgroup is used to organize and manage resource available processes.
-Currently there are no handy tool for gathering reousrce usage
-information for each and every child cgroups, makes it hard to detect
-resource outage and debug resource issues.
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-To overcome this, we present the cgroup.top interface. Just like the
-top command, user is able to easily gather resource usage information
-, allowing user to detect and respond to resource outage in child
-cgroups
+This patch introduces cgroup.top interface for each cgroup. When
+accessed by userspace, cgroup.top is able to:
+1. Sort cgroups by their usage on various resources(e.g. memory, cpu, etc.)
+2. Display resource usage status on all child cgroups.
 
-Show case:
-/ # mount -t cgroup2 none /sys/fs/cgroup
-/ # cd /sys/fs/cgroup/
-/sys/fs/cgroup # echo "+memory" > cgroup.subtree_control
-/sys/fs/cgroup # mkdir test1
-/sys/fs/cgroup # mkdir test2
-/sys/fs/cgroup # mkdir test3
-/sys/fs/cgroup # echo $$ > test2/cgroup.procs
-/sys/fs/cgroup # cd /test
-/test # ./memcg_malloc 512000 &
-/test # ./memcg_malloc 512000 &
-/test # ./memcg_malloc 512000 &
-/test # cd /sys/fs/cgroup
-/sys/fs/cgroup # echo $$ > test1/cgroup.procs
-/sys/fs/cgroup # cd /test
-/test # ./memcg_malloc 512000 &
-/test # cd /sys/fs/cgroup
-/sys/fs/cgroup # echo $$ > test3/cgroup.procs
-/sys/fs/cgroup # cat cgroup.top
-memory top:
-name            usage           anon            file            kernel
-test2           1974272         1671168         0               270336
-test1           700416          569344          0               94208
-test3           196608          86016           0               86016
-
-
-Lu Jialin (1):
-  memcg: Adapt cgroup.top into per-memcg
-
-Xiu Jianfeng (1):
-  cgroup: Introduce per-cgroup resource top show interface
-
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+Co-developed-by: Lu Jialin <lujialin4@huawei.com>
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+---
  include/linux/cgroup-defs.h |  1 +
- kernel/cgroup/cgroup.c      | 20 +++++++++
- mm/memcontrol.c             | 87 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+)
+ kernel/cgroup/cgroup.c      | 20 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+)
 
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 4bcf56b3491c..ba11e09f8f03 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -651,6 +651,7 @@ struct cgroup_subsys {
+ 	int (*css_extra_stat_show)(struct seq_file *seq,
+ 				   struct cgroup_subsys_state *css);
+ 
++	void (*css_top)(struct cgroup_subsys_state *css, struct seq_file *seq);
+ 	int (*can_attach)(struct cgroup_taskset *tset);
+ 	void (*cancel_attach)(struct cgroup_taskset *tset);
+ 	void (*attach)(struct cgroup_taskset *tset);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index ffaccd6373f1..01bd1a734a01 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3867,6 +3867,22 @@ static ssize_t cgroup_kill_write(struct kernfs_open_file *of, char *buf,
+ 	return ret ?: nbytes;
+ }
+ 
++static int cgroup_top_show(struct seq_file *seq, void *v)
++{
++	struct cgroup *cgrp = seq_css(seq)->cgroup;
++	struct cgroup_subsys_state *css;
++	int ssid;
++
++	rcu_read_lock();
++	for_each_css(css, ssid, cgrp) {
++		if (css->ss->css_top)
++			css->ss->css_top(css, seq);
++	}
++	rcu_read_unlock();
++
++	return 0;
++}
++
+ static int cgroup_file_open(struct kernfs_open_file *of)
+ {
+ 	struct cftype *cft = of_cft(of);
+@@ -5125,6 +5141,10 @@ static struct cftype cgroup_base_files[] = {
+ 		.release = cgroup_pressure_release,
+ 	},
+ #endif /* CONFIG_PSI */
++	{
++		.name = "cgroup.top",
++		.seq_show = cgroup_top_show,
++	},
+ 	{ }	/* terminate */
+ };
+ 
 -- 
 2.17.1
 
