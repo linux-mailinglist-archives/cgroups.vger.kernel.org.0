@@ -2,91 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B21E5A1F1B
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 04:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690025A1F1D
+	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 04:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbiHZCsS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 22:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        id S244898AbiHZCsp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 22:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbiHZCsQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 22:48:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADAFA3D79;
-        Thu, 25 Aug 2022 19:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=KrBgq4HD/icun5bFiHHIUQ6IjONVJ/rxTezt7YCnkJE=; b=rGM/UuEBB9L8aI2AUVk+gK2KDP
-        fKxnby64zNrqUPb9aKaMfaS7cuuLc+lcTb06Lp8ySc8Vk6/eQFezTahu31Rj544mnXY54mYmNceUr
-        ToOTtf4bTziGm77ZUOaOtUzudaP/nprEk4/QNk6+TjGOBYkniPvBz4KV8My/62pnfwDkBJgq1Tm+R
-        qOfblZEqiokIpz/hyr5GFpeffd8O7SlMmBm+VXU/i0+6YaJUtQpp81mLwVcrQahbTghA4hpsQZDOV
-        lSLKH77yESrNAHC3i6ZOHGaBMgSn8cqhq4WczqKBqF8In3ZxMsV87K0kVmYT7dB1Agh1rwPzsHZSG
-        GU6qIVyA==;
-Received: from [2601:1c0:6280:3f0::a6b3]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oRPOG-005OOu-0q; Fri, 26 Aug 2022 02:48:12 +0000
-Message-ID: <795c6785-e13e-5322-15b3-60ee2ec24197@infradead.org>
-Date:   Thu, 25 Aug 2022 19:48:10 -0700
+        with ESMTP id S229536AbiHZCso (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 22:48:44 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B27CCE29
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 19:48:41 -0700 (PDT)
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 27Q2mUvE015509;
+        Fri, 26 Aug 2022 11:48:30 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Fri, 26 Aug 2022 11:48:30 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 27Q2mUHH015505
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 26 Aug 2022 11:48:30 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <5ea67858-cda6-bf8d-565e-d793b608e93c@I-love.SAKURA.ne.jp>
+Date:   Fri, 26 Aug 2022 11:48:29 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.1.2
-Subject: Re: [PATCH linux-next] admin-guide: cgroup: fix a typo in description
 Content-Language: en-US
-To:     cgel.zte@gmail.com, tj@kernel.org
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        lufengchang <lu.fengchang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20220826020552.239407-1-lu.fengchang@zte.com.cn>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20220826020552.239407-1-lu.fengchang@zte.com.cn>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Cgroups <cgroups@vger.kernel.org>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] cgroup: Use cgroup_attach_{lock,unlock}() from
+ cgroup_attach_task_all()
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+No behavior changes; preparing for potential locking changes in future.
 
-On 8/25/22 19:05, cgel.zte@gmail.com wrote:
-> From: lufengchang <lu.fengchang@zte.com.cn>
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: lufengchang <lu.fengchang@zte.com.cn>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ kernel/cgroup/cgroup-internal.h | 2 ++
+ kernel/cgroup/cgroup-v1.c       | 6 ++----
+ kernel/cgroup/cgroup.c          | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-Are you sure that it's a typo?
-
-https://en.wikipedia.org/wiki/If_and_only_if
-
-"iff" is commonly used (in math/technical literature)
-to mean "if and only if".
-
-> ---
->  Documentation/admin-guide/cgroup-v1/cgroups.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v1/cgroups.rst b/Documentation/admin-guide/cgroup-v1/cgroups.rst
-> index b0688011ed06..fa747466e304 100644
-> --- a/Documentation/admin-guide/cgroup-v1/cgroups.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/cgroups.rst
-> @@ -573,7 +573,7 @@ cgroup_for_each_descendant_pre() for details.
->  ``void css_offline(struct cgroup *cgrp);``
->  (cgroup_mutex held by caller)
->  
-> -This is the counterpart of css_online() and called iff css_online()
-> +This is the counterpart of css_online() and called if css_online()
->  has succeeded on @cgrp. This signifies the beginning of the end of
->  @cgrp. @cgrp is being removed and the subsystem should start dropping
->  all references it's holding on @cgrp. When all references are dropped,
-
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 36b740cb3d59..2c7ecca226be 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -250,6 +250,8 @@ int cgroup_migrate(struct task_struct *leader, bool threadgroup,
+ 
+ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ 		       bool threadgroup);
++void cgroup_attach_lock(bool lock_threadgroup);
++void cgroup_attach_unlock(bool lock_threadgroup);
+ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ 					     bool *locked)
+ 	__acquires(&cgroup_threadgroup_rwsem);
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index ff6a8099eb2a..52bb5a74a23b 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -59,8 +59,7 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
+ 	int retval = 0;
+ 
+ 	mutex_lock(&cgroup_mutex);
+-	cpus_read_lock();
+-	percpu_down_write(&cgroup_threadgroup_rwsem);
++	cgroup_attach_lock(true);
+ 	for_each_root(root) {
+ 		struct cgroup *from_cgrp;
+ 
+@@ -72,8 +71,7 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
+ 		if (retval)
+ 			break;
+ 	}
+-	percpu_up_write(&cgroup_threadgroup_rwsem);
+-	cpus_read_unlock();
++	cgroup_attach_unlock(true);
+ 	mutex_unlock(&cgroup_mutex);
+ 
+ 	return retval;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e4bb5d57f4d1..5aee34bcf003 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2393,7 +2393,7 @@ EXPORT_SYMBOL_GPL(task_cgroup_path);
+  * write-locking cgroup_threadgroup_rwsem. This allows ->attach() to assume that
+  * CPU hotplug is disabled on entry.
+  */
+-static void cgroup_attach_lock(bool lock_threadgroup)
++void cgroup_attach_lock(bool lock_threadgroup)
+ {
+ 	cpus_read_lock();
+ 	if (lock_threadgroup)
+@@ -2404,7 +2404,7 @@ static void cgroup_attach_lock(bool lock_threadgroup)
+  * cgroup_attach_unlock - Undo cgroup_attach_lock()
+  * @lock_threadgroup: whether to up_write cgroup_threadgroup_rwsem
+  */
+-static void cgroup_attach_unlock(bool lock_threadgroup)
++void cgroup_attach_unlock(bool lock_threadgroup)
+ {
+ 	if (lock_threadgroup)
+ 		percpu_up_write(&cgroup_threadgroup_rwsem);
 -- 
-~Randy
+2.18.4
+
