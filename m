@@ -2,254 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6605A2DBE
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 19:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41ABA5A3062
+	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 22:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344931AbiHZRm0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Aug 2022 13:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S233859AbiHZUUI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Aug 2022 16:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344778AbiHZRmQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 13:42:16 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F0BE342C
-        for <cgroups@vger.kernel.org>; Fri, 26 Aug 2022 10:42:14 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id m10-20020a05600c3b0a00b003a603fc3f81so1229426wms.0
-        for <cgroups@vger.kernel.org>; Fri, 26 Aug 2022 10:42:14 -0700 (PDT)
+        with ESMTP id S231388AbiHZUUH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 16:20:07 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE7732EFB
+        for <cgroups@vger.kernel.org>; Fri, 26 Aug 2022 13:20:04 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 199so2502348pfz.2
+        for <cgroups@vger.kernel.org>; Fri, 26 Aug 2022 13:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=he/bfvf1mDfynCT5CMERAlIneGT6+vfp7BBeASbZgO4=;
-        b=KxEI28tPSvUdNvAkCqxed+rLWbEo5ARCEAFxCt3dpg9zrIvuE3hyl80F3lBx6u6qJ8
-         R3H2BDEl5L7K+oGIDQ+GjK3+LxQch4naSX+wXjC37jJ8uPcV/nR7R/TpQnB1BwSld3zJ
-         8A9o6uWd5OHoG6EhSrquWNsRUo+btk7LVQYEwB9wWyLHaMoMxohYIhDMTLJWnQc1wOIu
-         5oAFiC+QxDuY95fL6yWs6rGPB3zd9X2TzZJMsdYhExNwR4VFmsnTXyA0+3vf81dhV4nc
-         e6Yo3jfLObOFrEj8pqSkT2fdafWMy12nNaRl2jJm6z+Rm+/zknxKzE0IeiFATBFDDZX2
-         lMxA==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=Yy3h91/LZL0yMN3Y+gPnYCc8uzqqu6+PEMw/uYOkvrQ=;
+        b=QI2iqRq9/94E6zl7r9mZw4F+7Daqhq8WErAzs7MCXRZvrz4GpEbY7Dstc+ZZ2JEyb2
+         q0xcA8xKqPk01eYmQLRlBIm9I9enL9gle1pvxTgv3hEVqdUw5C4cSi7lwuKtIjcxf5KZ
+         MNemfeMqo0zzfRvxEdPkaXJq+V0CXBJoNhrKZhmH2a/6fEvyddf2Pci6F7c3hz5Uh2KZ
+         p9XfmAZB3QDZNhI51WLuUsrX5a34H43X0h0MgNESMM7lb3mZRO5lRiW8QfXtTjK0Iio8
+         Bx/faeNKIHAHpdLZt2Qt47/Jnw19TxwGoB6eZJ5V4qbulyod0s+zhEZ6nWzqexbUBQl1
+         6MGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=he/bfvf1mDfynCT5CMERAlIneGT6+vfp7BBeASbZgO4=;
-        b=rBqUWS/XV52aj9HcjMflXny4DSnzzBWiPrzwxjnXVUatgXIOvKBkkiR6ttR2ixPpvC
-         EUrPDn/9V0CTSLW3OdzalzuJmzr4xSwu8K44C0v0l9ZUf3it+pfV7W90AsnsfkJlkhZ1
-         U6yI2BGoDCaVarjRSjkPu0ancryZ/TKVXOACYsFgSQu2V9hWCemIcd9aM+zQLJSfEpL/
-         hZSrMJ5PKk2hCICkrM2Xc+3cc0wNdX2jM552eeqJ6CLId8cP9YnuDJARtdBNCLdVZsMt
-         ANJcjwAcQPbt1tr9jHk7eUGdHYmd+yrBjt7NKH4vlmb5xqiMNIwrAcb1ZBxVd+fiukCa
-         OIMA==
-X-Gm-Message-State: ACgBeo2fkn0vfABbRIWsfsinAHgGQybhAETVCmCfdSJEInk1T5H/zkel
-        xjJCmapOVZIhPpg0tRxgchhIzEgPs+herIsWTkW9rQ==
-X-Google-Smtp-Source: AA6agR7/djEpyXLmdsCZ/Kfc2/F8wSfF7w1WoiOTxpF6ZpcmN5MGMotc82Np/jxf3XCYtHfCucVkRsVFYrjqmymNdjw=
-X-Received: by 2002:a05:600c:224c:b0:3a6:7234:551 with SMTP id
- a12-20020a05600c224c00b003a672340551mr367113wmm.27.1661535733158; Fri, 26 Aug
- 2022 10:42:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220826165238.30915-1-mkoutny@suse.com> <20220826165238.30915-5-mkoutny@suse.com>
-In-Reply-To: <20220826165238.30915-5-mkoutny@suse.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 26 Aug 2022 10:41:37 -0700
-Message-ID: <CAJD7tkZZ6j6mPfwwFDy_ModYux5447HFP=oPwa6MFA_NYAZ9-g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] cgroup/bpf: Honor cgroup NS in cgroup_iter for ancestors
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
-        Serge Hallyn <serge.hallyn@canonical.com>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=Yy3h91/LZL0yMN3Y+gPnYCc8uzqqu6+PEMw/uYOkvrQ=;
+        b=eveszQLhDonaP0wv6EZsUm0xj9ikUg4oOw+gzAB21/0x3fqJKRpQ8IbnkPRFqoVi8c
+         fOpGT+ThuQBnHwTVMVUXuAGJhViffgTJQpA9uz0YIDlIM9DrKKdxVb3z3k6sz98dxDrO
+         /juj9tN5w5ls74WVwRfbJNb5J8Y4KzKeOyDm87KiaNd6o0mOIPoDT+2QwgtmNbmhJfZV
+         vaBGBuI6EdRPmKp2WUIPs9J7psidZ2evmAaYx3YChJVpIwD+KTQVRiiv02PfC2mEuZWY
+         d2zdnr7jmZlwBJPm/e/5RiLoAbdVn0VLb1tzN66woVA8xxdg/PejfT+hBcmYMrM3i0ry
+         k3PQ==
+X-Gm-Message-State: ACgBeo2SkHaCOrkEhfHVVl0Ln8npVs7IN63RVYCrecYqD9tNg+Pkk89g
+        F6gBBdPxUavLoZBthjC2e94VJA==
+X-Google-Smtp-Source: AA6agR5n02jhbK1nhPu/jZhpJFX2d1euSOaYUkGIxcjNNi+QlVmGNtQ1h1+3uTxVaQGYEwd8dNh3mw==
+X-Received: by 2002:a05:6a00:4147:b0:52e:2d56:17c8 with SMTP id bv7-20020a056a00414700b0052e2d5617c8mr5478964pfb.51.1661545204289;
+        Fri, 26 Aug 2022 13:20:04 -0700 (PDT)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id x21-20020a63f715000000b0042b117e8bf8sm1843703pgh.23.2022.08.26.13.20.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Aug 2022 13:20:03 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 20:20:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        Muneendra Kumar <muneendra.kumar@broadcom.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, Huang@google.com,
+        Shaoqin <shaoqin.huang@intel.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v7 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
+ pagetable stats.
+Message-ID: <Ywkq8HYyTI1eStSO@google.com>
+References: <20220823004639.2387269-1-yosryahmed@google.com>
+ <20220823004639.2387269-4-yosryahmed@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220823004639.2387269-4-yosryahmed@google.com>
+X-Spam-Status: No, score=-14.5 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi there!
-
-Thanks for following up with this series!
-
-On Fri, Aug 26, 2022 at 9:53 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
->
-> The iterator with BPF_CGROUP_ITER_ANCESTORS_UP can traverse up across a
-> cgroup namespace level, which may be surprising within a non-init cgroup
-> namespace.
->
-> Introduce and use a new cgroup_parent_ns() helper that stops according
-> to cgroup namespace boundary. With BPF_CGROUP_ITER_ANCESTORS_UP. We use
-> the cgroup namespace of the iterator caller, not that one of the creator
-> (might be different, the former is relevant).
->
-> Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
-> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+On Tue, Aug 23, 2022, Yosry Ahmed wrote:
+> Count the pages used by KVM mmu on x86 in memory stats under secondary
+> pagetable stats (e.g. "SecPageTables" in /proc/meminfo) to give better
+> visibility into the memory consumption of KVM mmu in a similar way to
+> how normal user page tables are accounted.
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
 > ---
->  include/linux/cgroup.h   |  3 +++
->  kernel/bpf/cgroup_iter.c |  9 ++++++---
->  kernel/cgroup/cgroup.c   | 32 +++++++++++++++++++++++---------
->  3 files changed, 32 insertions(+), 12 deletions(-)
->
-> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index b6a9528374a8..b63a80e03fae 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -858,6 +858,9 @@ struct cgroup_namespace *copy_cgroup_ns(unsigned long=
- flags,
->  int cgroup_path_ns(struct cgroup *cgrp, char *buf, size_t buflen,
->                    struct cgroup_namespace *ns);
->
-> +struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
-> +                               struct cgroup_namespace *ns);
-> +
->  #else /* !CONFIG_CGROUPS */
->
->  static inline void free_cgroup_ns(struct cgroup_namespace *ns) { }
-> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> index c69bce2f4403..06ee4a0c5870 100644
-> --- a/kernel/bpf/cgroup_iter.c
-> +++ b/kernel/bpf/cgroup_iter.c
-> @@ -104,6 +104,7 @@ static void *cgroup_iter_seq_next(struct seq_file *se=
-q, void *v, loff_t *pos)
->  {
->         struct cgroup_subsys_state *curr =3D (struct cgroup_subsys_state =
-*)v;
->         struct cgroup_iter_priv *p =3D seq->private;
-> +       struct cgroup *parent;
->
->         ++*pos;
->         if (p->terminate)
-> @@ -113,9 +114,11 @@ static void *cgroup_iter_seq_next(struct seq_file *s=
-eq, void *v, loff_t *pos)
->                 return css_next_descendant_pre(curr, p->start_css);
->         else if (p->order =3D=3D BPF_CGROUP_ITER_DESCENDANTS_POST)
->                 return css_next_descendant_post(curr, p->start_css);
-> -       else if (p->order =3D=3D BPF_CGROUP_ITER_ANCESTORS_UP)
-> -               return curr->parent;
-> -       else  /* BPF_CGROUP_ITER_SELF_ONLY */
-> +       else if (p->order =3D=3D BPF_CGROUP_ITER_ANCESTORS_UP) {
-> +               parent =3D cgroup_parent_ns(curr->cgroup,
-> +                                         current->nsproxy->cgroup_ns);
-> +               return parent ? &parent->self : NULL;
-> +       } else  /* BPF_CGROUP_ITER_SELF_ONLY */
->                 return NULL;
+>  arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
+>  arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
+>  2 files changed, 26 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index e418ef3ecfcb..4d38e4eba772 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1665,6 +1665,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
+>  	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
 >  }
->
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index c0377726031f..d60b5dfbbbc9 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1417,11 +1417,11 @@ static inline struct cgroup *__cset_cgroup_from_r=
-oot(struct css_set *cset,
->  }
->
->  /*
-> - * look up cgroup associated with current task's cgroup namespace on the
-> + * look up cgroup associated with given cgroup namespace on the
->   * specified hierarchy
->   */
-> -static struct cgroup *
-> -current_cgns_cgroup_from_root(struct cgroup_root *root)
-> +static struct cgroup *cgns_cgroup_from_root(struct cgroup_root *root,
-> +                                           struct cgroup_namespace *ns)
->  {
->         struct cgroup *res =3D NULL;
->         struct css_set *cset;
-> @@ -1430,7 +1430,7 @@ current_cgns_cgroup_from_root(struct cgroup_root *r=
-oot)
->
->         rcu_read_lock();
->
-> -       cset =3D current->nsproxy->cgroup_ns->root_cset;
-> +       cset =3D ns->root_cset;
->         res =3D __cset_cgroup_from_root(cset, root);
->
->         rcu_read_unlock();
-> @@ -1852,15 +1852,15 @@ int cgroup_show_path(struct seq_file *sf, struct =
-kernfs_node *kf_node,
->         int len =3D 0;
->         char *buf =3D NULL;
->         struct cgroup_root *kf_cgroot =3D cgroup_root_from_kf(kf_root);
-> -       struct cgroup *ns_cgroup;
-> +       struct cgroup *root_cgroup;
->
->         buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
->         if (!buf)
->                 return -ENOMEM;
->
->         spin_lock_irq(&css_set_lock);
-> -       ns_cgroup =3D current_cgns_cgroup_from_root(kf_cgroot);
-> -       len =3D kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_M=
-AX);
-> +       root_cgroup =3D cgns_cgroup_from_root(kf_cgroot, current->nsproxy=
-->cgroup_ns);
-> +       len =3D kernfs_path_from_node(kf_node, root_cgroup->kn, buf, PATH=
-_MAX);
->         spin_unlock_irq(&css_set_lock);
->
->         if (len >=3D PATH_MAX)
-> @@ -2330,6 +2330,18 @@ int cgroup_path_ns(struct cgroup *cgrp, char *buf,=
- size_t buflen,
->  }
->  EXPORT_SYMBOL_GPL(cgroup_path_ns);
->
-> +struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
-> +                                  struct cgroup_namespace *ns)
+>  
+> +static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
 > +{
-> +       struct cgroup *root_cgrp;
-> +
-> +       spin_lock_irq(&css_set_lock);
-> +       root_cgrp =3D cgns_cgroup_from_root(cgrp->root, ns);
-> +       spin_unlock_irq(&css_set_lock);
-> +
-> +       return cgrp =3D=3D root_cgrp ? NULL : cgroup_parent(cgrp);
-
-I understand that currently cgroup_iter is the only user of this, but
-for future use cases, is it safe to assume that cgrp will always be
-inside ns? Would it be safer to do something like:
-
-struct cgroup *parent =3D cgroup_parent(cgrp);
-
-if (!parent)
-    return NULL;
-
-return cgroup_is_descendant(parent, root_cgrp) ? parent : NULL;
-
-
+> +	kvm_mod_used_mmu_pages(kvm, +1);
+> +	kvm_account_pgtable_pages((void *)sp->spt, +1);
 > +}
 > +
->  /**
->   * task_cgroup_path - cgroup path of a task in the first cgroup hierarch=
-y
->   * @task: target task
-> @@ -6031,7 +6043,8 @@ struct cgroup *cgroup_get_from_id(u64 id)
->                 goto out;
->
->         spin_lock_irq(&css_set_lock);
-> -       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
-> +       root_cgrp =3D cgns_cgroup_from_root(&cgrp_dfl_root,
-> +                                         current->nsproxy->cgroup_ns);
->         spin_unlock_irq(&css_set_lock);
->         if (!cgroup_is_descendant(cgrp, root_cgrp)) {
->                 cgroup_put(cgrp);
-> @@ -6612,7 +6625,8 @@ struct cgroup *cgroup_get_from_path(const char *pat=
-h)
->         struct cgroup *root_cgrp;
->
->         spin_lock_irq(&css_set_lock);
-> -       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
-> +       root_cgrp =3D cgns_cgroup_from_root(&cgrp_dfl_root,
-> +                                         current->nsproxy->cgroup_ns);
->         kn =3D kernfs_walk_and_get(root_cgrp->kn, path);
->         spin_unlock_irq(&css_set_lock);
->         if (!kn)
-> --
-> 2.37.0
->
+> +static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+> +{
+> +	kvm_mod_used_mmu_pages(kvm, -1);
+> +	kvm_account_pgtable_pages((void *)sp->spt, -1);
+> +}
+
+Hrm, this is causing build on x86 issues for me.  AFAICT, modpost doesn't detect
+that this creates a new module dependency on __mod_lruvec_page_state() and so doesn't
+refresh vmlinux.symvers.
+
+  ERROR: modpost: "__mod_lruvec_page_state" [arch/x86/kvm/kvm.ko] undefined!
+  make[2]: *** [scripts/Makefile.modpost:128: modules-only.symvers] Error 1
+  make[1]: *** [Makefile:1769: modules] Error 2
+  make[1]: *** Waiting for unfinished jobs....
+  Kernel: arch/x86/boot/bzImage is ready  (#128)
+  make[1]: Leaving directory '/usr/local/google/home/seanjc/build/kernel/vm'
+  make: *** [Makefile:222: __sub-make] Error 2
+
+Both gcc and clang yield the same behavior, so I doubt it's the compiler doing
+something odd.  Cleaning the build makes the problem go away, but that's a poor
+band-aid.
+
+If I squash this with the prior patch that adds kvm_account_pgtable_pages() to
+kvm_host.h, modpost detects the need to refresh and all is well.
+
+Given that ARM doesn't support building KVM as a module, i.e. can't run afoul
+of whatever modpost weirdness I'm hitting, I'm inclined to squash this with the
+previous patch and punt on the modpost issue so that we can get this merged.
+
+Any objections?  Or thoughts on what's going wrong?
