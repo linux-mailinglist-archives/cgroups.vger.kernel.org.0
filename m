@@ -2,151 +2,204 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBFE5A30F9
-	for <lists+cgroups@lfdr.de>; Fri, 26 Aug 2022 23:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7200F5A36D1
+	for <lists+cgroups@lfdr.de>; Sat, 27 Aug 2022 11:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344932AbiHZV0O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Aug 2022 17:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S229737AbiH0J6y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 27 Aug 2022 05:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344686AbiHZV0M (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Aug 2022 17:26:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4244CA30
-        for <cgroups@vger.kernel.org>; Fri, 26 Aug 2022 14:26:10 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id e13so2277712wrm.1
-        for <cgroups@vger.kernel.org>; Fri, 26 Aug 2022 14:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=6UsE1Ljxz5h0xq3FFSdwmgCBOa2/vJlV8vw/uQpbLSQ=;
-        b=SWFjPL7/UKZ4cZdo+JI7Bm2LG8Zc5kFuduxCLX8+HwW0QibBTetn/y2E41mk+x5paO
-         JIzNbPVmE/Ekp/CzgnD2lphM56nu+cGQgvXiZ7OsW7wiDezSmmZwBWSBekAXujhOa0V0
-         A/+blidel2lSXN57C4fj+Mly1CkPB7JfH8fuOLQhwEdLJ5xIgzgdP41dV/v/Oq6fs9v0
-         LJnhM8cgZlGCe5bOOQ2JX0Rjt2uG1lGNw0/ekwO8fuwTjSJ6hE1BnAi1yzYcJ9yAPRpa
-         cvbehGZsoN5xor3oKmd+C683+iy9LUhdk3WtP7wGbPJfzVQ4Bu4/vzWsAhyUKcA6bwn9
-         MK+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=6UsE1Ljxz5h0xq3FFSdwmgCBOa2/vJlV8vw/uQpbLSQ=;
-        b=lsSR2KItAOcbjVDi22pgfyty5m816D7k0JA2G72HgmPWXRjfXEhN0CqTsuprD4sg6y
-         v+kdp7emsZ+q0YbBTc3uPF2MTSVINcu/pgl+tplvxJb3x/SnxJftvrYxDmfk0feSnaO/
-         J+rP50EF16eejTmGdzpS8YSVPZTI2B5yEYpuObL04vLhWjIcHEKbRVd6HF38vRzbSKPZ
-         pdhtwbalT820za86IGQH5VqisoD3ynJGPmKwJKp0Jk/b+FbGvLUGigDCIXuqupQfNlA5
-         aK/X+p8gMIYtFWUiSV8gVHm4MRr1bOK+6TvLdUcazJpp4enrVd7ls6BJlmTR5ThmFst9
-         WCrA==
-X-Gm-Message-State: ACgBeo0QIqCz0jgjOswTqEVTbOsqkntGk0b3b7zER0Ck74zDtk0yassl
-        hg9EiQNc8Kc+D6kGsYwVwZ6Sr0B2mm+rXHfCxqb/QA==
-X-Google-Smtp-Source: AA6agR4Hp1hENOCVVKgBgmda4N9xAiLK7ePDAp+2BKobakE/3YgGIHlFS8hcVYDNGA2YUpMSmk/d68XvTzxr+wDrl7o=
-X-Received: by 2002:a5d:6d0c:0:b0:225:4ff9:7e67 with SMTP id
- e12-20020a5d6d0c000000b002254ff97e67mr776077wrq.534.1661549168831; Fri, 26
- Aug 2022 14:26:08 -0700 (PDT)
+        with ESMTP id S231391AbiH0J6v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Aug 2022 05:58:51 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D41FA6C06
+        for <cgroups@vger.kernel.org>; Sat, 27 Aug 2022 02:58:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661594331; x=1693130331;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WaFvIrAEWKWz2RDrxHGrksTyxHIFPZuupvnsdXUTTTs=;
+  b=DvrLG2ZtQ8I/LupBcqkjmgNvJZewtB7qW2Lj4S9pHsOWPm6JE767Y4YK
+   uz6DKvFw6uOZe1IYWbZh1dvm3gtG19g8jzrMKd6KeOiNX20bRbIVGKJMh
+   oPrwm25TIFyRMcIvj4HpZ1ZKDz2xHr2SxMj/CYuSMQQ8JkIy74XYMDFpz
+   qPhFrmCRlnUSM6V+DZpqA/rZl4JCVZrezvS8bJAHnvPJioppmCvbGopJc
+   SYyJa3v9vrA49kPimcdhCVFYvcoSanuG1x4AYk2UIwvdUr6wr5x4guj6l
+   lq1zodfDdRo9KHHfz/hcP1jHg3TBLgONcKveCVHsvlq4CyVXD2anbVEGO
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10451"; a="294659887"
+X-IronPort-AV: E=Sophos;i="5.93,267,1654585200"; 
+   d="scan'208";a="294659887"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2022 02:58:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,267,1654585200"; 
+   d="scan'208";a="939024093"
+Received: from lkp-server01.sh.intel.com (HELO fc16deae1c42) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 27 Aug 2022 02:58:49 -0700
+Received: from kbuild by fc16deae1c42 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oRsaW-00003p-38;
+        Sat, 27 Aug 2022 09:58:48 +0000
+Date:   Sat, 27 Aug 2022 17:58:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ a4781930055b8f08c36f02877868bf794e92024d
+Message-ID: <6309ead2.gkDAQUDb+/Mdporm%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220823004639.2387269-1-yosryahmed@google.com>
- <20220823004639.2387269-4-yosryahmed@google.com> <Ywkq8HYyTI1eStSO@google.com>
-In-Reply-To: <Ywkq8HYyTI1eStSO@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 26 Aug 2022 14:25:32 -0700
-Message-ID: <CAJD7tka4w059gZOJJnZj2zodQ7CGCFzKGbKEtt9cE2XP5GF73A@mail.gmail.com>
-Subject: Re: [PATCH v7 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
- pagetable stats.
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 1:20 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Aug 23, 2022, Yosry Ahmed wrote:
-> > Count the pages used by KVM mmu on x86 in memory stats under secondary
-> > pagetable stats (e.g. "SecPageTables" in /proc/meminfo) to give better
-> > visibility into the memory consumption of KVM mmu in a similar way to
-> > how normal user page tables are accounted.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
-> >  arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
-> >  2 files changed, 26 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index e418ef3ecfcb..4d38e4eba772 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1665,6 +1665,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
-> >       percpu_counter_add(&kvm_total_used_mmu_pages, nr);
-> >  }
-> >
-> > +static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > +{
-> > +     kvm_mod_used_mmu_pages(kvm, +1);
-> > +     kvm_account_pgtable_pages((void *)sp->spt, +1);
-> > +}
-> > +
-> > +static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > +{
-> > +     kvm_mod_used_mmu_pages(kvm, -1);
-> > +     kvm_account_pgtable_pages((void *)sp->spt, -1);
-> > +}
->
-> Hrm, this is causing build on x86 issues for me.  AFAICT, modpost doesn't detect
-> that this creates a new module dependency on __mod_lruvec_page_state() and so doesn't
-> refresh vmlinux.symvers.
->
->   ERROR: modpost: "__mod_lruvec_page_state" [arch/x86/kvm/kvm.ko] undefined!
->   make[2]: *** [scripts/Makefile.modpost:128: modules-only.symvers] Error 1
->   make[1]: *** [Makefile:1769: modules] Error 2
->   make[1]: *** Waiting for unfinished jobs....
->   Kernel: arch/x86/boot/bzImage is ready  (#128)
->   make[1]: Leaving directory '/usr/local/google/home/seanjc/build/kernel/vm'
->   make: *** [Makefile:222: __sub-make] Error 2
->
-> Both gcc and clang yield the same behavior, so I doubt it's the compiler doing
-> something odd.  Cleaning the build makes the problem go away, but that's a poor
-> band-aid.
->
-> If I squash this with the prior patch that adds kvm_account_pgtable_pages() to
-> kvm_host.h, modpost detects the need to refresh and all is well.
->
-> Given that ARM doesn't support building KVM as a module, i.e. can't run afoul
-> of whatever modpost weirdness I'm hitting, I'm inclined to squash this with the
-> previous patch and punt on the modpost issue so that we can get this merged.
->
-> Any objections?  Or thoughts on what's going wrong?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: a4781930055b8f08c36f02877868bf794e92024d  Merge branch 'for-6.1' into for-next
 
-I am not familiar at all with modpost so I have no idea what's going
-wrong, but I have no problem with squashing the patches if you think
-this works best.
+elapsed time: 722m
+
+configs tested: 122
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+powerpc                           allnoconfig
+loongarch                         allnoconfig
+i386                                defconfig
+arc                                 defconfig
+loongarch                           defconfig
+s390                             allmodconfig
+alpha                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+s390                                defconfig
+x86_64                              defconfig
+s390                             allyesconfig
+i386                          randconfig-a014
+sh                               allmodconfig
+x86_64                        randconfig-a004
+mips                             allyesconfig
+x86_64                        randconfig-a002
+x86_64                               rhel-8.3
+powerpc                          allmodconfig
+arm                                 defconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+i386                          randconfig-a012
+x86_64                           allyesconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a015
+i386                          randconfig-a016
+alpha                            allyesconfig
+arc                              allyesconfig
+i386                             allyesconfig
+x86_64                          rhel-8.3-func
+m68k                             allyesconfig
+x86_64                         rhel-8.3-kunit
+m68k                             allmodconfig
+x86_64                           rhel-8.3-kvm
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+arm                              allyesconfig
+parisc                              defconfig
+arm64                            allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+parisc                           allyesconfig
+parisc64                            defconfig
+arc                  randconfig-r043-20220824
+riscv                randconfig-r042-20220824
+s390                 randconfig-r044-20220826
+s390                 randconfig-r044-20220824
+arc                  randconfig-r043-20220823
+riscv                randconfig-r042-20220826
+arc                  randconfig-r043-20220826
+arc                  randconfig-r043-20220825
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+i386                          randconfig-a005
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+powerpc                          allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+sh                          rsk7203_defconfig
+parisc                generic-32bit_defconfig
+arm                            xcep_defconfig
+openrisc                  or1klitex_defconfig
+ia64                            zx1_defconfig
+i386                          randconfig-c001
+sparc                               defconfig
+xtensa                           allyesconfig
+csky                                defconfig
+sparc                            allyesconfig
+x86_64                                  kexec
+ia64                             allmodconfig
+arm64                               defconfig
+arm                              allmodconfig
+m68k                                defconfig
+ia64                                defconfig
+mips                             allmodconfig
+
+clang tested configs:
+i386                          randconfig-a013
+i386                          randconfig-a015
+x86_64                        randconfig-a014
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+i386                          randconfig-a011
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a003
+hexagon              randconfig-r041-20220825
+hexagon              randconfig-r041-20220823
+hexagon              randconfig-r045-20220825
+hexagon              randconfig-r041-20220824
+hexagon              randconfig-r045-20220824
+hexagon              randconfig-r045-20220827
+riscv                randconfig-r042-20220827
+hexagon              randconfig-r041-20220827
+s390                 randconfig-r044-20220827
+s390                 randconfig-r044-20220823
+hexagon              randconfig-r045-20220826
+hexagon              randconfig-r041-20220826
+riscv                randconfig-r042-20220825
+s390                 randconfig-r044-20220825
+riscv                randconfig-r042-20220823
+hexagon              randconfig-r045-20220823
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+powerpc                      obs600_defconfig
+arm                                 defconfig
+arm                         bcm2835_defconfig
+arm                           sama7_defconfig
+riscv                            alldefconfig
+arm                         mv78xx0_defconfig
+x86_64                        randconfig-k001
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
