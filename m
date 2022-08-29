@@ -2,77 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90665A43C0
-	for <lists+cgroups@lfdr.de>; Mon, 29 Aug 2022 09:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1A95A4CFD
+	for <lists+cgroups@lfdr.de>; Mon, 29 Aug 2022 15:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbiH2H1z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Aug 2022 03:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S229499AbiH2NGj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Aug 2022 09:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiH2H1y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Aug 2022 03:27:54 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1894DF01;
-        Mon, 29 Aug 2022 00:27:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229493AbiH2NGV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Aug 2022 09:06:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A4562A9B;
+        Mon, 29 Aug 2022 06:00:40 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 4F72ECE0E62;
-        Mon, 29 Aug 2022 07:27:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 951C0C433D7;
-        Mon, 29 Aug 2022 07:27:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661758068;
-        bh=QBKOCoTZ6XZgyyunpEAs68DUjO/2pOPpwNeRHbtxvMs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XJSIQ1Lb0E3HGCPjCT7ITuT8fzC+A8MCwrjZcRnWMOD+YktvB5KCIL8TykwxdnzH/
-         eQWB73STnszdOdUhX4Ms1V+BX/Bfv3bcAx8CJIKy7t50xRUVMlCSKX+vW1kiaZr8Ff
-         VyCY5IIh/V7Qjsaoz+tR5LWuWcuWNTt982UTYJ7r2WA+P8AVuPT0kBnNuavGCL5Zpn
-         5vUvTPNLUdXSN2jL2grMBfMqxR+/a2SRYxOciy148qfBNdAyUMFpU9p6wXJ6Cvhn3n
-         IQ3sDiffpSGTrX3SxDpuNBPJIXOzvd+gaiqwJbaMN3mm25zVWyyo24gJuSw+7i5WRq
-         Sst1GXxFliyQQ==
-Date:   Mon, 29 Aug 2022 09:27:41 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Gabriel Ryan <gabe@cs.columbia.edu>,
-        Abhishek Shah <abhishek.shah@columbia.edu>,
-        linux-kernel@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
-        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, lizefan.x@bytedance.com,
-        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
-Subject: Re: data-race in cgroup_get_tree / proc_cgroup_show
-Message-ID: <20220829072741.tsxfgjp75lywzlgn@wittgenstein>
-References: <CAEHB249jcoG=sMGLUgqw3Yf+SjZ7ZkUfF_M+WcyQGCAe77o2kA@mail.gmail.com>
- <20220819072256.fn7ctciefy4fc4cu@wittgenstein>
- <CALbthtdFY+GHTzGH9OujzqpOtWZAqsU3MAsjv5OpwZUW6gVa7A@mail.gmail.com>
- <YwuySgH4j6h2CGvk@slm.duckdns.org>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D2D3222DDF;
+        Mon, 29 Aug 2022 12:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1661777998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sSRqVVn5SCoLVeckWTZ5Gj/nBtXDD5MTT0sRUoTFBiw=;
+        b=UqKZNoswzkT4opbT0CFX0E2k4fxB6asNd34TQMJiKraxmyY5Oy62NiBcyrPldyXJ7KDJHR
+        7Wzx8mJy2LXH7P8HqiXtIjspI2kHyviaLuibhQeNTELPHHnPMRqkdbRM750kNErG6GV8Br
+        EgX2s0bkY6Ph0Hv59W0uEeHHnYScYaw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9836D133A6;
+        Mon, 29 Aug 2022 12:59:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8skyJE64DGPAQwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 29 Aug 2022 12:59:58 +0000
+Date:   Mon, 29 Aug 2022 14:59:57 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
+        Serge Hallyn <serge.hallyn@canonical.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yonghong Song <yhs@fb.com>,
+        Muneendra Kumar <muneendra.kumar@broadcom.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH 4/4] cgroup/bpf: Honor cgroup NS in cgroup_iter for
+ ancestors
+Message-ID: <20220829125957.GB3579@blackbody.suse.cz>
+References: <20220826165238.30915-1-mkoutny@suse.com>
+ <20220826165238.30915-5-mkoutny@suse.com>
+ <CAJD7tkZZ6j6mPfwwFDy_ModYux5447HFP=oPwa6MFA_NYAZ9-g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kORqDWCi7qDJ0mEj"
 Content-Disposition: inline
-In-Reply-To: <YwuySgH4j6h2CGvk@slm.duckdns.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkZZ6j6mPfwwFDy_ModYux5447HFP=oPwa6MFA_NYAZ9-g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Aug 28, 2022 at 08:22:02AM -1000, Tejun Heo wrote:
-> On Mon, Aug 22, 2022 at 01:04:58PM -0400, Gabriel Ryan wrote:
-> > Hi Christian,
-> > 
-> > We ran a quick test and confirm your suggestion would eliminate the
-> > data race alert we observed. If the data race is benign (and it
-> > appears to be), using WRITE_ONCE(cgrp_dfl_visible, true) instead of
-> > cmpxchg in cgroup_get_tree() would probably also be ok.
-> 
-> I don't see how the data race can lead to anything but would the following
-> work?
 
-Yep. You can take my,
-Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
-when you turn it into a patch.
+--kORqDWCi7qDJ0mEj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Aug 26, 2022 at 10:41:37AM -0700, Yosry Ahmed <yosryahmed@google.com> wrote:
+> I understand that currently cgroup_iter is the only user of this, but
+> for future use cases, is it safe to assume that cgrp will always be
+> inside ns? Would it be safer to do something like:
+
+I preferred the simpler root_cgrp comparison to avoid pointer
+arithmetics in cgroup_is_descendant. But I also made the assumption of
+cgrp in ns.
+
+Thanks, I'll likely adjust cgroup_path_ns to make it more robust for
+an external cgrp.
+
+
+I'd like to clarify, if a process A in a broad cgroup ns sets up a BPF
+cgroup iterator, exposes it via bpffs and than a process B in a narrowed
+cgroup ns (which excludes the origin cgroup) wants to traverse the
+iterator, should it fail straight ahead (regardless of iter order)?
+The alternative would be to allow self-dereference but prohibit any
+iterator moves (regardless of order).
+
+
+Thanks,
+Michal
+
+--kORqDWCi7qDJ0mEj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYwy4SQAKCRAkDQmsBEOq
+uZX4AQDqrzGBoULhzyvm8GveGTXVJYAupuXli8zU2n5T8KXI1wEA/d5JS9XKNwTR
+qMIafR6at0V6U72iM2jn2OX84ZgiKgk=
+=auEQ
+-----END PGP SIGNATURE-----
+
+--kORqDWCi7qDJ0mEj--
