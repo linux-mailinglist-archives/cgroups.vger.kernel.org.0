@@ -2,92 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55BB5A53BB
-	for <lists+cgroups@lfdr.de>; Mon, 29 Aug 2022 20:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E315A593D
+	for <lists+cgroups@lfdr.de>; Tue, 30 Aug 2022 04:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbiH2SHt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Aug 2022 14:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
+        id S229591AbiH3CTb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Aug 2022 22:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbiH2SHs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Aug 2022 14:07:48 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1632B8B988
-        for <cgroups@vger.kernel.org>; Mon, 29 Aug 2022 11:07:47 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id kh8so6928132qvb.1
-        for <cgroups@vger.kernel.org>; Mon, 29 Aug 2022 11:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=7rQocjicZEmcxwKtCOFzf24LVnPFDEo/4tWTRLGIYcE=;
-        b=qL0rlGpyTRDVHdnZwy6wQJuIxEKjKUMQsjBj7a45cUf5S7tBgmg1bF5R/f9PiNR0Gn
-         KWmzUDLsZEk79MqhJnyZIZRGIBj5vp4MUALH8RpbD+Ww3cAQo1OpenjDGzmr2p2oQC+i
-         fV8bTXy5/C0GwxuhaUkXKHsUBy7mGZcNC/Aa2SjE+YGMUHyqf7fMt7TKYLMKz3CNYYXS
-         pSxOmPMS5EROBSrSBSm4vbT+wUQAoBGMxub3djMvhplX2nbVFS45/nEhV4wct2EMl9/t
-         Lk4TwfNdzKaBlQeNpeAj8WKQEyYuGVcbrNA+udLLIFWNW5Pc/dlmBmBBGvOEyl1iqYFr
-         Z5kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=7rQocjicZEmcxwKtCOFzf24LVnPFDEo/4tWTRLGIYcE=;
-        b=ftaD4senmc52jvdf+r/o0gSk3Yd6a2UuAc1Zf4Repw2LJW4TR2x53+k7qofQXr5xb4
-         MgnH6UajbUzfX7I8ZA78NzNXDJTJQwhSypr8t9BGFH5dh847rCl5DsrVa7INKGlqLZwl
-         fc74TUMlu2sV1jsPo2d3h34r+uNAmnkIH6bu932/xTjSZPZPYm+Fhd4ona/ZIYASw+Uj
-         4vNsg9/sZIxSxXejXmPqR1wN3sctZMkFIBfx1An6wsbX3ujZVlhTHYhfWWoJyXtcFYRe
-         MCkmjtLgB2PXFwBONiP9/UBkILQyD3TFIgA8qDnmQUu3c2+DMMtPNwvgVocF2+2edRax
-         s15w==
-X-Gm-Message-State: ACgBeo0an78VgZbwtxTFs7x0e0s/qtEkAlknEh+q4kOXpOQb33kqwXia
-        /e3zQHyWkg7kaH2InGNkKVmbuCNAFxhuSmcC2DhV/g==
-X-Google-Smtp-Source: AA6agR4OIV//3V4jm7d5wGtxHgWJ1uBfV88Ty4upvuiZ6NdZoLWIqadvl7YT969T8sm4AbUu1c5yo0cvXdZQllhqXEo=
-X-Received: by 2002:a05:6214:20a8:b0:477:1882:3e7 with SMTP id
- 8-20020a05621420a800b00477188203e7mr11986131qvd.44.1661796466132; Mon, 29 Aug
- 2022 11:07:46 -0700 (PDT)
+        with ESMTP id S229476AbiH3CTb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Aug 2022 22:19:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02019DF88
+        for <cgroups@vger.kernel.org>; Mon, 29 Aug 2022 19:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661825966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=acxiXerhGK/mk1WIiLY7l7lFOnLhh2aPqN8iFAXUUqg=;
+        b=ICmSuLKJXCyiXF+TNE5ioSfGe33YVOIiwzRSKQIdTlRYDyQ+5cUjLe+PIrpNjfq1lry4bR
+        Cl9n3sU1KERUrBHhJ7Nd8VGZQwywGrC/acoAPbpX73saveVP3v1GLLa7IwccbrsNkNlubl
+        bJ1+YumcEVdry65LB6EycExrqQV7R2g=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-627-fVPrXc5kO36qO1qH2zcptw-1; Mon, 29 Aug 2022 22:19:25 -0400
+X-MC-Unique: fVPrXc5kO36qO1qH2zcptw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BCC421C0514B;
+        Tue, 30 Aug 2022 02:19:24 +0000 (UTC)
+Received: from [10.22.8.171] (unknown [10.22.8.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 90F281410F37;
+        Tue, 30 Aug 2022 02:19:24 +0000 (UTC)
+Message-ID: <23924a85-1ddc-64c7-68c7-2dbd53eea4ee@redhat.com>
+Date:   Mon, 29 Aug 2022 22:19:24 -0400
 MIME-Version: 1.0
-References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-2-haoluo@google.com>
- <9edbddb7-4a3b-f8d1-777c-66e5f8efc977@fb.com>
-In-Reply-To: <9edbddb7-4a3b-f8d1-777c-66e5f8efc977@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 29 Aug 2022 11:07:35 -0700
-Message-ID: <CA+khW7h5KAqmhJB+3bCmeqs5EW927XnK1D+GrXqa3RUaxb1wTQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v9 1/5] bpf: Introduce cgroup iter
-To:     Yonghong Song <yhs@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: cgroups v2 cpuset partition bug
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+To:     =?UTF-8?B?TWF4aW0g4oCcTUFYUEFJTuKAnSBNYWthcm92?= 
+        <maxpain177@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org
+References: <C98773C9-F5ED-4664-BED1-5C03351130D4@gmail.com>
+ <YwT/BNqIdCEyUpFR@slm.duckdns.org>
+ <ef183fe9-8458-8a7f-2b8e-1c38666b6399@redhat.com>
+ <26A2A485-B70C-4361-8368-1A0081570E7C@gmail.com>
+ <961450c4-6b32-63ba-ff81-2f6184032de9@redhat.com>
+In-Reply-To: <961450c4-6b32-63ba-ff81-2f6184032de9@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 4:00 PM Yonghong Song <yhs@fb.com> wrote:
+On 8/29/22 13:48, Waiman Long wrote:
 >
-> Hao, we missed the bpftool dump part for the above bpf_link_info so
-> a followup is needed.
-> Please take a look at tools/bpf/bpftool/link.c searching 'map_id'
-> for an example.
+> On 8/29/22 13:16, Maxim “MAXPAIN” Makarov wrote:
+>> Hi. I used top and htop programs to check what CPU is using, and it's 
+>> showing that this task is running on CPU 2, so I think it shows the 
+>> correct CPU that is currently being used.
+>> Please note that the containerd process has /system/runtime cgroup, 
+>> which inherits cpuset from the root cgroup. /system/runtime cgroup 
+>> doesn't have any cpuset settings. Maybe this is the reason?
+> Oh, that could be the reason. Yes, it is probably a bug that other 
+> sibling cgroups should also be updated. I will look into that.
+>>
+>> I tried to remove the lowlatency group with 
+>> cpuset.cpus.partition=root and do taskset -cp 4 1079 manually, and it 
+>> works without any restart.
+>>
+>> I updated my post on StackExchange and added some new screenshots, so 
+>> please check it out.
 
-Sure Yonghong. I was on vacation. Will do this today.
+I tried to reproduce it but couldn't so far. Would you mind telling me 
+what kernel version are you using to show this bug? BTW, how do you make 
+htop show the CPU number, the CPU number isn't there by default.  What 
+htop version are you using?
+
+Thanks,
+Longman
+
