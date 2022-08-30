@@ -2,93 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A356D5A66B1
-	for <lists+cgroups@lfdr.de>; Tue, 30 Aug 2022 16:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2689A5A7036
+	for <lists+cgroups@lfdr.de>; Tue, 30 Aug 2022 23:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbiH3Ox5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Aug 2022 10:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S232139AbiH3V5Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Aug 2022 17:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiH3Ox4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Aug 2022 10:53:56 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 30 Aug 2022 07:53:55 PDT
-Received: from sender4-of-o54.zoho.com (sender4-of-o54.zoho.com [136.143.188.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F97911B60E;
-        Tue, 30 Aug 2022 07:53:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1661870308; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=YccQlM0YpBZa8BEArecQTA/6YF3Z9UEqrKSzACVcZD2uKnsF9OoZFjYibUi5Yuh2P7nIGWDL+8uAYTJlzygMm07JQmQhprUKxyiMthxbaIdNKyjFbmzjnWxQT2ilYjtpMUzvVocrbjUcdwEKz8ifN5vI23KliK0U8vfO8sgNpuI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1661870308; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=bDHqoi1ggUNw44SWIfwig+ES6dxTzwOKO9MpudL0Flc=; 
-        b=nhFmY+FTBOjVNmgnBSKkRto17smjv/TOaAIyAvdiRK8vq7/N3t1s3NUoAV6zmZrFAWDPxYY6exMcrE+nhCQtUsxCW2nY/dir5vXI0jidR2ryD4KYM9ibMM8v2ecYHmMbqNVT6kFkrzagVIsxqC9/TQf2D6xHjYzTPV0BHnmEtJE=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        spf=pass  smtp.mailfrom=business@elijahpepe.com;
-        dmarc=pass header.from=<business@elijahpepe.com>
-Received: from mail.zoho.com by mx.zohomail.com
-        with SMTP id 1661870307439465.9202214426898; Tue, 30 Aug 2022 07:38:27 -0700 (PDT)
-Date:   Tue, 30 Aug 2022 07:38:27 -0700
-From:   Elijah Conners <business@elijahpepe.com>
-To:     "axboe" <axboe@kernel.dk>
-Cc:     "linux-block" <linux-block@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "cgroups" <cgroups@vger.kernel.org>,
-        "josef" <josef@toxicpanda.com>,
-        "asmlsilence" <asml.silence@gmail.com>,
-        "minglei" <ming.lei@redhat.com>, "bvanassche" <bvanassche@acm.org>
-Message-ID: <182ef30785e.c6f6f47035469.3423320276766255135@elijahpepe.com>
-In-Reply-To: 
-Subject: [PATCH] iocost_monitor: reorder BlkgIterator
+        with ESMTP id S231382AbiH3V5G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Aug 2022 17:57:06 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38879E11F
+        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 14:52:57 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id 199so12584581pfz.2
+        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 14:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=kmi765rhdWrzQirlOzDuA6v2AsLs7icy29dLcvjyZaY=;
+        b=hWJ7zNlkecdEXTrVZ6wmkEknTN/2exZUrz57/hU7W4XRQNtZqa+j7DxnleUp3IhKBb
+         sPjQfJCIpekxST95aTOvA6LRmjGl/9uM3t36fhzVjmgsHhFGbG/O8T0o1vgEyeLA5C0I
+         EFGHin0OUfFk0fiXENOHWlBqiA7nVmwWjwoJSedO1iB8vWSr7VHZW2nPJIXqSCBO/+pl
+         sOwVvJuTcV0RbXyJlpScwEsj8aMQTbBVhWXan+gXoZK5KecfX5JTb9nvfZqtbC+UjDPf
+         k0jWJ+//LY8Te/xXhINDpZFf2p1eG1WkkfXxk1m7qr7C9e/izZw1Pye0n6Us513YUn22
+         Sv0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=kmi765rhdWrzQirlOzDuA6v2AsLs7icy29dLcvjyZaY=;
+        b=jkAMCIPAH11FXmR8HkMcimYf6eryc3qoH2CT7qUbn0U8HDSSPA9wTf2l4dpw8nEraA
+         LMidA/gsRcPx9v4OAqzfdduLLqCoYCoH8ouu6SS77w2p69dNr12Jr9HElcd8dt+4+nu5
+         NIkg60iIqUsAy8HDSzymWak0650ru5qnnuMucgyoye+Sm9ADQQ9RP4xWKiBgYm8tSwU0
+         0J8CHoHkTOuk14bba6wdZTd2VAZ67PR7+4YTZGlXO3WY99unheF+iCOfevR6gOybmA1X
+         5G0BsyYdpFIRoKJpdu4Yt3GWsTmrirdawRXTbpYbsjN0OcW4n4kkEK6Jx6w7u6imf9it
+         f2cA==
+X-Gm-Message-State: ACgBeo0KUIXJK5PB1/SghkzDoM+LeAfe2fNHvkBJ8TItzYQGDG446xoj
+        pKW+0HeW+KEst/Lk3MNCGMO4CQ==
+X-Google-Smtp-Source: AA6agR6asL5tWEMD9qdeUkMoP6zzYNAqZvPkbIyCF6qv1uEQUKWXuBujKh4awFSCPYR/F9Y2M19nxA==
+X-Received: by 2002:aa7:8742:0:b0:537:ee75:601a with SMTP id g2-20020aa78742000000b00537ee75601amr17381844pfo.37.1661896357847;
+        Tue, 30 Aug 2022 14:52:37 -0700 (PDT)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id k6-20020a170902ce0600b0015e8d4eb1dbsm10181118plg.37.2022.08.30.14.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Aug 2022 14:52:37 -0700 (PDT)
+Date:   Tue, 30 Aug 2022 21:52:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, Huang@google.com,
+        Shaoqin <shaoqin.huang@intel.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v7 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
+ pagetable stats.
+Message-ID: <Yw6GoWY411PrIRMx@google.com>
+References: <20220823004639.2387269-1-yosryahmed@google.com>
+ <20220823004639.2387269-4-yosryahmed@google.com>
+ <Ywkq8HYyTI1eStSO@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ywkq8HYyTI1eStSO@google.com>
+X-Spam-Status: No, score=-14.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-In order to comply with PEP 8, the first parameter of a class should be
-__init__.
+On Fri, Aug 26, 2022, Sean Christopherson wrote:
+> On Tue, Aug 23, 2022, Yosry Ahmed wrote:
+> > Count the pages used by KVM mmu on x86 in memory stats under secondary
+> > pagetable stats (e.g. "SecPageTables" in /proc/meminfo) to give better
+> > visibility into the memory consumption of KVM mmu in a similar way to
+> > how normal user page tables are accounted.
+> > 
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
+> >  2 files changed, 26 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index e418ef3ecfcb..4d38e4eba772 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -1665,6 +1665,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
+> >  	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
+> >  }
+> >  
+> > +static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+> > +{
+> > +	kvm_mod_used_mmu_pages(kvm, +1);
+> > +	kvm_account_pgtable_pages((void *)sp->spt, +1);
+> > +}
+> > +
+> > +static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+> > +{
+> > +	kvm_mod_used_mmu_pages(kvm, -1);
+> > +	kvm_account_pgtable_pages((void *)sp->spt, -1);
+> > +}
+> 
+> Hrm, this is causing build on x86 issues for me.  AFAICT, modpost doesn't detect
+> that this creates a new module dependency on __mod_lruvec_page_state() and so doesn't
+> refresh vmlinux.symvers.
+> 
+>   ERROR: modpost: "__mod_lruvec_page_state" [arch/x86/kvm/kvm.ko] undefined!
+>   make[2]: *** [scripts/Makefile.modpost:128: modules-only.symvers] Error 1
+>   make[1]: *** [Makefile:1769: modules] Error 2
+>   make[1]: *** Waiting for unfinished jobs....
+>   Kernel: arch/x86/boot/bzImage is ready  (#128)
+>   make[1]: Leaving directory '/usr/local/google/home/seanjc/build/kernel/vm'
+>   make: *** [Makefile:222: __sub-make] Error 2
+> 
+> Both gcc and clang yield the same behavior, so I doubt it's the compiler doing
+> something odd.  Cleaning the build makes the problem go away, but that's a poor
+> band-aid.
+> 
+> If I squash this with the prior patch that adds kvm_account_pgtable_pages() to
+> kvm_host.h, modpost detects the need to refresh and all is well.
+> 
+> Given that ARM doesn't support building KVM as a module, i.e. can't run afoul
+> of whatever modpost weirdness I'm hitting, I'm inclined to squash this with the
+> previous patch and punt on the modpost issue so that we can get this merged.
+> 
+> Any objections?  Or thoughts on what's going wrong?
 
-Signed-off-by: Elijah Conners <business@elijahpepe.com> 
----
- tools/cgroup/iocost_monitor.py                |  10 +-
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Pushed the series with the squash to branch `for_paolo/6.1` at:
 
-diff --git a/tools/cgroup/iocost_monitor.py b/tools/cgroup/iocost_monitor.py
-index c4ff907c078b..0dbbc67400fc 100644
---- a/tools/cgroup/iocost_monitor.py
-+++ b/tools/cgroup/iocost_monitor.py
-@@ -61,6 +61,11 @@ autop_names = {
- }
+    https://github.com/sean-jc/linux.git
 
- class BlkgIterator:
-+    def __init__(self, root_blkcg, q_id, include_dying=False):
-+        self.include_dying = include_dying
-+        self.blkgs = []
-+        self.walk(root_blkcg, q_id, '')
-+
-     def blkcg_name(blkcg):
-         return blkcg.css.cgroup.kn.name.string_().decode('utf-8')
+Unless you hear otherwise, it will make its way to kvm/queue "soon".
 
-@@ -82,11 +87,6 @@ class BlkgIterator:
-                                      blkcg.css.children.address_of_(), 'css.sibling'):
-             self.walk(c, q_id, path)
-
--    def __init__(self, root_blkcg, q_id, include_dying=False):
--        self.include_dying = include_dying
--        self.blkgs = []
--        self.walk(root_blkcg, q_id, '')
--
-     def __iter__(self):
-         return iter(self.blkgs)
-
---
-2.25.1
+Please yell if there are objections.
