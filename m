@@ -2,64 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E315A593D
-	for <lists+cgroups@lfdr.de>; Tue, 30 Aug 2022 04:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DD55A5B57
+	for <lists+cgroups@lfdr.de>; Tue, 30 Aug 2022 08:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiH3CTb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Aug 2022 22:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
+        id S229716AbiH3GAI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Aug 2022 02:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiH3CTb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Aug 2022 22:19:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02019DF88
-        for <cgroups@vger.kernel.org>; Mon, 29 Aug 2022 19:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661825966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=acxiXerhGK/mk1WIiLY7l7lFOnLhh2aPqN8iFAXUUqg=;
-        b=ICmSuLKJXCyiXF+TNE5ioSfGe33YVOIiwzRSKQIdTlRYDyQ+5cUjLe+PIrpNjfq1lry4bR
-        Cl9n3sU1KERUrBHhJ7Nd8VGZQwywGrC/acoAPbpX73saveVP3v1GLLa7IwccbrsNkNlubl
-        bJ1+YumcEVdry65LB6EycExrqQV7R2g=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-627-fVPrXc5kO36qO1qH2zcptw-1; Mon, 29 Aug 2022 22:19:25 -0400
-X-MC-Unique: fVPrXc5kO36qO1qH2zcptw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BCC421C0514B;
-        Tue, 30 Aug 2022 02:19:24 +0000 (UTC)
-Received: from [10.22.8.171] (unknown [10.22.8.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 90F281410F37;
-        Tue, 30 Aug 2022 02:19:24 +0000 (UTC)
-Message-ID: <23924a85-1ddc-64c7-68c7-2dbd53eea4ee@redhat.com>
-Date:   Mon, 29 Aug 2022 22:19:24 -0400
+        with ESMTP id S229738AbiH3GAH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Aug 2022 02:00:07 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE4312D15;
+        Mon, 29 Aug 2022 23:00:06 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id v5so3891834plo.9;
+        Mon, 29 Aug 2022 23:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc;
+        bh=qUSrr+Dj5JEyxXLU0zu9XCionGxLBWlgtmoR99MFjhQ=;
+        b=FjZ0kPOazz55wM/uQwXnHAUHofevmUyS/fY5Hz9pws04EQKglg986u+lddR1MBRc9G
+         JhOVc1ONM6hZeGw2sGMV8DtQCGEPaPSGYJlAE3j2M9fRp2J3R53+q3V4/ZLUfQk904XT
+         0BA1sw4kr4vqPw4k02HrQD6uldwsF7nVrYd7e9NMkOr/e3zEC67KEAKtT44+xc9mUIxc
+         glCfCRac7UFvijpundB+UUlCZwIAuNLfu+MRin/B7JuwhHAhnEu/5Wptuq9lmQfCdfH6
+         nEv5wN1UV6Opd14YB/YIvNr9vvUZobL0C6Ozo8qY6k0eQ/7g/2n7LwYub6AXvivgh11d
+         BiYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=qUSrr+Dj5JEyxXLU0zu9XCionGxLBWlgtmoR99MFjhQ=;
+        b=FtKh+XgdM+fXLunjgGvilnUcUkjvG5utlUZ7l/SJcSqorXvKuve9dCxgCyJofG72mW
+         ze2iI3z/n14ut9mpkIsE9km5nH5vp9a/PBwPCmFVSMEGW0KaWbczzya7pgz6jFv0NodU
+         0artty4eWR2ofuFz36wN19gOfWAjLGfSBxgdLxJ/Ag6xgWkoyw50sAZS4u60tPB6E/6q
+         98JzJQkApOj5rNOmKFrRzxdB74ZixE5QlgcPueqYKzRTqqZMSO4ZcuO2Ju74rpPMX+so
+         1A0mofxio6UsDUEie+6MvlqNE1dIGlA+ifL5ftm3nvyd908+U5LI/0K1LeZBrMNzT3m2
+         VD3w==
+X-Gm-Message-State: ACgBeo3uWdg5lj6vfUcLNanUlkQZUUFBRjwqXlDkT7ME5/zCB1avga7d
+        YYYWI/wTLzrDpVHeXs/3co/ot3Gn0eyJkeGb
+X-Google-Smtp-Source: AA6agR7u8R5s81ZyEwFILcQ8nuubO4ELAAl2cmAH/jIWx5Fgy9PdSMUWnnBoi4vl8ZQNbastjgKbZA==
+X-Received: by 2002:a17:90a:d149:b0:1fb:6dfb:1fb8 with SMTP id t9-20020a17090ad14900b001fb6dfb1fb8mr21573583pjw.25.1661839205472;
+        Mon, 29 Aug 2022 23:00:05 -0700 (PDT)
+Received: from KASONG-MB0.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id m24-20020a17090b069800b001fd962747d4sm5311546pjz.30.2022.08.29.23.00.02
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 29 Aug 2022 23:00:04 -0700 (PDT)
+From:   Kairui Song <ryncsn@gmail.com>
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>
+Subject: [PATCH 0/2] mm: memcontrol: cleanup and optimize for accounting params
+Date:   Tue, 30 Aug 2022 13:59:47 +0800
+Message-Id: <20220830055949.12640-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.35.2
+Reply-To: Kairui Song <kasong@tencent.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: cgroups v2 cpuset partition bug
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     =?UTF-8?B?TWF4aW0g4oCcTUFYUEFJTuKAnSBNYWthcm92?= 
-        <maxpain177@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org
-References: <C98773C9-F5ED-4664-BED1-5C03351130D4@gmail.com>
- <YwT/BNqIdCEyUpFR@slm.duckdns.org>
- <ef183fe9-8458-8a7f-2b8e-1c38666b6399@redhat.com>
- <26A2A485-B70C-4361-8368-1A0081570E7C@gmail.com>
- <961450c4-6b32-63ba-ff81-2f6184032de9@redhat.com>
-In-Reply-To: <961450c4-6b32-63ba-ff81-2f6184032de9@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,30 +73,26 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/29/22 13:48, Waiman Long wrote:
->
-> On 8/29/22 13:16, Maxim “MAXPAIN” Makarov wrote:
->> Hi. I used top and htop programs to check what CPU is using, and it's 
->> showing that this task is running on CPU 2, so I think it shows the 
->> correct CPU that is currently being used.
->> Please note that the containerd process has /system/runtime cgroup, 
->> which inherits cpuset from the root cgroup. /system/runtime cgroup 
->> doesn't have any cpuset settings. Maybe this is the reason?
-> Oh, that could be the reason. Yes, it is probably a bug that other 
-> sibling cgroups should also be updated. I will look into that.
->>
->> I tried to remove the lowlatency group with 
->> cpuset.cpus.partition=root and do taskset -cp 4 1079 manually, and it 
->> works without any restart.
->>
->> I updated my post on StackExchange and added some new screenshots, so 
->> please check it out.
+From: Kairui Song <kasong@tencent.com>
 
-I tried to reproduce it but couldn't so far. Would you mind telling me 
-what kernel version are you using to show this bug? BTW, how do you make 
-htop show the CPU number, the CPU number isn't there by default.  What 
-htop version are you using?
+Patch 1/2 changes the behavior of kmem accounting a bit, making
+it either globally enabled or globally disabled by boot params and
+no longer affected by the creation of the first non-root cgroup.
+This might be a bit arguable though.
 
-Thanks,
-Longman
+Patch 2/2 optimizes some hot paths by making cgroup_memory_noswap a
+static key, benchmark shows swap paths now have a ~4% lower overhead.
+
+Kairui Song (2):
+  mm: memcontrol: remove mem_cgroup_kmem_disabled
+  mm: memcontrol: make cgroup_memory_noswap a static key
+
+ include/linux/memcontrol.h |  8 +------
+ mm/memcontrol.c            | 45 +++++++++++++++++++++++---------------
+ mm/percpu.c                |  2 +-
+ mm/slab_common.c           |  2 +-
+ 4 files changed, 30 insertions(+), 27 deletions(-)
+
+-- 
+2.35.2
 
