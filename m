@@ -2,54 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2689A5A7036
-	for <lists+cgroups@lfdr.de>; Tue, 30 Aug 2022 23:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244035A71FB
+	for <lists+cgroups@lfdr.de>; Wed, 31 Aug 2022 01:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbiH3V5Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Aug 2022 17:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        id S231668AbiH3Xsx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Aug 2022 19:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbiH3V5G (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Aug 2022 17:57:06 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38879E11F
-        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 14:52:57 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id 199so12584581pfz.2
-        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 14:52:57 -0700 (PDT)
+        with ESMTP id S230378AbiH3Xsx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Aug 2022 19:48:53 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5006746B
+        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 16:48:50 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id s23so6521718wmj.4
+        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 16:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=kmi765rhdWrzQirlOzDuA6v2AsLs7icy29dLcvjyZaY=;
-        b=hWJ7zNlkecdEXTrVZ6wmkEknTN/2exZUrz57/hU7W4XRQNtZqa+j7DxnleUp3IhKBb
-         sPjQfJCIpekxST95aTOvA6LRmjGl/9uM3t36fhzVjmgsHhFGbG/O8T0o1vgEyeLA5C0I
-         EFGHin0OUfFk0fiXENOHWlBqiA7nVmwWjwoJSedO1iB8vWSr7VHZW2nPJIXqSCBO/+pl
-         sOwVvJuTcV0RbXyJlpScwEsj8aMQTbBVhWXan+gXoZK5KecfX5JTb9nvfZqtbC+UjDPf
-         k0jWJ+//LY8Te/xXhINDpZFf2p1eG1WkkfXxk1m7qr7C9e/izZw1Pye0n6Us513YUn22
-         Sv0w==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=tGVEnlLMpBamjr5zlczXq7fmwaznwoQ3idHABhgUuYM=;
+        b=KO+U0jA43GLZcwdXeyIX5nApqOewvbCN/kEwEioSXyjvoFoRRmxVAcOEse3v+CVhbj
+         jLnHHxVADcF5HhHRpQWGwFrUyrKwk/ndVvQHr5H0dAMUG9zgcyZoOT4OnkbuHncsWNgp
+         IkNnbqP9J0Dxp7txF3JCyMDpfIQ1B2h7kA+vEyRJqPQlMXi0WVQapPgKkZ3OF2ek4sMn
+         p7/0r48ezijpvcOm73x2lrXy/ZNJIVDm0GMPqolOSYldXS2Sms+cdrIs9fxhD8wqcVvN
+         GHItupLX5AYb2kO185XF6k+WC4V1D2cTOf9gvnN9lUQf3v7aPT+RAye8vYV/E7rrdfK6
+         dVeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=kmi765rhdWrzQirlOzDuA6v2AsLs7icy29dLcvjyZaY=;
-        b=jkAMCIPAH11FXmR8HkMcimYf6eryc3qoH2CT7qUbn0U8HDSSPA9wTf2l4dpw8nEraA
-         LMidA/gsRcPx9v4OAqzfdduLLqCoYCoH8ouu6SS77w2p69dNr12Jr9HElcd8dt+4+nu5
-         NIkg60iIqUsAy8HDSzymWak0650ru5qnnuMucgyoye+Sm9ADQQ9RP4xWKiBgYm8tSwU0
-         0J8CHoHkTOuk14bba6wdZTd2VAZ67PR7+4YTZGlXO3WY99unheF+iCOfevR6gOybmA1X
-         5G0BsyYdpFIRoKJpdu4Yt3GWsTmrirdawRXTbpYbsjN0OcW4n4kkEK6Jx6w7u6imf9it
-         f2cA==
-X-Gm-Message-State: ACgBeo0KUIXJK5PB1/SghkzDoM+LeAfe2fNHvkBJ8TItzYQGDG446xoj
-        pKW+0HeW+KEst/Lk3MNCGMO4CQ==
-X-Google-Smtp-Source: AA6agR6asL5tWEMD9qdeUkMoP6zzYNAqZvPkbIyCF6qv1uEQUKWXuBujKh4awFSCPYR/F9Y2M19nxA==
-X-Received: by 2002:aa7:8742:0:b0:537:ee75:601a with SMTP id g2-20020aa78742000000b00537ee75601amr17381844pfo.37.1661896357847;
-        Tue, 30 Aug 2022 14:52:37 -0700 (PDT)
-Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
-        by smtp.gmail.com with ESMTPSA id k6-20020a170902ce0600b0015e8d4eb1dbsm10181118plg.37.2022.08.30.14.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Aug 2022 14:52:37 -0700 (PDT)
-Date:   Tue, 30 Aug 2022 21:52:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=tGVEnlLMpBamjr5zlczXq7fmwaznwoQ3idHABhgUuYM=;
+        b=587DZX0slX0qnXLu3NfGiX74TX1tVNGB0akoJ7mqY+i3SKVQvj0MJjrzAgppH9a8nY
+         TQ1bHHIJ6U3Pxkggq54t/ylCIBI7lXoABrOSqJlaTY9JcXRp9v6tepKVw7bwUbgx8lbi
+         ZeAMnhhaaFZHn/9wR9e6dXwR2DzLyJQqzwq63y804zoHKXgZx96tA7nXEedpB1/WQ59c
+         ToW35gqMl4mSM2+P/KFbc7yMfSLjNvjZ3ze/+8BsOudeIuw5cEGFRL9yYWKJW8PUfKCQ
+         unz2oaBmjmRiFGNMwbVHH55IEnan0xbYtSnIJdGP+L2+vUEESXtz+R8h0GYqFdtb6yfS
+         PVGQ==
+X-Gm-Message-State: ACgBeo34W/HtOu/jb2svROBn+JRHXL8gmkHpRYeG2nAP34JNKHD5yKLQ
+        JYQ9HQOBqt17FV6NvztShdutOLoRADPahSIibcDivg==
+X-Google-Smtp-Source: AA6agR7kuj8FMBlUqHe1KsZByANta0qdtZ6dMTJPpi0P8kKLcTUdSOfhQ26jHFWjNyun/bjf1Y0GHPcdkLlVKxphkH4=
+X-Received: by 2002:a05:600c:1e05:b0:3a5:b441:e9c with SMTP id
+ ay5-20020a05600c1e0500b003a5b4410e9cmr231944wmb.24.1661903329205; Tue, 30 Aug
+ 2022 16:48:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220823004639.2387269-1-yosryahmed@google.com>
+ <20220823004639.2387269-4-yosryahmed@google.com> <Ywkq8HYyTI1eStSO@google.com>
+ <Yw6GoWY411PrIRMx@google.com>
+In-Reply-To: <Yw6GoWY411PrIRMx@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 30 Aug 2022 16:48:12 -0700
+Message-ID: <CAJD7tkafp25jfH1cTQksMa-xt6bAu3LKEWT0pCNYqtijhvjRYQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
+ pagetable stats.
+To:     Sean Christopherson <seanjc@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Marc Zyngier <maz@kernel.org>,
@@ -66,94 +71,91 @@ Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v7 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
- pagetable stats.
-Message-ID: <Yw6GoWY411PrIRMx@google.com>
-References: <20220823004639.2387269-1-yosryahmed@google.com>
- <20220823004639.2387269-4-yosryahmed@google.com>
- <Ywkq8HYyTI1eStSO@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ywkq8HYyTI1eStSO@google.com>
-X-Spam-Status: No, score=-14.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Shaoqin <shaoqin.huang@intel.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 26, 2022, Sean Christopherson wrote:
-> On Tue, Aug 23, 2022, Yosry Ahmed wrote:
-> > Count the pages used by KVM mmu on x86 in memory stats under secondary
-> > pagetable stats (e.g. "SecPageTables" in /proc/meminfo) to give better
-> > visibility into the memory consumption of KVM mmu in a similar way to
-> > how normal user page tables are accounted.
-> > 
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
-> >  arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
-> >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index e418ef3ecfcb..4d38e4eba772 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1665,6 +1665,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
-> >  	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
-> >  }
-> >  
-> > +static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > +{
-> > +	kvm_mod_used_mmu_pages(kvm, +1);
-> > +	kvm_account_pgtable_pages((void *)sp->spt, +1);
-> > +}
-> > +
-> > +static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > +{
-> > +	kvm_mod_used_mmu_pages(kvm, -1);
-> > +	kvm_account_pgtable_pages((void *)sp->spt, -1);
-> > +}
-> 
-> Hrm, this is causing build on x86 issues for me.  AFAICT, modpost doesn't detect
-> that this creates a new module dependency on __mod_lruvec_page_state() and so doesn't
-> refresh vmlinux.symvers.
-> 
->   ERROR: modpost: "__mod_lruvec_page_state" [arch/x86/kvm/kvm.ko] undefined!
->   make[2]: *** [scripts/Makefile.modpost:128: modules-only.symvers] Error 1
->   make[1]: *** [Makefile:1769: modules] Error 2
->   make[1]: *** Waiting for unfinished jobs....
->   Kernel: arch/x86/boot/bzImage is ready  (#128)
->   make[1]: Leaving directory '/usr/local/google/home/seanjc/build/kernel/vm'
->   make: *** [Makefile:222: __sub-make] Error 2
-> 
-> Both gcc and clang yield the same behavior, so I doubt it's the compiler doing
-> something odd.  Cleaning the build makes the problem go away, but that's a poor
-> band-aid.
-> 
-> If I squash this with the prior patch that adds kvm_account_pgtable_pages() to
-> kvm_host.h, modpost detects the need to refresh and all is well.
-> 
-> Given that ARM doesn't support building KVM as a module, i.e. can't run afoul
-> of whatever modpost weirdness I'm hitting, I'm inclined to squash this with the
-> previous patch and punt on the modpost issue so that we can get this merged.
-> 
-> Any objections?  Or thoughts on what's going wrong?
+On Tue, Aug 30, 2022 at 2:52 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Fri, Aug 26, 2022, Sean Christopherson wrote:
+> > On Tue, Aug 23, 2022, Yosry Ahmed wrote:
+> > > Count the pages used by KVM mmu on x86 in memory stats under secondary
+> > > pagetable stats (e.g. "SecPageTables" in /proc/meminfo) to give better
+> > > visibility into the memory consumption of KVM mmu in a similar way to
+> > > how normal user page tables are accounted.
+> > >
+> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > ---
+> > >  arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
+> > >  arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
+> > >  2 files changed, 26 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > index e418ef3ecfcb..4d38e4eba772 100644
+> > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > @@ -1665,6 +1665,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
+> > >     percpu_counter_add(&kvm_total_used_mmu_pages, nr);
+> > >  }
+> > >
+> > > +static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+> > > +{
+> > > +   kvm_mod_used_mmu_pages(kvm, +1);
+> > > +   kvm_account_pgtable_pages((void *)sp->spt, +1);
+> > > +}
+> > > +
+> > > +static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
+> > > +{
+> > > +   kvm_mod_used_mmu_pages(kvm, -1);
+> > > +   kvm_account_pgtable_pages((void *)sp->spt, -1);
+> > > +}
+> >
+> > Hrm, this is causing build on x86 issues for me.  AFAICT, modpost doesn't detect
+> > that this creates a new module dependency on __mod_lruvec_page_state() and so doesn't
+> > refresh vmlinux.symvers.
+> >
+> >   ERROR: modpost: "__mod_lruvec_page_state" [arch/x86/kvm/kvm.ko] undefined!
+> >   make[2]: *** [scripts/Makefile.modpost:128: modules-only.symvers] Error 1
+> >   make[1]: *** [Makefile:1769: modules] Error 2
+> >   make[1]: *** Waiting for unfinished jobs....
+> >   Kernel: arch/x86/boot/bzImage is ready  (#128)
+> >   make[1]: Leaving directory '/usr/local/google/home/seanjc/build/kernel/vm'
+> >   make: *** [Makefile:222: __sub-make] Error 2
+> >
+> > Both gcc and clang yield the same behavior, so I doubt it's the compiler doing
+> > something odd.  Cleaning the build makes the problem go away, but that's a poor
+> > band-aid.
+> >
+> > If I squash this with the prior patch that adds kvm_account_pgtable_pages() to
+> > kvm_host.h, modpost detects the need to refresh and all is well.
+> >
+> > Given that ARM doesn't support building KVM as a module, i.e. can't run afoul
+> > of whatever modpost weirdness I'm hitting, I'm inclined to squash this with the
+> > previous patch and punt on the modpost issue so that we can get this merged.
+> >
+> > Any objections?  Or thoughts on what's going wrong?
+>
+> Pushed the series with the squash to branch `for_paolo/6.1` at:
+>
 
-Pushed the series with the squash to branch `for_paolo/6.1` at:
+Thanks Sean!
 
-    https://github.com/sean-jc/linux.git
-
-Unless you hear otherwise, it will make its way to kvm/queue "soon".
-
-Please yell if there are objections.
+>     https://github.com/sean-jc/linux.git
+>
+> Unless you hear otherwise, it will make its way to kvm/queue "soon".
+>
+> Please yell if there are objections.
