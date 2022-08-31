@@ -2,136 +2,165 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF265A7C33
-	for <lists+cgroups@lfdr.de>; Wed, 31 Aug 2022 13:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D1E5A8936
+	for <lists+cgroups@lfdr.de>; Thu,  1 Sep 2022 00:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbiHaLcN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 31 Aug 2022 07:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
+        id S232712AbiHaWtR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 31 Aug 2022 18:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbiHaLcM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 31 Aug 2022 07:32:12 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED21DBD290;
-        Wed, 31 Aug 2022 04:32:07 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MHhn96GbpzlBss;
-        Wed, 31 Aug 2022 19:30:37 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgDnbDCuRg9jozSvAA--.12774S3;
-        Wed, 31 Aug 2022 19:31:59 +0800 (CST)
-Subject: Re: [PATCH v9 0/4] blk-throttle bugfix
-To:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, tj@kernel.org,
-        mkoutny@suse.com, ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20220829022240.3348319-1-yukuai1@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <eb7246b4-2cfe-a110-1e45-39f970e5441e@huaweicloud.com>
-Date:   Wed, 31 Aug 2022 19:31:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20220829022240.3348319-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDnbDCuRg9jozSvAA--.12774S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw1kJr17WrWDZF1rJr4DXFb_yoW5GF4rpF
-        Z3Zr45Cw17Crn7C3y3Cw13ZFWrKw4kJr1UWr13tw1ru3WDZr1UCrn29w4Y9F92vrZ7K34I
-        qr1DtFn2kryUZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
-        VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232643AbiHaWtQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 31 Aug 2022 18:49:16 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3095BD91EC
+        for <cgroups@vger.kernel.org>; Wed, 31 Aug 2022 15:49:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k126-20020a253d84000000b0068bb342010dso3126425yba.1
+        for <cgroups@vger.kernel.org>; Wed, 31 Aug 2022 15:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date;
+        bh=Ipn4iHe/yg+mxny4c01g7Po8t+R0aRPugnC10Z422Fk=;
+        b=p2AFOEi5vGtb1tUhtbYlZ00F68mil8VLs1Lo6ATVSmPdszXyCTRaayeQPRhLYq+tb4
+         2BU0EHsinRDXn7QQtVcOjaYfomxoAKYknKBD/vtrXVN00hCBJSPaxOJXQWffslTgrkw+
+         9PlpVdZoxZ4xyvUiGv3eo5+6U+maaN+achNbh1vmJDxZuCtb86Zb55Qwz0ZVC8EUh0Xc
+         AFvv8Eb0w/a3rfdHIS9BfzXyfcV9staK9ZdwJxgpBoIm0r+mhmLAXCtvBWpRphL2UbBQ
+         klas0NiDWrY1Qstm9kx09OPX3GwNhdNGfUwlRwXQwp3forhXV6wko2ESn8fqSQ+kA0zN
+         MG1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=Ipn4iHe/yg+mxny4c01g7Po8t+R0aRPugnC10Z422Fk=;
+        b=YY7lBza1l0kuChMqnE6z6zV++ILU7fYm1S+5rI7DzmEjVPlA79xPM15Wb+lY8j0SLy
+         PYFakzI3ql0k7nVIaFHqahrLkGODYAfV2wGh2XG875HXFO50/6nx/KQgc4oIiMBg05Kc
+         pT0XDN3aQdeyqXwpOiinLzbjH5bghojHh7jLaEprKPQniAisRxVxWrjafk05vKUYQ8P+
+         6+qXe95WAIVj1b73hAe+O0W04I42ODQq1X/JI1LwPuqlm3HSkw9MFMS7gf8yIVVWZTMW
+         kayHACN99zX2BD2GdnkpBvuIywGW5Tafp18BXf7VU5DvYfY0qRaJBxpII00EXWv7/cNB
+         Y2QQ==
+X-Gm-Message-State: ACgBeo3ZOmPCV5Whozdq/L3hKf3t1xHjOhsUtK7AmuzoTjByDJdQWSj7
+        z1oP9Y9NGczp8rVP7gU2HiXlHZSb1I9w
+X-Google-Smtp-Source: AA6agR7/V3nJns03/37pPbe+xIfXuklzJsVz03pu5XaQu2MQjjDInOYRowUTTaCUCdXK0dOyWlhwtNuaITE2
+X-Received: from joshdon-desktop.svl.corp.google.com ([2620:15c:2d4:203:aa74:a917:f27:6c1c])
+ (user=joshdon job=sendgmr) by 2002:a25:3b46:0:b0:69c:a60e:2e57 with SMTP id
+ i67-20020a253b46000000b0069ca60e2e57mr5457884yba.364.1661986154491; Wed, 31
+ Aug 2022 15:49:14 -0700 (PDT)
+Date:   Wed, 31 Aug 2022 15:49:03 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
+Message-ID: <20220831224903.454303-1-joshdon@google.com>
+Subject: [PATCH] cgroup: add pids.peak interface for pids controller
+From:   Josh Don <joshdon@google.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Jens!
+pids.peak tracks the high watermark of usage for number of pids. This
+helps give a better baseline on which to set pids.max. Polling
+pids.current isn't really feasible, since it would potentially miss
+short-lived spikes.
 
-在 2022/08/29 10:22, Yu Kuai 写道:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Changes in v9:
->   - renaming the flag BIO_THROTTLED to BIO_BPS_THROTTLED, and always
->   apply iops limit in path 1;
->   - add tag for patch 4
-> Changes in v8:
->   - use a new solution in patch 1
->   - move cleanups to a separate patchset
->   - rename bytes/io_skipped to carryover_bytes/ios in patch 4
-> Changes in v7:
->   - add patch 5 to improve handling of re-entered bio for bps limit
->   - as suggested by Tejun, add some comments
->   - sdd some Acked tag by Tejun
-> Changes in v6:
->   - rename parameter in patch 3
->   - add comments and reviewed tag for patch 4
-> Changes in v5:
->   - add comments in patch 4
->   - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
->   patch 4
->   - and cleanup patches 5-8
-> Changes in v4:
->   - add reviewed-by tag for patch 1
->   - add patch 2,3
->   - use a different way to fix io hung in patch 4
-> Changes in v3:
->   - fix a check in patch 1
->   - fix link err in patch 2 on 32-bit platform
->   - handle overflow in patch 2
-> Changes in v2:
->   - use a new solution suggested by Ming
->   - change the title of patch 1
->   - add patch 2
-> 
-> Patch 1 fix that blk-throttle can't work if multiple bios are throttle.
-> Patch 2 fix overflow while calculating wait time.
-> Patch 3,4 fix io hung due to configuration updates.
-> 
-> Previous version:
-> v1: https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
-> v2: https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
-> v3: https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
-> v4: https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
-> v5: https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
-> v6: https://lore.kernel.org/all/20220701093441.885741-1-yukuai1@huaweicloud.com/
-> v7: https://lore.kernel.org/all/20220802140415.2960284-1-yukuai1@huaweicloud.com/
-> v8: https://lore.kernel.org/all/20220823033130.874230-1-yukuai1@huaweicloud.com/
-> 
-> Yu Kuai (4):
->    blk-throttle: fix that io throttle can only work for single bio
->    blk-throttle: prevent overflow while calculating wait time
->    blk-throttle: factor out code to calculate ios/bytes_allowed
->    blk-throttle: fix io hung due to configuration updates
+This interface is analogous to memory.peak.
 
-Can you apply this patchset now?
+Signed-off-by: Josh Don <joshdon@google.com>
+---
+ kernel/cgroup/pids.c | 37 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-Thanks,
-Kuai
-> 
->   block/bio.c               |   2 -
->   block/blk-throttle.c      | 137 +++++++++++++++++++++++++-------------
->   block/blk-throttle.h      |  11 ++-
->   include/linux/bio.h       |   2 +-
->   include/linux/blk_types.h |   2 +-
->   5 files changed, 104 insertions(+), 50 deletions(-)
-> 
+diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
+index 511af87f685e..7695e60bcb40 100644
+--- a/kernel/cgroup/pids.c
++++ b/kernel/cgroup/pids.c
+@@ -47,6 +47,7 @@ struct pids_cgroup {
+ 	 */
+ 	atomic64_t			counter;
+ 	atomic64_t			limit;
++	int64_t				watermark;
+ 
+ 	/* Handle for "pids.events" */
+ 	struct cgroup_file		events_file;
+@@ -85,6 +86,16 @@ static void pids_css_free(struct cgroup_subsys_state *css)
+ 	kfree(css_pids(css));
+ }
+ 
++static void pids_update_watermark(struct pids_cgroup *p, int64_t nr_pids)
++{
++	/*
++	 * This is racy, but we don't need perfectly accurate tallying of
++	 * the watermark, and this lets us avoid extra atomic overhead.
++	 */
++	if (nr_pids > READ_ONCE(p->watermark))
++		WRITE_ONCE(p->watermark, nr_pids);
++}
++
+ /**
+  * pids_cancel - uncharge the local pid count
+  * @pids: the pid cgroup state
+@@ -128,8 +139,11 @@ static void pids_charge(struct pids_cgroup *pids, int num)
+ {
+ 	struct pids_cgroup *p;
+ 
+-	for (p = pids; parent_pids(p); p = parent_pids(p))
+-		atomic64_add(num, &p->counter);
++	for (p = pids; parent_pids(p); p = parent_pids(p)) {
++		int64_t new = atomic64_add_return(num, &p->counter);
++
++		pids_update_watermark(p, new);
++	}
+ }
+ 
+ /**
+@@ -156,6 +170,12 @@ static int pids_try_charge(struct pids_cgroup *pids, int num)
+ 		 */
+ 		if (new > limit)
+ 			goto revert;
++
++		/*
++		 * Not technically accurate if we go over limit somewhere up
++		 * the hierarchy, but that's tolerable for the watermark.
++		 */
++		pids_update_watermark(p, new);
+ 	}
+ 
+ 	return 0;
+@@ -311,6 +331,14 @@ static s64 pids_current_read(struct cgroup_subsys_state *css,
+ 	return atomic64_read(&pids->counter);
+ }
+ 
++static s64 pids_peak_read(struct cgroup_subsys_state *css,
++			  struct cftype *cft)
++{
++	struct pids_cgroup *pids = css_pids(css);
++
++	return READ_ONCE(pids->watermark);
++}
++
+ static int pids_events_show(struct seq_file *sf, void *v)
+ {
+ 	struct pids_cgroup *pids = css_pids(seq_css(sf));
+@@ -331,6 +359,11 @@ static struct cftype pids_files[] = {
+ 		.read_s64 = pids_current_read,
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 	},
++	{
++		.name = "peak",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_s64 = pids_peak_read,
++	},
+ 	{
+ 		.name = "events",
+ 		.seq_show = pids_events_show,
+-- 
+2.37.2.672.g94769d06f0-goog
 
