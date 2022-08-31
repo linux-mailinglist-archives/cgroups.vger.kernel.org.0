@@ -2,160 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 244035A71FB
-	for <lists+cgroups@lfdr.de>; Wed, 31 Aug 2022 01:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF265A7C33
+	for <lists+cgroups@lfdr.de>; Wed, 31 Aug 2022 13:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbiH3Xsx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Aug 2022 19:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S230332AbiHaLcN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 31 Aug 2022 07:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbiH3Xsx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Aug 2022 19:48:53 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5006746B
-        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 16:48:50 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id s23so6521718wmj.4
-        for <cgroups@vger.kernel.org>; Tue, 30 Aug 2022 16:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=tGVEnlLMpBamjr5zlczXq7fmwaznwoQ3idHABhgUuYM=;
-        b=KO+U0jA43GLZcwdXeyIX5nApqOewvbCN/kEwEioSXyjvoFoRRmxVAcOEse3v+CVhbj
-         jLnHHxVADcF5HhHRpQWGwFrUyrKwk/ndVvQHr5H0dAMUG9zgcyZoOT4OnkbuHncsWNgp
-         IkNnbqP9J0Dxp7txF3JCyMDpfIQ1B2h7kA+vEyRJqPQlMXi0WVQapPgKkZ3OF2ek4sMn
-         p7/0r48ezijpvcOm73x2lrXy/ZNJIVDm0GMPqolOSYldXS2Sms+cdrIs9fxhD8wqcVvN
-         GHItupLX5AYb2kO185XF6k+WC4V1D2cTOf9gvnN9lUQf3v7aPT+RAye8vYV/E7rrdfK6
-         dVeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=tGVEnlLMpBamjr5zlczXq7fmwaznwoQ3idHABhgUuYM=;
-        b=587DZX0slX0qnXLu3NfGiX74TX1tVNGB0akoJ7mqY+i3SKVQvj0MJjrzAgppH9a8nY
-         TQ1bHHIJ6U3Pxkggq54t/ylCIBI7lXoABrOSqJlaTY9JcXRp9v6tepKVw7bwUbgx8lbi
-         ZeAMnhhaaFZHn/9wR9e6dXwR2DzLyJQqzwq63y804zoHKXgZx96tA7nXEedpB1/WQ59c
-         ToW35gqMl4mSM2+P/KFbc7yMfSLjNvjZ3ze/+8BsOudeIuw5cEGFRL9yYWKJW8PUfKCQ
-         unz2oaBmjmRiFGNMwbVHH55IEnan0xbYtSnIJdGP+L2+vUEESXtz+R8h0GYqFdtb6yfS
-         PVGQ==
-X-Gm-Message-State: ACgBeo34W/HtOu/jb2svROBn+JRHXL8gmkHpRYeG2nAP34JNKHD5yKLQ
-        JYQ9HQOBqt17FV6NvztShdutOLoRADPahSIibcDivg==
-X-Google-Smtp-Source: AA6agR7kuj8FMBlUqHe1KsZByANta0qdtZ6dMTJPpi0P8kKLcTUdSOfhQ26jHFWjNyun/bjf1Y0GHPcdkLlVKxphkH4=
-X-Received: by 2002:a05:600c:1e05:b0:3a5:b441:e9c with SMTP id
- ay5-20020a05600c1e0500b003a5b4410e9cmr231944wmb.24.1661903329205; Tue, 30 Aug
- 2022 16:48:49 -0700 (PDT)
+        with ESMTP id S230288AbiHaLcM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 31 Aug 2022 07:32:12 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED21DBD290;
+        Wed, 31 Aug 2022 04:32:07 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MHhn96GbpzlBss;
+        Wed, 31 Aug 2022 19:30:37 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgDnbDCuRg9jozSvAA--.12774S3;
+        Wed, 31 Aug 2022 19:31:59 +0800 (CST)
+Subject: Re: [PATCH v9 0/4] blk-throttle bugfix
+To:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, tj@kernel.org,
+        mkoutny@suse.com, ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20220829022240.3348319-1-yukuai1@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <eb7246b4-2cfe-a110-1e45-39f970e5441e@huaweicloud.com>
+Date:   Wed, 31 Aug 2022 19:31:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220823004639.2387269-1-yosryahmed@google.com>
- <20220823004639.2387269-4-yosryahmed@google.com> <Ywkq8HYyTI1eStSO@google.com>
- <Yw6GoWY411PrIRMx@google.com>
-In-Reply-To: <Yw6GoWY411PrIRMx@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 30 Aug 2022 16:48:12 -0700
-Message-ID: <CAJD7tkafp25jfH1cTQksMa-xt6bAu3LKEWT0pCNYqtijhvjRYQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
- pagetable stats.
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20220829022240.3348319-1-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDnbDCuRg9jozSvAA--.12774S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1kJr17WrWDZF1rJr4DXFb_yoW5GF4rpF
+        Z3Zr45Cw17Crn7C3y3Cw13ZFWrKw4kJr1UWr13tw1ru3WDZr1UCrn29w4Y9F92vrZ7K34I
+        qr1DtFn2kryUZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 2:52 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Fri, Aug 26, 2022, Sean Christopherson wrote:
-> > On Tue, Aug 23, 2022, Yosry Ahmed wrote:
-> > > Count the pages used by KVM mmu on x86 in memory stats under secondary
-> > > pagetable stats (e.g. "SecPageTables" in /proc/meminfo) to give better
-> > > visibility into the memory consumption of KVM mmu in a similar way to
-> > > how normal user page tables are accounted.
-> > >
-> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >  arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
-> > >  arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
-> > >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index e418ef3ecfcb..4d38e4eba772 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -1665,6 +1665,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
-> > >     percpu_counter_add(&kvm_total_used_mmu_pages, nr);
-> > >  }
-> > >
-> > > +static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > > +{
-> > > +   kvm_mod_used_mmu_pages(kvm, +1);
-> > > +   kvm_account_pgtable_pages((void *)sp->spt, +1);
-> > > +}
-> > > +
-> > > +static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > > +{
-> > > +   kvm_mod_used_mmu_pages(kvm, -1);
-> > > +   kvm_account_pgtable_pages((void *)sp->spt, -1);
-> > > +}
-> >
-> > Hrm, this is causing build on x86 issues for me.  AFAICT, modpost doesn't detect
-> > that this creates a new module dependency on __mod_lruvec_page_state() and so doesn't
-> > refresh vmlinux.symvers.
-> >
-> >   ERROR: modpost: "__mod_lruvec_page_state" [arch/x86/kvm/kvm.ko] undefined!
-> >   make[2]: *** [scripts/Makefile.modpost:128: modules-only.symvers] Error 1
-> >   make[1]: *** [Makefile:1769: modules] Error 2
-> >   make[1]: *** Waiting for unfinished jobs....
-> >   Kernel: arch/x86/boot/bzImage is ready  (#128)
-> >   make[1]: Leaving directory '/usr/local/google/home/seanjc/build/kernel/vm'
-> >   make: *** [Makefile:222: __sub-make] Error 2
-> >
-> > Both gcc and clang yield the same behavior, so I doubt it's the compiler doing
-> > something odd.  Cleaning the build makes the problem go away, but that's a poor
-> > band-aid.
-> >
-> > If I squash this with the prior patch that adds kvm_account_pgtable_pages() to
-> > kvm_host.h, modpost detects the need to refresh and all is well.
-> >
-> > Given that ARM doesn't support building KVM as a module, i.e. can't run afoul
-> > of whatever modpost weirdness I'm hitting, I'm inclined to squash this with the
-> > previous patch and punt on the modpost issue so that we can get this merged.
-> >
-> > Any objections?  Or thoughts on what's going wrong?
->
-> Pushed the series with the squash to branch `for_paolo/6.1` at:
->
+Hi, Jens!
 
-Thanks Sean!
+在 2022/08/29 10:22, Yu Kuai 写道:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Changes in v9:
+>   - renaming the flag BIO_THROTTLED to BIO_BPS_THROTTLED, and always
+>   apply iops limit in path 1;
+>   - add tag for patch 4
+> Changes in v8:
+>   - use a new solution in patch 1
+>   - move cleanups to a separate patchset
+>   - rename bytes/io_skipped to carryover_bytes/ios in patch 4
+> Changes in v7:
+>   - add patch 5 to improve handling of re-entered bio for bps limit
+>   - as suggested by Tejun, add some comments
+>   - sdd some Acked tag by Tejun
+> Changes in v6:
+>   - rename parameter in patch 3
+>   - add comments and reviewed tag for patch 4
+> Changes in v5:
+>   - add comments in patch 4
+>   - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
+>   patch 4
+>   - and cleanup patches 5-8
+> Changes in v4:
+>   - add reviewed-by tag for patch 1
+>   - add patch 2,3
+>   - use a different way to fix io hung in patch 4
+> Changes in v3:
+>   - fix a check in patch 1
+>   - fix link err in patch 2 on 32-bit platform
+>   - handle overflow in patch 2
+> Changes in v2:
+>   - use a new solution suggested by Ming
+>   - change the title of patch 1
+>   - add patch 2
+> 
+> Patch 1 fix that blk-throttle can't work if multiple bios are throttle.
+> Patch 2 fix overflow while calculating wait time.
+> Patch 3,4 fix io hung due to configuration updates.
+> 
+> Previous version:
+> v1: https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
+> v2: https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
+> v3: https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
+> v4: https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
+> v5: https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
+> v6: https://lore.kernel.org/all/20220701093441.885741-1-yukuai1@huaweicloud.com/
+> v7: https://lore.kernel.org/all/20220802140415.2960284-1-yukuai1@huaweicloud.com/
+> v8: https://lore.kernel.org/all/20220823033130.874230-1-yukuai1@huaweicloud.com/
+> 
+> Yu Kuai (4):
+>    blk-throttle: fix that io throttle can only work for single bio
+>    blk-throttle: prevent overflow while calculating wait time
+>    blk-throttle: factor out code to calculate ios/bytes_allowed
+>    blk-throttle: fix io hung due to configuration updates
 
->     https://github.com/sean-jc/linux.git
->
-> Unless you hear otherwise, it will make its way to kvm/queue "soon".
->
-> Please yell if there are objections.
+Can you apply this patchset now?
+
+Thanks,
+Kuai
+> 
+>   block/bio.c               |   2 -
+>   block/blk-throttle.c      | 137 +++++++++++++++++++++++++-------------
+>   block/blk-throttle.h      |  11 ++-
+>   include/linux/bio.h       |   2 +-
+>   include/linux/blk_types.h |   2 +-
+>   5 files changed, 104 insertions(+), 50 deletions(-)
+> 
+
