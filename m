@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6535AA5E1
-	for <lists+cgroups@lfdr.de>; Fri,  2 Sep 2022 04:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208C75AA5E2
+	for <lists+cgroups@lfdr.de>; Fri,  2 Sep 2022 04:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235162AbiIBCbW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Sep 2022 22:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
+        id S235401AbiIBCbX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Sep 2022 22:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234544AbiIBCbH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Sep 2022 22:31:07 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF91C4BD36;
-        Thu,  1 Sep 2022 19:30:33 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id t129so584239pfb.6;
-        Thu, 01 Sep 2022 19:30:33 -0700 (PDT)
+        with ESMTP id S234993AbiIBCbI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Sep 2022 22:31:08 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E544E85A;
+        Thu,  1 Sep 2022 19:30:35 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id t5so771532pjs.0;
+        Thu, 01 Sep 2022 19:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=oTzSf85iWJHNEVVdQJQawTYzDnCEuMbWuvl4YMwFJHo=;
-        b=HpH5nbR7f38apaxWi0KaD3SeNAKzaoXicey2rg/miPioqCgeCWVOK43hCtIftBuo1N
-         QbqGHEF6XUCu0BCMIRlFwsthhpD00GqnpDf3e3iIVAx6t7zqW0H7lguDqeHmf9F9kjxZ
-         S6VeDMuodddj2nFJ9QdZANE0ynOkPTs8CSWtXQtVPUlS/WeUrrRH8JcbisME3QJuXhjN
-         PBriHpMPWSoNwoECmcNJcBgaMUza/8shHez4l6SJ+A6QdqVQeyaccN2u0IE0CWhjJnBn
-         +56WGiPw4jZ5f7N+AU/OOQCp50Ok1xUJm48Hr0097jDlSOabNoWqfp7K4Ct7NsN5+B+u
-         K5ZQ==
+        bh=eAg0PZWl4zJUTIoBr/3Gv3urgLIcQ4VDCzv1IFZNeuY=;
+        b=Gy+cv6XxxiYO3hr3Muw+hBZMy0efagnoQa+lkQO0z4mGYIW5CA1XBEpuraxfeAkfxK
+         G8jIecWEoNFtvzfvGj7MUoaQaJt6vAiOKaeeaE0MPYK18/zDhN7V4FvEnghuG12f7i8k
+         Wygblna21VTeaQ1/2AbJRacHSL9o97+r1sF9tnGeMEcckZfF2mRzApylow2eQjSffdB/
+         hmzgT9VOAVh2e1R9frgjc8IuTH7PdBnGqPgwVc5a7Y0hMwIth/hwYmEVonEu1nG6Pnij
+         zqNPwiEXu0QWL90ZfnVnEaOkufmAIS5nPaMLhxm/P9a6FaAONxHMU+n2OSgyMVpdr9Sa
+         6ayQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=oTzSf85iWJHNEVVdQJQawTYzDnCEuMbWuvl4YMwFJHo=;
-        b=TRUOcWBahLiX88DjyyWvbplmYcdq4CUKftUmFX4SYSNC8fliQgLjsVsB/0nXg4FVGU
-         yWiWluowTWYUcbOOKm4a89NVZ5Hcew89fpZz27FayWPlPQItCgu5N46UwwXDT2u8mZJ+
-         Mk0urEvmYRhR3jLWUpPNKY6w6zY3497ObZSO1/U3xGtvH/nMnIU11ZUkLiLUP80pMGCX
-         h3jG91R34dIed2qFRcZNZCFOdTeI9PRcKBJYhmO4GoA0Erie1kQ67/Gi6RfEnpihTs7I
-         rQKZwtWraclWujizCV0NE8EjeDDT6+P+1hp+x6klxh+mCYCUiue713gPpoqFKxs6QRCj
-         eIOQ==
-X-Gm-Message-State: ACgBeo28ZiACNcbZE6uHIa2+ldSw/++nUDnIb3W3jNqcJGHf3qkEtjf/
-        k4IprLn47LJSMXr75/f8j10=
-X-Google-Smtp-Source: AA6agR7Ygx377TAYolYTUSgnk0C2dXozijEaoUr+0SdI+Cp29mIWbr48/yrAJDnYVJ/ugfGgDTLCgQ==
-X-Received: by 2002:a65:6047:0:b0:42b:313e:d331 with SMTP id a7-20020a656047000000b0042b313ed331mr29312059pgp.179.1662085832022;
-        Thu, 01 Sep 2022 19:30:32 -0700 (PDT)
+        bh=eAg0PZWl4zJUTIoBr/3Gv3urgLIcQ4VDCzv1IFZNeuY=;
+        b=xp9e6/I6n7dbfh1UHDdeMdd/D8FREr6xMkQi1Gs4cLRuyVUTFefilSTX5QM1Ujf5GH
+         dFckr3h5hyUwTD4DP9clUwohVM3vbJpQlYhNMORHxHp1Fo1gr1VwohbzmvPHOJxhuwYg
+         ivh7mrG+mzlaS2MjQib4BIdM92uLuTzFLZ9ZispBWe73JDatZ61RAfiKveDMM3D5vAN6
+         4XMPoSOpxaLTg7NSM7eNdna3llDzDrrPAXYKwMIs+eN1qW/FL0cCYzUQ3mPun5AWHnQg
+         vPRUGGJ5i5QebJaF+LFYYTJt7Kl6YXkZ78T1rITbLSdkJjbnx+5L8x0JunZxxE5u8nGj
+         fw+A==
+X-Gm-Message-State: ACgBeo2WxbyDOouPjEuk9v9nEcVVDCMs6R+YuIHykdrNhMrG3l7XD30x
+        rTvxsustQ1N+jErlE9fj1JVd0IFZw9o9s8oPz/o=
+X-Google-Smtp-Source: AA6agR4DsBfz/UK1tZcnfi/DCBBeE+JJsSZfcGsqqa8xiOuQfkFBNrN6XShqRSgVYStdq2UPWrbWLQ==
+X-Received: by 2002:a17:903:2284:b0:174:8681:3f6e with SMTP id b4-20020a170903228400b0017486813f6emr25252605plh.5.1662085834206;
+        Thu, 01 Sep 2022 19:30:34 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:6001:50ea:5400:4ff:fe1f:fbe2])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170902da8400b0017297a6b39dsm269719plx.265.2022.09.01.19.30.30
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902da8400b0017297a6b39dsm269719plx.265.2022.09.01.19.30.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Sep 2022 19:30:31 -0700 (PDT)
+        Thu, 01 Sep 2022 19:30:33 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -59,9 +59,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 Cc:     cgroups@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-mm@kvack.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 10/13] mm, memcg: Add new helper get_obj_cgroup_from_cgroup
-Date:   Fri,  2 Sep 2022 02:30:00 +0000
-Message-Id: <20220902023003.47124-11-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 11/13] mm, memcg: Add new helper task_under_memcg_hierarchy
+Date:   Fri,  2 Sep 2022 02:30:01 +0000
+Message-Id: <20220902023003.47124-12-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220902023003.47124-1-laoar.shao@gmail.com>
 References: <20220902023003.47124-1-laoar.shao@gmail.com>
@@ -77,96 +77,41 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We want to open a cgroup directory and pass the fd into kernel, and then
-in the kernel we can charge the allocated memory into the open cgroup if it
-has valid memory subsystem. In the bpf subsystem, the opened cgroup will
-be store as a struct obj_cgroup pointer, so a new helper
-get_obj_cgroup_from_cgroup() is introduced.
+Introduce a new helper to check if a task belongs to a specific memcg.
+It is similar to mm_match_cgroup() except that the new helper is checked
+against a task rather than a mm struct. So with this new helper we can
+check a task directly.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/memcontrol.h |  1 +
- mm/memcontrol.c            | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+ include/linux/memcontrol.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 6040b5c..7a7f252 100644
+index 7a7f252..3b8a8dd 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -1734,6 +1734,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
- int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
- void __memcg_kmem_uncharge_page(struct page *page, int order);
- 
-+struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
- struct obj_cgroup *get_obj_cgroup_from_current(void);
- struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b69979c..4e3b51e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2940,6 +2940,7 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
- {
- 	struct obj_cgroup *objcg = NULL;
- 
-+	WARN_ON_ONCE(!rcu_read_lock_held());
- 	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
- 		objcg = rcu_dereference(memcg->objcg);
- 		if (objcg && obj_cgroup_tryget(objcg))
-@@ -2949,6 +2950,53 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
- 	return objcg;
+@@ -887,6 +887,20 @@ static inline bool mem_cgroup_is_descendant(struct mem_cgroup *memcg,
+ 	return cgroup_is_descendant(memcg->css.cgroup, root->css.cgroup);
  }
  
-+static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
++static inline bool task_under_memcg_hierarchy(struct task_struct *p,
++					      struct mem_cgroup *memcg)
 +{
-+	struct obj_cgroup *objcg;
-+
-+	if (memcg_kmem_bypass())
-+		return NULL;
++	struct mem_cgroup *task_memcg;
++	bool match = false;
 +
 +	rcu_read_lock();
-+	objcg = __get_obj_cgroup_from_memcg(memcg);
++	task_memcg = mem_cgroup_from_task(p);
++	if (task_memcg)
++		match = mem_cgroup_is_descendant(task_memcg, memcg);
 +	rcu_read_unlock();
-+	return objcg;
++	return match;
 +}
 +
-+/**
-+ * get_obj_cgroup_from_cgroup: Obtain a reference on given cgroup's objcg.
-+ * @cgrp: cgroup from which objcg should be extracted. It can't be NULL.
-+ *        The memory subsystem of this cgroup must be enabled, otherwise
-+ *        -EINVAL will be returned.
-+ * On success, the objcg will be returned.
-+ * On failure, -EINVAL will be returned.
-+ */
-+struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp)
-+{
-+	struct cgroup_subsys_state *css;
-+	struct mem_cgroup *memcg;
-+	struct obj_cgroup *objcg;
-+
-+	rcu_read_lock();
-+	css = rcu_dereference(cgrp->subsys[memory_cgrp_id]);
-+	if (!css || !css_tryget(css)) {
-+		rcu_read_unlock();
-+		return ERR_PTR(-EINVAL);
-+	}
-+	rcu_read_unlock();
-+
-+	memcg = mem_cgroup_from_css(css);
-+	if (!memcg) {
-+		css_put(css);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	objcg = get_obj_cgroup_from_memcg(memcg);
-+	css_put(css);
-+
-+	return objcg;
-+}
-+
- __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+ static inline bool mm_match_cgroup(struct mm_struct *mm,
+ 				   struct mem_cgroup *memcg)
  {
- 	struct obj_cgroup *objcg = NULL;
 -- 
 1.8.3.1
 
