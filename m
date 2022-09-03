@@ -2,53 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DA65AB9BE
-	for <lists+cgroups@lfdr.de>; Fri,  2 Sep 2022 23:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6915ABD69
+	for <lists+cgroups@lfdr.de>; Sat,  3 Sep 2022 08:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbiIBVCw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 2 Sep 2022 17:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        id S231834AbiICGRS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 3 Sep 2022 02:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbiIBVCm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 2 Sep 2022 17:02:42 -0400
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B11E399F
-        for <cgroups@vger.kernel.org>; Fri,  2 Sep 2022 14:02:32 -0700 (PDT)
-Received: by mail-il1-f198.google.com with SMTP id k9-20020a056e021a8900b002e5bd940e96so2630064ilv.13
-        for <cgroups@vger.kernel.org>; Fri, 02 Sep 2022 14:02:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=tjXPIVUa530Ib5lpdoYK8WIQSiEveJdJfuoCQgSxgqE=;
-        b=VaMLln3XrdTH4yHtLeh+b3//66KqIqI6cLlKN6TMoPoNGI6q3H8mi1o98v9eSfdHN3
-         mXmHPSSKE8pH/wkVkgsk5i75bYsQjI6V1tujN03sT1klj6KykZkD5GUt6MLaeOhnQdxO
-         Um/A+kkMQ6ozzqqcON/F/V9aJ9oNjOLVBAnXK9OcLhuKd22jUVpj7eTYJO64+BH0TabK
-         WDLOKDT17N00u2SGw+UZYzdA6L2Sca2YLhTf1eKfnk+1Cyzr8RnSp1XvdRwvFWPuaq+E
-         m59ktBiC23jBBA4wUOa8EV+4SbS+jPkq1VzkjqlDzdJBn7+nc5IvPJW65QChvQQVcruD
-         gXZg==
-X-Gm-Message-State: ACgBeo1NFqV1vO+t1BSeR4cALVD2jIZZRz2Y6a0NCwYomELes97z5J0E
-        rF4/5h450Iv/zpC/patdXmJpNcfcE0dttX7orgjwPYqthmDn
-X-Google-Smtp-Source: AA6agR6eV7qr9Lc76oYaiU3wkpsgPRUThCL+SvlcwlzZNM6d6bT2L9r99E9sFztEYbU4438+GCtLY3NxySyGqld+3S6f61doTMVV
+        with ESMTP id S229515AbiICGRR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Sep 2022 02:17:17 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30663F0776;
+        Fri,  2 Sep 2022 23:17:15 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MKPf924XwzKDR9;
+        Sat,  3 Sep 2022 14:15:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP2 (Coremail) with SMTP id Syh0CgBH53Bn8RJjLm43AQ--.14139S4;
+        Sat, 03 Sep 2022 14:17:12 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com
+Subject: [PATCH] blk-throttle: clean up codes that can't be reached
+Date:   Sat,  3 Sep 2022 14:28:26 +0800
+Message-Id: <20220903062826.1099085-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca4e:0:b0:2ee:bf22:630f with SMTP id
- q14-20020a92ca4e000000b002eebf22630fmr2663381ilo.287.1662152551115; Fri, 02
- Sep 2022 14:02:31 -0700 (PDT)
-Date:   Fri, 02 Sep 2022 14:02:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005f372b05e7b80c2e@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in mem_cgroup_track_foreign_dirty_slowpath
-From:   syzbot <syzbot+66ad6d47392c3113957e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, songmuchun@bytedance.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgBH53Bn8RJjLm43AQ--.14139S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxur1rJr47Gr4rGr45Jw4fXwb_yoWrAr4kpF
+        Wava13Aw1UXrsF9r43tw1DtFWFvws7X343t3y7Jw43trW2qw1qgF1kZa40vFWFyFZ7Wrs3
+        ZFn8KrWDGF4UC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26c
+        xKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,90 +58,140 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+From: Yu Kuai <yukuai3@huawei.com>
 
-syzbot found the following issue on:
+While doing code coverage testing while CONFIG_BLK_DEV_THROTTLING_LOW is
+disabled, we found that there are many codes can never be reached.
 
-HEAD commit:    85413d1e802e Merge branch 'for-next/fixes' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=108cec3b080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=57b9bfeca947ab90
-dashboard link: https://syzkaller.appspot.com/bug?extid=66ad6d47392c3113957e
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a3b1e5080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16dead7d080000
+This patch move such codes inside "#ifdef CONFIG_BLK_DEV_THROTTLING_LOW".
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+66ad6d47392c3113957e@syzkaller.appspotmail.com
-
-Unable to handle kernel paging request at virtual address 00000000000012e8
-Mem abort info:
-  ESR = 0x0000000096000006
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x06: level 2 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000006
-  CM = 0, WnR = 0
-user pgtable: 4k pages, 48-bit VAs, pgdp=000000011163c000
-[00000000000012e8] pgd=080000011204a003, p4d=080000011204a003, pud=080000011068f003, pmd=0000000000000000
-Internal error: Oops: 96000006 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 926 Comm: syz-executor308 Not tainted 6.0.0-rc3-syzkaller-16800-g85413d1e802e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-pstate: 204000c5 (nzCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : mem_cgroup_track_foreign_dirty_slowpath+0x3c/0x1e4 mm/memcontrol.c:4595
-lr : mem_cgroup_track_foreign_dirty_slowpath+0x38/0x1e4 mm/memcontrol.c:4586
-sp : ffff800016c9ba80
-x29: ffff800016c9ba80 x28: ffff0000d12cb500 x27: 0c00000000000001
-x26: 0000000000000001 x25: ffff0000c017b000 x24: 0000000000000100
-x23: ffff80000d379000 x22: 00000001000233ce x21: fffffc0003463000
-x20: ffff0000c3849060 x19: 0000000000000000 x18: 000000000000013a
-x17: ffff80000c04d6bc x16: ffff80000dbb8658 x15: ffff0000d12cb500
-x14: 0000000000000000 x13: 00000000ffffffff x12: ffff0000d12cb500
-x11: ff808000095ecd98 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c3849000 x7 : ffff80000856f3a4 x6 : 0000000000000000
-x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000002
-x2 : 0000000000000010 x1 : ffff80000cb90d29 x0 : 0000000000000001
-Call trace:
- mem_cgroup_track_foreign_dirty_slowpath+0x3c/0x1e4
- mem_cgroup_track_foreign_dirty include/linux/memcontrol.h:1663 [inline]
- folio_account_dirtied+0x430/0x650 mm/page-writeback.c:2575
- __folio_mark_dirty+0xbc/0x180 mm/page-writeback.c:2615
- block_dirty_folio+0x10c/0x1ec fs/buffer.c:640
- folio_mark_dirty+0xbc/0x208 mm/page-writeback.c:2748
- filemap_page_mkwrite+0x26c/0x5dc mm/filemap.c:3418
- do_page_mkwrite+0x74/0x288 mm/memory.c:2971
- wp_page_shared+0x8c/0x4e4 mm/memory.c:3316
- do_wp_page+0x86c/0x110c mm/memory.c:3466
- handle_pte_fault mm/memory.c:4929 [inline]
- __handle_mm_fault mm/memory.c:5053 [inline]
- handle_mm_fault+0x878/0xa40 mm/memory.c:5151
- __do_page_fault arch/arm64/mm/fault.c:502 [inline]
- do_page_fault+0x428/0x79c arch/arm64/mm/fault.c:602
- do_mem_abort+0x54/0x130 arch/arm64/mm/fault.c:818
- el0_da+0x70/0x16c arch/arm64/kernel/entry-common.c:502
- el0t_64_sync_handler+0xcc/0xf0 arch/arm64/kernel/entry-common.c:645
- el0t_64_sync+0x18c/0x190
-Code: aa1503e0 aa1403e1 9400006c f9400288 (f9497669) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	aa1503e0 	mov	x0, x21
-   4:	aa1403e1 	mov	x1, x20
-   8:	9400006c 	bl	0x1b8
-   c:	f9400288 	ldr	x8, [x20]
-* 10:	f9497669 	ldr	x9, [x19, #4840] <-- trapping instruction
-
-
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ block/blk-throttle.c | 90 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 56 insertions(+), 34 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 9f5fe62afff9..667b2958471a 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -1673,6 +1673,40 @@ struct blkcg_policy blkcg_policy_throtl = {
+ 	.pd_free_fn		= throtl_pd_free,
+ };
+ 
++void blk_throtl_cancel_bios(struct request_queue *q)
++{
++	struct cgroup_subsys_state *pos_css;
++	struct blkcg_gq *blkg;
++
++	spin_lock_irq(&q->queue_lock);
++	/*
++	 * queue_lock is held, rcu lock is not needed here technically.
++	 * However, rcu lock is still held to emphasize that following
++	 * path need RCU protection and to prevent warning from lockdep.
++	 */
++	rcu_read_lock();
++	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
++		struct throtl_grp *tg = blkg_to_tg(blkg);
++		struct throtl_service_queue *sq = &tg->service_queue;
++
++		/*
++		 * Set the flag to make sure throtl_pending_timer_fn() won't
++		 * stop until all throttled bios are dispatched.
++		 */
++		blkg_to_tg(blkg)->flags |= THROTL_TG_CANCELING;
++		/*
++		 * Update disptime after setting the above flag to make sure
++		 * throtl_select_dispatch() won't exit without dispatching.
++		 */
++		tg_update_disptime(tg);
++
++		throtl_schedule_pending_timer(sq, jiffies + 1);
++	}
++	rcu_read_unlock();
++	spin_unlock_irq(&q->queue_lock);
++}
++
++#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+ static unsigned long __tg_last_low_overflow_time(struct throtl_grp *tg)
+ {
+ 	unsigned long rtime = jiffies, wtime = jiffies;
+@@ -1777,39 +1811,6 @@ static bool throtl_hierarchy_can_upgrade(struct throtl_grp *tg)
+ 	return false;
+ }
+ 
+-void blk_throtl_cancel_bios(struct request_queue *q)
+-{
+-	struct cgroup_subsys_state *pos_css;
+-	struct blkcg_gq *blkg;
+-
+-	spin_lock_irq(&q->queue_lock);
+-	/*
+-	 * queue_lock is held, rcu lock is not needed here technically.
+-	 * However, rcu lock is still held to emphasize that following
+-	 * path need RCU protection and to prevent warning from lockdep.
+-	 */
+-	rcu_read_lock();
+-	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
+-		struct throtl_grp *tg = blkg_to_tg(blkg);
+-		struct throtl_service_queue *sq = &tg->service_queue;
+-
+-		/*
+-		 * Set the flag to make sure throtl_pending_timer_fn() won't
+-		 * stop until all throttled bios are dispatched.
+-		 */
+-		blkg_to_tg(blkg)->flags |= THROTL_TG_CANCELING;
+-		/*
+-		 * Update disptime after setting the above flag to make sure
+-		 * throtl_select_dispatch() won't exit without dispatching.
+-		 */
+-		tg_update_disptime(tg);
+-
+-		throtl_schedule_pending_timer(sq, jiffies + 1);
+-	}
+-	rcu_read_unlock();
+-	spin_unlock_irq(&q->queue_lock);
+-}
+-
+ static bool throtl_can_upgrade(struct throtl_data *td,
+ 	struct throtl_grp *this_tg)
+ {
+@@ -2005,7 +2006,6 @@ static void blk_throtl_update_idletime(struct throtl_grp *tg)
+ 	tg->checked_last_finish_time = last_finish_time;
+ }
+ 
+-#ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+ static void throtl_update_latency_buckets(struct throtl_data *td)
+ {
+ 	struct avg_latency_bucket avg_latency[2][LATENCY_BUCKET_SIZE];
+@@ -2086,6 +2086,28 @@ static void throtl_update_latency_buckets(struct throtl_data *td)
+ static inline void throtl_update_latency_buckets(struct throtl_data *td)
+ {
+ }
++
++static void blk_throtl_update_idletime(struct throtl_grp *tg)
++{
++}
++
++static void throtl_downgrade_check(struct throtl_grp *tg)
++{
++}
++
++static void throtl_upgrade_check(struct throtl_grp *tg)
++{
++}
++
++static bool throtl_can_upgrade(struct throtl_data *td,
++	struct throtl_grp *this_tg)
++{
++	return false;
++}
++
++static void throtl_upgrade_state(struct throtl_data *td)
++{
++}
+ #endif
+ 
+ bool __blk_throtl_bio(struct bio *bio)
+-- 
+2.31.1
+
