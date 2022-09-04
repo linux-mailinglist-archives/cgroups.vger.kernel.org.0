@@ -2,218 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3D95AC372
-	for <lists+cgroups@lfdr.de>; Sun,  4 Sep 2022 10:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096315AC612
+	for <lists+cgroups@lfdr.de>; Sun,  4 Sep 2022 21:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbiIDI1P (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 4 Sep 2022 04:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
+        id S230312AbiIDTXh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 4 Sep 2022 15:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiIDI1L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 4 Sep 2022 04:27:11 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0608941D1C;
-        Sun,  4 Sep 2022 01:27:09 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id s14-20020a17090a6e4e00b0020057c70943so231627pjm.1;
-        Sun, 04 Sep 2022 01:27:09 -0700 (PDT)
+        with ESMTP id S229627AbiIDTXg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 4 Sep 2022 15:23:36 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D4E2E69E;
+        Sun,  4 Sep 2022 12:23:35 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id x23so6639445pll.7;
+        Sun, 04 Sep 2022 12:23:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=zfiWejN/Bz3YBQupNom1bcY/9klYVsjCN66XEd476z0=;
-        b=SBEuv7blCe057KcuIJdNRyj3g2VOPTQq1llrfLNFf289npI8wf/m4D6m8V6XY3lUXp
-         Re5/g1GMCzHeowzixKLlyMxv657lA13nPeZhWWJ2OC266RIOX72T1P7U1QIAkGITZTkZ
-         OhFiv4GP/cj1MqfFk/e6TYkNwyKqbZZknzVH95RjMeoEs2gWuzEfbEQyCHG1wbtuLJHO
-         pjSg3+fSIKJmTcugr2ndTCmihpEGjkt8TbVpopZ7zzVFWdZ8gYe+YJI8gXqyPjNVYdVK
-         Rz3pc71J6gK/cLFZWzrR+DMSWgYikjoU/F8/eqeKn7KVfwAFofKX6tJeywPhCEF2HQqP
-         7Blw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
+        bh=t1xTYA4sjuGCh4pw3N6/8X8I4YHHyXAx3KGLnNc3nds=;
+        b=JuQdFQznN6fig6R2GT4wFv4boLIPrh52pkOjt7Lk8nwSgI65990K1hikW1+UWssukE
+         hkoBhQ15kid+XL/9WfgKqmYdxnNhivT42x0Favs9JqSVfbZk7KM6V/nvm87u8L5ENJxK
+         sUnBMp3KajXtvWlKqVkJ2nmon4lFv5WpkK7pP63O25Cz9I3Lhra7fp0atBGfasq85YMU
+         0piwSM/rdcd/050P3aavp1ybATVo4tInhsgWKqxmQjpQ02QhR1ya7lZCMid3kzVbxR0H
+         j6RZa8ATgc8gnLynqW/GwbdGRJVzFBafXFM12/beAvTFdWSb/jM8PqtVC1QNo4dxT1YA
+         tMQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=zfiWejN/Bz3YBQupNom1bcY/9klYVsjCN66XEd476z0=;
-        b=gkb7W3gUoeEZxpMzzIclRYJJa2pHcrDJ+1jVRnHM2CW9ehjuYjXLvAXk6f/LWQb/K5
-         VnOhJPAnq8O8UqR0vEOTUFMCOShg/+m/xcIjS6uvCMGab9ZRsKTvVHpColDVJzNfa4uc
-         tvlaon62fjei1jT4JBZYBkAS23qpNVmVUKhXZpGFjnC5nqmVpcoNmelufXN5fagunMAR
-         H85xuZPrRESC7pYcv4vtle8yGqol89VEH7rBp0rN4TiSxwiFDr0cUcs8+LK5tsfxsnkD
-         xIcOws+M/Xl/x1RgyzSiJWKEgoRj138U8/jLYdQi3I/9GaVSY1JlpSQIoiR8zA93ufPN
-         VkiQ==
-X-Gm-Message-State: ACgBeo1vymS+0VUVjsXKMdixhPKv8I96PsIXcpdcmcC7EBnIG372qad4
-        vlAvFdvAggwFOiiKybqZmyo=
-X-Google-Smtp-Source: AA6agR6p1vnEmVhMR4O8lPoCRt91HpCjcE3g3bJe1rFhs/kMi/uJluoc3/u+nZq0YPRXXKdaBaDdUg==
-X-Received: by 2002:a17:90b:3a81:b0:1fd:c490:4f08 with SMTP id om1-20020a17090b3a8100b001fdc4904f08mr13328363pjb.105.1662280028369;
-        Sun, 04 Sep 2022 01:27:08 -0700 (PDT)
-Received: from debian.me (subs02-180-214-232-16.three.co.id. [180.214.232.16])
-        by smtp.gmail.com with ESMTPSA id y11-20020a17090322cb00b001744018def7sm4901806plg.90.2022.09.04.01.27.07
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=t1xTYA4sjuGCh4pw3N6/8X8I4YHHyXAx3KGLnNc3nds=;
+        b=3FlyJrHXT00o9acOFVG30aCNY5J27dt4LditI0dnOo2OKrUkd6BJ+6Gem+mZY1sRjF
+         NiF+LOmfP0GpY+OPkqvkUM8tgPh8s7sn/M/c7TnTojtMT9gSAm2nfbCQI3byEOCSsU25
+         lm1fR5CZHKEdJInMy4XAQUK7jS8dlxw0g7ecawN3eXkWhx/5VD7V0y/TRa3z2s41zGah
+         n7wjvPStNRSuTHegD/cIVMMqCJkgEX9Ulnqte1Ug2T5rQSyLpJszlxKsgbvxk+cAcgSQ
+         ZawrIMLGmsDtJHRHeIP4SPMW326aj59aDUgn23Tr2VKbcrhoF/3Zxav0oXCBQ1vzH+6q
+         HMNA==
+X-Gm-Message-State: ACgBeo0mpVbEYDTAfErADPeg+U+wybmOSQ8wtXheD1+I+tfa1st0h6XF
+        G1KZDsKGXcflYcNXLmV1R28=
+X-Google-Smtp-Source: AA6agR7Fr+8qy74vv2j29N2M5Bf8aHfMmlBDM7k04lJv67nFAGaICCLvwviLtM1Rxh97EiGfwGZi1g==
+X-Received: by 2002:a17:902:b217:b0:172:bd6c:814d with SMTP id t23-20020a170902b21700b00172bd6c814dmr45833683plr.55.1662319414609;
+        Sun, 04 Sep 2022 12:23:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:291b])
+        by smtp.gmail.com with ESMTPSA id i192-20020a6287c9000000b00538116bab6fsm5980580pfe.213.2022.09.04.12.23.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 01:27:08 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 521D0102D35; Sun,  4 Sep 2022 15:20:28 +0700 (WIB)
-Date:   Sun, 4 Sep 2022 15:20:27 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v12 09/10] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <YxRfy/SaKkJSm5jY@debian.me>
-References: <20220901205745.323326-1-longman@redhat.com>
- <20220901205745.323326-10-longman@redhat.com>
+        Sun, 04 Sep 2022 12:23:33 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 4 Sep 2022 09:23:32 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Gabriel Ryan <gabe@cs.columbia.edu>,
+        Abhishek Shah <abhishek.shah@columbia.edu>,
+        linux-kernel@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
+        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
+Subject: [PATCH cgroup/for-6.1] cgroup: Remove data-race around
+ cgrp_dfl_visible
+Message-ID: <YxT7NASKiuZDx6PT@slm.duckdns.org>
+References: <CAEHB249jcoG=sMGLUgqw3Yf+SjZ7ZkUfF_M+WcyQGCAe77o2kA@mail.gmail.com>
+ <20220819072256.fn7ctciefy4fc4cu@wittgenstein>
+ <CALbthtdFY+GHTzGH9OujzqpOtWZAqsU3MAsjv5OpwZUW6gVa7A@mail.gmail.com>
+ <YwuySgH4j6h2CGvk@slm.duckdns.org>
+ <20220829072741.tsxfgjp75lywzlgn@wittgenstein>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oIHDfZi7tkZKklmK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220901205745.323326-10-longman@redhat.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20220829072741.tsxfgjp75lywzlgn@wittgenstein>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+From dc79ec1b232ad2c165d381d3dd2626df4ef9b5a4 Mon Sep 17 00:00:00 2001
+From: Tejun Heo <tj@kernel.org>
+Date: Sun, 4 Sep 2022 09:16:19 -1000
 
---oIHDfZi7tkZKklmK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There's a seemingly harmless data-race around cgrp_dfl_visible detected by
+kernel concurrency sanitizer. Let's remove it by throwing WRITE/READ_ONCE at
+it.
 
-On Thu, Sep 01, 2022 at 04:57:44PM -0400, Waiman Long wrote:
->  	It accepts only the following input values when written to.
-> =20
->  	  =3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> -	  "root"	a partition root
-> -	  "member"	a non-root member of a partition
-> +	  "member"	Non-root member of a partition
-> +	  "root"	Partition root
-> +	  "isolated"	Partition root without load balancing
->  	  =3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> =20
-><snipped>
-> +	On read, the "cpuset.cpus.partition" file can show the following
-> +	values.
-> +
-> +	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> +	  "member"			Non-root member of a partition
-> +	  "root"			Partition root
-> +	  "isolated"			Partition root without load balancing
-> +	  "root invalid (<reason>)"	Invalid partition root
-> +	  "isolated invalid (<reason>)"	Invalid isolated partition root
-> +	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> +
-
-These tables above produced htmldocs warnings:
-
-Documentation/admin-guide/cgroup-v2.rst:2191: WARNING: Malformed table.
-Text in column margin in table line 4.
-
-=3D=3D=3D=3D=3D=3D=3D=3D      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-"member"      Non-root member of a partition
-"root"        Partition root
-"isolated"    Partition root without load balancing
-=3D=3D=3D=3D=3D=3D=3D=3D      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Documentation/admin-guide/cgroup-v2.rst:2229: WARNING: Malformed table.
-Text in column margin in table line 5.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D        =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-"member"                      Non-root member of a partition
-"root"                        Partition root
-"isolated"                    Partition root without load balancing
-"root invalid (<reason>)"     Invalid partition root
-"isolated invalid (<reason>)" Invalid isolated partition root
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D        =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-
-I have applied the fixup:
-
----- >8 ----
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
-guide/cgroup-v2.rst
-index 76b3ea9fd5c560..77b6faecf066cb 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2185,11 +2185,11 @@ Cpuset Interface Files
-=20
- 	It accepts only the following input values when written to.
-=20
--	  =3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- 	  "member"	Non-root member of a partition
- 	  "root"	Partition root
- 	  "isolated"	Partition root without load balancing
--	  =3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
- 	The root cgroup is always a partition root and its state
- 	cannot be changed.  All other non-root cgroups start out as
-@@ -2222,13 +2222,13 @@ Cpuset Interface Files
- 	On read, the "cpuset.cpus.partition" file can show the following
- 	values.
-=20
--	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-+	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- 	  "member"			Non-root member of a partition
- 	  "root"			Partition root
- 	  "isolated"			Partition root without load balancing
- 	  "root invalid (<reason>)"	Invalid partition root
- 	  "isolated invalid (<reason>)"	Invalid isolated partition root
--	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-+	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
- 	In the case of an invalid partition root, a descriptive string on
- 	why the partition is invalid is included within parentheses.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Abhishek Shah <abhishek.shah@columbia.edu>
+Cc: Gabriel Ryan <gabe@cs.columbia.edu>
+Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
+Link: https://lore.kernel.org/netdev/20220819072256.fn7ctciefy4fc4cu@wittgenstein/
+---
+Applied to cgroup/for-6.1.
 
 Thanks.
 
---=20
-An old man doll... just what I always wanted! - Clara
+ kernel/cgroup/cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---oIHDfZi7tkZKklmK
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 0005de2e2ed9..e0b72eb5d283 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2173,7 +2173,7 @@ static int cgroup_get_tree(struct fs_context *fc)
+ 	struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
+ 	int ret;
+ 
+-	cgrp_dfl_visible = true;
++	WRITE_ONCE(cgrp_dfl_visible, true);
+ 	cgroup_get_live(&cgrp_dfl_root.cgrp);
+ 	ctx->root = &cgrp_dfl_root;
+ 
+@@ -6098,7 +6098,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 		struct cgroup *cgrp;
+ 		int ssid, count = 0;
+ 
+-		if (root == &cgrp_dfl_root && !cgrp_dfl_visible)
++		if (root == &cgrp_dfl_root && !READ_ONCE(cgrp_dfl_visible))
+ 			continue;
+ 
+ 		seq_printf(m, "%d:", root->hierarchy_id);
+-- 
+2.37.3
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCYxRfxAAKCRD2uYlJVVFO
-o3SHAQClBqZgslhw004gM4yBhkfde6wdEJ2nw/MXorNJ8fTClQD+JtUvFXJzGoUu
-rSAT7jqqrPGSs2nO4gsLQKWjeu/V6gQ=
-=Tjsc
------END PGP SIGNATURE-----
-
---oIHDfZi7tkZKklmK--
