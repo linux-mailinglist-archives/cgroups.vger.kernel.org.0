@@ -2,300 +2,517 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA5C5AC21C
-	for <lists+cgroups@lfdr.de>; Sun,  4 Sep 2022 04:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6085AC237
+	for <lists+cgroups@lfdr.de>; Sun,  4 Sep 2022 06:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbiIDC1d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 3 Sep 2022 22:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        id S229816AbiIDEDA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 4 Sep 2022 00:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbiIDC1b (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Sep 2022 22:27:31 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77334D832;
-        Sat,  3 Sep 2022 19:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662258449; x=1693794449;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MyDqAfyIavNoNgOVlV0h/HS947J7lgVxbR90s5sms48=;
-  b=HIHIPICQz9hbnA2jwgSGzPjBWPVqd1BClRhOFNrRvYkYQR1I/Dn8OTId
-   vCa0ClszOtBllaJkOcSHAeRNHol0meyrpWYI9YJyZyq5VkA2cZTnzN8rv
-   0Ia81qBWpO3nPC2OH9JoZL3cdHM6VQMaeRR5hS92cvJG2vBk5k+fvFuwM
-   hQrCFve+hqSz7ApJrKH5T+L9G3GvahRZ4jhOGWJs2BzHU7jRbksAPAKp+
-   cKhqYLV+42UXmt7/j3JYZUmz8K2L3cknJsbI9LPtQjBK58GzyKEa6+O7l
-   ROE83qMJr/zv0NKGE7fees6stx80OabzpFQhg5vAV5G61tqaIdkCFoTja
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10459"; a="276600690"
-X-IronPort-AV: E=Sophos;i="5.93,288,1654585200"; 
-   d="scan'208";a="276600690"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2022 19:27:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,288,1654585200"; 
-   d="scan'208";a="646516742"
-Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 03 Sep 2022 19:27:24 -0700
-Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oUfM3-0002S0-24;
-        Sun, 04 Sep 2022 02:27:23 +0000
-Date:   Sun, 4 Sep 2022 10:26:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     kbuild-all@lists.01.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v12 09/10] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <202209041056.v0eBaBjb-lkp@intel.com>
-References: <20220901205745.323326-10-longman@redhat.com>
+        with ESMTP id S229771AbiIDEC7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 4 Sep 2022 00:02:59 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67D6357F0
+        for <cgroups@vger.kernel.org>; Sat,  3 Sep 2022 21:02:57 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ev6-20020a17090aeac600b0020031370f86so1116755pjb.1
+        for <cgroups@vger.kernel.org>; Sat, 03 Sep 2022 21:02:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=S+YO3HVtXRaQAdmhc0xL9yDdiDnXmc6HtfEihdsrkxU=;
+        b=G/xyMTjqN25DfHQfHmSq9gbGrVtnQYsU9pE34TFjGdzut/IEZqtJpTBtSnF/rWsIty
+         ivgbtvSqb88BDwy5UwbF3IdPIAzVbYxfGH2QVkw/PXnVL1QrHbcGrA0Kbf33hgjPZl5a
+         s5+ClxGOTPJqkc/xcWJY8aCHNVbafxuc6x+7+v7hlaqBtkyIzFKxI8e9CPMdToMjZYM+
+         8N17f33TQjfpMSild0clJCnzMu8TWSZ0DUHilBVGnfGnyGMGuMmzMSs6959kI8Jt0/35
+         0wmoj1f/ahDVOLwCPapajNcc86QMiUQyY8vGG7IrqqMTQFLPg+OkRi7j7V6FxeeVhp5P
+         4tuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=S+YO3HVtXRaQAdmhc0xL9yDdiDnXmc6HtfEihdsrkxU=;
+        b=iEFL7LxVNnW9qsb6PAM455SCyikZlLQq+GxD3vgsvWw1HrMOdWxfUlcKduSk81+sP4
+         BvZn2gAM509rKWNx52ex3MysjieJJrGktk8ZfcAPqbdz7iBYP3JUoC/Tcw8ZgYkZNG7K
+         pN8xJrbXQg6TLZTPlPIrnoukN/Ebbpd0Avh83iTUO34wUmXFjput3qikDWiLVtBUkmVm
+         Nt5NrTAqoTlQvoX1/tlRU+kpK65MyopEWjfWMBMtfmUoNw2GPSKA0r9LKUBoO57Cs5s2
+         aHjih32+LSAzF+/3vMjSuvWoc2UzzV+Jmg7GZFgzlk/as8FAc957Ay94WRpr50rK51ts
+         j7xA==
+X-Gm-Message-State: ACgBeo1kSlj0EqlgptdNbXy+voDmjtpn6hEytjMGLxKeBYyvfmbQ9XT+
+        NwmvsscfAiMj0JF6BKVKD9Tucg==
+X-Google-Smtp-Source: AA6agR4u+y7CvWBgghC/S5UaKpqRGOBtA2FIlUvoCt6KXMDXbzaR61tE2sSyL3dVvGCg0R1JDh0oEw==
+X-Received: by 2002:a17:90b:1804:b0:1fb:141:a09d with SMTP id lw4-20020a17090b180400b001fb0141a09dmr12658281pjb.170.1662264176961;
+        Sat, 03 Sep 2022 21:02:56 -0700 (PDT)
+Received: from R911R1VA-1UT.inc.bytedance.com ([220.243.131.6])
+        by smtp.gmail.com with ESMTPSA id d18-20020a170903231200b0017555cef23asm4192668plh.232.2022.09.03.21.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Sep 2022 21:02:56 -0700 (PDT)
+From:   hezhongkun <hezhongkun.hzk@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, lizefan.x@bytedance.com,
+        wuyun.abel@bytedance.com,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Subject: [PATCH] cgroup/cpuset: Add a new isolated mems.policy type.
+Date:   Sun,  4 Sep 2022 12:02:41 +0800
+Message-Id: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220901205745.323326-10-longman@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Waiman,
+From: Zhongkun He <hezhongkun.hzk@bytedance.com>
 
-I love your patch! Perhaps something to improve:
+Mempolicy is difficult to use because it is set in-process
+via a system call. We want to make it easier to use mempolicy
+in cpuset, and  we can control low-priority cgroups to
+allocate memory in specified nodes. So this patch want to
+adds the mempolicy interface in cpuset.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.0-rc3 next-20220901]
-[cannot apply to tj-cgroup/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The mempolicy priority of cpuset is lower than the task.
+The order of getting the policy is:
+	1) vma mempolicy
+	2) task->mempolicy
+	3) cpuset->mempolicy
+	4) default policy.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/cgroup-cpuset-cpu-partition-code-fixes-enhancements/20220902-050019
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 42e66b1cc3a070671001f8a1e933a80818a192bf
-reproduce:
-        # https://github.com/intel-lab-lkp/linux/commit/dce03e1a3eb6fce8d7c849c8daeff91ec9a47fc8
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Waiman-Long/cgroup-cpuset-cpu-partition-code-fixes-enhancements/20220902-050019
-        git checkout dce03e1a3eb6fce8d7c849c8daeff91ec9a47fc8
-        make menuconfig
-        # enable CONFIG_COMPILE_TEST, CONFIG_WARN_MISSING_DOCUMENTS, CONFIG_WARN_ABI_ERRORS
-        make htmldocs
+cpuset's policy is owned by itself, but descendants will
+get the default mempolicy from parent.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+How to use the mempolicy interface:
+	echo prefer:2 > /sys/fs/cgroup/zz/cpuset.mems.policy
+	echo bind:1-3 > /sys/fs/cgroup/zz/cpuset.mems.policy
+        echo interleave:0,1,2,3 >/sys/fs/cgroup/zz/cpuset.mems.policy
+Show the policy:
+	cat /sys/fs/cgroup/zz/cpuset.mems.policy
+		prefer:2
+	cat /sys/fs/cgroup/zz/cpuset.mems.policy
+		bind:1-3
+	cat /sys/fs/cgroup/zz/cpuset.mems.policy
+		interleave:0-3
+Clear the policy:
+	echo default > /sys/fs/cgroup/zz/cpuset.mems.policy
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+---
+ include/linux/mempolicy.h |   9 ++
+ include/linux/sched.h     |   2 +
+ kernel/cgroup/cpuset.c    | 182 +++++++++++++++++++++++++++++++++++++-
+ kernel/fork.c             |   1 +
+ mm/mempolicy.c            |  25 ++++--
+ 5 files changed, 209 insertions(+), 10 deletions(-)
 
->> Documentation/admin-guide/cgroup-v2.rst:2191: WARNING: Malformed table.
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index 668389b4b53d..41c4b28fb71f 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -142,6 +142,7 @@ extern void numa_default_policy(void);
+ extern void numa_policy_init(void);
+ extern void mpol_rebind_task(struct task_struct *tsk, const nodemask_t *new);
+ extern void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new);
++extern void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask);
+ 
+ extern int huge_node(struct vm_area_struct *vma,
+ 				unsigned long addr, gfp_t gfp_flags,
+@@ -211,6 +212,11 @@ static inline void mpol_get(struct mempolicy *pol)
+ {
+ }
+ 
++static inline struct mempolicy *mpol_dup(struct mempolicy *pol)
++{
++	return NULL;
++}
++
+ struct shared_policy {};
+ 
+ static inline void mpol_shared_policy_init(struct shared_policy *sp,
+@@ -252,6 +258,9 @@ static inline void mpol_rebind_task(struct task_struct *tsk,
+ static inline void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new)
+ {
+ }
++static inline void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask)
++{
++}
+ 
+ static inline int huge_node(struct vm_area_struct *vma,
+ 				unsigned long addr, gfp_t gfp_flags,
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index e7b2f8a5c711..f935e1707e7c 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1236,6 +1236,8 @@ struct task_struct {
+ 	unsigned long			preempt_disable_ip;
+ #endif
+ #ifdef CONFIG_NUMA
++	/* cpuset memory policy */
++	struct mempolicy		*cs_mpol;
+ 	/* Protected by alloc_lock: */
+ 	struct mempolicy		*mempolicy;
+ 	short				il_prev;
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 1f3a55297f39..19fd359dc8d8 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -118,6 +118,9 @@ struct cpuset {
+ 	cpumask_var_t effective_cpus;
+ 	nodemask_t effective_mems;
+ 
++	/*cpuset mem policy */
++	struct mempolicy *mempolicy;
++
+ 	/*
+ 	 * CPUs allocated to child sub-partitions (default hierarchy only)
+ 	 * - CPUs granted by the parent = effective_cpus U subparts_cpus
+@@ -378,6 +381,10 @@ static void cpuset_hotplug_workfn(struct work_struct *work);
+ static DECLARE_WORK(cpuset_hotplug_work, cpuset_hotplug_workfn);
+ 
+ static DECLARE_WAIT_QUEUE_HEAD(cpuset_attach_wq);
++static void cpuset_change_task_cs_mpol(struct task_struct *tsk,
++		struct mempolicy *mpol);
++static inline void update_cs_mpol_nodemask(struct cpuset *cs,
++		struct mempolicy *mpol);
+ 
+ static inline void check_insane_mems_config(nodemask_t *nodes)
+ {
+@@ -570,7 +577,10 @@ static struct cpuset *alloc_trial_cpuset(struct cpuset *cs)
+ 	if (!trial)
+ 		return NULL;
+ 
++	mpol_get(trial->mempolicy);
++
+ 	if (alloc_cpumasks(trial, NULL)) {
++		mpol_put(trial->mempolicy);
+ 		kfree(trial);
+ 		return NULL;
+ 	}
+@@ -587,6 +597,7 @@ static struct cpuset *alloc_trial_cpuset(struct cpuset *cs)
+ static inline void free_cpuset(struct cpuset *cs)
+ {
+ 	free_cpumasks(cs, NULL);
++	mpol_put(cs->mempolicy);
+ 	kfree(cs);
+ }
+ 
+@@ -1849,6 +1860,7 @@ static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
+ 
+ 		spin_lock_irq(&callback_lock);
+ 		cp->effective_mems = *new_mems;
++		update_cs_mpol_nodemask(cp, cp->mempolicy);
+ 		spin_unlock_irq(&callback_lock);
+ 
+ 		WARN_ON(!is_in_v2_mode() &&
+@@ -2304,7 +2316,8 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+ 		 * fail.  TODO: have a better way to handle failure here
+ 		 */
+ 		WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
+-
++		/*update the cpuset mempolicy to task*/
++		cpuset_change_task_cs_mpol(task, cs->mempolicy);
+ 		cpuset_change_task_nodemask(task, &cpuset_attach_nodemask_to);
+ 		cpuset_update_task_spread_flag(cs, task);
+ 	}
+@@ -2441,6 +2454,140 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 	return retval;
+ }
+ 
++#ifdef CONFIG_NUMA
++
++/*update the mpol nodemask based on cpuset  nodemask*/
++static inline void update_cs_mpol_nodemask(struct cpuset *cs, struct mempolicy *mpol)
++{
++	nodemask_t newmems;
++
++	if (!mpol)
++		return;
++	nodes_and(newmems, cs->effective_mems, mpol->w.user_nodemask);
++
++	/*If no intersection between effective_mems and mpol user_nodemask,
++	 *use effective_mems to allocate mems.
++	 */
++	if (!nodes_weight(newmems))
++		newmems = cs->effective_mems;
++	mpol_rebind_policy(mpol, &newmems);
++}
++
++/*update cpuset policy for task*/
++static void cpuset_change_task_cs_mpol(struct task_struct *tsk,
++		struct mempolicy *mpol)
++{
++	struct mempolicy *old = NULL;
++
++	task_lock(tsk);
++	local_irq_disable();
++	write_seqcount_begin(&tsk->mems_allowed_seq);
++
++	old = tsk->cs_mpol;
++	tsk->cs_mpol = mpol;
++	mpol_get(mpol);
++	tsk->il_prev = 0;
++
++	write_seqcount_end(&tsk->mems_allowed_seq);
++	local_irq_enable();
++	task_unlock(tsk);
++	mpol_put(old);
++}
++
++static void update_tasks_cs_mpol(struct cpuset *cs)
++{
++	struct css_task_iter it;
++	struct task_struct *task;
++
++	css_task_iter_start(&cs->css, 0, &it);
++
++	while ((task = css_task_iter_next(&it)))
++		cpuset_change_task_cs_mpol(task, cs->mempolicy);
++	css_task_iter_end(&it);
++}
++
++/* change cpuset mempolicy */
++static ssize_t cpuset_mpol_write(struct kernfs_open_file *of,
++		char *buf, size_t nbytes, loff_t off)
++{
++	struct mempolicy *mpol, *old = NULL;
++	struct cpuset *cs = css_cs(of_css(of));
++	nodemask_t cs_allowed;
++	int err = -ENODEV;
++
++	css_get(&cs->css);
++	kernfs_break_active_protection(of->kn);
++	percpu_down_write(&cpuset_rwsem);
++
++	if (!is_cpuset_online(cs))
++		goto out_unlock;
++
++	buf = strstrip(buf);
++	err = mpol_parse_str(buf, &mpol);
++
++	if (err) {
++		err = -EINVAL;
++		goto out_unlock;
++	}
++
++	spin_lock_irq(&callback_lock);
++	old = cs->mempolicy;
++	update_cs_mpol_nodemask(cs, mpol);
++	cs->mempolicy = mpol;
++	spin_unlock_irq(&callback_lock);
++
++	update_tasks_cs_mpol(cs);
++
++out_unlock:
++	percpu_up_write(&cpuset_rwsem);
++	kernfs_unbreak_active_protection(of->kn);
++	css_put(&cs->css);
++
++	if (old) {
++	/*Wait for outstanding programs to complete.*/
++		synchronize_rcu();
++		mpol_put(old);
++	}
++	return err ?: nbytes;
++}
++
++/*show cpuset mempolicy*/
++static int cpuset_mpol_show(struct seq_file *seq, void *v)
++{
++	char buffer[64];
++	int ret = 0;
++	struct mempolicy *mpol;
++	struct cpuset *cs = css_cs(seq_css(seq));
++
++	memset(buffer, 0, sizeof(buffer));
++	spin_lock_irq(&callback_lock);
++	mpol = cs->mempolicy;
++
++	if (!mpol || mpol->mode == MPOL_DEFAULT)
++		goto out_unlock;
++
++	mpol_to_str(buffer, sizeof(buffer), mpol);
++	seq_printf(seq, buffer);
++	seq_putc(seq, '\n');
++
++out_unlock:
++	spin_unlock_irq(&callback_lock);
++	return ret;
++}
++
++#else
++static void cpuset_change_task_cs_mpol(struct task_struct *tsk,
++		struct mempolicy *mpol)
++{
++}
++
++static inline void update_cs_mpol_nodemask(struct cpuset *cs,
++		struct mempolicy *mpol)
++{
++}
++
++#endif
++
+ /*
+  * Common handling for a write to a "cpus" or "mems" file.
+  */
+@@ -2678,7 +2825,14 @@ static struct cftype legacy_files[] = {
+ 		.seq_show = cpuset_common_seq_show,
+ 		.private = FILE_EFFECTIVE_MEMLIST,
+ 	},
+-
++#ifdef CONFIG_NUMA
++	{
++		.name = "mems_policy",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = cpuset_mpol_show,
++		.write = cpuset_mpol_write,
++	},
++#endif
+ 	{
+ 		.name = "cpu_exclusive",
+ 		.read_u64 = cpuset_read_u64,
+@@ -2786,7 +2940,14 @@ static struct cftype dfl_files[] = {
+ 		.seq_show = cpuset_common_seq_show,
+ 		.private = FILE_EFFECTIVE_MEMLIST,
+ 	},
+-
++#ifdef CONFIG_NUMA
++	{
++		.name = "mems.policy",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = cpuset_mpol_show,
++		.write = cpuset_mpol_write,
++	},
++#endif
+ 	{
+ 		.name = "cpus.partition",
+ 		.seq_show = sched_partition_show,
+@@ -2835,6 +2996,21 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	fmeter_init(&cs->fmeter);
+ 	cs->relax_domain_level = -1;
+ 
++	if (IS_ENABLED(CONFIG_NUMA)) {
++		struct cpuset *pcs = css_cs(parent_css);
++		struct mempolicy *new;
++
++		/*Inherit mempolicy from parent.*/
++		spin_lock_irq(&callback_lock);
++		new = mpol_dup(pcs->mempolicy);
++
++		if (IS_ERR(new))
++			new = NULL;
++
++		cs->mempolicy = new;
++		spin_unlock_irq(&callback_lock);
++	}
++
+ 	/* Set CS_MEMORY_MIGRATE for default hierarchy */
+ 	if (cgroup_subsys_on_dfl(cpuset_cgrp_subsys))
+ 		__set_bit(CS_MEMORY_MIGRATE, &cs->flags);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 90c85b17bf69..3f695449e2a5 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2190,6 +2190,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 		p->mempolicy = NULL;
+ 		goto bad_fork_cleanup_delayacct;
+ 	}
++	mpol_get(p->cs_mpol); /*ref cpuset mempolicy*/
+ #endif
+ #ifdef CONFIG_CPUSETS
+ 	p->cpuset_mem_spread_rotor = NUMA_NO_NODE;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index b73d3248d976..144f79887df9 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -158,9 +158,15 @@ int numa_map_to_online_node(int node)
+ }
+ EXPORT_SYMBOL_GPL(numa_map_to_online_node);
+ 
++static inline struct mempolicy *task_or_cs_mpol(struct task_struct *p)
++{
++	return p->mempolicy ?
++		p->mempolicy : p->cs_mpol;
++}
++
+ struct mempolicy *get_task_policy(struct task_struct *p)
+ {
+-	struct mempolicy *pol = p->mempolicy;
++	struct mempolicy *pol = task_or_cs_mpol(p);
+ 	int node;
+ 
+ 	if (pol)
+@@ -349,7 +355,7 @@ static void mpol_rebind_preferred(struct mempolicy *pol,
+  * policies are protected by task->mems_allowed_seq to prevent a premature
+  * OOM/allocation failure due to parallel nodemask modification.
+  */
+-static void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask)
++void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask)
+ {
+ 	if (!pol || pol->mode == MPOL_LOCAL)
+ 		return;
+@@ -1895,7 +1901,7 @@ unsigned int mempolicy_slab_node(void)
+ 	if (!in_task())
+ 		return node;
+ 
+-	policy = current->mempolicy;
++	policy = task_or_cs_mpol(current);
+ 	if (!policy)
+ 		return node;
+ 
+@@ -2043,7 +2049,7 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+ 		return false;
+ 
+ 	task_lock(current);
+-	mempolicy = current->mempolicy;
++	mempolicy = task_or_cs_mpol(current);
+ 	switch (mempolicy->mode) {
+ 	case MPOL_PREFERRED:
+ 	case MPOL_PREFERRED_MANY:
+@@ -2633,13 +2639,16 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+  */
+ void mpol_put_task_policy(struct task_struct *task)
+ {
+-	struct mempolicy *pol;
++	struct mempolicy *pol, *cs_pol;
+ 
+ 	task_lock(task);
+ 	pol = task->mempolicy;
++	cs_pol = task->cs_mpol;
++	task->cs_mpol = NULL;
+ 	task->mempolicy = NULL;
+ 	task_unlock(task);
+ 	mpol_put(pol);
++	mpol_put(cs_pol);
+ }
+ 
+ static void sp_delete(struct shared_policy *sp, struct sp_node *n)
+@@ -2957,8 +2966,7 @@ static const char * const policy_modes[] =
+ 	[MPOL_PREFERRED_MANY]  = "prefer (many)",
+ };
+ 
+-
+-#ifdef CONFIG_TMPFS
++#if defined(CONFIG_TMPFS) || defined(CONFIG_NUMA)
+ /**
+  * mpol_parse_str - parse string to mempolicy, for tmpfs mpol mount option.
+  * @str:  string containing mempolicy to parse
+@@ -3054,6 +3062,9 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+ 			mode_flags |= MPOL_F_RELATIVE_NODES;
+ 		else
+ 			goto out;
++	} else {
++		/*use static mode_flags in default*/
++		mode_flags |= MPOL_F_STATIC_NODES;
+ 	}
+ 
+ 	new = mpol_new(mode, mode_flags, &nodes);
 
-vim +2191 Documentation/admin-guide/cgroup-v2.rst
-
-  2091	
-  2092	  cpuset.cpus
-  2093		A read-write multiple values file which exists on non-root
-  2094		cpuset-enabled cgroups.
-  2095	
-  2096		It lists the requested CPUs to be used by tasks within this
-  2097		cgroup.  The actual list of CPUs to be granted, however, is
-  2098		subjected to constraints imposed by its parent and can differ
-  2099		from the requested CPUs.
-  2100	
-  2101		The CPU numbers are comma-separated numbers or ranges.
-  2102		For example::
-  2103	
-  2104		  # cat cpuset.cpus
-  2105		  0-4,6,8-10
-  2106	
-  2107		An empty value indicates that the cgroup is using the same
-  2108		setting as the nearest cgroup ancestor with a non-empty
-  2109		"cpuset.cpus" or all the available CPUs if none is found.
-  2110	
-  2111		The value of "cpuset.cpus" stays constant until the next update
-  2112		and won't be affected by any CPU hotplug events.
-  2113	
-  2114	  cpuset.cpus.effective
-  2115		A read-only multiple values file which exists on all
-  2116		cpuset-enabled cgroups.
-  2117	
-  2118		It lists the onlined CPUs that are actually granted to this
-  2119		cgroup by its parent.  These CPUs are allowed to be used by
-  2120		tasks within the current cgroup.
-  2121	
-  2122		If "cpuset.cpus" is empty, the "cpuset.cpus.effective" file shows
-  2123		all the CPUs from the parent cgroup that can be available to
-  2124		be used by this cgroup.  Otherwise, it should be a subset of
-  2125		"cpuset.cpus" unless none of the CPUs listed in "cpuset.cpus"
-  2126		can be granted.  In this case, it will be treated just like an
-  2127		empty "cpuset.cpus".
-  2128	
-  2129		Its value will be affected by CPU hotplug events.
-  2130	
-  2131	  cpuset.mems
-  2132		A read-write multiple values file which exists on non-root
-  2133		cpuset-enabled cgroups.
-  2134	
-  2135		It lists the requested memory nodes to be used by tasks within
-  2136		this cgroup.  The actual list of memory nodes granted, however,
-  2137		is subjected to constraints imposed by its parent and can differ
-  2138		from the requested memory nodes.
-  2139	
-  2140		The memory node numbers are comma-separated numbers or ranges.
-  2141		For example::
-  2142	
-  2143		  # cat cpuset.mems
-  2144		  0-1,3
-  2145	
-  2146		An empty value indicates that the cgroup is using the same
-  2147		setting as the nearest cgroup ancestor with a non-empty
-  2148		"cpuset.mems" or all the available memory nodes if none
-  2149		is found.
-  2150	
-  2151		The value of "cpuset.mems" stays constant until the next update
-  2152		and won't be affected by any memory nodes hotplug events.
-  2153	
-  2154		Setting a non-empty value to "cpuset.mems" causes memory of
-  2155		tasks within the cgroup to be migrated to the designated nodes if
-  2156		they are currently using memory outside of the designated nodes.
-  2157	
-  2158		There is a cost for this memory migration.  The migration
-  2159		may not be complete and some memory pages may be left behind.
-  2160		So it is recommended that "cpuset.mems" should be set properly
-  2161		before spawning new tasks into the cpuset.  Even if there is
-  2162		a need to change "cpuset.mems" with active tasks, it shouldn't
-  2163		be done frequently.
-  2164	
-  2165	  cpuset.mems.effective
-  2166		A read-only multiple values file which exists on all
-  2167		cpuset-enabled cgroups.
-  2168	
-  2169		It lists the onlined memory nodes that are actually granted to
-  2170		this cgroup by its parent. These memory nodes are allowed to
-  2171		be used by tasks within the current cgroup.
-  2172	
-  2173		If "cpuset.mems" is empty, it shows all the memory nodes from the
-  2174		parent cgroup that will be available to be used by this cgroup.
-  2175		Otherwise, it should be a subset of "cpuset.mems" unless none of
-  2176		the memory nodes listed in "cpuset.mems" can be granted.  In this
-  2177		case, it will be treated just like an empty "cpuset.mems".
-  2178	
-  2179		Its value will be affected by memory nodes hotplug events.
-  2180	
-  2181	  cpuset.cpus.partition
-  2182		A read-write single value file which exists on non-root
-  2183		cpuset-enabled cgroups.  This flag is owned by the parent cgroup
-  2184		and is not delegatable.
-  2185	
-  2186		It accepts only the following input values when written to.
-  2187	
-  2188		  ========	================================
-  2189		  "member"	Non-root member of a partition
-  2190		  "root"	Partition root
-> 2191		  "isolated"	Partition root without load balancing
-  2192		  ========	================================
-  2193	
-  2194		The root cgroup is always a partition root and its state
-  2195		cannot be changed.  All other non-root cgroups start out as
-  2196		"member".
-  2197	
-  2198		When set to "root", the current cgroup is the root of a new
-  2199		partition or scheduling domain that comprises itself and all
-  2200		its descendants except those that are separate partition roots
-  2201		themselves and their descendants.
-  2202	
-  2203		When set to "isolated", the CPUs in that partition root will
-  2204		be in an isolated state without any load balancing from the
-  2205		scheduler.  Tasks placed in such a partition with multiple
-  2206		CPUs should be carefully distributed and bound to each of the
-  2207		individual CPUs for optimal performance.
-  2208	
-  2209		The value shown in "cpuset.cpus.effective" of a partition root
-  2210		is the CPUs that the partition root can dedicate to a potential
-  2211		new child partition root. The new child subtracts available
-  2212		CPUs from its parent "cpuset.cpus.effective".
-  2213	
-  2214		A partition root ("root" or "isolated") can be in one of the
-  2215		two possible states - valid or invalid.  An invalid partition
-  2216		root is in a degraded state where some state information may
-  2217		be retained, but behaves more like a "member".
-  2218	
-  2219		All possible state transitions among "member", "root" and
-  2220		"isolated" are allowed.
-  2221	
-  2222		On read, the "cpuset.cpus.partition" file can show the following
-  2223		values.
-  2224	
-  2225		  ======================	==============================
-  2226		  "member"			Non-root member of a partition
-  2227		  "root"			Partition root
-  2228		  "isolated"			Partition root without load balancing
-  2229		  "root invalid (<reason>)"	Invalid partition root
-  2230		  "isolated invalid (<reason>)"	Invalid isolated partition root
-  2231		  ======================	==============================
-  2232	
-  2233		In the case of an invalid partition root, a descriptive string on
-  2234		why the partition is invalid is included within parentheses.
-  2235	
-  2236		For a partition root to become valid, the following conditions
-  2237		must be met.
-  2238	
-  2239		1) The "cpuset.cpus" is exclusive with its siblings , i.e. they
-  2240		   are not shared by any of its siblings (exclusivity rule).
-  2241		2) The parent cgroup is a valid partition root.
-  2242		3) The "cpuset.cpus" is not empty and must contain at least
-  2243		   one of the CPUs from parent's "cpuset.cpus", i.e. they overlap.
-  2244		4) The "cpuset.cpus.effective" cannot be empty unless there is
-  2245		   no task associated with this partition.
-  2246	
-  2247		External events like hotplug or changes to "cpuset.cpus" can
-  2248		cause a valid partition root to become invalid and vice versa.
-  2249		Note that a task cannot be moved to a cgroup with empty
-  2250		"cpuset.cpus.effective".
-  2251	
-  2252		For a valid partition root with the sibling cpu exclusivity
-  2253		rule enabled, changes made to "cpuset.cpus" that violate the
-  2254		exclusivity rule will invalidate the partition as well as its
-  2255		sibiling partitions with conflicting cpuset.cpus values. So
-  2256		care must be taking in changing "cpuset.cpus".
-  2257	
-  2258		A valid non-root parent partition may distribute out all its CPUs
-  2259		to its child partitions when there is no task associated with it.
-  2260	
-  2261		Care must be taken to change a valid partition root to
-  2262		"member" as all its child partitions, if present, will become
-  2263		invalid causing disruption to tasks running in those child
-  2264		partitions. These inactivated partitions could be recovered if
-  2265		their parent is switched back to a partition root with a proper
-  2266		set of "cpuset.cpus".
-  2267	
-  2268		Poll and inotify events are triggered whenever the state of
-  2269		"cpuset.cpus.partition" changes.  That includes changes caused
-  2270		by write to "cpuset.cpus.partition", cpu hotplug or other
-  2271		changes that modify the validity status of the partition.
-  2272		This will allow user space agents to monitor unexpected changes
-  2273		to "cpuset.cpus.partition" without the need to do continuous
-  2274		polling.
-  2275	
-  2276	
-
+base-commit: c40e8341e3b3bb27e3a65b06b5b454626234c4f0
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.25.1
+
