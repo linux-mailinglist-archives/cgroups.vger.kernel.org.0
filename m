@@ -2,66 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268895AD031
-	for <lists+cgroups@lfdr.de>; Mon,  5 Sep 2022 12:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3F25AD023
+	for <lists+cgroups@lfdr.de>; Mon,  5 Sep 2022 12:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237798AbiIEKaz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Sep 2022 06:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        id S236332AbiIEKbM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Sep 2022 06:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237097AbiIEKax (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Sep 2022 06:30:53 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A68E2E69C
-        for <cgroups@vger.kernel.org>; Mon,  5 Sep 2022 03:30:51 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id z187so8209947pfb.12
-        for <cgroups@vger.kernel.org>; Mon, 05 Sep 2022 03:30:51 -0700 (PDT)
+        with ESMTP id S237863AbiIEKbK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Sep 2022 06:31:10 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3570839B9D
+        for <cgroups@vger.kernel.org>; Mon,  5 Sep 2022 03:31:08 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id p18so8119828plr.8
+        for <cgroups@vger.kernel.org>; Mon, 05 Sep 2022 03:31:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
          :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
-        bh=gtvu1sOWJAtKexo39ijvJL1dgptfKWjzICln4Ve7K/4=;
-        b=a0S+cI5o4IcMxp8BPR8AUgnrlaVxXq0POxlWQ7zqp6D+VsbpNz9X/FqxXJq1bb3htf
-         AI2Fb/m2tjO32ImNzN/g9EZ4QJ9uLhJrjyLjP2hyytCMZPkc8ZmSI62u8tKtDVp4r3Q2
-         GB2+9fMem/RLmVYcmRp+VWgr9ZDHiUxkQWmiqNGZJ3o9e07vD2epHCS3LTnx1fojPMmC
-         eU5/E6EcLmpxcqm6BYvWwNyiXy58q/gXG90uLX2JeH9QidVC5y3jLGZ9mVJ8PzCvFKEm
-         1lBq2dvG9QwsH1mvnoxB/sf1hWsIAXXWBmBPgQfe0aaIZ6BYnWlIlh6MLeKtRWLObzI2
-         BQzg==
+        bh=08C+VXVc0IMFZrrErYdVw4bP2ZSZwMhBjMLfYmODNYY=;
+        b=5qJtR8o8q181yaW02Pelm8vTh5nB2r4JcZaAQf0dDH/GMDD0eJ3Idryy96VUutJSOz
+         KQ5J9dfV/XmiSfy5EmB0QFQTPnznNeCLysW/MtuxyOf9or/9pCi7+kTulpJV0lqNPJaQ
+         l+qYtBb67hvNTpaB8DY83GYE8wxcqjjYVCk6I1zxMATw+o/9r/pyKNIOVDLDTLlVpS0N
+         mjwDdQQgRjmDm88FKrmPj0gSJ5pK7bPiwQ+N+4s+ZDrbz3QrdEkhWW4XHITKpitraDVS
+         JxW2ocZ64qsQC7v9cRrVwhvjFX0BsZnzhBr9owyS4NVMexUpNLtQvfy3woNaTPNw5LTq
+         1snw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
          :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
          :cc:subject:date;
-        bh=gtvu1sOWJAtKexo39ijvJL1dgptfKWjzICln4Ve7K/4=;
-        b=Ht1WRhvrYZJQIsMaXpF6HzAPSHP5nDC3oOs+uAc+ZMCa8xCTAuzfvYi2IOoeSmV7A/
-         Vhy1erN4UZ43Ll6hvsLvLo2jPpNJpm0gK+UNL76xWnrLKET0FfcIQsoZVXHY/WrWpt82
-         iWwhhDzQY/t6thl2nEsOHLWBbIv91/VS2ERWkvCJrs2sJy8isyTp0b4BYnuGXl0fzHrw
-         8rDuhbEP6A0908LTVMlork+i0kS4zgaIswWiiyM0AHiff1sINQYILIgFxVGxryom9yAC
-         /KKiyDzSlYUl0b4PsFRSn9Gdbm7nso38cgd4Rxw1AQlaQgGkgDVXK+QUqQLFiduilQZR
-         l30A==
-X-Gm-Message-State: ACgBeo1dEdoGlXH4jIR6O/9KyxJgiWpDgslgkBc9jFNgP2mAnARmihEo
-        0dhDQSG55lRb7nz2Li9e0SYtnQ==
-X-Google-Smtp-Source: AA6agR6D0zR7wUWzfMTak/FDwLHjkBdxm+fKf7GHHreRhXXZpVCI0ODqPOg74oFtwVf6bbM2Y6t8QA==
-X-Received: by 2002:a63:2bd5:0:b0:41d:9a9f:2e6d with SMTP id r204-20020a632bd5000000b0041d9a9f2e6dmr42579301pgr.53.1662373850885;
-        Mon, 05 Sep 2022 03:30:50 -0700 (PDT)
+        bh=08C+VXVc0IMFZrrErYdVw4bP2ZSZwMhBjMLfYmODNYY=;
+        b=SxDnJozMwuYzYZcCfy3ad7skc2wXzwTp1L6eA00YkKrSbTgtZ1GjlYQZrUhxvNoSQR
+         vqqtj1xoyRuVUEJeVF3CL0YYSLAzT6Q+tvyl+W5fyccnCt5oYL0HaKnBqKY4FEg8RwnM
+         +EQ8GAfg5tYBBpu9vPFpM8S+maLgtD2OY2VPARLSvnDJPa7GQA4MA+pBC6R4h0Glct+D
+         uYt0VRNbsgnTzzMJFbbv8aaAEmXeEis8xitflP/fRhhsNG4gldq3xZJAF0B41JxF2rKe
+         s8r7RK4Ko8sp5QvdYU5AGimOMNhXkAQnyAN+vv24Vx1Tjl5BReK65trma7mSLZ3UBQiU
+         X47w==
+X-Gm-Message-State: ACgBeo1g9SK/1BWsmW6gk9g9Y1xlpsu3rckdfvTSTg6gObCIWxLsJvYq
+        i5rYtmVYWReNYFtQTTjeXESYtA==
+X-Google-Smtp-Source: AA6agR7gFWof19I/xutyLSVCT2f+PsYjQouLLkyLJQ2fOpfCDSCz/eWBBqTJ20QLUG+Rzd90AMtE/Q==
+X-Received: by 2002:a17:90a:4fa3:b0:200:8ba3:94bc with SMTP id q32-20020a17090a4fa300b002008ba394bcmr164449pjh.21.1662373867667;
+        Mon, 05 Sep 2022 03:31:07 -0700 (PDT)
 Received: from [10.4.229.138] ([139.177.225.232])
-        by smtp.gmail.com with ESMTPSA id z188-20020a6233c5000000b00536aa488062sm7334490pfz.163.2022.09.05.03.30.47
+        by smtp.gmail.com with ESMTPSA id r10-20020a17090b050a00b0020080e8c8besm950991pjz.40.2022.09.05.03.31.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Sep 2022 03:30:50 -0700 (PDT)
-Message-ID: <c05bdeac-b354-0ac7-3233-27f8e5cbb38a@bytedance.com>
-Date:   Mon, 5 Sep 2022 18:30:38 +0800
+        Mon, 05 Sep 2022 03:31:07 -0700 (PDT)
+Message-ID: <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
+Date:   Mon, 5 Sep 2022 18:30:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
-Subject: Re: [Phishing Risk] [External] Re: [PATCH] cgroup/cpuset: Add a new
- isolated mems.policy type.
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220902063303.1057-1-hezhongkun.hzk@bytedance.com>
- <YxT/liaotbiOod51@slm.duckdns.org>
+Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
+ mems.policy type.
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, lizefan.x@bytedance.com,
+        wuyun.abel@bytedance.com
+References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
+ <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
 From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
-In-Reply-To: <YxT/liaotbiOod51@slm.duckdns.org>
+In-Reply-To: <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,23 +75,20 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun, thanks for your reply.
+Hi Michal, thanks for your reply.
 
-We usually use numactl to set the memory policy, but it cannot be 
-changed dynamically. In addition, the mempolicy of cpuset can provide a 
-more convenient interface for management and control panel.
+The current 'mempolicy' is hierarchically independent. The default value 
+of the child is to inherit from the parent. The modification of the 
+child policy will not be restricted by the parent.
 
-Sorry,I don't quite understand the meaning of "don't enforce anything 
-resource related". Does it mean mempolicy, such as "prefer:2" must 
-specify node? Or "cpuset.mems.policy" need to specify a default value?
-(cpuset.mems.policy does not require a default value.)
+Of course, there are other options, such as the child's policy mode must 
+be the same as the parent's. node can be the subset of parent's, but the 
+interleave type will be complicated, that's why hierarchy independence 
+is used. It would be better if you have other suggestions?
 
 Thanks.
 
-
-> Hello,
-> 
-> On Fri, Sep 02, 2022 at 02:33:03PM +0800, hezhongkun wrote:
+> On Sun 04-09-22 12:02:41, hezhongkun wrote:
 >> From: Zhongkun He <hezhongkun.hzk@bytedance.com>
 >>
 >> Mempolicy is difficult to use because it is set in-process
@@ -107,24 +106,14 @@ Thanks.
 >>
 >> cpuset's policy is owned by itself, but descendants will
 >> get the default mempolicy from parent.
->>
+> 
+> What is the hierarchical behavior of the policy? Say parent has a
+> stronger requirement (say bind) than a child (prefer)?
+>   
 >> How to use the mempolicy interface:
 >> 	echo prefer:2 > /sys/fs/cgroup/zz/cpuset.mems.policy
 >> 	echo bind:1-3 > /sys/fs/cgroup/zz/cpuset.mems.policy
 >>          echo interleave:0,1,2,3 >/sys/fs/cgroup/zz/cpuset.mems.policy
->> Show the policy:
->> 	cat /sys/fs/cgroup/zz/cpuset.mems.policy
->> 		prefer:2
->> 	cat /sys/fs/cgroup/zz/cpuset.mems.policy
->> 		bind:1-3
->> 	cat /sys/fs/cgroup/zz/cpuset.mems.policy
->> 		interleave:0-3
->> Clear the policy:
->> 	echo default > /sys/fs/cgroup/zz/cpuset.mems.policy
 > 
-> So, I'm a fan of adding cgroup functionalities which don't enforce anything
-> resource related. What you're proposing can easily be achieved with userland
-> tooling, right?
-> 
-> Thanks.
-> 
+> Am I just confused or did you really mean to combine all these
+> together?
