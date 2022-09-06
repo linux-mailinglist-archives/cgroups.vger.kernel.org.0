@@ -2,169 +2,191 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56355AE83F
-	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 14:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908315AE92F
+	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 15:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239668AbiIFMds (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Sep 2022 08:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
+        id S240195AbiIFNNs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Sep 2022 09:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237809AbiIFMdh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 08:33:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6364D218;
-        Tue,  6 Sep 2022 05:33:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1347F33939;
-        Tue,  6 Sep 2022 12:33:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1662467614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJ2hDmw9JyVIDJ8sx54ryU/U8R/CYAaL47eDHzs+5iE=;
-        b=al1qbdZOXhLv+Fvm/FIs/YRWj8fPc0Y4yzJiuX0pkO8cfK41Y6mVQR84DTVvOLCg+6cz8c
-        bBab7jdlicHYdwUBzFcVIdsyPkNIWPrvTEkbJStX/wT9mVKDnGHI9o7TdbRnBk7eC+02LC
-        ODvL7sSEOpXak0rE4eYSYaJKDTYTYH4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E99DD13A7A;
-        Tue,  6 Sep 2022 12:33:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BJ4YNh0+F2PORQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 06 Sep 2022 12:33:33 +0000
-Date:   Tue, 6 Sep 2022 14:33:33 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, lizefan.x@bytedance.com,
-        wuyun.abel@bytedance.com
-Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
- mems.policy type.
-Message-ID: <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
-References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
- <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
- <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
- <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
- <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
+        with ESMTP id S240375AbiIFNNp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 09:13:45 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACE76D9C8
+        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 06:13:37 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id x19so11357136pfr.1
+        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 06:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=z0xoCgZ6OB1X6I9K+Q5ULkuyhW887KdUWlCNKEVd8bw=;
+        b=w4ajL+gQDWI7cKBhAtKnr5qiDWAGO/We8uLJbQKU9jAQnQUOLx2qHZbOX1l7S4G5vh
+         FTv/eIZt6wZzqvcB84yAV4NpuX6QTsIKU7iaREKywsVq5rv3CoX7ve7fE1emDVz8Wsm1
+         CpFQY3aXhwzLmE/6c5T+vB4eaQmq7GzcLBit1y2HOBkyyT2cib4/TYiGZM75X83eooWc
+         3q5VLPpsM6sdGE5mNxACCk/J7RvSfk9HVtQeGEAyga1gZMPAWkgI3qVa1+hPcM5yOeJe
+         ++tbjev/riu9AwiHLXMbADkvtn/E8Y1wHQZZNCuZ7tCnq1rV3W+rNPALMR5xkExUIWCa
+         jDCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=z0xoCgZ6OB1X6I9K+Q5ULkuyhW887KdUWlCNKEVd8bw=;
+        b=lW+DLqojgMOhqZxatF6vGr14v7W+PZCJYW6dDv2xNFp34jggTd/dVoDNaOT7WY0ef8
+         YAJWpzOF6YpseNxmNKFNuInexsO6X43ybuHuCtbDTUikqvg5e0y1qM0UyMrdwF9YubSR
+         0/oWo+9Qlchu84qHASkWEzI2up/sSYg/7NLuo8SOPGsd2pxZ5+C4ALOBeWxv+yT44Zj4
+         di7pMcFhvE72g+4AxiK3oC3DI233SN8LeQKwxQOyCcE9819KUX7h/5/wW9qdUH1PM+62
+         4syrgI9wWIqF8AVTjoTeuHalYVQHh5/Hu4QKI99ZoWpjSYGRccfhKcJYupPqJJlso4FP
+         Ahkg==
+X-Gm-Message-State: ACgBeo2Y/kStegLQM83/vITyt8b3yQM16SWZpdX4g/LDwZUo/fYCgeeg
+        j+nMshQwXJrDXI9vjo7VgUrbUw==
+X-Google-Smtp-Source: AA6agR7azsge6TFNAr9bF+JPxyoBWZJ1WthoY2HFC76CWhDoB+va44aEwoh3LRpXMQfydp0cB3+i6g==
+X-Received: by 2002:a62:3347:0:b0:53d:f935:9f01 with SMTP id z68-20020a623347000000b0053df9359f01mr4811289pfz.8.1662470016946;
+        Tue, 06 Sep 2022 06:13:36 -0700 (PDT)
+Received: from [10.255.159.85] ([139.177.225.233])
+        by smtp.gmail.com with ESMTPSA id y1-20020a17090264c100b00172b87d97cbsm1778071pli.67.2022.09.06.06.13.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Sep 2022 06:13:35 -0700 (PDT)
+Message-ID: <be071d5a-ff2d-d06e-2f89-f2ca247dd19e@bytedance.com>
+Date:   Tue, 6 Sep 2022 21:13:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.1
+Subject: Re: [PATCH v4 00/10] sched/psi: some optimizations and extensions
+To:     hannes@cmpxchg.org, tj@kernel.org
+Cc:     surenb@google.com, mkoutny@suse.com, mingo@redhat.com,
+        peterz@infradead.org, gregkh@linuxfoundation.org, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
+References: <20220825164111.29534-1-zhouchengming@bytedance.com>
+Content-Language: en-US
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20220825164111.29534-1-zhouchengming@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 06-09-22 18:37:40, Zhongkun He wrote:
-> > On Mon 05-09-22 18:30:55, Zhongkun He wrote:
-> > > Hi Michal, thanks for your reply.
-> > > 
-> > > The current 'mempolicy' is hierarchically independent. The default value of
-> > > the child is to inherit from the parent. The modification of the child
-> > > policy will not be restricted by the parent.
-> > 
-> > This breaks cgroup fundamental property of hierarchical enforcement of
-> > each property. And as such it is a no go.
-> > 
-> > > Of course, there are other options, such as the child's policy mode must be
-> > > the same as the parent's. node can be the subset of parent's, but the
-> > > interleave type will be complicated, that's why hierarchy independence is
-> > > used. It would be better if you have other suggestions?
-> > 
-> > Honestly, I am not really sure cgroup cpusets is a great fit for this
-> > usecase. It would be probably better to elaborate some more what are the
-> > existing shortcomings and what you would like to achieve. Just stating
-> > the syscall is a hard to use interface is not quite clear on its own.
-> > 
-> > Btw. have you noticed this question?
-> > 
-> > > > What is the hierarchical behavior of the policy? Say parent has a
-> > > > stronger requirement (say bind) than a child (prefer)?
-> > > > > How to use the mempolicy interface:
-> > > > > 	echo prefer:2 > /sys/fs/cgroup/zz/cpuset.mems.policy
-> > > > > 	echo bind:1-3 > /sys/fs/cgroup/zz/cpuset.mems.policy
-> > > > >           echo interleave:0,1,2,3 >/sys/fs/cgroup/zz/cpuset.mems.policy
-> > > > 
-> > > > Am I just confused or did you really mean to combine all these
-> > > > together?
-> > 
+Hello,
+
+Could this series be merged into the linux-next?
+
+Thanks.
+
+
+On 2022/8/26 00:41, Chengming Zhou wrote:
+> Hi all,
 > 
-> Hi Michal, thanks for your reply.
+> This patch series are some optimizations and extensions for PSI.
 > 
-> >>Say parent has a stronger requirement (say bind) than a child(prefer)?
+> patch 1/10 fix periodic aggregation shut off problem introduced by earlier
+> commit 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups").
 > 
-> Yes, combine all these together.
-
-What is the semantic of the resulting policy?
-
-> The parent's task will use 'bind', child's
-> use 'prefer'.This is the current implementation, and we can discuss and
-> modify it together if there are other suggestions.
->
-> 1:Existing shortcomings
+> patch 2-4 are some misc optimizations, so put them in front of this series.
 > 
-> In our use case, the application and the control plane are two separate
-> systems. When the application is created, it doesn't know how to use memory,
-> and it doesn't care. The control plane will decide the memory usage policy
-> based on different reasons (the attributes of the application itself, the
-> priority, the remaining resources of the system). Currently, numactl is used
-> to set it at program startup, and the child process will inherit the
-> mempolicy.
-
-Yes this is common practice I have seen so far.
-
-> But we can't dynamically adjust the memory policy, except
-> restart, the memory policy will not change.
-
-Do you really need to change the policy itself or only the effective
-nodemask? I mean what is your usecase to go from say mbind to preferred
-policy?  Do you need any other policy than bind and preferred?
- 
-> 2:Our goals
+> patch 5/10 optimize task switch inside shared cgroups when in_memstall status
+> of prev task and next task are different.
 > 
-> For the above reasons, we want to create a mempolicy at the cgroup level.
-> Usually processes under a cgroup have the same priority and attributes, and
-> we can dynamically adjust the memory allocation strategy according to the
-> remaining resources of the system. For example, a low-priority cgroup uses
-> the 'bind:2-3' policy, and a high-priority cgroup uses bind:0-1. When
-> resources are insufficient, it will be changed to bind:3, bind:0-2 by
-> control plane, etc.Further more, more mempolicy can be extended, such as
-> allocating memory according to node weight, etc.
-
-Yes, I do understand that you want to change the node affinity and that
-is already possible with cpuset cgroup. The existing constrain is that
-the policy is hardcoded mbind IIRC. So you cannot really implement a dynamic
-preferred policy which would make some sense to me. The question is how
-to implement that with a sensible semantic. It is hard to partition the
-system into several cgroups if subset allows to spill over to others.
-Say something like the following
-	root (nodes=0-3)
-       /    \
-A (0, 1)     B (2, 3)
-
-if both are MBIND then this makes sense because they are kinda isolated
-(at least for user allocations) but if B is PREFERRED and therefore
-allowed to use nodes 0 and 1 then it can deplete the memory from A and
-therefore isolation doesn't work at all.
-
-I can imagine that the all cgroups would use PREFERRED policy and then
-nobody can expect anything and the configuration is mostly best effort.
-But it feels like this is an abuse of the cgroup interface and a proper
-syscall interface is likely due. Would it make more sense to add
-pidfd_set_mempolicy and allow sufficiently privileged process to
-manipulate default memory policy of a remote process?
--- 
-Michal Hocko
-SUSE Labs
+> patch 6/10 remove NR_ONCPU task accounting to save 4 bytes in the first
+> cacheline to be used by the following patch 7/10, which introduce new
+> PSI resource PSI_IRQ to track IRQ/SOFTIRQ pressure stall information.
+> 
+> patch 8-9 cache parent psi_group in struct psi_group to speed up the
+> hot iteration path.
+> 
+> patch 10/10 introduce a per-cgroup interface "cgroup.pressure" to disable
+> or re-enable PSI in the cgroup level, and we implement hiding and unhiding
+> the pressure files per Tejun's suggestion[1], which depends on his work[2].
+> 
+> [1] https://lore.kernel.org/all/YvqjhqJQi2J8RG3X@slm.duckdns.org/
+> [2] https://lore.kernel.org/all/20220820000550.367085-1-tj@kernel.org/
+> 
+> Performance test using mmtests/config-scheduler-perfpipe in
+> /user.slice/user-0.slice/session-4.scope:
+> 
+>                                  next                patched       patched/only-leaf
+> Min       Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+> 1st-qrtle Time        8.90 (   0.00%)        8.58 (   3.63%)        8.05 (   9.58%)
+> 2nd-qrtle Time        8.94 (   0.00%)        8.61 (   3.65%)        8.09 (   9.50%)
+> 3rd-qrtle Time        8.99 (   0.00%)        8.65 (   3.75%)        8.15 (   9.35%)
+> Max-1     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+> Max-5     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+> Max-10    Time        8.84 (   0.00%)        8.55 (   3.20%)        8.04 (   9.05%)
+> Max-90    Time        9.04 (   0.00%)        8.67 (   4.10%)        8.18 (   9.51%)
+> Max-95    Time        9.04 (   0.00%)        8.68 (   4.03%)        8.20 (   9.26%)
+> Max-99    Time        9.07 (   0.00%)        8.73 (   3.82%)        8.25 (   9.11%)
+> Max       Time        9.12 (   0.00%)        8.89 (   2.54%)        8.27 (   9.29%)
+> Amean     Time        8.95 (   0.00%)        8.62 *   3.67%*        8.11 *   9.43%*
+> 
+> Big thanks to Johannes Weiner, Tejun Heo and Michal Koutný for your
+> suggestions and review!
+> 
+> 
+> Changes in v4:
+>  - Collect Acked-by tags from Johannes Weiner.
+>  - Add many clear comments and changelogs per Johannes Weiner.
+>  - Replace for_each_psi_group() with better open-code.
+>  - Change to use better names cgroup_pressure_show() and
+>    cgroup_pressure_write().
+>  - Change to use better name psi_cgroup_restart() and only
+>    call it on enabling.
+> 
+> Changes in v3:
+>  - Rebase on linux-next and reorder patches to put misc optimizations
+>    patches in the front of this series.
+>  - Drop patch "sched/psi: don't change task psi_flags when migrate CPU/group"
+>    since it caused a little performance regression and it's just
+>    code refactoring, so drop it.
+>  - Don't define PSI_IRQ and PSI_IRQ_FULL when !CONFIG_IRQ_TIME_ACCOUNTING,
+>    in which case they are not used.
+>  - Add patch 8/10 "sched/psi: consolidate cgroup_psi()" make cgroup_psi()
+>    can handle all cgroups including root cgroup, make patch 9/10 simpler.
+>  - Rename interface to "cgroup.pressure" and add some explanation
+>    per Michal's suggestion.
+>  - Hide and unhide pressure files when disable/re-enable cgroup PSI,
+>    depends on Tejun's work.
+> 
+> Changes in v2:
+>  - Add Acked-by tags from Johannes Weiner. Thanks for review!
+>  - Fix periodic aggregation wakeup for common ancestors in
+>    psi_task_switch().
+>  - Add patch 7/10 from Johannes Weiner, which remove NR_ONCPU
+>    task accounting to save 4 bytes in the first cacheline.
+>  - Remove "psi_irq=" kernel cmdline parameter in last version.
+>  - Add per-cgroup interface "cgroup.psi" to disable/re-enable
+>    PSI stats accounting in the cgroup level.
+> 
+> 
+> Chengming Zhou (9):
+>   sched/psi: fix periodic aggregation shut off
+>   sched/psi: don't create cgroup PSI files when psi_disabled
+>   sched/psi: save percpu memory when !psi_cgroups_enabled
+>   sched/psi: move private helpers to sched/stats.h
+>   sched/psi: optimize task switch inside shared cgroups again
+>   sched/psi: add PSI_IRQ to track IRQ/SOFTIRQ pressure
+>   sched/psi: consolidate cgroup_psi()
+>   sched/psi: cache parent psi_group to speed up groups iterate
+>   sched/psi: per-cgroup PSI accounting disable/re-enable interface
+> 
+> Johannes Weiner (1):
+>   sched/psi: remove NR_ONCPU task accounting
+> 
+>  Documentation/admin-guide/cgroup-v2.rst |  23 ++
+>  include/linux/cgroup-defs.h             |   3 +
+>  include/linux/cgroup.h                  |   5 -
+>  include/linux/psi.h                     |  12 +-
+>  include/linux/psi_types.h               |  29 ++-
+>  kernel/cgroup/cgroup.c                  | 106 ++++++++-
+>  kernel/sched/core.c                     |   1 +
+>  kernel/sched/psi.c                      | 280 +++++++++++++++++-------
+>  kernel/sched/stats.h                    |   6 +
+>  9 files changed, 362 insertions(+), 103 deletions(-)
+> 
