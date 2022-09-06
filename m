@@ -2,70 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E585AF1F4
-	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 19:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD465AF2E4
+	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 19:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbiIFRKI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Sep 2022 13:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        id S230502AbiIFRlj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Sep 2022 13:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240174AbiIFRJc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 13:09:32 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028F7B2A;
-        Tue,  6 Sep 2022 09:58:50 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 123so2583246pfy.2;
-        Tue, 06 Sep 2022 09:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=XjgZYFNOvrIhYZ3W1M3muFB2Y46u3ki4tze0cD2gLBc=;
-        b=ouk+eTxl/O/1JqFYWDJvPJNXiyQ5m25943fmAjXirSUWWjqkhRjxfDq+7RNzmciuSr
-         yUZjs545kA7NztlBMf5GNnN5KBFOxBK7KUVMYdkVeHatFQdVY7JmNlH5mgTyeYyWDVXk
-         GHtVen0zUJEj6WOf1o1I9vsAnpA5Cdpn0tnJb2UYehMtDs1FZHl1qs15jt3xsNR8gD5R
-         tFeuYTsj55zKEmB/pK97yGltxAgftipubcdfap3GvDFtZ0gCpC1yo/IR7Hr94LkJACek
-         /wR5ySbLcxLsTkCQHbhrf6Jlmh/ZC8L9ASoNDuJ5VkDU8WLpShI0mna/QGevaLWHrmTV
-         RQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=XjgZYFNOvrIhYZ3W1M3muFB2Y46u3ki4tze0cD2gLBc=;
-        b=WrCloHbPGe2xlFVKXuVFkx1hlPAkvF2lC2dINK8ITyj2t2W/v/K98iPTc9QD96zffT
-         QX2bi2BAo9STVotG6lidT2dBy15rgqh2Ay8cSXSO76o4y0UfeV/KqD1vUrcUd6kONwSD
-         NBdFn6uTN7ri/TlLFXvvY+4rzHqr0tVlMTaycgWtkQJqPRw24jzwzZ2U4Jy05duLjx1k
-         pSWkNNs1fFwFs5tihELxMsZAewUioyM4T8U6w0fcF7x8FamCrDZ9sAFpzzzXzV3ICSes
-         SFbrndO3Ex6OlJ1HSNjc7Q6CJCAttLE2HeHQq5zJdGM0PKgGIKShbUVoeoil1nr5wiRW
-         YpzA==
-X-Gm-Message-State: ACgBeo3K4I0XkxszMpcZTVxxkkTrmdIwwx/FjA+DeZH730/KK9MdFQUm
-        MP5/YfxzkKHuZwT7MFiSDgssJsDCvdY=
-X-Google-Smtp-Source: AA6agR7fFN6HwW9TVFDKjD67QX7bBbjkk+n3g9IJWmgeruCvlQobsvp/z+vIjLXz7yT7K5l+9FC9LA==
-X-Received: by 2002:a65:6048:0:b0:412:73c7:cca9 with SMTP id a8-20020a656048000000b0041273c7cca9mr48303700pgp.257.1662483529204;
-        Tue, 06 Sep 2022 09:58:49 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id y8-20020a17090322c800b0016f85feae65sm10163589plg.87.2022.09.06.09.58.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Sep 2022 09:58:48 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 6 Sep 2022 06:58:47 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     cgroups@vger.kernel.org
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH cgroup/for-6.0-fixes] cpuset: Add Waiman Long as a cpuset
- maintainer
-Message-ID: <Yxd8R2VJFM44Hy6M@slm.duckdns.org>
-References: <Yxd8MUTOPbxvZVOk@slm.duckdns.org>
+        with ESMTP id S230175AbiIFRlh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 13:41:37 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47D6260E;
+        Tue,  6 Sep 2022 10:41:35 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MMWmS6PPPz9xFgS;
+        Wed,  7 Sep 2022 00:58:16 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwA34JNSfRdjftYoAA--.8234S2;
+        Tue, 06 Sep 2022 18:03:26 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, jakub@cloudflare.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, houtao1@huawei.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 0/7] bpf: Add fd modes check for map iter and extend libbpf
+Date:   Tue,  6 Sep 2022 19:02:54 +0200
+Message-Id: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yxd8MUTOPbxvZVOk@slm.duckdns.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwA34JNSfRdjftYoAA--.8234S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4kWryxAr1fAw4rWr4kZwb_yoW8uw4Dpr
+        Z3Gryakr1FvFWI9F9rGrsIyryfJa4xW3y5G3Z7Jr15Zry5XF4DArW8GF43Gry3u3s3W3Z3
+        Zr4Ykr9xGw17uFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
+        0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
+        F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4I
+        kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
+        xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUsfMaUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj4KtRwABsa
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,18 +65,55 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 06, 2022 at 06:58:25AM -1000, Tejun Heo wrote:
-> Waiman has been very active with cpuset recently and I've been cc'ing him
-> for cpuset related changes for a while now. Let's make him a cpuset
-> maintainer.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: Zefan Li <lizefan.x@bytedance.com>
-> Cc: Waiman Long <longman@redhat.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Applying to cgroup/for-6.0-fixes.
+Add a missing fd modes check in map iterators, potentially causing
+unauthorized map writes by eBPF programs attached to the iterator. Use this
+patch set as an opportunity to start a discussion with the cgroup
+developers about whether a security check is missing or not for their
+iterator.
 
-Thanks.
+Also, extend libbpf with the _opts variant of bpf_*_get_fd_by_id(). Only
+bpf_map_get_fd_by_id_opts() is really useful in this patch set, to ensure
+that the creation of a map iterator fails with a read-only fd.
+
+Add all variants in this patch set for symmetry with
+bpf_map_get_fd_by_id_opts(), and because all the variants share the same
+opts structure. Also, add all the variants here, to shrink the patch set
+fixing map permissions requested by bpftool, so that the remaining patches
+are only about the latter.
+
+Finally, extend the bpf_iter test with the read-only fd check, and test
+each _opts variant of bpf_*_get_fd_by_id().
+
+Roberto Sassu (7):
+  bpf: Add missing fd modes check for map iterators
+  libbpf: Define bpf_get_fd_opts and introduce
+    bpf_map_get_fd_by_id_opts()
+  libbpf: Introduce bpf_prog_get_fd_by_id_opts()
+  libbpf: Introduce bpf_btf_get_fd_by_id_opts()
+  libbpf: Introduce bpf_link_get_fd_by_id_opts()
+  selftests/bpf: Ensure fd modes are checked for map iters and destroy
+    links
+  selftests/bpf: Add tests for _opts variants of libbpf
+
+ include/linux/bpf.h                           |   2 +-
+ kernel/bpf/inode.c                            |   2 +-
+ kernel/bpf/map_iter.c                         |   3 +-
+ kernel/bpf/syscall.c                          |   8 +-
+ net/core/bpf_sk_storage.c                     |   3 +-
+ net/core/sock_map.c                           |   3 +-
+ tools/lib/bpf/bpf.c                           |  47 +++++-
+ tools/lib/bpf/bpf.h                           |  16 ++
+ tools/lib/bpf/libbpf.map                      |  10 +-
+ tools/lib/bpf/libbpf_version.h                |   2 +-
+ .../selftests/bpf/prog_tests/bpf_iter.c       |  34 +++-
+ .../bpf/prog_tests/libbpf_get_fd_opts.c       | 145 ++++++++++++++++++
+ .../bpf/progs/test_libbpf_get_fd_opts.c       |  49 ++++++
+ 13 files changed, 309 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_opts.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_libbpf_get_fd_opts.c
 
 -- 
-tejun
+2.25.1
+
