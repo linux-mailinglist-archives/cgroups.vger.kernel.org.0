@@ -2,378 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7DB5AE45E
-	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 11:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF44A5AE579
+	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 12:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbiIFJh3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Sep 2022 05:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S234000AbiIFKh4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Sep 2022 06:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbiIFJh2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 05:37:28 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EB06581D
-        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 02:37:26 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id cu2so21957300ejb.0
-        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 02:37:26 -0700 (PDT)
+        with ESMTP id S233857AbiIFKhz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 06:37:55 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFD551419
+        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 03:37:54 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id q15-20020a17090a304f00b002002ac83485so7030130pjl.0
+        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 03:37:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=unimore.it; s=google;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date;
-        bh=8ab4/KXC/VCJGrAM6wTzpCaYMhm/3tELW6Q/pF3d2yg=;
-        b=L3k2+HgNwBNOQ+ow8ojCGK5dmzXXckSbJ+ltZKHL+uHxZCqB3njwCzg4VdkEf9pYyo
-         EHv2NqYduPH+u4g9bR0foiCS+VYuNHJVpX8cgX5XNnWyA4eA9MNFy81mtKNNXVKGyXYu
-         sMK0dhdUQPuxSHK/l42tDAlBU7HRuTmuzbk2g=
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
+        bh=Xz8bdPgR7exYL3R9SL9LcFFqWqgFZVil8ZYBWFtqEUU=;
+        b=cA7Hl5ls5U/OscRp4DobHKMQjNA6D5C4jKC+7Av/PRDOkYb+XEGwmPKNz+0wLOS61X
+         fhy0qVVTI5ldKJ0RhCmSDZqq/RQePtu4iAEe6umgDYn0MBNIb9KyPYXriWh+6o/CF8Ev
+         0SP2kzY3jn3Ut7Uwr3OOVvEv5KLxDMgFehbIVflowPFwUBRRMOLtK6Poj76c5WL10QlO
+         UZZU0VV5LbhyEHUDIUhN0ptJM5SMq1MRRmLd4NfX9PAtqxwkwlH2NCOb6SDzLvD0tb4k
+         HBIsZ8wCBCeGVl7izNloEowlXHHdNdvPd5dTbNnKUop2/NhG/cwTOuW0nFYVuh7pSAbQ
+         i+6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=8ab4/KXC/VCJGrAM6wTzpCaYMhm/3tELW6Q/pF3d2yg=;
-        b=mzZitDuOF7ZOap8r2HNxUEY2mYc4RlQLhe2G7bWGriyjzIKV+7WTl3PJ1o6xSFQPRH
-         9shyLwWwnndU+1DE8Txfqb/G6OOfvnW/YRBEzr9fWC50P41jCo8E2E3IjvGWo2aFtOw/
-         FYsjmIytkbgnp6mwIYlwyfjqLxsW3BPm4HpE7niojJJFE4YVkVwIIYsi96IPe6CvQeYw
-         jDD4jjXeo9I2SPX2z8QiHsMHrqXueHuK1qlKtYSxlLPimxUh4fTEk9qWU2lzNq8tKzPk
-         YDCsvHZD0BjHpxL80TdU5pSU0BXKOMZDaAqvNW00HDbV1M74+xgUv2m01ZGXGr/LBqVN
-         Yd3A==
-X-Gm-Message-State: ACgBeo0OEVMGD58zWbzGqdFTb4dI/aUZZ6xTOAAzM3Pwp01DNa+deR3d
-        jr+Q63HYhR6Il8wcSqO2/hzu
-X-Google-Smtp-Source: AA6agR5oMrn7st5T+/R0moL8sWUBXk+gefDuxpdDuSrvcue7dAZwiiodmMrEtXkB8slie9xV103N4Q==
-X-Received: by 2002:a17:906:7954:b0:742:7a6:b179 with SMTP id l20-20020a170906795400b0074207a6b179mr24629684ejo.679.1662457044644;
-        Tue, 06 Sep 2022 02:37:24 -0700 (PDT)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id g15-20020a170906538f00b0076f927ed0f1sm265565ejo.127.2022.09.06.02.37.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Sep 2022 02:37:24 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH -next v10 3/4] block, bfq: refactor the counting of
- 'num_groups_with_pending_reqs'
-From:   Paolo Valente <paolo.valente@unimore.it>
-In-Reply-To: <e6b53794-f93f-92b2-1f45-35ae81a28a5c@huaweicloud.com>
-Date:   Tue, 6 Sep 2022 11:37:22 +0200
-Cc:     Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F758A356-EE6B-4B7B-95E2-6414616C77E4@unimore.it>
-References: <20220610021701.2347602-1-yukuai3@huawei.com>
- <20220610021701.2347602-4-yukuai3@huawei.com>
- <27F2DF19-7CC6-42C5-8CEB-43583EB4AE46@linaro.org>
- <abdbb5db-e280-62f8-0670-536fcb8ec4d9@huaweicloud.com>
- <C2CF100A-9A7C-4300-9A70-1295BC939C66@unimore.it>
- <9b2d667f-6636-9347-08a1-8bd0aa2346f2@huaweicloud.com>
- <2f94f241-445f-1beb-c4a8-73f6efce5af2@huaweicloud.com>
- <55A07102-BE55-4606-9E32-64E884064FB9@unimore.it>
- <5cb0e5bc-feec-86d6-6f60-3c28ee625efd@huaweicloud.com>
- <D89DCF20-27D8-4F8F-B8B0-FD193FC4F18D@unimore.it>
- <e6b53794-f93f-92b2-1f45-35ae81a28a5c@huaweicloud.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date;
+        bh=Xz8bdPgR7exYL3R9SL9LcFFqWqgFZVil8ZYBWFtqEUU=;
+        b=mJkWpBV9oK1JfYpVQNF5GHrv/6d2MWYkI7WxrWY7BwWCmV28m4vzdGw7CyiBUaAN/Z
+         eXYBVRYHH5fB071yh0T1P3gK/SZCsKsRuOkM/n8xsQLf/PqVKdWjf0L/3NkVVymRZIw0
+         p6nx0kA9bKXq/c4xNB43Z+7KuYOhDFx69W4S/9nf/hASbK7pnPltMXiiyozducH63gjq
+         /pQGz29YOgSIokph6MNbAsIsueBQoULd22221reRfpFexEAHjc8pqmSb8U9QgYWKG0EQ
+         ouMN5rAWuzB2BQlHjdM9NZDEATIm3ftvdVI0/AAHvjP4nqggAGQDCYgTkO+m8wqGHHBI
+         dyag==
+X-Gm-Message-State: ACgBeo0GLHkRxlxjTxRweYreNQu9aU+W5fX4bYAwWSfr581Bv6ttLpSe
+        W9jdYq+eXhN4H4wshckwYKEy0w==
+X-Google-Smtp-Source: AA6agR58jEPcuQgEpaDM12qAcr3UOiSCl01qGenKN5dkhfPeBha2n6tYh8xoaVvbyMRX8m7ZKFA5dQ==
+X-Received: by 2002:a17:903:228c:b0:16e:df74:34e5 with SMTP id b12-20020a170903228c00b0016edf7434e5mr53043766plh.49.1662460673860;
+        Tue, 06 Sep 2022 03:37:53 -0700 (PDT)
+Received: from [10.4.233.171] ([139.177.225.241])
+        by smtp.gmail.com with ESMTPSA id a16-20020a170902ecd000b00176db67ce98sm442737plh.3.2022.09.06.03.37.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Sep 2022 03:37:53 -0700 (PDT)
+Message-ID: <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
+Date:   Tue, 6 Sep 2022 18:37:40 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
+ mems.policy type.
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, lizefan.x@bytedance.com,
+        wuyun.abel@bytedance.com
+References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
+ <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
+ <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
+ <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
+From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
+In-Reply-To: <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+> On Mon 05-09-22 18:30:55, Zhongkun He wrote:
+>> Hi Michal, thanks for your reply.
+>>
+>> The current 'mempolicy' is hierarchically independent. The default value of
+>> the child is to inherit from the parent. The modification of the child
+>> policy will not be restricted by the parent.
+> 
+> This breaks cgroup fundamental property of hierarchical enforcement of
+> each property. And as such it is a no go.
+> 
+>> Of course, there are other options, such as the child's policy mode must be
+>> the same as the parent's. node can be the subset of parent's, but the
+>> interleave type will be complicated, that's why hierarchy independence is
+>> used. It would be better if you have other suggestions?
+> 
+> Honestly, I am not really sure cgroup cpusets is a great fit for this
+> usecase. It would be probably better to elaborate some more what are the
+> existing shortcomings and what you would like to achieve. Just stating
+> the syscall is a hard to use interface is not quite clear on its own.
+> 
+> Btw. have you noticed this question?
+> 
+>>> What is the hierarchical behavior of the policy? Say parent has a
+>>> stronger requirement (say bind) than a child (prefer)?
+>>>> How to use the mempolicy interface:
+>>>> 	echo prefer:2 > /sys/fs/cgroup/zz/cpuset.mems.policy
+>>>> 	echo bind:1-3 > /sys/fs/cgroup/zz/cpuset.mems.policy
+>>>>           echo interleave:0,1,2,3 >/sys/fs/cgroup/zz/cpuset.mems.policy
+>>>
+>>> Am I just confused or did you really mean to combine all these
+>>> together?
+>
 
+Hi Michal, thanks for your reply.
 
-> Il giorno 26 ago 2022, alle ore 04:34, Yu Kuai =
-<yukuai1@huaweicloud.com> ha scritto:
->=20
-> Hi, Paolo!
->=20
-> =E5=9C=A8 2022/08/25 22:59, Paolo Valente =E5=86=99=E9=81=93:
->>> Il giorno 11 ago 2022, alle ore 03:19, Yu Kuai =
-<yukuai1@huaweicloud.com <mailto:yukuai1@huaweicloud.com>> ha scritto:
->>>=20
->>> Hi, Paolo
->>>=20
->>> =E5=9C=A8 2022/08/10 18:49, Paolo Valente =E5=86=99=E9=81=93:
->>>>> Il giorno 27 lug 2022, alle ore 14:11, Yu Kuai =
-<yukuai1@huaweicloud.com <mailto:yukuai1@huaweicloud.com>> ha scritto:
->>>>>=20
->>>>> Hi, Paolo
->>>>>=20
->>>> hi
->>>>> Are you still interested in this patchset?
->>>>>=20
->>>> Yes. Sorry for replying very late again.
->>>> Probably the last fix that you suggest is enough, but I'm a little =
-bit
->>>> concerned that it may be a little hasty.  In fact, before this fix, =
-we
->>>> exchanged several messages, and I didn't seem to be very good at
->>>> convincing you about the need to keep into account also in-service
->>>> I/O.  So, my question is: are you sure that now you have a
->>>=20
->>> I'm confused here, I'm pretty aware that in-service I/O(as said =
-pending
->>> requests is the patchset) should be counted, as you suggested in v7, =
-are
->>> you still thinking that the way in this patchset is problematic?
->>>=20
->>> I'll try to explain again that how to track is bfqq has pending =
-pending
->>> requests, please let me know if you still think there are some =
-problems:
->>>=20
->>> patch 1 support to track if bfqq has pending requests, it's
->>> done by setting the flag 'entity->in_groups_with_pending_reqs' when =
-the
->>> first request is inserted to bfqq, and it's cleared when the last
->>> request is completed. specifically the flag is set in
->>> bfq_add_bfqq_busy() when 'bfqq->dispatched' if false, and it's =
-cleared
->>> both in bfq_completed_request() and bfq_del_bfqq_busy() when
->>> 'bfqq->diapatched' is false.
->>>=20
->> This general description seems correct to me. Have you already sent a =
-new version of your patchset?
->=20
-> It's glad that we finially on the same page here.
->=20
+ >>Say parent has a stronger requirement (say bind) than a child(prefer)?
 
-Yep. Sorry for my chronicle delay.
+Yes, combine all these together. The parent's task will use 'bind', 
+child's use 'prefer'.This is the current implementation, and we can 
+discuss and modify it together if there are other suggestions.
 
-> Please take a look at patch 1, which already impelement the above
-> descriptions, it seems to me there is no need to send a new version
-> for now. If you think there are still some other problems, please let
-> me know.
->=20
+1:Existing shortcomings
 
-Patch 1 seems ok to me. I seem to have only one pending comment on this =
-patch (3/4) instead. Let me paste previous stuff here for your =
-convenience:
+In our use case, the application and the control plane are two separate 
+systems. When the application is created, it doesn't know how to use 
+memory, and it doesn't care. The control plane will decide the memory 
+usage policy based on different reasons (the attributes of the 
+application itself, the priority, the remaining resources of the 
+system). Currently, numactl is used to set it at program startup, and 
+the child process will inherit the mempolicy. But we can't dynamically 
+adjust the memory policy, except restart, the memory policy will not change.
 
->>=20
->> -	/*
->> -	 * Next function is invoked last, because it causes bfqq to be
->> -	 * freed if the following holds: bfqq is not in service and
->> -	 * has no dispatched request. DO NOT use bfqq after the next
->> -	 * function invocation.
->> -	 */
-> I would really love it if you leave this comment.  I added it after
-> suffering a lot for a nasty UAF.  Of course the first sentence may
-> need to be adjusted if the code that precedes it is to be removed.
-> Same as above, if this patch is applied, this function will be gone.
+2:Our goals
 
-yes, but this comment now must be moved forward.
+For the above reasons, we want to create a mempolicy at the cgroup 
+level. Usually processes under a cgroup have the same priority and 
+attributes, and we can dynamically adjust the memory allocation strategy 
+according to the remaining resources of the system. For example, a 
+low-priority cgroup uses the 'bind:2-3' policy, and a high-priority 
+cgroup uses bind:0-1. When resources are insufficient, it will be 
+changed to bind:3, bind:0-2 by control plane, etc.Further more, more 
+mempolicy can be extended, such as allocating memory according to node 
+weight, etc.
 
-Looking forward for a new complete version, for a new review.  I'll do
-my best to reply quicker.
-
-Thanks,
-Paolo
+Thanks.
 
 
 
+	
 
 
-> Thanks,
-> Kuai
->> Thanks,
->> Paolo
->>> Thanks,
->>> Kuai
->>>> clear/complete understanding of this non-trivial matter?
->>>> Consequently, are we sure that this last fix is most certainly all =
-we
->>>> need?  Of course, I will check on my own, but if you reassure me on
->>>> this point, I will feel more confident.
->>>> Thanks,
->>>> Paolo
->>>>> =E5=9C=A8 2022/07/20 19:38, Yu Kuai =E5=86=99=E9=81=93:
->>>>>> Hi
->>>>>>=20
->>>>>> =E5=9C=A8 2022/07/20 19:24, Paolo VALENTE =E5=86=99=E9=81=93:
->>>>>>>=20
->>>>>>>=20
->>>>>>>> Il giorno 12 lug 2022, alle ore 15:30, Yu Kuai =
-<yukuai1@huaweicloud.com <mailto:yukuai1@huaweicloud.com> =
-<mailto:yukuai1@huaweicloud.com>> ha scritto:
->>>>>>>>=20
->>>>>>>> Hi!
->>>>>>>>=20
->>>>>>>> I'm copying my reply with new mail address, because Paolo seems
->>>>>>>> didn't receive my reply.
->>>>>>>>=20
->>>>>>>> =E5=9C=A8 2022/06/23 23:32, Paolo Valente =E5=86=99=E9=81=93:
->>>>>>>>> Sorry for the delay.
->>>>>>>>>> Il giorno 10 giu 2022, alle ore 04:17, Yu Kuai =
-<yukuai3@huawei.com <mailto:yukuai3@huawei.com> =
-<mailto:yukuai3@huawei.com>> ha scritto:
->>>>>>>>>>=20
->>>>>>>>>> Currently, bfq can't handle sync io concurrently as long as =
-they
->>>>>>>>>> are not issued from root group. This is because
->>>>>>>>>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
->>>>>>>>>> bfq_asymmetric_scenario().
->>>>>>>>>>=20
->>>>>>>>>> The way that bfqg is counted into =
-'num_groups_with_pending_reqs':
->>>>>>>>>>=20
->>>>>>>>>> Before this patch:
->>>>>>>>>> 1) root group will never be counted.
->>>>>>>>>> 2) Count if bfqg or it's child bfqgs have pending requests.
->>>>>>>>>> 3) Don't count if bfqg and it's child bfqgs complete all the =
-requests.
->>>>>>>>>>=20
->>>>>>>>>> After this patch:
->>>>>>>>>> 1) root group is counted.
->>>>>>>>>> 2) Count if bfqg have pending requests.
->>>>>>>>>> 3) Don't count if bfqg complete all the requests.
->>>>>>>>>>=20
->>>>>>>>>> With this change, the occasion that only one group is =
-activated can be
->>>>>>>>>> detected, and next patch will support concurrent sync io in =
-the
->>>>>>>>>> occasion.
->>>>>>>>>>=20
->>>>>>>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com =
-<mailto:yukuai3@huawei.com> <mailto:yukuai3@huawei.com>>
->>>>>>>>>> Reviewed-by: Jan Kara <jack@suse.cz <mailto:jack@suse.cz> =
-<mailto:jack@suse.cz>>
->>>>>>>>>> ---
->>>>>>>>>> block/bfq-iosched.c | 42 =
-------------------------------------------
->>>>>>>>>> block/bfq-iosched.h | 18 +++++++++---------
->>>>>>>>>> block/bfq-wf2q.c    | 19 ++++---------------
->>>>>>>>>> 3 files changed, 13 insertions(+), 66 deletions(-)
->>>>>>>>>>=20
->>>>>>>>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->>>>>>>>>> index 0ec21018daba..03b04892440c 100644
->>>>>>>>>> --- a/block/bfq-iosched.c
->>>>>>>>>> +++ b/block/bfq-iosched.c
->>>>>>>>>> @@ -970,48 +970,6 @@ void __bfq_weights_tree_remove(struct =
-bfq_data *bfqd,
->>>>>>>>>> void bfq_weights_tree_remove(struct bfq_data *bfqd,
->>>>>>>>>>     struct bfq_queue *bfqq)
->>>>>>>>>> {
->>>>>>>>>> -struct bfq_entity *entity =3D bfqq->entity.parent;
->>>>>>>>>> -
->>>>>>>>>> -for_each_entity(entity) {
->>>>>>>>>> -struct bfq_sched_data *sd =3D entity->my_sched_data;
->>>>>>>>>> -
->>>>>>>>>> -if (sd->next_in_service || sd->in_service_entity) {
->>>>>>>>>> -/*
->>>>>>>>>> -* entity is still active, because either
->>>>>>>>>> -* next_in_service or in_service_entity is not
->>>>>>>>>> -* NULL (see the comments on the definition of
->>>>>>>>>> -* next_in_service for details on why
->>>>>>>>>> -* in_service_entity must be checked too).
->>>>>>>>>> -*
->>>>>>>>>> -* As a consequence, its parent entities are
->>>>>>>>>> -* active as well, and thus this loop must
->>>>>>>>>> -* stop here.
->>>>>>>>>> -*/
->>>>>>>>>> -break;
->>>>>>>>>> -}
->>>>>>>>>> -
->>>>>>>>>> -/*
->>>>>>>>>> -* The decrement of num_groups_with_pending_reqs is
->>>>>>>>>> -* not performed immediately upon the deactivation of
->>>>>>>>>> -* entity, but it is delayed to when it also happens
->>>>>>>>>> -* that the first leaf descendant bfqq of entity gets
->>>>>>>>>> -* all its pending requests completed. The following
->>>>>>>>>> -* instructions perform this delayed decrement, if
->>>>>>>>>> -* needed. See the comments on
->>>>>>>>>> -* num_groups_with_pending_reqs for details.
->>>>>>>>>> -*/
->>>>>>>>>> -if (entity->in_groups_with_pending_reqs) {
->>>>>>>>>> -entity->in_groups_with_pending_reqs =3D false;
->>>>>>>>>> -bfqd->num_groups_with_pending_reqs--;
->>>>>>>>>> -}
->>>>>>>>>> -}
->>>>>>>>> With this part removed, I'm missing how you handle the =
-following
->>>>>>>>> sequence of events:
->>>>>>>>> 1.  a queue Q becomes non busy but still has dispatched =
-requests, so
->>>>>>>>> it must not be removed from the counter of queues with pending =
-reqs
->>>>>>>>> yet
->>>>>>>>> 2.  the last request of Q is completed with Q being still idle =
-(non
->>>>>>>>> busy).  At this point Q must be removed from the counter.  It =
-seems to
->>>>>>>>> me that this case is not handled any longer
->>>>>>>> Hi, Paolo
->>>>>>>>=20
->>>>>>>> 1) At first, patch 1 support to track if bfqq has pending =
-requests, it's
->>>>>>>> done by setting the flag 'entity->in_groups_with_pending_reqs' =
-when the
->>>>>>>> first request is inserted to bfqq, and it's cleared when the =
-last
->>>>>>>> request is completed(based on weights_tree insertion and =
-removal).
->>>>>>>>=20
->>>>>>>=20
->>>>>>> In patch 1 I don't see the flag cleared for the =
-request-completion event :(
->>>>>>>=20
->>>>>>> The piece of code involved is this:
->>>>>>>=20
->>>>>>> static void bfq_completed_request(struct bfq_queue *bfqq, struct =
-bfq_data *bfqd)
->>>>>>> {
->>>>>>> u64 now_ns;
->>>>>>> u32 delta_us;
->>>>>>>=20
->>>>>>> bfq_update_hw_tag(bfqd);
->>>>>>>=20
->>>>>>> bfqd->rq_in_driver[bfqq->actuator_idx]--;
->>>>>>> bfqd->tot_rq_in_driver--;
->>>>>>> bfqq->dispatched--;
->>>>>>>=20
->>>>>>> if (!bfqq->dispatched && !bfq_bfqq_busy(bfqq)) {
->>>>>>> /*
->>>>>>> * Set budget_timeout (which we overload to store the
->>>>>>> * time at which the queue remains with no backlog and
->>>>>>> * no outstanding request; used by the weight-raising
->>>>>>> * mechanism).
->>>>>>> */
->>>>>>> bfqq->budget_timeout =3D jiffies;
->>>>>>>=20
->>>>>>> bfq_weights_tree_remove(bfqd, bfqq);
->>>>>>> }
->>>>>>> ...
->>>>>>>=20
->>>>>>> Am I missing something?
->>>>>>=20
->>>>>> I add a new api bfq_del_bfqq_in_groups_with_pending_reqs() in =
-patch 1
->>>>>> to clear the flag, and it's called both from bfq_del_bfqq_busy() =
-and
->>>>>> bfq_completed_request(). I think you may miss the later:
->>>>>>=20
->>>>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->>>>>> index 0d46cb728bbf..0ec21018daba 100644
->>>>>> --- a/block/bfq-iosched.c
->>>>>> +++ b/block/bfq-iosched.c
->>>>>> @@ -6263,6 +6263,7 @@ static void bfq_completed_request(struct =
-bfq_queue *bfqq, struct bfq_data *bfqd)
->>>>>>           */
->>>>>>          bfqq->budget_timeout =3D jiffies;
->>>>>>=20
->>>>>> +        bfq_del_bfqq_in_groups_with_pending_reqs(bfqq);
->>>>>>          bfq_weights_tree_remove(bfqd, bfqq);
->>>>>>      }
->>>>>>=20
->>>>>> Thanks,
->>>>>> Kuai
->>>>>>>=20
->>>>>>> Thanks,
->>>>>>> Paolo
->>>>>=20
->>>> .
->=20
 
