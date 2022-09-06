@@ -2,72 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 915FD5AF47E
-	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 21:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FC05AF480
+	for <lists+cgroups@lfdr.de>; Tue,  6 Sep 2022 21:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbiIFThU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Sep 2022 15:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        id S229889AbiIFTkA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Sep 2022 15:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbiIFThT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 15:37:19 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C69910A9
-        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 12:37:18 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id x1so7929187plv.5
-        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 12:37:18 -0700 (PDT)
+        with ESMTP id S229757AbiIFTj7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Sep 2022 15:39:59 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936792A710
+        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 12:39:52 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id bh13so11545401pgb.4
+        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 12:39:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date;
-        bh=XJcSopcn6kgTqhrI+8/s9+7y1PjjuR0jL1WX7rSqHbk=;
-        b=fTqAmgzRhEwcGwkE0UoFGilloqSV9UoPG09wyE7gsvAfrtF+KGwZme1wLJf7vcAFwq
-         pdeZnMkgDyIN2YVg+xwRZ5j0O2ii9gLe/p/fyuPKxB8tmy9YI+phLxVrIQLr73PkM4R7
-         LjjciXRzs3h9cLvAymNkHOXHBNIkyPvbo+jPIgOhvrIrsBsICuJgL9d/WLkCm7Li+eZq
-         JxmNx/rGn79jjmWZwhu5wwlOcLLZh3LMB45d6JkDvCdgcuD8+Uncrok3HJDImZs+mTCB
-         UINHhbrq203isIaXOcNHpLmXi74vg4UPOAdxAz+YJu3cLOGxswTfqOrWZHcE18DxrzEu
-         BFxw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
+        bh=nlsO3qydHURiPESopIov6MAWpclh/6/lYNHj0fbMC4I=;
+        b=F95JAOTLsk80DmB2KeBQgUrMKsGMMDbmiSIJ2kqa34nWGZYTBl8qput1L3OvMfrpT/
+         7wYPdbsd+Fi40BVF+9zcjae67Ef+gtoJ7K6An5VoNJVwtUs/3vKY7r9si0wn6Selg86T
+         DBRnMRgfYKDRb/L0N3PFfwW7IpTNqxBruOrLKYXsw2n2fzKSff6w6vJ38x+Sn1Bq3cob
+         GCBx+lymS4kLxe5VAN5g/DsGnOUu6r31+icQfgTovFcAXY0CPRiJqH5TaKIjKZQFi9l4
+         chRU/9Dw9ZWxxkhxSrs/MNuKS8DxxTL3JS7U3VFBaiihZtzSKNCh9C/0AM8DkLmfOYZx
+         vL0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=XJcSopcn6kgTqhrI+8/s9+7y1PjjuR0jL1WX7rSqHbk=;
-        b=jb/8ZZ7qMITT8jIFwec4hcbspzXR31TBEvANoaCcFXeoHxNsRrhIs3ah2/u3OZSbaz
-         hvcLKDkG1RsSQ/cAq6F5FawoQcTCly5fgvfdJp/Kzq0Ypot8Hyil1CtzT95IHYxGRBYN
-         GF4To9SC0RyzUUA4qxjIkWN5OoIZpIB/ZST4dQm8XVJOO0l5v54l/zDNiLqT+rdnxOSl
-         hUPLQXcFKOPl08WRDkbd2ygB4ZFMF9IgUvT39Y2/9znIGqatfHj7Q0OY43BpoEF21F8c
-         K42CRtg9qO05ZIW3ZxqnuCynIUoN2JhQHYMBU1UyTsnLibaXUTBCd7QX2UQbO01a2Jt+
-         9+Zg==
-X-Gm-Message-State: ACgBeo0kdW7n2spu/etN8k0X1KhGE+b6PpVM/U9FJ/IhZZItGlOt6+N/
-        1ELMpUpOEOxGDSa+b5aGz0o=
-X-Google-Smtp-Source: AA6agR52cxbyA6nroPYH+CRlFIp1xo8iYHhGjwPk0o63PYhUMDSM5g/DSpuiqvDdBRRezxTYjw1Uwg==
-X-Received: by 2002:a17:903:204b:b0:176:a6c5:4277 with SMTP id q11-20020a170903204b00b00176a6c54277mr77326pla.24.1662493038137;
-        Tue, 06 Sep 2022 12:37:18 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=nlsO3qydHURiPESopIov6MAWpclh/6/lYNHj0fbMC4I=;
+        b=n/GhDHcXBNcF8y86IUu0N3412FgzTwjsxM0kNEcDmpxQQHbJfW4t0WmjlEpglYeX9c
+         0qR43m2263ozDspygm1kmQGNIwKyKD7krkWcpN8xE4/sJa9EHA4A7SuC7U7QApyU/Ud4
+         YZh0FgIn/QRithxHcSXkxRxQQTWVFtTUO2bZ1LpMdiofkcGZCBNMRE5DYZPd+Cz4aGEM
+         VCybkGoDdAAhXh5T+uuEEStGkqI3hF9bgQq17Y/N8rHuk6sfpqmQnyBoBLI1nW5znKqe
+         +DjE0RgdOWPs5bZrcFKOiC9cxWbdhqBSEhW91CtJ4u6iD17TO9CCxJvipt982OGDZWZT
+         gULA==
+X-Gm-Message-State: ACgBeo1VB57+1dUo7uSJmRyLbPyumPfunaiNGwNVITDSw19tMzEhniih
+        X+fIBcu7RnDcATuLK+PDqWE=
+X-Google-Smtp-Source: AA6agR6QSdOFGOEmMBTU1S8RKHTCHjPXZccTb6DxOCdvdLTMUt3WKSwLTu/+TVK+F19KOYZauIuMJw==
+X-Received: by 2002:aa7:838a:0:b0:536:101a:9ccf with SMTP id u10-20020aa7838a000000b00536101a9ccfmr61689pfm.18.1662493191998;
+        Tue, 06 Sep 2022 12:39:51 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id be7-20020a656e47000000b0041a716cec9esm8771893pgb.62.2022.09.06.12.37.17
+        by smtp.gmail.com with ESMTPSA id q4-20020a17090311c400b00172b87d9770sm10351158plh.81.2022.09.06.12.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Sep 2022 12:37:17 -0700 (PDT)
+        Tue, 06 Sep 2022 12:39:51 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 6 Sep 2022 09:37:16 -1000
+Date:   Tue, 6 Sep 2022 09:39:49 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        kernel-team@fb.com
+To:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, kernel-team@fb.com
 Subject: Re: [PATCH 1/2 cgroup/for-6.1] cgroup: Improve cftype add/rm error
  handling
-Message-ID: <YxehbNMr998iITHi@slm.duckdns.org>
+Message-ID: <YxeiBUwloEJu0lX9@slm.duckdns.org>
 References: <YxUUISLVLEIRBwEY@slm.duckdns.org>
- <20220905131435.GA1765@blackbody.suse.cz>
- <YxeCdHfk2nOUISDw@slm.duckdns.org>
- <20220906191112.GF30763@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220906191112.GF30763@blackbody.suse.cz>
+In-Reply-To: <YxUUISLVLEIRBwEY@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -79,20 +73,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Sun, Sep 04, 2022 at 11:09:53AM -1000, Tejun Heo wrote:
+> Let's track whether a cftype is currently added or not using a new flag
+> __CFTYPE_ADDED so that duplicate operations can be failed safely and
+> consistently allow using empty cftypes.
 
-On Tue, Sep 06, 2022 at 09:11:12PM +0200, Michal Koutný wrote:
-> Before the return here, the function should revert the base files first (or
-> silence the return value to 0 if such a partial population is acceptable).
-> 
-> (Actually, it looks like the revert in the subsys branch is unnecessary as
-> callers of css_populate_dir() would issue css_clear_dir() upon failure
-> eventually.)
-
-Yeah, so, the contract there is a bit unusual in that on failure the helpers
-don't need to cleanup after themselves as they'll get cleaned up together by
-the caller when it nukes the cgroup which was being created. While a bit
-unusual, it's simpler / safer this way, so...
+Applying 1-2 to cgroup/for-6.1.
 
 Thanks.
 
