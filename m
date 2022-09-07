@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0E15B08E3
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 17:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77765B08F3
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 17:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiIGPng (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 11:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
+        id S229515AbiIGPpW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 11:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiIGPne (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 11:43:34 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFBD9E2D5;
-        Wed,  7 Sep 2022 08:43:33 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id t11-20020a17090a510b00b001fac77e9d1fso18700114pjh.5;
-        Wed, 07 Sep 2022 08:43:33 -0700 (PDT)
+        with ESMTP id S229518AbiIGPpS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 11:45:18 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2145D11B;
+        Wed,  7 Sep 2022 08:45:17 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id q15-20020a17090a304f00b002002ac83485so11301317pjl.0;
+        Wed, 07 Sep 2022 08:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=P2y+BRPoGQxcqMhj3bfHoCPdDwxzhdrBdUaNfcmh0tE=;
-        b=f5sV92bQm4uCzJmJSVchg7K5WurYb/bA7u1+zpo2OohtxddaHLFxpVSinPu25hGluS
-         VkVOWz86PqadpIhvGnfZmfe930SnCERVZ2J3AOA0m1LyyfcQEry8dCLvK5fhH9KSEV18
-         /rRmvEwReN/H0EpByLp1q/20tf9gmD9mgGGF6nSZdvU47MkCXJlk8293pdZBJKCefA5y
-         YYWhiBYlY8h7ehdLbUBnhi1pc7HuYKW1myQIGQxATR/Q0Szx3n2srUQgWD96HzkCvz1Y
-         LymO1eHKTcsuqUITTxAhGw24ZQ/KfJpsIFl0lx9Je8dNu3aJcnroCfGUMot1FAOcAwyP
-         nK9Q==
+        bh=2Bs5WeryLUwa4Em1EtgsOFsgucZrdl6s2s+rxtjCKv0=;
+        b=GxZU/LPMUM2KaQzz22yGfVZ0We3v/2AvN6pejZw2UwV51PxFDYfmieeDwxAEIBEbCe
+         FQ72oqE3rYDNlKuQBtdr6/CLx48G2JCzMLv/Sa0M9GDF54vR4yoAeJeHyrM7R86jGHa6
+         2+w3e5Ntk8A04yteNqP3T/ta9icCvGnrcwvuI0UuKUcr2RGXcULYUEdOcHFphnDLPUsK
+         GnbL5qo3awvEkIfiBOSJXiOfkERKwb9ES7IZLbTNMwFWimoAS1+h7t9SatGqjur9L5Ev
+         GIDbpI9wn5g/vtaZeKua6lIh8BgDP+2yocrlNWS9DJ70hRjjf2vmPNSyNvV5Bnd9ld4g
+         RMdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=P2y+BRPoGQxcqMhj3bfHoCPdDwxzhdrBdUaNfcmh0tE=;
-        b=4mssJghjS2lBgrK/cb7MK2dKLu6I+l4cmYUEmEKHw34UpLbX+Yv0YrY35nLtGFNZ7I
-         ZYGHlPLRJVVbjB04Ws6dx1SZx7sSTO3nL6aG6tbU1KcUAO5YBGa3XfBfQurBSkjp4dW6
-         3kapyAAeIomF3nSSvYZsPEaaNRUzVw2aJ6fkTGF1c+5EanaBMvOR9pGUnBKKhIzx1fAU
-         RBEMV4NWOCWu6/kcOD3VP4tv69bVeRKgRB8DYBDbMDEYgzwHXG8qpcA4K5s6yQ72KrT4
-         g0xkykEixQBJ85cFEzcdATJ59GhKw/uwj3duvFHGwbsBCsUW0Eq7VFILTtAworI7oAAd
-         nTEw==
-X-Gm-Message-State: ACgBeo0Kn1uwdCyGZDqlMuCEHefyElC0HufRadq+vbhczpW9pLSSq/IZ
-        trmx4s2i316Xq5WAUG9G8nA=
-X-Google-Smtp-Source: AA6agR4wkKXd44PtzA2Fo4ApkSYqzqk7KHyAZDGJtqQROW6vcymT6U6Dzu0AdoOFp0/dTQoHV98OKQ==
-X-Received: by 2002:a17:903:22cd:b0:176:ca53:3e82 with SMTP id y13-20020a17090322cd00b00176ca533e82mr4672673plg.59.1662565413004;
-        Wed, 07 Sep 2022 08:43:33 -0700 (PDT)
+        bh=2Bs5WeryLUwa4Em1EtgsOFsgucZrdl6s2s+rxtjCKv0=;
+        b=uxYwI79O6SH/PQXa61M+9QXjy5tXFhydeGGVoZiXbe42w+uKrg73cv4ymthCKm2xZW
+         WEg5sXGVNDm+inaubQyj6jLtVJStu4856w5XIP0km7i2riPJ5NaaygaAW8/p5aF5jqo2
+         QDLMzUI74awmr6OKhJU36sQd+3SVyPp4tpPM8xFZEkgSnCEOvwS8+Ld1UwXW1PpvMGHv
+         YX7QDg/YguvgJIjQu2lFvdWHVEX/5aIvGnFuCUmbcvvcuJFogSjooY6oI/r0D115LzH6
+         81iTm4/1Ol71C/cfH4CFxmyMv6t3YFDRMA8rwZZytynmfTuUVYXB7uxzOBew+elQlKDY
+         rRpA==
+X-Gm-Message-State: ACgBeo3ceaqmo5CTYjynf0Z4XHThJvXvORG/DEivQV8dfZMYCrSWniqm
+        sQPYLqvfE7c6yILkaDVpB1cTzUaRReE=
+X-Google-Smtp-Source: AA6agR6i5fmZcERBsBE/o4wuPIE+v1IqIaxzMYQsvK1QTKGQ/xkfOPZ+F7IgGN7ueffOchvyeQOiPQ==
+X-Received: by 2002:a17:90b:4b08:b0:1fe:54ac:6b6 with SMTP id lx8-20020a17090b4b0800b001fe54ac06b6mr4794370pjb.208.1662565516758;
+        Wed, 07 Sep 2022 08:45:16 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170902784600b00172bf229dfdsm12515263pln.97.2022.09.07.08.43.32
+        by smtp.gmail.com with ESMTPSA id 125-20020a620483000000b0053dea60f3c8sm5793866pfe.87.2022.09.07.08.45.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 08:43:32 -0700 (PDT)
+        Wed, 07 Sep 2022 08:45:16 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 7 Sep 2022 05:43:31 -1000
+Date:   Wed, 7 Sep 2022 05:45:15 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -62,12 +62,13 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for
  bpf map
-Message-ID: <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+Message-ID: <Yxi8i3eP4fDDv2+X@slm.duckdns.org>
 References: <20220902023003.47124-1-laoar.shao@gmail.com>
+ <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220902023003.47124-1-laoar.shao@gmail.com>
+In-Reply-To: <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -79,23 +80,28 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+> ...
+> > This patchset tries to resolve the above two issues by introducing a
+> > selectable memcg to limit the bpf memory. Currently we only allow to
+> > select its ancestor to avoid breaking the memcg hierarchy further. 
+> > Possible use cases of the selectable memcg as follows,
+> 
+> As discussed in the following thread, there are clear downsides to an
+> interface which requires the users to specify the cgroups directly.
+> 
+>  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+> 
+> So, I don't really think this is an interface we wanna go for. I was hoping
+> to hear more from memcg folks in the above thread. Maybe ping them in that
+> thread and continue there?
 
-On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
-...
-> This patchset tries to resolve the above two issues by introducing a
-> selectable memcg to limit the bpf memory. Currently we only allow to
-> select its ancestor to avoid breaking the memcg hierarchy further. 
-> Possible use cases of the selectable memcg as follows,
-
-As discussed in the following thread, there are clear downsides to an
-interface which requires the users to specify the cgroups directly.
-
- https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
-
-So, I don't really think this is an interface we wanna go for. I was hoping
-to hear more from memcg folks in the above thread. Maybe ping them in that
-thread and continue there?
+Ah, another thing. If the memcg accounting is breaking things right now, we
+can easily introduce a memcg disable flag for bpf memory. That should help
+alleviating the immediate breakage while we figure this out.
 
 Thanks.
 
