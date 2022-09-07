@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C35195AFB57
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 06:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CBF5AFB59
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 06:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbiIGEgM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 00:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        id S229781AbiIGEgY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 00:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbiIGEgL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 00:36:11 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0617B8B2F6
-        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 21:36:09 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id o14-20020a17090ab88e00b0020034a4415dso5937818pjr.6
-        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 21:36:09 -0700 (PDT)
+        with ESMTP id S229729AbiIGEgT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 00:36:19 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB4F86069
+        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 21:36:18 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n17-20020a254011000000b006a90a92cf87so5805619yba.19
+        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 21:36:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date;
-        bh=+ENncUdfOxJ4q/8LZk6DI50+XMWx6BeUwv0z4tw0gRY=;
-        b=ZequgtabdjcCJmJYwHcuirxjXWYVxqBEGoqYBTddWUrFGxayaRDdkPPL35s5tGIzQ7
-         oohJe3ane8IE/6VPhwguj78pXQyNyZra47KKc+c8xJKEHGorIcMzWmrmRlwLoA2dHS95
-         NKjaOI9d+CsoGs/PtD5hTrcJmdjy8ugZzPcm9WEnuiDhAQdfC8LPWQBoQHOijfpRjQwf
-         z49WK7LH8anfLpxSIpaWSL7mxkmp44ZTKIN3Eyolkfra/wn0h5geUklvCLjRgu/NHGQX
-         q+Fnut9idgOpogDkYMQfi517Q0/kauc+cWYzh2xco62FeXGuOpev9tG1hUyiyQYR/ABl
-         2HFw==
+        bh=7xWB4XnyIc05hqp29+Ov/me4j17Vvs2h2ECTnGXauQA=;
+        b=SDmUz9LkUVm/33cr2fKGG4SmxGsrw9fW609UlO1Lh2n9kJAvfCfnCBYoBieiLK1YI4
+         MPXnoJKs7HxJOBMeo211kZrqk641hONA1Abc3kl7lVLPSE2aHCTST/ZAGe/af7Ia1j+Y
+         HSkzyUCEB5QeLvw41TwrGd/TwUv4YIM4WP861pR3jQm7dOBwu7Q0zlxU3M2K1wwpBOpB
+         CpJIkspZw9r5LITpRw9Xg679OMVQjNafq6M/iV99mdZ3p+Qr3ZpmS2S+7O4Mi0TM+q+w
+         DxfU/ss15LI61VWwYkkQPDsa/qz7JkfaqkZ89EbLkvsgKRetTJhSaS1Vm/9WvgNffImX
+         t82A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=+ENncUdfOxJ4q/8LZk6DI50+XMWx6BeUwv0z4tw0gRY=;
-        b=FKk7sRuV80c4Ta2WRxDFWt/LQGDMH92dew3XajZeDb5MOGSUt9R05risdms1tRZoKW
-         hfJEnvEldIA52CyNMoDZFFCUDZtv7J8ml0pEWt2muqtUoUy3MC5pQmK8TpjeUNjtvtiE
-         QUz2CeKiMB8/gk6T7FuocjGn+j6V569jV8RqiWqKTvAPE3VEwD09NQ8ag5N90kpuqRZM
-         ILIQ4E1dYtk0dS0beR3MyPwNRssBYybcSCVXuf6Hvh7nV48pzCdPcVw+bCz1urvXBvOn
-         BXe8PCEC2T3/u+aOVW+tsY9BmZG+pcen1bvlyzkCUPXrR2uFL/vV7/AVo1pqmqYuiwWK
-         8HSg==
-X-Gm-Message-State: ACgBeo2mpTVOPjpuiNlt/6jsQB5t1OFsgR4JvZ8EiK5qZyGdpAat7YWb
-        dEfKUxlaMXmytJT6bILKL3UuOCtDYLZ2iw==
-X-Google-Smtp-Source: AA6agR4Tjj9UlQLSGOInlnJphRscUgepBu0Rn+Rxd2copVybQoevmw94qxSMGgA6pLc+G3qI0NNwikm2QKECmw==
+        bh=7xWB4XnyIc05hqp29+Ov/me4j17Vvs2h2ECTnGXauQA=;
+        b=du/yetHiQb/cWS3aEY1JNR2qFBUzNUekSB4QYHsK4n+c2jNcyOFohYgrzutegsQRG5
+         6MXKG46YMtJX/r5ugjGXyg8HJij4S4tOUkI8V74t1o2vuVasnDXJVoVvozNg5u8X5BDF
+         SdQia0jYmXeB+4JPF3dMwLK6BYikEDtyCyGtWyqWPPNpJshCOH99BpXCkoSzgbC6lpMP
+         7dJ+gFlUfVjRsrL0dmq2peYcDpp8Kfu1vwFW+KceaJHl1x8f8O0RL35WKZ/rKQaoS7kq
+         EaXm6/OM0GMxyabKio+wEfvcsC5HT0p+UBhXwTEzT46minvK/ywcIv8TW2K519JZT/75
+         WlKQ==
+X-Gm-Message-State: ACgBeo2kL78K14IzHxskyBIHv307n81Hw9MCJOpjuBqu3azKkfo7AkjN
+        DHO9xh41U3OtLQI/z9V9LXns7LU6+uepUg==
+X-Google-Smtp-Source: AA6agR41qApOeAsNTHvyqJlEKDWWr4jqOOSYR9bBI0ISwpTGkM58sXdfS6K35j4AxALrx//Yb7zv/515y/Evow==
 X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:10a:b0:200:2849:235f with SMTP id
- p10-20020a17090b010a00b002002849235fmr175469pjz.1.1662525368959; Tue, 06 Sep
- 2022 21:36:08 -0700 (PDT)
-Date:   Wed,  7 Sep 2022 04:35:35 +0000
+ (user=shakeelb job=sendgmr) by 2002:a25:bb44:0:b0:677:24c:308f with SMTP id
+ b4-20020a25bb44000000b00677024c308fmr1554313ybk.433.1662525377841; Tue, 06
+ Sep 2022 21:36:17 -0700 (PDT)
+Date:   Wed,  7 Sep 2022 04:35:36 +0000
 In-Reply-To: <20220907043537.3457014-1-shakeelb@google.com>
 Mime-Version: 1.0
 References: <20220907043537.3457014-1-shakeelb@google.com>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
-Message-ID: <20220907043537.3457014-2-shakeelb@google.com>
-Subject: [PATCH 1/3] memcg: extract memcg_vmstats from struct mem_cgroup
+Message-ID: <20220907043537.3457014-3-shakeelb@google.com>
+Subject: [PATCH 2/3] memcg: rearrange code
 From:   Shakeel Butt <shakeelb@google.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -64,204 +64,85 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This is a preparatory patch to reduce the memory overhead of memory
-cgroup. The struct memcg_vmstats is the largest object embedded into the
-struct mem_cgroup. This patch extracts struct memcg_vmstats from struct
-mem_cgroup to ease the following patches in reducing the size of struct
-memcg_vmstats.
+This is a preparatory patch for easing the review of the follow up patch
+which will reduce the memory overhead of memory cgroups.
 
 Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
- include/linux/memcontrol.h | 37 +++----------------------
- mm/memcontrol.c            | 57 ++++++++++++++++++++++++++++++++------
- 2 files changed, 52 insertions(+), 42 deletions(-)
+ mm/memcontrol.c | 46 +++++++++++++++++++++++-----------------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index ca0df42662ad..dc7d40e575d5 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -80,29 +80,8 @@ enum mem_cgroup_events_target {
- 	MEM_CGROUP_NTARGETS,
- };
- 
--struct memcg_vmstats_percpu {
--	/* Local (CPU and cgroup) page state & events */
--	long			state[MEMCG_NR_STAT];
--	unsigned long		events[NR_VM_EVENT_ITEMS];
--
--	/* Delta calculation for lockless upward propagation */
--	long			state_prev[MEMCG_NR_STAT];
--	unsigned long		events_prev[NR_VM_EVENT_ITEMS];
--
--	/* Cgroup1: threshold notifications & softlimit tree updates */
--	unsigned long		nr_page_events;
--	unsigned long		targets[MEM_CGROUP_NTARGETS];
--};
--
--struct memcg_vmstats {
--	/* Aggregated (CPU and subtree) page state & events */
--	long			state[MEMCG_NR_STAT];
--	unsigned long		events[NR_VM_EVENT_ITEMS];
--
--	/* Pending child counts during tree propagation */
--	long			state_pending[MEMCG_NR_STAT];
--	unsigned long		events_pending[NR_VM_EVENT_ITEMS];
--};
-+struct memcg_vmstats_percpu;
-+struct memcg_vmstats;
- 
- struct mem_cgroup_reclaim_iter {
- 	struct mem_cgroup *position;
-@@ -298,7 +277,7 @@ struct mem_cgroup {
- 	CACHELINE_PADDING(_pad1_);
- 
- 	/* memory.stat */
--	struct memcg_vmstats	vmstats;
-+	struct memcg_vmstats	*vmstats;
- 
- 	/* memory.events */
- 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
-@@ -1001,15 +980,7 @@ static inline void mod_memcg_page_state(struct page *page,
- 	rcu_read_unlock();
- }
- 
--static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
--{
--	long x = READ_ONCE(memcg->vmstats.state[idx]);
--#ifdef CONFIG_SMP
--	if (x < 0)
--		x = 0;
--#endif
--	return x;
--}
-+unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
- 
- static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
- 					      enum node_stat_item idx)
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0a1a8a846870..b195d4ca2a72 100644
+index b195d4ca2a72..d0ccc16ed416 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -669,6 +669,40 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
+@@ -669,6 +669,29 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
  	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
  }
  
-+struct memcg_vmstats_percpu {
-+	/* Local (CPU and cgroup) page state & events */
-+	long			state[MEMCG_NR_STAT];
-+	unsigned long		events[NR_VM_EVENT_ITEMS];
-+
-+	/* Delta calculation for lockless upward propagation */
-+	long			state_prev[MEMCG_NR_STAT];
-+	unsigned long		events_prev[NR_VM_EVENT_ITEMS];
-+
-+	/* Cgroup1: threshold notifications & softlimit tree updates */
-+	unsigned long		nr_page_events;
-+	unsigned long		targets[MEM_CGROUP_NTARGETS];
-+};
-+
-+struct memcg_vmstats {
-+	/* Aggregated (CPU and subtree) page state & events */
-+	long			state[MEMCG_NR_STAT];
-+	unsigned long		events[NR_VM_EVENT_ITEMS];
-+
-+	/* Pending child counts during tree propagation */
-+	long			state_pending[MEMCG_NR_STAT];
-+	unsigned long		events_pending[NR_VM_EVENT_ITEMS];
-+};
-+
-+unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
-+{
-+	long x = READ_ONCE(memcg->vmstats->state[idx]);
-+#ifdef CONFIG_SMP
-+	if (x < 0)
-+		x = 0;
++/* Subset of vm_event_item to report for memcg event stats */
++static const unsigned int memcg_vm_event_stat[] = {
++	PGSCAN_KSWAPD,
++	PGSCAN_DIRECT,
++	PGSTEAL_KSWAPD,
++	PGSTEAL_DIRECT,
++	PGFAULT,
++	PGMAJFAULT,
++	PGREFILL,
++	PGACTIVATE,
++	PGDEACTIVATE,
++	PGLAZYFREE,
++	PGLAZYFREED,
++#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
++	ZSWPIN,
++	ZSWPOUT,
 +#endif
-+	return x;
-+}
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	THP_FAULT_ALLOC,
++	THP_COLLAPSE_ALLOC,
++#endif
++};
 +
- /**
-  * __mod_memcg_state - update cgroup memory statistics
-  * @memcg: the memory cgroup
-@@ -827,7 +861,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+ struct memcg_vmstats_percpu {
+ 	/* Local (CPU and cgroup) page state & events */
+ 	long			state[MEMCG_NR_STAT];
+@@ -1501,29 +1524,6 @@ static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
+ 	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
+ }
  
- static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+-/* Subset of vm_event_item to report for memcg event stats */
+-static const unsigned int memcg_vm_event_stat[] = {
+-	PGSCAN_KSWAPD,
+-	PGSCAN_DIRECT,
+-	PGSTEAL_KSWAPD,
+-	PGSTEAL_DIRECT,
+-	PGFAULT,
+-	PGMAJFAULT,
+-	PGREFILL,
+-	PGACTIVATE,
+-	PGDEACTIVATE,
+-	PGLAZYFREE,
+-	PGLAZYFREED,
+-#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+-	ZSWPIN,
+-	ZSWPOUT,
+-#endif
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	THP_FAULT_ALLOC,
+-	THP_COLLAPSE_ALLOC,
+-#endif
+-};
+-
+ static void memory_stat_format(struct mem_cgroup *memcg, char *buf, int bufsize)
  {
--	return READ_ONCE(memcg->vmstats.events[event]);
-+	return READ_ONCE(memcg->vmstats->events[event]);
- }
- 
- static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
-@@ -5170,6 +5204,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
- 
- 	for_each_node(node)
- 		free_mem_cgroup_per_node_info(memcg, node);
-+	kfree(memcg->vmstats);
- 	free_percpu(memcg->vmstats_percpu);
- 	kfree(memcg);
- }
-@@ -5199,6 +5234,10 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- 		goto fail;
- 	}
- 
-+	memcg->vmstats = kzalloc(sizeof(struct memcg_vmstats), GFP_KERNEL);
-+	if (!memcg->vmstats)
-+		goto fail;
-+
- 	memcg->vmstats_percpu = alloc_percpu_gfp(struct memcg_vmstats_percpu,
- 						 GFP_KERNEL_ACCOUNT);
- 	if (!memcg->vmstats_percpu)
-@@ -5418,9 +5457,9 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 		 * below us. We're in a per-cpu loop here and this is
- 		 * a global counter, so the first cycle will get them.
- 		 */
--		delta = memcg->vmstats.state_pending[i];
-+		delta = memcg->vmstats->state_pending[i];
- 		if (delta)
--			memcg->vmstats.state_pending[i] = 0;
-+			memcg->vmstats->state_pending[i] = 0;
- 
- 		/* Add CPU changes on this level since the last flush */
- 		v = READ_ONCE(statc->state[i]);
-@@ -5433,15 +5472,15 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 			continue;
- 
- 		/* Aggregate counts on this level and propagate upwards */
--		memcg->vmstats.state[i] += delta;
-+		memcg->vmstats->state[i] += delta;
- 		if (parent)
--			parent->vmstats.state_pending[i] += delta;
-+			parent->vmstats->state_pending[i] += delta;
- 	}
- 
- 	for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
--		delta = memcg->vmstats.events_pending[i];
-+		delta = memcg->vmstats->events_pending[i];
- 		if (delta)
--			memcg->vmstats.events_pending[i] = 0;
-+			memcg->vmstats->events_pending[i] = 0;
- 
- 		v = READ_ONCE(statc->events[i]);
- 		if (v != statc->events_prev[i]) {
-@@ -5452,9 +5491,9 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 		if (!delta)
- 			continue;
- 
--		memcg->vmstats.events[i] += delta;
-+		memcg->vmstats->events[i] += delta;
- 		if (parent)
--			parent->vmstats.events_pending[i] += delta;
-+			parent->vmstats->events_pending[i] += delta;
- 	}
- 
- 	for_each_node_state(nid, N_MEMORY) {
+ 	struct seq_buf s;
 -- 
 2.37.2.789.g6183377224-goog
 
