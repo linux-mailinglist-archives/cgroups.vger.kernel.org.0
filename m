@@ -2,225 +2,203 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BA25AFB5B
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 06:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C38D5AFE71
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 10:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbiIGEgc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 00:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
+        id S229720AbiIGIDr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 04:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbiIGEg0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 00:36:26 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED6B895DF
-        for <cgroups@vger.kernel.org>; Tue,  6 Sep 2022 21:36:25 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id j6-20020a170902da8600b00176a4279ba4so5336209plx.18
-        for <cgroups@vger.kernel.org>; Tue, 06 Sep 2022 21:36:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date;
-        bh=khSX7Y4iv18onStJMmBrPhwF58VNn8i03Anirden96Q=;
-        b=gemiZCbExV47bKx8wOek1aQ0u8hzbt+EnZzyGvpEX6V3hdl7+FzjhOMQFdg/BAePWs
-         g1Phtex5qyjXcE0CH8qo/myIMYCKBorj4O/lYfXNAuZQE1nIXh6Y/UorToCbyrfqTc08
-         w41m5Q1yfn7rEabS42x1kF04pr4Fz4DhfpdBQ7PAZvq2tOJI4kuvrPxvdDoYGIeFXtU7
-         73wZp+rS4GUGDo8QZ9/BnYm7kUNxwjCsKt+VQJT//oAjo2bR/bpBZ7YFQnfETArjdfst
-         yH5HuLvanOXbdhRwhVJR8If5nQVhIbTM14rXsNmexTs4BoP70k0Ts+2cN/b8E1sehylv
-         kQmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=khSX7Y4iv18onStJMmBrPhwF58VNn8i03Anirden96Q=;
-        b=5Dz9D/MvLFTAJPPD6/lQYucM6S5g9XfVQKIuA3BTDIJhBXVYUOZeW54Sj9Hxt/8G2Q
-         PYN4KvC0dKhBgmNEK8EkdDTOom1VWbXjEtdGRHfNETVmbleASaHerHhTwLpQWgMOZ+IK
-         sgMezyjaWSoxVH5hk2pTk1bTfwns0J5K2rQnd3/BPyzSQDPIkDD2DBcb98k5DixsNFUv
-         soGRh0BaQkE0eOb+oV7mRx68Oou5DlZIG97mrAK+tIIWcMSR0BrrWS4HByrxkvF+NsNu
-         e5+q97Kwm6lB1hx2aWtAcKJmxsBPO/cYq/kr/tWJ2nGYihY/SB85sWIj05grNA2hRHPg
-         GBow==
-X-Gm-Message-State: ACgBeo3n63Yg1eKtGKhFvh6yWhZ+s1oUoOfTIF5A7llmMFNgT/EegcIE
-        NRi+2ISmmzm6J1wblT4FawYU3CvHKR8kdQ==
-X-Google-Smtp-Source: AA6agR5/ynpD4fcrcx0c8sHHlPJFfJQPloK/P5POaEbeKl2ov/6eY/SmFki7BrZyFFL0jRWVJtkjvAuQBWyeJQ==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a17:903:40c9:b0:176:e58c:f082 with SMTP
- id t9-20020a17090340c900b00176e58cf082mr1969898pld.60.1662525384705; Tue, 06
- Sep 2022 21:36:24 -0700 (PDT)
-Date:   Wed,  7 Sep 2022 04:35:37 +0000
-In-Reply-To: <20220907043537.3457014-1-shakeelb@google.com>
-Mime-Version: 1.0
-References: <20220907043537.3457014-1-shakeelb@google.com>
-X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
-Message-ID: <20220907043537.3457014-4-shakeelb@google.com>
-Subject: [PATCH 3/3] memcg: reduce size of memcg vmstats structures
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
+        with ESMTP id S230311AbiIGIDV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 04:03:21 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76802AA35F;
+        Wed,  7 Sep 2022 01:03:12 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MMvk82kTkz9xHvd;
+        Wed,  7 Sep 2022 15:57:36 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwBnEJQZUBhjW0srAA--.12213S2;
+        Wed, 07 Sep 2022 09:02:48 +0100 (CET)
+Message-ID: <02309cfbc1ce47f7de6be8addc2caa315b1fee1b.camel@huaweicloud.com>
+Subject: Re: [PATCH 1/7] bpf: Add missing fd modes check for map iterators
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hou Tao <houtao1@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable <stable@vger.kernel.org>, fengc@google.com,
+        linux-security-module@vger.kernel.org
+Date:   Wed, 07 Sep 2022 10:02:30 +0200
+In-Reply-To: <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
+References: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
+         <20220906170301.256206-2-roberto.sassu@huaweicloud.com>
+         <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LxC2BwBnEJQZUBhjW0srAA--.12213S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1rCrW8ZF45GF4xKry8Krg_yoWrCFyDpr
+        W3t3W2k3Z2yF1xCrn2qan7WFyfAFW3Kw47Xrn8JryxC3s8Wrn2kr4Y93W3uF9ruF17tr1a
+        qr4qv3s3A3WDAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj4KycgACs8
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The struct memcg_vmstats and struct memcg_vmstats_percpu contains two
-arrays each for events of size NR_VM_EVENT_ITEMS which can be as large
-as 110. However the memcg v1 only uses 4 of those while memcg v2 uses
-15. The union of both is 17. On a 64 bit system, we are wasting
-approximately ((110 - 17) * 8 * 2) * (nr_cpus + 1) bytes which is
-significant on large machines.
+On Tue, 2022-09-06 at 11:21 -0700, Alexei Starovoitov wrote:
+> On Tue, Sep 6, 2022 at 10:04 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > 
+> > Commit 6e71b04a82248 ("bpf: Add file mode configuration into bpf
+> > maps")
+> > added the BPF_F_RDONLY and BPF_F_WRONLY flags, to let user space
+> > specify
+> > whether it will just read or modify a map.
+> > 
+> > Map access control is done in two steps. First, when user space
+> > wants to
+> > obtain a map fd, it provides to the kernel the eBPF-defined flags,
+> > which
+> > are converted into open flags and passed to the security_bpf_map()
+> > security
+> > hook for evaluation by LSMs.
+> > 
+> > Second, if user space successfully obtained an fd, it passes that
+> > fd to the
+> > kernel when it requests a map operation (e.g. lookup or update).
+> > The kernel
+> > first checks if the fd has the modes required to perform the
+> > requested
+> > operation and, if yes, continues the execution and returns the
+> > result to
+> > user space.
+> > 
+> > While the fd modes check was added for map_*_elem() functions, it
+> > is
+> > currently missing for map iterators, added more recently with
+> > commit
+> > a5cbe05a6673 ("bpf: Implement bpf iterator for map elements"). A
+> > map
+> > iterator executes a chosen eBPF program for each key/value pair of
+> > a map
+> > and allows that program to read and/or modify them.
+> > 
+> > Whether a map iterator allows only read or also write depends on
+> > whether
+> > the MEM_RDONLY flag in the ctx_arg_info member of the bpf_iter_reg
+> > structure is set. Also, write needs to be supported at verifier
+> > level (for
+> > example, it is currently not supported for sock maps).
+> > 
+> > Since map iterators obtain a map from a user space fd with
+> > bpf_map_get_with_uref(), add the new req_modes parameter to that
+> > function,
+> > so that map iterators can provide the required fd modes to access a
+> > map. If
+> > the user space fd doesn't include the required modes,
+> > bpf_map_get_with_uref() returns with an error, and the map iterator
+> > will
+> > not be created.
+> > 
+> > If a map iterator marks both the key and value as read-only, it
+> > calls
+> > bpf_map_get_with_uref() with FMODE_CAN_READ as value for req_modes.
+> > If it
+> > also allows write access to either the key or the value, it calls
+> > that
+> > function with FMODE_CAN_READ | FMODE_CAN_WRITE as value for
+> > req_modes,
+> > regardless of whether or not the write is supported by the verifier
+> > (the
+> > write is intentionally allowed).
+> > 
+> > bpf_fd_probe_obj() does not require any fd mode, as the fd is only
+> > used for
+> > the purpose of finding the eBPF object type, for pinning the object
+> > to the
+> > bpffs filesystem.
+> > 
+> > Finally, it is worth to mention that the fd modes check was not
+> > added for
+> > the cgroup iterator, although it registers an attach_target method
+> > like the
+> > other iterators. The reason is that the fd is not the only way for
+> > user
+> > space to reference a cgroup object (also by ID and by path). For
+> > the
+> > protection to be effective, all reference methods need to be
+> > evaluated
+> > consistently. This work is deferred to a separate patch.
+> 
+> I think the current behavior is fine.
+> File permissions don't apply at iterator level or prog level.
 
-This patch reduces the size of the given structures by adding one
-indirection and only stores array of events which are actually used by
-the memcg code. With this patch, the size of memcg_vmstats has reduced
-from 2544 bytes to 1056 bytes while the size of memcg_vmstats_percpu has
-reduced from 2568 bytes to 1080 bytes.
++ Chenbo, linux-security-module
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- mm/memcontrol.c | 52 ++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 43 insertions(+), 9 deletions(-)
+Well, if you write a security module to prevent writes on a map, and
+user space is able to do it anyway with an iterator, what is the
+purpose of the security module then?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d0ccc16ed416..a60012be6140 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -671,6 +671,8 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
- 
- /* Subset of vm_event_item to report for memcg event stats */
- static const unsigned int memcg_vm_event_stat[] = {
-+	PGPGIN,
-+	PGPGOUT,
- 	PGSCAN_KSWAPD,
- 	PGSCAN_DIRECT,
- 	PGSTEAL_KSWAPD,
-@@ -692,14 +694,30 @@ static const unsigned int memcg_vm_event_stat[] = {
- #endif
- };
- 
-+#define NR_MEMCG_EVENTS ARRAY_SIZE(memcg_vm_event_stat)
-+static int mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
-+
-+static void init_memcg_events(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < NR_MEMCG_EVENTS; ++i)
-+		mem_cgroup_events_index[memcg_vm_event_stat[i]] = i + 1;
-+}
-+
-+static inline int memcg_events_index(enum vm_event_item idx)
-+{
-+	return mem_cgroup_events_index[idx] - 1;
-+}
-+
- struct memcg_vmstats_percpu {
- 	/* Local (CPU and cgroup) page state & events */
- 	long			state[MEMCG_NR_STAT];
--	unsigned long		events[NR_VM_EVENT_ITEMS];
-+	unsigned long		events[NR_MEMCG_EVENTS];
- 
- 	/* Delta calculation for lockless upward propagation */
- 	long			state_prev[MEMCG_NR_STAT];
--	unsigned long		events_prev[NR_VM_EVENT_ITEMS];
-+	unsigned long		events_prev[NR_MEMCG_EVENTS];
- 
- 	/* Cgroup1: threshold notifications & softlimit tree updates */
- 	unsigned long		nr_page_events;
-@@ -709,11 +727,11 @@ struct memcg_vmstats_percpu {
- struct memcg_vmstats {
- 	/* Aggregated (CPU and subtree) page state & events */
- 	long			state[MEMCG_NR_STAT];
--	unsigned long		events[NR_VM_EVENT_ITEMS];
-+	unsigned long		events[NR_MEMCG_EVENTS];
- 
- 	/* Pending child counts during tree propagation */
- 	long			state_pending[MEMCG_NR_STAT];
--	unsigned long		events_pending[NR_VM_EVENT_ITEMS];
-+	unsigned long		events_pending[NR_MEMCG_EVENTS];
- };
- 
- unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
-@@ -873,24 +891,34 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
- void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
- 			  unsigned long count)
- {
--	if (mem_cgroup_disabled())
-+	int index = memcg_events_index(idx);
-+
-+	if (mem_cgroup_disabled() || index < 0)
- 		return;
- 
- 	memcg_stats_lock();
--	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
-+	__this_cpu_add(memcg->vmstats_percpu->events[index], count);
- 	memcg_rstat_updated(memcg, count);
- 	memcg_stats_unlock();
- }
- 
- static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
- {
--	return READ_ONCE(memcg->vmstats->events[event]);
-+	int index = memcg_events_index(event);
-+
-+	if (index < 0)
-+		return 0;
-+	return READ_ONCE(memcg->vmstats->events[index]);
- }
- 
- static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
- {
- 	long x = 0;
- 	int cpu;
-+	int index = memcg_events_index(event);
-+
-+	if (index < 0)
-+		return 0;
- 
- 	for_each_possible_cpu(cpu)
- 		x += per_cpu(memcg->vmstats_percpu->events[event], cpu);
-@@ -1564,10 +1592,15 @@ static void memory_stat_format(struct mem_cgroup *memcg, char *buf, int bufsize)
- 		       memcg_events(memcg, PGSTEAL_KSWAPD) +
- 		       memcg_events(memcg, PGSTEAL_DIRECT));
- 
--	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++)
-+	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
-+		if (memcg_vm_event_stat[i] == PGPGIN ||
-+		    memcg_vm_event_stat[i] == PGPGOUT)
-+			continue;
-+
- 		seq_buf_printf(&s, "%s %lu\n",
- 			       vm_event_name(memcg_vm_event_stat[i]),
- 			       memcg_events(memcg, memcg_vm_event_stat[i]));
-+	}
- 
- 	/* The above should easily fit into one page */
- 	WARN_ON_ONCE(seq_buf_has_overflowed(&s));
-@@ -5309,6 +5342,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 		page_counter_init(&memcg->kmem, &parent->kmem);
- 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
- 	} else {
-+		init_memcg_events();
- 		page_counter_init(&memcg->memory, NULL);
- 		page_counter_init(&memcg->swap, NULL);
- 		page_counter_init(&memcg->kmem, NULL);
-@@ -5477,7 +5511,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 			parent->vmstats->state_pending[i] += delta;
- 	}
- 
--	for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
-+	for (i = 0; i < NR_MEMCG_EVENTS; i++) {
- 		delta = memcg->vmstats->events_pending[i];
- 		if (delta)
- 			memcg->vmstats->events_pending[i] = 0;
--- 
-2.37.2.789.g6183377224-goog
+> fmode_can_read/write are for syscall commands only.
+> To be fair we've added them to lookup/delete commands
+> and it was more of a pain to maintain and no confirmed good use.
+
+I think a good use would be requesting the right permission for the
+type of operation that needs to be performed, e.g. read-only permission
+when you have a read-like operation like a lookup or dump.
+
+By always requesting read-write permission, for all operations,
+security modules won't be able to distinguish which operation has to be
+denied to satisfy the policy.
+
+One example of that is that, when there is a security module preventing
+writes on maps (will be that uncommon?), bpftool is not able to show
+the full list of maps because it asks for read-write permission for
+getting the map info.
+
+Freezing the map is not a solution, if you want to allow certain
+subjects to continuously update the protected map at run-time.
+
+Roberto
 
