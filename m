@@ -2,203 +2,204 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C38D5AFE71
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 10:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FAC5AFEB5
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 10:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbiIGIDr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 04:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
+        id S230305AbiIGIOZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 04:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbiIGIDV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 04:03:21 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76802AA35F;
-        Wed,  7 Sep 2022 01:03:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MMvk82kTkz9xHvd;
-        Wed,  7 Sep 2022 15:57:36 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBnEJQZUBhjW0srAA--.12213S2;
-        Wed, 07 Sep 2022 09:02:48 +0100 (CET)
-Message-ID: <02309cfbc1ce47f7de6be8addc2caa315b1fee1b.camel@huaweicloud.com>
-Subject: Re: [PATCH 1/7] bpf: Add missing fd modes check for map iterators
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hou Tao <houtao1@huawei.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        stable <stable@vger.kernel.org>, fengc@google.com,
-        linux-security-module@vger.kernel.org
-Date:   Wed, 07 Sep 2022 10:02:30 +0200
-In-Reply-To: <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
-References: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
-         <20220906170301.256206-2-roberto.sassu@huaweicloud.com>
-         <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230332AbiIGIOR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 04:14:17 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C26AB1B3
+        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 01:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662538449; x=1694074449;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3TdnOYEVdeUBzMisM085xYKK1KLS+Bb6h4ayASdTCjs=;
+  b=Ux6mOdYQmz7+/tkcex76ktQvJHyPQUGCqyqB+JcyDaCo4JUT63gniIxr
+   e6rlWnA3Tio2eJ+HcTct2LU12WNkXfOYjJQQSwsnEQr2p1nvFOdgtrs8D
+   cl6BHQhVy++/xmpexP6daWRBMuIUnvHZanTdLSAFKYxFt6IfB3rEvMeCW
+   qS/y23fY5FrPBcKztm+LNq9dc+Qofx4p0GO6uPvMXL6D+AbfAX3E8SyIc
+   Kv/pgqBtcTUD49xM9FvAd9sFOYkS53y0Tn/3QFAq6BUNWPVIxYtXBmfa7
+   Jm8i4DL1aU/pai9xlQZNdzG8b4dLyCq6fFp6Cpt8PuUlc1Yt8pM6BKtHD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10462"; a="298127300"
+X-IronPort-AV: E=Sophos;i="5.93,296,1654585200"; 
+   d="scan'208";a="298127300"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 01:14:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,296,1654585200"; 
+   d="scan'208";a="591595902"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 07 Sep 2022 01:14:08 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oVqCF-0006K5-2E;
+        Wed, 07 Sep 2022 08:14:07 +0000
+Date:   Wed, 07 Sep 2022 16:13:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 538b9e23ed6cc9ae64a7aa79b17317bf16a5d0c1
+Message-ID: <63185295.tcbxoJHMUFExoKVs%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwBnEJQZUBhjW0srAA--.12213S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF1rCrW8ZF45GF4xKry8Krg_yoWrCFyDpr
-        W3t3W2k3Z2yF1xCrn2qan7WFyfAFW3Kw47Xrn8JryxC3s8Wrn2kr4Y93W3uF9ruF17tr1a
-        qr4qv3s3A3WDAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj4KycgACs8
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 2022-09-06 at 11:21 -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 6, 2022 at 10:04 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Commit 6e71b04a82248 ("bpf: Add file mode configuration into bpf
-> > maps")
-> > added the BPF_F_RDONLY and BPF_F_WRONLY flags, to let user space
-> > specify
-> > whether it will just read or modify a map.
-> > 
-> > Map access control is done in two steps. First, when user space
-> > wants to
-> > obtain a map fd, it provides to the kernel the eBPF-defined flags,
-> > which
-> > are converted into open flags and passed to the security_bpf_map()
-> > security
-> > hook for evaluation by LSMs.
-> > 
-> > Second, if user space successfully obtained an fd, it passes that
-> > fd to the
-> > kernel when it requests a map operation (e.g. lookup or update).
-> > The kernel
-> > first checks if the fd has the modes required to perform the
-> > requested
-> > operation and, if yes, continues the execution and returns the
-> > result to
-> > user space.
-> > 
-> > While the fd modes check was added for map_*_elem() functions, it
-> > is
-> > currently missing for map iterators, added more recently with
-> > commit
-> > a5cbe05a6673 ("bpf: Implement bpf iterator for map elements"). A
-> > map
-> > iterator executes a chosen eBPF program for each key/value pair of
-> > a map
-> > and allows that program to read and/or modify them.
-> > 
-> > Whether a map iterator allows only read or also write depends on
-> > whether
-> > the MEM_RDONLY flag in the ctx_arg_info member of the bpf_iter_reg
-> > structure is set. Also, write needs to be supported at verifier
-> > level (for
-> > example, it is currently not supported for sock maps).
-> > 
-> > Since map iterators obtain a map from a user space fd with
-> > bpf_map_get_with_uref(), add the new req_modes parameter to that
-> > function,
-> > so that map iterators can provide the required fd modes to access a
-> > map. If
-> > the user space fd doesn't include the required modes,
-> > bpf_map_get_with_uref() returns with an error, and the map iterator
-> > will
-> > not be created.
-> > 
-> > If a map iterator marks both the key and value as read-only, it
-> > calls
-> > bpf_map_get_with_uref() with FMODE_CAN_READ as value for req_modes.
-> > If it
-> > also allows write access to either the key or the value, it calls
-> > that
-> > function with FMODE_CAN_READ | FMODE_CAN_WRITE as value for
-> > req_modes,
-> > regardless of whether or not the write is supported by the verifier
-> > (the
-> > write is intentionally allowed).
-> > 
-> > bpf_fd_probe_obj() does not require any fd mode, as the fd is only
-> > used for
-> > the purpose of finding the eBPF object type, for pinning the object
-> > to the
-> > bpffs filesystem.
-> > 
-> > Finally, it is worth to mention that the fd modes check was not
-> > added for
-> > the cgroup iterator, although it registers an attach_target method
-> > like the
-> > other iterators. The reason is that the fd is not the only way for
-> > user
-> > space to reference a cgroup object (also by ID and by path). For
-> > the
-> > protection to be effective, all reference methods need to be
-> > evaluated
-> > consistently. This work is deferred to a separate patch.
-> 
-> I think the current behavior is fine.
-> File permissions don't apply at iterator level or prog level.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 538b9e23ed6cc9ae64a7aa79b17317bf16a5d0c1  Merge branch 'for-6.0-fixes' into for-next
 
-+ Chenbo, linux-security-module
+elapsed time: 868m
 
-Well, if you write a security module to prevent writes on a map, and
-user space is able to do it anyway with an iterator, what is the
-purpose of the security module then?
+configs tested: 123
+configs skipped: 2
 
-> fmode_can_read/write are for syscall commands only.
-> To be fair we've added them to lookup/delete commands
-> and it was more of a pain to maintain and no confirmed good use.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I think a good use would be requesting the right permission for the
-type of operation that needs to be performed, e.g. read-only permission
-when you have a read-like operation like a lookup or dump.
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                           rhel-8.3-kvm
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                    rhel-8.3-kselftests
+x86_64                         rhel-8.3-kunit
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+sh                          r7780mp_defconfig
+sparc                       sparc64_defconfig
+parisc64                            defconfig
+powerpc                 canyonlands_defconfig
+arm                           viper_defconfig
+powerpc                    adder875_defconfig
+sh                        dreamcast_defconfig
+sh                   sh7770_generic_defconfig
+sh                          lboxre2_defconfig
+riscv                randconfig-r042-20220906
+arc                  randconfig-r043-20220906
+s390                 randconfig-r044-20220906
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+powerpc                mpc7448_hpc2_defconfig
+alpha                               defconfig
+arm                           sama5_defconfig
+powerpc                     tqm8548_defconfig
+i386                          randconfig-c001
+csky                             alldefconfig
+m68k                                defconfig
+powerpc                     pq2fads_defconfig
+xtensa                          iss_defconfig
+arm                          iop32x_defconfig
+mips                           ip32_defconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+sh                           se7750_defconfig
+sparc64                          alldefconfig
+arm                             ezx_defconfig
+powerpc                    amigaone_defconfig
+arm                        cerfcube_defconfig
+sparc                            allyesconfig
+sh                           se7705_defconfig
+powerpc                      bamboo_defconfig
+powerpc                      makalu_defconfig
+arc                         haps_hs_defconfig
+nios2                         10m50_defconfig
+arc                          axs103_defconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+arm                         lubbock_defconfig
+m68k                       m5475evb_defconfig
+sh                        edosk7705_defconfig
+s390                             allmodconfig
+parisc                generic-32bit_defconfig
+riscv             nommu_k210_sdcard_defconfig
+xtensa                              defconfig
+m68k                        mvme16x_defconfig
+xtensa                  nommu_kc705_defconfig
+loongarch                           defconfig
+loongarch                         allnoconfig
+sh                            titan_defconfig
+sh                     sh7710voipgw_defconfig
+sh                          rsk7264_defconfig
+sh                 kfr2r09-romimage_defconfig
+ia64                             allmodconfig
+nios2                            allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc                           allyesconfig
 
-By always requesting read-write permission, for all operations,
-security modules won't be able to distinguish which operation has to be
-denied to satisfy the policy.
+clang tested configs:
+hexagon              randconfig-r041-20220906
+hexagon              randconfig-r045-20220906
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+powerpc                     akebono_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                     mpc512x_defconfig
+arm                           spitz_defconfig
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+arm                       spear13xx_defconfig
+mips                      malta_kvm_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                     davinci_all_defconfig
+x86_64                        randconfig-k001
+arm                              alldefconfig
+powerpc                        icon_defconfig
+powerpc                      obs600_defconfig
 
-One example of that is that, when there is a security module preventing
-writes on maps (will be that uncommon?), bpftool is not able to show
-the full list of maps because it asks for read-write permission for
-getting the map info.
-
-Freezing the map is not a solution, if you want to allow certain
-subjects to continuously update the protected map at run-time.
-
-Roberto
-
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
