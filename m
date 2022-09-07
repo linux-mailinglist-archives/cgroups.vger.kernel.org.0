@@ -2,113 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDA25B06F7
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 16:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70725B0885
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 17:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbiIGOdo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 10:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
+        id S229676AbiIGP0N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 11:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbiIGOdP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 10:33:15 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1025B56D9
-        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 07:32:46 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id e17so12405162edc.5
-        for <cgroups@vger.kernel.org>; Wed, 07 Sep 2022 07:32:46 -0700 (PDT)
+        with ESMTP id S229695AbiIGP0M (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 11:26:12 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21F312742;
+        Wed,  7 Sep 2022 08:26:11 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id z187so14964433pfb.12;
+        Wed, 07 Sep 2022 08:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date;
-        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
-        b=mqK4Urm6SI0LL0fIUpNglz2SbMFsznWTf0PUQzqjeQH/Bx12DkdTnBbzDZaQ4NR5iF
-         EQ7O7aO6doj8u/y3juxRvQfrpZ+4GxqWxP8xLHHcNMflWyA+nbVtyNaPRhtr9ofPoPwP
-         8B+OpsMdCo4QTDhmgZx918/MwMfvch/o8zTMSvXvdQRmqiXAGAGG0BMKFEwgydJ+Wh2g
-         mACuo7ixacFf2kfjc0mw39zk8rxwdiQKq9VKx4zvYpa6O1ByXXOPP+qBaWEXo7gAHnwA
-         FAVlPjIOEE2/ttEfWJe2qBCmRSUgsg0XQyoATWJy8k712P//auvk1V/Dh46aKaKpfIy+
-         X5Hw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
+        bh=T6N91VXL3P8JDR20lw0om2klLL1DyAPfzo9iAd40Kjg=;
+        b=K8P5YEaVd5+q3A8nyGjz9haRwLkLdQ+3gkZT7IJhCoE9Z+aDbjvnVaJy3IpbnK+4Id
+         Tpxl2i7/GxiWvlli2vFfE7Ztdv8G5GRIbcWSFH25XSFKKNEWuyJ6AQ5DguaKT7l/2mSI
+         ZDskeA/7IG6yx76IgwlZRdc3SsNYF2GeoboK3BZxyQ0ZhEqj6tjBzrraJI8rORFGu3Ou
+         8wOLposlrWgOCaQjVL71crILG+qiz94TwejqdrmGgiZ3Aa4YF6/rlCdLnOr50W0B2NWZ
+         fLofVTge7UqV6obw9NLTxpzwdxdrWtMUGXkXGaV7x019QsbiXbGAhPsME/qXNJHoOHbA
+         +/Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
-        b=wp6/d4R7fh5L8+kqiHLDFQ4sICm8eYRS7uDyqkfcktfUeDv7QHmc33FnLxKbK2JQyH
-         cQeMNulo1k2GYaqvavB/UXdggcIOVPlKPk8EMbusSfZdgmwaYEHyUBPckPsGwDJyWnJl
-         7BFaZv6yY4ym2eFxBFFhcJDbeFeCmMOb1O7up0XTjbk/6W3zPT0iBjsHVGZhfqZP6h2B
-         a7yw+UacLoJMqjHocxzXB9eVN58Q50KBQuwchNkXQZA/nmWUvh6IyZ5sPRihRi7Bb8VS
-         AH+vGcp48D2W8BpBtXH5C9KmDY5ioXkSHw7ya6+32utTGzWZBWegL0AeWBpO1tXYCaTF
-         arEw==
-X-Gm-Message-State: ACgBeo2z7+bOBQgYw4Ps7lDKwTK+vei9E6jKAm2t1KsNZ1V9UF0Kgkm2
-        6wAyz0ujDSbz1jIUeeaPSS3siJDZxVMDLwijmgw=
-X-Google-Smtp-Source: AA6agR4rVWBPLpn6GXYzkUIV6dVS5ftgYaJRvLA5IUNE2znvSte/lik1W2yhM2ubbwRHIY2/TUDyhZrg0vh1fMG2v9I=
-X-Received: by 2002:a05:6402:510c:b0:43e:305c:a4d1 with SMTP id
- m12-20020a056402510c00b0043e305ca4d1mr3247713edd.35.1662561165041; Wed, 07
- Sep 2022 07:32:45 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=T6N91VXL3P8JDR20lw0om2klLL1DyAPfzo9iAd40Kjg=;
+        b=tvsdHMlrbTB8zQBtFg/bMCaoNPToDC/9q5BmMhK2wf+LdWfwZp06JjhNUst+09Mqc8
+         CVoCkcvXDSMs8DZZVUQNAEUXwpl1HpzYtwepOmxFB9YnQ4/QHfUkCeCN/JWASjNOqY7+
+         Ut7qf+uW+VHQDCCZsbEH0P6OsLDkhCq9JdY8lCgl0zngZzrzgGWE1g6swmV+kMZqEX43
+         a/luNY13oO6QOBrAAtRIIUkUjacysVbAe4UsJ4YYwcqc2cqThbzhlFzV+eQp5UkD4UUX
+         dNchX0PB5r6PANRwCKonGW0gPV+sGS5SaLWiojIuIWwDpJrQ7nE5dSQyGuDl4T0HO3Yy
+         hCvA==
+X-Gm-Message-State: ACgBeo3+5RNkIvs3XJR17ibruHnqViLnfJNBM74hrgP55KUczydvSgiZ
+        fHjlsQj1Wm3BsYzl8r4Yl7g=
+X-Google-Smtp-Source: AA6agR4tl43GZYvunN36ftktUwWbipKnbvYHV2gfLiaXyPYbOh83fwEBmn1Apv+RIzqkQnhEqF59fA==
+X-Received: by 2002:a65:6d13:0:b0:41d:7380:e9cc with SMTP id bf19-20020a656d13000000b0041d7380e9ccmr3907155pgb.153.1662564370905;
+        Wed, 07 Sep 2022 08:26:10 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id e7-20020a63db07000000b0041a67913d5bsm10797834pgg.71.2022.09.07.08.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 08:26:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 7 Sep 2022 05:26:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Phishing Risk] Re: [Phishing Risk] [External] Re: [PATCH]
+ cgroup/cpuset: Add a new isolated mems.policy type.
+Message-ID: <Yxi4EYxMaPNkL+of@slm.duckdns.org>
+References: <20220902063303.1057-1-hezhongkun.hzk@bytedance.com>
+ <YxT/liaotbiOod51@slm.duckdns.org>
+ <c05bdeac-b354-0ac7-3233-27f8e5cbb38a@bytedance.com>
+ <YxeBGeOaQxvlPLzo@slm.duckdns.org>
+ <d323bd95-476b-0901-855e-14c8796d1b23@bytedance.com>
 MIME-Version: 1.0
-Received: by 2002:a54:3fc4:0:0:0:0:0 with HTTP; Wed, 7 Sep 2022 07:32:44 -0700 (PDT)
-Reply-To: lumar.casey@outlook.com
-From:   LUMAR CASEY <miriankushrat@gmail.com>
-Date:   Wed, 7 Sep 2022 16:32:44 +0200
-Message-ID: <CAO4StN0TpPxKN5zH_svRaRqGX4qmv4BYo2qpgmikVSdFaMxdLg@mail.gmail.com>
-Subject: ATTENTION/PROPOSAL
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY,UPPERCASE_75_100 autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:543 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [miriankushrat[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  0.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d323bd95-476b-0901-855e-14c8796d1b23@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ATTENTION
+Hello,
 
-BUSINESS PARTNER,
+On Wed, Sep 07, 2022 at 08:06:30PM +0800, Zhongkun He wrote:
+> It would be better if one process had a way to dynamically modify the
+> mempolicy of another process. But unfortunately there is no interface or
+> system call to do that in userspace.
 
-I AM LUMAR CASEY WORKING WITH AN INSURANCE FINANCIAL INSTITUTE, WITH
-MY POSITION AND PRIVILEGES I WAS ABLE TO SOURCE OUT AN OVER DUE
-PAYMENT OF 12.8 MILLION POUNDS THAT IS NOW SECURED WITH A SHIPPING
-DIPLOMATIC OUTLET.
+If you need to change the properties dynamically, I suggest adding this as a
+dynamic per-process interface first. That's more generic and useful for more
+cases.
 
-I AM SEEKING YOUR PARTNERSHIP TO RECEIVE THIS CONSIGNMENT AS AS MY
-PARTNER TO INVEST THIS FUND INTO A PROSPEROUS INVESTMENT VENTURE IN
-YOUR COUNTRY.
+Thanks.
 
-I AWAIT YOUR REPLY TO ENABLE US PROCEED WITH THIS BUSINESS PARTNERSHIP TOGETHER.
-
-REGARDS,
-
-LUMAR CASEY
+-- 
+tejun
