@@ -2,185 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 808895B05AE
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 15:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDA25B06F7
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 16:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbiIGNut (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 09:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
+        id S230350AbiIGOdo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 10:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiIGNus (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 09:50:48 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE68A50E8
-        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 06:50:35 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m10-20020a17090a730a00b001fa986fd8eeso18423995pjk.0
-        for <cgroups@vger.kernel.org>; Wed, 07 Sep 2022 06:50:35 -0700 (PDT)
+        with ESMTP id S229674AbiIGOdP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 10:33:15 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1025B56D9
+        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 07:32:46 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e17so12405162edc.5
+        for <cgroups@vger.kernel.org>; Wed, 07 Sep 2022 07:32:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
-        bh=MgiF2QhoVH7izaAC6v9HdSeip3/dnqOw2S5EnYEL7zk=;
-        b=tyBysNtakVLwLosd6NM/vK1CqUudzQqZPlC72cw1rfa2hg2wgZvjK0mTMetrBlukH7
-         tZb+67+N/zPM5Tmb+bOM1Sykm7wQgEVgj8BUBD8vCGwxoSYiRU/hUjveit3Ud+/2bmBC
-         ZR7Ssg78La9RTA7wxRojAleaPa7l0715zdhc2pbBLmjwJTFUPto3Fv10Vvy6GhelSdFG
-         A+8ZMtgwXszLUMihVXzN7kstNCgHJEzSn/Aw+XPw44wzu6MDLjAWgNOu8Ej6gsuX4eOm
-         RTYQun6Tw78tSBtvWIMsySt1k72KvjHw8OpB3O1h7WMhOXb/pDiZ/L+kDny2Jt3KubrT
-         H/GQ==
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date;
+        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
+        b=mqK4Urm6SI0LL0fIUpNglz2SbMFsznWTf0PUQzqjeQH/Bx12DkdTnBbzDZaQ4NR5iF
+         EQ7O7aO6doj8u/y3juxRvQfrpZ+4GxqWxP8xLHHcNMflWyA+nbVtyNaPRhtr9ofPoPwP
+         8B+OpsMdCo4QTDhmgZx918/MwMfvch/o8zTMSvXvdQRmqiXAGAGG0BMKFEwgydJ+Wh2g
+         mACuo7ixacFf2kfjc0mw39zk8rxwdiQKq9VKx4zvYpa6O1ByXXOPP+qBaWEXo7gAHnwA
+         FAVlPjIOEE2/ttEfWJe2qBCmRSUgsg0XQyoATWJy8k712P//auvk1V/Dh46aKaKpfIy+
+         X5Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date;
-        bh=MgiF2QhoVH7izaAC6v9HdSeip3/dnqOw2S5EnYEL7zk=;
-        b=0vC7zfC2nu1RvuxEAZMLxJkxZxNoz+52CvzAfT3iIh8w7oDWWTdxiLppMwhdgwp3WH
-         LvGpCgVgxo5Mrd9ZmVn2C7YQL+Yq+wAqo4b0nnPAmFXjC4zwMm/xF/K1UK/7kEYmaM/I
-         V0CyybUWHV5QtKZlb5MHVisUThoralzmOAYpTqlkXjsW6n5J2Ln3LYTLmZOnv8jbmL26
-         Sr1Xd23WuBaKHAp+FFKp0bS2JWtf4dmWziNMTN2wk8bEjVzwvFmFFSbIKLl/ncKdzK0D
-         lO99Br3BoNIZ+xqqYw4kOh+JQUYDq3qeJPhS7n2pI2/K2ViZB2QBaJTUCw3x99O/sXJm
-         NUvQ==
-X-Gm-Message-State: ACgBeo0LH15qYyoN4b0gMsWUNBY5gTfxFr4PgAWkZdb3dL15j8lN6EU0
-        F/tzwnqgdoW31sQCDRYw/3DgjA==
-X-Google-Smtp-Source: AA6agR5koSkOslLJYDBSVR9RGjjb1QUMj/VxBP5Lmxqdsv+78ymCjMJHq0Ni7SLIHIhMMViosj+3ig==
-X-Received: by 2002:a17:90a:c1:b0:1f4:f757:6b48 with SMTP id v1-20020a17090a00c100b001f4f7576b48mr30371570pjd.56.1662558633815;
-        Wed, 07 Sep 2022 06:50:33 -0700 (PDT)
-Received: from [10.255.85.171] ([139.177.225.235])
-        by smtp.gmail.com with ESMTPSA id a7-20020aa78e87000000b0053bb934eaa9sm8324011pfr.201.2022.09.07.06.50.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Sep 2022 06:50:33 -0700 (PDT)
-Message-ID: <93d76370-6c43-5560-9a5f-f76a8cc979e0@bytedance.com>
-Date:   Wed, 7 Sep 2022 21:50:24 +0800
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
+        b=wp6/d4R7fh5L8+kqiHLDFQ4sICm8eYRS7uDyqkfcktfUeDv7QHmc33FnLxKbK2JQyH
+         cQeMNulo1k2GYaqvavB/UXdggcIOVPlKPk8EMbusSfZdgmwaYEHyUBPckPsGwDJyWnJl
+         7BFaZv6yY4ym2eFxBFFhcJDbeFeCmMOb1O7up0XTjbk/6W3zPT0iBjsHVGZhfqZP6h2B
+         a7yw+UacLoJMqjHocxzXB9eVN58Q50KBQuwchNkXQZA/nmWUvh6IyZ5sPRihRi7Bb8VS
+         AH+vGcp48D2W8BpBtXH5C9KmDY5ioXkSHw7ya6+32utTGzWZBWegL0AeWBpO1tXYCaTF
+         arEw==
+X-Gm-Message-State: ACgBeo2z7+bOBQgYw4Ps7lDKwTK+vei9E6jKAm2t1KsNZ1V9UF0Kgkm2
+        6wAyz0ujDSbz1jIUeeaPSS3siJDZxVMDLwijmgw=
+X-Google-Smtp-Source: AA6agR4rVWBPLpn6GXYzkUIV6dVS5ftgYaJRvLA5IUNE2znvSte/lik1W2yhM2ubbwRHIY2/TUDyhZrg0vh1fMG2v9I=
+X-Received: by 2002:a05:6402:510c:b0:43e:305c:a4d1 with SMTP id
+ m12-20020a056402510c00b0043e305ca4d1mr3247713edd.35.1662561165041; Wed, 07
+ Sep 2022 07:32:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
- mems.policy type.
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, lizefan.x@bytedance.com,
-        wuyun.abel@bytedance.com
-References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
- <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
- <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
- <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
- <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
- <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
-From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
-In-Reply-To: <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Received: by 2002:a54:3fc4:0:0:0:0:0 with HTTP; Wed, 7 Sep 2022 07:32:44 -0700 (PDT)
+Reply-To: lumar.casey@outlook.com
+From:   LUMAR CASEY <miriankushrat@gmail.com>
+Date:   Wed, 7 Sep 2022 16:32:44 +0200
+Message-ID: <CAO4StN0TpPxKN5zH_svRaRqGX4qmv4BYo2qpgmikVSdFaMxdLg@mail.gmail.com>
+Subject: ATTENTION/PROPOSAL
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM,UNDISC_MONEY,UPPERCASE_75_100 autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:543 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [miriankushrat[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
->> Hi Michal, thanks for your reply.
->>
->>>> Say parent has a stronger requirement (say bind) than a child(prefer)?
->>
->> Yes, combine all these together.
-> 
-> What is the semantic of the resulting policy?
-> 
->> The parent's task will use 'bind', child's
->> use 'prefer'.This is the current implementation, and we can discuss and
->> modify it together if there are other suggestions.
->>
->> 1:Existing shortcomings
->>
->> In our use case, the application and the control plane are two separate
->> systems. When the application is created, it doesn't know how to use memory,
->> and it doesn't care. The control plane will decide the memory usage policy
->> based on different reasons (the attributes of the application itself, the
->> priority, the remaining resources of the system). Currently, numactl is used
->> to set it at program startup, and the child process will inherit the
->> mempolicy.
-> 
-> Yes this is common practice I have seen so far.
-> 
->> But we can't dynamically adjust the memory policy, except
->> restart, the memory policy will not change.
-> 
-> Do you really need to change the policy itself or only the effective
-> nodemask? I mean what is your usecase to go from say mbind to preferred
-> policy?  Do you need any other policy than bind and preferred?
->   
->> 2:Our goals
->>
->> For the above reasons, we want to create a mempolicy at the cgroup level.
->> Usually processes under a cgroup have the same priority and attributes, and
->> we can dynamically adjust the memory allocation strategy according to the
->> remaining resources of the system. For example, a low-priority cgroup uses
->> the 'bind:2-3' policy, and a high-priority cgroup uses bind:0-1. When
->> resources are insufficient, it will be changed to bind:3, bind:0-2 by
->> control plane, etc.Further more, more mempolicy can be extended, such as
->> allocating memory according to node weight, etc.
-> 
-> Yes, I do understand that you want to change the node affinity and that
-> is already possible with cpuset cgroup. The existing constrain is that
-> the policy is hardcoded mbind IIRC. So you cannot really implement a dynamic
-> preferred policy which would make some sense to me. The question is how
-> to implement that with a sensible semantic. It is hard to partition the
-> system into several cgroups if subset allows to spill over to others.
-> Say something like the following
-> 	root (nodes=0-3)
->         /    \
-> A (0, 1)     B (2, 3)
-> 
-> if both are MBIND then this makes sense because they are kinda isolated
-> (at least for user allocations) but if B is PREFERRED and therefore
-> allowed to use nodes 0 and 1 then it can deplete the memory from A and
-> therefore isolation doesn't work at all.
-> 
-> I can imagine that the all cgroups would use PREFERRED policy and then
-> nobody can expect anything and the configuration is mostly best effort.
-> But it feels like this is an abuse of the cgroup interface and a proper
-> syscall interface is likely due. Would it make more sense to add
-> pidfd_set_mempolicy and allow sufficiently privileged process to
-> manipulate default memory policy of a remote process?
+ATTENTION
 
-Hi Michal, thanks for your reply.
+BUSINESS PARTNER,
 
- > Do you really need to change the policy itself or only the effective
- > nodemask? Do you need any other policy than bind and preferred?
+I AM LUMAR CASEY WORKING WITH AN INSURANCE FINANCIAL INSTITUTE, WITH
+MY POSITION AND PRIVILEGES I WAS ABLE TO SOURCE OUT AN OVER DUE
+PAYMENT OF 12.8 MILLION POUNDS THAT IS NOW SECURED WITH A SHIPPING
+DIPLOMATIC OUTLET.
 
-Yes, we need to change the policy, not only his nodemask. we really want 
-policy is interleave, and extend it to weight-interleave.
-Say something like the following
-			node       weight
-     interleave:		 0-3       1:1:1:1  default one by one
-     weight-interleave:   0-3       1:2:4:6  alloc pages by weight
-					    (User set weight.)
-In the actual usecase, the remaining resources of each node are 
-different, and the use of interleave cannot maximize the use of resources.
+I AM SEEKING YOUR PARTNERSHIP TO RECEIVE THIS CONSIGNMENT AS AS MY
+PARTNER TO INVEST THIS FUND INTO A PROSPEROUS INVESTMENT VENTURE IN
+YOUR COUNTRY.
 
-Back to the previous question.
- >The question is how to implement that with a sensible semantic.
+I AWAIT YOUR REPLY TO ENABLE US PROCEED WITH THIS BUSINESS PARTNERSHIP TOGETHER.
 
-Thanks for your analysis and suggestions.It is really difficult to add 
-policy directly to cgroup for the hierarchical enforcement. It would be 
-a good idea to add pidfd_set_mempolicy.
+REGARDS,
 
-Also, there is a new idea.
-We can try to separate the elements of mempolicy and use them independently.
-Mempolicy has two meanings:
-     nodes:which nodes to use(nodes,0-3), we can use cpuset's 
-effective_mems directly.
-     mode:how to use them(bind,prefer,etc). change the mode to a 
-cpuset->flags,such as CS_INTERLEAVE。
-task_struct->mems_allowed is equal to cpuset->effective_mems,which is 
-hierarchical enforcement。CS_INTERLEAVE can also be updated into tasks， 
-just like other flags(CS_SPREAD_PAGE).
-When a process needs to allocate memory, it can find the appropriate 
-node to allocate pages according to the flag and mems_allowed.
-
-thanks.
-
-
-
+LUMAR CASEY
