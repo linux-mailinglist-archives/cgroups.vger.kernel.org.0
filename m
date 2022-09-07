@@ -2,56 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158795B09EA
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 18:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1C35B0A09
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 18:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiIGQSP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 12:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        id S229924AbiIGQ1b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 12:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbiIGQSM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 12:18:12 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93424A0617;
-        Wed,  7 Sep 2022 09:18:11 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id j12so2687581pfi.11;
-        Wed, 07 Sep 2022 09:18:11 -0700 (PDT)
+        with ESMTP id S229850AbiIGQ1X (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 12:27:23 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3827C7B7BD;
+        Wed,  7 Sep 2022 09:27:22 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id fy31so31602236ejc.6;
+        Wed, 07 Sep 2022 09:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=uhG7u+w7VyCcpyqgRvdj5juA1UtJgIUngIaiJnQjnlg=;
-        b=fLpa63LacDyjcE/vOT2FJdnhbj72Sx8714QLP6Qn/d9p6+I87lcQWgOvbCBbSsukSH
-         mH12lh3sQ1gujRjvOcEfh94G9ku2t9m8Mb9vOyK6pPhM1vwODGEcCESbxd6uCu0W7HFn
-         7tHmH+luQvssLOTPgS2yHi/9wDhCFwGJUBcQpk29GxG7/GSThV5wNh+85ZC15/l1Oh3U
-         cUg0t+i5EIyHSimnTaevPPoNAic7cxVG723kdP19q3TQOf0ZSa8twTUsQaAsYk2euSoO
-         NLkrw9UCDqG5UlJL/R5d6PRHXT5URnD5nC3OgOwKhBDQLw4Na20v+/qa3fSpRYjCreS3
-         u/aQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=5llhNQoegHj47RA4ocj63iybZ451JyQ+C+VFCYoxmlQ=;
+        b=IeXT1QKppmnZoHt2LbDbXSy8xbcm3n9VzJqMPtMKc+TFLR2+DRP0dEbDiVAsN7IcYa
+         YkagG5Fw/dxRBrVDxjJ8i8YT4/4+c6V43KhUcqXNevP/tXDtTjolvg4DlSSGb6Kq3Nwz
+         M+xOqRxAuwQN8rdV9JsWYTG25BTllbeo6k1yK9SMFn3OH8QyVhe02ZsHtrJmPP4vBkq3
+         NbHYHvcxAlCTxbwWULmYGBShUQ4M1f1It+ZvIMAI/jm9AD7mAWYmuZO/RBlnjvQryq8+
+         XkUnD3DMTVq+Cv1tg+CUTauYxDODzImQXAgYDGgtH9U2SFkqspam2BYOsLNFuFOHH+Xw
+         xOZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=uhG7u+w7VyCcpyqgRvdj5juA1UtJgIUngIaiJnQjnlg=;
-        b=nKx8r1urFGbRincTVEnJrDMiOPFyDz/SfhU1YtG+67PqYQlMzCknlnLAd5yklJJYJO
-         EM2W2LV7Czt4KQbB/DqcN8kNGvKuGIV/a61IDgzLwdgg40warb6pIYO1DwsB/bVSWI9P
-         GB818t+EmdMfHvk6uVGAx4TwyjH8vDfOP6QcpEQOBW/jEeNTx433V8k1JSH9+e2VMYOQ
-         PFdI3fWlm6jd7XwY7lhoiBWE/+sG0hMtOZxoiOprtYhflLSosG1mPUy4gAVrTBZjoPb4
-         A9vSjML0QT0fnb6pksy+Hok0Yr5EltX6fiWrgtgWMLhVyuIa3SF4srpdRsL6kdYWySrP
-         UEPw==
-X-Gm-Message-State: ACgBeo2vprzBnTpomJ0QLur/DhXZ8kMToKICj2Mde4x4tNxE3c2UTjNw
-        Q25QevZ+b0VdyUt8FwYJnnA=
-X-Google-Smtp-Source: AA6agR6wNx9LxOCETAzDYG1oTNWybOA4XXGzQe/Kn3DjNxx2RlymyCZXDh5ou60S2sruh1qtJIzZPA==
-X-Received: by 2002:a63:b4b:0:b0:433:5e5b:a540 with SMTP id a11-20020a630b4b000000b004335e5ba540mr4073972pgl.271.1662567490747;
-        Wed, 07 Sep 2022 09:18:10 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id s9-20020a170902b18900b00174f62a14e5sm12572006plr.153.2022.09.07.09.18.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 09:18:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 7 Sep 2022 06:18:09 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=5llhNQoegHj47RA4ocj63iybZ451JyQ+C+VFCYoxmlQ=;
+        b=vTSRgTyVBWSSerYC16QxEueU9h7Ke1Iwh00QgwaUV/TFNhFg4OqcN1A1c2dL+at4dn
+         1ndOg5SU9XIM+GpL64rB+Fyebs0SeJeuvl1J2vp4DIx9mUCOQKsJ7r0KgBzUYLevsl5d
+         rdnt07RpTHIw+lcEATQwzkvdR59Z7AEUV9FbmRAZZSBgQ1BNhFZWAgQ54uBNpwemfzXk
+         GO1Yjn4W9QHV0Wno0YjVFQHXj60WzXnICSzEW2x+hY3qpjK0dKhcelHN95W9d6VzmhYz
+         LYhEwt3J6PSaA6YoFC7wE1MFu192G4kDETj49/Y6T1qwzBbOWfcrU2L/XZAL1hUSqetp
+         spGw==
+X-Gm-Message-State: ACgBeo2VsBwn6wwTHdX9xp4/rb2zPXgcrUoWSiGUocmQxDtIGIbYGphD
+        gi6ah4ElKns2cZTZ1PE/Jno5w9fvx3N3b3zhneY=
+X-Google-Smtp-Source: AA6agR4MeMIGmYaaAHF3RpiWA0wTnsNxF62gU+hfhVf0aJkPhDwXPZ+gSnmumGKEhbHf0mj+kmLkG+QKCPEFD6lT/4A=
+X-Received: by 2002:a17:906:dc93:b0:742:133b:42c3 with SMTP id
+ cs19-20020a170906dc9300b00742133b42c3mr3016190ejc.502.1662568040459; Wed, 07
+ Sep 2022 09:27:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <Yxi8i3eP4fDDv2+X@slm.duckdns.org> <CAADnVQ+ZMCeKZOsb3GL0CnnZW0pxR0oDTUjqDczvbsVAViLs-Q@mail.gmail.com>
+ <YxjEQabWR/BQOzk5@slm.duckdns.org>
+In-Reply-To: <YxjEQabWR/BQOzk5@slm.duckdns.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Sep 2022 09:27:09 -0700
+Message-ID: <CAADnVQLe4oGE8vrAMoJZ+xAT3BefyOv3EhwY3QVGBQn5x25DkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,41 +74,32 @@ Cc:     Yafang Shao <laoar.shao@gmail.com>,
         "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for
- bpf map
-Message-ID: <YxjEQabWR/BQOzk5@slm.duckdns.org>
-References: <20220902023003.47124-1-laoar.shao@gmail.com>
- <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
- <Yxi8i3eP4fDDv2+X@slm.duckdns.org>
- <CAADnVQ+ZMCeKZOsb3GL0CnnZW0pxR0oDTUjqDczvbsVAViLs-Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+ZMCeKZOsb3GL0CnnZW0pxR0oDTUjqDczvbsVAViLs-Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Sep 7, 2022 at 9:18 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Wed, Sep 07, 2022 at 09:13:09AM -0700, Alexei Starovoitov wrote:
+> > Hmm. We discussed this option already. We definitely don't want
+> > to introduce an uapi knob that will allow anyone to skip memcg
+> > accounting today and in the future.
+>
+> cgroup.memory boot parameter is how memcg provides last-resort workarounds
+> for this sort of problems / regressions while they're being addressed. It's
+> not a dynamically changeable or programmable thing. Just a boot time
+> opt-out. That said, if you don't want it, you don't want it.
 
-On Wed, Sep 07, 2022 at 09:13:09AM -0700, Alexei Starovoitov wrote:
-> Hmm. We discussed this option already. We definitely don't want
-> to introduce an uapi knob that will allow anyone to skip memcg
-> accounting today and in the future.
-
-cgroup.memory boot parameter is how memcg provides last-resort workarounds
-for this sort of problems / regressions while they're being addressed. It's
-not a dynamically changeable or programmable thing. Just a boot time
-opt-out. That said, if you don't want it, you don't want it.
-
-Thanks.
-
--- 
-tejun
+ahh. boot param.
+Are you suggesting a global off switch ? Like nosocket and nokmem.
+That would be a different story.
+Need to think more about it. It could be ok.
