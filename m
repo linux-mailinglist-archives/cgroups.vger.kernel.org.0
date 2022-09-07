@@ -2,115 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4CD5B039A
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 14:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808895B05AE
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 15:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbiIGMGm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 08:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
+        id S229682AbiIGNut (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 09:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbiIGMGl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 08:06:41 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D28F895C0
-        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 05:06:40 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v4so13340973pgi.10
-        for <cgroups@vger.kernel.org>; Wed, 07 Sep 2022 05:06:40 -0700 (PDT)
+        with ESMTP id S229538AbiIGNus (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 09:50:48 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE68A50E8
+        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 06:50:35 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id m10-20020a17090a730a00b001fa986fd8eeso18423995pjk.0
+        for <cgroups@vger.kernel.org>; Wed, 07 Sep 2022 06:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
          :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
-        bh=0OMCYXdwR40VgBJEbCb1Ib7nAC/48wQOIhHqsm4Pyls=;
-        b=HO4kjKdkDS/f97yEF+pCNPTD9Qua8BJsV2g6HRDvYYsaGXiL8d/7kvtOrUIj5FpP3u
-         Do171ILfzUr9ll+GMVbtMMkKuLFktC0LuKZYHCj8Aj4GRzOmL0kbSz+a68UvVjzMcfj0
-         kA6/ZHwpyBfxdjfjVvSOzG5SRoSZp9doRxmZrHtV9n6DsoCTRobj2aQgvGKLTd4t60L5
-         6xaJKWiPrdjfPfveb0kURb/8K3B6ViCYRGZl8yCKYPZ354MstcHpOPR7RalIFLu5a9IO
-         JqF8kEkTl/jJgocmBPv7hxEajpLVtL4HScdT5HN4ZgdHcuCinfyXB8Z7P5yPSwLct9bF
-         MDDQ==
+        bh=MgiF2QhoVH7izaAC6v9HdSeip3/dnqOw2S5EnYEL7zk=;
+        b=tyBysNtakVLwLosd6NM/vK1CqUudzQqZPlC72cw1rfa2hg2wgZvjK0mTMetrBlukH7
+         tZb+67+N/zPM5Tmb+bOM1Sykm7wQgEVgj8BUBD8vCGwxoSYiRU/hUjveit3Ud+/2bmBC
+         ZR7Ssg78La9RTA7wxRojAleaPa7l0715zdhc2pbBLmjwJTFUPto3Fv10Vvy6GhelSdFG
+         A+8ZMtgwXszLUMihVXzN7kstNCgHJEzSn/Aw+XPw44wzu6MDLjAWgNOu8Ej6gsuX4eOm
+         RTYQun6Tw78tSBtvWIMsySt1k72KvjHw8OpB3O1h7WMhOXb/pDiZ/L+kDny2Jt3KubrT
+         H/GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
          :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
          :cc:subject:date;
-        bh=0OMCYXdwR40VgBJEbCb1Ib7nAC/48wQOIhHqsm4Pyls=;
-        b=EfD2gRo6dEfTpLuLtMrWI1l5WZbcsNS4uzaZrMWee+V1F5n05OVXIif4DEt4Orx5j0
-         NaHbbNuEO5TJjlislcCwxxQkkl3FiBS1slvvHkjoe4fwa6DVFPjtYkVP3RJ85wpxKfzv
-         mYWXAj/mb67KbFiHZbCZiejoHtyCXD9680plRCkNcZPsPFEoDh2duCES89AlIIrA+Bsv
-         QFFArvJtrGYWAreNKOkCtetmBMrPdocTeB4gw2DRPuuiijVM/HC3lK9C4FgYRnyvNcQA
-         eTT62Xh0dqw/HPp6ezd6GPgHU7bHj/ZrMvh+JKb72u3M7GdNWTd28k+vgBJiRtiE3dCv
-         OUKQ==
-X-Gm-Message-State: ACgBeo32t0OTFptaW0T45ff1Bi9Z3RU9stiBTkIThR4S1BIiCnDSwPrY
-        zD85p5VEHla4AF9CatyadWEauQ==
-X-Google-Smtp-Source: AA6agR4tfDHmSiKzt3i01SAQZYBf7IAftYvaZ9oaAAQ6MJ+FVM062Gti6IBQ5YC8Fh5KKcjl9nRAzw==
-X-Received: by 2002:a63:4d66:0:b0:434:8301:53e1 with SMTP id n38-20020a634d66000000b00434830153e1mr3070042pgl.369.1662552399617;
-        Wed, 07 Sep 2022 05:06:39 -0700 (PDT)
+        bh=MgiF2QhoVH7izaAC6v9HdSeip3/dnqOw2S5EnYEL7zk=;
+        b=0vC7zfC2nu1RvuxEAZMLxJkxZxNoz+52CvzAfT3iIh8w7oDWWTdxiLppMwhdgwp3WH
+         LvGpCgVgxo5Mrd9ZmVn2C7YQL+Yq+wAqo4b0nnPAmFXjC4zwMm/xF/K1UK/7kEYmaM/I
+         V0CyybUWHV5QtKZlb5MHVisUThoralzmOAYpTqlkXjsW6n5J2Ln3LYTLmZOnv8jbmL26
+         Sr1Xd23WuBaKHAp+FFKp0bS2JWtf4dmWziNMTN2wk8bEjVzwvFmFFSbIKLl/ncKdzK0D
+         lO99Br3BoNIZ+xqqYw4kOh+JQUYDq3qeJPhS7n2pI2/K2ViZB2QBaJTUCw3x99O/sXJm
+         NUvQ==
+X-Gm-Message-State: ACgBeo0LH15qYyoN4b0gMsWUNBY5gTfxFr4PgAWkZdb3dL15j8lN6EU0
+        F/tzwnqgdoW31sQCDRYw/3DgjA==
+X-Google-Smtp-Source: AA6agR5koSkOslLJYDBSVR9RGjjb1QUMj/VxBP5Lmxqdsv+78ymCjMJHq0Ni7SLIHIhMMViosj+3ig==
+X-Received: by 2002:a17:90a:c1:b0:1f4:f757:6b48 with SMTP id v1-20020a17090a00c100b001f4f7576b48mr30371570pjd.56.1662558633815;
+        Wed, 07 Sep 2022 06:50:33 -0700 (PDT)
 Received: from [10.255.85.171] ([139.177.225.235])
-        by smtp.gmail.com with ESMTPSA id y1-20020a17090a474100b001fdbb2e38acsm14714571pjg.5.2022.09.07.05.06.36
+        by smtp.gmail.com with ESMTPSA id a7-20020aa78e87000000b0053bb934eaa9sm8324011pfr.201.2022.09.07.06.50.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Sep 2022 05:06:39 -0700 (PDT)
-Message-ID: <d323bd95-476b-0901-855e-14c8796d1b23@bytedance.com>
-Date:   Wed, 7 Sep 2022 20:06:30 +0800
+        Wed, 07 Sep 2022 06:50:33 -0700 (PDT)
+Message-ID: <93d76370-6c43-5560-9a5f-f76a8cc979e0@bytedance.com>
+Date:   Wed, 7 Sep 2022 21:50:24 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
-Subject: Re: [Phishing Risk] Re: [Phishing Risk] [External] Re: [PATCH]
- cgroup/cpuset: Add a new isolated mems.policy type.
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220902063303.1057-1-hezhongkun.hzk@bytedance.com>
- <YxT/liaotbiOod51@slm.duckdns.org>
- <c05bdeac-b354-0ac7-3233-27f8e5cbb38a@bytedance.com>
- <YxeBGeOaQxvlPLzo@slm.duckdns.org>
+Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
+ mems.policy type.
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, lizefan.x@bytedance.com,
+        wuyun.abel@bytedance.com
+References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
+ <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
+ <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
+ <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
+ <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
+ <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
 From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
-In-Reply-To: <YxeBGeOaQxvlPLzo@slm.duckdns.org>
+In-Reply-To: <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> Hello,
+>> Hi Michal, thanks for your reply.
+>>
+>>>> Say parent has a stronger requirement (say bind) than a child(prefer)?
+>>
+>> Yes, combine all these together.
 > 
-> On Mon, Sep 05, 2022 at 06:30:38PM +0800, Zhongkun He wrote:
->> We usually use numactl to set the memory policy, but it cannot be changed
->> dynamically. In addition, the mempolicy of cpuset can provide a more
->> convenient interface for management and control panel.
+> What is the semantic of the resulting policy?
 > 
-> But you can write a better tool easily in userspace to do whatever you wanna
-> do, right? If you're worried about racing against forks, you can freeze the
-> cgroup, iterate all pids applying whatever new policy and then unfreeze. We
-> can probably improve the freezer interface so that multiple users don't
-> conflict with each other but that shouldn't be too difficult to do and is
-> gonna be useful generically.
+>> The parent's task will use 'bind', child's
+>> use 'prefer'.This is the current implementation, and we can discuss and
+>> modify it together if there are other suggestions.
+>>
+>> 1:Existing shortcomings
+>>
+>> In our use case, the application and the control plane are two separate
+>> systems. When the application is created, it doesn't know how to use memory,
+>> and it doesn't care. The control plane will decide the memory usage policy
+>> based on different reasons (the attributes of the application itself, the
+>> priority, the remaining resources of the system). Currently, numactl is used
+>> to set it at program startup, and the child process will inherit the
+>> mempolicy.
 > 
-> I don't see much point in adding something which can be almost trivially
-> implemented in userspace as a built-in kernel feature.
+> Yes this is common practice I have seen so far.
 > 
->> Sorry,I don't quite understand the meaning of "don't enforce anything
->> resource related". Does it mean mempolicy, such as "prefer:2" must specify
->> node? Or "cpuset.mems.policy" need to specify a default value?
->> (cpuset.mems.policy does not require a default value.)
+>> But we can't dynamically adjust the memory policy, except
+>> restart, the memory policy will not change.
 > 
-> In that there's no real resource being distributed hierarchically like cpu
-> cycles or memory capacities. All it's doing is changing attributes for a
-> group of processes, which can be done from userspace all the same.
+> Do you really need to change the policy itself or only the effective
+> nodemask? I mean what is your usecase to go from say mbind to preferred
+> policy?  Do you need any other policy than bind and preferred?
+>   
+>> 2:Our goals
+>>
+>> For the above reasons, we want to create a mempolicy at the cgroup level.
+>> Usually processes under a cgroup have the same priority and attributes, and
+>> we can dynamically adjust the memory allocation strategy according to the
+>> remaining resources of the system. For example, a low-priority cgroup uses
+>> the 'bind:2-3' policy, and a high-priority cgroup uses bind:0-1. When
+>> resources are insufficient, it will be changed to bind:3, bind:0-2 by
+>> control plane, etc.Further more, more mempolicy can be extended, such as
+>> allocating memory according to node weight, etc.
 > 
-> Thanks.
+> Yes, I do understand that you want to change the node affinity and that
+> is already possible with cpuset cgroup. The existing constrain is that
+> the policy is hardcoded mbind IIRC. So you cannot really implement a dynamic
+> preferred policy which would make some sense to me. The question is how
+> to implement that with a sensible semantic. It is hard to partition the
+> system into several cgroups if subset allows to spill over to others.
+> Say something like the following
+> 	root (nodes=0-3)
+>         /    \
+> A (0, 1)     B (2, 3)
 > 
-Hi Tejun, thanks for your reply.
+> if both are MBIND then this makes sense because they are kinda isolated
+> (at least for user allocations) but if B is PREFERRED and therefore
+> allowed to use nodes 0 and 1 then it can deplete the memory from A and
+> therefore isolation doesn't work at all.
+> 
+> I can imagine that the all cgroups would use PREFERRED policy and then
+> nobody can expect anything and the configuration is mostly best effort.
+> But it feels like this is an abuse of the cgroup interface and a proper
+> syscall interface is likely due. Would it make more sense to add
+> pidfd_set_mempolicy and allow sufficiently privileged process to
+> manipulate default memory policy of a remote process?
 
-It would be better if one process had a way to dynamically modify the
-mempolicy of another process. But unfortunately there is no interface or
-system call to do that in userspace.
+Hi Michal, thanks for your reply.
 
-In our use case, we hope to combine memory policy with cgroup for
-better use of resources. The current implementation may not be suitable, 
-I'll keep trying other approaches.
+ > Do you really need to change the policy itself or only the effective
+ > nodemask? Do you need any other policy than bind and preferred?
 
-Thanks again.
+Yes, we need to change the policy, not only his nodemask. we really want 
+policy is interleave, and extend it to weight-interleave.
+Say something like the following
+			node       weight
+     interleave:		 0-3       1:1:1:1  default one by one
+     weight-interleave:   0-3       1:2:4:6  alloc pages by weight
+					    (User set weight.)
+In the actual usecase, the remaining resources of each node are 
+different, and the use of interleave cannot maximize the use of resources.
+
+Back to the previous question.
+ >The question is how to implement that with a sensible semantic.
+
+Thanks for your analysis and suggestions.It is really difficult to add 
+policy directly to cgroup for the hierarchical enforcement. It would be 
+a good idea to add pidfd_set_mempolicy.
+
+Also, there is a new idea.
+We can try to separate the elements of mempolicy and use them independently.
+Mempolicy has two meanings:
+     nodes:which nodes to use(nodes,0-3), we can use cpuset's 
+effective_mems directly.
+     mode:how to use them(bind,prefer,etc). change the mode to a 
+cpuset->flags,such as CS_INTERLEAVE。
+task_struct->mems_allowed is equal to cpuset->effective_mems,which is 
+hierarchical enforcement。CS_INTERLEAVE can also be updated into tasks， 
+just like other flags(CS_SPREAD_PAGE).
+When a process needs to allocate memory, it can find the appropriate 
+node to allocate pages according to the flag and mems_allowed.
+
+thanks.
+
+
+
