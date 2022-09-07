@@ -2,67 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FC65B089B
-	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 17:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0E15B08E3
+	for <lists+cgroups@lfdr.de>; Wed,  7 Sep 2022 17:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbiIGPcV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 11:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S229742AbiIGPng (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Sep 2022 11:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiIGPcU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 11:32:20 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6765A7696B;
-        Wed,  7 Sep 2022 08:32:19 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id pj10so4491204pjb.2;
-        Wed, 07 Sep 2022 08:32:19 -0700 (PDT)
+        with ESMTP id S229515AbiIGPne (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 11:43:34 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFBD9E2D5;
+        Wed,  7 Sep 2022 08:43:33 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id t11-20020a17090a510b00b001fac77e9d1fso18700114pjh.5;
+        Wed, 07 Sep 2022 08:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=2y84KoxHvAca0x2HYNXqxqJj776eiDbPEKIjReMrg0U=;
-        b=RCPz9p+Nm7+WOSNmOPN1+QvBYB8EhdBwxeXR6gnhlbAts2QrkYbmNTYTpJZ98fgPPF
-         PBl/6LoKGUlg+AcfZkjDU6xf7r8RtInGmJHbDUCjURuh+T2Vll6Praux5Orn4iaeDqwm
-         jxV4YJvo9RbSCftdHfGjhMCV8QNHdXBUzVJ9lt9ijth/jwtdLgnIZtyD2tBora/s4YKV
-         ChT9rFNyrRAFZc546muYP38fxNj7VYw4s7kDHXMvjcBWNOcDwGcVs0Y6TZP/A0ESSHFp
-         B8cRLWxPlzfh0r+Vhc50oXUgfnsdNkI1V8eO1TF0YKSIopG3NCUBnN6VSmRDkQpeM3Ly
-         hiTg==
+        bh=P2y+BRPoGQxcqMhj3bfHoCPdDwxzhdrBdUaNfcmh0tE=;
+        b=f5sV92bQm4uCzJmJSVchg7K5WurYb/bA7u1+zpo2OohtxddaHLFxpVSinPu25hGluS
+         VkVOWz86PqadpIhvGnfZmfe930SnCERVZ2J3AOA0m1LyyfcQEry8dCLvK5fhH9KSEV18
+         /rRmvEwReN/H0EpByLp1q/20tf9gmD9mgGGF6nSZdvU47MkCXJlk8293pdZBJKCefA5y
+         YYWhiBYlY8h7ehdLbUBnhi1pc7HuYKW1myQIGQxATR/Q0Szx3n2srUQgWD96HzkCvz1Y
+         LymO1eHKTcsuqUITTxAhGw24ZQ/KfJpsIFl0lx9Je8dNu3aJcnroCfGUMot1FAOcAwyP
+         nK9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=2y84KoxHvAca0x2HYNXqxqJj776eiDbPEKIjReMrg0U=;
-        b=Sm3W1WwJnj4AKM0QUUTaOEYYUH+1Lkx5NjB0WO17XLfgRQ6GwZBq9NgQXRJeVPeH5/
-         xx094+uANThRUpb1gVQknr708oy0WVgWw2uHg1yb7egMAdirSWoPiAGLr+HLZCLEFpP2
-         gMMqQX4xoH4w/kZRhD2u2JViW8Z2MA4g+TCpKrRwGiI/eUZl2Yb3nnHdjUX+ilwNr+nY
-         VdnbNVCZhvFkJK3B6xABT8b13HsaxJD9EB34JbokKNdgsvP0I1v91XdeGaohWSoLbN1B
-         WW3GVHH2V5cTvIbXVL+u6Rxs03a7C1MDZ73MMuqk8sN1+aECbRJU7YCX5fCNWyQjQXo7
-         Q/qA==
-X-Gm-Message-State: ACgBeo3helQZ1q6cuEj8uH3pw0q4NWSgup/l5W2nMKooXht0dUQgOryM
-        d+a9gCyf39J9qboozE3WdnE=
-X-Google-Smtp-Source: AA6agR6CoHdWVQeSggz2rj+Be9WXzcSrS5L0JFdC4/ip2osl35mQ0JDhjPAcVxs+NdHQowGNYh7Wiw==
-X-Received: by 2002:a17:902:7796:b0:172:c716:d3ac with SMTP id o22-20020a170902779600b00172c716d3acmr4489711pll.137.1662564738413;
-        Wed, 07 Sep 2022 08:32:18 -0700 (PDT)
+        bh=P2y+BRPoGQxcqMhj3bfHoCPdDwxzhdrBdUaNfcmh0tE=;
+        b=4mssJghjS2lBgrK/cb7MK2dKLu6I+l4cmYUEmEKHw34UpLbX+Yv0YrY35nLtGFNZ7I
+         ZYGHlPLRJVVbjB04Ws6dx1SZx7sSTO3nL6aG6tbU1KcUAO5YBGa3XfBfQurBSkjp4dW6
+         3kapyAAeIomF3nSSvYZsPEaaNRUzVw2aJ6fkTGF1c+5EanaBMvOR9pGUnBKKhIzx1fAU
+         RBEMV4NWOCWu6/kcOD3VP4tv69bVeRKgRB8DYBDbMDEYgzwHXG8qpcA4K5s6yQ72KrT4
+         g0xkykEixQBJ85cFEzcdATJ59GhKw/uwj3duvFHGwbsBCsUW0Eq7VFILTtAworI7oAAd
+         nTEw==
+X-Gm-Message-State: ACgBeo0Kn1uwdCyGZDqlMuCEHefyElC0HufRadq+vbhczpW9pLSSq/IZ
+        trmx4s2i316Xq5WAUG9G8nA=
+X-Google-Smtp-Source: AA6agR4wkKXd44PtzA2Fo4ApkSYqzqk7KHyAZDGJtqQROW6vcymT6U6Dzu0AdoOFp0/dTQoHV98OKQ==
+X-Received: by 2002:a17:903:22cd:b0:176:ca53:3e82 with SMTP id y13-20020a17090322cd00b00176ca533e82mr4672673plg.59.1662565413004;
+        Wed, 07 Sep 2022 08:43:33 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c20c00b00176cde52192sm4456191pll.251.2022.09.07.08.32.17
+        by smtp.gmail.com with ESMTPSA id e6-20020a170902784600b00172bf229dfdsm12515263pln.97.2022.09.07.08.43.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 08:32:18 -0700 (PDT)
+        Wed, 07 Sep 2022 08:43:32 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 7 Sep 2022 05:32:16 -1000
+Date:   Wed, 7 Sep 2022 05:43:31 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] cgroup/cpuset: remove unreachable code
-Message-ID: <Yxi5gI1f2MxdC0c9@slm.duckdns.org>
-References: <20220907040112.82030-1-jiapeng.chong@linux.alibaba.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org,
+        lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for
+ bpf map
+Message-ID: <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+References: <20220902023003.47124-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220907040112.82030-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20220902023003.47124-1-laoar.shao@gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -74,42 +79,25 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-(cc'ing Waiman and quoting the whole message)
+Hello,
 
-On Wed, Sep 07, 2022 at 12:01:12PM +0800, Jiapeng Chong wrote:
-> The function sched_partition_show cannot execute seq_puts, delete the
-> invalid code.
-> 
-> kernel/cgroup/cpuset.c:2849 sched_partition_show() warn: ignoring unreachable code.
-> 
-> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=2087
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
+On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+...
+> This patchset tries to resolve the above two issues by introducing a
+> selectable memcg to limit the bpf memory. Currently we only allow to
+> select its ancestor to avoid breaking the memcg hierarchy further. 
+> Possible use cases of the selectable memcg as follows,
 
-Applied to cgroup/for-6.1.
+As discussed in the following thread, there are clear downsides to an
+interface which requires the users to specify the cgroups directly.
+
+ https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+
+So, I don't really think this is an interface we wanna go for. I was hoping
+to hear more from memcg folks in the above thread. Maybe ping them in that
+thread and continue there?
 
 Thanks.
-
->  kernel/cgroup/cpuset.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 6baa977a71ba..b474289c15b8 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2846,8 +2846,6 @@ static int sched_partition_show(struct seq_file *seq, void *v)
->  		else
->  			seq_printf(seq, "%s invalid\n", type);
->  		break;
-> -		seq_puts(seq, "isolated invalid\n");
-> -		break;
->  	}
->  	return 0;
->  }
-> -- 
-> 2.20.1.7.g153144c
-> 
 
 -- 
 tejun
