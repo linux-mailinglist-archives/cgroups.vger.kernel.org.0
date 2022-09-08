@@ -2,157 +2,183 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 860225B12A7
-	for <lists+cgroups@lfdr.de>; Thu,  8 Sep 2022 04:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C935B13C8
+	for <lists+cgroups@lfdr.de>; Thu,  8 Sep 2022 06:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbiIHCsq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Sep 2022 22:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        id S229577AbiIHE4z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Sep 2022 00:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiIHCsp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Sep 2022 22:48:45 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2757FFBF;
-        Wed,  7 Sep 2022 19:48:41 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id v6so4864690ljj.0;
-        Wed, 07 Sep 2022 19:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=S007uhudJiEUSw5VwxgkV7xB4iqXJLx8bGrjx4fe7Ec=;
-        b=Wynxkd/Lh2b+ogTbqK96/Gt6zE8OZeDngoOQzpEIsMlpgLwgwooTbQV5YtjXg+k+43
-         UspSoj/yZnUA2/GoXB9T2DiNXkYLbKF4nXr6Ui8BwkpzIXGa9GwJq+SrJNBX7i2yXbdg
-         BfpSllT6UIpzwxu9DLlXK9/1LAXbzA0p4z7ahPmrQIzQB2ovJI9+TvXYJE2+FKSvAGjQ
-         3GXNk8TxFQMKZ3d93OIEUlyB05I+Uvqq/2ynKBJCQWJkYwwRYWpoewHgCVzlHSaru083
-         ACQrWwhViZfE479uxHlF7W8EID7aiLjo/amxw7glHDaVnxPhJivreP+95GHsAcfCSsJW
-         Y3hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=S007uhudJiEUSw5VwxgkV7xB4iqXJLx8bGrjx4fe7Ec=;
-        b=qc2aE6n2HkG9qJrlqmr4fTkaIjFE9MF6pf6p0nGlWL+jmdZ9TS5oOYo9It/pm0T7/G
-         8IQli6iAus0D+DC03P9FBIIuFfRxqTjXrMBQx6TzhqbPW4emB9kqeRlu/ek3b1F3KCoX
-         LYmOOWs5G0qB/c2p4keEW6DRFXVJAsWxeIN7D0iAzdanMfVaEpDzSgxws/I8utowDrrE
-         Ziik5fnV83U6SzfQfwfhALoqt1GpGalhs0+bR7EAkQJ4VoShyEQ5UMnTX2q/MuPVVRZh
-         0Dcj/Xo53eKgVtM/YKfmktm1VBJhx8iq+O2WaFR30o1KyxHVKg9Y5NlE/tCYNqZZw/Po
-         IfNA==
-X-Gm-Message-State: ACgBeo2XqsCMmzhPs2Cd7OI3qokDYTbQibrXzLTnJjacJ79t23Bm8jnl
-        vkNH1Lfx/mv7MH3XrwEq89hU82lszH9fv09lsWY=
-X-Google-Smtp-Source: AA6agR51DPksjb7gaR1DJ20WyBaKaOQEPNurBKQksz7/9Z2PW16bQ3gm9ag9gGKHTWzQzy+kZcizRIHGLZcNsqiLDVA=
-X-Received: by 2002:a2e:91d7:0:b0:26a:c623:ad26 with SMTP id
- u23-20020a2e91d7000000b0026ac623ad26mr1838663ljg.512.1662605320251; Wed, 07
- Sep 2022 19:48:40 -0700 (PDT)
+        with ESMTP id S229487AbiIHE4y (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Sep 2022 00:56:54 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1242AFAD0
+        for <cgroups@vger.kernel.org>; Wed,  7 Sep 2022 21:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662613013; x=1694149013;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pAxkceB878k1Ay1bHZYgGAP5y0fENi0US3D3YxV+9U8=;
+  b=SRN8suyqPjMsTy0mgi+Hklwkbxg3c8kE+Hm8z0ppwfjDJGM3yH4uWTp6
+   XXlhtKeR/i/l66vLcYvFfvxRs6XqbNub+uPCLS7SyQ2G1EsF50g1yfbd2
+   f76e+olKJm3DYiiejcOoWoV6eczeH6yi5pPUNnD+LYxQ0om7031+SgDSy
+   5OcVXr4HqM8kUjBKJEz2BmUhbLFH5SPx+0OavATIRVIUyxk+L2aTjRsc+
+   rEIQLBqG+h9Sq/WAoZCQxwSv33vjxi0OoMfiz2l/AdXlvueU9vJ575V7k
+   kVd3RJz/Bp9kEmvt7CxUsBp79p/6j+ttgOAzDrEaaPlTrm5zBs7A6odU+
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="323258775"
+X-IronPort-AV: E=Sophos;i="5.93,299,1654585200"; 
+   d="scan'208";a="323258775"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 21:56:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,299,1654585200"; 
+   d="scan'208";a="644916008"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2022 21:56:51 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oW9at-0007Nj-0k;
+        Thu, 08 Sep 2022 04:56:51 +0000
+Date:   Thu, 08 Sep 2022 12:56:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-6.1] BUILD SUCCESS
+ c478bd88362418bd2a1c230215fde184f5642e44
+Message-ID: <631975e3.oFmvwHAOxyeQVi6k%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
- <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car> <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
- <CAADnVQJHtY0m5TnFxnn8w3xBUfAGNzbf1HmS3ChqcLJadEYJFg@mail.gmail.com>
-In-Reply-To: <CAADnVQJHtY0m5TnFxnn8w3xBUfAGNzbf1HmS3ChqcLJadEYJFg@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 8 Sep 2022 10:48:03 +0800
-Message-ID: <CALOAHbAwvPFp6F8BXjzTeNnL7rT+LfA6_yoCY5sLO9VVkjXONA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 8, 2022 at 10:43 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Sep 7, 2022 at 7:37 PM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > >
-> > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
-> > > > Hello,
-> > > >
-> > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
-> > > > ...
-> > > > > This patchset tries to resolve the above two issues by introducing a
-> > > > > selectable memcg to limit the bpf memory. Currently we only allow to
-> > > > > select its ancestor to avoid breaking the memcg hierarchy further.
-> > > > > Possible use cases of the selectable memcg as follows,
-> > > >
-> > > > As discussed in the following thread, there are clear downsides to an
-> > > > interface which requires the users to specify the cgroups directly.
-> > > >
-> > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
-> > > >
-> > > > So, I don't really think this is an interface we wanna go for. I was hoping
-> > > > to hear more from memcg folks in the above thread. Maybe ping them in that
-> > > > thread and continue there?
-> > >
-> >
-> > Hi Roman,
-> >
-> > > As I said previously, I don't like it, because it's an attempt to solve a non
-> > > bpf-specific problem in a bpf-specific way.
-> > >
-> >
-> > Why do you still insist that bpf_map->memcg is not a bpf-specific
-> > issue after so many discussions?
-> > Do you charge the bpf-map's memory the same way as you charge the page
-> > caches or slabs ?
-> > No, you don't. You charge it in a bpf-specific way.
-> >
-> > > Yes, memory cgroups are not great for accounting of shared resources, it's well
-> > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
-> > > in a particular cgroup setup. Honestly, I don't think it's worth the added
-> > > complexity. Especially because a similar behaviour can be achieved simple
-> > > by placing the task which creates the map into the desired cgroup.
-> >
-> > Are you serious ?
-> > Have you ever read the cgroup doc? Which clearly describe the "No
-> > Internal Process Constraint".[1]
-> > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
-> >
-> > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-> >
-> > > Beatiful? Not. Neither is the proposed solution.
-> > >
-> >
-> > Is it really hard to admit a fault?
->
-> Yafang,
->
-> This attitude won't get you anywhere.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.1
+branch HEAD: c478bd88362418bd2a1c230215fde184f5642e44  cgroup/cpuset: remove unreachable code
 
-Thanks for pointing it out. It is my fault.
+elapsed time: 739m
 
-> Selecting memcg by fd is no go.
-> You need to work with the community to figure out a solution
-> acceptable to maintainers of relevant subsystems.
+configs tested: 102
+configs skipped: 3
 
-Yes, I'm trying.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                  randconfig-r043-20220907
+m68k                             allmodconfig
+powerpc                           allnoconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+i386                                defconfig
+powerpc                          allmodconfig
+x86_64                              defconfig
+mips                             allyesconfig
+x86_64                               rhel-8.3
+x86_64                        randconfig-a013
+m68k                             allyesconfig
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+i386                          randconfig-a001
+x86_64                    rhel-8.3-kselftests
+x86_64                        randconfig-a006
+i386                          randconfig-a014
+i386                             allyesconfig
+i386                          randconfig-a003
+x86_64                        randconfig-a015
+sh                               allmodconfig
+x86_64                           allyesconfig
+arm                                 defconfig
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+i386                          randconfig-a005
+x86_64                        randconfig-a004
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a012
+i386                          randconfig-a016
+csky                                defconfig
+sparc                            alldefconfig
+sparc                               defconfig
+um                                  defconfig
+sh                            titan_defconfig
+arm                            mps2_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+ia64                          tiger_defconfig
+arc                              alldefconfig
+i386                             alldefconfig
+powerpc                     ep8248e_defconfig
+m68k                          hp300_defconfig
+m68k                        m5272c3_defconfig
+arm                          exynos_defconfig
+sparc                             allnoconfig
+arm                        cerfcube_defconfig
+powerpc                      arches_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                     asp8347_defconfig
+loongarch                           defconfig
+loongarch                         allnoconfig
+i386                          randconfig-c001
+sh                          r7785rp_defconfig
+arm                          iop32x_defconfig
+powerpc                     mpc83xx_defconfig
+xtensa                generic_kc705_defconfig
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+sh                     sh7710voipgw_defconfig
+sh                             sh03_defconfig
+sh                           se7750_defconfig
+s390                             allmodconfig
+xtensa                       common_defconfig
+ia64                             allmodconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+sh                          r7780mp_defconfig
+arm                            qcom_defconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20220907
+hexagon              randconfig-r045-20220907
+s390                 randconfig-r044-20220907
+x86_64                        randconfig-a005
+riscv                randconfig-r042-20220907
+x86_64                        randconfig-a001
+i386                          randconfig-a013
+x86_64                        randconfig-a012
+i386                          randconfig-a015
+i386                          randconfig-a002
+x86_64                        randconfig-a003
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a006
+i386                          randconfig-a011
+i386                          randconfig-a004
+powerpc                 mpc8315_rdb_defconfig
+mips                           ip22_defconfig
+powerpc                     tqm8540_defconfig
+arm                           spitz_defconfig
+x86_64                        randconfig-k001
+powerpc                     akebono_defconfig
+mips                      malta_kvm_defconfig
+arm                    vt8500_v6_v7_defconfig
 
 -- 
-Regards
-Yafang
+0-DAY CI Kernel Test Service
+https://01.org/lkp
