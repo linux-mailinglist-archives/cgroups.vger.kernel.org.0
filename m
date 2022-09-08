@@ -2,117 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3855B157C
-	for <lists+cgroups@lfdr.de>; Thu,  8 Sep 2022 09:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D5A5B162A
+	for <lists+cgroups@lfdr.de>; Thu,  8 Sep 2022 10:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbiIHHT3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Sep 2022 03:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        id S230345AbiIHIBV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Sep 2022 04:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbiIHHT1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Sep 2022 03:19:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64639215;
-        Thu,  8 Sep 2022 00:19:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E390A1F6E6;
-        Thu,  8 Sep 2022 07:19:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1662621560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yklmv2ux9aHaYIhutjyFigStqNyf61xsI5qM8T+Pp2M=;
-        b=XsPHwzskZaYb147v91HjRFvXSb84ItKrVKY4TdypktvPUCZ2ermxWVd6wuWWBL62hWeknq
-        6NcmpS4lfkIA6SlBKqpvEw22impF8ik4Ke/ZnscUqU7zWcM3fgHpS+TuB6ok1QrNv/Ppp5
-        kt5N85b5OZvoxs/3u369Z0s2CX7Fv+g=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4FC813A6D;
-        Thu,  8 Sep 2022 07:19:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hn80LXiXGWOJDwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 08 Sep 2022 07:19:20 +0000
-Date:   Thu, 8 Sep 2022 09:19:20 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, lizefan.x@bytedance.com,
-        wuyun.abel@bytedance.com
-Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
- mems.policy type.
-Message-ID: <YxmXeC7te2HAi4dX@dhcp22.suse.cz>
-References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
- <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
- <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
- <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
- <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
- <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
- <93d76370-6c43-5560-9a5f-f76a8cc979e0@bytedance.com>
+        with ESMTP id S229484AbiIHIBU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Sep 2022 04:01:20 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D49C16;
+        Thu,  8 Sep 2022 01:01:19 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MNWjj2CyvzHngv;
+        Thu,  8 Sep 2022 15:59:21 +0800 (CST)
+Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 8 Sep 2022 16:01:16 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm100009.china.huawei.com
+ (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 8 Sep
+ 2022 16:01:16 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH] mm/memcontrol: use kstrtobool for swapaccount param parsing
+Date:   Thu, 8 Sep 2022 16:34:52 +0800
+Message-ID: <20220908083452.2844125-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <93d76370-6c43-5560-9a5f-f76a8cc979e0@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm100009.china.huawei.com (7.185.36.113)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 07-09-22 21:50:24, Zhongkun He wrote:
-[...]
-> > Do you really need to change the policy itself or only the effective
-> > nodemask? Do you need any other policy than bind and preferred?
-> 
-> Yes, we need to change the policy, not only his nodemask. we really want
-> policy is interleave, and extend it to weight-interleave.
-> Say something like the following
-> 			node       weight
->     interleave:		 0-3       1:1:1:1  default one by one
->     weight-interleave:   0-3       1:2:4:6  alloc pages by weight
-> 					    (User set weight.)
-> In the actual usecase, the remaining resources of each node are different,
-> and the use of interleave cannot maximize the use of resources.
+Use kstrtobool which is more powerful to handle all kinds of parameters
+like 'Yy1Nn0' or [oO][NnFf] for "on" and "off".
 
-OK, this seems a separate topic. It would be good to start by proposing
-that new policy in isolation with the semantic description.
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 7 ++++---
+ mm/memcontrol.c                                 | 8 ++++----
+ mm/swap_cgroup.c                                | 2 +-
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
-> Back to the previous question.
-> >The question is how to implement that with a sensible semantic.
-> 
-> Thanks for your analysis and suggestions.It is really difficult to add
-> policy directly to cgroup for the hierarchical enforcement. It would be a
-> good idea to add pidfd_set_mempolicy.
-
-Are you going to pursue that path?
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 2434c6729f1c..5f8531e39bc9 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6037,10 +6037,11 @@
+ 			Execution Facility on pSeries.
  
-> Also, there is a new idea.
-> We can try to separate the elements of mempolicy and use them independently.
-> Mempolicy has two meanings:
->     nodes:which nodes to use(nodes,0-3), we can use cpuset's effective_mems
-> directly.
->     mode:how to use them(bind,prefer,etc). change the mode to a
-> cpuset->flags,such as CS_INTERLEAVE。
-> task_struct->mems_allowed is equal to cpuset->effective_mems,which is
-> hierarchical enforcement。CS_INTERLEAVE can also be updated into tasks，
-> just like other flags(CS_SPREAD_PAGE).
-> When a process needs to allocate memory, it can find the appropriate node to
-> allocate pages according to the flag and mems_allowed.
-
-I am not sure I see the advantage as the mode and nodes are always
-closely coupled. You cannot really have one wihtout the other.
-
+ 	swapaccount=	[KNL]
+-			Format: [0|1]
++			Format: { [oO][Nn]/Y/y/1 | [oO][Ff]/N/n/0 }
+ 			Enable accounting of swap in memory resource
+-			controller if no parameter or 1 is given or disable
+-			it if 0 is given (See Documentation/admin-guide/cgroup-v1/memory.rst)
++			controller if no parameter or [oO][Nn]/Y/y/1 is given
++			or disable it if [oO][Ff]/N/n/0 is given
++			(See Documentation/admin-guide/cgroup-v1/memory.rst)
+ 
+ 	swiotlb=	[ARM,IA-64,PPC,MIPS,X86]
+ 			Format: { <int> [,<int>] | force | noforce }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0a1a8a846870..5511c0c120d9 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7434,10 +7434,10 @@ bool mem_cgroup_swap_full(struct folio *folio)
+ 
+ static int __init setup_swap_account(char *s)
+ {
+-	if (!strcmp(s, "1"))
+-		cgroup_memory_noswap = false;
+-	else if (!strcmp(s, "0"))
+-		cgroup_memory_noswap = true;
++	bool res;
++
++	if (!kstrtobool(s, &res))
++		cgroup_memory_noswap = !res;
+ 	return 1;
+ }
+ __setup("swapaccount=", setup_swap_account);
+diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
+index 5a9442979a18..107dd0e94b01 100644
+--- a/mm/swap_cgroup.c
++++ b/mm/swap_cgroup.c
+@@ -194,7 +194,7 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
+ 	return 0;
+ nomem:
+ 	pr_info("couldn't allocate enough memory for swap_cgroup\n");
+-	pr_info("swap_cgroup can be disabled by swapaccount=0 boot option\n");
++	pr_info("swap_cgroup can be disabled by swapaccount=[oO][Ff]/N/n/0 boot option\n");
+ 	return -ENOMEM;
+ }
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
