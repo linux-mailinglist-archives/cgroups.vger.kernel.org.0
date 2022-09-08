@@ -2,28 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932CB5B1FED
-	for <lists+cgroups@lfdr.de>; Thu,  8 Sep 2022 16:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B120B5B21D2
+	for <lists+cgroups@lfdr.de>; Thu,  8 Sep 2022 17:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbiIHOAg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Sep 2022 10:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
+        id S231264AbiIHPRe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Sep 2022 11:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232349AbiIHOAI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Sep 2022 10:00:08 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B93F5BA;
-        Thu,  8 Sep 2022 06:59:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MNgcW0HfGz9y62N;
-        Thu,  8 Sep 2022 21:55:23 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDn3pIh9RljLSYwAA--.49581S2;
-        Thu, 08 Sep 2022 14:59:10 +0100 (CET)
-Message-ID: <8d7a713e500b5e3fce93e4c5c7b8841eb6dd28e4.camel@huaweicloud.com>
+        with ESMTP id S229789AbiIHPRd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Sep 2022 11:17:33 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAA740571;
+        Thu,  8 Sep 2022 08:17:32 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id go34so3790453ejc.2;
+        Thu, 08 Sep 2022 08:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=dvC/u7qJ5dN4X47tbsTGAuz++QpERj+4FDleSIpBEMg=;
+        b=R0hVOMicuPDSnoQmcmYiJB3LFWFfOFwjBgRBuwuOEWI5JTxT51Lu0OjLr++Gxw/lzs
+         Tvik3ezKxyKAnzDTCdQqFNmpHVznLaNacrF9ZuvJc9pBhz0lrAdZi1n+3xp/ijThvgp8
+         VOwRWcRDrlK9c+JFS1o8ONZvPVH7bR5r3/0ESeh6jy2zLWd7yU9MbottgDeiLnCTWQUN
+         tzuE0V5OqQhzozQQSsV16et/mkj7icGxA9KjWbtIM5r6eFzdxL2e+f9jqf4Nw1JWc8Gp
+         zzjf6KnNbCgGJ8j2doSbs7qY9udYo9nEXzEMNqBxnxO5iPN9tehMBETqPTDu68UbIvgn
+         qldw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=dvC/u7qJ5dN4X47tbsTGAuz++QpERj+4FDleSIpBEMg=;
+        b=bCVLOJe+uWFWhqRYSGlMsFWddY0ccOuslSZ8SxdL5L4VKGycPyhjMCScLRhrL0wnfH
+         RsYzRQaebJgmm78Cg/YaAN4h7x05qFflvpl/48d9F+9zdZvvCyQq7TL4x9K/CZjvJyKp
+         MBqif/DNTnyFdBHskvp2mk1B8zH0UkInMhxX7ly6sfwJuQkpGto1JBRRvrIjiFf3x+97
+         o5C8f42lClJCCLQaBHcMn+tBo5h3qGNYa5g+kVTJEFlKNVY8QQcOH4CmslmqXyG5fWq1
+         vvyGtTkV49j8EDzzYtl4fiB78Cu5BoqX0p4ICS6c4nbSy8sIiz0tWrTpps/jPlbQ+W6X
+         NDEg==
+X-Gm-Message-State: ACgBeo2kHgehmbKYlK/bn9FOqYfXQFkMOZxRq42BTwPpoWaewC3p1ZtZ
+        i4+mAZFTL3LeSGmr2QXgeLi+SG2lq4CZ77J0pa8=
+X-Google-Smtp-Source: AA6agR6lkwvnPcInorNKbMkhlPy/kqMnwSqf9ilS5C3PIU+zXOi3rmnC/1PYHJgUShzGaAZn2JBWrMwTREu95J9WrlE=
+X-Received: by 2002:a17:907:a04f:b0:772:da0b:e2f1 with SMTP id
+ gz15-20020a170907a04f00b00772da0be2f1mr3625960ejc.327.1662650250524; Thu, 08
+ Sep 2022 08:17:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
+ <20220906170301.256206-2-roberto.sassu@huaweicloud.com> <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
+ <02309cfbc1ce47f7de6be8addc2caa315b1fee1b.camel@huaweicloud.com>
+ <CAADnVQ+cEM5Sb7d9yPA72Mp2zimx7VZ5Si3SPVdAZgsdFGpP1Q@mail.gmail.com> <8d7a713e500b5e3fce93e4c5c7b8841eb6dd28e4.camel@huaweicloud.com>
+In-Reply-To: <8d7a713e500b5e3fce93e4c5c7b8841eb6dd28e4.camel@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 8 Sep 2022 08:17:19 -0700
+Message-ID: <CAADnVQL7murY8G4SG5sF3855ETBpmrv0S-dueR8Rht4ucm6WwQ@mail.gmail.com>
 Subject: Re: [PATCH 1/7] bpf: Add missing fd modes check for map iterators
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -49,180 +80,124 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Roberto Sassu <roberto.sassu@huawei.com>,
         stable <stable@vger.kernel.org>, Chenbo Feng <fengc@google.com>,
         LSM List <linux-security-module@vger.kernel.org>
-Date:   Thu, 08 Sep 2022 15:58:53 +0200
-In-Reply-To: <CAADnVQ+cEM5Sb7d9yPA72Mp2zimx7VZ5Si3SPVdAZgsdFGpP1Q@mail.gmail.com>
-References: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
-         <20220906170301.256206-2-roberto.sassu@huaweicloud.com>
-         <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
-         <02309cfbc1ce47f7de6be8addc2caa315b1fee1b.camel@huaweicloud.com>
-         <CAADnVQ+cEM5Sb7d9yPA72Mp2zimx7VZ5Si3SPVdAZgsdFGpP1Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwDn3pIh9RljLSYwAA--.49581S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr4rJw17tF18ZF47Xr15twb_yoWrAFy3pF
-        Z3tryxtr1kZFW7Za9Y9F48WFWFy3srAasrAF1DJryUAFWkXr1vkr1xta1fXasIyFyrX3WS
-        y3yYk348Xa4UXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAJBF1jj37gqQAAsJ
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 2022-09-07 at 09:02 -0700, Alexei Starovoitov wrote:
-> 
+On Thu, Sep 8, 2022 at 6:59 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> On Wed, 2022-09-07 at 09:02 -0700, Alexei Starovoitov wrote:
+> >
+>
+> [...]
+>
+> > > Well, if you write a security module to prevent writes on a map,
+> > > and
+> > > user space is able to do it anyway with an iterator, what is the
+> > > purpose of the security module then?
+> >
+> > sounds like a broken "security module" and nothing else.
+>
+> Ok, if a custom security module does not convince you, let me make a
+> small example with SELinux.
+>
+> I created a small map iterator that sets every value of a map to 5:
+>
+> SEC("iter/bpf_map_elem")
+> int write_bpf_hash_map(struct bpf_iter__bpf_map_elem *ctx)
+> {
+>         u32 *key = ctx->key;
+>         u8 *val = ctx->value;
+>
+>         if (key == NULL || val == NULL)
+>                 return 0;
+>
+>         *val = 5;
+>         return 0;
+> }
+>
+> I create and pin a map:
+>
+> # bpftool map create /sys/fs/bpf/map type array key 4 value 1 entries 1
+> name test
+>
+> Initially, the content of the map looks like:
+>
+> # bpftool map dump pinned /sys/fs/bpf/map
+> key: 00 00 00 00  value: 00
+> Found 1 element
+>
+> I then created a new SELinux type bpftool_test_t, which has only read
+> permission on maps:
+>
+> # sesearch -A -s bpftool_test_t -t unconfined_t -c bpf
+> allow bpftool_test_t unconfined_t:bpf map_read;
+>
+> So, what I expect is that this type is not able to write to the map.
+>
+> Indeed, the current bpftool is not able to do it:
+>
+> # strace -f -etrace=bpf runcon -t bpftool_test_t bpftool iter pin
+> writer.o /sys/fs/bpf/iter map pinned /sys/fs/bpf/map
+> bpf(BPF_OBJ_GET, {pathname="/sys/fs/bpf/map", bpf_fd=0, file_flags=0},
+> 144) = -1 EACCES (Permission denied)
+> Error: bpf obj get (/sys/fs/bpf): Permission denied
+>
+> This happens because the current bpftool requests to access the map
+> with read-write permission, and SELinux denies it:
+>
+> # cat /var/log/audit/audit.log|audit2allow
+>
+>
+> #============= bpftool_test_t ==============
+> allow bpftool_test_t unconfined_t:bpf map_write;
+>
+>
+> The command failed, and the content of the map is still:
+>
+> # bpftool map dump pinned /sys/fs/bpf/map
+> key: 00 00 00 00  value: 00
+> Found 1 element
+>
+>
+> Now, what I will do is to use a slightly modified version of bpftool
+> which requests read-only access to the map instead:
+>
+> # strace -f -etrace=bpf runcon -t bpftool_test_t ./bpftool iter pin
+> writer.o /sys/fs/bpf/iter map pinned /sys/fs/bpf/map
+> bpf(BPF_OBJ_GET, {pathname="/sys/fs/bpf/map", bpf_fd=0,
+> file_flags=BPF_F_RDONLY}, 16) = 3
+> libbpf: elf: skipping unrecognized data section(5) .eh_frame
+> libbpf: elf: skipping relo section(6) .rel.eh_frame for section(5)
+> .eh_frame
+>
+> ...
+>
+> bpf(BPF_LINK_CREATE, {link_create={prog_fd=4, target_fd=0,
+> attach_type=BPF_TRACE_ITER, flags=0}, ...}, 48) = 5
+> bpf(BPF_OBJ_PIN, {pathname="/sys/fs/bpf/iter", bpf_fd=5, file_flags=0},
+> 16) = 0
+>
+> That worked, because SELinux grants read-only permission to
+> bpftool_test_t. However, the map iterator does not check how the fd was
+> obtained, and thus allows the iterator to be created.
+>
+> At this point, we have write access, despite not having the right to do
+> it:
 
-[...]
-
-> > Well, if you write a security module to prevent writes on a map,
-> > and
-> > user space is able to do it anyway with an iterator, what is the
-> > purpose of the security module then?
-> 
-> sounds like a broken "security module" and nothing else.
-
-Ok, if a custom security module does not convince you, let me make a
-small example with SELinux.
-
-I created a small map iterator that sets every value of a map to 5:
-
-SEC("iter/bpf_map_elem")
-int write_bpf_hash_map(struct bpf_iter__bpf_map_elem *ctx)
-{
-	u32 *key = ctx->key;
-	u8 *val = ctx->value;
-
-	if (key == NULL || val == NULL)
-		return 0;
-
-	*val = 5;
-	return 0;
-}
-
-I create and pin a map:
-
-# bpftool map create /sys/fs/bpf/map type array key 4 value 1 entries 1
-name test
-
-Initially, the content of the map looks like:
-
-# bpftool map dump pinned /sys/fs/bpf/map 
-key: 00 00 00 00  value: 00
-Found 1 element
-
-I then created a new SELinux type bpftool_test_t, which has only read
-permission on maps:
-
-# sesearch -A -s bpftool_test_t -t unconfined_t -c bpf
-allow bpftool_test_t unconfined_t:bpf map_read;
-
-So, what I expect is that this type is not able to write to the map.
-
-Indeed, the current bpftool is not able to do it:
-
-# strace -f -etrace=bpf runcon -t bpftool_test_t bpftool iter pin
-writer.o /sys/fs/bpf/iter map pinned /sys/fs/bpf/map
-bpf(BPF_OBJ_GET, {pathname="/sys/fs/bpf/map", bpf_fd=0, file_flags=0},
-144) = -1 EACCES (Permission denied)
-Error: bpf obj get (/sys/fs/bpf): Permission denied
-
-This happens because the current bpftool requests to access the map
-with read-write permission, and SELinux denies it:
-
-# cat /var/log/audit/audit.log|audit2allow
-
-
-#============= bpftool_test_t ==============
-allow bpftool_test_t unconfined_t:bpf map_write;
-
-
-The command failed, and the content of the map is still:
-
-# bpftool map dump pinned /sys/fs/bpf/map 
-key: 00 00 00 00  value: 00
-Found 1 element
-
-
-Now, what I will do is to use a slightly modified version of bpftool
-which requests read-only access to the map instead:
-
-# strace -f -etrace=bpf runcon -t bpftool_test_t ./bpftool iter pin
-writer.o /sys/fs/bpf/iter map pinned /sys/fs/bpf/map
-bpf(BPF_OBJ_GET, {pathname="/sys/fs/bpf/map", bpf_fd=0,
-file_flags=BPF_F_RDONLY}, 16) = 3
-libbpf: elf: skipping unrecognized data section(5) .eh_frame
-libbpf: elf: skipping relo section(6) .rel.eh_frame for section(5)
-.eh_frame
-
-...
-
-bpf(BPF_LINK_CREATE, {link_create={prog_fd=4, target_fd=0,
-attach_type=BPF_TRACE_ITER, flags=0}, ...}, 48) = 5
-bpf(BPF_OBJ_PIN, {pathname="/sys/fs/bpf/iter", bpf_fd=5, file_flags=0},
-16) = 0
-
-That worked, because SELinux grants read-only permission to
-bpftool_test_t. However, the map iterator does not check how the fd was
-obtained, and thus allows the iterator to be created.
-
-At this point, we have write access, despite not having the right to do
-it:
-
-# cat /sys/fs/bpf/iter
-# bpftool map dump pinned /sys/fs/bpf/map 
-key: 00 00 00 00  value: 05
-Found 1 element
-
-The iterator updated the map value.
-
-
-The patch I'm proposing checks how the map fd was obtained, and if its
-modes are compatible with the operations an attached program is allowed
-to do. If the fd does not have the required modes, eBPF denies the
-creation of the map iterator.
-
-After patching the kernel, I try to run the modified bpftool again:
-
-# strace -f -etrace=bpf runcon -t bpftool_test_t ./bpftool iter pin
-writer.o /sys/fs/bpf/iter map pinned /sys/fs/bpf/map
-bpf(BPF_OBJ_GET, {pathname="/sys/fs/bpf/map", bpf_fd=0,
-file_flags=BPF_F_RDONLY}, 16) = 3
-libbpf: elf: skipping unrecognized data section(5) .eh_frame
-libbpf: elf: skipping relo section(6) .rel.eh_frame for section(5)
-.eh_frame
-
-...
-
-bpf(BPF_LINK_CREATE, {link_create={prog_fd=4, target_fd=0,
-attach_type=BPF_TRACE_ITER, flags=0}, ...}, 48) = -1 EPERM (Operation
-not permitted)
-libbpf: prog 'write_bpf_hash_map': failed to attach to iterator:
-Operation not permitted
-Error: attach_iter failed for program write_bpf_hash_map
-
-The map iterator cannot be created and the map is not updated:
-
-# bpftool map dump pinned /sys/fs/bpf/map 
-key: 00 00 00 00  value: 00
-Found 1 element
-
-Roberto
-
+That is a wrong assumption to begin with.
+Having an fd to a bpf object (map, link, prog) allows access.
+read/write sort-of applicable to maps, but not so much
+to progs, links.
+That file based read/write flag is only for user processes.
+bpf progs always had separate flags for that.
+See BPF_F_RDONLY vs BPF_F_RDONLY_PROG.
+One doesn't imply the other.
