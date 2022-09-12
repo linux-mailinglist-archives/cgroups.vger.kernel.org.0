@@ -2,87 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D448C5B53CC
-	for <lists+cgroups@lfdr.de>; Mon, 12 Sep 2022 08:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EFE5B5493
+	for <lists+cgroups@lfdr.de>; Mon, 12 Sep 2022 08:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbiILGPM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Sep 2022 02:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S229586AbiILGet (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Sep 2022 02:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiILGPL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Sep 2022 02:15:11 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A512193D7;
-        Sun, 11 Sep 2022 23:15:10 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MQx9n69RXzl80p;
-        Mon, 12 Sep 2022 14:13:33 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP2 (Coremail) with SMTP id Syh0CgDHGXNszh5jZkTpAg--.61302S3;
-        Mon, 12 Sep 2022 14:15:08 +0800 (CST)
-Subject: Re: [PATCH v2 0/3] blk-throttle cleanups
-To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, axboe@kernel.dk
+        with ESMTP id S229615AbiILGes (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Sep 2022 02:34:48 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451A5A464
+        for <cgroups@vger.kernel.org>; Sun, 11 Sep 2022 23:34:47 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n17-20020a05600c501100b003a84bf9b68bso6486064wmr.3
+        for <cgroups@vger.kernel.org>; Sun, 11 Sep 2022 23:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date;
+        bh=Gh72+xybfCA8FBwxhnWF+Al39bZjJMaBK2yiRuBCeS0=;
+        b=ZbDpMDinqj0thb/noDlUyZWiHuLMFOSxFm4xtMxlegMHeucMybV0Bq4YkVDOFDaC8Y
+         Ig7lTcfYLpfdmB6KrCDXgHuo7w6jW/lDu6dfuMXl/arg2UgI67ylm7DsBY8bei3B91E3
+         lanC0MoI0VIS0S0/JD3wHTJapZ9RfGrVZd5fPg792BsJ+JHG2nJ6dfFZNhTxEzGU/gd/
+         bFJHLBqL4K7K7/Rr6vf9itetdYsV+wfSqjStu4ATfyiA5iD1y3RdobOL7oFMktEbOcMp
+         HmqVEiPtbPT9qSMv1bctXIt3YML7J/9qD4jNZ34tjfXsRuWakajnoIbO56Tymmmunvgy
+         9ahQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=Gh72+xybfCA8FBwxhnWF+Al39bZjJMaBK2yiRuBCeS0=;
+        b=H/8JSN4mMAMhzI/U8lkg1g7DA4TKb5v6yIgA2rhG4ZSbaq+uYijksArIDKihuALywB
+         7AdZ8POO+U0iHgO2zlD2jJTqSRWlsCgZ/9IfqNOmQjxdAOqu45BQmnERSs847cC4NMir
+         rEi1OMzC+yYUSujRlIREIlLFCyHZi4uzCHIhpRTyXk9VHMr/QTpM5hKWYyXiiVr38KRS
+         nLNNacjG/kABLbMYwaYCpS2bZOBw85zJBGREVJTzIUaIRk0R7MFE+KW9LD8uoPbE+BWU
+         zMdR1xFlOAl2QT+DKkXRq/f/00FGz0g97HTuOuUHXFFi5W4PtwW9bYtr41HLsL3bMKSQ
+         6lnA==
+X-Gm-Message-State: ACgBeo3uOiEhouGXn+pdj86WzBqyooWrBtjMAbl5qyBh/RXZfxCfmjz5
+        f3GZVNMS5K+i/wY5nhbkBF6M8WunCpzOvq4VY2Q=
+X-Google-Smtp-Source: AA6agR42/4Wqi2cXsI8h1LZ6l7vZvLVnQxKnzOip/dy111wmBMHnZpDioPELfpSQ/WpcsCoLftBAbw==
+X-Received: by 2002:a05:600c:3544:b0:3b4:6278:8b60 with SMTP id i4-20020a05600c354400b003b462788b60mr7759836wmq.188.1662963626808;
+        Sun, 11 Sep 2022 23:20:26 -0700 (PDT)
+Received: from [127.0.0.1] ([185.122.133.20])
+        by smtp.gmail.com with ESMTPSA id bh16-20020a05600c3d1000b003a60ff7c082sm8790639wmb.15.2022.09.11.23.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Sep 2022 23:20:26 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     mkoutny@suse.com, tj@kernel.org, ming.lei@redhat.com,
+        Yu Kuai <yukuai1@huaweicloud.com>
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20220827101637.1775111-1-yukuai1@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7b149545-7a4e-8379-19b6-181d415780fd@huaweicloud.com>
-Date:   Mon, 12 Sep 2022 14:15:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        yukuai3@huawei.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+In-Reply-To: <20220829022240.3348319-1-yukuai1@huaweicloud.com>
+References: <20220829022240.3348319-1-yukuai1@huaweicloud.com>
+Subject: Re: [PATCH v9 0/4] blk-throttle bugfix
+Message-Id: <166296362587.59201.9043385966296424992.b4-ty@kernel.dk>
+Date:   Mon, 12 Sep 2022 00:20:25 -0600
 MIME-Version: 1.0
-In-Reply-To: <20220827101637.1775111-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHGXNszh5jZkTpAg--.61302S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYr7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
-        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
-        CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2
-        V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUF9a9DUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: b4 0.10.0-dev-65ba7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, jens
-
-Can you apply this patchset?
-
-Thanks,
-Kuai
-
-ÔÚ 2022/08/27 18:16, Yu Kuai Ð´µÀ:
+On Mon, 29 Aug 2022 10:22:36 +0800, Yu Kuai wrote:
 > From: Yu Kuai <yukuai3@huawei.com>
 > 
+> Changes in v9:
+>  - renaming the flag BIO_THROTTLED to BIO_BPS_THROTTLED, and always
+>  apply iops limit in path 1;
+>  - add tag for patch 4
+> Changes in v8:
+>  - use a new solution in patch 1
+>  - move cleanups to a separate patchset
+>  - rename bytes/io_skipped to carryover_bytes/ios in patch 4
+> Changes in v7:
+>  - add patch 5 to improve handling of re-entered bio for bps limit
+>  - as suggested by Tejun, add some comments
+>  - sdd some Acked tag by Tejun
+> Changes in v6:
+>  - rename parameter in patch 3
+>  - add comments and reviewed tag for patch 4
+> Changes in v5:
+>  - add comments in patch 4
+>  - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
+>  patch 4
+>  - and cleanup patches 5-8
+> Changes in v4:
+>  - add reviewed-by tag for patch 1
+>  - add patch 2,3
+>  - use a different way to fix io hung in patch 4
+> Changes in v3:
+>  - fix a check in patch 1
+>  - fix link err in patch 2 on 32-bit platform
+>  - handle overflow in patch 2
 > Changes in v2:
->   - add tag
->   - remove patch 4
+>  - use a new solution suggested by Ming
+>  - change the title of patch 1
+>  - add patch 2
 > 
-> There are no functional changes.
-> 
-> Yu Kuai (3):
->    blk-throttle: use 'READ/WRITE' instead of '0/1'
->    blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
->    blk-throttle: cleanup tg_update_disptime()
-> 
->   block/blk-throttle.c | 21 ++++++++++++---------
->   1 file changed, 12 insertions(+), 9 deletions(-)
-> 
+> [...]
+
+Applied, thanks!
+
+[1/4] blk-throttle: fix that io throttle can only work for single bio
+      commit: 320fb0f91e55ba248d4bad106b408e59099cfa89
+[2/4] blk-throttle: prevent overflow while calculating wait time
+      commit: 8d6bbaada2e0a65f9012ac4c2506460160e7237a
+[3/4] blk-throttle: factor out code to calculate ios/bytes_allowed
+      commit: 681cd46fff8cd81e387747c7850f2e730d3e0b74
+[4/4] blk-throttle: fix io hung due to configuration updates
+      commit: a880ae93e5b5bb5d8d5500077a391e3f5ec7715c
+
+Best regards,
+-- 
+Jens Axboe
+
 
