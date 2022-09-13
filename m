@@ -2,98 +2,206 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8057B5B5492
-	for <lists+cgroups@lfdr.de>; Mon, 12 Sep 2022 08:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD2A5B67AC
+	for <lists+cgroups@lfdr.de>; Tue, 13 Sep 2022 08:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbiILGef (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Sep 2022 02:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S230195AbiIMGQB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Sep 2022 02:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiILGee (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Sep 2022 02:34:34 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3DAD9A
-        for <cgroups@vger.kernel.org>; Sun, 11 Sep 2022 23:34:31 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id gh9so17803963ejc.8
-        for <cgroups@vger.kernel.org>; Sun, 11 Sep 2022 23:34:31 -0700 (PDT)
+        with ESMTP id S229969AbiIMGQA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Sep 2022 02:16:00 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C845459B0;
+        Mon, 12 Sep 2022 23:15:59 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id u18so18417728lfo.8;
+        Mon, 12 Sep 2022 23:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date;
-        bh=eJpetYLvd8t1fhFVDnNO/2TqAinXp5zIfJwgDELUxmI=;
-        b=Z2APGz+u9boMJ5/zapRBac1k/AOu3vzAVNEoUMY0mA6x93A9ywX16FjQP+ZEKQYlTo
-         TX7I/pZJCOr/+SD/8Xa3O4r2g3IyvOOpO145ErP5/HdiqwvAWRAPyk4qnHLPvNuC1pUF
-         nVEp+kkhaOfxCobHa51iKtN3YNxJyEudBtoy0SVeHB1gQ+Tr0SGc3T/FN5UEOS/JIkvE
-         U9/l7Ir06H7U/Orv35Hl81uTYhdXo2UKgtpPVBw2nmkVHxxu4wGR0vcIbers5MUSFrOV
-         s+S1B6xc3SHPjaZEHqR06KaLau5MWan28zlADfUjdRoV6YLYTTTgCBrVH8cJyeakwTt3
-         W5SQ==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=iL+PSuTvBsgGgVuYBzw23P7DA3wgNTk8Y2M7Kc+r7u8=;
+        b=UXg7Y3VmdYKh0yVQeWq3KV0amIKGmR9oIbm2MDgvqcrlBMbu3Gz0DwJ2d7oTuamu/6
+         MNqFRm+GD3j1yKbm3LDTkdJ4gee9fnjmeQVk7onS2afn0pU1gUPmFp0Ort3ThmUpqA0P
+         BCRjT363Klq15cX5XXoZwn7aC1EW4FZso6vCdIvC6WRpB6PZNTsmNFVUdoVwmhGOrCoN
+         Fd5buTIBvFqWtyxkxWCx+SQ9CXELd4rl/uPSaEFApnVvkLyVB3sAcMwPC0sOajU+oldm
+         D3lKi3nkb3r+0KVHyovGr1Q1S7rQkiFWuDJHhpqPSVfxddUM2JVIAt+djtL61R2yldi+
+         ypcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=eJpetYLvd8t1fhFVDnNO/2TqAinXp5zIfJwgDELUxmI=;
-        b=EuN3L7TOfRIb5m6JdE0oeaAvWHGqlndu/9rtio3J+jLzX2tefNke5ydrK3xK/vG/VM
-         RLeiJC0Epf3WdFJJRo4a6mHN0pw8I3tn4E+fWvMBR/7SkEp60nDUl4oo73GdocVrkntT
-         GgaDcHWochHDVgQqbFh5bIoMGWvWEnRjuSm5a29MahLoUXYeOuATH3X7Ybzd+xqnNWVE
-         kRcLc2NLym6JIzeUsbBZp3qo2YDJjBLYea80RkojpUCOGARHCkl7sMr37prxNfGqAx75
-         XnIuwGyX5cBTfRBEmU6HdZzZSBshmrL/Kr6rvuKjXqZzE1frhBBugb0uzaiKd8toKlaF
-         +iwQ==
-X-Gm-Message-State: ACgBeo0HhI6cYTrJfPD8FQl5Dllu1WJZ3opabMqZ9MfyquMI+QyL93w6
-        f5vhKd/0KfKFmHrXb2wJr4VjiETrziO3wefGAnU=
-X-Google-Smtp-Source: AA6agR4GSrw3bwi1+ZRWqXiAJR+JncOxzPoQRCKfiQYCJNJ3/rOuYnBwdlNPOVOu8o8s7Sfuow22QA==
-X-Received: by 2002:adf:e38f:0:b0:228:68f0:4f85 with SMTP id e15-20020adfe38f000000b0022868f04f85mr14817773wrm.570.1662963629431;
-        Sun, 11 Sep 2022 23:20:29 -0700 (PDT)
-Received: from [127.0.0.1] ([185.122.133.20])
-        by smtp.gmail.com with ESMTPSA id id11-20020a05600ca18b00b003b332a7b898sm8480508wmb.45.2022.09.11.23.20.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 23:20:28 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     tj@kernel.org, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     cgroups@vger.kernel.org, yi.zhang@huawei.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com
-In-Reply-To: <20220827101637.1775111-1-yukuai1@huaweicloud.com>
-References: <20220827101637.1775111-1-yukuai1@huaweicloud.com>
-Subject: Re: [PATCH v2 0/3] blk-throttle cleanups
-Message-Id: <166296362850.59359.17771579764308484678.b4-ty@kernel.dk>
-Date:   Mon, 12 Sep 2022 00:20:28 -0600
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=iL+PSuTvBsgGgVuYBzw23P7DA3wgNTk8Y2M7Kc+r7u8=;
+        b=AAq6AeZB1lqZclOI911iPHhqBYzLVT8XcnUPohUEvEFvlwrB0Yhk4ia8OcyDsKNfVN
+         V6tK2J+vaSouw06nbZ+tUuEqjMo7+SSXVN872jIoWmjy1Bll5QbKImZx/flsGz80Qcxu
+         uzD6o+SAUyVwu71LpicVntmPFLJmLp0FpY1iEmkDpVuh7ae/bhpWSzP2Mh1/ImEEgPE/
+         Gi4rc74/28sLfjeC9YQW48bQ3swS97x8u1YobOfNjc+RxDTiCQZqgXTpEQ18CgELpG/c
+         KmVJPQZR0R7T1/60fGaubUAY+IyJEboeIQMf5icSrft0KWBiEOvxKRpbQPMh0R4VLgGD
+         m9wQ==
+X-Gm-Message-State: ACgBeo0fbkVYXW8/6D1bloCJqgkt8gMkjLzCYGtCUqobQ4rR6sqKh7KW
+        ieH99kZfIgt9YhzUAkLZrvro2yo+/4+rVFXvPs0W0ltl9Zg=
+X-Google-Smtp-Source: AA6agR5VmWxfy56PXWZAcwLrkMGS5wp/Ejn6/hngmWDh5knnHYWEpK2RjT7MF2S80VGErukdVML8SxZeKNR+2oc2bAU=
+X-Received: by 2002:a05:6512:308d:b0:499:bd1a:d1bc with SMTP id
+ z13-20020a056512308d00b00499bd1ad1bcmr4830380lfd.274.1663049757320; Mon, 12
+ Sep 2022 23:15:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-65ba7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car> <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
+ <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 13 Sep 2022 14:15:20 +0800
+Message-ID: <CALOAHbAzi0s3N_5BOkLsnGfwWCDpUksvvhPejjj5jo4G2v3mGg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, 27 Aug 2022 18:16:34 +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Changes in v2:
->  - add tag
->  - remove patch 4
-> 
-> There are no functional changes.
-> 
-> [...]
+On Fri, Sep 9, 2022 at 12:13 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> On Thu, Sep 08, 2022 at 10:37:02AM +0800, Yafang Shao wrote:
+> > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > >
+> > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
+> > > > Hello,
+> > > >
+> > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+> > > > ...
+> > > > > This patchset tries to resolve the above two issues by introducing a
+> > > > > selectable memcg to limit the bpf memory. Currently we only allow to
+> > > > > select its ancestor to avoid breaking the memcg hierarchy further.
+> > > > > Possible use cases of the selectable memcg as follows,
+> > > >
+> > > > As discussed in the following thread, there are clear downsides to an
+> > > > interface which requires the users to specify the cgroups directly.
+> > > >
+> > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+> > > >
+> > > > So, I don't really think this is an interface we wanna go for. I was hoping
+> > > > to hear more from memcg folks in the above thread. Maybe ping them in that
+> > > > thread and continue there?
+> > >
+> >
+> > Hi Roman,
+> >
+> > > As I said previously, I don't like it, because it's an attempt to solve a non
+> > > bpf-specific problem in a bpf-specific way.
+> > >
+> >
+> > Why do you still insist that bpf_map->memcg is not a bpf-specific
+> > issue after so many discussions?
+> > Do you charge the bpf-map's memory the same way as you charge the page
+> > caches or slabs ?
+> > No, you don't. You charge it in a bpf-specific way.
+>
 
-Applied, thanks!
+Hi Roman,
 
-[1/3] blk-throttle: use 'READ/WRITE' instead of '0/1'
-      commit: 7e9c5c54d440bd6402ffdba4dc4f3df5bfe64ea4
-[2/3] blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
-      commit: 8c25ed0cb9d2e349ebebfeacf7ce1ae015afe54d
-[3/3] blk-throttle: cleanup tg_update_disptime()
-      commit: c013710e1a7eba8e33da9380a068fe1cec017226
+Sorry for the late response.
+I've been on vacation in the past few days.
 
-Best regards,
+> The only difference is that we charge the cgroup of the processes who
+> created a map, not a process who is doing a specific allocation.
+
+This means the bpf-map can be indepent of process, IOW, the memcg of
+bpf-map can be indepent of the memcg of the processes.
+This is the fundamental difference between bpf-map and page caches, then...
+
+> Your patchset doesn't change this.
+
+We can make this behavior reasonable by introducing an independent
+memcg, as what I did in the previous version.
+
+> There are pros and cons with this approach, we've discussed it back
+> to the times when bpf memcg accounting was developed. If you want
+> to revisit this, it's maybe possible (given there is a really strong and likely
+> new motivation appears), but I haven't seen any complaints yet except from you.
+>
+
+memcg-base bpf accounting is a new feature, which may not be used widely.
+
+> >
+> > > Yes, memory cgroups are not great for accounting of shared resources, it's well
+> > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
+> > > in a particular cgroup setup. Honestly, I don't think it's worth the added
+> > > complexity. Especially because a similar behaviour can be achieved simple
+> > > by placing the task which creates the map into the desired cgroup.
+> >
+> > Are you serious ?
+> > Have you ever read the cgroup doc? Which clearly describe the "No
+> > Internal Process Constraint".[1]
+> > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
+>
+> But you can place it into another leaf cgroup. You can delete this leaf cgroup
+> and your memcg will get reparented. You can attach this process and create
+> a bpf map to the parent cgroup before it gets child cgroups.
+
+If the process doesn't exit after it created bpf-map, we have to
+migrate it around memcgs....
+The complexity in deployment can introduce unexpected issues easily.
+
+> You can revisit the idea of shared bpf maps and outlive specific cgroups.
+> Lof of options.
+>
+> >
+> > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
+> >
+> > > Beatiful? Not. Neither is the proposed solution.
+> > >
+> >
+> > Is it really hard to admit a fault?
+>
+> Yafang, you posted several versions and so far I haven't seen much of support
+> or excitement from anyone (please, fix me if I'm wrong). It's not like I'm
+> nacking a patchset with many acks, reviews and supporters.
+>
+> Still think you're solving an important problem in a reasonable way?
+> It seems like not many are convinced yet. I'd recommend to focus on this instead
+> of blaming me.
+>
+
+The best way so far is to introduce specific memcg for specific resources.
+Because not only the process owns its memcg, but also specific
+resources own their memcgs, for example bpf-map, or socket.
+
+struct bpf_map {                                 <<<< memcg owner
+    struct memcg_cgroup *memcg;
+};
+
+struct sock {                                       <<<< memcg owner
+    struct mem_cgroup *sk_memcg;
+};
+
+These resources already have their own memcgs, so we should make this
+behavior formal.
+
+The selectable memcg is just a variant of 'echo ${proc} > cgroup.procs'.
+
 -- 
-Jens Axboe
-
-
+Regards
+Yafang
