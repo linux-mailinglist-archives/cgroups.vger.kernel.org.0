@@ -2,110 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 521925BCFC1
-	for <lists+cgroups@lfdr.de>; Mon, 19 Sep 2022 17:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A8A5BD475
+	for <lists+cgroups@lfdr.de>; Mon, 19 Sep 2022 20:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbiISPBV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Sep 2022 11:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
+        id S230095AbiISSHZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Sep 2022 14:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbiISPBU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Sep 2022 11:01:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB76B31372;
-        Mon, 19 Sep 2022 08:01:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3A6931F74A;
-        Mon, 19 Sep 2022 15:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1663599677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iDQ4TbeBXa/svhW7EfZleIQJqRglXyx7TDIqISE6yyM=;
-        b=QruWER5KDSb+2K6n6HFs/WUurfTkzp5sMxSVkMVrm3lehOt+UtyXCfIE5QlGQ6AB/pQl2H
-        bWA7U17LROAZJt8gYCc6PbCQMojyqbCPedL6IdL4/SbV8YQ9RG2aDhG9+P00umlWIFwU4j
-        oOEFwRn36kywPKURtqAA8cYTgrgtKb4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 02ABA13A96;
-        Mon, 19 Sep 2022 15:01:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SryBOTyEKGOsbgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 19 Sep 2022 15:01:16 +0000
-Date:   Mon, 19 Sep 2022 17:01:16 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S231349AbiISSHJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Sep 2022 14:07:09 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266F14621F;
+        Mon, 19 Sep 2022 11:06:51 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id l10so28586838plb.10;
+        Mon, 19 Sep 2022 11:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date;
+        bh=gEJQAVOMzbt4PPx+Qy3opmg3geJE7rZvH1CdGnwIjt0=;
+        b=nbulrSye1Ljiu3ZTZKiIiuL+PXrsz2uUKYqD8NYqbUSgSm3Vi0gErRmMJ0GPmvae9i
+         uFrQSoh1Dekn6R4JT7YM9d2sB+smEUc5gTVkoLOgpOXTfVVq5yRmFpBMPNiY+OWHd1Kj
+         7sFgW+7uvTFADWLZukSZmOygnPnhuEFahpb4O1RUVtEByOp/h4uLCqIzCz2MARhjf316
+         CrtqEu1wm2L0h+YlZ0T1jzFRka98lhHFmUQAsoubRrqiucMdFSGJUbf948tBw19kEGIp
+         Y1ZOXVA7Lx/gNKOo6xHFKUxWeh3vBVe2/ypemZtIy0k2iK3bg1qmnklw+AkaME+BTNKX
+         jTXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=gEJQAVOMzbt4PPx+Qy3opmg3geJE7rZvH1CdGnwIjt0=;
+        b=f4f+eq/Hhb5uvxU++sijjfDyz0LsyRYBz3u2tVOne0lnkCMB41qjCbTJYrhu/ODQ/e
+         CHnB/l41AOx+gnHf5KBNF09gRLQm+V50T3mbtFtGVbLENoLoU2avaAZCRBN+xhOsk1qR
+         fWbQrCuc0Z7qIg16wE8DkxV35yugPcFUGOn9h+1juNEVEVxgRl4WDonU+zjS0ikQtlzs
+         qhcgkqd/rMUidUTuYkIKjHEs8WGFh+wBYwtsbV1GFfpq7wVmg0czlFytQcSKs5btJrUZ
+         7ym8QDlNGP7tnUugoaePqDjvf2+zzjoFnUs8uRMHPzFLaeoiVCloXGQyv4RPBgyuxUjj
+         4gZQ==
+X-Gm-Message-State: ACrzQf1tMXE6zh/K1CkGvCNQRY0AELq76Au3bl1OrhhRuw6dlWG0bv4W
+        XLZFh5a1MTdSNFEiFwk2xNrwVCNG8ux+K3Rx
+X-Google-Smtp-Source: AMsMyM5kYJs2A7dAyc++tZB14m9oF8eF+ZjYUe5y9ruXb2TlBiIiCmYHqKap33TnVIIvXllSCIIZfg==
+X-Received: by 2002:a17:903:41c9:b0:176:b9df:c743 with SMTP id u9-20020a17090341c900b00176b9dfc743mr967826ple.162.1663610809289;
+        Mon, 19 Sep 2022 11:06:49 -0700 (PDT)
+Received: from KASONG-MB0.tencent.com ([115.171.41.135])
+        by smtp.gmail.com with ESMTPSA id u21-20020a632355000000b0041c30def5e8sm14176654pgm.33.2022.09.19.11.06.46
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 19 Sep 2022 11:06:48 -0700 (PDT)
+From:   Kairui Song <ryncsn@gmail.com>
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v3] mm/memcontrol: use kstrtobool for swapaccount param
- parsing
-Message-ID: <YyiEPPecoqsinebe@dhcp22.suse.cz>
-References: <20220909145308.f2f61d6992f00ef6977f833b@linux-foundation.org>
- <20220913071358.1812206-1-liushixin2@huawei.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>
+Subject: [PATCH v2 0/2] mm: memcontrol: cleanup and optimize for two accounting params
+Date:   Tue, 20 Sep 2022 02:06:32 +0800
+Message-Id: <20220919180634.45958-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.35.2
+Reply-To: Kairui Song <kasong@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220913071358.1812206-1-liushixin2@huawei.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 13-09-22 15:13:58, Liu Shixin wrote:
-> Use kstrtobool which is more powerful to handle all kinds of parameters
-> like 'Yy1Nn0' or [oO][NnFf] for "on" and "off".
+From: Kairui Song <kasong@tencent.com>
 
-the main usefulness is with the code reusability of library functions
-rather than ad-hoc stuff.
+V2 of "[PATCH 0/2] mm: memcontrol: cleanup and optimize for accounting params".
 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Patch 1/2 is a minor cleanup for kmem accouting path.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Patch 2/2 optimizes some hot paths by making cgroup_memory_noswap a
+static key, benchmark shows swap paths now have a ~5% lower overhead.
 
-Thanks!
-> ---
->  mm/memcontrol.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 0a1a8a846870..5511c0c120d9 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7434,10 +7434,10 @@ bool mem_cgroup_swap_full(struct folio *folio)
->  
->  static int __init setup_swap_account(char *s)
->  {
-> -	if (!strcmp(s, "1"))
-> -		cgroup_memory_noswap = false;
-> -	else if (!strcmp(s, "0"))
-> -		cgroup_memory_noswap = true;
-> +	bool res;
-> +
-> +	if (!kstrtobool(s, &res))
-> +		cgroup_memory_noswap = !res;
->  	return 1;
->  }
->  __setup("swapaccount=", setup_swap_account);
-> -- 
-> 2.25.1
+Update from V1:
+- Collect Acked-by for patch 2/2 from Michal Hocko, Thanks!
+- Simplify patch 1/1, don't drop mem_cgroup_kmem_disabled and only
+  change one call site as a minor clean up, update commit message
+  for patch 2/2, as suggested by Michal Hocko.
+
+Kairui Song (2):
+  mm: memcontrol: use memcg_kmem_enabled in count_objcg_event
+  mm: memcontrol: make cgroup_memory_noswap a static key
+
+ include/linux/memcontrol.h |  2 +-
+ mm/memcontrol.c            | 27 +++++++++++++++++++--------
+ 2 files changed, 20 insertions(+), 9 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.35.2
+
