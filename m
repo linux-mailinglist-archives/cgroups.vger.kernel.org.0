@@ -2,47 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC685BDA22
-	for <lists+cgroups@lfdr.de>; Tue, 20 Sep 2022 04:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769215BDA44
+	for <lists+cgroups@lfdr.de>; Tue, 20 Sep 2022 04:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbiITC3M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Sep 2022 22:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
+        id S229760AbiITCk1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Sep 2022 22:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbiITC3L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Sep 2022 22:29:11 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC63A57571;
-        Mon, 19 Sep 2022 19:29:08 -0700 (PDT)
-Date:   Mon, 19 Sep 2022 19:29:02 -0700
+        with ESMTP id S229731AbiITCk0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Sep 2022 22:40:26 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0717AE96;
+        Mon, 19 Sep 2022 19:40:22 -0700 (PDT)
+Date:   Mon, 19 Sep 2022 19:40:13 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1663640947;
+        t=1663641620;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Azk++dAUvKme1VxPhtmJU9jTbzs9oCk7066tB1JCjdc=;
-        b=RkPy3/nhUuZhup/28G2vo4pAPfBajx/Kw92mASQFoaLiKa5FkybZLzziaRDXZ5hW1wQfVD
-        P2Jw7Hu/z/t0X5Xz/uMgFuno7uAf7qaL4J4uxWdqw8w7Fjz5zHeNWd0AJLTz49gR6QL8DS
-        L2UcAvZisT42l2T1jPOV6FDaz42fr/I=
+        bh=gZS5sqyWSO3yFeBcOAHmX3+4vNuQk4vlxXsy9wXRJYQ=;
+        b=L6Imu+c68+a2ysnK5RgOIzLcFHaxaChY8+VJb198+3lRmsAb5UOsa/DjbnCwCQPjk50QUL
+        k/IwMVtsg1xp+9fr84CH2pyUG+j48J44igAn/mK4NwHlDVAlISWOFhV2uhvt44x5yeNFG2
+        EMJe8LTS4WSVxoP8QUrdUU/s1UihOWE=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Kairui Song <kasong@tencent.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 2/2] mm: memcontrol: make cgroup_memory_noswap a
- static key
-Message-ID: <YyklbsFFu26cmHPU@P9FQF9L96D>
-References: <20220919180634.45958-1-ryncsn@gmail.com>
- <20220919180634.45958-3-ryncsn@gmail.com>
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for
+ bpf map
+Message-ID: <YykoDeoqz6VYe2I4@P9FQF9L96D>
+References: <20220902023003.47124-1-laoar.shao@gmail.com>
+ <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car>
+ <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
+ <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car>
+ <CALOAHbAzi0s3N_5BOkLsnGfwWCDpUksvvhPejjj5jo4G2v3mGg@mail.gmail.com>
+ <YySqFtU9skPaJipV@P9FQF9L96D.corp.robot.car>
+ <CALOAHbAYx1=uu7AP=5Gbs6-eggXTKmkhzc-MhROezxqkbVQRiQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220919180634.45958-3-ryncsn@gmail.com>
+In-Reply-To: <CALOAHbAYx1=uu7AP=5Gbs6-eggXTKmkhzc-MhROezxqkbVQRiQ@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -54,86 +70,234 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 20, 2022 at 02:06:34AM +0800, Kairui Song wrote:
-> From: Kairui Song <kasong@tencent.com>
+On Sun, Sep 18, 2022 at 11:44:48AM +0800, Yafang Shao wrote:
+> On Sat, Sep 17, 2022 at 12:53 AM Roman Gushchin
+> <roman.gushchin@linux.dev> wrote:
+> >
+> > On Tue, Sep 13, 2022 at 02:15:20PM +0800, Yafang Shao wrote:
+> > > On Fri, Sep 9, 2022 at 12:13 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > > >
+> > > > On Thu, Sep 08, 2022 at 10:37:02AM +0800, Yafang Shao wrote:
+> > > > > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > > > > >
+> > > > > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
+> > > > > > > Hello,
+> > > > > > >
+> > > > > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+> > > > > > > ...
+> > > > > > > > This patchset tries to resolve the above two issues by introducing a
+> > > > > > > > selectable memcg to limit the bpf memory. Currently we only allow to
+> > > > > > > > select its ancestor to avoid breaking the memcg hierarchy further.
+> > > > > > > > Possible use cases of the selectable memcg as follows,
+> > > > > > >
+> > > > > > > As discussed in the following thread, there are clear downsides to an
+> > > > > > > interface which requires the users to specify the cgroups directly.
+> > > > > > >
+> > > > > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+> > > > > > >
+> > > > > > > So, I don't really think this is an interface we wanna go for. I was hoping
+> > > > > > > to hear more from memcg folks in the above thread. Maybe ping them in that
+> > > > > > > thread and continue there?
+> > > > > >
+> > > > >
+> > > > > Hi Roman,
+> > > > >
+> > > > > > As I said previously, I don't like it, because it's an attempt to solve a non
+> > > > > > bpf-specific problem in a bpf-specific way.
+> > > > > >
+> > > > >
+> > > > > Why do you still insist that bpf_map->memcg is not a bpf-specific
+> > > > > issue after so many discussions?
+> > > > > Do you charge the bpf-map's memory the same way as you charge the page
+> > > > > caches or slabs ?
+> > > > > No, you don't. You charge it in a bpf-specific way.
+> > > >
+> > >
+> > > Hi Roman,
+> > >
+> > > Sorry for the late response.
+> > > I've been on vacation in the past few days.
+> > >
+> > > > The only difference is that we charge the cgroup of the processes who
+> > > > created a map, not a process who is doing a specific allocation.
+> > >
+> > > This means the bpf-map can be indepent of process, IOW, the memcg of
+> > > bpf-map can be indepent of the memcg of the processes.
+> > > This is the fundamental difference between bpf-map and page caches, then...
+> > >
+> > > > Your patchset doesn't change this.
+> > >
+> > > We can make this behavior reasonable by introducing an independent
+> > > memcg, as what I did in the previous version.
+> > >
+> > > > There are pros and cons with this approach, we've discussed it back
+> > > > to the times when bpf memcg accounting was developed. If you want
+> > > > to revisit this, it's maybe possible (given there is a really strong and likely
+> > > > new motivation appears), but I haven't seen any complaints yet except from you.
+> > > >
+> > >
+> > > memcg-base bpf accounting is a new feature, which may not be used widely.
+> > >
+> > > > >
+> > > > > > Yes, memory cgroups are not great for accounting of shared resources, it's well
+> > > > > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
+> > > > > > in a particular cgroup setup. Honestly, I don't think it's worth the added
+> > > > > > complexity. Especially because a similar behaviour can be achieved simple
+> > > > > > by placing the task which creates the map into the desired cgroup.
+> > > > >
+> > > > > Are you serious ?
+> > > > > Have you ever read the cgroup doc? Which clearly describe the "No
+> > > > > Internal Process Constraint".[1]
+> > > > > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
+> > > >
+> > > > But you can place it into another leaf cgroup. You can delete this leaf cgroup
+> > > > and your memcg will get reparented. You can attach this process and create
+> > > > a bpf map to the parent cgroup before it gets child cgroups.
+> > >
+> > > If the process doesn't exit after it created bpf-map, we have to
+> > > migrate it around memcgs....
+> > > The complexity in deployment can introduce unexpected issues easily.
+> > >
+> > > > You can revisit the idea of shared bpf maps and outlive specific cgroups.
+> > > > Lof of options.
+> > > >
+> > > > >
+> > > > > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
+> > > > >
+> > > > > > Beatiful? Not. Neither is the proposed solution.
+> > > > > >
+> > > > >
+> > > > > Is it really hard to admit a fault?
+> > > >
+> > > > Yafang, you posted several versions and so far I haven't seen much of support
+> > > > or excitement from anyone (please, fix me if I'm wrong). It's not like I'm
+> > > > nacking a patchset with many acks, reviews and supporters.
+> > > >
+> > > > Still think you're solving an important problem in a reasonable way?
+> > > > It seems like not many are convinced yet. I'd recommend to focus on this instead
+> > > > of blaming me.
+> > > >
+> > >
+> > > The best way so far is to introduce specific memcg for specific resources.
+> > > Because not only the process owns its memcg, but also specific
+> > > resources own their memcgs, for example bpf-map, or socket.
+> > >
+> > > struct bpf_map {                                 <<<< memcg owner
+> > >     struct memcg_cgroup *memcg;
+> > > };
+> > >
+> > > struct sock {                                       <<<< memcg owner
+> > >     struct mem_cgroup *sk_memcg;
+> > > };
+> > >
+> > > These resources already have their own memcgs, so we should make this
+> > > behavior formal.
+> > >
+> > > The selectable memcg is just a variant of 'echo ${proc} > cgroup.procs'.
+> >
+> > This is a fundamental change: cgroups were always hierarchical groups
+> > of processes/threads. You're basically suggesting to extend it to
+> > hierarchical groups of processes and some other objects (what's a good
+> > definition?).
 > 
-> cgroup_memory_noswap is used in many hot path, so make it a static key
-> to lower the kernel overhead.
+> Kind of, but not exactly.
+> We can do it without breaking the cgroup hierarchy. Under current
+> cgroup hierarchy, the user can only echo processes/threads into a
+> cgroup, that won't be changed in the future. The specific resources
+> are not exposed to the user, the user can only control these specific
+> resources by controlling their associated processes/threads.
+> For example,
 > 
-> Using 8G of ZRAM as SWAP, benchmark using `perf stat -d -d -d --repeat 100`
-> with the following code snip in a non-root cgroup:
+>                 Memcg-A
+>                        |---- Memcg-A1
+>                        |---- Memcg-A2
 > 
->    #include <stdio.h>
->    #include <string.h>
->    #include <linux/mman.h>
->    #include <sys/mman.h>
->    #define MB 1024UL * 1024UL
->    int main(int argc, char **argv){
->       void *p = mmap(NULL, 8000 * MB, PROT_READ | PROT_WRITE,
->                      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->       memset(p, 0xff, 8000 * MB);
->       madvise(p, 8000 * MB, MADV_PAGEOUT);
->       memset(p, 0xff, 8000 * MB);
->       return 0;
->    }
+> We can introduce a new file memory.owner into each memcg. Each bit of
+> memory.owner represents a specific resources,
 > 
-> Before:
->           7,021.43 msec task-clock                #    0.967 CPUs utilized            ( +-  0.03% )
->              4,010      context-switches          #  573.853 /sec                     ( +-  0.01% )
->                  0      cpu-migrations            #    0.000 /sec
->          2,052,057      page-faults               #  293.661 K/sec                    ( +-  0.00% )
->     12,616,546,027      cycles                    #    1.805 GHz                      ( +-  0.06% )  (39.92%)
->        156,823,666      stalled-cycles-frontend   #    1.25% frontend cycles idle     ( +-  0.10% )  (40.25%)
->        310,130,812      stalled-cycles-backend    #    2.47% backend cycles idle      ( +-  4.39% )  (40.73%)
->     18,692,516,591      instructions              #    1.49  insn per cycle
->                                                   #    0.01  stalled cycles per insn  ( +-  0.04% )  (40.75%)
->      4,907,447,976      branches                  #  702.283 M/sec                    ( +-  0.05% )  (40.30%)
->         13,002,578      branch-misses             #    0.26% of all branches          ( +-  0.08% )  (40.48%)
->      7,069,786,296      L1-dcache-loads           #    1.012 G/sec                    ( +-  0.03% )  (40.32%)
->        649,385,847      L1-dcache-load-misses     #    9.13% of all L1-dcache accesses  ( +-  0.07% )  (40.10%)
->      1,485,448,688      L1-icache-loads           #  212.576 M/sec                    ( +-  0.15% )  (39.49%)
->         31,628,457      L1-icache-load-misses     #    2.13% of all L1-icache accesses  ( +-  0.40% )  (39.57%)
->          6,667,311      dTLB-loads                #  954.129 K/sec                    ( +-  0.21% )  (39.50%)
->          5,668,555      dTLB-load-misses          #   86.40% of all dTLB cache accesses  ( +-  0.12% )  (39.03%)
->                765      iTLB-loads                #  109.476 /sec                     ( +- 21.81% )  (39.44%)
->          4,370,351      iTLB-load-misses          # 214320.09% of all iTLB cache accesses  ( +-  1.44% )  (39.86%)
->        149,207,254      L1-dcache-prefetches      #   21.352 M/sec                    ( +-  0.13% )  (40.27%)
+>  memory.owner: | bit31 | bitN | ... | bit1 | bit0 |
+>                                          |               |
+> |------ bit0: bpf memory
+>                                          |
+> |-------------- bit1: socket memory
+>                                          |
+>                                          |---------------------------
+> bitN: a specific resource
 > 
->            7.25869 +- 0.00203 seconds time elapsed  ( +-  0.03% )
+> There won't be too many specific resources which have to own their
+> memcgs, so I think 32bits is enough.
 > 
-> After:
->           6,576.16 msec task-clock                #    0.953 CPUs utilized            ( +-  0.10% )
->              4,020      context-switches          #  605.595 /sec                     ( +-  0.01% )
->                  0      cpu-migrations            #    0.000 /sec
->          2,052,056      page-faults               #  309.133 K/sec                    ( +-  0.00% )
->     11,967,619,180      cycles                    #    1.803 GHz                      ( +-  0.36% )  (38.76%)
->        161,259,240      stalled-cycles-frontend   #    1.38% frontend cycles idle     ( +-  0.27% )  (36.58%)
->        253,605,302      stalled-cycles-backend    #    2.16% backend cycles idle      ( +-  4.45% )  (34.78%)
->     19,328,171,892      instructions              #    1.65  insn per cycle
->                                                   #    0.01  stalled cycles per insn  ( +-  0.10% )  (31.46%)
->      5,213,967,902      branches                  #  785.461 M/sec                    ( +-  0.18% )  (30.68%)
->         12,385,170      branch-misses             #    0.24% of all branches          ( +-  0.26% )  (34.13%)
->      7,271,687,822      L1-dcache-loads           #    1.095 G/sec                    ( +-  0.12% )  (35.29%)
->        649,873,045      L1-dcache-load-misses     #    8.93% of all L1-dcache accesses  ( +-  0.11% )  (41.41%)
->      1,950,037,608      L1-icache-loads           #  293.764 M/sec                    ( +-  0.33% )  (43.11%)
->         31,365,566      L1-icache-load-misses     #    1.62% of all L1-icache accesses  ( +-  0.39% )  (45.89%)
->          6,767,809      dTLB-loads                #    1.020 M/sec                    ( +-  0.47% )  (48.42%)
->          6,339,590      dTLB-load-misses          #   95.43% of all dTLB cache accesses  ( +-  0.50% )  (46.60%)
->                736      iTLB-loads                #  110.875 /sec                     ( +-  1.79% )  (48.60%)
->          4,314,836      iTLB-load-misses          # 518653.73% of all iTLB cache accesses  ( +-  0.63% )  (42.91%)
->        144,950,156      L1-dcache-prefetches      #   21.836 M/sec                    ( +-  0.37% )  (41.39%)
+>                 Memcg-A : memory.owner == 0x1
+>                        |---- Memcg-A1 : memory.owner == 0
+>                        |---- Memcg-A2 : memory.owner == 0x1
 > 
->            6.89935 +- 0.00703 seconds time elapsed  ( +-  0.10% )
+> Then the bpf created by processes in Memcg-A1 will be charged into
+> Memcg-A directly without charging into Memcg-A1.
+> But the bpf created by processes in Memcg-A2 will be charged into
+> Memcg-A2 as its memory.owner is 0x1.
+> That said, these specific resources are not fully independent of
+> process, while they are still associated with the processes which
+> create them.
+> Luckily memory.move_charge_at_immigrate is disabled in cgroup2, so we
+> don't need to care about the possible migration issue.
 > 
-> The performance is clearly better. There is no significant hotspot
-> improvement according to perf report, as there are quite a few
-> callers of memcg_swap_enabled and do_memsw_account (which calls
-> memcg_swap_enabled). Many pieces of minor optimizations resulted
-> in lower overhead for the branch predictor, and bettter performance.
+> I think we may also apply it to shared page caches.  For example,
+>       struct inode {
+>           struct mem_cgroup *memcg;          <<<< add a new member
+>       };
 > 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+> We define struct inode as a memcg owner, and use scope-based charge to
+> charge its pages into inode->memcg.
+> And then put all memcgs which shared these resources under the same
+> parent. The page caches of this inode will be charged into the parent
+> directly.
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Ok, so it's something like premature selective reparenting.
+
+> The shared page cache is more complicated than bpf memory, so I'm not
+> quite sure if it can apply to shared page cache, but it can work well
+> for bpf memory.
+
+Yeah, this is the problem. It feels like it's a problem very specific
+to bpf maps and an exact way you use them. I don't think you can successfully
+advocate for changes of these calibre without a more generic problem. I might
+be wrong.
+
+> 
+> Regarding the observability, we can introduce a specific item into
+> memory.stat for this specific memory. For example a new item 'bpf' for
+> bpf memory.
+> That can be accounted/unaccounted for in the same way as we do in
+> set_active_memcg(). for example,
+> 
+>     struct task_struct {
+>         struct mem_cgroup  *active_memcg;
+>         int                             active_memcg_item;   <<<<
+> introduce a new member
+>     };
+> 
+>     bpf_memory_alloc()
+>     {
+>              old_memcg = set_active_memcg(memcg);
+>              old_item = set_active_memcg_item(MEMCG_BPF);
+
+I thought about something like this but for a different purpose:
+to track the amount of memory consumed by bpf.
+
+>              alloc();
+>              set_active_memcg_item(old_item);
+>              set_active_memcg(old_memcg);
+>     }
+> 
+>     bpf_memory_free()
+>     {
+>              old = set_active_memcg_item(MEMCG_BPF);
+>              free();
+>              set_active_memcg_item(old);
+>     }
+
+But the problem is that we shoud very carefully mark all allocations and
+releases, which is very error-prone. Interfaces which don't require annotating
+releases are generally better, but require additional memory.
 
 Thanks!
