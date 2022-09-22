@@ -2,199 +2,143 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67F75E5ACE
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 07:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733385E6938
+	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 19:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbiIVFk6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 01:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
+        id S231228AbiIVRLO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Sep 2022 13:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiIVFk5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 01:40:57 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13AD81B0A;
-        Wed, 21 Sep 2022 22:40:54 -0700 (PDT)
-X-UUID: 802ff2ee5b574f9095d791aa7211dc99-20220922
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=V/4+Moo1S3nQcLY9jDjtjnWEDd9L/Kw2aufNRHGosCA=;
-        b=Zo90xoefOKJHvtfEFcDTAqWFMMlSWhYdihn9YUwakBoC7hSj65xFQOnkygZWjRWo+0MaOfGzMIuyKHdO04SqksKYo04Q/Ql+ZbID6f3GpTsr00YT5rq3AD7qAoZiR0Fhzx7za2FPjitpJ6vUJJ8lOcjWUAYbbUvnHd5+FHK+MKU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.11,REQID:93a320cb-2d0a-420e-a931-84fcd3502661,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:45
-X-CID-INFO: VERSION:1.1.11,REQID:93a320cb-2d0a-420e-a931-84fcd3502661,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-        elease,TS:45
-X-CID-META: VersionHash:39a5ff1,CLOUDID:696eb1a2-dc04-435c-b19b-71e131a5fc35,B
-        ulkID:2209221340524T07RBDH,BulkQuantity:1,Recheck:0,SF:28|17|19|48|823|824
-        ,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:
-        0
-X-UUID: 802ff2ee5b574f9095d791aa7211dc99-20220922
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <jing-ting.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1364894657; Thu, 22 Sep 2022 13:40:48 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 22 Sep 2022 13:40:47 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Sep 2022 13:40:47 +0800
-Message-ID: <93f4ce9486ec4b856ba0f3bfe956fc9b2d3cb4cf.camel@mediatek.com>
-Subject: Re: BUG: HANG_DETECT waiting for migration_cpu_stop() complete
-From:   Jing-Ting Wu <jing-ting.wu@mediatek.com>
-To:     Hillf Danton <hdanton@sina.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Waiman Long <longman@redhat.com>,
-        ValentinSchneider <vschneid@redhat.com>,
-        TejunHeo <tj@kernel.org>, <wsd_upstream@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Jonathan.JMChen@mediatek.com>,
-        "chris.redpath@arm.com" <chris.redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Vincent Donnefort" <vdonnefort@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Christian Brauner <brauner@kernel.org>,
-        <cgroups@vger.kernel.org>, <lixiong.liu@mediatek.com>,
-        <wenju.xu@mediatek.com>
-Date:   Thu, 22 Sep 2022 13:40:47 +0800
-In-Reply-To: <20220907000741.2496-1-hdanton@sina.com>
-References: <20220907000741.2496-1-hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        with ESMTP id S230256AbiIVRLN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 13:11:13 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF699EA5A7;
+        Thu, 22 Sep 2022 10:11:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663866671; x=1695402671;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AxE0i8/Mftgy7fZYyASRgEYg0hxIfDnCcTRxEHqj3Sw=;
+  b=BIraYHDiNA1YEP5Y8fGuHIdhGzAvsq7mcL7c8eYRbHXHvHVv6Axzqyry
+   W8dRmALMn95O9OMX+A2+RRHBcZ8RooaszvjM0zTGORNnCFULjH6sCPX8l
+   5R9LvnLa0q1wrjujoQCClwy9QrDV1wgdU3hpaiNIzhGIccMgGuIt3bi0n
+   ir7fqoxEGri/INBfnaeGMOUojCjq9kyVM2aPohrF6uGLhnFubhmAqNt/l
+   OBwSCBW6F7qq3u1Y5a5fxgeqDI071FPKX0lOeM4rs2i/PozCp+o4vOCBl
+   vWCrIOTH+GFy/mFMyRZ/6ynU8vRFE5ueqRDndkAI3P6WA3mTLzsI38Fva
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="326689824"
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
+   d="scan'208";a="326689824"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 10:11:11 -0700
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
+   d="scan'208";a="762269804"
+Received: from sknaidu-mobl1.amr.corp.intel.com (HELO kcaccard-desk.amr.corp.intel.com) ([10.212.165.187])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 10:11:06 -0700
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: [RFC PATCH 00/20] Add Cgroup support for SGX EPC memory
+Date:   Thu, 22 Sep 2022 10:10:37 -0700
+Message-Id: <20220922171057.1236139-1-kristen@linux.intel.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MTK:  N
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,UNPARSEABLE_RELAY,URIBL_CSS autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 2022-09-07 at 08:07 +0800, Hillf Danton wrote:
-> On 5 Sep 2022 10:47:36 +0800 Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> wrote
-> > 
-> > We meet the HANG_DETECT happened in T SW version with kernel-5.15.
-> > Many tasks have been blocked for a long time.
-> > 
-> > Root cause:
-> > migration_cpu_stop() is not complete due to
-> > is_migration_disabled(p) is
-> > true, complete is false and complete_all() never get executed.
-> > It let other task wait the rwsem.
-> 
-> See if handing task over to stopper again in case of migration
-> disabled
-> could survive your tests.
-> 
-> Hillf
-> 
-> --- linux-5.15/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2322,9 +2322,7 @@ static int migration_cpu_stop(void *data
->  	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued
-> because
->  	 * we're holding p->pi_lock.
->  	 */
-> -	if (task_rq(p) == rq) {
-> -		if (is_migration_disabled(p))
-> -			goto out;
-> +	if (task_rq(p) == rq && !is_migration_disabled(p)) {
->  
->  		if (pending) {
->  			p->migration_pending = NULL;
+Add a new cgroup controller to regulate the distribution of SGX EPC memory,
+which is a subset of system RAM that is used to provide SGX-enabled
+applications with protected memory, and is otherwise inaccessible.
 
-Because Peter have some concern for patch by Waiman.
-We add Hillf's patch to our stability test.
-But there are side effects after patched.
-The warning appear once < two weeks. 
+SGX EPC memory allocations are separate from normal RAM allocations,
+and is managed solely by the SGX subsystem. The existing cgroup memory
+controller cannot be used to limit or account for SGX EPC memory.
 
-Backtrace as follows:
-[name:panic&]WARNING: CPU: 6 PID: 32583 at affine_move_task
-pc : affine_move_task
-lr : __set_cpus_allowed_ptr_locked
-Call trace:
-affine_move_task
-__set_cpus_allowed_ptr_locked
-migrate_enable
-__cgroup_bpf_run_filter_skb
-ip_finish_output
-ip_output
+This patchset implements the sgx_epc cgroup controller, which will provide
+support for stats, events, and the following interface files:
 
+sgx_epc.current
+	A read-only value which represents the total amount of EPC
+	memory currently being used on by the cgroup and its descendents.
 
-The root cause is when is_migration_disabled(p) is true，the patched
-version will set p->migration_pending to NULL by migration_cpu_stop.
-And in affine_move_task will raise a WARN_ON_ONCE(!pending).
+sgx_epc.low
+	A read-write value which is used to set best-effort protection
+	of EPC usage. If the EPC usage of a cgroup drops below this value,
+	then the cgroup's EPC memory will not be reclaimed if possible.
 
-Kernel-5.15/kernel/sched/core.c:
-static int affine_move_task(struct rq *rq, struct task_struct *p,
-struct rq_flags *rf, int dest_cpu, unsigned int flags) {
-...
-	If (WARN_ON_ONCE(!pending)) {
- 	  Task_rq_unlock(rq,p,fr);
-  	  return -EINVAL;
-	}
-...
-}
+sgx_epc.high
+	A read-write value which is used to set a best-effort limit
+	on the amount of EPC usage a cgroup has. If a cgroup's usage
+	goes past the high value, the EPC memory of that cgroup will
+	get reclaimed back under the high limit.
 
-But the tasks have not been migrated to the new affinity CPU, so there
-should be pending tasks to be processed, so p->migration_pending should
-not be NULL.
+sgx_epc.max
+	A read-write value which is used to set a hard limit for
+	cgroup EPC usage. If a cgroup's EPC usage reaches this limit,
+	allocations are blocked until EPC memory can be reclaimed from
+	the cgroup.
 
+This work was originally authored by Sean Christopherson a few years ago,
+and was modified to work with more recent kernels.
 
+The patchset adds support for multiple LRUs to track both reclaimable
+EPC pages (i.e. pages the reclaimer knows about), as well as unreclaimable
+EPC pages (i.e. pages which the reclaimer isn't aware of, such as va pages).
+These pages are assigned to an LRU, as well as an enclave, so that an
+enclave's full EPC usage can be tracked. During OOM events, an enclave
+can be have its memory zapped, and all the EPC pages not tracked by the
+reclaimer can be freed.
 
-Without patch:
-When is_migration_disabled is true, then goto out and not set p-
->migration_pending to NULL.
+I appreciate your comments and feedback.
 
-static int migration_cpu_stop(void *data) {
-...
-	If (task_rq(p) == rq) {
-        	     if (is_migration_disabled(p))
-                	           goto out;
-	}
-...
-}
+Sean Christopherson (20):
+  x86/sgx: Call cond_resched() at the end of sgx_reclaim_pages()
+  x86/sgx: Store EPC page owner as a 'void *' to handle multiple users
+  x86/sgx: Track owning enclave in VA EPC pages
+  x86/sgx: Add 'struct sgx_epc_lru' to encapsulate lru list(s)
+  x86/sgx: Introduce unreclaimable EPC page lists
+  x86/sgx: Introduce RECLAIM_IN_PROGRESS flag for EPC pages
+  x86/sgx: Use a list to track to-be-reclaimed pages during reclaim
+  x86/sgx: Add EPC page flags to identify type of page
+  x86/sgx: Allow reclaiming up to 32 pages, but scan 16 by default
+  x86/sgx: Return the number of EPC pages that were successfully
+    reclaimed
+  x86/sgx: Add option to ignore age of page during EPC reclaim
+  x86/sgx: Add helper to retrieve SGX EPC LRU given an EPC page
+  x86/sgx: Prepare for multiple LRUs
+  x86/sgx: Expose sgx_reclaim_pages() for use by EPC cgroup
+  x86/sgx: Add helper to grab pages from an arbitrary EPC LRU
+  x86/sgx: Add EPC OOM path to forcefully reclaim EPC
+  cgroup, x86/sgx: Add SGX EPC cgroup controller
+  x86/sgx: Enable EPC cgroup controller in SGX core
+  x86/sgx: Add stats and events interfaces to EPC cgroup controller
+  docs, cgroup, x86/sgx: Add SGX EPC cgroup controller documentation
 
+ Documentation/admin-guide/cgroup-v2.rst | 201 +++++
+ arch/x86/kernel/cpu/sgx/Makefile        |   1 +
+ arch/x86/kernel/cpu/sgx/encl.c          |  89 ++-
+ arch/x86/kernel/cpu/sgx/encl.h          |   4 +-
+ arch/x86/kernel/cpu/sgx/epc_cgroup.c    | 950 ++++++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/epc_cgroup.h    |  51 ++
+ arch/x86/kernel/cpu/sgx/ioctl.c         |  13 +-
+ arch/x86/kernel/cpu/sgx/main.c          | 389 ++++++++--
+ arch/x86/kernel/cpu/sgx/sgx.h           |  40 +-
+ arch/x86/kernel/cpu/sgx/virt.c          |  28 +-
+ include/linux/cgroup_subsys.h           |   4 +
+ init/Kconfig                            |  12 +
+ 12 files changed, 1669 insertions(+), 113 deletions(-)
+ create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
 
-With patch:
-When is_migration_disabled is true and pending is true, goto else if
-flow. Because p->cpus_ptr not updated when migrate_disable, so this
-condition is always true and p->migration_pending will set to NULL.
-
-static int migration_cpu_stop(void *data) {
-...
-	If (task_rq(p) == rq && !is_migration_disabled(p) ) {
- 	  ...
-	} else if (pending) {
-	  ...
-	  If (cpumask_test_cpu(task_cpu(p), p-> cpus_ ptr)) { 
-        	p->migration_pending = NULL;
-      		 complete = true;
-      		 goto out;
-	}
-...
-}
-
-
-
-
-
-
-Best regards,
-Jing-Ting Wu
-
+-- 
+2.37.3
 
