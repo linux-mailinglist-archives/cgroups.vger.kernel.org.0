@@ -2,92 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BB95E6D8D
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 23:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83965E6E90
+	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 23:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbiIVVED (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 17:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        id S231268AbiIVVj6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Sep 2022 17:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbiIVVD7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 17:03:59 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A1210CA7C;
-        Thu, 22 Sep 2022 14:03:56 -0700 (PDT)
+        with ESMTP id S231233AbiIVVjy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 17:39:54 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D229114033;
+        Thu, 22 Sep 2022 14:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663880637; x=1695416637;
+  t=1663882793; x=1695418793;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=5J/gUw0ozggdiEjT67Hv+Q1CO877q7WnX+QC9z+OreE=;
-  b=cGQ3FhvmCEU1br1E/02+iXJWgWqgjpHiM7usoLkViCJf2toyn5wGQ0lM
-   cB9bf8ZoQ3RbJYV1V4uTEpxLaL3kpdnGs75jXqD7J4sLS0Fb3RbYcluu4
-   eUShQ4xROSserw5YPRhlCH04kULGlB1z81+3p9dzsFomQCYGs8eCn9Py+
-   bS/ehEOKPfGP+h5MX8wXsAC+kccGePgmXeU9Hs+ySTR4Zys3J86fR8Cuc
-   9qFmqDtGEwZU/3ylxF/bm6QjM8ZroTdK1n6C4GkUByo+dl6eZIZIhOuvE
-   Yr15QatCUwEz7NBDpxOdEcTlqxRpIgtnRxUpBv0Ef39lulSw0wLBrQlT4
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="301870386"
+  bh=LziEyfJawc4QSz0lLnm/mVQqdAi9KJUUSw7+yO6FQ2U=;
+  b=gPEQfjxow2GpepwrV6myffF8g/dR0a5Tiq0MfkOjd9MFkC4qXLOEyVlN
+   /FjXq//T+lmEElCfuY/4Moz5RWmq/NNu3DSPuu0k2m8cp6t8MOZSoBkVK
+   hMorp2rznH5d8/EuNuMl9NdTwh4H6ivlZtT2VNk1wd5lEWnrt7vOgxQG8
+   EqQx8OEzBDAA7zx1MFf3zLCXIOiBNDN0Z+eIsPo/i/tESidgGT8OrQiMI
+   WbeiNWNSCW1jPtRZ0l/Zqk9xZr6NCQH9q+StD6cDZEXE9IYK2dPKghHJd
+   AGUkZmWeEzdKncr6V1ETBzvwPCJPuZWDdWxy33ypfIMV7CF+DSr5pRU66
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="287549742"
 X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="301870386"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:03:52 -0700
+   d="scan'208";a="287549742"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:39:53 -0700
 X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="948770813"
+   d="scan'208";a="762373094"
 Received: from sponnura-mobl1.amr.corp.intel.com (HELO [10.209.58.200]) ([10.209.58.200])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:03:51 -0700
-Message-ID: <7ff6d114-a6cc-e3c5-5edb-8ac0e527d8a9@intel.com>
-Date:   Thu, 22 Sep 2022 14:03:52 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:39:52 -0700
+Message-ID: <f2236b51-400a-b300-e818-297e45cc7b49@intel.com>
+Date:   Thu, 22 Sep 2022 14:39:53 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [RFC PATCH 00/20] Add Cgroup support for SGX EPC memory
+Subject: Re: [RFC PATCH 03/20] x86/sgx: Track owning enclave in VA EPC pages
 Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Sean Christopherson <seanjc@google.com>
 References: <20220922171057.1236139-1-kristen@linux.intel.com>
- <YyyeSVSk/lWdo/W4@slm.duckdns.org>
- <4b8605533e5deade739249bfb341ab9c06d56a1e.camel@linux.intel.com>
- <YyyykUJQtYbPVctn@slm.duckdns.org>
+ <20220922171057.1236139-4-kristen@linux.intel.com>
+ <1adb03c8-1274-3898-0677-03015a1f5a5d@intel.com>
+ <f031ac1bd6b16509f1d714cd65e6b017f054940c.camel@linux.intel.com>
 From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <YyyykUJQtYbPVctn@slm.duckdns.org>
+In-Reply-To: <f031ac1bd6b16509f1d714cd65e6b017f054940c.camel@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/22/22 12:08, Tejun Heo wrote:
-> Can you please give more concrete examples? I'd love to hear how the SGX EPC
-> memory is typically used in what amounts and what's the performance
-> implications when they get reclaimed and so on. ie. Please describe a
-> realistic usage scenario of contention with sufficient details on how the
-> system is set up, what the applications are using the SGX EPC memory for and
-> how much, how the contention on memory affects the users and so on.
+On 9/22/22 13:04, Kristen Carlson Accardi wrote:
+>> BTW, is there a flag or any other way to tell to what kind of object
+>> ->owner points?
+> The owner will only be an sgx_encl type if it is a va page, so to tell
+> what kind of object owner is, you look at the epc page flags - like
+> this:
+>         if (epc_page->flags & SGX_EPC_PAGE_ENCLAVE)
+>                 encl = ((struct sgx_encl_page *)epc_page->owner)->encl;
+>         else if (epc_page->flags & SGX_EPC_PAGE_VERSION_ARRAY)
+>                 encl = epc_page->owner;
+> ...
 
-One wrinkle is that the apps that use SGX EPC memory are *normal* apps.
- There are frameworks that some folks are very excited about that allow
-you to run mostly unmodified app stacks inside SGX.  For example:
-
-	https://github.com/gramineproject/graphene
-
-In fact, Gramine users are the troublesome ones for overcommit.  Most
-explicitly-written SGX applications are quite austere in their SGX
-memory use; they're probably never going to see overcommit.  These
-Gramine-wrapped apps are (relative) pigs.  They've been the ones finding
-bugs in the existing SGX overcommit code.
-
-So, where does all the SGX memory go?  It's the usual suspects:
-memcached and redis. ;)
+I don't know how much refactoring it would take, but it would be nice if
+that was a bit more obvious.  Basically, can we get the code that checks
+for or sets SGX_EPC_PAGE_VERSION_ARRAY close to the code that assigns or
+reads ->owner?
