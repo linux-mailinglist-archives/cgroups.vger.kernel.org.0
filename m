@@ -2,60 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E20995E5A0A
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 06:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003D25E5A0C
+	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 06:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbiIVEIO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 00:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        id S230007AbiIVEOl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Sep 2022 00:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbiIVEHy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 00:07:54 -0400
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35783AF0D2;
-        Wed, 21 Sep 2022 21:06:10 -0700 (PDT)
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-11e9a7135easo12152435fac.6;
-        Wed, 21 Sep 2022 21:06:10 -0700 (PDT)
+        with ESMTP id S229789AbiIVEOj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 00:14:39 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39C7DFD2;
+        Wed, 21 Sep 2022 21:14:38 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id d64-20020a17090a6f4600b00202ce056566so918949pjk.4;
+        Wed, 21 Sep 2022 21:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
+        bh=z8K8JabQHxvWke1wLuSNQQKC0Zp7p6L1teN9v6xkDP8=;
+        b=GZpjOi0ytaP2Q0bSJ8LGmg2pmd5KvjScrRWewswVinGIz3c/zhvb+1l/h2psEwXYaB
+         rkShb2F5lWekTtP+LgZDTxg/pbOKMJWns05QG0lgHnwch5fCx0x5MstVObxATaeeFrw7
+         lMg1vYE2HDHCqKbxqTeG+KIZlrwSfd+gSnxqUL/VxJAz1TLnACv0ommsz0DE04xROqJw
+         EV+zodAOmFwbyqfZpBTpL5Fo8GqljGs583mTwmEvMiwZdeapXtJCQHHniv5KC1ONVs71
+         /k1jbqX2Lf9MLz7KlT8Hyddd6h8YFEhEkSx0EGXYcNusCziPsYfnBb8M21UnUzOcxbtD
+         1Dog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=siMkRhF/SLAewvNkB/FUmhDXG1LTV2qd6SPVClT7RXM=;
-        b=C4mhES5BtjVJNUwSFQaZTZsj0CD4u9wtDykPtVeSPaNVsbEWNrn1BYPtLlZIbYDKaZ
-         Qd8eGmfGlzPfW9Y3JCXkAlkYO6miiZFvy2I9Bw2qy2awCvlJ7RNTlgg0Pc7O+FGLnWOg
-         3xxFgJJllc4QcqbquQbYcM+kGMk/PergZgCIa0ui84ijZElAX/1+18xsxnLIeDA9jfMu
-         iR7CIkforn71dPL4nCcyQN9QH9AK+DNvXrLuym5+xAOfJDstP4gH9RX7c6uX/UzfF9gW
-         UAjGgSs3lRlVCrWLaNGJV971mvxhB0O7TBje0PT2tQcTutU07oobpFjM/Do6WgGx/2eb
-         fi/w==
-X-Gm-Message-State: ACrzQf0CD6PRr9mlTyxVPNuGW0/CvwQYuo0p1pwBdgjhNfEBuOnhL1PG
-        KTPqr2lTm9Y61H+r6s1YYImmBTHcpzE1QlzlYulVdSfX
-X-Google-Smtp-Source: AMsMyM4y6qxzP6Yh1L9Q0h9wWC2dT6c/ICcvE7FfxlDfZYPCF7u7MfOowlgP/hMhzqyR2mupWed9yStTEMlJTwn1eAA=
-X-Received: by 2002:a05:6870:524b:b0:12c:cfd2:81c0 with SMTP id
- o11-20020a056870524b00b0012ccfd281c0mr802693oai.209.1663819532230; Wed, 21
- Sep 2022 21:05:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <YuQvcCrcgNWbtndU@slm.duckdns.org> <YuRJ7uzKY5/fokH5@slm.duckdns.org>
- <YuRo2PLFH6wLgEkm@slm.duckdns.org> <Yvq33G14AU0cuswB@slm.duckdns.org>
-In-Reply-To: <Yvq33G14AU0cuswB@slm.duckdns.org>
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date;
+        bh=z8K8JabQHxvWke1wLuSNQQKC0Zp7p6L1teN9v6xkDP8=;
+        b=WIxMUyNS0xKvZZtBeXTgXatQnHl6n/L4+Z450m5KIarX3FxDrvnt3Izn9AHdI8T1dF
+         O1XZvnvc7Eyu8L3b6QH3nwQh2dD8C3QmL94/zNKxtYBR+dxAKUrWzBwNElEs1sMZmWxD
+         78YW4izboxMyxvgwALgJlNP1kJytxWa021TvNk1JaJbgXZYiKbAnYFxqNP0NxMYjSls5
+         V2fPL+/epVJR/K+q0t3ey3nVGFvKhBwFG296TfL5k/xuGEPKLai/XL4bZMjPe6YrJaP3
+         tW/IDgZlErs5ZDtHvNKFciCz8nrV0LcAtvuqgNfOKkHvY5kEsGF0AfsSyYxJLHGQwIFl
+         xGKw==
+X-Gm-Message-State: ACrzQf0oMp8sTez+l7/GQ6K1DpUYAzOHNWYN50Qc8zx2WPli7wK6fWPW
+        ZraCZotqBn/uQ46G75r3DdE=
+X-Google-Smtp-Source: AMsMyM6H9DykUZ5nykAuy1NSDpqTlkI7yB2pKbDL1MY31zpOGgU2hatPthfJuE6yM2AFSIdUilvhAg==
+X-Received: by 2002:a17:902:f644:b0:172:b074:d1f5 with SMTP id m4-20020a170902f64400b00172b074d1f5mr1407085plg.29.1663820078037;
+        Wed, 21 Sep 2022 21:14:38 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:1040:796c:caf8:4dcf:320d])
+        by smtp.gmail.com with ESMTPSA id lp5-20020a17090b4a8500b002006f15ad4fsm2749152pjb.10.2022.09.21.21.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Sep 2022 21:14:37 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 21 Sep 2022 21:05:20 -0700
-Message-ID: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
-Subject: Re: [PATCH v3 cgroup/for-5.20] cgroup: Replace cgroup->ancestor_ids[]
- with ->ancestors[]
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups <cgroups@vger.kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: [PATCH] perf stat: Support old kernels for bperf cgroup counting
+Date:   Wed, 21 Sep 2022 21:14:35 -0700
+Message-Id: <20220922041435.709119-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.37.3.968.ga6b4b080e4-goog
+In-Reply-To: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,34 +76,75 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+The recent change in the cgroup will break the backward compatiblity in
+the BPF program.  It should support both old and new kernels using BPF
+CO-RE technique.
 
-On Mon, Aug 15, 2022 at 2:17 PM Tejun Heo <tj@kernel.org> wrote:
->
-> On Fri, Jul 29, 2022 at 01:10:16PM -1000, Tejun Heo wrote:
-> > Every cgroup knows all its ancestors through its ->ancestor_ids[]. There's
-> > no advantage to remembering the IDs instead of the pointers directly and
-> > this makes the array useless for finding an actual ancestor cgroup forcing
-> > cgroup_ancestor() to iteratively walk up the hierarchy instead. Let's
-> > replace cgroup->ancestor_ids[] with ->ancestors[] and remove the walking-up
-> > from cgroup_ancestor().
-> >
-> > While at it, improve comments around cgroup_root->cgrp_ancestor_storage.
-> >
-> > This patch shouldn't cause user-visible behavior differences.
-> >
-> > v2: Update cgroup_ancestor() to use ->ancestors[].
-> >
-> > v3: cgroup_root->cgrp_ancestor_storage's type is updated to match
-> >     cgroup->ancestors[]. Better comments.
-> >
-> > Signed-off-by: Tejun Heo <tj@kernel.org>
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
->
-> Applied to cgroup/for-6.1.
+Like the task_struct->__state handling in the offcpu analysis, we can
+check the field name in the cgroup struct.
 
-I've realized that perf stat change needs backward compatibility.
-Will send a fix soon.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+Arnaldo, I think this should go through the cgroup tree since it depends
+on the earlier change there.  I don't think it'd conflict with other
+perf changes but please let me know if you see any trouble, thanks!
 
-Thanks,
-Namhyung
+ tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+index 488bd398f01d..4fe61043de04 100644
+--- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
++++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+@@ -43,12 +43,39 @@ struct {
+ 	__uint(value_size, sizeof(struct bpf_perf_event_value));
+ } cgrp_readings SEC(".maps");
+ 
++/* new kernel cgroup definition */
++struct cgroup___new {
++	int level;
++	struct cgroup *ancestors[];
++} __attribute__((preserve_access_index));
++
++/* old kernel cgroup definition */
++struct cgroup___old {
++	int level;
++	u64 ancestor_ids[];
++} __attribute__((preserve_access_index));
++
+ const volatile __u32 num_events = 1;
+ const volatile __u32 num_cpus = 1;
+ 
+ int enabled = 0;
+ int use_cgroup_v2 = 0;
+ 
++static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
++{
++	/* recast pointer to capture new type for compiler */
++	struct cgroup___new *cgrp_new = (void *)cgrp;
++
++	if (bpf_core_field_exists(cgrp_new->ancestors)) {
++		return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
++	} else {
++		/* recast pointer to capture old type for compiler */
++		struct cgroup___old *cgrp_old = (void *)cgrp;
++
++		return BPF_CORE_READ(cgrp_old, ancestor_ids[level]);
++	}
++}
++
+ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
+ {
+ 	struct task_struct *p = (void *)bpf_get_current_task();
+@@ -70,7 +97,7 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
+ 			break;
+ 
+ 		// convert cgroup-id to a map index
+-		cgrp_id = BPF_CORE_READ(cgrp, ancestors[i], kn, id);
++		cgrp_id = get_cgroup_v1_ancestor_id(cgrp, i);
+ 		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
+ 		if (!elem)
+ 			continue;
+-- 
+2.37.3.968.ga6b4b080e4-goog
+
