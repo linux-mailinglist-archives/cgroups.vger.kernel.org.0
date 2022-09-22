@@ -2,149 +2,199 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 003D25E5A0C
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 06:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67F75E5ACE
+	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 07:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbiIVEOl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 00:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S229610AbiIVFk6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Sep 2022 01:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbiIVEOj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 00:14:39 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39C7DFD2;
-        Wed, 21 Sep 2022 21:14:38 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id d64-20020a17090a6f4600b00202ce056566so918949pjk.4;
-        Wed, 21 Sep 2022 21:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
-        bh=z8K8JabQHxvWke1wLuSNQQKC0Zp7p6L1teN9v6xkDP8=;
-        b=GZpjOi0ytaP2Q0bSJ8LGmg2pmd5KvjScrRWewswVinGIz3c/zhvb+1l/h2psEwXYaB
-         rkShb2F5lWekTtP+LgZDTxg/pbOKMJWns05QG0lgHnwch5fCx0x5MstVObxATaeeFrw7
-         lMg1vYE2HDHCqKbxqTeG+KIZlrwSfd+gSnxqUL/VxJAz1TLnACv0ommsz0DE04xROqJw
-         EV+zodAOmFwbyqfZpBTpL5Fo8GqljGs583mTwmEvMiwZdeapXtJCQHHniv5KC1ONVs71
-         /k1jbqX2Lf9MLz7KlT8Hyddd6h8YFEhEkSx0EGXYcNusCziPsYfnBb8M21UnUzOcxbtD
-         1Dog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date;
-        bh=z8K8JabQHxvWke1wLuSNQQKC0Zp7p6L1teN9v6xkDP8=;
-        b=WIxMUyNS0xKvZZtBeXTgXatQnHl6n/L4+Z450m5KIarX3FxDrvnt3Izn9AHdI8T1dF
-         O1XZvnvc7Eyu8L3b6QH3nwQh2dD8C3QmL94/zNKxtYBR+dxAKUrWzBwNElEs1sMZmWxD
-         78YW4izboxMyxvgwALgJlNP1kJytxWa021TvNk1JaJbgXZYiKbAnYFxqNP0NxMYjSls5
-         V2fPL+/epVJR/K+q0t3ey3nVGFvKhBwFG296TfL5k/xuGEPKLai/XL4bZMjPe6YrJaP3
-         tW/IDgZlErs5ZDtHvNKFciCz8nrV0LcAtvuqgNfOKkHvY5kEsGF0AfsSyYxJLHGQwIFl
-         xGKw==
-X-Gm-Message-State: ACrzQf0oMp8sTez+l7/GQ6K1DpUYAzOHNWYN50Qc8zx2WPli7wK6fWPW
-        ZraCZotqBn/uQ46G75r3DdE=
-X-Google-Smtp-Source: AMsMyM6H9DykUZ5nykAuy1NSDpqTlkI7yB2pKbDL1MY31zpOGgU2hatPthfJuE6yM2AFSIdUilvhAg==
-X-Received: by 2002:a17:902:f644:b0:172:b074:d1f5 with SMTP id m4-20020a170902f64400b00172b074d1f5mr1407085plg.29.1663820078037;
-        Wed, 21 Sep 2022 21:14:38 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:1040:796c:caf8:4dcf:320d])
-        by smtp.gmail.com with ESMTPSA id lp5-20020a17090b4a8500b002006f15ad4fsm2749152pjb.10.2022.09.21.21.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 21:14:37 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        bpf@vger.kernel.org
-Subject: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-Date:   Wed, 21 Sep 2022 21:14:35 -0700
-Message-Id: <20220922041435.709119-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.37.3.968.ga6b4b080e4-goog
-In-Reply-To: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+        with ESMTP id S229554AbiIVFk5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 01:40:57 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13AD81B0A;
+        Wed, 21 Sep 2022 22:40:54 -0700 (PDT)
+X-UUID: 802ff2ee5b574f9095d791aa7211dc99-20220922
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=V/4+Moo1S3nQcLY9jDjtjnWEDd9L/Kw2aufNRHGosCA=;
+        b=Zo90xoefOKJHvtfEFcDTAqWFMMlSWhYdihn9YUwakBoC7hSj65xFQOnkygZWjRWo+0MaOfGzMIuyKHdO04SqksKYo04Q/Ql+ZbID6f3GpTsr00YT5rq3AD7qAoZiR0Fhzx7za2FPjitpJ6vUJJ8lOcjWUAYbbUvnHd5+FHK+MKU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.11,REQID:93a320cb-2d0a-420e-a931-84fcd3502661,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:45
+X-CID-INFO: VERSION:1.1.11,REQID:93a320cb-2d0a-420e-a931-84fcd3502661,IP:0,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+        elease,TS:45
+X-CID-META: VersionHash:39a5ff1,CLOUDID:696eb1a2-dc04-435c-b19b-71e131a5fc35,B
+        ulkID:2209221340524T07RBDH,BulkQuantity:1,Recheck:0,SF:28|17|19|48|823|824
+        ,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:
+        0
+X-UUID: 802ff2ee5b574f9095d791aa7211dc99-20220922
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <jing-ting.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1364894657; Thu, 22 Sep 2022 13:40:48 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 22 Sep 2022 13:40:47 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Sep 2022 13:40:47 +0800
+Message-ID: <93f4ce9486ec4b856ba0f3bfe956fc9b2d3cb4cf.camel@mediatek.com>
+Subject: Re: BUG: HANG_DETECT waiting for migration_cpu_stop() complete
+From:   Jing-Ting Wu <jing-ting.wu@mediatek.com>
+To:     Hillf Danton <hdanton@sina.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Waiman Long <longman@redhat.com>,
+        ValentinSchneider <vschneid@redhat.com>,
+        TejunHeo <tj@kernel.org>, <wsd_upstream@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Jonathan.JMChen@mediatek.com>,
+        "chris.redpath@arm.com" <chris.redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Vincent Donnefort" <vdonnefort@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Christian Brauner <brauner@kernel.org>,
+        <cgroups@vger.kernel.org>, <lixiong.liu@mediatek.com>,
+        <wenju.xu@mediatek.com>
+Date:   Thu, 22 Sep 2022 13:40:47 +0800
+In-Reply-To: <20220907000741.2496-1-hdanton@sina.com>
+References: <20220907000741.2496-1-hdanton@sina.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MTK:  N
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,UNPARSEABLE_RELAY,URIBL_CSS autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The recent change in the cgroup will break the backward compatiblity in
-the BPF program.  It should support both old and new kernels using BPF
-CO-RE technique.
+On Wed, 2022-09-07 at 08:07 +0800, Hillf Danton wrote:
+> On 5 Sep 2022 10:47:36 +0800 Jing-Ting Wu <jing-ting.wu@mediatek.com>
+> wrote
+> > 
+> > We meet the HANG_DETECT happened in T SW version with kernel-5.15.
+> > Many tasks have been blocked for a long time.
+> > 
+> > Root cause:
+> > migration_cpu_stop() is not complete due to
+> > is_migration_disabled(p) is
+> > true, complete is false and complete_all() never get executed.
+> > It let other task wait the rwsem.
+> 
+> See if handing task over to stopper again in case of migration
+> disabled
+> could survive your tests.
+> 
+> Hillf
+> 
+> --- linux-5.15/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2322,9 +2322,7 @@ static int migration_cpu_stop(void *data
+>  	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued
+> because
+>  	 * we're holding p->pi_lock.
+>  	 */
+> -	if (task_rq(p) == rq) {
+> -		if (is_migration_disabled(p))
+> -			goto out;
+> +	if (task_rq(p) == rq && !is_migration_disabled(p)) {
+>  
+>  		if (pending) {
+>  			p->migration_pending = NULL;
 
-Like the task_struct->__state handling in the offcpu analysis, we can
-check the field name in the cgroup struct.
+Because Peter have some concern for patch by Waiman.
+We add Hillf's patch to our stability test.
+But there are side effects after patched.
+The warning appear once < two weeks. 
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
-Arnaldo, I think this should go through the cgroup tree since it depends
-on the earlier change there.  I don't think it'd conflict with other
-perf changes but please let me know if you see any trouble, thanks!
+Backtrace as follows:
+[name:panic&]WARNING: CPU: 6 PID: 32583 at affine_move_task
+pc : affine_move_task
+lr : __set_cpus_allowed_ptr_locked
+Call trace:
+affine_move_task
+__set_cpus_allowed_ptr_locked
+migrate_enable
+__cgroup_bpf_run_filter_skb
+ip_finish_output
+ip_output
 
- tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-index 488bd398f01d..4fe61043de04 100644
---- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-+++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-@@ -43,12 +43,39 @@ struct {
- 	__uint(value_size, sizeof(struct bpf_perf_event_value));
- } cgrp_readings SEC(".maps");
- 
-+/* new kernel cgroup definition */
-+struct cgroup___new {
-+	int level;
-+	struct cgroup *ancestors[];
-+} __attribute__((preserve_access_index));
-+
-+/* old kernel cgroup definition */
-+struct cgroup___old {
-+	int level;
-+	u64 ancestor_ids[];
-+} __attribute__((preserve_access_index));
-+
- const volatile __u32 num_events = 1;
- const volatile __u32 num_cpus = 1;
- 
- int enabled = 0;
- int use_cgroup_v2 = 0;
- 
-+static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
-+{
-+	/* recast pointer to capture new type for compiler */
-+	struct cgroup___new *cgrp_new = (void *)cgrp;
-+
-+	if (bpf_core_field_exists(cgrp_new->ancestors)) {
-+		return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
-+	} else {
-+		/* recast pointer to capture old type for compiler */
-+		struct cgroup___old *cgrp_old = (void *)cgrp;
-+
-+		return BPF_CORE_READ(cgrp_old, ancestor_ids[level]);
-+	}
-+}
-+
- static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
- {
- 	struct task_struct *p = (void *)bpf_get_current_task();
-@@ -70,7 +97,7 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
- 			break;
- 
- 		// convert cgroup-id to a map index
--		cgrp_id = BPF_CORE_READ(cgrp, ancestors[i], kn, id);
-+		cgrp_id = get_cgroup_v1_ancestor_id(cgrp, i);
- 		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
- 		if (!elem)
- 			continue;
--- 
-2.37.3.968.ga6b4b080e4-goog
+The root cause is when is_migration_disabled(p) is true，the patched
+version will set p->migration_pending to NULL by migration_cpu_stop.
+And in affine_move_task will raise a WARN_ON_ONCE(!pending).
+
+Kernel-5.15/kernel/sched/core.c:
+static int affine_move_task(struct rq *rq, struct task_struct *p,
+struct rq_flags *rf, int dest_cpu, unsigned int flags) {
+...
+	If (WARN_ON_ONCE(!pending)) {
+ 	  Task_rq_unlock(rq,p,fr);
+  	  return -EINVAL;
+	}
+...
+}
+
+But the tasks have not been migrated to the new affinity CPU, so there
+should be pending tasks to be processed, so p->migration_pending should
+not be NULL.
+
+
+
+Without patch:
+When is_migration_disabled is true, then goto out and not set p-
+>migration_pending to NULL.
+
+static int migration_cpu_stop(void *data) {
+...
+	If (task_rq(p) == rq) {
+        	     if (is_migration_disabled(p))
+                	           goto out;
+	}
+...
+}
+
+
+With patch:
+When is_migration_disabled is true and pending is true, goto else if
+flow. Because p->cpus_ptr not updated when migrate_disable, so this
+condition is always true and p->migration_pending will set to NULL.
+
+static int migration_cpu_stop(void *data) {
+...
+	If (task_rq(p) == rq && !is_migration_disabled(p) ) {
+ 	  ...
+	} else if (pending) {
+	  ...
+	  If (cpumask_test_cpu(task_cpu(p), p-> cpus_ ptr)) { 
+        	p->migration_pending = NULL;
+      		 complete = true;
+      		 goto out;
+	}
+...
+}
+
+
+
+
+
+
+Best regards,
+Jing-Ting Wu
+
 
