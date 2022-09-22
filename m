@@ -2,60 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF265E695D
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 19:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A135E6964
+	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 19:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbiIVROM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 13:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
+        id S229482AbiIVROc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Sep 2022 13:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbiIVRNt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 13:13:49 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ABA101964;
-        Thu, 22 Sep 2022 10:13:40 -0700 (PDT)
+        with ESMTP id S232108AbiIVROG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 13:14:06 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24DE103FD0;
+        Thu, 22 Sep 2022 10:14:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663866821; x=1695402821;
+  t=1663866843; x=1695402843;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Zhko5yUObMvnwMj2ppPRiU1c++lm7yggSa7NwT4K8xo=;
-  b=jfkTG6mc0ySGFA+oXCY9GEW/MgOnNB0FvGUDO3Nb0hQJ4FSgvJKUlM0d
-   Z0wWMB7jiAgrjYj+CCAPRAYj+EkdqjinBmcpXzPXjh3VDRqE33lvM2TNQ
-   OdUGShRO9wlS307grgxqWM4Gg/GPMa7qIo7xwvsW+osaEyO0lrFBZiSZn
-   xyJhVKA7oVIehcQRxztDDDoiyAIDdH/OACm1g1twp8p2KZ52+y84PDd3p
-   +TL4cAJsD7Ru+YRfvfiYf63HU5qup7mCdr/pm4A6WMOTOEhz0pv9DAq3S
-   1vuGF1PEjFAuyHCUjvfXPdTxGpA+wfsg+sEWf08J49n8PV+JnadZZXDmC
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="301216985"
+  bh=0g8SxneYPLxLe679j97cgFtWHKoCh+6kgTZISdI3av0=;
+  b=KMJulJLdwqoBaA8RaBo3oSjztV+niqBy3NSBl500Z39dbhy6NFZzAXt2
+   C/GjUiZvcsrs2ZMZoj5Z+XbTk8zkUllOMyWqGg5oPeYuGPu8W2lu/PX65
+   uVqowGifTtEzsTGT0LM4OB3ckWB5cmrJoHqJEAczDumyJBstM1GnVR3li
+   CSYt13gdR3ml3IcZv02NKucZy15PDWRVWqD6GRQV3QQmjlvVqsH92DocN
+   NPVHM0MwJnyCjCOy2jU9IjlQwpQwNVGrpZoyORqQODP8kxUef3tDP+O9h
+   /M3lg+y/CeNm3HmA//WNbkNOT+G9rMEDNhPV12c5ofUcLFKiLvTDIH017
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="283421613"
 X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="301216985"
+   d="scan'208";a="283421613"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 10:12:31 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 10:12:32 -0700
 X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="762270270"
+   d="scan'208";a="762270292"
 Received: from sknaidu-mobl1.amr.corp.intel.com (HELO kcaccard-desk.amr.corp.intel.com) ([10.212.165.187])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 10:11:54 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 10:11:56 -0700
 From:   Kristen Carlson Accardi <kristen@linux.intel.com>
 To:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>
 Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [RFC PATCH 19/20] x86/sgx: Add stats and events interfaces to EPC cgroup controller
-Date:   Thu, 22 Sep 2022 10:10:56 -0700
-Message-Id: <20220922171057.1236139-20-kristen@linux.intel.com>
+        Sean Christopherson <seanjc@google.com>,
+        linux-doc@vger.kernel.org
+Subject: [RFC PATCH 20/20] docs, cgroup, x86/sgx: Add SGX EPC cgroup controller documentation
+Date:   Thu, 22 Sep 2022 10:10:57 -0700
+Message-Id: <20220922171057.1236139-21-kristen@linux.intel.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220922171057.1236139-1-kristen@linux.intel.com>
 References: <20220922171057.1236139-1-kristen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,317 +64,235 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Enable the cgroup sgx_epc.stats and sgx_epc.events files and
-associated counters.
+Add initial documentation for the SGX EPC cgroup controller,
+which regulates distribution of SGX Enclave Page Cache (EPC) memory.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 Cc: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kernel/cpu/sgx/epc_cgroup.c | 134 +++++++++++++++++++++++++--
- arch/x86/kernel/cpu/sgx/epc_cgroup.h |  16 +++-
- arch/x86/kernel/cpu/sgx/main.c       |   6 +-
- 3 files changed, 145 insertions(+), 11 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst | 201 ++++++++++++++++++++++++
+ 1 file changed, 201 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-index 71da3b499950..8541029b86be 100644
---- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-+++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-@@ -77,6 +77,43 @@ static struct sgx_epc_cgroup *parent_epc_cgroup(struct sgx_epc_cgroup *epc_cg)
- 	return sgx_epc_cgroup_from_css(epc_cg->css.parent);
- }
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index be4a77baf784..c355cb08fc18 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -71,6 +71,10 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
+        5.9-2 Migration and Ownership
+      5-10. Others
+        5-10-1. perf_event
++     5-11. SGX EPC
++       5-11-1. SGX EPC Interface Files
++       5-11-2. Usage Guidelines
++       5-11-3. Migration
+      5-N. Non-normative information
+        5-N-1. CPU controller root cgroup process behaviour
+        5-N-2. IO controller root cgroup process behaviour
+@@ -2440,6 +2444,203 @@ always be filtered by cgroup v2 path.  The controller can still be
+ moved to a legacy hierarchy after v2 hierarchy is populated.
  
-+static inline unsigned long sgx_epc_cgroup_cnt_read(struct sgx_epc_cgroup *epc_cg,
-+						    enum sgx_epc_cgroup_counter i)
-+{
-+	return atomic_long_read(&epc_cg->cnt[i]);
-+}
-+
-+static inline void sgx_epc_cgroup_cnt_reset(struct sgx_epc_cgroup *epc_cg,
-+					    enum sgx_epc_cgroup_counter i)
-+{
-+	atomic_long_set(&epc_cg->cnt[i], 0);
-+}
-+
-+static inline void sgx_epc_cgroup_cnt_add(struct sgx_epc_cgroup *epc_cg,
-+					  enum sgx_epc_cgroup_counter i,
-+					  unsigned long cnt)
-+{
-+	atomic_long_add(cnt, &epc_cg->cnt[i]);
-+}
-+
-+static inline void sgx_epc_cgroup_event(struct sgx_epc_cgroup *epc_cg,
-+					enum sgx_epc_cgroup_counter i,
-+					unsigned long cnt)
-+{
-+	sgx_epc_cgroup_cnt_add(epc_cg, i, cnt);
-+
-+	if (i == SGX_EPC_CGROUP_LOW || i == SGX_EPC_CGROUP_HIGH ||
-+	    i == SGX_EPC_CGROUP_MAX)
-+		cgroup_file_notify(&epc_cg->events_file);
-+}
-+
-+static inline void sgx_epc_cgroup_cnt_sub(struct sgx_epc_cgroup *epc_cg,
-+					  enum sgx_epc_cgroup_counter i,
-+					  unsigned long cnt)
-+{
-+	atomic_long_sub(cnt, &epc_cg->cnt[i]);
-+}
-+
- /**
-  * sgx_epc_cgroup_iter - iterate over the EPC cgroup hierarchy
-  * @root:		hierarchy root
-@@ -368,7 +405,9 @@ void sgx_epc_cgroup_isolate_pages(struct sgx_epc_cgroup *root,
-                          */
-                         if (!sgx_epc_cgroup_all_in_use_are_low(root))
-                                 continue;
-+			sgx_epc_cgroup_event(epc_cg, SGX_EPC_CGROUP_LOW, 1);
-                 }
-+		sgx_epc_cgroup_event(epc_cg, SGX_EPC_CGROUP_RECLAMATIONS, 1);
  
-                 sgx_isolate_epc_pages(&epc_cg->lru, nr_to_scan, dst);
-                 if (!*nr_to_scan) {
-@@ -383,8 +422,11 @@ void sgx_epc_cgroup_isolate_pages(struct sgx_epc_cgroup *root,
- }
++SGX EPC
++-------
++
++The "sgx_epc" controller regulates distribution of SGX EPC memory,
++which is a subset of system RAM that is used to provide SGX-enabled
++applications with protected memory, and is otherwise inaccessible,
++i.e. shows up as reserved in /proc/iomem and cannot be read/written
++outside of an SGX enclave.
++
++Although current systems implement EPC by stealing memory from RAM,
++for all intents and purposes the EPC is independent from normal system
++memory, e.g. must be reserved at boot from RAM and cannot be converted
++between EPC and normal memory while the system is running.  The EPC is
++managed by the SGX subsystem and is not accounted by the memory
++controller.  Note that this is true only for EPC memory itself, i.e.
++normal memory allocations related to SGX and EPC memory, e.g. the
++backing memory for evicted EPC pages, are accounted, limited and
++protected by the memory controller.
++
++Much like normal system memory, EPC memory can be overcommitted via
++virtual memory techniques and pages can be swapped out of the EPC
++to their backing store (normal system memory allocated via shmem).
++The SGX EPC subsystem is analogous to the memory subsytem, and the
++SGX EPC controller is in turn analogous to the memory controller;
++it implements limit and protection models for EPC memory.
++
++See Documentation/x86/sgx.rst for more info on SGX and EPC.
++
++SGX EPC Interface Files
++~~~~~~~~~~~~~~~~~~~~~~~
++
++All SGX EPC memory amounts are in bytes unless explicitly stated
++otherwise.  If a value which is not PAGE_SIZE aligned is written,
++the actual value used by the controller will be rounded down to
++the closest PAGE_SIZE multiple.
++
++  sgx_epc.current
++
++	A read-only single value file which exists on all cgroups.
++
++	The total amount of EPC memory currently being used by the
++	cgroup and its descendants.
++
++  sgx_epc.low
++
++	A read-write single value file which exists on non-root
++	cgroups.  The default is "0".
++
++	Best-effort protection of EPC usage.  If the EPC usage of a
++	cgroup is below its limits, and all its ancestors are below
++	their low limits, then the cgroup's EPC won't be reclaimed
++	unless EPC cannot be reclaimed from unprotected cgroups,
++	e.g. all sibling cgroups are also below their low limit.
++
++	Setting low to a value more than the amount of EPC available
++	is discouraged.  The low limit is effectively ignored if the
++	cgroup's high or max limit is less than its low limit.
++
++  sgx_epc.high
++
++	A read-write single value file which exists on non-root
++	cgroups.  The default is "max".
++
++	EPC usage best-effort limit.  This is the main mechanism to
++	control EPC usage of a cgroup.  If a cgroup's usage goes
++	over the high boundary, EPC pages will be reclaimed from
++	the cgroup until it is back under the high limit.
++
++	Going over the high limit does not prevent allocation of
++	additional EPC pages, e.g. EPC usage will often spike above
++	the high limit during enclave creation, when a large number
++	of EPC pages are EADDed in a short period.
++
++  sgx_epc.max
++
++	A read-write single value file which exists on non-root
++	cgroups.  The default is "max".
++
++	EPC usage hard limit.  If a cgroup's EPC usage reaches this
++	limit, EPC allocations, e.g. for page fault handling, will
++	be blocked until EPC can be reclaimed from the cgroup.  If
++	EPC cannot be reclaimed in a timely manner, reclaim will be
++	forced, e.g. by ignoring LRU.
++
++	The max limit is intended to be a last line of defense; it
++	should rarely come into play on a properly configured and
++	monitored system.
++
++  sgx_epc.stats
++
++	A read-write flat-keyed file which exists on all cgroups.
++	Reads from the file display the cgroup's statistics, while
++	writes reset the underlying counters (if applicable).
++
++	The entries are ordered to be human readable, and new entries
++	can show up in the middle.  Don't rely on items remaining in a
++	fixed position; use the keys to look up specific values!
++
++	The following entries are defined.
++
++	  pages
++
++		The total number of pages currently being used by the
++		cgroup and its descendants, i.e. sgx_epc.current / 4096.
++
++	  direct
++
++		The number of pages currently being used by the cgroup
++		itself, excluding its descendants.
++
++	  indirect
++
++		The number of pages currently being used by the cgroup's
++		descendants, excluding its own pages.
++
++	  reclaimed
++
++		The number of pages that have been reclaimed from the
++		cgroup (since sgx_epc.stats was last reset).
++
++	  reclamations
++
++		The number of times this cgroup's LRU lists have been
++		scanned for reclaim, i.e. the number of times the cgroup
++		has been selected for reclaim via any code path.
++
++  sgx_epc.events
++
++	A read-write flat-keyed file which exists on non-root cgroups.
++	Writes to the file reset the event counters to zero.  A value
++	change in this file generates a file modified event.
++
++	The following entries are defined.
++
++	  low
++
++		The number of times the cgroup has been reclaimed even
++		though its usage is under the low boundary, e.g. due to
++		all sibling cgroups also being low.  This event usually
++		indicates that the low boundary is over-committed.
++
++	  high
++
++		The number of times the cgroup has triggered a reclaim
++		due to its EPC usage exceeding its high EPC boundary.
++		This event is expected for cgroups whose EPC usage is
++		capped by its high limit rather than global pressure.
++
++	  max
++
++		The number of times the cgroup has triggered a reclaim
++		due to its EPC usage  approaching (or exceeding) its max
++		EPC boundary.
++
++Usage Guidelines
++~~~~~~~~~~~~~~~~
++
++"sgx_epc.high" and "sgx_epc.low" are the main mechanisms to control
++EPC usage; using "sgx_epc.max" as anything other than a safety net
++is inadvisable, SGX application performance will suffer greatly if
++a process encounters its max limit.  Because a cgroup is allowed to
++breach its high limit, e.g. to fault in a page, performance is not
++artificially limited, whereas the max limit will effectively block
++a faulting application until the kernel can reclaim EPC memory from
++the cgroup.
++
++Exactly how "sgx_epc.high" is utilized will vary case by case, i.e.
++there is no one "correct" strategy.  Deferring to global EPC memory
++pressure, e.g. by overcommitting on the high limit, may be the most
++effective approach for a particular situation, whereas a different
++scenario might warrant a more draconian usage of the high limit.
++Regardless of the strategy used, because breach of the high limit
++does not cause processes to block or be killed, a management agent
++has ample opportunity to monitor and react as needed, e.g. it can
++raise the offending cgroup's high limit or terminate the workload.
++
++Similarly, "sgx_epc.low" can play different roles depending on the
++situation, e.g. it can be set to a relatively high value to protect
++a mission critical workload, or it may be used to reserve a minimal
++amount of EPC memory simply to ensure forward progress.  Employing
++"sgx_epc.low" in some capacity is generally recommended, especially
++when overcommitting "sgx_epc.high", as it is relatively common for
++a system to be under heavy EPC pressure; this holds true even on a
++carefully tuned system, as initializing an enclave requires all of
++the enclave's pages be brought into the EPC at some point prior to
++initialization, if only temporarily.
++
++Migration
++~~~~~~~~~~~~~~~~
++
++Once an EPC page is charged to a cgroup (during allocation), it
++remains charged to the original cgroup until the page is released
++or reclaimed.  Migrating a process to a different cgroup doesn't
++move the EPC charges that it incurred while in the previous cgroup
++to its new cgroup.
++
++
+ Non-normative information
+ -------------------------
  
- static int sgx_epc_cgroup_reclaim_pages(unsigned long nr_pages,
--					struct sgx_epc_reclaim_control *rc)
-+					struct sgx_epc_reclaim_control *rc,
-+					enum sgx_epc_cgroup_counter c)
- {
-+	sgx_epc_cgroup_event(rc->epc_cg, c, 1);
-+
- 	/*
- 	 * Ensure sgx_reclaim_pages is called with a minimum and maximum
- 	 * number of pages.  Attempting to reclaim only a few pages will
-@@ -434,7 +476,8 @@ static inline void __sgx_epc_cgroup_reclaim_high(struct sgx_epc_cgroup *epc_cg)
- 		if (cur <= high)
- 			break;
- 
--		if (!sgx_epc_cgroup_reclaim_pages(cur - high, &rc)) {
-+		if (!sgx_epc_cgroup_reclaim_pages(cur - high, &rc,
-+						  SGX_EPC_CGROUP_HIGH)) {
- 			if (sgx_epc_cgroup_reclaim_failed(&rc))
- 				break;
- 		}
-@@ -494,7 +537,8 @@ static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
- 		if (cur <= max)
- 			break;
- 
--		if (!sgx_epc_cgroup_reclaim_pages(cur - max, &rc)) {
-+		if (!sgx_epc_cgroup_reclaim_pages(cur - max, &rc,
-+						  SGX_EPC_CGROUP_MAX)) {
- 			if (sgx_epc_cgroup_reclaim_failed(&rc))
- 				break;
- 		}
-@@ -539,7 +583,8 @@ static int __sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg,
- 		over = ((cur + nr_pages) > max) ?
- 			(cur + nr_pages) - max : SGX_EPC_RECLAIM_MIN_PAGES;
- 
--		if (!sgx_epc_cgroup_reclaim_pages(over, &rc)) {
-+		if (!sgx_epc_cgroup_reclaim_pages(over, &rc,
-+						  SGX_EPC_CGROUP_MAX)) {
- 			if (sgx_epc_cgroup_reclaim_failed(&rc)) {
- 				if (++nr_empty > SGX_EPC_RECLAIM_OOM_THRESHOLD)
- 					return -ENOMEM;
-@@ -586,6 +631,8 @@ struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(struct mm_struct *mm,
- 
- 	if (ret)
- 		return ERR_PTR(ret);
-+
-+	sgx_epc_cgroup_cnt_add(epc_cg, SGX_EPC_CGROUP_PAGES, 1);
- 	return epc_cg;
- }
- 
-@@ -593,13 +640,17 @@ struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(struct mm_struct *mm,
-  * sgx_epc_cgroup_uncharge - hierarchically uncharge EPC pages
-  * @epc_cg:	the charged epc cgroup
-  * @nr_pages:	the number of pages to uncharge
-+ * @reclaimed:	whether the pages were reclaimed (vs. freed)
-  */
--void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg)
-+void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg, bool reclaimed)
- {
- 	if (sgx_epc_cgroup_disabled())
- 		return;
- 
- 	page_counter_uncharge(&epc_cg->pc, 1);
-+	sgx_epc_cgroup_cnt_sub(epc_cg, SGX_EPC_CGROUP_PAGES, 1);
-+	if (reclaimed)
-+		sgx_epc_cgroup_event(epc_cg, SGX_EPC_CGROUP_RECLAIMED, 1);
- 
- 	if (epc_cg != root_epc_cgroup)
- 		css_put_many(&epc_cg->css, 1);
-@@ -665,6 +716,61 @@ static u64 sgx_epc_current_read(struct cgroup_subsys_state *css,
- 	return (u64)page_counter_read(&epc_cg->pc) * PAGE_SIZE;
- }
- 
-+static int sgx_epc_stats_show(struct seq_file *m, void *v)
-+{
-+	struct sgx_epc_cgroup *epc_cg = sgx_epc_cgroup_from_css(seq_css(m));
-+
-+	unsigned long cur, dir, rec, recs;
-+	cur = page_counter_read(&epc_cg->pc);
-+	dir = sgx_epc_cgroup_cnt_read(epc_cg, SGX_EPC_CGROUP_PAGES);
-+	rec = sgx_epc_cgroup_cnt_read(epc_cg, SGX_EPC_CGROUP_RECLAIMED);
-+	recs= sgx_epc_cgroup_cnt_read(epc_cg, SGX_EPC_CGROUP_RECLAMATIONS);
-+
-+	seq_printf(m, "pages            %lu\n", cur);
-+	seq_printf(m, "direct           %lu\n", dir);
-+	seq_printf(m, "indirect         %lu\n", (cur - dir));
-+	seq_printf(m, "reclaimed        %lu\n", rec);
-+	seq_printf(m, "reclamations	%lu\n", recs);
-+
-+	return 0;
-+}
-+
-+static ssize_t sgx_epc_stats_reset(struct kernfs_open_file *of,
-+				   char *buf, size_t nbytes, loff_t off)
-+{
-+	struct sgx_epc_cgroup *epc_cg = sgx_epc_cgroup_from_css(of_css(of));
-+	sgx_epc_cgroup_cnt_reset(epc_cg, SGX_EPC_CGROUP_RECLAIMED);
-+	sgx_epc_cgroup_cnt_reset(epc_cg, SGX_EPC_CGROUP_RECLAMATIONS);
-+	return nbytes;
-+}
-+
-+
-+static int sgx_epc_events_show(struct seq_file *m, void *v)
-+{
-+	struct sgx_epc_cgroup *epc_cg = sgx_epc_cgroup_from_css(seq_css(m));
-+
-+	unsigned long low, high, max;
-+	low  = sgx_epc_cgroup_cnt_read(epc_cg, SGX_EPC_CGROUP_LOW);
-+	high = sgx_epc_cgroup_cnt_read(epc_cg, SGX_EPC_CGROUP_HIGH);
-+	max  = sgx_epc_cgroup_cnt_read(epc_cg, SGX_EPC_CGROUP_MAX);
-+
-+	seq_printf(m, "low      %lu\n", low);
-+	seq_printf(m, "high     %lu\n", high);
-+	seq_printf(m, "max      %lu\n", max);
-+
-+	return 0;
-+}
-+
-+static ssize_t sgx_epc_events_reset(struct kernfs_open_file *of,
-+				    char *buf, size_t nbytes, loff_t off)
-+{
-+	struct sgx_epc_cgroup *epc_cg = sgx_epc_cgroup_from_css(of_css(of));
-+	sgx_epc_cgroup_cnt_reset(epc_cg, SGX_EPC_CGROUP_LOW);
-+	sgx_epc_cgroup_cnt_reset(epc_cg, SGX_EPC_CGROUP_HIGH);
-+	sgx_epc_cgroup_cnt_reset(epc_cg, SGX_EPC_CGROUP_MAX);
-+	return nbytes;
-+}
-+
- static int sgx_epc_low_show(struct seq_file *m, void *v)
- {
- 	struct sgx_epc_cgroup *epc_cg = sgx_epc_cgroup_from_css(seq_css(m));
-@@ -733,7 +839,8 @@ static ssize_t sgx_epc_high_write(struct kernfs_open_file *of,
- 		if (signal_pending(current))
- 			break;
- 
--		if (!sgx_epc_cgroup_reclaim_pages(cur - high, &rc)) {
-+		if (!sgx_epc_cgroup_reclaim_pages(cur - high, &rc,
-+						  SGX_EPC_CGROUP_HIGH)) {
- 			if (sgx_epc_cgroup_reclaim_failed(&rc))
- 				break;
- 		}
-@@ -782,7 +889,8 @@ static ssize_t sgx_epc_max_write(struct kernfs_open_file *of, char *buf,
- 		if (signal_pending(current))
- 			break;
- 
--		if (!sgx_epc_cgroup_reclaim_pages(cur - max, &rc)) {
-+		if (!sgx_epc_cgroup_reclaim_pages(cur - max, &rc,
-+						  SGX_EPC_CGROUP_MAX)) {
- 			if (sgx_epc_cgroup_reclaim_failed(&rc)) {
- 				if (++nr_empty > SGX_EPC_RECLAIM_OOM_THRESHOLD)
- 					sgx_epc_cgroup_oom(epc_cg);
-@@ -799,6 +907,18 @@ static struct cftype sgx_epc_cgroup_files[] = {
- 		.name = "current",
- 		.read_u64 = sgx_epc_current_read,
- 	},
-+	{
-+		.name = "stats",
-+		.seq_show = sgx_epc_stats_show,
-+		.write = sgx_epc_stats_reset,
-+	},
-+	{
-+		.name = "events",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.file_offset = offsetof(struct sgx_epc_cgroup, events_file),
-+		.seq_show = sgx_epc_events_show,
-+		.write = sgx_epc_events_reset,
-+	},
- 	{
- 		.name = "low",
- 		.flags = CFTYPE_NOT_ON_ROOT,
-diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
-index 226304a3d523..656c9f386b48 100644
---- a/arch/x86/kernel/cpu/sgx/epc_cgroup.h
-+++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
-@@ -14,6 +14,16 @@
- #ifndef CONFIG_CGROUP_SGX_EPC
- struct sgx_epc_cgroup;
- #else
-+enum sgx_epc_cgroup_counter {
-+	SGX_EPC_CGROUP_PAGES,
-+	SGX_EPC_CGROUP_RECLAIMED,
-+	SGX_EPC_CGROUP_RECLAMATIONS,
-+	SGX_EPC_CGROUP_LOW,
-+	SGX_EPC_CGROUP_HIGH,
-+	SGX_EPC_CGROUP_MAX,
-+	SGX_EPC_CGROUP_NR_COUNTERS,
-+};
-+
- struct sgx_epc_cgroup {
- 	struct cgroup_subsys_state	css;
- 
-@@ -24,11 +34,15 @@ struct sgx_epc_cgroup {
- 	struct sgx_epc_cgroup	*reclaim_iter;
- 	struct work_struct	reclaim_work;
- 	unsigned int		epoch;
-+
-+	atomic_long_t           cnt[SGX_EPC_CGROUP_NR_COUNTERS];
-+
-+	struct cgroup_file      events_file;
- };
- 
- struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(struct mm_struct *mm,
- 						 bool reclaim);
--void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg);
-+void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg, bool reclaimed);
- bool sgx_epc_cgroup_lru_empty(struct sgx_epc_cgroup *root);
- void sgx_epc_cgroup_isolate_pages(struct sgx_epc_cgroup *root,
- 				  int *nr_to_scan, struct list_head *dst);
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 29653a0d4670..3330ed4d0d43 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -412,7 +412,7 @@ int sgx_reclaim_epc_pages(int nr_to_scan, bool ignore_age,
- 
- #ifdef CONFIG_CGROUP_SGX_EPC
- 		if (epc_page->epc_cg) {
--			sgx_epc_cgroup_uncharge(epc_page->epc_cg);
-+			sgx_epc_cgroup_uncharge(epc_page->epc_cg, true);
- 			epc_page->epc_cg = NULL;
- 		}
- #endif
-@@ -663,7 +663,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- 		WARN_ON(page->epc_cg);
- 		page->epc_cg = epc_cg;
- 	} else {
--		sgx_epc_cgroup_uncharge(epc_cg);
-+		sgx_epc_cgroup_uncharge(epc_cg, false);
- 	}
- #endif
- 	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
-@@ -698,7 +698,7 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
- 	spin_unlock(&node->lock);
- #ifdef CONFIG_CGROUP_SGX_EPC
- 	if (page->epc_cg) {
--		sgx_epc_cgroup_uncharge(page->epc_cg);
-+		sgx_epc_cgroup_uncharge(page->epc_cg, false);
- 		page->epc_cg = NULL;
- 	}
- #endif
 -- 
 2.37.3
 
