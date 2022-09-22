@@ -2,125 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3935E69CE
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 19:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF765E6B4D
+	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 20:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbiIVRll (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 13:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        id S231853AbiIVSyW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Sep 2022 14:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbiIVRlg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 13:41:36 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18556EFA48;
-        Thu, 22 Sep 2022 10:41:33 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id x1-20020a17090ab00100b001fda21bbc90so3148035pjq.3;
-        Thu, 22 Sep 2022 10:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=YTw4/4H1DrZyYT8r3vAbsU7ElPYxgVDhU3+OM9JyucE=;
-        b=ElLCbl1NZGRXMxpT6v5xRjFMH5pVD8Cb811OWdYBmSUbw6+6INd7SgCM411RdFKg2D
-         3gBBwooCUeu9bguTScSkm/XZSKCxDniYvdgWCIhnkKXa/dj/aqMoxUdDf/Z4g4Z3Uyxz
-         fJktrerUAVeMdfLrhHHvN0kbmKSsQmUR4AfFzNTL/auXAiED8nOxCign4vgffb5wAAha
-         ODjUE/FYzl39vEFJ1jKVo1TaQdQR//fsoXDGhh7myPCV/CZ20tcFNpmeDfdQNQeVatLo
-         Q6WOHGCkKXqSy8yRccfb+uwAOH7duIQ8LnHnLiFE59louwT8ra/ug4luSqNxIhGSaQle
-         b8yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=YTw4/4H1DrZyYT8r3vAbsU7ElPYxgVDhU3+OM9JyucE=;
-        b=V2HLaggexGwvc31+4BvmRIWl+0T6Z1XhW9NWT1U+/DA1RcG0SkW4ms6CJ9NjC1pu9p
-         tjE6ekeYxMstIl2QW6q9wAJap0P8JBGB8w7rRgx9760AdaVDDOTSomXnSnVDs8MOwLum
-         wGNX1PVsSRLcecCXucmd8syS0cDwc1MP0DQdPAyVwruWoRzeKUmYgEfX2EN6re04ym4B
-         WAR6i5ZJCCDPN3xG0u4pIUuTLZQRwkAz5Mey9Q89VNVOjQqaCS/LZL/RkGa+LY95V/23
-         75uzCBjoPw+3oc/aeH9wqLg77sj2B7gSnavmVBfFDP7+Y13vsrIH29XpU0pUCV53SNZt
-         HgRg==
-X-Gm-Message-State: ACrzQf2D71n+0kDGnXNauMmyUYn0HmHQdAnrTbF+FXenebFChG8ZFvlU
-        MhGTBZLWg7mvedZzEGAwO742UqOMNqi+cA==
-X-Google-Smtp-Source: AMsMyM46RQnmrtmArNIqRDGJepiXlLiVqEbR8tjp1VE8FwEn++T4TpusHiOcNrt//9HfQThYvL4t+w==
-X-Received: by 2002:a17:902:e54b:b0:178:75b9:f1e9 with SMTP id n11-20020a170902e54b00b0017875b9f1e9mr4426028plf.104.1663868492316;
-        Thu, 22 Sep 2022 10:41:32 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id x128-20020a623186000000b0053e6eae9665sm4800874pfx.140.2022.09.22.10.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 10:41:31 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 22 Sep 2022 07:41:29 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [RFC PATCH 00/20] Add Cgroup support for SGX EPC memory
-Message-ID: <YyyeSVSk/lWdo/W4@slm.duckdns.org>
-References: <20220922171057.1236139-1-kristen@linux.intel.com>
+        with ESMTP id S229570AbiIVSyU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 14:54:20 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C313AF1632;
+        Thu, 22 Sep 2022 11:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663872858; x=1695408858;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=18DSOnaBqd0/z4y1LvXCXFY/s8ZUIoakuUNkf0L236A=;
+  b=RXKX73PXaFsIleHDlFNSkERG6zoBIGaGwZycBAmgmkaQyJU1Srb2mfBZ
+   uC/KV3p6IVkeofFrHmI3QRm6mjLvYGnyG0LedQvaNXnEr3OP63nw311HT
+   +lj8FcB0Azl5CfDcBpOWr/Qx3zqndoCdXONaCx2irxY2vhsG52oFAyVhn
+   H3IhjkRQdSTyzkYSRSYEk6sJpomGhifeD2nrun/0YCCYXI+gpaazkQxFd
+   SBOErP4KObz2ks7VNWGTRWQoMUR5w5FrS2UhmBhqqUDpvuKgmuzZ2/h1d
+   aV/8NTFStq3LADqB2n3zMiwPSZOsjMqZGSZ04a7rD6sHvlNIc1t1xCSXb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="386686164"
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
+   d="scan'208";a="386686164"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 11:54:18 -0700
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
+   d="scan'208";a="653103887"
+Received: from sponnura-mobl1.amr.corp.intel.com (HELO [10.209.58.200]) ([10.209.58.200])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 11:54:17 -0700
+Message-ID: <3b0e70bb-6e9d-d5da-8e96-d9a813d5ab3f@intel.com>
+Date:   Thu, 22 Sep 2022 11:54:18 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220922171057.1236139-1-kristen@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [RFC PATCH 02/20] x86/sgx: Store EPC page owner as a 'void *' to
+ handle multiple users
+Content-Language: en-US
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Sean Christopherson <seanjc@google.com>
+References: <20220922171057.1236139-1-kristen@linux.intel.com>
+ <20220922171057.1236139-3-kristen@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20220922171057.1236139-3-kristen@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On 9/22/22 10:10, Kristen Carlson Accardi wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> A future patch will use the owner field for either a pointer to
+> a struct sgx_encl, or a struct sgx_encl_page.
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/sgx.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+> index 0f2020653fba..5a7e858a8f98 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -33,7 +33,7 @@ struct sgx_epc_page {
+>  	unsigned int section;
+>  	u16 flags;
+>  	u16 poison;
+> -	struct sgx_encl_page *owner;
+> +	void *owner;
+>  	struct list_head list;
+>  };
+>  
 
-(cc'ing memcg folks)
+We normally handle these with a union.  I'd probably do something like
+this instead:
 
-On Thu, Sep 22, 2022 at 10:10:37AM -0700, Kristen Carlson Accardi wrote:
-> Add a new cgroup controller to regulate the distribution of SGX EPC memory,
-> which is a subset of system RAM that is used to provide SGX-enabled
-> applications with protected memory, and is otherwise inaccessible.
-> 
-> SGX EPC memory allocations are separate from normal RAM allocations,
-> and is managed solely by the SGX subsystem. The existing cgroup memory
-> controller cannot be used to limit or account for SGX EPC memory.
-> 
-> This patchset implements the sgx_epc cgroup controller, which will provide
-> support for stats, events, and the following interface files:
-> 
-> sgx_epc.current
-> 	A read-only value which represents the total amount of EPC
-> 	memory currently being used on by the cgroup and its descendents.
-> 
-> sgx_epc.low
-> 	A read-write value which is used to set best-effort protection
-> 	of EPC usage. If the EPC usage of a cgroup drops below this value,
-> 	then the cgroup's EPC memory will not be reclaimed if possible.
-> 
-> sgx_epc.high
-> 	A read-write value which is used to set a best-effort limit
-> 	on the amount of EPC usage a cgroup has. If a cgroup's usage
-> 	goes past the high value, the EPC memory of that cgroup will
-> 	get reclaimed back under the high limit.
-> 
-> sgx_epc.max
-> 	A read-write value which is used to set a hard limit for
-> 	cgroup EPC usage. If a cgroup's EPC usage reaches this limit,
-> 	allocations are blocked until EPC memory can be reclaimed from
-> 	the cgroup.
-
-I don't know how SGX uses its memory but you said in the other message that
-it's usually a really small portion of the memory and glancing the code it
-looks like its own page aging and all. Can you give some concrete examples
-on how it's used and why we need cgroup support for it? Also, do you really
-need all three control knobs here? e.g. given that .high is only really
-useful in conjunction with memory pressure and oom handling from userspace,
-I don't see how this would actually be useful for something like this.
-
-Thanks.
-
--- 
-tejun
+-	struct sgx_encl_page *owner;
++	union owner {
++		struct sgx_encl	     *o_encl;
++		struct sgx_encl_page *o_page;
++	}
