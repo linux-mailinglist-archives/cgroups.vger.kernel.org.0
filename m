@@ -2,86 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D83965E6E90
-	for <lists+cgroups@lfdr.de>; Thu, 22 Sep 2022 23:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC965E74DE
+	for <lists+cgroups@lfdr.de>; Fri, 23 Sep 2022 09:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbiIVVj6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Sep 2022 17:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        id S230124AbiIWH3I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 23 Sep 2022 03:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbiIVVjy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Sep 2022 17:39:54 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D229114033;
-        Thu, 22 Sep 2022 14:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663882793; x=1695418793;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LziEyfJawc4QSz0lLnm/mVQqdAi9KJUUSw7+yO6FQ2U=;
-  b=gPEQfjxow2GpepwrV6myffF8g/dR0a5Tiq0MfkOjd9MFkC4qXLOEyVlN
-   /FjXq//T+lmEElCfuY/4Moz5RWmq/NNu3DSPuu0k2m8cp6t8MOZSoBkVK
-   hMorp2rznH5d8/EuNuMl9NdTwh4H6ivlZtT2VNk1wd5lEWnrt7vOgxQG8
-   EqQx8OEzBDAA7zx1MFf3zLCXIOiBNDN0Z+eIsPo/i/tESidgGT8OrQiMI
-   WbeiNWNSCW1jPtRZ0l/Zqk9xZr6NCQH9q+StD6cDZEXE9IYK2dPKghHJd
-   AGUkZmWeEzdKncr6V1ETBzvwPCJPuZWDdWxy33ypfIMV7CF+DSr5pRU66
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="287549742"
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="287549742"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:39:53 -0700
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="762373094"
-Received: from sponnura-mobl1.amr.corp.intel.com (HELO [10.209.58.200]) ([10.209.58.200])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 14:39:52 -0700
-Message-ID: <f2236b51-400a-b300-e818-297e45cc7b49@intel.com>
-Date:   Thu, 22 Sep 2022 14:39:53 -0700
+        with ESMTP id S229606AbiIWH3H (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 23 Sep 2022 03:29:07 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835AF12B5C4;
+        Fri, 23 Sep 2022 00:29:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3CD44218FA;
+        Fri, 23 Sep 2022 07:29:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1663918144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rOM18LotnWoAueDS7CKAxKNZg+usqMDivdcE9JRJPBE=;
+        b=dVnRMWYNhplQavDtc54h2Ex/j2jYR77RBKGgq9v2Rjc1hmm4joAkkKC8VCpEp/rjz3GJ3D
+        E2XRU17CR4X2WBeCgaI2Yt3Emris/lMgFiGkurmrvA65OOPU02Kjg7PUOixpnvsGhUOrLK
+        X1I7y+0RI28a/Znu5Spp2d+yb3u9Xq0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C79913A00;
+        Fri, 23 Sep 2022 07:29:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JIcMCkBgLWM9bAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 23 Sep 2022 07:29:04 +0000
+Date:   Fri, 23 Sep 2022 09:29:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, lizefan.x@bytedance.com,
+        wuyun.abel@bytedance.com
+Subject: Re: [External] Re: [PATCH] cgroup/cpuset: Add a new isolated
+ mems.policy type.
+Message-ID: <Yy1gP7wcoCqzRa0B@dhcp22.suse.cz>
+References: <20220904040241.1708-1-hezhongkun.hzk@bytedance.com>
+ <YxWbBYZKDTrkmlOe@dhcp22.suse.cz>
+ <0e5f380b-9201-0f56-9144-ce8449491fc8@bytedance.com>
+ <YxXUjvWmZoG9vVNV@dhcp22.suse.cz>
+ <ca5e57fd-4699-2cec-b328-3d6bac43c8ef@bytedance.com>
+ <Yxc+HZ6rjcR535oN@dhcp22.suse.cz>
+ <93d76370-6c43-5560-9a5f-f76a8cc979e0@bytedance.com>
+ <YxmXeC7te2HAi4dX@dhcp22.suse.cz>
+ <fa5e5a79-aa1a-a009-d0c8-0a39380a71b6@bytedance.com>
+ <120cb50d-d617-a60a-ec24-915f826318f1@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [RFC PATCH 03/20] x86/sgx: Track owning enclave in VA EPC pages
-Content-Language: en-US
-To:     Kristen Carlson Accardi <kristen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Sean Christopherson <seanjc@google.com>
-References: <20220922171057.1236139-1-kristen@linux.intel.com>
- <20220922171057.1236139-4-kristen@linux.intel.com>
- <1adb03c8-1274-3898-0677-03015a1f5a5d@intel.com>
- <f031ac1bd6b16509f1d714cd65e6b017f054940c.camel@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <f031ac1bd6b16509f1d714cd65e6b017f054940c.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <120cb50d-d617-a60a-ec24-915f826318f1@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/22/22 13:04, Kristen Carlson Accardi wrote:
->> BTW, is there a flag or any other way to tell to what kind of object
->> ->owner points?
-> The owner will only be an sgx_encl type if it is a va page, so to tell
-> what kind of object owner is, you look at the epc page flags - like
-> this:
->         if (epc_page->flags & SGX_EPC_PAGE_ENCLAVE)
->                 encl = ((struct sgx_encl_page *)epc_page->owner)->encl;
->         else if (epc_page->flags & SGX_EPC_PAGE_VERSION_ARRAY)
->                 encl = epc_page->owner;
-> ...
+On Wed 14-09-22 23:10:47, Zhongkun He wrote:
+> > > 
+> > > > Back to the previous question.
+> > > > > The question is how to implement that with a sensible semantic.
+> > > > 
+> > > > Thanks for your analysis and suggestions.It is really difficult to add
+> > > > policy directly to cgroup for the hierarchical enforcement. It
+> > > > would be a good idea to add pidfd_set_mempolicy.
+> > > 
+> > > Are you going to pursue that path?
+> 
+> > Hi Michal, thanks for your suggestion and reply.
+> > 
+> >  > Are you going to pursue that path?
+> > 
+> > Yes，I'll give it a try as it makes sense to modify the policy dynamically.
+> > 
+> > Thanks.
+> 
+> Hi Michal, i have a question about pidfd_set_mempolicy, it would be better
+> if you have some suggestions.
+> 
+> The task_struct of processes and threads are independent. If we change the
+> mempolicy of the process through pidfd_set_mempolicy, the mempolicy of its
+> thread will not change. Of course users can set the mempolicy of all threads
+> by iterating through /proc/tgid/task.
+> 
+> The question is whether we should override the thread's mempolicy when
+> setting the process's mempolicy.
+> 
+> There are two options:
+> A:Change the process's mempolicy and set that mempolicy to all it's threads.
+> B:Only change the process's mempolicy in kernel. The mempolicy of the thread
+> needs to be modified by the user through pidfd_set_mempolicy in
+> userspace, if necessary.
 
-I don't know how much refactoring it would take, but it would be nice if
-that was a bit more obvious.  Basically, can we get the code that checks
-for or sets SGX_EPC_PAGE_VERSION_ARRAY close to the code that assigns or
-reads ->owner?
+set_mempolicy is a per task_struct operation and so should be pidfd
+based API as well. If somebody requires a per-thread-group setting then
+the whole group should be iterated. I do not think we have any
+precendence where pidfd operation on the thread group leader has side
+effects on other threads as well.
+-- 
+Michal Hocko
+SUSE Labs
