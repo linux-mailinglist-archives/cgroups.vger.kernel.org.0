@@ -2,73 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F4B5E87E7
-	for <lists+cgroups@lfdr.de>; Sat, 24 Sep 2022 05:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4325E87EC
+	for <lists+cgroups@lfdr.de>; Sat, 24 Sep 2022 05:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbiIXDUY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 23 Sep 2022 23:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S231833AbiIXDW6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 23 Sep 2022 23:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbiIXDUW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 23 Sep 2022 23:20:22 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2D91A399;
-        Fri, 23 Sep 2022 20:20:20 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id l10so1717097plb.10;
-        Fri, 23 Sep 2022 20:20:20 -0700 (PDT)
+        with ESMTP id S233180AbiIXDWz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 23 Sep 2022 23:22:55 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B21C120BEB;
+        Fri, 23 Sep 2022 20:22:54 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id c7so1842825pgt.11;
+        Fri, 23 Sep 2022 20:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=zdaZUg3/Ml2ij6XPZD2qg9IOy8atuUvae1lDmHhGEaU=;
-        b=UnG1HqbKS/mgMg2dkwoqyo9cxa/2p7p+q8MDbzDOgljy0JmBKN0AWL+/mahBJ/oE4b
-         /9QD89ZRZ9yccoJzfPy1SQYt46FZAHzGDAXYLKiMDDVay1UH7uAAzk0Pnp4PMrM/DYFA
-         qct+9CeD/c4KcYv4qvhJlG7CUUdSyifL0o4iXE3JixbsRu10MtIcZU1pnh/dg3IaJDGW
-         l/o4f/rGLnfGtadyK68xaOvEpWZxNrSqawqgdBi7N/MUUR7Q7HiQSxZMg6C29UfLCrcf
-         Cc6YLDBbmkNwdTZc1eALtudTSBzGRjfP7tPAUl52zchsEqh82XFo68pJm7Ob1HOBZZ7b
-         +ttA==
+        bh=pVZ/vufAufJqpHyXPbOtKj2Be+zfIdhN74kmWcGVahk=;
+        b=MDlwjG16Co36ivQru9yTmqGAh8rRKn57/5yL7cl6/Y4KJK6KlPGTOSgnHKufNpTyTJ
+         HF5+9/Z9psnwV/TYIRz/lPeiWCNFTZw855a8Iatejwa1KbFJAHciym7KrtWwGG26cNtY
+         PI/gg4xkwmVdcKyQYpPyI4tSlUHbMk09fG4urMx6Re4sEiTKYhrGZECV1fvWiphnkhZm
+         H+pGIlsXbC8b5GmdnHLAT+PzIbOjlqYq8fLlS67nIxlM88VwXqBLAIG3ETpkei8oLi2o
+         vuKEnO5bqgThdWimNby2WYiK3CYiXc6sWGoV9N2dre373lqDLVb57wP5LhEn21nD1pBL
+         8sNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=zdaZUg3/Ml2ij6XPZD2qg9IOy8atuUvae1lDmHhGEaU=;
-        b=f/uXecO7C25VG6UFoogqSScDLMKiKV09tIurppSCAlMrKksQl6sij36gIbKzfEfL4N
-         DfUTUE4PFR+ZY/NjwbntGGA9pdakB/rWIFMREX14TQr0Un5d8SE9sI+8T7xAdsvqpMRF
-         pPwvz0B/DU0nP3USeXHza9jh1zhsisw8o0Zlishei3xKXu4l7Km0PkTPOp87sHqUbiGr
-         mLiNZy/Z9TvAh2q9R139GYNHiLVx9Y+OjKIMrIztYxq+ZFWqPjHdhTTOrHeLV1jnP8sM
-         rLQdcpdRgXXiv5ND0wVG2h8M1YKgthYAXKBL8UY1JAvQNtceLIYSkga0H0Jm1xn6BXZb
-         GwEw==
-X-Gm-Message-State: ACrzQf1iUhQm/ts0uILeI+LFAEg9cC4IOBvQLJgce2zAHbt25pzAs+cW
-        1M4KR8esVjFDS5MInP1ILY0=
-X-Google-Smtp-Source: AMsMyM5q0D4IBPE+GYfOG2nQqyklGERs9XUlFfWm9EZr1G063EsXvtnS95wpHmmMGpSeA2bakubf+g==
-X-Received: by 2002:a17:903:22c2:b0:178:3c7c:18af with SMTP id y2-20020a17090322c200b001783c7c18afmr11513864plg.134.1663989619818;
-        Fri, 23 Sep 2022 20:20:19 -0700 (PDT)
+        bh=pVZ/vufAufJqpHyXPbOtKj2Be+zfIdhN74kmWcGVahk=;
+        b=Si2U3zoRZqS7qN4MISwqIITqIZYu07BsnXOm8BOcG3sHxI4mWNHQLGVQG2k28cE+hf
+         oZK9LGpume4F3dtMY8ejov1PW9mtcO60FcwHPKh2DCgvYYSg87z1bluw4dD8HnGCNCCF
+         wNoHZSaq3s4HoTyW32KSaafha947trvQijWnTXbNeBLHV+NwuSQ/dVcPyCY1w6lMqE66
+         nQ2A6V5w9Ne2jcBZIqfuLMHy9mqPoO4kTTVywGXUI5fuh+IV6XwexnwAFLd3TwxxLnjI
+         LGWefKWKmkGMdicJP+0oE6jVpJO1XrGvMyHTprnv262RDds08Og8ZywpNFSpL4Z8/7bM
+         GmQQ==
+X-Gm-Message-State: ACrzQf2gXIb/waGTp4OyXzL+UUJMMJffsowLuV6M3s+KX3Yed3en1dr2
+        6Seb8blgMOjXeI9j4n+y348=
+X-Google-Smtp-Source: AMsMyM6X+wN7/ZBRv0sTQmop149LiBp1WYBiaO2r2ePMExDhqoSB4rvpsaaYTdFLfg6NoqVsR7jz2g==
+X-Received: by 2002:a05:6a00:bea:b0:53e:d0c0:faed with SMTP id x42-20020a056a000bea00b0053ed0c0faedmr12294958pfu.30.1663989773546;
+        Fri, 23 Sep 2022 20:22:53 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id y10-20020a17090a2b4a00b001fab208523esm2302079pjc.3.2022.09.23.20.20.19
+        by smtp.gmail.com with ESMTPSA id j10-20020a170902da8a00b0016ef87334aesm6860953plx.162.2022.09.23.20.22.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Sep 2022 20:20:19 -0700 (PDT)
+        Fri, 23 Sep 2022 20:22:52 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 23 Sep 2022 17:20:18 -1000
+Date:   Fri, 23 Sep 2022 17:22:51 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        songmuchun@bytedance.com, akpm@linux-foundation.org,
-        lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH bpf-next 10/10] bpf, memcg: Add new item bpf into
- memory.stat
-Message-ID: <Yy53cgcwx+hTll4R@slm.duckdns.org>
-References: <20220921170002.29557-1-laoar.shao@gmail.com>
- <20220921170002.29557-11-laoar.shao@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
+Message-ID: <Yy54CwK84JY/o+Ci@slm.duckdns.org>
+References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+ <20220922041435.709119-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220921170002.29557-11-laoar.shao@gmail.com>
+In-Reply-To: <20220922041435.709119-1-namhyung@kernel.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -79,45 +77,22 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Wed, Sep 21, 2022 at 05:00:02PM +0000, Yafang Shao wrote:
-> A new item 'bpf' is introduced into memory.stat, then we can get the memory
-> consumed by bpf. Currently only the memory of bpf-map is accounted.
-> The accouting of this new item is implemented with scope-based accouting,
-> which is similar to set_active_memcg(). In this scope, the memory allocated
-> will be accounted or unaccounted to a specific item, which is specified by
-> set_active_memcg_item().
-
-Imma let memcg folks comment on the implementation. Hmm... I wonder how this
-would tie in with the BPF memory allocator Alexei is working on.
-
-> The result in cgroup v1 as follows,
-> 	$ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
-> 	bpf 109056000
-> 	total_bpf 109056000
-> After the map is removed, the counter will become zero again.
->         $ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
->         bpf 0
->         total_bpf 0
+On Wed, Sep 21, 2022 at 09:14:35PM -0700, Namhyung Kim wrote:
+> The recent change in the cgroup will break the backward compatiblity in
+> the BPF program.  It should support both old and new kernels using BPF
+> CO-RE technique.
 > 
-> The 'bpf' may not be 0 after the bpf-map is destroyed, because there may be
-> cached objects.
+> Like the task_struct->__state handling in the offcpu analysis, we can
+> check the field name in the cgroup struct.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+> Arnaldo, I think this should go through the cgroup tree since it depends
+> on the earlier change there.  I don't think it'd conflict with other
+> perf changes but please let me know if you see any trouble, thanks!
 
-What's the difference between bpf and total_bpf? Where's total_bpf
-implemented? It doesn't seem to be anywhere. Please also update
-Documentation/admin-guide/cgroup-v2.rst.
-
-> Note that there's no kmemcg in root memory cgroup, so the item 'bpf' will
-> be always 0 in root memory cgroup. If a bpf-map is charged into root memcg
-> directly, its memory size will not be accounted, so the 'total_bpf' can't
-> be used to monitor system-wide bpf memory consumption yet.
-
-So, system-level accounting is usually handled separately as it's most
-likely that we'd want the same stat at the system level even when cgroup is
-not implemented. Here, too, it'd make sense to first implement system level
-bpf memory usage accounting, expose that through /proc/meminfo and then use
-the same source for root level cgroup stat.
+FWIW, looks fine to me and I'd be happy to route this through the cgroup
+tree once it gets acked.
 
 Thanks.
 
