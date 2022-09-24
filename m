@@ -2,99 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835525E8DA3
-	for <lists+cgroups@lfdr.de>; Sat, 24 Sep 2022 17:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4385E8E13
+	for <lists+cgroups@lfdr.de>; Sat, 24 Sep 2022 17:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbiIXPAO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 24 Sep 2022 11:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S231156AbiIXPlx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 24 Sep 2022 11:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbiIXPAN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 24 Sep 2022 11:00:13 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6832922BC5
-        for <cgroups@vger.kernel.org>; Sat, 24 Sep 2022 08:00:12 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 78so2771046pgb.13
-        for <cgroups@vger.kernel.org>; Sat, 24 Sep 2022 08:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date;
-        bh=/ZxmoZGavmWNlrZnawkbXveh01Wn367vmE/VNkXmIdw=;
-        b=s25ZCs1tSDwZADqqqf1Vm4xt2zv7eMrlkQYv4xQaqPF3mPJzzvhB2mzxAqxPkb32pK
-         NHAqqy/qx4pNcfeO5zqFmmWF2ufBVP1cOVbbxVTdLQvPTSHxLDM+xweoWGa34eoy6rDG
-         dyyruF1ntIIDA6CvCIvQDTZADmji0DJAHX5s0Vhfrhdfq4gt11Qo5ttrdt7FnYlOgmiM
-         g8G3lY1JxPY4sBzH8MwvY9x6UDIuc8ekZ8AqGfJh5wk+r/EmtPVkEnjYkiP/kHjK9ETv
-         OYDkJBXcuZFyiUKv4Aw+s8K/uMug7rbzVAcHajZOqT5eH86LKpfotHSrJsWWt7a+AOji
-         zcSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=/ZxmoZGavmWNlrZnawkbXveh01Wn367vmE/VNkXmIdw=;
-        b=K3pivkSe8eeichdhxTblPXtEad6oYQr0cUwzRSX7V2dP08hCMf5OG/mc5Kjq3NSOyq
-         IAX98LnfRsKwHa/su+ruWtzlXUX4Gh+uNPVQvAfLMleFzcfM1zTI5/Bs7LQXi15/sNVi
-         EE4fBnYeuIJrjmqsdeoaAN6UivJ3KwzfHyypdX0xajqszWyGLNR/Tdp6SBhsjlJ6BnIK
-         fDxvTSkH75V0gK37NP6Tse3IZUdYTz4JGzls5/Bx3S8eqJcktFaui1s8T1w2fcPKqQsd
-         AsGrRrQthLN1aqO9BbzbQmq9QgRbem8mI3bVCfHasz3iOkMx0Ix8Y/8kEZ134SNPcxmu
-         JmWA==
-X-Gm-Message-State: ACrzQf2Zigq5vCtkj63uZSq+OElvudN5ysF+04SFvDIOg867OTjVgfVT
-        VHTHLVvydoc1CUgYW4BnZDakWQ==
-X-Google-Smtp-Source: AMsMyM5+ef+aw0XcysL1aexhvPjDjgsey9VsVY7POoHb/1mlXyhvyLCmIyCeSI3bLtHy1j0OgNAhEA==
-X-Received: by 2002:a63:5d48:0:b0:43a:390b:2183 with SMTP id o8-20020a635d48000000b0043a390b2183mr12204841pgm.29.1664031611841;
-        Sat, 24 Sep 2022 08:00:11 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id k1-20020a170902760100b0017870f471f6sm7848200pll.226.2022.09.24.08.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Sep 2022 08:00:11 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     tj@kernel.org, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, yi.zhang@huawei.com,
-        yukuai3@huawei.com
-In-Reply-To: <20220921095309.1481289-1-yukuai1@huaweicloud.com>
-References: <20220921095309.1481289-1-yukuai1@huaweicloud.com>
-Subject: Re: [PATCH 0/2] blk-throttle: improve bypassing bios checkings
-Message-Id: <166403161084.5171.274436515046613194.b4-ty@kernel.dk>
-Date:   Sat, 24 Sep 2022 09:00:10 -0600
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-355bd
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S233921AbiIXPlw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 24 Sep 2022 11:41:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880576AA01;
+        Sat, 24 Sep 2022 08:41:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43310B80E52;
+        Sat, 24 Sep 2022 15:41:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E6635C433D7;
+        Sat, 24 Sep 2022 15:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664034109;
+        bh=veuerdAVOK4AGVI2s09VktzG6lI4Wh5dRvCojYk+5PY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lbEfE+X/gJ2dTmCoEmQfZ8rKVcCui+Eu21msiyZnmhh+CaXvGAj6hjqtWzyNNp8Ns
+         uJzvAbs0sbOF65mGeYjI6i02lm1KY4oDa7t0S2alHK1hbdQtzP7BIJAkkhv6nhgy0L
+         1zYdt2JBnARcxWdv4WWhVq8kc8y3HXUcc5n4sSqTdObtBM4KbAJiQBUQzzaI2fCzxW
+         3budMkFM4z/b+6mOjdYn/RfHwp622TnEIQS5BwXn0hWMgwNAE4/J9i+TVWMiQHWDYc
+         C6j2vBrG2UshwvHunXSb7ma2Jy+4u7QOKe1pMPTR0TBAQTl3LVFIjM5dQSC9JmCmDf
+         cQs9Z+KT1rrVg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CBC8CE4D03A;
+        Sat, 24 Sep 2022 15:41:48 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup fixes for v6.0-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <Yy5/MV8BvP+M5Fmi@slm.duckdns.org>
+References: <Yy5/MV8BvP+M5Fmi@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <Yy5/MV8BvP+M5Fmi@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.0-rc6-fixes
+X-PR-Tracked-Commit-Id: df02452f3df069a59bc9e69c84435bf115cb6e37
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1772094f12a7b180aa9ab849586f891b14d06d1f
+Message-Id: <166403410883.30824.4959463978058826483.pr-tracker-bot@kernel.org>
+Date:   Sat, 24 Sep 2022 15:41:48 +0000
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 21 Sep 2022 17:53:07 +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Currently, "tg->has_rules" and "tg->flags & THROTL_TG_HAS_IOPS_LIMIT"
-> both try to bypass bios that don't need to be throttled, however, they are
-> a little redundant and both not perfect:
-> 
-> 1) "tg->has_rules" only distinguish read and write, but not iops and bps
->    limit.
-> 2) "tg->flags & THROTL_TG_HAS_IOPS_LIMIT" only check if iops limit
->    exist, read and write is not distinguished, and bps limit is not
->    checked.
-> 
-> [...]
+The pull request you sent on Fri, 23 Sep 2022 17:53:21 -1000:
 
-Applied, thanks!
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.0-rc6-fixes
 
-[1/2] blk-throttle: remove THROTL_TG_HAS_IOPS_LIMIT
-      commit: 85496749904016f36b69332f73a1cf3ecfee828f
-[2/2] blk-throttle: improve bypassing bios checkings
-      commit: 81c7a63abc7c0be572b4f853e913ce93a34f6e1b
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1772094f12a7b180aa9ab849586f891b14d06d1f
 
-Best regards,
+Thank you!
+
 -- 
-Jens Axboe
-
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
