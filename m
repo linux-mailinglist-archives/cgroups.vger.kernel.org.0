@@ -2,79 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3ADC5EA8CE
-	for <lists+cgroups@lfdr.de>; Mon, 26 Sep 2022 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B3D5EA9F5
+	for <lists+cgroups@lfdr.de>; Mon, 26 Sep 2022 17:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbiIZOoN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Sep 2022 10:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        id S235946AbiIZPOy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Sep 2022 11:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235383AbiIZOnp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Sep 2022 10:43:45 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE6184E72;
-        Mon, 26 Sep 2022 06:06:21 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id ay7-20020a05600c1e0700b003b49861bf48so8176262wmb.0;
-        Mon, 26 Sep 2022 06:06:21 -0700 (PDT)
+        with ESMTP id S236193AbiIZPOP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Sep 2022 11:14:15 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE2D2709
+        for <cgroups@vger.kernel.org>; Mon, 26 Sep 2022 06:57:13 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id i3so4111935qkl.3
+        for <cgroups@vger.kernel.org>; Mon, 26 Sep 2022 06:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=lHYmumLvyE4V6WpEgRdvIHKDaBX6pkuSXgTnGyOxhOQ=;
-        b=IbCR66K42xKS/M7CztGQ/LQwHaP2woOeBjaIbh+fDq1UpLATW4PO90HWgwWtBykUjM
-         0HFnd3Fvcq4RrR+0gAVoejrdv99y5kHVbenxc5NAbMGkf3N4Q6uM9TRajq85B4J8ZjSV
-         V9XJrozFgaVtJ66AgOm/XY3g53aH44A0ATIQsMFfMwFsaPIFTE6EeXYZrIlDC2l48fAE
-         KZHd8afOJREzG4jpDC7lYSeU43uR6LjGw2LPG7z95O1bkwfXoBdZ3PiLVcxGwPbEtwIn
-         33/32wZQKrjC+cbzxJ37ne+EwCc+Kc0RpNFBDDOyHXuTSz5aY6q2E8thqzuOeyX4aNQ+
-         aSrQ==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=fVdpPr3f8bRd7B1cM3PWSFoALdvL6AntNtNCVepwQ2Q=;
+        b=1d9f5RsBJxy54KAvlvlDlqBnvfh09snGIaY+6tvR2PwJb8W2/H0yK3jGriNt2JmahM
+         gqWhIFwuh0UZ+C2UumnkbJWyJ6rDK2pKaxW3puzSUzrz7sSlzakzLN6njU4R/pYzJSIB
+         EuFwuwSTppmZFSyDEE7eJVdFYUo9Et/OiqExxX95fifd0xJ6t8vDLsVCXFg8equ7uAz0
+         iNmSSjeT76pA7UVs2IMoN/Lf9vxrk+ItFKLIw2pndSHR6oVHp4yIhTQmVRrKY9KJhjkm
+         lN8vWWAsrcoQtS+NIFmjYmsrjW0h5S5vkeXtfCCVgzk4o8/Emjt6fufYXfGeZs8kzjQ0
+         xPZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=lHYmumLvyE4V6WpEgRdvIHKDaBX6pkuSXgTnGyOxhOQ=;
-        b=q8qItM1rlQBqvC+6sHvu12x8LsDjPSHug+PhVGvV4EtFN/sCzIapGYZhqe4sjAteps
-         8PpE1bftc/KWXJQs3GzmWvnDydbEMAcqnInupljlCEAxt+XhRtnPnGG0vyv8AFIzRSPQ
-         fSB+Mo+iPuBKeXx+v7m4/7EhQprWCTeoPP1kR7Qy3wfg9Y4UsUkm89oy3TG4Y2k7To9W
-         8fszdH2wopQxCLd+dgKTg4JJ2zHjtTNCmn05b/2CVD1bFj4Bo50l7QDqSYW2wS9rA9uV
-         wPTrKKaDBpTIuQMVHn+my9YZL9FUr5zcG/Wbthr/53UI5WVqDK21PppzgkSEGwFUgkA/
-         xa6Q==
-X-Gm-Message-State: ACrzQf3FnU/Q2tMkFiOzKp00/FlhXPiSTH4i157yk/w07yR457gyWrik
-        kXSPEfyIx/ZkxZxejcHz9at9gWjal3Th1VxiCuc=
-X-Google-Smtp-Source: AMsMyM4b0qgmhm6PiBNfWnLD3vMEtUlll0xIKZtIF9qUWcglWtI/yMWUUVWoPKE4QceNSNvUf+y3+KI8RAgNAvb9sR8=
-X-Received: by 2002:a7b:c389:0:b0:3b4:a67a:2ef7 with SMTP id
- s9-20020a7bc389000000b003b4a67a2ef7mr21793251wmj.180.1664197580076; Mon, 26
- Sep 2022 06:06:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <6b362c6e-9c80-4344-9430-b831f9871a3c@openvz.org>
- <f9394752-e272-9bf9-645f-a18c56d1c4ec@openvz.org> <20220918092849.GA10314@u164.east.ru>
- <CADxRZqyyHAtzaaPjcKi8AichGew2yi-_vQcKoLoxPanLvXZL0g@mail.gmail.com> <20220921170259.GI8331@blackbody.suse.cz>
-In-Reply-To: <20220921170259.GI8331@blackbody.suse.cz>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Mon, 26 Sep 2022 16:06:08 +0300
-Message-ID: <CADxRZqyAG5Co9hLEp6p8vPC9WyGERR6un-3Rqapyv14G4vPXJw@mail.gmail.com>
-Subject: Re: [sparc64] fails to boot, (was: Re: [PATCH memcg v6] net: set
- proper memcg for net_init hooks allocations)
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Vasily Averin <vvs@openvz.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=fVdpPr3f8bRd7B1cM3PWSFoALdvL6AntNtNCVepwQ2Q=;
+        b=YvXjpxubpnDf5BbbOkyAAZt0C/yo2rela7VX8H6eFNqHURaesT8tJkaBc3Q2ptX5dE
+         wQHZSuNxV5LeaGsMArcqkBzvud7ztWUhh1IYYG803pvOcm7/s6TVquxVXjTwT6+fb4DF
+         ZfN6PrfuTDkaY/fD8lewl6u9+9ctYNpgIaO2onAJh4gak3Kp1cD/dyo6JgrBp09dUqic
+         I3zoJgKrOEwBt2akLUXzyA15f7zMD3EBeoOh0a/RRF8zYszyzBQomY86Xt+Gw5vKv0oS
+         cTctNiWzzvougo4W0qVGGUunbQWnYpbnM4LEjvpl03fReexWZw41nA8iAg0z2W2qwaRj
+         OIrg==
+X-Gm-Message-State: ACrzQf2p2NWdl4Gr9R8lXD2lNBS2th9wv4HddTBuLN7ii43o+3l9FjCv
+        B7j0huj1pE71jfJGFK7Up/xAHA==
+X-Google-Smtp-Source: AMsMyM7NXtNo0d4ehct9h5yaCEQocmeph8T7MmSmFEzl7jaAbmRg6rcj6l4GFeWB8/X7Wf56XopM6w==
+X-Received: by 2002:a05:620a:24d6:b0:6cd:f96a:35b with SMTP id m22-20020a05620a24d600b006cdf96a035bmr14048238qkn.471.1664200632354;
+        Mon, 26 Sep 2022 06:57:12 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-9175-2920-760a-79fa.res6.spectrum.com. [2603:7000:c01:2716:9175:2920:760a:79fa])
+        by smtp.gmail.com with ESMTPSA id l27-20020a37f91b000000b006ce580c2663sm11598075qkj.35.2022.09.26.06.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Sep 2022 06:57:11 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Shakeel Butt <shakeelb@google.com>, Michal Hocko <mhocko@suse.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, cgroups@vger.kernel.org,
-        Sparc kernel list <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] memcg swap fix & cleanups
+Date:   Mon, 26 Sep 2022 09:57:00 -0400
+Message-Id: <20220926135704.400818-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.37.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,41 +68,25 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 8:03 PM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
-> On Wed, Sep 21, 2022 at 05:44:56PM +0300, Anatoly Pugachev <matorola@gmai=
-l.com> wrote:
-> > On Sun, Sep 18, 2022 at 12:39 PM Anatoly Pugachev <matorola@gmail.com> =
-wrote:
-> > >
-> > >
-> > > I'm unable to boot my sparc64 VM anymore (5.19 still boots, 6.0-rc1 d=
-oes not),
-> > > bisected up to this patch,
-> > >
-> > > mator@ttip:~/linux-2.6$ git bisect bad
-> > > 1d0403d20f6c281cb3d14c5f1db5317caeec48e9 is the first bad commit
-> > > commit 1d0403d20f6c281cb3d14c5f1db5317caeec48e9
-> >
-> > reverting this patch makes my sparc64 box boot successfully.
->
-> The failed address falls into vmmemmap region (per your boot log
-> output). It looks like the respective page/folio (of init_net struct) is
-> unbacked there (and likely folio_test_slab fails dereferencing ->flags).
->
-> Would you mind sharing your kernel's config?
-> (I'm most curious about CONFIG_SPARSMEM_VMEMMAP, I'm not familiar with
-> your arch at all though.)
+This is a refresh of older patches that fell through the cracks.
 
-mator@ttip:~/dmesg$ zcat config-6.0.0-rc6-00010-gb7f0f527dc3c.gz | grep VME=
-MMAP
-CONFIG_SPARSEMEM_VMEMMAP_ENABLE=3Dy
-CONFIG_SPARSEMEM_VMEMMAP=3Dy
+Applies on top of mm-unstable.
 
-I do upload config and boot logs to
-https://github.com/mator/sparc64-dmesg
+ Documentation/admin-guide/cgroup-v1/memory.rst  |  4 +-
+ Documentation/admin-guide/kernel-parameters.txt |  6 --
+ arch/mips/configs/db1xxx_defconfig              |  1 -
+ arch/mips/configs/generic_defconfig             |  1 -
+ arch/powerpc/configs/powernv_defconfig          |  1 -
+ arch/powerpc/configs/pseries_defconfig          |  1 -
+ arch/sh/configs/sdk7786_defconfig               |  1 -
+ arch/sh/configs/urquell_defconfig               |  1 -
+ include/linux/swap.h                            |  2 +-
+ include/linux/swap_cgroup.h                     |  4 +-
+ init/Kconfig                                    |  5 --
+ mm/Makefile                                     |  4 +-
+ mm/memcontrol.c                                 | 79 ++++++++---------------
+ mm/swap_cgroup.c                                |  6 ++
+ tools/testing/selftests/cgroup/config           |  1 -
+ 15 files changed, 39 insertions(+), 78 deletions(-)
 
-building a new kernel version/releases as 'make olddefconfig && make -j'
-current version of booted 6.0.0-rc6 is available as
-https://github.com/mator/sparc64-dmesg/blob/master/config-6.0.0-rc6-00010-g=
-b7f0f527dc3c.gz
+
