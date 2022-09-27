@@ -2,65 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802625EBF26
-	for <lists+cgroups@lfdr.de>; Tue, 27 Sep 2022 12:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCB75EC46A
+	for <lists+cgroups@lfdr.de>; Tue, 27 Sep 2022 15:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbiI0KCf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Sep 2022 06:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        id S232526AbiI0N3K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Sep 2022 09:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbiI0KCa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Sep 2022 06:02:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55076956AF;
-        Tue, 27 Sep 2022 03:02:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5C1861793;
-        Tue, 27 Sep 2022 10:02:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407F0C433D6;
-        Tue, 27 Sep 2022 10:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664272948;
-        bh=dlgt8sTUOCFvaKMGVG7jt6xOPr5SYmh1UhVPSKkYzV8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SzSGGrMbrYCeDjltNrgrL3VG2omylsDXXWGmFRuKYPFnG2Xtt63azHAsuGowYidFD
-         vuXsb1OH/s/KwBRrtO4U7PShzKeRUQ6r0e13xxx6bq+NTHfByi71P4P6tQvc7Z8p1W
-         QQu/R2CHgWE0QRLqrRl6ANwMMZJClkApkeRIMNC7efj90M4T9lKE5uoFewIOEQmM/3
-         Y6fCSR/7GnG+tEUZB8N1wSz/PUN49XvesX2YiFyZr2dYXU2ZRmA2geaiWFJLkpAPQk
-         H1I6zN0LGrV0YwBi4275HtG2my1Kuu0KK1SzWnQ3lUfAapmKTlFxrXh+RWDZrb4ars
-         KrO+qSy8Z1aVA==
-Message-ID: <54078150-3c22-3563-7731-5c7fda85987d@kernel.org>
-Date:   Tue, 27 Sep 2022 12:02:23 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH] Revert "net: set proper memcg for net_init hooks
- allocations"
-Content-Language: en-US
-To:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        with ESMTP id S232854AbiI0N2d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Sep 2022 09:28:33 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B361063AE
+        for <cgroups@vger.kernel.org>; Tue, 27 Sep 2022 06:23:51 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id g2so5992841qkk.1
+        for <cgroups@vger.kernel.org>; Tue, 27 Sep 2022 06:23:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date;
+        bh=vjjvifvRbyamwiKwXAGlU+rtv6BwVcIgFInlxUxWOFk=;
+        b=Me2NuFx7YYw5/6VUYsnM6+enyki04bmQjGYAmmDKSrf5RtYBaK9xqhr2G7e1NqO0QF
+         Ul827IrzQJQRfEOyZkgCsX2wki8XYKYL5cf9AzTRaaapKaLlle+822jZUhlylP3lvpFO
+         UzIDaN64+l2wrTV3kGjAhxlCc5+oL3qZq2hKSlJPIpr5pmyESjbis/n61/yAxqrx5wJe
+         nBoHEvtvfn/inr7H2QrVltHXGms0vN5cgTjxAgUBCyKQ/QUm7FsmTSNJUwJhqi8aZIvu
+         fYk0CsF+jffSBWIMmB3n81wwlP0GqE6NeVwKpmS/G7hpZxBC7g//LH0VSKKAmF+MH6yz
+         nEvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=vjjvifvRbyamwiKwXAGlU+rtv6BwVcIgFInlxUxWOFk=;
+        b=gC3hAhB6vXS7ZRaFIgxkVmVLjrUkVny6Xk/LpgBw0ny449g7YLzY4EpzL0H324/tCy
+         sow7yux4WjFJHFIsiUzYCy2Tr2BaXcB3xp3W13zDh26Z0oWx9KzqFyzISl0dMyoaY4SI
+         FQ5LuksWkz6AXrMGpS5IWwxBITJrrDVNro45m+MDy1xoaqp4qRdWbK6EDy8NxxvTytO0
+         h/kXEYwK3tSeOtS4wMfczQ4kzPpEDd+3F6ZrPax7yre/FPo9kxBRzN2wXJjIaC+6Ww3L
+         74ZDtLkKIDxY2D/7CBJAA/4ucdsvoZWcgC7ONldsWIHBQGvBevyAtB/runr+ODxTQVO/
+         h2Fw==
+X-Gm-Message-State: ACrzQf20kI7UhZv1c2pJNkRGGjTF6RNkrINa7pVbe/wmpI120TCNk7me
+        JRh1S0cIxxgbk0PDoU/neMKRSQ==
+X-Google-Smtp-Source: AMsMyM65yqybhnl7GHNiayZJMKpPszKKQOL9Jzw6Xdn4Vy42enBAU5bETyNDytnE3YEGZgVI1i+Rvw==
+X-Received: by 2002:a05:620a:1922:b0:6ce:fbfc:d19e with SMTP id bj34-20020a05620a192200b006cefbfcd19emr17944366qkb.22.1664284990061;
+        Tue, 27 Sep 2022 06:23:10 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-9175-2920-760a-79fa.res6.spectrum.com. [2603:7000:c01:2716:9175:2920:760a:79fa])
+        by smtp.gmail.com with ESMTPSA id f6-20020ac80146000000b0035a70a25651sm838545qtg.55.2022.09.27.06.23.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Sep 2022 06:23:09 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 09:23:08 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Anatoly Pugachev <matorola@gmail.com>,
         Vasily Averin <vvs@openvz.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        sparclinux@vger.kernel.org, regressions@lists.linux.dev
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH] Revert "net: set proper memcg for net_init hooks
+ allocations"
+Message-ID: <YzL5PNgp/43a5N6K@cmpxchg.org>
 References: <20220926195931.2497968-1-shakeelb@google.com>
-From:   "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <20220926195931.2497968-1-shakeelb@google.com>
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20220926195931.2497968-1-shakeelb@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,7 +82,7 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/26/22 21:59, Shakeel Butt wrote:
+On Mon, Sep 26, 2022 at 07:59:31PM +0000, Shakeel Butt wrote:
 > This reverts commit 1d0403d20f6c281cb3d14c5f1db5317caeec48e9.
 > 
 > Anatoly Pugachev reported that the commit 1d0403d20f6c ("net: set proper
@@ -76,117 +90,16 @@ On 9/26/22 21:59, Shakeel Butt wrote:
 > VMs failed to boot and the VMs boot fine with that patch reverted. So,
 > revert the patch for now and later we can debug the issue.
 > 
-
-Link: https://lore.kernel.org/all/20220918092849.GA10314@u164.east.ru/
-
-(mainly for regzbot reading this thread but should be valid usage for
-the report anyway)
-
-Fixes: 1d0403d20f6c ("net: set proper memcg for net_init hooks allocations")
-
 > Reported-by: Anatoly Pugachev <matorola@gmail.com>
 > Signed-off-by: Shakeel Butt <shakeelb@google.com>
 > Cc: Vasily Averin <vvs@openvz.org>
 > Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Michal KoutnÃ½ <mkoutny@suse.com>
+> Cc: Michal Koutný <mkoutny@suse.com>
 > Cc: Andrew Morton <akpm@linux-foundation.org>
 > Cc: Linus Torvalds <torvalds@linux-foundation.org>
 > Cc: cgroups@vger.kernel.org
 > Cc: sparclinux@vger.kernel.org
 > Cc: linux-mm@kvack.org
 > Cc: linux-kernel@vger.kernel.org
-> ---
->  include/linux/memcontrol.h | 45 --------------------------------------
->  net/core/net_namespace.c   |  7 ------
->  2 files changed, 52 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index ef479e554253..e1644a24009c 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1787,42 +1787,6 @@ static inline void count_objcg_event(struct obj_cgroup *objcg,
->  	rcu_read_unlock();
->  }
->  
-> -/**
-> - * get_mem_cgroup_from_obj - get a memcg associated with passed kernel object.
-> - * @p: pointer to object from which memcg should be extracted. It can be NULL.
-> - *
-> - * Retrieves the memory group into which the memory of the pointed kernel
-> - * object is accounted. If memcg is found, its reference is taken.
-> - * If a passed kernel object is uncharged, or if proper memcg cannot be found,
-> - * as well as if mem_cgroup is disabled, NULL is returned.
-> - *
-> - * Return: valid memcg pointer with taken reference or NULL.
-> - */
-> -static inline struct mem_cgroup *get_mem_cgroup_from_obj(void *p)
-> -{
-> -	struct mem_cgroup *memcg;
-> -
-> -	rcu_read_lock();
-> -	do {
-> -		memcg = mem_cgroup_from_obj(p);
-> -	} while (memcg && !css_tryget(&memcg->css));
-> -	rcu_read_unlock();
-> -	return memcg;
-> -}
-> -
-> -/**
-> - * mem_cgroup_or_root - always returns a pointer to a valid memory cgroup.
-> - * @memcg: pointer to a valid memory cgroup or NULL.
-> - *
-> - * If passed argument is not NULL, returns it without any additional checks
-> - * and changes. Otherwise, root_mem_cgroup is returned.
-> - *
-> - * NOTE: root_mem_cgroup can be NULL during early boot.
-> - */
-> -static inline struct mem_cgroup *mem_cgroup_or_root(struct mem_cgroup *memcg)
-> -{
-> -	return memcg ? memcg : root_mem_cgroup;
-> -}
->  #else
->  static inline bool mem_cgroup_kmem_disabled(void)
->  {
-> @@ -1879,15 +1843,6 @@ static inline void count_objcg_event(struct obj_cgroup *objcg,
->  {
->  }
->  
-> -static inline struct mem_cgroup *get_mem_cgroup_from_obj(void *p)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline struct mem_cgroup *mem_cgroup_or_root(struct mem_cgroup *memcg)
-> -{
-> -	return NULL;
-> -}
->  #endif /* CONFIG_MEMCG_KMEM */
->  
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-> diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-> index 6b9f19122ec1..0ec2f5906a27 100644
-> --- a/net/core/net_namespace.c
-> +++ b/net/core/net_namespace.c
-> @@ -18,7 +18,6 @@
->  #include <linux/user_namespace.h>
->  #include <linux/net_namespace.h>
->  #include <linux/sched/task.h>
-> -#include <linux/sched/mm.h>
->  #include <linux/uidgid.h>
->  #include <linux/cookie.h>
->  
-> @@ -1144,13 +1143,7 @@ static int __register_pernet_operations(struct list_head *list,
->  		 * setup_net() and cleanup_net() are not possible.
->  		 */
->  		for_each_net(net) {
-> -			struct mem_cgroup *old, *memcg;
-> -
-> -			memcg = mem_cgroup_or_root(get_mem_cgroup_from_obj(net));
-> -			old = set_active_memcg(memcg);
->  			error = ops_init(ops, net);
-> -			set_active_memcg(old);
-> -			mem_cgroup_put(memcg);
->  			if (error)
->  				goto out_undo;
->  			list_add_tail(&net->exit_list, &net_exit_list);
 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
