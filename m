@@ -2,95 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355525ED6E3
-	for <lists+cgroups@lfdr.de>; Wed, 28 Sep 2022 09:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5055EDBD1
+	for <lists+cgroups@lfdr.de>; Wed, 28 Sep 2022 13:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbiI1HzQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Sep 2022 03:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S231703AbiI1LdV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Sep 2022 07:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbiI1Hy4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Sep 2022 03:54:56 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6E2D7D;
-        Wed, 28 Sep 2022 00:54:39 -0700 (PDT)
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1odRts-0007n0-5Z; Wed, 28 Sep 2022 09:54:36 +0200
-Message-ID: <a66880d7-fc2e-4fa7-0711-5d93b4304607@leemhuis.info>
-Date:   Wed, 28 Sep 2022 09:54:35 +0200
+        with ESMTP id S229951AbiI1LdU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Sep 2022 07:33:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980DC82878;
+        Wed, 28 Sep 2022 04:33:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5CD631F9A5;
+        Wed, 28 Sep 2022 11:33:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1664364798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M2mgymyLYQSEBITlSU1B1GuO4Bx/FQHXI8TQ8CJx3tk=;
+        b=bN1H8DRBbqY2qZfqYkrDVdsihILQFlH7+D1I6FyL/1qnGLAhzw2Oe3+4jqpCw1uUCBn9b/
+        ZceXP1aSUUHTD9cSy4Z5hS8xyPJL8JrN3fZb94Bt5FBYPfm6JbJHAT1jXui1/CJcpq2Xwg
+        HvUMNYFdpSLsyG7RVbQDWUaW0a+Imkk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30B0F13677;
+        Wed, 28 Sep 2022 11:33:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ac6jCv4wNGOQJgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 28 Sep 2022 11:33:18 +0000
+Date:   Wed, 28 Sep 2022 13:33:16 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH v2] cgroup: Reorganize css_set_lock and kernfs path processing
+Message-ID: <YzQw/EvH9Sb58Au2@blackbook>
+References: <20220905170944.23071-1-mkoutny@suse.com>
+ <Yxd/sUQ/NB3NlC6f@slm.duckdns.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Content-Language: en-US, de-DE
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Anatoly Pugachev <matorola@gmail.com>,
-        Vasily Averin <vvs@openvz.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, cgroups@vger.kernel.org,
-        sparclinux@vger.kernel.org, regressions@lists.linux.dev
-References: <6b362c6e-9c80-4344-9430-b831f9871a3c@openvz.org>
- <f9394752-e272-9bf9-645f-a18c56d1c4ec@openvz.org>
- <20220918092849.GA10314@u164.east.ru>
- <eca7d9b3-9831-5d04-1f39-8976765df87a@suse.cz>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: [sparc64] fails to boot, (was: Re: [PATCH memcg v6] net: set
- proper memcg for net_init hooks allocations)
-In-Reply-To: <eca7d9b3-9831-5d04-1f39-8976765df87a@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1664351679;1649a21f;
-X-HE-SMSGID: 1odRts-0007n0-5Z
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Yxd/sUQ/NB3NlC6f@slm.duckdns.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 27.09.22 11:54, Vlastimil Babka wrote:
-> On 9/18/22 11:28, Anatoly Pugachev wrote:
->> On Fri, Jun 03, 2022 at 07:19:43AM +0300, Vasily Averin wrote:
->>> __register_pernet_operations() executes init hook of registered
->>> pernet_operation structure in all existing net namespaces.
->> [...]
->> I'm unable to boot my sparc64 VM anymore (5.19 still boots, 6.0-rc1 does not),
->> bisected up to this patch,
->>
->> mator@ttip:~/linux-2.6$ git bisect bad
->> 1d0403d20f6c281cb3d14c5f1db5317caeec48e9 is the first bad commit
->> commit 1d0403d20f6c281cb3d14c5f1db5317caeec48e9
->> [...]
-> 
-> #regzbot introduced: 1d0403d20f6c
+The commit 74e4b956eb1c incorrectly wrapped kernfs_walk_and_get
+(might_sleep) under css_set_lock (spinlock). css_set_lock is needed by
+__cset_cgroup_from_root to ensure stable cset->cgrp_links but not for
+kernfs_walk_and_get.
 
-Thx for getting this regression tracked using regzbot. FWIW, that went
-sideways (as your already noticed and mentioned on IRC), as that made
-regzbot treat *your* mail as the report of the regressions. In cases
-like this you need "#regzbot ^introduced 1d0403d20f6c" (since recently
-"#regzbot introduced 1d0403d20f6c ^" works, too), as then regzbot will
-consider the *parent* mail the report (and then regzbot will look out
-for patches that link to them using a Link: tag).
+We only need to make sure that the returned root_cgrp won't be freed
+under us. This is given in the case of global root because it is static
+(cgrp_dfl_root.cgrp). When the root_cgrp is lower in the hierarchy, it
+is pinned by cgroup_ns->root_cset (and `current` task cannot switch
+namespace asynchronously so ns_proxy pins cgroup_ns).
 
-No worries, I did the same mistake a few time already :-D I send a mail
-with that command now, so let's resolve this subthread by marking it invalid
+(Note this reasoning won't hold for root cgroups in v1 hierarchies but
+the path resolution works only with the default hierarchy.)
 
-#regzbot invalid: mis-used regzbot command, now properly tracked
+Fixes: 74e4b956eb1c: ("cgroup: Honor caller's cgroup NS when resolving path")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cgroup.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+Hello.
 
-P.S.: As the Linux kernel's regression tracker I deal with a lot of
-reports and sometimes miss something important when writing mails like
-this. If that's the case here, don't hesitate to tell me in a public
-reply, it's in everyone's interest to set the public record straight.
+v2: dropped changes around kernfs_path_from_node(), reworded commit
+    message
+
+I realized the pinning with reference taking won't really work
+generally. The code would get the reference within RCU read section, so
+it'd have to be cgroup_get_live() and if that fails there's not much to
+do.
+
+So, instead of generalization, I only post special-cased patch that
+fixes the introduced bug and doesn't touch the rest.
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index c37b8265c0a3..ac71af8ef65c 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1392,11 +1392,16 @@ static void cgroup_destroy_root(struct cgroup_root *root)
+ 	cgroup_free_root(root);
+ }
+ 
++/*
++ * Returned cgroup is without refcount but it's valid as long as cset pins it.
++ */
+ static inline struct cgroup *__cset_cgroup_from_root(struct css_set *cset,
+ 					    struct cgroup_root *root)
+ {
+ 	struct cgroup *res_cgroup = NULL;
+ 
++	lockdep_assert_held(&css_set_lock);
++
+ 	if (cset == &init_css_set) {
+ 		res_cgroup = &root->cgrp;
+ 	} else if (root == &cgrp_dfl_root) {
+@@ -6673,8 +6678,8 @@ struct cgroup *cgroup_get_from_path(const char *path)
+ 
+ 	spin_lock_irq(&css_set_lock);
+ 	root_cgrp = current_cgns_cgroup_from_root(&cgrp_dfl_root);
+-	kn = kernfs_walk_and_get(root_cgrp->kn, path);
+ 	spin_unlock_irq(&css_set_lock);
++	kn = kernfs_walk_and_get(root_cgrp->kn, path);
+ 	if (!kn)
+ 		goto out;
+ 
+-- 
+2.37.3
 
