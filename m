@@ -2,168 +2,194 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E235EF86E
-	for <lists+cgroups@lfdr.de>; Thu, 29 Sep 2022 17:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703D75EFF6E
+	for <lists+cgroups@lfdr.de>; Thu, 29 Sep 2022 23:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235836AbiI2POB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Sep 2022 11:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        id S229451AbiI2Vyv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Sep 2022 17:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235485AbiI2POA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Sep 2022 11:14:00 -0400
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com [199.106.114.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54E514C058;
-        Thu, 29 Sep 2022 08:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1664464437; x=1696000437;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=G/e61zul7HNCHKUCokTMpB1fZU2sjgcjzI//4g1OuSI=;
-  b=MhBOhu/s26kyoF+RO9E69IypTi9SfYYgrUA3V19bNM6SmelBvdJKx2xy
-   JGzCmolkzV6AWIQnaaZ0ay+bCBm7ZvQm5pCyABmFY6j7l8c3flJ+QOyM+
-   BMCb2X1IfFMc/QMrt5DiXxyPJl1lg7wjXgask0ydyXy5cKUujvZEOB02Y
-   4=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 29 Sep 2022 08:13:57 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.45.79.139])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2022 08:13:56 -0700
-Received: from [10.216.55.35] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Thu, 29 Sep
- 2022 08:13:47 -0700
-Message-ID: <cdb597d4-6543-3e34-cbbd-6a776b0d6581@quicinc.com>
-Date:   Thu, 29 Sep 2022 20:43:43 +0530
+        with ESMTP id S229436AbiI2Vyq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Sep 2022 17:54:46 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6B88218A;
+        Thu, 29 Sep 2022 14:54:43 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 67CCB1101AC9;
+        Fri, 30 Sep 2022 07:54:42 +1000 (AEST)
+Received: from discord.disaster.area ([192.168.253.110])
+        by dread.disaster.area with esmtp (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oe1UO-00DiQo-Lt; Fri, 30 Sep 2022 07:54:40 +1000
+Received: from dave by discord.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1oe1UO-008FwK-1u;
+        Fri, 30 Sep 2022 07:54:40 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     cgroups@vger.kernel.org
+Cc:     linux-mm@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: [PATCH] memcg: calling reclaim_high(GFP_KERNEL) in GFP_NOFS context deadlocks
+Date:   Fri, 30 Sep 2022 07:54:40 +1000
+Message-Id: <20220929215440.1967887-1-david@fromorbit.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: BUG: HANG_DETECT waiting for migration_cpu_stop() complete
-Content-Language: en-US
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Steven Rostedt <rostedt@goodmis.org>
-CC:     Tejun Heo <tj@kernel.org>,
-        Jing-Ting Wu <jing-ting.wu@mediatek.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        <wsd_upstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Jonathan.JMChen@mediatek.com>,
-        "chris.redpath@arm.com" <chris.redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        <cgroups@vger.kernel.org>, <lixiong.liu@mediatek.com>,
-        <wenju.xu@mediatek.com>
-References: <88b2910181bda955ac46011b695c53f7da39ac47.camel@mediatek.com>
- <b605c3ec-94ab-a55f-5825-9b370d77ecf3@quicinc.com>
- <203d4614c1b2a498a240ace287156e9f401d5395.camel@mediatek.com>
- <YxeR0RoiTdm8sWCJ@slm.duckdns.org>
- <02b8e7b3-941d-8bb9-cd0e-992738893ba3@redhat.com>
- <36a73401-7011-834a-7949-c65a2f66246c@redhat.com>
- <YxeylMvgc/wKcJqk@hirez.programming.kicks-ass.net>
- <e6153b89-1f41-3fff-241b-a767e41a1e7e@quicinc.com>
-In-Reply-To: <e6153b89-1f41-3fff-241b-a767e41a1e7e@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-Spam-Status: No, score=-8.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=63361422
+        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
+        a=xOM3xZuef0cA:10 a=20KFwNOVAAAA:8 a=fTH2pkiRgn-0OzpUQTkA:9
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi All,
+From: Dave Chinner <dchinner@redhat.com>
 
-On 9/23/2022 7:50 PM, Mukesh Ojha wrote:
-> Hi Peter,
-> 
-> 
-> On 9/7/2022 2:20 AM, Peter Zijlstra wrote:
->> On Tue, Sep 06, 2022 at 04:40:03PM -0400, Waiman Long wrote:
->>
->> I've not followed the earlier stuff due to being unreadable; just
->> reacting to this..
-> 
-> We are able to reproduce this issue explained at this link
-> 
-> https://lore.kernel.org/lkml/88b2910181bda955ac46011b695c53f7da39ac47.camel@mediatek.com/ 
-> 
-> 
-> 
->>
->>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->>> index 838623b68031..5d9ea1553ec0 100644
->>> --- a/kernel/sched/core.c
->>> +++ b/kernel/sched/core.c
->>> @@ -2794,9 +2794,9 @@ static int __set_cpus_allowed_ptr_locked(struct
->>> task_struct *p,
->>>                  if (cpumask_equal(&p->cpus_mask, new_mask))
->>>                          goto out;
->>>
->>> -               if (WARN_ON_ONCE(p == current &&
->>> -                                is_migration_disabled(p) &&
->>> -                                !cpumask_test_cpu(task_cpu(p), 
->>> new_mask)))
->>> {
->>> +               if (is_migration_disabled(p) &&
->>> +                   !cpumask_test_cpu(task_cpu(p), new_mask)) {
->>> +                       WARN_ON_ONCE(p == current);
->>>                          ret = -EBUSY;
->>>                          goto out;
->>>                  }
->>> @@ -2818,7 +2818,11 @@ static int __set_cpus_allowed_ptr_locked(struct
->>> task_struct *p,
->>>          if (flags & SCA_USER)
->>>                  user_mask = clear_user_cpus_ptr(p);
->>>
->>> -       ret = affine_move_task(rq, p, rf, dest_cpu, flags);
->>> +       if (!is_migration_disabled(p) || (flags & SCA_MIGRATE_ENABLE)) {
->>> +               ret = affine_move_task(rq, p, rf, dest_cpu, flags);
->>> +       } else {
->>> +               task_rq_unlock(rq, p, rf);
->>> +       }
->>
->> This cannot be right. There might be previous set_cpus_allowed_ptr()
->> callers that are blocked and waiting for the task to land on a valid
->> CPU.
->>
-> 
-> Was thinking if just skipping as below will help here, well i am not sure .
-> 
-> But thinking what if we keep the task as it is on the same cpu and let's 
-> wait for migration to be enabled for the task to take care of it later.
-> 
-> ------------------->O------------------------------------------
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index d90d37c..7717733 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2390,8 +2390,10 @@ static int migration_cpu_stop(void *data)
->           * we're holding p->pi_lock.
->           */
->          if (task_rq(p) == rq) {
-> -               if (is_migration_disabled(p))
-> +               if (is_migration_disabled(p)) {
-> +                       complete = true;
->                          goto out;
-> +               }
-> 
->                  if (pending) {
-> 
+This should be more obvious, but gfpflags_allow_blocking() is not
+the same thing as a GFP_KERNEL reclaim contexts. The former checks
+GFP_DIRECT_RECLAIM which tells us if direct reclaim is allowed. The
+latter (GFP_KERNEL) allows blocking on anything, including
+filesystem and IO structures during reclaim.
 
-Any suggestion on this bug ?
+However, we do lots of memory allocation from various filesystems we
+are under GFP_NOFS contexts, including page cache folios. Hence if
+direct reclaim in GFP_NOFS context waits on filesystem progress
+(e.g. waits on folio writeback) then memory reclaim can deadlock.
 
+e.g. page cache allocation (which is GFP_NOFS context) gets stuck
+waiting on page writeback like so:
 
--Mukesh
+[   75.943494] task:test_write      state:D stack:12560 pid: 3728 ppid:  3613 flags:0x00004002
+[   75.944788] Call Trace:
+[   75.945183]  <TASK>
+[   75.945543]  __schedule+0x2f9/0xa30
+[   75.946118]  ? __mod_memcg_lruvec_state+0x41/0x90
+[   75.946895]  schedule+0x5a/0xc0
+[   75.947397]  io_schedule+0x42/0x70
+[   75.947992]  folio_wait_bit_common+0x159/0x3d0
+[   75.948732]  ? dio_warn_stale_pagecache.part.0+0x50/0x50
+[   75.949505]  folio_wait_writeback+0x28/0x80
+[   75.950163]  shrink_page_list+0x96e/0xc30
+[   75.950843]  shrink_lruvec+0x558/0xb80
+[   75.951440]  shrink_node+0x2c6/0x700
+[   75.952059]  do_try_to_free_pages+0xd5/0x570
+[   75.952771]  try_to_free_mem_cgroup_pages+0x105/0x220
+[   75.953548]  reclaim_high.constprop.0+0xa3/0xf0
+[   75.954209]  mem_cgroup_handle_over_high+0x8f/0x280
+[   75.955025]  ? kmem_cache_alloc_lru+0x1c6/0x3f0
+[   75.955781]  try_charge_memcg+0x6c3/0x820
+[   75.956436]  ? __mem_cgroup_threshold+0x16/0x150
+[   75.957204]  charge_memcg+0x76/0xf0
+[   75.957810]  __mem_cgroup_charge+0x29/0x80
+[   75.958464]  __filemap_add_folio+0x225/0x590
+[   75.959112]  ? scan_shadow_nodes+0x30/0x30
+[   75.959794]  filemap_add_folio+0x37/0xa0
+[   75.960432]  __filemap_get_folio+0x1fd/0x340
+[   75.961141]  ? xas_load+0x5/0xa0
+[   75.961712]  iomap_write_begin+0x103/0x6a0
+[   75.962390]  ? filemap_dirty_folio+0x5c/0x80
+[   75.963106]  ? iomap_write_end+0xa2/0x2b0
+[   75.963744]  iomap_file_buffered_write+0x17c/0x380
+[   75.964546]  xfs_file_buffered_write+0xb1/0x2e0
+[   75.965286]  ? xfs_file_buffered_write+0x2b2/0x2e0
+[   75.966097]  vfs_write+0x2ca/0x3d0
+[   75.966702]  __x64_sys_pwrite64+0x8c/0xc0
+[   75.967349]  do_syscall_64+0x35/0x80
+
+At this point, the system has 58 pending XFS IO completions that are
+stuck waiting for workqueue progress:
+
+[ 1664.460579] workqueue xfs-conv/dm-0: flags=0x4c
+[ 1664.461332]   pwq 48: cpus=24 node=3 flags=0x0 nice=0 active=58/256 refcnt=59
+[ 1664.461335]     pending: xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io
+
+and nothing is making progress. The reason progress is not being
+made is not clear from what I can gather from the steaming corpse,
+but it is clear that the memcg reclaim code should not be blocking
+on filesystem related objects in GFP_NOFS allocation contexts.
+
+We have the reclaim context parameters right there when we call
+mem_cgroup_handle_over_high(), so pass them down the stack so memcg
+reclaim doesn't cause deadlocks. This makes the reclaim deadlocks in
+the test I've been running go away.
+
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+---
+ include/linux/memcontrol.h       | 4 ++--
+ include/linux/resume_user_mode.h | 2 +-
+ mm/memcontrol.c                  | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 6257867fbf95..575bb8cfc810 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -919,7 +919,7 @@ unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
+ 	return READ_ONCE(mz->lru_zone_size[zone_idx][lru]);
+ }
+ 
+-void mem_cgroup_handle_over_high(void);
++void mem_cgroup_handle_over_high(gfp_t gfp_mask);
+ 
+ unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg);
+ 
+@@ -1433,7 +1433,7 @@ static inline void folio_memcg_unlock(struct folio *folio)
+ {
+ }
+ 
+-static inline void mem_cgroup_handle_over_high(void)
++static inline void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ {
+ }
+ 
+diff --git a/include/linux/resume_user_mode.h b/include/linux/resume_user_mode.h
+index 285189454449..f8f3e958e9cf 100644
+--- a/include/linux/resume_user_mode.h
++++ b/include/linux/resume_user_mode.h
+@@ -55,7 +55,7 @@ static inline void resume_user_mode_work(struct pt_regs *regs)
+ 	}
+ #endif
+ 
+-	mem_cgroup_handle_over_high();
++	mem_cgroup_handle_over_high(GFP_KERNEL);
+ 	blkcg_maybe_throttle_current();
+ 
+ 	rseq_handle_notify_resume(NULL, regs);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b69979c9ced5..09fbebff9796 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2491,7 +2491,7 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+  * Scheduled by try_charge() to be executed from the userland return path
+  * and reclaims memory over the high limit.
+  */
+-void mem_cgroup_handle_over_high(void)
++void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ {
+ 	unsigned long penalty_jiffies;
+ 	unsigned long pflags;
+@@ -2519,7 +2519,7 @@ void mem_cgroup_handle_over_high(void)
+ 	 */
+ 	nr_reclaimed = reclaim_high(memcg,
+ 				    in_retry ? SWAP_CLUSTER_MAX : nr_pages,
+-				    GFP_KERNEL);
++				    gfp_mask);
+ 
+ 	/*
+ 	 * memory.high is breached and reclaim is unable to keep up. Throttle
+@@ -2755,7 +2755,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
+ 	    !(current->flags & PF_MEMALLOC) &&
+ 	    gfpflags_allow_blocking(gfp_mask)) {
+-		mem_cgroup_handle_over_high();
++		mem_cgroup_handle_over_high(gfp_mask);
+ 	}
+ 	return 0;
+ }
+-- 
+2.37.2
+
