@@ -2,229 +2,202 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6C05F0132
-	for <lists+cgroups@lfdr.de>; Fri, 30 Sep 2022 01:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7658A5F01D3
+	for <lists+cgroups@lfdr.de>; Fri, 30 Sep 2022 02:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbiI2XE2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Sep 2022 19:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        id S229842AbiI3Ad5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Sep 2022 20:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbiI2XEW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Sep 2022 19:04:22 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C9A131F5A;
-        Thu, 29 Sep 2022 16:04:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1664492660; x=1696028660;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=GjIOFLe95MCncSp3Tp2dLHwlw40/oRT9ecKhAzjx4mI=;
-  b=lsaAFpUa+e39BsGnk7flILvfcoQYXHnWFGm79Ndx0gc+XhvW5iXjaER9
-   Di8Vu7A5gFNd5u+UFFsDLXLVCHXyQK/4/usoVWWG4boiNgMv1kADeHTCA
-   oWQZWC5I1jWpxWRcRPSrQl8j+Ybnq04ZRIA4GTn/xSIcF+yQdv665lHGA
-   zCV//uG/lbhw0bH5UZt4Fv/Hnt/t215PKvsaiLVvXBBrCYMXKAXPPlpSZ
-   +ykOJavrn2UR1AFMWJ9XKaor1hr4pe4XQbMQwD7Q/bztsOZWZFc9YinE0
-   Bnmj/z0ytELwFNAQ+jsnNl6EgQEUedTYp++nrxg1Vu3E5CAF0eGsesKhF
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10485"; a="388326078"
-X-IronPort-AV: E=Sophos;i="5.93,356,1654585200"; 
-   d="scan'208";a="388326078"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2022 16:04:16 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10485"; a="685052644"
-X-IronPort-AV: E=Sophos;i="5.93,356,1654585200"; 
-   d="scan'208";a="685052644"
-Received: from andyjuye-mobl.amr.corp.intel.com (HELO [10.209.4.224]) ([10.209.4.224])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2022 16:04:15 -0700
-Message-ID: <b1c1fe128ea6b012a3092d1150a2bf8a6773e36b.camel@linux.intel.com>
-Subject: Re: [RFC PATCH 04/20] x86/sgx: Add 'struct sgx_epc_lru' to
- encapsulate lru list(s)
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>
-Date:   Thu, 29 Sep 2022 16:04:14 -0700
-In-Reply-To: <Yy2ynLZ2KX6bOcHr@kernel.org>
-References: <20220922171057.1236139-1-kristen@linux.intel.com>
-         <20220922171057.1236139-5-kristen@linux.intel.com>
-         <Yy2ynLZ2KX6bOcHr@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229771AbiI3Ad4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Sep 2022 20:33:56 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9D69201928;
+        Thu, 29 Sep 2022 17:33:54 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-106-210.pa.nsw.optusnet.com.au [49.181.106.210])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id F14211101193;
+        Fri, 30 Sep 2022 10:33:52 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1oe3yR-00DlGg-OL; Fri, 30 Sep 2022 10:33:51 +1000
+Date:   Fri, 30 Sep 2022 10:33:51 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     cgroups@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] memcg: calling reclaim_high(GFP_KERNEL) in GFP_NOFS
+ context deadlocks
+Message-ID: <20220930003351.GJ3600936@dread.disaster.area>
+References: <20220929215440.1967887-1-david@fromorbit.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220929215440.1967887-1-david@fromorbit.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=63363972
+        a=j6JUzzrSC7wlfFge/rmVbg==:117 a=j6JUzzrSC7wlfFge/rmVbg==:17
+        a=kj9zAlcOel0A:10 a=xOM3xZuef0cA:10 a=37rDS-QxAAAA:8 a=20KFwNOVAAAA:8
+        a=7-415B0cAAAA:8 a=fl4qZB1B0tTFcq_AKD4A:9 a=CjuIK1q_8ugA:10
+        a=k1Nq6YrhK2t884LQW06G:22 a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-T24gRnJpLCAyMDIyLTA5LTIzIGF0IDE2OjIwICswMzAwLCBKYXJra28gU2Fra2luZW4gd3JvdGU6
-Cj4gT24gVGh1LCBTZXAgMjIsIDIwMjIgYXQgMTA6MTA6NDFBTSAtMDcwMCwgS3Jpc3RlbiBDYXJs
-c29uIEFjY2FyZGkKPiB3cm90ZToKPiA+IEZyb206IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW4u
-ai5jaHJpc3RvcGhlcnNvbkBpbnRlbC5jb20+Cj4gPiAKPiA+IFdyYXAgdGhlIGV4aXN0aW5nIHJl
-Y2xhaW1hYmxlIGxpc3QgYW5kIGl0cyBzcGlubG9jayBpbiBhIHN0cnVjdCB0bwo+ID4gbWluaW1p
-emUgdGhlIGNvZGUgY2hhbmdlcyBuZWVkZWQgdG8gaGFuZGxlIG11bHRpcGxlIExSVXMgYXMgd2Vs
-bCBhcwo+ID4gcmVjbGFpbWFibGUgYW5kIG5vbi1yZWNsYWltYWJsZSBsaXN0cywgYm90aCBvZiB3
-aGljaCB3aWxsIGJlCj4gPiBpbnRyb2R1Y2VkCj4gPiBhbmQgdXNlZCBieSBTR1ggRVBDIGNncm91
-cHMuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IFNlYW4gQ2hyaXN0b3BoZXJzb24KPiA+IDxzZWFu
-LmouY2hyaXN0b3BoZXJzb25AaW50ZWwuY29tPgo+ID4gU2lnbmVkLW9mZi1ieTogS3Jpc3RlbiBD
-YXJsc29uIEFjY2FyZGkgPGtyaXN0ZW5AbGludXguaW50ZWwuY29tPgo+ID4gQ2M6IFNlYW4gQ2hy
-aXN0b3BoZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPgo+IAo+IFRoZSBjb21taXQgbWVzc2FnZSBj
-b3VsZCBleHBsaWNpdGx5IHN0YXRlIHRoZSBhZGRlZCBkYXRhIHR5cGUuCj4gCj4gVGhlIGRhdGEg
-dHlwZSBpcyBub3QgTFJVOiB0b2dldGhlciB3aXRoIHRoZSBMSUZPIGxpc3QsIGkuZS4KPiBhIHF1
-ZXVlLCB0aGUgY29kZSBpbXBsZW1lbnRzIExSVSBhbGlrZSBwb2xpY3kuCj4gCj4gSSB3b3VsZCBu
-YW1lIHRoZSBkYXRhIHR5cGUgYXMgc2d4X2VwY19xdWV1ZSBiZWNhdXNlIGl0IGlzIGEgCj4gbGVz
-cyBjb25mdXNpbmcgbmFtZS4KCkkgdGhpbmsgd2hlbiB5b3UgbG9vayBhdCBwYXRjaCAwNS8yMCB3
-aGljaCBhZGRzIHRoZSB1bnJlY2xhaW1hYmxlIGZpZWxkCnRoaXMgYmVjb21lcyBsZXNzIGxpa2Ug
-YSBzdHJhaWdodCB1cCBxdWV1ZSBkYXRhIHR5cGUuCgo+IAo+ID4gLS0tCj4gPiDCoGFyY2gveDg2
-L2tlcm5lbC9jcHUvc2d4L21haW4uYyB8IDM3ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0t
-LQo+ID4gLS0tLQo+ID4gwqBhcmNoL3g4Ni9rZXJuZWwvY3B1L3NneC9zZ3guaMKgIHwgMTEgKysr
-KysrKysrKwo+ID4gwqAyIGZpbGVzIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKyksIDE4IGRlbGV0
-aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvbWFp
-bi5jCj4gPiBiL2FyY2gveDg2L2tlcm5lbC9jcHUvc2d4L21haW4uYwo+ID4gaW5kZXggNGNkZWI5
-MTVkYzg2Li5hZjY4ZGMxYzY3N2IgMTAwNjQ0Cj4gPiAtLS0gYS9hcmNoL3g4Ni9rZXJuZWwvY3B1
-L3NneC9tYWluLmMKPiA+ICsrKyBiL2FyY2gveDg2L2tlcm5lbC9jcHUvc2d4L21haW4uYwo+ID4g
-QEAgLTI2LDEwICsyNiw5IEBAIHN0YXRpYyBERUZJTkVfWEFSUkFZKHNneF9lcGNfYWRkcmVzc19z
-cGFjZSk7Cj4gPiDCoAo+ID4gwqAvKgo+ID4gwqAgKiBUaGVzZSB2YXJpYWJsZXMgYXJlIHBhcnQg
-b2YgdGhlIHN0YXRlIG9mIHRoZSByZWNsYWltZXIsIGFuZAo+ID4gbXVzdCBiZSBhY2Nlc3NlZAo+
-ID4gLSAqIHdpdGggc2d4X3JlY2xhaW1lcl9sb2NrIGFjcXVpcmVkLgo+ID4gKyAqIHdpdGggc2d4
-X2dsb2JhbF9scnUubG9jayBhY3F1aXJlZC4KPiA+IMKgICovCj4gPiAtc3RhdGljIExJU1RfSEVB
-RChzZ3hfYWN0aXZlX3BhZ2VfbGlzdCk7Cj4gPiAtc3RhdGljIERFRklORV9TUElOTE9DSyhzZ3hf
-cmVjbGFpbWVyX2xvY2spOwo+ID4gK3N0YXRpYyBzdHJ1Y3Qgc2d4X2VwY19scnUgc2d4X2dsb2Jh
-bF9scnU7Cj4gPiDCoAo+ID4gwqBzdGF0aWMgYXRvbWljX2xvbmdfdCBzZ3hfbnJfZnJlZV9wYWdl
-cyA9IEFUT01JQ19MT05HX0lOSVQoMCk7Cj4gPiDCoAo+ID4gQEAgLTI5OCwxMiArMjk3LDEyIEBA
-IHN0YXRpYyB2b2lkIHNneF9yZWNsYWltX3BhZ2VzKHZvaWQpCj4gPiDCoMKgwqDCoMKgwqDCoMKg
-aW50IHJldDsKPiA+IMKgwqDCoMKgwqDCoMKgwqBpbnQgaTsKPiA+IMKgCj4gPiAtwqDCoMKgwqDC
-oMKgwqBzcGluX2xvY2soJnNneF9yZWNsYWltZXJfbG9jayk7Cj4gPiArwqDCoMKgwqDCoMKgwqBz
-cGluX2xvY2soJnNneF9nbG9iYWxfbHJ1LmxvY2spOwo+ID4gwqDCoMKgwqDCoMKgwqDCoGZvciAo
-aSA9IDA7IGkgPCBTR1hfTlJfVE9fU0NBTjsgaSsrKSB7Cj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgaWYgKGxpc3RfZW1wdHkoJnNneF9hY3RpdmVfcGFnZV9saXN0KSkKPiA+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAobGlzdF9lbXB0eSgmc2d4X2dsb2JhbF9s
-cnUucmVjbGFpbWFibGUpKQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgYnJlYWs7Cj4gPiDCoAo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoGVwY19wYWdlID0gbGlzdF9maXJzdF9lbnRyeSgmc2d4X2FjdGl2ZV9wYWdlX2xpc3QsCj4g
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZXBjX3BhZ2UgPQo+ID4gbGlzdF9maXJz
-dF9lbnRyeSgmc2d4X2dsb2JhbF9scnUucmVjbGFpbWFibGUsCj4gPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBzdHJ1Y3Qgc2d4X2VwY19wYWdlLAo+ID4gbGlzdCk7Cj4gPiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGxpc3RfZGVsX2luaXQoJmVwY19wYWdlLT5saXN0KTsK
-PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZW5jbF9wYWdlID0gZXBjX3BhZ2Ut
-Pm93bmVyOwo+ID4gQEAgLTMxNiw3ICszMTUsNyBAQCBzdGF0aWMgdm9pZCBzZ3hfcmVjbGFpbV9w
-YWdlcyh2b2lkKQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgICovCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBlcGNfcGFnZS0+ZmxhZ3MgJj0KPiA+IH5TR1hfRVBDX1BBR0VfUkVDTEFJTUVSX1RSQUNL
-RUQ7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgfQo+ID4gLcKgwqDCoMKgwqDCoMKgc3Bpbl91bmxvY2so
-JnNneF9yZWNsYWltZXJfbG9jayk7Cj4gPiArwqDCoMKgwqDCoMKgwqBzcGluX3VubG9jaygmc2d4
-X2dsb2JhbF9scnUubG9jayk7Cj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoGZvciAoaSA9IDA7
-IGkgPCBjbnQ7IGkrKykgewo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBlcGNf
-cGFnZSA9IGNodW5rW2ldOwo+ID4gQEAgLTMzOSw5ICszMzgsOSBAQCBzdGF0aWMgdm9pZCBzZ3hf
-cmVjbGFpbV9wYWdlcyh2b2lkKQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBj
-b250aW51ZTsKPiA+IMKgCj4gPiDCoHNraXA6Cj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgc3Bpbl9sb2NrKCZzZ3hfcmVjbGFpbWVyX2xvY2spOwo+ID4gLcKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoGxpc3RfYWRkX3RhaWwoJmVwY19wYWdlLT5saXN0LAo+ID4gJnNneF9h
-Y3RpdmVfcGFnZV9saXN0KTsKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzcGlu
-X3VubG9jaygmc2d4X3JlY2xhaW1lcl9sb2NrKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqBzcGluX2xvY2soJnNneF9nbG9iYWxfbHJ1LmxvY2spOwo+ID4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoGxpc3RfYWRkX3RhaWwoJmVwY19wYWdlLT5saXN0LAo+ID4gJnNn
-eF9nbG9iYWxfbHJ1LnJlY2xhaW1hYmxlKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBzcGluX3VubG9jaygmc2d4X2dsb2JhbF9scnUubG9jayk7Cj4gPiDCoAo+ID4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBrcmVmX3B1dCgmZW5jbF9wYWdlLT5lbmNsLT5yZWZj
-b3VudCwKPiA+IHNneF9lbmNsX3JlbGVhc2UpOwo+ID4gwqAKPiA+IEBAIC0zNzQsNyArMzczLDcg
-QEAgc3RhdGljIHZvaWQgc2d4X3JlY2xhaW1fcGFnZXModm9pZCkKPiA+IMKgc3RhdGljIGJvb2wg
-c2d4X3Nob3VsZF9yZWNsYWltKHVuc2lnbmVkIGxvbmcgd2F0ZXJtYXJrKQo+ID4gwqB7Cj4gPiDC
-oMKgwqDCoMKgwqDCoMKgcmV0dXJuIGF0b21pY19sb25nX3JlYWQoJnNneF9ucl9mcmVlX3BhZ2Vz
-KSA8IHdhdGVybWFyayAmJgo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICFsaXN0X2Vt
-cHR5KCZzZ3hfYWN0aXZlX3BhZ2VfbGlzdCk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgIWxpc3RfZW1wdHkoJnNneF9nbG9iYWxfbHJ1LnJlY2xhaW1hYmxlKTsKPiA+IMKgfQo+ID4g
-wqAKPiA+IMKgLyoKPiA+IEBAIC00MjcsNiArNDI2LDggQEAgc3RhdGljIGJvb2wgX19pbml0Cj4g
-PiBzZ3hfcGFnZV9yZWNsYWltZXJfaW5pdCh2b2lkKQo+ID4gwqAKPiA+IMKgwqDCoMKgwqDCoMKg
-wqBrc2d4ZF90c2sgPSB0c2s7Cj4gPiDCoAo+ID4gK8KgwqDCoMKgwqDCoMKgc2d4X2xydV9pbml0
-KCZzZ3hfZ2xvYmFsX2xydSk7Cj4gPiArCj4gPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHRydWU7
-Cj4gPiDCoH0KPiA+IMKgCj4gPiBAQCAtNTAyLDEwICs1MDMsMTAgQEAgc3RydWN0IHNneF9lcGNf
-cGFnZQo+ID4gKl9fc2d4X2FsbG9jX2VwY19wYWdlKHZvaWQpCj4gPiDCoCAqLwo+ID4gwqB2b2lk
-IHNneF9tYXJrX3BhZ2VfcmVjbGFpbWFibGUoc3RydWN0IHNneF9lcGNfcGFnZSAqcGFnZSkKPiA+
-IMKgewo+ID4gLcKgwqDCoMKgwqDCoMKgc3Bpbl9sb2NrKCZzZ3hfcmVjbGFpbWVyX2xvY2spOwo+
-ID4gK8KgwqDCoMKgwqDCoMKgc3Bpbl9sb2NrKCZzZ3hfZ2xvYmFsX2xydS5sb2NrKTsKPiA+IMKg
-wqDCoMKgwqDCoMKgwqBwYWdlLT5mbGFncyB8PSBTR1hfRVBDX1BBR0VfUkVDTEFJTUVSX1RSQUNL
-RUQ7Cj4gPiAtwqDCoMKgwqDCoMKgwqBsaXN0X2FkZF90YWlsKCZwYWdlLT5saXN0LCAmc2d4X2Fj
-dGl2ZV9wYWdlX2xpc3QpOwo+ID4gLcKgwqDCoMKgwqDCoMKgc3Bpbl91bmxvY2soJnNneF9yZWNs
-YWltZXJfbG9jayk7Cj4gPiArwqDCoMKgwqDCoMKgwqBsaXN0X2FkZF90YWlsKCZwYWdlLT5saXN0
-LCAmc2d4X2dsb2JhbF9scnUucmVjbGFpbWFibGUpOwo+ID4gK8KgwqDCoMKgwqDCoMKgc3Bpbl91
-bmxvY2soJnNneF9nbG9iYWxfbHJ1LmxvY2spOwo+ID4gwqB9Cj4gPiDCoAo+ID4gwqAvKioKPiA+
-IEBAIC01MjAsMTggKzUyMSwxOCBAQCB2b2lkIHNneF9tYXJrX3BhZ2VfcmVjbGFpbWFibGUoc3Ry
-dWN0Cj4gPiBzZ3hfZXBjX3BhZ2UgKnBhZ2UpCj4gPiDCoCAqLwo+ID4gwqBpbnQgc2d4X3VubWFy
-a19wYWdlX3JlY2xhaW1hYmxlKHN0cnVjdCBzZ3hfZXBjX3BhZ2UgKnBhZ2UpCj4gPiDCoHsKPiA+
-IC3CoMKgwqDCoMKgwqDCoHNwaW5fbG9jaygmc2d4X3JlY2xhaW1lcl9sb2NrKTsKPiA+ICvCoMKg
-wqDCoMKgwqDCoHNwaW5fbG9jaygmc2d4X2dsb2JhbF9scnUubG9jayk7Cj4gPiDCoMKgwqDCoMKg
-wqDCoMKgaWYgKHBhZ2UtPmZsYWdzICYgU0dYX0VQQ19QQUdFX1JFQ0xBSU1FUl9UUkFDS0VEKSB7
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qIFRoZSBwYWdlIGlzIGJlaW5n
-IHJlY2xhaW1lZC4gKi8KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKGxp
-c3RfZW1wdHkoJnBhZ2UtPmxpc3QpKSB7Cj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHNwaW5fdW5sb2NrKCZzZ3hfcmVjbGFpbWVyX2xvY2spOwo+ID4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzcGluX3VubG9j
-aygmc2d4X2dsb2JhbF9scnUubG9jayk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVCVVNZOwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqB9Cj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBsaXN0X2RlbCgmcGFnZS0+bGlzdCk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHBhZ2UtPmZsYWdzICY9IH5TR1hfRVBDX1BBR0VfUkVDTEFJTUVSX1RSQUNLRUQ7Cj4gPiDC
-oMKgwqDCoMKgwqDCoMKgfQo+ID4gLcKgwqDCoMKgwqDCoMKgc3Bpbl91bmxvY2soJnNneF9yZWNs
-YWltZXJfbG9jayk7Cj4gPiArwqDCoMKgwqDCoMKgwqBzcGluX3VubG9jaygmc2d4X2dsb2JhbF9s
-cnUubG9jayk7Cj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+ID4gwqB9Cj4g
-PiBAQCAtNTY0LDcgKzU2NSw3IEBAIHN0cnVjdCBzZ3hfZXBjX3BhZ2UgKnNneF9hbGxvY19lcGNf
-cGFnZSh2b2lkCj4gPiAqb3duZXIsIGJvb2wgcmVjbGFpbSkKPiA+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOwo+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqB9Cj4gPiDCoAo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoGlmIChsaXN0X2VtcHR5KCZzZ3hfYWN0aXZlX3BhZ2VfbGlzdCkpCj4gPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKGxpc3RfZW1wdHkoJnNneF9nbG9iYWxfbHJ1LnJlY2xh
-aW1hYmxlKSkKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHJldHVybiBFUlJfUFRSKC1FTk9NRU0pOwo+ID4gwqAKPiA+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgaWYgKCFyZWNsYWltKSB7Cj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYv
-a2VybmVsL2NwdS9zZ3gvc2d4LmgKPiA+IGIvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvc2d4LmgK
-PiA+IGluZGV4IDVhN2U4NThhOGY5OC4uN2IyMDhlZThlYjQ1IDEwMDY0NAo+ID4gLS0tIGEvYXJj
-aC94ODYva2VybmVsL2NwdS9zZ3gvc2d4LmgKPiA+ICsrKyBiL2FyY2gveDg2L2tlcm5lbC9jcHUv
-c2d4L3NneC5oCj4gPiBAQCAtODMsNiArODMsMTcgQEAgc3RhdGljIGlubGluZSB2b2lkICpzZ3hf
-Z2V0X2VwY192aXJ0X2FkZHIoc3RydWN0Cj4gPiBzZ3hfZXBjX3BhZ2UgKnBhZ2UpCj4gPiDCoMKg
-wqDCoMKgwqDCoMKgcmV0dXJuIHNlY3Rpb24tPnZpcnRfYWRkciArIGluZGV4ICogUEFHRV9TSVpF
-Owo+ID4gwqB9Cj4gPiDCoAo+ID4gK3N0cnVjdCBzZ3hfZXBjX2xydSB7Cj4gPiArwqDCoMKgwqDC
-oMKgwqBzcGlubG9ja190IGxvY2s7Cj4gPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgbGlzdF9oZWFk
-IHJlY2xhaW1hYmxlOwo+IAo+IHMvcmVjbGFpbWFibGUvbGlzdC8KCkl0IGZlZWxzIHRvIG1lIHRo
-YXQgb25jZSB5b3UgYWRkIHRoZSAidW5yZWNsYWltYWJsZSIgc3RydWN0IGxpc3RfaGVhZApmaWVs
-ZCB0byB0aGlzIHN0cnVjdCBpbiB0aGUgbmV4dCBwYXRjaCwgaXQgd291bGQgYmUgYSBiaXQgY29u
-ZnVzaW5nIHRvCnJlbmFtZSB0aGlzIHRvIGp1c3QgImxpc3QiLiBXaGF0IHRoZSBmaW5hbCBzdHJ1
-Y3QgbG9va3MgbGlrZSBpcwphY3R1YWxseSBub3QgcmVhbGx5IGEgbmljZSBjbGVhbiBzaW1wbGUg
-cXVldWUsIGJ1dCAyIGxpc3RzIC0gb25lIGZvcgpFUEMgcGFnZXMgd2hpY2ggYXJlIGJlaW5nIHRy
-YWNrZWQgYnkgdGhlIHJlY2xhaW1lciwgYW5kIG9uZSBmb3IgRVBDCnBhZ2VzIHdoaWNoIGFyZSBu
-b3QgKHN1Y2ggYXMgdmEgcGFnZXMpLgoKPiAKPiA+ICt9Owo+ID4gKwo+ID4gK3N0YXRpYyBpbmxp
-bmUgdm9pZCBzZ3hfbHJ1X2luaXQoc3RydWN0IHNneF9lcGNfbHJ1ICpscnUpCj4gPiArewo+ID4g
-K8KgwqDCoMKgwqDCoMKgc3Bpbl9sb2NrX2luaXQoJmxydS0+bG9jayk7Cj4gPiArwqDCoMKgwqDC
-oMKgwqBJTklUX0xJU1RfSEVBRCgmbHJ1LT5yZWNsYWltYWJsZSk7Cj4gPiArfQo+ID4gKwo+ID4g
-wqBzdHJ1Y3Qgc2d4X2VwY19wYWdlICpfX3NneF9hbGxvY19lcGNfcGFnZSh2b2lkKTsKPiA+IMKg
-dm9pZCBzZ3hfZnJlZV9lcGNfcGFnZShzdHJ1Y3Qgc2d4X2VwY19wYWdlICpwYWdlKTsKPiA+IMKg
-Cj4gPiAtLSAKPiA+IDIuMzcuMwo+ID4gCj4gCj4gUGxlYXNlIGFsc28gYWRkIHRoZXNlOgo+IAo+
-IC8qCj4gwqAqIE11c3QgYmUgY2FsbGVkIHdpdGggcXVldWUtPmxvY2sgYWNxdWlyZWQuCj4gwqAq
-Lwo+IHN0YXRpYyBpbmxpbmUgc3RydWN0IHNneF9lcGNfcGFnZSAqX19zZ3hfZXBjX3F1ZXVlX3B1
-c2goc3RydWN0Cj4gc2d4X2VwY19xdWV1ZSAqcXVldWUsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0Cj4gc2d4X3BhZ2UgKnBhZ2Up
-Cj4gewo+IMKgwqDCoMKgwqDCoMKgIGxpc3RfYWRkX3RhaWwoJnBhZ2UtPmxpc3QsICZxdWV1ZS0+
-bGlzdCk7Cj4gfQo+IAo+IC8qCj4gwqAqIE11c3QgYmUgY2FsbGVkIHdpdGggcXVldWUtPmxvY2sg
-YWNxdWlyZWQuCj4gwqAqLwo+IHN0YXRpYyBpbmxpbmUgc3RydWN0IHNneF9lcGNfcGFnZSAqX19z
-Z3hfZXBjX3F1ZXVlX3BvcChzdHJ1Y3QKPiBzZ3hfZXBjX3F1ZXVlICpxdWV1ZSkKPiB7Cj4gwqDC
-oMKgwqDCoMKgwqAgc3RydWN0IHNneF9lcGNfcGFnZSAqcGFnZTsKPiAKPiDCoMKgwqDCoMKgwqDC
-oCBpZiAobGlzdF9lbXB0eSgmcXVldWUtPmxpc3QpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHJldHVybiBOVUxMOwo+IAo+IMKgwqDCoMKgwqDCoMKgwqBwYWdlID0gbGlzdF9maXJz
-dF9lbnRyeSgmcXVldWUtPmxpc3QsIHN0cnVjdCBzZ3hfZXBjX3BhZ2UsCj4gbGlzdCk7Cj4gwqDC
-oMKgwqDCoMKgwqDCoGxpc3RfZGVsX2luaXQoJnBhZ2UtPmxpc3QpOwo+IAo+IMKgwqDCoMKgwqDC
-oMKgIHJldHVybiBwYWdlOwo+IH0KPiAKPiBBbmQgdXNlIHRoZW0gaW4gZXhpc3Rpbmcgc2l0ZXMu
-IEl0IGVuc3VyZXMgY29oZXJlbnQgYmVoYXZpb3IuIFlvdQo+IHNob3VsZCBiZQo+IGFibGUgdG8g
-cmVwbGFjZSBhbGwgdXNlcyB3aXRoIGVpdGhlciwgb3IgY29tYmluYXRpb24gb2YgdGhlbQo+IChs
-aXN0X21vdmUpLgo+IAo+IEJSLCBKYXJra28KCg==
+[oops, cc should have been linux-mm@kvack.org]
 
+On Fri, Sep 30, 2022 at 07:54:40AM +1000, Dave Chinner wrote:
+> From: Dave Chinner <dchinner@redhat.com>
+> 
+> This should be more obvious, but gfpflags_allow_blocking() is not
+> the same thing as a GFP_KERNEL reclaim contexts. The former checks
+> GFP_DIRECT_RECLAIM which tells us if direct reclaim is allowed. The
+> latter (GFP_KERNEL) allows blocking on anything, including
+> filesystem and IO structures during reclaim.
+> 
+> However, we do lots of memory allocation from various filesystems we
+> are under GFP_NOFS contexts, including page cache folios. Hence if
+> direct reclaim in GFP_NOFS context waits on filesystem progress
+> (e.g. waits on folio writeback) then memory reclaim can deadlock.
+> 
+> e.g. page cache allocation (which is GFP_NOFS context) gets stuck
+> waiting on page writeback like so:
+> 
+> [   75.943494] task:test_write      state:D stack:12560 pid: 3728 ppid:  3613 flags:0x00004002
+> [   75.944788] Call Trace:
+> [   75.945183]  <TASK>
+> [   75.945543]  __schedule+0x2f9/0xa30
+> [   75.946118]  ? __mod_memcg_lruvec_state+0x41/0x90
+> [   75.946895]  schedule+0x5a/0xc0
+> [   75.947397]  io_schedule+0x42/0x70
+> [   75.947992]  folio_wait_bit_common+0x159/0x3d0
+> [   75.948732]  ? dio_warn_stale_pagecache.part.0+0x50/0x50
+> [   75.949505]  folio_wait_writeback+0x28/0x80
+> [   75.950163]  shrink_page_list+0x96e/0xc30
+> [   75.950843]  shrink_lruvec+0x558/0xb80
+> [   75.951440]  shrink_node+0x2c6/0x700
+> [   75.952059]  do_try_to_free_pages+0xd5/0x570
+> [   75.952771]  try_to_free_mem_cgroup_pages+0x105/0x220
+> [   75.953548]  reclaim_high.constprop.0+0xa3/0xf0
+> [   75.954209]  mem_cgroup_handle_over_high+0x8f/0x280
+> [   75.955025]  ? kmem_cache_alloc_lru+0x1c6/0x3f0
+> [   75.955781]  try_charge_memcg+0x6c3/0x820
+> [   75.956436]  ? __mem_cgroup_threshold+0x16/0x150
+> [   75.957204]  charge_memcg+0x76/0xf0
+> [   75.957810]  __mem_cgroup_charge+0x29/0x80
+> [   75.958464]  __filemap_add_folio+0x225/0x590
+> [   75.959112]  ? scan_shadow_nodes+0x30/0x30
+> [   75.959794]  filemap_add_folio+0x37/0xa0
+> [   75.960432]  __filemap_get_folio+0x1fd/0x340
+> [   75.961141]  ? xas_load+0x5/0xa0
+> [   75.961712]  iomap_write_begin+0x103/0x6a0
+> [   75.962390]  ? filemap_dirty_folio+0x5c/0x80
+> [   75.963106]  ? iomap_write_end+0xa2/0x2b0
+> [   75.963744]  iomap_file_buffered_write+0x17c/0x380
+> [   75.964546]  xfs_file_buffered_write+0xb1/0x2e0
+> [   75.965286]  ? xfs_file_buffered_write+0x2b2/0x2e0
+> [   75.966097]  vfs_write+0x2ca/0x3d0
+> [   75.966702]  __x64_sys_pwrite64+0x8c/0xc0
+> [   75.967349]  do_syscall_64+0x35/0x80
+> 
+> At this point, the system has 58 pending XFS IO completions that are
+> stuck waiting for workqueue progress:
+> 
+> [ 1664.460579] workqueue xfs-conv/dm-0: flags=0x4c
+> [ 1664.461332]   pwq 48: cpus=24 node=3 flags=0x0 nice=0 active=58/256 refcnt=59
+> [ 1664.461335]     pending: xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io, xfs_end_io
+> 
+> and nothing is making progress. The reason progress is not being
+> made is not clear from what I can gather from the steaming corpse,
+> but it is clear that the memcg reclaim code should not be blocking
+> on filesystem related objects in GFP_NOFS allocation contexts.
+> 
+> We have the reclaim context parameters right there when we call
+> mem_cgroup_handle_over_high(), so pass them down the stack so memcg
+> reclaim doesn't cause deadlocks. This makes the reclaim deadlocks in
+> the test I've been running go away.
+> 
+> Signed-off-by: Dave Chinner <dchinner@redhat.com>
+> ---
+>  include/linux/memcontrol.h       | 4 ++--
+>  include/linux/resume_user_mode.h | 2 +-
+>  mm/memcontrol.c                  | 6 +++---
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 6257867fbf95..575bb8cfc810 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -919,7 +919,7 @@ unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
+>  	return READ_ONCE(mz->lru_zone_size[zone_idx][lru]);
+>  }
+>  
+> -void mem_cgroup_handle_over_high(void);
+> +void mem_cgroup_handle_over_high(gfp_t gfp_mask);
+>  
+>  unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg);
+>  
+> @@ -1433,7 +1433,7 @@ static inline void folio_memcg_unlock(struct folio *folio)
+>  {
+>  }
+>  
+> -static inline void mem_cgroup_handle_over_high(void)
+> +static inline void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+>  {
+>  }
+>  
+> diff --git a/include/linux/resume_user_mode.h b/include/linux/resume_user_mode.h
+> index 285189454449..f8f3e958e9cf 100644
+> --- a/include/linux/resume_user_mode.h
+> +++ b/include/linux/resume_user_mode.h
+> @@ -55,7 +55,7 @@ static inline void resume_user_mode_work(struct pt_regs *regs)
+>  	}
+>  #endif
+>  
+> -	mem_cgroup_handle_over_high();
+> +	mem_cgroup_handle_over_high(GFP_KERNEL);
+>  	blkcg_maybe_throttle_current();
+>  
+>  	rseq_handle_notify_resume(NULL, regs);
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b69979c9ced5..09fbebff9796 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2491,7 +2491,7 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+>   * Scheduled by try_charge() to be executed from the userland return path
+>   * and reclaims memory over the high limit.
+>   */
+> -void mem_cgroup_handle_over_high(void)
+> +void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+>  {
+>  	unsigned long penalty_jiffies;
+>  	unsigned long pflags;
+> @@ -2519,7 +2519,7 @@ void mem_cgroup_handle_over_high(void)
+>  	 */
+>  	nr_reclaimed = reclaim_high(memcg,
+>  				    in_retry ? SWAP_CLUSTER_MAX : nr_pages,
+> -				    GFP_KERNEL);
+> +				    gfp_mask);
+>  
+>  	/*
+>  	 * memory.high is breached and reclaim is unable to keep up. Throttle
+> @@ -2755,7 +2755,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
+>  	    !(current->flags & PF_MEMALLOC) &&
+>  	    gfpflags_allow_blocking(gfp_mask)) {
+> -		mem_cgroup_handle_over_high();
+> +		mem_cgroup_handle_over_high(gfp_mask);
+>  	}
+>  	return 0;
+>  }
+> -- 
+> 2.37.2
+> 
+> 
+
+-- 
+Dave Chinner
+david@fromorbit.com
