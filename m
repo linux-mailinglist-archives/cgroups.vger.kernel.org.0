@@ -2,133 +2,239 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 267FD5F189F
-	for <lists+cgroups@lfdr.de>; Sat,  1 Oct 2022 04:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14F45F1C31
+	for <lists+cgroups@lfdr.de>; Sat,  1 Oct 2022 14:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbiJACbj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Sep 2022 22:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S229462AbiJAMis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 1 Oct 2022 08:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbiJACba (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Sep 2022 22:31:30 -0400
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21826125D96;
-        Fri, 30 Sep 2022 19:31:29 -0700 (PDT)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-127dca21a7dso7399296fac.12;
-        Fri, 30 Sep 2022 19:31:29 -0700 (PDT)
+        with ESMTP id S229458AbiJAMis (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 1 Oct 2022 08:38:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CE0C5BEE
+        for <cgroups@vger.kernel.org>; Sat,  1 Oct 2022 05:38:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j16so10620464lfg.1
+        for <cgroups@vger.kernel.org>; Sat, 01 Oct 2022 05:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
+        bh=B3MMnLV5KzQSBoCIoVn465sXrjYLB6L1MBWhvVFk+Wo=;
+        b=iTppsY5fg3g/uw+5/L4JVR/cOGxBqqmX6QFi/dlcjF4Gj/uCqY6Fw87YT2wQ5L4yC4
+         4wswXeBu3WYaaXdu7BUHd3izGnicy6GvHqIo3ZJZDJdxko7kG2cnLcWs2wcQSsDP+6xG
+         k+/ucgrdMwxpa3sl0Ut3iS/Wasft+r6tW32ROxsSGZz6JwoE6XPQ9zkpFSi7T3Fk0DFS
+         mBkR5u6UjERYtCo1Coin33UzSslT0C0m1bfxNEZT+1TVa//OA07wMZuHB7o5IS3B6vNV
+         pN3PnGGpuObZhC3W1seXHh3SYaQmLrSUKb3izDeF5ga9W7F+k/fYQ/qHINs94Jv/zdXg
+         BBhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=TsSNtaxjzzrx0UGRlq15EZuhaugUhUgclS9Wef+tMjA=;
-        b=kaUDziaMuKIsPXEo1NARHh6a8YfZ7PCTfT9/4dAjqpR1bf7i+xcJ+KXsWgHIhBDvkI
-         JyQ+EdlsDdcxuF9aOGcUepMhWYcm9C1g3lnYzHHVa5b7EYKeLATDa0zLEuPUNEU9P3YO
-         Nt8O77O95l+WMszY3azrrXe69g8wnGfeWyLTGRbcrMAQ5JPL/mMHnSsGRd32WHYpbg+c
-         C4GykgbpKh5wT/NxS/elCsl2I4DS8lErGfc2QUF26gOP0OVEA3e76U98pSbE4zzxkzp8
-         S7/oa9rLAl0zV6WcfCd+tEn1sr33bh/6g9m4Kpc44ghgOeHlaiP7hrx2LB3amS4AfAzJ
-         PzCw==
-X-Gm-Message-State: ACrzQf1tvtUwA/re8/D1Axjh/vL0NekT2nqHFRDTVHZ9ZsQvlH2rNIZQ
-        9XUME8csjIwd9HY4eiO4szaPyCJjLpRStqInWT8=
-X-Google-Smtp-Source: AMsMyM7Yi1zPsDiXRfU1bZZHzwmu8SBCTd/6ZNM+dwKzBgmouEYVAxUpY+L4PS/jzdxYlVAY+5ffaUbRPOpty+fg9hQ=
-X-Received: by 2002:a05:6871:14f:b0:131:a644:7c58 with SMTP id
- z15-20020a056871014f00b00131a6447c58mr469446oab.209.1664591488387; Fri, 30
- Sep 2022 19:31:28 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date;
+        bh=B3MMnLV5KzQSBoCIoVn465sXrjYLB6L1MBWhvVFk+Wo=;
+        b=hpaJeiKnfsOF5HmXxXBiVdBF3wev1FDBljkVVRdeCQrOQ4h5BplaG9RF6H4/T/ESqL
+         otqtaaklirbXkx+Q2Dvyny+VV2pB+VKhVyEkp3YzKAH2TowDQymPIATIrDNZzjkPVjpX
+         /rPN3tWWhAb6tYKvWSzBSfs6RaVzzt8jEadWiu52s5VFrkdcx4nH4wfnGJqOsEMyDGL8
+         HWPGMXpdlPAYDS+AKR1seppWlKAW88srV6VQUCVX4pIZRmvm61f1oRUl+fg6djlQXQFG
+         NaNfTlcTkOivdnvjjYh+7iWlg4sabOsvE41JhdnXQWt08YbGqXbu7BQSxr1yO1ODuCX8
+         PODA==
+X-Gm-Message-State: ACrzQf20xqu45UyXXf4ZiWHhY/7PnbfWRlqfgPh8+It/I0udOxv0Qstg
+        5a4I2M+80ouq5M7s06yKAzY=
+X-Google-Smtp-Source: AMsMyM5SlQ6HMYbCBD3iKsdFCda7LA49aSJrDxTgEh66h7PLt9fF0FC6c+cgy39dtbAY0tBtf6r1kA==
+X-Received: by 2002:a05:6512:b01:b0:4a1:baae:327d with SMTP id w1-20020a0565120b0100b004a1baae327dmr4571907lfu.668.1664627925261;
+        Sat, 01 Oct 2022 05:38:45 -0700 (PDT)
+Received: from ?IPV6:2a02:2168:a11:244b::1? ([2a02:2168:a11:244b::1])
+        by smtp.gmail.com with ESMTPSA id bi9-20020a0565120e8900b00497aa190523sm750952lfb.248.2022.10.01.05.38.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Oct 2022 05:38:44 -0700 (PDT)
+Message-ID: <b91e75f4-b09c-85aa-c6ad-2364dab9af92@gmail.com>
+Date:   Sat, 1 Oct 2022 15:38:43 +0300
 MIME-Version: 1.0
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
- <20220922041435.709119-1-namhyung@kernel.org> <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 30 Sep 2022 19:31:17 -0700
-Message-ID: <CAM9d7ch8RUgf8V1hi=ccgV84XSfujuWtUKKgre8eQdGmtdiFLA@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        cgroups <cgroups@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: Possible race in obj_stock_flush_required() vs drain_obj_stock()
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <1664546131660.1777662787.1655319815@gmail.com>
+ <Yzc0yZwDB8GG+4t7@P9FQF9L96D.corp.robot.car>
+From:   Alexander Fedorov <halcien@gmail.com>
+In-Reply-To: <Yzc0yZwDB8GG+4t7@P9FQF9L96D.corp.robot.car>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On 30.09.2022 21:26, Roman Gushchin wrote:
+> On Fri, Sep 30, 2022 at 02:06:48PM +0000, Alexander Fedorov wrote:
+>> 1) First CPU:
+>>    css_killed_work_fn() -> mem_cgroup_css_offline() ->
+>> drain_all_stock() -> obj_stock_flush_required()
+>>         if (stock->cached_objcg) {
+>>
+>> This check sees a non-NULL pointer for *another* CPU's `memcg_stock`
+>> instance.
+>>
+>> 2) Second CPU:
+>>   css_free_rwork_fn() -> __mem_cgroup_free() -> free_percpu() ->
+>> obj_cgroup_uncharge() -> drain_obj_stock()
+>> It frees `cached_objcg` pointer in its own `memcg_stock` instance:
+>>         struct obj_cgroup *old = stock->cached_objcg;
+>>         < ... >
+>>         obj_cgroup_put(old);
+>>         stock->cached_objcg = NULL;
+>>
+>> 3) First CPU continues after the 'if' check and re-reads the pointer
+>> again, now it is NULL and dereferencing it leads to kernel panic:
+>> static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>>                                      struct mem_cgroup *root_memcg)
+>> {
+>> < ... >
+>>         if (stock->cached_objcg) {
+>>                 memcg = obj_cgroup_memcg(stock->cached_objcg);
+> 
+> Great catch!
+> 
+> I'm not sure about switching to rcu primitives though. In all other cases
+> stock->cached_objcg is accessed only from a local cpu, so using rcu_*
+> function is an overkill.
+> 
+> How's something about this? (completely untested)
 
-On Fri, Sep 30, 2022 at 3:48 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Sep 21, 2022 at 9:21 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The recent change in the cgroup will break the backward compatiblity in
-> > the BPF program.  It should support both old and new kernels using BPF
-> > CO-RE technique.
-> >
-> > Like the task_struct->__state handling in the offcpu analysis, we can
-> > check the field name in the cgroup struct.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > Arnaldo, I think this should go through the cgroup tree since it depends
-> > on the earlier change there.  I don't think it'd conflict with other
-> > perf changes but please let me know if you see any trouble, thanks!
-> >
-> >  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
-> >  1 file changed, 28 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > index 488bd398f01d..4fe61043de04 100644
-> > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > @@ -43,12 +43,39 @@ struct {
-> >         __uint(value_size, sizeof(struct bpf_perf_event_value));
-> >  } cgrp_readings SEC(".maps");
-> >
-> > +/* new kernel cgroup definition */
-> > +struct cgroup___new {
-> > +       int level;
-> > +       struct cgroup *ancestors[];
-> > +} __attribute__((preserve_access_index));
-> > +
-> > +/* old kernel cgroup definition */
-> > +struct cgroup___old {
-> > +       int level;
-> > +       u64 ancestor_ids[];
-> > +} __attribute__((preserve_access_index));
-> > +
-> >  const volatile __u32 num_events = 1;
-> >  const volatile __u32 num_cpus = 1;
-> >
-> >  int enabled = 0;
-> >  int use_cgroup_v2 = 0;
-> >
-> > +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
-> > +{
-> > +       /* recast pointer to capture new type for compiler */
-> > +       struct cgroup___new *cgrp_new = (void *)cgrp;
-> > +
-> > +       if (bpf_core_field_exists(cgrp_new->ancestors)) {
-> > +               return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
->
-> have you checked generated BPF code for this ancestors[level] access?
-> I'd expect CO-RE relocation for finding ancestors offset and then just
-> normal + level * 8 arithmetic, but would be nice to confirm. Apart
-> from this, looks good to me:
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Tested READ_ONCE() patch and it works.  But are rcu primitives an overkill?
+For me they are documenting how actually complex is synchronization here.
+For example, only after converting to rcu I noticed this (5.10.131-rt72):
 
-Thanks for your review!
+static void drain_obj_stock(struct memcg_stock_pcp *stock)
+{
+	struct obj_cgroup *old = stock->cached_objcg;
+< ... >
+	obj_cgroup_put(old);
+	stock->cached_objcg = NULL;
+}
 
-How can I check the generated code?  Do you have something works with
-skeletons or do I have to save the BPF object somehow during the build?
+On kernel with enabled preemption this function can be preempted between
+obj_cgroup_put() -> kfree_rcu() call and `cached_objcg` assignment, and
+since scheduling marks the end of grace period then another task running
+drain_all_stock() could access freed memory.
 
-Thanks,
-Namhyung
+Since `cached_objcg` was not marked as synchronized variable this problem
+could not be seen just by reading drain_obj_stock(), but after adding rcu
+markings it is easier to notice (and fix with rcu_replace_pointer()).
+
+Checked in mainline, this use-after-free was fixed when fixing another
+problem:
+5675114623872300aa9fcd72aef2b8b7f421fe12
+"mm/memcg: protect memcg_stock with a local_lock_t"
+
+> Also, please add
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+
+Done, and reposted original patch because my email client malformed it
+(+ comment about use-after-free)...
+
+
+    mm/memcg: fix race in obj_stock_flush_required() vs drain_obj_stock()
+    
+    When obj_stock_flush_required() is called from drain_all_stock() it
+    reads the `memcg_stock->cached_objcg` field twice for another CPU's
+    per-cpu variable, leading to TOCTTOU race: another CPU can
+    simultaneously enter drain_obj_stock() and clear its own instance of
+    `memcg_stock->cached_objcg`.
+    
+    Another problem is in drain_obj_stock() which sets `cached_objcg` to
+    NULL after freeing which might lead to use-after-free.
+    
+    To fix it mark `cached_objcg` as RCU protected field and use rcu_*()
+    accessors everywhere.
+
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Signed-off-by: Alexander Fedorov <halcien@gmail.com>
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c1152f8747..2ab205f529 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2215,7 +2215,7 @@ struct memcg_stock_pcp {
+ 	unsigned int nr_pages;
+ 
+ #ifdef CONFIG_MEMCG_KMEM
+-	struct obj_cgroup *cached_objcg;
++	struct obj_cgroup __rcu *cached_objcg;
+ 	unsigned int nr_bytes;
+ #endif
+ 
+@@ -3148,7 +3148,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 	local_lock_irqsave(&memcg_stock.lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+-	if (objcg == stock->cached_objcg && stock->nr_bytes >= nr_bytes) {
++	if (objcg == rcu_access_pointer(stock->cached_objcg) && stock->nr_bytes >= nr_bytes) {
+ 		stock->nr_bytes -= nr_bytes;
+ 		ret = true;
+ 	}
+@@ -3160,7 +3160,8 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 
+ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+ {
+-	struct obj_cgroup *old = stock->cached_objcg;
++	struct obj_cgroup *old = rcu_replace_pointer(stock->cached_objcg, NULL,
++						lockdep_is_held(&stock->lock));
+ 
+ 	if (!old)
+ 		return;
+@@ -3198,16 +3199,16 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+ 	}
+ 
+ 	obj_cgroup_put(old);
+-	stock->cached_objcg = NULL;
+ }
+ 
+ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+ 				     struct mem_cgroup *root_memcg)
+ {
+ 	struct mem_cgroup *memcg;
++	struct obj_cgroup *cached_objcg = rcu_dereference(stock->cached_objcg);
+ 
+-	if (stock->cached_objcg) {
+-		memcg = obj_cgroup_memcg(stock->cached_objcg);
++	if (cached_objcg) {
++		memcg = obj_cgroup_memcg(cached_objcg);
+ 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
+ 			return true;
+ 	}
+@@ -3223,11 +3224,11 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 	local_lock_irqsave(&memcg_stock.lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+-	if (stock->cached_objcg != objcg) { /* reset if necessary */
++	if (rcu_access_pointer(stock->cached_objcg) != objcg) { /* reset if necessary */
+ 		drain_obj_stock(stock);
+ 		obj_cgroup_get(objcg);
+-		stock->cached_objcg = objcg;
+ 		stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
++		rcu_assign_pointer(stock->cached_objcg, objcg);
+ 	}
+ 	stock->nr_bytes += nr_bytes;
+ 
+@@ -7162,6 +7163,7 @@ static int __init mem_cgroup_init(void)
+ 
+ 		stock = per_cpu_ptr(&memcg_stock, cpu);
+ 		INIT_WORK(&stock->work, drain_local_stock);
++		RCU_INIT_POINTER(stock->cached_objcg, NULL);
+ 		local_lock_init(&stock->lock);
+ 	}
+ 
