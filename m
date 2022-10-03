@@ -2,57 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518B95F3674
-	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 21:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042975F36E1
+	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 22:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbiJCTjO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Oct 2022 15:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S229481AbiJCUP3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Oct 2022 16:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbiJCTjI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 15:39:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732BA48C89
-        for <cgroups@vger.kernel.org>; Mon,  3 Oct 2022 12:39:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664825946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bt8NrIwM3fjyECcwzKDQPI25RNR/tnhtjpGaAmrolEU=;
-        b=L977o8K4kRJlpFxbR2lr9hMnGnhb5NBnawJHG0P0y8YwFVmF3uRfXrA+/bM+3jq0LZLtLz
-        B8XuUYmMgepKf7GWXFKAiPW5nKgohgbNP9DykmLdxcrZ6cxW+cd44cOC/2F5KjOtoIwSzM
-        AKDwsqOnt+ty460TDzu6waIOe3U7Z78=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-262-QPMKw7qtNC-PeeSjYKP1Gg-1; Mon, 03 Oct 2022 15:39:03 -0400
-X-MC-Unique: QPMKw7qtNC-PeeSjYKP1Gg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD91E381A721;
-        Mon,  3 Oct 2022 19:39:02 +0000 (UTC)
-Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 476C31121319;
-        Mon,  3 Oct 2022 19:39:02 +0000 (UTC)
-Message-ID: <67f5d0af-dbfa-291a-a596-c90860b94455@redhat.com>
-Date:   Mon, 3 Oct 2022 15:39:02 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH v7 1/3] llist: Add a lock-less list variant terminated by
- a sentinel node
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S229516AbiJCUP2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 16:15:28 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815E42A268;
+        Mon,  3 Oct 2022 13:15:27 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id c24so10655305plo.3;
+        Mon, 03 Oct 2022 13:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
+        bh=C3/N9hbhwupuGmO0AntkXcuTr5FrNGR8ZHngrdZEthU=;
+        b=qRoStCLUpxzw2alYY4nRjwbDniVOp8r0swaVcfpwPdIZNnoFCQ4yfr/+ZSZ1CDeYOs
+         z7pb17R3TjBSqJwf5r/yas2oc5Tg5YIcxLhgMAwL8Az8k0PEcg4mVmeiQR3jyRy/AwhO
+         +YWF/uUicBgF61WQTFHS1YOx12fHVeKIowPbeQbx+MpvPCBiAd7NAmJcvPGKX+vzyvEP
+         lWgbCkExvoG93U49AtvbMOPRVbxtS/ejd3i3tR9o+A3EQBbztZuuvQWE+mjLFEkO272e
+         kMxiNlbpxEbPFy58aiweYJFXjJVHhv1oRFonnxwCQWQ5+4UX9EozgbNg3PmZUJENB6nM
+         TukA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=C3/N9hbhwupuGmO0AntkXcuTr5FrNGR8ZHngrdZEthU=;
+        b=UD/G8Nlhb+PxdnTSTfrXDUQ1pmIfu3QdUQqbmEZ1iwshS+lxvKdm6K1Z6veMvvBjHc
+         i4acfLEcADlHaLvhiLrAC73mDgw5Jz3NPLM7KKxgxLZ77rxh0mKKuskb0KQnwHcVnI4v
+         +s5819KB6uZD6e/tqvtkxvoleJuCowFDTtPVV9VkvgHUKjvIMxF90ztWlZ6Ewd86InQN
+         8FtP+4l+DCwkcjH/oIZgdDWQWH8ugfewCn3DPtci7/pRBbq6FEVYxX6w0vHxtBtUZFJV
+         d+KdFEVN/Nx0TUPmmgFy83AGpKA/WCXr3jU5Hb8wzstcm4ifAunDlE9kFMmyWsktXXZ5
+         8Rmw==
+X-Gm-Message-State: ACrzQf3ADmsHquN3snY+NyFCkPYabuE4RPgMZ6r4C52trapcSBu3gcnE
+        uvqmd9htjx9WyEHS1uuc3mt/qhzFhuOAIw==
+X-Google-Smtp-Source: AMsMyM52XvJpXABGrNU34Tz1SGCYuNUqAG1pM7eFFxSnbt+hDbkTf/b8aWnc/cIS17tC9C+18TN7lw==
+X-Received: by 2002:a17:90b:4d08:b0:20a:6861:352c with SMTP id mw8-20020a17090b4d0800b0020a6861352cmr13840900pjb.225.1664828126740;
+        Mon, 03 Oct 2022 13:15:26 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:cb45])
+        by smtp.gmail.com with ESMTPSA id v1-20020a626101000000b00543a098a6ffsm7708265pfb.212.2022.10.03.13.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Oct 2022 13:15:26 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 3 Oct 2022 10:15:24 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
 Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         Ming Lei <ming.lei@redhat.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v7 1/3] llist: Add a lock-less list variant terminated by
+ a sentinel node
+Message-ID: <YztC3BVzOiwOKZij@slm.duckdns.org>
 References: <20221003154459.207538-1-longman@redhat.com>
  <20221003154459.207538-2-longman@redhat.com>
  <YzsQZPONIJRgtf3o@slm.duckdns.org>
@@ -61,68 +69,32 @@ References: <20221003154459.207538-1-longman@redhat.com>
  <8008933b-4a28-19e5-02db-ef1d07eaf952@redhat.com>
  <YzsdsjlMMDFwLOzR@slm.duckdns.org>
  <87e7cd70-4ab6-f33b-ce26-afe2c7c04faa@redhat.com>
-In-Reply-To: <87e7cd70-4ab6-f33b-ce26-afe2c7c04faa@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+ <67f5d0af-dbfa-291a-a596-c90860b94455@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67f5d0af-dbfa-291a-a596-c90860b94455@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
-On 10/3/22 13:40, Waiman Long wrote:
->
-> On 10/3/22 13:36, Tejun Heo wrote:
->> Hello,
->>
->> On Mon, Oct 03, 2022 at 01:32:49PM -0400, Waiman Long wrote:
->>> What my current thinking is to make llist works with both NULL and 
->>> sentinel
->>> terminated lockless list. Users who wish to use the sentinel terminated
->>> version will have to use special sentinel version of LLIST_HEAD() 
->>> macro and
->>> llist_del_all() and __llist_del_all() functions. In this way, I 
->>> don't need
->>> to touch an existing users of llist while minimizing code 
->>> redundancy. What
->>> do you think?
->> Wouldn't that be more error-prone in the long term? I'd just bite the 
->> bullet
->> and convert the empty tests. It is a hassle to find them but given 
->> that it's
->> just the head node testing, it hopefully wouldn't be too bad.
->
-> OK, I will take a further look at what changes will be needed by the 
-> existing llist users.
+On Mon, Oct 03, 2022 at 03:39:02PM -0400, Waiman Long wrote:
+> There are 123 instances where llist_head is referenced in arch, driver,
+> filesystem and kernel code. Going through all these to make sure that it
+> will all work will be a major effort. I think it will be safer to allow both
+> NULL and the sentinel node as the initializers and gradually convert them to
+> use the proper llist APIs over time to complete the conversion. I am sorry
+> that I can't spend that much time upfront for this conversion effort.
 
-After a further look, I think the task of making sentinel llist the 
-default will be more time consuming that I initially thought. For example,
+I see. Oh well, thanks for taking a look.
 
-1) arch/powerpc/include/asm/kvm_book3s_64.h:
-    It has its own llist iterator for_each_nest_rmap_safe.
-
-2) kprobe use llist but not the full set of APIs and the
-    various arch code put NULL in their llist_node to communicate
-    with kprobe.
-
-3) drivers/vhost/scsi.c uses llist but it doesn't use LLIST_HEAD
-    nor init_llist_head to initialize the llist_head. I suspect that
-    it may relies on NULL being the initial value.
-
-There are 123 instances where llist_head is referenced in arch, driver, 
-filesystem and kernel code. Going through all these to make sure that it 
-will all work will be a major effort. I think it will be safer to allow 
-both NULL and the sentinel node as the initializers and gradually 
-convert them to use the proper llist APIs over time to complete the 
-conversion. I am sorry that I can't spend that much time upfront for 
-this conversion effort.
-
-Regards,
-Longman
-
+-- 
+tejun
