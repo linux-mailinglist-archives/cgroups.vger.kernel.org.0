@@ -2,112 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57135F3255
-	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 17:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F61A5F32CF
+	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 17:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbiJCPIl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Oct 2022 11:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
+        id S229591AbiJCPpg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Oct 2022 11:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbiJCPIk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 11:08:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325481BEBE;
-        Mon,  3 Oct 2022 08:08:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229586AbiJCPpe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 11:45:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ADEE69
+        for <cgroups@vger.kernel.org>; Mon,  3 Oct 2022 08:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664811932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xusHdmDukwYHMbUJFh7S0rrQ2RjmbWo7AAZhEr8dtGk=;
+        b=PE/xP0G96LHSjfXtDyAR0gM+Ke4E8BmkXwBI06lt4nNcZINZsf3wHyFvXSVRPZQK2rI9WE
+        HCSHarwyVFmp3mpLL8vxXVZ8HN5yh6/QJezE9AM7j2Jef/AdF/CCcR/dbt0uJuIV7ETq8T
+        5uP/8PHv6926jOtQuhzf8nvcm7jLLIE=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-186-9uDLktXuNka7DDbBSkZcVQ-1; Mon, 03 Oct 2022 11:45:31 -0400
+X-MC-Unique: 9uDLktXuNka7DDbBSkZcVQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D54AA21982;
-        Mon,  3 Oct 2022 15:08:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1664809717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aytUdXlGSVAVAW293DkhDivkGR0N7fkvULdwZOjcsOA=;
-        b=n/FrNF6zgz6jZFmZnlJOWIbrGzQYXL6yM0mJ/jc+QIH1ww+yX9V1b8JfTsKpXG0QyYRZmf
-        gIWbP1pq/MTUlu8K1wfZh8MsW1LfrK7LvQVeKNgMVX51MimhtIJL5YlF+de/kXp+5BF+0J
-        Pnl3KLp1HBlbjwAkHetW094SQIHonQM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A974C13522;
-        Mon,  3 Oct 2022 15:08:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id O/oGKPX6OmN5dgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 03 Oct 2022 15:08:37 +0000
-Date:   Mon, 3 Oct 2022 17:08:36 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] memcg: calling reclaim_high(GFP_KERNEL) in GFP_NOFS
- context deadlocks
-Message-ID: <Yzr69M9MtNYIKPBx@blackbook>
-References: <20220929215440.1967887-1-david@fromorbit.com>
- <20220929222006.GI3600936@dread.disaster.area>
- <YzbesGeUkX3qwqj8@blackbook>
- <20220930220834.GK3600936@dread.disaster.area>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1893729ABA0E;
+        Mon,  3 Oct 2022 15:45:31 +0000 (UTC)
+Received: from llong.com (dhcp-17-215.bos.redhat.com [10.18.17.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A14B2027061;
+        Mon,  3 Oct 2022 15:45:30 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v7 0/3] blk-cgroup: Optimize blkcg_rstat_flush()
+Date:   Mon,  3 Oct 2022 11:44:56 -0400
+Message-Id: <20221003154459.207538-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OOHJpowuF7rqPJPU"
-Content-Disposition: inline
-In-Reply-To: <20220930220834.GK3600936@dread.disaster.area>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+ v7:
+  - Drop patch 1 ("blk-cgroup: Correctly free percpu iostat_cpu in blkg
+    on error exit") as it is found to be unnecessary.
+  - Add a new llist patch to provide a lockless list variant terminated
+    by a sentinel node.
+  - Modified patch 3 to use the new sllist API and move percpu_ref_put()
+    later in the blkcg_rstat_flush() loop to prevent potential
+    use-after-free problem.
 
---OOHJpowuF7rqPJPU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ v6:
+  - Add a missing free_percpu() into blkcg_css_free() in patch 3.
+  - Integrating the documentation patch 4 back into patch 3.
 
-On Sat, Oct 01, 2022 at 08:08:34AM +1000, Dave Chinner <david@fromorbit.com> wrote:
-> You might be right in that c9afe31ec443 exposed the issue, but it's
-> not the root cause. I think c9afe31ec443 just a case of a
-> new caller of mem_cgroup_handle_over_high() stepping on the landmine
-> left by b3ff92916af3 adding an unconditional GFP_KERNEL direct
-> reclaim deep in the guts of the memcg code.
+ v5:
+  - Add a new patch 2 to eliminate the use of intermediate "ret"
+    variable in blkcg_css_alloc() to fix compilation warning reported
+    by kernel test robot.
 
-It's specific of the memory.high induced reclaim that it happens out of
-sensitive paths (as was with exit to usermode or workqueue), so there'd
-be no explicit flags to pass through, hence the unconditional
-GFP_KERNEL.
+This patch series improves blkcg_rstat_flush() performance by eliminating
+unnecessary blkg enumeration and flush operations for those blkg's and
+blkg_iostat_set's that haven't been updated since the last flush.
 
-> So what's the real root cause of the issue - the commit that stepped
-> on the landmine, or the commit that placed the landmine?
+Waiman Long (3):
+  llist: Add a lock-less list variant terminated by a sentinel node
+  blk-cgroup: Return -ENOMEM directly in blkcg_css_alloc() error path
+  blk-cgroup: Optimize blkcg_rstat_flush()
 
-My preference here is slighty on the newer commit but feel free to
-reference both.
+ block/blk-cgroup.c    |  85 ++++++++++++++++++++++-----
+ block/blk-cgroup.h    |   9 +++
+ include/linux/llist.h | 132 +++++++++++++++++++++++++++++++++++++++++-
+ lib/llist.c           |  79 ++++++++++++++++++++++++-
+ 4 files changed, 289 insertions(+), 16 deletions(-)
 
-> Either way, if anyone backports b3ff92916af3 or has a kernel with
-> b3ff92916af3 and not c9afe31ec443, they still need to know
-> about the landmine in b3ff92916af3....
+-- 
+2.31.1
 
-To be on the same page -- having just b3ff92916af3 won't lead to the
-described cycle when FS code reclaims without GFP_NOFS? (IOW, how would
-the fix look like fix without c9afe31ec443?)
-
-Thanks,
-Michal
-
---OOHJpowuF7rqPJPU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYzr68gAKCRAkDQmsBEOq
-uShAAP4nCUb/8BBe0G5NPxDTfRtDkhqnQSLtUqP1SheQihbQ8AEA08BzlyOuRTWH
-DwghMoqgqag9V2P98YpcCDpA2R/KvwA=
-=/1mZ
------END PGP SIGNATURE-----
-
---OOHJpowuF7rqPJPU--
