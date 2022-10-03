@@ -2,131 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0775F323D
-	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57135F3255
+	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 17:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbiJCPBn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Oct 2022 11:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
+        id S230014AbiJCPIl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Oct 2022 11:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbiJCPBl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 11:01:41 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F4933367
-        for <cgroups@vger.kernel.org>; Mon,  3 Oct 2022 08:01:40 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id k10so16992533lfm.4
-        for <cgroups@vger.kernel.org>; Mon, 03 Oct 2022 08:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
-        bh=9rAQZSDFLx6oyudqXJUAKh8EPFf5CZriEW2Q/puz7cw=;
-        b=R8sv2LFCszyDp3XyJnq6sBvDNnGkSMQYnrP0Lc3g+w4Yp8MnStv2rONOs0pMHKHcfd
-         b1HwUh/xsuxD6nwHgRLiKUWcF23LKLGO3t3trUjyZC1CnwmHORgYdieP+o8PO5wklJjZ
-         gvvs6uXlyJ2PsOJYOa/Xi3YiaNhGR2lFYaOqLZ6MZ1/sHkr/mKvS76+s1GvLAKF6leys
-         CryJL6jxaaUc1b8uatBJ/TDxAMK7CvHL5sBQYWQWhzPYNOEcuOeosg+tj3FWXixEaYbK
-         6feHOwigK9z4PuRHCKdXAFlm5jhOu7kw/YrGgQumu4diYCXnfDawjwmf7Yv730voEpEL
-         znWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date;
-        bh=9rAQZSDFLx6oyudqXJUAKh8EPFf5CZriEW2Q/puz7cw=;
-        b=0IIEzkbw1CjvISUsrwgUSiipGGxs/VbIEH5cu47BXTWmKLh/m350vrD9fz82Wy7yda
-         z0t4iXQElH6AtjQhf1LAh4x9xYEX1+9z0xKsURuk5vV03cC6UleF2Arixvi3lQ7Kre//
-         mfjySAYD5w0REENrMqiy/7sLCCwVFf5UxJooNGOTpGPB2bruXr6vrfC9/tw9HIISk0Fy
-         DtXHo2R1gtGCRAL2TLTofyATtXbG2jaK8cccTiJbuYLSQnryyCBRxWMNwq2tNy+Oyc85
-         qVjCxCLP/Zw7gGNtAQ4PNfQ5+f4knBg/HFrp4XX2ra6DSKB7YQ4EGSZo9jLUugAN7HmJ
-         Qd4A==
-X-Gm-Message-State: ACrzQf1mFkcNHUoFNR/IVvuwlFHzX5iEey9wfa4cjo29g/ebvCAGRt9J
-        onC9CxK6Sm89TKTJuGPNVBQ=
-X-Google-Smtp-Source: AMsMyM7sHpygU+KbInUJWX2tRggNVSc8JmSzUbVltsBYyqZ+reOPbJxrmcMdzi49gQ2Qb8oMaPYUNA==
-X-Received: by 2002:a19:f713:0:b0:4a2:2eda:dbc7 with SMTP id z19-20020a19f713000000b004a22edadbc7mr2913849lfe.511.1664809298701;
-        Mon, 03 Oct 2022 08:01:38 -0700 (PDT)
-Received: from ?IPV6:2a02:2168:a11:244b::1? ([2a02:2168:a11:244b::1])
-        by smtp.gmail.com with ESMTPSA id x7-20020a2e9c87000000b0026dcfe9c7dasm509453lji.14.2022.10.03.08.01.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Oct 2022 08:01:38 -0700 (PDT)
-Message-ID: <2f9bdffd-062e-a364-90c4-da7f09c95619@gmail.com>
-Date:   Mon, 3 Oct 2022 18:01:35 +0300
+        with ESMTP id S229864AbiJCPIk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 11:08:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325481BEBE;
+        Mon,  3 Oct 2022 08:08:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D54AA21982;
+        Mon,  3 Oct 2022 15:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1664809717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aytUdXlGSVAVAW293DkhDivkGR0N7fkvULdwZOjcsOA=;
+        b=n/FrNF6zgz6jZFmZnlJOWIbrGzQYXL6yM0mJ/jc+QIH1ww+yX9V1b8JfTsKpXG0QyYRZmf
+        gIWbP1pq/MTUlu8K1wfZh8MsW1LfrK7LvQVeKNgMVX51MimhtIJL5YlF+de/kXp+5BF+0J
+        Pnl3KLp1HBlbjwAkHetW094SQIHonQM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A974C13522;
+        Mon,  3 Oct 2022 15:08:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id O/oGKPX6OmN5dgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 03 Oct 2022 15:08:37 +0000
+Date:   Mon, 3 Oct 2022 17:08:36 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] memcg: calling reclaim_high(GFP_KERNEL) in GFP_NOFS
+ context deadlocks
+Message-ID: <Yzr69M9MtNYIKPBx@blackbook>
+References: <20220929215440.1967887-1-david@fromorbit.com>
+ <20220929222006.GI3600936@dread.disaster.area>
+ <YzbesGeUkX3qwqj8@blackbook>
+ <20220930220834.GK3600936@dread.disaster.area>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Subject: Re: Possible race in obj_stock_flush_required() vs drain_obj_stock()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <1664546131660.1777662787.1655319815@gmail.com>
- <Yzc0yZwDB8GG+4t7@P9FQF9L96D.corp.robot.car>
- <b91e75f4-b09c-85aa-c6ad-2364dab9af92@gmail.com>
- <Yzm5cukBe6IfyAs7@P9FQF9L96D.lan>
- <d3cf9c69-19a1-53f9-cf97-5d40ce5cda44@gmail.com>
- <YzrkaKZKYqx+c325@dhcp22.suse.cz>
- <821923d8-17c3-f1c2-4d6a-5653c88db3e8@gmail.com>
- <YzrxNGpf7sSwSWy2@dhcp22.suse.cz>
-From:   Alexander Fedorov <halcien@gmail.com>
-In-Reply-To: <YzrxNGpf7sSwSWy2@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OOHJpowuF7rqPJPU"
+Content-Disposition: inline
+In-Reply-To: <20220930220834.GK3600936@dread.disaster.area>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 03.10.2022 17:27, Michal Hocko wrote:
-> On Mon 03-10-22 17:09:15, Alexander Fedorov wrote:
->> On 03.10.2022 16:32, Michal Hocko wrote:
->>> On Mon 03-10-22 15:47:10, Alexander Fedorov wrote:
->>>> @@ -3197,17 +3197,30 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
->>>>  		stock->nr_bytes = 0;
->>>>  	}
->>>>  
->>>> -	obj_cgroup_put(old);
->>>> +	/*
->>>> +	 * Clear pointer before freeing memory so that
->>>> +	 * drain_all_stock() -> obj_stock_flush_required()
->>>> +	 * does not see a freed pointer.
->>>> +	 */
->>>>  	stock->cached_objcg = NULL;
->>>> +	obj_cgroup_put(old);
->>>
->>> Do we need barrier() or something else to ensure there is no reordering?
->>> I am not reallyu sure what kind of barriers are implied by the pcp ref
->>> counting.
->>
->> obj_cgroup_put() -> kfree_rcu() -> synchronize_rcu() should take care
->> of this:
-> 
-> This is a very subtle guarantee. Also it would only apply if this is the
-> last reference, right?
 
-Hmm, yes, for the last reference only, also not sure about pcp ref
-counter ordering rules for previous references.
+--OOHJpowuF7rqPJPU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Is there any reason to not use
-> 	WRITE_ONCE(stock->cached_objcg, NULL);
-> 	obj_cgroup_put(old);
-> 
-> IIRC this should prevent any reordering. 
+On Sat, Oct 01, 2022 at 08:08:34AM +1000, Dave Chinner <david@fromorbit.com> wrote:
+> You might be right in that c9afe31ec443 exposed the issue, but it's
+> not the root cause. I think c9afe31ec443 just a case of a
+> new caller of mem_cgroup_handle_over_high() stepping on the landmine
+> left by b3ff92916af3 adding an unconditional GFP_KERNEL direct
+> reclaim deep in the guts of the memcg code.
 
-Now that I think about it we actually must use WRITE_ONCE everywhere
-when writing cached_objcg because otherwise compiler might split the
-pointer-sized store into several smaller-sized ones (store tearing),
-and obj_stock_flush_required() would read garbage instead of pointer.
+It's specific of the memory.high induced reclaim that it happens out of
+sensitive paths (as was with exit to usermode or workqueue), so there'd
+be no explicit flags to pass through, hence the unconditional
+GFP_KERNEL.
 
-And thinking about memory barriers, maybe we need them too alongside
-WRITE_ONCE when setting pointer to non-null value?  Otherwise
-drain_all_stock() -> obj_stock_flush_required() might read old data.
-Since that's exactly what rcu_assign_pointer() does, it seems
-that we are going back to using rcu_*() primitives everywhere?
+> So what's the real root cause of the issue - the commit that stepped
+> on the landmine, or the commit that placed the landmine?
+
+My preference here is slighty on the newer commit but feel free to
+reference both.
+
+> Either way, if anyone backports b3ff92916af3 or has a kernel with
+> b3ff92916af3 and not c9afe31ec443, they still need to know
+> about the landmine in b3ff92916af3....
+
+To be on the same page -- having just b3ff92916af3 won't lead to the
+described cycle when FS code reclaims without GFP_NOFS? (IOW, how would
+the fix look like fix without c9afe31ec443?)
+
+Thanks,
+Michal
+
+--OOHJpowuF7rqPJPU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYzr68gAKCRAkDQmsBEOq
+uShAAP4nCUb/8BBe0G5NPxDTfRtDkhqnQSLtUqP1SheQihbQ8AEA08BzlyOuRTWH
+DwghMoqgqag9V2P98YpcCDpA2R/KvwA=
+=/1mZ
+-----END PGP SIGNATURE-----
+
+--OOHJpowuF7rqPJPU--
