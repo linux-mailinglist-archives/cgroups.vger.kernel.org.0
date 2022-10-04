@@ -2,64 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5827D5F4C3E
-	for <lists+cgroups@lfdr.de>; Wed,  5 Oct 2022 00:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E23E5F4CA6
+	for <lists+cgroups@lfdr.de>; Wed,  5 Oct 2022 01:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbiJDWzG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Oct 2022 18:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S230040AbiJDXe7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Oct 2022 19:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiJDWzF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Oct 2022 18:55:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD80DF95
-        for <cgroups@vger.kernel.org>; Tue,  4 Oct 2022 15:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664924100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DC7n5vrJm9+7rtzmCox+oVCN8flf2wk8nlQItN2YxhA=;
-        b=W72N73GBVXuNma9FdfBikf9sd4fupF03OjMiVi6ldd4VlkkjCmlVIWvPDtbmcAls/AqL7R
-        Lu5YEYC187FvMV2xrPretJbgVuvmgyGV3io4XKOWO1lfM8yEjd7JccxlI1CTOXD6WgDMoZ
-        dvu3TF5yMSQlYhcKYa2UdBeXw6XLwjo=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-2-0IBI0tUgMT6xquT_Hvi9Dg-1; Tue, 04 Oct 2022 18:53:38 -0400
-X-MC-Unique: 0IBI0tUgMT6xquT_Hvi9Dg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 644173800C22;
-        Tue,  4 Oct 2022 22:53:38 +0000 (UTC)
-Received: from [10.22.10.217] (unknown [10.22.10.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D34C235429;
-        Tue,  4 Oct 2022 22:53:37 +0000 (UTC)
-Message-ID: <35942f9a-e21c-9317-3d9f-61cbac5f8dfd@redhat.com>
-Date:   Tue, 4 Oct 2022 18:53:37 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH v8 3/3] blk-cgroup: Optimize blkcg_rstat_flush()
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20221004151748.293388-1-longman@redhat.com>
- <20221004151748.293388-4-longman@redhat.com> <YzyAT/lfyKhOnOpy@blackbook>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <YzyAT/lfyKhOnOpy@blackbook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        with ESMTP id S230131AbiJDXe5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Oct 2022 19:34:57 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7869AA1AA
+        for <cgroups@vger.kernel.org>; Tue,  4 Oct 2022 16:34:54 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id z7-20020a170903018700b0017835863686so11198904plg.11
+        for <cgroups@vger.kernel.org>; Tue, 04 Oct 2022 16:34:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date;
+        bh=1VwEyudEEg4smBY+MKZJWdKtquNfzB47uQiiqV8iKco=;
+        b=NTnSd9KVV9hSY/eQWHkPHqQELNcIlqXK5hsxw8/MyexBmo1bKCndxFIWE0/C+FZmFI
+         b11BypLFppC7UdyHn8rthfOwwJjqsgCrxnuD6cNd+0+xrH0d1+/k+Nwtr8TSQ2EUsCug
+         OVYko2zetdkm1pM9AxqEGmEwKzORdSEW9qqgBCsaCQmp4G2ucgjqRP6zktn3MQ5b4kz/
+         Lrq/ORYH0cFTXNOMop7YlY3ty97eccT7Xhy5HKM4jlo1ipvycIUlJc3uUcds3eWwEWQP
+         6JXQb0c9AO4n177s6Rz0uP11zUUDZSknUhSW3b7sBMw3MxcoFPVumzPz6OBwo4IP5hqL
+         Bspg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=1VwEyudEEg4smBY+MKZJWdKtquNfzB47uQiiqV8iKco=;
+        b=uOkgmyDPY9eQRfNqYcjM8W4wcnlhIpuN+fPykx6i+bFtcW/CFIIsGV2ltIxECPzuKF
+         TrHqLM9nhwroQ3Gqf6Ob8YrWE13HktGnE5iM3kq6qqzbI1sXxalrJ3q9AQv/gvJ79Aia
+         j9aUfULmjC4SLmfAzA6Zwo8o/oq+4ZOdqsbpXt9dyaiITGJsHuvr6l9K4FuDDq99LY0A
+         v/nNaEF5lxO7ZuiYIV46/IIoTk0sTqFJJrexsznpKBwsii4W9yJ4oGZ/0gqWk+h0oktH
+         96Niz4EqHoaxbZvVvA/2JcSHsFQUqqTOdDjZupttBfC2+0KLTKYLy5dJBElk50dvncka
+         BC3A==
+X-Gm-Message-State: ACrzQf1cZ6gEOeSoYPuuKD+RIIsSVTD6oNI5+XDoMusxW+Bu48TDz7Jr
+        7rYQJ1vB/Txnby3WhWshXhB2PWqoTe0I9BFS
+X-Google-Smtp-Source: AMsMyM7G2avoH6qtf6yI3RrR3LpogE6JnX6Z1xf+0wvpymlSTnAYLsRP24LicTX48tUJpOueGYCpPRPrkAvAMZ7b
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:90a:c986:b0:205:f08c:a82b with SMTP
+ id w6-20020a17090ac98600b00205f08ca82bmr438572pjt.1.1664926493371; Tue, 04
+ Oct 2022 16:34:53 -0700 (PDT)
+Date:   Tue,  4 Oct 2022 23:34:46 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Message-ID: <20221004233446.787056-1-yosryahmed@google.com>
+Subject: [PATCH] mm/vmscan: check references from all memcgs for swapbacked memory
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,134 +71,112 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/4/22 14:49, Michal Koutný wrote:
-> Hello.
->
-> On Tue, Oct 04, 2022 at 11:17:48AM -0400, Waiman Long <longman@redhat.com> wrote:
->> To protect against destruction of blkg, a percpu reference is gotten
->> when putting into the lockless list and put back when removed.
-> Just to conclude my previous remark about the loop, let me try
-> explaining it more precisely:
->
-> blkcg->lhead via blkg_iostat_set holds reference to blkcg_gq
->     (taken in in blk_cgroup_bio_start)
->
-> blkcg_gq holds reference to its blkcg_gq->blkcg
->     (taken in blkg_create)
->
-> The cycle has two edges, the latter is broken in __blkg_release but
-> that's a release callback of the involved blkcg_gq->refcnt, so it won't
-> be called.
->
-> The first edges is broken in blkcg_rstat_flush and that's more promising.
-> The current code does the final flushes -- in css_release_work_fn.
-> The problem is that it's the release callback of blkcg->css, i.e. it's
-> also referenced on the cycle, therefore this final flush won't happen
-> before cycle is broken.
->
-> Fortunately, any other caller of cgroup_rstat_flush comes to the rescue
-> -- the blkcg_rstat_flush on the stuck blkcg would decompose lhead list
-> and the reference cycle is broken.
->
-> In summary, I think this adds the reference cycle but its survival time
-> is limited to the soonest cgroup_rstat_flush call, which should not
-> cause practical troubles.
+During page/folio reclaim, we check folio is referenced using
+folio_referenced() to avoid reclaiming folios that have been recently
+accessed (hot memory). The ratinale is that this memory is likely to be
+accessed soon, and hence reclaiming it will cause a refault.
 
-Thanks for the explanation. I now get what you are referring to. Yes, 
-this delayed blkcg removal problem is annoying. I think the following 
-patch should eliminate this issue. What do you think?
+For memcg reclaim, we pass in sc->target_mem_cgroup to
+folio_referenced(), which means we only check accesses to the folio
+from processes in the subtree of the target memcg. This behavior was
+originally introduced by commit bed7161a519a ("Memory controller: make
+page_referenced() cgroup aware") a long time ago. Back then, refaulted
+pages would get charged to the memcg of the process that was faulting them
+in. It made sense to only consider accesses coming from processes in the
+subtree of target_mem_cgroup. If a page was charged to memcg A but only
+being accessed by a sibling memcg B, we would reclaim it if memcg A is
+under pressure. memcg B can then fault it back in and get charged for it
+appropriately.
 
-Cheers,
-Longman
+Today, this behavior still makes sense for file pages. However, unlike
+file pages, when swapbacked pages are refaulted they are charged to the
+memcg that was originally charged for them during swapout. Which
+means that if a swapbacked page is charged to memcg A but only used by
+memcg B, and we reclaim it when memcg A is under pressure, it would
+simply be faulted back in and charged again to memcg A once memcg B
+accesses it. In that sense, accesses from all memcgs matter equally when
+considering if a swapbacked page/folio is a viable reclaim target.
 
-----------------8<-------------[ cut here ]------------------
+Add folio_referenced_memcg() which decides what memcg we should pass to
+folio_referenced() based on the folio type, and includes an elaborate
+comment about why we should do so. This should help reclaim make better
+decision and reduce refaults when reclaiming swapbacked memory that is
+used by multiple memcgs.
 
-  block/blk-cgroup.c     | 15 ++++++++++++++-
-  include/linux/cgroup.h |  1 +
-  kernel/cgroup/rstat.c  | 20 ++++++++++++++++++++
-  3 files changed, 35 insertions(+), 1 deletion(-)
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ mm/vmscan.c | 38 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 63569b05db0d..f896caef9947 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1122,10 +1122,12 @@ struct list_head *blkcg_get_cgwb_list(struct 
-cgroup_subsys_state *css)
-   */
-  static void blkcg_destroy_blkgs(struct blkcg *blkcg)
-  {
-+    int cpu;
-+
-      might_sleep();
-
-+    css_get(&blkcg->css);
-      spin_lock_irq(&blkcg->lock);
--
-      while (!hlist_empty(&blkcg->blkg_list)) {
-          struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
-                          struct blkcg_gq, blkcg_node);
-@@ -1148,6 +1150,17 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
-      }
-
-      spin_unlock_irq(&blkcg->lock);
-+
-+    /*
-+     * Flush all the non-empty percpu lockless lists.
-+     */
-+    for_each_possible_cpu(cpu) {
-+        struct llist_head *lhead = per_cpu_ptr(blkcg->lhead, cpu);
-+
-+        if (!llist_empty(lhead))
-+            cgroup_rstat_css_flush(&blkcg->css, cpu);
-+    }
-+    css_put(&blkcg->css);
-  }
-
-  /**
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index ac5d0515680e..33e226a34073 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -763,6 +763,7 @@ void cgroup_rstat_flush(struct cgroup *cgrp);
-  void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp);
-  void cgroup_rstat_flush_hold(struct cgroup *cgrp);
-  void cgroup_rstat_flush_release(void);
-+void cgroup_rstat_css_flush(struct cgroup_subsys_state *css, int cpu);
-
-  /*
-   * Basic resource stats.
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index feb59380c896..a4e18d627b54 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -251,6 +251,26 @@ void cgroup_rstat_flush_release(void)
-      spin_unlock_irq(&cgroup_rstat_lock);
-  }
-
-+/**
-+ * cgroup_rstat_css_flush - flush stats for the given css and cpu
-+ * @css: target css to be flush
-+ * @cpu: the cpu that holds the stats to be flush
-+ *
-+ * A lightweight rstat flush operation for a given css and cpu.
-+ * Only the cpu_lock is being held for mutual exclusion, the 
-cgroup_rstat_lock
-+ * isn't used.
-+ */
-+void cgroup_rstat_css_flush(struct cgroup_subsys_state *css, int cpu)
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index c5a4bff11da6..f9fa0f9287e5 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1443,14 +1443,43 @@ enum folio_references {
+ 	FOLIOREF_ACTIVATE,
+ };
+ 
++/* What memcg should we pass to folio_referenced()? */
++static struct mem_cgroup *folio_referenced_memcg(struct folio *folio,
++						 struct mem_cgroup *target_memcg)
 +{
-+    raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
-+
-+    raw_spin_lock_irq(cpu_lock);
-+    rcu_read_lock();
-+    css->ss->css_rstat_flush(css, cpu);
-+    rcu_read_unlock();
-+    raw_spin_unlock_irq(cpu_lock);
++	/*
++	 * We check references to folios to make sure we don't reclaim hot
++	 * folios that are likely to be refaulted soon. We pass a memcg to
++	 * folio_referenced() to only check references coming from processes in
++	 * that memcg's subtree.
++	 *
++	 * For file folios, we only consider references from processes in the
++	 * subtree of the target memcg. If a folio is charged to
++	 * memcg A but is only referenced by processes in memcg B, we reclaim it
++	 * if memcg A is under pressure. If it is later accessed by memcg B it
++	 * will be faulted back in and charged to memcg B. For memcg A, this is
++	 * called memory that should be reclaimed.
++	 *
++	 * On the other hand, when swapbacked folios are faulted in, they get
++	 * charged to the memcg that was originally charged for them at the time
++	 * of swapping out. This means that if a folio that is charged to
++	 * memcg A gets swapped out, it will get charged back to A when *any*
++	 * memcg accesses it. In that sense, we need to consider references from
++	 * *all* processes when considering whether to reclaim a swapbacked
++	 * folio.
++	 */
++	return folio_test_swapbacked(folio) ? NULL : target_memcg;
 +}
 +
-  int cgroup_rstat_init(struct cgroup *cgrp)
-  {
-      int cpu;
+ static enum folio_references folio_check_references(struct folio *folio,
+ 						  struct scan_control *sc)
+ {
+ 	int referenced_ptes, referenced_folio;
+ 	unsigned long vm_flags;
++	struct mem_cgroup *memcg = folio_referenced_memcg(folio,
++						sc->target_mem_cgroup);
+ 
+-	referenced_ptes = folio_referenced(folio, 1, sc->target_mem_cgroup,
+-					   &vm_flags);
++	referenced_ptes = folio_referenced(folio, 1, memcg, &vm_flags);
+ 	referenced_folio = folio_test_clear_referenced(folio);
+ 
+ 	/*
+@@ -2581,6 +2610,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ 
+ 	while (!list_empty(&l_hold)) {
+ 		struct folio *folio;
++		struct mem_cgroup *memcg;
+ 
+ 		cond_resched();
+ 		folio = lru_to_folio(&l_hold);
+@@ -2600,8 +2630,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ 		}
+ 
+ 		/* Referenced or rmap lock contention: rotate */
+-		if (folio_referenced(folio, 0, sc->target_mem_cgroup,
+-				     &vm_flags) != 0) {
++		memcg = folio_referenced_memcg(folio, sc->target_mem_cgroup);
++		if (folio_referenced(folio, 0, memcg, &vm_flags) != 0) {
+ 			/*
+ 			 * Identify referenced, file-backed active folios and
+ 			 * give them one more trip around the active list. So
 -- 
-
+2.38.0.rc1.362.ged0d419d3c-goog
 
