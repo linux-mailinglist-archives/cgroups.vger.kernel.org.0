@@ -2,297 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7373A5F466B
-	for <lists+cgroups@lfdr.de>; Tue,  4 Oct 2022 17:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5205F475C
+	for <lists+cgroups@lfdr.de>; Tue,  4 Oct 2022 18:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbiJDPSS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Oct 2022 11:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S229744AbiJDQSu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Oct 2022 12:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbiJDPSL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Oct 2022 11:18:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D51A5F117
-        for <cgroups@vger.kernel.org>; Tue,  4 Oct 2022 08:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664896687;
+        with ESMTP id S229722AbiJDQSt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Oct 2022 12:18:49 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E645F119
+        for <cgroups@vger.kernel.org>; Tue,  4 Oct 2022 09:18:48 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 09:18:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1664900326;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0FpnMCqztZfcSkuoNWtTteDfyJFqXA0aSmNRg6udllo=;
-        b=WC/c6IIcHCGCmcgS0VmcTp/B5/zno3KJ93sIhZIoLHc2Awy4Q1wJ8sVevLELa/NJruzw1t
-        YSJEo81s+oZ4nzCigFJgr+kq2kDxealc3mnsuXtByVw2Xqh/OgH331IXu7RvPEmYncdFgs
-        lyeNcjIRyVeALmod0e6BNSy5DKU7+l0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-611-bh6WZBlvPxyRyOeK73kHFQ-1; Tue, 04 Oct 2022 11:18:04 -0400
-X-MC-Unique: bh6WZBlvPxyRyOeK73kHFQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9E3C02999B2A;
-        Tue,  4 Oct 2022 15:18:01 +0000 (UTC)
-Received: from llong.com (unknown [10.22.10.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 328042166B29;
-        Tue,  4 Oct 2022 15:18:01 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v8 3/3] blk-cgroup: Optimize blkcg_rstat_flush()
-Date:   Tue,  4 Oct 2022 11:17:48 -0400
-Message-Id: <20221004151748.293388-4-longman@redhat.com>
-In-Reply-To: <20221004151748.293388-1-longman@redhat.com>
-References: <20221004151748.293388-1-longman@redhat.com>
+        bh=ZUComksE3kcEt46sxXrKqcpfs6gx5hGj/h6rV5lmqcA=;
+        b=sMO7vktZT5MGx84xs2oOUmu8oUi89tdQnMxkIFjywwl4y39OEIc2bizLFqfa+JS6ri6azL
+        Puy0FUqzIvk0/3dyPuJS4UoaxKZk12X/YFishkxYpBUyyi2TlsCqf3i3rXFq8BZhbPfgA+
+        IgKU+H2s3Qlcq0X/zgTyfbpEgtEQMgw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Alexander Fedorov <halcien@gmail.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: Possible race in obj_stock_flush_required() vs drain_obj_stock()
+Message-ID: <Yzxc0jzOnAu667F8@P9FQF9L96D.lan>
+References: <1664546131660.1777662787.1655319815@gmail.com>
+ <Yzc0yZwDB8GG+4t7@P9FQF9L96D.corp.robot.car>
+ <b91e75f4-b09c-85aa-c6ad-2364dab9af92@gmail.com>
+ <Yzm5cukBe6IfyAs7@P9FQF9L96D.lan>
+ <d3cf9c69-19a1-53f9-cf97-5d40ce5cda44@gmail.com>
+ <YzrkaKZKYqx+c325@dhcp22.suse.cz>
+ <821923d8-17c3-f1c2-4d6a-5653c88db3e8@gmail.com>
+ <YzrxNGpf7sSwSWy2@dhcp22.suse.cz>
+ <2f9bdffd-062e-a364-90c4-da7f09c95619@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f9bdffd-062e-a364-90c4-da7f09c95619@gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-For a system with many CPUs and block devices, the time to do
-blkcg_rstat_flush() from cgroup_rstat_flush() can be rather long. It
-can be especially problematic as interrupt is disabled during the flush.
-It was reported that it might take seconds to complete in some extreme
-cases leading to hard lockup messages.
+On Mon, Oct 03, 2022 at 06:01:35PM +0300, Alexander Fedorov wrote:
+> On 03.10.2022 17:27, Michal Hocko wrote:
+> > On Mon 03-10-22 17:09:15, Alexander Fedorov wrote:
+> >> On 03.10.2022 16:32, Michal Hocko wrote:
+> >>> On Mon 03-10-22 15:47:10, Alexander Fedorov wrote:
+> >>>> @@ -3197,17 +3197,30 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+> >>>>  		stock->nr_bytes = 0;
+> >>>>  	}
+> >>>>  
+> >>>> -	obj_cgroup_put(old);
+> >>>> +	/*
+> >>>> +	 * Clear pointer before freeing memory so that
+> >>>> +	 * drain_all_stock() -> obj_stock_flush_required()
+> >>>> +	 * does not see a freed pointer.
+> >>>> +	 */
+> >>>>  	stock->cached_objcg = NULL;
+> >>>> +	obj_cgroup_put(old);
+> >>>
+> >>> Do we need barrier() or something else to ensure there is no reordering?
+> >>> I am not reallyu sure what kind of barriers are implied by the pcp ref
+> >>> counting.
+> >>
+> >> obj_cgroup_put() -> kfree_rcu() -> synchronize_rcu() should take care
+> >> of this:
+> > 
+> > This is a very subtle guarantee. Also it would only apply if this is the
+> > last reference, right?
+> 
+> Hmm, yes, for the last reference only, also not sure about pcp ref
+> counter ordering rules for previous references.
+> 
+> > Is there any reason to not use
+> > 	WRITE_ONCE(stock->cached_objcg, NULL);
+> > 	obj_cgroup_put(old);
+> > 
+> > IIRC this should prevent any reordering. 
+> 
+> Now that I think about it we actually must use WRITE_ONCE everywhere
+> when writing cached_objcg because otherwise compiler might split the
+> pointer-sized store into several smaller-sized ones (store tearing),
+> and obj_stock_flush_required() would read garbage instead of pointer.
+>
+> And thinking about memory barriers, maybe we need them too alongside
+> WRITE_ONCE when setting pointer to non-null value?  Otherwise
+> drain_all_stock() -> obj_stock_flush_required() might read old data.
+> Since that's exactly what rcu_assign_pointer() does, it seems
+> that we are going back to using rcu_*() primitives everywhere?
 
-As it is likely that not all the percpu blkg_iostat_set's has been
-updated since the last flush, those stale blkg_iostat_set's don't need
-to be flushed in this case. This patch optimizes blkcg_rstat_flush()
-by keeping a lockless list of recently updated blkg_iostat_set's in a
-newly added percpu blkcg->lhead pointer.
+Hm, Idk, I'm still somewhat resistant to the idea of putting rcu primitives,
+but maybe it's the right thing. Maybe instead we should always schedule draining
+on all cpus instead and perform a cpu-local check and bail out if a flush is not
+required? Michal, Johannes, what do you think?
 
-The blkg_iostat_set is added to a sentinel lockless list on the update
-side in blk_cgroup_bio_start(). It is removed from the sentinel lockless
-list when flushed in blkcg_rstat_flush(). Due to racing, it is possible
-that blk_iostat_set's in the lockless list may have no new IO stats to
-be flushed, but that is OK.
+Btw the same approach is used for the memcg part (stock->cached),
+so if we're going to change anything, we need to change it too.
 
-To protect against destruction of blkg, a percpu reference is gotten
-when putting into the lockless list and put back when removed.
-
-A blkg_iostat_set can determine if it is in a lockless list by checking
-the content of its lnode.next pointer which will be non-NULL when in
-a sentinel lockless list.
-
-When booting up an instrumented test kernel with this patch on a
-2-socket 96-thread system with cgroup v2, out of the 2051 calls to
-cgroup_rstat_flush() after bootup, 1788 of the calls were exited
-immediately because of empty lockless list. After an all-cpu kernel
-build, the ratio became 6295424/6340513. That was more than 99%.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
- block/blk-cgroup.c | 75 ++++++++++++++++++++++++++++++++++++++++++----
- block/blk-cgroup.h |  9 ++++++
- 2 files changed, 78 insertions(+), 6 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 946592249795..63569b05db0d 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -59,6 +59,37 @@ static struct workqueue_struct *blkcg_punt_bio_wq;
- 
- #define BLKG_DESTROY_BATCH_SIZE  64
- 
-+/*
-+ * Lockless lists for tracking IO stats update
-+ *
-+ * New IO stats are stored in the percpu iostat_cpu within blkcg_gq (blkg).
-+ * There are multiple blkg's (one for each block device) attached to each
-+ * blkcg. The rstat code keeps track of which cpu has IO stats updated,
-+ * but it doesn't know which blkg has the updated stats. If there are many
-+ * block devices in a system, the cost of iterating all the blkg's to flush
-+ * out the IO stats can be high. To reduce such overhead, a set of percpu
-+ * lockless lists (lhead) per blkcg are used to track the set of recently
-+ * updated iostat_cpu's since the last flush. An iostat_cpu will be put
-+ * onto the lockless list on the update side [blk_cgroup_bio_start()] if
-+ * not there yet and then removed when being flushed [blkcg_rstat_flush()].
-+ * References to blkg are gotten and then put back in the process to
-+ * protect against blkg removal.
-+ *
-+ * Return: 0 if successful or -ENOMEM if allocation fails.
-+ */
-+static int init_blkcg_llists(struct blkcg *blkcg)
-+{
-+	int cpu;
-+
-+	blkcg->lhead = alloc_percpu_gfp(struct llist_head, GFP_KERNEL);
-+	if (!blkcg->lhead)
-+		return -ENOMEM;
-+
-+	for_each_possible_cpu(cpu)
-+		init_sllist_head(per_cpu_ptr(blkcg->lhead, cpu));
-+	return 0;
-+}
-+
- /**
-  * blkcg_css - find the current css
-  *
-@@ -236,8 +267,10 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct request_queue *q,
- 	blkg->blkcg = blkcg;
- 
- 	u64_stats_init(&blkg->iostat.sync);
--	for_each_possible_cpu(cpu)
-+	for_each_possible_cpu(cpu) {
- 		u64_stats_init(&per_cpu_ptr(blkg->iostat_cpu, cpu)->sync);
-+		per_cpu_ptr(blkg->iostat_cpu, cpu)->blkg = blkg;
-+	}
- 
- 	for (i = 0; i < BLKCG_MAX_POLS; i++) {
- 		struct blkcg_policy *pol = blkcg_policy[i];
-@@ -864,7 +897,9 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
- static void blkcg_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- {
- 	struct blkcg *blkcg = css_to_blkcg(css);
--	struct blkcg_gq *blkg;
-+	struct llist_head *lhead = per_cpu_ptr(blkcg->lhead, cpu);
-+	struct llist_node *lnode;
-+	struct blkg_iostat_set *bisc, *next_bisc;
- 
- 	/* Root-level stats are sourced from system-wide IO stats */
- 	if (!cgroup_parent(css->cgroup))
-@@ -872,12 +907,21 @@ static void blkcg_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 
- 	rcu_read_lock();
- 
--	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
-+	lnode = sllist_del_all(lhead);
-+	if (!lnode)
-+		goto out;
-+
-+	/*
-+	 * Iterate only the iostat_cpu's queued in the lockless list.
-+	 */
-+	llist_for_each_entry_safe(bisc, next_bisc, lnode, lnode) {
-+		struct blkcg_gq *blkg = bisc->blkg;
- 		struct blkcg_gq *parent = blkg->parent;
--		struct blkg_iostat_set *bisc = per_cpu_ptr(blkg->iostat_cpu, cpu);
- 		struct blkg_iostat cur;
- 		unsigned int seq;
- 
-+		WRITE_ONCE(lnode->next, NULL);
-+
- 		/* fetch the current per-cpu values */
- 		do {
- 			seq = u64_stats_fetch_begin(&bisc->sync);
-@@ -890,8 +934,10 @@ static void blkcg_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 		if (parent && parent->parent)
- 			blkcg_iostat_update(parent, &blkg->iostat.cur,
- 					    &blkg->iostat.last);
-+		percpu_ref_put(&blkg->refcnt);
- 	}
- 
-+out:
- 	rcu_read_unlock();
- }
- 
-@@ -1170,6 +1216,7 @@ static void blkcg_css_free(struct cgroup_subsys_state *css)
- 
- 	mutex_unlock(&blkcg_pol_mutex);
- 
-+	free_percpu(blkcg->lhead);
- 	kfree(blkcg);
- }
- 
-@@ -1189,6 +1236,9 @@ blkcg_css_alloc(struct cgroup_subsys_state *parent_css)
- 			goto unlock;
- 	}
- 
-+	if (init_blkcg_llists(blkcg))
-+		goto free_blkcg;
-+
- 	for (i = 0; i < BLKCG_MAX_POLS ; i++) {
- 		struct blkcg_policy *pol = blkcg_policy[i];
- 		struct blkcg_policy_data *cpd;
-@@ -1229,7 +1279,8 @@ blkcg_css_alloc(struct cgroup_subsys_state *parent_css)
- 	for (i--; i >= 0; i--)
- 		if (blkcg->cpd[i])
- 			blkcg_policy[i]->cpd_free_fn(blkcg->cpd[i]);
--
-+	free_percpu(blkcg->lhead);
-+free_blkcg:
- 	if (blkcg != &blkcg_root)
- 		kfree(blkcg);
- unlock:
-@@ -1990,6 +2041,7 @@ static int blk_cgroup_io_type(struct bio *bio)
- 
- void blk_cgroup_bio_start(struct bio *bio)
- {
-+	struct blkcg *blkcg = bio->bi_blkg->blkcg;
- 	int rwd = blk_cgroup_io_type(bio), cpu;
- 	struct blkg_iostat_set *bis;
- 	unsigned long flags;
-@@ -2008,9 +2060,20 @@ void blk_cgroup_bio_start(struct bio *bio)
- 	}
- 	bis->cur.ios[rwd]++;
- 
-+	/*
-+	 * If the iostat_cpu isn't in a lockless list, put it into the
-+	 * list to indicate that a stat update is pending.
-+	 */
-+	if (!READ_ONCE(bis->lnode.next)) {
-+		struct llist_head *lhead = this_cpu_ptr(blkcg->lhead);
-+
-+		llist_add(&bis->lnode, lhead);
-+		percpu_ref_get(&bis->blkg->refcnt);
-+	}
-+
- 	u64_stats_update_end_irqrestore(&bis->sync, flags);
- 	if (cgroup_subsys_on_dfl(io_cgrp_subsys))
--		cgroup_rstat_updated(bio->bi_blkg->blkcg->css.cgroup, cpu);
-+		cgroup_rstat_updated(blkcg->css.cgroup, cpu);
- 	put_cpu();
- }
- 
-diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index d2724d1dd7c9..0968b6c8ea12 100644
---- a/block/blk-cgroup.h
-+++ b/block/blk-cgroup.h
-@@ -18,6 +18,7 @@
- #include <linux/cgroup.h>
- #include <linux/kthread.h>
- #include <linux/blk-mq.h>
-+#include <linux/llist.h>
- 
- struct blkcg_gq;
- struct blkg_policy_data;
-@@ -43,6 +44,8 @@ struct blkg_iostat {
- 
- struct blkg_iostat_set {
- 	struct u64_stats_sync		sync;
-+	struct llist_node		lnode;
-+	struct blkcg_gq		       *blkg;
- 	struct blkg_iostat		cur;
- 	struct blkg_iostat		last;
- };
-@@ -97,6 +100,12 @@ struct blkcg {
- 	struct blkcg_policy_data	*cpd[BLKCG_MAX_POLS];
- 
- 	struct list_head		all_blkcgs_node;
-+
-+	/*
-+	 * List of updated percpu blkg_iostat_set's since the last flush.
-+	 */
-+	struct llist_head __percpu	*lhead;
-+
- #ifdef CONFIG_BLK_CGROUP_FC_APPID
- 	char                            fc_app_id[FC_APPID_LEN];
- #endif
--- 
-2.31.1
-
+Thanks!
