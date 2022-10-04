@@ -2,99 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 042975F36E1
-	for <lists+cgroups@lfdr.de>; Mon,  3 Oct 2022 22:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4737A5F3D1E
+	for <lists+cgroups@lfdr.de>; Tue,  4 Oct 2022 09:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiJCUP3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Oct 2022 16:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S229627AbiJDHTb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Oct 2022 03:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbiJCUP2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Oct 2022 16:15:28 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815E42A268;
-        Mon,  3 Oct 2022 13:15:27 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c24so10655305plo.3;
-        Mon, 03 Oct 2022 13:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=C3/N9hbhwupuGmO0AntkXcuTr5FrNGR8ZHngrdZEthU=;
-        b=qRoStCLUpxzw2alYY4nRjwbDniVOp8r0swaVcfpwPdIZNnoFCQ4yfr/+ZSZ1CDeYOs
-         z7pb17R3TjBSqJwf5r/yas2oc5Tg5YIcxLhgMAwL8Az8k0PEcg4mVmeiQR3jyRy/AwhO
-         +YWF/uUicBgF61WQTFHS1YOx12fHVeKIowPbeQbx+MpvPCBiAd7NAmJcvPGKX+vzyvEP
-         lWgbCkExvoG93U49AtvbMOPRVbxtS/ejd3i3tR9o+A3EQBbztZuuvQWE+mjLFEkO272e
-         kMxiNlbpxEbPFy58aiweYJFXjJVHhv1oRFonnxwCQWQ5+4UX9EozgbNg3PmZUJENB6nM
-         TukA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=C3/N9hbhwupuGmO0AntkXcuTr5FrNGR8ZHngrdZEthU=;
-        b=UD/G8Nlhb+PxdnTSTfrXDUQ1pmIfu3QdUQqbmEZ1iwshS+lxvKdm6K1Z6veMvvBjHc
-         i4acfLEcADlHaLvhiLrAC73mDgw5Jz3NPLM7KKxgxLZ77rxh0mKKuskb0KQnwHcVnI4v
-         +s5819KB6uZD6e/tqvtkxvoleJuCowFDTtPVV9VkvgHUKjvIMxF90ztWlZ6Ewd86InQN
-         8FtP+4l+DCwkcjH/oIZgdDWQWH8ugfewCn3DPtci7/pRBbq6FEVYxX6w0vHxtBtUZFJV
-         d+KdFEVN/Nx0TUPmmgFy83AGpKA/WCXr3jU5Hb8wzstcm4ifAunDlE9kFMmyWsktXXZ5
-         8Rmw==
-X-Gm-Message-State: ACrzQf3ADmsHquN3snY+NyFCkPYabuE4RPgMZ6r4C52trapcSBu3gcnE
-        uvqmd9htjx9WyEHS1uuc3mt/qhzFhuOAIw==
-X-Google-Smtp-Source: AMsMyM52XvJpXABGrNU34Tz1SGCYuNUqAG1pM7eFFxSnbt+hDbkTf/b8aWnc/cIS17tC9C+18TN7lw==
-X-Received: by 2002:a17:90b:4d08:b0:20a:6861:352c with SMTP id mw8-20020a17090b4d0800b0020a6861352cmr13840900pjb.225.1664828126740;
-        Mon, 03 Oct 2022 13:15:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:cb45])
-        by smtp.gmail.com with ESMTPSA id v1-20020a626101000000b00543a098a6ffsm7708265pfb.212.2022.10.03.13.15.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Oct 2022 13:15:26 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 3 Oct 2022 10:15:24 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v7 1/3] llist: Add a lock-less list variant terminated by
- a sentinel node
-Message-ID: <YztC3BVzOiwOKZij@slm.duckdns.org>
-References: <20221003154459.207538-1-longman@redhat.com>
- <20221003154459.207538-2-longman@redhat.com>
- <YzsQZPONIJRgtf3o@slm.duckdns.org>
- <006ebc52-ab37-442a-9ba3-e7b8dff53fab@redhat.com>
- <YzsUgY4CC0SH8Sl2@slm.duckdns.org>
- <8008933b-4a28-19e5-02db-ef1d07eaf952@redhat.com>
- <YzsdsjlMMDFwLOzR@slm.duckdns.org>
- <87e7cd70-4ab6-f33b-ce26-afe2c7c04faa@redhat.com>
- <67f5d0af-dbfa-291a-a596-c90860b94455@redhat.com>
+        with ESMTP id S229520AbiJDHTa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Oct 2022 03:19:30 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C0441D32
+        for <cgroups@vger.kernel.org>; Tue,  4 Oct 2022 00:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1664867970; x=1696403970;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Dua2vkeJXhGD2pJC42kY/gAtbX8tYNywuN+EFBVnfbs=;
+  b=jgIKnvarQYglAFh8SumrHxja2WGUxGf0nqcUp7lXXeDLrpl8J0edaCx1
+   yAeABAVjydNeJgaEbYpy3Y7GLw5mMqkVGUXlMMkHPafMcX0KnDwNIpy3F
+   ojmc5GYL0XJafZe+rlAd5JtQVFP32iV3i866mdm38Ct7VGefPNYrnqyWy
+   f7GAEBi81+GyYbQkWCUjuVwUmgmkCipuBo+4idic+DGVJ1wzl/TWGmN/c
+   t9WZC02uU6k0Tj2mt5nP+5UoKM4+LfvcjkLIihk2J72AF28cigyQQSygM
+   dzkQH2t3FTeEJrkjD2pRhKHV691/NxdotwinN0z74wMVB5W2fJCxA6Vt3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10489"; a="286037287"
+X-IronPort-AV: E=Sophos;i="5.93,367,1654585200"; 
+   d="scan'208";a="286037287"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2022 00:19:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10489"; a="692385423"
+X-IronPort-AV: E=Sophos;i="5.93,367,1654585200"; 
+   d="scan'208";a="692385423"
+Received: from lkp-server01.sh.intel.com (HELO 14cc182da2d0) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Oct 2022 00:19:28 -0700
+Received: from kbuild by 14cc182da2d0 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1ofcD9-0005QT-1d;
+        Tue, 04 Oct 2022 07:19:27 +0000
+Date:   Tue, 04 Oct 2022 15:19:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:test-merge-for-6.1] BUILD SUCCESS
+ 99996071fa0f2cbf22697f6e82014ecb15a53b2a
+Message-ID: <633bde6d.XLJnwp9n9pOAEuvu%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67f5d0af-dbfa-291a-a596-c90860b94455@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge-for-6.1
+branch HEAD: 99996071fa0f2cbf22697f6e82014ecb15a53b2a  Merge branch 'for-6.1' into test-merge-for-6.1
 
-On Mon, Oct 03, 2022 at 03:39:02PM -0400, Waiman Long wrote:
-> There are 123 instances where llist_head is referenced in arch, driver,
-> filesystem and kernel code. Going through all these to make sure that it
-> will all work will be a major effort. I think it will be safer to allow both
-> NULL and the sentinel node as the initializers and gradually convert them to
-> use the proper llist APIs over time to complete the conversion. I am sorry
-> that I can't spend that much time upfront for this conversion effort.
+elapsed time: 743m
 
-I see. Oh well, thanks for taking a look.
+configs tested: 63
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                                 defconfig
+s390                             allmodconfig
+x86_64                           rhel-8.3-syz
+alpha                               defconfig
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+s390                                defconfig
+riscv                randconfig-r042-20221003
+s390                             allyesconfig
+arc                  randconfig-r043-20221003
+s390                 randconfig-r044-20221003
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+sh                               allmodconfig
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+i386                 randconfig-a015-20221003
+x86_64                    rhel-8.3-kselftests
+arm                                 defconfig
+i386                 randconfig-a016-20221003
+m68k                             allmodconfig
+i386                                defconfig
+i386                 randconfig-a014-20221003
+i386                 randconfig-a011-20221003
+arc                              allyesconfig
+i386                 randconfig-a012-20221003
+i386                 randconfig-a013-20221003
+alpha                            allyesconfig
+m68k                             allyesconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+i386                             allyesconfig
+x86_64               randconfig-a011-20221003
+x86_64               randconfig-a012-20221003
+x86_64               randconfig-a013-20221003
+x86_64               randconfig-a015-20221003
+x86_64               randconfig-a014-20221003
+x86_64               randconfig-a016-20221003
+arc                  randconfig-r043-20221002
+ia64                             allmodconfig
+
+clang tested configs:
+hexagon              randconfig-r045-20221003
+hexagon              randconfig-r041-20221003
+i386                 randconfig-a003-20221003
+i386                 randconfig-a002-20221003
+i386                 randconfig-a001-20221003
+i386                 randconfig-a004-20221003
+i386                 randconfig-a005-20221003
+i386                 randconfig-a006-20221003
+x86_64               randconfig-a003-20221003
+x86_64               randconfig-a002-20221003
+x86_64               randconfig-a001-20221003
+x86_64               randconfig-a004-20221003
+x86_64               randconfig-a005-20221003
+x86_64               randconfig-a006-20221003
+hexagon              randconfig-r041-20221002
+hexagon              randconfig-r045-20221002
+riscv                randconfig-r042-20221002
+s390                 randconfig-r044-20221002
 
 -- 
-tejun
+0-DAY CI Kernel Test Service
+https://01.org/lkp
