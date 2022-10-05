@@ -2,72 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B575F5AC0
-	for <lists+cgroups@lfdr.de>; Wed,  5 Oct 2022 21:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F14F5F5B33
+	for <lists+cgroups@lfdr.de>; Wed,  5 Oct 2022 22:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbiJETtw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Oct 2022 15:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        id S230127AbiJEUsZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Oct 2022 16:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbiJETtw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Oct 2022 15:49:52 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FD9103F
-        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 12:49:50 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id x18so10881392qkn.6
-        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 12:49:49 -0700 (PDT)
+        with ESMTP id S229967AbiJEUsY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Oct 2022 16:48:24 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C28F7F11D
+        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 13:48:23 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id y20so6803054uao.8
+        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 13:48:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=KTsXqBLMJ7z5zDaMVeB3mFtjBOaAR2nLT0zyd4+BXeg=;
-        b=rL48SW7QvdXgLHL74fCHo4SV8KfIpBhdqZiIQkFNh26QO0TTK/n2jD7rLs5fjZNgXX
-         yqzl+73lIDTO9Wo+L+sKEUh5VTyKcrOARmxgyzCkLnBzZGOYGKz1LMCzJrk8y5VEvrXl
-         SL9TmligGaKXnhQ7moybwxP0quMm54chKS1ExXoghqPYamj7omGSHq8jkHq0MYM5geLn
-         7RLi84RADnmvjggV2xnJHWsRaTXaqRCHbsd+hBNFTax2A3pXm2Lxz0alAp1GkgBPI9f6
-         phptnuyHdseoFF1K7kCZfEqfVIJxshHn4QPHCyLp5ZcLGdzlRzgkd9J+CROfJfxgtMrv
-         7s2w==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=pH0zOlds4k1pn2k9y2zQLXOdbFwcJ2yiRKb/htjH3Uk=;
+        b=FErrZMzivjR/A5E21MQn1/2DXduzHVWRROGe6Ud2gjscvz10sql8a5gaj4ZD9xSVNA
+         dRXymD67ilwrVSpkDTL1H7ylxFC9pYd5v8NEYKLasINuw1TmiBeEN/mvHu7qICAYTImQ
+         ka5uL0ncuFTlmRm+6hHIQ8Ma/zzn9dBJr29jm8qai3w/UZv82Q4CFeUMwzTJRTQlnO5Z
+         pbo78ytl4764MoBLJZ7Pk9DqkeS6bGKMYc8z9/drFxdZH9SxPDuk4dvvmVE0jUQWs8ws
+         W9iL7p9O4vr/dX+J9EL1DxXuM4hP/Vfq6OsFjBGOh6oSf52rB8x/J8TujBSrtukQ954H
+         w2/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=KTsXqBLMJ7z5zDaMVeB3mFtjBOaAR2nLT0zyd4+BXeg=;
-        b=pgBHE4j3j+ia5o7sYlaJKQ13+sUjIeZ093pbeBi28ngtZdfXNZkdUU2MW/ZKnBA7Gt
-         HLOMsx3F6Acjaq/rNT0MJJYKACfFxGJgvRKOx1BXmUOx+Ngee7CzhJ5HpNQFwPvjlyD/
-         n9aml9vQJREqfIzR6sFuxY3onAI+t0kbR3y6UguDEIbq+7yOFuQhNJ0owCs69qS9UO4f
-         RW2SZmIDqeS8Ctt8cIOYEwvD636XzkT4GIxSs73S95fBy7LPbpThcRBuvD/rYHxOXIAj
-         w+voWN5BK0L5jt6I8zTyFRrPrWTof7KDaIDjAfSnYp0mr4KnIR/b2ngLlzSwdSbc2n1A
-         7BYg==
-X-Gm-Message-State: ACrzQf0aHFQ+TS40pq9TeC0sv2X/n/qGoWH2tc5Qo+sFP0DhzH65J2v2
-        WdwdfpS4ysfzdn2kANlToJjGow==
-X-Google-Smtp-Source: AMsMyM64bYzTh2coBvcK6ApYP5+mCCGuTVoNmZIhCeEBPxWh6+64BAKzJyw6Jm+z60lU7vZXu19vSw==
-X-Received: by 2002:a05:620a:16cf:b0:6ce:4b65:db21 with SMTP id a15-20020a05620a16cf00b006ce4b65db21mr854017qkn.544.1664999389066;
-        Wed, 05 Oct 2022 12:49:49 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::8a16])
-        by smtp.gmail.com with ESMTPSA id j3-20020a05620a410300b006b5bf5d45casm18608327qko.27.2022.10.05.12.49.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Oct 2022 12:49:48 -0700 (PDT)
-Date:   Wed, 5 Oct 2022 15:49:47 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=pH0zOlds4k1pn2k9y2zQLXOdbFwcJ2yiRKb/htjH3Uk=;
+        b=GpoWDPtjjXFphM/HAGM82YaPCt3a5TqlOKmQ/NCJyA5+3OuHMu6m0UhcX7Y8YtKx3u
+         UNBFRffHh62FcJMArFdlBH3p9BgdkTB47mvE+/LEi+W7USWoTmw/8FYFCKOS0lLY4FKC
+         NQK7NxSeEfiK4LMAu2KMV7FhJi2biPpOVZ6LcjPx7KiThVv/5NtBDnfmCUEFD+5CmPyL
+         jbnBLJp3Z5W/Cl8YR+JpeGgA68EIqnF30202zF2dFNK4USEP/bPF3YgfK32pI8mBO4Ek
+         eSnVOh7bqv12Dy0A2GmyXEYOj0ht19jU+Lx333R3Q6Yz7DgiVnwyQF0Bi9oLr2QkXt/S
+         wR5w==
+X-Gm-Message-State: ACrzQf0ovs9u+iHGu6sAWuZbOJXVNgrSQNKmN9AvKPEmUsQaNzjkfABM
+        rPm92BvLORx5qwH/qyrG0Ro66Fizmh5/y3DgWQORlQ==
+X-Google-Smtp-Source: AMsMyM6aTCliTCNY0L3OfUC8MMYfTb5EC3wVMouU8hxv59dCZ3tOJB0Dj+k0ZL1fw1l6+vgk5PoBTP30v9tv23NkiUg=
+X-Received: by 2002:ab0:6f94:0:b0:3d1:d6e5:5de6 with SMTP id
+ f20-20020ab06f94000000b003d1d6e55de6mr837772uav.51.1665002902081; Wed, 05 Oct
+ 2022 13:48:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221005173713.1308832-1-yosryahmed@google.com>
+In-Reply-To: <20221005173713.1308832-1-yosryahmed@google.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Wed, 5 Oct 2022 14:47:46 -0600
+Message-ID: <CAOUHufaDhmHwY_qd2z26k6vK=eCHudJL1Pp4xALP25iZfbSJWA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/vmscan: check references from all memcgs for
+ swapbacked memory
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
         Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm/vmscan: check references from all memcgs for
- swapbacked memory
-Message-ID: <Yz3f23fPHEx1XJLJ@cmpxchg.org>
-References: <20221005173713.1308832-1-yosryahmed@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221005173713.1308832-1-yosryahmed@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        David Rientjes <rientjes@google.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,12 +74,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 05, 2022 at 05:37:13PM +0000, Yosry Ahmed wrote:
+On Wed, Oct 5, 2022 at 11:37 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
 > During page/folio reclaim, we check if a folio is referenced using
 > folio_referenced() to avoid reclaiming folios that have been recently
 > accessed (hot memory). The rationale is that this memory is likely to be
 > accessed soon, and hence reclaiming it will cause a refault.
-> 
+>
 > For memcg reclaim, we currently only check accesses to the folio from
 > processes in the subtree of the target memcg. This behavior was
 > originally introduced by commit bed7161a519a ("Memory controller: make
@@ -91,7 +91,7 @@ On Wed, Oct 05, 2022 at 05:37:13PM +0000, Yosry Ahmed wrote:
 > being accessed by a sibling memcg B, we would reclaim it if memcg A is
 > is the reclaim target. memcg B can then fault it back in and get charged
 > for it appropriately.
-> 
+>
 > Today, this behavior still makes sense for file pages. However, unlike
 > file pages, when swapbacked pages are refaulted they are charged to the
 > memcg that was originally charged for them during swapping out. Which
@@ -100,10 +100,9 @@ On Wed, Oct 05, 2022 at 05:37:13PM +0000, Yosry Ahmed wrote:
 > in and charged again to memcg A once memcg B accesses it. In that sense,
 > accesses from all memcgs matter equally when considering if a swapbacked
 > page/folio is a viable reclaim target.
-> 
+>
 > Modify folio_referenced() to always consider accesses from all memcgs if
 > the folio is swapbacked.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+It seems to me this change can potentially increase the number of
+zombie memcgs. Any risk assessment done on this?
