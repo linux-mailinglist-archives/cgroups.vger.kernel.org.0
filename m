@@ -2,138 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9038B5F57E5
-	for <lists+cgroups@lfdr.de>; Wed,  5 Oct 2022 17:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BB25F5846
+	for <lists+cgroups@lfdr.de>; Wed,  5 Oct 2022 18:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbiJEP4N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Oct 2022 11:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
+        id S229593AbiJEQaO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Oct 2022 12:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbiJEP4M (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Oct 2022 11:56:12 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF5E7969F
-        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 08:56:10 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o20-20020a05600c4fd400b003b4a516c479so1284544wmq.1
-        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 08:56:10 -0700 (PDT)
+        with ESMTP id S229813AbiJEQaM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Oct 2022 12:30:12 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D5E14D14
+        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 09:30:09 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id f23so15831790plr.6
+        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 09:30:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=7a/LoYvpCfoolYwQAKh6JCAxVB7pDgsUOT/7iK/WTWA=;
-        b=oatM/DuzZqdzxPdmhesMOJTCOHkKQGc14RUqIgdihrzrd6CfHIa6r3nXHN+2iKe9vp
-         OpQRH9oRNrvvfa/zRsB+qWD7adGbskLl31VKTezR6LLg0nXT4E+A38BspZ5G28RYbjAY
-         YEknG8XvaPZVXP9b7yZWVEH9n/QH2kV6NNeZ7r23NalWKjpkqnkC0hGd2qk1A4LGcI8H
-         cipvVTQP2t4nhsfBCwM/xQqdfgR+2y3CskyIfMkGozej8NdY/6qtdpXGosCcGYrTkds/
-         a+NTULObkeiYlG3d3ptMyOijxKdy1su6oiVirLzBOhKN5aQj1mBQapv9WNEd1Ent93l9
-         vd2g==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DIgSyoN94ADqU20gRcmOmyh9FdirVR3/a/n9qkAKtZM=;
+        b=pJ841aP9R3YYjlZHcaKL4JqVDmnW1R6uCt2rV3ba70kepXv9mH8Oyq3he8OA52pVIc
+         AKoD0jCdja0PT3R8DuX3PLkQ5yJ3Wbw+fQM1eOztB9+2PS6HhGG7Rok0CIaPbOxtqFoy
+         qs+eHZMrAPb0R7SuoK5wD7yEPhMW7c/c5Wo3KMATlnL0jcxCVwezL1eN/JgacZud926T
+         vN3bmZUfBdgYXOH+5ASAaa7nhO4k2oOTEnbtcu5YqhyKnWSJQnLJXdv3CdV978h69iyF
+         T8EC84w1Vu7YLVN1BpDrhhHEcfR9xL+SMTNfASMjk7TCyz4psKsKYFOeFpgtn294FIkJ
+         RCBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=7a/LoYvpCfoolYwQAKh6JCAxVB7pDgsUOT/7iK/WTWA=;
-        b=wULuOiyos0VLIsfGaXXeRodSK2UlGffW4d29FbtaYnblqNAMZsUopyKEui8oixsYuS
-         5sP12qHm1QuQuFf8N48Govoa3dan7k+ii9D3nW6Kx3nyi/srZEIuZPjsPa1p+dAtmPPG
-         Y90DtMXeDese3o2jnxieSaNVbMS+vJU5ELHhlvvaWNGBa5la9TR8tT0sdNKML3ybrDZW
-         syCEA4Z1UXNA2n840fS1UkLDaPgBcdpx5aFHNKUeA2dRReAAQJF3cypPaJZ5W5H1NjNT
-         zlFdrY0sOgpMJQxvae7p31xrNd6UuHzyGJVDmSDroy7RYbeN5OH7MlronZ5ydtS1ceFc
-         a5Lg==
-X-Gm-Message-State: ACrzQf2UtxjKVC4X/j1aOOUB/LbhlmIbv2qKL/WfpgF1bKANEmNOSB2y
-        9PlDtZEMrvwEkF50PVT3gnI1btTn5lwdBG/ENBwryQ==
-X-Google-Smtp-Source: AMsMyM4NzpApVCSaeSrqVfB0BIHl7CGUiDtHyAfG/+pwqTtYM8YfYREzw1B3JoiHg4VRqpRqwJ4ihZLf4SQ9abKcq28=
-X-Received: by 2002:a7b:ce97:0:b0:3b3:4136:59fe with SMTP id
- q23-20020a7bce97000000b003b3413659femr199314wmj.24.1664985368254; Wed, 05 Oct
- 2022 08:56:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221004233446.787056-1-yosryahmed@google.com>
- <Yz2O1dGeBGBTh6SM@cmpxchg.org> <CAJD7tkbMtHEN_1zGP=V1X4YGFCxEXv_j2Fqe8TFdOTy-ykiVUg@mail.gmail.com>
- <Yz2oAjIRZKKwe8tY@cmpxchg.org>
-In-Reply-To: <Yz2oAjIRZKKwe8tY@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 5 Oct 2022 08:55:31 -0700
-Message-ID: <CAJD7tkYc2hTdOXedjfK60=Q=HAbHp6ch5cLH=C3GDakc6MdBmA@mail.gmail.com>
-Subject: Re: [PATCH] mm/vmscan: check references from all memcgs for
- swapbacked memory
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DIgSyoN94ADqU20gRcmOmyh9FdirVR3/a/n9qkAKtZM=;
+        b=SQvRXOCRKAJM6MI5Q8G10Nuudet9Q6stC180Fpd/UorxVwtIJzt8aJNXh0Yh+3eNnq
+         9fZx9PaaTgWltS+KV65VICOvYD2IeaDecuMZ0l77VuFIRWm1OkUfRKHnxaigVk9pCmxe
+         gVVjmUgyglj2Mx7vU8IykBrrBa+YV3p+2dYv62hFbNooUJ7uNzIC040eMxWAht6Kbgob
+         m1Au9XCgNAOAmvjZkwpoi9KRB7XblexBqDA0nRa+bJWhk9TwoOASfftblmwkJVDwYk0g
+         KhCiRbfGWlHt4+M/Xog4nmmb3QAV1fg9F/KDilfkeNCtJxHlo/EY93wbqdSVg4weLhY5
+         hImw==
+X-Gm-Message-State: ACrzQf3NIMo3zosTb7uehxHthcuql1hVg5ab8GNXWIADy+659TEILEmc
+        UhhxcFb50mth1mcRqry7/Io=
+X-Google-Smtp-Source: AMsMyM4dZa2wFlO2eoUttBpzx40l+TSN4R3EXA/xgUAQygXzXxfhmBqeBLXW4BHo/49MKxyfo+FMJg==
+X-Received: by 2002:a17:903:2691:b0:17a:8f3:bef0 with SMTP id jf17-20020a170903269100b0017a08f3bef0mr212119plb.17.1664987409070;
+        Wed, 05 Oct 2022 09:30:09 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id n9-20020a17090a160900b001f319e9b9e5sm1332146pja.16.2022.10.05.09.30.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Oct 2022 09:30:08 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 5 Oct 2022 06:30:06 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>
+Subject: Re: [RFC] memcg rstat flushing optimization
+Message-ID: <Yz2xDq0jo1WZNblz@slm.duckdns.org>
+References: <CAJD7tkZQ+L5N7FmuBAXcg_2Lgyky7m=fkkBaUChr7ufVMHss=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkZQ+L5N7FmuBAXcg_2Lgyky7m=fkkBaUChr7ufVMHss=A@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 5, 2022 at 8:51 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Oct 05, 2022 at 07:54:25AM -0700, Yosry Ahmed wrote:
-> > On Wed, Oct 5, 2022 at 7:04 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > Would you mind moving this to folio_referenced() directly? There is
-> > > already a comment and branch in there that IMO would extend quite
-> > > naturally to cover the new exception:
-> > >
-> > >         /*
-> > >          * If we are reclaiming on behalf of a cgroup, skip
-> > >          * counting on behalf of references from different
-> > >          * cgroups
-> > >          */
-> > >         if (memcg) {
-> > >                 rwc.invalid_vma = invalid_folio_referenced_vma;
-> > >         }
-> > >
-> > > That would keep the decision-making and doc in one place.
-> >
-> > Hi Johannes,
-> >
-> > Thanks for taking a look!
-> >
-> > I originally wanted to make the change in folio_referenced(). My only
-> > concern was that it wouldn't be clear for people looking at reclaim
-> > code in mm/vmscan.c. It would appear as if we are passing in the
-> > target memcg to folio_referenced(), and only if you look within you
-> > would realize that sometimes it ignores the passed memcg.
-> >
-> > It seemed to me that deciding whether we want to check references from
-> > one memcg or all of them is a reclaim decision, while
-> > folio_referenced() is just an rmap API that does what it is told: "if
-> > I am passed a memcg, I only look at references coming from this
-> > memcg". On the other hand, it looks like the doc has always lived in
-> > folio_referenced()/page_referenced(), so I might be overthinking this
-> > (I have been known to do this).
->
-> I agree it would be nicer to have this policy in vmscan.c. OTOH it's a
-> policy that applies to all folio_referenced() callers, and it's
-> fragile to require them to opt into it individually.
->
-> Vmscan is the only user of the function, so it's not the worst thing
-> to treat it as an extension of the reclaim code.
->
-> If it helps convince you, there is another, actually quite similar
-> reclaim policy already encoded in folio_referenced():
->
->                         if (ptep_clear_flush_young_notify(vma, address,
->                                                 pvmw.pte)) {
->                                 /*
->                                  * Don't treat a reference through
->                                  * a sequentially read mapping as such.
->                                  * If the folio has been used in another mapping,
->                                  * we will catch it; if this other mapping is
->                                  * already gone, the unmap path will have set
->                                  * the referenced flag or activated the folio.
->                                  */
->                                 if (likely(!(vma->vm_flags & VM_SEQ_READ)))
->                                         referenced++;
->                         }
+Hello,
 
-Thanks for clarifying. Will send v2 later today :)
+On Tue, Oct 04, 2022 at 06:17:40PM -0700, Yosry Ahmed wrote:
+> We have recently ran into a hard lockup on a machine with hundreds of
+> CPUs and thousands of memcgs during an rstat flush. There have also
+> been some discussions during LPC between myself, Michal Koutný, and
+> Shakeel about memcg rstat flushing optimization. This email is a
+> follow up on that, discussing possible ideas to optimize memcg rstat
+> flushing.
+> 
+> Currently, mem_cgroup_flush_stats() is the main interface to flush
+> memcg stats. It has some internal optimizations that can skip a flush
+> if there hasn't been significant updates in general. It always flushes
+> the entire memcg hierarchy, and always invokes flushing using
+> cgroup_rstat_flush_irqsafe(), which has interrupts disabled and does
+> not sleep. As you can imagine, with a sufficiently large number of
+> memcgs and cpus, a call to mem_cgroup_flush_stats() might be slow, or
+> in an extreme case like the one we ran into, cause a hard lockup
+> (despite periodically flushing every 4 seconds).
+
+How long were the stalls? Given that rstats are usually flushed by its
+consumers, flushing taking some time might be acceptable but what's really
+problematic is that the whole thing is done with irq disabled. We can think
+about other optimizations later too but I think the first thing to do is
+making the flush code able to pause and resume. ie. flush in batches and
+re-enable irq / resched between batches. We'd have to pay attention to
+guaranteeing forward progress. It'd be ideal if we can structure iteration
+in such a way that resuming doesn't end up nodes which got added after it
+started flushing.
+
+Thanks.
+
+-- 
+tejun
