@@ -2,73 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0605F5EA2
-	for <lists+cgroups@lfdr.de>; Thu,  6 Oct 2022 04:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9665F6003
+	for <lists+cgroups@lfdr.de>; Thu,  6 Oct 2022 06:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbiJFCOE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Oct 2022 22:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S229548AbiJFETi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Oct 2022 00:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbiJFCOD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Oct 2022 22:14:03 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F352CCBC
-        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 19:14:02 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id l8so200110wmi.2
-        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 19:14:02 -0700 (PDT)
+        with ESMTP id S229591AbiJFETh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Oct 2022 00:19:37 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92DBD9A
+        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 21:19:35 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id z30so348836qkz.13
+        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 21:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=QDIgC+mJ41actrgXCTNkcAZRdvkb92D80nFmN32xkMY=;
-        b=MolortEC0wzeHJawsNOKpE3qaPOkxU08GmWWLNDWfHyDm/aTELESlGfZS8NQo3fCTG
-         xSuHidQxKGXplB8XaC30T/WpsDmhzrLmXue95N90MbK4cRg9aecENdsRXMvqHHNFpJwY
-         HmJ9H6+h5DU12Flt4zv/z23P7v3zHTbfuX+rl1pXKcu12gw1F1lBg0VGO+PyfHx7F3ep
-         Xicq/Wc1j/VUprPgWjNwoHtiDns9LiDWt9oGoPCxkOB6YSkog7CMNsnILnDXaq58O9i2
-         fvqz3twfcYSdCZ5XF9XCsMi7piGAU0XcEdSlWCiRjiwgUa2XqwYkRodkA2uDAhj9Ur5G
-         jwFQ==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R4VEh9i/QK9xTQL6ExiIgh+tg9GqBfC90q8qqSObsBU=;
+        b=sZL9/JucKLz3kza/Ci0aE4mVLQuA02JUnRd0KZ+JjmTvCYZBC54ujscNSfmQ/NxErl
+         TBJxwh2iZtm7uXDfkJufgPQ+xGw1njpAaiBlaqgy+2mkenaYeIj2LxooAMyYvv+iFdQP
+         TOnXK2UPvQ0tNG7A3YwlRfQmV5CMnuf8jD4P+ac5y2/XUyIZgT3NgkrCOn46rsnBY7iA
+         dVo+PTwO2hWBzCNR8+P7nWKid7JTLjWfYHCzde0xqyh8Q44PTs7Fu3uDqvfG5I+sbALj
+         u56wTAUzxDi/JxYTiGVAo5YQ9kbM+v0953iBfko68HZuZSyWrunAPEzP226mMlwTQj71
+         n57g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=QDIgC+mJ41actrgXCTNkcAZRdvkb92D80nFmN32xkMY=;
-        b=eJc4v1OdHasOI63qvtF8r+N1nKzYaUK9Mb/OoUhR013fW9bhUoX0C0WfT7bTCwv9Zz
-         8ODd+QoyAIdTQ/Isqu7vaeAoTpq1VFNPqUupsktpSglXwUYfWCXLPBMtzlptTjUsp6pl
-         ObHfRVXIaDzs/0rZ4+NtUU6+KzOpoPhtQ82I7ZRD6Ft0goe2C4hDjXuRb2Qps3bYw/85
-         rfhHLkbLbzcuTUPzl85zOmLOMlgZVS9TZ2iimbQy82NALZi/+3JFm75OXxMgPEW83WYg
-         HB/yr29X4zfQrtWgVLhmY9rqpS310Bh3K/51mCEEBRQ8ZqZVC7nixfAnNtX108AhzkEl
-         /pFQ==
-X-Gm-Message-State: ACrzQf0xdWsLeft6iGh7AQALyoOo/jiDEQZoeVy3YvP2ivKYZO5OkDCy
-        4FGauU4J6GcAl5IpHBADtlyXcVsEYndoZiAeotQRbw==
-X-Google-Smtp-Source: AMsMyM7g2v817+WfXcJ3VUZSGaeCsYGQ50Zr/LsYqL5aSmzkd8byLt3oZ9TuDdmNBJucGLzQuECecZYCn/DEd4+GOSg=
-X-Received: by 2002:a7b:c4c1:0:b0:3bf:e351:4ba with SMTP id
- g1-20020a7bc4c1000000b003bfe35104bamr2939233wmk.152.1665022440837; Wed, 05
- Oct 2022 19:14:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJD7tkZQ+L5N7FmuBAXcg_2Lgyky7m=fkkBaUChr7ufVMHss=A@mail.gmail.com>
- <Yz2xDq0jo1WZNblz@slm.duckdns.org> <CAJD7tkawcrpmacguvyWVK952KtD-tP+wc2peHEjyMHesdM1o0Q@mail.gmail.com>
- <Yz3CH7caP7H/C3gL@slm.duckdns.org> <CAJD7tkY8gNNaPneAVFDYcWN9irUvE4ZFW=Hv=5898cWFG1p7rg@mail.gmail.com>
- <Yz3LYoxhvGW/b9yz@slm.duckdns.org> <CAJD7tkZOw9hrc0jKYqYW1ysGZNjSVDgjhCyownBRmpS+UUCP3A@mail.gmail.com>
-In-Reply-To: <CAJD7tkZOw9hrc0jKYqYW1ysGZNjSVDgjhCyownBRmpS+UUCP3A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 5 Oct 2022 19:13:24 -0700
-Message-ID: <CAJD7tkaovbFoys0vC4xkLdzcAEPpofBkg0OPFWi0wex49EMa8g@mail.gmail.com>
-Subject: Re: [RFC] memcg rstat flushing optimization
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R4VEh9i/QK9xTQL6ExiIgh+tg9GqBfC90q8qqSObsBU=;
+        b=C+HvdTmDwu3/tmtmN7eSi4zTi+rMtu8MjdhB2FTYIBUX7wY8Ji6sjC3eAIf8elkYAS
+         SEEK/ELPHpQX0jl9XopQWcJw6LMLfejXMz8MGKuTtGXv/Q7kIsq1NBoywVQB438LLwum
+         nprs3PBEEKTfwCNuygqsnJo0fYhORnvPoW2N0rS0hZs/8ChiVCAwyPo12Sr6kfMogrO4
+         NWNhB0gRml8e/SgnmMzakQlcyUNnrfsaN+X3pYnSdSMloxhmFAZrVwIDKHVNtQzXahiJ
+         cN1YWo10l1PKD7KteIeHQSA7psJA/WEQhn5hmOiu55hnsXcMHbq/f/BjDw8UofgCDIcZ
+         fKpA==
+X-Gm-Message-State: ACrzQf2Mrdc3tLSA5qerEl5vlgZDc8Og9nudLS2lHnWFmm7SAzz2bfF0
+        ekaKRpmIEPWzZFGJOga22ybGqvcWMvY0Jg==
+X-Google-Smtp-Source: AMsMyM5iFdQs5h8Er5ULgff4bJSprImXOkkfnC/FHoRy0rd5gqF55hYL0TbLF6bWECu4B2p/1Vq11w==
+X-Received: by 2002:a37:c06:0:b0:6e2:b66f:b78f with SMTP id 6-20020a370c06000000b006e2b66fb78fmr1911018qkm.444.1665029974896;
+        Wed, 05 Oct 2022 21:19:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::8a16])
+        by smtp.gmail.com with ESMTPSA id j25-20020ac84419000000b003938a65479bsm1331656qtn.10.2022.10.05.21.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Oct 2022 21:19:34 -0700 (PDT)
+Date:   Thu, 6 Oct 2022 00:19:33 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm/vmscan: check references from all memcgs for
+ swapbacked memory
+Message-ID: <Yz5XVZfq8abvMYJ8@cmpxchg.org>
+References: <20221005173713.1308832-1-yosryahmed@google.com>
+ <CAOUHufaDhmHwY_qd2z26k6vK=eCHudJL1Pp4xALP25iZfbSJWA@mail.gmail.com>
+ <CAJD7tkaS4T5dD3CpST2wsie5uP1ruHiaWL5AJv0j8V9=yiOuug@mail.gmail.com>
+ <CAOUHufYKvbZTJ_ofD4+DyzY+DuHrRKYChnJVwqD7OKwe6sw-hw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOUHufYKvbZTJ_ofD4+DyzY+DuHrRKYChnJVwqD7OKwe6sw-hw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,89 +80,53 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 5, 2022 at 11:38 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> On Wed, Oct 5, 2022 at 11:22 AM Tejun Heo <tj@kernel.org> wrote:
+On Wed, Oct 05, 2022 at 03:13:38PM -0600, Yu Zhao wrote:
+> On Wed, Oct 5, 2022 at 3:02 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 > >
-> > Hello,
-> >
-> > On Wed, Oct 05, 2022 at 11:02:23AM -0700, Yosry Ahmed wrote:
-> > > > I was thinking more that being done inside the flush function.
+> > On Wed, Oct 5, 2022 at 1:48 PM Yu Zhao <yuzhao@google.com> wrote:
 > > >
-> > > I think the flush function already does that in some sense if
-> > > might_sleep is true, right? The problem here is that we are using
+> > > On Wed, Oct 5, 2022 at 11:37 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > >
+> > > > During page/folio reclaim, we check if a folio is referenced using
+> > > > folio_referenced() to avoid reclaiming folios that have been recently
+> > > > accessed (hot memory). The rationale is that this memory is likely to be
+> > > > accessed soon, and hence reclaiming it will cause a refault.
+> > > >
+> > > > For memcg reclaim, we currently only check accesses to the folio from
+> > > > processes in the subtree of the target memcg. This behavior was
+> > > > originally introduced by commit bed7161a519a ("Memory controller: make
+> > > > page_referenced() cgroup aware") a long time ago. Back then, refaulted
+> > > > pages would get charged to the memcg of the process that was faulting them
+> > > > in. It made sense to only consider accesses coming from processes in the
+> > > > subtree of target_mem_cgroup. If a page was charged to memcg A but only
+> > > > being accessed by a sibling memcg B, we would reclaim it if memcg A is
+> > > > is the reclaim target. memcg B can then fault it back in and get charged
+> > > > for it appropriately.
+> > > >
+> > > > Today, this behavior still makes sense for file pages. However, unlike
+> > > > file pages, when swapbacked pages are refaulted they are charged to the
+> > > > memcg that was originally charged for them during swapping out. Which
+> > > > means that if a swapbacked page is charged to memcg A but only used by
+> > > > memcg B, and we reclaim it from memcg A, it would simply be faulted back
+> > > > in and charged again to memcg A once memcg B accesses it. In that sense,
+> > > > accesses from all memcgs matter equally when considering if a swapbacked
+> > > > page/folio is a viable reclaim target.
+> > > >
+> > > > Modify folio_referenced() to always consider accesses from all memcgs if
+> > > > the folio is swapbacked.
+> > >
+> > > It seems to me this change can potentially increase the number of
+> > > zombie memcgs. Any risk assessment done on this?
 > >
-> > Oh I forgot about that. Right.
-> >
-> > ...
-> > > I took a couple of crashed machines kdumps and ran a script to
-> > > traverse updated memcgs and check how many cpus have updates and how
-> > > many updates are there on each cpu. I found that on average only a
-> > > couple of stats are updated per-cpu per-cgroup, and less than 25% of
-> > > cpus (but this is on a large machine, I expect the number to go higher
-> > > on smaller machines). Which is why I suggested a bitmask. I understand
-> > > though that this depends on whatever workloads were running on those
-> > > machines, and that in case where most stats are updated the bitmask
-> > > will actually make things slightly worse.
-> >
-> > One worry I have about selective flushing is that it's only gonna improve
-> > things by some multiples while we can reasonably increase the problem size
-> > by orders of magnitude.
->
-> I think we would usually want to flush a few stats (< 5?) in irqsafe
-> contexts out of over 100, so I would say the improvement would be
-> good, but yeah, the problem size can reasonably increase more than
-> that. It also depends on which stats we selectively flush. If they are
-> not in the same cache line we might end up bringing in a lot of stats
-> anyway into the cpu cache.
->
-> >
-> > The only real ways out I can think of are:
-> >
-> > * Implement a periodic flusher which keeps the stats needed in irqsafe path
-> >   acceptably uptodate to avoid flushing with irq disabled. We can make this
-> >   adaptive too - no reason to do all this if the number to flush isn't huge.
->
-> We do have a periodic flusher today for memcg stats (see
-> flush_memcg_stats_dwork). It calls __mem_cgroup_flush_stas() which
-> only flushes if the total number of updates is over a certain
-> threshold.
-> mem_cgroup_flush_stas_delayed(), which is called in the page fault
-> path, only does a flush if the last flush was a certain while ago. We
-> don't use the delayed version in all irqsafe contexts though, and I am
-> not the right person to tell if we can.
->
-> But I think this is not what you meant. I think you meant only
-> flushing the specific stats needed in irqsafe contexts more frequently
-> and not invoking a flush at all in irqsafe contexts (or using
-> mem_cgroup_flush_stas_delayed()..?). Right?
->
-> I am not the right person to judge what is acceptably up-to-date to be
-> honest, so I would wait for other memcgs folks to chime in on this.
->
-> >
-> > * Shift some work to the updaters. e.g. in many cases, propagating per-cpu
-> >   updates a couple levels up from update path will significantly reduce the
-> >   fanouts and thus the number of entries which need to be flushed later. It
-> >   does add on-going overhead, so it prolly should adaptive or configurable,
-> >   hopefully the former.
->
-> If we are adding overhead to the updaters, would it be better to
-> maintain a bitmask of updated stats, or do you think it would be more
-> effective to propagate updates a couple of levels up? I think to
-> propagate updates up in updaters context we would need percpu versions
-> of the "pending" stats, which would also add memory consumption.
->
+> > Do you mind elaborating the case(s) where this could happen? Is this
+> > the cgroup v1 case in mem_cgroup_swapout() where we are reclaiming
+> > from a zombie memcg and swapping out would let us move the charge to
+> > the parent?
+> 
+> The scenario is quite straightforward: for a page charged to memcg A
+> and also actively used by memcg B, if we don't ignore the access from
+> memcg B, we won't be able to reclaim it after memcg A is deleted.
 
-A potential problem that I also noticed with propagating percpu
-updates up on the update path is that we will need to update
-memcg->vmstats_percpu->[state/event/..]_prev. Currently these percpu
-prev variables are only updated by rstat flushing code. If they can
-also be updated on the update path then we might need some locking
-primitive to protect them, which would add more overhead.
-
-> >
-> > Thanks.
-> >
-> > --
-> > tejun
+This patch changes the behavior of limit-induced reclaim. There is no
+limit reclaim on A after it's been deleted. And parental/global
+reclaim has always recognized outside references.
