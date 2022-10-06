@@ -2,61 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D742C5F6076
-	for <lists+cgroups@lfdr.de>; Thu,  6 Oct 2022 07:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FEC5F61A3
+	for <lists+cgroups@lfdr.de>; Thu,  6 Oct 2022 09:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbiJFFLR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 6 Oct 2022 01:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S230036AbiJFHbZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Oct 2022 03:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbiJFFLP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Oct 2022 01:11:15 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FDA89AED
-        for <cgroups@vger.kernel.org>; Wed,  5 Oct 2022 22:11:14 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id n186so936785vsc.9
-        for <cgroups@vger.kernel.org>; Wed, 05 Oct 2022 22:11:14 -0700 (PDT)
+        with ESMTP id S229724AbiJFHbY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Oct 2022 03:31:24 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787028E453
+        for <cgroups@vger.kernel.org>; Thu,  6 Oct 2022 00:31:23 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id bu30so1274429wrb.8
+        for <cgroups@vger.kernel.org>; Thu, 06 Oct 2022 00:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=5+UVhZeJoX4E+WLpr6yal2+2CsSWy2udLw4VJRvJT/4=;
-        b=L3Xj7CNE0iYbk4Ok4e/ZTGnvZ5gj7ioKBA8XJGpolU3HZEPrufCoVkh86+13rrBvxZ
-         bNByukcF4GRti36tqGuYv5xL0zXlNzm6NykB35agHaw52zNNzujhtdfmxowToQbARytP
-         T0vjAbod/q5jQCPyIiBYR5FA1agmOjCVDgv8a//KLkhbRRpSpjACEZ6Eqd2//6a/2Xwk
-         JxtljFMZ8xTLx+4mTeDoI+5iQQtBCuNkgEHTk2qC6Xu3QH///lykGQiosOyCB31NflMg
-         3QAOnUICU3t3RaQb7BUzMrMylpHjeR+ZiUHTyN6bRjvr3n5XYBqVGWSb1RasbglRGjZC
-         fgpA==
+        bh=RVWW/BaJYSJb5iFCcmVWgHh8lf5q5nSO5D6+WwfrGO0=;
+        b=mBl1Gv36EpxEHwxD8G7c2u80/IL6+9yVxn+9bsflcmtYODk4l9xKEbagkili2v3OxI
+         XjdikoyYoP1QyAmW0TZErMbO84gMIB6gcm6OYndYagBwSrqg9Gy4hv7im3obX0sBrq3p
+         qG/hjkBWPS6Ku3/fjoIlhVjcF58vx5EDYDbEXQV215CHEO4WTUxZ6janp1qrFyDboI/w
+         OOo7kmv3GN2o97SK1InevEG172WD5n92gOjtHgaSDG0nvTAvYaHKUFk1a40joFB5wq9W
+         04WeKaJxs/LPaW2NmdgChnXxn6tpuD1tcm9ISfoO9lHunE2GHuEn5rl04s9FhpFGXaMN
+         smIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=5+UVhZeJoX4E+WLpr6yal2+2CsSWy2udLw4VJRvJT/4=;
-        b=nGVBAM9Ex/lVIa92XRGOmNAxL3tjM9ONkh0MvE0MNCu88tEQu6P8tLlHPYuvk0+l0m
-         rRCV0MBvqy0TnQa3L/B7Sz4G67OSJDJs/YBz9SkAnHzg+A0uFTrLoyPuGaukS/tEU8WH
-         oqMitia/WclGIxzqxWCzLH+Bf1g0v5Mal5wAuxzsX8dU3xl3i7+0XLNR+gLP4VamDhW9
-         yPpk31LO3deTHkYNmbfZT4Z6v69PrKnX8Vs7WyYpq1bGNz6zDavYZs7gPEP7O/P+DU4a
-         FEHHyrnCVUwHLlHN1Spg4wJanXoj7bMMGjmGsN3ZPBzhr5OfKlKcK1XIH1ilq3qRDu/M
-         Roog==
-X-Gm-Message-State: ACrzQf0dus6rmezz0O0bCDHnOoFPuW0kS2l042oWucEVK58GnQ29Z0eI
-        K1QsKai3ja0W0NzjIaqV21EEbfL7utLkKct8CrCa5w==
-X-Google-Smtp-Source: AMsMyM4hOMbC3IJKXlBxwVnc1CGr2wX2+4f6W3gA4myq3Epr7Of7WPyRKyhnZs6io3NEpfzjRKFs28WgVg1flGFiiRs=
-X-Received: by 2002:a67:ac08:0:b0:3a5:d34b:ae1 with SMTP id
- v8-20020a67ac08000000b003a5d34b0ae1mr1305964vse.46.1665033073521; Wed, 05 Oct
- 2022 22:11:13 -0700 (PDT)
+        bh=RVWW/BaJYSJb5iFCcmVWgHh8lf5q5nSO5D6+WwfrGO0=;
+        b=cwRyDLBbbBtM6uFOCmI7DnMHnoM54K2xvomJWVTxnS+8NzW7m697ZGx+u999N6bn/n
+         /Kp4F7SH/bpK2wlkJni7thQY8btvwltTPl1ZPHbc52SqaGcier/NCJ4u8ByxoKaD43GT
+         +fnfXeGFbAHOEtcbvAFg954OTpwvuLgG9MGQTct0YD2RbcrR1vOsYNM4+eJtL/CLHe3R
+         ZMbcyUkX9QdUZRp17vrE8Wd+qZYx1G91xHE1xKBXuCv+gnGYdSOyILe2vjY+SEMCUtYl
+         F88VgmR77LXq0/3rE1/sPSrCDWNL2n5LEFFDMgxIJqUcUbYs2CYCsgp/artGDb2MHA20
+         TuYw==
+X-Gm-Message-State: ACrzQf0xIr7pN5z90I5wvnvlhHZnbPMHrj20OWr9m1L8XRpKvVknT67d
+        w7eiVPa9b3g4HkZ9Tb90bYcTSPn3ly+vgf0BuDHjaA==
+X-Google-Smtp-Source: AMsMyM4F8plDfzsO4L9/zK32C+FXqkAqa2FGfRbFh1YLiFVJeQ15FU4Yvw6zh5fQyrQBEgCP8iE/zP+zKvziVDYpiCU=
+X-Received: by 2002:adf:fb05:0:b0:228:6463:b15d with SMTP id
+ c5-20020adffb05000000b002286463b15dmr2091087wrr.534.1665041481940; Thu, 06
+ Oct 2022 00:31:21 -0700 (PDT)
 MIME-Version: 1.0
 References: <20221005173713.1308832-1-yosryahmed@google.com>
  <CAOUHufaDhmHwY_qd2z26k6vK=eCHudJL1Pp4xALP25iZfbSJWA@mail.gmail.com>
  <CAJD7tkaS4T5dD3CpST2wsie5uP1ruHiaWL5AJv0j8V9=yiOuug@mail.gmail.com>
  <CAOUHufYKvbZTJ_ofD4+DyzY+DuHrRKYChnJVwqD7OKwe6sw-hw@mail.gmail.com> <Yz5XVZfq8abvMYJ8@cmpxchg.org>
 In-Reply-To: <Yz5XVZfq8abvMYJ8@cmpxchg.org>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 5 Oct 2022 23:10:37 -0600
-Message-ID: <CAOUHufa+f-RB1Lddu3fQPof=eqduyxM3mcCBuk3OR-Tu=+VN+w@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 6 Oct 2022 00:30:45 -0700
+Message-ID: <CAJD7tkao9DU2e_2co_HgOm38PxvLqdRS=kHcOdRfqcqN6MRdaw@mail.gmail.com>
 Subject: Re: [PATCH v2] mm/vmscan: check references from all memcgs for
  swapbacked memory
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
+Cc:     Yu Zhao <yuzhao@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
@@ -77,7 +77,7 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 5, 2022 at 10:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Wed, Oct 5, 2022 at 9:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
 > On Wed, Oct 05, 2022 at 03:13:38PM -0600, Yu Zhao wrote:
 > > On Wed, Oct 5, 2022 at 3:02 PM Yosry Ahmed <yosryahmed@google.com> wrote:
@@ -130,8 +130,17 @@ On Wed, Oct 5, 2022 at 10:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > limit reclaim on A after it's been deleted. And parental/global
 > reclaim has always recognized outside references.
 
-We use memory.reclaim to scrape memcgs right before rmdir so that they
-are unlikely to stick around. Otherwise our job scheduler would see
-less available memory and become less eager to increase load. This in
-turn reduces the chance of global reclaim, and deleted memcgs would
-stick around even longer.
+Do you mind elaborating on the parental reclaim part?
+
+I am looking at the code and it looks like memcg reclaim of a parent
+(limit-induced or proactive) will only consider references coming from
+its subtree, even when reclaiming from its dead children. It looks
+like as long as sc->target_mem_cgroup is set, we ignore outside
+references (relative to sc->target_mem_cgroup).
+
+If that is true, maybe we want to keep ignoring outside references for
+swap-backed pages if the folio is charged to a dead memcg? My
+understanding is that in this case we will uncharge the page from the
+dead memcg and charge the swapped entry to the parent, reducing the
+number of refs on the dead memcg. Without this check, this patch might
+prevent the charge from being moved to the parent in this case. WDYT?
