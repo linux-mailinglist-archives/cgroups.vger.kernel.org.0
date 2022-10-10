@@ -2,102 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A615FA8CE
-	for <lists+cgroups@lfdr.de>; Tue, 11 Oct 2022 01:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A375FA8D2
+	for <lists+cgroups@lfdr.de>; Tue, 11 Oct 2022 01:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbiJJX7G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Oct 2022 19:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        id S229782AbiJJX7r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Oct 2022 19:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbiJJX67 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Oct 2022 19:58:59 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0867FF9D
-        for <cgroups@vger.kernel.org>; Mon, 10 Oct 2022 16:58:57 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id m2-20020a17090a158200b002058e593c2bso4565808pja.2
-        for <cgroups@vger.kernel.org>; Mon, 10 Oct 2022 16:58:57 -0700 (PDT)
+        with ESMTP id S230246AbiJJX7d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Oct 2022 19:59:33 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33DF7FFA0;
+        Mon, 10 Oct 2022 16:59:24 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 70so11042968pjo.4;
+        Mon, 10 Oct 2022 16:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UTUrIJaSpVElDApPbK9Ogfa6jeq4HshVrEJbru1RJcM=;
-        b=p+6H8bBZwkvXjYGvxdxhky+agm9qBDmK8LpqI+MkL1oZLYiZQD/o23pMHVwj4xGRhx
-         bf9ODEqigYJc6RVWntTsxsj0pOopw1I4WXYAqnonPx4QdbV7S0LHfp0tSEcFoxWUhHn7
-         30AMO8eq8jME46yURzfELTkWz8aJr1Iodvfc+7axAwaUAU9UZlkhgR/UF3T9F/wmVjMP
-         D8ZLPnEocCn5U6yJ/FyDHNXxbO5lRS9rakU22g2FgjaFEDTsUJ6JSO4Ec9gKycc5Li4A
-         1IXJT6f4tjJcpYLEoTuzvQ6FWwPINyF/jj3Ix9q80CwMjA2kZiLMx/JhHsIe2U1VkyLP
-         Jchw==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XATmXDDouGmZ8eVmg2gOICME3agw6HNrb3TQMDuvm/4=;
+        b=AS5j0WakWcXloGTMkDVqd2Cneha7BIrjvG2XXT41mxwinS7nhAdmQDYDl1IzutSN7N
+         GtfRRcfzd/xXbKbIdHhfHCn7qpzNdjU25NUUUIt8Lj2MXVutYNCUSLZczrKNSg7HShqK
+         G+LNdMzkSzzqM2Tl1x5FWduRvauGP8dZvRrRveXpg9Iv9KPDRJID+v0C8uufmRDysenO
+         7AB7VUpvwZQibh3eFsy3F4vSq9HU8M+WE4BnUTlc/ZJpGSmRtHMdsfNXIFkmygCi03+G
+         UlASbuOBE7FXyQhJNlcCOZIYSvSritHqCB5kuLO4I2L4te6Ox7aSJyuxic4Kwee29AwF
+         Qfsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UTUrIJaSpVElDApPbK9Ogfa6jeq4HshVrEJbru1RJcM=;
-        b=aHkVyByshtjgQEq1iH88W7GPmGecRDrLOt3Tw4OKYEb69clEb8ooI2GOPY926DOJ2c
-         6F1O6yvKmfmVAKHngz161iRp/z5CaCUkRMQ+vN2I9MZt2AgdXJgMaX10zQNUduFJ5zIz
-         USgv5+QM9gi20MFmZv+mHAyQQRVyjWSdVbfW9/3lS3g8N0eEqAgU1DJ8xfQyavkZ5jjq
-         5PngOczFaUlbnOd9Rkv2SfEpslHGfgXunB4JGoMjNoVf3c2e/XVl6/MeJHGrt6xxdpxk
-         kVkOYxqPeYDSnKwIhCYEvcp+gob8L7W7n1BtTtfQbg08NaOFZT6Q/z4wQUghJp8vNIEP
-         W0sg==
-X-Gm-Message-State: ACrzQf1d+BaQb/EHE96rChBUd+3yUNpe0PMuZVXylio4hXfXEAwPGF67
-        Dmz+yQ0MlYIMW0vvDe78p1jhurxczsmcmqHc
-X-Google-Smtp-Source: AMsMyM7Lto5Xlv8xKu7VE669vgBYORrets5oSwZzF6NLsybuXw+F8Qy++IDKLe70lX6fUeg2cGtIEv+gwQzD/swm
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:248e:b0:563:7910:29b9 with
- SMTP id c14-20020a056a00248e00b00563791029b9mr5599812pfv.43.1665446337253;
- Mon, 10 Oct 2022 16:58:57 -0700 (PDT)
-Date:   Mon, 10 Oct 2022 23:58:45 +0000
-In-Reply-To: <20221010235845.3379019-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20221010235845.3379019-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
-Message-ID: <20221010235845.3379019-4-yosryahmed@google.com>
-Subject: [PATCH v1 3/3] bpf: cgroup_iter: support cgroup1 using cgroup fd
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XATmXDDouGmZ8eVmg2gOICME3agw6HNrb3TQMDuvm/4=;
+        b=YzC9UbzCGS1M10wGcBPzpbacrVzCBXQxFQhtGRwWKEnHKF/SbCzaiLU6uEDVHY9tc+
+         X3ucV1OxiOxJzpOdQr0j7EuudeeZc2WeFHWn5owhHEMPkjdHUQQ5mu9H2IHSaM3Fq5hM
+         AQFurdZnW9m/CIZ5V/CB+tsRcD1wJVDV11L6tO0dqStsV7OW79huR+PJhzOoNwWnvWKv
+         ODWibtyb9XQWpD62KTWt8doGIjer50Bs6U4l4FXdN+CQDJvMbnX9Xs1rrFLz5Ep+e33g
+         b8kRbozselQtltWKrO5j1JR2yxyB/9YMUPfeYJhWwFlbMtex5tSRtXnB+gYem93bLZfk
+         ivKQ==
+X-Gm-Message-State: ACrzQf1pa/MQOQqWLkw6n10NFstqbaX6zkRdPvp97GI1TYqQODuJDhaN
+        4IdsUs1+YmYsIoICCJJUVDI=
+X-Google-Smtp-Source: AMsMyM55f6qfG3GKGkE8TBhQ7GPkPeadXYHc9TiiKUZFs2qxbbAURTiSOOoDjD0fLcDWjglf0PH1/Q==
+X-Received: by 2002:a17:902:d2cc:b0:182:d901:5d28 with SMTP id n12-20020a170902d2cc00b00182d9015d28mr5580837plc.142.1665446361746;
+        Mon, 10 Oct 2022 16:59:21 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id f13-20020a170902f38d00b00172fc5b0764sm7111255ple.270.2022.10.10.16.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Oct 2022 16:59:21 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 10 Oct 2022 13:59:20 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
+Message-ID: <Y0Sx2KWX4gPlLytq@slm.duckdns.org>
+References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+ <20220922041435.709119-1-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220922041435.709119-1-namhyung@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Use cgroup_all_get_from_fd() to support attaching to cgroup1 using fds.
+On Wed, Sep 21, 2022 at 09:14:35PM -0700, Namhyung Kim wrote:
+> The recent change in the cgroup will break the backward compatiblity in
+> the BPF program.  It should support both old and new kernels using BPF
+> CO-RE technique.
+> 
+> Like the task_struct->__state handling in the offcpu analysis, we can
+> check the field name in the cgroup struct.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- kernel/bpf/cgroup_iter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks like it's acked enough but the patch doesn't apply anymore. Namhyung,
+can you please refresh the patch? I'll route this through
+cgroup/for-6.1-fixes unless somebody objects.
 
-diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-index 0d200a993489..8bb307139748 100644
---- a/kernel/bpf/cgroup_iter.c
-+++ b/kernel/bpf/cgroup_iter.c
-@@ -196,7 +196,7 @@ static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
- 		return -EINVAL;
- 
- 	if (fd)
--		cgrp = cgroup_get_from_fd(fd);
-+		cgrp = cgroup_all_get_from_fd(fd);
- 	else if (id)
- 		cgrp = cgroup_get_from_id(id);
- 	else /* walk the entire hierarchy by default. */
+Thanks.
+
 -- 
-2.38.0.rc1.362.ged0d419d3c-goog
-
+tejun
