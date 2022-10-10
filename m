@@ -2,135 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82855F9B7A
-	for <lists+cgroups@lfdr.de>; Mon, 10 Oct 2022 10:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DF05FA397
+	for <lists+cgroups@lfdr.de>; Mon, 10 Oct 2022 20:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbiJJI5a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Oct 2022 04:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
+        id S229820AbiJJSsJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Oct 2022 14:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbiJJI5a (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Oct 2022 04:57:30 -0400
-Received: from mail-oa1-x44.google.com (mail-oa1-x44.google.com [IPv6:2001:4860:4864:20::44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175A5631CA
-        for <cgroups@vger.kernel.org>; Mon, 10 Oct 2022 01:57:29 -0700 (PDT)
-Received: by mail-oa1-x44.google.com with SMTP id 586e51a60fabf-1364357a691so5276601fac.7
-        for <cgroups@vger.kernel.org>; Mon, 10 Oct 2022 01:57:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PXUl3DqLFbTtFtCoMEclQM3ZbKkw2ZlACbyEiXC/hso=;
-        b=EqSzkZtsf1yX3BnomQvJNepwXowKD71I29ap08rnmBkb/g/8E/NjKb10a6bqJnX4hQ
-         7tzfMrkPOdOCrP9MXm8TmIKlaQMIFWtOckWuuRtQ4yIdNzYxZQZZ3MTBMqzkXd41gj/T
-         1bh542MWi5V6Mg/VGIGkldMrbQlEJgVw18qb3zoa0xv72UjuZwFcpoyr2X3Kwnt4vbsL
-         4vE7sMIG9Oh3+ylbPW9Wx5QxINzZsbYGFo0+/RvEktYFQuMKUZurEEVbWUi7CcDgDJCU
-         fVolloIEXkpZZK/sMGK3z5kDKMUkPJFl9Wy4ABzJO3DsNsIasitCBzqHkW5HRJiym8hR
-         /ZLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PXUl3DqLFbTtFtCoMEclQM3ZbKkw2ZlACbyEiXC/hso=;
-        b=254R1T7b/mBFf2dGrdYg0z92u28z57o/Beur00T4K2rawQnbc4lOe2j12W+HKrFmNP
-         OrJSgAvoPSF+n12WbqEapBeu4/3gGwVwvcgwqFhe1kZOrS0bcAS0JNmUEjCumla5YpnE
-         RxStgpzSMPcSNF1Ibd4aPOPFM8srD2WCHuBNnHgdA8yenqDLG5uXAjmpdbKKFG+kJQWd
-         pdC01VMWkfExFwQAu9Gj4HJFyN82jvHYKvvGVlq0nNPRiXvGlI8EZVh4Oi00Nll9pmaZ
-         /5lM5RoMIla9IHcN7lCwCmiTRPzEQZQYDOm9xp62zGzJ6H+rCbhrLmru/osJlLK5GoQ+
-         jqRA==
-X-Gm-Message-State: ACrzQf1Szp6CZ+BLL6/UqwWnXLzCF9UiIjISL/VcN4tZVTG0grnmURA4
-        pAd8wi/V509q4uUp2bbndRZjH0QhqyzVrALU0j8=
-X-Google-Smtp-Source: AMsMyM79FgDFgjgF/ToFS6p9w+oWtgx00PiWkgNHEkqmGBQkIBgAHaYkKoB9si9kwolA1qublICfbY7nyAFl774Pme8=
-X-Received: by 2002:a05:6870:1496:b0:132:2020:9c8d with SMTP id
- k22-20020a056870149600b0013220209c8dmr9297804oab.78.1665392248391; Mon, 10
- Oct 2022 01:57:28 -0700 (PDT)
-MIME-Version: 1.0
-Sender: mohammeddrashok@gmail.com
-Received: by 2002:a05:6838:ac92:0:0:0:0 with HTTP; Mon, 10 Oct 2022 01:57:28
- -0700 (PDT)
-From:   Ibrahim idewu <ibrahimidewu4@gmail.com>
-Date:   Mon, 10 Oct 2022 09:57:28 +0100
-X-Google-Sender-Auth: Gg0eQXAhVsYYjDZnVRBrEdyZhF4
-Message-ID: <CAL=ghb7jmU9wWrfpMnuZaSfGMpipWT7QPm9+paUL484aai=7EA@mail.gmail.com>
-Subject: I Need Your Respond
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.0 required=5.0 tests=ADVANCE_FEE_5_NEW_FRM_MNY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FILL_THIS_FORM,FREEMAIL_FROM,HK_SCAM,LOTS_OF_MONEY,MONEY_FORM,
-        MONEY_FRAUD_8,NA_DOLLARS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_MONEY_PERCENT,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:44 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5233]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [ibrahimidewu4[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 NA_DOLLARS BODY: Talks about a million North American dollars
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.8 HK_SCAM No description available.
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  0.0 FILL_THIS_FORM Fill in a form with personal information
-        *  0.0 MONEY_FORM Lots of money if you fill out a form
-        *  2.8 MONEY_FRAUD_8 Lots of money and very many fraud phrases
-        *  0.0 ADVANCE_FEE_5_NEW_FRM_MNY Advance Fee fraud form and lots of
-        *      money
-        *  2.7 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+        with ESMTP id S229703AbiJJSsD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Oct 2022 14:48:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFA3753A7;
+        Mon, 10 Oct 2022 11:48:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EAD3960DF3;
+        Mon, 10 Oct 2022 18:48:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5156DC433D6;
+        Mon, 10 Oct 2022 18:48:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665427681;
+        bh=/Py6ESRtICN91Jb9M97//qpI/8ZRofKXGr3GK+ybBK4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=KgMIsaWKihVaygu59Fl8W6KqgkCm5kIe7mc0+KsvGmFUhnioNujFryGlK8EQZJ9W1
+         7lct/dtjXaN5BFsLYcMWE9KXf0id4jfanCRkhgYFXV/ijtdzjgY+ozTiroh04tHEf9
+         dHpxQ5L6QtH/1ypnrkxfIBbSHV1t+/H7fgbxWuvBSZhCmXK1TRxnw4yF1vyJ4YuCj3
+         bH6LrC1qqNAfrGq7B212SuKh0Ac0xCjkSe6bfcKPv3f7YgvxQCIHZitr8xia3JwEIc
+         PMcTOcReb9/cf4+wu93ru/3YddHyBpaQZuUxyiqG/7SUHxSn76GN0HPv9W+v7OH/Lm
+         Tyr6OPszzXQ4Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3FEB4E4D022;
+        Mon, 10 Oct 2022 18:48:01 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup changes for v6.1-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YzsmLRxPvYQlwtZo@slm.duckdns.org>
+References: <YzsmLRxPvYQlwtZo@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YzsmLRxPvYQlwtZo@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.1
+X-PR-Tracked-Commit-Id: 8619e94d3be376bb5e8f20988c0e6e3309d2b09a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: adf4bfc4a9ab86be0b72fa9cadc9e7ab6ad15dfe
+Message-Id: <166542768125.29715.10610347781123624678.pr-tracker-bot@kernel.org>
+Date:   Mon, 10 Oct 2022 18:48:01 +0000
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-HELLO..,
+The pull request you sent on Mon, 3 Oct 2022 08:13:01 -1000:
 
-My name is Mr. Ibrahim Idewu, I work in the bank here in Burkina faso.
-I got your contact
-from internet search i hope that you will not expose or betray this
-trust and confident that am about to entrust in you for the benefit of
-our both families.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.1
 
-I discovered an abandoned fund here in our bank belonging to a dead
-businessman who lost his life and entire family in a motor accident,
-I am in need of your help as a foreigner to present you as the next of
-kin and to transfer the
-sum of $19.3 million U.S dollars (nineteen. Three million U.S dollars) into your
-account risk is completely %100 free.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/adf4bfc4a9ab86be0b72fa9cadc9e7ab6ad15dfe
 
-This is paid or shared in these percentages, 60% for me and 40% for
-you. I have secured legal documents that can be used to substantiate
-this claim. The only thing I have to do is put your names in the
-documents and legalize them here in court to prove you as the rightful
-beneficiary. All I need now is your honest cooperation,
-confidentiality and your trust, so that we can complete this
-transaction. I guarantee that this transaction is 100% risk-free, as
-the transfer is subject to international banking law
+Thank you!
 
-Please give me this as we have 5 days to work through this. This is very urgent.
-
-1. Full Name:
-2. Your direct mobile number:
-3. Your contact address:
-4. Your job:
-5. Your nationality:
-6. Your gender / age:
-
-Please confirm your message and interest to provide further
-information. Please do get back to me on time.
-
-Best regards
-Mr. Ibrahim idewu
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
