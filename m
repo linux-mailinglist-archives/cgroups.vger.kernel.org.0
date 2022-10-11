@@ -2,111 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D145FB7A5
-	for <lists+cgroups@lfdr.de>; Tue, 11 Oct 2022 17:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586A25FB87C
+	for <lists+cgroups@lfdr.de>; Tue, 11 Oct 2022 18:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiJKPrs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Oct 2022 11:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
+        id S229893AbiJKQqq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Oct 2022 12:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbiJKPr2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Oct 2022 11:47:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47DD12606;
-        Tue, 11 Oct 2022 08:39:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 205E21F8E0;
-        Tue, 11 Oct 2022 15:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1665502782; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229511AbiJKQqk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Oct 2022 12:46:40 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C174A572E;
+        Tue, 11 Oct 2022 09:46:34 -0700 (PDT)
+Message-ID: <2ba0ee79-2e7e-6807-3312-1a2c5ef3bae0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1665506792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vB0AXXBtm0Hrdk0bg6YG9HeCQbPU+AcCqyHQMZO7aHU=;
-        b=AOyiExVT8ICluY29f7EISViuBP4fZfaDGjWt/zgw/wKFtAhm86QAWBAMm3OGNO88yDbw4L
-        dCppJmVuT0D38ZQBGQ4D/GsypMU9r0HpZIlyL+USdsMoBBwX+vizkRdpijHy57HK/3+fS7
-        wQVsY/OckiDS1Src/EUzygFkKRStZJs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E9FF813AAC;
-        Tue, 11 Oct 2022 15:39:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6uS9Nj2ORWNyWwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 11 Oct 2022 15:39:41 +0000
-Date:   Tue, 11 Oct 2022 17:39:41 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Chris Down <chris@chrisdown.name>
-Subject: Re: [PATCH] mm/memcontrol: Don't increase effective low/min if no
- protection needed
-Message-ID: <Y0WOPZxWSnUjzZ8e@dhcp22.suse.cz>
-References: <20221011143015.1152968-1-longman@redhat.com>
+        bh=fSpHFQ/t+wVXLc+3hNEAK/z5TCpUZCMKJcQhLnBO7pA=;
+        b=VZXczMB1/0cXDlJrV4Hl9sjqWKt4jiyPljBV9WZxUvzdbwjoKUqh1lDfvqbGk8Z/cPGbuU
+        VrlszEalWaKYs9+1ekJ60k4dB7wYy6bqb7n9IIKJ3baP+C7ioDlkDKwAQWkwmQEmMU0mZB
+        JamUEiyRsoy6dCO7N4Vlwh+lNYYHkwM=
+Date:   Tue, 11 Oct 2022 09:46:27 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221011143015.1152968-1-longman@redhat.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 2/2] bpf: cgroup_iter: support cgroup1 using cgroup fd
+Content-Language: en-US
+To:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20221011003359.3475263-1-yosryahmed@google.com>
+ <20221011003359.3475263-3-yosryahmed@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221011003359.3475263-3-yosryahmed@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 11-10-22 10:30:15, Waiman Long wrote:
-> Since commit bc50bcc6e00b ("mm: memcontrol: clean up and document
-> effective low/min calculations"), the effective low/min protections can
-> be non-zero even if the corresponding memory.low/min values are 0. That
-> can surprise users to see MEMCG_LOW events even when the memory.low
-> value is not set. One example is the LTP's memcontrol04 test which fails
-> because it detects some MEMCG_LOW events for a cgroup with a memory.min
-> value of 0.
-
-Is this with memory_recursiveprot mount option?
-
-> Fix this by updating effective_protection() to not returning a non-zero
-> low/min protection values if the corresponding memory.low/min values
-> or those of its parent are 0.
+On 10/10/22 5:33 PM, Yosry Ahmed wrote:
+> Use cgroup_v1v2_get_from_fd() in cgroup_iter to support attaching to
+> both cgroup v1 and v2 using fds.
 > 
-> Fixes: bc50bcc6e00b ("mm: memcontrol: clean up and document effective low/min calculations")
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 > ---
->  mm/memcontrol.c | 3 +++
->  1 file changed, 3 insertions(+)
+>   kernel/bpf/cgroup_iter.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b69979c9ced5..893d4d5e518a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6660,6 +6660,9 @@ static unsigned long effective_protection(unsigned long usage,
->  	unsigned long protected;
->  	unsigned long ep;
->  
-> +	if (!setting || !parent_effective)
-> +		return 0UL;	/* No protection is needed */
-> +
+> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+> index 0d200a993489..9fcf09f2ef00 100644
+> --- a/kernel/bpf/cgroup_iter.c
+> +++ b/kernel/bpf/cgroup_iter.c
+> @@ -196,7 +196,7 @@ static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+>   		return -EINVAL;
+>   
+>   	if (fd)
+> -		cgrp = cgroup_get_from_fd(fd);
+> +		cgrp = cgroup_v1v2_get_from_fd(fd);
 
-This will break the above memory_recursiveprot AFAICS.
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
->  	protected = min(usage, setting);
->  	/*
->  	 * If all cgroups at this level combined claim and use more
-> -- 
-> 2.31.1
+Tejun, patch 1 should depend on a recent revert that is not in the bpf tree yet. 
+  Do you want to take this set to the cgroup tree?
 
--- 
-Michal Hocko
-SUSE Labs
+>   	else if (id)
+>   		cgrp = cgroup_get_from_id(id);
+>   	else /* walk the entire hierarchy by default. */
+
