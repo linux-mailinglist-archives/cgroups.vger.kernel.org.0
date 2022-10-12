@@ -2,175 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24245FC05F
-	for <lists+cgroups@lfdr.de>; Wed, 12 Oct 2022 07:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCD95FC19E
+	for <lists+cgroups@lfdr.de>; Wed, 12 Oct 2022 10:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbiJLF7k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Oct 2022 01:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
+        id S229619AbiJLIGR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Oct 2022 04:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbiJLF72 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Oct 2022 01:59:28 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79E8ACA34
-        for <cgroups@vger.kernel.org>; Tue, 11 Oct 2022 22:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1665554364; x=1697090364;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FSmTMj7EKKSZu90bhrN2dE6B347/TX2bLtN2Z4e0N/g=;
-  b=HhB5M8qItW4e9kDYvo56BWoTEOxapDUbXirQGPp2rguqT5wkMR6aGeV8
-   C70EEDxUWS5gKGCbKNzPGHjHuALFc08MImZSAee5i+8SWRo++boDj6mPX
-   k6ZjS/8nddHDB1Xufv0zXZRoaFBaR+RhyWdVtd0/w82Sds8WUt8YD7tMs
-   WC2DEGuJrimU3sO2sGdmQzgMLvu8ee64ekW0LLuZSj3/TDdfGVnVuOeTO
-   nh9iq/QJO0d0tF57KXfxfcb4LF+ow571Su/EafhoELk+J6fyekNnyBIPE
-   soaMjMYeNnhnxEDghHO9uIM56HOLkJLGNu4miRlLttib+Zzz2mEHP3UUz
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10497"; a="331197145"
-X-IronPort-AV: E=Sophos;i="5.95,178,1661842800"; 
-   d="scan'208";a="331197145"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2022 22:59:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10497"; a="659811474"
-X-IronPort-AV: E=Sophos;i="5.95,178,1661842800"; 
-   d="scan'208";a="659811474"
-Received: from lkp-server01.sh.intel.com (HELO 2af0a69ca4e0) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 11 Oct 2022 22:59:11 -0700
-Received: from kbuild by 2af0a69ca4e0 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oiUlq-0003XT-2t;
-        Wed, 12 Oct 2022 05:59:10 +0000
-Date:   Wed, 12 Oct 2022 13:58:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS WITH WARNING
- 8248fe413216732f98563e8882b6c6ae617c327b
-Message-ID: <63465771.HuIMUTop7iDUWBQ9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229501AbiJLIGR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Oct 2022 04:06:17 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C5A76544;
+        Wed, 12 Oct 2022 01:06:16 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id d7-20020a17090a2a4700b0020d268b1f02so1324028pjg.1;
+        Wed, 12 Oct 2022 01:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SBrtNGgiKc64ZJ37zUKu7nEMj/WdDGr4Yyp+sxihhTY=;
+        b=K/T1u6SXP48sf76E+Em0jrB8E2jrFWVkXe5K4LWyyfdjCJGnBFHi9HpGgcAkW0dY26
+         epUvWm7/I/Ec5Z4SIadzKcUySRzlhdF0e5pNtAwvEtt054Y1ZK8W/x1C/Z3rNoygrrii
+         3gyEMWZ54SwI/DDueHBXXJkw1GkqDSZVmFGNtvhFBAuBPpO1oi+X/gvBFH2YeEDgpOaO
+         XwrA3NhdNK1EBYcsU8vPCB83nkTlBVW+y/ADuBGG+HeZVzKwGdzbn8X8bQW3QqoC/Srd
+         um5pWBqHwAN9O5lqa8bMOZiwHBuaa8qWKp5oO1CmbUoqB4F1Kq24Bvtnnvcg4K5mLREz
+         WIkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SBrtNGgiKc64ZJ37zUKu7nEMj/WdDGr4Yyp+sxihhTY=;
+        b=07ZbMwM7u0rBhQHWCUk7mS1GY/5B8enEGtunWZWSZGEo57PD3QT8N4Tdoy8lIwXXBN
+         PtrUAfICZGcEF2JA9wAPW/bQ8Y4HIp7pP5FS8PWDXpUsgNEgOLz4iugIrV3yRrshQl6c
+         mDZ8mgCxml3oNARf+hCWXpjuoAWVyot4IylcFdfD/p38OQ+48GREj6MAlYD/tvljl9mJ
+         KY9FnemF1iub5kt0d1LY7qMx4qlugzUtorq3fIgkRSVNHfRMbhNUEU5uPqmO0QvwU0bt
+         ooqINVq5upzGSihmuCfJlN/jvlUI87x9lXHpXabgqFPH1IHTAZTF7zi4cBTcjUMzDbtn
+         hvGA==
+X-Gm-Message-State: ACrzQf2gTL7WrN0HSf0srGvhax+VPn0FKUkhTq5Z0sMIpAjQJ3mYm62Z
+        UL/3H06056tqkgtmTz4MX9Y=
+X-Google-Smtp-Source: AMsMyM5pgh/DksMxWIN3NvTA/VmtDd0ii9THpnjPJ8bQFtS3F0wVWDrWEgm53Se+ipcx8tgPtJ0fjw==
+X-Received: by 2002:a17:90b:4f8e:b0:20c:c3a8:38b with SMTP id qe14-20020a17090b4f8e00b0020cc3a8038bmr3854889pjb.10.1665561975786;
+        Wed, 12 Oct 2022 01:06:15 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id o9-20020a170903210900b0017f7d7e95d3sm9863168ple.167.2022.10.12.01.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Oct 2022 01:06:15 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 11 Oct 2022 22:06:13 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH cgroup/for-6.1-fixes] mm: cgroup: fix comments for get
+ from fd/file helpers
+Message-ID: <Y0Z1deLeePrNmdeu@slm.duckdns.org>
+References: <20221011225155.4055415-1-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <20221011225155.4055415-1-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 8248fe413216732f98563e8882b6c6ae617c327b  perf stat: Support old kernels for bperf cgroup counting
+On Tue, Oct 11, 2022 at 10:51:55PM +0000, Yosry Ahmed wrote:
+> Fix the documentation comments for cgroup_[v1v2_]get_from_[fd/file]().
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+> I cannot reproduce the warning so I cannot make sure it's fixed by this.
+> 
+> Again, apologies for missing updating the comment in the first place.
 
-Warning reports:
-
-https://lore.kernel.org/lkml/202210120440.qmxr3KCs-lkp@intel.com
-
-Warning: (recently discovered and may have been fixed)
-
-kernel/cgroup/cgroup.c:6765: warning: expecting prototype for cgroup_get_from_fd(). Prototype was for cgroup_v1v2_get_from_fd() instead
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allmodconfig
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- alpha-randconfig-r026-20221012
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- loongarch-allyesconfig
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- m68k-allmodconfig
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- m68k-randconfig-r005-20221010
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- mips-allmodconfig
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- openrisc-randconfig-r023-20221012
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- powerpc-allmodconfig
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-|-- riscv-allyesconfig
-|   `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-`-- sparc-allyesconfig
-    `-- kernel-cgroup-cgroup.c:warning:expecting-prototype-for-cgroup_get_from_fd().-Prototype-was-for-cgroup_v1v2_get_from_fd()-instead
-
-elapsed time: 725m
-
-configs tested: 64
-configs skipped: 2
-
-gcc tested configs:
-arc                                 defconfig
-alpha                               defconfig
-x86_64                              defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-s390                             allmodconfig
-m68k                             allyesconfig
-x86_64                               rhel-8.3
-i386                                defconfig
-x86_64                           rhel-8.3-syz
-s390                 randconfig-r044-20221010
-s390                                defconfig
-riscv                randconfig-r042-20221010
-arc                  randconfig-r043-20221010
-x86_64                           allyesconfig
-i386                 randconfig-a012-20221010
-x86_64                         rhel-8.3-kunit
-sh                               allmodconfig
-alpha                            allyesconfig
-arm                                 defconfig
-x86_64               randconfig-a011-20221010
-x86_64                           rhel-8.3-kvm
-s390                             allyesconfig
-i386                 randconfig-a011-20221010
-arc                              allyesconfig
-x86_64               randconfig-a014-20221010
-x86_64               randconfig-a016-20221010
-x86_64               randconfig-a015-20221010
-m68k                             allmodconfig
-x86_64               randconfig-a012-20221010
-x86_64               randconfig-a013-20221010
-i386                 randconfig-a013-20221010
-i386                 randconfig-a014-20221010
-ia64                             allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a015-20221010
-mips                             allyesconfig
-arm                              allyesconfig
-powerpc                          allmodconfig
-arm64                            allyesconfig
-i386                 randconfig-a016-20221010
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-i386                             allyesconfig
-
-clang tested configs:
-i386                 randconfig-a003-20221010
-i386                 randconfig-a004-20221010
-hexagon              randconfig-r041-20221010
-i386                 randconfig-a002-20221010
-hexagon              randconfig-r045-20221010
-i386                 randconfig-a005-20221010
-i386                 randconfig-a001-20221010
-i386                 randconfig-a006-20221010
-x86_64               randconfig-a002-20221010
-x86_64               randconfig-a006-20221010
-x86_64               randconfig-a001-20221010
-x86_64               randconfig-a003-20221010
-x86_64               randconfig-a004-20221010
-x86_64               randconfig-a005-20221010
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
+No worries at all. Thanks for fixing it. Applied to cgroup/for-6.1-fixes.
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+tejun
