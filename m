@@ -2,123 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA97A5FDC46
-	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 16:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E41E5FDC5A
+	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 16:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbiJMOTn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Oct 2022 10:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        id S229563AbiJMOWX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Oct 2022 10:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiJMOTm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Oct 2022 10:19:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1086E1176;
-        Thu, 13 Oct 2022 07:19:36 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29DCmDDs019560;
-        Thu, 13 Oct 2022 14:19:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=aJUHKCeMONPiBv7qlHCAOXHfax7cF/SDLjjQwEaq4Y4=;
- b=Uvxx1SCL3EKf+l5Vo465umT20Yj4c9oRV3x0jIijFiDbAlwgUghlkz9289dK5xAdzm9B
- AaJ0VYAk6OWzIH5dBBoYozkkpMZ5mQbmqunjJxtBRC+QFBeyRbNCqMZl0VItAFg1erwF
- 9DQ0nyQ0ums405O8ZHev43ddIrcPyENONUNiqOFq0aqgBlNr6Oos/P1Az4f9f7AZj9hQ
- RODm19kEeYouHIaybgFcjEdnVyTVPeIsyU0PzH2OYE/JdNFI1AQEgXKw0wHkZbJoOnUY
- qbDXcQR9erXKL6IDM3EGykQJLUCvQb0cWqa8akkgzQIvjulsVGuwCmp1zSZHK+xxnjb3 ng== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3k6fpsrm65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Oct 2022 14:19:28 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 29DEJSpL023015
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Oct 2022 14:19:28 GMT
-Received: from [10.216.35.42] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Thu, 13 Oct
- 2022 07:19:25 -0700
-Message-ID: <9662bcef-f901-fac6-1dff-dc2a2da216fe@quicinc.com>
-Date:   Thu, 13 Oct 2022 19:49:22 +0530
+        with ESMTP id S229680AbiJMOWW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Oct 2022 10:22:22 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C3CD7E19
+        for <cgroups@vger.kernel.org>; Thu, 13 Oct 2022 07:22:13 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id z18so1356287qvn.6
+        for <cgroups@vger.kernel.org>; Thu, 13 Oct 2022 07:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2NGQAGAfwfgj6bQQFri3e7UvpFHJBbG66RlLh3PT3p8=;
+        b=SDhA7zbv62PBaHsvPGDAgC+u2bWJOE2OO2P9PQ8O8yhfC3+O+6zOHA0pKrIUoxR0jb
+         rdkdaIOIcP0Zm/LwhM9aYOF2nNRGLOCXW6KDvAxTI8GGHfmY59JXXY4vLfnHaGMnBvYm
+         KPJqMc1JMbsz+TlNcGzW9lsTFb86rQ8TKR4SJ8rtNt8IG9eK3Gx2mc7rf0D0IzPdj0qj
+         q94Q3OnfgWsGiDhsBjJzu33I6+YFoFGIH5067KhLkF04G3vqGwwO3xG4oVW1zsY4yO2E
+         yyw4sfe4cfH5bzvYjNCPsf8dOL1soi9uAiw9XtpJ0HfB21bV+G9RFgpzYGiK9R9YarDJ
+         hmOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2NGQAGAfwfgj6bQQFri3e7UvpFHJBbG66RlLh3PT3p8=;
+        b=7kCf6+gmMYRQSsnmqokDw/ozrHgxOjoipuCF6SEDqO++3ucsreWDDiYbSXB9UKPVD8
+         36UiBoV1fRoG4by81wL7l0++rB6Vb/fzfqiW4vkhms6kXG+eDNMRU+XgqKu8gZ3mFlsw
+         EIZtCGPdciYx0h4+j68TxJ9M9YCsOWk53aWNMyGuQ2bQGAHwrvkwHPlBsxSK9gp6Nxyk
+         H73vFwf9DmSe3kpp1iWfeUu14nfqVzF3/XM3YZcxCbI6ADGTk2tB2msQYPXpm9PUB3sQ
+         LriBP7XmZUDqJa2Ru6T1qVrFxGUM7FIqFZp3r0qfD6qrBjqtItFUXYvk45bIfEwVeegb
+         pETQ==
+X-Gm-Message-State: ACrzQf1PtX+Htpax2n0UUzSw0m/iKy2DW3BYx6xUrx6YcKxJ0QE07r5i
+        1uJIzcnZlLO8RgT4TlZKP7AELA==
+X-Google-Smtp-Source: AMsMyM4ejZLk6SAda6oIT4GjMyfCkdv+MKWSXy85/4wqrAIiPeVWI24lZSdclBBimgKybOfcGtq5Dw==
+X-Received: by 2002:a05:6214:2a83:b0:4b1:cdc6:821d with SMTP id jr3-20020a0562142a8300b004b1cdc6821dmr160703qvb.36.1665670931825;
+        Thu, 13 Oct 2022 07:22:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::3a61])
+        by smtp.gmail.com with ESMTPSA id q4-20020a05620a2a4400b006ee74cc976esm9007413qkp.70.2022.10.13.07.22.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Oct 2022 07:22:11 -0700 (PDT)
+Date:   Thu, 13 Oct 2022 10:22:10 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     =?utf-8?Q?Gra=C5=BEvydas?= Ignotas <notasas@gmail.com>,
+        Wei Wang <weiwan@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        netdev <netdev@vger.kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Subject: Re: UDP rx packet loss in a cgroup with a memory limit
+Message-ID: <Y0gfEn6487fMalI9@cmpxchg.org>
+References: <CANOLnON11vzvVdyJfW+QJ36siWR4-s=HJ2aRKpRy7CP=aRPoSw@mail.gmail.com>
+ <CANOLnOPeOi0gxYwd5+ybdv5w=RZEh5JakJPE9xgrSL1cecZHbw@mail.gmail.com>
+ <Yv0h1PFxmK7rVWpy@cmpxchg.org>
+ <CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com>
+ <CAEA6p_BhAh6f_kAHEoEJ38nunY=c=4WqxhJQUjT+dCSAr_rm8g@mail.gmail.com>
+ <CANOLnONQaHXOp1z1rNum74N2b=Ub7t5NsGHqPdHUQL4+4YYEQg@mail.gmail.com>
+ <CALvZod6VaQXrs1x7ff=RRWWP+CgD0hQkTROfZ9XowQ_Zo3SO3Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v2] blk-cgroup: Fix typo in comment
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huawei.com>, <tj@kernel.org>,
-        <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20221013141659.24032-1-shikemeng@huawei.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20221013141659.24032-1-shikemeng@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ZL7xVFvJtL-SnHbmHImiKG9L5Y5jg5M7
-X-Proofpoint-GUID: ZL7xVFvJtL-SnHbmHImiKG9L5Y5jg5M7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-13_08,2022-10-13_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 suspectscore=0 bulkscore=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210130085
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALvZod6VaQXrs1x7ff=RRWWP+CgD0hQkTROfZ9XowQ_Zo3SO3Q@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
-
-On 10/13/2022 7:46 PM, Kemeng Shi wrote:
-> Replace assocating with associating.
-> Replace intiailized with initialized.
+On Wed, Oct 12, 2022 at 09:36:34PM -0700, Shakeel Butt wrote:
+> On Wed, Aug 17, 2022 at 1:12 PM Gražvydas Ignotas <notasas@gmail.com> wrote:
+> >
+> > On Wed, Aug 17, 2022 at 9:16 PM Wei Wang <weiwan@google.com> wrote:
+> > >
+> > > On Wed, Aug 17, 2022 at 10:37 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > > >
+> > > > + Eric and netdev
+> > > >
+> > > > On Wed, Aug 17, 2022 at 10:13 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > > >
+> > > > > This is most likely a regression caused by this patch:
+> > > > >
+> > > > > commit 4b1327be9fe57443295ae86fe0fcf24a18469e9f
+> > > > > Author: Wei Wang <weiwan@google.com>
+> > > > > Date:   Tue Aug 17 12:40:03 2021 -0700
+> > > > >
+> > > > >     net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
+> > > > >
+> > > > >     Add gfp_t mask as an input parameter to mem_cgroup_charge_skmem(),
+> > > > >     to give more control to the networking stack and enable it to change
+> > > > >     memcg charging behavior. In the future, the networking stack may decide
+> > > > >     to avoid oom-kills when fallbacks are more appropriate.
+> > > > >
+> > > > >     One behavior change in mem_cgroup_charge_skmem() by this patch is to
+> > > > >     avoid force charging by default and let the caller decide when and if
+> > > > >     force charging is needed through the presence or absence of
+> > > > >     __GFP_NOFAIL.
+> > > > >
+> > > > >     Signed-off-by: Wei Wang <weiwan@google.com>
+> > > > >     Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> > > > >     Signed-off-by: David S. Miller <davem@davemloft.net>
+> > > > >
+> > > > > We never used to fail these allocations. Cgroups don't have a
+> > > > > kswapd-style watermark reclaimer, so the network relied on
+> > > > > force-charging and leaving reclaim to allocations that can block.
+> > > > > Now it seems network packets could just fail indefinitely.
+> > > > >
+> > > > > The changelog is a bit terse given how drastic the behavior change
+> > > > > is. Wei, Shakeel, can you fill in why this was changed? Can we revert
+> > > > > this for the time being?
+> > > >
+> > > > Does reverting the patch fix the issue? However I don't think it will.
+> > > >
+> > > > Please note that we still have the force charging as before this
+> > > > patch. Previously when mem_cgroup_charge_skmem() force charges, it
+> > > > returns false and __sk_mem_raise_allocated takes suppress_allocation
+> > > > code path. Based on some heuristics, it may allow it or it may
+> > > > uncharge and return failure.
+> > >
+> > > The force charging logic in __sk_mem_raise_allocated only gets
+> > > considered on tx path for STREAM socket. So it probably does not take
+> > > effect on UDP path. And, that logic is NOT being altered in the above
+> > > patch.
+> > > So specifically for UDP receive path, what happens in
+> > > __sk_mem_raise_allocated() BEFORE the above patch is:
+> > > - mem_cgroup_charge_skmem() gets called:
+> > >     - try_charge() with GFP_NOWAIT gets called and  failed
+> > >     - try_charge() with __GFP_NOFAIL
+> > >     - return false
+> > > - goto suppress_allocation:
+> > >     - mem_cgroup_uncharge_skmem() gets called
+> > > - return 0 (which means failure)
+> > >
+> > > AFTER the above patch, what happens in __sk_mem_raise_allocated() is:
+> > > - mem_cgroup_charge_skmem() gets called:
+> > >     - try_charge() with GFP_NOWAIT gets called and failed
+> > >     - return false
+> > > - goto suppress_allocation:
+> > >     - We no longer calls mem_cgroup_uncharge_skmem()
+> > > - return 0
+> > >
+> > > So I agree with Shakeel, that this change shouldn't alter the behavior
+> > > of the above call path in such a situation.
+> > > But do let us know if reverting this change has any effect on your test.
+> >
+> > The problem is still there (the kernel wasn't compiling after revert,
+> > had to adjust another seemingly unrelated callsite). It's hard to tell
+> > if it's better or worse since it happens so randomly.
+> >
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> ---
-> Changes in v2:
->   -based on current mainline code
->   -add acked-by
-> 
->   block/blk-cgroup.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 6a5c849ee061..4c4bc874bd95 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -577,7 +577,7 @@ EXPORT_SYMBOL_GPL(blkcg_print_blkgs);
->    * @pd: policy private data of interest
->    * @v: value to print
->    *
-> - * Print @v to @sf for the device assocaited with @pd.
-> + * Print @v to @sf for the device associated with @pd.
->    */
->   u64 __blkg_prfill_u64(struct seq_file *sf, struct blkg_policy_data *pd, u64 v)
->   {
-> @@ -765,7 +765,7 @@ EXPORT_SYMBOL_GPL(blkg_conf_prep);
->   
->   /**
->    * blkg_conf_finish - finish up per-blkg config update
-> - * @ctx: blkg_conf_ctx intiailized by blkg_conf_prep()
-> + * @ctx: blkg_conf_ctx initialized by blkg_conf_prep()
->    *
->    * Finish up after per-blkg config update.  This function must be paired
->    * with blkg_conf_prep().
+> Hello everyone, we have a better understanding why the patch pointed
+> out by Johannes might have exposed this issue. See
+> https://lore.kernel.org/all/20221013041833.rhifxw4gqwk4ofi2@google.com/.
 
+Wow, that's super subtle! Nice sleuthing.
 
-LGTM.
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> To summarize, the old code was depending on a subtle interaction of
+> force-charge and percpu charge caches which this patch removed. The
+> fix I am proposing is for the network stack to be explicit of its need
+> (i.e. use GFP_ATOMIC) instead of depending on a subtle behavior.
 
--Mukesh
+That sounds good to me.
