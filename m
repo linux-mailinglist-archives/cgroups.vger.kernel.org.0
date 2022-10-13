@@ -2,101 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5675FCFAE
-	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 02:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247275FD139
+	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 02:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbiJMAUj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Oct 2022 20:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
+        id S231605AbiJMAfq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Oct 2022 20:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbiJMATy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Oct 2022 20:19:54 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC7A171CE4
-        for <cgroups@vger.kernel.org>; Wed, 12 Oct 2022 17:17:53 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 126so323541ybw.3
-        for <cgroups@vger.kernel.org>; Wed, 12 Oct 2022 17:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nqgh1ED8YLB3Lt0ws7IuNLmuxoK0yD2LR5GJPgsLVvA=;
-        b=W1fbXQ4scCa8Aep6N0cQa85yRo+RHzhCjqU9C17a2GycoxpJKqsfwyTzqPU2P9Dgpa
-         +l6W0OriU9nSD1VENAfnSKXeF274+lr4SyUHODPMPW2x3a8jcaKK9+eZV2uJWHoMir0T
-         Vcx+kXS6Eqbpe7DbkwjZ49mEerz1hwPFIz8Ld0q/CoGVyfL/1HWyro0i9LugpgS4AXKN
-         ign/P4AP/BpuWW/cHBjxOLuuTfXFsSMCMu8SHFtP5vt3KgodzfzfTUgJNCrxYR9bI9xY
-         oUh275VlEVNfw+4YPxMuIedrLbqw9kCSZ7O2Z9Kd9snkSpDjZi3iJw9nDl14QfXbGHXd
-         Q7Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nqgh1ED8YLB3Lt0ws7IuNLmuxoK0yD2LR5GJPgsLVvA=;
-        b=1RDtMmuyATsUxO8NSwCDsyaM0YYFGQGi3VG8TZfVrng9m+ktx0rX2iwtwrMnFOn+V3
-         DU3GSGK5W69DhEdXs4CaaJ4CgiqoWsBhGb5EgZmMNJePdHBaxvqVEShR5BqC62yYSoMe
-         WQp9kKd/TXOj0KBX1fm1U86TMra5D3Q1qhqvqH2YecnfRE8KAUaNMI6g1GQmq+R0UzT9
-         nz5muGHndAQohOu8WsNgY3lhDqQWLlRrLDjmxSGtnB5R9N5hOIiv1awMdYw8ci5qhveL
-         pO/vNG79O9H+Hahpvh6NlBmyph1TwESRk/4L5JKNN+b56tUSmwFe3G4ddVZimNXs0/9z
-         t6kg==
-X-Gm-Message-State: ACrzQf3DbIdClZpt+goPyh8IFoHUfxi8naMjVnS9vdbTpKQ9y8u4jhPw
-        PaG6p3ZDOH8b0stEwdPxvJt6J7uc9eEQef/JfjBstQ==
-X-Google-Smtp-Source: AMsMyM5Xnza8VEtFbrhcq72guYOiwZzbACy5/YLx5pQbN6BpBeTecfpkREpBFpJHdWAl173DTnZHrkaj5NX6U0SFseo=
-X-Received: by 2002:a25:9885:0:b0:6b3:e9a7:4952 with SMTP id
- l5-20020a259885000000b006b3e9a74952mr32358446ybo.294.1665620270607; Wed, 12
- Oct 2022 17:17:50 -0700 (PDT)
+        with ESMTP id S231691AbiJMAci (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Oct 2022 20:32:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FABADFC31;
+        Wed, 12 Oct 2022 17:28:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0D75616D1;
+        Thu, 13 Oct 2022 00:19:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E889C43141;
+        Thu, 13 Oct 2022 00:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665620376;
+        bh=BrPmkkzV33LoAQaZVvf/My4DJRhBfffGea4/qAXPUQc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Dky3QKgnwfLced6CDVSVB9r9w9+YVlZf20gO+HykkmI9FLLm6zgUwDoR0TBBgyQZg
+         eYIVWqtJ+crN1y/MNaYpaJ6QYuQ9dJKZF8tY23qyqsq9C/97ZYZAxsiWOSVzsUA/7B
+         8xkCK44eVcsxcnFnj+YxIe1Nw8v0FOVKi0ZyF6R/wLt5OlS6e/o8YHNnaqzOI9JHhz
+         EE6XZ8Teb8+qBjOgSSl+93pb/g5sw+1DnD7UH6da6Uh5cWo6o1PV87WVQBmIVfAJZA
+         lskVWIzrSd+CxIG59+OXcvBLRtxtgnkvRlaHsLbLrvKs079VwsELqK+N7ewQC8fgnc
+         jrYTqzg3I5ivg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yu Kuai <yukuai3@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 19/63] blk-throttle: prevent overflow while calculating wait time
+Date:   Wed, 12 Oct 2022 20:17:53 -0400
+Message-Id: <20221013001842.1893243-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221013001842.1893243-1-sashal@kernel.org>
+References: <20221013001842.1893243-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210817194003.2102381-1-weiwan@google.com> <20221012163300.795e7b86@kernel.org>
-In-Reply-To: <20221012163300.795e7b86@kernel.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 12 Oct 2022 17:17:38 -0700
-Message-ID: <CALvZod5pKzcxWsLnjUwE9fUb=1S9MDLOHF950miF8x8CWtK5Bw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Wei Wang <weiwan@google.com>, Eric Dumazet <edumazet@google.com>,
-        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 4:33 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 17 Aug 2021 12:40:03 -0700 Wei Wang wrote:
-> > Add gfp_t mask as an input parameter to mem_cgroup_charge_skmem(),
-> > to give more control to the networking stack and enable it to change
-> > memcg charging behavior. In the future, the networking stack may decide
-> > to avoid oom-kills when fallbacks are more appropriate.
-> >
-> > One behavior change in mem_cgroup_charge_skmem() by this patch is to
-> > avoid force charging by default and let the caller decide when and if
-> > force charging is needed through the presence or absence of
-> > __GFP_NOFAIL.
->
-> This patch is causing a little bit of pain to us, to workloads running
-> with just memory.max set. After this change the TCP rx path no longer
-> forces the charging.
->
-> Any recommendation for the fix? Setting memory.high a few MB under
-> memory.max seems to remove the failures.
+From: Yu Kuai <yukuai3@huawei.com>
 
-Did the revert of this patch fix the issue you are seeing? The reason
-I am asking is because this patch should not change the behavior.
-Actually someone else reported the similar issue for UDP RX at [1] and
-they tested the revert as well. The revert did not fix the issue for
-them.
+[ Upstream commit 8d6bbaada2e0a65f9012ac4c2506460160e7237a ]
 
-Wei has a better explanation at [2] why this patch is not the cause
-for these issues.
+There is a problem found by code review in tg_with_in_bps_limit() that
+'bps_limit * jiffy_elapsed_rnd' might overflow. Fix the problem by
+calling mul_u64_u64_div_u64() instead.
 
-[1] https://lore.kernel.org/all/CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com/
-[2] https://lore.kernel.org/all/CAEA6p_BhAh6f_kAHEoEJ38nunY=c=4WqxhJQUjT+dCSAr_rm8g@mail.gmail.com/
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20220829022240.3348319-3-yukuai1@huaweicloud.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ block/blk-throttle.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 139b2d7a99e2..d3c048fbb0e5 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -806,7 +806,7 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+ 				 u64 bps_limit, unsigned long *wait)
+ {
+ 	bool rw = bio_data_dir(bio);
+-	u64 bytes_allowed, extra_bytes, tmp;
++	u64 bytes_allowed, extra_bytes;
+ 	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
+ 	unsigned int bio_size = throtl_bio_data_size(bio);
+ 
+@@ -824,10 +824,8 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+ 		jiffy_elapsed_rnd = tg->td->throtl_slice;
+ 
+ 	jiffy_elapsed_rnd = roundup(jiffy_elapsed_rnd, tg->td->throtl_slice);
+-
+-	tmp = bps_limit * jiffy_elapsed_rnd;
+-	do_div(tmp, HZ);
+-	bytes_allowed = tmp;
++	bytes_allowed = mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed_rnd,
++					    (u64)HZ);
+ 
+ 	if (tg->bytes_disp[rw] + bio_size <= bytes_allowed) {
+ 		if (wait)
+-- 
+2.35.1
+
