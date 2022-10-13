@@ -2,70 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F485FD3BE
-	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 06:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1F85FD3DF
+	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 06:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbiJMESk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Oct 2022 00:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
+        id S229577AbiJMEgv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Oct 2022 00:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbiJMESh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Oct 2022 00:18:37 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8C2122BC7
-        for <cgroups@vger.kernel.org>; Wed, 12 Oct 2022 21:18:35 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id w15-20020a17090a8a0f00b0020afece09efso2578923pjn.5
-        for <cgroups@vger.kernel.org>; Wed, 12 Oct 2022 21:18:35 -0700 (PDT)
+        with ESMTP id S229484AbiJMEgt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Oct 2022 00:36:49 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AD111C6C1
+        for <cgroups@vger.kernel.org>; Wed, 12 Oct 2022 21:36:47 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-35ceeae764dso7399697b3.4
+        for <cgroups@vger.kernel.org>; Wed, 12 Oct 2022 21:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zRvbOdnLFkkO1H+l0YKZdetTiBnUb46NxgSTP+dtmWw=;
-        b=UHRwCHPfL9O7ChsvIKIHzncJ2N3Fjdrq0hlgsp1EwwDR2LNEVm5/FrMmvck2ZjQqDc
-         QO7XNuUb3Or1ixE3y5dL1xON/UZnZE+I0yt1y9b7QFGB/Q6kVb9aREbKxAgtbYMlIheL
-         kgEqGxFSMKdRWmm7zjRn6D+Wmlau2q8wiHgY8X0e555V4tJ72xR+jX4AlRGYaJkyU7ke
-         HXibMWsW8IrgyjHqsw+sZr9M9aVnLuSyFalJWPSuS0HSNLOj1NnAcsQayv7AxTPd1rms
-         rmVtNoHsurRukqtMwk2UDi9TkLaL7sbTXklc/w3CDAk+P4aTlw1M9d1g3TEfT0McpP56
-         aagQ==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MYZC/ZZhrwfqeSKJS7iWNQa4xs9BkuJYpmdkhZqDO3E=;
+        b=bD3BNclyP9ltZIweT1HDKFuXx6eb7hOiLH9JVviEPYPhB0sOYPnOgSU66gdF5d75+3
+         TlT4HyKkoVhHJB9h5halO2XpqS8djMcIXY4706siHzr/PLKnv112E/jabXR193uN3VcJ
+         Q4R2PquNN4OCA4stpjgToiAixsItpkw4Wf/g8xxe6JpEyWsj43y9KYMVQ7VVW1MKEkWD
+         MW2SYxDHdUMKQZv2bqCPYKIN999RCky76DYbu1YcIVUDt+yDL3z5STwfNhL9Z+AfZMeT
+         aMVhDpXfyfPVhRgip9XUGbp9hhNLyveS8nWaOZwTZWsFXiNOKv9T/2UxcbCCZzKIE1Mm
+         UQmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zRvbOdnLFkkO1H+l0YKZdetTiBnUb46NxgSTP+dtmWw=;
-        b=iz+9wiTDEvivWtJAZcokKsN0llLiDYHCarIl1PHzdr/i87Mbn+K+BAV+s/w9h66To0
-         SzRbYeWbacjr0GOQU+3nGqtUvKIX7aaD6J30vKQFxlenVcZTQtD4C8EfbCyWK9gFumce
-         GxE+jKtT+zzgIKkA2LVrU4DowfnNc2TJks83tm7M9CuHyQzN4dwiW4VrG+XcQeKG+PIR
-         8cSc/OUw9EMEb3YJXOX+l6k9ZZ0zfkGyFUncUGy+JVVkkrewLmeNOqxX7DZ+cHLMTLW0
-         Zgf4qOxgGRErFmbKyMUJso2Y5J6M5M+yUiXMEMi9eMGIVYv2zCCV4S5JWbng5PJ9k+Kn
-         CRew==
-X-Gm-Message-State: ACrzQf0GbxRdVgPOiMouqeWRcjRXM2/4z2N2jQKGxggwCk2S9Q9trvtZ
-        bZOATo+NnP8B/Y+ye4kReowl8nsZ1+Fa6Q==
-X-Google-Smtp-Source: AMsMyM6DXcyFsUJiVLXKV0d1YWYVYDoajBGEzNpfPGTooN0zpPbM5rFjzXpN02Uf/C4PaKrSUw/WwCyfDEGs6Q==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a17:902:ecc2:b0:17f:9022:e00b with SMTP
- id a2-20020a170902ecc200b0017f9022e00bmr33674660plh.87.1665634715170; Wed, 12
- Oct 2022 21:18:35 -0700 (PDT)
-Date:   Thu, 13 Oct 2022 04:18:33 +0000
-In-Reply-To: <CAEA6p_BUUzhHVAyaD3semV84M+TeZzmrkyjpwb-gs8e6sQRCWw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20210817194003.2102381-1-weiwan@google.com> <20221012163300.795e7b86@kernel.org>
- <CALvZod5pKzcxWsLnjUwE9fUb=1S9MDLOHF950miF8x8CWtK5Bw@mail.gmail.com>
- <20221012173825.45d6fbf2@kernel.org> <20221013005431.wzjurocrdoozykl7@google.com>
- <20221012184050.5a7f3bde@kernel.org> <20221012201650.3e55331d@kernel.org>
- <CAEA6p_CqqPtnWjr_yYr1oVF3UKe=6RqFLrg1OoANs2eg5_by0A@mail.gmail.com>
- <20221012204941.3223d205@kernel.org> <CAEA6p_BUUzhHVAyaD3semV84M+TeZzmrkyjpwb-gs8e6sQRCWw@mail.gmail.com>
-Message-ID: <20221013041833.rhifxw4gqwk4ofi2@google.com>
-Subject: Re: [PATCH net-next] net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MYZC/ZZhrwfqeSKJS7iWNQa4xs9BkuJYpmdkhZqDO3E=;
+        b=JYPvl6f6/HeRnuRWMgnscv6E09SE3DBFbh95XWrCcP2CfJ+lgt7XiL79NkbxOcPiB2
+         sMHWV2L1LZnV0xs6Qw+WQvFCN7QgA47vi/Vho5Ttrg6Oe0vhxXeZOXt9qUOp4dXkyDva
+         uscaj7n93pZhaeMskfbmaL/MIsczXsz4e2ZkVomCIndUP5TJqdy/cDw3a4A30Y/bKk/P
+         HVkAIKPO+MlPGxKIonhfJlYDUtJyWkZc4jIRR3N1cigsk03PtyL3bQqPNpscBYj5mzlS
+         qjRYsDzBXwl2NXNpbt/COBuPuJH+ct53T6OZrImiopXZY0F5OKogUXwhBYfbDIzhz5RX
+         vmWw==
+X-Gm-Message-State: ACrzQf3s3Ud/RZtfWkDnJcmyVMgA4Cgy1kJtxtxcrM7rZHeVlPUoQ7Lj
+        VbKTrCTas0wt2mnOiVVfRNxCDcwsKrYsraX/rQ8PdQ==
+X-Google-Smtp-Source: AMsMyM4JwARt2gsfW3ADYilWDn1NFUBx3KE68DKqvT23RO3GiX4CqATZEILY6t09XMVmV61nBv6lrhFaSEPDN4pinJk=
+X-Received: by 2002:a81:892:0:b0:355:a4c8:f310 with SMTP id
+ 140-20020a810892000000b00355a4c8f310mr29362922ywi.486.1665635806604; Wed, 12
+ Oct 2022 21:36:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <CANOLnON11vzvVdyJfW+QJ36siWR4-s=HJ2aRKpRy7CP=aRPoSw@mail.gmail.com>
+ <CANOLnOPeOi0gxYwd5+ybdv5w=RZEh5JakJPE9xgrSL1cecZHbw@mail.gmail.com>
+ <Yv0h1PFxmK7rVWpy@cmpxchg.org> <CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com>
+ <CAEA6p_BhAh6f_kAHEoEJ38nunY=c=4WqxhJQUjT+dCSAr_rm8g@mail.gmail.com> <CANOLnONQaHXOp1z1rNum74N2b=Ub7t5NsGHqPdHUQL4+4YYEQg@mail.gmail.com>
+In-Reply-To: <CANOLnONQaHXOp1z1rNum74N2b=Ub7t5NsGHqPdHUQL4+4YYEQg@mail.gmail.com>
 From:   Shakeel Butt <shakeelb@google.com>
-To:     Wei Wang <weiwan@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+Date:   Wed, 12 Oct 2022 21:36:34 -0700
+Message-ID: <CALvZod6VaQXrs1x7ff=RRWWP+CgD0hQkTROfZ9XowQ_Zo3SO3Q@mail.gmail.com>
+Subject: Re: UDP rx packet loss in a cgroup with a memory limit
+To:     =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>
+Cc:     Wei Wang <weiwan@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Eric Dumazet <edumazet@google.com>,
+        netdev <netdev@vger.kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,73 +75,102 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 09:04:59PM -0700, Wei Wang wrote:
-> On Wed, Oct 12, 2022 at 8:49 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Wed, Aug 17, 2022 at 1:12 PM Gra=C5=BEvydas Ignotas <notasas@gmail.com> =
+wrote:
+>
+> On Wed, Aug 17, 2022 at 9:16 PM Wei Wang <weiwan@google.com> wrote:
 > >
-> > On Wed, 12 Oct 2022 20:34:00 -0700 Wei Wang wrote:
-> > > > I pushed this little nugget to one affected machine via KLP:
+> > On Wed, Aug 17, 2022 at 10:37 AM Shakeel Butt <shakeelb@google.com> wro=
+te:
+> > >
+> > > + Eric and netdev
+> > >
+> > > On Wed, Aug 17, 2022 at 10:13 AM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
 > > > >
-> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > index 03ffbb255e60..c1ca369a1b77 100644
-> > > > --- a/mm/memcontrol.c
-> > > > +++ b/mm/memcontrol.c
-> > > > @@ -7121,6 +7121,10 @@ bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages,
-> > > >                 return true;
-> > > >         }
+> > > > This is most likely a regression caused by this patch:
 > > > >
-> > > > +       if (gfp_mask == GFP_NOWAIT) {
-> > > > +               try_charge(memcg, gfp_mask|__GFP_NOFAIL, nr_pages);
-> > > > +               refill_stock(memcg, nr_pages);
-> > > > +       }
-> > > >         return false;
-> > > >  }
+> > > > commit 4b1327be9fe57443295ae86fe0fcf24a18469e9f
+> > > > Author: Wei Wang <weiwan@google.com>
+> > > > Date:   Tue Aug 17 12:40:03 2021 -0700
 > > > >
-> > > AFAICT, if you force charge by passing __GFP_NOFAIL to try_charge(),
-> > > you should return true to tell the caller that the nr_pages is
-> > > actually being charged.
+> > > >     net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
+> > > >
+> > > >     Add gfp_t mask as an input parameter to mem_cgroup_charge_skmem=
+(),
+> > > >     to give more control to the networking stack and enable it to c=
+hange
+> > > >     memcg charging behavior. In the future, the networking stack ma=
+y decide
+> > > >     to avoid oom-kills when fallbacks are more appropriate.
+> > > >
+> > > >     One behavior change in mem_cgroup_charge_skmem() by this patch =
+is to
+> > > >     avoid force charging by default and let the caller decide when =
+and if
+> > > >     force charging is needed through the presence or absence of
+> > > >     __GFP_NOFAIL.
+> > > >
+> > > >     Signed-off-by: Wei Wang <weiwan@google.com>
+> > > >     Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> > > >     Signed-off-by: David S. Miller <davem@davemloft.net>
+> > > >
+> > > > We never used to fail these allocations. Cgroups don't have a
+> > > > kswapd-style watermark reclaimer, so the network relied on
+> > > > force-charging and leaving reclaim to allocations that can block.
+> > > > Now it seems network packets could just fail indefinitely.
+> > > >
+> > > > The changelog is a bit terse given how drastic the behavior change
+> > > > is. Wei, Shakeel, can you fill in why this was changed? Can we reve=
+rt
+> > > > this for the time being?
+> > >
+> > > Does reverting the patch fix the issue? However I don't think it will=
+.
+> > >
+> > > Please note that we still have the force charging as before this
+> > > patch. Previously when mem_cgroup_charge_skmem() force charges, it
+> > > returns false and __sk_mem_raise_allocated takes suppress_allocation
+> > > code path. Based on some heuristics, it may allow it or it may
+> > > uncharge and return failure.
 > >
-> > Ack - not sure what the best thing to do is, tho. Always pass NOFAIL
-> > in softirq?
+> > The force charging logic in __sk_mem_raise_allocated only gets
+> > considered on tx path for STREAM socket. So it probably does not take
+> > effect on UDP path. And, that logic is NOT being altered in the above
+> > patch.
+> > So specifically for UDP receive path, what happens in
+> > __sk_mem_raise_allocated() BEFORE the above patch is:
+> > - mem_cgroup_charge_skmem() gets called:
+> >     - try_charge() with GFP_NOWAIT gets called and  failed
+> >     - try_charge() with __GFP_NOFAIL
+> >     - return false
+> > - goto suppress_allocation:
+> >     - mem_cgroup_uncharge_skmem() gets called
+> > - return 0 (which means failure)
 > >
-> > It's not clear to me yet why doing the charge/uncharge actually helps,
-> > perhaps try_to_free_mem_cgroup_pages() does more when NOFAIL is passed?
+> > AFTER the above patch, what happens in __sk_mem_raise_allocated() is:
+> > - mem_cgroup_charge_skmem() gets called:
+> >     - try_charge() with GFP_NOWAIT gets called and failed
+> >     - return false
+> > - goto suppress_allocation:
+> >     - We no longer calls mem_cgroup_uncharge_skmem()
+> > - return 0
 > >
-> I am curious to know as well.
-> 
-> > I'll do more digging tomorrow.
-> >
-> > > Although I am not very sure what refill_stock() does. Does that
-> > > "uncharge" those pages?
-> >
-> > I think so, I copied it from mem_cgroup_uncharge_skmem().
+> > So I agree with Shakeel, that this change shouldn't alter the behavior
+> > of the above call path in such a situation.
+> > But do let us know if reverting this change has any effect on your test=
+.
+>
+> The problem is still there (the kernel wasn't compiling after revert,
+> had to adjust another seemingly unrelated callsite). It's hard to tell
+> if it's better or worse since it happens so randomly.
+>
 
-I think I understand why this issue start happening after this patch.
-The memcg charging happens in batches of 32 (64 nowadays) pages even
-if the charge request is less. The remaining pre-charge is cached in
-the per-cpu cache (or stock).
+Hello everyone, we have a better understanding why the patch pointed
+out by Johannes might have exposed this issue. See
+https://lore.kernel.org/all/20221013041833.rhifxw4gqwk4ofi2@google.com/.
 
-With (GFP_NOWAIT | __GFP_NOFAIL), you let the memcg go over the limit
-without triggering oom-kill and then refill_stock just put the
-pre-charge in the per-cpu cache. So, the later allocation/charge succeed
-from the per-cpu cache even though memcg is over the limit.
-
-So, with this patch we no longer force charge and then uncharge on
-failure, so the later allocation/charge fail similarly.
-
-Regarding what is the right thing to do, IMHO, is to use GFP_ATOMIC
-instead of GFP_NOWAIT. If you see the following comment in
-try_charge_memcg(), we added this exception particularly for these kind
-of situations.
-
-...
-	/*
-	 * Memcg doesn't have a dedicated reserve for atomic
-	 * allocations. But like the global atomic pool, we need to
-	 * put the burden of reclaim on regular allocation requests
-	 * and let these go through as privileged allocations.
-	 */
-	if (!(gfp_mask & (__GFP_NOFAIL | __GFP_HIGH)))
-		return -ENOMEM;
-...
-
-Shakeel
+To summarize, the old code was depending on a subtle interaction of
+force-charge and percpu charge caches which this patch removed. The
+fix I am proposing is for the network stack to be explicit of its need
+(i.e. use GFP_ATOMIC) instead of depending on a subtle behavior.
