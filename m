@@ -2,175 +2,193 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E41E5FDC5A
-	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 16:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7974B5FE487
+	for <lists+cgroups@lfdr.de>; Thu, 13 Oct 2022 23:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbiJMOWX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Oct 2022 10:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
+        id S230312AbiJMVv2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Oct 2022 17:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiJMOWW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Oct 2022 10:22:22 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C3CD7E19
-        for <cgroups@vger.kernel.org>; Thu, 13 Oct 2022 07:22:13 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id z18so1356287qvn.6
-        for <cgroups@vger.kernel.org>; Thu, 13 Oct 2022 07:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2NGQAGAfwfgj6bQQFri3e7UvpFHJBbG66RlLh3PT3p8=;
-        b=SDhA7zbv62PBaHsvPGDAgC+u2bWJOE2OO2P9PQ8O8yhfC3+O+6zOHA0pKrIUoxR0jb
-         rdkdaIOIcP0Zm/LwhM9aYOF2nNRGLOCXW6KDvAxTI8GGHfmY59JXXY4vLfnHaGMnBvYm
-         KPJqMc1JMbsz+TlNcGzW9lsTFb86rQ8TKR4SJ8rtNt8IG9eK3Gx2mc7rf0D0IzPdj0qj
-         q94Q3OnfgWsGiDhsBjJzu33I6+YFoFGIH5067KhLkF04G3vqGwwO3xG4oVW1zsY4yO2E
-         yyw4sfe4cfH5bzvYjNCPsf8dOL1soi9uAiw9XtpJ0HfB21bV+G9RFgpzYGiK9R9YarDJ
-         hmOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2NGQAGAfwfgj6bQQFri3e7UvpFHJBbG66RlLh3PT3p8=;
-        b=7kCf6+gmMYRQSsnmqokDw/ozrHgxOjoipuCF6SEDqO++3ucsreWDDiYbSXB9UKPVD8
-         36UiBoV1fRoG4by81wL7l0++rB6Vb/fzfqiW4vkhms6kXG+eDNMRU+XgqKu8gZ3mFlsw
-         EIZtCGPdciYx0h4+j68TxJ9M9YCsOWk53aWNMyGuQ2bQGAHwrvkwHPlBsxSK9gp6Nxyk
-         H73vFwf9DmSe3kpp1iWfeUu14nfqVzF3/XM3YZcxCbI6ADGTk2tB2msQYPXpm9PUB3sQ
-         LriBP7XmZUDqJa2Ru6T1qVrFxGUM7FIqFZp3r0qfD6qrBjqtItFUXYvk45bIfEwVeegb
-         pETQ==
-X-Gm-Message-State: ACrzQf1PtX+Htpax2n0UUzSw0m/iKy2DW3BYx6xUrx6YcKxJ0QE07r5i
-        1uJIzcnZlLO8RgT4TlZKP7AELA==
-X-Google-Smtp-Source: AMsMyM4ejZLk6SAda6oIT4GjMyfCkdv+MKWSXy85/4wqrAIiPeVWI24lZSdclBBimgKybOfcGtq5Dw==
-X-Received: by 2002:a05:6214:2a83:b0:4b1:cdc6:821d with SMTP id jr3-20020a0562142a8300b004b1cdc6821dmr160703qvb.36.1665670931825;
-        Thu, 13 Oct 2022 07:22:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::3a61])
-        by smtp.gmail.com with ESMTPSA id q4-20020a05620a2a4400b006ee74cc976esm9007413qkp.70.2022.10.13.07.22.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Oct 2022 07:22:11 -0700 (PDT)
-Date:   Thu, 13 Oct 2022 10:22:10 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     =?utf-8?Q?Gra=C5=BEvydas?= Ignotas <notasas@gmail.com>,
-        Wei Wang <weiwan@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        netdev <netdev@vger.kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: UDP rx packet loss in a cgroup with a memory limit
-Message-ID: <Y0gfEn6487fMalI9@cmpxchg.org>
-References: <CANOLnON11vzvVdyJfW+QJ36siWR4-s=HJ2aRKpRy7CP=aRPoSw@mail.gmail.com>
- <CANOLnOPeOi0gxYwd5+ybdv5w=RZEh5JakJPE9xgrSL1cecZHbw@mail.gmail.com>
- <Yv0h1PFxmK7rVWpy@cmpxchg.org>
- <CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com>
- <CAEA6p_BhAh6f_kAHEoEJ38nunY=c=4WqxhJQUjT+dCSAr_rm8g@mail.gmail.com>
- <CANOLnONQaHXOp1z1rNum74N2b=Ub7t5NsGHqPdHUQL4+4YYEQg@mail.gmail.com>
- <CALvZod6VaQXrs1x7ff=RRWWP+CgD0hQkTROfZ9XowQ_Zo3SO3Q@mail.gmail.com>
+        with ESMTP id S230316AbiJMVui (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Oct 2022 17:50:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B3C36BF7;
+        Thu, 13 Oct 2022 14:49:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C36D161956;
+        Thu, 13 Oct 2022 21:49:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F00C433C1;
+        Thu, 13 Oct 2022 21:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665697791;
+        bh=kOV91CXYBBdDhsKUffc0YPbPE0GmfumglfTqvPfrNVg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FOPgBLevSILr9FUbnIDgT4cF5yC51HoZbSmvnOq6Et3/cOuVywQpk57cPLXePWDiL
+         GyW42GSJIT19Fb8vm6hYwuvlaSbcBrAid1amDa+MGbJA5jb/ZknOFADWAujsuR2UTG
+         mtJLqm/H+hMdu7nY3sub1YNKW1NhcqJLnwDVKnEGGtjKLoRqAhDRCBTTmMJdQs0T6v
+         MXOfVfcWs66WhuDA7uYCsxuWigWNLC3Pi0i3BSo8obay+CCbA8bPEmDV/yyJrJnYkv
+         UQm0bVNLx741tkHJzA9FgNPNiVM0eA8PiP3y8L7SnQiFDlJH7ZPbogu9J24w05Dmdw
+         2fLtU06M0j61Q==
+Date:   Thu, 13 Oct 2022 14:49:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Wei Wang <weiwan@google.com>, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Neil Spring <ntspring@meta.com>, ycheng@google.com
+Subject: Re: [PATCH net-next] net-memcg: pass in gfp_t mask to
+ mem_cgroup_charge_skmem()
+Message-ID: <20221013144950.44b52f90@kernel.org>
+In-Reply-To: <20221012163300.795e7b86@kernel.org>
+References: <20210817194003.2102381-1-weiwan@google.com>
+        <20221012163300.795e7b86@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALvZod6VaQXrs1x7ff=RRWWP+CgD0hQkTROfZ9XowQ_Zo3SO3Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 09:36:34PM -0700, Shakeel Butt wrote:
-> On Wed, Aug 17, 2022 at 1:12 PM Gražvydas Ignotas <notasas@gmail.com> wrote:
-> >
-> > On Wed, Aug 17, 2022 at 9:16 PM Wei Wang <weiwan@google.com> wrote:
-> > >
-> > > On Wed, Aug 17, 2022 at 10:37 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > > >
-> > > > + Eric and netdev
-> > > >
-> > > > On Wed, Aug 17, 2022 at 10:13 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > > >
-> > > > > This is most likely a regression caused by this patch:
-> > > > >
-> > > > > commit 4b1327be9fe57443295ae86fe0fcf24a18469e9f
-> > > > > Author: Wei Wang <weiwan@google.com>
-> > > > > Date:   Tue Aug 17 12:40:03 2021 -0700
-> > > > >
-> > > > >     net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
-> > > > >
-> > > > >     Add gfp_t mask as an input parameter to mem_cgroup_charge_skmem(),
-> > > > >     to give more control to the networking stack and enable it to change
-> > > > >     memcg charging behavior. In the future, the networking stack may decide
-> > > > >     to avoid oom-kills when fallbacks are more appropriate.
-> > > > >
-> > > > >     One behavior change in mem_cgroup_charge_skmem() by this patch is to
-> > > > >     avoid force charging by default and let the caller decide when and if
-> > > > >     force charging is needed through the presence or absence of
-> > > > >     __GFP_NOFAIL.
-> > > > >
-> > > > >     Signed-off-by: Wei Wang <weiwan@google.com>
-> > > > >     Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > > > >     Signed-off-by: David S. Miller <davem@davemloft.net>
-> > > > >
-> > > > > We never used to fail these allocations. Cgroups don't have a
-> > > > > kswapd-style watermark reclaimer, so the network relied on
-> > > > > force-charging and leaving reclaim to allocations that can block.
-> > > > > Now it seems network packets could just fail indefinitely.
-> > > > >
-> > > > > The changelog is a bit terse given how drastic the behavior change
-> > > > > is. Wei, Shakeel, can you fill in why this was changed? Can we revert
-> > > > > this for the time being?
-> > > >
-> > > > Does reverting the patch fix the issue? However I don't think it will.
-> > > >
-> > > > Please note that we still have the force charging as before this
-> > > > patch. Previously when mem_cgroup_charge_skmem() force charges, it
-> > > > returns false and __sk_mem_raise_allocated takes suppress_allocation
-> > > > code path. Based on some heuristics, it may allow it or it may
-> > > > uncharge and return failure.
-> > >
-> > > The force charging logic in __sk_mem_raise_allocated only gets
-> > > considered on tx path for STREAM socket. So it probably does not take
-> > > effect on UDP path. And, that logic is NOT being altered in the above
-> > > patch.
-> > > So specifically for UDP receive path, what happens in
-> > > __sk_mem_raise_allocated() BEFORE the above patch is:
-> > > - mem_cgroup_charge_skmem() gets called:
-> > >     - try_charge() with GFP_NOWAIT gets called and  failed
-> > >     - try_charge() with __GFP_NOFAIL
-> > >     - return false
-> > > - goto suppress_allocation:
-> > >     - mem_cgroup_uncharge_skmem() gets called
-> > > - return 0 (which means failure)
-> > >
-> > > AFTER the above patch, what happens in __sk_mem_raise_allocated() is:
-> > > - mem_cgroup_charge_skmem() gets called:
-> > >     - try_charge() with GFP_NOWAIT gets called and failed
-> > >     - return false
-> > > - goto suppress_allocation:
-> > >     - We no longer calls mem_cgroup_uncharge_skmem()
-> > > - return 0
-> > >
-> > > So I agree with Shakeel, that this change shouldn't alter the behavior
-> > > of the above call path in such a situation.
-> > > But do let us know if reverting this change has any effect on your test.
-> >
-> > The problem is still there (the kernel wasn't compiling after revert,
-> > had to adjust another seemingly unrelated callsite). It's hard to tell
-> > if it's better or worse since it happens so randomly.
-> >
-> 
-> Hello everyone, we have a better understanding why the patch pointed
-> out by Johannes might have exposed this issue. See
-> https://lore.kernel.org/all/20221013041833.rhifxw4gqwk4ofi2@google.com/.
+On Wed, 12 Oct 2022 16:33:00 -0700 Jakub Kicinski wrote:
+> This patch is causing a little bit of pain to us, to workloads running
+> with just memory.max set. After this change the TCP rx path no longer
+> forces the charging.
+>=20
+> Any recommendation for the fix? Setting memory.high a few MB under
+> memory.max seems to remove the failures.
 
-Wow, that's super subtle! Nice sleuthing.
+Eric, is there anything that would make the TCP perform particularly
+poorly under mem pressure?
 
-> To summarize, the old code was depending on a subtle interaction of
-> force-charge and percpu charge caches which this patch removed. The
-> fix I am proposing is for the network stack to be explicit of its need
-> (i.e. use GFP_ATOMIC) instead of depending on a subtle behavior.
+Dropping and pruning happens a lot here:
 
-That sounds good to me.
+# nstat -a | grep -i -E 'Prune|Drop'
+TcpExtPruneCalled               1202577            0.0
+TcpExtOfoPruned                 734606             0.0
+TcpExtTCPOFODrop                64191              0.0
+TcpExtTCPRcvQDrop               384305             0.0
+
+Same workload on 5.6 kernel:
+
+TcpExtPruneCalled               1223043            0.0
+TcpExtOfoPruned                 3377               0.0
+TcpExtListenDrops               10596              0.0
+TcpExtTCPOFODrop                22                 0.0
+TcpExtTCPRcvQDrop               734                0.0
+
+=46rom a quick look at the code and with what Shakeel explained in mind -
+previously we would have "loaded up the cache" after the first failed
+try, so we never got into the loop inside tcp_try_rmem_schedule() which
+most likely nukes the entire OFO queue:
+
+static int tcp_try_rmem_schedule(struct sock *sk, struct sk_buff *skb,
+				 unsigned int size)
+{
+	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf ||
+	    !sk_rmem_schedule(sk, skb, size)) {
+	    /* ^ would fail but "load up the cache" ^ */
+
+		if (tcp_prune_queue(sk) < 0)
+			return -1;
+
+		/* v this one would not fail due to the cache v */
+		while (!sk_rmem_schedule(sk, skb, size)) {
+			if (!tcp_prune_ofo_queue(sk))
+				return -1;
+
+Neil mentioned that he's seen multi-second stalls when SACKed segments
+get dropped from the OFO queue. Sender waits for a very long time before
+retrying something that was already SACKed if the receiver keeps
+sacking new, later segments. Even when ACK reaches the previously-SACKed
+block which should prove to the sender that something is very wrong.
+
+I tried to repro this with a packet drill and it's not what I see
+exactly, I need to keep shortening the RTT otherwise the retx comes=20
+out before the next SACK arrives.
+
+I'll try to read the code, and maybe I'll get lucky and manage capture
+the exact impacted flows :S But does anything of this nature ring the
+bell?
+
+`../common/defaults.sh`
+
+    0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
+   +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) =3D 0
+   +0 bind(3, ..., ...) =3D 0
+   +0 listen(3, 1) =3D 0
+
+   +0 < S 0:0(0) win 65535 <mss 1000,sackOK,nop,nop,nop,wscale 8>
+   +0 > S. 0:0(0) ack 1 <mss 1460,nop,nop,sackOK,nop,wscale 8>
+  +.1 < . 1:1(0) ack 1 win 2048
+   +0 accept(3, ..., ...) =3D 4
+
+   +0 write(4, ..., 60000) =3D 60000
+   +0 > P. 1:10001(10000) ack 1
+
+// Do some SACK-ing
+  +.1 < . 1:1(0) ack 1 win 513 <sack 1001:2001,nop,nop>
++.001 < . 1:1(0) ack 1 win 513 <sack 1001:2001 3001:4001 5001:6001,nop,nop>
+// ..and we pretend we lost 1001:2001
++.001 < . 1:1(0) ack 1 win 513 <sack 2001:10001,nop,nop>
+
+// re-xmit holes and send more
+   +0 > . 10001:11001(1000) ack 1
+   +0 > . 1:1001(1000) ack 1
+   +0 > . 2001:3001(1000) ack 1 win 256
+   +0 > P. 11001:13001(2000) ack 1 win 256
+   +0 > P. 13001:15001(2000) ack 1 win 256
+
+  +.1 < . 1:1(0) ack 1001 win 513 <sack 2001:15001,nop,nop>
+
+   +0 > P. 15001:18001(3000) ack 1 win 256
+   +0 > P. 18001:20001(2000) ack 1 win 256
+   +0 > P. 20001:22001(2000) ack 1 win 256
+
+  +.1 < . 1:1(0) ack 1001 win 513 <sack 2001:22001,nop,nop>
+
+   +0 > P. 22001:24001(2000) ack 1 win 256
+   +0 > P. 24001:26001(2000) ack 1 win 256
+   +0 > P. 26001:28001(2000) ack 1 win 256
+   +0 > .  28001:29001(1000) ack 1 win 256
+
++0.05 < . 1:1(0) ack 1001 win 257 <sack 2001:29001,nop,nop>
+
+   +0 > P. 29001:31001(2000) ack 1 win 256
+   +0 > P. 31001:33001(2000) ack 1 win 256
+   +0 > P. 33001:35001(2000) ack 1 win 256
+   +0 > . 35001:36001(1000) ack 1 win 256
+
++0.05 < . 1:1(0) ack 1001 win 257 <sack 2001:36001,nop,nop>
+
+   +0 > P. 36001:38001(2000) ack 1 win 256
+   +0 > P. 38001:40001(2000) ack 1 win 256
+   +0 > P. 40001:42001(2000) ack 1 win 256
+   +0 > .  42001:43001(1000) ack 1 win 256
+
++0.05 < . 1:1(0) ack 1001 win 257 <sack 2001:43001,nop,nop>
+
+   +0 > P. 43001:45001(2000) ack 1 win 256
+   +0 > P. 45001:47001(2000) ack 1 win 256
+   +0 > P. 47001:49001(2000) ack 1 win 256
+   +0 > .  49001:50001(1000) ack 1 win 256
+
++0.04 < . 1:1(0) ack 1001 win 257 <sack 2001:50001,nop,nop>
+
+   +0 > P. 50001:52001(2000) ack 1 win 256
+   +0 > P. 52001:54001(2000) ack 1 win 256
+   +0 > P. 54001:56001(2000) ack 1 win 256
+   +0 > .  56001:57001(1000) ack 1 win 256
+
++0.04 > . 1001:2001(1000) ack 1 win 256
+
+
+  +.1 < . 1:1(0) ack 1001 win 257 <sack 2001:29001,nop,nop>
+
