@@ -2,45 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5F36016A8
-	for <lists+cgroups@lfdr.de>; Mon, 17 Oct 2022 20:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88A8601B4E
+	for <lists+cgroups@lfdr.de>; Mon, 17 Oct 2022 23:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbiJQSwn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Oct 2022 14:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S229935AbiJQVb0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Oct 2022 17:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbiJQSwm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 14:52:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDA972ED4
-        for <cgroups@vger.kernel.org>; Mon, 17 Oct 2022 11:52:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DADA25BFCA;
-        Mon, 17 Oct 2022 18:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1666032759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uIg/vWRDzwcg+FnbrRQRZsB7kMPtfjh8GsB556SPdCE=;
-        b=opkb3ve0AqetQ24+LxR7h4nCUtfSNEtlQ16c+8jm7TtbDpuPTQc24EklqJhdYisPgtwIq+
-        1hzt/V+jP3veWOnLweikP1UqTd6OsekH8QTMgpz1dzxJPs/N0pS1xWl7zohBsLC0rWCfHI
-        yVO3G4J3tCyfvLTwQY8zDhjJ1Sp9+wI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A118B13398;
-        Mon, 17 Oct 2022 18:52:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AqNGJnekTWPhBgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 17 Oct 2022 18:52:39 +0000
-Date:   Mon, 17 Oct 2022 20:52:38 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
+        with ESMTP id S230368AbiJQVbS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 17:31:18 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1DF7B294
+        for <cgroups@vger.kernel.org>; Mon, 17 Oct 2022 14:31:17 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id n73so10223765iod.13
+        for <cgroups@vger.kernel.org>; Mon, 17 Oct 2022 14:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vc3li/tzR/oCCHp/uAgdn1p2dDfcQKGULLcU+GBdb+c=;
+        b=RAhZtWKR/m4APOcLNaQu/IyieOIGeudNyluby/pCrVi2sFz2u1A0FSefKBAtiPDBf8
+         seUBQVFcmsN0KKROH6v2fX9rYKR9yV3RxQEUg5HZJmPE4otB/k/wdZ3cXQnqp4gI2cfX
+         +BsbrZ/E+jyA19LGwo0Xfj/sPwij+yDUr5znU9FgwCBQuY3ECDYxZIXkooVOZstOU5DW
+         8kEpIXyAYuDCwvYA3IqHwv88jmBPBdiiuinwjffl8ccf0BCAMvS0uxjEmpOz576Fgi4u
+         VQFx9bUPD3QtIf2eqt48BCliwgEEmZuBd7vQ9EcuUw28y1AQ5QNHJKrLI+9GcbuH4aKz
+         KJJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vc3li/tzR/oCCHp/uAgdn1p2dDfcQKGULLcU+GBdb+c=;
+        b=f6CnFNVo8NtS1IKtRdHVcI5OFhW7vCdHzqFlyD8HNNcersDd5EKPPuKgJZNiuyhn4m
+         fEiUNZkV+6rOyKkNGElsSN1n9rmQLawflKw/WAjj5iiG7ApRAx0/xcwreTZSLJg1PhBw
+         6fz6Fnr8L/IDr1CrLuC4kPAs3WbqG+LA73CjXYVr7uza7ghuxcvSFQCq861xwX7RbHq/
+         T3u5qCPousKj+4MEKrWh2Pt/+pZpekkILRgII3sMwj4vUd4qEpSEJAHi9aOM9MfM+js8
+         npwHCSanN79TNjgC5nqIUJKj0a9ZRfJLnDmPTVooCeJ/yGWBD65EMH6Dd4sR97TcDpcy
+         Vysg==
+X-Gm-Message-State: ACrzQf3U4VX4dySXh1JGJOaCDn02CyVJjJwmp2XRQD4WE1eyiOAjmJja
+        DnVzKbtAuKcWZ2T8Tg2/pSZjKOe/OMxT+R24ecPoeQ==
+X-Google-Smtp-Source: AMsMyM4aKKAWsgREP04N0/OdfQ9Pbgp/J6t+WdZ4ViGaN//UH/MMywdFAMTg/PJ/x7SLE2VVL46RT9dMSVX0Qp0eM1w=
+X-Received: by 2002:a05:6638:480c:b0:363:aed5:ed3c with SMTP id
+ cp12-20020a056638480c00b00363aed5ed3cmr6464575jab.207.1666042277152; Mon, 17
+ Oct 2022 14:31:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJD7tkZQ+L5N7FmuBAXcg_2Lgyky7m=fkkBaUChr7ufVMHss=A@mail.gmail.com>
+ <20221017185238.GA7699@blackbody.suse.cz>
+In-Reply-To: <20221017185238.GA7699@blackbody.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 17 Oct 2022 14:30:41 -0700
+Message-ID: <CAJD7tkYkX7hetynuTYbpV50e1+dKgqWuGJ8d_VFSJPoF=k61NA@mail.gmail.com>
+Subject: Re: [RFC] memcg rstat flushing optimization
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -49,81 +63,75 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linux-MM <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
         Greg Thelen <gthelen@google.com>
-Subject: Re: [RFC] memcg rstat flushing optimization
-Message-ID: <20221017185238.GA7699@blackbody.suse.cz>
-References: <CAJD7tkZQ+L5N7FmuBAXcg_2Lgyky7m=fkkBaUChr7ufVMHss=A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkZQ+L5N7FmuBAXcg_2Lgyky7m=fkkBaUChr7ufVMHss=A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Mon, Oct 17, 2022 at 11:52 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
+e:
+>
+> Hello.
+>
+> On Tue, Oct 04, 2022 at 06:17:40PM -0700, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > Sorry for the long email :)
+>
+> (I'll get to other parts sometime in the future. Sorry for my latency :)
+>
+> > We have recently ran into a hard lockup on a machine with hundreds of
+> > CPUs and thousands of memcgs during an rstat flush.
+> > [...]
+>
+> I only respond with some remarks to this particular case.
+>
+>
+> > As you can imagine, with a sufficiently large number of
+> > memcgs and cpus, a call to mem_cgroup_flush_stats() might be slow, or
+> > in an extreme case like the one we ran into, cause a hard lockup
+> > (despite periodically flushing every 4 seconds).
+>
+> Is this your modification from the upstream value of FLUSH_TIME (that's
+> every 2 s)?
 
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's actually once every 4s like upstream, I got confused by
+flush_next_time multiplying the flush interval by 2.
 
-Hello.
+>
+> In the mailthread, you also mention >10s for hard-lockups. That sounds
+> scary (even with the once per 4 seconds) since with large enough update
+> tree (and update activity) periodic flush couldn't keep up.
+> Also, it seems to be kind of bad feedback, the longer a (periodic) flush
+> takes, the lower is the frequency of them and the more updates may
+> accumulate. I.e. one spike in update activity can get the system into
+> a spiral of long flushes that won't recover once the activity doesn't
+> drop much more.
 
-On Tue, Oct 04, 2022 at 06:17:40PM -0700, Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> Sorry for the long email :)
+Yeah it is scary and shouldn't be likely to happen, but it did :(
 
-(I'll get to other parts sometime in the future. Sorry for my latency :)
+We can keep coming up with mitigations to try and make it less likely,
+but I was hoping we can find something more fundamental like keeping
+track of what we really need to flush or avoiding all flushing in
+non-sleepable contexts if possible.
 
-> We have recently ran into a hard lockup on a machine with hundreds of
-> CPUs and thousands of memcgs during an rstat flush.
-> [...]
+>
+> (2nd point should have been about some memcg_check_events() optimization
+> or THRESHOLDS_EVENTS_TARGET justifying delayed flush but I've found none =
+to be applicable.
+> Just noting that v2 fortunetly doesn't have the threshold
+> notifications.)
 
-I only respond with some remarks to this particular case.
+I think even without that, we can still run into the same problem in
+other non-sleepable flushing contexts.
 
-
-> As you can imagine, with a sufficiently large number of
-> memcgs and cpus, a call to mem_cgroup_flush_stats() might be slow, or
-> in an extreme case like the one we ran into, cause a hard lockup
-> (despite periodically flushing every 4 seconds).
-
-Is this your modification from the upstream value of FLUSH_TIME (that's
-every 2 s)?
-
-In the mailthread, you also mention >10s for hard-lockups. That sounds
-scary (even with the once per 4 seconds) since with large enough update
-tree (and update activity) periodic flush couldn't keep up.
-Also, it seems to be kind of bad feedback, the longer a (periodic) flush
-takes, the lower is the frequency of them and the more updates may
-accumulate. I.e. one spike in update activity can get the system into
-a spiral of long flushes that won't recover once the activity doesn't
-drop much more.=20
-
-(2nd point should have been about some memcg_check_events() optimization
-or THRESHOLDS_EVENTS_TARGET justifying delayed flush but I've found none to=
- be applicable.
-Just noting that v2 fortunetly doesn't have the threshold
-notifications.)
-
-Regards,
-Michal
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY02kdAAKCRAkDQmsBEOq
-ucSYAQC1iiT2OoWMBWVeABnkerHapSlZb9R02QB2KaKYuq0IeQEAhZVf5gQ3FK2e
-7yTBVL+HCfkrSeToyI19ckXOnIIGBwA=
-=s/Rd
------END PGP SIGNATURE-----
-
---4Ckj6UjgE2iN1+kY--
+>
+> Regards,
+> Michal
