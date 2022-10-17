@@ -2,68 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD20600519
-	for <lists+cgroups@lfdr.de>; Mon, 17 Oct 2022 04:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3919B600802
+	for <lists+cgroups@lfdr.de>; Mon, 17 Oct 2022 09:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbiJQCG6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 16 Oct 2022 22:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
+        id S229770AbiJQHr0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Oct 2022 03:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbiJQCG5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 16 Oct 2022 22:06:57 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8560141D16;
-        Sun, 16 Oct 2022 19:06:56 -0700 (PDT)
-Received: from kwepemi500016.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MrKxd60MCzmVNq;
-        Mon, 17 Oct 2022 10:02:13 +0800 (CST)
-Received: from [10.174.178.129] (10.174.178.129) by
- kwepemi500016.china.huawei.com (7.221.188.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 10:06:54 +0800
-Subject: Re: [PATCH 0/3] A few cleanup patches for blk-iolatency.c
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20220929074055.30080-1-shikemeng@huawei.com>
-From:   Kemeng Shi <shikemeng@huawei.com>
-Message-ID: <b25560e2-78ae-b501-ff2b-ad69fd5c0f49@huawei.com>
-Date:   Mon, 17 Oct 2022 10:06:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        with ESMTP id S230062AbiJQHrY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 03:47:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF55193ED;
+        Mon, 17 Oct 2022 00:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N3DhelgxeJD6609Ma0kcmpLW0VW7ci1zuKd0emkDasI=; b=4fQDVYDXyHEvBhehq1JK9VdDW0
+        R3tMd/QDPEtKsjFGyFUg5svkVWeas3otDLcoY5ADt9NTdCDdXhQyvOSW0DiE+Ha40wEVm/WfkzT/P
+        2ch6qZHi1dMjetjJmmIpImeTfa6H8ZZIkQJ5A7xdpLLo5NXFdAN8dqifLlAyZKASYGEEnlfL06jmG
+        yElmdEt09/1MHOslxcYuYYBVYM/zyj4Cb8W/6WUxoR+nYxhbg+dlVS3nz2/T4FBe6Pb/3hYyNRHvI
+        3YHeorVPSs9m3r3Mfq/GgQdazSE7bATFMgq6NUCBUwMIZHJOLAuHVUoWLH3zLEoaYTfJ2ti5bhaI7
+        9m8SZYMg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1okKqE-008bBK-57; Mon, 17 Oct 2022 07:47:18 +0000
+Date:   Mon, 17 Oct 2022 00:47:18 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dawei Li <set_pte_at@outlook.com>
+Cc:     axboe@kernel.dk, tj@kernel.org, paolo.valente@linaro.org,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] block: Add helper for queue_flags bit test
+Message-ID: <Y00IhghhGgVQBknL@infradead.org>
+References: <20221011145246.8656-1-set_pte_at@outlook.com>
+ <TYCP286MB232392B1D23662DE81B0D2D5CA239@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <20220929074055.30080-1-shikemeng@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.129]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500016.china.huawei.com (7.221.188.220)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYCP286MB232392B1D23662DE81B0D2D5CA239@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Friendly ping ...
+>  	if (op_is_flush(bio->bi_opf) &&
+> -	    !test_bit(QUEUE_FLAG_WC, &q->queue_flags)) {
+> +		!blk_queue_wb_cached(q)) {
 
-on 9/29/2022 3:40 PM, Kemeng Shi wrote:
-> This series contains three cleanup patches to remove redundant check,
-> correct comment and simplify struct iolatency_grp in blk-iolatency.c.
-> 
-> Kemeng Shi (3):
->   block: Remove redundant parent blkcg_gp check in check_scale_change
->   block: Correct comment for scale_cookie_change
->   block: Replace struct rq_depth with unsigned int in struct
->     iolatency_grp
-> 
->  block/blk-iolatency.c | 33 ++++++++++++++-------------------
->  1 file changed, 14 insertions(+), 19 deletions(-)
-> 
+The formatting is wrong here.  And I really think these helpers do
+nothing but obsfucating the code.  Now instead of a grep telling
+me exactly what is going on I now need to walk through the macro
+first.  (nevermind that this particular one is also horribly misnamed).
 
--- 
-Best wishes
-Kemeng Shi
