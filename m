@@ -2,53 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B12601F04
-	for <lists+cgroups@lfdr.de>; Tue, 18 Oct 2022 02:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CFD6020B7
+	for <lists+cgroups@lfdr.de>; Tue, 18 Oct 2022 04:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbiJRAPR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Oct 2022 20:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
+        id S229925AbiJRCBQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Oct 2022 22:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbiJRAOX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 20:14:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D40889AD8;
-        Mon, 17 Oct 2022 17:11:12 -0700 (PDT)
+        with ESMTP id S229801AbiJRCBP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 22:01:15 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EBE17AA9;
+        Mon, 17 Oct 2022 19:01:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EDA91B81C0B;
-        Tue, 18 Oct 2022 00:11:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDAAC433D7;
-        Tue, 18 Oct 2022 00:11:06 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1F79AB81BDD;
+        Tue, 18 Oct 2022 02:01:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DF29CC433D7;
+        Tue, 18 Oct 2022 02:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666051867;
-        bh=x0y/DlrlGVWqurzJyNaXRKYcomDyO74QFqiGj1H8ra4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D6nZz93arlLlObwq0IultNymp8riYQL9urKwPpSwaPd8g6QFKd/+HHtyLcv45/g+V
-         AMfFaDf0at4sXb/ZAEdXen+cnjqsBLKtxLH1Tfb/GZl3hrXS4saEuZaz/E91pJuDy0
-         4cU4ajq8nvzIzEsVxSg73fmgBOYZ0sgAGhtvfo3z0RD3u+HzRBsbQH2c99GnsWb59C
-         3ofMYgpSu7H66n4h3jkGI/EAzrzsTHNSe5BB4PbYVK7lXGVR9qhaLhgecakseiex35
-         kgkfFR1rS1lpF8jVlmNuQvnf5O6z4yg8thovIBJs2ffF4yTvO78PC0TtKpOckEXcMr
-         0DN6u0ncr4Pxw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>,
-        Abhishek Shah <abhishek.shah@columbia.edu>,
-        Gabriel Ryan <gabe@cs.columbia.edu>,
-        Christian Brauner <brauner@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 03/13] cgroup: Remove data-race around cgrp_dfl_visible
-Date:   Mon, 17 Oct 2022 20:10:52 -0400
-Message-Id: <20221018001102.2731930-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221018001102.2731930-1-sashal@kernel.org>
-References: <20221018001102.2731930-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1666058471;
+        bh=F+S51e6wTdPG2aXbo8dh/010c09681MqZA1F3Fzj39c=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=om1h2Erm2L3PTREyOpBE7EB3a2xw0DBVx2poVEhOX9E1ZjdD8ftpp8L90y8R9Mxs5
+         tE1ZOR52IRCXge04EcunpFtDu0A/jpl+2H6BVuCD3sN8cABse2Pla48WtFHcb7+BgE
+         yn5bLhrTPeHlYzutjVUm9Jd6DymsQq/p5vZoT3SgsN2Pcqp75XzX5YFwVHuwYpYG4U
+         X8LhgYQB9n6ELsKgcrRctyGxpN1Rfgs7vRNjF9zjXVqRWBCTWBCnqnUIPgH3g5OoRe
+         Vd2w/l3W4HZPxFbBe3F5cdB3vsIG05rQmVDHC/7yGp8BG24lK7B1/PGZiIbF/aNcVN
+         49Vip/4dPrN6Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C1E5FE270EC;
+        Tue, 18 Oct 2022 02:01:11 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup fixes for v6.1-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <Y03NC6GVxT6iPDsr@slm.duckdns.org>
+References: <Y03NC6GVxT6iPDsr@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <Y03NC6GVxT6iPDsr@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.1-rc1-fixes
+X-PR-Tracked-Commit-Id: 79a818b5087393d5a4cb356d4545d02f55bf1a2f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: bb1a1146467ad812bb65440696df0782e2bc63c8
+Message-Id: <166605847178.4906.14956649686203829290.pr-tracker-bot@kernel.org>
+Date:   Tue, 18 Oct 2022 02:01:11 +0000
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,46 +59,15 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+The pull request you sent on Mon, 17 Oct 2022 11:45:47 -1000:
 
-[ Upstream commit dc79ec1b232ad2c165d381d3dd2626df4ef9b5a4 ]
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.1-rc1-fixes
 
-There's a seemingly harmless data-race around cgrp_dfl_visible detected by
-kernel concurrency sanitizer. Let's remove it by throwing WRITE/READ_ONCE at
-it.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/bb1a1146467ad812bb65440696df0782e2bc63c8
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Abhishek Shah <abhishek.shah@columbia.edu>
-Cc: Gabriel Ryan <gabe@cs.columbia.edu>
-Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
-Link: https://lore.kernel.org/netdev/20220819072256.fn7ctciefy4fc4cu@wittgenstein/
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/cgroup/cgroup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you!
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index d14575c0e464..194060a6492a 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2178,7 +2178,7 @@ static int cgroup_get_tree(struct fs_context *fc)
- 	struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
- 	int ret;
- 
--	cgrp_dfl_visible = true;
-+	WRITE_ONCE(cgrp_dfl_visible, true);
- 	cgroup_get_live(&cgrp_dfl_root.cgrp);
- 	ctx->root = &cgrp_dfl_root;
- 
-@@ -6022,7 +6022,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
- 		struct cgroup *cgrp;
- 		int ssid, count = 0;
- 
--		if (root == &cgrp_dfl_root && !cgrp_dfl_visible)
-+		if (root == &cgrp_dfl_root && !READ_ONCE(cgrp_dfl_visible))
- 			continue;
- 
- 		seq_printf(m, "%d:", root->hierarchy_id);
 -- 
-2.35.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
