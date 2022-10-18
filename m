@@ -2,35 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95FB601EE3
-	for <lists+cgroups@lfdr.de>; Tue, 18 Oct 2022 02:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B12601F04
+	for <lists+cgroups@lfdr.de>; Tue, 18 Oct 2022 02:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbiJRAOh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Oct 2022 20:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        id S231745AbiJRAPR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Oct 2022 20:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbiJRAOP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 20:14:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D2888DF8;
-        Mon, 17 Oct 2022 17:10:50 -0700 (PDT)
+        with ESMTP id S231805AbiJRAOX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Oct 2022 20:14:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D40889AD8;
+        Mon, 17 Oct 2022 17:11:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BFA04B81C04;
-        Tue, 18 Oct 2022 00:10:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8934FC43470;
-        Tue, 18 Oct 2022 00:10:38 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EDA91B81C0B;
+        Tue, 18 Oct 2022 00:11:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDAAC433D7;
+        Tue, 18 Oct 2022 00:11:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666051839;
-        bh=pi8pLsYW4g0+QIgNtoUdgUCpe0BC5kGnIcEdILtWFCU=;
+        s=k20201202; t=1666051867;
+        bh=x0y/DlrlGVWqurzJyNaXRKYcomDyO74QFqiGj1H8ra4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dc92d1ac9j9u7r+OmjaAvRO46WjcIArVGC84qt4VOXfO6HWg3CTF1ikMWxVL8QJG1
-         97anq76AAQ7bPwGvxgsSBJ6w1bJFt4rJbRBjMz8E5nCLhs1QYchyxwTLQavXF9pe0b
-         +0mxFza//hrj4n65mp5tG/1JsARRkpwhGUeiQarAybKYCR3Vzrry101FmsjmENHHax
-         pwJBknN5edV7PyR9gCaTqelkgelKENujG1uZEZyTZhb+TKDINjqwAGy1lKiOxSgW1l
-         +e7dS0AyajPkLVas/en7u1p3YOBCTANwyQwrQpg2sDUQMPoZfmzl05PCidlgALOBhL
-         luDUfLkU7Hl4A==
+        b=D6nZz93arlLlObwq0IultNymp8riYQL9urKwPpSwaPd8g6QFKd/+HHtyLcv45/g+V
+         AMfFaDf0at4sXb/ZAEdXen+cnjqsBLKtxLH1Tfb/GZl3hrXS4saEuZaz/E91pJuDy0
+         4cU4ajq8nvzIzEsVxSg73fmgBOYZ0sgAGhtvfo3z0RD3u+HzRBsbQH2c99GnsWb59C
+         3ofMYgpSu7H66n4h3jkGI/EAzrzsTHNSe5BB4PbYVK7lXGVR9qhaLhgecakseiex35
+         kgkfFR1rS1lpF8jVlmNuQvnf5O6z4yg8thovIBJs2ffF4yTvO78PC0TtKpOckEXcMr
+         0DN6u0ncr4Pxw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tejun Heo <tj@kernel.org>,
@@ -39,12 +39,12 @@ Cc:     Tejun Heo <tj@kernel.org>,
         Christian Brauner <brauner@kernel.org>,
         Sasha Levin <sashal@kernel.org>, lizefan.x@bytedance.com,
         hannes@cmpxchg.org, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 05/16] cgroup: Remove data-race around cgrp_dfl_visible
-Date:   Mon, 17 Oct 2022 20:10:18 -0400
-Message-Id: <20221018001029.2731620-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 03/13] cgroup: Remove data-race around cgrp_dfl_visible
+Date:   Mon, 17 Oct 2022 20:10:52 -0400
+Message-Id: <20221018001102.2731930-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221018001029.2731620-1-sashal@kernel.org>
-References: <20221018001029.2731620-1-sashal@kernel.org>
+In-Reply-To: <20221018001102.2731930-1-sashal@kernel.org>
+References: <20221018001102.2731930-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -77,10 +77,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 684c16849eff..5178593ee1f1 100644
+index d14575c0e464..194060a6492a 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -2110,7 +2110,7 @@ static int cgroup_get_tree(struct fs_context *fc)
+@@ -2178,7 +2178,7 @@ static int cgroup_get_tree(struct fs_context *fc)
  	struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
  	int ret;
  
@@ -89,7 +89,7 @@ index 684c16849eff..5178593ee1f1 100644
  	cgroup_get_live(&cgrp_dfl_root.cgrp);
  	ctx->root = &cgrp_dfl_root;
  
-@@ -5946,7 +5946,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+@@ -6022,7 +6022,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
  		struct cgroup *cgrp;
  		int ssid, count = 0;
  
