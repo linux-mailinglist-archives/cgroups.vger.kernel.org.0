@@ -2,295 +2,209 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E69604EE3
-	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 19:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E948604FD6
+	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 20:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbiJSReo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Oct 2022 13:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S230235AbiJSSpj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Oct 2022 14:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbiJSReU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 13:34:20 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE11C1C2EA7;
-        Wed, 19 Oct 2022 10:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666200858; x=1697736858;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7rJx5gTjnj7urPJTsmnnJY+QejvZumuwu5CnaP5NC0E=;
-  b=Y7d7E7ODuMUzNET7qnn3bkuPgecdQqJrvkzQTET3qid15Hqa2XqVkioZ
-   /jUljU9nYzzZYrS1HdcVV/OQ+uw5VMTk3BgRvaPjfR23g3xNibMtUzZp0
-   vavvrfbzA/7mcvHhXJOX2ZlEmVuR3lNbo326JiRnZ8h229VIRQZ2iPK7S
-   IO+seC1s3rahEM1/7CMaLmS60na7QvZGtMuk9IciIQFZoPAerNtL6dP1n
-   +2r7LtMBiRoDX8jJYNNdD0OuM3BUXkzcxfKxkxYx2Wc4l7KKmXYuBdUBI
-   iYXRwvxjRUpD++21MyLn6i3Mq+CZEOBvhpheAgYpJww2y4Uab+idKoAUp
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="306474634"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="306474634"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:34:16 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="607204941"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="607204941"
-Received: from mjmcener-mobl1.amr.corp.intel.com (HELO localhost.localdomain) ([10.213.233.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:34:13 -0700
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-To:     Intel-gfx@lists.freedesktop.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S230260AbiJSSpi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 14:45:38 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020711CBAB3;
+        Wed, 19 Oct 2022 11:45:37 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id u71so17073126pgd.2;
+        Wed, 19 Oct 2022 11:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Shq/ANspULQpM+jmY/ItEvxo0c4euo/Y2Hzyv6LpqQk=;
+        b=QvkbNwKv3uL21y9WnQdugb7J5FuBi/nHAZSSHsWuLdEs990fEmSOh9O7zHz869V4k1
+         GgKjtfsLhykxTdurNKEH+B2NN1L+qDnACPis99Ozn25iJ48GhoREMe+Rbcj4fXl7OX9O
+         R3RUwj2vdPpv61gmRM2FB3ybZpgIn5O+dkdkGidKGn9H9GT2E8L+Dy8JmlRAIVo0gOfx
+         JcDhz7+KK+mfo/esXs3dUOBbXyWUWGMU3iDSh4od4UzwFbezsC4+fryQe+ja9oqktBpM
+         uJpVpzkWjZcbJWdniEVbFoVGicnafqLSfP0xrD/prDhO0duXJmrdD3uDWYUlsmetI1AW
+         0zzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Shq/ANspULQpM+jmY/ItEvxo0c4euo/Y2Hzyv6LpqQk=;
+        b=l90QHFQa9Gotg6W1zD+dq4fyCJkrP3tkKYTRas4b/Cr2czm4nTs6Pa68E2XcOLLF0U
+         OVBIc8rTXqbyM621iO5MgNiE30vk/wW7w9ddjILYgK0TEjKLcHu4gFpPHgN0VptHeNOP
+         arDoGMn/48iD5zQBcpCzQL+QtHQtYYUdWOHFB6QQSYurjBWYQ6mTDJ+CLb8LE5VpRslY
+         7J8x1Ml9n0/1QQRqKLtQm57MyXjQTKteaTo/YbYNvMYczRuDNY/q+uv+fnNIfHRG/zin
+         86EeBCFb9BlrjRFEagFWpCuEhEsT44TqeFf6tN7LDTwOm5lBnevd9pjG558wyFsz+sI0
+         5kbw==
+X-Gm-Message-State: ACrzQf3tdgIxGsTiZHXVJkiLyrhoyiuuzOlKUbSIL7aK6ENpq7+YEuLC
+        SHmFEh+eFJ1RPCGmPb9fSf4=
+X-Google-Smtp-Source: AMsMyM726GVVscJ6aTLpr7k+YQ2cOomN1frlnHpAi5DC1hViUYKke2LdyyKq/Mjnc/hzRtxcekXmNQ==
+X-Received: by 2002:a05:6a00:1905:b0:566:2a02:e1a1 with SMTP id y5-20020a056a00190500b005662a02e1a1mr10173939pfi.1.1666205136204;
+        Wed, 19 Oct 2022 11:45:36 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id ij19-20020a170902ab5300b0017f7628cbddsm11089309plb.30.2022.10.19.11.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Oct 2022 11:45:35 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 19 Oct 2022 08:45:34 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Dave Airlie <airlied@redhat.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?q?St=C3=A9phane=20Marchesin?= <marcheu@chromium.org>,
+        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
         "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [RFC 17/17] drm/i915: Implement cgroup controller over budget throttling
-Date:   Wed, 19 Oct 2022 18:32:54 +0100
-Message-Id: <20221019173254.3361334-18-tvrtko.ursulin@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
+Subject: Re: [RFC 00/17] DRM scheduling cgroup controller
+Message-ID: <Y1BFziiJdBzsIJWH@slm.duckdns.org>
 References: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Hello,
 
-When notified by the drm core we are over our allotted time budget, i915
-instance will check if any of the GPU engines it is reponsible for is
-fully saturated. If it is, and the client in question is using that
-engine, it will throttle it.
+On Wed, Oct 19, 2022 at 06:32:37PM +0100, Tvrtko Ursulin wrote:
+...
+> DRM static priority interface files
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+>   drm.priority_levels
+> 	One of:
+> 	 1) And integer representing the minimum number of discrete priority
+> 	    levels for the whole group.
+> 	    Optionally followed by an asterisk ('*') indicating some DRM clients
+> 	    in the group support more than the minimum number.
+> 	 2) '0'- indicating one or more DRM clients in the group has no support
+> 	    for static priority control.
+> 	 3) 'n/a' - when there are no DRM clients in the configured group.
+> 
+>   drm.priority
+> 	A read-write integer between -10000 and 10000 (inclusive) representing
+> 	an abstract static priority level.
+> 
+>   drm.effective_priority
+> 	Read only integer showing the current effective priority level for the
+> 	group. Effective meaning taking into account the chain of inherited
 
-For now throttling is done simplistically by lowering the scheduling
-priority while client is throttled.
+From interface POV, this is a lot worse than the second proposal and I'd
+really like to avoid this. Even if we go with mapping user priority
+configuration to per-driver priorities, I'd much prefer if the interface
+presented to user is weight based and let each driver try to match the
+resulting hierarchical weight (ie. the absolute proportion a given cgroup
+should have at the point in time) as best as they can rather than exposing
+opaque priority numbers to userspace whose meaning isn't defined at all.
 
-Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
----
- .../gpu/drm/i915/gem/i915_gem_execbuffer.c    | 22 ++++-
- drivers/gpu/drm/i915/i915_driver.c            |  1 +
- drivers/gpu/drm/i915/i915_drm_client.c        | 93 +++++++++++++++++++
- drivers/gpu/drm/i915/i915_drm_client.h        |  9 ++
- 4 files changed, 123 insertions(+), 2 deletions(-)
+> DRM scheduling soft limits interface files
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+>   drm.weight
+> 	Standard cgroup weight based control [1, 10000] used to configure the
+> 	relative distributing of GPU time between the sibling groups.
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-index 391c5b5c80be..efcbd827f6a0 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-@@ -8,6 +8,7 @@
- #include <linux/dma-resv.h>
- #include <linux/highmem.h>
- #include <linux/minmax.h>
-+#include <linux/prandom.h>
- #include <linux/sync_file.h>
- #include <linux/uaccess.h>
- 
-@@ -3018,15 +3019,32 @@ static void retire_requests(struct intel_timeline *tl, struct i915_request *end)
- }
- 
- #ifdef CONFIG_CGROUP_DRM
-+static unsigned int
-+__get_class(struct drm_i915_file_private *fpriv, const struct i915_request *rq)
-+{
-+	unsigned int class;
-+
-+	class = rq->context->engine->uabi_class;
-+
-+	if (WARN_ON_ONCE(class >= ARRAY_SIZE(fpriv->client->throttle)))
-+		class = 0;
-+
-+	return class;
-+}
-+
- static void copy_priority(struct i915_sched_attr *attr,
--			  const struct i915_execbuffer *eb)
-+			  const struct i915_execbuffer *eb,
-+			  const struct i915_request *rq)
- {
-+	struct drm_i915_file_private *file_priv = eb->file->driver_priv;
- 	const int scale = DIV_ROUND_CLOSEST(DRM_CGROUP_PRIORITY_MAX,
- 					    I915_CONTEXT_MAX_USER_PRIORITY);
- 	int prio;
- 
- 	*attr = eb->gem_context->sched;
- 	prio = attr->priority * scale + eb->file->drm_cgroup_priority;
-+	if (file_priv->client->throttle[__get_class(file_priv, rq)])
-+		prio -= 1 + prandom_u32_max(-DRM_CGROUP_PRIORITY_MIN / 2);
- 	prio = DIV_ROUND_UP(prio, scale);
- 	attr->priority = clamp(prio,
- 			       I915_CONTEXT_MIN_USER_PRIORITY,
-@@ -3056,7 +3074,7 @@ static int eb_request_add(struct i915_execbuffer *eb, struct i915_request *rq,
- 
- 	/* Check that the context wasn't destroyed before submission */
- 	if (likely(!intel_context_is_closed(eb->context))) {
--		copy_priority(&attr, eb);
-+		copy_priority(&attr, eb, rq);
- 	} else {
- 		/* Serialise with context_close via the add_to_timeline */
- 		i915_request_set_error_once(rq, -ENOENT);
-diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
-index b949fd715202..abac9bb5bf27 100644
---- a/drivers/gpu/drm/i915/i915_driver.c
-+++ b/drivers/gpu/drm/i915/i915_driver.c
-@@ -1897,6 +1897,7 @@ static const struct drm_ioctl_desc i915_ioctls[] = {
- static const struct drm_cgroup_ops i915_drm_cgroup_ops = {
- 	.priority_levels = i915_drm_priority_levels,
- 	.active_time_us = i915_drm_cgroup_get_active_time_us,
-+	.signal_budget = i915_drm_cgroup_signal_budget,
- };
- #endif
- 
-diff --git a/drivers/gpu/drm/i915/i915_drm_client.c b/drivers/gpu/drm/i915/i915_drm_client.c
-index 8527fe80d449..ce497055cc3f 100644
---- a/drivers/gpu/drm/i915/i915_drm_client.c
-+++ b/drivers/gpu/drm/i915/i915_drm_client.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/kernel.h>
-+#include <linux/ktime.h>
- #include <linux/slab.h>
- #include <linux/types.h>
- 
-@@ -173,6 +174,98 @@ u64 i915_drm_cgroup_get_active_time_us(struct drm_file *file)
- 
- 	return busy;
- }
-+
-+int i915_drm_cgroup_signal_budget(struct drm_file *file, u64 usage, u64 budget)
-+{
-+	struct drm_i915_file_private *fpriv = file->driver_priv;
-+	u64 class_usage[I915_LAST_UABI_ENGINE_CLASS + 1];
-+	u64 class_last[I915_LAST_UABI_ENGINE_CLASS + 1];
-+	struct drm_i915_private *i915 = fpriv->dev_priv;
-+	struct i915_drm_client *client = fpriv->client;
-+	struct intel_engine_cs *engine;
-+	bool over = usage > budget;
-+	unsigned int i;
-+	ktime_t unused;
-+	int ret = 0;
-+	u64 t;
-+
-+	if (!supports_stats(i915))
-+		return -EINVAL;
-+
-+	if (usage == 0 && budget == 0)
-+		return 0;
-+
-+printk("i915_drm_cgroup_signal_budget client-id=%u over=%u (%llu/%llu) <%u>\n",
-+       client->id, over, usage, budget, client->over_budget);
-+
-+	if (over) {
-+		client->over_budget++;
-+		if (!client->over_budget)
-+			client->over_budget = 2;
-+	} else {
-+		client->over_budget = 0;
-+		memset(client->class_last, 0, sizeof(client->class_last));
-+		memset(client->throttle, 0, sizeof(client->throttle));
-+		return 0;
-+	}
-+
-+	memset(class_usage, 0, sizeof(class_usage));
-+	for_each_uabi_engine(engine, i915)
-+		class_usage[engine->uabi_class] +=
-+			ktime_to_ns(intel_engine_get_busy_time(engine, &unused));
-+
-+	memcpy(class_last, client->class_last, sizeof(class_last));
-+	memcpy(client->class_last, class_usage, sizeof(class_last));
-+
-+	for (i = 0; i < ARRAY_SIZE(uabi_class_names); i++)
-+		class_usage[i] -= class_last[i];
-+
-+	t = client->last;
-+	client->last = ktime_get_raw_ns();
-+	t = client->last - t;
-+
-+	if (client->over_budget == 1)
-+		return 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(uabi_class_names); i++) {
-+		u64 client_class_usage[I915_LAST_UABI_ENGINE_CLASS + 1];
-+		unsigned int capacity;
-+
-+		if (!i915->engine_uabi_class_count[i])
-+			continue;
-+
-+		t = DIV_ROUND_UP_ULL(t, 1000);
-+		class_usage[i] = DIV_ROUND_CLOSEST_ULL(class_usage[i], 1000);
-+		usage = DIV_ROUND_CLOSEST_ULL(class_usage[i] * 100ULL,
-+					      t *
-+					      i915->engine_uabi_class_count[i]);
-+		if (usage <= 95) {
-+			/* class not oversubsribed */
-+			if (client->throttle[i]) {
-+				client->throttle[i] = false;
-+printk("  UN-throttling class%u (phys=%lld%%)\n",
-+       i, usage);
-+			}
-+			continue;
-+		}
-+
-+		client_class_usage[i] =
-+			get_class_active_ns(client, i, &capacity);
-+
-+		if (client_class_usage[i] && !client->throttle[i]) {
-+			ret |= 1;
-+			client->throttle[i] = true;
-+			/*
-+			 * QQQ maybe apply "strength" of throttling based on
-+			 * usage/budget?
-+			 */
-+printk("  THROTTLING class%u (phys=%lld%% client=%lluus)\n",
-+       i, usage, client_class_usage[i] / 1000);
-+		}
-+	}
-+
-+	return ret;
-+}
- #endif
- 
- #ifdef CONFIG_PROC_FS
-diff --git a/drivers/gpu/drm/i915/i915_drm_client.h b/drivers/gpu/drm/i915/i915_drm_client.h
-index 99b8ae01c183..b05afe01e68e 100644
---- a/drivers/gpu/drm/i915/i915_drm_client.h
-+++ b/drivers/gpu/drm/i915/i915_drm_client.h
-@@ -40,6 +40,13 @@ struct i915_drm_client {
- 	 * @past_runtime: Accumulation of pphwsp runtimes from closed contexts.
- 	 */
- 	atomic64_t past_runtime[I915_LAST_UABI_ENGINE_CLASS + 1];
-+
-+#ifdef CONFIG_CGROUP_DRM
-+	bool throttle[I915_LAST_UABI_ENGINE_CLASS + 1];
-+	unsigned int over_budget;
-+	u64 last;
-+	u64 class_last[I915_LAST_UABI_ENGINE_CLASS + 1];
-+#endif
- };
- 
- void i915_drm_clients_init(struct i915_drm_clients *clients,
-@@ -70,5 +77,7 @@ void i915_drm_clients_fini(struct i915_drm_clients *clients);
- unsigned int i915_drm_priority_levels(struct drm_file *file);
- 
- u64 i915_drm_cgroup_get_active_time_us(struct drm_file *file);
-+int i915_drm_cgroup_signal_budget(struct drm_file *file,
-+				  u64 usage, u64 budget);
- 
- #endif /* !__I915_DRM_CLIENT_H__ */
+Please take a look at io.weight. This can follow the same convention to
+express both global and per-device weights.
+
+>   drm.period_us
+> 	An integer representing the period with which the controller should look
+> 	at the GPU usage by the group and potentially send the over/under budget
+> 	signal.
+> 	Value of zero (defaul) disables the soft limit checking.
+
+Can we not do period_us or at least make it a per-driver tuning parameter
+exposed as module param? Weight, users can easily understand and configure.
+period_us is a lot more an implementation detail. If we want to express the
+trade-off between latency and bandwidth at the interface, we prolly should
+encode the latency requirement in a more canonical way but let's leave that
+for the future.
+
+>   drm.budget_supported
+> 	One of:
+> 	 1) 'yes' - when all DRM clients in the group support the functionality.
+> 	 2) 'no' - when at least one of the DRM clients does not support the
+> 		   functionality.
+> 	 3) 'n/a' - when there are no DRM clients in the group.
+
+Yeah, I'm not sure about this. This isn't a per-cgroup property to begin
+with and I'm not sure 'no' meaning at least one device not supporting is
+intuitive. The distinction between 'no' and 'n/a' is kinda weird too. Please
+drop this.
+
+Another basic interface question. Is everyone happy with the drm prefix or
+should it be something like gpu? Also, in the future, if there's a consensus
+around how to control gpu memory, what prefix would that take?
+
+> The second proposal is a little bit more advanced in concept and also a little
+> bit less finished. Interesting thing is that it builds upon the per client GPU
+> utilisation work which landed recently for a few drivers. So my thinking is that
+> in principle, an intersect of drivers which support both that and some sort of
+> priority scheduling control, could also in theory support this.
+> 
+> Another really interesting angle for this controller is that it mimics the same
+> control menthod used by the CPU scheduler. That is the proportional/weight based
+> GPU time budgeting. Which makes it easy to configure and does not need a new
+> mental model.
+> 
+> However, as the introduction mentions, GPUs are much more heterogenous and
+> therefore the controller uses very "soft" wording as to what it promises. The
+> general statement is that it can define budgets, notify clients when they are
+> over them, and let individual drivers implement best effort handling of those
+> conditions.
+> 
+> Delegation of duties in the implementation goes likes this:
+> 
+>  * DRM cgroup controller implements the control files and the scanning loop.
+>  * DRM core is required to track all DRM clients belonging to processes so it
+>    can answer when asked how much GPU time is a process using.
+>  * DRM core also provides a call back which the controller will call when a
+>    certain process is over budget.
+>  * Individual drivers need to implement two similar hooks, but which work for
+>    a single DRM client. Over budget callback and GPU utilisation query.
+> 
+> What I have demonstrated in practice is that when wired to i915, in a really
+> primitive way where the over-budget condition simply lowers the scheduling
+> priority, the concept can be almost equally effective as the static priority
+> control. I say almost because the design where budget control depends on the
+> periodic usage scanning has a fundamental delay, so responsiveness will depend
+> on the scanning period, which may or may not be a problem for a particular use
+> case.
+> 
+> The unfinished part is the GPU budgeting split which currently does not
+> propagate unused bandwith to children, neither can share it with siblings. But
+> this is not due fundamental reasons, just to avoid spending too much time on it
+> too early.
+
+Rather than doing it hierarchically on the spot, it's usually a lot cheaper
+and easier to calculate the flattened hierarchical weight per leaf cgroup
+and divide the bandwidth according to the eventual portions. For an example,
+please take a look at block/blk-iocost.c.
+
+I don't know much about the drm driver side, so can't comment much on it but
+I do really like the idea of having the core implementation determining who
+should get how much and then letting each driver enforce the target. That
+seems a lot more robust and generic than trying to somehow coax and expose
+per-driver priority implementations directly.
+
+Thanks.
+
 -- 
-2.34.1
-
+tejun
