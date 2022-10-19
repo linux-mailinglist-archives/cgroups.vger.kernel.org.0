@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C82604EDA
-	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 19:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B88604EDB
+	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 19:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbiJSRed (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Oct 2022 13:34:33 -0400
+        id S229936AbiJSRec (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Oct 2022 13:34:32 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbiJSReQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 13:34:16 -0400
+        with ESMTP id S231397AbiJSReM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 13:34:12 -0400
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347D21D3473;
-        Wed, 19 Oct 2022 10:34:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDD41D3765;
+        Wed, 19 Oct 2022 10:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1666200850; x=1697736850;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=1PhDcr2XGs8uIfUaec8gKHHe5Qyfm3zBRnEHtyvj3RQ=;
-  b=IVcznIwZ5QqLvgB7+xhCORjk2JBODXlTGjC2Gv19V7X4oqGukeYnJMAz
-   yCts2qL9vgUVaCxK7nrqHnu4wjqFR0eOWHFk8ncoeGLG+RAfmNd0Im/Rv
-   xeFItnQyK5JiCr9BNQWYjpu9a+y3UVpQfB2nUl5RWI4SiZbZZ39rpMvlR
-   68D9ft49KUHYaTkL1CWV8UZ6mmkbgdwM6TIud07R6GGr89oMX9onTX9MX
-   2WK/ItwN56NF0Yz1AZ+wFlKmDy1psGXqbeyVwWCgWmZ+iv+WoLwv0WYIL
-   lizBTLo8T95KuhnxtcGBBhkr75CtSI5wPUKu05mZX2hfMOTV6MAjuLxN1
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="306474481"
+  bh=57xevMaPNuTYw9loIK3v8HjbtAVBJSLqQ4lTiTCwMqQ=;
+  b=b403/DjIO2r0FckCx6SOM0koAAHJZ2j5vZVUjwN7GcB6jJf6KNBKeme3
+   opYJEwTVl6Ge+palbio+0/ishxAb71+4mJiJILJnrJHMRv2DPN70P7zP4
+   KW2AiNyfdnBjyxQw8eevt6AKaCztGm6N0F1BMKd68k3F4ADNmdJQ1QvTT
+   fKsESVkZiBuoDyiUF7/iH+1c5Ozzh0ZBDtQka7YH64PPIafL3TAZt5EDu
+   5NaUXct4Hga8uQjwgkx5vkx7jeRV06UYkUony3vaJ8cbl61i8xwtmkg2j
+   k1bRLEd3er4WtEKSC7WpM29VRiVeh4OJ0YEyYjX7g1jfgqb2D8qVHH2Fi
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="306474511"
 X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="306474481"
+   d="scan'208";a="306474511"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:50 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="607204795"
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:53 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="607204806"
 X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="607204795"
+   d="scan'208";a="607204806"
 Received: from mjmcener-mobl1.amr.corp.intel.com (HELO localhost.localdomain) ([10.213.233.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:46 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:50 -0700
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -51,9 +51,9 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [RFC 09/17] cgroup/drm: Introduce weight based drm cgroup control
-Date:   Wed, 19 Oct 2022 18:32:46 +0100
-Message-Id: <20221019173254.3361334-10-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 10/17] drm: Add ability to query drm cgroup GPU time
+Date:   Wed, 19 Oct 2022 18:32:47 +0100
+Message-Id: <20221019173254.3361334-11-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
 References: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
@@ -71,99 +71,79 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-Similar to CPU scheduling, implement a concept of weight in the drm cgroup
-controller.
-
-Uses the same range and default as the CPU controller - CGROUP_WEIGHT_MIN,
-CGROUP_WEIGHT_DFL and CGROUP_WEIGHT_MAX.
-
-Later each cgroup is assigned a time budget proportionaly based on the
-relative weights of it's siblings. This time budget is in turn split by
-the group's children and so on.
-
-Children of the root cgroup will be exempt from split budgets and
-therefore compete for the GPU time independently and without weight based
-control.
-
-This will be used to implement a soft, or best effort signal from drm
-cgroup to drm core notifying about groups which are over their allotted
-budget.
-
-No guarantees that the limit can be enforced are provided or implied.
+Add a driver callback and core helper which allow querying the time spent
+on GPUs for processes belonging to a group.
 
 Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 ---
- kernel/cgroup/drm.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/gpu/drm/drm_cgroup.c | 24 ++++++++++++++++++++++++
+ include/drm/drm_clients.h    |  1 +
+ include/drm/drm_drv.h        |  9 +++++++++
+ 3 files changed, 34 insertions(+)
 
-diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-index 01954c3a2087..4b6f88d8236e 100644
---- a/kernel/cgroup/drm.c
-+++ b/kernel/cgroup/drm.c
-@@ -17,6 +17,7 @@ struct drm_cgroup_state {
+diff --git a/drivers/gpu/drm/drm_cgroup.c b/drivers/gpu/drm/drm_cgroup.c
+index 59b730ed1334..e0cadb5e5659 100644
+--- a/drivers/gpu/drm/drm_cgroup.c
++++ b/drivers/gpu/drm/drm_cgroup.c
+@@ -206,3 +206,27 @@ void drm_pid_update_priority(struct pid *pid, int priority)
+ 	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(drm_pid_update_priority);
++
++u64 drm_pid_get_active_time_us(struct pid *pid)
++{
++	struct drm_pid_clients *clients;
++	u64 total = 0;
++
++	rcu_read_lock();
++	clients = xa_load(&drm_pid_clients, (unsigned long)pid);
++	if (clients) {
++		struct drm_file *fpriv;
++
++		list_for_each_entry_rcu(fpriv, &clients->file_list, clink) {
++			const struct drm_cgroup_ops *cg_ops =
++				fpriv->minor->dev->driver->cg_ops;
++
++			if (cg_ops && cg_ops->active_time_us)
++				total += cg_ops->active_time_us(fpriv);
++		}
++	}
++	rcu_read_unlock();
++
++	return total;
++}
++EXPORT_SYMBOL_GPL(drm_pid_get_active_time_us);
+diff --git a/include/drm/drm_clients.h b/include/drm/drm_clients.h
+index 3a0b1cdb338f..f25e09ed5feb 100644
+--- a/include/drm/drm_clients.h
++++ b/include/drm/drm_clients.h
+@@ -37,5 +37,6 @@ static inline void drm_clients_migrate(struct drm_file *file_priv)
  
- 	int priority;
- 	int effective_priority;
-+	unsigned int weight;
+ unsigned int drm_pid_priority_levels(struct pid *pid, bool *non_uniform);
+ void drm_pid_update_priority(struct pid *pid, int priority);
++u64 drm_pid_get_active_time_us(struct pid *pid);
+ 
+ #endif
+diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+index 2371d73e12cf..0f1802df01fe 100644
+--- a/include/drm/drm_drv.h
++++ b/include/drm/drm_drv.h
+@@ -183,6 +183,15 @@ struct drm_cgroup_ops {
+ 	 * priorities of already running workloads.
+ 	 */
+ 	void (*update_priority) (struct drm_file *, int priority);
++
++	/**
++	 * @active_time_us:
++	 *
++	 * Optional callback for reporting the GPU time consumed by this client.
++	 *
++	 * Used by the DRM core when queried by the DRM cgroup controller.
++	 */
++	u64 (*active_time_us) (struct drm_file *);
  };
  
- static DEFINE_MUTEX(drmcg_mutex);
-@@ -163,6 +164,33 @@ drmcs_write_priority(struct cgroup_subsys_state *css, struct cftype *cftype,
- 	return 0;
- }
- 
-+static u64
-+drmcs_read_weight(struct cgroup_subsys_state *css, struct cftype *cft)
-+{
-+	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
-+
-+	return drmcs->weight;
-+}
-+
-+static int
-+drmcs_write_weight(struct cgroup_subsys_state *css, struct cftype *cftype,
-+		   u64 weight)
-+{
-+	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
-+	int ret;
-+
-+	if (weight < CGROUP_WEIGHT_MIN || weight > CGROUP_WEIGHT_MAX)
-+		return -ERANGE;
-+
-+	ret = mutex_lock_interruptible(&drmcg_mutex);
-+	if (ret)
-+		return ret;
-+	drmcs->weight = weight;
-+	mutex_unlock(&drmcg_mutex);
-+
-+	return 0;
-+}
-+
- static int drmcs_online(struct cgroup_subsys_state *css)
- {
- 	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
-@@ -210,6 +238,8 @@ drmcs_alloc(struct cgroup_subsys_state *parent_css)
- 	if (!drmcs)
- 		return ERR_PTR(-ENOMEM);
- 
-+	drmcs->weight = CGROUP_WEIGHT_DFL;
-+
- 	return &drmcs->css;
- }
- 
-@@ -230,6 +260,12 @@ struct cftype files[] = {
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 		.read_s64 = drmcs_read_effective_priority,
- 	},
-+	{
-+		.name = "weight",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_u64 = drmcs_read_weight,
-+		.write_u64 = drmcs_write_weight,
-+	},
- 	{ } /* Zero entry terminates. */
- };
- 
+ /**
 -- 
 2.34.1
 
