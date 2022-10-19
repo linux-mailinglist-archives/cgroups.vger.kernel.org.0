@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC39604EB9
-	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 19:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F4F604EBC
+	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 19:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbiJSRd3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Oct 2022 13:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
+        id S230136AbiJSRde (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Oct 2022 13:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbiJSRd1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 13:33:27 -0400
+        with ESMTP id S230432AbiJSRdb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 13:33:31 -0400
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B391C20BF;
-        Wed, 19 Oct 2022 10:33:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453131C7107;
+        Wed, 19 Oct 2022 10:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666200806; x=1697736806;
+  t=1666200810; x=1697736810;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=34jcEyaboM7Cpl5hmtqGUgBiY4OSzKr0bOyVxNTPRuA=;
-  b=SxQl+4FRxYkORNOe0E29yxbuq18rp/vkb10ImMboVEMmhd5MSqrwwD5s
-   pjefJ4UB4COb2dMzKcAwHXB55DqqpjDKwjCrvGaH6wXldzVng4z/4CGGT
-   ZvZYTYbPskHJhLakqLVJsZeqhP5bHNqikUfnr9kHr096R2hDMih5CGQYP
-   NA6eOPh8Xo4JlLDgy7rjqaVisHisBnnlkqg747G7nWK0ujN2xMJ3t2XEM
-   LmuSdb2ubbUC84Stmt5F84WEdJdeBdE870AH6gy10ksRb32HqJZHsSmi3
-   NVbd8eb/U4VhsnC+Un2XLGRShFwcwrfY1reyokCg6YLz2BBAjjNgTRFbu
+  bh=so+cW5QlleQSFpTNdeeHNSHQtjYir/C5XqB3E0TiChk=;
+  b=klzOA7UXLuQcEsHxOQ0Mrdmd6tPhvmVE7pnYdSny5X6LmZqumltixeyX
+   1Dd6I5PV5KSHcIzRpnowgo3wnbRjoZ9+S9qVwawWxOdWBDHZZKM1XLMJZ
+   LKI6rzI7lGKdjc2HOMD41Z+JtgVfroS1b4QnxULI6VLh7HmK7H2nHeap/
+   6CGUbcFCKJX0+PouJV2Qsq2SUyU8U9pRNU5NdvS5BNYV5OB4RnvQVPult
+   qGj7abm/VaQdkHsvT2jRtv9oBhBdBtvpK2nmAEgfitGdZRndMg9f9RxdZ
+   hXlecNxo60d1AwbdonW1vAazt5H5FguX4C/zHr8oiQEbQtDxoeCCX/HwX
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="306474309"
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="306474341"
 X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="306474309"
+   d="scan'208";a="306474341"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:26 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="607204700"
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:29 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="607204710"
 X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; 
-   d="scan'208";a="607204700"
+   d="scan'208";a="607204710"
 Received: from mjmcener-mobl1.amr.corp.intel.com (HELO localhost.localdomain) ([10.213.233.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:22 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2022 10:33:26 -0700
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -51,14 +51,13 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [RFC 02/17] drm: Track clients per owning process
-Date:   Wed, 19 Oct 2022 18:32:39 +0100
-Message-Id: <20221019173254.3361334-3-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 03/17] cgroup/drm: Support cgroup priority control
+Date:   Wed, 19 Oct 2022 18:32:40 +0100
+Message-Id: <20221019173254.3361334-4-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
 References: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
@@ -72,214 +71,279 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-To enable propagation of settings from the cgroup drm controller to drm we
-need to start tracking which processes own which drm clients.
+A lot of the drm drivers support a concept of a scheduling priority. Add
+support for controlling it via the drm cgroup controller.
 
-Implement that by tracking the struct pid pointer of the owning process in
-a new XArray, pointing to a structure containing a list of associated
-struct drm_file pointers.
+Abstract priority control range of [DRM_CGROUP_PRIORITY_MIN,
+DRM_CGROUP_PRIORITY_MAX] is used and each group hierarchy adjusts it's
+base level based on a priority of its parent. In terms of an example that
+looks like this:
 
-Clients are added and removed under the filelist mutex and RCU list
-operations are used below it to allow for lockless lookup.
+       P=-1000
+          /\
+         /  \
+        /    \
+      A=0   B=100
+
+This results in the effective priority of a group A of -1000 and B of
+-900. In other words the fact B is configured for elevated priority is
+relative to the parent being a low priority and hence is only elevated in
+the context of its siblings.
+
+Implementation does not impose any further policy and leaves sensible
+configuration to the system administrator.
+
+Individual drm drivers are expected to transparently convert the drm
+cgroup priority into values suitable for their capabilities.
+
+No guarantees on effectiveness or granularity are provided by the
+controller, apart the available range being chosen to be an integer and
+hence allowing a generic concept of normal (zero), lower (negative values)
+and higher (positive values).
+
+Every cgroup starts with a default priority of zero.
 
 Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 ---
- drivers/gpu/drm/Makefile     |  1 +
- drivers/gpu/drm/drm_cgroup.c | 60 ++++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/drm_file.c   | 18 ++++++++---
- include/drm/drm_clients.h    | 31 +++++++++++++++++++
- include/drm/drm_file.h       |  4 +++
- 5 files changed, 110 insertions(+), 4 deletions(-)
- create mode 100644 drivers/gpu/drm/drm_cgroup.c
- create mode 100644 include/drm/drm_clients.h
+ Documentation/admin-guide/cgroup-v2.rst |  58 +++++++++++++
+ include/linux/cgroup_drm.h              |   4 +
+ kernel/cgroup/drm.c                     | 110 ++++++++++++++++++++++++
+ 3 files changed, 172 insertions(+)
 
-diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 6e55c47288e4..0719970d17ee 100644
---- a/drivers/gpu/drm/Makefile
-+++ b/drivers/gpu/drm/Makefile
-@@ -59,6 +59,7 @@ drm-$(CONFIG_DRM_LEGACY) += \
- 	drm_scatter.o \
- 	drm_vm.o
- drm-$(CONFIG_DRM_LIB_RANDOM) += lib/drm_random.o
-+drm-$(CONFIG_CGROUP_DRM) += drm_cgroup.o
- drm-$(CONFIG_COMPAT) += drm_ioc32.o
- drm-$(CONFIG_DRM_PANEL) += drm_panel.o
- drm-$(CONFIG_OF) += drm_of.o
-diff --git a/drivers/gpu/drm/drm_cgroup.c b/drivers/gpu/drm/drm_cgroup.c
-new file mode 100644
-index 000000000000..a31ff1d593ab
---- /dev/null
-+++ b/drivers/gpu/drm/drm_cgroup.c
-@@ -0,0 +1,60 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * Copyright © 2022 Intel Corporation
-+ */
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index dc254a3cb956..0a6d97c83ea4 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2398,6 +2398,64 @@ HugeTLB Interface Files
+         hugetlb pages of <hugepagesize> in this cgroup.  Only active in
+         use hugetlb pages are included.  The per-node values are in bytes.
+ 
++DRM
++---
 +
-+#include <drm/drm_drv.h>
-+#include <drm/drm_clients.h>
++The DRM controller allows configuring static hierarchical scheduling priority.
 +
-+static DEFINE_XARRAY(drm_pid_clients);
++DRM static priority control
++~~~~~~~~~~~~~~~~~~~~~~~~~~~
 +
-+void drm_clients_close(struct drm_file *file_priv)
-+{
-+	unsigned long pid = (unsigned long)file_priv->pid;
-+	struct drm_device *dev = file_priv->minor->dev;
-+	struct drm_pid_clients *clients;
++Static priority control exposes a hierarchical control interface for the
++scheduling priority support present in many DRM device drivers.
 +
-+	lockdep_assert_held(&dev->filelist_mutex);
++Hierarchical meaning that the child group priorities are relative to their
++parent. As an example:
 +
-+	clients = xa_load(&drm_pid_clients, pid);
-+	list_del_rcu(&file_priv->clink);
-+	if (atomic_dec_and_test(&clients->num)) {
-+		xa_erase(&drm_pid_clients, pid);
-+		kfree_rcu(clients, rcu);
-+	}
-+}
++	A=-1000
++	   /\
++	  /  \
++	 /    \
++	B=0   C=100
 +
-+int drm_clients_open(struct drm_file *file_priv)
-+{
-+	unsigned long pid = (unsigned long)file_priv->pid;
-+	struct drm_device *dev = file_priv->minor->dev;
-+	struct drm_pid_clients *clients;
-+	bool new_client = false;
++This results in the effective priority of a group B of -1000 and C of -900. In
++other words the fact C is configured for elevated priority is relative to its
++parent being a low priority and hence is only elevated in the context of its
++siblings.
 +
-+	lockdep_assert_held(&dev->filelist_mutex);
++The scope of individual DRM scheduling priority may be per device or per device
++driver, or a combination of both, depending on the implementation. The
++controller does not ensure any priority ordering across multiple DRM drivers nor
++does it impose any further policy and leaves desired configuration to the system
++administrator.
 +
-+	clients = xa_load(&drm_pid_clients, pid);
-+	if (!clients) {
-+		clients = kmalloc(sizeof(*clients), GFP_KERNEL);
-+		if (!clients)
-+			return -ENOMEM;
-+		atomic_set(&clients->num, 0);
-+		INIT_LIST_HEAD(&clients->file_list);
-+		init_rcu_head(&clients->rcu);
-+		new_client = true;
-+	}
-+	atomic_inc(&clients->num);
-+	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
-+	if (new_client) {
-+		void *xret;
++Individual DRM drivers are required to transparently convert the cgroup priority
++into values suitable for their capabilities.
 +
-+		xret = xa_store(&drm_pid_clients, pid, clients, GFP_KERNEL);
-+		if (xa_err(xret)) {
-+			list_del_init(&file_priv->clink);
-+			kfree(clients);
-+			return PTR_ERR(clients);
-+		}
-+	}
++No guarantees on effectiveness or granularity are provided by the controller,
++apart the available range being chosen to be an integer and hence allowing a
++generic concept of normal (zero), lower (negative values) and higher (positive
++values) priority.
 +
-+	return 0;
-+}
-diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-index a8b4d918e9a3..ce58d5c513db 100644
---- a/drivers/gpu/drm/drm_file.c
-+++ b/drivers/gpu/drm/drm_file.c
-@@ -40,6 +40,7 @@
++DRM static priority interface files
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++  drm.priority_levels
++	One of:
++	 1) And integer representing the minimum number of discrete priority
++	    levels for the whole group.
++	 2) '0'- indicating one or more DRM clients in the group has no support
++	    for static priority control.
++	 3) 'n/a' - when there are no DRM clients in the configured group.
++
++  drm.priority
++	A read-write integer between -10000 and 10000 (inclusive) representing
++	an abstract static priority level.
++
++  drm.effective_priority
++	Read only integer showing the current effective priority level for the
++	group. Effective meaning taking into account the chain of inherited
++
+ Misc
+ ----
+ 
+diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+index bf8abc6b8ebf..a59792ccb550 100644
+--- a/include/linux/cgroup_drm.h
++++ b/include/linux/cgroup_drm.h
+@@ -6,4 +6,8 @@
+ #ifndef _CGROUP_DRM_H
+ #define _CGROUP_DRM_H
+ 
++#define DRM_CGROUP_PRIORITY_MIN	(-10000)
++#define DRM_CGROUP_PRIORITY_DEF	(0)
++#define DRM_CGROUP_PRIORITY_MAX	(10000)
++
+ #endif	/* _CGROUP_DRM_H */
+diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
+index b88c93661df3..2350e1f8a48a 100644
+--- a/kernel/cgroup/drm.c
++++ b/kernel/cgroup/drm.c
+@@ -6,24 +6,117 @@
  #include <linux/slab.h>
+ #include <linux/cgroup.h>
+ #include <linux/cgroup_drm.h>
++#include <linux/minmax.h>
++#include <linux/mutex.h>
+ #include <linux/sched.h>
  
- #include <drm/drm_client.h>
-+#include <drm/drm_clients.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_file.h>
- #include <drm/drm_print.h>
-@@ -298,6 +299,7 @@ static void drm_close_helper(struct file *filp)
- 
- 	mutex_lock(&dev->filelist_mutex);
- 	list_del(&file_priv->lhead);
-+	drm_clients_close(file_priv);
- 	mutex_unlock(&dev->filelist_mutex);
- 
- 	drm_file_free(file_priv);
-@@ -349,10 +351,8 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
- 
- 	if (drm_is_primary_client(priv)) {
- 		ret = drm_master_open(priv);
--		if (ret) {
--			drm_file_free(priv);
--			return ret;
--		}
-+		if (ret)
-+			goto err_free;
- 	}
- 
- 	filp->private_data = priv;
-@@ -360,6 +360,9 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
- 	priv->filp = filp;
- 
- 	mutex_lock(&dev->filelist_mutex);
-+	ret = drm_clients_open(priv);
-+	if (ret)
-+		goto err_unlock;
- 	list_add(&priv->lhead, &dev->filelist);
- 	mutex_unlock(&dev->filelist_mutex);
- 
-@@ -387,6 +390,13 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
- #endif
- 
- 	return 0;
+ struct drm_cgroup_state {
+ 	struct cgroup_subsys_state css;
 +
-+err_unlock:
-+	mutex_unlock(&dev->filelist_mutex);
-+err_free:
-+	drm_file_free(priv);
++	int priority;
++	int effective_priority;
+ };
+ 
++static DEFINE_MUTEX(drmcg_mutex);
 +
-+	return ret;
+ static inline struct drm_cgroup_state *
+ css_to_drmcs(struct cgroup_subsys_state *css)
+ {
+ 	return container_of(css, struct drm_cgroup_state, css);
  }
  
- /**
-diff --git a/include/drm/drm_clients.h b/include/drm/drm_clients.h
-new file mode 100644
-index 000000000000..4ae553a03d1e
---- /dev/null
-+++ b/include/drm/drm_clients.h
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * Copyright © 2022 Intel Corporation
-+ */
-+
-+#ifndef _DRM_CLIENTS_H_
-+#define _DRM_CLIENTS_H_
-+
-+#include <drm/drm_file.h>
-+
-+struct drm_pid_clients {
-+	atomic_t num;
-+	struct list_head file_list;
-+	struct rcu_head rcu;
-+};
-+
-+#if IS_ENABLED(CONFIG_CGROUP_DRM)
-+void drm_clients_close(struct drm_file *file_priv);
-+int drm_clients_open(struct drm_file *file_priv);
-+#else
-+static inline void drm_clients_close(struct drm_file *file_priv)
++static int drmcs_show_priority_levels(struct seq_file *sf, void *v)
 +{
-+}
++	seq_printf(sf, "%u\n", 0);
 +
-+static inline int drm_clients_open(struct drm_file *file_priv)
-+{
 +	return 0;
 +}
-+#endif
 +
-+#endif
-diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
-index d780fd151789..0965eb111f24 100644
---- a/include/drm/drm_file.h
-+++ b/include/drm/drm_file.h
-@@ -268,6 +268,10 @@ struct drm_file {
- 	/** @minor: &struct drm_minor for this file. */
- 	struct drm_minor *minor;
++static s64
++drmcs_read_effective_priority(struct cgroup_subsys_state *css,
++			      struct cftype *cft)
++{
++	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
++
++	return drmcs->effective_priority;
++}
++
++static s64
++drmcs_read_priority(struct cgroup_subsys_state *css, struct cftype *cft)
++{
++	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
++
++	return drmcs->priority;
++}
++
++static void update_priority(struct drm_cgroup_state *drmcs, int priority)
++{
++	struct cgroup_subsys_state *node;
++
++	lockdep_assert_held(&drmcg_mutex);
++
++	if (priority == drmcs->priority)
++		return;
++
++	drmcs->priority = priority;
++
++	rcu_read_lock();
++	css_for_each_descendant_pre(node, &drmcs->css) {
++		struct drm_cgroup_state *dnode = css_to_drmcs(node);
++		int pprio;
++
++		if (!node->parent)
++			pprio = DRM_CGROUP_PRIORITY_DEF;
++		else
++			pprio = css_to_drmcs(node->parent)->effective_priority;
++
++		dnode->effective_priority =
++			clamp(pprio + dnode->priority,
++			      DRM_CGROUP_PRIORITY_MIN,
++			      DRM_CGROUP_PRIORITY_MAX);
++	}
++	rcu_read_unlock();
++}
++
++static int
++drmcs_write_priority(struct cgroup_subsys_state *css, struct cftype *cftype,
++		     s64 priority)
++{
++	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
++	int ret;
++
++	if (priority < (s64)DRM_CGROUP_PRIORITY_MIN ||
++	    priority > (s64)DRM_CGROUP_PRIORITY_MAX)
++		return -ERANGE;
++
++	ret = mutex_lock_interruptible(&drmcg_mutex);
++	if (ret)
++		return ret;
++	update_priority(drmcs, (int)priority);
++	mutex_unlock(&drmcg_mutex);
++
++	return 0;
++}
++
++static int drmcs_online(struct cgroup_subsys_state *css)
++{
++	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
++
++	mutex_lock(&drmcg_mutex);
++	update_priority(drmcs, DRM_CGROUP_PRIORITY_DEF);
++	mutex_unlock(&drmcg_mutex);
++
++	return 0;
++}
++
+ static void drmcs_free(struct cgroup_subsys_state *css)
+ {
+ 	kfree(css_to_drmcs(css));
+ }
  
-+#if IS_ENABLED(CONFIG_CGROUP_DRM)
-+	struct list_head clink;
-+#endif
-+
- 	/**
- 	 * @object_idr:
- 	 *
+ static struct drm_cgroup_state root_drmcs = {
++	.priority = DRM_CGROUP_PRIORITY_DEF,
++	.effective_priority = DRM_CGROUP_PRIORITY_DEF,
+ };
+ 
+ static struct cgroup_subsys_state *
+@@ -42,12 +135,29 @@ drmcs_alloc(struct cgroup_subsys_state *parent_css)
+ }
+ 
+ struct cftype files[] = {
++	{
++		.name = "priority_levels",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = drmcs_show_priority_levels,
++	},
++	{
++		.name = "priority",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_s64 = drmcs_read_priority,
++		.write_s64 = drmcs_write_priority,
++	},
++	{
++		.name = "effective_priority",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_s64 = drmcs_read_effective_priority,
++	},
+ 	{ } /* Zero entry terminates. */
+ };
+ 
+ struct cgroup_subsys drm_cgrp_subsys = {
+ 	.css_alloc	= drmcs_alloc,
+ 	.css_free	= drmcs_free,
++	.css_online	= drmcs_online,
+ 	.early_init	= false,
+ 	.legacy_cftypes	= files,
+ 	.dfl_cftypes	= files,
 -- 
 2.34.1
 
