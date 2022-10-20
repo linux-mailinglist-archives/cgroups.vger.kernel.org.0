@@ -2,209 +2,383 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E948604FD6
-	for <lists+cgroups@lfdr.de>; Wed, 19 Oct 2022 20:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDA2605778
+	for <lists+cgroups@lfdr.de>; Thu, 20 Oct 2022 08:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbiJSSpj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Oct 2022 14:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
+        id S230039AbiJTGkj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Oct 2022 02:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbiJSSpi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Oct 2022 14:45:38 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020711CBAB3;
-        Wed, 19 Oct 2022 11:45:37 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id u71so17073126pgd.2;
-        Wed, 19 Oct 2022 11:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Shq/ANspULQpM+jmY/ItEvxo0c4euo/Y2Hzyv6LpqQk=;
-        b=QvkbNwKv3uL21y9WnQdugb7J5FuBi/nHAZSSHsWuLdEs990fEmSOh9O7zHz869V4k1
-         GgKjtfsLhykxTdurNKEH+B2NN1L+qDnACPis99Ozn25iJ48GhoREMe+Rbcj4fXl7OX9O
-         R3RUwj2vdPpv61gmRM2FB3ybZpgIn5O+dkdkGidKGn9H9GT2E8L+Dy8JmlRAIVo0gOfx
-         JcDhz7+KK+mfo/esXs3dUOBbXyWUWGMU3iDSh4od4UzwFbezsC4+fryQe+ja9oqktBpM
-         uJpVpzkWjZcbJWdniEVbFoVGicnafqLSfP0xrD/prDhO0duXJmrdD3uDWYUlsmetI1AW
-         0zzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Shq/ANspULQpM+jmY/ItEvxo0c4euo/Y2Hzyv6LpqQk=;
-        b=l90QHFQa9Gotg6W1zD+dq4fyCJkrP3tkKYTRas4b/Cr2czm4nTs6Pa68E2XcOLLF0U
-         OVBIc8rTXqbyM621iO5MgNiE30vk/wW7w9ddjILYgK0TEjKLcHu4gFpPHgN0VptHeNOP
-         arDoGMn/48iD5zQBcpCzQL+QtHQtYYUdWOHFB6QQSYurjBWYQ6mTDJ+CLb8LE5VpRslY
-         7J8x1Ml9n0/1QQRqKLtQm57MyXjQTKteaTo/YbYNvMYczRuDNY/q+uv+fnNIfHRG/zin
-         86EeBCFb9BlrjRFEagFWpCuEhEsT44TqeFf6tN7LDTwOm5lBnevd9pjG558wyFsz+sI0
-         5kbw==
-X-Gm-Message-State: ACrzQf3tdgIxGsTiZHXVJkiLyrhoyiuuzOlKUbSIL7aK6ENpq7+YEuLC
-        SHmFEh+eFJ1RPCGmPb9fSf4=
-X-Google-Smtp-Source: AMsMyM726GVVscJ6aTLpr7k+YQ2cOomN1frlnHpAi5DC1hViUYKke2LdyyKq/Mjnc/hzRtxcekXmNQ==
-X-Received: by 2002:a05:6a00:1905:b0:566:2a02:e1a1 with SMTP id y5-20020a056a00190500b005662a02e1a1mr10173939pfi.1.1666205136204;
-        Wed, 19 Oct 2022 11:45:36 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id ij19-20020a170902ab5300b0017f7628cbddsm11089309plb.30.2022.10.19.11.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 11:45:35 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 19 Oct 2022 08:45:34 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S230162AbiJTGkh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Oct 2022 02:40:37 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2087.outbound.protection.outlook.com [40.107.244.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EC5102DE4;
+        Wed, 19 Oct 2022 23:40:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R1YEO2KkuQZoS2Yt/3FyqA1WTWY0Bx/Z7M0FAVDJ+djNOESanFk8WxgICQj3r/eWH4LXxolFivp4OVnmMISWghnr7LZD8jMbdSXlBNSYIEoWRAgbp8PUFPAk/cv1a1QRFoDoBxPVP7vL6BLpL55xCSILA1tVOJx73iyGtw1K4A/OSbVQKC0AGsmHEkLh5RN+rvOyFlPdClCGtP0/BfMVGCMd5QDO53E1DuuLq+swHuQLkuEmGQC6/8NtxdkHKSEhK/Or/Oh61t66TtIaL7o1cYZnUxoKRe1mYhrpaxS6Mo/kStR1nka6h2luEWZpazLKbmnLdoeSouZXwoZUkcEFOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZRjd5gGc5dM0iyvE+7fKZbFCMXIeMKgSXAWDB/qHzew=;
+ b=geJEY2vrFBFusflg4BX6Gvlx7OvJlvrwMRdhrIp9Ogadi+xwQ7f5RU2F5q9bzLiyAPr7w3WxHhOOeDX6shyTA0oRG6V4zRAZYgv2FZym05P27+4ez7LrAl6hFHJ3B4JRHIkNj3vSmnPcC3x2d2n1NGlIlzplirs1JpYjRWwvRxUyF/eew5mSgG96rE+PUQXgq+vdj071R4ZwFTVm8z3Kfk7WjEtVNUOXAX9bwzFx0c5P6FxCGUbpGFw2MGT8AGTuPRP4KYOcq2jEC1pUm1JvbQRrcUsFvlQgTiCuaH+hA7G1HxowsK/Lb72hcr6DzWca6zzkqlQ/U4cUjwKXCjkRBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZRjd5gGc5dM0iyvE+7fKZbFCMXIeMKgSXAWDB/qHzew=;
+ b=5q4B6jvVBWsBrDUdudIjXVdr4hkFwGQ9v9NZFsY6/VWvFQY3Mk7eTOLy2DE6hHCNiXHcN/TgyQRLmB98norx5cfS+xOvOM18qDka9tHsECTc5QSPSbYtLGcd7N9/fv1PTYUxSYQuA1a/Z/4YvICwASaXArwZw4SnK4DWT7dZTzk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM4PR12MB6062.namprd12.prod.outlook.com (2603:10b6:8:b2::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5723.34; Thu, 20 Oct 2022 06:40:33 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::805b:58b6:1f27:d644]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::805b:58b6:1f27:d644%6]) with mapi id 15.20.5723.034; Thu, 20 Oct 2022
+ 06:40:33 +0000
+Message-ID: <77499370-bb0e-7f7e-ac1b-ad14f47578d9@amd.com>
+Date:   Thu, 20 Oct 2022 08:40:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [RFC 02/17] drm: Track clients per owning process
+Content-Language: en-US
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Intel-gfx@lists.freedesktop.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Dave Airlie <airlied@redhat.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Rob Clark <robdclark@chromium.org>,
-        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
         "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: Re: [RFC 00/17] DRM scheduling cgroup controller
-Message-ID: <Y1BFziiJdBzsIJWH@slm.duckdns.org>
 References: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
+ <20221019173254.3361334-3-tvrtko.ursulin@linux.intel.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20221019173254.3361334-3-tvrtko.ursulin@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM6P195CA0104.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:209:86::45) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221019173254.3361334-1-tvrtko.ursulin@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|DM4PR12MB6062:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43bcb665-a850-4bff-3fba-08dab265fd38
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TFQi2Cjv/7mG6sVQC5pcdzIOM5nyhQ5wW/mBWnrLW2G6tlYcPz1avai10XdfexRbAnaaM+4+WPC56r9vvs3T1jGTr4fvqTalutT4x2B/pt+cEDj5mwq6Xj6v/cD5CLm88KiQ3FIkZiJiDMmUXH2Y6LD0pcRtgKCsLjP/mNWWM/uOQ1Fv2Ku2Z8MF1sWICSMnGAXqTiJAcGUnPQGfU43q2k0XuBrA9Wo8AJe3N0lvNRjAquoBvVhQvVeBufD1dxv0kdGG/az3Aw2tb9lpqpkA/gQtCumYl3EagL6nalaxbXFf6KkvDHVEIsvFR791YPIBDWZ//VCV3oC8uxuBqy/N6Ngu4HjlkhfQoamt/CC6VXzyXMhNwIapH4byQ2/bP1K/ArFLLeULQhhrYhld4F6BkGIJXdXD+dTCoasmpxBjStMj45yxCXBhUUGFv16v54CClyJ3J3NPE+Wz2Gb7nYAU/Tf4PSzfYtQ15RvnkRWuB4SYWBIo9Hv0NoQhoX3LZKHCz/iR5NEVLlUJc0ZOqbdItidMsgO5A7i/g/VeqGJJCu1qWRS1ZTfCQLK8QEj/p3RwzaUbg/IHgVZ5bHJEV40sXUIT7A0pLH6VwZ0hP7y01/1yLvb1GZIaEkv/CYuS633LZMNKO11WiH0Zzba1jBTQ3JG+otQoXvAX5dI1OJqsLsoSteuZjmkPY4fMxqFnOddCIBsVLjlfq+p+JaX1C+EALxYAiAKXUl766OZ+HC97oCahwQmAICu3JrtbNPHDVR26cRA3oa+pI2MmF3KzbkTwioWXJGolEd4QR+r0s5TJNGE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(451199015)(186003)(478600001)(6486002)(31686004)(2616005)(2906002)(8936002)(38100700002)(83380400001)(36756003)(6666004)(5660300002)(316002)(7416002)(8676002)(41300700001)(6506007)(66946007)(66556008)(66476007)(4326008)(31696002)(6512007)(54906003)(26005)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3BtRnJicHZnSVZOa0FweVExTWdlSmNjTDQwQ3JEeCtTV3Y0NjNvUDdBY1B1?=
+ =?utf-8?B?dDg0cCt4aTZ6K1pPK1JZSUlYU2FwT0N5azdpM2NCajNnWjFzWE1Wazh3Yzkw?=
+ =?utf-8?B?TU5qa3g1U1pEekx4b2tqVnk2VFNzaE16TGFXZHlJbkRvSXl1UXl5Wk9USitM?=
+ =?utf-8?B?b0JnT3hBQmFHWXBwempJWEdDQjB2TWdvMktpeXVJTGNJTTNIelR6Smo5c0tW?=
+ =?utf-8?B?Q3NVUURNWEp0U0o0bDFPbWh1cUVMVnBUREc2VUh0TUZWOC92Q2hXV1V2b0ZN?=
+ =?utf-8?B?b2U4Y2FmODhDcFpoOXJQY1o0UVlqZHdvcmtIZEREWkhOZVVLZ2JEODVVWENu?=
+ =?utf-8?B?MnU4WEpGbHRROTFvSHBzL1lmalpXTUh6azUzSytFZVhjOGNEQlNtdzVrSnNK?=
+ =?utf-8?B?YWYxWnd6aCtYb0wzQVU2a0ZzLzIrejZScUZBZmZJTnJlUUZOTytOcEtYMlZM?=
+ =?utf-8?B?NmExdEVreWJOVnNuUklQYUtvNjNWaVBiejJhUStyTDBOcWtrUTUxVVpzb2hU?=
+ =?utf-8?B?eHZNK3h4eEdjT0c5bXFLSXA3MmV3Z2ppTUtMbWtlWXRaR29aWmxEUkd2cVVM?=
+ =?utf-8?B?d0RWeE9JcStFS2VYT1ZzUXhvTVFUSVBaMVNmZnFFY0NuY0Rrd0RWOHlmRlVj?=
+ =?utf-8?B?c2hUUXZmMmQwem1TRGJFckVqbmlPem9IMndNVzdDc1VseERUOEpRa3dGZTRu?=
+ =?utf-8?B?a0NHdFY4QTJCTzY1cnZHVDYwcUEvbDJUazhPT0hLN0Rwc3l2bk95d0RLMHRq?=
+ =?utf-8?B?Yy9EdjFPUmZEZ0NXYVIrWlNwUVk2MDFrVG1qdkNpY3RwVkNPL2VtS3Z6T3pW?=
+ =?utf-8?B?YXJtOHBtOUY5a01McDlKRzhwMW12Qy9DVUtiMDlEM0QrTW5CTHJidXpOUGhL?=
+ =?utf-8?B?eWRZZWNIbkFqMkI3eUVLVzBLRlJoODExZjFGQTg4bzZwSTRHeUxicFpZa3VH?=
+ =?utf-8?B?R1krNE5YRmVGcVIrSnk0NlhQL3p5bHZBZWYzUHpYbHlUbFB5L2FDbk9FNFc1?=
+ =?utf-8?B?QXJCT2lNMHZPNkQ1OTZwMUhMeEhnSmREUUtiTzJUZUFnWXkwdGVZVys3a2Jj?=
+ =?utf-8?B?aFV5MDdnd201SS9PM3lwblgxdHowTkR3RmcwU1pnWmxnYmFPb0hEdERFa1pC?=
+ =?utf-8?B?QzZId2VJUHRvN1E0RGNrN04yZHpPWjkrNWVLZVhxVW92NkNXUm43NzFOZnNr?=
+ =?utf-8?B?S01kWURkSVhEOUxMazNMUnBiRmwyVEV2Mk4vc25MaDNtemxIL0NVQkozUkxw?=
+ =?utf-8?B?b0ZDSnRhQ0tUWC9vUUdtdElRdllwZ0hTdEs5aXFKVWhpc0t1MFFwRFVoc2pp?=
+ =?utf-8?B?MkJhajFlU2ZOdjJEYlZvUGdjbXFQQURhTnMyNTVQcmttYlQrSUEzakpsWW9i?=
+ =?utf-8?B?eW5FSVc2alJQdjRPb1VOU2lmMGZnTVBGbVZvV1A5NjRhYnBjZlhxSHYzNmRP?=
+ =?utf-8?B?ZkM4QnZVd2lzY2xxV0VrdWRRNm1ybmkwWlNPSlFGanEwV0VjOWx6MkRXRDdQ?=
+ =?utf-8?B?TkZUeEI4eVFrTmNyYXJHeElndmNTQ2xsVGtTTlhKaVIvSFVGYm5CaDJucUVW?=
+ =?utf-8?B?Y3BiWVBaTmdjVCtNbWY3T05STVNoQTdtaUk3MGN2TC9ESGptRnhodmZxY0sx?=
+ =?utf-8?B?ZXR6RTdQN0lOakRyS0ZXQ3MzbHU4S1ZKSngrYTdkdzZCY3FXd1EvbFBoVHd2?=
+ =?utf-8?B?S3hEYnNuMkhJdlVVZVRHMUpSbHgybDBBYW53MVp3VG1hYXh2ejlqY0dMSm1R?=
+ =?utf-8?B?dy9vbHpXa29kYmdPL0p3UXdpL2hiOHI5Um9EZzNPNHZlQUxRSjh2ZGVHdnM5?=
+ =?utf-8?B?Nmh5WGdFQjlQWkUrNVhEN0k4Ui9manNCSDlkMmRYRkUzWUoxQ08wSEV6ZlZC?=
+ =?utf-8?B?Tmg4eWhURUMreWlWUTJwcW9Bb3FMWUJURXJxUHJkTWRGQU9wUFNGNmpsWDZD?=
+ =?utf-8?B?Y2kraWRhV2pnYS9iNFcrWkJCVDN2NjdOTlBIc3QyaHprVE15VUJFS2pWcXR1?=
+ =?utf-8?B?QkN0YkVTQmtNRWFoSzcwWHdOdFNrVkJlZHJJWG5tZHZVQklQem96NG9lRGhH?=
+ =?utf-8?B?QkpKM0p1UGNGQjFPUmtUUVloSml2eVl6bHU3WnhDTXlUR3p2bWxVMVJ1WHNE?=
+ =?utf-8?Q?2IqwIJQKlFzSc+XuCfTpI+Byv?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43bcb665-a850-4bff-3fba-08dab265fd38
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2022 06:40:33.7515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ldqjbDHW4AByf1vZ+aYbKbckJMOoKVBnP6aCBCsFIVaUSB73fRLrTk8NDIOEf5Yj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6062
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Am 19.10.22 um 19:32 schrieb Tvrtko Ursulin:
+> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+>
+> To enable propagation of settings from the cgroup drm controller to drm we
+> need to start tracking which processes own which drm clients.
+>
+> Implement that by tracking the struct pid pointer of the owning process in
+> a new XArray, pointing to a structure containing a list of associated
+> struct drm_file pointers.
+>
+> Clients are added and removed under the filelist mutex and RCU list
+> operations are used below it to allow for lockless lookup.
 
-On Wed, Oct 19, 2022 at 06:32:37PM +0100, Tvrtko Ursulin wrote:
-...
-> DRM static priority interface files
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
->   drm.priority_levels
-> 	One of:
-> 	 1) And integer representing the minimum number of discrete priority
-> 	    levels for the whole group.
-> 	    Optionally followed by an asterisk ('*') indicating some DRM clients
-> 	    in the group support more than the minimum number.
-> 	 2) '0'- indicating one or more DRM clients in the group has no support
-> 	    for static priority control.
-> 	 3) 'n/a' - when there are no DRM clients in the configured group.
-> 
->   drm.priority
-> 	A read-write integer between -10000 and 10000 (inclusive) representing
-> 	an abstract static priority level.
-> 
->   drm.effective_priority
-> 	Read only integer showing the current effective priority level for the
-> 	group. Effective meaning taking into account the chain of inherited
+That won't work easily like this. The problem is that file_priv->pid is 
+usually not accurate these days:
 
-From interface POV, this is a lot worse than the second proposal and I'd
-really like to avoid this. Even if we go with mapping user priority
-configuration to per-driver priorities, I'd much prefer if the interface
-presented to user is weight based and let each driver try to match the
-resulting hierarchical weight (ie. the absolute proportion a given cgroup
-should have at the point in time) as best as they can rather than exposing
-opaque priority numbers to userspace whose meaning isn't defined at all.
+ From the debugfs clients file:
 
-> DRM scheduling soft limits interface files
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
->   drm.weight
-> 	Standard cgroup weight based control [1, 10000] used to configure the
-> 	relative distributing of GPU time between the sibling groups.
+       systemd-logind   773   0   y    y     0          0
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+              firefox  2945 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+               chrome 35940 128   n    n  1000          0
+               chrome 35940   0   n    y  1000          1
+               chrome 35940   0   n    y  1000          2
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
+                 Xorg  1639 128   n    n  1000          0
 
-Please take a look at io.weight. This can follow the same convention to
-express both global and per-device weights.
+This is with glxgears and a bunch other OpenGL applications running.
 
->   drm.period_us
-> 	An integer representing the period with which the controller should look
-> 	at the GPU usage by the group and potentially send the over/under budget
-> 	signal.
-> 	Value of zero (defaul) disables the soft limit checking.
+The problem is that for most applications the X/Wayland server is now 
+opening the render node. The only exceptions in this case are apps using 
+DRI2 (VA-API?).
 
-Can we not do period_us or at least make it a per-driver tuning parameter
-exposed as module param? Weight, users can easily understand and configure.
-period_us is a lot more an implementation detail. If we want to express the
-trade-off between latency and bandwidth at the interface, we prolly should
-encode the latency requirement in a more canonical way but let's leave that
-for the future.
+I always wanted to fix this and actually track who is using the file 
+descriptor instead of who opened it, but never had the time to do this.
 
->   drm.budget_supported
-> 	One of:
-> 	 1) 'yes' - when all DRM clients in the group support the functionality.
-> 	 2) 'no' - when at least one of the DRM clients does not support the
-> 		   functionality.
-> 	 3) 'n/a' - when there are no DRM clients in the group.
+I think you need to fix this problem first. And BTW: and unsigned long 
+doesn't work as PID either with containers.
 
-Yeah, I'm not sure about this. This isn't a per-cgroup property to begin
-with and I'm not sure 'no' meaning at least one device not supporting is
-intuitive. The distinction between 'no' and 'n/a' is kinda weird too. Please
-drop this.
+Regards,
+Christian.
 
-Another basic interface question. Is everyone happy with the drm prefix or
-should it be something like gpu? Also, in the future, if there's a consensus
-around how to control gpu memory, what prefix would that take?
+>
+> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> ---
+>   drivers/gpu/drm/Makefile     |  1 +
+>   drivers/gpu/drm/drm_cgroup.c | 60 ++++++++++++++++++++++++++++++++++++
+>   drivers/gpu/drm/drm_file.c   | 18 ++++++++---
+>   include/drm/drm_clients.h    | 31 +++++++++++++++++++
+>   include/drm/drm_file.h       |  4 +++
+>   5 files changed, 110 insertions(+), 4 deletions(-)
+>   create mode 100644 drivers/gpu/drm/drm_cgroup.c
+>   create mode 100644 include/drm/drm_clients.h
+>
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index 6e55c47288e4..0719970d17ee 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -59,6 +59,7 @@ drm-$(CONFIG_DRM_LEGACY) += \
+>   	drm_scatter.o \
+>   	drm_vm.o
+>   drm-$(CONFIG_DRM_LIB_RANDOM) += lib/drm_random.o
+> +drm-$(CONFIG_CGROUP_DRM) += drm_cgroup.o
+>   drm-$(CONFIG_COMPAT) += drm_ioc32.o
+>   drm-$(CONFIG_DRM_PANEL) += drm_panel.o
+>   drm-$(CONFIG_OF) += drm_of.o
+> diff --git a/drivers/gpu/drm/drm_cgroup.c b/drivers/gpu/drm/drm_cgroup.c
+> new file mode 100644
+> index 000000000000..a31ff1d593ab
+> --- /dev/null
+> +++ b/drivers/gpu/drm/drm_cgroup.c
+> @@ -0,0 +1,60 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright © 2022 Intel Corporation
+> + */
+> +
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_clients.h>
+> +
+> +static DEFINE_XARRAY(drm_pid_clients);
+> +
+> +void drm_clients_close(struct drm_file *file_priv)
+> +{
+> +	unsigned long pid = (unsigned long)file_priv->pid;
+> +	struct drm_device *dev = file_priv->minor->dev;
+> +	struct drm_pid_clients *clients;
+> +
+> +	lockdep_assert_held(&dev->filelist_mutex);
+> +
+> +	clients = xa_load(&drm_pid_clients, pid);
+> +	list_del_rcu(&file_priv->clink);
+> +	if (atomic_dec_and_test(&clients->num)) {
+> +		xa_erase(&drm_pid_clients, pid);
+> +		kfree_rcu(clients, rcu);
+> +	}
+> +}
+> +
+> +int drm_clients_open(struct drm_file *file_priv)
+> +{
+> +	unsigned long pid = (unsigned long)file_priv->pid;
+> +	struct drm_device *dev = file_priv->minor->dev;
+> +	struct drm_pid_clients *clients;
+> +	bool new_client = false;
+> +
+> +	lockdep_assert_held(&dev->filelist_mutex);
+> +
+> +	clients = xa_load(&drm_pid_clients, pid);
+> +	if (!clients) {
+> +		clients = kmalloc(sizeof(*clients), GFP_KERNEL);
+> +		if (!clients)
+> +			return -ENOMEM;
+> +		atomic_set(&clients->num, 0);
+> +		INIT_LIST_HEAD(&clients->file_list);
+> +		init_rcu_head(&clients->rcu);
+> +		new_client = true;
+> +	}
+> +	atomic_inc(&clients->num);
+> +	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
+> +	if (new_client) {
+> +		void *xret;
+> +
+> +		xret = xa_store(&drm_pid_clients, pid, clients, GFP_KERNEL);
+> +		if (xa_err(xret)) {
+> +			list_del_init(&file_priv->clink);
+> +			kfree(clients);
+> +			return PTR_ERR(clients);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+> index a8b4d918e9a3..ce58d5c513db 100644
+> --- a/drivers/gpu/drm/drm_file.c
+> +++ b/drivers/gpu/drm/drm_file.c
+> @@ -40,6 +40,7 @@
+>   #include <linux/slab.h>
+>   
+>   #include <drm/drm_client.h>
+> +#include <drm/drm_clients.h>
+>   #include <drm/drm_drv.h>
+>   #include <drm/drm_file.h>
+>   #include <drm/drm_print.h>
+> @@ -298,6 +299,7 @@ static void drm_close_helper(struct file *filp)
+>   
+>   	mutex_lock(&dev->filelist_mutex);
+>   	list_del(&file_priv->lhead);
+> +	drm_clients_close(file_priv);
+>   	mutex_unlock(&dev->filelist_mutex);
+>   
+>   	drm_file_free(file_priv);
+> @@ -349,10 +351,8 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
+>   
+>   	if (drm_is_primary_client(priv)) {
+>   		ret = drm_master_open(priv);
+> -		if (ret) {
+> -			drm_file_free(priv);
+> -			return ret;
+> -		}
+> +		if (ret)
+> +			goto err_free;
+>   	}
+>   
+>   	filp->private_data = priv;
+> @@ -360,6 +360,9 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
+>   	priv->filp = filp;
+>   
+>   	mutex_lock(&dev->filelist_mutex);
+> +	ret = drm_clients_open(priv);
+> +	if (ret)
+> +		goto err_unlock;
+>   	list_add(&priv->lhead, &dev->filelist);
+>   	mutex_unlock(&dev->filelist_mutex);
+>   
+> @@ -387,6 +390,13 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
+>   #endif
+>   
+>   	return 0;
+> +
+> +err_unlock:
+> +	mutex_unlock(&dev->filelist_mutex);
+> +err_free:
+> +	drm_file_free(priv);
+> +
+> +	return ret;
+>   }
+>   
+>   /**
+> diff --git a/include/drm/drm_clients.h b/include/drm/drm_clients.h
+> new file mode 100644
+> index 000000000000..4ae553a03d1e
+> --- /dev/null
+> +++ b/include/drm/drm_clients.h
+> @@ -0,0 +1,31 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright © 2022 Intel Corporation
+> + */
+> +
+> +#ifndef _DRM_CLIENTS_H_
+> +#define _DRM_CLIENTS_H_
+> +
+> +#include <drm/drm_file.h>
+> +
+> +struct drm_pid_clients {
+> +	atomic_t num;
+> +	struct list_head file_list;
+> +	struct rcu_head rcu;
+> +};
+> +
+> +#if IS_ENABLED(CONFIG_CGROUP_DRM)
+> +void drm_clients_close(struct drm_file *file_priv);
+> +int drm_clients_open(struct drm_file *file_priv);
+> +#else
+> +static inline void drm_clients_close(struct drm_file *file_priv)
+> +{
+> +}
+> +
+> +static inline int drm_clients_open(struct drm_file *file_priv)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+> +#endif
+> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
+> index d780fd151789..0965eb111f24 100644
+> --- a/include/drm/drm_file.h
+> +++ b/include/drm/drm_file.h
+> @@ -268,6 +268,10 @@ struct drm_file {
+>   	/** @minor: &struct drm_minor for this file. */
+>   	struct drm_minor *minor;
+>   
+> +#if IS_ENABLED(CONFIG_CGROUP_DRM)
+> +	struct list_head clink;
+> +#endif
+> +
+>   	/**
+>   	 * @object_idr:
+>   	 *
 
-> The second proposal is a little bit more advanced in concept and also a little
-> bit less finished. Interesting thing is that it builds upon the per client GPU
-> utilisation work which landed recently for a few drivers. So my thinking is that
-> in principle, an intersect of drivers which support both that and some sort of
-> priority scheduling control, could also in theory support this.
-> 
-> Another really interesting angle for this controller is that it mimics the same
-> control menthod used by the CPU scheduler. That is the proportional/weight based
-> GPU time budgeting. Which makes it easy to configure and does not need a new
-> mental model.
-> 
-> However, as the introduction mentions, GPUs are much more heterogenous and
-> therefore the controller uses very "soft" wording as to what it promises. The
-> general statement is that it can define budgets, notify clients when they are
-> over them, and let individual drivers implement best effort handling of those
-> conditions.
-> 
-> Delegation of duties in the implementation goes likes this:
-> 
->  * DRM cgroup controller implements the control files and the scanning loop.
->  * DRM core is required to track all DRM clients belonging to processes so it
->    can answer when asked how much GPU time is a process using.
->  * DRM core also provides a call back which the controller will call when a
->    certain process is over budget.
->  * Individual drivers need to implement two similar hooks, but which work for
->    a single DRM client. Over budget callback and GPU utilisation query.
-> 
-> What I have demonstrated in practice is that when wired to i915, in a really
-> primitive way where the over-budget condition simply lowers the scheduling
-> priority, the concept can be almost equally effective as the static priority
-> control. I say almost because the design where budget control depends on the
-> periodic usage scanning has a fundamental delay, so responsiveness will depend
-> on the scanning period, which may or may not be a problem for a particular use
-> case.
-> 
-> The unfinished part is the GPU budgeting split which currently does not
-> propagate unused bandwith to children, neither can share it with siblings. But
-> this is not due fundamental reasons, just to avoid spending too much time on it
-> too early.
-
-Rather than doing it hierarchically on the spot, it's usually a lot cheaper
-and easier to calculate the flattened hierarchical weight per leaf cgroup
-and divide the bandwidth according to the eventual portions. For an example,
-please take a look at block/blk-iocost.c.
-
-I don't know much about the drm driver side, so can't comment much on it but
-I do really like the idea of having the core implementation determining who
-should get how much and then letting each driver enforce the target. That
-seems a lot more robust and generic than trying to somehow coax and expose
-per-driver priority implementations directly.
-
-Thanks.
-
--- 
-tejun
