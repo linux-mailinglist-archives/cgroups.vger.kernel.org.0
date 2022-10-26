@@ -2,161 +2,167 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FF160E0D3
-	for <lists+cgroups@lfdr.de>; Wed, 26 Oct 2022 14:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936DB60E375
+	for <lists+cgroups@lfdr.de>; Wed, 26 Oct 2022 16:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbiJZMgk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Oct 2022 08:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        id S234349AbiJZOgo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Oct 2022 10:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbiJZMgb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Oct 2022 08:36:31 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB2C8E442;
-        Wed, 26 Oct 2022 05:36:23 -0700 (PDT)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29QCZoXE004892;
-        Wed, 26 Oct 2022 12:36:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=LoNYjlvw7n7AAaxNgSQnxhM7o1qFq0VL7RM3za1O2Yo=;
- b=hm+19J7JgVA0+Lihb+CZfSSiRdzSrxBX9XCM/+hbFMxA7MMCdht3dhn4KzJE3wIGDO+n
- HEbdsQTOfUePta5ZFDtwOpoEJ2+e9jQtxp9fvtklFLU9hR93NfZBB8vuc8KvtDnhoAhO
- XJagtI0c93lj6KerCHSXf4hVrefPyZ17BhisD0WHLEOST//rMRdTQGTGeRzMB/Yi0v9O
- YabPvIU5SblaT+dTvY3/UGq4J/MNSMXB30AeGqoEerg97zYujoKYmfo0iy0YKw1H9TKX
- Yd0zSEDvhs3N6NnZ4ZJRhyF5cTHmSjvxgD82aRG8FP9obnmE08/suvzz8qwPjzF2v9uf UQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kf3n5tue3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Oct 2022 12:36:14 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29QCa8Up007547;
-        Wed, 26 Oct 2022 12:36:13 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kf3n5ttup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Oct 2022 12:36:13 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29QCYul0005032;
-        Wed, 26 Oct 2022 12:35:53 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3kc7sj7eh3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 Oct 2022 12:35:53 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 29QCZpuZ2163298
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Oct 2022 12:35:51 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C03EAE053;
-        Wed, 26 Oct 2022 12:35:51 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2D438AE045;
-        Wed, 26 Oct 2022 12:35:48 +0000 (GMT)
-Received: from [9.43.91.80] (unknown [9.43.91.80])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Oct 2022 12:35:47 +0000 (GMT)
-Message-ID: <22590f74-ec91-e673-32df-8a04b4ab3931@linux.ibm.com>
-Date:   Wed, 26 Oct 2022 18:05:46 +0530
+        with ESMTP id S234347AbiJZOgl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Oct 2022 10:36:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E005D4BA76
+        for <cgroups@vger.kernel.org>; Wed, 26 Oct 2022 07:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666794999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RuQ473Ae4BWJHrbZgeWqzD+yGxNzK8Ar53dsUNjWpn4=;
+        b=aKs9H8iLObVx3yCLgeQm1UUUgjNA7T8XFainsf0tDzbW7tj88UXzcNvbmW/48j+0QAmVnx
+        xZnngoMc6VbiqImEcN/S+2IdOdlD5+tOQL+1UsdVnj4uLzvN750Arqkkqg1y+CpnpCqOkk
+        epOE0pUzhLtao5wlyZCcw6+utkTZkNE=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-336-lH-Nv13GPUiXSAnlzXpOYA-1; Wed, 26 Oct 2022 10:36:34 -0400
+X-MC-Unique: lH-Nv13GPUiXSAnlzXpOYA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B39F43817A68;
+        Wed, 26 Oct 2022 14:36:33 +0000 (UTC)
+Received: from [10.18.17.153] (dhcp-17-153.bos.redhat.com [10.18.17.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0AC6C2024CB7;
+        Wed, 26 Oct 2022 14:36:33 +0000 (UTC)
+Message-ID: <da533477-da08-88cb-1e76-46364f1a6151@redhat.com>
+Date:   Wed, 26 Oct 2022 10:36:32 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
+ Thunderbird/102.3.0
 Subject: Re: [PATCH] mm/vmscan: respect cpuset policy during page demotion
 Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Feng Tang <feng.tang@intel.com>,
+To:     Feng Tang <feng.tang@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Waiman Long <longman@redhat.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>
+        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>, ying.huang@intel.com,
+        aneesh.kumar@linux.ibm.com, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        tim.c.chen@intel.com, fengwei.yin@intel.com
 References: <20221026074343.6517-1-feng.tang@intel.com>
- <dc453287-015d-fd1c-fe7f-6ee45772d6aa@linux.ibm.com>
- <Y1jpDfwBQId3GkJC@feng-clx> <Y1j7tsj5M0Md/+Er@dhcp22.suse.cz>
- <d17698d2-c1b5-9aa3-6271-838830d36cc5@linux.ibm.com>
- <Y1kTz1qjfsY1UBPf@dhcp22.suse.cz>
- <44e485d4-acf5-865d-17fe-13be1c1b430b@linux.ibm.com>
- <Y1kmOaXvzwRv/tza@dhcp22.suse.cz>
-From:   Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
-In-Reply-To: <Y1kmOaXvzwRv/tza@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20221026074343.6517-1-feng.tang@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1Q9pvveorLwz4xerIDi54tOgfrFYTHPz
-X-Proofpoint-ORIG-GUID: y98Ye8vStkw9KLE5ZWvS4COwtqur_lej
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-26_06,2022-10-26_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- priorityscore=1501 adultscore=0 lowpriorityscore=0 malwarescore=0
- phishscore=0 impostorscore=0 mlxlogscore=995 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210260070
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/26/22 5:51 PM, Michal Hocko wrote:
-> On Wed 26-10-22 17:38:06, Aneesh Kumar K V wrote:
->> On 10/26/22 4:32 PM, Michal Hocko wrote:
->>> On Wed 26-10-22 16:12:25, Aneesh Kumar K V wrote:
->>>> On 10/26/22 2:49 PM, Michal Hocko wrote:
->>>>> On Wed 26-10-22 16:00:13, Feng Tang wrote:
->>>>>> On Wed, Oct 26, 2022 at 03:49:48PM +0800, Aneesh Kumar K V wrote:
->>>>>>> On 10/26/22 1:13 PM, Feng Tang wrote:
->>>>>>>> In page reclaim path, memory could be demoted from faster memory tier
->>>>>>>> to slower memory tier. Currently, there is no check about cpuset's
->>>>>>>> memory policy, that even if the target demotion node is not allowd
->>>>>>>> by cpuset, the demotion will still happen, which breaks the cpuset
->>>>>>>> semantics.
->>>>>>>>
->>>>>>>> So add cpuset policy check in the demotion path and skip demotion
->>>>>>>> if the demotion targets are not allowed by cpuset.
->>>>>>>>
->>>>>>>
->>>>>>> What about the vma policy or the task memory policy? Shouldn't we respect
->>>>>>> those memory policy restrictions while demoting the page? 
->>>>>>  
->>>>>> Good question! We have some basic patches to consider memory policy
->>>>>> in demotion path too, which are still under test, and will be posted
->>>>>> soon. And the basic idea is similar to this patch.
->>>>>
->>>>> For that you need to consult each vma and it's owning task(s) and that
->>>>> to me sounds like something to be done in folio_check_references.
->>>>> Relying on memcg to get a cpuset cgroup is really ugly and not really
->>>>> 100% correct. Memory controller might be disabled and then you do not
->>>>> have your association anymore.
->>>>>
->>>>
->>>> I was looking at this recently and I am wondering whether we should worry about VM_SHARE
->>>> vmas. 
->>>>
->>>> ie, page_to_policy() can just reverse lookup just one VMA and fetch the policy right?
->>>
->>> How would that help for private mappings shared between parent/child?
->>
->>
->> this is MAP_PRIVATE | MAP_SHARED?
-> 
+On 10/26/22 03:43, Feng Tang wrote:
+> In page reclaim path, memory could be demoted from faster memory tier
+> to slower memory tier. Currently, there is no check about cpuset's
+> memory policy, that even if the target demotion node is not allowd
+> by cpuset, the demotion will still happen, which breaks the cpuset
+> semantics.
+>
+> So add cpuset policy check in the demotion path and skip demotion
+> if the demotion targets are not allowed by cpuset.
+>
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> ---
+> Hi reviewers,
+>
+> For easy bisectable, I combined the cpuset change and mm change
+> in one patch, if you prefer to separate them, I can turn it into
+> 2 patches.
+>
+> Thanks,
+> Feng
+>
+>   include/linux/cpuset.h |  6 ++++++
+>   kernel/cgroup/cpuset.c | 29 +++++++++++++++++++++++++++++
+>   mm/vmscan.c            | 35 ++++++++++++++++++++++++++++++++---
+>   3 files changed, 67 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index d58e0476ee8e..6fcce2bd2631 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -178,6 +178,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
+>   	task_unlock(current);
+>   }
+>   
+> +extern void cpuset_get_allowed_mem_nodes(struct cgroup *cgroup,
+> +						nodemask_t *nmask);
+>   #else /* !CONFIG_CPUSETS */
+>   
+>   static inline bool cpusets_enabled(void) { return false; }
+> @@ -299,6 +301,10 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
+>   	return false;
+>   }
+>   
+> +static inline void cpuset_get_allowed_mem_nodes(struct cgroup *cgroup,
+> +						nodemask_t *nmask)
+> +{
+> +}
+>   #endif /* !CONFIG_CPUSETS */
+>   
+>   #endif /* _LINUX_CPUSET_H */
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 3ea2e836e93e..cbb118c0502f 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3750,6 +3750,35 @@ nodemask_t cpuset_mems_allowed(struct task_struct *tsk)
+>   	return mask;
+>   }
+>   
+> +/*
+> + * Retrieve the allowed memory nodemask for a cgroup.
+> + *
+> + * Set *nmask to cpuset's effective allowed nodemask for cgroup v2,
+> + * and NODE_MASK_ALL (means no constraint) for cgroup v1 where there
+> + * is no guaranteed association from a cgroup to a cpuset.
+> + */
+> +void cpuset_get_allowed_mem_nodes(struct cgroup *cgroup, nodemask_t *nmask)
+> +{
+> +	struct cgroup_subsys_state *css;
+> +	struct cpuset *cs;
+> +
+> +	if (!is_in_v2_mode()) {
+> +		*nmask = NODE_MASK_ALL;
+> +		return;
+> +	}
 
-Sorry, I meant MAP_ANONYMOUS | MAP_SHARED. 
+You are allowing all nodes to be used for cgroup v1. Is there a reason 
+why you ignore v1?
 
-> This is not a valid combination IIRC. What I meant is a simple
-> MAP_PRIVATE|MAP_ANON that is CoW shared between parent and child.
-> 
-> [...]
+> +
+> +	rcu_read_lock();
+> +	css = cgroup_e_css(cgroup, &cpuset_cgrp_subsys);
+> +	if (css) {
+> +		css_get(css);
+> +		cs = css_cs(css);
+> +		*nmask = cs->effective_mems;
+> +		css_put(css);
+> +	}
+Since you are holding an RCU read lock and copying out the whole 
+nodemask, you probably don't need to do a css_get/css_put pair.
+> +
+> +	rcu_read_unlock();
+> +}
+> +
+Cheers,
 
+Longman
 
--aneesh
