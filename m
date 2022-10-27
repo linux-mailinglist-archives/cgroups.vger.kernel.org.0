@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1FE60F741
-	for <lists+cgroups@lfdr.de>; Thu, 27 Oct 2022 14:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A7360F864
+	for <lists+cgroups@lfdr.de>; Thu, 27 Oct 2022 15:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbiJ0MaQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Oct 2022 08:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        id S235961AbiJ0NFi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Oct 2022 09:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235711AbiJ0M3w (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Oct 2022 08:29:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90A41147C;
-        Thu, 27 Oct 2022 05:29:51 -0700 (PDT)
+        with ESMTP id S235883AbiJ0NF3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Oct 2022 09:05:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734B236864;
+        Thu, 27 Oct 2022 06:05:27 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D54682189E;
-        Thu, 27 Oct 2022 12:29:49 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 25E1A1F8BD;
+        Thu, 27 Oct 2022 13:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1666873789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1666875925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qLCHdSoF5LvMGX21jAzxWFCsbeXpnvlMNpAzGikriy4=;
-        b=RJeUztS7r094eW6OujV+pvkgja9wTiwyiRHoJsanxtMjnKblu1Vdp8ONKpkwEDNh0nwPON
-        YxHuTG3JWccRnJ0scqKJnDuIQQ4uHszEKCvFn9HTC3xLLjUOUmiWCaBSfKomhXO8mWZzgO
-        y8Ub5T1ot7toA2QaS58/EAn5MTRavKk=
+        bh=iLNO8fwHXhHPJ6MycKJ73w5HGMLMj9HlWspV0+LyiJY=;
+        b=rDEM3ZnGroiojMFPrn3cjucEP3ymtmI5jrPZuAxvb5gEMPrn0HIj7PmXKMYgHo1+tO7yE2
+        6urCMiTAG71A2qFslg+sHC6po5k0B6snagoA3ro5K29S4RuzkKtq0qdXHCrGD7CohRaAAK
+        dRp+4plLctbuWS/EqHucGbLmAfiWebU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0336134CA;
-        Thu, 27 Oct 2022 12:29:49 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EFFFE134CA;
+        Thu, 27 Oct 2022 13:05:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id M7RMJ715WmOGSAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 27 Oct 2022 12:29:49 +0000
-Date:   Thu, 27 Oct 2022 14:29:49 +0200
+        id D90POBSCWmNLXgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 27 Oct 2022 13:05:24 +0000
+Date:   Thu, 27 Oct 2022 15:05:23 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
+To:     Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
 Cc:     Feng Tang <feng.tang@intel.com>,
-        Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Waiman Long <longman@redhat.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -54,23 +54,23 @@ Cc:     Feng Tang <feng.tang@intel.com>,
         "Chen, Tim C" <tim.c.chen@intel.com>,
         "Yin, Fengwei" <fengwei.yin@intel.com>
 Subject: Re: [PATCH] mm/vmscan: respect cpuset policy during page demotion
-Message-ID: <Y1p5vaN1AWhpNWZx@dhcp22.suse.cz>
+Message-ID: <Y1qCE8snHO2uKHKd@dhcp22.suse.cz>
 References: <dc453287-015d-fd1c-fe7f-6ee45772d6aa@linux.ibm.com>
  <Y1jpDfwBQId3GkJC@feng-clx>
  <Y1j7tsj5M0Md/+Er@dhcp22.suse.cz>
- <Y1kl8VbPE0RYdyEB@feng-clx>
- <Y1lZV6qHp3gIINGc@dhcp22.suse.cz>
- <87wn8lkbk5.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Y1ou5DGHrEsKnhri@dhcp22.suse.cz>
- <87o7txk963.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Y1o63SWD2KmQkT3v@dhcp22.suse.cz>
- <87fsf9k3yg.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <d17698d2-c1b5-9aa3-6271-838830d36cc5@linux.ibm.com>
+ <Y1kTz1qjfsY1UBPf@dhcp22.suse.cz>
+ <44e485d4-acf5-865d-17fe-13be1c1b430b@linux.ibm.com>
+ <Y1kmOaXvzwRv/tza@dhcp22.suse.cz>
+ <22590f74-ec91-e673-32df-8a04b4ab3931@linux.ibm.com>
+ <Y1pJG+d+kXJgjNMc@dhcp22.suse.cz>
+ <5a6c29f9-1154-03af-c22e-55108feb155f@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fsf9k3yg.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+In-Reply-To: <5a6c29f9-1154-03af-c22e-55108feb155f@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,72 +78,33 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 27-10-22 17:31:35, Huang, Ying wrote:
-> Michal Hocko <mhocko@suse.com> writes:
+On Thu 27-10-22 15:46:07, Aneesh Kumar K V wrote:
+> On 10/27/22 2:32 PM, Michal Hocko wrote:
 > 
-> > On Thu 27-10-22 15:39:00, Huang, Ying wrote:
-> >> Michal Hocko <mhocko@suse.com> writes:
-> >> 
-> >> > On Thu 27-10-22 14:47:22, Huang, Ying wrote:
-> >> >> Michal Hocko <mhocko@suse.com> writes:
-> >> > [...]
-> >> >> > I can imagine workloads which wouldn't like to get their memory demoted
-> >> >> > for some reason but wouldn't it be more practical to tell that
-> >> >> > explicitly (e.g. via prctl) rather than configuring cpusets/memory
-> >> >> > policies explicitly?
-> >> >> 
-> >> >> If my understanding were correct, prctl() configures the process or
-> >> >> thread.
-> >> >
-> >> > Not necessarily. There are properties which are per adddress space like
-> >> > PR_[GS]ET_THP_DISABLE. This could be very similar.
-> >> >
-> >> >> How can we get process/thread configuration at demotion time?
-> >> >
-> >> > As already pointed out in previous emails. You could hook into
-> >> > folio_check_references path, more specifically folio_referenced_one
-> >> > where you have all that you need already - all vmas mapping the page and
-> >> > then it is trivial to get the corresponding vm_mm. If at least one of
-> >> > them has the flag set then the demotion is not allowed (essentially the
-> >> > same model as VM_LOCKED).
-> >> 
-> >> Got it!  Thanks for detailed explanation.
-> >> 
-> >> One bit may be not sufficient.  For example, if we want to avoid or
-> >> control cross-socket demotion and still allow demoting to slow memory
-> >> nodes in local socket, we need to specify a node mask to exclude some
-> >> NUMA nodes from demotion targets.
-> >
-> > Isn't this something to be configured on the demotion topology side? Or
-> > do you expect there will be per process/address space usecases? I mean
-> > different processes running on the same topology, one requesting local
-> > demotion while other ok with the whole demotion topology?
+> >>
+> >> Sorry, I meant MAP_ANONYMOUS | MAP_SHARED. 
+> > 
+> > I am still not sure where you are targeting to be honest. MAP_SHARED or
+> > MAP_PRIVATE both can have page shared between several vmas.
 > 
-> I think that it's possible for different processes have different
-> requirements.
 > 
-> - Some processes don't care about where the memory is placed, prefer
->   local, then fall back to remote if no free space.
-> 
-> - Some processes want to avoid cross-socket traffic, bind to nodes of
->   local socket.
-> 
-> - Some processes want to avoid to use slow memory, bind to fast memory
->   node only.
+> What I was checking was w.r.t demotion and shared pages do we need to
+> cross-check all the related memory policies? On the page fault side, we don't do that.
 
-Yes, I do understand that. Do you have any specific examples in mind?
-[...]
-> > If we really need/want to give a fine grained control over demotion
-> > nodemask then we would have to go with vma->mempolicy interface. In
-> > any case a per process on/off knob sounds like a reasonable first step
-> > before we learn more about real usecases.
-> 
-> Yes.  Per-mm or per-vma property is much better than per-task property.
-> Another possibility, how about add a new flag to set_mempolicy() system
-> call to set the per-mm mempolicy?  `numactl` can use that by default.
+Yes, because on the page fault we do have an originator and so we can
+apply some reasonable semantic. For the memory reclaim there is no such
+originator for a specific page. A completely unrelated context might be
+reclaiming a page with some mempolicy constrain and you do not have any
+records who has faulted it in. The fact that we have a memory policy
+also at the task level makes a completely consistent semantic rather
+hard if possible at all (e.g. what if different thread are simply bound
+to a different node because shared memory is prefaulted and local thread
+mappings will be always local).
 
-Do you mean a flag to control whether the given policy is applied to a
-task or mm?
+I do not think shared mappings are very much special in that regards. It
+is our mempolicy API that allows to specify a policy for vmas as well as
+tasks and the later makes the semantic for reclaim really awkward.
+
 -- 
 Michal Hocko
 SUSE Labs
