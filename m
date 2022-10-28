@@ -2,174 +2,354 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9391D61193C
-	for <lists+cgroups@lfdr.de>; Fri, 28 Oct 2022 19:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E48E611C50
+	for <lists+cgroups@lfdr.de>; Fri, 28 Oct 2022 23:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbiJ1RYH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Oct 2022 13:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        id S229823AbiJ1VQN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Oct 2022 17:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbiJ1RYH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Oct 2022 13:24:07 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C02822AB58;
-        Fri, 28 Oct 2022 10:24:06 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m14-20020a17090a3f8e00b00212dab39bcdso10501504pjc.0;
-        Fri, 28 Oct 2022 10:24:06 -0700 (PDT)
+        with ESMTP id S230074AbiJ1VPx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Oct 2022 17:15:53 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB6558DF0;
+        Fri, 28 Oct 2022 14:15:42 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id f140so5829411pfa.1;
+        Fri, 28 Oct 2022 14:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uWRk2+cg4JD0YlEG67ex3jOV5izVRgHvNcMy0hsBnco=;
-        b=prHkLIu5cEuWwbChfnUxhVQzBCXk/zyL6eJyK/Wb7otKwjaCrzIq3XW2UK2JzyS4Iw
-         VO4x7PSyBtEh4QkOXnHq/Lchf8ySh5Aup5b999/W+GXjfDiCBa9zKxEzIVLmyrFfkU6b
-         SxLhNhELaKSgqrlGHWUogD+HSabs65jM9+4kHVbrp6ET9tYi2P7z5K1nXsct2AjsxHF3
-         vdNFvKJv3dmyRqhBxeOLIIYaE0Av+7Da2kGBtCNqhGpKN+30L8jrC0x8FkOv2RACZ0s3
-         lp6K36RgYhat5D86/qQ7UbZmmLFIRiHR2RS0D/IBLYMUBqcsEXndnME3dYJ4SMTy+a0i
-         Fh7A==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=so5KjIAi+UDspG5gHdkovGWg4PfI5tqTcbEYdk2iMM4=;
+        b=LTx560iGkIhRcFQUJREcKDJSLR6oNZGviD0v7JewFvV8SM/4liM3fs1HQI4LaPBIXi
+         MVtyOUEowfyJiIEX+El7dFUkqSPUxCA/vKR0ZIVzhhQX8zqmDw8nqR79wT9XP4ppCd61
+         91Xuv5C/by7BlIk7/PD+qoP1TsCaFYwOOaYy1VinUgRsEvmD7glqilIZ76xiquWyFzTt
+         yjf9epFTBsADYbKNCv2ObmK8yJFuDa0cv46h2m2X7j4bsKkg/Eic6pJel3k48v+z2my3
+         bWQmHiHPDtAx6SF6pAhDfthEzkDV6Jg+bzcvzHSUQwoqb1ZXCirw1NqwbNMp2I0C8/yt
+         +72w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uWRk2+cg4JD0YlEG67ex3jOV5izVRgHvNcMy0hsBnco=;
-        b=3ALP5fvrmmfa0GyuEkyVfid4qYUSGOLLedSdwQJSn6MW3qa6zhQmcCM4wd7TBVjhKv
-         HZG7R62fLCDWOuprBKsMY6s54LPwT6mGNZBa+6Jb7S5Rc8bnd45s/HKA+AEsS//yOn3z
-         tYLosxivVsRhs6K3gg/miRAwrzlixLY9ITrQC4/ZIVPpmu8PZX1KPamfBBfQgFUbUYK8
-         DAykpVZwrtrl8rDKcaSvgJkYIc02wdKSdktdfHru9u2nz6EmiNFBWCxGRySrhiNpRGX8
-         RTsRnUxtbOzXJccaqER4A2FRblCinumAeIJJnf2iNCcnu19FAciVzb3aeu3st8DU1c7y
-         3tjA==
-X-Gm-Message-State: ACrzQf2/wYAEHv0qgm8GF+Wq0StGblDq1gtM0w4FhuO8yOLVnQUzIIT0
-        UourUokuD8QdDak/3gmwcuIFiweyr8EaiDd3zD0=
-X-Google-Smtp-Source: AMsMyM4XcalM18oGVqqNW++pIXW4u2xD24d1lXvmoCR4zi6MoMUO15NIU8IpCwvDd/SilDSs/oM2Aipx+j1Q95CDMFY=
-X-Received: by 2002:a17:902:e88a:b0:183:9ecb:ff85 with SMTP id
- w10-20020a170902e88a00b001839ecbff85mr3434plg.169.1666977846069; Fri, 28 Oct
- 2022 10:24:06 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=so5KjIAi+UDspG5gHdkovGWg4PfI5tqTcbEYdk2iMM4=;
+        b=aS9t2Ger+A37YkjfJXnWMRa5ijMLOw6hwNhLh9w8VgnuGsEDy80u3dXvaZy4nh/uuB
+         CjtiLpXT9BYjVRtKx6c/zKAmgdqdezz3bTT3NDmdOWMMh13AARUMXwcBZXasjp6jX6Vs
+         BWuo9WNmOkQDDARksmAj2Ebd5KmbgpRR4YVt0LQeBjtbwg7984uAK9D8SzAlNU799j+E
+         SQ9bGp6O96UwykD6Dgy5KkMl5jCpgXfRcwWG1ODMskTtN1t6NJAL9yT5+Ejt0D6uoVIQ
+         vEikxIHrDUN5eL9R0Dcg2oAFV9qSwmpn3w34FQsHyKyO81luqtB8AiFjWmEz1bsDbym4
+         mycA==
+X-Gm-Message-State: ACrzQf19Zcpf+21GuOlez2BMGwoZaJP1907lRCz7+dJKnFnM3iI0bECI
+        wbUFFNUcoFLqUhsrxF35BGs=
+X-Google-Smtp-Source: AMsMyM6chb3q9aDutDEteiuNyHnlrhzGp+0ny1AZ4yBBSEX5EVcG5UfRIlt35WpQXzuqzO+Ixz7ieA==
+X-Received: by 2002:a63:454d:0:b0:43c:e834:ec0 with SMTP id u13-20020a63454d000000b0043ce8340ec0mr1349181pgk.270.1666991742153;
+        Fri, 28 Oct 2022 14:15:42 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:940b])
+        by smtp.gmail.com with ESMTPSA id c206-20020a621cd7000000b005632f6490aasm3242048pfc.77.2022.10.28.14.15.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Oct 2022 14:15:41 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 28 Oct 2022 11:15:40 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: [PATCH RESEND cgroup/for-6.1-fixes] cgroup: Implement
+ DEBUG_CGROUP_REF
+Message-ID: <Y1xGfJGIDIMKrMa7@slm.duckdns.org>
+References: <Y1w9EKH/CZhNGLJj@slm.duckdns.org>
 MIME-Version: 1.0
-References: <20221026074343.6517-1-feng.tang@intel.com> <dc453287-015d-fd1c-fe7f-6ee45772d6aa@linux.ibm.com>
- <Y1jpDfwBQId3GkJC@feng-clx> <Y1j7tsj5M0Md/+Er@dhcp22.suse.cz>
- <Y1kl8VbPE0RYdyEB@feng-clx> <Y1lZV6qHp3gIINGc@dhcp22.suse.cz>
- <CAHbLzkppDPm87dx9-a7t3oP9DuZ0xCPC1UWr+E-s+vh12Gwb+w@mail.gmail.com>
- <Y1ovOeEPXT1fxCuc@feng-clx> <CAHbLzkqvh3ry=FjQGuG--As2yYF2NU+bfvORqk1FyfE_vvTwXw@mail.gmail.com>
- <Y1tOigFZeDzjPGsv@feng-clx> <87y1t0ijbk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87y1t0ijbk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 28 Oct 2022 10:23:53 -0700
-Message-ID: <CAHbLzkpO46yTiSVrKWRnABNW_PutuudEkB3RD-_YKxamW9SyaA@mail.gmail.com>
-Subject: Re: [PATCH] mm/vmscan: respect cpuset policy during page demotion
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Feng Tang <feng.tang@intel.com>, "Hocko, Michal" <mhocko@suse.com>,
-        Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Waiman Long <longman@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y1w9EKH/CZhNGLJj@slm.duckdns.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 10:55 PM Huang, Ying <ying.huang@intel.com> wrote:
->
-> Feng Tang <feng.tang@intel.com> writes:
->
-> > On Thu, Oct 27, 2022 at 10:55:58AM -0700, Yang Shi wrote:
-> >> On Thu, Oct 27, 2022 at 12:12 AM Feng Tang <feng.tang@intel.com> wrote:
-> >> >
-> >> > On Thu, Oct 27, 2022 at 01:57:52AM +0800, Yang Shi wrote:
-> >> > > On Wed, Oct 26, 2022 at 8:59 AM Michal Hocko <mhocko@suse.com> wrote:
-> >> > [...]
-> >> > > > > > This all can get quite expensive so the primary question is, does the
-> >> > > > > > existing behavior generates any real issues or is this more of an
-> >> > > > > > correctness exercise? I mean it certainly is not great to demote to an
-> >> > > > > > incompatible numa node but are there any reasonable configurations when
-> >> > > > > > the demotion target node is explicitly excluded from memory
-> >> > > > > > policy/cpuset?
-> >> > > > >
-> >> > > > > We haven't got customer report on this, but there are quite some customers
-> >> > > > > use cpuset to bind some specific memory nodes to a docker (You've helped
-> >> > > > > us solve a OOM issue in such cases), so I think it's practical to respect
-> >> > > > > the cpuset semantics as much as we can.
-> >> > > >
-> >> > > > Yes, it is definitely better to respect cpusets and all local memory
-> >> > > > policies. There is no dispute there. The thing is whether this is really
-> >> > > > worth it. How often would cpusets (or policies in general) go actively
-> >> > > > against demotion nodes (i.e. exclude those nodes from their allowes node
-> >> > > > mask)?
-> >> > > >
-> >> > > > I can imagine workloads which wouldn't like to get their memory demoted
-> >> > > > for some reason but wouldn't it be more practical to tell that
-> >> > > > explicitly (e.g. via prctl) rather than configuring cpusets/memory
-> >> > > > policies explicitly?
-> >> > > >
-> >> > > > > Your concern about the expensive cost makes sense! Some raw ideas are:
-> >> > > > > * if the shrink_folio_list is called by kswapd, the folios come from
-> >> > > > >   the same per-memcg lruvec, so only one check is enough
-> >> > > > > * if not from kswapd, like called form madvise or DAMON code, we can
-> >> > > > >   save a memcg cache, and if the next folio's memcg is same as the
-> >> > > > >   cache, we reuse its result. And due to the locality, the real
-> >> > > > >   check is rarely performed.
-> >> > > >
-> >> > > > memcg is not the expensive part of the thing. You need to get from page
-> >> > > > -> all vmas::vm_policy -> mm -> task::mempolicy
-> >> > >
-> >> > > Yeah, on the same page with Michal. Figuring out mempolicy from page
-> >> > > seems quite expensive and the correctness can't be guranteed since the
-> >> > > mempolicy could be set per-thread and the mm->task depends on
-> >> > > CONFIG_MEMCG so it doesn't work for !CONFIG_MEMCG.
-> >> >
-> >> > Yes, you are right. Our "working" psudo code for mem policy looks like
-> >> > what Michal mentioned, and it can't work for all cases, but try to
-> >> > enforce it whenever possible:
-> >> >
-> >> > static bool  __check_mpol_demotion(struct folio *folio, struct vm_area_struct *vma,
-> >> >                 unsigned long addr, void *arg)
-> >> > {
-> >> >         bool *skip_demotion = arg;
-> >> >         struct mempolicy *mpol;
-> >> >         int nid, dnid;
-> >> >         bool ret = true;
-> >> >
-> >> >         mpol = __get_vma_policy(vma, addr);
-> >> >         if (!mpol) {
-> >> >                 struct task_struct *task;
-> >> >                 if (vma->vm_mm)
-> >> >                         task = vma->vm_mm->owner;
-> >>
-> >> But this task may not be the task you want IIUC. For example, the
-> >> process has two threads, A and B. They have different mempolicy. The
-> >> vmscan is trying to demote a page belonging to thread A, but the task
-> >> may point to thread B, so you actually get the wrong mempolicy IIUC.
-> >
-> > Yes, this is a valid concern! We don't have good solution for this.
-> > For memory policy, we may only handle the per-vma policy for now whose
-> > cost is relatively low, as a best-effort try.
->
-> Yes.  The solution isn't perfect, especially for multiple-thread
-> processes with thread specific memory policy.  But the proposed code
-> above can support the most common cases at least, that is, run workload
-> with `numactl`.
+From 6ab428604f724cf217a47b7d3f3353aab815b40e Mon Sep 17 00:00:00 2001
+From: Tejun Heo <tj@kernel.org>
+Date: Fri, 28 Oct 2022 10:45:44 -1000
+Subject: [PATCH] cgroup: Implement DEBUG_CGROUP_REF
 
-Not only multi threads, but also may be broken for shared pages. When
-you do rmap walk, you may get multiple contradict mempolicy, which one
-would you like to obey?
+It's really difficult to debug when cgroup or css refs leak. Let's add a
+debug option to force the refcnt function to not be inlined so that they can
+be kprobed for debugging.
 
-TBH I'm not sure whether such half-baked solution is worth it or not,
-at least at this moment. The cost is not cheap, but the gain may not
-be worth it IMHO.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+Oops, forgot the cgroups ML. Resending. Patch is applied to
+cgroup/for-6.1-fixes.
 
->
-> Best Regards,
-> Huang, Ying
+Thanks.
+
+ include/linux/cgroup.h        | 97 +++++------------------------------
+ include/linux/cgroup_refcnt.h | 90 ++++++++++++++++++++++++++++++++
+ kernel/cgroup/cgroup.c        |  5 ++
+ lib/Kconfig.debug             | 10 ++++
+ 4 files changed, 117 insertions(+), 85 deletions(-)
+ create mode 100644 include/linux/cgroup_refcnt.h
+
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index a88de5bdeaa9..5c9c07a44706 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -309,71 +309,23 @@ void css_task_iter_end(struct css_task_iter *it);
+  * Inline functions.
+  */
+ 
++#ifdef CONFIG_DEBUG_CGROUP_REF
++void css_get(struct cgroup_subsys_state *css);
++void css_get_many(struct cgroup_subsys_state *css, unsigned int n);
++bool css_tryget(struct cgroup_subsys_state *css);
++bool css_tryget_online(struct cgroup_subsys_state *css);
++void css_put(struct cgroup_subsys_state *css);
++void css_put_many(struct cgroup_subsys_state *css, unsigned int n);
++#else
++#define CGROUP_REF_FN_ATTRS	static inline
++#include <linux/cgroup_refcnt.h>
++#endif
++
+ static inline u64 cgroup_id(const struct cgroup *cgrp)
+ {
+ 	return cgrp->kn->id;
+ }
+ 
+-/**
+- * css_get - obtain a reference on the specified css
+- * @css: target css
+- *
+- * The caller must already have a reference.
+- */
+-static inline void css_get(struct cgroup_subsys_state *css)
+-{
+-	if (!(css->flags & CSS_NO_REF))
+-		percpu_ref_get(&css->refcnt);
+-}
+-
+-/**
+- * css_get_many - obtain references on the specified css
+- * @css: target css
+- * @n: number of references to get
+- *
+- * The caller must already have a reference.
+- */
+-static inline void css_get_many(struct cgroup_subsys_state *css, unsigned int n)
+-{
+-	if (!(css->flags & CSS_NO_REF))
+-		percpu_ref_get_many(&css->refcnt, n);
+-}
+-
+-/**
+- * css_tryget - try to obtain a reference on the specified css
+- * @css: target css
+- *
+- * Obtain a reference on @css unless it already has reached zero and is
+- * being released.  This function doesn't care whether @css is on or
+- * offline.  The caller naturally needs to ensure that @css is accessible
+- * but doesn't have to be holding a reference on it - IOW, RCU protected
+- * access is good enough for this function.  Returns %true if a reference
+- * count was successfully obtained; %false otherwise.
+- */
+-static inline bool css_tryget(struct cgroup_subsys_state *css)
+-{
+-	if (!(css->flags & CSS_NO_REF))
+-		return percpu_ref_tryget(&css->refcnt);
+-	return true;
+-}
+-
+-/**
+- * css_tryget_online - try to obtain a reference on the specified css if online
+- * @css: target css
+- *
+- * Obtain a reference on @css if it's online.  The caller naturally needs
+- * to ensure that @css is accessible but doesn't have to be holding a
+- * reference on it - IOW, RCU protected access is good enough for this
+- * function.  Returns %true if a reference count was successfully obtained;
+- * %false otherwise.
+- */
+-static inline bool css_tryget_online(struct cgroup_subsys_state *css)
+-{
+-	if (!(css->flags & CSS_NO_REF))
+-		return percpu_ref_tryget_live(&css->refcnt);
+-	return true;
+-}
+-
+ /**
+  * css_is_dying - test whether the specified css is dying
+  * @css: target css
+@@ -394,31 +346,6 @@ static inline bool css_is_dying(struct cgroup_subsys_state *css)
+ 	return !(css->flags & CSS_NO_REF) && percpu_ref_is_dying(&css->refcnt);
+ }
+ 
+-/**
+- * css_put - put a css reference
+- * @css: target css
+- *
+- * Put a reference obtained via css_get() and css_tryget_online().
+- */
+-static inline void css_put(struct cgroup_subsys_state *css)
+-{
+-	if (!(css->flags & CSS_NO_REF))
+-		percpu_ref_put(&css->refcnt);
+-}
+-
+-/**
+- * css_put_many - put css references
+- * @css: target css
+- * @n: number of references to put
+- *
+- * Put references obtained via css_get() and css_tryget_online().
+- */
+-static inline void css_put_many(struct cgroup_subsys_state *css, unsigned int n)
+-{
+-	if (!(css->flags & CSS_NO_REF))
+-		percpu_ref_put_many(&css->refcnt, n);
+-}
+-
+ static inline void cgroup_get(struct cgroup *cgrp)
+ {
+ 	css_get(&cgrp->self);
+diff --git a/include/linux/cgroup_refcnt.h b/include/linux/cgroup_refcnt.h
+new file mode 100644
+index 000000000000..1aa89295dac0
+--- /dev/null
++++ b/include/linux/cgroup_refcnt.h
+@@ -0,0 +1,90 @@
++/**
++ * css_get - obtain a reference on the specified css
++ * @css: target css
++ *
++ * The caller must already have a reference.
++ */
++CGROUP_REF_FN_ATTRS
++void css_get(struct cgroup_subsys_state *css)
++{
++	if (!(css->flags & CSS_NO_REF))
++		percpu_ref_get(&css->refcnt);
++}
++
++/**
++ * css_get_many - obtain references on the specified css
++ * @css: target css
++ * @n: number of references to get
++ *
++ * The caller must already have a reference.
++ */
++CGROUP_REF_FN_ATTRS
++void css_get_many(struct cgroup_subsys_state *css, unsigned int n)
++{
++	if (!(css->flags & CSS_NO_REF))
++		percpu_ref_get_many(&css->refcnt, n);
++}
++
++/**
++ * css_tryget - try to obtain a reference on the specified css
++ * @css: target css
++ *
++ * Obtain a reference on @css unless it already has reached zero and is
++ * being released.  This function doesn't care whether @css is on or
++ * offline.  The caller naturally needs to ensure that @css is accessible
++ * but doesn't have to be holding a reference on it - IOW, RCU protected
++ * access is good enough for this function.  Returns %true if a reference
++ * count was successfully obtained; %false otherwise.
++ */
++CGROUP_REF_FN_ATTRS
++bool css_tryget(struct cgroup_subsys_state *css)
++{
++	if (!(css->flags & CSS_NO_REF))
++		return percpu_ref_tryget(&css->refcnt);
++	return true;
++}
++
++/**
++ * css_tryget_online - try to obtain a reference on the specified css if online
++ * @css: target css
++ *
++ * Obtain a reference on @css if it's online.  The caller naturally needs
++ * to ensure that @css is accessible but doesn't have to be holding a
++ * reference on it - IOW, RCU protected access is good enough for this
++ * function.  Returns %true if a reference count was successfully obtained;
++ * %false otherwise.
++ */
++CGROUP_REF_FN_ATTRS
++bool css_tryget_online(struct cgroup_subsys_state *css)
++{
++	if (!(css->flags & CSS_NO_REF))
++		return percpu_ref_tryget_live(&css->refcnt);
++	return true;
++}
++
++/**
++ * css_put - put a css reference
++ * @css: target css
++ *
++ * Put a reference obtained via css_get() and css_tryget_online().
++ */
++CGROUP_REF_FN_ATTRS
++void css_put(struct cgroup_subsys_state *css)
++{
++	if (!(css->flags & CSS_NO_REF))
++		percpu_ref_put(&css->refcnt);
++}
++
++/**
++ * css_put_many - put css references
++ * @css: target css
++ * @n: number of references to put
++ *
++ * Put references obtained via css_get() and css_tryget_online().
++ */
++CGROUP_REF_FN_ATTRS
++void css_put_many(struct cgroup_subsys_state *css, unsigned int n)
++{
++	if (!(css->flags & CSS_NO_REF))
++		percpu_ref_put_many(&css->refcnt, n);
++}
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d922773fa90b..f786c4c973a0 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -248,6 +248,11 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
+ 			      struct cgroup *cgrp, struct cftype cfts[],
+ 			      bool is_add);
+ 
++#ifdef CONFIG_DEBUG_CGROUP_REF
++#define CGROUP_REF_FN_ATTRS	noinline
++#include <linux/cgroup_refcnt.h>
++#endif
++
+ /**
+  * cgroup_ssid_enabled - cgroup subsys enabled test by subsys ID
+  * @ssid: subsys ID of interest
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 3761118d1879..b620a340d7df 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1701,6 +1701,16 @@ config LATENCYTOP
+ 	  Enable this option if you want to use the LatencyTOP tool
+ 	  to find out which userspace is blocking on what kernel operations.
+ 
++config DEBUG_CGROUP_REF
++	bool "Disable inlining of cgroup css reference count functions"
++	depends on DEBUG_KERNEL
++	depends on CGROUPS
++	depends on KPROBES
++	default n
++	help
++	  Force cgroup css reference count functions to not be inlined so
++	  that they can be kprobed for debugging.
++
+ source "kernel/trace/Kconfig"
+ 
+ config PROVIDE_OHCI1394_DMA_INIT
+-- 
+2.38.0
+
