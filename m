@@ -2,73 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E9D614FA1
-	for <lists+cgroups@lfdr.de>; Tue,  1 Nov 2022 17:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52587614FC2
+	for <lists+cgroups@lfdr.de>; Tue,  1 Nov 2022 17:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbiKAQqk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Nov 2022 12:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S230437AbiKAQyl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Nov 2022 12:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbiKAQqj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 12:46:39 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD49712A95;
-        Tue,  1 Nov 2022 09:46:37 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id v4-20020a17090a088400b00212cb0ed97eso13375477pjc.5;
-        Tue, 01 Nov 2022 09:46:37 -0700 (PDT)
+        with ESMTP id S230504AbiKAQyi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 12:54:38 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AB51D0CC
+        for <cgroups@vger.kernel.org>; Tue,  1 Nov 2022 09:54:38 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id c15-20020a17090a1d0f00b0021365864446so13395807pjd.4
+        for <cgroups@vger.kernel.org>; Tue, 01 Nov 2022 09:54:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8NNV/E5PvWzmIXNGvDSWT/6GgvR8jci+9gjd8ctauYo=;
-        b=LEL4GYFUmS8dUOAT/5nK1/KYd+ZwtOmK9IedlMya1qlOZRx+FuuuuA/CtLRS+eCLRz
-         Nsz6Dr/k/g6GAPFyavmARI1wuovp24HHeB6HGw0lS3IQv+qRkvB0JZ1gKMbi/FLWoeYh
-         H2hrCDdMs7KYEipsyf2LL7i2N5mYxjOCRDArSv1s0QSKfzMKIORCDRuOqdmBpwsohacW
-         6QuUicBqOf+POhLdqmHX7PXtL0vRcyB4s4VBHQpx3CLs1uS4Aad6MGQMTANTDZpWbGKo
-         YyQDpVTaEkJBqnArwECrk8uywmNczFnR0FTUAaZWfA8KK93xKlpBmR2J0DO1TKHyVw0i
-         qwug==
+        bh=spsZndBT7leVOWuziIPS4xU0aN+hFOZ8iUUTPETtklA=;
+        b=AvcaKX3jDJlPbj+XUFXCw/eNC1XntbhLZOVPgZ+tAFa/w5ylcYNV6PCYWT0S5QF1/o
+         8Yyos9IKlZ+YvbCz5y9hBe31IIvFXdv0zsQrC+ECFrZFwYbxp80vbv9p+FZwokqriof5
+         pAhCJp7S75lfrFvVwv5RIRYfgAgbuREIePNpRiloRNBcNsUycaU7RbPybIb8VszXADKI
+         uVi7nJB1U8sQf6EUJsxS7AkP6G6UIGgQXIWqsz8oNI1xa9/xrPbbG7MbvXlSFcCM5e7e
+         DD8+rDC1bisp9MQJqmk4MNMEZ7tWXFVGl1rtq/8XaonFT/SX3Nn6YivWUVdc7s6ocLF3
+         g0Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8NNV/E5PvWzmIXNGvDSWT/6GgvR8jci+9gjd8ctauYo=;
-        b=XbGmplaJ1I/m10NJJcKSkxbtUGeBcdIwhBOKutqwaMyMsQFi5CBBBcvZscFsW+ffGK
-         Q+tM79u8utZ8kTZdDSZbfBfSdrvAhiuU6uWtC5fVAPP9744hrmbWj+0bImT+rYGd8+T+
-         /SriZiKZ7su6NzVby42YH9GFZyeY8m/1QXP7Xs4p3buxl2tCyhgr7pJpqT2jMnn/7PdF
-         ftDdt40eqbQ11w8C6BzVjVGJ9Ga6KkdnEESvyVgJY+9ZyYFu7k2H0SyhMCK8kSDsDhOK
-         7PcLnXM40INTFl+YLjsZ8TvzPVCepgxJ9wzeHe34OJrk0YFPRsUH2jPyC9CNs/2mucXY
-         GxcA==
-X-Gm-Message-State: ACrzQf2QTJ36zMvC8dkXEsULgwHt5wvP+Aeh+zuodziSRvuKJDmnqyCW
-        zZ6Z7vZW19t+l78hQ8dmUmaEE7RPKLC71A==
-X-Google-Smtp-Source: AMsMyM7gRgdNVhhxA9mKmp7nYeepdqg6rs0kbUI0glNDKNRPfKqztAuA7caGIiSRhU54fNwxObiiuQ==
-X-Received: by 2002:a17:902:d4ce:b0:187:17bd:44d7 with SMTP id o14-20020a170902d4ce00b0018717bd44d7mr14164487plg.84.1667321197086;
-        Tue, 01 Nov 2022 09:46:37 -0700 (PDT)
+        bh=spsZndBT7leVOWuziIPS4xU0aN+hFOZ8iUUTPETtklA=;
+        b=GwDqmB8BE9cVAsYiDpv/+mfgZNOXrRQfnX1c10TALOrRKovhXwYJtWgJGmHKVAI4+X
+         3Xyi+PUPWrCeJYeUJoOgKJ35P5Kp+rkALOktJ79rSnAiF4GLvKNuTpK1PsOgJsl2XFFi
+         6fYwhFLY8z3hFu9VXavTK7n3t8GC1kocGbQ067O70mCeYutookMW3gxF5+ZpH9qucMt3
+         8ys0ZxJFqhPcrvWiKoS5a3QuCQHYPK8F01S5ACQa8vApOW6QegfCDVooeOpyqdf5qF37
+         po9a0z8DpXPD7zYKH4VGCkag1uo/oT1WNiU+zl49CJEFhFPvM3DWcoQ4GuXaysSnb8CY
+         ON+w==
+X-Gm-Message-State: ACrzQf2S349s+/V42NFejQvXiUawQMHN5aoOpiatHbnhqejiZHnGSvHu
+        dw2OzizbGMlIO2J8EO+uZhMCpG8fm0y4wA==
+X-Google-Smtp-Source: AMsMyM6N6Yk3Xf7v6MnN6c4CX+aivv/CvZblaV5x1T2mYeLG2/OvRUioP2me5rpdbYgBZOGzJvrPpQ==
+X-Received: by 2002:a17:903:1d1:b0:187:3f0b:af76 with SMTP id e17-20020a17090301d100b001873f0baf76mr1835310plh.145.1667321677459;
+        Tue, 01 Nov 2022 09:54:37 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id n15-20020aa7984f000000b0055f209690c0sm6748817pfq.50.2022.11.01.09.46.36
+        by smtp.gmail.com with ESMTPSA id p1-20020a170902e74100b001784a45511asm6612904plf.79.2022.11.01.09.54.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 09:46:36 -0700 (PDT)
+        Tue, 01 Nov 2022 09:54:37 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 1 Nov 2022 06:46:35 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, Martin Liska <mliska@suse.cz>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
- prints
-Message-ID: <Y2FNa4bGhJoevRKT@slm.duckdns.org>
-References: <20221031114520.10518-1-jirislaby@kernel.org>
- <Y1++fLJXkeZgtXR2@infradead.org>
- <Y2AMcSPAJpj6obSA@slm.duckdns.org>
- <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
+Date:   Tue, 1 Nov 2022 06:54:34 -1000
+From:   "tj@kernel.org" <tj@kernel.org>
+To:     "Accardi, Kristen C" <kristen.c.accardi@intel.com>
+Cc:     "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: clarification about misc controller and capacity vs. max
+Message-ID: <Y2FPSqOaQGnISvXu@slm.duckdns.org>
+References: <2f7b7d6b10bdcbc9a73ea449d3636575124afa25.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
+In-Reply-To: <2f7b7d6b10bdcbc9a73ea449d3636575124afa25.camel@intel.com>
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -81,46 +75,28 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Tue, Nov 01, 2022 at 06:46:56AM +0100, Jiri Slaby wrote:
-> Yes. The real problem is that using anything else then an INT_MIN <= x <=
-> INT_MAX _constant_ in an enum is undefined in ANSI C < 2x (in particular, 1
-> << x is undefined too). gcc manual defines unsigned int on the top of that
-> as defined too (so this holds for our -std=g*).
-> 
-> > I suppose the most reasonable thing to do here is just splitting them into
-> > separate enum definitions. Does anyone know how this behavior change came to
-> > be?
-> 
-> C2x which introduces un/signed long enums. See the bug I linked in the
-> commit log:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36113
+On Tue, Nov 01, 2022 at 04:40:22PM +0000, Accardi, Kristen C wrote:
+> I notice in the comments for the misc controller it is stated that the
+> max limit can be more than actual total capacity, meaning that we can
+> overcommit with the resource controlled by the misc controller.
+> However, in the misc_cg_try_charge() code, the function will return -
+> EBUSY if max limit will be crossed or total usage will be more than the
+> capacity, which would seem to enforce total capacity as an upper limit
+> in addition to max and not allow for overcommit. Can you provide some
+> clarity on whether the resource consumption model for the misc
+> controller should allow for overcommit?
 
-I see. So, it was an extension but the new standard is defined differently
-and we're gonna end up with that behavior.
+I think what it's trying to say is that the sum of first level .max's can be
+higher than the total capacity. e.g. Let's say you have 5 of this resource
+and a hierarchy like the following.
 
-> The change is also turned on in < C2x on purpose. AIUI, unless there is too
-> much breakage. So we'd need to sort it out in (rather distant) future anyway
-> (when we come up to -std=g2x).
+        R - A - A'
+          + B - B'
+          \ C
 
-The part that the new behavior applying to <C2x feels like an odd decision.
-I'm having a hard time seeing the upsides in doing so but maybe that's just
-me not knowing the area well enough.
-
-> > Do we know whether clang is gonna be changed the same way?
-> 
-> In C2x, Likely. In < C2x, dunno what'd be the default.
-
-It looks like we can do one of the following two:
-
-* If gcc actually changes the behavior for <c2x, split the enums according
-  to their sizes. This feels rather silly but I can't think of a better way
-  to cater to divergent compiler behaviors.
-
-* If gcc doesn't change the behavior for <c2x, there's nothing to do for the
-  time being. Later when we switch to -std=g2x, we can just change the
-  format strings to use the now larger types.
-
-Does the above make sense?
+It's valid to have A, B, C's max set to 4, 3, 2 respectively even if they
+sum up to 9 which is larger than what's available in the system, 5 - ie. the
+max limits are overcommitted for the resource.
 
 Thanks.
 
