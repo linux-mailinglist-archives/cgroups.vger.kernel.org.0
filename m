@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A4761573E
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFEC61573A
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiKBCEG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Nov 2022 22:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
+        id S230064AbiKBCEF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Nov 2022 22:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbiKBCED (ORCPT
+        with ESMTP id S230037AbiKBCED (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 22:04:03 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A390186E1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A05318B0D;
         Tue,  1 Nov 2022 19:04:02 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N299L1f5pzKF2w;
-        Wed,  2 Nov 2022 10:01:26 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N299n4HcJzl4Gh;
+        Wed,  2 Nov 2022 10:01:49 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP2 (Coremail) with SMTP id Syh0CgCnP9QN0GFjGqzfBA--.48110S7;
+        by APP2 (Coremail) with SMTP id Syh0CgCnP9QN0GFjGqzfBA--.48110S8;
         Wed, 02 Nov 2022 10:04:00 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     jack@suse.cz, axboe@kernel.dk, paolo.valente@linaro.org
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH -next v4 3/5] block, bfq: cleanup bfq_activate_requeue_entity()
-Date:   Wed,  2 Nov 2022 10:25:40 +0800
-Message-Id: <20221102022542.3621219-4-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v4 4/5] block, bfq: remove dead code for updating 'rq_in_driver'
+Date:   Wed,  2 Nov 2022 10:25:41 +0800
+Message-Id: <20221102022542.3621219-5-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
 References: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCnP9QN0GFjGqzfBA--.48110S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF48CryDKrWftryrZrWkJFb_yoW8WFyrpF
-        ZIkr409r40gF13GFW3X3WUXrWfW3s3A3y3JFnrJw1fJr12krnYqanI9F1SqFy0k393CF15
-        Z34jq3y8XF4UJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
+X-CM-TRANSID: Syh0CgCnP9QN0GFjGqzfBA--.48110S8
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1xJFyfur4xGr4fJrWUArb_yoWkWrc_Ka
+        4SkF97ZryrArW3ur45JF1Yqa4vva1fW3WDAFn8Krs5uF4ag3ZaywnFqr4a9FZrX397G3Wf
+        twn0q3W3Jrn0vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbTxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+        1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZX7UUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -62,53 +62,42 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Just make the code a litter cleaner by removing the unnecessary
-variable 'sd'.
+Such code are not even compiled since they are inside marco "#if 0".
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Acked-by: Paolo Valente <paolo.valente@unimore.it>
 ---
- block/bfq-wf2q.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ block/bfq-iosched.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-index a908aa3eb0ab..4d4b84e7bf3e 100644
---- a/block/bfq-wf2q.c
-+++ b/block/bfq-wf2q.c
-@@ -1052,12 +1052,12 @@ static void __bfq_requeue_entity(struct bfq_entity *entity)
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 42aa5fc7f17b..2381cf220ba2 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2321,22 +2321,6 @@ static sector_t get_sdist(sector_t last_pos, struct request *rq)
+ 	return 0;
  }
  
- static void __bfq_activate_requeue_entity(struct bfq_entity *entity,
--					  struct bfq_sched_data *sd,
- 					  bool non_blocking_wait_rq)
- {
- 	struct bfq_service_tree *st = bfq_entity_service_tree(entity);
- 
--	if (sd->in_service_entity == entity || entity->tree == &st->active)
-+	if (entity->sched_data->in_service_entity == entity ||
-+	    entity->tree == &st->active)
- 		 /*
- 		  * in service or already queued on the active tree,
- 		  * requeue or reposition
-@@ -1089,14 +1089,10 @@ static void bfq_activate_requeue_entity(struct bfq_entity *entity,
- 					bool non_blocking_wait_rq,
- 					bool requeue, bool expiration)
- {
--	struct bfq_sched_data *sd;
+-#if 0 /* Still not clear if we can do without next two functions */
+-static void bfq_activate_request(struct request_queue *q, struct request *rq)
+-{
+-	struct bfq_data *bfqd = q->elevator->elevator_data;
 -
- 	for_each_entity(entity) {
--		sd = entity->sched_data;
--		__bfq_activate_requeue_entity(entity, sd, non_blocking_wait_rq);
+-	bfqd->rq_in_driver++;
+-}
 -
--		if (!bfq_update_next_in_service(sd, entity, expiration) &&
--		    !requeue)
-+		__bfq_activate_requeue_entity(entity, non_blocking_wait_rq);
-+		if (!bfq_update_next_in_service(entity->sched_data, entity,
-+						expiration) && !requeue)
- 			break;
- 	}
- }
+-static void bfq_deactivate_request(struct request_queue *q, struct request *rq)
+-{
+-	struct bfq_data *bfqd = q->elevator->elevator_data;
+-
+-	bfqd->rq_in_driver--;
+-}
+-#endif
+-
+ static void bfq_remove_request(struct request_queue *q,
+ 			       struct request *rq)
+ {
 -- 
 2.31.1
 
