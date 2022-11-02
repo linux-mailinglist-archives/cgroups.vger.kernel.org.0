@@ -2,126 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D7A615DD1
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 09:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEE4615E66
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 09:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbiKBIfq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Wed, 2 Nov 2022 04:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
+        id S230184AbiKBIxy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Nov 2022 04:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbiKBIfn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 04:35:43 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B051A04C
-        for <cgroups@vger.kernel.org>; Wed,  2 Nov 2022 01:35:39 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-191-guNOfW50N0qHgkOwqcty6g-1; Wed, 02 Nov 2022 08:35:37 +0000
-X-MC-Unique: guNOfW50N0qHgkOwqcty6g-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Nov
- 2022 08:35:35 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.042; Wed, 2 Nov 2022 08:35:35 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tejun Heo' <tj@kernel.org>, Jiri Slaby <jirislaby@kernel.org>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Martin Liska <mliska@suse.cz>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: RE: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
- prints
-Thread-Topic: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
- prints
-Thread-Index: AQHY7hGH734dfSyX20WOi86L/FtKtq4rTpIA
-Date:   Wed, 2 Nov 2022 08:35:34 +0000
-Message-ID: <2b975ee3117e45aaa7882203cf9a4db8@AcuMS.aculab.com>
-References: <20221031114520.10518-1-jirislaby@kernel.org>
- <Y1++fLJXkeZgtXR2@infradead.org> <Y2AMcSPAJpj6obSA@slm.duckdns.org>
- <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
- <Y2FNa4bGhJoevRKT@slm.duckdns.org>
-In-Reply-To: <Y2FNa4bGhJoevRKT@slm.duckdns.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S230019AbiKBIxx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 04:53:53 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52684E83;
+        Wed,  2 Nov 2022 01:53:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B089A22339;
+        Wed,  2 Nov 2022 08:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1667379230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAyd5hYheJHs7wZ412hApYrbs0qLQ48nSsf9XNgypBM=;
+        b=RjV6dnJfhfmC76wKcoNRFCWemxydooK/VGDCWqPhiMz0F/TrV1ZdiW0XKhCBJ8Z7iR628t
+        jbGI2t0D0qvdGIrFzIqSqDmp4SOjwQiT0zrCtyvHvOOiv4hyqm+5N/sArHJ9TZeIonaEa1
+        LVNRrUQKlBz+NnQeVIaR9H9oNcggfrw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E748139D3;
+        Wed,  2 Nov 2022 08:53:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ErMOIB4wYmPQGQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 02 Nov 2022 08:53:50 +0000
+Date:   Wed, 2 Nov 2022 09:53:49 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Leonardo Bras <leobras@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1 0/3] Avoid scheduling cache draining to isolated cpus
+Message-ID: <Y2IwHVdgAJ6wfOVH@dhcp22.suse.cz>
+References: <20221102020243.522358-1-leobras@redhat.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221102020243.522358-1-leobras@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Tejun Heo
-> Sent: 01 November 2022 16:47
+On Tue 01-11-22 23:02:40, Leonardo Bras wrote:
+> Patch #1 expands housekeepíng_any_cpu() so we can find housekeeping cpus
+> closer (NUMA) to any desired CPU, instead of only the current CPU.
 > 
-> Hello,
+> ### Performance argument that motivated the change:
+> There could be an argument of why would that be needed, since the current
+> CPU is probably acessing the current cacheline, and so having a CPU closer
+> to the current one is always the best choice since the cache invalidation
+> will take less time. OTOH, there could be cases like this which uses
+> perCPU variables, and we can have up to 3 different CPUs touching the
+> cacheline:
 > 
-> On Tue, Nov 01, 2022 at 06:46:56AM +0100, Jiri Slaby wrote:
-> > Yes. The real problem is that using anything else then an INT_MIN <= x <=
-> > INT_MAX _constant_ in an enum is undefined in ANSI C < 2x (in particular, 1
-> > << x is undefined too). gcc manual defines unsigned int on the top of that
-> > as defined too (so this holds for our -std=g*).
-> >
-> > > I suppose the most reasonable thing to do here is just splitting them into
-> > > separate enum definitions. Does anyone know how this behavior change came to
-> > > be?
-> >
-> > C2x which introduces un/signed long enums. See the bug I linked in the
-> > commit log:
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36113
+> C1 - Isolated CPU: The perCPU data 'belongs' to this one
+> C2 - Scheduling CPU: Schedule some work to be done elsewhere, current cpu
+> C3 - Housekeeping CPU: This one will do the work
 > 
-> I see. So, it was an extension but the new standard is defined differently
-> and we're gonna end up with that behavior.
+> Most of the times the cacheline is touched, it should be by C1. Some times
+> a C2 will schedule work to run on C3, since C1 is isolated.
 > 
-> > The change is also turned on in < C2x on purpose. AIUI, unless there is too
-> > much breakage. So we'd need to sort it out in (rather distant) future anyway
-> > (when we come up to -std=g2x).
+> If C1 and C2 are in different NUMA nodes, we could have C3 either in
+> C2 NUMA node (housekeeping_any_cpu()) or in C1 NUMA node 
+> (housekeeping_any_cpu_from(C1). 
 > 
-> The part that the new behavior applying to <C2x feels like an odd decision.
-> I'm having a hard time seeing the upsides in doing so but maybe that's just
-> me not knowing the area well enough.
+> If C3 is in C2 NUMA node, there will be a faster invalidation when C3
+> tries to get cacheline exclusivity, and then a slower invalidation when
+> this happens in C1, when it's working in its data.
 > 
-> > > Do we know whether clang is gonna be changed the same way?
-> >
-> > In C2x, Likely. In < C2x, dunno what'd be the default.
+> If C3 is in C1 NUMA node, there will be a slower invalidation when C3
+> tries to get cacheline exclusivity, and then a faster invalidation when
+> this happens in C1.
 > 
-> It looks like we can do one of the following two:
+> The thing is: it should be better to wait less when doing kernel work
+> on an isolated CPU, even at the cost of some housekeeping CPU waiting
+> a few more cycles.
+> ###
 > 
-> * If gcc actually changes the behavior for <c2x, split the enums according
->   to their sizes. This feels rather silly but I can't think of a better way
->   to cater to divergent compiler behaviors.
+> Patch #2 changes the locking strategy of memcg_stock_pcp->stock_lock from
+> local_lock to spinlocks, so it can be later used to do remote percpu
+> cache draining on patch #3. Most performance concerns should be pointed
+> in the commit log.
 > 
-> * If gcc doesn't change the behavior for <c2x, there's nothing to do for the
->   time being. Later when we switch to -std=g2x, we can just change the
->   format strings to use the now larger types.
+> Patch #3 implements the remote per-CPU cache drain, making use of both 
+> patches #2 and #3. Performance-wise, in non-isolated scenarios, it should
+> introduce an extra function call and a single test to check if the CPU is
+> isolated. 
 > 
-> Does the above make sense?
+> On scenarios with isolation enabled on boot, it will also introduce an
+> extra test to check in the cpumask if the CPU is isolated. If it is,
+> there will also be an extra read of the cpumask to look for a
+> housekeeping CPU.
 
-I think the enums have to be split.
-There will be other side effects of promoting the constants to 64bit
-that are much more difficult to detect than the warnings from printf.
+This is a rather deep dive in the cache line usage but the most
+important thing is really missing. Why do we want this change? From the
+context it seems that this is an actual fix for isolcpu= setup when
+remote (aka non isolated activity) interferes with isolated cpus by
+scheduling pcp charge caches on those cpus.
 
-I'm also not sure whether the type is even consistent for 32bit
-and 64bit builds.
-Casts are (sort of) horrid.
+Is this understanding correct?
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+If yes, how big of a problem that is? If you want a remote draining then
+you need some sort of locking (currently we rely on local lock). How
+come this locking is not going to cause a different form of disturbance?
+-- 
+Michal Hocko
+SUSE Labs
