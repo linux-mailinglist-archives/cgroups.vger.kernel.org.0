@@ -2,130 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CB66163C5
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 14:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603AA61649F
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 15:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbiKBNVq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Nov 2022 09:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
+        id S231388AbiKBOMR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Nov 2022 10:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbiKBNVp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 09:21:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153A32A949
-        for <cgroups@vger.kernel.org>; Wed,  2 Nov 2022 06:20:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667395256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b49q1XHQiuNrTW4a7AJc1gkwX+9NO+6eMUUebYAkoIk=;
-        b=DQCFMPWNg+7u4F6W4v1k8yZajlJeoqWvdiSoKA9oSu3trSOMEYEpqS4UEMrjlwEn/l6TpK
-        teipeSUPEhBz3pCnNaZ+N6vXWHLbD6aJV/mi7jonQKuxngiFBH51xxQ+j0PE97IveTC5Ph
-        C02sVYfsFTdObwfEFvPNsS3jYuz22S8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-424-_B9dybYVNdaISa1roMvJXg-1; Wed, 02 Nov 2022 09:20:50 -0400
-X-MC-Unique: _B9dybYVNdaISa1roMvJXg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2D24E85A59D;
-        Wed,  2 Nov 2022 13:20:50 +0000 (UTC)
-Received: from [10.22.10.104] (unknown [10.22.10.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C848A42220;
-        Wed,  2 Nov 2022 13:20:49 +0000 (UTC)
-Message-ID: <d0b43b7d-54d3-00bd-abe0-78212ee9355a@redhat.com>
-Date:   Wed, 2 Nov 2022 09:20:48 -0400
+        with ESMTP id S229899AbiKBOMM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 10:12:12 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B405227FF7
+        for <cgroups@vger.kernel.org>; Wed,  2 Nov 2022 07:11:55 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id h10so12510368qvq.7
+        for <cgroups@vger.kernel.org>; Wed, 02 Nov 2022 07:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Km8d07l+If3latZbcnno8TWKH4LLZv0VkyhOoXFA9PI=;
+        b=3K17y2wDCpq6CGFi/JqscdFCZwJGvNNaM/UrrmYofJw1wR3fGyOhi0rlaMmUvngM6N
+         1krgS08m59z2fr/guD+Fxxlexzk1wWL4DDBfFKhfYnmJzVrUGe1X4SPy/ewT8BQC0GfG
+         cyN/fTXQ6bcPNPSW3tnZyUIjkUqa1IflSfWNU57n1QgVF2Pfb/1krse6RRVC5tWKohru
+         eaMOhLitbn3Pvl2VfFWMFZMYpBalV/17Mrynnzxe6BuDm4NHgpy96rb9Ta41d8fsSuYQ
+         4HSWJFbdNieK8n5myVnk2FIvFji3UCt22731b4pIAwKKstvvQJ57GK52yWp62ipKzz8Y
+         WCxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Km8d07l+If3latZbcnno8TWKH4LLZv0VkyhOoXFA9PI=;
+        b=npdaZLFs1GFSIqHMbYKxkUv4GCiJm3SJ6YJmv3Vdr5eqGO/1oW9BcJSFsLUdX+Mp7l
+         DEC40z12TbNQKwZItocxWtQ+MKit92N/1UTvI3qeNhh09WhXcivzXUm2hgNOm1pilXAj
+         Lta1JTm/OJJPs1xeZvuLQcCINclG45m4XilylQbM7Ax82erv1/CoqKpFYmg+UaUTifX1
+         Ynm1hhVzVRIsHDsI1A1HeCY+tciFtoEjjGOIiLV3nNmEdQSMH9jshiegdoJER2fdPPpu
+         t6XwescxiW0MAxy89TtV8nuaGanL2uEIujlNxGSpP+jIDpjhXR6u0pN+La+89xWVYJYz
+         JCkQ==
+X-Gm-Message-State: ACrzQf1I9sEbr2fij179bzqKEWlkdnQSHwFtCtVLgVA8Rbk7lxugTDmr
+        GnC2EbB6ItFiPmk4+8plQGibyQ==
+X-Google-Smtp-Source: AMsMyM4K1A4U/HfQlteUYmVSAP0jWa6eNflO23gy6GLcso3nCMkqhvxGSpQm+BcuP6EyzmHHwmrnYA==
+X-Received: by 2002:ad4:5c47:0:b0:4bc:f84:da8f with SMTP id a7-20020ad45c47000000b004bc0f84da8fmr8748534qva.73.1667398314614;
+        Wed, 02 Nov 2022 07:11:54 -0700 (PDT)
+Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
+        by smtp.gmail.com with ESMTPSA id v26-20020ac8729a000000b00359961365f1sm6524563qto.68.2022.11.02.07.11.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Nov 2022 07:11:54 -0700 (PDT)
+Date:   Wed, 2 Nov 2022 10:11:48 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Kemeng Shi <shikemeng@huawei.com>
+Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] block: Correct comment for scale_cookie_change
+Message-ID: <Y2J6pPj4/aVdoGPp@localhost.localdomain>
+References: <20221018111240.22612-1-shikemeng@huawei.com>
+ <20221018111240.22612-3-shikemeng@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [RFC PATCH 0/2] cpuset: Skip possible unwanted CPU-mask updates.
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        cgroups@vger.kernel.org
-Cc:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20221102105530.1795429-1-bigeasy@linutronix.de>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20221102105530.1795429-1-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221018111240.22612-3-shikemeng@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/2/22 06:55, Sebastian Andrzej Siewior wrote:
-> Hi,
->
-> while playing with cgroups and tasks which alter their CPU-mask I
-> noticed a behaviour which is unwanted:
-> - Upon enabling the cpuset controller, all currently set CPU-mask are
->    changed. Here one could argue how bad it is assuming that the
->    controller gets only enabled once during boot.
->
-> - While having a task limited to only one CPU (or more but a subset of
->    the cpuset's mask) then adding an additional CPU (or removing an
->    unrelated CPU) from that cpuset results in changing the CPU-mask of
->    that task and adding additional CPUs.
->
-> The test used to verify the behaviour:
->
-> # Limit to CPU 0-1
-> $ taskset -pc 0-1 $$
-> # Enable the cpuset controller
-> $  echo "+cpu" >> /sys/fs/cgroup/cgroup.subtree_control ; echo "+cpuset" >> /sys/fs/cgroup/cgroup.subtree_control
->
-> # Query the CPU-mask. Expect to see 0-1 since it is a subset of
-> # all-online-CPUs
-> $ taskset -pc $$
->
-> # Update the mask to CPUs 1-2
-> $ taskset -pc 1-2 $$
->
-> # Change the CPU-mask of the cgroup to CPUs 1-3.
-> $ echo 1-3 > /sys/fs/cgroup/user.slice/cpuset.cpus
-> # Expect to see 1-2 because it is a subset of 1-3
-> $ taskset -pc $$
->
-> # Change the CPU-mask of the cgroup to CPUs 2-3.
-> $ echo 2-3 > /sys/fs/cgroup/user.slice/cpuset.cpus
-> # Expect to see 2-3 because CPU 1 is not part of 2-3
-> $ taskset -pc $$
->
-> # Change the CPU-mask of the cgroup to CPUs 2-4.
-> $ echo 2-4 > /sys/fs/cgroup/user.slice/cpuset.cpus
-> # Expect to see 2-4 because task's old CPU-mask matches the old mask of
-> # the cpuset.
-> $ taskset -pc $$
->
-> Posting this as RFC in case I'm missing something obvious or breaking an
-> unknown (to me) requirement that this series would break.
+On Tue, Oct 18, 2022 at 07:12:39PM +0800, Kemeng Shi wrote:
+> Default queue depth of iolatency_grp is unlimited, so we scale down
+> quickly(once by half) in scale_cookie_change. Remove the "subtract
+> 1/16th" part which is not the truth and add the actual way we
+> scale down.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
 
-Yes, that is a known issue which is especially problematic when cgroup 
-v2 is used. That is why I have recently posted a set of patches to 
-enable persistent user requested affinity and they have been merged into 
-tip:
+This is perfect, thanks Kemeng
 
-851a723e45d1 sched: Always clear user_cpus_ptr in do_set_cpus_allowed()
-da019032819a sched: Enforce user requested affinity
-8f9ea86fdf99 sched: Always preserve the user requested cpumask
-713a2e21a513 sched: Introduce affinity_context
-5584e8ac2c68 sched: Add __releases annotations to affine_move_task()
-
-They should be able to address the problem that you list here. Please 
-let me know if there are still problem remaining.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
 Thanks,
-Longman
 
+Josef
