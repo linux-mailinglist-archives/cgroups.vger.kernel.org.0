@@ -2,104 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA3E615760
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED24615772
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbiKBCLi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Nov 2022 22:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S229941AbiKBCSR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Nov 2022 22:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbiKBCLe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 22:11:34 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B78D1F611
-        for <cgroups@vger.kernel.org>; Tue,  1 Nov 2022 19:11:30 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id g129so15022197pgc.7
-        for <cgroups@vger.kernel.org>; Tue, 01 Nov 2022 19:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xMwht8Kpuf4LTPdcGCutOruwBCb0mDtYIKt07DMBo4E=;
-        b=3tM2CRKuvgSzDtO4YVhoaV1qCBEevMeRGgXGrmtKFAev/snlKP5Xk6nNeRdBCAP6B0
-         VZZ1RkVha8lmm8QlrzbOLgbzk/oEJLb6KXV5DIspagBlE7prEN7VNxRg66/Xx9/6EEr5
-         qDo+fMediXpg2y4tK0/cGWFw7vX7DgQismTRejAH5dC/j20lcsejEnhAg8YsM7fe84Db
-         OwKwWnOMj2a95PzEx2MY6SckIx55uRbT++lNNE5UXKMXot23Yl3VzsMrASwHoZsXP7SY
-         O4Ki5GqPakLrQqljsMvzRR5lUGVmtboW0JSadNNszzhifG9lhJz/ViHZImbU9sijLq+3
-         W8XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xMwht8Kpuf4LTPdcGCutOruwBCb0mDtYIKt07DMBo4E=;
-        b=VGjB5CwMdmMsB/TfsCiDTxO94DaiiH66x6cmvDu7H6zuPvxDjSDWcwmdlw6UOqDX/F
-         vQy/sWYBPHbfo1QJhftzv3KbvN6m33ZsCXia2uLzLdM4eI0CmzKEMQ1Vq/0jNZSkK0zg
-         0L4PF8IbgHJ2ujuA5C3Up5TYhGRSaGopVIPJudxzo1SOrX1ySOwounkgpPxJbtli9wqo
-         TVse6Uom7mHtFuVT0vof/cyKBr481Wbi3FUTrQLoUlIo9ydhenPLaD7ozagTcKKcccpM
-         cRDdI73OOgBvyiDcN/LZGXjSC3mMqdD2lF5neXW9ag5Kc7UhbWgEsauttNFmzEWgOrsD
-         AA6g==
-X-Gm-Message-State: ACrzQf0xgN8U47erMdNKYVIs4mIX+IoGpdqhn8TUcHFO/2UVHW7aDh12
-        bpNI1eoW7zyD8KKTEq9JdkRsUg==
-X-Google-Smtp-Source: AMsMyM4mGiPfonebz8lFJ7kC7vx4c5XsK1r4ARLkgHxS1AY/xvIlHCobStZ6m2tfZTgTgMizeaf3ew==
-X-Received: by 2002:aa7:83c8:0:b0:56d:8e07:4618 with SMTP id j8-20020aa783c8000000b0056d8e074618mr11391621pfn.33.1667355089608;
-        Tue, 01 Nov 2022 19:11:29 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id i59-20020a17090a3dc100b00202618f0df4sm232036pjc.0.2022.11.01.19.11.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 19:11:29 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     jack@suse.cz, Yu Kuai <yukuai1@huaweicloud.com>,
-        paolo.valente@linaro.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, cgroups@vger.kernel.org, yukuai3@huawei.com
-In-Reply-To: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
+        with ESMTP id S229457AbiKBCSQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 22:18:16 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55311EED6;
+        Tue,  1 Nov 2022 19:18:15 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4N29Tn4cF0z6PYPv;
+        Wed,  2 Nov 2022 10:15:41 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgCX8+Vk02FjQFNMAg--.26377S3;
+        Wed, 02 Nov 2022 10:18:14 +0800 (CST)
+Subject: Re: [PATCH -next v4 1/5] block, bfq: remove set but not used variable
+ in __bfq_entity_update_weight_prio
+To:     Jens Axboe <axboe@kernel.dk>, Yu Kuai <yukuai1@huaweicloud.com>,
+        jack@suse.cz, paolo.valente@linaro.org
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
 References: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
-Subject: Re: [PATCH -next v4 0/5] multiple cleanup patches for bfqd
-Message-Id: <166735508849.16539.13483811523178998202.b4-ty@kernel.dk>
-Date:   Tue, 01 Nov 2022 20:11:28 -0600
+ <20221102022542.3621219-2-yukuai1@huaweicloud.com>
+ <7f7e59cb-e0b8-0db5-7c46-11aea963bcfa@kernel.dk>
+ <ee543096-ae21-99d3-f3a5-483deab03a5f@kernel.dk>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <61725ff6-6da3-3d3c-4261-7f05c57ab9da@huaweicloud.com>
+Date:   Wed, 2 Nov 2022 10:18:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <ee543096-ae21-99d3-f3a5-483deab03a5f@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.11.0-dev-d9ed3
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-CM-TRANSID: gCh0CgCX8+Vk02FjQFNMAg--.26377S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0
+        xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 2 Nov 2022 10:25:37 +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+Hi,
+
+在 2022/11/02 10:11, Jens Axboe 写道:
+> On 11/1/22 8:09 PM, Jens Axboe wrote:
+>> On 11/1/22 8:25 PM, Yu Kuai wrote:
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> After the patch "block, bfq: cleanup bfq_weights_tree add/remove apis"),
+>>> the local variable 'bfqd' is not used anymore, thus remove it.
+>>
+>> Please add a Fixes tag.
 > 
-> Changes in v4:
->  - move first two patches from v3 into another thread.
->  - add patch 1
+> Looks like the rest were good to go, so I added it myself.
+
+Thanks for helping out. I'm not sure which commit id to use since the
+fixed patch is not in linux-next yet, does the commit id stay the same
+when the patch applied from for-6.2 to next ?
+
+Thanks,
+Kuai
 > 
-> Changes in v3:
->  - resend v2 with new mail address
-> 
-> [...]
-
-Applied, thanks!
-
-[1/5] block, bfq: remove set but not used variable in __bfq_entity_update_weight_prio
-      commit: 060d9217d356a28e1bcfd2df0c8bf59aa24a12ce
-[2/5] block, bfq: factor out code to update 'active_entities'
-      commit: e5c63eb4b59f9fb9b28e29d605a4dabbeff7772e
-[3/5] block, bfq: cleanup bfq_activate_requeue_entity()
-      commit: f6fd119b1ae2c4f794dffc87421cf4ce2414401e
-[4/5] block, bfq: remove dead code for updating 'rq_in_driver'
-      commit: 918fdea3884ca8de93bd0e8ad02545eb8e3695d6
-[5/5] block, bfq: don't declare 'bfqd' as type 'void *' in bfq_group
-      commit: aa625117d6f67e33fab280358855fdd332bb20ab
-
-Best regards,
--- 
-Jens Axboe
-
 
