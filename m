@@ -2,144 +2,221 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEE4615E66
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 09:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A436160FF
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 11:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbiKBIxy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Nov 2022 04:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56974 "EHLO
+        id S231177AbiKBKhm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Nov 2022 06:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbiKBIxx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 04:53:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52684E83;
-        Wed,  2 Nov 2022 01:53:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B089A22339;
-        Wed,  2 Nov 2022 08:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1667379230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mAyd5hYheJHs7wZ412hApYrbs0qLQ48nSsf9XNgypBM=;
-        b=RjV6dnJfhfmC76wKcoNRFCWemxydooK/VGDCWqPhiMz0F/TrV1ZdiW0XKhCBJ8Z7iR628t
-        jbGI2t0D0qvdGIrFzIqSqDmp4SOjwQiT0zrCtyvHvOOiv4hyqm+5N/sArHJ9TZeIonaEa1
-        LVNRrUQKlBz+NnQeVIaR9H9oNcggfrw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E748139D3;
-        Wed,  2 Nov 2022 08:53:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ErMOIB4wYmPQGQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 02 Nov 2022 08:53:50 +0000
-Date:   Wed, 2 Nov 2022 09:53:49 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 0/3] Avoid scheduling cache draining to isolated cpus
-Message-ID: <Y2IwHVdgAJ6wfOVH@dhcp22.suse.cz>
-References: <20221102020243.522358-1-leobras@redhat.com>
+        with ESMTP id S230423AbiKBKhM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 06:37:12 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6AB29833
+        for <cgroups@vger.kernel.org>; Wed,  2 Nov 2022 03:36:50 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id r197-20020a6b8fce000000b006c3fc33424dso13885103iod.5
+        for <cgroups@vger.kernel.org>; Wed, 02 Nov 2022 03:36:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B+5G9YOyBZC5keBKXNouF3ZVV7nJu79PwBan1THF9vc=;
+        b=Gw88Ik3HfIL9MgNBytjSlkAkz0MEiBRdIBNi3mSooVttNzKcHI8CvH6Pvb4pxJSyWy
+         gjpwOJYM3KPXp5zCL1LEZojzIxS9bjnmmbP4eA/sqsSuz16VSjHDm83PyJ/AwY7qnQs+
+         vppaciSaVZ8mN+pY84rae6TZtQfwBtx9Ja2N8x9J32qvAHbsp4hLv5T8u8nzqydGFuaQ
+         xKLMARTN0D99LBLKIgFCZVuQicWRNYkHSrp7gT1dj1B7y14R2rfDHd/Lvj37H8QfVFaD
+         wx0OvBWc37qDV2OqVWcizKBEz6phG9lo6u2OoYp1KUdF6iF58mkqz1NAmC9iNxf3Ve5Q
+         5OJA==
+X-Gm-Message-State: ACrzQf3ndJMqsvprVuNWzHuu5l2Vr2z7d6ciFgev4TlzGbdZkqIWTnNE
+        yUa6C/iEFnHYAV9yoImL8tOQNlrO4Jp/fgCt+d3qqRlIW7zk
+X-Google-Smtp-Source: AMsMyM7DbXv4ATlq24ddfaVIMDBbLcjX+mGxk+stBiORoQta7jBCFXoyG5BIL82qGy0WhIVRaPUfJVdPo99VfaVAKDF+btLN65oY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221102020243.522358-1-leobras@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:c102:0:b0:300:cf38:1743 with SMTP id
+ p2-20020a92c102000000b00300cf381743mr1801992ile.114.1667385409487; Wed, 02
+ Nov 2022 03:36:49 -0700 (PDT)
+Date:   Wed, 02 Nov 2022 03:36:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000009483d05ec7a6b93@google.com>
+Subject: [syzbot] possible deadlock in static_key_slow_inc (2)
+From:   syzbot <syzbot+c39682e86c9d84152f93@syzkaller.appspotmail.com>
+To:     cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 01-11-22 23:02:40, Leonardo Bras wrote:
-> Patch #1 expands housekeepíng_any_cpu() so we can find housekeeping cpus
-> closer (NUMA) to any desired CPU, instead of only the current CPU.
-> 
-> ### Performance argument that motivated the change:
-> There could be an argument of why would that be needed, since the current
-> CPU is probably acessing the current cacheline, and so having a CPU closer
-> to the current one is always the best choice since the cache invalidation
-> will take less time. OTOH, there could be cases like this which uses
-> perCPU variables, and we can have up to 3 different CPUs touching the
-> cacheline:
-> 
-> C1 - Isolated CPU: The perCPU data 'belongs' to this one
-> C2 - Scheduling CPU: Schedule some work to be done elsewhere, current cpu
-> C3 - Housekeeping CPU: This one will do the work
-> 
-> Most of the times the cacheline is touched, it should be by C1. Some times
-> a C2 will schedule work to run on C3, since C1 is isolated.
-> 
-> If C1 and C2 are in different NUMA nodes, we could have C3 either in
-> C2 NUMA node (housekeeping_any_cpu()) or in C1 NUMA node 
-> (housekeeping_any_cpu_from(C1). 
-> 
-> If C3 is in C2 NUMA node, there will be a faster invalidation when C3
-> tries to get cacheline exclusivity, and then a slower invalidation when
-> this happens in C1, when it's working in its data.
-> 
-> If C3 is in C1 NUMA node, there will be a slower invalidation when C3
-> tries to get cacheline exclusivity, and then a faster invalidation when
-> this happens in C1.
-> 
-> The thing is: it should be better to wait less when doing kernel work
-> on an isolated CPU, even at the cost of some housekeeping CPU waiting
-> a few more cycles.
-> ###
-> 
-> Patch #2 changes the locking strategy of memcg_stock_pcp->stock_lock from
-> local_lock to spinlocks, so it can be later used to do remote percpu
-> cache draining on patch #3. Most performance concerns should be pointed
-> in the commit log.
-> 
-> Patch #3 implements the remote per-CPU cache drain, making use of both 
-> patches #2 and #3. Performance-wise, in non-isolated scenarios, it should
-> introduce an extra function call and a single test to check if the CPU is
-> isolated. 
-> 
-> On scenarios with isolation enabled on boot, it will also introduce an
-> extra test to check in the cpumask if the CPU is isolated. If it is,
-> there will also be an extra read of the cpumask to look for a
-> housekeeping CPU.
+Hello,
 
-This is a rather deep dive in the cache line usage but the most
-important thing is really missing. Why do we want this change? From the
-context it seems that this is an actual fix for isolcpu= setup when
-remote (aka non isolated activity) interferes with isolated cpus by
-scheduling pcp charge caches on those cpus.
+syzbot found the following issue on:
 
-Is this understanding correct?
+HEAD commit:    a2c65a9d0568 net: dsa: fall back to default tagger if we c..
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10cfb046880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a66c6c673fb555e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=c39682e86c9d84152f93
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159ad4fc880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159d8591880000
 
-If yes, how big of a problem that is? If you want a remote draining then
-you need some sort of locking (currently we rely on local lock). How
-come this locking is not going to cause a different form of disturbance?
--- 
-Michal Hocko
-SUSE Labs
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c43fc9428e96/disk-a2c65a9d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ef96432b3e62/vmlinux-a2c65a9d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ee926615bbfc/bzImage-a2c65a9d.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c39682e86c9d84152f93@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.1.0-rc2-syzkaller-00201-ga2c65a9d0568 #0 Not tainted
+------------------------------------------------------
+syz-executor229/3606 is trying to acquire lock:
+ffffffff8be35130 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_slow_inc+0xe/0x20 kernel/jump_label.c:158
+
+but task is already holding lock:
+ffffffff8bfda0c8 (freezer_mutex){+.+.}-{3:3}, at: freezer_change_state kernel/cgroup/legacy_freezer.c:387 [inline]
+ffffffff8bfda0c8 (freezer_mutex){+.+.}-{3:3}, at: freezer_write+0x98/0xa50 kernel/cgroup/legacy_freezer.c:426
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (freezer_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
+       freezer_attach+0x70/0x1f0 kernel/cgroup/legacy_freezer.c:163
+       cgroup_migrate_execute+0xbcf/0x1230 kernel/cgroup/cgroup.c:2615
+       cgroup_attach_task+0x41c/0x870 kernel/cgroup/cgroup.c:2906
+       __cgroup1_procs_write.constprop.0+0x3be/0x4b0 kernel/cgroup/cgroup-v1.c:523
+       cgroup_file_write+0x1de/0x770 kernel/cgroup/cgroup.c:4057
+       kernfs_fop_write_iter+0x3f8/0x610 fs/kernfs/file.c:330
+       call_write_iter include/linux/fs.h:2191 [inline]
+       new_sync_write fs/read_write.c:491 [inline]
+       vfs_write+0x9e9/0xdd0 fs/read_write.c:584
+       ksys_write+0x127/0x250 fs/read_write.c:637
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (cgroup_threadgroup_rwsem){++++}-{0:0}:
+       percpu_down_write+0x4f/0x390 kernel/locking/percpu-rwsem.c:227
+       cgroup_attach_lock kernel/cgroup/cgroup.c:2431 [inline]
+       cgroup_procs_write_start+0x151/0x630 kernel/cgroup/cgroup.c:2935
+       __cgroup_procs_write+0xd7/0x650 kernel/cgroup/cgroup.c:5135
+       cgroup_procs_write+0x22/0x50 kernel/cgroup/cgroup.c:5171
+       cgroup_file_write+0x1de/0x770 kernel/cgroup/cgroup.c:4057
+       kernfs_fop_write_iter+0x3f8/0x610 fs/kernfs/file.c:330
+       call_write_iter include/linux/fs.h:2191 [inline]
+       new_sync_write fs/read_write.c:491 [inline]
+       vfs_write+0x9e9/0xdd0 fs/read_write.c:584
+       ksys_write+0x127/0x250 fs/read_write.c:637
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (cpu_hotplug_lock){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3097 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+       validate_chain kernel/locking/lockdep.c:3831 [inline]
+       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
+       lock_acquire kernel/locking/lockdep.c:5668 [inline]
+       lock_acquire+0x1df/0x630 kernel/locking/lockdep.c:5633
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       cpus_read_lock+0x3e/0x140 kernel/cpu.c:310
+       static_key_slow_inc+0xe/0x20 kernel/jump_label.c:158
+       freezer_apply_state+0x1e1/0x260 kernel/cgroup/legacy_freezer.c:353
+       freezer_change_state kernel/cgroup/legacy_freezer.c:398 [inline]
+       freezer_write+0x571/0xa50 kernel/cgroup/legacy_freezer.c:426
+       cgroup_file_write+0x1de/0x770 kernel/cgroup/cgroup.c:4057
+       kernfs_fop_write_iter+0x3f8/0x610 fs/kernfs/file.c:330
+       call_write_iter include/linux/fs.h:2191 [inline]
+       new_sync_write fs/read_write.c:491 [inline]
+       vfs_write+0x9e9/0xdd0 fs/read_write.c:584
+       ksys_write+0x127/0x250 fs/read_write.c:637
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  cpu_hotplug_lock --> cgroup_threadgroup_rwsem --> freezer_mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(freezer_mutex);
+                               lock(cgroup_threadgroup_rwsem);
+                               lock(freezer_mutex);
+  lock(cpu_hotplug_lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor229/3606:
+ #0: ffff888079bc2460 (sb_writers#10){.+.+}-{0:0}, at: ksys_write+0x127/0x250 fs/read_write.c:637
+ #1: ffff88801fa91c88 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x28c/0x610 fs/kernfs/file.c:321
+ #2: ffff888145b99a00 (kn->active#56){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x2b0/0x610 fs/kernfs/file.c:322
+ #3: ffffffff8bfda0c8 (freezer_mutex){+.+.}-{3:3}, at: freezer_change_state kernel/cgroup/legacy_freezer.c:387 [inline]
+ #3: ffffffff8bfda0c8 (freezer_mutex){+.+.}-{3:3}, at: freezer_write+0x98/0xa50 kernel/cgroup/legacy_freezer.c:426
+
+stack backtrace:
+CPU: 0 PID: 3606 Comm: syz-executor229 Not tainted 6.1.0-rc2-syzkaller-00201-ga2c65a9d0568 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/11/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2177
+ check_prev_add kernel/locking/lockdep.c:3097 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3216 [inline]
+ validate_chain kernel/locking/lockdep.c:3831 [inline]
+ __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
+ lock_acquire kernel/locking/lockdep.c:5668 [inline]
+ lock_acquire+0x1df/0x630 kernel/locking/lockdep.c:5633
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ cpus_read_lock+0x3e/0x140 kernel/cpu.c:310
+ static_key_slow_inc+0xe/0x20 kernel/jump_label.c:158
+ freezer_apply_state+0x1e1/0x260 kernel/cgroup/legacy_freezer.c:353
+ freezer_change_state kernel/cgroup/legacy_freezer.c:398 [inline]
+ freezer_write+0x571/0xa50 kernel/cgroup/legacy_freezer.c:426
+ cgroup_file_write+0x1de/0x770 kernel/cgroup/cgroup.c:4057
+ kernfs_fop_write_iter+0x3f8/0x610 fs/kernfs/file.c:330
+ call_write_iter include/linux/fs.h:2191 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x9e9/0xdd0 fs/read_write.c:584
+ ksys_write+0x127/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fe89501f769
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff9816df18 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fe89501f769
+RDX: 0000000000000007 RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 00007fff9816df40 R09: 00007fff9816df40
+R10: 00007fff9816df40 R11: 0000000000000246 R12: 00007fff9816df3c
+R13: 00007fff9816df50 R14: 00007fff9816df90 R15: 0000000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
