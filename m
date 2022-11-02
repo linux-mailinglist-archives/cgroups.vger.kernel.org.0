@@ -2,130 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BFC615741
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D7A615DD1
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 09:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbiKBCEH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Nov 2022 22:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        id S229971AbiKBIfq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Wed, 2 Nov 2022 04:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbiKBCED (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 22:04:03 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D679A186C9;
-        Tue,  1 Nov 2022 19:04:02 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N299p0BQBzl21b;
-        Wed,  2 Nov 2022 10:01:50 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP2 (Coremail) with SMTP id Syh0CgCnP9QN0GFjGqzfBA--.48110S9;
-        Wed, 02 Nov 2022 10:04:01 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     jack@suse.cz, axboe@kernel.dk, paolo.valente@linaro.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH -next v4 5/5] block, bfq: don't declare 'bfqd' as type 'void *' in bfq_group
-Date:   Wed,  2 Nov 2022 10:25:42 +0800
-Message-Id: <20221102022542.3621219-6-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
-References: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
+        with ESMTP id S230283AbiKBIfn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 04:35:43 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B051A04C
+        for <cgroups@vger.kernel.org>; Wed,  2 Nov 2022 01:35:39 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-191-guNOfW50N0qHgkOwqcty6g-1; Wed, 02 Nov 2022 08:35:37 +0000
+X-MC-Unique: guNOfW50N0qHgkOwqcty6g-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Nov
+ 2022 08:35:35 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.042; Wed, 2 Nov 2022 08:35:35 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tejun Heo' <tj@kernel.org>, Jiri Slaby <jirislaby@kernel.org>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Martin Liska <mliska@suse.cz>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Subject: RE: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
+ prints
+Thread-Topic: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
+ prints
+Thread-Index: AQHY7hGH734dfSyX20WOi86L/FtKtq4rTpIA
+Date:   Wed, 2 Nov 2022 08:35:34 +0000
+Message-ID: <2b975ee3117e45aaa7882203cf9a4db8@AcuMS.aculab.com>
+References: <20221031114520.10518-1-jirislaby@kernel.org>
+ <Y1++fLJXkeZgtXR2@infradead.org> <Y2AMcSPAJpj6obSA@slm.duckdns.org>
+ <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
+ <Y2FNa4bGhJoevRKT@slm.duckdns.org>
+In-Reply-To: <Y2FNa4bGhJoevRKT@slm.duckdns.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCnP9QN0GFjGqzfBA--.48110S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4UAFy5Wr47Gw4UCr45ZFb_yoW8tw43p3
-        ZIq3WDWrWftrn3Wr4UA3Wjqr93twn3C34DKa4kX34avFy7trnFqan0yw18Z3W09FZxCrsr
-        Z34j93ykZr17twUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTYUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Tejun Heo
+> Sent: 01 November 2022 16:47
+> 
+> Hello,
+> 
+> On Tue, Nov 01, 2022 at 06:46:56AM +0100, Jiri Slaby wrote:
+> > Yes. The real problem is that using anything else then an INT_MIN <= x <=
+> > INT_MAX _constant_ in an enum is undefined in ANSI C < 2x (in particular, 1
+> > << x is undefined too). gcc manual defines unsigned int on the top of that
+> > as defined too (so this holds for our -std=g*).
+> >
+> > > I suppose the most reasonable thing to do here is just splitting them into
+> > > separate enum definitions. Does anyone know how this behavior change came to
+> > > be?
+> >
+> > C2x which introduces un/signed long enums. See the bug I linked in the
+> > commit log:
+> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36113
+> 
+> I see. So, it was an extension but the new standard is defined differently
+> and we're gonna end up with that behavior.
+> 
+> > The change is also turned on in < C2x on purpose. AIUI, unless there is too
+> > much breakage. So we'd need to sort it out in (rather distant) future anyway
+> > (when we come up to -std=g2x).
+> 
+> The part that the new behavior applying to <C2x feels like an odd decision.
+> I'm having a hard time seeing the upsides in doing so but maybe that's just
+> me not knowing the area well enough.
+> 
+> > > Do we know whether clang is gonna be changed the same way?
+> >
+> > In C2x, Likely. In < C2x, dunno what'd be the default.
+> 
+> It looks like we can do one of the following two:
+> 
+> * If gcc actually changes the behavior for <c2x, split the enums according
+>   to their sizes. This feels rather silly but I can't think of a better way
+>   to cater to divergent compiler behaviors.
+> 
+> * If gcc doesn't change the behavior for <c2x, there's nothing to do for the
+>   time being. Later when we switch to -std=g2x, we can just change the
+>   format strings to use the now larger types.
+> 
+> Does the above make sense?
 
-Prevent unnecessary format conversion for bfqg->bfqd in multiple
-places.
+I think the enums have to be split.
+There will be other side effects of promoting the constants to 64bit
+that are much more difficult to detect than the warnings from printf.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Acked-by: Paolo Valente <paolo.valente@unimore.it>
----
- block/bfq-cgroup.c  | 2 +-
- block/bfq-iosched.h | 2 +-
- block/bfq-wf2q.c    | 6 ++----
- 3 files changed, 4 insertions(+), 6 deletions(-)
+I'm also not sure whether the type is even consistent for 32bit
+and 64bit builds.
+Casts are (sort of) horrid.
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 4c37398e0b99..d57872cc05ed 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -224,7 +224,7 @@ void bfqg_stats_update_io_add(struct bfq_group *bfqg, struct bfq_queue *bfqq,
- {
- 	blkg_rwstat_add(&bfqg->stats.queued, opf, 1);
- 	bfqg_stats_end_empty_time(&bfqg->stats);
--	if (!(bfqq == ((struct bfq_data *)bfqg->bfqd)->in_service_queue))
-+	if (!(bfqq == bfqg->bfqd->in_service_queue))
- 		bfqg_stats_set_start_group_wait_time(bfqg, bfqq_group(bfqq));
- }
- 
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 76363841d8ff..9fa89577322d 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -931,7 +931,7 @@ struct bfq_group {
- 	struct bfq_entity entity;
- 	struct bfq_sched_data sched_data;
- 
--	void *bfqd;
-+	struct bfq_data *bfqd;
- 
- 	struct bfq_queue *async_bfqq[2][IOPRIO_NR_LEVELS];
- 	struct bfq_queue *async_idle_bfqq;
-diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-index 4d4b84e7bf3e..b02b53658ed4 100644
---- a/block/bfq-wf2q.c
-+++ b/block/bfq-wf2q.c
-@@ -222,9 +222,8 @@ static void bfq_inc_active_entities(struct bfq_entity *entity)
- {
- 	struct bfq_sched_data *sd = entity->sched_data;
- 	struct bfq_group *bfqg = container_of(sd, struct bfq_group, sched_data);
--	struct bfq_data *bfqd = (struct bfq_data *)bfqg->bfqd;
- 
--	if (bfqg != bfqd->root_group)
-+	if (bfqg != bfqg->bfqd->root_group)
- 		bfqg->active_entities++;
- }
- 
-@@ -232,9 +231,8 @@ static void bfq_dec_active_entities(struct bfq_entity *entity)
- {
- 	struct bfq_sched_data *sd = entity->sched_data;
- 	struct bfq_group *bfqg = container_of(sd, struct bfq_group, sched_data);
--	struct bfq_data *bfqd = (struct bfq_data *)bfqg->bfqd;
- 
--	if (bfqg != bfqd->root_group)
-+	if (bfqg != bfqg->bfqd->root_group)
- 		bfqg->active_entities--;
- }
- 
--- 
-2.31.1
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
