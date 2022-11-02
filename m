@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFEC61573A
-	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BFC615741
+	for <lists+cgroups@lfdr.de>; Wed,  2 Nov 2022 03:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbiKBCEF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Nov 2022 22:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S230103AbiKBCEH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Nov 2022 22:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbiKBCED (ORCPT
+        with ESMTP id S230039AbiKBCED (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Tue, 1 Nov 2022 22:04:03 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A05318B0D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D679A186C9;
         Tue,  1 Nov 2022 19:04:02 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N299n4HcJzl4Gh;
-        Wed,  2 Nov 2022 10:01:49 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N299p0BQBzl21b;
+        Wed,  2 Nov 2022 10:01:50 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP2 (Coremail) with SMTP id Syh0CgCnP9QN0GFjGqzfBA--.48110S8;
-        Wed, 02 Nov 2022 10:04:00 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgCnP9QN0GFjGqzfBA--.48110S9;
+        Wed, 02 Nov 2022 10:04:01 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     jack@suse.cz, axboe@kernel.dk, paolo.valente@linaro.org
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH -next v4 4/5] block, bfq: remove dead code for updating 'rq_in_driver'
-Date:   Wed,  2 Nov 2022 10:25:41 +0800
-Message-Id: <20221102022542.3621219-5-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v4 5/5] block, bfq: don't declare 'bfqd' as type 'void *' in bfq_group
+Date:   Wed,  2 Nov 2022 10:25:42 +0800
+Message-Id: <20221102022542.3621219-6-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
 References: <20221102022542.3621219-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCnP9QN0GFjGqzfBA--.48110S8
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF1xJFyfur4xGr4fJrWUArb_yoWkWrc_Ka
-        4SkF97ZryrArW3ur45JF1Yqa4vva1fW3WDAFn8Krs5uF4ag3ZaywnFqr4a9FZrX397G3Wf
-        twn0q3W3Jrn0vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbTxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-        F7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
-        1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMx
-        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
-        0xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
-        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZX7UUUUU==
+X-CM-TRANSID: Syh0CgCnP9QN0GFjGqzfBA--.48110S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4UAFy5Wr47Gw4UCr45ZFb_yoW8tw43p3
+        ZIq3WDWrWftrn3Wr4UA3Wjqr93twn3C34DKa4kX34avFy7trnFqan0yw18Z3W09FZxCrsr
+        Z34j93ykZr17twUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
+        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTYUUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -62,42 +62,70 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Such code are not even compiled since they are inside marco "#if 0".
+Prevent unnecessary format conversion for bfqg->bfqd in multiple
+places.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Acked-by: Paolo Valente <paolo.valente@unimore.it>
 ---
- block/bfq-iosched.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ block/bfq-cgroup.c  | 2 +-
+ block/bfq-iosched.h | 2 +-
+ block/bfq-wf2q.c    | 6 ++----
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 42aa5fc7f17b..2381cf220ba2 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2321,22 +2321,6 @@ static sector_t get_sdist(sector_t last_pos, struct request *rq)
- 	return 0;
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 4c37398e0b99..d57872cc05ed 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -224,7 +224,7 @@ void bfqg_stats_update_io_add(struct bfq_group *bfqg, struct bfq_queue *bfqq,
+ {
+ 	blkg_rwstat_add(&bfqg->stats.queued, opf, 1);
+ 	bfqg_stats_end_empty_time(&bfqg->stats);
+-	if (!(bfqq == ((struct bfq_data *)bfqg->bfqd)->in_service_queue))
++	if (!(bfqq == bfqg->bfqd->in_service_queue))
+ 		bfqg_stats_set_start_group_wait_time(bfqg, bfqq_group(bfqq));
  }
  
--#if 0 /* Still not clear if we can do without next two functions */
--static void bfq_activate_request(struct request_queue *q, struct request *rq)
--{
--	struct bfq_data *bfqd = q->elevator->elevator_data;
--
--	bfqd->rq_in_driver++;
--}
--
--static void bfq_deactivate_request(struct request_queue *q, struct request *rq)
--{
--	struct bfq_data *bfqd = q->elevator->elevator_data;
--
--	bfqd->rq_in_driver--;
--}
--#endif
--
- static void bfq_remove_request(struct request_queue *q,
- 			       struct request *rq)
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index 76363841d8ff..9fa89577322d 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -931,7 +931,7 @@ struct bfq_group {
+ 	struct bfq_entity entity;
+ 	struct bfq_sched_data sched_data;
+ 
+-	void *bfqd;
++	struct bfq_data *bfqd;
+ 
+ 	struct bfq_queue *async_bfqq[2][IOPRIO_NR_LEVELS];
+ 	struct bfq_queue *async_idle_bfqq;
+diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+index 4d4b84e7bf3e..b02b53658ed4 100644
+--- a/block/bfq-wf2q.c
++++ b/block/bfq-wf2q.c
+@@ -222,9 +222,8 @@ static void bfq_inc_active_entities(struct bfq_entity *entity)
  {
+ 	struct bfq_sched_data *sd = entity->sched_data;
+ 	struct bfq_group *bfqg = container_of(sd, struct bfq_group, sched_data);
+-	struct bfq_data *bfqd = (struct bfq_data *)bfqg->bfqd;
+ 
+-	if (bfqg != bfqd->root_group)
++	if (bfqg != bfqg->bfqd->root_group)
+ 		bfqg->active_entities++;
+ }
+ 
+@@ -232,9 +231,8 @@ static void bfq_dec_active_entities(struct bfq_entity *entity)
+ {
+ 	struct bfq_sched_data *sd = entity->sched_data;
+ 	struct bfq_group *bfqg = container_of(sd, struct bfq_group, sched_data);
+-	struct bfq_data *bfqd = (struct bfq_data *)bfqg->bfqd;
+ 
+-	if (bfqg != bfqd->root_group)
++	if (bfqg != bfqg->bfqd->root_group)
+ 		bfqg->active_entities--;
+ }
+ 
 -- 
 2.31.1
 
