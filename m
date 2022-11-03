@@ -2,93 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D83617436
-	for <lists+cgroups@lfdr.de>; Thu,  3 Nov 2022 03:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57225618040
+	for <lists+cgroups@lfdr.de>; Thu,  3 Nov 2022 15:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbiKCCbh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Nov 2022 22:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
+        id S231160AbiKCO4B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Nov 2022 10:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiKCCbg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Nov 2022 22:31:36 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79E1CCA;
-        Wed,  2 Nov 2022 19:31:35 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id m14-20020a17090a3f8e00b00212dab39bcdso3939139pjc.0;
-        Wed, 02 Nov 2022 19:31:35 -0700 (PDT)
+        with ESMTP id S231808AbiKCOzr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Nov 2022 10:55:47 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341DE183B8
+        for <cgroups@vger.kernel.org>; Thu,  3 Nov 2022 07:55:25 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id l2so2133925pld.13
+        for <cgroups@vger.kernel.org>; Thu, 03 Nov 2022 07:55:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cWur7HMVd8Ke8GikOufYnkHwwFXOwHuL2p1d2EaRZQ4=;
-        b=LHg0QvuIyTZaP2L3VKH46Q9HpSocgocqW64wr5w9rN7A1/45tQRuzDepB3CuHT0ewX
-         rf5d45xvbFIIurHHUmIN783brPGJl/6JAIj9Vqtmb+f/i+2TSwFnRwe6vvhdHvkdVDdg
-         fsUyyhAM43SrXN5uTLLssApnXPbw+YhBQhSKdhD6faQG8mwhlJUNjvBjNXch7g0O3/yA
-         W+EZ+Vu6dwPlKBhGkJDOidgUKpCnwNfuAp3Jgh35C6rCVO8NY4GW1PRi3dCgI39VP3DR
-         OrFLnuaW1R2a24OoNBABG+uQqHtxZkBN6EwP0zq+SuvGQqgor/p446gJtzbBjOJCHVIs
-         RdrQ==
+        d=shopee.com; s=shopee.com;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DDZXj8GxjjLzzwnzzLDMimDqIgBJg1GXsbBMV5BLFZk=;
+        b=DAX5Ib72zbcXbDQV1g+lVn1hDwjULe0CH9/YMVCG1hQbvZjWdFqaHBOR0N7iB3YYqj
+         /JgecYOLDCYGoENGa9cUPmL5ou3S/ybeaekN4mZv5f9hhUOKFBRFkFAvyTOmrYif+bFE
+         m2ABXFYvyZBQkqYgwz/xXvIgElZGBdYa14IBZcrTMor/6XYL8IYvIJK7zmJ2Pt34B+Al
+         bVtx/CJB07Yq/6fZd5EQ+V7V3pkiyCyoVsLrpjMouY/ZfUtGUuFm/H6Yp1FlwCAjJ5Ol
+         5nlZKi5QTxRFkmHrirau/2KGnIf+pTmWTgIZayuIeVehSKS2D2LLLR/PoUSS78PmWEUT
+         BQ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cWur7HMVd8Ke8GikOufYnkHwwFXOwHuL2p1d2EaRZQ4=;
-        b=p3wJe+gE8sI0e7DWW/wiLeX2Txr8ob2EpIkgiGz2P/7vVYAyZshFU4YIdHr2btlPE4
-         PfFQsDsrbu+M4nezGhWLKz/P8Hmq+VREeLkBB+FlGLxOkMKUMCiU3k81FKW4a5HQjO3U
-         5D0OVYugO2hA74e8RcgYlcua1a11WLLPZ228fWnbLimC6NxRLh/yUN53RJuYX8LR7deE
-         6Z/wcalE6+k520oBIFL2KE5ctYpmmQECCDjoyNgztBXCDobKVDuoKfEnmUJxuIzpjMYb
-         J0SqQOC65aPowYomNXRXdkiPP8WuLb2eqdCSz+glIQZC6ZFDm7/OunXmS2xbuvgy9PRj
-         Q5XQ==
-X-Gm-Message-State: ACrzQf2Hlya0606dEcq0KHpIMIZqJcPz+jYPMCydS9kcTHnVa+Ty/pP8
-        mNhSEWeNVPp5vLs9y9zU/00=
-X-Google-Smtp-Source: AMsMyM5Bk7ipWNRGqH2CUxQVlGb+fIzltpqkUGvhDMvQRPiQtlVOJd8FJYSwMxSn+YOWZ5T85LZNIQ==
-X-Received: by 2002:a17:90a:311:b0:214:143b:c7ab with SMTP id 17-20020a17090a031100b00214143bc7abmr10942799pje.21.1667442695034;
-        Wed, 02 Nov 2022 19:31:35 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id v10-20020a17090abb8a00b002137030f652sm2147447pjr.12.2022.11.02.19.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 19:31:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Nov 2022 16:31:33 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DDZXj8GxjjLzzwnzzLDMimDqIgBJg1GXsbBMV5BLFZk=;
+        b=A4de5PcFwGF2za5b/16Bj+eSAciCNH1mOZamxEx9xvgehKCALxvvUDXuD61KvcmCap
+         ua3lDZfiRaJk1LuaJOnI6e4aZfgcWcEn+jiw0iTNxnnSJ3K1esjW5XBtNcgx4KJ79idw
+         xlrAHWhsRtL8kAXjK6CTncSDvA76EDjjUhVYAslcXR72G5ZVAotlgNUkkf0CgO1JK7cm
+         u6HWF/nf0Cf48TL7SmHKUPo4oLDCjHyXdBWbme8+t7r7f8YC+VDHCl14TuHAZd9yI+XV
+         VrXu8h75cmqArsZ/ooF59F6mkKChmplxIV8kGvg+ATycoVTUV6TwOp+2+u/ADlotA/wV
+         eD2Q==
+X-Gm-Message-State: ACrzQf1+M3QcQTivNkEhdyB4pkOKs0jHeEzPV/P4VmmgMBlA9hkJPLwK
+        usdbzIjhYCqjFMyYuAgZGFPTuw==
+X-Google-Smtp-Source: AMsMyM7E9oRN01SfGdM6D4I2DLXL6UNTenOwUZMM+VatfZSgZRUKDHoyGD6dHUiqEi4SkFHi8GMeKA==
+X-Received: by 2002:a17:90b:3690:b0:213:c985:b5ee with SMTP id mj16-20020a17090b369000b00213c985b5eemr26277194pjb.192.1667487324534;
+        Thu, 03 Nov 2022 07:55:24 -0700 (PDT)
+Received: from [10.12.136.34] ([143.92.127.224])
+        by smtp.gmail.com with ESMTPSA id y3-20020a17090a1f4300b002135fdfa995sm78693pjy.25.2022.11.03.07.55.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Nov 2022 07:55:24 -0700 (PDT)
+Message-ID: <830cdb70-2823-9c46-1986-2801023353d0@shopee.com>
+Date:   Thu, 3 Nov 2022 22:55:19 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [PATCH] cgroup: Simplify code in css_set_move_task
+To:     Tejun Heo <tj@kernel.org>
+Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
         lizefan.x@bytedance.com, hannes@cmpxchg.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Simplify code in css_set_move_task
-Message-ID: <Y2MoBeJGU1Exg6cX@slm.duckdns.org>
 References: <20221020074701.84326-1-haifeng.xu@shopee.com>
  <20221027080558.GA23269@blackbody.suse.cz>
  <adb7418c-39a2-6202-970a-a039ad8201dd@shopee.com>
  <20221031131140.GC27841@blackbody.suse.cz>
  <25f6a188-4cc6-dace-1468-fd5645711515@shopee.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25f6a188-4cc6-dace-1468-fd5645711515@shopee.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+ <Y2MoBeJGU1Exg6cX@slm.duckdns.org>
+From:   Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <Y2MoBeJGU1Exg6cX@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 10:13:22AM +0800, Haifeng Xu wrote:
-> I understand your worries. Can I just check the populated state of
-> css_set in 'css_set_update_populated' and don't change the order any
-> more? I think it can also streamline 'css_set_move_task' a bit.
 
-FWIW, I don't see much value in the proposed change. The resulting code
-isn't better in any noticeable way. Even if the change were straightforward,
-the value of the patch would seem questionable. There's no point in creating
-code churns like this. Nothing is improved in any material way while
-creating completely unnecessary risk for subtle breakages.
 
-Thanks.
-
--- 
-tejun
+On 2022/11/3 10:31, Tejun Heo wrote:
+> On Thu, Nov 03, 2022 at 10:13:22AM +0800, Haifeng Xu wrote:
+>> I understand your worries. Can I just check the populated state of
+>> css_set in 'css_set_update_populated' and don't change the order any
+>> more? I think it can also streamline 'css_set_move_task' a bit.
+> 
+> FWIW, I don't see much value in the proposed change. The resulting code
+> isn't better in any noticeable way. Even if the change were straightforward,
+> the value of the patch would seem questionable. There's no point in creating
+> code churns like this. Nothing is improved in any material way while
+> creating completely unnecessary risk for subtle breakages.
+> 
+> Thanks.
+> 
+Got it, thanks.
