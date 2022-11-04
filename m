@@ -2,93 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A45B6619DF1
-	for <lists+cgroups@lfdr.de>; Fri,  4 Nov 2022 18:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1737D619FA8
+	for <lists+cgroups@lfdr.de>; Fri,  4 Nov 2022 19:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbiKDRA3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Nov 2022 13:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
+        id S231620AbiKDSV7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Nov 2022 14:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbiKDRA1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Nov 2022 13:00:27 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC68B31FA6
-        for <cgroups@vger.kernel.org>; Fri,  4 Nov 2022 10:00:25 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id k2so3428933qkk.7
-        for <cgroups@vger.kernel.org>; Fri, 04 Nov 2022 10:00:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/jNIi3NLp/0QE0eLEgGhnlZnXslRxZtVSsauwMnJ52A=;
-        b=TyCMiI4ARMPxd18RVlEv+qm2LWR7zC104Hlivn40qb5lZJslIeDFuCNMNvjneFE/Nj
-         LFwCX5vAwmEX/R8qjGO9x9K9/hgdwoRd2q59WUqMzWoiDvISQjer+tTT1jJ7UfSLA8Vn
-         fR3VeAjk206NeR5DC2lSXJH82ZME8JVM9jplc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/jNIi3NLp/0QE0eLEgGhnlZnXslRxZtVSsauwMnJ52A=;
-        b=onusKroA4JwnFe9ytt6WvOE8UrqvW3xqdiO0lZxOb08bhE31B05HpYdnPag28Sxm4Y
-         WOYZPJspbKIDBrXDgSbxRhfsj7dkFyt1Dm8Vq13RV4eDdnhgEXD2AWAWHvV1TiPKzDt5
-         WaAk40no/jyPYyJmx6Y23MMw0VxaxE7QEmAa5fgKCTJPLGahIagy7EfeAt9wbUYEXb5O
-         0Jq+X8dncYGcQvAX0CjRsKV/ZYtFECbdsJVuGUNvtdzPNau9kn6ve+/ISytQuqeq7TC3
-         x4iBJ41GLbAKsGLB5MPNnv5L7M9sPQNRUWPOEdvAtoDaZjnmRuqFq+O/w9Ziyk/osaTn
-         GpqA==
-X-Gm-Message-State: ACrzQf0FetW8ofUCb23XtfspATjKkOrQjLM+qrjGKUnfPVk7EWTLgQpq
-        4AJnIpaMxSUcHlFYQiql1o4DJ9OV3nIQHw==
-X-Google-Smtp-Source: AMsMyM5/rN8VLa3HH3mQNoYutWnx971MtPfo7JZ/xdhjCHWfORW2rcJGM9JRleIVrik1fVYd0Hjd2A==
-X-Received: by 2002:a05:620a:1130:b0:6fa:31ff:1ac2 with SMTP id p16-20020a05620a113000b006fa31ff1ac2mr19705801qkk.751.1667581224812;
-        Fri, 04 Nov 2022 10:00:24 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id y19-20020a05620a44d300b006fa2dde9db8sm3260229qkp.95.2022.11.04.10.00.20
-        for <cgroups@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Nov 2022 10:00:20 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-36cbcda2157so48830467b3.11
-        for <cgroups@vger.kernel.org>; Fri, 04 Nov 2022 10:00:20 -0700 (PDT)
-X-Received: by 2002:a81:8241:0:b0:370:5fad:47f0 with SMTP id
- s62-20020a818241000000b003705fad47f0mr27409344ywf.441.1667581219811; Fri, 04
- Nov 2022 10:00:19 -0700 (PDT)
+        with ESMTP id S231724AbiKDSV6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Nov 2022 14:21:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244C94AF28
+        for <cgroups@vger.kernel.org>; Fri,  4 Nov 2022 11:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667586060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mwGJiTiSAfN6PRbmiMouEvgWpKw4XbL4CZuerrQ/8Q0=;
+        b=H/3sOjE1AyWZmzrBEzNhNyflt7Xx9bAFXtCUpOqSxloXxZi+yEND94A0swj4ioxy2Y0uws
+        rkR0Qmm8aVhYs8t1DzcECD3VqB9Ri0jraiZtJWUda0lmS0BV/ouN+60TpkFQdRNuq8m6we
+        7kpHucxHn6oXBkCOG+9suU2mZ6v9X2Q=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-607-cI6xdKNwNXayL6aN7p5wlQ-1; Fri, 04 Nov 2022 14:20:57 -0400
+X-MC-Unique: cI6xdKNwNXayL6aN7p5wlQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 867B61C05196;
+        Fri,  4 Nov 2022 18:20:56 +0000 (UTC)
+Received: from llong.com (unknown [10.22.34.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB927C15BA5;
+        Fri,  4 Nov 2022 18:20:55 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v9 0/3] blk-cgroup: Optimize blkcg_rstat_flush()
+Date:   Fri,  4 Nov 2022 14:20:47 -0400
+Message-Id: <20221104182050.342908-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20221104054053.431922658@goodmis.org>
-In-Reply-To: <20221104054053.431922658@goodmis.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 4 Nov 2022 10:00:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whKE5UL+AuCC2wK8oq8D_ueSO_T7-9Acx4POouqVi8ZHg@mail.gmail.com>
-Message-ID: <CAHk-=whKE5UL+AuCC2wK8oq8D_ueSO_T7-9Acx4POouqVi8ZHg@mail.gmail.com>
-Subject: Re: [RFC][PATCH v3 00/33] timers: Use timer_shutdown*() before
- freeing timers
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bluetooth@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,32 +61,45 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Nov 3, 2022 at 10:48 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Ideally, I would have the first patch go into this rc cycle, which is mostly
-> non functional as it will allow the other patches to come in via the respective
-> subsystems in the next merge window.
+ v9:
+  - Remove patch "llist: Allow optional sentinel node terminated lockless
+    list" for now. This will be done as a follow-up patch.
+  - Add a new lqueued field to blkg_iostat_set to store the status of
+    whether lnode is in a lockless list.
+  - Add a new patch 3 to speed up the freeing of blkcg by flushing out
+    the rstat lockless lists at blkcg offline time.
 
-Ack.
+ v8:
+  - Update the llist patch to make existing llist functions and macros
+    work for both NULL and sentinel terminated lockless list as much
+    as possible and leave only the initialization and removal functions
+    to have a sentinel terminated llist variants.
 
-I also wonder if we could do the completely trivially correct
-conversions immediately.
+ v7:
+  - Drop patch 1 ("blk-cgroup: Correctly free percpu iostat_cpu in blkg
+    on error exit") as it is found to be unnecessary.
+  - Add a new llist patch to provide a lockless list variant terminated
+    by a sentinel node.
+  - Modified patch 3 to use the new sllist API and move percpu_ref_put()
+    later in the blkcg_rstat_flush() loop to prevent potential
+    use-after-free problem.
 
-I'm talking about the scripted ones where it's currently a
-"del_timer_sync()", and the very next action is freeing whatever data
-structure the timer is in (possibly with something like free_irq() in
-between - my point is that there's an unconditional free that is very
-clear and unambiguous), so that there is absolutely no question about
-whether they should use "timer_shutdown_sync()" or not.
 
-IOW, things like patches 03, 17 and 31, and at least parts others in
-this series.
+This patch series improves blkcg_rstat_flush() performance by eliminating
+unnecessary blkg enumeration and flush operations for those blkg's and
+blkg_iostat_set's that haven't been updated since the last flush.
 
-This series clearly has several much more complex cases that need
-actual real code review, and I think it would help to have the
-completely unambiguous cases out of the way, just to get rid of noise.
+Waiman Long (3):
+  blk-cgroup: Return -ENOMEM directly in blkcg_css_alloc() error path
+  blk-cgroup: Optimize blkcg_rstat_flush()
+  blk-cgroup: Flush stats at blkgs destruction path
 
-So I'd take that first patch, and a scripted set of "this cannot
-change any semantics" patches early.
+ block/blk-cgroup.c     | 103 +++++++++++++++++++++++++++++++++++------
+ block/blk-cgroup.h     |  10 ++++
+ include/linux/cgroup.h |   1 +
+ kernel/cgroup/rstat.c  |  20 ++++++++
+ 4 files changed, 119 insertions(+), 15 deletions(-)
 
-                Linus
+-- 
+2.31.1
+
