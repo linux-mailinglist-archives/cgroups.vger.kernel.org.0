@@ -2,74 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B909A61DA6E
-	for <lists+cgroups@lfdr.de>; Sat,  5 Nov 2022 13:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D601B61DACF
+	for <lists+cgroups@lfdr.de>; Sat,  5 Nov 2022 15:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbiKEMny (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 5 Nov 2022 08:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
+        id S229781AbiKEOS0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 5 Nov 2022 10:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbiKEMnx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 5 Nov 2022 08:43:53 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233EF23BE0
-        for <cgroups@vger.kernel.org>; Sat,  5 Nov 2022 05:43:52 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id a5so11126340edb.11
-        for <cgroups@vger.kernel.org>; Sat, 05 Nov 2022 05:43:52 -0700 (PDT)
+        with ESMTP id S229614AbiKEOS0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 5 Nov 2022 10:18:26 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6100D8;
+        Sat,  5 Nov 2022 07:18:20 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id t62so7927689oib.12;
+        Sat, 05 Nov 2022 07:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
-        b=mPMWJSv9+I/YyfOX/KhSq6QJxEVF9czxBjlZfOBHyBNprqZzbXMAaGfMuCUz15WUgd
-         P8+TrngI9Rc3ViQGUSuldljbiqwUWen18O0hqt/Ie0OeGmALridq11sGaHqFDDc4lalJ
-         acwKewZa0Z+JmHCFhOB1EPm3VoCXqyskBeWh+qI8WdUTyGDi2ZRZxfd09WAIYwZTAuE6
-         D6FM36pRhxYi0ioJBBk7CWNeJYL6Gz2n7XR51nKKfVaOUPERzSe8HFAiowZB91Qmwfcs
-         4SUmlVM/PGDPqE9RxpsHH7kHCVf7N827dpoIMP0fu4UEVHZDK4bGxZoR2Xec1mMJWH/r
-         0h6A==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PYhR6hYWBdnOcbKjn7H8NpQf1Qg9j5JtEEKHrz9oi/g=;
+        b=cEC5IT1XpqlAK68Dgo5+fxnDFCjVpzY0DRagRqxTDry42i1dK2tcbNHYd7Ayss+LTR
+         Zq5Ih2v2443bsxwUvCZI2AevutQelDkhHOJqQhhh90RAdGwH1ztuIkNBULvbO0OWUDyB
+         Zs3Rt+XqCTKE2Cs9eS/ndyLispMby6sUmCV9hIPpDCZ1JKOuE8AnRRE6npVgjTBnltto
+         YYH4ZircOfT5HS0GEZGZOnxYVDveuMG1fd0QtTxHxYW8Huxn/roqBK+JFSqL6Tdp87g+
+         GSZROE0361WHir4UDtfX6jA945ccs7fZ7mz9TOtoNTCBa80eZ2tSlHY0p6xlLXtkRQTo
+         pyNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c8XA1N0uaxkLO/wKHErNWHaSuu64k5Pjb5u9dmcZrOc=;
-        b=M+c17Zl1J35oyf+Ia/HU5CnB2FtdaiEa9nBXP17ZLzoTJV0xr19B8c7jHNK5skHNdr
-         O+uuYRwJhInb+1tiLrsU0Bz5ebPuFhH8dPDcrYFWsdHZFeWsR28K+ZijtHmi+0CJVNOQ
-         wRyj+LjyUH5aJ2zlNqzxmo5Qxx9IckEYd3vAVzZEWgeXPodvgku8ATseNvH87Y+YRKky
-         OUCkO2Y5CvlE3zWEHbiV9HC5SCIe8gYB4RWZrZay9lchRyggOd9wcaAnY5U0yDyo3G/b
-         +1O5f+e5ZQMTXhCuuiT0qUB8A4rXulT6uhaofBZ8h71u+X8HO4sg/TBqyTQBn9DCXif3
-         1w2Q==
-X-Gm-Message-State: ACrzQf3I5bSFOvOilV6oRXvb6ska/fleSMWY5cf1i+ONkmn8SfKI1tQR
-        /jH3eHawfqmdGp+cRDxQbVaAgJ0H1PjY717u6z8=
-X-Google-Smtp-Source: AMsMyM6+i/60GLAa/SmSMCVLMrWq6VlVwX7X2L0dN+kFhjV6izdhKjpdEAZB1JmiGGgnIYpSeGh29lOxg8cgnriAXMM=
-X-Received: by 2002:aa7:c504:0:b0:461:122b:882b with SMTP id
- o4-20020aa7c504000000b00461122b882bmr41194609edq.14.1667652230661; Sat, 05
- Nov 2022 05:43:50 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PYhR6hYWBdnOcbKjn7H8NpQf1Qg9j5JtEEKHrz9oi/g=;
+        b=0L+F2Y9iQVD8xQC609r+5wtBIbz4VSSrBvwYsDE8sqfnClPBPVBbPQOCHtW+jReblG
+         sEmjRm428bVRXRcihuGA9nlbWR0DIv2H5zluwgOboNHo0lw31c/xMfGunfKLiFMd+V7w
+         qwMnOruxPwTg0g6wOIBjDlqX/mwwix4yHgLiCr/ttKljHbWH3Z3OfYEm1luKqYf9b0YZ
+         aEJ2jVAWoo89BTy5TJoucdP0dV/3eRHyHNdQdzPqFmDGGfZ6mUT134dqX9WGF0nvx8yC
+         VEes7HL/5g7/6CmUIlRYtJMPEFaDV+mxm3GGjOEQi4DvaLTtx9VsLLt9H14AGR3iig59
+         kEcg==
+X-Gm-Message-State: ACrzQf09gjQhXq48MF8zZNCAcEnjIXQLQhQeHddD0pUBo5Ys//Yua2s/
+        6aCtjDEuSx3VNdFHeHWvkzw=
+X-Google-Smtp-Source: AMsMyM5In/UjkQAOQkguZQ2rHL63I8msSs9c6an0J/9gKdjSX2hezT8PwL34Y+85tQUi0BEYyplo0Q==
+X-Received: by 2002:a05:6808:2104:b0:35a:5e9:a411 with SMTP id r4-20020a056808210400b0035a05e9a411mr18764923oiw.168.1667657900081;
+        Sat, 05 Nov 2022 07:18:20 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e1-20020a056870c0c100b00132741e966asm830469oad.51.2022.11.05.07.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Nov 2022 07:18:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 5 Nov 2022 07:18:17 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-edac@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bluetooth@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, intel-gfx@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-leds@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
+ timers
+Message-ID: <20221105141817.GF1606271@roeck-us.net>
+References: <20221105060024.598488967@goodmis.org>
 MIME-Version: 1.0
-Received: by 2002:a05:7208:33:b0:5c:ee07:e4f3 with HTTP; Sat, 5 Nov 2022
- 05:43:49 -0700 (PDT)
-Reply-To: stefanopessia755@hotmail.com
-From:   Stefano Pessina <francisnzioka80@gmail.com>
-Date:   Sat, 5 Nov 2022 15:43:49 +0300
-Message-ID: <CAL5scYq=1B=-RX8Eh9M9tf4CevQNnnh7JZ63=g4o=AHLN+9dbg@mail.gmail.com>
-Subject: Geldspende
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221105060024.598488967@goodmis.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---=20
-Die Summe von 500.000,00 =E2=82=AC wurde Ihnen von STEFANO PESSINA gespende=
-t.
-Bitte kontaktieren Sie uns f=C3=BCr weitere Informationen =C3=BCber
-stefanopessia755@hotmail.com
+On Sat, Nov 05, 2022 at 02:00:24AM -0400, Steven Rostedt wrote:
+> 
+> Back in April, I posted an RFC patch set to help mitigate a common issue
+> where a timer gets armed just before it is freed, and when the timer
+> goes off, it crashes in the timer code without any evidence of who the
+> culprit was. I got side tracked and never finished up on that patch set.
+> Since this type of crash is still our #1 crash we are seeing in the field,
+> it has become a priority again to finish it.
+> 
+> The last version of that patch set is here:
+> 
+>   https://lore.kernel.org/all/20221104054053.431922658@goodmis.org/
+> 
+> I'm calling this version 4a as it only has obvious changes were the timer that
+> is being shutdown is in the same function where it will be freed or released,
+> as this series should be "safe" for adding. I'll be calling the other patches
+> 4b for the next merge window.
+> 
+
+Just in case you didn't notice:
+
+Looking through the resulting code, I think some of the remaining
+calls to del_singleshot_timer_sync() can be converted as well.
+
+The calls in drivers/staging/wlan-ng/prism2usb.c:prism2sta_disconnect_usb()
+are obvious (the containing data structure is freed in the same function).
+For drivers/char/tpm/tpm-dev-common.c:tpm_common_release(), the containing
+data structure is freed in the calling code.
+
+Thanks,
+Guenter
