@@ -2,61 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D6E61A683
-	for <lists+cgroups@lfdr.de>; Sat,  5 Nov 2022 02:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47FF61A6C2
+	for <lists+cgroups@lfdr.de>; Sat,  5 Nov 2022 02:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbiKEBBR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Nov 2022 21:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        id S229639AbiKEBrF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Nov 2022 21:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiKEBBQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Nov 2022 21:01:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719B42CC9E
-        for <cgroups@vger.kernel.org>; Fri,  4 Nov 2022 17:59:27 -0700 (PDT)
+        with ESMTP id S229615AbiKEBrE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Nov 2022 21:47:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F28711162
+        for <cgroups@vger.kernel.org>; Fri,  4 Nov 2022 18:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667609966;
+        s=mimecast20190719; t=1667612767;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TbSqpBbgk+NOPaOLl9NnIjbIwkdm/eU7seDomB5Bqqc=;
-        b=hC3W5xrv1hzpboUte+r7ZCXiko2DbKz7tJAvWpY9f/TfmOnVFZzEJSkf4oNCDkY7Joafye
-        /jT7nhodOprYfpsJLHdGgF3baXQNdZlx7KpiRenq6iRDawfJuSmyxVCW/Kh5Xg5NMGSR0B
-        v6GS31NKvzdB8te+F88ba9iNF2yyQTg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-121-2BACaGxTOzyXSMlgs6nv3w-1; Fri, 04 Nov 2022 20:59:23 -0400
-X-MC-Unique: 2BACaGxTOzyXSMlgs6nv3w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D566F85A5B6;
-        Sat,  5 Nov 2022 00:59:22 +0000 (UTC)
-Received: from llong.com (unknown [10.22.16.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60D952166B26;
-        Sat,  5 Nov 2022 00:59:22 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        bh=n/vEmjXbFu8njlGuJecpg9SySWjZKX34Yfb/SdTSRfo=;
+        b=Ifi5/2lXuO+StfasRI76KsPPrE7bXnS/5t/kRBfKaQGiUvfdkfSOye8kSBZYMvROAa3MWm
+        G+Fg5pVWo8Vv4fSd/fXzltPMkBKzBg+fMWfbI/nt5T2NlTXdIzN1Ht+v0EoK/OIPTz8CkZ
+        ZSwesK1tm5Jjo7zAdC280oeO97OazbI=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-134-7RSUB1I3Pf-RVX157DQiQg-1; Fri, 04 Nov 2022 21:46:06 -0400
+X-MC-Unique: 7RSUB1I3Pf-RVX157DQiQg-1
+Received: by mail-oi1-f198.google.com with SMTP id x203-20020acae0d4000000b0035a623fce1aso1001376oig.10
+        for <cgroups@vger.kernel.org>; Fri, 04 Nov 2022 18:46:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n/vEmjXbFu8njlGuJecpg9SySWjZKX34Yfb/SdTSRfo=;
+        b=49mQl57hy+Og3SancQ067dmekwIXI34ShzzoMst8B8RMyn846IwJy4rTGE4v81AB2y
+         gcwW7fmd+UzmxcGm5XEByPBkP7/aSur4t+3heVj8A1gpyxHPbuReu5pOZ7z45dv0cN6J
+         GhU8fHKGW1X4n/PLX1AK4JQ7fPDwcjY5iNqV4Mdt9Gp4XenFNi4oDqj66H/Ikiyw8PL4
+         vkv9Kq0BGCtTAcjw5MQBAkFAHpVxYq1otqW5MWJQcl3khwyBf7Sbk732dpDgwkLPCAGU
+         dL2uKCEFFdVKWuQ65AK8NhG8IiupXBe7D2milLxH1KIlpafgg5UraioIHwM+Jam5c8jY
+         XetA==
+X-Gm-Message-State: ACrzQf219uHzKw1OtegagHPSGGOjX6FgJgwuT6e4WUD6v2PVkRbjK1wK
+        Eu41uwaZoo9si+GnUbEu0cfPabRZNjyqOn+YvZ6cJfN9p3OMzzx8RTa3oBnUYWe1UPyxhhZ+R91
+        p+awegfGzCoU6df1f3A==
+X-Received: by 2002:a05:6830:6991:b0:661:281c:66ad with SMTP id cy17-20020a056830699100b00661281c66admr18892779otb.243.1667612765521;
+        Fri, 04 Nov 2022 18:46:05 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6ZlDNmrYvwFnYbdlFuIgRhOVvkF7K2jY/yn2OBZt07iZaph+M3IW9r0LY/9L/ACYpHMKBcxA==
+X-Received: by 2002:a05:6830:6991:b0:661:281c:66ad with SMTP id cy17-20020a056830699100b00661281c66admr18892773otb.243.1667612765241;
+        Fri, 04 Nov 2022 18:46:05 -0700 (PDT)
+Received: from ?IPv6:2804:1b3:a802:1099:7cb2:3a49:6197:5307? ([2804:1b3:a802:1099:7cb2:3a49:6197:5307])
+        by smtp.gmail.com with ESMTPSA id m27-20020a056870a11b00b0013669485016sm290444oae.37.2022.11.04.18.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Nov 2022 18:46:04 -0700 (PDT)
+Message-ID: <3c4ae3bb70d92340d9aaaa1856928476641a8533.camel@redhat.com>
+Subject: Re: [PATCH v1 0/3] Avoid scheduling cache draining to isolated cpus
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v10 3/3] blk-cgroup: Flush stats at blkgs destruction path
-Date:   Fri,  4 Nov 2022 20:59:02 -0400
-Message-Id: <20221105005902.407297-4-longman@redhat.com>
-In-Reply-To: <20221105005902.407297-1-longman@redhat.com>
-References: <20221105005902.407297-1-longman@redhat.com>
+        Frederic Weisbecker <frederic@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Date:   Fri, 04 Nov 2022 22:45:58 -0300
+In-Reply-To: <Y2TQLavnLVd4qHMT@dhcp22.suse.cz>
+References: <20221102020243.522358-1-leobras@redhat.com>
+         <Y2IwHVdgAJ6wfOVH@dhcp22.suse.cz>
+         <07810c49ef326b26c971008fb03adf9dc533a178.camel@redhat.com>
+         <Y2Pe45LHANFxxD7B@dhcp22.suse.cz>
+         <0183b60e79cda3a0f992d14b4db5a818cd096e33.camel@redhat.com>
+         <Y2TQLavnLVd4qHMT@dhcp22.suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,106 +100,126 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As noted by Michal, the blkg_iostat_set's in the lockless list
-hold reference to blkg's to protect against their removal. Those
-blkg's hold reference to blkcg. When a cgroup is being destroyed,
-cgroup_rstat_flush() is only called at css_release_work_fn() which is
-called when the blkcg reference count reaches 0. This circular dependency
-will prevent blkcg from being freed until some other events cause
-cgroup_rstat_flush() to be called to flush out the pending blkcg stats.
+On Fri, 2022-11-04 at 09:41 +0100, Michal Hocko wrote:
+> On Thu 03-11-22 13:53:41, Leonardo Br=C3=A1s wrote:
+> > On Thu, 2022-11-03 at 16:31 +0100, Michal Hocko wrote:
+> > > On Thu 03-11-22 11:59:20, Leonardo Br=C3=A1s wrote:
+> [...]
+> > > > I understand there will be a locking cost being paid in the isolate=
+d CPUs when:
+> > > > a) The isolated CPU is requesting the stock drain,
+> > > > b) When the isolated CPUs do a syscall and end up using the protect=
+ed structure
+> > > > the first time after a remote drain.
+> > >=20
+> > > And anytime the charging path (consume_stock resp. refill_stock)
+> > > contends with the remote draining which is out of control of the RT
+> > > task. It is true that the RT kernel will turn that spin lock into a
+> > > sleeping RT lock and that could help with potential priority inversio=
+ns
+> > > but still quite costly thing I would expect.
+> > >=20
+> > > > Both (a) and (b) should happen during a syscall, and IIUC the a rt =
+workload
+> > > > should not expect the syscalls to be have a predictable time, so it=
+ should be
+> > > > fine.
+> > >=20
+> > > Now I am not sure I understand. If you do not consider charging path =
+to
+> > > be RT sensitive then why is this needed in the first place? What else
+> > > would be populating the pcp cache on the isolated cpu? IRQs?
+> >=20
+> > I am mostly trying to deal with drain_all_stock() calling schedule_work=
+_on() at
+> > isolated_cpus. Since the scheduled drain_local_stock() will be competin=
+g for cpu
+> > time with the RT workload, we can have preemption of the RT workload, w=
+hich is a
+> > problem for meeting the deadlines.
+>=20
+> Yes, this is understood. But it is not really clear to me why would any
+> draining be necessary for such an isolated CPU if no workload other than
+> the RT (which pressumably doesn't charge any memory?) is running on that
+> CPU? Is that the RT task during the initialization phase that leaves
+> that cache behind or something else?
 
-To prevent this delayed blkcg removal, add a new cgroup_rstat_css_flush()
-function to flush stats for a given css and cpu and call it at the blkgs
-destruction path, blkcg_destroy_blkgs(), whenever there are still some
-pending stats to be flushed. This will ensure that blkcg reference
-count can reach 0 ASAP.
+(I am new to this part of the code, so please correct me when I miss someth=
+ing.)
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- block/blk-cgroup.c     | 15 ++++++++++++++-
- include/linux/cgroup.h |  1 +
- kernel/cgroup/rstat.c  | 20 ++++++++++++++++++++
- 3 files changed, 35 insertions(+), 1 deletion(-)
+IIUC,=C2=A0if a process belongs to a control group with memory control, the=
+ 'charge'
+will happen when a memory page starts getting used by it.
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 3e03c0d13253..57941d2a8ba3 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1084,10 +1084,12 @@ struct list_head *blkcg_get_cgwb_list(struct cgroup_subsys_state *css)
-  */
- static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- {
-+	int cpu;
-+
- 	might_sleep();
- 
-+	css_get(&blkcg->css);
- 	spin_lock_irq(&blkcg->lock);
--
- 	while (!hlist_empty(&blkcg->blkg_list)) {
- 		struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
- 						struct blkcg_gq, blkcg_node);
-@@ -1110,6 +1112,17 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- 	}
- 
- 	spin_unlock_irq(&blkcg->lock);
-+
-+	/*
-+	 * Flush all the non-empty percpu lockless lists.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		struct llist_head *lhead = per_cpu_ptr(blkcg->lhead, cpu);
-+
-+		if (!llist_empty(lhead))
-+			cgroup_rstat_css_cpu_flush(&blkcg->css, cpu);
-+	}
-+	css_put(&blkcg->css);
- }
- 
- /**
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 528bd44b59e2..6c4e66b3fa84 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -766,6 +766,7 @@ void cgroup_rstat_flush(struct cgroup *cgrp);
- void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp);
- void cgroup_rstat_flush_hold(struct cgroup *cgrp);
- void cgroup_rstat_flush_release(void);
-+void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu);
- 
- /*
-  * Basic resource stats.
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 793ecff29038..910e633869b0 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -281,6 +281,26 @@ void cgroup_rstat_flush_release(void)
- 	spin_unlock_irq(&cgroup_rstat_lock);
- }
- 
-+/**
-+ * cgroup_rstat_css_cpu_flush - flush stats for the given css and cpu
-+ * @css: target css to be flush
-+ * @cpu: the cpu that holds the stats to be flush
-+ *
-+ * A lightweight rstat flush operation for a given css and cpu.
-+ * Only the cpu_lock is being held for mutual exclusion, the cgroup_rstat_lock
-+ * isn't used.
-+ */
-+void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu)
-+{
-+	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
-+
-+	raw_spin_lock_irq(cpu_lock);
-+	rcu_read_lock();
-+	css->ss->css_rstat_flush(css, cpu);
-+	rcu_read_unlock();
-+	raw_spin_unlock_irq(cpu_lock);
-+}
-+
- int cgroup_rstat_init(struct cgroup *cgrp)
- {
- 	int cpu;
--- 
-2.31.1
+So, if we assume a RT load in a isolated CPU will not charge any memory, we=
+ are
+assuming it will never be part of a memory-controlled cgroup.
+
+I mean, can we just assume this?=20
+
+If I got that right, would not that be considered a limitation? like
+"If you don't want your workload to be interrupted by perCPU cache draining=
+,
+don't put it in a cgroup with memory control".
+
+> Sorry for being so focused on this
+> but I would like to understand on whether this is avoidable by a
+> different startup scheme or it really needs to be addressed in some way.
+
+No worries, I am in fact happy you are giving it this much attention :)
+
+I also understand this is a considerable change in the locking strategy, an=
+d
+avoiding that is the first thing that should be tried.
+
+>=20
+> > One way I thought to solve that was introducing a remote drain, which w=
+ould
+> > require a different strategy for locking, since not all accesses to the=
+ pcp
+> > caches would happen on a local CPU.=20
+>=20
+> Yeah, I am not supper happy about additional spin lock TBH. One
+> potential way to go would be to completely avoid pcp cache for isolated
+> CPUs.=C2=A0That would have some performance impact of course but on the o=
+ther
+> hand it would give a more predictable behavior for those CPUs which
+> sounds like a reasonable compromise to me. What do you think?
+
+You mean not having a perCPU stock, then?=20
+So consume_stock() for isolated CPUs would always return false, causing
+try_charge_memcg() always walking the slow path?
+
+IIUC, both my proposal and yours would degrade performance only when we use
+isolated CPUs + memcg. Is that correct?
+
+If so, it looks like the impact would be even bigger without perCPU stock ,
+compared to introducing a spinlock.
+
+Unless, we are counting to this case where a remote CPU is draining an isol=
+ated
+CPU, and the isolated CPU faults a page, and has to wait for the spinlock t=
+o be
+released in the remote CPU. Well, this seems possible to happen, but I woul=
+d
+have to analyze how often would it happen, and how much would it impact the
+deadlines. I *guess* most of the RT workload's memory pages are pre-faulted
+before its starts, so it can avoid the faulting latency, but I need to conf=
+irm
+that.
+
+On the other hand, compared to how it works now now, this should be a more
+controllable way of introducing latency than a scheduled cache drain.
+
+Your suggestion on no-stocks/caches in isolated CPUs would be great for
+predictability, but I am almost sure the cost in overall performance would =
+not
+be fine.
+
+With the possibility of prefaulting pages, do you see any scenario that wou=
+ld
+introduce some undesirable latency in the workload?
+
+Thanks a lot for the discussion!
+Leo
 
