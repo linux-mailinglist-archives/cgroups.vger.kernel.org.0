@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA3A622FE0
-	for <lists+cgroups@lfdr.de>; Wed,  9 Nov 2022 17:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2826622FDE
+	for <lists+cgroups@lfdr.de>; Wed,  9 Nov 2022 17:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbiKIQMx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Nov 2022 11:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58750 "EHLO
+        id S232193AbiKIQMw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Nov 2022 11:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbiKIQMZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Nov 2022 11:12:25 -0500
+        with ESMTP id S232125AbiKIQM2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Nov 2022 11:12:28 -0500
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4808210FE6;
-        Wed,  9 Nov 2022 08:12:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94C022B21;
+        Wed,  9 Nov 2022 08:12:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668010344; x=1699546344;
+  t=1668010347; x=1699546347;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+tkTnG1kbfQkuQWu7X2WwiAikHzraT6aROxd5PKF3OE=;
-  b=KkXfG5UOC8FnwK3BUSvUAUaauAYhy9JDQd9nHEuvFTisnIwGpW5diy49
-   +s1YSZrd1qsSFXiTzjn3KbD1rEaLolOLaa8FBegD3HslpvvI9Sh6aY8d0
-   VOV9iW7CgBoJXRmJb6DcyOMRNWXrC0zPwm6XfCLbNyEg9yx5Qo8TDVdn/
-   94WtnDDLyTvrEOwcUXrlfSBLbNY7/p8ArfPwQSM1OlmnrmEfolMovKDrJ
-   kRhiAkpOHGzjteP/oieVOeHSRPqdefHjHSadXw/2sFjhgTx6VGlwwO33u
-   BWWvJUwGcx3w5wiLKg16oW1QT3E5LEp4zkeBODYjAqn6K5J0KmZ+dXN+1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="312181384"
+  bh=Qq6Henm8EAobf6LwC/wUuKCvjc1IJ70N8x2PFzYMvRs=;
+  b=YjQ+5XBr03tLQEV+adZgg5GKoWtQ9dsdG6v9oQZaokU8/FoXrWlP8GTM
+   sP7R4QY9/Z6oK02iTeyboaw84UOJAnI9Pc1xr4oyDoriO+0j4R0DEq8U6
+   DyZ4wl27XRC3gxCxl/Tm7oN7blY8AW/gqaGGepy7lh7Bvtt7XuG0GcV7N
+   MNfWiVOSgDT/ipusmPaUPYegKMOsNJ1InFoq0aI6x4MIaz7SIdeQkgOWD
+   BpW8GGbS6tvQIJeOUwlxJKvhC6h3uHAKODTG72oRLWN9Bj0mjyWfN2pVF
+   8h+nohNk8m/T9WX/WPUK5+rBIvzwnoc02RQvQnBrU7mL37ErV6dKQLsSp
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="312181402"
 X-IronPort-AV: E=Sophos;i="5.96,151,1665471600"; 
-   d="scan'208";a="312181384"
+   d="scan'208";a="312181402"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:24 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="811684529"
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:27 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="811684540"
 X-IronPort-AV: E=Sophos;i="5.96,151,1665471600"; 
-   d="scan'208";a="811684529"
+   d="scan'208";a="811684540"
 Received: from smurnane-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.196.238])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:20 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:24 -0800
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -51,9 +51,9 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [RFC 07/13] drm/cgroup: Add ability to query drm cgroup GPU time
-Date:   Wed,  9 Nov 2022 16:11:35 +0000
-Message-Id: <20221109161141.2987173-8-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 08/13] drm/cgroup: Add over budget signalling callback
+Date:   Wed,  9 Nov 2022 16:11:36 +0000
+Message-Id: <20221109161141.2987173-9-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
 References: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
@@ -71,29 +71,28 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-Add a driver callback and core helper which allow querying the time spent
-on GPUs for processes belonging to a group.
+Add a new callback via which the drm cgroup controller is notifying the
+drm core that a certain process is above its allotted GPU time.
 
 Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 ---
- drivers/gpu/drm/drm_cgroup.c | 24 ++++++++++++++++++++++++
- include/drm/drm_clients.h    |  2 ++
- include/drm/drm_drv.h        | 28 ++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+)
+ drivers/gpu/drm/drm_cgroup.c | 21 +++++++++++++++++++++
+ include/drm/drm_clients.h    |  1 +
+ include/drm/drm_drv.h        |  8 ++++++++
+ 3 files changed, 30 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_cgroup.c b/drivers/gpu/drm/drm_cgroup.c
-index 94e6f39b90c7..06810b4c3ff1 100644
+index 06810b4c3ff1..e3854741c584 100644
 --- a/drivers/gpu/drm/drm_cgroup.c
 +++ b/drivers/gpu/drm/drm_cgroup.c
-@@ -128,3 +128,27 @@ drm_clients_migrate(struct drm_file *file_priv,
- 	atomic_inc(&clients->num);
- 	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
+@@ -152,3 +152,24 @@ u64 drm_pid_get_active_time_us(struct pid *pid)
+ 	return total;
  }
+ EXPORT_SYMBOL_GPL(drm_pid_get_active_time_us);
 +
-+u64 drm_pid_get_active_time_us(struct pid *pid)
++void drm_pid_signal_budget(struct pid *pid, u64 usage, u64 budget)
 +{
 +	struct drm_pid_clients *clients;
-+	u64 total = 0;
 +
 +	rcu_read_lock();
 +	clients = xa_load(&drm_pid_clients, (unsigned long)pid);
@@ -104,72 +103,43 @@ index 94e6f39b90c7..06810b4c3ff1 100644
 +			const struct drm_cgroup_ops *cg_ops =
 +				fpriv->minor->dev->driver->cg_ops;
 +
-+			if (cg_ops && cg_ops->active_time_us)
-+				total += cg_ops->active_time_us(fpriv);
++			if (cg_ops && cg_ops->signal_budget)
++				cg_ops->signal_budget(fpriv, usage, budget);
 +		}
 +	}
 +	rcu_read_unlock();
-+
-+	return total;
 +}
-+EXPORT_SYMBOL_GPL(drm_pid_get_active_time_us);
++EXPORT_SYMBOL_GPL(drm_pid_signal_budget);
 diff --git a/include/drm/drm_clients.h b/include/drm/drm_clients.h
-index fbb8cffdf7a9..b9b8009c28a6 100644
+index b9b8009c28a6..356ee92792a6 100644
 --- a/include/drm/drm_clients.h
 +++ b/include/drm/drm_clients.h
-@@ -41,4 +41,6 @@ drm_clients_migrate(struct drm_file *file_priv,
- }
+@@ -42,5 +42,6 @@ drm_clients_migrate(struct drm_file *file_priv,
  #endif
  
-+u64 drm_pid_get_active_time_us(struct pid *pid);
-+
+ u64 drm_pid_get_active_time_us(struct pid *pid);
++void drm_pid_signal_budget(struct pid *pid, u64 usage, u64 budget);
+ 
  #endif
 diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
-index f6159acb8856..c09fe9bd517f 100644
+index c09fe9bd517f..c30afe97f922 100644
 --- a/include/drm/drm_drv.h
 +++ b/include/drm/drm_drv.h
-@@ -148,6 +148,24 @@ enum drm_driver_feature {
- 	DRIVER_KMS_LEGACY_CONTEXT	= BIT(31),
+@@ -164,6 +164,14 @@ struct drm_cgroup_ops {
+ 	 * Used by the DRM core when queried by the DRM cgroup controller.
+ 	 */
+ 	u64 (*active_time_us) (struct drm_file *);
++
++	/**
++	 * @signal_budget:
++	 *
++	 * Optional callback used by the DRM core to forward over/under GPU time
++	 * messages sent by the DRM cgroup controller.
++	 */
++	int (*signal_budget) (struct drm_file *, u64 used, u64 budget);
  };
  
-+/**
-+ * struct drm_cgroup_ops
-+ *
-+ * This structure contains a number of callbacks that drivers can provide if
-+ * they are able to support one or more of the functionalities implemented by
-+ * the DRM cgroup controller.
-+ */
-+struct drm_cgroup_ops {
-+	/**
-+	 * @active_time_us:
-+	 *
-+	 * Optional callback for reporting the GPU time consumed by this client.
-+	 *
-+	 * Used by the DRM core when queried by the DRM cgroup controller.
-+	 */
-+	u64 (*active_time_us) (struct drm_file *);
-+};
-+
  /**
-  * struct drm_driver - DRM driver structure
-  *
-@@ -459,6 +477,16 @@ struct drm_driver {
- 	 */
- 	const struct file_operations *fops;
- 
-+#ifdef CONFIG_CGROUP_DRM
-+	/**
-+	 * @cg_ops:
-+	 *
-+	 * Optional pointer to driver callbacks facilitating integration with
-+	 * the DRM cgroup controller.
-+	 */
-+	const struct drm_cgroup_ops *cg_ops;
-+#endif
-+
- #ifdef CONFIG_DRM_LEGACY
- 	/* Everything below here is for legacy driver, never use! */
- 	/* private: */
 -- 
 2.34.1
 
