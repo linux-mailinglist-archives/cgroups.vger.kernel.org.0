@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 963F8622FD1
-	for <lists+cgroups@lfdr.de>; Wed,  9 Nov 2022 17:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D22A622FD3
+	for <lists+cgroups@lfdr.de>; Wed,  9 Nov 2022 17:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbiKIQMX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Nov 2022 11:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
+        id S231887AbiKIQM0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Nov 2022 11:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbiKIQMS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Nov 2022 11:12:18 -0500
+        with ESMTP id S232051AbiKIQMT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Nov 2022 11:12:19 -0500
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C654A22BC4;
-        Wed,  9 Nov 2022 08:12:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599D2220FA;
+        Wed,  9 Nov 2022 08:12:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668010334; x=1699546334;
+  t=1668010337; x=1699546337;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=2BMu5cQFprtCxtPp+oUiMxCkYO0RYwczmemKP8KDzJQ=;
-  b=WTKMsaYJ0KnqM1xg3jzS6hlD5dGy951FBSilNa2goOgtiB84Q9IOC1MC
-   Wf7EgABXbjbtyJiY/zQkNM1q5wrCeNC8soTSC6/r1suN6dSX2z5HLpc68
-   PcHiohgCp62NSr39OFYqa3NaHsW7RP1NW79Nxay4Qk4RXKl9kj7mGOGH3
-   XRUrYKUj3WoW2cNKCEPVXwbdr9K5mWX7e8L18ghPEp1SblHeYCv9iomfr
-   mB3cuidkTFymGArlO6bHqiGC6eFxx97rPnv7YmkKCv92gspXlTcOJKueF
-   4SglUyBw9DXi6WtnOG6qWSINDFvfkyPdF98ZWirFYjub06yUPdZepXoiU
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="312181332"
+  bh=DOi4RMupNEjpYyK4WovQ8kG/iXKjxHECtSroc0kXvAE=;
+  b=CtuIL09I139syLEmVYuiqfQuO8R7ReTxij1KU7fqkZ2DseuIKLe+IXHU
+   RH44Ltk2t0Y6ZGQS+cxmIXC6pn4DMkoK9QX5YVJlzCvDUs7F19ePIEJGF
+   soGT3OyZ4zreF1ODbOEPJ63dsKtYMiwkk7/GCCHUtxkY9hf57JPDOx4K/
+   ifbiMGTNI9nOLbP6GfUEHDu87A76he+uL6ZVPEvMsvWX+a34l1wuULZuu
+   X/HXlXZwr7E3PEg4hDw8IBVFarQvkIs8uwuKhoxrxe5RLwwOSzGOP4AZr
+   rUZdc+6dNOsV1Lz9YBqYkhkUSMyqEN7DCCilJJgZa6MrKYByZ31c4x8w0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="312181345"
 X-IronPort-AV: E=Sophos;i="5.96,151,1665471600"; 
-   d="scan'208";a="312181332"
+   d="scan'208";a="312181345"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:13 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="811684449"
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:17 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="811684480"
 X-IronPort-AV: E=Sophos;i="5.96,151,1665471600"; 
-   d="scan'208";a="811684449"
+   d="scan'208";a="811684480"
 Received: from smurnane-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.196.238])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:10 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:13 -0800
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -51,9 +51,9 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [RFC 04/13] cgroup: Add the DRM cgroup controller
-Date:   Wed,  9 Nov 2022 16:11:32 +0000
-Message-Id: <20221109161141.2987173-5-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 05/13] drm/cgroup: Track clients per owning process
+Date:   Wed,  9 Nov 2022 16:11:33 +0000
+Message-Id: <20221109161141.2987173-6-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
 References: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
@@ -72,137 +72,300 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-Skeleton controller without any functionality.
+To enable propagation of settings from the cgroup drm controller to drm we
+need to start tracking which processes own which drm clients.
+
+Implement that by tracking the struct pid pointer of the owning process in
+a new XArray, pointing to a structure containing a list of associated
+struct drm_file pointers.
+
+Clients are added and removed under the filelist mutex and RCU list
+operations are used below it to allow for lockless lookup.
 
 Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 ---
- include/linux/cgroup_drm.h    |  9 ++++++
- include/linux/cgroup_subsys.h |  4 +++
- init/Kconfig                  |  7 +++++
- kernel/cgroup/Makefile        |  1 +
- kernel/cgroup/drm.c           | 54 +++++++++++++++++++++++++++++++++++
- 5 files changed, 75 insertions(+)
- create mode 100644 include/linux/cgroup_drm.h
- create mode 100644 kernel/cgroup/drm.c
+ drivers/gpu/drm/Makefile     |   1 +
+ drivers/gpu/drm/drm_cgroup.c | 123 +++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/drm_file.c   |  21 ++++--
+ include/drm/drm_clients.h    |  44 +++++++++++++
+ include/drm/drm_file.h       |   4 ++
+ 5 files changed, 189 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/gpu/drm/drm_cgroup.c
+ create mode 100644 include/drm/drm_clients.h
 
-diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index c44a54cadb61..4495dda2a720 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -59,6 +59,7 @@ drm-$(CONFIG_DRM_LEGACY) += \
+ 	drm_scatter.o \
+ 	drm_vm.o
+ drm-$(CONFIG_DRM_LIB_RANDOM) += lib/drm_random.o
++drm-$(CONFIG_CGROUP_DRM) += drm_cgroup.o
+ drm-$(CONFIG_COMPAT) += drm_ioc32.o
+ drm-$(CONFIG_DRM_PANEL) += drm_panel.o
+ drm-$(CONFIG_OF) += drm_of.o
+diff --git a/drivers/gpu/drm/drm_cgroup.c b/drivers/gpu/drm/drm_cgroup.c
 new file mode 100644
-index 000000000000..bf8abc6b8ebf
+index 000000000000..56aa8303974a
 --- /dev/null
-+++ b/include/linux/cgroup_drm.h
-@@ -0,0 +1,9 @@
++++ b/drivers/gpu/drm/drm_cgroup.c
+@@ -0,0 +1,123 @@
 +/* SPDX-License-Identifier: MIT */
 +/*
 + * Copyright © 2022 Intel Corporation
 + */
 +
-+#ifndef _CGROUP_DRM_H
-+#define _CGROUP_DRM_H
++#include <drm/drm_drv.h>
++#include <drm/drm_clients.h>
 +
-+#endif	/* _CGROUP_DRM_H */
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index 445235487230..49460494a010 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -65,6 +65,10 @@ SUBSYS(rdma)
- SUBSYS(misc)
++static DEFINE_XARRAY(drm_pid_clients);
++
++static void
++__del_clients(struct drm_pid_clients *clients,
++	      struct drm_file *file_priv,
++	      unsigned long pid)
++{
++	list_del_rcu(&file_priv->clink);
++	if (atomic_dec_and_test(&clients->num)) {
++		xa_erase(&drm_pid_clients, pid);
++		kfree_rcu(clients, rcu);
++	}
++}
++
++void drm_clients_close(struct drm_file *file_priv)
++{
++	struct drm_device *dev = file_priv->minor->dev;
++	struct drm_pid_clients *clients;
++	struct pid *pid;
++
++	lockdep_assert_held(&dev->filelist_mutex);
++
++	pid = rcu_access_pointer(file_priv->pid);
++	clients = xa_load(&drm_pid_clients, (unsigned long)pid);
++	if (WARN_ON_ONCE(!clients))
++		return;
++
++	__del_clients(clients, file_priv, (unsigned long)pid);
++}
++
++static struct drm_pid_clients *__alloc_clients(void)
++{
++	struct drm_pid_clients *clients;
++
++	clients = kmalloc(sizeof(*clients), GFP_KERNEL);
++	if (clients) {
++		atomic_set(&clients->num, 0);
++		INIT_LIST_HEAD(&clients->file_list);
++		init_rcu_head(&clients->rcu);
++	}
++
++	return clients;
++}
++
++int drm_clients_open(struct drm_file *file_priv)
++{
++	struct drm_device *dev = file_priv->minor->dev;
++	struct drm_pid_clients *clients;
++	bool new_client = false;
++	unsigned long pid;
++
++	lockdep_assert_held(&dev->filelist_mutex);
++
++	pid = (unsigned long)rcu_access_pointer(file_priv->pid);
++	clients = xa_load(&drm_pid_clients, pid);
++	if (!clients) {
++		clients = __alloc_clients();
++		if (!clients)
++			return -ENOMEM;
++		new_client = true;
++	}
++	atomic_inc(&clients->num);
++	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
++	if (new_client) {
++		void *xret;
++
++		xret = xa_store(&drm_pid_clients, pid, clients, GFP_KERNEL);
++		if (xa_err(xret)) {
++			list_del_init(&file_priv->clink);
++			kfree(clients);
++			return PTR_ERR(clients);
++		}
++	}
++
++	return 0;
++}
++
++void
++drm_clients_migrate(struct drm_file *file_priv,
++		    unsigned long old,
++		    unsigned long new)
++{
++	struct drm_device *dev = file_priv->minor->dev;
++	struct drm_pid_clients *existing_clients;
++	struct drm_pid_clients *clients;
++
++	lockdep_assert_held(&dev->filelist_mutex);
++
++	existing_clients = xa_load(&drm_pid_clients, new);
++	clients = xa_load(&drm_pid_clients, old);
++
++	if (WARN_ON_ONCE(!clients))
++		return;
++	else if (WARN_ON_ONCE(clients == existing_clients))
++		return;
++
++	__del_clients(clients, file_priv, old);
++
++	if (!existing_clients) {
++		void *xret;
++
++		clients = __alloc_clients();
++		if (WARN_ON(!clients))
++			return;
++
++		xret = xa_store(&drm_pid_clients, new, clients, GFP_KERNEL);
++		if (WARN_ON(xa_err(xret)))
++			return;
++	} else {
++		clients = existing_clients;
++	}
++
++	atomic_inc(&clients->num);
++	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
++}
+diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+index 4f5cff5c0bea..16ca5b88f414 100644
+--- a/drivers/gpu/drm/drm_file.c
++++ b/drivers/gpu/drm/drm_file.c
+@@ -40,6 +40,7 @@
+ #include <linux/slab.h>
+ 
+ #include <drm/drm_client.h>
++#include <drm/drm_clients.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_file.h>
+ #include <drm/drm_print.h>
+@@ -298,6 +299,7 @@ static void drm_close_helper(struct file *filp)
+ 
+ 	mutex_lock(&dev->filelist_mutex);
+ 	list_del(&file_priv->lhead);
++	drm_clients_close(file_priv);
+ 	mutex_unlock(&dev->filelist_mutex);
+ 
+ 	drm_file_free(file_priv);
+@@ -349,10 +351,8 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
+ 
+ 	if (drm_is_primary_client(priv)) {
+ 		ret = drm_master_open(priv);
+-		if (ret) {
+-			drm_file_free(priv);
+-			return ret;
+-		}
++		if (ret)
++			goto err_free;
+ 	}
+ 
+ 	filp->private_data = priv;
+@@ -360,6 +360,9 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
+ 	priv->filp = filp;
+ 
+ 	mutex_lock(&dev->filelist_mutex);
++	ret = drm_clients_open(priv);
++	if (ret)
++		goto err_unlock;
+ 	list_add(&priv->lhead, &dev->filelist);
+ 	mutex_unlock(&dev->filelist_mutex);
+ 
+@@ -387,6 +390,13 @@ static int drm_open_helper(struct file *filp, struct drm_minor *minor)
  #endif
  
-+#if IS_ENABLED(CONFIG_CGROUP_DRM)
-+SUBSYS(drm)
-+#endif
+ 	return 0;
 +
- /*
-  * The following subsystems are not supported on the default hierarchy.
-  */
-diff --git a/init/Kconfig b/init/Kconfig
-index abf65098f1b6..70c08f340961 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1087,6 +1087,13 @@ config CGROUP_RDMA
- 	  Attaching processes with active RDMA resources to the cgroup
- 	  hierarchy is allowed even if can cross the hierarchy's limit.
++err_unlock:
++	mutex_unlock(&dev->filelist_mutex);
++err_free:
++	drm_file_free(priv);
++
++	return ret;
+ }
  
-+config CGROUP_DRM
-+	bool "DRM controller"
-+	help
-+	  Provides the DRM subsystem controller.
-+
-+	  ...
-+
- config CGROUP_FREEZER
- 	bool "Freezer controller"
- 	help
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index 12f8457ad1f9..849bd2917477 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -6,4 +6,5 @@ obj-$(CONFIG_CGROUP_PIDS) += pids.o
- obj-$(CONFIG_CGROUP_RDMA) += rdma.o
- obj-$(CONFIG_CPUSETS) += cpuset.o
- obj-$(CONFIG_CGROUP_MISC) += misc.o
-+obj-$(CONFIG_CGROUP_DRM) += drm.o
- obj-$(CONFIG_CGROUP_DEBUG) += debug.o
-diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
+ /**
+@@ -523,6 +533,9 @@ void drm_file_update_pid(struct drm_file *filp)
+ 	dev = filp->minor->dev;
+ 	mutex_lock(&dev->filelist_mutex);
+ 	old = rcu_replace_pointer(filp->pid, pid, 1);
++	if (pid != old)
++		drm_clients_migrate(filp,
++				    (unsigned long)old, (unsigned long)pid);
+ 	mutex_unlock(&dev->filelist_mutex);
+ 
+ 	if (pid != old) {
+diff --git a/include/drm/drm_clients.h b/include/drm/drm_clients.h
 new file mode 100644
-index 000000000000..b88c93661df3
+index 000000000000..fbb8cffdf7a9
 --- /dev/null
-+++ b/kernel/cgroup/drm.c
-@@ -0,0 +1,54 @@
++++ b/include/drm/drm_clients.h
+@@ -0,0 +1,44 @@
 +/* SPDX-License-Identifier: MIT */
 +/*
 + * Copyright © 2022 Intel Corporation
 + */
 +
-+#include <linux/slab.h>
-+#include <linux/cgroup.h>
-+#include <linux/cgroup_drm.h>
-+#include <linux/sched.h>
++#ifndef _DRM_CLIENTS_H_
++#define _DRM_CLIENTS_H_
 +
-+struct drm_cgroup_state {
-+	struct cgroup_subsys_state css;
++#include <drm/drm_file.h>
++
++struct drm_pid_clients {
++	atomic_t num;
++	struct list_head file_list;
++	struct rcu_head rcu;
 +};
 +
-+static inline struct drm_cgroup_state *
-+css_to_drmcs(struct cgroup_subsys_state *css)
++#if IS_ENABLED(CONFIG_CGROUP_DRM)
++void drm_clients_close(struct drm_file *file_priv);
++int drm_clients_open(struct drm_file *file_priv);
++
++void
++drm_clients_migrate(struct drm_file *file_priv,
++		    unsigned long old,
++		    unsigned long new);
++#else
++static inline void drm_clients_close(struct drm_file *file_priv)
 +{
-+	return container_of(css, struct drm_cgroup_state, css);
 +}
 +
-+static void drmcs_free(struct cgroup_subsys_state *css)
++static inline int drm_clients_open(struct drm_file *file_priv)
 +{
-+	kfree(css_to_drmcs(css));
++	return 0;
 +}
 +
-+static struct drm_cgroup_state root_drmcs = {
-+};
-+
-+static struct cgroup_subsys_state *
-+drmcs_alloc(struct cgroup_subsys_state *parent_css)
++static void
++drm_clients_migrate(struct drm_file *file_priv,
++		    unsigned long old,
++		    unsigned long new)
 +{
-+	struct drm_cgroup_state *drmcs;
 +
-+	if (!parent_css)
-+		return &root_drmcs.css;
-+
-+	drmcs = kzalloc(sizeof(*drmcs), GFP_KERNEL);
-+	if (!drmcs)
-+		return ERR_PTR(-ENOMEM);
-+
-+	return &drmcs->css;
 +}
++#endif
 +
-+struct cftype files[] = {
-+	{ } /* Zero entry terminates. */
-+};
++#endif
+diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
+index b8be69b551af..ad20aaad40f5 100644
+--- a/include/drm/drm_file.h
++++ b/include/drm/drm_file.h
+@@ -275,6 +275,10 @@ struct drm_file {
+ 	/** @minor: &struct drm_minor for this file. */
+ 	struct drm_minor *minor;
+ 
++#if IS_ENABLED(CONFIG_CGROUP_DRM)
++	struct list_head clink;
++#endif
 +
-+struct cgroup_subsys drm_cgrp_subsys = {
-+	.css_alloc	= drmcs_alloc,
-+	.css_free	= drmcs_free,
-+	.early_init	= false,
-+	.legacy_cftypes	= files,
-+	.dfl_cftypes	= files,
-+};
+ 	/**
+ 	 * @object_idr:
+ 	 *
 -- 
 2.34.1
 
