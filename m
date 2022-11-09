@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2826622FDE
-	for <lists+cgroups@lfdr.de>; Wed,  9 Nov 2022 17:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E65622FE3
+	for <lists+cgroups@lfdr.de>; Wed,  9 Nov 2022 17:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbiKIQMw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Nov 2022 11:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        id S232096AbiKIQM6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Nov 2022 11:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbiKIQM2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Nov 2022 11:12:28 -0500
+        with ESMTP id S232151AbiKIQMr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Nov 2022 11:12:47 -0500
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94C022B21;
-        Wed,  9 Nov 2022 08:12:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C6523E8F;
+        Wed,  9 Nov 2022 08:12:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668010347; x=1699546347;
+  t=1668010353; x=1699546353;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Qq6Henm8EAobf6LwC/wUuKCvjc1IJ70N8x2PFzYMvRs=;
-  b=YjQ+5XBr03tLQEV+adZgg5GKoWtQ9dsdG6v9oQZaokU8/FoXrWlP8GTM
-   sP7R4QY9/Z6oK02iTeyboaw84UOJAnI9Pc1xr4oyDoriO+0j4R0DEq8U6
-   DyZ4wl27XRC3gxCxl/Tm7oN7blY8AW/gqaGGepy7lh7Bvtt7XuG0GcV7N
-   MNfWiVOSgDT/ipusmPaUPYegKMOsNJ1InFoq0aI6x4MIaz7SIdeQkgOWD
-   BpW8GGbS6tvQIJeOUwlxJKvhC6h3uHAKODTG72oRLWN9Bj0mjyWfN2pVF
-   8h+nohNk8m/T9WX/WPUK5+rBIvzwnoc02RQvQnBrU7mL37ErV6dKQLsSp
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="312181402"
+  bh=QhCzUoXOe6qmLG6Pf4Ep1QDjdcywTWaTd4/r+6EDODU=;
+  b=ihKodDpY9JPEmtT4KZOPQXVqfc8u52eY4Ddj70IqK/T6QHn6TEQH+vK5
+   /BJ1yG/1ouq1dj+V+mzDs+Np7h6kywpP7yTXsmeUCFS+jQItglyyV293T
+   /IV9Zq3no4+zxqkse3llm2cGQ9fldBKBpSHj2FWImpWTxtjAnZ+MWd6pg
+   Unvdith2K+0NRBE/21atjDWiqegXSnaksyLFe4/UT3uoOZw0r93TIvlWi
+   /ULr4CkqNku8VKA0qOQ8CPBXmLfYI1JfTbJmdGv7F0WF7f/k2S7bbo3B9
+   5gxLfVZK3s8GZhNQz2HCE2krKepwqjXqBTr8JLscdcXs/QaaDROTBhkrt
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="312181433"
 X-IronPort-AV: E=Sophos;i="5.96,151,1665471600"; 
-   d="scan'208";a="312181402"
+   d="scan'208";a="312181433"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:27 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="811684540"
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:32 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="811684566"
 X-IronPort-AV: E=Sophos;i="5.96,151,1665471600"; 
-   d="scan'208";a="811684540"
+   d="scan'208";a="811684566"
 Received: from smurnane-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.196.238])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:24 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2022 08:12:27 -0800
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -51,9 +51,9 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [RFC 08/13] drm/cgroup: Add over budget signalling callback
-Date:   Wed,  9 Nov 2022 16:11:36 +0000
-Message-Id: <20221109161141.2987173-9-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 09/13] drm/cgroup: Only track clients which are providing drm_cgroup_ops
+Date:   Wed,  9 Nov 2022 16:11:37 +0000
+Message-Id: <20221109161141.2987173-10-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
 References: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
@@ -71,75 +71,50 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-Add a new callback via which the drm cgroup controller is notifying the
-drm core that a certain process is above its allotted GPU time.
+To reduce the number of tracking going on, especially with drivers which
+will not support any sort of control from the drm cgroup controller side,
+lets express the funcionality as opt-in and use the presence of
+drm_cgroup_ops as activation criteria.
 
 Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 ---
- drivers/gpu/drm/drm_cgroup.c | 21 +++++++++++++++++++++
- include/drm/drm_clients.h    |  1 +
- include/drm/drm_drv.h        |  8 ++++++++
- 3 files changed, 30 insertions(+)
+ drivers/gpu/drm/drm_cgroup.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_cgroup.c b/drivers/gpu/drm/drm_cgroup.c
-index 06810b4c3ff1..e3854741c584 100644
+index e3854741c584..d3050c744e3e 100644
 --- a/drivers/gpu/drm/drm_cgroup.c
 +++ b/drivers/gpu/drm/drm_cgroup.c
-@@ -152,3 +152,24 @@ u64 drm_pid_get_active_time_us(struct pid *pid)
- 	return total;
- }
- EXPORT_SYMBOL_GPL(drm_pid_get_active_time_us);
-+
-+void drm_pid_signal_budget(struct pid *pid, u64 usage, u64 budget)
-+{
-+	struct drm_pid_clients *clients;
-+
-+	rcu_read_lock();
-+	clients = xa_load(&drm_pid_clients, (unsigned long)pid);
-+	if (clients) {
-+		struct drm_file *fpriv;
-+
-+		list_for_each_entry_rcu(fpriv, &clients->file_list, clink) {
-+			const struct drm_cgroup_ops *cg_ops =
-+				fpriv->minor->dev->driver->cg_ops;
-+
-+			if (cg_ops && cg_ops->signal_budget)
-+				cg_ops->signal_budget(fpriv, usage, budget);
-+		}
-+	}
-+	rcu_read_unlock();
-+}
-+EXPORT_SYMBOL_GPL(drm_pid_signal_budget);
-diff --git a/include/drm/drm_clients.h b/include/drm/drm_clients.h
-index b9b8009c28a6..356ee92792a6 100644
---- a/include/drm/drm_clients.h
-+++ b/include/drm/drm_clients.h
-@@ -42,5 +42,6 @@ drm_clients_migrate(struct drm_file *file_priv,
- #endif
+@@ -35,6 +35,9 @@ void drm_clients_close(struct drm_file *file_priv)
  
- u64 drm_pid_get_active_time_us(struct pid *pid);
-+void drm_pid_signal_budget(struct pid *pid, u64 usage, u64 budget);
+ 	lockdep_assert_held(&dev->filelist_mutex);
  
- #endif
-diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
-index c09fe9bd517f..c30afe97f922 100644
---- a/include/drm/drm_drv.h
-+++ b/include/drm/drm_drv.h
-@@ -164,6 +164,14 @@ struct drm_cgroup_ops {
- 	 * Used by the DRM core when queried by the DRM cgroup controller.
- 	 */
- 	u64 (*active_time_us) (struct drm_file *);
++	if (!dev->driver->cg_ops)
++		return;
 +
-+	/**
-+	 * @signal_budget:
-+	 *
-+	 * Optional callback used by the DRM core to forward over/under GPU time
-+	 * messages sent by the DRM cgroup controller.
-+	 */
-+	int (*signal_budget) (struct drm_file *, u64 used, u64 budget);
- };
+ 	pid = rcu_access_pointer(file_priv->pid);
+ 	clients = xa_load(&drm_pid_clients, (unsigned long)pid);
+ 	if (WARN_ON_ONCE(!clients))
+@@ -66,6 +69,9 @@ int drm_clients_open(struct drm_file *file_priv)
  
- /**
+ 	lockdep_assert_held(&dev->filelist_mutex);
+ 
++	if (!dev->driver->cg_ops)
++		return 0;
++
+ 	pid = (unsigned long)rcu_access_pointer(file_priv->pid);
+ 	clients = xa_load(&drm_pid_clients, pid);
+ 	if (!clients) {
+@@ -101,6 +107,9 @@ drm_clients_migrate(struct drm_file *file_priv,
+ 
+ 	lockdep_assert_held(&dev->filelist_mutex);
+ 
++	if (!dev->driver->cg_ops)
++		return;
++
+ 	existing_clients = xa_load(&drm_pid_clients, new);
+ 	clients = xa_load(&drm_pid_clients, old);
+ 
 -- 
 2.34.1
 
