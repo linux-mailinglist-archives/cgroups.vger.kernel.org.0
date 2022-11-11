@@ -2,50 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D982662613E
-	for <lists+cgroups@lfdr.de>; Fri, 11 Nov 2022 19:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39D062613F
+	for <lists+cgroups@lfdr.de>; Fri, 11 Nov 2022 19:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbiKKSgF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Nov 2022 13:36:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        id S233752AbiKKSgG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 11 Nov 2022 13:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbiKKSf4 (ORCPT
+        with ESMTP id S233968AbiKKSf4 (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Fri, 11 Nov 2022 13:35:56 -0500
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CF583692;
-        Fri, 11 Nov 2022 10:35:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FF5836A0;
+        Fri, 11 Nov 2022 10:35:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668191739; x=1699727739;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zkMqL68m/5zo4IQcHhhj9rd1XQDhqh5jgd3Tu0wSwho=;
-  b=a3maXEy2Kf14SUJXdiryH8v/8W9m1yBW5azsFEreBJra7juFsZRfq5iC
-   k4qBIlbchCBOjQa+e/HrU7Cjjt7lt6Szai2UKDulwMZdVsLgRkB0BR5pj
-   iR9j7MEDjHOHE7ErYoltMlGX7noP2ykYqOCx7b5FTBlBznc1Nei+OKcJU
-   us6oLoUK7jlAuemHcArQ9aAxcu7dcc9VOEtfuvCABUX9s9XV0nTZtPNnx
-   yA83GSWanNtwNa6OlDKkKvd62qsqROBKn839afnL4z8jiixwMqKyjGaNW
-   m9WDYllLn4kMnA5ff0v9aXnjBU32uKPPTEGh4yZkh1VZiXySNox+6x4bn
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10528"; a="292050285"
+  t=1668191740; x=1699727740;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=yI9+1QYO+OyJR5ru97E8yvOHVHg/mVuCwIGgN4RVNoY=;
+  b=mrhcvffruyMtPOpwocXnyCph0O/H0tFoV/oH/huJ2Q3LJDWKuBFQVmie
+   Dl9umXSFd2got7cCK7GttGWfyqTOJb1+vy9gBI8o/rRCNlUHWKaCoUWxD
+   Bj9EzUZiqqiMAMYgwnppqyxGzS7+n0YcMjiziN+srGCuO13N//O4Sp97V
+   n36JGRkzPC2dgpnS7lPZm7R5keBkRUtflZlZwiUHAXZTa93NXMkhEZUCs
+   W9DYlXcoRgfEgwXL8LW65i+o3b8javyJjcN4s7Lx7gOTD7CZQlQ31K77D
+   Yh78Ly+xYwfxYNq/a7Qu8rC6/VBii84PT/fq66oW1+9pfzql96z1AKBso
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10528"; a="292050289"
 X-IronPort-AV: E=Sophos;i="5.96,157,1665471600"; 
-   d="scan'208";a="292050285"
+   d="scan'208";a="292050289"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2022 10:35:38 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10528"; a="640089155"
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2022 10:35:40 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10528"; a="640089159"
 X-IronPort-AV: E=Sophos;i="5.96,157,1665471600"; 
-   d="scan'208";a="640089155"
+   d="scan'208";a="640089159"
 Received: from hermesli-mobl.amr.corp.intel.com (HELO kcaccard-desk.amr.corp.intel.com) ([10.212.218.5])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2022 10:35:38 -0800
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2022 10:35:39 -0800
 From:   Kristen Carlson Accardi <kristen@linux.intel.com>
 To:     jarkko@kernel.org, dave.hansen@linux.kernel.org, tj@kernel.org,
         linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org
-Cc:     zhiquan1.li@intel.com
-Subject: [PATCH 00/26] Add Cgroup support for SGX EPC memory
-Date:   Fri, 11 Nov 2022 10:35:05 -0800
-Message-Id: <20221111183532.3676646-1-kristen@linux.intel.com>
+        cgroups@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     zhiquan1.li@intel.com,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH 01/26] x86/sgx: Call cond_resched() at the end of sgx_reclaim_pages()
+Date:   Fri, 11 Nov 2022 10:35:06 -0800
+Message-Id: <20221111183532.3676646-2-kristen@linux.intel.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20221111183532.3676646-1-kristen@linux.intel.com>
+References: <20221111183532.3676646-1-kristen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -57,85 +64,87 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Utilize the Miscellaneous cgroup controller to regulate the distribution
-of SGX EPC memory, which is a subset of system RAM that is used to provide
-SGX-enabled applications with protected memory, and is otherwise inaccessible.
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-SGX EPC memory allocations are separate from normal RAM allocations,
-and is managed solely by the SGX subsystem. The existing cgroup memory
-controller cannot be used to limit or account for SGX EPC memory.
+In order to avoid repetition of cond_resched() in ksgxd() and
+sgx_alloc_epc_page(), move the invocation of post-reclaim cond_resched()
+inside sgx_reclaim_pages(). Except in the case of sgx_reclaim_direct(),
+sgx_reclaim_pages() is always called in a loop and is always followed
+by a call to cond_resched().  This will hold true for the EPC cgroup
+as well, which adds even more calls to sgx_reclaim_pages() and thus
+cond_resched(). Calls to sgx_reclaim_direct() may be performance
+sensitive. Allow sgx_reclaim_direct() to avoid the cond_resched()
+call by moving the original sgx_reclaim_pages() call to
+__sgx_reclaim_pages() and then have sgx_reclaim_pages() become a
+wrapper around that call with a cond_resched().
 
-This patchset implements the support for sgx_epc memory within the 
-misc cgroup controller, and then utilizes the misc cgroup controller
-to provide support for setting the total system capacity, max limit
-per cgroup, and events.
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-This work was originally authored by Sean Christopherson a few years ago,
-and was modified to work with more recent kernels, and to utilize the
-misc cgroup controller rather than a custom controller. It is currently
-based on top of the MCA patches.
-
-Here's the MCA patchset for reference.
-https://lore.kernel.org/linux-sgx/2d52c8c4-8ed0-6df2-2911-da5b9fcc9ae4@intel.com/T/#t
-
-The patchset adds support for multiple LRUs to track both reclaimable
-EPC pages (i.e. pages the reclaimer knows about), as well as unreclaimable
-EPC pages (i.e. pages which the reclaimer isn't aware of, such as va pages).
-These pages are assigned to an LRU, as well as an enclave, so that an
-enclave's full EPC usage can be tracked, and limited to a max value. During
-OOM events, an enclave can be have its memory zapped, and all the EPC pages
-not tracked by the reclaimer can be freed.
-
-I appreciate your comments and feedback.
-
-Kristen Carlson Accardi (13):
-  x86/sgx: Add 'struct sgx_epc_lru' to encapsulate lru list(s)
-  x86/sgx: Use sgx_epc_lru for existing active page list
-  x86/sgx: Track epc pages on reclaimable or unreclaimable lists
-  cgroup/misc: Add notifier block list support for css events
-  cgroup/misc: Expose root_misc
-  cgroup/misc: Expose parent_misc()
-  cgroup/misc: allow users of misc cgroup to read specific cgroup usage
-  cgroup/misc: allow misc cgroup consumers to read the max value
-  cgroup/misc: Add private per cgroup data to struct misc_cg
-  cgroup/misc: Add tryget functionality for misc controller
-  cgroup/misc: Add SGX EPC resource type
-  x86/sgx: Add support for misc cgroup controller
-  Docs/x86/sgx: Add description for cgroup support
-
-Sean Christopherson (13):
-  x86/sgx: Call cond_resched() at the end of sgx_reclaim_pages()
-  x86/sgx: Store struct sgx_encl when allocating new va pages
-  x86/sgx: Introduce RECLAIM_IN_PROGRESS flag for EPC pages
-  x86/sgx: Use a list to track to-be-reclaimed pages during reclaim
-  x86/sgx: Add EPC page flags to identify type of page
-  x86/sgx: Allow reclaiming up to 32 pages, but scan 16 by default
-  x86/sgx: Return the number of EPC pages that were successfully
-    reclaimed
-  x86/sgx: Add option to ignore age of page during EPC reclaim
-  x86/sgx: Add helper to retrieve SGX EPC LRU given an EPC page
-  x86/sgx: Prepare for multiple LRUs
-  x86/sgx: Expose sgx_reclaim_pages() for use by EPC cgroup
-  x86/sgx: Add helper to grab pages from an arbitrary EPC LRU
-  x86/sgx: Add EPC OOM path to forcefully reclaim EPC
-
- Documentation/x86/sgx.rst            |  77 ++++
- arch/x86/Kconfig                     |  13 +
- arch/x86/kernel/cpu/sgx/Makefile     |   1 +
- arch/x86/kernel/cpu/sgx/encl.c       |  89 ++++-
- arch/x86/kernel/cpu/sgx/encl.h       |   4 +-
- arch/x86/kernel/cpu/sgx/epc_cgroup.c | 561 +++++++++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/epc_cgroup.h |  59 +++
- arch/x86/kernel/cpu/sgx/ioctl.c      |  13 +-
- arch/x86/kernel/cpu/sgx/main.c       | 405 +++++++++++++++----
- arch/x86/kernel/cpu/sgx/sgx.h        |  96 ++++-
- arch/x86/kernel/cpu/sgx/virt.c       |  28 +-
- include/linux/misc_cgroup.h          |  71 ++++
- kernel/cgroup/misc.c                 | 145 ++++++-
- 13 files changed, 1446 insertions(+), 116 deletions(-)
- create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
- create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
-
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 160c8dbee0ab..ffce6fc70a1f 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -287,7 +287,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
+  * problematic as it would increase the lock contention too much, which would
+  * halt forward progress.
+  */
+-static void sgx_reclaim_pages(void)
++static void __sgx_reclaim_pages(void)
+ {
+ 	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
+ 	struct sgx_backing backing[SGX_NR_TO_SCAN];
+@@ -369,6 +369,12 @@ static void sgx_reclaim_pages(void)
+ 	}
+ }
+ 
++static void sgx_reclaim_pages(void)
++{
++	__sgx_reclaim_pages();
++	cond_resched();
++}
++
+ static bool sgx_should_reclaim(unsigned long watermark)
+ {
+ 	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+@@ -378,12 +384,14 @@ static bool sgx_should_reclaim(unsigned long watermark)
+ /*
+  * sgx_reclaim_direct() should be called (without enclave's mutex held)
+  * in locations where SGX memory resources might be low and might be
+- * needed in order to make forward progress.
++ * needed in order to make forward progress. This call to
++ * __sgx_reclaim_pages() avoids the cond_resched() in sgx_reclaim_pages()
++ * to improve performance.
+  */
+ void sgx_reclaim_direct(void)
+ {
+ 	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+-		sgx_reclaim_pages();
++		__sgx_reclaim_pages();
+ }
+ 
+ static int ksgxd(void *p)
+@@ -410,8 +418,6 @@ static int ksgxd(void *p)
+ 
+ 		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
+ 			sgx_reclaim_pages();
+-
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+@@ -582,7 +588,6 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+ 		}
+ 
+ 		sgx_reclaim_pages();
+-		cond_resched();
+ 	}
+ 
+ 	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
 -- 
 2.37.3
 
