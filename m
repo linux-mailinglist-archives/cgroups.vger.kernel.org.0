@@ -2,102 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B99628C43
-	for <lists+cgroups@lfdr.de>; Mon, 14 Nov 2022 23:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3735D628D31
+	for <lists+cgroups@lfdr.de>; Tue, 15 Nov 2022 00:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237701AbiKNWoM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Nov 2022 17:44:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
+        id S231355AbiKNXKR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Nov 2022 18:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbiKNWoD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Nov 2022 17:44:03 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E88B867;
-        Mon, 14 Nov 2022 14:43:59 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id z26so12451241pff.1;
-        Mon, 14 Nov 2022 14:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0RkJm12EG/9E1zu6+WxpU+WvUvpr5g7TNGosiBHQiqs=;
-        b=jYAlB6T2TOHN4HHkErKWne7mc4i/zPhe9R0lfnOngKXiyPq+Thno7P922IY0g2Drfo
-         zvMAURArSuTKAOkCVgvtw8DdpP+waWCjdJVBV2MPvJy0U5fEMxvbv9oJU1Yvqvi7ZwI3
-         MdCzo2QiIy6QfCkY9NXyfO4WARTbk2aCPgkra7SKKT7OVnq7mo/yQ3s47NIWmF0M3SaV
-         C4SM8YaSmL44dmp3qy76n+uT0BGCC8pfD9cjtdrWJ3byNruYi7ZjKZuPsdpRO+DRhhrW
-         YjkTPG+8ov3sd+PIIwOneVmRl54qzgpz4b1UL6k4R+WAm4RtjtG//UAJlWK7/IlY0iGU
-         xAtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0RkJm12EG/9E1zu6+WxpU+WvUvpr5g7TNGosiBHQiqs=;
-        b=agQD7C2Vya5zCmw1vX++NTq8JS9rNDghAHOr15Afa7+rE24GEzk+iQFMQbhRdHhyEK
-         st/cPani+ARFC8YMLs3NRMPA2CLpXEBYXHNNDBLhxrMW9fH1IEvLHSt69EA1nOYtHuEB
-         j8FJWmtX9AYGspM4RvEMK4M7zjK/EAH3/96YolELK5whkDF2Vz4Mes7ROR7PCUN7IL4D
-         qOoKVDZYeVO1up+G1KojeJnJRLA2txYyXsWnTy8nJ5jlDE8VEmYlCjOZLGkRt3MGuPlm
-         fgivQ0PnKFjBkz1pweO6VcT8yFg5GSU/aJ+lu5iF8MgiLrZ/32kqLa+TXwwtiVQrNpAH
-         awQA==
-X-Gm-Message-State: ANoB5pmRRqR0YCBVb2/K984sFA+IaWMYXDd3ySystnX1Q6DnLx9zTeSI
-        KBQZy0zg6goC9xfwkZAgpjw=
-X-Google-Smtp-Source: AA0mqf7lxEb0AxXbQvRejZp/swbVSzCxMl3BbaFVMt0CGZXBh+TOySlOfwrJwHd4vyTH5k4jO2VSJA==
-X-Received: by 2002:aa7:8155:0:b0:572:725f:33e6 with SMTP id d21-20020aa78155000000b00572725f33e6mr188590pfn.46.1668465838739;
-        Mon, 14 Nov 2022 14:43:58 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id l2-20020a635702000000b0046ec057243asm6258029pgb.12.2022.11.14.14.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Nov 2022 14:43:58 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 14 Nov 2022 12:43:57 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>
-Subject: Re: [PATCH v10 3/3] blk-cgroup: Flush stats at blkgs destruction path
-Message-ID: <Y3LErVJiFL9wSGGl@slm.duckdns.org>
-References: <20221105005902.407297-1-longman@redhat.com>
- <20221105005902.407297-4-longman@redhat.com>
+        with ESMTP id S231627AbiKNXKP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Nov 2022 18:10:15 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E0B22C;
+        Mon, 14 Nov 2022 15:10:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668467414; x=1700003414;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=xegt7ptKTtdJNW416eZFU2xzyfbyFyg07lD2i0oq41Q=;
+  b=bEarSPNZtvx1T83GZvW9m36KNUTrCZAKbbqhkMxfty356n6/Sl2glriy
+   s8HHrq8+b31UNMmxw4/wMm8M7Q1mW5aT0BotXqqV8dv0Xz/+PBkVeKACy
+   NnpgxT3rwFcOr/T1NYhWl6ePQZjtacz3YpzZltz/J+918Bs1jOQRGA8Xr
+   42ZElt3RY0EUThXsa+Dv/dc9CSB5NLp0QdV8wmfL9RrT9cB5pXaw3K1EB
+   s8H6X4Ue94zJJXjii4nuZwqv80PDCURgL2DYGKGQF4mdQU8lcYKTLLq/f
+   yOKwTR4xf8tf+IYPhpYLZ+IneqxdAwx5Ved1ZI8wl56w2vGGwarnQZ8nR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="312109889"
+X-IronPort-AV: E=Sophos;i="5.96,164,1665471600"; 
+   d="scan'208";a="312109889"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2022 15:10:14 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="702198648"
+X-IronPort-AV: E=Sophos;i="5.96,164,1665471600"; 
+   d="scan'208";a="702198648"
+Received: from tmacfarl-mobl1.amr.corp.intel.com (HELO [10.209.82.47]) ([10.209.82.47])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2022 15:10:13 -0800
+Message-ID: <6f7afaa6811cbda30d12c38d73d4b261ab733a9f.camel@linux.intel.com>
+Subject: Re: [PATCH 17/26] cgroup/misc: Add notifier block list support for
+ css events
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, zhiquan1.li@intel.com
+Date:   Mon, 14 Nov 2022 15:10:05 -0800
+In-Reply-To: <Y3LES3rUIZ/PtwzV@slm.duckdns.org>
+References: <20221111183532.3676646-1-kristen@linux.intel.com>
+         <20221111183532.3676646-18-kristen@linux.intel.com>
+         <Y3LES3rUIZ/PtwzV@slm.duckdns.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221105005902.407297-4-longman@redhat.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 08:59:02PM -0400, Waiman Long wrote:
-> As noted by Michal, the blkg_iostat_set's in the lockless list
-> hold reference to blkg's to protect against their removal. Those
-> blkg's hold reference to blkcg. When a cgroup is being destroyed,
-> cgroup_rstat_flush() is only called at css_release_work_fn() which is
-> called when the blkcg reference count reaches 0. This circular dependency
-> will prevent blkcg from being freed until some other events cause
-> cgroup_rstat_flush() to be called to flush out the pending blkcg stats.
-> 
-> To prevent this delayed blkcg removal, add a new cgroup_rstat_css_flush()
-> function to flush stats for a given css and cpu and call it at the blkgs
-> destruction path, blkcg_destroy_blkgs(), whenever there are still some
-> pending stats to be flushed. This will ensure that blkcg reference
-> count can reach 0 ASAP.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On Mon, 2022-11-14 at 12:42 -1000, Tejun Heo wrote:
+> Hello,
+>=20
+> On Fri, Nov 11, 2022 at 10:35:22AM -0800, Kristen Carlson Accardi
+> wrote:
+> > +/**
+> > + * register_misc_cg_notifier() - Register for css callback events
+> > + * @nb: notifier_block to register
+> > + *
+> > + * Context: Any context.
+> > + */
+> > +int register_misc_cg_notifier(struct notifier_block *nb)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return
+> > blocking_notifier_chain_register(&misc_cg_notify_list, nb);
+> > +}
+> > +EXPORT_SYMBOL_GPL(register_misc_cg_notifier);
+> > +
+> > +/**
+> > + * unregister_misc_cg_notifier() - unregister for css callback
+> > events
+> > + * @nb: notifier_block to unregister
+> > + *
+> > + * Context: Any context.
+> > + */
+> > +int unregister_misc_cg_notifier(struct notifier_block *nb)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return
+> > blocking_notifier_chain_unregister(&misc_cg_notify_list, nb);
+> > +}
+> > +EXPORT_SYMBOL_GPL(unregister_misc_cg_notifier);
+>=20
+> So, I'm not necessarily against this but wonder whether it'd be more
+> straightforward to add sth like struct misc_res_ops which contains
+> the
+> optional callbacks and then have an array of pointers to the structs
+> which
+> are initialized / registered somehow. What do you think?
+>=20
+> Thanks.
+>=20
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Makes no difference to me TBH - I believe they will be functionally
+equivalent and from a downstream user perspective equally as easy to
+use, so whatever you think is easiest for you to maintain.
 
-Thanks.
-
--- 
-tejun
