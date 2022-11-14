@@ -2,94 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBFA626F54
-	for <lists+cgroups@lfdr.de>; Sun, 13 Nov 2022 12:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325BB6277A2
+	for <lists+cgroups@lfdr.de>; Mon, 14 Nov 2022 09:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbiKMLqr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 13 Nov 2022 06:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
+        id S236411AbiKNI2k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Nov 2022 03:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbiKMLqp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 13 Nov 2022 06:46:45 -0500
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5792B1FE;
-        Sun, 13 Nov 2022 03:46:43 -0800 (PST)
-Received: by mail-wm1-f42.google.com with SMTP id ja4-20020a05600c556400b003cf6e77f89cso7630296wmb.0;
-        Sun, 13 Nov 2022 03:46:43 -0800 (PST)
+        with ESMTP id S236448AbiKNI2i (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Nov 2022 03:28:38 -0500
+Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1165E17899
+        for <cgroups@vger.kernel.org>; Mon, 14 Nov 2022 00:28:35 -0800 (PST)
+Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-367cd2807f2so99387307b3.1
+        for <cgroups@vger.kernel.org>; Mon, 14 Nov 2022 00:28:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0+TUOsPnDycx17yT5y3SaYxN2lSmtxkJKGL2zeQTOy8=;
+        b=DvHVT3Kf+Qfmcc5lHR7qLISxeX+xAoAj2Zg0e4+daovqy9CDlkUmbtqLYoNIzlYFoF
+         jHIifKdQbU4Z7SWgFBU4Q8qf0yPRvzc5s0pjalnnG0n/Ee7hcDjR6xG0mvvr0B7HwQru
+         bSTlAiW7sOQK56+ae+aR7Efej+FTej0y3teo2A3a7uV7Et2p2lxRwGAXROx+T5veOg4J
+         p5OSh8Gj6j05SzN5w+y5RxRikm08j7qWTSgAj0IkXs+u9kw6osoz9vdkPEiFwebtOY5T
+         QIx7sT+vj/AtZErFusksDl/0a1nc8cCHGQdBwgdnk5C1zy9LcRSOzFusO6yKd5iSI+J/
+         prTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SgLDEPBAsaqSd32xdssMnO2SIr7s6T8Rai6MM1Udg1w=;
-        b=zA8lqqBDAQp4F662bQitbN5nT5/Rc5iUKJtXbiojzeTVgisPcK/WYeTHKpjEvSzVek
-         WzvDGvVOn186miUfxpMy4dJ+IGsaBolVrYhg/DzZ5mr08lh6VKGMUH8shZfEM/7Bejzj
-         i+TxkqryPvZUnkLdiUqhxH+BX6TTzsGiv1H6P1ALYYDYc6YhRT7EaV6P/LXCqjel9V6z
-         /37Gg1n51rRoLybQ0mJCauKxWBj2xO1wQLmb90vavCk3GgfUrSGxf5w3m0nlruMYItfS
-         1E01Ko+3ofMqMTMft6+YzpsUzBwiBSZaGqZknTDoTtvFDJAqhTpGgOKxf1B5k3+Mgmla
-         jXzw==
-X-Gm-Message-State: ANoB5pnLL0Mn2iljztFTUuCVjoQ0k771PoBJykE8ZMsiSjzFgjYvuvGS
-        6js64SI1/kUGQXutNMYXknc=
-X-Google-Smtp-Source: AA0mqf5B1N6a18eU383YCZU1EaWR5KFenAxcLsdu6//CnAXFKk60213F0hAbvbglyCCqTm2vXIJtHQ==
-X-Received: by 2002:a05:600c:4b07:b0:3cf:7267:5b40 with SMTP id i7-20020a05600c4b0700b003cf72675b40mr5661772wmp.164.1668340002304;
-        Sun, 13 Nov 2022 03:46:42 -0800 (PST)
-Received: from localhost ([2a00:23c8:6c0c:ff01:8fbf:89fd:a697:2959])
-        by smtp.gmail.com with ESMTPSA id o37-20020a05600c512500b003cf54b77bfesm15808803wms.28.2022.11.13.03.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Nov 2022 03:46:41 -0800 (PST)
-From:   Breno Leitao <leitao@debian.org>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        shuah@kernel.org, cgroups@vger.kernel.org
-Cc:     leit@meta.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kselftest/cgroup: Fix gathering number of CPUs
-Date:   Sun, 13 Nov 2022 11:44:49 +0000
-Message-Id: <20221113114449.18693-1-leitao@debian.org>
-X-Mailer: git-send-email 2.38.1
+        bh=0+TUOsPnDycx17yT5y3SaYxN2lSmtxkJKGL2zeQTOy8=;
+        b=lwbdQQnNYAA5B34a6c4F7SaWpx1k+tll1mUAYhseuTw+6lEuMGE6tW6EnLcCmpbcbG
+         ns+xf/UKh1F+4/AOWWEfYb55S9WW7tWAgTZgbOzUna4jnTI2S6ZPWmGdkbgrV8knBZ6G
+         2wOUqikbLimwRNkbPDVHIg8/Fu3CKOMhDuLAwjNANBO4hbCVfZI+7GAoI0QoMkFr4VnQ
+         7He7SCRxwcZQSsqMpxb2gX5BKbtfN8PyC7vtF+8cOGXockNKMAYBPEMsPFBVCgk+bpUZ
+         WlpAPRv5hd4Ya9g+c1+FzVnDEBTeKljnayMvom9MmRlOyo7hA/y+7yGN2BXOV+xk3uis
+         JqcQ==
+X-Gm-Message-State: ANoB5pkXHEAQxj9ixC0pI1qA/CiA1EvPgWB3DvY0GTniI1Y9LK1iJWHS
+        MgyWGTJmOpmNuW5kAXef9WZ4lzk2pahZs8aTh8c=
+X-Google-Smtp-Source: AA0mqf7VL1tomoCDo2fgbZD3zI+xwBBLGqUVvLbzl5gvbSsUsaBJTdFC41CBwphYMKn89kK82Db14iV2E0kiZQMTwjk=
+X-Received: by 2002:a81:1ac9:0:b0:370:5fad:6c01 with SMTP id
+ a192-20020a811ac9000000b003705fad6c01mr11375203ywa.327.1668414514498; Mon, 14
+ Nov 2022 00:28:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Sender: goochieng100@gmail.com
+Received: by 2002:a05:7000:8464:b0:3dd:a13f:f50d with HTTP; Mon, 14 Nov 2022
+ 00:28:33 -0800 (PST)
+From:   Richard Wahl <richardwahls16@gmail.com>
+Date:   Mon, 14 Nov 2022 00:28:33 -0800
+X-Google-Sender-Auth: Wb-xsAEhz1PJ_e55LdHikgKA6Gk
+Message-ID: <CALn1HmWWyi0F5t2u3_6fEOZ40ivYESz8+emfL7J5NR5gL4AbFg@mail.gmail.com>
+Subject: 1.200.000 Euro werden Ihnen zugesprochen
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-test_cpuset_prs.sh is failing with the following error:
+--=20
+Gute Nachrichten,
 
-	test_cpuset_prs.sh: line 29: [[: 8
-	57%: syntax error in expression (error token is "57%")
-
-This is happening because `lscpu | grep "^CPU(s)"` returns two lines in
-some systems (such as Debian unstable):
-
-	# lscpu | grep "^CPU(s)"
-	CPU(s):                          8
-	CPU(s) scaling MHz:              55%
-
-This is a simple fix that discard the second line.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index 526d2c42d870..564ca8c33035 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -25,7 +25,7 @@ WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
- CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
- [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
- 
--CPUS=$(lscpu | grep "^CPU(s)" | sed -e "s/.*:[[:space:]]*//")
-+CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
- [[ $CPUS -lt 8 ]] && skip_test "Test needs at least 8 cpus available!"
- 
- # Set verbose flag and delay factor
--- 
-2.38.1
-
+Es wird erwartet, dass Sie Ihren Preis in K=C3=BCrze einl=C3=B6sen. Ich bin
+"Herr Richard Wahl". Ich habe in der Power Ball-Lotterie ein Verm=C3=B6gen
+gewonnen und spende einen Teil davon an zehn
+Wohlt=C3=A4tigkeitsorganisationen und zehn gl=C3=BCckliche Menschen. Zum Gl=
+=C3=BCck
+stehen Sie auf meiner Liste, um dieses freiwillige Spendenangebot zu
+erhalten. Antworten Sie jetzt f=C3=BCr weitere Informationen
