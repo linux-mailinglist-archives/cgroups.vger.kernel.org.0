@@ -2,91 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8709E628D41
-	for <lists+cgroups@lfdr.de>; Tue, 15 Nov 2022 00:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EA1628F0B
+	for <lists+cgroups@lfdr.de>; Tue, 15 Nov 2022 02:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236826AbiKNXRi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Nov 2022 18:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35522 "EHLO
+        id S231598AbiKOBRC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Nov 2022 20:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbiKNXRh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Nov 2022 18:17:37 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0397613F1E;
-        Mon, 14 Nov 2022 15:17:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668467857; x=1700003857;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=BJtuGQcejdW0AaDzJi8BImdXcSYnmn5KFjXEYF0+NuY=;
-  b=NZwEMtKY5sd9W1hHNCFAjEJaLhtoBbpLFdFJDbEkh3XSBk3W9FAwyLHQ
-   zQbSgkBIRu7SpO6CE4EHMm5V2upKqvWXrQZq9E81ffsfKZXlvTB/4+5Sm
-   oux6vzzpXtr6Rlp2PfRwPEXKVqXmrbWrggIkcjWXH0LIFn+zfBDoFGCFm
-   x/7RjDHGUw10gN7zD9TL6jsMUHDabjBs3jG73xWGo0hu3nhltA0ZJwdDv
-   IPekmxM0mHKJJqroRV1vsJVWoWRwDwWzhzyVHPDp3qMsXO5xPttlb2hQ7
-   kriGut5HnZZPcUef19+mx47H5d/Prd8t34plCQndMFbKZm+tH5VBe19XA
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="310816045"
-X-IronPort-AV: E=Sophos;i="5.96,164,1665471600"; 
-   d="scan'208";a="310816045"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2022 15:17:36 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10531"; a="744344646"
-X-IronPort-AV: E=Sophos;i="5.96,164,1665471600"; 
-   d="scan'208";a="744344646"
-Received: from tmacfarl-mobl1.amr.corp.intel.com (HELO [10.209.82.47]) ([10.209.82.47])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2022 15:17:35 -0800
-Message-ID: <f7d63c6ea33b8aacf1e5f1ede91636f397e1b770.camel@linux.intel.com>
-Subject: Re: [PATCH 17/26] cgroup/misc: Add notifier block list support for
- css events
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, zhiquan1.li@intel.com
-Date:   Mon, 14 Nov 2022 15:17:34 -0800
-In-Reply-To: <Y3LLJypIUOSGKujT@slm.duckdns.org>
-References: <20221111183532.3676646-1-kristen@linux.intel.com>
-         <20221111183532.3676646-18-kristen@linux.intel.com>
-         <Y3LES3rUIZ/PtwzV@slm.duckdns.org>
-         <6f7afaa6811cbda30d12c38d73d4b261ab733a9f.camel@linux.intel.com>
-         <Y3LLJypIUOSGKujT@slm.duckdns.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        with ESMTP id S231425AbiKOBRA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Nov 2022 20:17:00 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932A512ADC;
+        Mon, 14 Nov 2022 17:16:57 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NB7Yv3Jjlz4f3m6v;
+        Tue, 15 Nov 2022 09:16:51 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgC329iE6HJjpFosAg--.10568S3;
+        Tue, 15 Nov 2022 09:16:54 +0800 (CST)
+Subject: Re: [PATCH v2 4/5] blk-iocost: fix sleeping in atomic context
+ warnning
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@lst.de, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20221104023938.2346986-1-yukuai1@huaweicloud.com>
+ <20221104023938.2346986-5-yukuai1@huaweicloud.com>
+ <Y3K8MSFWw8eTnxtm@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <1644d8fd-a0b4-a6fd-63a2-6309db1bfa11@huaweicloud.com>
+Date:   Tue, 15 Nov 2022 09:16:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y3K8MSFWw8eTnxtm@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgC329iE6HJjpFosAg--.10568S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF13ur48JFWrCry3uw1kGrg_yoW8WrWrpF
+        yag3Wqyw4jqFnF9wsFyw1SvF1Skw109w4rA3s7Gasayr9rWrn3KFn5trWF9r10vry3XrWj
+        vF4FqrW5Zr1UA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 2022-11-14 at 13:11 -1000, Tejun Heo wrote:
-> Hello,
->=20
-> On Mon, Nov 14, 2022 at 03:10:05PM -0800, Kristen Carlson Accardi
-> wrote:
-> > Makes no difference to me TBH - I believe they will be functionally
-> > equivalent and from a downstream user perspective equally as easy
-> > to
-> > use, so whatever you think is easiest for you to maintain.
->=20
-> Yeah, functionally they should be equivalent. Hmm... Let's go with
-> the ops
-> table so that it's more explicit.
->=20
+Hi,
+
+ÔÚ 2022/11/15 6:07, Tejun Heo Ð´µÀ:
+> On Fri, Nov 04, 2022 at 10:39:37AM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> match_u64() is called inside ioc->lock, which causes smatch static
+>> checker warnings:
+>>
+>> block/blk-iocost.c:3211 ioc_qos_write() warn: sleeping in atomic context
+>> block/blk-iocost.c:3240 ioc_qos_write() warn: sleeping in atomic context
+>> block/blk-iocost.c:3407 ioc_cost_model_write() warn: sleeping in atomic
+>> context
+>>
+>> Fix the problem by introducing a mutex and using it while prasing input
+>> params.
+> 
+> It bothers me that parsing an u64 string requires a GFP_KERNEL memory
+> allocation.
+> 
+>> @@ -2801,9 +2806,11 @@ static void ioc_rqos_queue_depth_changed(struct rq_qos *rqos)
+>>   {
+>>   	struct ioc *ioc = rqos_to_ioc(rqos);
+>>   
+>> +	mutex_lock(&ioc->params_mutex);
+>>   	spin_lock_irq(&ioc->lock);
+>>   	ioc_refresh_params(ioc, false);
+>>   	spin_unlock_irq(&ioc->lock);
+>> +	mutex_unlock(&ioc->params_mutex);
+>>   }
+> 
+> Aren't the params still protected by ioc->lock? Why do we need to grab both?
+
+Yes, the params is updated inside ioc->lock, but they can be read
+without the lock before updating them, which is protected by mutex
+instead.
+
+> 
+> Any chance I can persuade you into updating match_NUMBER() helpers to not
+> use match_strdup()? They can easily disable irq/preemption and use percpu
+> buffers and we won't need most of this patchset.
+
+Do you mean preallocated percpu buffer? Is there any example I can
+learn? Anyway, replace match_strdup() to avoid memory allocation sounds
+good.
+
+Thanks,
+Kuai
+> 
 > Thanks.
->=20
-
-OK, in the next version I will make this change, consolidate everything
-for the misc controller into 1 or 2 patches as you requested, and also
-get rid of the helpers and just access the struct directly. Thanks for
-your review.
-
-Kristen
+> 
 
