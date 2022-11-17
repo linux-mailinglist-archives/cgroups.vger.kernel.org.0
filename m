@@ -2,72 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2973E62DEFD
-	for <lists+cgroups@lfdr.de>; Thu, 17 Nov 2022 16:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B6262DF71
+	for <lists+cgroups@lfdr.de>; Thu, 17 Nov 2022 16:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240083AbiKQPFY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Nov 2022 10:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S240563AbiKQPSE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Nov 2022 10:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbiKQPFU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Nov 2022 10:05:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674D959876
-        for <cgroups@vger.kernel.org>; Thu, 17 Nov 2022 07:04:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668697456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3/pZzLYRJIJU5BHs9Uc1Vomcy9mjzdUIDjXX/Oi2kCE=;
-        b=V1b5vNY3ymMyGsy/T0n8wpJ3WhhZ6DRb1r5NmlSh+uk00cb0yNRKAzo13UYq0azKojwqEc
-        fmzS8XX+D3KEQ8mSxiweo/e8tIy+N44JiIxKSQl6gZXClWFetinOq+f+vIj5z0LkQT4DHJ
-        jJkqOxqpwMXc3u8oAwv0bUQxyzTI7rg=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-501-zdytaWCWMxqkHMwBxuSObg-1; Thu, 17 Nov 2022 10:04:13 -0500
-X-MC-Unique: zdytaWCWMxqkHMwBxuSObg-1
-Received: by mail-qv1-f72.google.com with SMTP id ng1-20020a0562143bc100b004bb706b3a27so1776033qvb.20
-        for <cgroups@vger.kernel.org>; Thu, 17 Nov 2022 07:04:13 -0800 (PST)
+        with ESMTP id S240603AbiKQPRt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Nov 2022 10:17:49 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ABE64546
+        for <cgroups@vger.kernel.org>; Thu, 17 Nov 2022 07:12:23 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id jr19so1226336qtb.7
+        for <cgroups@vger.kernel.org>; Thu, 17 Nov 2022 07:12:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cb4RJ2noO6I+KBBEP872ofv51+cSy/3xrWUOMQWU1g4=;
+        b=unvKwDbp6LIvRE1YZzhs+MLHGUogLNHOaJtbDbivWS5s44b5nd/+fzpFFuHNOngT5A
+         4frV5x8oF3oEG+aSh2cr/LvyIvOLohkDasFZmTzDykSqt6JO/eI9HIhqoG9pCQzMorp7
+         cxFJ8gX3Cl/eHNc3HKfulahIoglZ7NtSKddroAvfL0pkYFpiFZm0sWerGkyOm4Y6sFnE
+         H/LiloikMwsXjYmWX95A7aWP4f6s8o+oHlLLspaKrBitIaNF0zrDvHaSBhtzn+7uevhb
+         J3+xquR69zS5ohA1ttWbfAKezUsgPpzc0+yy75yslYQD/tEZUBYp0hgJ8Sz8+ASq2vX3
+         w0Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3/pZzLYRJIJU5BHs9Uc1Vomcy9mjzdUIDjXX/Oi2kCE=;
-        b=A8C3j0lCqV37pV6QqRskH+ZTZsZiDkZIh1wM/v8GyTpTimQBonGD02AFIVcMEcO1tz
-         M7fPWq85X6UusfI2FtUZxCL5dwXwe2rfKI3Uc8FMtaAgWViWEGOa/5UnuDYridfwt3lv
-         Z3IYUKIu9y+2/TGDv1s/xgHFDjdgR4RPDCNxBgl5uSADbxGJ1aR2dvCzYjxEMrvLiZsW
-         LuDsieVKGAnenP8lrtAhxJ/sFL080/Ev816/HzVWRckdElqNQZLJcVivp18HqUM12C0W
-         i/ZosOXMIDvc8WYJHVv8S8OiHZHSpnirHaIo0YYRptDg5G+aBjk2pj4k4yIjybkqabuT
-         jKow==
-X-Gm-Message-State: ANoB5pnpEAsDnRCvNdJHz3WAUBxEfEZeQKfJe6ZhRK3+GDyM5YLcMOpX
-        zZiLCXiSQqO7n5y2RY5TEeXw2+IBShQqKmfnCg5Eu0FVUt7QEpl5phq6bKKUDpOWY41GQYKkIU0
-        oWWI6nYw9gjBu8edZOoGWAomP/2236JhT6g==
-X-Received: by 2002:ac8:124a:0:b0:3a5:e9fc:aa81 with SMTP id g10-20020ac8124a000000b003a5e9fcaa81mr2479617qtj.538.1668697453044;
-        Thu, 17 Nov 2022 07:04:13 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf78K7K9QQ/LEvml9I/mWSQVn+B0fyexIMzg8OX/iKi7kiwkPii8zpQjSqYYBFiNTGcK/7rWDOQ6MILAFdcpRCs=
-X-Received: by 2002:ac8:124a:0:b0:3a5:e9fc:aa81 with SMTP id
- g10-20020ac8124a000000b003a5e9fcaa81mr2479601qtj.538.1668697452805; Thu, 17
- Nov 2022 07:04:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20221117071557.165742-1-kamalesh.babulal@oracle.com>
-In-Reply-To: <20221117071557.165742-1-kamalesh.babulal@oracle.com>
-From:   Joel Savitz <jsavitz@redhat.com>
-Date:   Thu, 17 Nov 2022 11:03:56 -0400
-Message-ID: <CAL1p7m4MeYbccde1rPKuxcbtj6Tm+sa4Ro_REAMBmWszyWJ3_w@mail.gmail.com>
-Subject: Re: [PATCH v2] cgroup/cpuset: Improve cpuset_css_alloc() description
-To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cb4RJ2noO6I+KBBEP872ofv51+cSy/3xrWUOMQWU1g4=;
+        b=G3wCSO+XE+Np6JmdFd/jx0I2HrlTi4jOW8D1SNaihnZDCYexj32b0jgmrcEZhs2X7a
+         r0NV4VUiMqKKO6zLi9qy4JqYnekPhAcNYDxR1s66IfaVw5elmbS2nYaW1KvF1KJaeRwe
+         NDGAqloEQLguLYKAZNTG1+b846TsukPQSD2l1H2Qby8bal/VCfwd/ifcqpPOF0ZnJyyN
+         qJhJ2iFBP05hPI99KBPgF9FYPWy4FD66p9s6ZsHnQLXIWJzj/BRjxcIXvDjTvK8r7MoY
+         xxGqvfNiBcBrYaQcko7amPTySTYWPZWjtuGWcQF+91waLlbRrN78OD9WVcSXPssNxcuY
+         Xr4g==
+X-Gm-Message-State: ANoB5pmFrBXmumRaQqNSsoJGqbhWOWvWLUg+c554cw/iDmrMxMJ9o5CO
+        mjvyjtE4TEZeqn0S3q4fXuVzaw==
+X-Google-Smtp-Source: AA0mqf6db36HEcuGPTsX5mFnx6+PAMiVxBZOXmOKzqIIc4IWHOrqiX1PGXdOEJM6QU27gkNBb9gQuw==
+X-Received: by 2002:ac8:741a:0:b0:3a5:2932:3a77 with SMTP id p26-20020ac8741a000000b003a529323a77mr2534247qtq.591.1668697936744;
+        Thu, 17 Nov 2022 07:12:16 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:bc4])
+        by smtp.gmail.com with ESMTPSA id i15-20020a05620a248f00b006fa9d101775sm618553qkn.33.2022.11.17.07.12.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 07:12:16 -0800 (PST)
+Date:   Thu, 17 Nov 2022 10:12:39 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Hromatka <tom.hromatka@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        cgroups@vger.kernel.org
+Subject: Re: cgroup v1 and balance_dirty_pages
+Message-ID: <Y3ZPZyaX1WN3tad4@cmpxchg.org>
+References: <87wn7uf4ve.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wn7uf4ve.fsf@linux.ibm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,50 +69,36 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 3:18 AM Kamalesh Babulal
-<kamalesh.babulal@oracle.com> wrote:
->
-> Change the function argument in the description of cpuset_css_alloc()
-> from 'struct cgroup' -> 'struct cgroup_subsys_state'.  The change to the
-> argument type was introduced by commit eb95419b023a ("cgroup: pass
-> around cgroup_subsys_state instead of cgroup in subsystem methods").
-> Also, add more information to its description.
->
-> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-> ---
-> v2: Reworded the description to be more accurate, as suggested
->     by Waiman Long
->
->  kernel/cgroup/cpuset.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index b474289c15b8..ce789e1b2a2f 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3046,11 +3046,15 @@ static struct cftype dfl_files[] = {
->  };
->
->
-> -/*
-> - *     cpuset_css_alloc - allocate a cpuset css
-> - *     cgrp:   control group that the new cpuset will be part of
-> +/**
-> + * cpuset_css_alloc - Allocate a cpuset css
-> + * @parent_css: Parent css of the control group that the new cpuset will be
-> + *              part of
-> + * Return: cpuset css on success, -ENOMEM on failure.
-> + *
-> + * Allocate and initialize a new cpuset css, for non-NULL @parent_css, return
-> + * top cpuset css otherwise.
->   */
-> -
->  static struct cgroup_subsys_state *
->  cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
->  {
-> --
-> 2.34.3
->
+Hi Aneesh,
 
-Acked-by: Joel Savitz <jsavitz@redhat.com>
+On Thu, Nov 17, 2022 at 12:24:13PM +0530, Aneesh Kumar K.V wrote:
+> Currently, we don't pause in balance_dirty_pages with cgroup v1 when we
+> have task dirtying too many pages w.r.t to memory limit in the memcg.
+> This is because with cgroup v1 all the limits are checked against global
+> available resources. So on a system with a large amount of memory, a
+> cgroup with a smaller limit can easily hit OOM if the task within the
+> cgroup continuously dirty pages.
 
+Page reclaim has special writeback throttling for cgroup1, see the
+folio_wait_writeback() in shrink_folio_list(). It's not as smooth as
+proper dirty throttling, but it should prevent OOMs.
+
+Is this not working anymore?
+
+> Shouldn't we throttle the task based on the memcg limits in this case?
+> commit 9badce000e2c ("cgroup, writeback: don't enable cgroup writeback
+> on traditional hierarchies") indicates we run into issues with enabling
+> cgroup writeback with v1. But we still can keep the global writeback
+> domain, but check the throtling needs against memcg limits in
+> balance_dirty_pages()?
+
+Deciding when to throttle is only one side of the coin, though.
+
+The other side is selective flushing in the IO context of whoever
+generated the dirty data, and matching the rate of dirtying to the
+rate of writeback. This isn't really possible in cgroup1, as the
+domains for memory and IO control could be disjunct.
+
+For example, if a fast-IO cgroup shares memory with a slow-IO cgroup,
+what's the IO context for flushing the shared dirty data? What's the
+throttling rate you apply to dirtiers?
