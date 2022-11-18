@@ -2,132 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1A762FEB9
-	for <lists+cgroups@lfdr.de>; Fri, 18 Nov 2022 21:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5697D630790
+	for <lists+cgroups@lfdr.de>; Sat, 19 Nov 2022 01:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbiKRUXp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Nov 2022 15:23:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
+        id S232364AbiKSAhP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Nov 2022 19:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiKRUXo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Nov 2022 15:23:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1CF56D68
-        for <cgroups@vger.kernel.org>; Fri, 18 Nov 2022 12:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668802970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wLNx2lv/9wKRUvF6SaKybhGa6+X/Ftk2qDUqbH/DPVM=;
-        b=iXY0Uxjz5AQ9oAosc88+rrELyPfxgfrjWmJrOXWD9TxFLHkbdsdZqaFTju+ZxNpVmhP5jp
-        douZMXqiDKRrlbYsPT+40i1rk3XbTODbd6bNpRwxw76eSe/cjFAsQ+BslghbdiHFOjN4+6
-        e6c/shEWl1SrTfbDjv5vC06OkPVtH0w=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-584-zHP1jgBKMXmR7pO1DgdPJw-1; Fri, 18 Nov 2022 15:22:44 -0500
-X-MC-Unique: zHP1jgBKMXmR7pO1DgdPJw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4227A1C05EC0;
-        Fri, 18 Nov 2022 20:22:43 +0000 (UTC)
-Received: from [10.22.18.201] (unknown [10.22.18.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6BF340C6EC3;
-        Fri, 18 Nov 2022 20:22:42 +0000 (UTC)
-Message-ID: <5c92d811-63d4-2c92-3018-7ba8d9c4f21a@redhat.com>
-Date:   Fri, 18 Nov 2022 15:22:40 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH] kselftest/cgroup: Add cleanup() to test_cpuset_prs.sh
-Content-Language: en-US
-To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+        with ESMTP id S236129AbiKSAgX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Nov 2022 19:36:23 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A172AE32
+        for <cgroups@vger.kernel.org>; Fri, 18 Nov 2022 15:43:25 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id u7so4372198qvn.13
+        for <cgroups@vger.kernel.org>; Fri, 18 Nov 2022 15:43:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W/iTpmR4sRdLv0Rk3A8XEP/l6NiYPL92CF45ZyTgAiU=;
+        b=gsWF7RmdFZNApUCqHEyf0BafcUrFVHnUgIS7HhgpUNR5xF9VvlzTIR5biXLQLJAtux
+         ef1rp8dfIEcWWTpYDLJSxGwb35YMj4OcmP+tdOx2Fr4vTWGgN2XS2NtPbcroIz8XKl4v
+         FNhXlg07RHUWM4bfGIaZ7i6wMsSfF+pCELt+P+9QZRmTkbnrqcjpAFUZjLFsEapoxUsy
+         OMy1jNRSZJsxU+SqK2GdMJbnM8ptspzNHM41EB5x1wPnpWgIDPBEHkEOa4qM4JIIXMO7
+         15q1sHnkCMenDiRbzLQIew81n2tPXEb926GxiXB24xnKLs9+3HFdVuWpl6r8Oc7mlhkt
+         bGOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W/iTpmR4sRdLv0Rk3A8XEP/l6NiYPL92CF45ZyTgAiU=;
+        b=XIF5w30JoqZO9a5aptfLdK1HrSG23hcOuJQWma0BD8fn+4KSXIcgrAae+k8TNiAiny
+         E3V9b2k4+zJ5/xEWkYZXO4k7dqqtKBJjFABO8Xe/q00wmcqP/7RxO/UtO0Dfn+YsDGCW
+         xLBRKBu8Mv7EKjpgsZW93Yca/OfJ/n6ZdBYYfx5UGIHhZP/wr0BZ6hXId1dZnF7un8dY
+         /Yjoo3OtbN2+5p/oJ3bKaGAo5ehJXTWS/qt4KYSmoPkvYjecqydf5uGTxGfwYKMx1/5T
+         GWneulnpQzHm2vB49e6Z1eqKRgYhRzwaMGXapjS0Kqy8wUEyGQStA+sWbPS/abrDWHdG
+         ifYg==
+X-Gm-Message-State: ANoB5plsrJD4jlPxyKGJu5EO2TCr0ei1KxJbfJn0sLL6sINAWoxky8uj
+        XXaCqVyXkAF+d9I0e8srsawT1g==
+X-Google-Smtp-Source: AA0mqf5G/gaac1k+oIvscpizv4XMzhcrStHSf0J/I1Czc9JO0bpVKFs2vCc7zi+UWJRorpllDXYDFw==
+X-Received: by 2002:a0c:8091:0:b0:4bb:b8ec:2bc7 with SMTP id 17-20020a0c8091000000b004bbb8ec2bc7mr8811778qvb.20.1668815004777;
+        Fri, 18 Nov 2022 15:43:24 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:bc4])
+        by smtp.gmail.com with ESMTPSA id i10-20020a05620a404a00b006bb8b5b79efsm3504337qko.129.2022.11.18.15.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 15:43:23 -0800 (PST)
+Date:   Fri, 18 Nov 2022 18:43:46 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221118101330.251332-1-kamalesh.babulal@oracle.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20221118101330.251332-1-kamalesh.babulal@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        cgroups@vger.kernel.org, stable@kernel.org
+Subject: Re: [PATCH] mm/cgroup/reclaim: Fix dirty pages throttling on cgroup
+ v1
+Message-ID: <Y3gYsv6oAcJ2u0Py@cmpxchg.org>
+References: <20221118070603.84081-1-aneesh.kumar@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221118070603.84081-1-aneesh.kumar@linux.ibm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/18/22 05:13, Kamalesh Babulal wrote:
-> Install a cleanup function using the trap command for signals EXIT,
-> SIGINT, SIGQUIT and SIGABRT.  The cleanup function will perform:
-> 1. Online the CPUs that were made offline during the test.
-> 2. Removing the cgroups created.
-> 3. Restoring the original /sys/kernel/debug/sched/verbose value,
->     currently it's left turned on, irrespective of the original
->     configuration value.
->
-> the test performs steps 1 and 2, on the successful runs, but not during
-> all of the failed runs.  With the cleanup(), the system will perform all
-> three steps during failed/passed test runs.
->
-> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-> ---
->   .../testing/selftests/cgroup/test_cpuset_prs.sh | 17 ++++++++++++++++-
->   1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 526d2c42d870..b8ed82b55b1d 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -16,7 +16,12 @@ skip_test() {
->   [[ $(id -u) -eq 0 ]] || skip_test "Test must be run as root!"
->   
->   # Set sched verbose flag, if available
-> -[[ -d /sys/kernel/debug/sched ]] && echo Y > /sys/kernel/debug/sched/verbose
-> +if [[ -d /sys/kernel/debug/sched ]]
-> +then
-> +	# Used to restore the original setting during cleanup
-> +	SCHED_DEBUG=$(cat /sys/kernel/debug/sched/verbose)
-> +	echo Y > /sys/kernel/debug/sched/verbose
-> +fi
->   
->   # Get wait_inotify location
->   WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
-> @@ -54,6 +59,15 @@ echo +cpuset > cgroup.subtree_control
->   [[ -d test ]] || mkdir test
->   cd test
->   
-> +cleanup()
-> +{
-> +	online_cpus
-> +	rmdir A1/A2/A3 A1/A2 A1 B1 > /dev/null 2>&1
-> +	cd ..
-> +	rmdir test > /dev/null 2>&1
-> +	echo "$SCHED_DEBUG" > /sys/kernel/debug/sched/verbose
-> +}
-> +
->   # Pause in ms
->   pause()
->   {
-> @@ -666,6 +680,7 @@ test_inotify()
->   	fi
->   }
->   
-> +trap cleanup 0 2 3 6
->   run_state_test TEST_MATRIX
->   test_isolated
->   test_inotify
+On Fri, Nov 18, 2022 at 12:36:03PM +0530, Aneesh Kumar K.V wrote:
+> balance_dirty_pages doesn't do the required dirty throttling on cgroupv1. See
+> commit 9badce000e2c ("cgroup, writeback: don't enable cgroup writeback on
+> traditional hierarchies"). Instead, the kernel depends on writeback throttling
+> in shrink_folio_list to achieve the same goal. With large memory systems, the
+> flusher may not be able to writeback quickly enough such that we will start
+> finding pages in the shrink_folio_list already in writeback. Hence for cgroupv1
+> let's do a reclaim throttle after waking up the flusher.
+> 
+> The below test which used to fail on a 256GB system completes till the
+> the file system is full with this change.
+> 
+> root@lp2:/sys/fs/cgroup/memory# mkdir test
+> root@lp2:/sys/fs/cgroup/memory# cd test/
+> root@lp2:/sys/fs/cgroup/memory/test# echo 120M > memory.limit_in_bytes
+> root@lp2:/sys/fs/cgroup/memory/test# echo $$ > tasks
+> root@lp2:/sys/fs/cgroup/memory/test# dd if=/dev/zero of=/home/kvaneesh/test bs=1M
+> Killed
+> 
+> Cc: <stable@kernel.org>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-That looks good to me. Thanks for the improvement.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Acked-by: Waiman Long <longman@redhat.com>
-
+Thanks Aneesh
