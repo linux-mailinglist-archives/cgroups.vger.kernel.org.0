@@ -2,139 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F4962EEC1
-	for <lists+cgroups@lfdr.de>; Fri, 18 Nov 2022 08:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D9462F245
+	for <lists+cgroups@lfdr.de>; Fri, 18 Nov 2022 11:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241364AbiKRH63 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Nov 2022 02:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        id S241141AbiKRKOA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Nov 2022 05:14:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241200AbiKRH5r (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Nov 2022 02:57:47 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4999990587;
-        Thu, 17 Nov 2022 23:57:36 -0800 (PST)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ND8FC5DQjzJnq7;
-        Fri, 18 Nov 2022 15:54:23 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 18 Nov 2022 15:57:34 +0800
-Received: from localhost.localdomain (10.90.53.65) by
- kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 18 Nov 2022 15:57:33 +0800
-From:   limin <limin100@huawei.com>
-To:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
-        <songmuchun@bytedance.com>, <tj@kernel.org>,
-        <lizefan.x@bytedance.com>, <shuah@kernel.org>
-Subject: [PATCH -next] kselftest/cgroup: fix unexcepted testing failure on test_memcontrol
-Date:   Fri, 18 Nov 2022 15:57:27 +0800
-Message-ID: <20221118075727.542942-1-limin100@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        with ESMTP id S241062AbiKRKN6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Nov 2022 05:13:58 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E69769F8;
+        Fri, 18 Nov 2022 02:13:57 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2AI98vje005005;
+        Fri, 18 Nov 2022 10:13:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2022-7-12; bh=2ITJaP4jdIVNZSLXzqhqrVHW2OsvNSr1kvcLSWotVrg=;
+ b=092vVsB0kfR/0f5FxqEyj51tOi4vmkOA58lPpY7B/ExjLYMUEMJEPTI3LqeRMpg9sLN1
+ QbU6gXwnpoGTiDbUFqBKPgoDwwaJ+GdnW8UCicPSiLeLxtq6JDVvGmSnKZvKWAXOkeH5
+ 2cnSnSB97qDBUjma4xu0PGyEBDnopaqKEzz3zA/KPtsSb28lDEiOMAqWMnLqNUeJ3cYo
+ B14bQHYdoDzGqrSTmNEj+8QWszp+Jb8bxPzWi+lt4zUFhA4HSPRaOCtjxZo7vFonPn8c
+ FLgymQn94Xsf8Oa0BYRpt27wxCWeSiSdQA2BYlsW2w/tsDILhA6fEfqTBldyRRiqqRKD BA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kx70ur6sn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Nov 2022 10:13:49 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 2AI9Mo7N034324;
+        Fri, 18 Nov 2022 10:13:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3kw2deus8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Nov 2022 10:13:48 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AIADlTM027553;
+        Fri, 18 Nov 2022 10:13:47 GMT
+Received: from jarvis3.oracle.com (dhcp-10-191-220-40.vpn.oracle.com [10.191.220.40])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3kw2deus6s-1;
+        Fri, 18 Nov 2022 10:13:47 +0000
+From:   Kamalesh Babulal <kamalesh.babulal@oracle.com>
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kselftest/cgroup: Add cleanup() to test_cpuset_prs.sh
+Date:   Fri, 18 Nov 2022 15:43:30 +0530
+Message-Id: <20221118101330.251332-1-kamalesh.babulal@oracle.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.65]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-17_06,2022-11-18_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211180061
+X-Proofpoint-GUID: PhYjCzto24wHHYvFrCj4PoqDoJp-D1X8
+X-Proofpoint-ORIG-GUID: PhYjCzto24wHHYvFrCj4PoqDoJp-D1X8
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When the `test_memcontrol` is run,
-the following two test cases fail:
-1. test_memcg_low
-The original test case does not address the following issues:
-First, the memory reclamation behavior is different
- when memory.min or memory.low is set.
-Second, when memory.low of a cgroup is set to 0
-and the cgroup's father's is set to 50,
-the value of the low field in the memory.events
-of the cgroup is greater than 0.
-2. test_memcg_swap_max
-When swap.max is set, the sum of memory.current
-and memory.swap.current is slightly greater than
-the allocated memory size.
-The judgment in the original test case is too strict.
-some test cases will be failed as following:
-(the fourth and tenth):
+Install a cleanup function using the trap command for signals EXIT,
+SIGINT, SIGQUIT and SIGABRT.  The cleanup function will perform:
+1. Online the CPUs that were made offline during the test.
+2. Removing the cgroups created.
+3. Restoring the original /sys/kernel/debug/sched/verbose value,
+   currently it's left turned on, irrespective of the original
+   configuration value.
 
-$ sudo ./test_memcontrol
-ok 1 test_memcg_subtree_control
-ok 2 test_memcg_current
-ok 3 test_memcg_min
-not ok 4 test_memcg_low
-ok 5 test_memcg_high
-ok 6 test_memcg_high_sync
-ok 7 test_memcg_max
-ok 8 test_memcg_reclaim
-ok 9 test_memcg_oom_events
-not ok 10 test_memcg_swap_max
-ok 11 test_memcg_sock
-ok 12 test_memcg_oom_group_leaf_events
-ok 13 test_memcg_oom_group_parent_events
-ok 14 test_memcg_oom_group_score_events
+the test performs steps 1 and 2, on the successful runs, but not during
+all of the failed runs.  With the cleanup(), the system will perform all
+three steps during failed/passed test runs.
 
-this patch will correct this unexcepted failure
-
-Signed-off-by: limin <limin100@huawei.com>
-Signed-off-by: liaoqixin <liaoqixin@huawei.com>
+Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
 ---
- tools/testing/selftests/cgroup/test_memcontrol.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ .../testing/selftests/cgroup/test_cpuset_prs.sh | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 883335955..18a1d40b1 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -381,8 +381,7 @@ static int test_memcg_protection(const char *root, bool min)
- 			"memory.low prevents from allocating anon memory\n");
- 		goto cleanup;
- 	}
--
--	if (!values_close(cg_read_long(parent[1], "memory.current"), MB(50), 3))
-+	if (!values_close(cg_read_long(parent[1], "memory.current"), min ? MB(50) : MB(30), 3))
- 		goto cleanup;
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index 526d2c42d870..b8ed82b55b1d 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -16,7 +16,12 @@ skip_test() {
+ [[ $(id -u) -eq 0 ]] || skip_test "Test must be run as root!"
  
- 	if (min) {
-@@ -401,9 +400,6 @@ static int test_memcg_protection(const char *root, bool min)
- 			goto cleanup;
- 		if (i <= no_low_events_index && low <= 0)
- 			goto cleanup;
--		if (i > no_low_events_index && low)
--			goto cleanup;
--
- 	}
+ # Set sched verbose flag, if available
+-[[ -d /sys/kernel/debug/sched ]] && echo Y > /sys/kernel/debug/sched/verbose
++if [[ -d /sys/kernel/debug/sched ]]
++then
++	# Used to restore the original setting during cleanup
++	SCHED_DEBUG=$(cat /sys/kernel/debug/sched/verbose)
++	echo Y > /sys/kernel/debug/sched/verbose
++fi
  
- 	ret = KSFT_PASS;
-@@ -768,7 +764,7 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
+ # Get wait_inotify location
+ WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
+@@ -54,6 +59,15 @@ echo +cpuset > cgroup.subtree_control
+ [[ -d test ]] || mkdir test
+ cd test
  
- 	swap_current = cg_read_long(cgroup, "memory.swap.current");
- 	if (!swap_current ||
--	    !values_close(mem_current + swap_current, size, 3))
-+	    !values_close(mem_current + swap_current, size, 30))
- 		goto cleanup;
++cleanup()
++{
++	online_cpus
++	rmdir A1/A2/A3 A1/A2 A1 B1 > /dev/null 2>&1
++	cd ..
++	rmdir test > /dev/null 2>&1
++	echo "$SCHED_DEBUG" > /sys/kernel/debug/sched/verbose
++}
++
+ # Pause in ms
+ pause()
+ {
+@@ -666,6 +680,7 @@ test_inotify()
+ 	fi
+ }
  
- 	ret = 0;
-@@ -808,7 +804,7 @@ static int test_memcg_swap_max(const char *root)
- 	if (cg_read_strcmp(memcg, "memory.swap.max", "max\n"))
- 		goto cleanup;
- 
--	if (cg_write(memcg, "memory.swap.max", "30M"))
-+	if (cg_write(memcg, "memory.swap.max", "70M"))
- 		goto cleanup;
- 
- 	if (cg_write(memcg, "memory.max", "30M"))
++trap cleanup 0 2 3 6
+ run_state_test TEST_MATRIX
+ test_isolated
+ test_inotify
 -- 
-2.33.0
+2.34.3
 
