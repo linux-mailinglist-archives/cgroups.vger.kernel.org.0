@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B2C630A0B
-	for <lists+cgroups@lfdr.de>; Sat, 19 Nov 2022 03:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6678D630A58
+	for <lists+cgroups@lfdr.de>; Sat, 19 Nov 2022 03:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235316AbiKSCWz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Nov 2022 21:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S234517AbiKSCZA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Nov 2022 21:25:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235378AbiKSCVQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Nov 2022 21:21:16 -0500
+        with ESMTP id S230076AbiKSCX2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Nov 2022 21:23:28 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1727A5724;
-        Fri, 18 Nov 2022 18:14:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED847EC89;
+        Fri, 18 Nov 2022 18:15:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 53E1DB82679;
-        Sat, 19 Nov 2022 02:14:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E93F6C433D7;
-        Sat, 19 Nov 2022 02:14:30 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43003B8267D;
+        Sat, 19 Nov 2022 02:15:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2264C433D6;
+        Sat, 19 Nov 2022 02:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668824072;
-        bh=KOH7+RQT+uGmHeZ6pATcxN1+BPy/mxwR9/qr3fBh9Yo=;
+        s=k20201202; t=1668824129;
+        bh=Uha3JSi27qAZYklk7skNMOdy3BYTAWOlDdWDXV0LTb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkJcHdXf6sNIFvDy5Aed7/m7SJiIO7Ys2LgBVc7q6D2LVa0WApgVEj9D6Hw0MPXWo
-         08xtkCy0ulIhaALU2yIi0oYSY60742COg9WbL1ajmxBb/BgahwXc+1rsier9cjS9da
-         sV2KV8k8HRcpFC/Xp+ocH5Ma8mfx4KgS2zFHzrcwsgHuUhDZzxYwudS3P12rmeDKGU
-         3qvJnMkp40sLCOLtFZpIJxgg4NENMghX3HLi18E/VagsjFbLYxqlkTBiZBL/bCXK2Q
-         1mrsycecluZnHXoqXiyBpKCTBcSbdaH8ozAOprar2ddKniJ3FY2Nbin9CQW6iqqyLA
-         m0vxg8HenAuDA==
+        b=MpLKo2J4MWL4wV5K0RIsF9tJBN1LCCGyg8RARdOZg9ExYQuG4TcVDEHs78aWsN1EB
+         jhlLe2pTw18/C6YO62h9sJCFwFovzZ+495RLSWNSPnzQf3WQn7n6FIgxChSNA8eAD6
+         wt/1sFp85JluuZoYo87ZMVdZKZzjv55VYWd21Vj7v4l1llC6h9fEZE+qp7vCM+JP1y
+         UsLHQM28Ui/IkDC1b3WJKiiTrOfDgWoMLm7pITulEjA1kE0hPCuQAtHkkGu88mdU9M
+         H4XhYoYtqnIcWTzuVLN50r2DRNOJRX1iszDL8VeWmn7iAi2Rj3K2DdU8SxqfN6ZK6t
+         uCvCVWMTmC/Gg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yu Kuai <yukuai3@huawei.com>, Jan Kara <jack@suse.cz>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
         paolo.valente@linaro.org, tj@kernel.org, josef@toxicpanda.com,
         linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 21/27] block, bfq: fix null pointer dereference in bfq_bio_bfqg()
-Date:   Fri, 18 Nov 2022 21:13:46 -0500
-Message-Id: <20221119021352.1774592-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 15/18] block, bfq: fix null pointer dereference in bfq_bio_bfqg()
+Date:   Fri, 18 Nov 2022 21:14:56 -0500
+Message-Id: <20221119021459.1775052-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221119021352.1774592-1-sashal@kernel.org>
-References: <20221119021352.1774592-1-sashal@kernel.org>
+In-Reply-To: <20221119021459.1775052-1-sashal@kernel.org>
+References: <20221119021459.1775052-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -185,10 +185,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index e2e765a54fe9..a8d0b4c71b05 100644
+index be6733558b83..badb90352bf3 100644
 --- a/block/bfq-cgroup.c
 +++ b/block/bfq-cgroup.c
-@@ -613,6 +613,10 @@ struct bfq_group *bfq_bio_bfqg(struct bfq_data *bfqd, struct bio *bio)
+@@ -611,6 +611,10 @@ struct bfq_group *bfq_bio_bfqg(struct bfq_data *bfqd, struct bio *bio)
  	struct bfq_group *bfqg;
  
  	while (blkg) {
