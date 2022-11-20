@@ -2,92 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BAF63150C
-	for <lists+cgroups@lfdr.de>; Sun, 20 Nov 2022 16:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BFA63152B
+	for <lists+cgroups@lfdr.de>; Sun, 20 Nov 2022 17:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbiKTPwA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 20 Nov 2022 10:52:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
+        id S229491AbiKTQZT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 20 Nov 2022 11:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiKTPv7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 20 Nov 2022 10:51:59 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB8B27DE4
-        for <cgroups@vger.kernel.org>; Sun, 20 Nov 2022 07:51:59 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id y13so9220996pfp.7
-        for <cgroups@vger.kernel.org>; Sun, 20 Nov 2022 07:51:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DttQDPYJqDe2lRvTfIAZ96JFKMlEltVMw+oadVUR8gw=;
-        b=jvTBchvEr1cpkAFx1KWphFje2d/lHBFdAMl2ic9Wwv3/qYiIPMqd8hNFjdxVP9FbzN
-         dF2yWOgzqFAeYontau/3ftgNeLXDbjC5nUwoAqUNt/Kac3hPXAXK8fgWGKaf9j7wnLLa
-         VjkRM8LZ/W+fFIBF4H0FTBGsQJs1pzPxuy1pLPYse4wEMFqMBYyl5w9TImS7Uky0NF7j
-         06iJOR7JYYmFAlA4TrEvplumSaDxcCuav2hg/OguaHJ7rXa0o7jes+q2qhfGqf4sTprt
-         U9zx7uUHFKJ+eaDrV5maUiLIjC+jYvmzrJLpoEepYKHcf/GqKZBszq6VIipscvPNorrG
-         k/RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DttQDPYJqDe2lRvTfIAZ96JFKMlEltVMw+oadVUR8gw=;
-        b=FjfaMTJZfzIRJzfa5dhsjEs0BzLRrszVc+ED4NgmbrN25guSJUBXGTzDyYEq/1aPrT
-         NFduqE7zpN8wK9mwbR6metjRmb8va4ugqLjpO/cW9TCDL22wII2UKZFJBOTlHgoFlx/C
-         hW2BP8J98BlrLVvNTC6CDapCQCijVJlLD3AaUV+tPsO57Wq8G4gQ+UC3gF9Jap4A90z2
-         t48Fvh5XdeBaBUYC8fVG0kqtpE0lD+ueLbRKOSAm9FnlRz0Bzmx0y/niBLOzSRFO3dPy
-         SRWfvPnW//IijD+ZrcKcOODoGKkNINe1BcsYah3Vp2hIcLB55xLiUmY8vTTszKUNm+0t
-         lhag==
-X-Gm-Message-State: ANoB5pnNnxJmGpIDw5yYgsWjrE5ktx2ZpwdW+haYJMrUx1cEhmYjG7aL
-        R1pOAHIWCM3M8kE7QOHpEGySxdlyGL3khQ==
-X-Google-Smtp-Source: AA0mqf5JIfD/BWXFNnIfKMW5HC7lQRe8TXhJ/QlV6sprCm5Qo0dwzT1fghBWiJvRUtqzaZPrmqVFdw==
-X-Received: by 2002:a63:f1d:0:b0:475:a06:50ae with SMTP id e29-20020a630f1d000000b004750a0650aemr1038849pgl.67.1668959518729;
-        Sun, 20 Nov 2022 07:51:58 -0800 (PST)
-Received: from ubuntu-haifeng.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id p188-20020a625bc5000000b0056e32a2b88esm6730378pfb.219.2022.11.20.07.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Nov 2022 07:51:58 -0800 (PST)
-From:   "haifeng.xu" <haifeng.xu@shopee.com>
-To:     tj@kernel.org
+        with ESMTP id S229454AbiKTQZS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 20 Nov 2022 11:25:18 -0500
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F1B2DDB;
+        Sun, 20 Nov 2022 08:25:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1668961514;
+        bh=n1RHYaSr7YVqpR8H4s00LHMTau2igcsd/5bJkmmJeNU=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=pRHgB9QTxpHTbMYjOUJS8PqOUVjx2KvI2Lxodd+h9qHf0pQCvDVJi7WkHXSAY19Qm
+         MljcSA6rjBNuSm2tuErOP7ZWZsPcKfTh5o7JQojVBC+BAK9Njz1B1vWK3Y4wq5cgCi
+         VVKcVitj2q63UqJCdmm4jJ8ALaWB2yXLXsIXOodY=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id ECE3D128115A;
+        Sun, 20 Nov 2022 11:25:14 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ldle52qfiSPc; Sun, 20 Nov 2022 11:25:14 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1668961514;
+        bh=n1RHYaSr7YVqpR8H4s00LHMTau2igcsd/5bJkmmJeNU=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=pRHgB9QTxpHTbMYjOUJS8PqOUVjx2KvI2Lxodd+h9qHf0pQCvDVJi7WkHXSAY19Qm
+         MljcSA6rjBNuSm2tuErOP7ZWZsPcKfTh5o7JQojVBC+BAK9Njz1B1vWK3Y4wq5cgCi
+         VVKcVitj2q63UqJCdmm4jJ8ALaWB2yXLXsIXOodY=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 3ACCA1280FD2;
+        Sun, 20 Nov 2022 11:25:14 -0500 (EST)
+Message-ID: <77e79fad98b945f4f3f72b584d10fe01e187b8a8.camel@HansenPartnership.com>
+Subject: Re: [PATCH] cgroup: Fix typo in comment
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     "haifeng.xu" <haifeng.xu@shopee.com>, tj@kernel.org
 Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "haifeng.xu" <haifeng.xu@shopee.com>
-Subject: [PATCH] cgroup: Fix typo in comment
-Date:   Sun, 20 Nov 2022 15:51:34 +0000
-Message-Id: <20221120155134.57193-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 20 Nov 2022 11:25:11 -0500
+In-Reply-To: <20221120155134.57193-1-haifeng.xu@shopee.com>
+References: <20221120155134.57193-1-haifeng.xu@shopee.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Replace iff with if.
+On Sun, 2022-11-20 at 15:51 +0000, haifeng.xu wrote:
+> Replace iff with if.
 
-Signed-off-by: haifeng.xu <haifeng.xu@shopee.com>
----
- kernel/cgroup/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You can't do this without a more detailed analysis.  iff means if and
+only if (logical implies in both directions), which appears to be more
+correct in the code being patched than if, which is logical implies in
+only one direction only.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index f2743a476190..93c5e50b1392 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -814,7 +814,7 @@ static bool css_set_populated(struct css_set *cset)
-  * One of the css_sets associated with @cgrp is either getting its first
-  * task or losing the last.  Update @cgrp->nr_populated_* accordingly.  The
-  * count is propagated towards root so that a given cgroup's
-- * nr_populated_children is zero iff none of its descendants contain any
-+ * nr_populated_children is zero if none of its descendants contain any
-  * tasks.
-  *
-  * @cgrp's interface file "cgroup.populated" is zero if both
--- 
-2.25.1
+James
 
