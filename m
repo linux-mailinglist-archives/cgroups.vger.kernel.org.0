@@ -2,73 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C636348F0
-	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 22:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7CB634948
+	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 22:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiKVVKc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Nov 2022 16:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        id S234023AbiKVV30 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Nov 2022 16:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232783AbiKVVKb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 16:10:31 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBAE7CB95;
-        Tue, 22 Nov 2022 13:10:30 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id f9so10896209pgf.7;
-        Tue, 22 Nov 2022 13:10:30 -0800 (PST)
+        with ESMTP id S233174AbiKVV3Z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 16:29:25 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CD322529;
+        Tue, 22 Nov 2022 13:29:23 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id k7so14877286pll.6;
+        Tue, 22 Nov 2022 13:29:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C+KEqUPpt9nBZhy2l32eLRwk2q2Rg4+1eaxUkvjjhgg=;
-        b=hC1R8VpRUm1vtCVrxmHeI+RFvGrfUTgxzJDsTjqJnYDMfgLrcdlSQuqYhPvY/Ngiq8
-         YsJqRaFeRDIFWRDrW9MQKFf+YhGpvvEE5JQp6I7LE/fbFPycigIFZVC50Mn7T81Rc0ip
-         SpacCnKP0Cv8PWm/lx6EslA0e0XeGhuBFY1S80wuP3an5Ehy7+Du23j1TktTHFLf3g/X
-         xqpe587AjbUhmVWzf7e8zF8uXlCPo3vftSKmyF+LypLxS97o0nf1yo/ZCnmc70DYJF2C
-         xCNElSexSwgXjaNE3Ig8aTcZB/CYj0DlUtMBK+bALBMYuDlHh711uqPYnLmKjKocyIR5
-         DyOQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XYbx+av6DBnORVcQ2ULxfCSTDy21R06QMcTObHYEV34=;
+        b=YGgKFSzVDtg4WqE7blC+H6hUzPYoBzvcBGqcO8VWfLHbMTqWNn4bE7btkALc2ygD5T
+         D2Xj8asn40IU8QFMvKIiMRt9BNe+DUkTI09kpbDa7g6S4DYFTI1rHz51KuXDTKNuj/Sh
+         Njuax5n6GHUJW8GAskJ2gtcmll/eWEZMsPzskTGXNZq1xDdhzPToaaPHs1DMAxoR4CXC
+         g4T4/4TWRfjOCE9jGNmZHF8RmxInIK24wUW/svb5XVdP3I4wtMt1v020nT6Bdw3YBKkC
+         HS1n2b8c0YyB6P4nGoAjBTrENJqPW49nR/dgfsFdWHaBGUsSvvgdvsl3W2dE202ZTirX
+         l7Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C+KEqUPpt9nBZhy2l32eLRwk2q2Rg4+1eaxUkvjjhgg=;
-        b=iMwfLciWIW2zFcp08JYbyorkU/18boVs50jlDqcjgrQ43oKz9KeDpZ+uW0+uoctAD9
-         p7OlD+f4lKqPurUiEfz9DYtMVDLAcTBWTiRL2L89bMKJY1GTxTK10JRZZwFUQx2tlmEB
-         HqSFGglmlRn6MelvE9Px2ZMG9dxmpNvF4GsEBS4qv50l+R5bFBIivf7f8CVgpANiVJMB
-         96Xi54+lFCFm/3lmXtekLM8M17yzRZ5M9e71fSZHnrB5XBd3G5KA5E0M9LmBpvoWuFdW
-         4Q/WwELjuG1XAtxiCEkpBSL4Bwo9gVRTNZvUU6r82KQaxOMifTlEfHjHaAoiwVJnzYvQ
-         He6g==
-X-Gm-Message-State: ANoB5pkORTFZkm4VSqpcreETztTfkPc8ne2KJKz+rXsYFgS6y111cKEC
-        9iOGyRqBHuJJv7qM1Dqz3Zg=
-X-Google-Smtp-Source: AA0mqf6TsDpRKKyxDHKrpggRE8TEmiZt0DJaKX3yDhZBcH1LKsFTJaLXufIb42rblcCx6ncdMDdGYQ==
-X-Received: by 2002:a62:16d3:0:b0:562:c1d4:e287 with SMTP id 202-20020a6216d3000000b00562c1d4e287mr5701810pfw.80.1669151430256;
-        Tue, 22 Nov 2022 13:10:30 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XYbx+av6DBnORVcQ2ULxfCSTDy21R06QMcTObHYEV34=;
+        b=Z4qVrnG+f8eVTaMAD6HKNcG2lG/JqKDgsknZGsDf5iEOPG8WjcW5lZ5+qQlNqq2W4q
+         HIF1vFvjdmCwzy+En5TV7ywd5pKQVr9yLDx6e9gMHT2nshQgPIo/UrPaoo1HIXnZO2nI
+         5wX3fcZ1euBcvj72g+aoL2AGo8UL1l+XkF4jXjHPKmivI+fIR/BFlq7n7G6ATUXOkaka
+         SZ+ppCEL2uau4Q4nkmkII+JSEEJ6mAeFgRuD8A6bSIatgwQHe8vOJZ0Q5u/+SG7Q1iu6
+         EDgasuDmXdd3fQRWgEtIuHbjxFKSiffJMuSv7tBR+DbSKSlwOdJh9inJAIE8F2tup0ar
+         dp+A==
+X-Gm-Message-State: ANoB5pnv3f4K6FFt/Su6w1gueIlgrR4RciXU1KeFujBheSGtZvqzWqyD
+        HnitSks1RqjXHZUmhiLNRS0=
+X-Google-Smtp-Source: AA0mqf5KzdFRzATj/MphE9mRIT5fns0fCeoG8/eWEzDJc/WpbIxhsTPN2fpHhxYabp11HdHmpTseJw==
+X-Received: by 2002:a17:903:2407:b0:17f:3da:f19d with SMTP id e7-20020a170903240700b0017f03daf19dmr8588893plo.147.1669152562517;
+        Tue, 22 Nov 2022 13:29:22 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::5:bb3])
-        by smtp.gmail.com with ESMTPSA id h9-20020a170902f54900b00176a2d23d1asm12659611plf.56.2022.11.22.13.10.29
+        by smtp.gmail.com with ESMTPSA id b8-20020aa78ec8000000b005627ddbc7a4sm11086709pfr.191.2022.11.22.13.29.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Nov 2022 13:10:29 -0800 (PST)
+        Tue, 22 Nov 2022 13:29:22 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 22 Nov 2022 11:10:28 -1000
+Date:   Tue, 22 Nov 2022 11:29:20 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     hch@lst.de, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH v2 4/5] blk-iocost: fix sleeping in atomic context
- warnning
-Message-ID: <Y306xJV6aNXd94kb@slm.duckdns.org>
-References: <20221104023938.2346986-1-yukuai1@huaweicloud.com>
- <20221104023938.2346986-5-yukuai1@huaweicloud.com>
- <Y3K8MSFWw8eTnxtm@slm.duckdns.org>
- <3da991c6-21e4-8ed8-ba75-ccb92059f0ae@huaweicloud.com>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [RFC 11/13] cgroup/drm: Introduce weight based drm cgroup control
+Message-ID: <Y30/MIsLmVAZ7pQi@slm.duckdns.org>
+References: <20221109161141.2987173-1-tvrtko.ursulin@linux.intel.com>
+ <20221109161141.2987173-12-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3da991c6-21e4-8ed8-ba75-ccb92059f0ae@huaweicloud.com>
+In-Reply-To: <20221109161141.2987173-12-tvrtko.ursulin@linux.intel.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -79,49 +82,96 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Nov 17, 2022 at 07:28:50PM +0800, Yu Kuai wrote:
-> Hi, Tejun!
-> 
-> 在 2022/11/15 6:07, Tejun Heo 写道:
-> 
-> > 
-> > Any chance I can persuade you into updating match_NUMBER() helpers to not
-> > use match_strdup()? They can easily disable irq/preemption and use percpu
-> > buffers and we won't need most of this patchset.
-> 
-> Does the following patch match your proposal?
-> 
-> diff --git a/lib/parser.c b/lib/parser.c
-> index bcb23484100e..ded652471919 100644
-> --- a/lib/parser.c
-> +++ b/lib/parser.c
-> @@ -11,6 +11,24 @@
->  #include <linux/slab.h>
->  #include <linux/string.h>
-> 
-> +#define U64_MAX_SIZE 20
+On Wed, Nov 09, 2022 at 04:11:39PM +0000, Tvrtko Ursulin wrote:
+> +DRM scheduling soft limits
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~
 > +
-> +static DEFINE_PER_CPU(char, buffer[U64_MAX_SIZE]);
+> +Because of the heterogenous hardware and driver DRM capabilities, soft limits
+> +are implemented as a loose co-operative (bi-directional) interface between the
+> +controller and DRM core.
 > +
-> +static char *get_buffer(void)
-> +{
-> +       preempt_disable();
-> +       local_irq_disable();
+> +The controller configures the GPU time allowed per group and periodically scans
+> +the belonging tasks to detect the over budget condition, at which point it
+> +invokes a callback notifying the DRM core of the condition.
 > +
-> +       return this_cpu_ptr(buffer);
-> +}
+> +DRM core provides an API to query per process GPU utilization and 2nd API to
+> +receive notification from the cgroup controller when the group enters or exits
+> +the over budget condition.
 > +
-> +static void put_buffer(void)
-> +{
-> +       local_irq_enable();
-> +       preempt_enable();
-> +}
-> +
-> 
-> Then match_strdup() and kfree() in match_NUMBER() can be replaced with
-> get_buffer() and put_buffer().
+> +Individual DRM drivers which implement the interface are expected to act on this
+> +in the best-effort manner only. There are no guarantees that the soft limits
+> +will be respected.
 
-Sorry about the late reply. Yeah, something like this.
+Soft limits is a bit of misnomer and can be confused with best-effort limits
+such as memory.high. Prolly best to not use the term.
+
+> +static bool
+> +__start_scanning(struct drm_cgroup_state *root, unsigned int period_us)
+> +{
+> +	struct cgroup_subsys_state *node;
+> +	bool ok = false;
+> +
+> +	rcu_read_lock();
+> +
+> +	css_for_each_descendant_post(node, &root->css) {
+> +		struct drm_cgroup_state *drmcs = css_to_drmcs(node);
+> +
+> +		if (!css_tryget_online(node))
+> +			goto out;
+> +
+> +		drmcs->active_us = 0;
+> +		drmcs->sum_children_weights = 0;
+> +
+> +		if (node == &root->css)
+> +			drmcs->per_s_budget_ns =
+> +				DIV_ROUND_UP_ULL(NSEC_PER_SEC * period_us,
+> +						 USEC_PER_SEC);
+> +		else
+> +			drmcs->per_s_budget_ns = 0;
+> +
+> +		css_put(node);
+> +	}
+> +
+> +	css_for_each_descendant_post(node, &root->css) {
+> +		struct drm_cgroup_state *drmcs = css_to_drmcs(node);
+> +		struct drm_cgroup_state *parent;
+> +		u64 active;
+> +
+> +		if (!css_tryget_online(node))
+> +			goto out;
+> +		if (!node->parent) {
+> +			css_put(node);
+> +			continue;
+> +		}
+> +		if (!css_tryget_online(node->parent)) {
+> +			css_put(node);
+> +			goto out;
+> +		}
+> +		parent = css_to_drmcs(node->parent);
+> +
+> +		active = drmcs_get_active_time_us(drmcs);
+> +		if (active > drmcs->prev_active_us)
+> +			drmcs->active_us += active - drmcs->prev_active_us;
+> +		drmcs->prev_active_us = active;
+> +
+> +		parent->active_us += drmcs->active_us;
+> +		parent->sum_children_weights += drmcs->weight;
+> +
+> +		css_put(node);
+> +		css_put(&parent->css);
+> +	}
+> +
+> +	ok = true;
+> +
+> +out:
+> +	rcu_read_unlock();
+> +
+> +	return ok;
+> +}
+
+A more conventional and scalable way to go about this would be using an
+rbtree keyed by virtual time. Both CFS and blk-iocost are examples of this,
+but I think for drm, it can be a lot simpler.
 
 Thanks.
 
