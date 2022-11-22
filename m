@@ -2,92 +2,190 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2BD632CAF
-	for <lists+cgroups@lfdr.de>; Mon, 21 Nov 2022 20:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2846331A4
+	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 01:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbiKUTMh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Nov 2022 14:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S229553AbiKVAyV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Nov 2022 19:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbiKUTMG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Nov 2022 14:12:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796EBD2DEC
-        for <cgroups@vger.kernel.org>; Mon, 21 Nov 2022 11:11:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669057871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pCmAWoY/E+D1EdQWKofo3IS5cplA0bKml9JOCiXWhTQ=;
-        b=P8yOsBNsJms5T9BTfHTQbcQdN5NkdVgbRcJ9HAw38mOr0lh7l5iNrTeN4QJau6EEfggqfH
-        Oxdd4YoLT8b39Y1DYa+AHBOLciS5bSCa6A7ZL1RJHffqpvZ4l8JG8XWQQecYBN2QqZ4KFf
-        5HLv0o+qNQjOZG/Tu/eknzwUhsyOgdY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-656-MChxLxSOMvCXjIztijKxCw-1; Mon, 21 Nov 2022 14:11:06 -0500
-X-MC-Unique: MChxLxSOMvCXjIztijKxCw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B455D811E84;
-        Mon, 21 Nov 2022 19:11:03 +0000 (UTC)
-Received: from [10.22.33.92] (unknown [10.22.33.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 45FFA49BB60;
-        Mon, 21 Nov 2022 19:11:03 +0000 (UTC)
-Message-ID: <78de73b0-2a27-592b-b70b-ca209962fdef@redhat.com>
-Date:   Mon, 21 Nov 2022 14:11:03 -0500
+        with ESMTP id S231844AbiKVAxz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Nov 2022 19:53:55 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94512E06B0
+        for <cgroups@vger.kernel.org>; Mon, 21 Nov 2022 16:53:54 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id f201so15568783yba.12
+        for <cgroups@vger.kernel.org>; Mon, 21 Nov 2022 16:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=O6WUOw9T0DV19s/c2TGTrCQrdf4F5EyxA3HYag+nfl0=;
+        b=K7uGD5oz/aX87z0dSzQiMLPSWToAYxYdnapsn443FHnDX0Zpnyu7ogdz44QyeZYtkh
+         N2soQOhA7Uf54WmfPwkNv8Wh6ohKOfa1RV33ck4avR0Fos+V9s17/WKxkSUAxC5H1lPj
+         MHaYxnD5euM+lAJWHkrzN/9sC9BjhZNqYWqqs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O6WUOw9T0DV19s/c2TGTrCQrdf4F5EyxA3HYag+nfl0=;
+        b=0d9VcNRcM4TkoiafGk1yuDH4V/HPYHmyg745jp6fm2Je2cBH8Bu+MPc0EMMpUSWNW9
+         Nbbmq4cgEURD3XzgKSdiDWsU6zDK+FOihdyGytEdJzvujiJRVLWWUxR4qpqk6eMJmasT
+         9GggBUlXvSZasAr3ltedPqqDWEEEiryliHPKt98NIlhKL8Eodu/RxmRcjHJt9b5O7t5Y
+         IkigLPVIbjny27m0yDr+Tc/rAo1WEihSEN7rqxH5rLWjBRfsUxkgtvWiFYFOxMFev3t9
+         LFXGrNgWNDULIc8kh4XfScIaxxDjVgsHXLeQcCMj6CzmnRo5PA1u6UbaDyBgEs/o4jCU
+         3Ulg==
+X-Gm-Message-State: ANoB5pkTvsf25KDqc8usCpu7S+nTSza47Ln7hm76hG0omOyB6LeuMmMZ
+        WlHPMgbZMUhMEhozwQ7ONtweZzICRlQudRB6F73ADg==
+X-Google-Smtp-Source: AA0mqf4EpbJUR3UuJTQ7sbSad4/fl/NT35pwFr98CaDrRMn5fwcn3TSYJxpSSSeDeV2CANvkQa9SkrJLEtQifg4QTpY=
+X-Received: by 2002:a05:6902:1825:b0:6de:f09:2427 with SMTP id
+ cf37-20020a056902182500b006de0f092427mr1386018ybb.125.1669078433693; Mon, 21
+ Nov 2022 16:53:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH 2/2] cgroup/cpuset: Optimize cpuset_attach() on v2
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20221112221939.1272764-1-longman@redhat.com>
- <20221112221939.1272764-3-longman@redhat.com>
- <20221121185042.GA15225@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20221121185042.GA15225@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Mon, 21 Nov 2022 16:53:43 -0800
+Message-ID: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
+Subject: Low TCP throughput due to vmpressure with swap enabled
+To:     Linux MM <linux-mm@kvack.org>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, cgroups@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
-On 11/21/22 13:50, Michal Koutný wrote:
-> On Sat, Nov 12, 2022 at 05:19:39PM -0500, Waiman Long <longman@redhat.com> wrote:
->> +	/*
->> +	 * In the default hierarchy, enabling cpuset in the child cgroups
->> +	 * will trigger a number of cpuset_attach() calls with no change
->> +	 * in effective cpus and mems. In that case, we can optimize out
->> +	 * by skipping the task iteration and update.
->> +	 */
->> +	if (cgroup_subsys_on_dfl(cpuset_cgrp_subsys) &&
->> +	    !cpus_updated && !mems_updated) {
-> I'm just wondering -- why is this limited to the default hierarchy only?
-> IOW why can't v1 skip too (when favorable constness between cpusets).
+We have observed a negative TCP throughput behavior from the following commit:
 
-Cpuset v1 is a bit more complex. Besides cpu and node masks, it also 
-have other flags like the spread flags that we need to looks for 
-changes. Unlike cpuset v2, I don't think it is likely that 
-cpuset_attach() will be called without changes in cpu and node masks. 
-That are the reason why this patch focuses on v2. If it is found that 
-this is not the case, we can always extend the support to v1.
+* 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
 
-Cheers,
-Longman
+It landed back in 2016 in v4.5, so it's not exactly a new issue.
 
+The crux of the issue is that in some cases with swap present the
+workload can be unfairly throttled in terms of TCP throughput.
+
+I am able to reproduce this issue in a VM locally on v6.1-rc6 with 8
+GiB of RAM with zram enabled.
+
+The setup is fairly simple:
+
+1. Run the following go proxy in one cgroup (it has some memory
+ballast to simulate useful memory usage):
+
+* https://gist.github.com/bobrik/2c1a8a19b921fefe22caac21fda1be82
+
+sudo systemd-run --scope -p MemoryLimit=6G go run main.go
+
+2. Run the following fio config in another cgroup to simulate mmapped
+page cache usage:
+
+[global]
+size=8g
+bs=256k
+iodepth=256
+direct=0
+ioengine=mmap
+group_reporting
+time_based
+runtime=86400
+numjobs=8
+name=randread
+rw=randread
+
+[job1]
+filename=derp
+
+sudo systemd-run --scope fio randread.fio
+
+3. Run curl to request a large file via proxy:
+
+curl -o /dev/null http://localhost:4444
+
+4. Observe low throughput. The numbers here are dependent on your
+location, but in my VM the throughput drops from 60MB/s to 10MB/s
+depending on whether fio is running or not.
+
+I can see that this happens because of the commit I mentioned with
+some perf tracing:
+
+sudo perf probe --add 'vmpressure:48 memcg->css.cgroup->kn->id scanned
+vmpr_scanned=vmpr->scanned reclaimed vmpr_reclaimed=vmpr->reclaimed'
+sudo perf probe --add 'vmpressure:72 memcg->css.cgroup->kn->id'
+
+I can record the probes above during curl runtime:
+
+sudo perf record -a -e probe:vmpressure_L48,probe:vmpressure_L72 -- sleep 5
+
+Line 48 allows me to observe scanned and reclaimed page counters, line
+72 is the actual throttling.
+
+Here's an example trace showing my go proxy cgroup:
+
+kswapd0 89 [002] 2351.221995: probe:vmpressure_L48: (ffffffed2639dd90)
+id=0xf23 scanned=0x140 vmpr_scanned=0x0 reclaimed=0x0
+vmpr_reclaimed=0x0
+kswapd0 89 [007] 2351.333407: probe:vmpressure_L48: (ffffffed2639dd90)
+id=0xf23 scanned=0x2b3 vmpr_scanned=0x140 reclaimed=0x0
+vmpr_reclaimed=0x0
+kswapd0 89 [007] 2351.333408: probe:vmpressure_L72: (ffffffed2639de2c) id=0xf23
+
+We scanned lots of pages, but weren't able to reclaim anything.
+
+When throttling happens, it's in tcp_prune_queue, where rcv_ssthresh
+(TCP window clamp) is set to 4 x advmss:
+
+* https://elixir.bootlin.com/linux/v5.15.76/source/net/ipv4/tcp_input.c#L5373
+
+else if (tcp_under_memory_pressure(sk))
+tp->rcv_ssthresh = min(tp->rcv_ssthresh, 4U * tp->advmss);
+
+I can see plenty of memory available in both my go proxy cgroup and in
+the system in general:
+
+$ free -h
+total used free shared buff/cache available
+Mem: 7.8Gi 4.3Gi 104Mi 0.0Ki 3.3Gi 3.3Gi
+Swap: 11Gi 242Mi 11Gi
+
+It just so happens that all of the memory is hot and is not eligible
+to be reclaimed. Since swap is enabled, the memory is still eligible
+to be scanned. If swap is disabled, then my go proxy is not eligible
+for scanning anymore (all memory is anonymous, nowhere to reclaim it),
+so the whole issue goes away.
+
+Punishing well behaving programs like that doesn't seem fair. We saw
+production metals with 200GB page cache out of 384GB of RAM, where a
+well behaved proxy with 60GB of RAM + 15GB of swap is throttled like
+that. The fact that it only happens with swap makes it extra weird.
+
+I'm not really sure what to do with this. From our end we'll probably
+just pass cgroup.memory=nosocket in cmdline to disable this behavior
+altogether, since it's not like we're running out of TCP memory (and
+we can deal with that better if it ever comes to that). There should
+probably be a better general case solution.
+
+I don't know how widespread this issue can be. You need a fair amount
+of page cache pressure to try to go to anonymous memory for reclaim to
+trigger this.
+
+Either way, this seems like a bit of a landmine.
