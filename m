@@ -2,56 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DD7634453
-	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 20:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263F56344CC
+	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 20:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234698AbiKVTIs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Nov 2022 14:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        id S234592AbiKVTrC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Nov 2022 14:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbiKVTIq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 14:08:46 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1C27ECBB
-        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 11:08:44 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id v128so843902vsb.13
-        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 11:08:44 -0800 (PST)
+        with ESMTP id S232355AbiKVTqz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 14:46:55 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4647C46C
+        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 11:46:53 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id t5so15504806vsh.8
+        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 11:46:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fKEisOcCxxrkfHjW9WxsM8SkyONoJunCQr/mSNvg18w=;
-        b=mv1vO6EVJFQHmOOPSto15ifvc0zcEe34ioOnM5MyYbCpS7QbKucnzT6UaTsnTf5CxU
-         tWRPFwXHVHphMm1FODx/9niRsHYLf71qs0kMmREw/jSZ6idKI06kHWAGrIxinqsXv0c7
-         6p23QtcPBpkHBgWP+kblIIB3gaaUln2L40fy6NnWeLTTK9iMYhP730afCEVnW5dP6rcg
-         jKUKEeHB78cVPoapdl1gSBPnSH2y/w2z+T4lmWO2jzVbFI0goi6foKF+0O/2xAypEKek
-         +P4aw8o6DBuP73QHlRXdpjMD9Un3Va0nJmSBL44jF6Z7qOHnZPtkhTH8oK0ZIfGrkNni
-         OASQ==
+        bh=iJupukkEoGhIVTPDQgfM6MLu0R+8+aVVrcwFrJK3N0c=;
+        b=M80awYn8ZIf5OKkEY2DksCS/pgDp0Vlt4QAZaq4A5dWXtc7g9jtLqRw15V+r5kecxR
+         /g6Lj8CXkZVy7zj5+J/Cc/xEv8SWpgJ35wU15k/o0m8ZFMXBIER7TqbblSrplcRN65sR
+         VxwfriTfukZdxbDBMuTOJFjHE2A+ElzVavRiL7FmEX7KHHkpvs3SqIsFOBqGCVKehTta
+         ScsClvj3jyvRwzH4fXxNxd6i7CCG1ApRWrtTG2AOuJJGcKg+wVEXDN7llD2pWGD89ZY5
+         uSk/LGsGE/YLh9rkKe4Wi/REyuTnDjbG4DfUktJJroFAofiZ6N9GbZ/mt7hhKHw+jX0V
+         aPsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fKEisOcCxxrkfHjW9WxsM8SkyONoJunCQr/mSNvg18w=;
-        b=N2ACJvOWGOvZ2SV/Rpiv+gXkDbmCCj8noT0MkBeKYvZKGci01qUY3t6suLWTbdZtX5
-         MyVmyLZy3cEnsMI6PE83AdQyWGe9Rv4/v3Btb0wF0gyDBGbHxVeryLOlPe7y6JqAxa2D
-         f5n3YRJbB1DerBDP0Y1df0DYMnZHRGmFu6enfe0HCYxSynVGkMxN/T8/uXHAN+mw5ykE
-         Ryv18IaBt7VCwBDxDYgdq2Ez4BOLHlQiN+XBl3+K8qSwVUDZCX4pH4/BS9N6f1z4uCmB
-         n84keTaYmLBhaQVvseR+Xw9JAfIgn5KrciFI8A0iRM0hq3N6ZHaSBgbqwkEXs2tZvV0H
-         Dq7Q==
-X-Gm-Message-State: ANoB5pl0I3jaN/skL/L4nw+Ky9i8H3ggvy2BomPOnmkILqvMgSmLxq3G
-        oFCaSHl5F3YmsW1SDXzHDqxPX6xhZSKIPIEx6u9MXQ==
-X-Google-Smtp-Source: AA0mqf7s3ZLwIADGrmZbS5EhOy/cXfvuc6KPbinmWOjq5dzTh0s+Gs8Q8RUfUPw9LF8wsXqWnglSj8+M2Vn9ZD9H6iw=
-X-Received: by 2002:a67:fbd6:0:b0:3ac:38c7:1bdd with SMTP id
- o22-20020a67fbd6000000b003ac38c71bddmr4789726vsr.9.1669144123684; Tue, 22 Nov
- 2022 11:08:43 -0800 (PST)
+        bh=iJupukkEoGhIVTPDQgfM6MLu0R+8+aVVrcwFrJK3N0c=;
+        b=BbMVqM2HznFbrWwWvmh21w2aq+PcyZqzFnOSDmM8CWM6gx9QGoaUGd0TAxtnY42gGl
+         /zCtTDD5s4cfTqJrZwWJ+R6mD8pGimx+FT2BdAgXF/Pez3sw/vJgRar26C4qfyudcHc5
+         CnIiREK/tz+FotxvcUgea0z/7Ny/xuM6PnIQ/eswsQmK+++iHwbkes7pAVXm43qWHiwa
+         T6BCMIpCsYIYurUOOF9T1ziR4B1Ao4ZJFfCV+SFRzE+fLjPr58qRSciYKDaLpuZlVeZ9
+         0RiQYSMo35eXfLP8+/Ff612hcSkxYRA7EX9Y5xinrCT+rHBhmOD3Ww4SlbxY3ZK+QxwZ
+         07tQ==
+X-Gm-Message-State: ANoB5pkyC6H4OO+VoENFD9P7TJNgnYWEWhg0pGNIIIgIptSD1TV6XgHr
+        cGD6hs7ZIaxMu6JMcIYSRQMDdeumen94hlDkiqYPQQ==
+X-Google-Smtp-Source: AA0mqf4zhuspzMASRV535xF+302qrJJOauH0NL+OEdJsr1TbABXo+Yhb9mLmDvugbzEMGniRMzfswCkaxQecYC7OQtc=
+X-Received: by 2002:a67:c906:0:b0:3aa:f64:fbfd with SMTP id
+ w6-20020a67c906000000b003aa0f64fbfdmr5403462vsk.15.1669146412036; Tue, 22 Nov
+ 2022 11:46:52 -0800 (PST)
 MIME-Version: 1.0
 References: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
- <CAOUHufbQ_JjW=zXEi10+=LQOREOPHrK66Rqayr=sFUH_tQbW1w@mail.gmail.com> <CABWYdi3aOtJuMe4Z=FFzBb3iR6Cc9k8G2swSuZ_GDnaESuE_EQ@mail.gmail.com>
-In-Reply-To: <CABWYdi3aOtJuMe4Z=FFzBb3iR6Cc9k8G2swSuZ_GDnaESuE_EQ@mail.gmail.com>
+In-Reply-To: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
 From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 22 Nov 2022 12:08:07 -0700
-Message-ID: <CAOUHufbm6dLxgZ5=cbz1ogHGXrOfbF=wimpJySDpMRGJ=QPV4w@mail.gmail.com>
+Date:   Tue, 22 Nov 2022 12:46:15 -0700
+Message-ID: <CAOUHufYd-5cqLsQvPBwcmWeph2pQyQYFRWynyg0UVpzUBWKbxw@mail.gmail.com>
 Subject: Re: Low TCP throughput due to vmpressure with swap enabled
 To:     Ivan Babrou <ivan@cloudflare.com>
 Cc:     Linux MM <linux-mm@kvack.org>,
@@ -82,39 +81,61 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 12:05 PM Ivan Babrou <ivan@cloudflare.com> wrote:
+On Mon, Nov 21, 2022 at 5:53 PM Ivan Babrou <ivan@cloudflare.com> wrote:
 >
-> On Tue, Nov 22, 2022 at 10:59 AM Yu Zhao <yuzhao@google.com> wrote:
-> >
-> > On Mon, Nov 21, 2022 at 5:53 PM Ivan Babrou <ivan@cloudflare.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > We have observed a negative TCP throughput behavior from the following commit:
-> > >
-> > > * 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
-> > >
-> > > It landed back in 2016 in v4.5, so it's not exactly a new issue.
-> > >
-> > > The crux of the issue is that in some cases with swap present the
-> > > workload can be unfairly throttled in terms of TCP throughput.
-> > >
-> > > I am able to reproduce this issue in a VM locally on v6.1-rc6 with 8
-> > > GiB of RAM with zram enabled.
-> >
-> > Hi Ivan,
-> >
-> > If it's not too much trouble, could you try again with the following?
-> >   CONFIG_LRU_GEN=y
-> >   CONFIG_LRU_GEN_ENABLED=y
-> >
-> > I haven't tried it myself. But I'll fix whatever doesn't work for you,
-> > since your team is on the top of my customer list :)
+> Hello,
 >
-> We don't have it in production, since there we have 5.15 LTS (our
-> kernel team is testing v6.1).
+> We have observed a negative TCP throughput behavior from the following commit:
 >
-> I do have it enabled in my VM running v6.1-rc6 where I was able to
-> replicate this, so it doesn't seem to help.
+> * 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
+>
+> It landed back in 2016 in v4.5, so it's not exactly a new issue.
+>
+> The crux of the issue is that in some cases with swap present the
+> workload can be unfairly throttled in terms of TCP throughput.
+>
+> I am able to reproduce this issue in a VM locally on v6.1-rc6 with 8
+> GiB of RAM with zram enabled.
+>
+> The setup is fairly simple:
+>
+> 1. Run the following go proxy in one cgroup (it has some memory
+> ballast to simulate useful memory usage):
+>
+> * https://gist.github.com/bobrik/2c1a8a19b921fefe22caac21fda1be82
+>
+> sudo systemd-run --scope -p MemoryLimit=6G go run main.go
+>
+> 2. Run the following fio config in another cgroup to simulate mmapped
+> page cache usage:
+>
+> [global]
+> size=8g
+> bs=256k
+> iodepth=256
+> direct=0
+> ioengine=mmap
+> group_reporting
+> time_based
+> runtime=86400
+> numjobs=8
+> name=randread
+> rw=randread
 
-Thanks. I'll look into this and get back to you.
+Is it practical for your workload to apply some madvise/fadvise hint?
+For the above repro, it would be fadvise_hint=1 which is mapped into
+MADV_RANDOM automatically. The kernel also supports MADV_SEQUENTIAL,
+but not POSIX_FADV_NOREUSE at the moment.
+
+We actually have similar issues but unfortunately I haven't been able
+to come up with any solution beyond recommending the above flags.
+The problem is that harvesting the accessed bit from mmapped memory is
+costly, and when random accesses happen fast enough, the cost of doing
+that prevents LRU from collecting more information to make better
+decisions. In a nutshell, LRU can't tell whether there is genuine
+memory locality with your test case.
+
+It's a very difficult problem to solve from LRU's POV. I'd like to
+hear more about your workloads and see whether there are workarounds
+other than tackling the problem head-on, if applying hints is not
+practical or preferrable.
