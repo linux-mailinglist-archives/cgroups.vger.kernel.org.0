@@ -2,151 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5283D63451F
-	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 21:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E69C634811
+	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 21:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbiKVUGM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Nov 2022 15:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
+        id S233213AbiKVU0O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Nov 2022 15:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbiKVUGL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 15:06:11 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C375B87555
-        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 12:06:09 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id 124so2259158vsv.4
-        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 12:06:09 -0800 (PST)
+        with ESMTP id S232341AbiKVU0N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 15:26:13 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8448827DFF;
+        Tue, 22 Nov 2022 12:26:12 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id b1-20020a17090a7ac100b00213fde52d49so15356593pjl.3;
+        Tue, 22 Nov 2022 12:26:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zkjjvph7GSIuRbhiRbs3/9b09qAojNLtWfTKgHMBCNM=;
-        b=EKHw8TY0iwnDzUIKHY+rodJJ/AkxSWo4HZVVCllcpw9GQBAjvq5Z2tW17w75DwjlKz
-         TivHS5jzHlS39CGYE7qhA7a9zKY8pHRwkcvn3KHmv5jSREEprRRd9eI08TlOSM44hCAi
-         ZN7/PIst4o4dBeNi5HAdOhkeMzmAERfeDkRsHXc2ooqxrx2o8ro/gyzgMFLSlDIxXopF
-         Hk4YN5AdX4j+NGxDQ5NAUgA3vX3d7h+U3K0yu0URqR/j65q4WpklARZe0dkMUYiK1Ocu
-         LvwIBOVwVmPWKEfmLiwEMIqaZAFHE5+hZsNwB1QxnCaNtnlJvbi2zZ6es1qu2s70dE0P
-         hoOA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ql2FYZtChC8kHpVI2e9mEHckclAXpvmwn/fO5tPh578=;
+        b=elh+z0q1qqevOLCYpwBkrBAb6yjmtaCYgataLx2FY3l8CrqJmnwjYJWWkb5XE113YF
+         wt+kf4HIRlorudrICrtnK9/H2DPLaZSXNrbpt8G62NLJIKN8sfcQUFdKwfg06jc0C5+p
+         8Gtx4MymzEdA0l8pyQ1Cf2LPpu2Wp+22iPTyGXFjEnggAQxp1UPsc++daU16duq13EKY
+         a2VTX51iWrP73LKhnvgT0RVcYOFWdyJDccZ5b8xGiTGmp43Ls+jmMr1jHEkDDh3SyE1e
+         x8u9Div/D2HUKk1ec770Bu2vK+iXmlPe3ItbyjMQdRWapEXVc54OAKYChtCcD2e+K3ke
+         q0uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zkjjvph7GSIuRbhiRbs3/9b09qAojNLtWfTKgHMBCNM=;
-        b=YPkTSLgN5xdD746wrZIg29FLQNEyAxpOfuZaHfwNKWa9Cw/hFq1eJvIiauSXfde958
-         PXSZKpTmvLiYi7Hu9MiQTYBvz4ZxXejiFruNfIUh39sRG+Rs5FVq5aZGMkonl29aFojw
-         HS5UlRhTk3x/nEcE++ck7c5eTXdt8WLJHrLflBjZSY4L7U2UsnbNeYfqMyt3CjqXCUL7
-         lgOrp+336NLZQvCCxmTZoXFeG64cgtpHm4t2ABgjK2kGnfLLjIvSFoBUqg8O3l+PglB/
-         VbKrEPy1Z3knlB0LMcWW/hRbAq79wYX2ocQCh5KCTLiDw4R0efuEffFQv2Bh4LOC5dFM
-         ACRA==
-X-Gm-Message-State: ANoB5pnwgiVmmbqQP8seb2YcEU9c9s4xdMUZa48EaWAPqjHHl/bjyBd3
-        2o03+QtSWT+153SPbX6veOLlPGwpYs32JyoH12N+cg==
-X-Google-Smtp-Source: AA0mqf59AJtPEQWUQCAgyMsEzkAGMb6VLhEDREOmKfLqTdZ/zgN22CCY0D6BY6gFrL7UaA8TGXtfKgxqqxu8Ot7jHvM=
-X-Received: by 2002:a67:c906:0:b0:3aa:f64:fbfd with SMTP id
- w6-20020a67c906000000b003aa0f64fbfdmr5458009vsk.15.1669147568764; Tue, 22 Nov
- 2022 12:06:08 -0800 (PST)
-MIME-Version: 1.0
-References: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
- <CAOUHufYd-5cqLsQvPBwcmWeph2pQyQYFRWynyg0UVpzUBWKbxw@mail.gmail.com>
-In-Reply-To: <CAOUHufYd-5cqLsQvPBwcmWeph2pQyQYFRWynyg0UVpzUBWKbxw@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 22 Nov 2022 13:05:32 -0700
-Message-ID: <CAOUHufYSeTeO5ZMpnCR781esHV4QV5Th+pd=52UaM9cXNNKF9w@mail.gmail.com>
-Subject: Re: Low TCP throughput due to vmpressure with swap enabled
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ql2FYZtChC8kHpVI2e9mEHckclAXpvmwn/fO5tPh578=;
+        b=gIYWqxh7EllkvI87XOFlwLSmIeriqzWfpu4BIGUyHEdSNj1JtcAxcqFWZT29iYZvCo
+         j+mHnEpVqub2wSmKr3+UyLKZ3EFMTlM04/wsXHEl9o03hHF4EUX38fqfc5fvvOJwZCSf
+         9yXDXVufuOHnev+ijO7Yr/9SC/7QKshIczxi0ZlM914dIpujX7KNBjuuMfjDPlinV9dQ
+         CgXJsd6Jw+J6VmZEtkTNvIpzgDzPrGvS6e6pqAKNkvAMLvu6eGX9f4ofPQRpE+TjBssZ
+         prECv+5W653qsjJ3Z/88T44zeaRqVQXzlBYz9vfl+DBKRkvthxDiQjetLeSq301ttCXg
+         XpiA==
+X-Gm-Message-State: ANoB5pmEc9g8U0mUYRd+KRe1AEb4MpwT8xYYUEUuDP6KMteOQMJHDqFb
+        NfhGKcmC+DWT8HW3W+9ouFo=
+X-Google-Smtp-Source: AA0mqf5oGIFMVmy9BowMY5qnMQENYrRn8wXpwe2NFMB9qFE6FmgU4Tc323G37NWDBgbwSvOoByvZwg==
+X-Received: by 2002:a17:90a:8a03:b0:218:9f92:d1a0 with SMTP id w3-20020a17090a8a0300b002189f92d1a0mr16072431pjn.53.1669148771369;
+        Tue, 22 Nov 2022 12:26:11 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:bb3])
+        by smtp.gmail.com with ESMTPSA id y10-20020a1709027c8a00b00186cf82717fsm12407693pll.165.2022.11.22.12.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Nov 2022 12:26:11 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 22 Nov 2022 10:26:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, cgroups@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Shuah Khan <shuah@kernel.org>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kselftest/cgroup: Add cleanup() to test_cpuset_prs.sh
+Message-ID: <Y30wYVzuCGK/0Zxp@slm.duckdns.org>
+References: <20221118101330.251332-1-kamalesh.babulal@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221118101330.251332-1-kamalesh.babulal@oracle.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 12:46 PM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Mon, Nov 21, 2022 at 5:53 PM Ivan Babrou <ivan@cloudflare.com> wrote:
-> >
-> > Hello,
-> >
-> > We have observed a negative TCP throughput behavior from the following commit:
-> >
-> > * 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
-> >
-> > It landed back in 2016 in v4.5, so it's not exactly a new issue.
-> >
-> > The crux of the issue is that in some cases with swap present the
-> > workload can be unfairly throttled in terms of TCP throughput.
-> >
-> > I am able to reproduce this issue in a VM locally on v6.1-rc6 with 8
-> > GiB of RAM with zram enabled.
-> >
-> > The setup is fairly simple:
-> >
-> > 1. Run the following go proxy in one cgroup (it has some memory
-> > ballast to simulate useful memory usage):
-> >
-> > * https://gist.github.com/bobrik/2c1a8a19b921fefe22caac21fda1be82
-> >
-> > sudo systemd-run --scope -p MemoryLimit=6G go run main.go
-> >
-> > 2. Run the following fio config in another cgroup to simulate mmapped
-> > page cache usage:
-> >
-> > [global]
-> > size=8g
-> > bs=256k
-> > iodepth=256
-> > direct=0
-> > ioengine=mmap
-> > group_reporting
-> > time_based
-> > runtime=86400
-> > numjobs=8
-> > name=randread
-> > rw=randread
->
-> Is it practical for your workload to apply some madvise/fadvise hint?
-> For the above repro, it would be fadvise_hint=1 which is mapped into
-> MADV_RANDOM automatically. The kernel also supports MADV_SEQUENTIAL,
-> but not POSIX_FADV_NOREUSE at the moment.
+On Fri, Nov 18, 2022 at 03:43:30PM +0530, Kamalesh Babulal wrote:
+> Install a cleanup function using the trap command for signals EXIT,
+> SIGINT, SIGQUIT and SIGABRT.  The cleanup function will perform:
+> 1. Online the CPUs that were made offline during the test.
+> 2. Removing the cgroups created.
+> 3. Restoring the original /sys/kernel/debug/sched/verbose value,
+>    currently it's left turned on, irrespective of the original
+>    configuration value.
+> 
+> the test performs steps 1 and 2, on the successful runs, but not during
+> all of the failed runs.  With the cleanup(), the system will perform all
+> three steps during failed/passed test runs.
+> 
+> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
 
-Actually fadvise_hint already defaults to 1. At least with MGLRU, the
-page cache should be thrown away without causing you any problem. It
-might be mapped to POSIX_FADV_RANDOM rather than MADV_RANDOM.
-POSIX_FADV_RANDOM is ignored at the moment.
+Applied cgroup/for-6.2.
 
-Sorry for all the noise. Let me dig into this and get back to you later today.
+Thanks.
 
-
-> We actually have similar issues but unfortunately I haven't been able
-> to come up with any solution beyond recommending the above flags.
-> The problem is that harvesting the accessed bit from mmapped memory is
-> costly, and when random accesses happen fast enough, the cost of doing
-> that prevents LRU from collecting more information to make better
-> decisions. In a nutshell, LRU can't tell whether there is genuine
-> memory locality with your test case.
->
-> It's a very difficult problem to solve from LRU's POV. I'd like to
-> hear more about your workloads and see whether there are workarounds
-> other than tackling the problem head-on, if applying hints is not
-> practical or preferrable.
+-- 
+tejun
