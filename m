@@ -2,56 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D31E634394
-	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 19:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B451C63442D
+	for <lists+cgroups@lfdr.de>; Tue, 22 Nov 2022 20:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbiKVSYC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Nov 2022 13:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        id S232676AbiKVS76 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Nov 2022 13:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbiKVSYB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 13:24:01 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89EE2F3BB
-        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 10:24:00 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-39e61d2087dso77188667b3.5
-        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 10:24:00 -0800 (PST)
+        with ESMTP id S229507AbiKVS75 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Nov 2022 13:59:57 -0500
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C400FD0F
+        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 10:59:56 -0800 (PST)
+Received: by mail-vs1-xe29.google.com with SMTP id l190so15363313vsc.10
+        for <cgroups@vger.kernel.org>; Tue, 22 Nov 2022 10:59:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WQLDoQzOOOLSeL4BW8P5dyKRJbU6yXunhkxiL7lS7JY=;
-        b=CDJdz0q15FCrFgZ2RgOE7aoOkCnIE0qqjNfpiyaFukahYrSsxZ4fDxJsk+IKeVDOLo
-         fTIZ884+FEiiSCjX4m/RkJvUVv/DQEsLzT8tR6MQJj/DZLHa5vYBkFxjl3a61gRXpZoj
-         rpC2JE+T9pLyf+7khG2HYb3MmtiSv8Hc+Sqy3T0KWu28zVIJIVLhqo1hgYEx0lvQmB8o
-         hBW6p4z3/wlIQ2VX6+WDew8PHl2O8jidBSbLv71s0dt5scFC2DINgLvjBDp/1D7ww7a/
-         HrKpH89edAqH8LukVTkAMdhBlxmVVkYaKernLE5kg3YAKjOaPWyPaIo0MEZmOcq1MqXj
-         Jk+g==
+        bh=9DTsq3fTwNbT6i34craZmfTRExedmDHXASu4ap4JQWc=;
+        b=euKH/+vJIk4jb5GYcwTIndpZtGrvZkOBeSQRk87xMjmZTH+RQ1pCNwnXJLB8r/oQO0
+         x4NbvARykKT5UQRTYNFqc4c4y2HLtlQ0gwBrOUmgIYxYGKBvSsLiYFxxHey3fT3w/9Vj
+         HOQ7Qj5hpRKUloDQyonDJ8F2dOblLZMmhxyUfbRFBcyPMZ2uFWy1Izg4UvFn7gsqx2n1
+         ym1wloPvHbcVO13o21Vg+S93Kbo51YjBNfIYA2HBOkKEPJ/Z6SJ4/BP/QvHgGdHCxwvD
+         QGOm47FEhjAWZAXMx2WhoKZKfiBjRMtZfj9QV6t+NhIB5xXw6qp1E8JC0TJGvherHUzh
+         c4Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WQLDoQzOOOLSeL4BW8P5dyKRJbU6yXunhkxiL7lS7JY=;
-        b=ILNfBqy3g7uUxJSpiy134Vmt3K/xVYCZGu3UGoiJel85oNNLvotSmi20uT1kKgO1on
-         f/c1mD6r9WSD8pA2TEhuJ0VxalXyupQeSP25PWc8c1WlVbHcwh5qBRyypLsTwhsIQW9b
-         Be9f+L9ZWVzysvsCLV4FRBChWZN56nIhMfZrnvX/PFFbj7TyEG4FhndD1RoGePzJPtBh
-         hb0lwdByoMWi/Z5EBJFV6yaJdJ20eMUDxL5ytD5CbM1GdcJx3M/sowrlHPLIvKtb97kw
-         9utBR8Sw8eMDqlT+bWzub1IiDxwIvIKKMYheSq+9XIYk0RX4de8vvkzZfY2LXDJvh/w5
-         fuwA==
-X-Gm-Message-State: ANoB5pmg5Y59wir2XONcya6CLFgPMFWzzCI5v9XnBYzUVik46Q3oOUNN
-        tFxm5Poszqmu+HHZwG63k3rboUpNSqIti0PavJq8sQ==
-X-Google-Smtp-Source: AA0mqf6LXCkwUEsGG9yFNI5WKVis3+ohpo5D3S2bFziOk7I40KkoxIKh/CgI5DYlRVN1wovpZt5CgwqvQjG2/bPGkQI=
-X-Received: by 2002:a81:7cd6:0:b0:357:6958:372a with SMTP id
- x205-20020a817cd6000000b003576958372amr5414093ywc.255.1669141439602; Tue, 22
- Nov 2022 10:23:59 -0800 (PST)
+        bh=9DTsq3fTwNbT6i34craZmfTRExedmDHXASu4ap4JQWc=;
+        b=LDUqkx90qbUr92cwgeLLRfE+fjzkgZQmhFlbTygkwulUPP3VOUp2ht7iMfYQ/rtR7y
+         fm35AaK+eKW5yG5WZSpiG15FjOWS0aT4gyerLWXGs5Ml7zzh7zESo2bY092CicCCc39M
+         ho30xkTMwki91CxhJdhwNgLnf/JOWjKlocghmC2a/8uaqpGxrIqDzbzGLHTcP+R6Vj+s
+         iSR7Afl+YTuIaj3LtiHQlGznvsj2rfE684cOyVw98Au5MMAC5FQgV2lHXWdQ9VHL8jak
+         Vd+sywsLyy6ptEsBV0PPVuCDEk5kYvd/Rdo5XX2FwygKPOSgf4n3E00bHnhjd1D6eWR7
+         5u3A==
+X-Gm-Message-State: ANoB5plpPgi50T8aZjC7nfspbuWJzd9wEBsvL9by9f5NqaMduzngvEVp
+        ggiOnir7xbbU9Lh5ggMLR5IuLXYkYb9Atk7OBUk4OQ==
+X-Google-Smtp-Source: AA0mqf7Uzxc/Jj31rG85oI1E9wRDLbPWhLS/I4nmAkG7IG1izVik37RCH407Iffcv4TAVFRK9egw/NuOlJWDujTFTMo=
+X-Received: by 2002:a67:f8d4:0:b0:3aa:1a3a:6447 with SMTP id
+ c20-20020a67f8d4000000b003aa1a3a6447mr4323889vsp.50.1669143595264; Tue, 22
+ Nov 2022 10:59:55 -0800 (PST)
 MIME-Version: 1.0
 References: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
- <CANn89iLzARPp6jW1xS0rf+-wS_RnwK-Kfgs9uQFYan2AHPRQFA@mail.gmail.com> <CABWYdi2TWJej806yif9hi7cxD9P9-EpMB9EU_72wWw9fFqtt4g@mail.gmail.com>
-In-Reply-To: <CABWYdi2TWJej806yif9hi7cxD9P9-EpMB9EU_72wWw9fFqtt4g@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 22 Nov 2022 10:23:48 -0800
-Message-ID: <CANn89iK97nkVxchN4-20LxfKd3Bq1bQeY7hsZA6Q=zT+Zd0GOQ@mail.gmail.com>
+In-Reply-To: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Tue, 22 Nov 2022 11:59:18 -0700
+Message-ID: <CAOUHufbQ_JjW=zXEi10+=LQOREOPHrK66Rqayr=sFUH_tQbW1w@mail.gmail.com>
 Subject: Re: Low TCP throughput due to vmpressure with swap enabled
 To:     Ivan Babrou <ivan@cloudflare.com>
 Cc:     Linux MM <linux-mm@kvack.org>,
@@ -63,6 +62,7 @@ Cc:     Linux MM <linux-mm@kvack.org>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         David Ahern <dsahern@kernel.org>,
@@ -73,7 +73,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,53 +81,29 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 10:11 AM Ivan Babrou <ivan@cloudflare.com> wrote:
+On Mon, Nov 21, 2022 at 5:53 PM Ivan Babrou <ivan@cloudflare.com> wrote:
 >
-> On Tue, Nov 22, 2022 at 10:01 AM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Mon, Nov 21, 2022 at 4:53 PM Ivan Babrou <ivan@cloudflare.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > We have observed a negative TCP throughput behavior from the following commit:
-> > >
-> > > * 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
-> > >
-> > > It landed back in 2016 in v4.5, so it's not exactly a new issue.
-> > >
-> > > The crux of the issue is that in some cases with swap present the
-> > > workload can be unfairly throttled in terms of TCP throughput.
-> >
-> > I guess defining 'fairness' in such a scenario is nearly impossible.
-> >
-> > Have you tried changing /proc/sys/net/ipv4/tcp_rmem  (and/or tcp_wmem) ?
-> > Defaults are quite conservative.
+> Hello,
 >
-> Yes, our max sizes are much higher than the defaults. I don't see how
-> it matters though. The issue is that the kernel clamps rcv_sshtrehsh
-> at 4 x advmss.
-
-There are some places (eg tcp_clamp_window) where we have this
-additional condition :
-
-sk_memory_allocated(sk) < sk_prot_mem_limits(sk, 0)
-
-So I was suggesting maybe to add a similar condition to tcp_try_rmem_schedule()
-
-Then adjust tcp_rmem for your needs.
-
- No matter how much TCP memory you end up using, the
-> kernel will clamp based on responsiveness to memory reclaim, which in
-> turn depends on swap presence. We're seeing it in production with tens
-> of thousands of sockets and high max tcp_rmem and I'm able to
-> replicate the same issue in my vm with the default sysctl values.
+> We have observed a negative TCP throughput behavior from the following commit:
 >
-> > If for your workload you want to ensure a minimum amount of memory per
-> > TCP socket,
-> > that might be good enough.
+> * 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
 >
-> That's not my goal at all. We don't have a problem with TCP memory
-> consumption. Our issue is low throughput because vmpressure() thinks
-> that the cgroup is memory constrained when it most definitely is not.
+> It landed back in 2016 in v4.5, so it's not exactly a new issue.
+>
+> The crux of the issue is that in some cases with swap present the
+> workload can be unfairly throttled in terms of TCP throughput.
+>
+> I am able to reproduce this issue in a VM locally on v6.1-rc6 with 8
+> GiB of RAM with zram enabled.
 
-OK, then I will stop commenting I guess :)
+Hi Ivan,
+
+If it's not too much trouble, could you try again with the following?
+  CONFIG_LRU_GEN=y
+  CONFIG_LRU_GEN_ENABLED=y
+
+I haven't tried it myself. But I'll fix whatever doesn't work for you,
+since your team is on the top of my customer list :)
+
+Thanks.
