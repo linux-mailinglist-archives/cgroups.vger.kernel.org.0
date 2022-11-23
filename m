@@ -2,95 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555F563698B
-	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 20:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7982636994
+	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 20:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239639AbiKWTHJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Nov 2022 14:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
+        id S239694AbiKWTH5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Nov 2022 14:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236590AbiKWTHI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 14:07:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A1CB0420
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 11:06:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669230366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SDRg/5ZBX3XDzjEuh83I6NIeECdfJo03H+sBbmb+sh8=;
-        b=Brta+LkyS9A8u/1n42xRhg9epE0iJtV+LtHV3EmTn6IB6eqH8LOUGBU4zekJZ/1Tw9mZh7
-        Cko5YvtuSjnvcUZThjDyZwYLzaFdO8Lo8FRHGPBchpc23KZC+mNcdmZhydi4FrJ4gHXakA
-        yl0FyFWEF6Lzchjb/At9XD+4SYG1+pg=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-166-6s7-BiPVP5G29OaqdhZcgg-1; Wed, 23 Nov 2022 14:06:02 -0500
-X-MC-Unique: 6s7-BiPVP5G29OaqdhZcgg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 392181C068CC;
-        Wed, 23 Nov 2022 19:06:02 +0000 (UTC)
-Received: from [10.22.17.47] (unknown [10.22.17.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A86FDC15BA5;
-        Wed, 23 Nov 2022 19:06:01 +0000 (UTC)
-Message-ID: <a89de82d-41e7-a40f-a5a3-83ad62bf383f@redhat.com>
-Date:   Wed, 23 Nov 2022 14:05:59 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH] cgroup/cpuset: Optimize update_tasks_nodemask()
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S239790AbiKWTHh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 14:07:37 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CAEF7;
+        Wed, 23 Nov 2022 11:07:35 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id mv18so8978404pjb.0;
+        Wed, 23 Nov 2022 11:07:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oJ1XxPBP6l91zCvLonYfrAhVHQ+WkP/p/oLP73T5QzE=;
+        b=AYyIeS27Ml0qFv4GlN+J2HpoE/+ez5mP3DcQSSSmQVPSkehPvX45k2Pm/f0poKKmAn
+         JkEzBXH/AItqzO4I/wVi8+WjPCIkFphvfmjws+xNBp7QlMPlGPBYAWh08Vn15kzcumFC
+         VvGXi0KmtdQKUGtxC1Qtb2eE87cCKKOIRz7ZEWWLdWKCae7goewehyPTWXahQMp87mQX
+         O0EEpF3Rok7izhkHeTtFsyuZEPnOD3QNCZuuqLVSqhkc8HQ51kp30LJfyTtsu5E8vUCc
+         atJfeK2l/4ayUmLyTxU1Xrw3a6CTqA+S58Btpu0n+Xlx3NwKuq6bTFCBvLGNBBUqki+a
+         5+kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oJ1XxPBP6l91zCvLonYfrAhVHQ+WkP/p/oLP73T5QzE=;
+        b=2DeyQBIJWNOvzS+p/lTpvEpaHhzXUN7lFmF5/bxebGetR9o1VlYa/bRm5t475q7M2u
+         DQwy5glOtLl+jCPvZa7AnudxXbHjtgIgLDE3MS2N1YNMhC5HyrxP8e5eb4EKvvLv04/f
+         NPeBd6/FC/yZVhGoK4U3iXSYykcOXYkrG209wxv13O9bQHgBsRaWFZvfWKudL9fMZhVR
+         06JWCntxY+9QN+FVs3BLHnHRyf9NW6JAoFidAQZl3Y/PJwD13Eflo6o8g1FuuGidLNdW
+         N4K3xU6q3MZwoiEQB8icpnNZiMVTuzPIL4Sd6iO84D7Qf/7qsvyMgMZgfZIvBX+kCMvI
+         zAjQ==
+X-Gm-Message-State: ANoB5pkG0BoCRr9HlBArprSaKd3jEgpRP65Ch8jkZZu4AA9xhHhbJqHk
+        WDZLnd6Kay0mnP28EyoADos=
+X-Google-Smtp-Source: AA0mqf4Fj8ByyNPocjylBuHLzMUXUMD2uMQBOrd9yJyAeW0b+ZHxcqQa4vgSjoR8k2up47m36FbRPA==
+X-Received: by 2002:a17:902:e80f:b0:188:f571:cea2 with SMTP id u15-20020a170902e80f00b00188f571cea2mr13284658plg.146.1669230454912;
+        Wed, 23 Nov 2022 11:07:34 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b00176acd80f69sm14609625pli.102.2022.11.23.11.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Nov 2022 11:07:34 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 23 Nov 2022 09:07:33 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
 Cc:     "haifeng.xu" <haifeng.xu@shopee.com>, lizefan.x@bytedance.com,
         hannes@cmpxchg.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup/cpuset: Optimize update_tasks_nodemask()
+Message-ID: <Y35vdbcVYx99zePI@slm.duckdns.org>
 References: <20221123082157.71326-1-haifeng.xu@shopee.com>
  <Y35Swdpq+rJe+Tu3@slm.duckdns.org>
  <5fccf438-fdbe-1bc8-6460-b3911cc51566@redhat.com>
  <Y35sbREgYE6aIdIp@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Y35sbREgYE6aIdIp@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <a89de82d-41e7-a40f-a5a3-83ad62bf383f@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a89de82d-41e7-a40f-a5a3-83ad62bf383f@redhat.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, Nov 23, 2022 at 02:05:59PM -0500, Waiman Long wrote:
+> Right, the group leader is just a marker to make it easier to avoid
+> duplicating the work for the same mm. If the group leader happens to be in
+> another cpuset, it will suffer some performance consequence.
 
-On 11/23/22 13:54, Tejun Heo wrote:
-> On Wed, Nov 23, 2022 at 01:48:46PM -0500, Waiman Long wrote:
->> I think it is an issue anyway if different threads of a process are in
->> different cpusets with different node mask. It is not a configuration that
->> should be used at all.
-> Anything memory related is in the same boat and people still use them
-> reaching whatever end results they reach. Given the whole thing is pretty
-> ill-defined, I don't wanna change the behavior now.
-I am just saying that this is not a good config. I don't have any 
-intention to change the existing behavior at all.
->
->> This patch makes update_tasks_nodemask() somewhat similar to cpuset_attach()
->> where all tasks are iterated to update the node mask but only the task
->> leaders are required to update the mm. For a non-group leader task, maybe we
->> can check if the group leader is in the same cpuset. If so, we can skip the
->> mm update. Do we need similar change in cpuset_attach()?
-> The leader isn't special tho. We just wanna avoid visiting the same mm more
-> than once, right?
+Yeah, I guess that's gonna be good enough for most cases.
 
-Right, the group leader is just a marker to make it easier to avoid 
-duplicating the work for the same mm. If the group leader happens to be 
-in another cpuset, it will suffer some performance consequence.
+Thanks.
 
-Cheers,
-Longman
-
+-- 
+tejun
