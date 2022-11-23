@@ -2,89 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7982636994
-	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 20:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 938E5636B1D
+	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 21:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239694AbiKWTH5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Nov 2022 14:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S239875AbiKWUbT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Nov 2022 15:31:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239790AbiKWTHh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 14:07:37 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CAEF7;
-        Wed, 23 Nov 2022 11:07:35 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id mv18so8978404pjb.0;
-        Wed, 23 Nov 2022 11:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oJ1XxPBP6l91zCvLonYfrAhVHQ+WkP/p/oLP73T5QzE=;
-        b=AYyIeS27Ml0qFv4GlN+J2HpoE/+ez5mP3DcQSSSmQVPSkehPvX45k2Pm/f0poKKmAn
-         JkEzBXH/AItqzO4I/wVi8+WjPCIkFphvfmjws+xNBp7QlMPlGPBYAWh08Vn15kzcumFC
-         VvGXi0KmtdQKUGtxC1Qtb2eE87cCKKOIRz7ZEWWLdWKCae7goewehyPTWXahQMp87mQX
-         O0EEpF3Rok7izhkHeTtFsyuZEPnOD3QNCZuuqLVSqhkc8HQ51kp30LJfyTtsu5E8vUCc
-         atJfeK2l/4ayUmLyTxU1Xrw3a6CTqA+S58Btpu0n+Xlx3NwKuq6bTFCBvLGNBBUqki+a
-         5+kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oJ1XxPBP6l91zCvLonYfrAhVHQ+WkP/p/oLP73T5QzE=;
-        b=2DeyQBIJWNOvzS+p/lTpvEpaHhzXUN7lFmF5/bxebGetR9o1VlYa/bRm5t475q7M2u
-         DQwy5glOtLl+jCPvZa7AnudxXbHjtgIgLDE3MS2N1YNMhC5HyrxP8e5eb4EKvvLv04/f
-         NPeBd6/FC/yZVhGoK4U3iXSYykcOXYkrG209wxv13O9bQHgBsRaWFZvfWKudL9fMZhVR
-         06JWCntxY+9QN+FVs3BLHnHRyf9NW6JAoFidAQZl3Y/PJwD13Eflo6o8g1FuuGidLNdW
-         N4K3xU6q3MZwoiEQB8icpnNZiMVTuzPIL4Sd6iO84D7Qf/7qsvyMgMZgfZIvBX+kCMvI
-         zAjQ==
-X-Gm-Message-State: ANoB5pkG0BoCRr9HlBArprSaKd3jEgpRP65Ch8jkZZu4AA9xhHhbJqHk
-        WDZLnd6Kay0mnP28EyoADos=
-X-Google-Smtp-Source: AA0mqf4Fj8ByyNPocjylBuHLzMUXUMD2uMQBOrd9yJyAeW0b+ZHxcqQa4vgSjoR8k2up47m36FbRPA==
-X-Received: by 2002:a17:902:e80f:b0:188:f571:cea2 with SMTP id u15-20020a170902e80f00b00188f571cea2mr13284658plg.146.1669230454912;
-        Wed, 23 Nov 2022 11:07:34 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b00176acd80f69sm14609625pli.102.2022.11.23.11.07.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 11:07:34 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 23 Nov 2022 09:07:33 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     "haifeng.xu" <haifeng.xu@shopee.com>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/cpuset: Optimize update_tasks_nodemask()
-Message-ID: <Y35vdbcVYx99zePI@slm.duckdns.org>
-References: <20221123082157.71326-1-haifeng.xu@shopee.com>
- <Y35Swdpq+rJe+Tu3@slm.duckdns.org>
- <5fccf438-fdbe-1bc8-6460-b3911cc51566@redhat.com>
- <Y35sbREgYE6aIdIp@slm.duckdns.org>
- <a89de82d-41e7-a40f-a5a3-83ad62bf383f@redhat.com>
+        with ESMTP id S236036AbiKWUbD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 15:31:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53CFFF43E
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 12:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669235042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W6/q0I9lhD2Ic91IJouqxj39nsjVclbcOMvuo2nvzhI=;
+        b=PkjOCtxJID0YwIHCsr2Eh8P2ckyXjsfEhDPis4sls6u20J0iO+REDf8g/ulfGN/VvkX3+9
+        B+uIjxqrZS4T8s/xWiER2Wumd8iAI27dOkINEcfBkH5uaf96ObA1asrKgUgF6Rbu1/naVG
+        d23Ug0ggqwWOjDa2AWrMT3fUdpGZsrs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-175-QBuExES4OmGx5AyWY2yy0Q-1; Wed, 23 Nov 2022 15:23:58 -0500
+X-MC-Unique: QBuExES4OmGx5AyWY2yy0Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3A6DE800B23;
+        Wed, 23 Nov 2022 20:23:58 +0000 (UTC)
+Received: from [10.22.17.47] (unknown [10.22.17.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F9C040C2086;
+        Wed, 23 Nov 2022 20:23:57 +0000 (UTC)
+Content-Type: multipart/mixed; boundary="------------UyHPKBK8yiP03gC4izCN5JwL"
+Message-ID: <2ac6f207-e08a-2a7f-01ae-dfaf15eefaf6@redhat.com>
+Date:   Wed, 23 Nov 2022 15:23:55 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a89de82d-41e7-a40f-a5a3-83ad62bf383f@redhat.com>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH] cgroup/cpuset: Optimize update_tasks_nodemask()
+Content-Language: en-US
+To:     "haifeng.xu" <haifeng.xu@shopee.com>
+Cc:     lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221123082157.71326-1-haifeng.xu@shopee.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20221123082157.71326-1-haifeng.xu@shopee.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 02:05:59PM -0500, Waiman Long wrote:
-> Right, the group leader is just a marker to make it easier to avoid
-> duplicating the work for the same mm. If the group leader happens to be in
-> another cpuset, it will suffer some performance consequence.
+This is a multi-part message in MIME format.
+--------------UyHPKBK8yiP03gC4izCN5JwL
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yeah, I guess that's gonna be good enough for most cases.
+On 11/23/22 03:21, haifeng.xu wrote:
+> When change the 'cpuset.mems' under some cgroup, system will hung
+> for a long time. From the dmesg, many processes or theads are
+> stuck in fork/exit. The reason is show as follows.
+>
+> thread A:
+> cpuset_write_resmask /* takes cpuset_rwsem */
+>    ...
+>      update_tasks_nodemask
+>        mpol_rebind_mm /* waits mmap_lock */
+>
+> thread B:
+> worker_thread
+>    ...
+>      cpuset_migrate_mm_workfn
+>        do_migrate_pages /* takes mmap_lock */
+>
+> thread C:
+> cgroup_procs_write /* takes cgroup_mutex and cgroup_threadgroup_rwsem */
+>    ...
+>      cpuset_can_attach
+>        percpu_down_write /* waits cpuset_rwsem */
+>
+> Once update the nodemasks of cpuset, thread A wakes up thread B to
+> migrate mm. But when thread A iterates through all tasks, including
+> child threads and group leader, it has to wait the mmap_lock which
+> has been take by thread B. Unfortunately, thread C wants to migrate
+> tasks into cgroup at this moment, it must wait thread A to release
+> cpuset_rwsem. If thread B spends much time to migrate mm, the
+> fork/exit which acquire cgroup_threadgroup_rwsem also need to
+> wait for a long time.
+>
+> There is no need to migrate the mm of child threads which is
+> shared with group leader. Just iterate through the group
+> leader only.
+>
+> Signed-off-by: haifeng.xu <haifeng.xu@shopee.com>
+> ---
+>   kernel/cgroup/cpuset.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 589827ccda8b..43cbd09546d0 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1968,6 +1968,9 @@ static void update_tasks_nodemask(struct cpuset *cs)
+>   
+>   		cpuset_change_task_nodemask(task, &newmems);
+>   
+> +		if (!thread_group_leader(task))
+> +			continue;
+> +
+>   		mm = get_task_mm(task);
+>   		if (!mm)
+>   			continue;
 
-Thanks.
+Could you try the attached test patch to see if it can fix your problem? 
+Something along the line of this patch will be more acceptable.
 
--- 
-tejun
+Thanks,
+Longman
+
+
+--------------UyHPKBK8yiP03gC4izCN5JwL
+Content-Type: text/x-patch; charset=UTF-8; name="test.patch"
+Content-Disposition: attachment; filename="test.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL2tlcm5lbC9jZ3JvdXAvY3B1c2V0LmMgYi9rZXJuZWwvY2dyb3VwL2Nw
+dXNldC5jCmluZGV4IGI0NzQyODljMTViOC4uOWMxN2I2ZDQ4NzdjIDEwMDY0NAotLS0gYS9r
+ZXJuZWwvY2dyb3VwL2NwdXNldC5jCisrKyBiL2tlcm5lbC9jZ3JvdXAvY3B1c2V0LmMKQEAg
+LTE5NDIsNiArMTk0Miw3IEBAIHN0YXRpYyB2b2lkIHVwZGF0ZV90YXNrc19ub2RlbWFzayhz
+dHJ1Y3QgY3B1c2V0ICpjcykKIAlzdGF0aWMgbm9kZW1hc2tfdCBuZXdtZW1zOwkvKiBwcm90
+ZWN0ZWQgYnkgY3B1c2V0X3J3c2VtICovCiAJc3RydWN0IGNzc190YXNrX2l0ZXIgaXQ7CiAJ
+c3RydWN0IHRhc2tfc3RydWN0ICp0YXNrOworCWJvb2wgbWlncmF0ZTsKIAogCWNwdXNldF9i
+ZWluZ19yZWJvdW5kID0gY3M7CQkvKiBjYXVzZXMgbXBvbF9kdXAoKSByZWJpbmQgKi8KIApA
+QCAtMTk1NywxOSArMTk1OCwyNSBAQCBzdGF0aWMgdm9pZCB1cGRhdGVfdGFza3Nfbm9kZW1h
+c2soc3RydWN0IGNwdXNldCAqY3MpCiAJICogSXQncyBvayBpZiB3ZSByZWJpbmQgdGhlIHNh
+bWUgbW0gdHdpY2U7IG1wb2xfcmViaW5kX21tKCkKIAkgKiBpcyBpZGVtcG90ZW50LiAgQWxz
+byBtaWdyYXRlIHBhZ2VzIGluIGVhY2ggbW0gdG8gbmV3IG5vZGVzLgogCSAqLworCW1pZ3Jh
+dGUgPSBpc19tZW1vcnlfbWlncmF0ZShjcyk7CiAJY3NzX3Rhc2tfaXRlcl9zdGFydCgmY3Mt
+PmNzcywgMCwgJml0KTsKIAl3aGlsZSAoKHRhc2sgPSBjc3NfdGFza19pdGVyX25leHQoJml0
+KSkpIHsKIAkJc3RydWN0IG1tX3N0cnVjdCAqbW07Ci0JCWJvb2wgbWlncmF0ZTsKIAogCQlj
+cHVzZXRfY2hhbmdlX3Rhc2tfbm9kZW1hc2sodGFzaywgJm5ld21lbXMpOwogCisJCS8qCisJ
+CSAqIFNraXAgbW0gdXBkYXRlIGlmIGEgbm9uIGdyb3VwIGxlYWRlciB0YXNrIGFuZCBpdHMg
+Z3JvdXAKKwkJICogbGVhZGVyIGFyZSBpbiB0aGUgc2FtZSBjcHVzZXQuCisJCSAqLworCQlp
+ZiAoIXRocmVhZF9ncm91cF9sZWFkZXIodGFzaykgJiYKKwkJICAgKHRhc2tfY3ModGFzay0+
+Z3JvdXBfbGVhZGVyKSA9PSBjcykpCisJCQljb250aW51ZTsKKwogCQltbSA9IGdldF90YXNr
+X21tKHRhc2spOwogCQlpZiAoIW1tKQogCQkJY29udGludWU7CiAKLQkJbWlncmF0ZSA9IGlz
+X21lbW9yeV9taWdyYXRlKGNzKTsKLQogCQltcG9sX3JlYmluZF9tbShtbSwgJmNzLT5tZW1z
+X2FsbG93ZWQpOwogCQlpZiAobWlncmF0ZSkKIAkJCWNwdXNldF9taWdyYXRlX21tKG1tLCAm
+Y3MtPm9sZF9tZW1zX2FsbG93ZWQsICZuZXdtZW1zKTsK
+
+--------------UyHPKBK8yiP03gC4izCN5JwL--
+
