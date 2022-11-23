@@ -2,118 +2,222 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB4163687D
-	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 19:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7A063688A
+	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 19:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239698AbiKWSQJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Nov 2022 13:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        id S239431AbiKWSSo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Nov 2022 13:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239644AbiKWSPg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 13:15:36 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538CAC47;
-        Wed, 23 Nov 2022 10:14:02 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id ci10so10339918pjb.1;
-        Wed, 23 Nov 2022 10:14:02 -0800 (PST)
+        with ESMTP id S239411AbiKWSSO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 13:18:14 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2524414089
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 10:18:13 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id d18so9159454qvs.6
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 10:18:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sMUk2UqA8txZdZbMsTiuPaMt9b7Ay82RXjXskAbuDPs=;
-        b=QAlAxOsEx24Cwf9tScvp0rAk8jnc3b8EhqyZVyTEUzMY+iffJxG+UTg2oo5xYUNszd
-         672R0ISbxm5hWjLG31Lvt+uIB/W6X45fhUb3yktwB1ioI6w3ZAUq+xsbihEMtpGCk/tk
-         rbTh1RYNawjVNsF66tpno4HWYq3IhBgEWzKwAesID2AUcPFOnKK/pOsZqXVE5e69/NVT
-         WU2woTi4IZ91+E0sVX5QTpJmDgsRoZs6ar4Tw1Dd8m26mXphAzH0X9gs5238Ljbs6AtY
-         ETcT2DHqHoHvEHW4pMIxk0CqJKz7GBBPXP5Ik/3uXCOLOADa0CxV9jX0HX9QNXg9XGAJ
-         Jq0g==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LByvlpCL+LRhavRIegrpdrd5Lc2V7kp80WStpkpve1I=;
+        b=cCBLtfi5K4sU5yrNo1RImOt+Dj8joY80jakzA+6USTvY467lH6tomTnQmnyul5qx3B
+         dreZImpWfOi6dCDe6L46g1ybagMMyOeu+/yInkp04GIfiyCLZRL8mf0+LzZfJMf2jolk
+         FJHdEJBOKctYHolC1/b26ialFQwRJGC177w2fMw6t/H7/BXbnBqvy7XKvo4cmtt2ibv4
+         d+2IAyVQ/t9IxQAqfNr2Z+rxZ+hfPj69QX8vnS93R52rsFvX//2LwqjGu1zcfwF/A73Q
+         pae3opRy+jrtwYhDv7S3iarQpyjSM5kUBe2Mr6Y+G9cCpTdTAv+x0r+jJSnBsXk3rZxZ
+         HxOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sMUk2UqA8txZdZbMsTiuPaMt9b7Ay82RXjXskAbuDPs=;
-        b=x3OYwQh7M9ZPV1kxW2xtEOEter6iGtlP7YBRNGVIPLrdBMlG18NfAxMXTA/hwRGZIA
-         RJs0Veb5sM7h/9g2X0PiqH8b6lBYV4U69K5YjivPLML+7VvVFVyVfxqBECf1AYUBSrnI
-         IUN8hw7gvjEq5gZilkRDlTJ14Ww+owIG9p8oEx1nN9/UDokiiGUn4BuKN7t/RWneXJfn
-         gqzGmOLjK9Muo8orNwfDFxUTrO2qmWnIuBJVD3F0raT9xTdTVMXe4BRnPqf2sYZomqNT
-         v7vqfXFjJIqbQuznOrFBfO4UqEZYPCsvnays0KxRQqOjWuxtFaG4LL21ESrzckKVD1KB
-         IRzA==
-X-Gm-Message-State: ANoB5pmGf8fZxfNT4OiK+CrrOa9qvrOHn5mwMBwc43kSUGWZ9jVVcD9w
-        /JRf7Ds/9a8rVSxjWGz7WMM=
-X-Google-Smtp-Source: AA0mqf6YZDuqBxTaT3yKbcyzATU8IJutlMvueeC+Mhr/ThkaBo1xhdJuHo5fUG353UMJ3B5H+fxWWg==
-X-Received: by 2002:a17:903:22c4:b0:171:5092:4d12 with SMTP id y4-20020a17090322c400b0017150924d12mr10383844plg.107.1669227241568;
-        Wed, 23 Nov 2022 10:14:01 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id s12-20020a63f04c000000b0047681fa88d1sm11161364pgj.53.2022.11.23.10.14.00
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LByvlpCL+LRhavRIegrpdrd5Lc2V7kp80WStpkpve1I=;
+        b=iLFN5JDmAvcF4rkiRef2xoZ9lm/SCLgVcmrE49iIkgmVjbqZYj5+sovQe816K0ReZm
+         zgBsdDjY1cv3cCUAfFAVu8FlDB5638WnkGg73ImjSutL1efNWED+kve7p8wju70meC6+
+         UfUN9gHQPTD+BrTElC2ErmEjhDfQxF5/p8W0G9lso7SyvJNNZz/RtMCDzLjVjbaXTxZS
+         hI3oHpWt/ryXhBTZaV1ZM+H9t2mBZxQ+A2H42Ovr/cuhkCMy5HldrhSz1sSl4GspMRv3
+         /YV7mrrrCCWsGN6s+rb52F2ws6D8Qbh5up6eHupfrQJ2pdZCJilLWzWRXkFprSuboKxR
+         cnXA==
+X-Gm-Message-State: ANoB5pldvpPsJP3+k/It0nOeFYTe2KJE0znxXzRI02c4F3vGzNCtjIF5
+        gLc9iXVS0XsYXZjZoapjxALuBsnKfVncGA==
+X-Google-Smtp-Source: AA0mqf6euLVRQD6uWEiFOFFxCWVfrFfGyAoT44QChDA6t+nqbhvSbPtvgRHWym3ku5j6LUmaz6CySA==
+X-Received: by 2002:ad4:448f:0:b0:4c6:c62f:fbe5 with SMTP id m15-20020ad4448f000000b004c6c62ffbe5mr4408701qvt.105.1669227492209;
+        Wed, 23 Nov 2022 10:18:12 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:bc4])
+        by smtp.gmail.com with ESMTPSA id a11-20020ac8108b000000b0035d08c1da35sm10021966qtj.45.2022.11.23.10.18.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 10:14:01 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 23 Nov 2022 08:13:59 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Kemeng Shi <shikemeng@huawei.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/11] blk-throttle: ignore cgroup without io queued in
- blk_throtl_cancel_bios
-Message-ID: <Y35i54BnLjKce3Kc@slm.duckdns.org>
-References: <20221123060401.20392-1-shikemeng@huawei.com>
- <20221123060401.20392-4-shikemeng@huawei.com>
+        Wed, 23 Nov 2022 10:18:11 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: remove lock_page_memcg() from rmap
+Date:   Wed, 23 Nov 2022 13:18:38 -0500
+Message-Id: <20221123181838.1373440-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221123060401.20392-4-shikemeng@huawei.com>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 02:03:53PM +0800, Kemeng Shi wrote:
-> Ignore cgroup without io queued in blk_throtl_cancel_bios for two
-> reasons:
-> 1. Save cpu cycle for trying to dispatch cgroup which is no io queued.
-> 2. Avoid non-consistent state that cgroup is inserted to service queue
-> without THROTL_TG_PENDING set as tg_update_disptime will unconditional
-> re-insert cgroup to service queue. If we are on the default hierarchy,
-> IO dispatched from child in tg_dispatch_one_bio will trigger inserting
-> cgroup to service queue without erase first and ruin the tree.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
-> ---
->  block/blk-throttle.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index b33bcf53b36e..acfac916ed99 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -1728,7 +1728,12 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
->  		 * Set the flag to make sure throtl_pending_timer_fn() won't
->  		 * stop until all throttled bios are dispatched.
->  		 */
-> -		blkg_to_tg(blkg)->flags |= THROTL_TG_CANCELING;
-> +		tg->flags |= THROTL_TG_CANCELING;
-> +
-> +		/* No need to dispatch cgroup without io queued */
+rmap changes (mapping and unmapping) of a page currently take
+lock_page_memcg() to serialize 1) update of the mapcount and the
+cgroup mapped counter with 2) cgroup moving the page and updating the
+old cgroup and the new cgroup counters based on page_mapped().
 
-It's probably more important to mention that putting this in without PENDING
-set can corrupt the tree in the future through double insertion.
+Before b2052564e66d ("mm: memcontrol: continue cache reclaim from
+offlined groups"), we used to reassign all pages that could be found
+on a cgroup's LRU list on deletion - something that rmap didn't
+naturally serialize against. Since that commit, however, the only
+pages that get moved are those mapped into page tables of a task
+that's being migrated. In that case, the pte lock is always held (and
+we know the page is mapped), which keeps rmap changes at bay already.
 
-> +		if (!(tg->flags & THROTL_TG_PENDING))
-> +			continue;
-> +
+The additional lock_page_memcg() by rmap is redundant. Remove it.
 
-Other than than the above comment,
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 35 ++++++++++++++++++++---------------
+ mm/rmap.c       | 12 ------------
+ 2 files changed, 20 insertions(+), 27 deletions(-)
 
-  Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 23750cec0036..52b86ca7a78e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5676,7 +5676,10 @@ static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
+  * @from: mem_cgroup which the page is moved from.
+  * @to:	mem_cgroup which the page is moved to. @from != @to.
+  *
+- * The caller must make sure the page is not on LRU (isolate_page() is useful.)
++ * This function acquires folio_lock() and folio_lock_memcg(). The
++ * caller must exclude all other possible ways of accessing
++ * page->memcg, such as LRU isolation (to lock out isolation) and
++ * having the page mapped and pte-locked (to lock out rmap).
+  *
+  * This function doesn't do "charge" to new cgroup and doesn't do "uncharge"
+  * from old cgroup.
+@@ -5696,6 +5699,13 @@ static int mem_cgroup_move_account(struct page *page,
+ 	VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
+ 	VM_BUG_ON(compound && !folio_test_large(folio));
+ 
++	/*
++	 * We're only moving pages mapped into the moving process's
++	 * page tables. The caller's pte lock prevents rmap from
++	 * removing the NR_x_MAPPED state while we transfer it.
++	 */
++	VM_WARN_ON_ONCE(!folio_mapped(folio));
++
+ 	/*
+ 	 * Prevent mem_cgroup_migrate() from looking at
+ 	 * page's memory cgroup of its source page while we change it.
+@@ -5715,30 +5725,25 @@ static int mem_cgroup_move_account(struct page *page,
+ 	folio_memcg_lock(folio);
+ 
+ 	if (folio_test_anon(folio)) {
+-		if (folio_mapped(folio)) {
+-			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+-			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+-			if (folio_test_transhuge(folio)) {
+-				__mod_lruvec_state(from_vec, NR_ANON_THPS,
+-						   -nr_pages);
+-				__mod_lruvec_state(to_vec, NR_ANON_THPS,
+-						   nr_pages);
+-			}
++		__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
++		__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
++
++		if (folio_test_transhuge(folio)) {
++			__mod_lruvec_state(from_vec, NR_ANON_THPS, -nr_pages);
++			__mod_lruvec_state(to_vec, NR_ANON_THPS, nr_pages);
+ 		}
+ 	} else {
+ 		__mod_lruvec_state(from_vec, NR_FILE_PAGES, -nr_pages);
+ 		__mod_lruvec_state(to_vec, NR_FILE_PAGES, nr_pages);
+ 
++		__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
++		__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
++
+ 		if (folio_test_swapbacked(folio)) {
+ 			__mod_lruvec_state(from_vec, NR_SHMEM, -nr_pages);
+ 			__mod_lruvec_state(to_vec, NR_SHMEM, nr_pages);
+ 		}
+ 
+-		if (folio_mapped(folio)) {
+-			__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
+-			__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
+-		}
+-
+ 		if (folio_test_dirty(folio)) {
+ 			struct address_space *mapping = folio_mapping(folio);
+ 
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 459dc1c44d8a..11a4894158db 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1222,9 +1222,6 @@ void page_add_anon_rmap(struct page *page,
+ 	bool compound = flags & RMAP_COMPOUND;
+ 	bool first = true;
+ 
+-	if (unlikely(PageKsm(page)))
+-		lock_page_memcg(page);
+-
+ 	/* Is page being mapped by PTE? Is this its first map to be added? */
+ 	if (likely(!compound)) {
+ 		first = atomic_inc_and_test(&page->_mapcount);
+@@ -1254,9 +1251,6 @@ void page_add_anon_rmap(struct page *page,
+ 	if (nr)
+ 		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
+ 
+-	if (unlikely(PageKsm(page)))
+-		unlock_page_memcg(page);
+-
+ 	/* address might be in next vma when migration races vma_adjust */
+ 	else if (first)
+ 		__page_set_anon_rmap(page, vma, address,
+@@ -1321,7 +1315,6 @@ void page_add_file_rmap(struct page *page,
+ 	bool first;
+ 
+ 	VM_BUG_ON_PAGE(compound && !PageTransHuge(page), page);
+-	lock_page_memcg(page);
+ 
+ 	/* Is page being mapped by PTE? Is this its first map to be added? */
+ 	if (likely(!compound)) {
+@@ -1349,7 +1342,6 @@ void page_add_file_rmap(struct page *page,
+ 			NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmapped);
+ 	if (nr)
+ 		__mod_lruvec_page_state(page, NR_FILE_MAPPED, nr);
+-	unlock_page_memcg(page);
+ 
+ 	mlock_vma_page(page, vma, compound);
+ }
+@@ -1378,8 +1370,6 @@ void page_remove_rmap(struct page *page,
+ 		return;
+ 	}
+ 
+-	lock_page_memcg(page);
+-
+ 	/* Is page being unmapped by PTE? Is this its last map to be removed? */
+ 	if (likely(!compound)) {
+ 		last = atomic_add_negative(-1, &page->_mapcount);
+@@ -1427,8 +1417,6 @@ void page_remove_rmap(struct page *page,
+ 	 * and remember that it's only reliable while mapped.
+ 	 */
+ 
+-	unlock_page_memcg(page);
+-
+ 	munlock_vma_page(page, vma, compound);
+ }
+ 
 -- 
-tejun
+2.38.1
+
