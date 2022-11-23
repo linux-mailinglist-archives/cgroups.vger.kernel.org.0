@@ -2,61 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0362C636C70
-	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 22:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDADA636CA3
+	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 22:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238516AbiKWVfw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Nov 2022 16:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
+        id S238103AbiKWV5t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Nov 2022 16:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238495AbiKWVfv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 16:35:51 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7157BA9963
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 13:35:50 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id h2so10679ile.11
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 13:35:50 -0800 (PST)
+        with ESMTP id S232729AbiKWV5s (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 16:57:48 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2104722BCF
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 13:57:45 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id fz10so90434qtb.3
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 13:57:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EX+iSv5Kmy5pWCU6qHN1XnjDJL0rBeY3pl3KxgAVckk=;
-        b=b10RFWNVd2zdnGJldXFMotlCMISNPpbAzPXwCC5XB8K/O/Qbxo1Ykr+Zuquy4KnQSk
-         lKbKgLl4YVXUUIbNQcg1k2vfYUL/kXk9P2ZAUFfJQo3Px5Y0bCin92+iywsxg10EQVt7
-         0FY75zZqhlN3tWEw3A3qYZ2TRd/08fVttj4P/scn6P1bnladNhDGTWayjha7X6U+CpJN
-         b38YMKfSeRVcLfp9Y37JUNqic5+IbvKMNR43YOReL++Rv01/RMyGSZIgXIwn4rHPEoeC
-         YH+VtwM2w0aqHPvjnAb+X4HkbzzlmL9i5ZqCTZWX3xB1s434D+chabHVk6p7xjglB4bA
-         9Y6A==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eXUl97TIC36iX2gzZ4z9T7kVADet1dCMIeHKCLo4dC4=;
+        b=1d778WwTHiFnSrOOtipV1oy8hteglhzctqXDcakElk44hR7nj0Kw1HZUKFrkLK1flS
+         1dy2ejEUeQqR3zUjNbKe64kHFHaCeNPfR+mHEFOOM8LiucYx2e8pjbjLk1BMo3Sbf3K9
+         wZL/Jay42f6APIg1zJmYPEYEFZuFaYZ54oLip8A+55aEI0PiSRx6eLERACZ4gNoB/nRm
+         LTOQd16sAxmRdLvYL+ViYyxYH5UhhXYq81mueLRa3i7YmQ4Cty/v68jpsO7pFl5W2ApC
+         fFUnjjrFHbN4SCxNJgdTGJifAWOycqM5/tm/mDgGyEo4EcDqRaXaB8j0C8GsSVJo9CBj
+         8CpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EX+iSv5Kmy5pWCU6qHN1XnjDJL0rBeY3pl3KxgAVckk=;
-        b=T6Q/y1OFPEzC1ECZG4qkBr7pNgCx/5FB3H+SJGz+cVZ8RgE9FSiBJC6UUSb7X7SaAw
-         Rr8MU6mQcpbMZgQOy9WCl3bz0mx/vp+rU1eCFvARhA+qV79UPsWxA57vMvJTUnZNheKb
-         optH29xqWRM8KVkOxX3RTl3QAO9UzEVYQZNZpPL5RC7v2mSqHNwOd4stZ+YOhaS/ekVq
-         tJZUXZeByP/9abQJYIG7VckMRjNXA1ei3vsI4O+n37ywL9lkzZ20HJfuINsrNcKeh6FA
-         owJdRTM4BXQpYQX8IsDVyuNeuU38ozZDHWNeM3rR4AoKSZ154ZMS+k2YOOzeI9hsSAe+
-         lf4w==
-X-Gm-Message-State: ANoB5pkDMK6D1OYZ8U5lD8o7IO+3GPwusNYXgH9zc4Hx0zitzknCVE5s
-        A8LsS0HI3IhkPwaQ9+F0onc62XS52mp+7cqOKKW5NA==
-X-Google-Smtp-Source: AA0mqf4lP2z0kK6TvyHZz0JLFcWM6gHSYEk5ZOkGXDWYkpJ3buhfHLrH7I5bora7wiW364oiw31YycSlb+NPj0VS0Ew=
-X-Received: by 2002:a05:6e02:10d0:b0:302:bb08:3c22 with SMTP id
- s16-20020a056e0210d000b00302bb083c22mr8957829ilj.147.1669239349596; Wed, 23
- Nov 2022 13:35:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20221122203850.2765015-1-almasrymina@google.com>
- <Y35fw2JSAeAddONg@cmpxchg.org> <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
-In-Reply-To: <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 23 Nov 2022 13:35:13 -0800
-Message-ID: <CAJD7tkZNW=u1TD-Fd_3RuzRNtaFjxihbGm0836QHkdp0Nn-vyQ@mail.gmail.com>
-Subject: Re: [RFC PATCH V1] mm: Disable demotion from proactive reclaim
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eXUl97TIC36iX2gzZ4z9T7kVADet1dCMIeHKCLo4dC4=;
+        b=g881iXvnmzMu5tXUtDwojimS6iur7Q0LCQ44zzPDbZ8hx4eC0oMoI4H9Z8Qai2Qxut
+         0NbEDS66aKWAs/n3EMXM3S5EZ3EVz9h3ZsG7PbFL//WeSKzHBcOQsOHlwKD16UoK3gJh
+         FoX5DD+1rX33UeXKx1okfiTu7xvrOhjtg7+E2kngOyVDnlxzcdIxq/aZdRF9841XXAIe
+         g+npzv71n1dPuJC4Sag8NA38qZNiyA6xHRzloL8kCQH6wL8wbcEQNYY6+6TyNLExQuHC
+         JdJmGIVbtsVmEXG1peDjlQSv1jHMf+PnU4HFMG8+KT0DQ5Vgg8WQZZmwYWDlv7oG0Ffe
+         p1pg==
+X-Gm-Message-State: ANoB5pkklIwH4waeil+mNRzm8fcx7QBBLC2ua+XMje3cYLffW2nHZjHe
+        aFfNjYeMdjk0bNS71zT4aZjZ+Q==
+X-Google-Smtp-Source: AA0mqf59P97n8g2DJvpHoXjjiYjLodaojFr8pNiZ3Pf2y67xR6vLpb15b1401HTaq887RBMqTNLCfg==
+X-Received: by 2002:ac8:4a10:0:b0:3a5:2556:42ed with SMTP id x16-20020ac84a10000000b003a5255642edmr13309728qtq.422.1669240664291;
+        Wed, 23 Nov 2022 13:57:44 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:bc4])
+        by smtp.gmail.com with ESMTPSA id t18-20020a05620a451200b006fafc111b12sm13219537qkp.83.2022.11.23.13.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Nov 2022 13:57:43 -0800 (PST)
+Date:   Wed, 23 Nov 2022 16:58:10 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Mina Almasry <almasrymina@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Huang Ying <ying.huang@intel.com>,
+Cc:     Huang Ying <ying.huang@intel.com>,
         Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
         Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
         shakeelb@google.com, gthelen@google.com, fvdl@google.com,
         Michal Hocko <mhocko@kernel.org>,
@@ -65,11 +62,17 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Subject: Re: [RFC PATCH V1] mm: Disable demotion from proactive reclaim
+Message-ID: <Y36XchdgTCsMP4jT@cmpxchg.org>
+References: <20221122203850.2765015-1-almasrymina@google.com>
+ <Y35fw2JSAeAddONg@cmpxchg.org>
+ <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,8 +80,7 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 1:21 PM Mina Almasry <almasrymina@google.com> wrote:
->
+On Wed, Nov 23, 2022 at 01:20:57PM -0800, Mina Almasry wrote:
 > On Wed, Nov 23, 2022 at 10:00 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > >
 > > Hello Mina,
@@ -119,9 +121,9 @@ On Wed, Nov 23, 2022 at 1:21 PM Mina Almasry <almasrymina@google.com> wrote:
 > > demotion and reclaim independently as you please: if you call it on a
 > > node with demotion targets, it will demote; if you call it on a node
 > > without one, it'll reclaim. And current users will remain unaffected.
->
+> 
 > Hello Johannes, thanks for taking a look!
->
+> 
 > I can certainly add the "nodes=" arg to memory.reclaim and you're
 > right, that would help in bridging the gap. However, if I understand
 > the underlying code correctly, with only the nodes= arg the kernel
@@ -129,15 +131,22 @@ On Wed, Nov 23, 2022 at 1:21 PM Mina Almasry <almasrymina@google.com> wrote:
 > fall back to reclaiming if it can't demote the full amount. I had
 > hoped to have the flexibility to protect latency sensitive jobs from
 > reclaim entirely while attempting to do demotion.
->
-> There are probably ways to get around that in the userspace. I presume
-> the userspace can check if there is available memory on the node's
-> demotion targets, and if so, the kernel should demote-only. But I feel
-> that wouldn't be reliable as the demotion logic may change across
-> kernel versions. The userspace may think the kernel would demote but
-> instead demotion failed due to whatever heuristic introduced into the
-> new kernel version.
->
+
+The fallback to reclaim actually strikes me as wrong.
+
+Think of reclaim as 'demoting' the pages to the storage tier. If we
+have a RAM -> CXL -> storage hierarchy, we should demote from RAM to
+CXL and from CXL to storage. If we reclaim a page from RAM, it means
+we 'demote' it directly from RAM to storage, bypassing potentially a
+huge amount of pages colder than it in CXL. That doesn't seem right.
+
+If demotion fails, IMO it shouldn't satisfy the reclaim request by
+breaking the layering. Rather it should deflect that pressure to the
+lower layers to make room. This makes sure we maintain an aging
+pipeline that honors the memory tier hierarchy.
+
+So I'm hesitant to design cgroup controls around the current behavior.
+
 > The above is just one angle of the issue. Another angle (which Yosry
 > would care most about I think) is that at Google we call
 > memory.reclaim mainly when memory.current is too close to memory.max
@@ -147,19 +156,6 @@ On Wed, Nov 23, 2022 at 1:21 PM Mina Almasry <almasrymina@google.com> wrote:
 > we would run into that regression, but I defer to Yosry here, he may
 > have a solution for that in mind already.
 
-We don't exactly rely on memory.current, but we do have a separate
-proactive reclaim policy today from demotion, and we do expect
-memory.reclaim to reclaim memory and not demote it. So it is important
-that we can control reclaim vs. demotion separately. Having
-memory.reclaim do demotions by default is not ideal for our current
-setup, so at least having a demote= argument to control it (no
-demotions, may demote, only demote) is needed.
-
->
-> For these reasons, what do you think about adding both the "nodes="
-> and "demote=" args from my patch series to memory.reclaim? With these
-> args the default memory.reclaim behavior would suit meta as-is (no
-> change) but we would be able to configure it to address our use cases
-> as well.
->
-> As always, thanks for taking the time to review!
+IMO it should both demote and reclaim. Simliar to how memory.reclaim
+on a non-tiered memory system would both deactivate active pages and
+reclaim inactive pages.
