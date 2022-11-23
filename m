@@ -2,117 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 245606367E3
-	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 19:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C86B63685C
+	for <lists+cgroups@lfdr.de>; Wed, 23 Nov 2022 19:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238223AbiKWSAM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Nov 2022 13:00:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S239645AbiKWSOa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Nov 2022 13:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237630AbiKWSAL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 13:00:11 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C8AF26
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 10:00:10 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id fz10so11740813qtb.3
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 10:00:10 -0800 (PST)
+        with ESMTP id S239572AbiKWSNi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 13:13:38 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226D9DFAF;
+        Wed, 23 Nov 2022 10:10:00 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso2859182pjt.0;
+        Wed, 23 Nov 2022 10:10:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9A8cQiLxG2eDxIN9LqbxR9kHprQzAjhFPvRfMzy2nbA=;
-        b=JThIsrnalYZmSDDhQKwWGGeuUVFsTtfznTSg/LnbVkKWTcX9TtIOv42OyoGs/EtBM8
-         5lKGVFslA1HnCNcURKMoM7T/K5hQwmN15JAejQfmZfRaoCm/MMDOmrdCHuzVCDcYlBOm
-         3IAENmp+qd/OJOhBTPrmss/VakKTnaf6J5wSznE4djUqzpdYatYSslwQHPZmXSf277kI
-         D2w+/RQ5P18zqyLmhAbeXS1zvALCeHv+RG+/JYfuS9W+4DGU4sd57x7C61z2PraoCam2
-         GEGp6cj7FfpM9ECL7TpcAPgq0EZ2u8/s5TQ1PwqG5SQpnHDtFREeAmmJ6yvoVy//Qa5W
-         SsjA==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=42jiVvL+Ts2qh8Knn9mc2OntlNZr+ruehTRXIYJtsgE=;
+        b=kGEGxym2YsPDl+okJR+jAn9W99iCg2L5fctazVNfEVJQ6iw7n7XVcxJnKnNmYjd6g6
+         u6u6XnwbjVrt0w8j72DAle4dZGDdtfBW8X9zTc81l5maOtamqMfUIaUQwafb8lOvrWGO
+         qINUff3Ku+XIthIeKcEVc7busmkpJoMzZYZYaogshvbYljNoFzNiXCuVjwBalmvJcrBT
+         RIfqC8i+i1MU6as4+/8XsNCXD8L1AVZJFkyLTtmZ81dFQjtaSLreuez9uTMsF/jZZw3n
+         QQ7uwWxo01UW971auvwjUE1twN8Qs0LmIOAV+H8FsQetN7TJ3taVuownfeYPwHTjHQqC
+         G7kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9A8cQiLxG2eDxIN9LqbxR9kHprQzAjhFPvRfMzy2nbA=;
-        b=7VUP+khLVMYZ7tlfn78pnycg5VQvOjnP5vCKb6Iv2zTNvPr4+DDj8ZKzXrzgT3bgap
-         V8dyEqijaublKG369tOGProATxKH5M290M0hYxeI5Gy3QMW2UBVrHeW/LVlp/pIvkguh
-         XJ61AdMLixxoz4jg09xiLPbGYrw948UXTRBD5/TAQeaVF5Ue+/A8zo6AkZDjFH5BSA1n
-         INvNmJNEQZ6H4UmtBKu9HPJU+a0fJUPQOxVadnOT0MTuVRiGlPhSuVCuFukvNmXF2gIr
-         VVGbNzma/Q3MpgzOGYOuCQWXmN343QaG06oLlZOGw9vzJviY80zP6lP4nH5b53MXEUkE
-         Fwkw==
-X-Gm-Message-State: ANoB5pmUyo8mTuaWRVcM2tEyCDGzqiImZspRBRsV0kkImZMEnoBnaXRC
-        3B8XgU9G0S1AfO5/3k02Nf1k6w==
-X-Google-Smtp-Source: AA0mqf7yzb7BfNDeGRABLsmwYWSqaGKI2q66TVb/68TnDeMjm5zA8YnyzmhmQSDqNQ1wSvG+wsNWTA==
-X-Received: by 2002:a05:622a:4890:b0:3a5:84b9:3292 with SMTP id fc16-20020a05622a489000b003a584b93292mr27137746qtb.119.1669226409525;
-        Wed, 23 Nov 2022 10:00:09 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:bc4])
-        by smtp.gmail.com with ESMTPSA id i10-20020a05620a404a00b006bb8b5b79efsm12868905qko.129.2022.11.23.10.00.08
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=42jiVvL+Ts2qh8Knn9mc2OntlNZr+ruehTRXIYJtsgE=;
+        b=rL0Et8rbi5utMRm1jglbVoT20scF8yu09lounWABPOHCFD82LnkpOifrjL0b5wffWk
+         zAH4OkcScRSWEogI0c4PLLzrbEijSx+eMilO0P7iQp3Q/5I8kbmge52N08RKx5iQwsy6
+         8DST1boSqPbBq/h8+jDhpUGBBb82lQqqs3XYUz6J5baB09JpwEDMLs5Soyc5ExbT2WXU
+         Pqrm87jdaV8ns/DQcRFArK5qtMUFpKCgwimnHSJtkgl6uurE2IUrhxsf2GnHCiTKW55F
+         qZo2VK4PriHKUaTOBPVjk74a4sgyhfuiripe7uGxsVsLar3s213lMWXQVmLVwm+TX1Ni
+         La6Q==
+X-Gm-Message-State: ANoB5plYYOwB1ZPKTRJVrP/N7GmUQcWeJjWmn6Md5f2+V4q1YRxU0ot0
+        8IxBYEDhq16bA+AtMhATqNc=
+X-Google-Smtp-Source: AA0mqf5kuG7tARTAIVt0J36rhq6lFOFV3bxt97HboHYXGMYzhr0PyTXjm63gzdQX3EzbzSmCwQy7sw==
+X-Received: by 2002:a17:902:ea06:b0:186:abaf:8fe with SMTP id s6-20020a170902ea0600b00186abaf08femr23078476plg.95.1669226999341;
+        Wed, 23 Nov 2022 10:09:59 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id w11-20020aa79a0b000000b0056bad6ff1b8sm12932685pfj.101.2022.11.23.10.09.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 10:00:09 -0800 (PST)
-Date:   Wed, 23 Nov 2022 13:00:35 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
-        shakeelb@google.com, gthelen@google.com, fvdl@google.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH V1] mm: Disable demotion from proactive reclaim
-Message-ID: <Y35fw2JSAeAddONg@cmpxchg.org>
-References: <20221122203850.2765015-1-almasrymina@google.com>
+        Wed, 23 Nov 2022 10:09:58 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 23 Nov 2022 08:09:57 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Kemeng Shi <shikemeng@huawei.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/11] blk-throttle: Fix that bps of child could exceed
+ bps limited in parent
+Message-ID: <Y35h9SmFeEJtBNgM@slm.duckdns.org>
+References: <20221123060401.20392-1-shikemeng@huawei.com>
+ <20221123060401.20392-3-shikemeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221122203850.2765015-1-almasrymina@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221123060401.20392-3-shikemeng@huawei.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Mina,
+On Wed, Nov 23, 2022 at 02:03:52PM +0800, Kemeng Shi wrote:
+> @@ -964,10 +963,8 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
+>  	unsigned int bio_size = throtl_bio_data_size(bio);
+>  
+>  	/* Charge the bio to the group */
+> -	if (!bio_flagged(bio, BIO_BPS_THROTTLED)) {
+> -		tg->bytes_disp[rw] += bio_size;
+> -		tg->last_bytes_disp[rw] += bio_size;
+> -	}
+> +	tg->bytes_disp[rw] += bio_size;
+> +	tg->last_bytes_disp[rw] += bio_size;
 
-On Tue, Nov 22, 2022 at 12:38:45PM -0800, Mina Almasry wrote:
-> Since commit 3f1509c57b1b ("Revert "mm/vmscan: never demote for memcg
-> reclaim""), the proactive reclaim interface memory.reclaim does both
-> reclaim and demotion. This is likely fine for us for latency critical
-> jobs where we would want to disable proactive reclaim entirely, and is
-> also fine for latency tolerant jobs where we would like to both
-> proactively reclaim and demote.
-> 
-> However, for some latency tiers in the middle we would like to demote but
-> not reclaim. This is because reclaim and demotion incur different latency
-> costs to the jobs in the cgroup. Demoted memory would still be addressable
-> by the userspace at a higher latency, but reclaimed memory would need to
-> incur a pagefault.
-> 
-> To address this, I propose having reclaim-only and demotion-only
-> mechanisms in the kernel. There are a couple possible
-> interfaces to carry this out I considered:
-> 
-> 1. Disable demotion in the memory.reclaim interface and add a new
->    demotion interface (memory.demote).
-> 2. Extend memory.reclaim with a "demote=<int>" flag to configure the demotion
->    behavior in the kernel like so:
->    	- demote=0 would disable demotion from this call.
-> 	- demote=1 would allow the kernel to demote if it desires.
-> 	- demote=2 would only demote if possible but not attempt any
-> 	  other form of reclaim.
+Are you sure this isn't gonna lead to double accounting? IIRC, the primary
+purpose of this flag is avoiding duplicate accounting of bios which end up
+going through the throttling path multiple times for whatever reason and
+we've had numerous breakages around it.
 
-Unfortunately, our proactive reclaim stack currently relies on
-memory.reclaim doing both. It may not stay like that, but I'm a bit
-wary of changing user-visible semantics post-facto.
+To address the problem you're describing in this patch, wouldn't it make
+more sense to set the flag only when the bio traversed the entire tree
+rather than after each tg?
 
-In patch 2, you're adding a node interface to memory.demote. Can you
-add this to memory.reclaim instead? This would allow you to control
-demotion and reclaim independently as you please: if you call it on a
-node with demotion targets, it will demote; if you call it on a node
-without one, it'll reclaim. And current users will remain unaffected.
+Thanks.
+
+-- 
+tejun
