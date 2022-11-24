@@ -2,291 +2,216 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 350D3637239
-	for <lists+cgroups@lfdr.de>; Thu, 24 Nov 2022 07:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCD6637316
+	for <lists+cgroups@lfdr.de>; Thu, 24 Nov 2022 08:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbiKXGDr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Nov 2022 01:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
+        id S229631AbiKXHtS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Nov 2022 02:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbiKXGDP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Nov 2022 01:03:15 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114B5F844
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 22:03:05 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id s4so550100qtx.6
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 22:03:05 -0800 (PST)
+        with ESMTP id S229657AbiKXHtI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Nov 2022 02:49:08 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E32248F0
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 23:49:07 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 136so952441pga.1
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 23:49:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FJy6vszDoCp46m3JopX1uY8udZeM6fOcw9P3JKhadjs=;
-        b=Jvzn8i+eto9wT02o0N73tnQsoWxjvcrnnCDN3aoRmc4emsUiyBKr3H6Z30JhGymYbs
-         AtGemDi/cBgL5d0zDL61lbDsKrqtZoU3ejVPDXCDbMgzQSNsmXeETIHc8vIYYW6gfHJo
-         WwmU5DEsQ/oG2uW5eERRdx9E3hCK6Y1AC3M4HRiJcBIXnDBCmHRLRGuVAvPTOXRMf96v
-         emKKyJRjUx9QDIltDC8iL9MONtVrzo00/xAEoX+MbGdVDPje5IjmaU+aTeOhqyy9Ko8g
-         83eFsLblUIj6MpwruchSm+bgXDu1HEPjM2Wxfqztj34UzGT3N0RuaJk3ZFiOG1506/xd
-         ky+w==
+        d=shopee.com; s=shopee.com;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G7mIOYx5XpbGQFlC8Ida0reEU5Je0qsdFez1FBYqNyg=;
+        b=NjotXgc97HbmEPcoHrS+QOmRpacOKDb6QdXBznUNud1zfBEYbcLcS0Xt2g3PItbFnr
+         h2QU44T4XntjX+yX5aGFm63L8ScVMzk1QnKOSbFWpMjeDfEt7yvCS4NDOuIXfg82fZnh
+         DZzGBg5gfIpGza1QU53WZ6sK/ar+0Nz7Mf6oySCBTtb8gXxzc2hXUes7f3Je+8/5ietR
+         9h/mbj4vZ4lepK0FPHfAd8Y215fWJxhs+X16DRMm8Nj8EduGiaUZuO9UvZWHyabH7cNa
+         kqGuLQR40VQZmVKmSTG+2MvAwq4nPCFJCV8Pos7IuGYCwARs3J6QL7bZBK6+bnipJ8iM
+         coPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FJy6vszDoCp46m3JopX1uY8udZeM6fOcw9P3JKhadjs=;
-        b=Ye0yxOGkFVu/puJROjo6tXDSH//VV4uNmqCGDEZzdi/JBf6XtybnS9dIvJc4h/tsi8
-         ChYGDQF78ZsRQhniBq9ycrrr3PBnqAYNBKYOUR7HvUBXuAVmulPfclnvKd5LGL/A404l
-         cyNebllntOXF5ruu9aW1OTI73WdW88lCKcMTMeqYLMy9vmtCL6bnj0isb3tad8oXsHrn
-         NK+OLliB8LyrIUFbOc2MYyrXPnbMyqDufhH70tlqw3Kc8NWDIebFqhljgGdLujfICBPt
-         RqdIkPgy39yaxh2z+D0EZeNBcfoLkCRxh7fpBph5K8n1hpo1vSZam1i0jbOBmn8o6pmQ
-         VX2Q==
-X-Gm-Message-State: ANoB5pkYOVMpXKAQfoEZpCI6CyxaqlOtDWeqG+0Wa/YTYtk7jbR11Mj6
-        MzzG4JY7sO/+1Wh4ceTN9IBZJRA1CAbraw==
-X-Google-Smtp-Source: AA0mqf5smS7eoF6TMtyvNccYdWE/pQH9AIZMl3YnHwgT/NCCQ0QiGIaFm6+XMemAUMwsqQWO/ufOvQ==
-X-Received: by 2002:a05:622a:4d0f:b0:3a5:25d4:2f2c with SMTP id fd15-20020a05622a4d0f00b003a525d42f2cmr13194152qtb.112.1669269783513;
-        Wed, 23 Nov 2022 22:03:03 -0800 (PST)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id o22-20020a05620a2a1600b006eeb3165554sm351606qkp.19.2022.11.23.22.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 22:03:02 -0800 (PST)
-Date:   Wed, 23 Nov 2022 22:03:00 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: remove lock_page_memcg() from rmap
-In-Reply-To: <20221123181838.1373440-1-hannes@cmpxchg.org>
-Message-ID: <16dd09c-bb6c-6058-2b3-7559b5aefe9@google.com>
-References: <20221123181838.1373440-1-hannes@cmpxchg.org>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=G7mIOYx5XpbGQFlC8Ida0reEU5Je0qsdFez1FBYqNyg=;
+        b=kM8IDdS/QAQDwKL6AX2DtHBfgB6Nl400jykjWrJsyBVDI+zJFe9Z9NlMyk9rVQWQTS
+         gIreC/Vd4jJ0MndvWwS8+w4RL/PagROjJsAVWK3ZPvw35R0sLZlep0XlSWuX3TMAnv78
+         I52BfE+rHW7+LydHpgPZGqgHarDi3zkuGsORHxfv2DGIa9jgdIyR98tHVYOzuh9r8ioE
+         Vf58/3d2PKFrOHmrKm4KQHUP2KmPlsJRR4Z6QajE9+1Zeh1+G30x29Wy+5UtC2W0XzE1
+         zxo7uWAiKkLkU6KcROft9hIKF9yvcpUBq8YFk/8tDiZpDfXJfQt4Pphxg4po/MmGggLe
+         VUBw==
+X-Gm-Message-State: ANoB5pmaFtD2K7GCZqnJ6/M+EGmDylftEN9VbXcJ1QSaINOTh1+dbmoS
+        MX3dCDf3YlzC1Elq0COuQoO7O7klrA2N/UaA
+X-Google-Smtp-Source: AA0mqf5pzoo6QD8W/O4UzNRjG/dH8mFcNXz4MwupnYm372vlZ08PSLVbYtDXpowYkklRamgw7dATgg==
+X-Received: by 2002:a63:ff63:0:b0:477:8d4f:3dda with SMTP id s35-20020a63ff63000000b004778d4f3ddamr13055439pgk.552.1669276146630;
+        Wed, 23 Nov 2022 23:49:06 -0800 (PST)
+Received: from [10.54.24.49] ([143.92.118.2])
+        by smtp.gmail.com with ESMTPSA id p5-20020a170902e74500b0018691ce1696sm532146plf.131.2022.11.23.23.49.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Nov 2022 23:49:06 -0800 (PST)
+Message-ID: <21e73dad-c6d0-21ea-dcdf-355b71c8537b@shopee.com>
+Date:   Thu, 24 Nov 2022 15:49:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.0
+Subject: Re: [PATCH] cgroup/cpuset: Optimize update_tasks_nodemask()
+To:     Waiman Long <longman@redhat.com>
+Cc:     lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221123082157.71326-1-haifeng.xu@shopee.com>
+ <2ac6f207-e08a-2a7f-01ae-dfaf15eefaf6@redhat.com>
+ <4de8821b-e0c0-bf63-4d76-b0ce208cce3b@shopee.com>
+ <dfcbffb9-b58a-6d25-2174-39394eb0ccde@redhat.com>
+From:   Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <dfcbffb9-b58a-6d25-2174-39394eb0ccde@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 23 Nov 2022, Johannes Weiner wrote:
 
-> rmap changes (mapping and unmapping) of a page currently take
-> lock_page_memcg() to serialize 1) update of the mapcount and the
-> cgroup mapped counter with 2) cgroup moving the page and updating the
-> old cgroup and the new cgroup counters based on page_mapped().
+
+On 2022/11/24 12:24, Waiman Long wrote:
+> On 11/23/22 22:33, Haifeng Xu wrote:
+>>
+>> On 2022/11/24 04:23, Waiman Long wrote:
+>>> On 11/23/22 03:21, haifeng.xu wrote:
+>>>> When change the 'cpuset.mems' under some cgroup, system will hung
+>>>> for a long time. From the dmesg, many processes or theads are
+>>>> stuck in fork/exit. The reason is show as follows.
+>>>>
+>>>> thread A:
+>>>> cpuset_write_resmask /* takes cpuset_rwsem */
+>>>>     ...
+>>>>       update_tasks_nodemask
+>>>>         mpol_rebind_mm /* waits mmap_lock */
+>>>>
+>>>> thread B:
+>>>> worker_thread
+>>>>     ...
+>>>>       cpuset_migrate_mm_workfn
+>>>>         do_migrate_pages /* takes mmap_lock */
+>>>>
+>>>> thread C:
+>>>> cgroup_procs_write /* takes cgroup_mutex and
+>>>> cgroup_threadgroup_rwsem */
+>>>>     ...
+>>>>       cpuset_can_attach
+>>>>         percpu_down_write /* waits cpuset_rwsem */
+>>>>
+>>>> Once update the nodemasks of cpuset, thread A wakes up thread B to
+>>>> migrate mm. But when thread A iterates through all tasks, including
+>>>> child threads and group leader, it has to wait the mmap_lock which
+>>>> has been take by thread B. Unfortunately, thread C wants to migrate
+>>>> tasks into cgroup at this moment, it must wait thread A to release
+>>>> cpuset_rwsem. If thread B spends much time to migrate mm, the
+>>>> fork/exit which acquire cgroup_threadgroup_rwsem also need to
+>>>> wait for a long time.
+>>>>
+>>>> There is no need to migrate the mm of child threads which is
+>>>> shared with group leader. Just iterate through the group
+>>>> leader only.
+>>>>
+>>>> Signed-off-by: haifeng.xu <haifeng.xu@shopee.com>
+>>>> ---
+>>>>    kernel/cgroup/cpuset.c | 3 +++
+>>>>    1 file changed, 3 insertions(+)
+>>>>
+>>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>>> index 589827ccda8b..43cbd09546d0 100644
+>>>> --- a/kernel/cgroup/cpuset.c
+>>>> +++ b/kernel/cgroup/cpuset.c
+>>>> @@ -1968,6 +1968,9 @@ static void update_tasks_nodemask(struct cpuset
+>>>> *cs)
+>>>>              cpuset_change_task_nodemask(task, &newmems);
+>>>>    +        if (!thread_group_leader(task))
+>>>> +            continue;
+>>>> +
+>>>>            mm = get_task_mm(task);
+>>>>            if (!mm)
+>>>>                continue;
+>>> Could you try the attached test patch to see if it can fix your problem?
+>>> Something along the line of this patch will be more acceptable.
+>>>
+>>> Thanks,
+>>> Longman
+>>>
+>> Hi, Longman.
+>> Thanks for your patch, but there are still some problems.
+>>
+>> 1）
+>>    (group leader, node: 0,1)
+>>           cgroup0
+>>           /     \
+>>          /       \
+>>      cgroup1   cgroup2
+>>     (threads)  (threads)
+>>
+>> If set node 0 in cgroup1 and node 1 in cgroup2, both of them will update
+>> the mm. And the nodemask of mm depends on who set the node last.
 > 
-> Before b2052564e66d ("mm: memcontrol: continue cache reclaim from
-> offlined groups"), we used to reassign all pages that could be found
-> on a cgroup's LRU list on deletion - something that rmap didn't
-> naturally serialize against. Since that commit, however, the only
-> pages that get moved are those mapped into page tables of a task
-> that's being migrated. In that case, the pte lock is always held (and
-> we know the page is mapped), which keeps rmap changes at bay already.
+> Yes, that is the existing behavior. It was not that well defined in the
+> past and so it is somewhat ambiguous as to what we need to do about it.
 > 
-> The additional lock_page_memcg() by rmap is redundant. Remove it.
+
+The test patch works if the child threads are in same cpuset with group
+leader which has same logic with my patch. But if they are in different
+cpusets, the test patch will fail because the contention of mmap_lock
+still exsits and seems similar to the original logic.
+
+> BTW, cgroup1 has a memory_migrate flag which will force page migration
+> if set. I guess you may have it set in your case as it will introduce a
+> lot more delay as page migration takes time. That is probably the reason
+> why you are seeing a long delay. So one possible solution is to turn
+> this flag off. Cgroup v2 doesn't have this flag.
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Thank you, I love it: but with sorrow and shame, NAK to this version.
+Dou you mean 'CS_MEMORY_MIGRATE'? This flag can be turn off in Cgroup
+v1, but it has been set in Cgroup v2 (cpuset_css_alloc) in default and
+couldn't be changed.
 
-I was gearing up to rush in the crash fix at the bottom, when testing
-showed that the new VM_WARN_ON_ONCE(!folio_mapped(folio)) actually hits.
-
-So I've asked Stephen to drop this mm-unstable commit from -next for
-tonight, while we think about what more is needed.
-
-I was disbelieving when I saw the warning, couldn't understand at all.
-But a look at get_mctgt_type() shatters my illusion: it's doesn't just
-return a page for pte_present(ptent), it goes off looking up swap
-cache and page cache; plus I've no idea whether an MC_TARGET_DEVICE
-page would appear as folio_mapped() or not.
-
-Does that mean that we just have to reinstate the folio_mapped() checks
-in mm/memcontrol.c i.e. revert all mm/memcontrol.c changes from the
-commit?  Or does it invalidate the whole project to remove
-lock_page_memcg() from mm/rmap.c?
-
-Too disappointed to think about it more tonight :-(
-Hugh
-
-
-> ---
->  mm/memcontrol.c | 35 ++++++++++++++++++++---------------
->  mm/rmap.c       | 12 ------------
->  2 files changed, 20 insertions(+), 27 deletions(-)
+>>
+>> 2）
+>>     (process, node: 0,1)
+>>           cgroup0
+>>           /     \
+>>          /       \
+>>      cgroup1   cgroup2
+>>     (node: 0)  (node: 1)
+>>
+>> If migrate thread from cgroup0 to cgroup1 or cgroup2, cpuset_attach
+>> won't update the mm. So the nodemask of thread, including mems_allowed
+>> and mempolicy（updated in cpuset_change_task_nodemask）, is different
+>> from
+>> the vm_policy in vma(updated in mpol_rebind_mm).
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 23750cec0036..52b86ca7a78e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5676,7 +5676,10 @@ static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
->   * @from: mem_cgroup which the page is moved from.
->   * @to:	mem_cgroup which the page is moved to. @from != @to.
->   *
-> - * The caller must make sure the page is not on LRU (isolate_page() is useful.)
-> + * This function acquires folio_lock() and folio_lock_memcg(). The
-> + * caller must exclude all other possible ways of accessing
-> + * page->memcg, such as LRU isolation (to lock out isolation) and
-> + * having the page mapped and pte-locked (to lock out rmap).
->   *
->   * This function doesn't do "charge" to new cgroup and doesn't do "uncharge"
->   * from old cgroup.
-> @@ -5696,6 +5699,13 @@ static int mem_cgroup_move_account(struct page *page,
->  	VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
->  	VM_BUG_ON(compound && !folio_test_large(folio));
->  
-> +	/*
-> +	 * We're only moving pages mapped into the moving process's
-> +	 * page tables. The caller's pte lock prevents rmap from
-> +	 * removing the NR_x_MAPPED state while we transfer it.
-> +	 */
-> +	VM_WARN_ON_ONCE(!folio_mapped(folio));
-> +
->  	/*
->  	 * Prevent mem_cgroup_migrate() from looking at
->  	 * page's memory cgroup of its source page while we change it.
-> @@ -5715,30 +5725,25 @@ static int mem_cgroup_move_account(struct page *page,
->  	folio_memcg_lock(folio);
->  
->  	if (folio_test_anon(folio)) {
-> -		if (folio_mapped(folio)) {
-> -			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
-> -			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
-> -			if (folio_test_transhuge(folio)) {
-> -				__mod_lruvec_state(from_vec, NR_ANON_THPS,
-> -						   -nr_pages);
-> -				__mod_lruvec_state(to_vec, NR_ANON_THPS,
-> -						   nr_pages);
-> -			}
-> +		__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
-> +		__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
-> +
-> +		if (folio_test_transhuge(folio)) {
-> +			__mod_lruvec_state(from_vec, NR_ANON_THPS, -nr_pages);
-> +			__mod_lruvec_state(to_vec, NR_ANON_THPS, nr_pages);
->  		}
->  	} else {
->  		__mod_lruvec_state(from_vec, NR_FILE_PAGES, -nr_pages);
->  		__mod_lruvec_state(to_vec, NR_FILE_PAGES, nr_pages);
->  
-> +		__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
-> +		__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
-> +
->  		if (folio_test_swapbacked(folio)) {
->  			__mod_lruvec_state(from_vec, NR_SHMEM, -nr_pages);
->  			__mod_lruvec_state(to_vec, NR_SHMEM, nr_pages);
->  		}
->  
-> -		if (folio_mapped(folio)) {
-> -			__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
-> -			__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
-> -		}
-> -
->  		if (folio_test_dirty(folio)) {
->  			struct address_space *mapping = folio_mapping(folio);
->  
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 459dc1c44d8a..11a4894158db 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1222,9 +1222,6 @@ void page_add_anon_rmap(struct page *page,
->  	bool compound = flags & RMAP_COMPOUND;
->  	bool first = true;
->  
-> -	if (unlikely(PageKsm(page)))
-> -		lock_page_memcg(page);
-> -
->  	/* Is page being mapped by PTE? Is this its first map to be added? */
->  	if (likely(!compound)) {
->  		first = atomic_inc_and_test(&page->_mapcount);
-> @@ -1254,9 +1251,6 @@ void page_add_anon_rmap(struct page *page,
->  	if (nr)
->  		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
->  
-> -	if (unlikely(PageKsm(page)))
-> -		unlock_page_memcg(page);
-> -
->  	/* address might be in next vma when migration races vma_adjust */
->  	else if (first)
->  		__page_set_anon_rmap(page, vma, address,
-> @@ -1321,7 +1315,6 @@ void page_add_file_rmap(struct page *page,
->  	bool first;
->  
->  	VM_BUG_ON_PAGE(compound && !PageTransHuge(page), page);
-> -	lock_page_memcg(page);
->  
->  	/* Is page being mapped by PTE? Is this its first map to be added? */
->  	if (likely(!compound)) {
-> @@ -1349,7 +1342,6 @@ void page_add_file_rmap(struct page *page,
->  			NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmapped);
->  	if (nr)
->  		__mod_lruvec_page_state(page, NR_FILE_MAPPED, nr);
-> -	unlock_page_memcg(page);
->  
->  	mlock_vma_page(page, vma, compound);
->  }
-> @@ -1378,8 +1370,6 @@ void page_remove_rmap(struct page *page,
->  		return;
->  	}
->  
-> -	lock_page_memcg(page);
-> -
->  	/* Is page being unmapped by PTE? Is this its last map to be removed? */
->  	if (likely(!compound)) {
->  		last = atomic_add_negative(-1, &page->_mapcount);
-> @@ -1427,8 +1417,6 @@ void page_remove_rmap(struct page *page,
->  	 * and remember that it's only reliable while mapped.
->  	 */
->  
-> -	unlock_page_memcg(page);
-> -
->  	munlock_vma_page(page, vma, compound);
->  }
->  
-> -- 
-> 2.38.1
+> Yes, that can be the case.
+> 
+>>
+>>
+>> In a word, if threads have different cpusets with different nodemask, it
+>> will cause inconsistent memory behavior.
+> 
+> So do you have suggestion of what we need to do going forward?
 
-[PATCH] mm: remove lock_page_memcg() from rmap - fix
+Should we prevent thread from migrating to those cgroups which have
+different nodemask with the cgroup that contains the group leader?
 
-Blame me for the hidden "else", which now does the wrong thing, leaving
-page's anon_vma unset, then VM_BUG_ON before do_swap_page's set_pte_at.
+In addition, the group leader and child threads should be in same cgroup
+tree, also the level of cgroup containes group leader must be higher
+than these cgroups contain child threads, so update_nodemask will work.
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- mm/rmap.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 11a4894158db..5a8d27fdc644 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1251,13 +1251,14 @@ void page_add_anon_rmap(struct page *page,
- 	if (nr)
- 		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
- 
--	/* address might be in next vma when migration races vma_adjust */
--	else if (first)
--		__page_set_anon_rmap(page, vma, address,
--				     !!(flags & RMAP_EXCLUSIVE));
--	else
--		__page_check_anon_rmap(page, vma, address);
--
-+	if (!PageKsm(page)) {
-+		/* address may be in next vma if migration races vma_adjust */
-+		if (first)
-+			__page_set_anon_rmap(page, vma, address,
-+					     !!(flags & RMAP_EXCLUSIVE));
-+		else
-+			__page_check_anon_rmap(page, vma, address);
-+	}
- 	mlock_vma_page(page, vma, compound);
- }
- 
--- 
-2.35.3
+Or just disable thread migration in cpuset？It's easy to achieve but will
+affect cpu bind.
+> 
+> Cheers,
+> Longman
+> 
+> 
