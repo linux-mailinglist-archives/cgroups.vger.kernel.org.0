@@ -2,179 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C61563717C
-	for <lists+cgroups@lfdr.de>; Thu, 24 Nov 2022 05:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94766371C3
+	for <lists+cgroups@lfdr.de>; Thu, 24 Nov 2022 06:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbiKXE0P (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Nov 2022 23:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35446 "EHLO
+        id S229463AbiKXF26 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Nov 2022 00:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiKXE0F (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Nov 2022 23:26:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A059C8CA1
-        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 20:25:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669263907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QjVToG+OhKw4vvhYVNzjybjOZkvj6GH2PdUap1ZiVFE=;
-        b=UTZpG+lcO3qSJhbxHgl25JEDb5YsstILtWyaWD/Jjj8z0Iqsiyb+cUL+vprPi+ut4Lx1KH
-        GYfx0zVVqTqmtUfsW2WGDHkv0JzFNYKGT0uDBgnkNncoZxalOrRnCu+SoxJgvaWiFjZe0j
-        9UoTWnzYsCcmlMAs0Jt6wtO202bdgH0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-646-er7UZ0A8NyO5erOQyliZoA-1; Wed, 23 Nov 2022 23:25:00 -0500
-X-MC-Unique: er7UZ0A8NyO5erOQyliZoA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A4DD13800C27;
-        Thu, 24 Nov 2022 04:24:59 +0000 (UTC)
-Received: from [10.22.8.49] (unknown [10.22.8.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E43C4A9254;
-        Thu, 24 Nov 2022 04:24:59 +0000 (UTC)
-Message-ID: <dfcbffb9-b58a-6d25-2174-39394eb0ccde@redhat.com>
-Date:   Wed, 23 Nov 2022 23:24:57 -0500
+        with ESMTP id S229450AbiKXF25 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Nov 2022 00:28:57 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF39C052C;
+        Wed, 23 Nov 2022 21:28:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669267736; x=1700803736;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=yzllx2aXHanc4RlM697MHQ9doyide2+HpLsBlPh6fPY=;
+  b=a7dd0UFqA3/b8+LxYo0ChDAgo7WfRQGqC1iCpvwDfDhxowOyxepWaw59
+   apO8di9w/hQ9DO5tyKbiukx/RD58d+9ULQ2jxwo8wCBoeL/o76M4lqglR
+   kBjEX7DKXNZdWdOiB5k07/fu6jm6VMbne4/S5R6Hf9voHISOupa1ZgfDR
+   M2IInhX9pJAR2UDZ+HL/29V9P4HE8VjSq3PtrnHKoTW7BZEsRtq1hes5l
+   u8QABUokbJdktH0woThF8vlEusrI1zMxyCJxP1gplu4bJIL7Z63Yf/BFe
+   vsKz75MvKFdxLlqkiIX3FVlZRGQg0cPTptorCBnyo18l/j8+YbRVbTvxS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10540"; a="316039962"
+X-IronPort-AV: E=Sophos;i="5.96,189,1665471600"; 
+   d="scan'208";a="316039962"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 21:28:56 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10540"; a="887219634"
+X-IronPort-AV: E=Sophos;i="5.96,189,1665471600"; 
+   d="scan'208";a="887219634"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 21:28:52 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
+        shakeelb@google.com, gthelen@google.com, fvdl@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 3/4] mm: Fix demotion-only scanning anon pages
+References: <20221122203850.2765015-1-almasrymina@google.com>
+        <20221122203850.2765015-3-almasrymina@google.com>
+Date:   Thu, 24 Nov 2022 13:27:51 +0800
+In-Reply-To: <20221122203850.2765015-3-almasrymina@google.com> (Mina Almasry's
+        message of "Tue, 22 Nov 2022 12:38:47 -0800")
+Message-ID: <87wn7korag.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH] cgroup/cpuset: Optimize update_tasks_nodemask()
-Content-Language: en-US
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221123082157.71326-1-haifeng.xu@shopee.com>
- <2ac6f207-e08a-2a7f-01ae-dfaf15eefaf6@redhat.com>
- <4de8821b-e0c0-bf63-4d76-b0ce208cce3b@shopee.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <4de8821b-e0c0-bf63-4d76-b0ce208cce3b@shopee.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/23/22 22:33, Haifeng Xu wrote:
+Mina Almasry <almasrymina@google.com> writes:
+
+> This is likely a missed change from commit a2a36488a61c ("mm/vmscan: Consider
+> anonymous pages without swap"). Current logic is if !may_swap _or_
+> !can_reclaim_anon_pages() then we don't scan anon memory.
 >
-> On 2022/11/24 04:23, Waiman Long wrote:
->> On 11/23/22 03:21, haifeng.xu wrote:
->>> When change the 'cpuset.mems' under some cgroup, system will hung
->>> for a long time. From the dmesg, many processes or theads are
->>> stuck in fork/exit. The reason is show as follows.
->>>
->>> thread A:
->>> cpuset_write_resmask /* takes cpuset_rwsem */
->>>     ...
->>>       update_tasks_nodemask
->>>         mpol_rebind_mm /* waits mmap_lock */
->>>
->>> thread B:
->>> worker_thread
->>>     ...
->>>       cpuset_migrate_mm_workfn
->>>         do_migrate_pages /* takes mmap_lock */
->>>
->>> thread C:
->>> cgroup_procs_write /* takes cgroup_mutex and cgroup_threadgroup_rwsem */
->>>     ...
->>>       cpuset_can_attach
->>>         percpu_down_write /* waits cpuset_rwsem */
->>>
->>> Once update the nodemasks of cpuset, thread A wakes up thread B to
->>> migrate mm. But when thread A iterates through all tasks, including
->>> child threads and group leader, it has to wait the mmap_lock which
->>> has been take by thread B. Unfortunately, thread C wants to migrate
->>> tasks into cgroup at this moment, it must wait thread A to release
->>> cpuset_rwsem. If thread B spends much time to migrate mm, the
->>> fork/exit which acquire cgroup_threadgroup_rwsem also need to
->>> wait for a long time.
->>>
->>> There is no need to migrate the mm of child threads which is
->>> shared with group leader. Just iterate through the group
->>> leader only.
->>>
->>> Signed-off-by: haifeng.xu <haifeng.xu@shopee.com>
->>> ---
->>>    kernel/cgroup/cpuset.c | 3 +++
->>>    1 file changed, 3 insertions(+)
->>>
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 589827ccda8b..43cbd09546d0 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -1968,6 +1968,9 @@ static void update_tasks_nodemask(struct cpuset
->>> *cs)
->>>              cpuset_change_task_nodemask(task, &newmems);
->>>    +        if (!thread_group_leader(task))
->>> +            continue;
->>> +
->>>            mm = get_task_mm(task);
->>>            if (!mm)
->>>                continue;
->> Could you try the attached test patch to see if it can fix your problem?
->> Something along the line of this patch will be more acceptable.
->>
->> Thanks,
->> Longman
->>
-> Hi, Longman.
-> Thanks for your patch, but there are still some problems.
+> This should be an 'and'. We would like to scan anon memory if we may swap
+> or if we can_reclaim_anon_pages().
 >
-> 1）
->    (group leader, node: 0,1)
->           cgroup0
->           /     \
->          /       \
->      cgroup1   cgroup2
->     (threads)  (threads)
+> Fixes: commit a2a36488a61c ("mm/vmscan: Consider anonymous pages without swap")
 >
-> If set node 0 in cgroup1 and node 1 in cgroup2, both of them will update
-> the mm. And the nodemask of mm depends on who set the node last.
-
-Yes, that is the existing behavior. It was not that well defined in the 
-past and so it is somewhat ambiguous as to what we need to do about it.
-
-BTW, cgroup1 has a memory_migrate flag which will force page migration 
-if set. I guess you may have it set in your case as it will introduce a 
-lot more delay as page migration takes time. That is probably the reason 
-why you are seeing a long delay. So one possible solution is to turn 
-this flag off. Cgroup v2 doesn't have this flag.
-
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> ---
+>  mm/vmscan.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> 2）
->     (process, node: 0,1)
->           cgroup0
->           /     \
->          /       \
->      cgroup1   cgroup2
->     (node: 0)  (node: 1)
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 8c1f5416d789..d7e509b3f07f 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2931,7 +2931,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  	enum lru_list lru;
 >
-> If migrate thread from cgroup0 to cgroup1 or cgroup2, cpuset_attach
-> won't update the mm. So the nodemask of thread, including mems_allowed
-> and mempolicy（updated in cpuset_change_task_nodemask）, is different from
-> the vm_policy in vma(updated in mpol_rebind_mm).
+>  	/* If we have no swap space, do not bother scanning anon folios. */
+> -	if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
+> +	if (!sc->may_swap && !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
 
-Yes, that can be the case.
+If there is only DRAM but swap device is enabled, sc->may_swap will not
+work as expected.  So we should check can_demote() instead if
+sc->may_swap.
 
->
->
-> In a word, if threads have different cpusets with different nodemask, it
-> will cause inconsistent memory behavior.
+Best Regards,
+Huang, Ying
 
-So do you have suggestion of what we need to do going forward?
-
-Cheers,
-Longman
-
-
+>  		scan_balance = SCAN_FILE;
+>  		goto out;
+>  	}
+> --
+> 2.38.1.584.g0f3c55d4c2-goog
