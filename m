@@ -2,114 +2,291 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CFE6371F0
-	for <lists+cgroups@lfdr.de>; Thu, 24 Nov 2022 06:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350D3637239
+	for <lists+cgroups@lfdr.de>; Thu, 24 Nov 2022 07:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbiKXFwV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Nov 2022 00:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S229789AbiKXGDr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Nov 2022 01:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiKXFwQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Nov 2022 00:52:16 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C26A627EA;
-        Wed, 23 Nov 2022 21:52:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669269135; x=1700805135;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=6G7nnH68EGLhd5S/EKcOEOe5slAPl+r6rFU7g2dJ4Z8=;
-  b=Npo54Z8yRkPyCdpPwpwFxFJVtkQIIFMp33BhLHwbrHOZrzvW0lcQnHjj
-   u2GpjVdBjFJUEu07WGee9+xEG8fo0XgXXT2aVzzXrzLj1FQ6/kj0h7Fkw
-   YhhFYfKD91w3l+DZHutE6ZE+k/yeVsumwI0DmnG6MRJlB3hHBKgPFERcy
-   43DSLEL3YnAe+/Yr1PiCU62mDTNlaOdUp2KHz42ppfDrGvYGy4DeV1gFA
-   5kWFKiuy6CociveVI2ny/4YdYHrfB2eXpAeNdKM84LdRnid3MZAga1jI5
-   idasOP0yZseugaz7H0lWqc7B4VwKdvkS2eZITvkSgwCIS4Pe4waodpd7d
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10540"; a="311858645"
-X-IronPort-AV: E=Sophos;i="5.96,189,1665471600"; 
-   d="scan'208";a="311858645"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 21:52:15 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10540"; a="644367190"
-X-IronPort-AV: E=Sophos;i="5.96,189,1665471600"; 
-   d="scan'208";a="644367190"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 21:52:10 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
+        with ESMTP id S229732AbiKXGDP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Nov 2022 01:03:15 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114B5F844
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 22:03:05 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id s4so550100qtx.6
+        for <cgroups@vger.kernel.org>; Wed, 23 Nov 2022 22:03:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FJy6vszDoCp46m3JopX1uY8udZeM6fOcw9P3JKhadjs=;
+        b=Jvzn8i+eto9wT02o0N73tnQsoWxjvcrnnCDN3aoRmc4emsUiyBKr3H6Z30JhGymYbs
+         AtGemDi/cBgL5d0zDL61lbDsKrqtZoU3ejVPDXCDbMgzQSNsmXeETIHc8vIYYW6gfHJo
+         WwmU5DEsQ/oG2uW5eERRdx9E3hCK6Y1AC3M4HRiJcBIXnDBCmHRLRGuVAvPTOXRMf96v
+         emKKyJRjUx9QDIltDC8iL9MONtVrzo00/xAEoX+MbGdVDPje5IjmaU+aTeOhqyy9Ko8g
+         83eFsLblUIj6MpwruchSm+bgXDu1HEPjM2Wxfqztj34UzGT3N0RuaJk3ZFiOG1506/xd
+         ky+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FJy6vszDoCp46m3JopX1uY8udZeM6fOcw9P3JKhadjs=;
+        b=Ye0yxOGkFVu/puJROjo6tXDSH//VV4uNmqCGDEZzdi/JBf6XtybnS9dIvJc4h/tsi8
+         ChYGDQF78ZsRQhniBq9ycrrr3PBnqAYNBKYOUR7HvUBXuAVmulPfclnvKd5LGL/A404l
+         cyNebllntOXF5ruu9aW1OTI73WdW88lCKcMTMeqYLMy9vmtCL6bnj0isb3tad8oXsHrn
+         NK+OLliB8LyrIUFbOc2MYyrXPnbMyqDufhH70tlqw3Kc8NWDIebFqhljgGdLujfICBPt
+         RqdIkPgy39yaxh2z+D0EZeNBcfoLkCRxh7fpBph5K8n1hpo1vSZam1i0jbOBmn8o6pmQ
+         VX2Q==
+X-Gm-Message-State: ANoB5pkYOVMpXKAQfoEZpCI6CyxaqlOtDWeqG+0Wa/YTYtk7jbR11Mj6
+        MzzG4JY7sO/+1Wh4ceTN9IBZJRA1CAbraw==
+X-Google-Smtp-Source: AA0mqf5smS7eoF6TMtyvNccYdWE/pQH9AIZMl3YnHwgT/NCCQ0QiGIaFm6+XMemAUMwsqQWO/ufOvQ==
+X-Received: by 2002:a05:622a:4d0f:b0:3a5:25d4:2f2c with SMTP id fd15-20020a05622a4d0f00b003a525d42f2cmr13194152qtb.112.1669269783513;
+        Wed, 23 Nov 2022 22:03:03 -0800 (PST)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id o22-20020a05620a2a1600b006eeb3165554sm351606qkp.19.2022.11.23.22.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Nov 2022 22:03:02 -0800 (PST)
+Date:   Wed, 23 Nov 2022 22:03:00 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
-        shakeelb@google.com, gthelen@google.com, fvdl@google.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH V1] mm: Disable demotion from proactive reclaim
-References: <20221122203850.2765015-1-almasrymina@google.com>
-        <Y35fw2JSAeAddONg@cmpxchg.org>
-        <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
-        <Y36XchdgTCsMP4jT@cmpxchg.org>
-Date:   Thu, 24 Nov 2022 13:51:20 +0800
-In-Reply-To: <Y36XchdgTCsMP4jT@cmpxchg.org> (Johannes Weiner's message of
-        "Wed, 23 Nov 2022 16:58:10 -0500")
-Message-ID: <874juonbmv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove lock_page_memcg() from rmap
+In-Reply-To: <20221123181838.1373440-1-hannes@cmpxchg.org>
+Message-ID: <16dd09c-bb6c-6058-2b3-7559b5aefe9@google.com>
+References: <20221123181838.1373440-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Johannes,
+On Wed, 23 Nov 2022, Johannes Weiner wrote:
 
-Johannes Weiner <hannes@cmpxchg.org> writes:
-[...]
->
-> The fallback to reclaim actually strikes me as wrong.
->
-> Think of reclaim as 'demoting' the pages to the storage tier. If we
-> have a RAM -> CXL -> storage hierarchy, we should demote from RAM to
-> CXL and from CXL to storage. If we reclaim a page from RAM, it means
-> we 'demote' it directly from RAM to storage, bypassing potentially a
-> huge amount of pages colder than it in CXL. That doesn't seem right.
->
-> If demotion fails, IMO it shouldn't satisfy the reclaim request by
-> breaking the layering. Rather it should deflect that pressure to the
-> lower layers to make room. This makes sure we maintain an aging
-> pipeline that honors the memory tier hierarchy.
+> rmap changes (mapping and unmapping) of a page currently take
+> lock_page_memcg() to serialize 1) update of the mapcount and the
+> cgroup mapped counter with 2) cgroup moving the page and updating the
+> old cgroup and the new cgroup counters based on page_mapped().
+> 
+> Before b2052564e66d ("mm: memcontrol: continue cache reclaim from
+> offlined groups"), we used to reassign all pages that could be found
+> on a cgroup's LRU list on deletion - something that rmap didn't
+> naturally serialize against. Since that commit, however, the only
+> pages that get moved are those mapped into page tables of a task
+> that's being migrated. In that case, the pte lock is always held (and
+> we know the page is mapped), which keeps rmap changes at bay already.
+> 
+> The additional lock_page_memcg() by rmap is redundant. Remove it.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Yes.  I think that we should avoid to fall back to reclaim as much as
-possible too.  Now, when we allocate memory for demotion
-(alloc_demote_page()), __GFP_KSWAPD_RECLAIM is used.  So, we will trigger
-kswapd reclaim on lower tier node to free some memory to avoid fall back
-to reclaim on current (higher tier) node.  This may be not good enough,
-for example, the following patch from Hasan may help via waking up
-kswapd earlier.
+Thank you, I love it: but with sorrow and shame, NAK to this version.
 
-https://lore.kernel.org/linux-mm/b45b9bf7cd3e21bca61d82dcd1eb692cd32c122c.1637778851.git.hasanalmaruf@fb.com/
+I was gearing up to rush in the crash fix at the bottom, when testing
+showed that the new VM_WARN_ON_ONCE(!folio_mapped(folio)) actually hits.
 
-Do you know what is the next step plan for this patch?
+So I've asked Stephen to drop this mm-unstable commit from -next for
+tonight, while we think about what more is needed.
 
-Should we do even more?
+I was disbelieving when I saw the warning, couldn't understand at all.
+But a look at get_mctgt_type() shatters my illusion: it's doesn't just
+return a page for pte_present(ptent), it goes off looking up swap
+cache and page cache; plus I've no idea whether an MC_TARGET_DEVICE
+page would appear as folio_mapped() or not.
 
-From another point of view, I still think that we can use falling back
-to reclaim as the last resort to avoid OOM in some special situations,
-for example, most pages in the lowest tier node are mlock() or too hot
-to be reclaimed.
+Does that mean that we just have to reinstate the folio_mapped() checks
+in mm/memcontrol.c i.e. revert all mm/memcontrol.c changes from the
+commit?  Or does it invalidate the whole project to remove
+lock_page_memcg() from mm/rmap.c?
 
-> So I'm hesitant to design cgroup controls around the current behavior.
->
+Too disappointed to think about it more tonight :-(
+Hugh
 
-Best Regards,
-Huang, Ying
+
+> ---
+>  mm/memcontrol.c | 35 ++++++++++++++++++++---------------
+>  mm/rmap.c       | 12 ------------
+>  2 files changed, 20 insertions(+), 27 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 23750cec0036..52b86ca7a78e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5676,7 +5676,10 @@ static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
+>   * @from: mem_cgroup which the page is moved from.
+>   * @to:	mem_cgroup which the page is moved to. @from != @to.
+>   *
+> - * The caller must make sure the page is not on LRU (isolate_page() is useful.)
+> + * This function acquires folio_lock() and folio_lock_memcg(). The
+> + * caller must exclude all other possible ways of accessing
+> + * page->memcg, such as LRU isolation (to lock out isolation) and
+> + * having the page mapped and pte-locked (to lock out rmap).
+>   *
+>   * This function doesn't do "charge" to new cgroup and doesn't do "uncharge"
+>   * from old cgroup.
+> @@ -5696,6 +5699,13 @@ static int mem_cgroup_move_account(struct page *page,
+>  	VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
+>  	VM_BUG_ON(compound && !folio_test_large(folio));
+>  
+> +	/*
+> +	 * We're only moving pages mapped into the moving process's
+> +	 * page tables. The caller's pte lock prevents rmap from
+> +	 * removing the NR_x_MAPPED state while we transfer it.
+> +	 */
+> +	VM_WARN_ON_ONCE(!folio_mapped(folio));
+> +
+>  	/*
+>  	 * Prevent mem_cgroup_migrate() from looking at
+>  	 * page's memory cgroup of its source page while we change it.
+> @@ -5715,30 +5725,25 @@ static int mem_cgroup_move_account(struct page *page,
+>  	folio_memcg_lock(folio);
+>  
+>  	if (folio_test_anon(folio)) {
+> -		if (folio_mapped(folio)) {
+> -			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+> -			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+> -			if (folio_test_transhuge(folio)) {
+> -				__mod_lruvec_state(from_vec, NR_ANON_THPS,
+> -						   -nr_pages);
+> -				__mod_lruvec_state(to_vec, NR_ANON_THPS,
+> -						   nr_pages);
+> -			}
+> +		__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+> +		__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+> +
+> +		if (folio_test_transhuge(folio)) {
+> +			__mod_lruvec_state(from_vec, NR_ANON_THPS, -nr_pages);
+> +			__mod_lruvec_state(to_vec, NR_ANON_THPS, nr_pages);
+>  		}
+>  	} else {
+>  		__mod_lruvec_state(from_vec, NR_FILE_PAGES, -nr_pages);
+>  		__mod_lruvec_state(to_vec, NR_FILE_PAGES, nr_pages);
+>  
+> +		__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
+> +		__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
+> +
+>  		if (folio_test_swapbacked(folio)) {
+>  			__mod_lruvec_state(from_vec, NR_SHMEM, -nr_pages);
+>  			__mod_lruvec_state(to_vec, NR_SHMEM, nr_pages);
+>  		}
+>  
+> -		if (folio_mapped(folio)) {
+> -			__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
+> -			__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
+> -		}
+> -
+>  		if (folio_test_dirty(folio)) {
+>  			struct address_space *mapping = folio_mapping(folio);
+>  
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 459dc1c44d8a..11a4894158db 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1222,9 +1222,6 @@ void page_add_anon_rmap(struct page *page,
+>  	bool compound = flags & RMAP_COMPOUND;
+>  	bool first = true;
+>  
+> -	if (unlikely(PageKsm(page)))
+> -		lock_page_memcg(page);
+> -
+>  	/* Is page being mapped by PTE? Is this its first map to be added? */
+>  	if (likely(!compound)) {
+>  		first = atomic_inc_and_test(&page->_mapcount);
+> @@ -1254,9 +1251,6 @@ void page_add_anon_rmap(struct page *page,
+>  	if (nr)
+>  		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
+>  
+> -	if (unlikely(PageKsm(page)))
+> -		unlock_page_memcg(page);
+> -
+>  	/* address might be in next vma when migration races vma_adjust */
+>  	else if (first)
+>  		__page_set_anon_rmap(page, vma, address,
+> @@ -1321,7 +1315,6 @@ void page_add_file_rmap(struct page *page,
+>  	bool first;
+>  
+>  	VM_BUG_ON_PAGE(compound && !PageTransHuge(page), page);
+> -	lock_page_memcg(page);
+>  
+>  	/* Is page being mapped by PTE? Is this its first map to be added? */
+>  	if (likely(!compound)) {
+> @@ -1349,7 +1342,6 @@ void page_add_file_rmap(struct page *page,
+>  			NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmapped);
+>  	if (nr)
+>  		__mod_lruvec_page_state(page, NR_FILE_MAPPED, nr);
+> -	unlock_page_memcg(page);
+>  
+>  	mlock_vma_page(page, vma, compound);
+>  }
+> @@ -1378,8 +1370,6 @@ void page_remove_rmap(struct page *page,
+>  		return;
+>  	}
+>  
+> -	lock_page_memcg(page);
+> -
+>  	/* Is page being unmapped by PTE? Is this its last map to be removed? */
+>  	if (likely(!compound)) {
+>  		last = atomic_add_negative(-1, &page->_mapcount);
+> @@ -1427,8 +1417,6 @@ void page_remove_rmap(struct page *page,
+>  	 * and remember that it's only reliable while mapped.
+>  	 */
+>  
+> -	unlock_page_memcg(page);
+> -
+>  	munlock_vma_page(page, vma, compound);
+>  }
+>  
+> -- 
+> 2.38.1
+
+[PATCH] mm: remove lock_page_memcg() from rmap - fix
+
+Blame me for the hidden "else", which now does the wrong thing, leaving
+page's anon_vma unset, then VM_BUG_ON before do_swap_page's set_pte_at.
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ mm/rmap.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 11a4894158db..5a8d27fdc644 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1251,13 +1251,14 @@ void page_add_anon_rmap(struct page *page,
+ 	if (nr)
+ 		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
+ 
+-	/* address might be in next vma when migration races vma_adjust */
+-	else if (first)
+-		__page_set_anon_rmap(page, vma, address,
+-				     !!(flags & RMAP_EXCLUSIVE));
+-	else
+-		__page_check_anon_rmap(page, vma, address);
+-
++	if (!PageKsm(page)) {
++		/* address may be in next vma if migration races vma_adjust */
++		if (first)
++			__page_set_anon_rmap(page, vma, address,
++					     !!(flags & RMAP_EXCLUSIVE));
++		else
++			__page_check_anon_rmap(page, vma, address);
++	}
+ 	mlock_vma_page(page, vma, compound);
+ }
+ 
+-- 
+2.35.3
