@@ -2,37 +2,37 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2A263AC20
+	by mail.lfdr.de (Postfix) with ESMTP id 99E9163AC22
 	for <lists+cgroups@lfdr.de>; Mon, 28 Nov 2022 16:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbiK1PXd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Nov 2022 10:23:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        id S231645AbiK1PXe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Nov 2022 10:23:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbiK1PXc (ORCPT
+        with ESMTP id S231447AbiK1PXc (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 10:23:32 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996A025EA;
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B341E59;
         Mon, 28 Nov 2022 07:23:31 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NLTft5ZFgzJnwS;
-        Mon, 28 Nov 2022 23:20:06 +0800 (CST)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NLTk31BpDzRpG4;
+        Mon, 28 Nov 2022 23:22:51 +0800 (CST)
 Received: from dggpeml500003.china.huawei.com (7.185.36.200) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.31; Mon, 28 Nov 2022 23:23:28 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500003.china.huawei.com
  (7.185.36.200) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 28 Nov
- 2022 23:23:27 +0800
+ 2022 23:23:28 +0800
 From:   Li Nan <linan122@huawei.com>
 To:     <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>
 CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linan122@huawei.com>,
         <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH -next 3/8] blk-iocost: don't allow to configure bio based device
-Date:   Mon, 28 Nov 2022 23:44:29 +0800
-Message-ID: <20221128154434.4177442-4-linan122@huawei.com>
+Subject: [PATCH -next 4/8] blk-iocost: read params inside lock in sysfs apis
+Date:   Mon, 28 Nov 2022 23:44:30 +0800
+Message-ID: <20221128154434.4177442-5-linan122@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221128154434.4177442-1-linan122@huawei.com>
 References: <20221128154434.4177442-1-linan122@huawei.com>
@@ -53,44 +53,50 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-iocost is based on rq_qos, which can only work for request based device,
-thus it doesn't make sense to configure iocost for bio based device.
+Otherwise, user might get abnormal values if params is updated
+concurrently.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Li Nan <linan122@huawei.com>
 ---
- block/blk-iocost.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ block/blk-iocost.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index c532129a1456..2bfecc511dd9 100644
+index 2bfecc511dd9..a645184aba4a 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -3181,6 +3181,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 		return PTR_ERR(bdev);
+@@ -3125,6 +3125,7 @@ static u64 ioc_qos_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
+ 	if (!dname)
+ 		return 0;
  
- 	disk = bdev->bd_disk;
-+	if (!queue_is_mq(disk->queue)) {
-+		ret = -EPERM;
-+		goto out;
-+	}
-+
- 	ioc = q_to_ioc(disk->queue);
- 	if (!ioc) {
- 		ret = blk_iocost_init(disk);
-@@ -3364,6 +3369,11 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
- 		return PTR_ERR(bdev);
++	spin_lock_irq(&ioc->lock);
+ 	seq_printf(sf, "%s enable=%d ctrl=%s rpct=%u.%02u rlat=%u wpct=%u.%02u wlat=%u min=%u.%02u max=%u.%02u\n",
+ 		   dname, ioc->enabled, ioc->user_qos_params ? "user" : "auto",
+ 		   ioc->params.qos[QOS_RPPM] / 10000,
+@@ -3137,6 +3138,7 @@ static u64 ioc_qos_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
+ 		   ioc->params.qos[QOS_MIN] % 10000 / 100,
+ 		   ioc->params.qos[QOS_MAX] / 10000,
+ 		   ioc->params.qos[QOS_MAX] % 10000 / 100);
++	spin_unlock_irq(&ioc->lock);
+ 	return 0;
+ }
  
- 	q = bdev_get_queue(bdev);
-+	if (!queue_is_mq(q)) {
-+		ret = -EPERM;
-+		goto out;
-+	}
-+
- 	ioc = q_to_ioc(q);
- 	if (!ioc) {
- 		ret = blk_iocost_init(bdev->bd_disk);
+@@ -3319,12 +3321,14 @@ static u64 ioc_cost_model_prfill(struct seq_file *sf,
+ 	if (!dname)
+ 		return 0;
+ 
++	spin_lock_irq(&ioc->lock);
+ 	seq_printf(sf, "%s ctrl=%s model=linear "
+ 		   "rbps=%llu rseqiops=%llu rrandiops=%llu "
+ 		   "wbps=%llu wseqiops=%llu wrandiops=%llu\n",
+ 		   dname, ioc->user_cost_model ? "user" : "auto",
+ 		   u[I_LCOEF_RBPS], u[I_LCOEF_RSEQIOPS], u[I_LCOEF_RRANDIOPS],
+ 		   u[I_LCOEF_WBPS], u[I_LCOEF_WSEQIOPS], u[I_LCOEF_WRANDIOPS]);
++	spin_unlock_irq(&ioc->lock);
+ 	return 0;
+ }
+ 
 -- 
 2.31.1
 
