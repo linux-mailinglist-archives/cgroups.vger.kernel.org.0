@@ -2,126 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F3763AD07
-	for <lists+cgroups@lfdr.de>; Mon, 28 Nov 2022 16:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D2F63AE3F
+	for <lists+cgroups@lfdr.de>; Mon, 28 Nov 2022 18:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbiK1Pye (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Nov 2022 10:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
+        id S231925AbiK1RAB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Nov 2022 12:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbiK1Pyc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 10:54:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6000523EBB
-        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 07:53:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669650817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/AJ0l8IgalwuHi6aQkbaTJH6CSV9/VHsYq9E6VyGE4U=;
-        b=eSVRIpgMN4qnDtw6UyLGWp50zUGr667hJajlIZKEyCGApdax7Il/2A8tL1LDwduq8nWYv3
-        soV9XutBzerXB7jZ4YYVFbO1lWoF0iRSrHn+r0D30DhA9vV27kjPsH4XZ1RnJYIfVgWKV+
-        js1Kt7/VCa/jVTYNIMS1+Bu3edCZBnk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-607-Uqa5zVnyMkuBLW5ut3eDSQ-1; Mon, 28 Nov 2022 10:53:36 -0500
-X-MC-Unique: Uqa5zVnyMkuBLW5ut3eDSQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 626638027F5;
-        Mon, 28 Nov 2022 15:53:35 +0000 (UTC)
-Received: from [10.22.10.34] (unknown [10.22.10.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D3731415100;
-        Mon, 28 Nov 2022 15:53:34 +0000 (UTC)
-Message-ID: <e89e94b6-6bc8-8d1e-0f6f-ad1ea6c60e0f@redhat.com>
-Date:   Mon, 28 Nov 2022 10:53:32 -0500
+        with ESMTP id S231959AbiK1Q76 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 11:59:58 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E87B85B
+        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 08:59:54 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id mn15so3913531qvb.13
+        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 08:59:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OXdDTBqVegaar+pLWmnzFVWbntmDwb7qj9MvTJ7r5tA=;
+        b=SpduupwX9+hgKbJAt1uBrr8GR8cVFBKX0qw5ONERsYzdWfB/N9QQYj9qCTlogNAj9M
+         kEK1FZaNNPnXmtE+uVPtkinRgEpJ1JoknUQoYwGF0Q32h29zIr9jgsAs8IBYPk+9JHOn
+         Su5WwW7J6E51pqICAcNNXMFqDgpDkcudvpSBi+GuH7OKHiHtB7StrdVPvzjyKor5dNKH
+         qSYxxiWRzhj/yNfWFvtLA5Lw0fHWShpuoKz07eFZ+qSags11ZrQ6yOn7HI7EsRUagcth
+         y3wAQAJjBGqBze7yEFUSoIPh0PUs+jQdGn2yb51ZjJ1Qw/2m/kffiVI1MZUrJWniHcRb
+         5pxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OXdDTBqVegaar+pLWmnzFVWbntmDwb7qj9MvTJ7r5tA=;
+        b=H1Z1iTnR1gcMyrmbwCo8AZghaeGNrvyBAiCvmKAifnJuox74oozhtrLnzB7SGfvzLJ
+         xluNuBP8lWHRo+4PJTC1Mnl3F4gdxDs8nvNTm0ljgGAahUiCbaB9OQ23/PfU61PCBguh
+         vv5i36TY+VwLcJbp7P4DxU13AiQtHFOwIBPuQyJ2aw/8gPBOkSwVNJu5a5zLB2idmf4w
+         g8Py47FfJNJ/hxhnYxUn8rtVgF6JUkfP1t875D9xQNUB7nztwv+hahVS3pISZlc2Adxk
+         9XfgP7q2+9xGuWFwCi8jIoRx+LXGe6u7KIByN26iIA0Nm4lEylixh6CHmGdfg4sJnVpg
+         7d4w==
+X-Gm-Message-State: ANoB5pnQQvC6O3g7wwQXjBs3aBg4L/uqUL/fnL2p0C1cN3l+6QDSFqne
+        XOMI+KnEdo1sqTYK+idvn2HUPA==
+X-Google-Smtp-Source: AA0mqf6YL2EMCu1emEAeBljTAyGqg+e4upqSkexn0n7tt8PvbvgqT5YQUqibJtyHYwze4hQcv1N9Yg==
+X-Received: by 2002:a05:6214:328f:b0:4c6:82cd:92d1 with SMTP id mu15-20020a056214328f00b004c682cd92d1mr32083981qvb.82.1669654793427;
+        Mon, 28 Nov 2022 08:59:53 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-9175-2920-760a-79fa.res6.spectrum.com. [2603:7000:c01:2716:9175:2920:760a:79fa])
+        by smtp.gmail.com with ESMTPSA id s23-20020ac85297000000b003a5430ee366sm7141054qtn.60.2022.11.28.08.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Nov 2022 08:59:53 -0800 (PST)
+Date:   Mon, 28 Nov 2022 11:59:52 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove lock_page_memcg() from rmap
+Message-ID: <Y4TpCJ+5uCvWE6co@cmpxchg.org>
+References: <20221123181838.1373440-1-hannes@cmpxchg.org>
+ <16dd09c-bb6c-6058-2b3-7559b5aefe9@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH-block] blk-cgroup: Use css_tryget() in
- blkcg_destroy_blkgs()
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>, Yi Zhang <yi.zhang@redhat.com>
-References: <20221128033057.1279383-1-longman@redhat.com>
- <427068db-6695-a1e2-4aa2-033220680eb9@kernel.dk>
- <b9018641-d39f-ff74-8cfb-ba597f5ee0c2@redhat.com>
- <786aacda-b25d-67f6-bad3-0030b0e2637e@kernel.dk>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <786aacda-b25d-67f6-bad3-0030b0e2637e@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16dd09c-bb6c-6058-2b3-7559b5aefe9@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/28/22 10:42, Jens Axboe wrote:
-> On 11/28/22 8:38?AM, Waiman Long wrote:
->> On 11/28/22 09:14, Jens Axboe wrote:
->>> On 11/27/22 8:30?PM, Waiman Long wrote:
->>>> Commit 951d1e94801f ("blk-cgroup: Flush stats at blkgs destruction
->>>> path") incorrectly assumes that css_get() will always succeed. That may
->>>> not be true if there is no blkg associated with the blkcg. If css_get()
->>>> fails, the subsequent css_put() call may lead to data corruption as
->>>> was illustrated in a test system that it crashed on bootup when that
->>>> commit was included. Also blkcg may be freed at any time leading to
->>>> use-after-free. Fix it by using css_tryget() instead and bail out if
->>>> the tryget fails.
->>>>
->>>> Fixes: 951d1e94801f ("blk-cgroup: Flush stats at blkgs destruction path")
->>>> Reported-by: Yi Zhang <yi.zhang@redhat.com>
->>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>> ---
->>>> ? block/blk-cgroup.c | 7 ++++++-
->>>> ? 1 file changed, 6 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
->>>> index 57941d2a8ba3..74fefc8cbcdf 100644
->>>> --- a/block/blk-cgroup.c
->>>> +++ b/block/blk-cgroup.c
->>>> @@ -1088,7 +1088,12 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
->>>> ? ????? might_sleep();
->>>> ? -??? css_get(&blkcg->css);
->>>> +??? /*
->>>> +???? * If css_tryget() fails, there is no blkg to destroy.
->>>> +???? */
->>>> +??? if (!css_tryget(&blkcg->css))
->>>> +??????? return;
->>>> +
->>>> ????? spin_lock_irq(&blkcg->lock);
->>>> ????? while (!hlist_empty(&blkcg->blkg_list)) {
->>>> ????????? struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
->>> This doesn't seem safe to me, but maybe I'm missing something. A tryget
->>> operation can be fine if we're under RCU lock and the entity is freed
->>> appropriately, but what makes it safe here? Could blkcg already be gone
->>> at this point?
->> The actual freeing of the blkcg structure is under RCU protection. So
->> the structure won't be freed immediately even if css_tryget() fails. I
->> suspect what Michal found may be the root cause of this problem. If
->> so, this is an existing bug which gets exposed by my patch.
-> But what prevents it from going away here since you're not under RCU
-> lock for the tryget? Doesn't help that the freeing side is done in an
-> RCU safe manner, if the ref attempt is not.
+On Wed, Nov 23, 2022 at 10:03:00PM -0800, Hugh Dickins wrote:
+> On Wed, 23 Nov 2022, Johannes Weiner wrote:
+> > rmap changes (mapping and unmapping) of a page currently take
+> > lock_page_memcg() to serialize 1) update of the mapcount and the
+> > cgroup mapped counter with 2) cgroup moving the page and updating the
+> > old cgroup and the new cgroup counters based on page_mapped().
+> > 
+> > Before b2052564e66d ("mm: memcontrol: continue cache reclaim from
+> > offlined groups"), we used to reassign all pages that could be found
+> > on a cgroup's LRU list on deletion - something that rmap didn't
+> > naturally serialize against. Since that commit, however, the only
+> > pages that get moved are those mapped into page tables of a task
+> > that's being migrated. In that case, the pte lock is always held (and
+> > we know the page is mapped), which keeps rmap changes at bay already.
+> > 
+> > The additional lock_page_memcg() by rmap is redundant. Remove it.
+> > 
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> Thank you, I love it: but with sorrow and shame, NAK to this version.
+> 
+> I was gearing up to rush in the crash fix at the bottom, when testing
+> showed that the new VM_WARN_ON_ONCE(!folio_mapped(folio)) actually hits.
+> 
+> So I've asked Stephen to drop this mm-unstable commit from -next for
+> tonight, while we think about what more is needed.
+> 
+> I was disbelieving when I saw the warning, couldn't understand at all.
+> But a look at get_mctgt_type() shatters my illusion: it's doesn't just
+> return a page for pte_present(ptent), it goes off looking up swap
+> cache and page cache; plus I've no idea whether an MC_TARGET_DEVICE
+> page would appear as folio_mapped() or not.
 
-You are right. blkcg_destroy_blkgs() shouldn't be called with all the 
-blkcg references gone. Will work on a revised patch.
+Thanks for catching this.
 
-Cheers,
-Longman
+A device_private pte always has a matching mapcount in the fake page
+it points to, so we should be good here. Those pages migrate back and
+forth between system and device memory, relying on the migration
+code's unmap and restore bits. Hence they participate in regular rmap.
 
+The swapcache/pagecache bit was a brainfart. We acquire the folio lock
+in move_account(), which would lock out concurrent faults. If it's not
+mapped, I don't see how it could become mapped behind our backs. But
+we do need to be prepared for it to be unmapped.
+
+> Does that mean that we just have to reinstate the folio_mapped() checks
+> in mm/memcontrol.c i.e. revert all mm/memcontrol.c changes from the
+> commit?  Or does it invalidate the whole project to remove
+> lock_page_memcg() from mm/rmap.c?
+
+I think we have to bring back the folio_mapped() conditional and
+update the comments. But it shouldn't invalidate the whole project.
+
+I'll triple check this, however.
+
+Thanks
