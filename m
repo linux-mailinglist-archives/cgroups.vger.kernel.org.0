@@ -2,85 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3002C63AE85
-	for <lists+cgroups@lfdr.de>; Mon, 28 Nov 2022 18:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BF363B11C
+	for <lists+cgroups@lfdr.de>; Mon, 28 Nov 2022 19:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbiK1RJw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Nov 2022 12:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        id S234232AbiK1SVS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Nov 2022 13:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbiK1RJR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 12:09:17 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E88B7F2;
-        Mon, 28 Nov 2022 09:09:04 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id k5so10119435pjo.5;
-        Mon, 28 Nov 2022 09:09:04 -0800 (PST)
+        with ESMTP id S233049AbiK1SUn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 13:20:43 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070483D91F
+        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 10:07:28 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id i12so7951146qvs.2
+        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 10:07:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sznbp6Qjro/lU0fK9+7muhZjge7QWHgQWbjlTiDXzkc=;
-        b=a8tTbIcUy2a41TN780C+9J4rBtuAeFTi8gr72QkA0d2fcO8Uwmb6U5OzC3NKdEHsLY
-         l2esfexl6uRmQ4ljLpk/ffd0/3DnPY0ik2CPQ9EMfuJCyAmXMrFvJucmchwO+xb3rogv
-         ChfoJNtPJVUpaHKP6H3h1Fazd2xWQl+8i0ufLrwSla/QEQbBRXcagCCFTLZwLtwG/vNi
-         cS3cSVvO/muC82MOR1B3Ggp1gpjpqH59zMn3yiI+cH1TDFw8WqmR4vC150oMsGUIUunV
-         vvT5BSl1bNkGqr2SyZVnOcIaVC59T3osws9U30UgVXRHsDQWjghnfNgIzj3HmDMFyQhS
-         pKyg==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOn1PUQxMJCGp3yaVSqPelmstrqLulCIcemPhpNVzdU=;
+        b=4tQKhAmlgqJFeuomcyGn+GyBJTF3TXNZND3NJQrXoNmD8007Bxyc2BZx8oFt4hfIHz
+         DcHStdfL2bgNWjZTK0ib7Ohf9zqFJ+82s5fozbOWW3QWW289UEPRstHix3b0fcK1+fOF
+         ud9ZTqyADxWT2iqEUic/48O1fS33VMxPFrU3i1iO79Mwue4ofOjSA5Yhg7qSYgKtqIYq
+         c0XG+rJLlfayL++XpOTdm2AUjwy3zr8n5NSnhkwYqQPKPXDvpOjCuAvDzEVYTP13jtUi
+         c80FdjP5USS2wz5z/YixX3LluJBQGexKDWu0K9Qraubay+EYw+V5uZ1Iy3idEWE+bCZM
+         Fl8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sznbp6Qjro/lU0fK9+7muhZjge7QWHgQWbjlTiDXzkc=;
-        b=a3W6SI84WnRXAzfqP7GNRHLVm2wRkp8DKWu9MAGgpjGi7V6/DuV/b+AvFa2p47vndr
-         Hh5ObyEgXgR663p8ixh4l6oW7N+gMcJzNq2a2rhQJHJbEpQlXd4uk+E5Tkaeltm/q/xn
-         W97pFbWf4NSe9GqB+AXZmL8i5g8lrrdWDaUXFpAi2RnMh4to0BX3bDNRKagsnf2fb4xI
-         CCFWy57lgn+S++zadinbcXkIuooRAiNiFORDXKuibaCuSuHgYqAO5uhr3d8CFPQ3CCck
-         ZLXMPhtaR2Mk+RZpOpiKOsCIIkjUGTfLgWcrzj+4KO4Ro48AuE0brmF+skuD3tI7hJy4
-         LwhQ==
-X-Gm-Message-State: ANoB5pkxIYMWB8qwp5Z7z4n2zbicT8ggkGRSMb2cVwg0OAxAYHhCT02C
-        hrxnXjt3A1LhP3NQlw0uzFU=
-X-Google-Smtp-Source: AA0mqf4tKE1nA4FYiGNaJkI6RtdPH+BPsqU9WiX4+2WxKvZ86kVUjsZeLWMxYFAR34Q5vyMPg2wJdw==
-X-Received: by 2002:a17:90a:5298:b0:217:e054:9ac8 with SMTP id w24-20020a17090a529800b00217e0549ac8mr61944865pjh.246.1669655343440;
-        Mon, 28 Nov 2022 09:09:03 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id ga18-20020a17090b039200b0020a11217682sm7848802pjb.27.2022.11.28.09.09.02
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qOn1PUQxMJCGp3yaVSqPelmstrqLulCIcemPhpNVzdU=;
+        b=IlET2P354WsfdtwQaLbz0rx+2AaXOTsFAs+WkW6DHakSXURPH8gao6vCxNJOcnm+jG
+         vnlSdR9Jf3ViTIxc/eqeT6PzpUgCe+vB/sp5lZ4THq9wvBwYC4Q8ugc2wCGJwXE4xhSB
+         f/D2D4+KJtslZNmmO9EFFwXclmvr1RZBzCaOpZDP9+HXyBQT0nBo3/6qnaq7iQCdur9r
+         gyXaLdD2m8P0bGA3oigRqjZhA0RohVc3NI74aStmjYUeoMfbJ2WSpUAMPqtcsbywVSB9
+         3Vfz7VyfPbzaoVpor/E6Z0rVSnFei1K8V6miMDa4e3depf+dKa7LeG5dU08Wzqo9aIaM
+         TICg==
+X-Gm-Message-State: ANoB5pkEmhh8r46x68ae+qQKzWYfdi7cahbVN3cm1+1nYpt2dXQrqmxt
+        bunwE6dtfoEEH77WPuLP7skovQ==
+X-Google-Smtp-Source: AA0mqf6DaYR4aiOKw2PMYmb+XewvGkHvB6VF27wWN2x2o6DHCI1w5vwLSnOS5O+2XZOdfSZK+r2GVg==
+X-Received: by 2002:a0c:ff28:0:b0:4b8:6953:aed6 with SMTP id x8-20020a0cff28000000b004b86953aed6mr34287361qvt.47.1669658847054;
+        Mon, 28 Nov 2022 10:07:27 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-9175-2920-760a-79fa.res6.spectrum.com. [2603:7000:c01:2716:9175:2920:760a:79fa])
+        by smtp.gmail.com with ESMTPSA id u19-20020a37ab13000000b006e99290e83fsm8607554qke.107.2022.11.28.10.07.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 09:09:03 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 28 Nov 2022 07:09:01 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Li Jinlin <lijinlin3@huawei.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liuzhiqiang26@huawei.com
-Subject: Re: [PATCH] blk-iocost: fix shift-out-of-bounds in iocg_hick_delay()
-Message-ID: <Y4TrLfOj5sTpXyYR@slm.duckdns.org>
-References: <20221126121458.3564942-1-lijinlin3@huawei.com>
+        Mon, 28 Nov 2022 10:07:26 -0800 (PST)
+Date:   Mon, 28 Nov 2022 13:07:25 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, cgroups@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: Low TCP throughput due to vmpressure with swap enabled
+Message-ID: <Y4T43Tc54vlKjTN0@cmpxchg.org>
+References: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
+ <Y30rdnZ+lrfOxjTB@cmpxchg.org>
+ <CABWYdi3PqipLxnqeepXeZ471pfeBg06-PV0Uw04fU-LHnx_A4g@mail.gmail.com>
+ <CABWYdi0qhWs56WK=k+KoQBAMh+Tb6Rr0nY4kJN+E5YqfGhKTmQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221126121458.3564942-1-lijinlin3@huawei.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CABWYdi0qhWs56WK=k+KoQBAMh+Tb6Rr0nY4kJN+E5YqfGhKTmQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Nov 26, 2022 at 08:14:58PM +0800, Li Jinlin wrote:
->  	if (iocg->delay)
-> -		delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
-> +		delay = iocg->delay >> min(div64_u64(tdelta, USEC_PER_SEC), 63);
+On Tue, Nov 22, 2022 at 05:28:24PM -0800, Ivan Babrou wrote:
+> On Tue, Nov 22, 2022 at 2:11 PM Ivan Babrou <ivan@cloudflare.com> wrote:
+> >
+> > On Tue, Nov 22, 2022 at 12:05 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > >
+> > > On Mon, Nov 21, 2022 at 04:53:43PM -0800, Ivan Babrou wrote:
+> > > > Hello,
+> > > >
+> > > > We have observed a negative TCP throughput behavior from the following commit:
+> > > >
+> > > > * 8e8ae645249b mm: memcontrol: hook up vmpressure to socket pressure
+> > > >
+> > > > It landed back in 2016 in v4.5, so it's not exactly a new issue.
+> > > >
+> > > > The crux of the issue is that in some cases with swap present the
+> > > > workload can be unfairly throttled in terms of TCP throughput.
+> > >
+> > > Thanks for the detailed analysis, Ivan.
+> > >
+> > > Originally, we pushed back on sockets only when regular page reclaim
+> > > had completely failed and we were about to OOM. This patch was an
+> > > attempt to be smarter about it and equalize pressure more smoothly
+> > > between socket memory, file cache, anonymous pages.
+> > >
+> > > After a recent discussion with Shakeel, I'm no longer quite sure the
+> > > kernel is the right place to attempt this sort of balancing. It kind
+> > > of depends on the workload which type of memory is more imporant. And
+> > > your report shows that vmpressure is a flawed mechanism to implement
+> > > this, anyway.
+> > >
+> > > So I'm thinking we should delete the vmpressure thing, and go back to
+> > > socket throttling only if an OOM is imminent. This is in line with
+> > > what we do at the system level: sockets get throttled only after
+> > > reclaim fails and we hit hard limits. It's then up to the users and
+> > > sysadmin to allocate a reasonable amount of buffers given the overall
+> > > memory budget.
+> > >
+> > > Cgroup accounting, limiting and OOM enforcement is still there for the
+> > > socket buffers, so misbehaving groups will be contained either way.
+> > >
+> > > What do you think? Something like the below patch?
+> >
+> > The idea sounds very reasonable to me. I can't really speak for the
+> > patch contents with any sort of authority, but it looks ok to my
+> > non-expert eyes.
+> >
+> > There were some conflicts when cherry-picking this into v5.15. I think
+> > the only real one was for the "!sc->proactive" condition not being
+> > present there. For the rest I just accepted the incoming change.
+> >
+> > I'm going to be away from my work computer until December 5th, but
+> > I'll try to expedite my backported patch to a production machine today
+> > to confirm that it makes the difference. If I can get some approvals
+> > on my internal PRs, I should be able to provide the results by EOD
+> > tomorrow.
+> 
+> I tried the patch and something isn't right here.
 
-Let's just set delay to 0 if the shift is too big.
+Thanks for giving it a sping.
 
-Thanks.
+> With the patch applied I'm capped at ~120MB/s, which is a symptom of a
+> clamped window.
+> 
+> I can't find any sockets with memcg->socket_pressure = 1, but at the
+> same time I only see the following rcv_ssthresh assigned to sockets:
 
--- 
-tejun
+Hm, I don't see how socket accounting would alter the network behavior
+other than through socket_pressure=1.
+
+How do you look for that flag? If you haven't yet done something
+comparable, can you try with tracing to rule out sampling errors?
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 066166aebbef..134b623bee6a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7211,6 +7211,7 @@ bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages,
+ 		goto success;
+ 	}
+ 	memcg->socket_pressure = 1;
++	trace_printk("skmem charge failed nr_pages=%u gfp=%pGg\n", nr_pages, &gfp_mask);
+ 	if (gfp_mask & __GFP_NOFAIL) {
+ 		try_charge(memcg, gfp_mask, nr_pages);
+ 		goto success;
