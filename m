@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10466395F1
-	for <lists+cgroups@lfdr.de>; Sat, 26 Nov 2022 13:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7D8639FED
+	for <lists+cgroups@lfdr.de>; Mon, 28 Nov 2022 04:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiKZMQD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 26 Nov 2022 07:16:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S229810AbiK1DEd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 27 Nov 2022 22:04:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbiKZMQB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 26 Nov 2022 07:16:01 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E7F1D678;
-        Sat, 26 Nov 2022 04:15:59 -0800 (PST)
+        with ESMTP id S229475AbiK1DE1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 27 Nov 2022 22:04:27 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934DB65A7;
+        Sun, 27 Nov 2022 19:04:24 -0800 (PST)
 Received: from canpemm500008.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NK9ff1SzjzmW99;
-        Sat, 26 Nov 2022 20:15:22 +0800 (CST)
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NL9G54kxzzJnkL;
+        Mon, 28 Nov 2022 11:01:01 +0800 (CST)
 Received: from huawei.com (10.175.124.27) by canpemm500008.china.huawei.com
  (7.192.105.151) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 26 Nov
- 2022 20:15:57 +0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 28 Nov
+ 2022 11:04:22 +0800
 From:   Li Jinlin <lijinlin3@huawei.com>
 To:     <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>
 CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <liuzhiqiang26@huawei.com>
-Subject: [PATCH] blk-iocost: fix shift-out-of-bounds in iocg_hick_delay()
-Date:   Sat, 26 Nov 2022 20:14:58 +0800
-Message-ID: <20221126121458.3564942-1-lijinlin3@huawei.com>
+Subject: [PATCH v2] blk-iocost: fix shift-out-of-bounds in iocg_hick_delay()
+Date:   Mon, 28 Nov 2022 11:04:13 +0800
+Message-ID: <20221128030413.882998-1-lijinlin3@huawei.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  canpemm500008.china.huawei.com (7.192.105.151)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -84,27 +84,31 @@ if the value of the E2 is negative or is greater than or equal to the
 width of E1, the behavior is undefined.
 
 In the actual test, if the E2 is greater than or equal to the width of
-E1, the result of E1 >> E2 is E1 >> (E2 %/ E1width), which is not what we
+E1, the result of E1 >> E2 is E1 >> (E2 % E1width), which is not what we
 want.
 
 So letting the value of the right operand be less than the width of u64
-in this expression.
+in this right shift expression.
 
 Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
 ---
- block/blk-iocost.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+Use min_t instead of min to resolve W=1 build warning.
+---
+ block/blk-iocost.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 07c1a31dd495..2b837ac4b2ba 100644
+index 07c1a31dd495..0dfc2c82b7d9 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -1332,7 +1332,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
+@@ -1332,7 +1332,8 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  	/* calculate the current delay in effect - 1/2 every second */
  	tdelta = now->now - iocg->delay_at;
  	if (iocg->delay)
 -		delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
-+		delay = iocg->delay >> min(div64_u64(tdelta, USEC_PER_SEC), 63);
++		delay = iocg->delay >>
++			min_t(u64, div64_u64(tdelta, USEC_PER_SEC), 63);
  	else
  		delay = 0;
  
