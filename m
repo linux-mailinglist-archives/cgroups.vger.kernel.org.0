@@ -2,102 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F39363B847
-	for <lists+cgroups@lfdr.de>; Tue, 29 Nov 2022 03:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A6A63B84B
+	for <lists+cgroups@lfdr.de>; Tue, 29 Nov 2022 03:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235212AbiK2CxW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Nov 2022 21:53:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
+        id S234813AbiK2C7y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Nov 2022 21:59:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235206AbiK2CxI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 21:53:08 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490FF186D8
-        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 18:53:07 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id b21so12082680plc.9
-        for <cgroups@vger.kernel.org>; Mon, 28 Nov 2022 18:53:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tVdaZGcP4j88Qml5mJfIo0BmHi+s/R7fEtpX29Aegis=;
-        b=eOWHOBNDHn0V8MqJlRrEQyiG3etYoyVj6HwWZjScS+ro7oXp5NnHwhu5V0XnAqkFOl
-         6coP5VmkxdS1kKd8anif+2CIXOCyWCUw00MMJ/B7ruMCC30ZGevpet4thlWyKu6g7Mmo
-         oxCduW3h3rMAWAq4cf/olag3GY2b+yPIMI2YBT05xMmL0/RfvpD0b99A2JEK5SsjTDsA
-         q4MgDxRM4yNHBfjWC2SAQEVHEA+qr+wd4kJUk8aa600dSny2BZsIut+ApQTNkGX8gD+g
-         KnPhKTw4NnFHV0or2ZKsD9P0kbjJ7CMEEo6YXfNUfZKQF5scF01DdHZt5KqHaUvgR0oI
-         XWzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tVdaZGcP4j88Qml5mJfIo0BmHi+s/R7fEtpX29Aegis=;
-        b=bB1ch4mRce+zO1/P3BnbFxMlBjSPdkmE/baAgmU9TId7DXlycIHywqRTP5JOcAx1jz
-         ebGTMg0bZ1B9poCwE1RDtKjLgaw908oDi0ZzPC95VCM9gVf5i9CeiazItIYwnpZ0edIm
-         g1mFX5McJ7pBVUajKGXQ1Biiy8uuf5pxmr9nVeyc64c3kuzLEfx7ziWg25ovoajzooZj
-         VgtAtTicNAuNjsgV1oo6hp8lo9ybG1kDVHFje+cgvjRRi6ndQDysPpm2myn/a6EXVd0T
-         opm6k2mKOSao05579WQlnia+oEEHDPnKDGGX5Ae3L3sHo9LR7NjQELnaqF0FMYlKfMeR
-         fLxA==
-X-Gm-Message-State: ANoB5pkVPJNRZHzmxW/Ikc0oeBBhUnHaw5X1f+WD5o9/PhfJJWpYEdue
-        WbSRw8jMVsILKMsnwfG5U4QZlQ==
-X-Google-Smtp-Source: AA0mqf5ciHYvPxuAaaVEz4jM+nFvHbYtSONxjtEHHR65kdwaI8ehoRIKYMPx9p3MtfkJfVceVwamuw==
-X-Received: by 2002:a17:902:6505:b0:186:a7ff:e8ae with SMTP id b5-20020a170902650500b00186a7ffe8aemr34845364plk.77.1669690386709;
-        Mon, 28 Nov 2022 18:53:06 -0800 (PST)
-Received: from [10.54.24.49] (static-ip-147-99-134-202.rev.dyxnet.com. [202.134.99.147])
-        by smtp.gmail.com with ESMTPSA id s4-20020a17090a764400b0020087d7e778sm172073pjl.37.2022.11.28.18.53.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 18:53:06 -0800 (PST)
-Message-ID: <db6284ba-b936-b38c-662d-3189c14596e7@shopee.com>
-Date:   Tue, 29 Nov 2022 10:53:02 +0800
+        with ESMTP id S234773AbiK2C7x (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Nov 2022 21:59:53 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76243303F3;
+        Mon, 28 Nov 2022 18:59:51 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NLnB93p4Xz4f3pFr;
+        Tue, 29 Nov 2022 10:59:45 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgAH_qyidYVjPcsKBQ--.9176S3;
+        Tue, 29 Nov 2022 10:59:48 +0800 (CST)
+Subject: Re: [PATCH v2] blk-iocost: fix shift-out-of-bounds in
+ iocg_hick_delay()
+To:     Li Jinlin <lijinlin3@huawei.com>,
+        Yu Kuai <yukuai1@huaweicloud.com>, Tejun Heo <tj@kernel.org>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liuzhiqiang26@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20221128030413.882998-1-lijinlin3@huawei.com>
+ <Y4US2vFmR4pnw08Z@slm.duckdns.org>
+ <bbc5e21f-9e77-41bb-5763-36bd905b52a0@huaweicloud.com>
+ <2830bd58-0f53-fa54-58e5-e87225b1fdf1@huawei.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <5489e3c5-30ad-d7af-c329-40c93d9a1b62@huaweicloud.com>
+Date:   Tue, 29 Nov 2022 10:59:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.5.0
-Subject: Re: [PATCH] cgroup/cpuset: Clean up cpuset_task_status_allowed
-To:     Tejun Heo <tj@kernel.org>
-Cc:     longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221125075133.12718-1-haifeng.xu@shopee.com>
- <Y4TqvlOmXqY/CBEc@slm.duckdns.org>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <Y4TqvlOmXqY/CBEc@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2830bd58-0f53-fa54-58e5-e87225b1fdf1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgAH_qyidYVjPcsKBQ--.9176S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww1xtw18Zr4kuF4UtrWUJwb_yoW8Zryrpr
+        95GFyUJrW5Xr1xCr18tr1UZry5tr17Jw1DCr1rAF18JrW8Jr1YgF48Xr1q9F1UArs5JF18
+        JF15GF1DZry7JF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi,
 
-
-On 2022/11/29 01:07, Tejun Heo wrote:
-> On Fri, Nov 25, 2022 at 07:51:33AM +0000, haifeng.xu wrote:
->> cpuset_task_status_allowed just shows mems_allowed status, so
->> rename it to task_mems_allowed. Moreover, it's only used in
->> proc_pid_status, so move it to fs/proc/array.c. There is no
->> intentional function change.
+在 2022/11/29 10:49, Li Jinlin 写道:
+> 
+> 
+> On 2022/11/29 9:14, Yu Kuai wrote:
+>> Hi,
 >>
->> Signed-off-by: haifeng.xu <haifeng.xu@shopee.com>
-> 
-> mems_allowed being a very much cpuset feature, I don't see how this is an
-> improvement. The new code is different and can be another way of doing it,
-> sure, but there's no inherent benefit to it. What's the point of the churn?
-> 
-> Thanks.
-> 
+>> 在 2022/11/29 3:58, Tejun Heo 写道:
+>>> On Mon, Nov 28, 2022 at 11:04:13AM +0800, Li Jinlin wrote:
+>>>>        /* calculate the current delay in effect - 1/2 every second */
+>>>>        tdelta = now->now - iocg->delay_at;
+>>>>        if (iocg->delay)
+>>>> -        delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
+>>>> +        delay = iocg->delay >>
+>>>> +            min_t(u64, div64_u64(tdelta, USEC_PER_SEC), 63);
+>>>
+>>> I replied earlier but the right thing to do here is setting delay to 0 if
+>>> the shift is >= 64.
+>>
+>> Perhaps following change will make more sense?
+>>
+>> @@ -1322,18 +1323,19 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
+>>   {
+>>          struct ioc *ioc = iocg->ioc;
+>>          struct blkcg_gq *blkg = iocg_to_blkg(iocg);
+>> -       u64 tdelta, delay, new_delay;
+>> +       u64 delay = 0;
+>> +       u64 new_delay;
+>>          s64 vover, vover_pct;
+>>          u32 hwa;
+>>
+>>          lockdep_assert_held(&iocg->waitq.lock);
+>>
+>>          /* calculate the current delay in effect - 1/2 every second */
+>> -       tdelta = now->now - iocg->delay_at;
+>> -       if (iocg->delay)
+>> +       if (iocg->delay && now->now > iocg->delay_at) {
+>> +               u64 tdelta = now->now - iocg->delay_at;
+>> +
+>>                  delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
+>> -       else
+>> -               delay = 0;
+>> +       }
+>>
+> I think "now->now > iocg->delay_at" is unnecessary, it is almost inevitable.
 
-Hi, tejun.
+ From what I see, following can only happen if now->now < iocg->delay_at:
 
-In proc_pid_status, task_cpus_allowed is used to show cpus_allowed, similar to that,
-task_mems_allowed is more specific to show mems_allowed. Also cpuset_task_status_allowed
-is used to dispaly memory status in '/proc/<pid>/status' and isn't used in other files, so
-keep it in the fs/proc/array.c.
+"shift exponent 18446744073709"
+
+Or something else triggers it?
 
 Thanks,
-Haifeng.
+Kuai
 
