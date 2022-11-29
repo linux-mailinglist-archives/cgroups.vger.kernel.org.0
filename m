@@ -2,69 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B42B63C8FF
-	for <lists+cgroups@lfdr.de>; Tue, 29 Nov 2022 21:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE7A63C971
+	for <lists+cgroups@lfdr.de>; Tue, 29 Nov 2022 21:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbiK2UL4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Nov 2022 15:11:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
+        id S236549AbiK2Ufe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Nov 2022 15:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236871AbiK2ULu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Nov 2022 15:11:50 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048A25E3E1
-        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 12:11:50 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id gu23so18300222ejb.10
-        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 12:11:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=legvGcKgmwLAMK4y4XOe/MwITozgdgtfyHeG3Kd+G99qcMNEQ2mbsZFO8njO+4iBKo
-         puZe+5IR5hZuWNIE/QPaZpXAxcfz+4ifTezGwBi83xffaBF6FrpiCfindu1rplLnwxec
-         UTSk3iVPPWTfcs5G1+0IlnyP5HnFyF4sdf7rhpW6bERbUZMv22yuIf99gZBfuf3v5jHg
-         V1fuI9CUwj+3+n1XRLD3Ss/wvKC9NyXwzKFm1jBmbqtNCqC3SpCsdl6/kFiZRUneryLz
-         13nfMdGti3nXpXcOORLWaOraD9rtlXXdA+98wpxJ+kM3T9EA7rxK3tDE+FFm1NcTv9l+
-         miQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=I1T8kenEUsHNfTSZpIKNAwRIIfSb+pUgRsrVH80DoFauUxLwhkycnmSS8eAbirTonr
-         5qMIXnJMpJou5XcR2S047Mcb5tXEKuO4isMNrC81KU53wJ16W6j+j55TKB16MvvLwoVi
-         xxYwN2cbefMYIBDOsnHPsEwQDALkeNP/0QjDN3tFjlr12TeJEmwmWWqb5TmXtZ2ov+7e
-         5rYBFJP3pf17lg+oh8K8Qq3y+LlXWyhg6K1SfCteaZEVNMTf8mCKekL7CkH+NdevVvrW
-         kfMEpMXH3o6WOlbE3AiuFnArDvDYwyayDSVMz4UzZlXdiTXhUX302s3sug+WDHLfDGv1
-         +BNw==
-X-Gm-Message-State: ANoB5pl1Usukn7qF5cUDeJqpV44LtgRdlHq1TPI3Sdy5iD7rGL1we2Yy
-        YFKPM2WNUYE9q2klYz+PooMao5iawEm8C0BSxBk=
-X-Google-Smtp-Source: AA0mqf6n4eQhncAoUDm40s1F04NIWUFeOghviULUaNZk+okN/FBUf/6ix35VhVwVMgAbdOOpj27nrcrT11y8WhgFCo4=
-X-Received: by 2002:a17:906:3a09:b0:78d:6655:d12e with SMTP id
- z9-20020a1709063a0900b0078d6655d12emr34556543eje.260.1669752709273; Tue, 29
- Nov 2022 12:11:49 -0800 (PST)
+        with ESMTP id S236375AbiK2Ufa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Nov 2022 15:35:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FC161B9E
+        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 12:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669754070;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nsMFyIcOKMdH8kGov88EPCbLbTICW8XLJaolwn8fdZQ=;
+        b=PbrlCkmRV13K7Tlf2bNtM4huFyhOcEHKDNqY+K9wP1snZVx51QLwVQJp5aUkAbHH3lLPxc
+        jgtNtXwP8KPM6XxxA5vyCJOSZtnilLFKLnBNOCvQRNnmmkOPjA7pBviKiflF5CZGKiy95m
+        AR4yNJZlZrzm0DuH4A85TCidd7cFT1g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-445-SZGhVrRyO_-myQQoKno4yA-1; Tue, 29 Nov 2022 15:34:25 -0500
+X-MC-Unique: SZGhVrRyO_-myQQoKno4yA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60622802314;
+        Tue, 29 Nov 2022 20:34:23 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 696AE140EBF5;
+        Tue, 29 Nov 2022 20:34:22 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ming Lei <ming.lei@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Waiman Long <longman@redhat.com>,
+        Yi Zhang <yi.zhang@redhat.com>
+Subject: [PATCH-block v2] bdi, blk-cgroup: Fix potential UAF of blkcg
+Date:   Tue, 29 Nov 2022 15:34:00 -0500
+Message-Id: <20221129203400.1456100-1-longman@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a17:907:8747:b0:7ae:e68c:886c with HTTP; Tue, 29 Nov 2022
- 12:11:47 -0800 (PST)
-Reply-To: mr.abraham022@gmail.com
-From:   "Mr.Abraham" <joykekeli3@gmail.com>
-Date:   Tue, 29 Nov 2022 20:11:47 +0000
-Message-ID: <CAKaeHTfQvAVuxhh9eS3K9RA6NdSD6Pk+w=fa1WJqh-H+jdHVaQ@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer me.
-Regard, Mr.Abraham
+Commit 59b57717fff8 ("blkcg: delay blkg destruction until after
+writeback has finished") delayed call to blkcg_destroy_blkgs() to
+cgwb_release_workfn(). However, it is done after a css_put() of blkcg
+which may be the final put that causes the blkcg to be freed as RCU
+read lock isn't held.
+
+By adding a css_tryget() into blkcg_destroy_blkgs() and warning its
+failure, the following stack trace was produced in a test system on
+bootup.
+
+[   34.254240] RIP: 0010:blkcg_destroy_blkgs+0x16a/0x1a0
+      :
+[   34.339943] Call Trace:
+[   34.342395]  <TASK>
+[   34.344510]  blkcg_unpin_online+0x38/0x60
+[   34.348523]  cgwb_release_workfn+0x6a/0x200
+[   34.352708]  process_one_work+0x1e5/0x3b0
+[   34.356742]  ? rescuer_thread+0x390/0x390
+[   34.360758]  worker_thread+0x50/0x3a0
+[   34.364425]  ? rescuer_thread+0x390/0x390
+[   34.368447]  kthread+0xd9/0x100
+[   34.371592]  ? kthread_complete_and_exit+0x20/0x20
+[   34.376386]  ret_from_fork+0x22/0x30
+[   34.379982]  </TASK>
+
+This confirms that a potential UAF situation can happen.
+
+Fix that by delaying the css_put() until after the blkcg_unpin_online()
+call. Also use css_tryget() in blkcg_destroy_blkgs() and issue a warning
+if css_tryget() fails with no RCU read lock held.
+
+The reproducing system can no longer produce a warning with this patch.
+All the runnable block/0* tests including block/027 were run successfully
+without failure.
+
+Fixes: 59b57717fff8 ("blkcg: delay blkg destruction until after writeback has finished")
+Suggested-by: Michal Koutný <mkoutny@suse.com>
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ block/blk-cgroup.c | 10 +++++++++-
+ mm/backing-dev.c   |  8 ++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 57941d2a8ba3..904372bb96f1 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1088,7 +1088,15 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
+ 
+ 	might_sleep();
+ 
+-	css_get(&blkcg->css);
++	/*
++	 * blkcg_destroy_blkgs() shouldn't be called with all the blkcg
++	 * references gone and rcu_read_lock not held.
++	 */
++	if (!css_tryget(&blkcg->css)) {
++		WARN_ON_ONCE(!rcu_read_lock_held());
++		return;
++	}
++
+ 	spin_lock_irq(&blkcg->lock);
+ 	while (!hlist_empty(&blkcg->blkg_list)) {
+ 		struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index c30419a5e119..36f75b072325 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -390,11 +390,15 @@ static void cgwb_release_workfn(struct work_struct *work)
+ 	wb_shutdown(wb);
+ 
+ 	css_put(wb->memcg_css);
+-	css_put(wb->blkcg_css);
+ 	mutex_unlock(&wb->bdi->cgwb_release_mutex);
+ 
+-	/* triggers blkg destruction if no online users left */
++	/*
++	 * Triggers blkg destruction if no online users left
++	 * The final blkcg css_put() has to be done after blkcg_unpin_online()
++	 * to avoid use-after-free.
++	 */
+ 	blkcg_unpin_online(wb->blkcg_css);
++	css_put(wb->blkcg_css);
+ 
+ 	fprop_local_destroy_percpu(&wb->memcg_completions);
+ 
+-- 
+2.31.1
+
