@@ -2,202 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2166D63DA95
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 17:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B652663DAEB
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 17:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbiK3Q16 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 11:27:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S229956AbiK3Qmk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 11:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbiK3Q16 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 11:27:58 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B08ADF85;
-        Wed, 30 Nov 2022 08:27:56 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 014482129A;
-        Wed, 30 Nov 2022 16:27:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1669825675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nXfNG6Sww8fGURySTb8eVABizwa45hjeSXnodgsxL7A=;
-        b=K5AhfMD1mmeSLfJHmy5N+Z9Fp6PpPk7Tg6j3Gg7JBI1HUIpk9Q1kujuQk6AXGNNyV145KQ
-        d9PwmobJ2stCSZPjUM0avskb5R4vue2G5ijhEc6FYiczmjflCS0mD9rGkb6uCxCJrsuy3j
-        g3oV+3D2ydZVm0DCiTt0qtKaJSdI6oU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D03D313A70;
-        Wed, 30 Nov 2022 16:27:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pufuMYqEh2NEPgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 30 Nov 2022 16:27:54 +0000
-Date:   Wed, 30 Nov 2022 17:27:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
-        <chengkaitao@didiglobal.com>
-Cc:     Tao pilgrim <pilgrimtao@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "cgel.zte@gmail.com" <cgel.zte@gmail.com>,
-        "ran.xiaokai@zte.com.cn" <ran.xiaokai@zte.com.cn>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
- oom killed
-Message-ID: <Y4eEiqwMMkHv9ELM@dhcp22.suse.cz>
-References: <CAAWJmAYPUK+1GBS0R460pDvDKrLr9zs_X2LT2yQTP_85kND5Ew@mail.gmail.com>
- <7EF16CB9-C34A-410B-BEBE-0303C1BB7BA0@didiglobal.com>
+        with ESMTP id S229731AbiK3Qmj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 11:42:39 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59023BFA
+        for <cgroups@vger.kernel.org>; Wed, 30 Nov 2022 08:42:36 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-3bfd998fa53so124032127b3.5
+        for <cgroups@vger.kernel.org>; Wed, 30 Nov 2022 08:42:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pjDPR5yR6DIywWszOgQ0UDhPZ4vEbh5Pko8PrUKf3pI=;
+        b=K86j6VMRXYIQSYFV+KA78qEDNE9v5WU4bWnu4FRw2pC332BzaqIyvlaShvQZTviLZD
+         COiqs6oMwW2dklkvQs/yh280WV+N5Q24S0VgBHZCrlfJLl/ncK8ChCEoWqv/eJYepItk
+         w3TFu1AzI/YXHE0e0rGAG38/r1K85Vt9QOPLE9sGdYGtas73TUgIfS1+ZrPxAmTPeBDV
+         avwm8hAtetBSQ0iCfIXlWtRuBAPQGxskP22jpMWnlLE6CT/Oc8cXnN+ArYwiZhRjHECL
+         lvTKpFg9DZpUKswVxXm+tma4r66CsXSqKTzYnah7h3nBdLDzGmYTnDQ1ARpHDJe6op4r
+         O+Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pjDPR5yR6DIywWszOgQ0UDhPZ4vEbh5Pko8PrUKf3pI=;
+        b=oq3dhq6OueAHoZOTe6/KEFNlM+qCVE/N4ZiZDsASnIewQJsaLC0T8vc2N5GfNrvoT1
+         MX+fKIa72u/Xfv9arST8LhVWzyZnufbrm3j+43Cvm+Jptsyx/zCjZPioFaMNw/0Y26Of
+         dxaFnxc7EBHm94RAEOSXJnHkDhok9Y+VnYotp92dD4axpZA0T14Tpar85o1qQToYBQTF
+         ILBGrmp/P6PywrQNjLcfxOtiasLjy7k+al/lQSHYE5RdeqsKWLEUvnBYUG1yjL452P1q
+         fxJW6PzgntcUX7rhAXLomMfdjNk961gg4VJ5FDBR/vyrOSQJVyJuPNkqIhK0QvJ5+IHw
+         QxNg==
+X-Gm-Message-State: ANoB5pllG//0jf3GdkctZ6gZkZVXr3TG6Jk64SrrNGm30zAbhevwptb4
+        /PhsUfNWwfhkIUbqLWwod08Cv97hqKUSc+4Y4KLFpw==
+X-Google-Smtp-Source: AA0mqf4XJlQocRvwHgq5x6G+DiS5HWePV/wtvsYDvhb/t958IEY8PeYMJEWY84wIyKWoBw2EWDiCO1pk1A/sEmqKBdo=
+X-Received: by 2002:a0d:d80c:0:b0:3ca:b34:9ce1 with SMTP id
+ a12-20020a0dd80c000000b003ca0b349ce1mr13279423ywe.466.1669826555061; Wed, 30
+ Nov 2022 08:42:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7EF16CB9-C34A-410B-BEBE-0303C1BB7BA0@didiglobal.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221123181838.1373440-1-hannes@cmpxchg.org> <16dd09c-bb6c-6058-2b3-7559b5aefe9@google.com>
+ <Y4TpCJ+5uCvWE6co@cmpxchg.org> <Y4ZYsrXLBFDIxuoO@cmpxchg.org> <3659bbe0-ccf2-7feb-5465-b287593aa421@google.com>
+In-Reply-To: <3659bbe0-ccf2-7feb-5465-b287593aa421@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 30 Nov 2022 08:42:24 -0800
+Message-ID: <CALvZod7_FjO-CjzHUpQTsCTm4-68a1eKi_qY=4XdF+g7yMLd4Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: remove lock_page_memcg() from rmap
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 30-11-22 15:46:19, 程垲涛 Chengkaitao Cheng wrote:
-> On 2022-11-30 21:15:06, "Michal Hocko" <mhocko@suse.com> wrote:
-> > On Wed 30-11-22 15:01:58, chengkaitao wrote:
-> > > From: chengkaitao <pilgrimtao@gmail.com>
-> > >
-> > > We created a new interface <memory.oom.protect> for memory, If there is
-> > > the OOM killer under parent memory cgroup, and the memory usage of a
-> > > child cgroup is within its effective oom.protect boundary, the cgroup's
-> > > tasks won't be OOM killed unless there is no unprotected tasks in other
-> > > children cgroups. It draws on the logic of <memory.min/low> in the
-> > > inheritance relationship.
+On Tue, Nov 29, 2022 at 11:33 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> On Tue, 29 Nov 2022, Johannes Weiner wrote:
+> > On Mon, Nov 28, 2022 at 11:59:53AM -0500, Johannes Weiner wrote:
+> > > On Wed, Nov 23, 2022 at 10:03:00PM -0800, Hugh Dickins wrote:
+> > > The swapcache/pagecache bit was a brainfart. We acquire the folio lock
+> > > in move_account(), which would lock out concurrent faults. If it's not
+> > > mapped, I don't see how it could become mapped behind our backs. But
+> > > we do need to be prepared for it to be unmapped.
 > >
-> > Could you be more specific about usecases?
-
-This is a very important question to answer.
-
-> > How do you tune oom.protect
-> > wrt to other tunables? How does this interact with the oom_score_adj
-> > tunining (e.g. a first hand oom victim with the score_adj 1000 sitting
-> > in a oom protected memcg)?
-> 
-> We prefer users to use score_adj and oom.protect independently. Score_adj is 
-> a parameter applicable to host, and oom.protect is a parameter applicable to cgroup. 
-> When the physical machine's memory size is particularly large, the score_adj 
-> granularity is also very large. However, oom.protect can achieve more fine-grained 
-> adjustment.
-
-Let me clarify a bit. I am not trying to defend oom_score_adj. It has
-it's well known limitations and it is is essentially unusable for many
-situations other than - hide or auto-select potential oom victim.
-
-> When the score_adj of the processes are the same, I list the following cases 
-> for explanation,
-> 
->           root
->            |
->         cgroup A
->        /        \
->  cgroup B      cgroup C
-> (task m,n)     (task x,y)
-> 
-> score_adj(all task) = 0;
-> oom.protect(cgroup A) = 0;
-> oom.protect(cgroup B) = 0;
-> oom.protect(cgroup C) = 3G;
-
-How can you enforce protection at C level without any protection at A
-level? This would easily allow arbitrary cgroup to hide from the oom
-killer and spill over to other cgroups.
-
-> usage(task m) = 1G
-> usage(task n) = 2G
-> usage(task x) = 1G
-> usage(task y) = 2G
-> 
-> oom killer order of cgroup A: n > m > y > x
-> oom killer order of host:     y = n > x = m
-> 
-> If cgroup A is a directory maintained by users, users can use oom.protect 
-> to protect relatively important tasks x and y.
-> 
-> However, when score_adj and oom.protect are used at the same time, we 
-> will also consider the impact of both, as expressed in the following formula. 
-> but I have to admit that it is an unstable result.
-> score = task_usage + score_adj * totalpage - eoom.protect * task_usage / local_memcg_usage
-
-I hope I am not misreading but this has some rather unexpected
-properties. First off, bigger memory consumers in a protected memcg are
-protected more. Also I would expect the protection discount would
-be capped by the actual usage otherwise excessive protection
-configuration could skew the results considerably.
- 
-> > I haven't really read through the whole patch but this struck me odd.
-> 
-> > > @@ -552,8 +552,19 @@ static int proc_oom_score(struct seq_file *m, struct pid_namespace *ns,
-> > > 	unsigned long totalpages = totalram_pages() + total_swap_pages;
-> > > 	unsigned long points = 0;
-> > > 	long badness;
-> > > +#ifdef CONFIG_MEMCG
-> > > +	struct mem_cgroup *memcg;
-> > > 
-> > > -	badness = oom_badness(task, totalpages);
-> > > +	rcu_read_lock();
-> > > +	memcg = mem_cgroup_from_task(task);
-> > > +	if (memcg && !css_tryget(&memcg->css))
-> > > +		memcg = NULL;
-> > > +	rcu_read_unlock();
-> > > +
-> > > +	update_parent_oom_protection(root_mem_cgroup, memcg);
-> > > +	css_put(&memcg->css);
-> > > +#endif
-> > > +	badness = oom_badness(task, totalpages, MEMCG_OOM_PROTECT);
+> > Welp, that doesn't protect us from the inverse, where the page is
+> > mapped elsewhere and the other ptes are going away. So this won't be
+> > enough, unfortunately.
 > >
-> > the badness means different thing depending on which memcg hierarchy
-> > subtree you look at. Scaling based on the global oom could get really
-> > misleading.
-> 
-> I also took it into consideration. I planned to change "/proc/pid/oom_score" 
-> to a writable node. When writing to different cgroup paths, different values 
-> will be output. The default output is root cgroup. Do you think this idea is 
-> feasible?
+> > > > Does that mean that we just have to reinstate the folio_mapped() checks
+> > > > in mm/memcontrol.c i.e. revert all mm/memcontrol.c changes from the
+> > > > commit?  Or does it invalidate the whole project to remove
+> > > > lock_page_memcg() from mm/rmap.c?
+> >
+> > Short of further restricting the pages that can be moved, I don't see
+> > how we can get rid of the cgroup locks in rmap after all. :(
+> >
+> > We can try limiting move candidates to present ptes. But maybe it's
+> > indeed time to deprecate the legacy charge moving altogether, and get
+> > rid of the entire complication.
+> >
+> > Hugh, Shakeel, Michal, what do you think?
+>
+> I'm certainly not against deprecating it - it's a largish body of odd
+> code, which poses signficant problems, yet is very seldom used; but I
+> feel that we'd all like to see it gone from rmap quicker that it can
+> be fully deprecated out of existence.
+>
+> I do wonder if any user would notice, if we quietly removed its
+> operation on non-present ptes; certainly there *might* be users
+> relying on that behaviour, but I doubt that many would.
+>
+> Alternatively (although I think Linus's objection to it in rmap is on
+> both aesthetic and performance grounds, and retaining any trace of it
+> in rmap.c still fails the aesthetic), can there be some static-keying
+> done, to eliminate (un)lock_page_memcg() overhead for all but those few
+> who actually indulge in moving memcg charge at immigrate?  (But I think
+> you would have already done that if it were possible.)
+>
 
-I do not follow. Care to elaborate?
--- 
-Michal Hocko
-SUSE Labs
+My preference would be going with the removal of non-present ptes over
+static-key in [un]lock_page_memcg().
+
+How about the following steps:
+
+1. Add warning in memory.move_charge_at_immigrate now (6.1/6.2) that
+this is going away and also backport it to the stable kernels.
+
+2. For 6.2 (or 6.3), remove the non-present pte migration with some
+additional text in the warning and do the rmap cleanup.
+
+3. After 3 or 4 releases (and hopefully finding no real users), we
+deprecate this completely.
+
+Step 3 can be delayed if there are some users depending on it. However
+we need to be firm that this is going away irrespective.
+
+Shakeel
