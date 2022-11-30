@@ -2,25 +2,25 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E6463D623
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 14:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C954763D62F
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 14:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234880AbiK3NA6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 08:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        id S235335AbiK3NBB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 08:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbiK3NA4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 08:00:56 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E8C429B1;
-        Wed, 30 Nov 2022 05:00:54 -0800 (PST)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NMfSX2sz3zRpdX;
-        Wed, 30 Nov 2022 21:00:12 +0800 (CST)
+        with ESMTP id S229929AbiK3NA5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 08:00:57 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665EF4AF34;
+        Wed, 30 Nov 2022 05:00:56 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NMfSY2Z9Gz15N01;
+        Wed, 30 Nov 2022 21:00:13 +0800 (CST)
 Received: from dggpeml500003.china.huawei.com (7.185.36.200) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 30 Nov 2022 21:00:52 +0800
+ 15.1.2375.31; Wed, 30 Nov 2022 21:00:53 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500003.china.huawei.com
  (7.185.36.200) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 30 Nov
@@ -30,9 +30,9 @@ To:     <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>
 CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linan122@huawei.com>,
         <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH -next v2 4/9] blk-iocost: read params inside lock in sysfs apis
-Date:   Wed, 30 Nov 2022 21:21:51 +0800
-Message-ID: <20221130132156.2836184-5-linan122@huawei.com>
+Subject: [PATCH -next v2 5/9] blk-iocost: fix divide by 0 error in calc_lcoefs()
+Date:   Wed, 30 Nov 2022 21:21:52 +0800
+Message-ID: <20221130132156.2836184-6-linan122@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221130132156.2836184-1-linan122@huawei.com>
 References: <20221130132156.2836184-1-linan122@huawei.com>
@@ -51,52 +51,59 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+echo max of u64 to cost.model can cause divide by 0 error.
 
-Otherwise, user might get abnormal values if params is updated
-concurrently.
+  # echo 8:0 rbps=18446744073709551615 > /sys/fs/cgroup/io.cost.model
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+  divide error: 0000 [#1] PREEMPT SMP
+  RIP: 0010:calc_lcoefs+0x4c/0xc0
+  Call Trace:
+   <TASK>
+   ioc_refresh_params+0x2b3/0x4f0
+   ioc_cost_model_write+0x3cb/0x4c0
+   ? _copy_from_iter+0x6d/0x6c0
+   ? kernfs_fop_write_iter+0xfc/0x270
+   cgroup_file_write+0xa0/0x200
+   kernfs_fop_write_iter+0x17d/0x270
+   vfs_write+0x414/0x620
+   ksys_write+0x73/0x160
+   __x64_sys_write+0x1e/0x30
+   do_syscall_64+0x35/0x80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+calc_lcoefs() uses the input value of cost.model in DIV_ROUND_UP_ULL,
+overflow would happen if bps plus IOC_PAGE_SIZE is greater than
+ULLONG_MAX, it can cause divide by 0 error.I_LCOEF_MAX is introduced to
+prevent it.
+
 Signed-off-by: Li Nan <linan122@huawei.com>
 ---
- block/blk-iocost.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ block/blk-iocost.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index bc6522bb314d..3a96cd557c47 100644
+index 3a96cd557c47..f4a754b9d10f 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -3125,6 +3125,7 @@ static u64 ioc_qos_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
- 	if (!dname)
- 		return 0;
+@@ -306,6 +306,9 @@ enum {
+ 	IOC_PAGE_SIZE		= 1 << IOC_PAGE_SHIFT,
+ 	IOC_SECT_TO_PAGE_SHIFT	= IOC_PAGE_SHIFT - SECTOR_SHIFT,
  
-+	spin_lock_irq(&ioc->lock);
- 	seq_printf(sf, "%s enable=%d ctrl=%s rpct=%u.%02u rlat=%u wpct=%u.%02u wlat=%u min=%u.%02u max=%u.%02u\n",
- 		   dname, ioc->enabled, ioc->user_qos_params ? "user" : "auto",
- 		   ioc->params.qos[QOS_RPPM] / 10000,
-@@ -3137,6 +3138,7 @@ static u64 ioc_qos_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
- 		   ioc->params.qos[QOS_MIN] % 10000 / 100,
- 		   ioc->params.qos[QOS_MAX] / 10000,
- 		   ioc->params.qos[QOS_MAX] % 10000 / 100);
-+	spin_unlock_irq(&ioc->lock);
- 	return 0;
- }
++	/* avoid overflow */
++	I_LCOEF_MAX		= ULLONG_MAX - IOC_PAGE_SIZE,
++
+ 	/* if apart further than 16M, consider randio for linear model */
+ 	LCOEF_RANDIO_PAGES	= 4096,
+ };
+@@ -3431,6 +3434,8 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
+ 			goto out_unlock;
+ 		}
  
-@@ -3319,12 +3321,14 @@ static u64 ioc_cost_model_prfill(struct seq_file *sf,
- 	if (!dname)
- 		return 0;
- 
-+	spin_lock_irq(&ioc->lock);
- 	seq_printf(sf, "%s ctrl=%s model=linear "
- 		   "rbps=%llu rseqiops=%llu rrandiops=%llu "
- 		   "wbps=%llu wseqiops=%llu wrandiops=%llu\n",
- 		   dname, ioc->user_cost_model ? "user" : "auto",
- 		   u[I_LCOEF_RBPS], u[I_LCOEF_RSEQIOPS], u[I_LCOEF_RRANDIOPS],
- 		   u[I_LCOEF_WBPS], u[I_LCOEF_WSEQIOPS], u[I_LCOEF_WRANDIOPS]);
-+	spin_unlock_irq(&ioc->lock);
- 	return 0;
- }
- 
++		if (v > I_LCOEF_MAX)
++			goto out_unlock;
+ 		u[tok] = v;
+ 		user = true;
+ 	}
 -- 
 2.31.1
 
