@@ -2,135 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B652663DAEB
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 17:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE3563DBEB
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 18:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbiK3Qmk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 11:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
+        id S229938AbiK3R0h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 12:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbiK3Qmj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 11:42:39 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59023BFA
-        for <cgroups@vger.kernel.org>; Wed, 30 Nov 2022 08:42:36 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-3bfd998fa53so124032127b3.5
-        for <cgroups@vger.kernel.org>; Wed, 30 Nov 2022 08:42:36 -0800 (PST)
+        with ESMTP id S229571AbiK3R0g (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 12:26:36 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6112B622
+        for <cgroups@vger.kernel.org>; Wed, 30 Nov 2022 09:26:35 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id z9so8408616ilu.10
+        for <cgroups@vger.kernel.org>; Wed, 30 Nov 2022 09:26:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjDPR5yR6DIywWszOgQ0UDhPZ4vEbh5Pko8PrUKf3pI=;
-        b=K86j6VMRXYIQSYFV+KA78qEDNE9v5WU4bWnu4FRw2pC332BzaqIyvlaShvQZTviLZD
-         COiqs6oMwW2dklkvQs/yh280WV+N5Q24S0VgBHZCrlfJLl/ncK8ChCEoWqv/eJYepItk
-         w3TFu1AzI/YXHE0e0rGAG38/r1K85Vt9QOPLE9sGdYGtas73TUgIfS1+ZrPxAmTPeBDV
-         avwm8hAtetBSQ0iCfIXlWtRuBAPQGxskP22jpMWnlLE6CT/Oc8cXnN+ArYwiZhRjHECL
-         lvTKpFg9DZpUKswVxXm+tma4r66CsXSqKTzYnah7h3nBdLDzGmYTnDQ1ARpHDJe6op4r
-         O+Iw==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=04jXt74UY1VtpJun8zJvpOrg9ETd91QGiWVG7jWf27c=;
+        b=WvC3pO7A3ARpOpPdif1K6HiRZlgxJ/CstMca+FL0z0mtnmuUqcKoo7VHwcnziQbl//
+         jS+djIEAMLc6lTGvZY5l0345olBTCWEhjjBf2AwIsCgolZ6/oYAs4nRaDpNER5dVBDPX
+         sMq55sqJV6jv7gUnQ9T9wCK5Ot9OmPWvJe6nVfnuDVVJ+yNpvB/rXR2CIqms+BoXDt/b
+         cGMgh+Qnr74STBe8oISOcViGmkm95U61eut4IMPTZSmbN6vEEryfhATvELwBBA7mu2HZ
+         M7HY7WxOOE05iMNJM1kZSIrGpPhFMAAZ6Ge2hcwHMejCi8rVAVCBXTEKfKbjqBx7pnTT
+         MOGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pjDPR5yR6DIywWszOgQ0UDhPZ4vEbh5Pko8PrUKf3pI=;
-        b=oq3dhq6OueAHoZOTe6/KEFNlM+qCVE/N4ZiZDsASnIewQJsaLC0T8vc2N5GfNrvoT1
-         MX+fKIa72u/Xfv9arST8LhVWzyZnufbrm3j+43Cvm+Jptsyx/zCjZPioFaMNw/0Y26Of
-         dxaFnxc7EBHm94RAEOSXJnHkDhok9Y+VnYotp92dD4axpZA0T14Tpar85o1qQToYBQTF
-         ILBGrmp/P6PywrQNjLcfxOtiasLjy7k+al/lQSHYE5RdeqsKWLEUvnBYUG1yjL452P1q
-         fxJW6PzgntcUX7rhAXLomMfdjNk961gg4VJ5FDBR/vyrOSQJVyJuPNkqIhK0QvJ5+IHw
-         QxNg==
-X-Gm-Message-State: ANoB5pllG//0jf3GdkctZ6gZkZVXr3TG6Jk64SrrNGm30zAbhevwptb4
-        /PhsUfNWwfhkIUbqLWwod08Cv97hqKUSc+4Y4KLFpw==
-X-Google-Smtp-Source: AA0mqf4XJlQocRvwHgq5x6G+DiS5HWePV/wtvsYDvhb/t958IEY8PeYMJEWY84wIyKWoBw2EWDiCO1pk1A/sEmqKBdo=
-X-Received: by 2002:a0d:d80c:0:b0:3ca:b34:9ce1 with SMTP id
- a12-20020a0dd80c000000b003ca0b349ce1mr13279423ywe.466.1669826555061; Wed, 30
- Nov 2022 08:42:35 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=04jXt74UY1VtpJun8zJvpOrg9ETd91QGiWVG7jWf27c=;
+        b=QH5RhGplIzOt2F8X5bDxftM7NOwlPRbCJxX8rp1IXy+DspqIh0U/3PFwvqLuOGqscH
+         fOw40tVygrAlEdWdWK3tBeeDu0CXVA42AeTmvkNY8nkZS7BA1h31fNGSUoFtufd2oUqx
+         ZuOvESdopydGtzA+4Cpk7+Vj8ZezOt8iwXMIXUCpvcqXwVxNNjpD3TgFntbBcPgDc0Il
+         mrwxUE9KrqQl25W5jYgKLO8n1Dh2G6TJruBVQyXXVp6vlpCoQrfaAJ8gC5mQlnfTIix2
+         ixjLc/yWlKmUH9jltdhXiXF8P0gK0F5EEDnzeU+llPIIgYhRPSSYHppRtmNdqk0MDe5o
+         IbJA==
+X-Gm-Message-State: ANoB5pl7co/6lTEd1J0hZ5nmaTVLZmHJMF3bm9LXn4TKeKyPeJxck8gd
+        OtUu4CWDgM2yvdDklgMZ7Yia3Q==
+X-Google-Smtp-Source: AA0mqf4+xJx0hE4uVatQ7H6ZQopio6F/vICz5HPoG9dJxBEnflwG6PUOg4lYyFxT+ASdvPdJ5OKkrg==
+X-Received: by 2002:a05:6e02:80d:b0:303:afb:a98d with SMTP id u13-20020a056e02080d00b003030afba98dmr8960568ilm.74.1669829194557;
+        Wed, 30 Nov 2022 09:26:34 -0800 (PST)
+Received: from [192.168.1.94] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id a92-20020a029465000000b003633748c95dsm750543jai.163.2022.11.30.09.26.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Nov 2022 09:26:34 -0800 (PST)
+Message-ID: <c8a2fc0f-0bd3-b276-646f-cab97ba5bc34@kernel.dk>
+Date:   Wed, 30 Nov 2022 10:26:32 -0700
 MIME-Version: 1.0
-References: <20221123181838.1373440-1-hannes@cmpxchg.org> <16dd09c-bb6c-6058-2b3-7559b5aefe9@google.com>
- <Y4TpCJ+5uCvWE6co@cmpxchg.org> <Y4ZYsrXLBFDIxuoO@cmpxchg.org> <3659bbe0-ccf2-7feb-5465-b287593aa421@google.com>
-In-Reply-To: <3659bbe0-ccf2-7feb-5465-b287593aa421@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 30 Nov 2022 08:42:24 -0800
-Message-ID: <CALvZod7_FjO-CjzHUpQTsCTm4-68a1eKi_qY=4XdF+g7yMLd4Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: remove lock_page_memcg() from rmap
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH -next v2 0/9] iocost bugfix
+Content-Language: en-US
+To:     Li Nan <linan122@huawei.com>, tj@kernel.org, josef@toxicpanda.com
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com
+References: <20221130132156.2836184-1-linan122@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20221130132156.2836184-1-linan122@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 29, 2022 at 11:33 PM Hugh Dickins <hughd@google.com> wrote:
->
-> On Tue, 29 Nov 2022, Johannes Weiner wrote:
-> > On Mon, Nov 28, 2022 at 11:59:53AM -0500, Johannes Weiner wrote:
-> > > On Wed, Nov 23, 2022 at 10:03:00PM -0800, Hugh Dickins wrote:
-> > > The swapcache/pagecache bit was a brainfart. We acquire the folio lock
-> > > in move_account(), which would lock out concurrent faults. If it's not
-> > > mapped, I don't see how it could become mapped behind our backs. But
-> > > we do need to be prepared for it to be unmapped.
-> >
-> > Welp, that doesn't protect us from the inverse, where the page is
-> > mapped elsewhere and the other ptes are going away. So this won't be
-> > enough, unfortunately.
-> >
-> > > > Does that mean that we just have to reinstate the folio_mapped() checks
-> > > > in mm/memcontrol.c i.e. revert all mm/memcontrol.c changes from the
-> > > > commit?  Or does it invalidate the whole project to remove
-> > > > lock_page_memcg() from mm/rmap.c?
-> >
-> > Short of further restricting the pages that can be moved, I don't see
-> > how we can get rid of the cgroup locks in rmap after all. :(
-> >
-> > We can try limiting move candidates to present ptes. But maybe it's
-> > indeed time to deprecate the legacy charge moving altogether, and get
-> > rid of the entire complication.
-> >
-> > Hugh, Shakeel, Michal, what do you think?
->
-> I'm certainly not against deprecating it - it's a largish body of odd
-> code, which poses signficant problems, yet is very seldom used; but I
-> feel that we'd all like to see it gone from rmap quicker that it can
-> be fully deprecated out of existence.
->
-> I do wonder if any user would notice, if we quietly removed its
-> operation on non-present ptes; certainly there *might* be users
-> relying on that behaviour, but I doubt that many would.
->
-> Alternatively (although I think Linus's objection to it in rmap is on
-> both aesthetic and performance grounds, and retaining any trace of it
-> in rmap.c still fails the aesthetic), can there be some static-keying
-> done, to eliminate (un)lock_page_memcg() overhead for all but those few
-> who actually indulge in moving memcg charge at immigrate?  (But I think
-> you would have already done that if it were possible.)
->
+On 11/30/22 6:21 AM, Li Nan wrote:
+> Li Nan (4):
+>   blk-iocost: fix divide by 0 error in calc_lcoefs()
+>   blk-iocost: change div64_u64 to DIV64_U64_ROUND_UP in
+>     ioc_refresh_params()
+>   blk-iocost: fix UAF in ioc_pd_free
+>   block: fix null-pointer dereference in ioc_pd_init
+> 
+> Yu Kuai (5):
+>   blk-iocost: cleanup ioc_qos_write() and ioc_cost_model_write()
+>   blk-iocost: improve hanlder of match_u64()
+>   blk-iocost: don't allow to configure bio based device
+>   blk-iocost: read params inside lock in sysfs apis
+>   blk-iocost: fix walk_list corruption
+> 
+>  block/blk-iocost.c | 117 ++++++++++++++++++++++++++++-----------------
+>  block/genhd.c      |   2 +-
+>  2 files changed, 75 insertions(+), 44 deletions(-)
 
-My preference would be going with the removal of non-present ptes over
-static-key in [un]lock_page_memcg().
+Please include a changelog when posting later versions of a patchset.
 
-How about the following steps:
+-- 
+Jens Axboe
 
-1. Add warning in memory.move_charge_at_immigrate now (6.1/6.2) that
-this is going away and also backport it to the stable kernels.
 
-2. For 6.2 (or 6.3), remove the non-present pte migration with some
-additional text in the warning and do the rmap cleanup.
-
-3. After 3 or 4 releases (and hopefully finding no real users), we
-deprecate this completely.
-
-Step 3 can be delayed if there are some users depending on it. However
-we need to be firm that this is going away irrespective.
-
-Shakeel
