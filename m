@@ -2,69 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6A763E1D3
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 21:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027AB63E225
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 21:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbiK3UXm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 15:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S230286AbiK3Uco (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 15:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiK3UXQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 15:23:16 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A3EF75;
-        Wed, 30 Nov 2022 12:22:35 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id x13-20020a17090a46cd00b00218f611b6e9so3456908pjg.1;
-        Wed, 30 Nov 2022 12:22:35 -0800 (PST)
+        with ESMTP id S229941AbiK3UcC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 15:32:02 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E7F54475;
+        Wed, 30 Nov 2022 12:31:30 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id o5-20020a17090a678500b00218cd5a21c9so3470050pjj.4;
+        Wed, 30 Nov 2022 12:31:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rXdxFhxTXJMZHC2K4jUkxh/OKutSS9K9Oo99ntvx5PA=;
-        b=fwyygy/fIcGISnxM7SLd6HwKX/itaYN7ne1sCrDpxfbyLvA/cYTRPkVgulkb4I5K1h
-         1ubPvLIZte+QIp4MCfHDL3whCyHeHroidEc7paAJ2LlFvK5lP17RnutOxvtk3AKlMYJR
-         tzfQ56dgLwAYEw8BEVndHTMEIlj3V4iFc6cTpaGKvgw3/pQS6tjnLOQ9ap6SPdS/xjwD
-         ho9jq2NS9Yfxyt20H3vwHJqav1tRRKrHuEvj8vuJPuyDB4o8htsopWsUszs2VaYuPqFb
-         O01oWFIDJjIUhYyH99AoZmGQDceqxvisTkY1V37hhitb88QrslKdeXpoO4wwgoPbnohC
-         LG4A==
+        bh=zERogrghEXBrjx46RlEGcBUab/oF8o5TSfDWdWk3204=;
+        b=CbBJH1iSFlP/+nWb9lr6aDG63sPp/lrVxYD5U9xyWoQntUFWySjlkoLu5qHG6HjIGf
+         XG+btjog3tUDwuH4Zx62q9zDDXiniyM0ILQ94Y8hyBEF5bAxpXwloJxWsNMeB2WTH2bW
+         M0SWvKno+eCyw3zJIrlZPSVggxp0wo44y6OFZl1Wbg64Ds+TWOepX6dVmaBCvLPGo2zg
+         VdWK8QSRqkSvOOwa4d3HX1VnjliG25vSJcSSHftki7wTOsmOjNYBaiQL6fC3nJNkKfkI
+         PJA/7D1kOpFCnZaYehRAFxs8Lh3fRmjLMRRTMRSFAqjJG6PyRS6DAC82ODpJbPIMKiKY
+         hH5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rXdxFhxTXJMZHC2K4jUkxh/OKutSS9K9Oo99ntvx5PA=;
-        b=IThz3mSC2S5XKMic5xJ7W2CkBmeESHvf82IGxcMQumztCAG1T39/DZi2DsaJ5HvFCt
-         V79JVnjSORXJOgvaIzgek3ofXmYnEQb4UD6nexKt7vt6GXHkCXgV+XMFJW/LMCb/0TRJ
-         Ho8jZt862Ll5yJVjl983osF4oDxQhLPyem4kyHM7Xlppbh03sqIK+SRasELsnkxnlnJu
-         VyaNlnBV2pl5t9TEicpScOd+aTfJrnSzcNE2mFuSCF5QbLivPoi5pRsfvr5awA9qao7I
-         y2t2VN5wWMfZ4LqxD7cNxGxFhjmnjOvKIktLhFCcS7sHY8lgx1Q0XC1ojzZPBfJlzd1l
-         LgnQ==
-X-Gm-Message-State: ANoB5pmAqzjiaRHrn88cANBhcIpKt4C/te61q+UQ+pJ2Rp0Nq5tbXYil
-        erwiZfTHOcGWC61m14XF1E4=
-X-Google-Smtp-Source: AA0mqf5iFU9bZQDFBqqdrpIVGNTYf2Znccn2uj/KxfyIKuIsWGP8I9Pw6CPIYJj1XVOz6CDFBtq57w==
-X-Received: by 2002:a17:90a:a616:b0:219:6afd:24be with SMTP id c22-20020a17090aa61600b002196afd24bemr3258885pjq.0.1669839754973;
-        Wed, 30 Nov 2022 12:22:34 -0800 (PST)
+        bh=zERogrghEXBrjx46RlEGcBUab/oF8o5TSfDWdWk3204=;
+        b=KJOynGteEWKTvwQtX/AlZ60JeDhVeC7KOJDb4yEO0nkeqB8KB9uV+QKYkCTY4MTgn6
+         UIbBDA9/lqnNTbTq+BLYym+VVx8/Yk3fqBsaCP7cGE3CjvYg46JRlb6rpsAxPwOLk0sm
+         7h/bwi3CqgWhERStAEcmMnBUBCHJ8oZE4pNOu87ZHSfGjTGnq7sK+tJIVZZPLKqH98Kr
+         6+5FSSlorwK3eRfn+G2GzSJsrLePV/AqdtBFqy0vh3Iwmfepr2WV2cvMGJTKdrrJHZdd
+         Ef7m+70d4tOf+jMhNT9DlqhyAnu99i0EOTe9p9MrweU6pfw6B2h9WWgWpzgQ/tOufHV0
+         XMrg==
+X-Gm-Message-State: ANoB5pm3EzcRhU7Wyk3M5mKNoUvia/tD7wI+OlfJBS9WolQiM897rJC0
+        RFAx6TwfIM4wT6VX3qJiDUw=
+X-Google-Smtp-Source: AA0mqf4VM80Ds16sfnw7neteYzn/Ov1p8FE5iG3YyqDlZxPhDtrE9KPBjmNgn6cwqx3CRV7oc7Y4Ew==
+X-Received: by 2002:a17:902:bf06:b0:17b:d6ad:94c8 with SMTP id bi6-20020a170902bf0600b0017bd6ad94c8mr57718162plb.110.1669840289398;
+        Wed, 30 Nov 2022 12:31:29 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id x12-20020a1709029a4c00b00186a2dd3ffdsm1914862plv.15.2022.11.30.12.22.34
+        by smtp.gmail.com with ESMTPSA id d13-20020aa797ad000000b00574a82bb877sm1760832pfq.203.2022.11.30.12.31.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 12:22:34 -0800 (PST)
+        Wed, 30 Nov 2022 12:31:28 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 30 Nov 2022 10:22:33 -1000
+Date:   Wed, 30 Nov 2022 10:31:27 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Li Nan <linan122@huawei.com>
 Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yi.zhang@huawei.com
-Subject: Re: [PATCH -next v2 6/9] blk-iocost: change div64_u64 to
- DIV64_U64_ROUND_UP in ioc_refresh_params()
-Message-ID: <Y4e7ibMMu4quJMO5@slm.duckdns.org>
+Subject: Re: [PATCH -next v2 1/9] blk-iocost: cleanup ioc_qos_write() and
+ ioc_cost_model_write()
+Message-ID: <Y4e9n89vJ45+9WD2@slm.duckdns.org>
 References: <20221130132156.2836184-1-linan122@huawei.com>
- <20221130132156.2836184-7-linan122@huawei.com>
+ <20221130132156.2836184-2-linan122@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221130132156.2836184-7-linan122@huawei.com>
+In-Reply-To: <20221130132156.2836184-2-linan122@huawei.com>
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -75,31 +75,33 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 09:21:53PM +0800, Li Nan wrote:
-> vrate_min is calculated by DIV64_U64_ROUND_UP, but vrate_max is calculated
-> by div64_u64. Vrate_min may be 1 greater than vrate_max if the input
-> values min and max of cost.qos are equal.
-> 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->  block/blk-iocost.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-> index f4a754b9d10f..2316ba93e7d6 100644
-> --- a/block/blk-iocost.c
-> +++ b/block/blk-iocost.c
-> @@ -926,7 +926,7 @@ static bool ioc_refresh_params(struct ioc *ioc, bool force)
+On Wed, Nov 30, 2022 at 09:21:48PM +0800, Li Nan wrote:
+> @@ -3197,6 +3197,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
+>  	enable = ioc->enabled;
+>  	user = ioc->user_qos_params;
 >  
->  	ioc->vrate_min = DIV64_U64_ROUND_UP((u64)ioc->params.qos[QOS_MIN] *
->  					    VTIME_PER_USEC, MILLION);
-> -	ioc->vrate_max = div64_u64((u64)ioc->params.qos[QOS_MAX] *
-> +	ioc->vrate_max = DIV64_U64_ROUND_UP((u64)ioc->params.qos[QOS_MAX] *
->  				   VTIME_PER_USEC, MILLION);
+> +	ret = -EINVAL;
+>  	while ((p = strsep(&input, " \t\n"))) {
+>  		substring_t args[MAX_OPT_ARGS];
+>  		char buf[32];
+> @@ -3218,7 +3219,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
+>  			else if (!strcmp(buf, "user"))
+>  				user = true;
+>  			else
+> -				goto einval;
+> +				goto out_unlock;
 
-Can you please align the parameters line? Other than that
+So, I kinda dislike it. That's a lot of code to cover with one "ret =
+-EINVAL" assignment which makes it pretty easy to make a mistake. People use
+variables like i, ret, err without thinking much and it doesn't help that
+you now can't tell whether a given exit condition is error or not by just
+looking at it.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+I don't know what great extra insight the return value from match_u64()
+would carry (like, what else is it gonna say? and even if it does why does
+that matter when we say -EINVAL to pretty much everything else) so I'm not
+sure this matters but if you really want it just add a separate error return
+label?
 
 Thanks.
 
