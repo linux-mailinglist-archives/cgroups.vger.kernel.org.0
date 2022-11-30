@@ -2,110 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A619463D62A
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 14:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50ADC63D667
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 14:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbiK3NBE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 08:01:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
+        id S234555AbiK3NPJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 08:15:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234936AbiK3NA6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 08:00:58 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B154EC2A;
-        Wed, 30 Nov 2022 05:00:58 -0800 (PST)
-Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NMfSZ67kyzRpfP;
-        Wed, 30 Nov 2022 21:00:14 +0800 (CST)
-Received: from dggpeml500003.china.huawei.com (7.185.36.200) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 30 Nov 2022 21:00:55 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500003.china.huawei.com
- (7.185.36.200) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 30 Nov
- 2022 21:00:54 +0800
-From:   Li Nan <linan122@huawei.com>
-To:     <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linan122@huawei.com>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH -next v2 9/9] blk-iocost: fix walk_list corruption
-Date:   Wed, 30 Nov 2022 21:21:56 +0800
-Message-ID: <20221130132156.2836184-10-linan122@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221130132156.2836184-1-linan122@huawei.com>
-References: <20221130132156.2836184-1-linan122@huawei.com>
+        with ESMTP id S234530AbiK3NPI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 08:15:08 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2816B56D4B;
+        Wed, 30 Nov 2022 05:15:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C695B21ACC;
+        Wed, 30 Nov 2022 13:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1669814106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=78kBTVjk9NN3b//OL4d2dPMzsmFl6kOFvw+wnxdUvC0=;
+        b=CJ5yMJnrkOzf4sfqOWKQ1oSbCwMifCAwlufTAq1pWndcvZ5cAeOuB0nUqN676FKRXuNrLs
+        VanShgHoCm8feQxtJEpumXrdKUFYdFlrhjNoHTeVkyWn3K/SDlL9mo3hqvI/V/M59IYJW1
+        bgTi/RkuuLd/q/bmdszcfp1VvqnOwSE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C39C1331F;
+        Wed, 30 Nov 2022 13:15:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id V0ynJVpXh2OuVwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 30 Nov 2022 13:15:06 +0000
+Date:   Wed, 30 Nov 2022 14:15:06 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     chengkaitao <pilgrimtao@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org, songmuchun@bytedance.com,
+        cgel.zte@gmail.com, ran.xiaokai@zte.com.cn,
+        viro@zeniv.linux.org.uk, zhengqi.arch@bytedance.com,
+        ebiederm@xmission.com, Liam.Howlett@oracle.com,
+        chengzhihao1@huawei.com, haolee.swjtu@gmail.com, yuzhao@google.com,
+        willy@infradead.org, vasily.averin@linux.dev, vbabka@suse.cz,
+        surenb@google.com, sfr@canb.auug.org.au, mcgrof@kernel.org,
+        sujiaxun@uniontech.com, feng.tang@intel.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
+ oom killed
+Message-ID: <Y4dXWsaLKRwJvWEY@dhcp22.suse.cz>
+References: <20221130070158.44221-1-chengkaitao@didiglobal.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500003.china.huawei.com (7.185.36.200)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221130070158.44221-1-chengkaitao@didiglobal.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Wed 30-11-22 15:01:58, chengkaitao wrote:
+> From: chengkaitao <pilgrimtao@gmail.com>
+> 
+> We created a new interface <memory.oom.protect> for memory, If there is
+> the OOM killer under parent memory cgroup, and the memory usage of a
+> child cgroup is within its effective oom.protect boundary, the cgroup's
+> tasks won't be OOM killed unless there is no unprotected tasks in other
+> children cgroups. It draws on the logic of <memory.min/low> in the
+> inheritance relationship.
 
-Our test report a problem:
+Could you be more specific about usecases? How do you tune oom.protect
+wrt to other tunables? How does this interact with the oom_score_adj
+tunining (e.g. a first hand oom victim with the score_adj 1000 sitting
+in a oom protected memcg)?
 
-------------[ cut here ]------------
-list_del corruption. next->prev should be ffff888127e0c4b0, but was ffff888127e090b0
-WARNING: CPU: 2 PID: 3117789 at lib/list_debug.c:62 __list_del_entry_valid+0x119/0x130
-RIP: 0010:__list_del_entry_valid+0x119/0x130
-RIP: 0010:__list_del_entry_valid+0x119/0x130
-Call Trace:
- <IRQ>
- iocg_flush_stat.isra.0+0x11e/0x230
- ? ioc_rqos_done+0x230/0x230
- ? ioc_now+0x14f/0x180
- ioc_timer_fn+0x569/0x1640
+I haven't really read through the whole patch but this struck me odd.
 
-We haven't reporduced it yet, but we think this is due to parent iocg is
-freed before child iocg, and then in ioc_timer_fn, walk_list is
-corrupted.
+> @@ -552,8 +552,19 @@ static int proc_oom_score(struct seq_file *m, struct pid_namespace *ns,
+>  	unsigned long totalpages = totalram_pages() + total_swap_pages;
+>  	unsigned long points = 0;
+>  	long badness;
+> +#ifdef CONFIG_MEMCG
+> +	struct mem_cgroup *memcg;
+>  
+> -	badness = oom_badness(task, totalpages);
+> +	rcu_read_lock();
+> +	memcg = mem_cgroup_from_task(task);
+> +	if (memcg && !css_tryget(&memcg->css))
+> +		memcg = NULL;
+> +	rcu_read_unlock();
+> +
+> +	update_parent_oom_protection(root_mem_cgroup, memcg);
+> +	css_put(&memcg->css);
+> +#endif
+> +	badness = oom_badness(task, totalpages, MEMCG_OOM_PROTECT);
 
-1) Remove child cgroup can concurrent with remove parent cgroup, and
-ioc_pd_free for parent iocg can be called before child iocg. This can be
-fixed by moving the handle of walk_list to ioc_pd_offline, since that
-offline from child is ensured to be called before parent.
+the badness means different thing depending on which memcg hierarchy
+subtree you look at. Scaling based on the global oom could get really
+misleading.
 
-2) ioc_pd_free can be triggered from both removing device and removing
-cgroup, this patch fix the problem by deleting timer before deactivating
-policy, so that free parent iocg first in this case won't matter.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- block/blk-iocost.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 710cf63a1643..d2b873908f88 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2813,13 +2813,14 @@ static void ioc_rqos_exit(struct rq_qos *rqos)
- {
- 	struct ioc *ioc = rqos_to_ioc(rqos);
- 
-+	del_timer_sync(&ioc->timer);
-+
- 	blkcg_deactivate_policy(rqos->q, &blkcg_policy_iocost);
- 
- 	spin_lock_irq(&ioc->lock);
- 	ioc->running = IOC_STOP;
- 	spin_unlock_irq(&ioc->lock);
- 
--	del_timer_sync(&ioc->timer);
- 	free_percpu(ioc->pcpu_stat);
- 	kfree(ioc);
- }
 -- 
-2.31.1
-
+Michal Hocko
+SUSE Labs
