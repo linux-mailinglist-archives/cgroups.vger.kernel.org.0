@@ -2,74 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AC763CD19
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 03:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC70B63CD36
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 03:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbiK3CDi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Nov 2022 21:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
+        id S229580AbiK3CPF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Nov 2022 21:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbiK3CDh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Nov 2022 21:03:37 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B5327173
-        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 18:03:35 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id n141-20020a254093000000b006eacc13c38eso14879027yba.0
-        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 18:03:35 -0800 (PST)
+        with ESMTP id S229875AbiK3CPD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Nov 2022 21:15:03 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053C231ED0
+        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 18:15:02 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id p15so7815903vsr.5
+        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 18:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qySU/YYSJyV1Gig5PuzcugPI3DQny2PGxjqX/sS0z2A=;
-        b=a7ok51aioMeHNiJSu7WtcVreWg/hIHdE7BTzM7xqt0k47iaIVEw0p+PKilUz+Z5Tsl
-         2bQOfpVf6meh/wYFWCctnSFxSpCbqFFPHBt5Nx0JBytQZ0/IliRi6rBDoMjhvyJd7AhH
-         ztB6iXeQE6BMroMQu8TBfxxXA2Ppm6c6oqSaNqTXvTK7OFI0mKSXpd38JrYmZBxE0Fct
-         EHaaFE7e+qLy5rV6dHmXgMmqwzhxz5EJdyUk4lQL8I6UEpKrA0X0yTgSHiZiWUr/rorG
-         O94Fpmf4kbvmxVvBMTIu7yKpC7llbZOk/E1EWf8UhfpN5UlttHcJCrkpJLwc8P352EeK
-         IYcw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0JX7OVGXqhjLT5U0sxZCrCFZrJK+/Ptd8iza3dr3fMU=;
+        b=fK/t1R6jEYGIaIccsQFMtY0W0OhO5tYVELmfG/KKVlOA90f7AmEAgqSwrhjlT087Ov
+         Zjr15NzihKSnGTMQUHUxIhxuT3ou17X5W1y0nDS2O36heNDIwEE+Pb52dW4ajbGO+LkP
+         ngDaqhU7EMfSMN9uIjJO7R0Ip1IQctKb8QDGKuZHd+m476Mm8rGCxaaFIYNrZdpXaBJf
+         GEWTEfzEMM+r+wFLkgmMVmLT7rvvYEaYMTS1ZtZZJzieimTZJRwh5gxyuIutcw30B49Y
+         CkYhspbjwY1xiX3TSmLqHlbBg7HvFlesXloEhio5Vw20Ve3MDTLyWhmqgf5/z0lQgg+n
+         qnEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qySU/YYSJyV1Gig5PuzcugPI3DQny2PGxjqX/sS0z2A=;
-        b=6+BDWdtMIZz/aRaabjWZDVyhp1Z62oqCWvvgMwM9rbybNc5lrMMWD7THca6+WQ4MSJ
-         TwJ4XaOYFvQUc+CC57vGgWPnqxkOPrGMPMBmEFR3Qb35XI+gWq+ZxK9g9Uy6JZue/33C
-         taWIuJaK9PLi8zqCX8lgog8vAJ20LR27Rq6NhnwzCC5lcMzHqb78ZmHmMChmE7BGT+S/
-         ALcRPxvqGbDleQ4f2g6uVVXIZMArS+Uqn1mvIxpAu04OW3/5AWCO/2VLW81Jcy3RUfjG
-         8xEgzLKITw+h63pS6I/UggfF0JSOcupHlczc2OIK/bFEdD7zk50TzS/Em86/34SW1U0+
-         AV/Q==
-X-Gm-Message-State: ANoB5pmgjsF3tPS+7ht6P7RZCFHemqxSUberugTeUt42zVIRxF0R8Xzr
-        TbYbQZQSA1/Qi5RS4Gx6nCAPikGV9pOT1SplSg==
-X-Google-Smtp-Source: AA0mqf7g8lJGoWb8KEPiq3MhQbh+oBKm+lFB3ObIBN3lGaF8mBPfoAWa/O48jVf8luC/UX/oIap+IknPhLZDdG+NAg==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2d4:203:5ef5:d4df:2c34:14d1])
- (user=almasrymina job=sendgmr) by 2002:a25:ba92:0:b0:6d3:66bb:786b with SMTP
- id s18-20020a25ba92000000b006d366bb786bmr58770981ybg.459.1669773814553; Tue,
- 29 Nov 2022 18:03:34 -0800 (PST)
-Date:   Tue, 29 Nov 2022 18:03:27 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221130020328.1009347-1-almasrymina@google.com>
-Subject: [RFC PATCH v2] mm: Add nodes= arg to memory.reclaim
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0JX7OVGXqhjLT5U0sxZCrCFZrJK+/Ptd8iza3dr3fMU=;
+        b=sEjAa6BP/yrr0Fw/SR0l2WK6SDlGsS0+xh5ul6uTqfhZ0b30SpNeTk6d7K5jWNkIBT
+         VuWANr5XhtV9cgINLGy5DXxQAqrOsnKfS9LHmiYXOrcG4QCwBweE/hlBUOXZTtcGzzwo
+         yHJrZD85k2qNwYTer6cNaPZ07gLxVmVlavaQbWhKVyU2ysrKcZrp7Ai9pOpFbNzdiXnb
+         kxicKX/0UgSo+lGdq4CtSokv+ywT2igZ/afIOZQwgZ5r2NOvp6lshdWAzmCD9dPaBVRj
+         mxfDMI/SOnlIN4pYjnl3xs6NJPL5Akp6fBosrMLapsnHDBH48ZamSpTS5XHM1YtVdr41
+         OkYw==
+X-Gm-Message-State: ANoB5plJZB8I4mSFtY9/y1osNCJohgR4IE6a25TypQ8oZecGK0cgp1Hh
+        SHsIpePN+PwqKsiT62q8NhRh7IgjBuuoMqAGC+nf9A==
+X-Google-Smtp-Source: AA0mqf5qCx7brp/8Dmkd70vgLRjX378XaQj83zJ+INAgJDVwo6ip+MvAfzH9/EPsv41BaKjD1If4S16ThnMaeXL/KMA=
+X-Received: by 2002:a05:6102:54a5:b0:3b0:7462:a88c with SMTP id
+ bk37-20020a05610254a500b003b07462a88cmr18688692vsb.49.1669774500963; Tue, 29
+ Nov 2022 18:15:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20221122203850.2765015-1-almasrymina@google.com>
+ <Y35fw2JSAeAddONg@cmpxchg.org> <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
+ <Y36XchdgTCsMP4jT@cmpxchg.org> <874juonbmv.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <874juonbmv.fsf@yhuang6-desk2.ccr.corp.intel.com>
 From:   Mina Almasry <almasrymina@google.com>
-To:     Huang Ying <ying.huang@intel.com>,
+Date:   Tue, 29 Nov 2022 18:14:49 -0800
+Message-ID: <CAHS8izMhoHVCGxXGt8qRtf-fPpAR8=pTy7Rc3j2=Wf8vJz-C+g@mail.gmail.com>
+Subject: Re: [RFC PATCH V1] mm: Disable demotion from proactive reclaim
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Yang Shi <yang.shi@linux.alibaba.com>,
         Yosry Ahmed <yosryahmed@google.com>,
         Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
         shakeelb@google.com, gthelen@google.com, fvdl@google.com,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mina Almasry <almasrymina@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,269 +78,65 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The nodes= arg instructs the kernel to only scan the given nodes for
-proactive reclaim. For example use cases, consider a 2 tier memory system:
+On Wed, Nov 23, 2022 at 9:52 PM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Hi, Johannes,
+>
+> Johannes Weiner <hannes@cmpxchg.org> writes:
+> [...]
+> >
+> > The fallback to reclaim actually strikes me as wrong.
+> >
+> > Think of reclaim as 'demoting' the pages to the storage tier. If we
+> > have a RAM -> CXL -> storage hierarchy, we should demote from RAM to
+> > CXL and from CXL to storage. If we reclaim a page from RAM, it means
+> > we 'demote' it directly from RAM to storage, bypassing potentially a
+> > huge amount of pages colder than it in CXL. That doesn't seem right.
+> >
+> > If demotion fails, IMO it shouldn't satisfy the reclaim request by
+> > breaking the layering. Rather it should deflect that pressure to the
+> > lower layers to make room. This makes sure we maintain an aging
+> > pipeline that honors the memory tier hierarchy.
+>
+> Yes.  I think that we should avoid to fall back to reclaim as much as
+> possible too.  Now, when we allocate memory for demotion
+> (alloc_demote_page()), __GFP_KSWAPD_RECLAIM is used.  So, we will trigger
 
-nodes 0,1 -> top tier
-nodes 2,3 -> second tier
+I may be missing something but as far I can tell reclaim is disabled
+for allocations from lower tier memory:
+https://elixir.bootlin.com/linux/v6.1-rc7/source/mm/vmscan.c#L1583
 
-$ echo "1m nodes=0" > memory.reclaim
+I think this is maybe a good thing when doing proactive demotion. In
+this case we probably don't want to try to reclaim from lower tier
+nodes and instead fail the proactive demotion. However I can see this
+being desirable when the top tier nodes are under real memory pressure
+to deflect that pressure to the lower tier nodes.
 
-This instructs the kernel to attempt to reclaim 1m memory from node 0.
-Since node 0 is a top tier node, demotion will be attempted first. This
-is useful to direct proactive reclaim to specific nodes that are under
-pressure.
+> kswapd reclaim on lower tier node to free some memory to avoid fall back
+> to reclaim on current (higher tier) node.  This may be not good enough,
+> for example, the following patch from Hasan may help via waking up
+> kswapd earlier.
+>
+> https://lore.kernel.org/linux-mm/b45b9bf7cd3e21bca61d82dcd1eb692cd32c122c.1637778851.git.hasanalmaruf@fb.com/
+>
+> Do you know what is the next step plan for this patch?
+>
+> Should we do even more?
+>
+> From another point of view, I still think that we can use falling back
+> to reclaim as the last resort to avoid OOM in some special situations,
+> for example, most pages in the lowest tier node are mlock() or too hot
+> to be reclaimed.
+>
+> > So I'm hesitant to design cgroup controls around the current behavior.
 
-$ echo "1m nodes=2,3" > memory.reclaim
+I sent RFC v2 patch:
+https://lore.kernel.org/linux-mm/20221130020328.1009347-1-almasrymina@google.com/T/#u
 
-This instructs the kernel to attempt to reclaim 1m memory in the second tier,
-since this tier of memory has no demotion targets the memory will be
-reclaimed.
+Please take a look when convenient. Thanks!
 
-$ echo "1m nodes=0,1" > memory.reclaim
-
-Instructs the kernel to reclaim memory from the top tier nodes, which can
-be desirable according to the userspace policy if there is pressure on
-the top tiers. Since these nodes have demotion targets, the kernel will
-attempt demotion first.
-
-Since commit 3f1509c57b1b ("Revert "mm/vmscan: never demote for memcg
-reclaim""), the proactive reclaim interface memory.reclaim does both
-reclaim and demotion. Reclaim and demotion incur different latency costs
-to the jobs in the cgroup. Demoted memory would still be addressable
-by the userspace at a higher latency, but reclaimed memory would need to
-incur a pagefault.
-
-The 'nodes' arg is useful to allow the userspace to control demotion
-and reclaim independently according to its policy: if the memory.reclaim
-is called on a node with demotion targets, it will attempt demotion first;
-if it is called on a node without demotion targets, it will only attempt
-reclaim.
-
-Signed-off-by: Mina Almasry <almasrymina@google.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 15 +++---
- include/linux/swap.h                    |  3 +-
- mm/memcontrol.c                         | 67 ++++++++++++++++++++-----
- mm/vmscan.c                             |  4 +-
- 4 files changed, 68 insertions(+), 21 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 74cec76be9f2..ac5fcbcd5ae6 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1245,17 +1245,13 @@ PAGE_SIZE multiple when read back.
- 	This is a simple interface to trigger memory reclaim in the
- 	target cgroup.
-
--	This file accepts a single key, the number of bytes to reclaim.
--	No nested keys are currently supported.
-+	This file accepts a string which contains the number of bytes to
-+	reclaim.
-
- 	Example::
-
- 	  echo "1G" > memory.reclaim
-
--	The interface can be later extended with nested keys to
--	configure the reclaim behavior. For example, specify the
--	type of memory to reclaim from (anon, file, ..).
--
- 	Please note that the kernel can over or under reclaim from
- 	the target cgroup. If less bytes are reclaimed than the
- 	specified amount, -EAGAIN is returned.
-@@ -1267,6 +1263,13 @@ PAGE_SIZE multiple when read back.
- 	This means that the networking layer will not adapt based on
- 	reclaim induced by memory.reclaim.
-
-+	This file also allows the user to specify the nodes to reclaim from,
-+	via the 'nodes=' key, example::
-+
-+	  echo "1G nodes=0,1" > memory.reclaim
-+
-+	The above instructs the kernel to reclaim memory from nodes 0,1.
-+
-   memory.peak
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index b61e2007d156..f542c114dffd 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -419,7 +419,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
--						  unsigned int reclaim_options);
-+						  unsigned int reclaim_options,
-+						  nodemask_t nodemask);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 23750cec0036..a0d7850173a9 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -63,6 +63,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/parser.h>
- #include "internal.h"
- #include <net/sock.h>
- #include <net/ip.h>
-@@ -2392,7 +2393,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP);
-+							MEMCG_RECLAIM_MAY_SWAP,
-+							NODE_MASK_ALL);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2683,7 +2685,8 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options);
-+						    gfp_mask, reclaim_options,
-+						    NODE_MASK_ALL);
- 	psi_memstall_leave(&pflags);
-
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -3503,7 +3506,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
-
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
-+					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP,
-+					NODE_MASK_ALL)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -3614,7 +3618,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
-
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP))
-+						  MEMCG_RECLAIM_MAY_SWAP,
-+						  NODE_MASK_ALL))
- 			nr_retries--;
- 	}
-
-@@ -6407,7 +6412,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
-
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
-+					NODE_MASK_ALL);
-
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -6456,7 +6462,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
-
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
-+					NODE_MASK_ALL))
- 				nr_reclaims--;
- 			continue;
- 		}
-@@ -6579,21 +6586,54 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
-
-+enum {
-+	MEMORY_RECLAIM_NODES = 0,
-+	MEMORY_RECLAIM_NULL,
-+};
-+
-+static const match_table_t if_tokens = {
-+	{ MEMORY_RECLAIM_NODES, "nodes=%s" },
-+	{ MEMORY_RECLAIM_NULL, NULL },
-+};
-+
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
--	unsigned int reclaim_options;
--	int err;
-+	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-+				       MEMCG_RECLAIM_PROACTIVE;
-+	char *old_buf, *start;
-+	substring_t args[MAX_OPT_ARGS];
-+	int token;
-+	char value[256];
-+	nodemask_t nodemask = NODE_MASK_ALL;
-
- 	buf = strstrip(buf);
--	err = page_counter_memparse(buf, "", &nr_to_reclaim);
--	if (err)
--		return err;
-
--	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
-+	old_buf = buf;
-+	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-+	if (buf == old_buf)
-+		return -EINVAL;
-+
-+	buf = strstrip(buf);
-+
-+	while ((start = strsep(&buf, " ")) != NULL) {
-+		if (!strlen(start))
-+			continue;
-+		token = match_token(start, if_tokens, args);
-+		match_strlcpy(value, args, sizeof(value));
-+		switch (token) {
-+		case MEMORY_RECLAIM_NODES:
-+			if (nodelist_parse(value, nodemask) < 0)
-+				return -EINVAL;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
- 	while (nr_reclaimed < nr_to_reclaim) {
- 		unsigned long reclaimed;
-
-@@ -6610,7 +6650,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
- 						nr_to_reclaim - nr_reclaimed,
--						GFP_KERNEL, reclaim_options);
-+						GFP_KERNEL, reclaim_options,
-+						nodemask);
-
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7b8e8e43806b..23fc5b523764 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -6735,7 +6735,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
--					   unsigned int reclaim_options)
-+					   unsigned int reclaim_options,
-+					   nodemask_t nodemask)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
-@@ -6750,6 +6751,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.nodemask = &nodemask,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
---
-2.38.1.584.g0f3c55d4c2-goog
+> >
+>
+> Best Regards,
+> Huang, Ying
+>
