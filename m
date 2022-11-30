@@ -2,118 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 669B063D5BC
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 13:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BECD363D5DA
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 13:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbiK3Mj4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 07:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
+        id S234607AbiK3Mnp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 07:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiK3Mjy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 07:39:54 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70432792B;
-        Wed, 30 Nov 2022 04:39:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669811993; x=1701347993;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iPuUqicRuUklAlC5NV44CDz/ub4ZDmFDWBmSCxl3Jkw=;
-  b=VmD+Tld7VK+TKKsOLApG+zWmnWS7mdPl+tG1U9gyyz5MrCD5MqP0+i/W
-   Mz5Qj5MvCTxwwUNyeK30kW31itd+mXLM6k+oAeK3vkFFxpDE+HMewrjQF
-   VXh9LlvGqtNmddQfYCuMQAWCxFRXTq+7EgvCqhniM6Z5PNfNJeNmhqJ8g
-   aDcy538050krtABGERsZGLNCIBxrLSL6ihxp5GzYeAMXIKKKNwJjUS1gf
-   cw1jmsBa3hJJmZkzcQ5oFs7ysCv7XnyEPyyI4sSIXyYLW2tzKk1jcPfWq
-   QvzhtCpAu6Ylp2JZ8u3McEZ7VoKxQuux8SjEcSmE1xEgLllhMaQt8k3kI
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="379663970"
-X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
-   d="scan'208";a="379663970"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 04:39:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="637977002"
-X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
-   d="scan'208";a="637977002"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 30 Nov 2022 04:39:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1p0MNO-002GIz-1o;
-        Wed, 30 Nov 2022 14:39:46 +0200
-Date:   Wed, 30 Nov 2022 14:39:46 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Ming Lei <ming.lei@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Yi Zhang <yi.zhang@redhat.com>
-Subject: Re: [PATCH-block v2] bdi, blk-cgroup: Fix potential UAF of blkcg
-Message-ID: <Y4dPEtGuQ2A3L+Ww@smile.fi.intel.com>
-References: <20221129203400.1456100-1-longman@redhat.com>
+        with ESMTP id S234278AbiK3Mno (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 07:43:44 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1CA4B753;
+        Wed, 30 Nov 2022 04:43:43 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id z17so11899292pff.1;
+        Wed, 30 Nov 2022 04:43:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SYFP0szIO4uQWosjf/DBeQUEddgh/eJCRxGlHyoP1o=;
+        b=lGFEahgyoDkFfO4MTJBxV+WDKKjYFLDSWD9cIm+boSkjj2uoMWRWiQcNtpl/TOm5rK
+         sSHEv/glh5oOTksk41RVezXagw6jbuZ40TXl7NEnFNYManHa/w1R71xZZI36J4lX25UM
+         cbcUfD4gneaUwM4QD+SBL6cBzhU+wznPmwiJK9DMF2KXg2dr+bRBElQibmy510sUXU9m
+         PDGF6zV6GJt6ZojTKhrgyy9u/iQhayTWSqnd1UbNFjJ59iUnn8gey849SPnDD1NkqUem
+         y+2zRdZvWk7CPIYegPztuRmyowZwiKIAvxOhInYXosz5F72MggNoCosSPckKf+1f0vF1
+         S69A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0SYFP0szIO4uQWosjf/DBeQUEddgh/eJCRxGlHyoP1o=;
+        b=x6FeW+M2RH1uyFt2ru45iPSctMNc2R3/x/JKx0QXAc7HUhsVS+RhlFg2BKJCALJHk0
+         b4O+tearRIn3s+Ezl/HrIi0sZU/2KCqvyST6ZiSFgetElmvR6F1yZZCwMr2n+QzUumrI
+         dEYuVpy0DxE9FAGD98MqiiWCYIvUNyYZs3tE9p6TKjUWrGIQB6DelMk1lck9AugA+lgT
+         g7j0wDR7xH0Uu8Kk0mJmyk/lv0kWVMre14SSgzCwG9a57uBPQypAps9kPunBpZMSSDJO
+         Wha0QcL2f5trkUklwhCg8bBiPT6O+kLVkOHEUtAAK3XGuLQFr+XfWixK31uin0bj8CFx
+         i5XA==
+X-Gm-Message-State: ANoB5pkfUwBPXuH1Bqk+YNNeundu6DJc03Z5Kj6bmo8iJaPHH97r/oe5
+        833JW589frlhvvcNjLMffy4=
+X-Google-Smtp-Source: AA0mqf6gJ2VDhQCzPJjGyRfnk3iFdVRCTTJb/bbVvhipQMA64yPolrxBfQn0+QAJf7edKJ9vxrG42g==
+X-Received: by 2002:aa7:9416:0:b0:575:518e:dc11 with SMTP id x22-20020aa79416000000b00575518edc11mr11919945pfo.86.1669812223326;
+        Wed, 30 Nov 2022 04:43:43 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-85.three.co.id. [180.214.232.85])
+        by smtp.gmail.com with ESMTPSA id z9-20020a1709027e8900b00186b8752a78sm1374421pla.80.2022.11.30.04.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Nov 2022 04:43:42 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 492AB103FF3; Wed, 30 Nov 2022 19:43:39 +0700 (WIB)
+Date:   Wed, 30 Nov 2022 19:43:39 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Tao pilgrim <pilgrimtao@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, cgel.zte@gmail.com,
+        ran.xiaokai@zte.com.cn, viro@zeniv.linux.org.uk,
+        zhengqi.arch@bytedance.com, ebiederm@xmission.com,
+        Liam.Howlett@oracle.com, chengzhihao1@huawei.com,
+        haolee.swjtu@gmail.com, yuzhao@google.com, willy@infradead.org,
+        vasily.averin@linux.dev, vbabka@suse.cz, surenb@google.com,
+        sfr@canb.auug.org.au, mcgrof@kernel.org, sujiaxun@uniontech.com,
+        feng.tang@intel.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        chengkaitao@didiglobal.com
+Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
+ oom killed
+Message-ID: <Y4dP+3VEYl/YUfK1@debian.me>
+References: <20221130070158.44221-1-chengkaitao@didiglobal.com>
+ <fd28321c-5f00-ba94-daed-2b8da2292c1f@gmail.com>
+ <CAAWJmAYPUK+1GBS0R460pDvDKrLr9zs_X2LT2yQTP_85kND5Ew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="U2At7WgeybTkF08j"
 Content-Disposition: inline
-In-Reply-To: <20221129203400.1456100-1-longman@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAWJmAYPUK+1GBS0R460pDvDKrLr9zs_X2LT2yQTP_85kND5Ew@mail.gmail.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 29, 2022 at 03:34:00PM -0500, Waiman Long wrote:
-> Commit 59b57717fff8 ("blkcg: delay blkg destruction until after
-> writeback has finished") delayed call to blkcg_destroy_blkgs() to
-> cgwb_release_workfn(). However, it is done after a css_put() of blkcg
-> which may be the final put that causes the blkcg to be freed as RCU
-> read lock isn't held.
-> 
-> By adding a css_tryget() into blkcg_destroy_blkgs() and warning its
-> failure, the following stack trace was produced in a test system on
-> bootup.
-> 
-> [   34.254240] RIP: 0010:blkcg_destroy_blkgs+0x16a/0x1a0
->       :
-> [   34.339943] Call Trace:
-> [   34.342395]  <TASK>
-> [   34.344510]  blkcg_unpin_online+0x38/0x60
-> [   34.348523]  cgwb_release_workfn+0x6a/0x200
-> [   34.352708]  process_one_work+0x1e5/0x3b0
-> [   34.356742]  ? rescuer_thread+0x390/0x390
-> [   34.360758]  worker_thread+0x50/0x3a0
-> [   34.364425]  ? rescuer_thread+0x390/0x390
-> [   34.368447]  kthread+0xd9/0x100
-> [   34.371592]  ? kthread_complete_and_exit+0x20/0x20
-> [   34.376386]  ret_from_fork+0x22/0x30
-> [   34.379982]  </TASK>
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#backtraces-in-commit-messages
+--U2At7WgeybTkF08j
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Nov 30, 2022 at 07:33:01PM +0800, Tao pilgrim wrote:
+> On Wed, Nov 30, 2022 at 4:41 PM Bagas Sanjaya <bagasdotme@gmail.com> wrot=
+e:
+> >
+> > On 11/30/22 14:01, chengkaitao wrote:
+> > > From: chengkaitao <pilgrimtao@gmail.com>
+> > >
+> >
+> > Yikes! Another patch from ZTE guys.
+> >
+> > I'm suspicious to patches sent from them due to bad reputation with
+> > kernel development community. First, they sent all patches via
+> > cgel.zte@gmail.com (listed in Cc) but Greg can't sure these are really
+> > sent from them ([1] & [2]). Then they tried to workaround by sending
+> > from their personal Gmail accounts, again with same response from him
+> > [3]. And finally they sent spoofed emails (as he pointed out in [4]) -
+> > they pretend to send from ZTE domain but actually sent from their
+> > different domain (see raw message and look for X-Google-Original-From:
+> > header.
+>=20
+> Hi Bagas Sanjaya,
+>=20
+> I'm not an employee of ZTE, just an ordinary developer. I really don't kn=
+ow
+> all the details about community and ZTE, The reason why I cc cgel.zte@gma=
+il.com
+> is because the output of the script <get_maintainer.pl> has the
+> address <cgel.zte@gmail.com>.
+>=20
+> If there is any error in the format of the email, I will try my best
+> to correct it.
+>=20
 
-> This confirms that a potential UAF situation can happen.
-> 
-> Fix that by delaying the css_put() until after the blkcg_unpin_online()
-> call. Also use css_tryget() in blkcg_destroy_blkgs() and issue a warning
-> if css_tryget() fails with no RCU read lock held.
-> 
-> The reproducing system can no longer produce a warning with this patch.
-> All the runnable block/0* tests including block/027 were run successfully
-> without failure.
+OK, thanks for clarification. At first I thought you were ZTE guys.
+Sorry for inconvenience.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Now I ask: why do your email seem spoofed (sending from your gmail
+account but there is extra gmail-specific header that makes you like
+"sending" from your corporate email address? Wouldn't it be nice (and
+appropriate) if you can send and receive email with the latter address
+instead?
 
+Thanks.
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--U2At7WgeybTkF08j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY4dP9QAKCRD2uYlJVVFO
+o2fFAP9CcwtLbXBJc0AgmMHIUvGNiyhA9iDVaDQGg5tezc3siAD+MdwAl/MqnXUT
+o9/M5ZNbB5lgA8Gdug0py/N/VDy0TQc=
+=RwhN
+-----END PGP SIGNATURE-----
+
+--U2At7WgeybTkF08j--
