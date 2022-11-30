@@ -2,158 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE7A63C971
-	for <lists+cgroups@lfdr.de>; Tue, 29 Nov 2022 21:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16C563CCDB
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 02:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbiK2Ufe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Nov 2022 15:35:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S229707AbiK3BdK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Nov 2022 20:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236375AbiK2Ufa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Nov 2022 15:35:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FC161B9E
-        for <cgroups@vger.kernel.org>; Tue, 29 Nov 2022 12:34:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1669754070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=nsMFyIcOKMdH8kGov88EPCbLbTICW8XLJaolwn8fdZQ=;
-        b=PbrlCkmRV13K7Tlf2bNtM4huFyhOcEHKDNqY+K9wP1snZVx51QLwVQJp5aUkAbHH3lLPxc
-        jgtNtXwP8KPM6XxxA5vyCJOSZtnilLFKLnBNOCvQRNnmmkOPjA7pBviKiflF5CZGKiy95m
-        AR4yNJZlZrzm0DuH4A85TCidd7cFT1g=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-445-SZGhVrRyO_-myQQoKno4yA-1; Tue, 29 Nov 2022 15:34:25 -0500
-X-MC-Unique: SZGhVrRyO_-myQQoKno4yA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60622802314;
-        Tue, 29 Nov 2022 20:34:23 +0000 (UTC)
-Received: from llong.com (unknown [10.22.17.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 696AE140EBF5;
-        Tue, 29 Nov 2022 20:34:22 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Ming Lei <ming.lei@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Waiman Long <longman@redhat.com>,
-        Yi Zhang <yi.zhang@redhat.com>
-Subject: [PATCH-block v2] bdi, blk-cgroup: Fix potential UAF of blkcg
-Date:   Tue, 29 Nov 2022 15:34:00 -0500
-Message-Id: <20221129203400.1456100-1-longman@redhat.com>
+        with ESMTP id S229579AbiK3BdK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Nov 2022 20:33:10 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693AA6D497;
+        Tue, 29 Nov 2022 17:33:08 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NMMCY5RF5z4f3npq;
+        Wed, 30 Nov 2022 09:32:57 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgCHL67KsoZjwoA9BQ--.16355S3;
+        Wed, 30 Nov 2022 09:33:00 +0800 (CST)
+Subject: Re: [PATCH -next 8/8] block: fix null-pointer dereference in
+ ioc_pd_init
+To:     Christoph Hellwig <hch@infradead.org>, Li Nan <linan122@huawei.com>
+Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20221128154434.4177442-1-linan122@huawei.com>
+ <20221128154434.4177442-9-linan122@huawei.com>
+ <Y4YWQcb4PMmIdzIM@infradead.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <e46fdde5-f320-9276-72ec-0f5fb5b48ffd@huaweicloud.com>
+Date:   Wed, 30 Nov 2022 09:32:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <Y4YWQcb4PMmIdzIM@infradead.org>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: cCh0CgCHL67KsoZjwoA9BQ--.16355S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYx7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
+        VFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Commit 59b57717fff8 ("blkcg: delay blkg destruction until after
-writeback has finished") delayed call to blkcg_destroy_blkgs() to
-cgwb_release_workfn(). However, it is done after a css_put() of blkcg
-which may be the final put that causes the blkcg to be freed as RCU
-read lock isn't held.
+Hi,
 
-By adding a css_tryget() into blkcg_destroy_blkgs() and warning its
-failure, the following stack trace was produced in a test system on
-bootup.
+‘⁄ 2022/11/29 22:25, Christoph Hellwig –¥µ¿:
+> On Mon, Nov 28, 2022 at 11:44:34PM +0800, Li Nan wrote:
+>> Fix problem by moving rq_qos_exit() to disk_release().
+> 
+> No, that now means it is removed to later.  You need to add proper
+> synchronization.
+> .
+> 
 
-[   34.254240] RIP: 0010:blkcg_destroy_blkgs+0x16a/0x1a0
-      :
-[   34.339943] Call Trace:
-[   34.342395]  <TASK>
-[   34.344510]  blkcg_unpin_online+0x38/0x60
-[   34.348523]  cgwb_release_workfn+0x6a/0x200
-[   34.352708]  process_one_work+0x1e5/0x3b0
-[   34.356742]  ? rescuer_thread+0x390/0x390
-[   34.360758]  worker_thread+0x50/0x3a0
-[   34.364425]  ? rescuer_thread+0x390/0x390
-[   34.368447]  kthread+0xd9/0x100
-[   34.371592]  ? kthread_complete_and_exit+0x20/0x20
-[   34.376386]  ret_from_fork+0x22/0x30
-[   34.379982]  </TASK>
+Can you explain a bit more? Maybe I'm being noob, here disk is about to
+be freed, and I can think of any contention.
 
-This confirms that a potential UAF situation can happen.
-
-Fix that by delaying the css_put() until after the blkcg_unpin_online()
-call. Also use css_tryget() in blkcg_destroy_blkgs() and issue a warning
-if css_tryget() fails with no RCU read lock held.
-
-The reproducing system can no longer produce a warning with this patch.
-All the runnable block/0* tests including block/027 were run successfully
-without failure.
-
-Fixes: 59b57717fff8 ("blkcg: delay blkg destruction until after writeback has finished")
-Suggested-by: Michal Koutn√Ω <mkoutny@suse.com>
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- block/blk-cgroup.c | 10 +++++++++-
- mm/backing-dev.c   |  8 ++++++--
- 2 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 57941d2a8ba3..904372bb96f1 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1088,7 +1088,15 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- 
- 	might_sleep();
- 
--	css_get(&blkcg->css);
-+	/*
-+	 * blkcg_destroy_blkgs() shouldn't be called with all the blkcg
-+	 * references gone and rcu_read_lock not held.
-+	 */
-+	if (!css_tryget(&blkcg->css)) {
-+		WARN_ON_ONCE(!rcu_read_lock_held());
-+		return;
-+	}
-+
- 	spin_lock_irq(&blkcg->lock);
- 	while (!hlist_empty(&blkcg->blkg_list)) {
- 		struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index c30419a5e119..36f75b072325 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -390,11 +390,15 @@ static void cgwb_release_workfn(struct work_struct *work)
- 	wb_shutdown(wb);
- 
- 	css_put(wb->memcg_css);
--	css_put(wb->blkcg_css);
- 	mutex_unlock(&wb->bdi->cgwb_release_mutex);
- 
--	/* triggers blkg destruction if no online users left */
-+	/*
-+	 * Triggers blkg destruction if no online users left
-+	 * The final blkcg css_put() has to be done after blkcg_unpin_online()
-+	 * to avoid use-after-free.
-+	 */
- 	blkcg_unpin_online(wb->blkcg_css);
-+	css_put(wb->blkcg_css);
- 
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
- 
--- 
-2.31.1
+Thanks,
+Kuai
 
