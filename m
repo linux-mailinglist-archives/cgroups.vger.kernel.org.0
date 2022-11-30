@@ -2,116 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EC163D0E7
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 09:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D823F63D0FB
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 09:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbiK3Ilu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 03:41:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
+        id S236680AbiK3Io6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 03:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbiK3Ilt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 03:41:49 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0768929CA4;
-        Wed, 30 Nov 2022 00:41:48 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id mv18so15101635pjb.0;
-        Wed, 30 Nov 2022 00:41:48 -0800 (PST)
+        with ESMTP id S236672AbiK3IoV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 03:44:21 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B66430F75;
+        Wed, 30 Nov 2022 00:44:19 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id t17so15067141pjo.3;
+        Wed, 30 Nov 2022 00:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bClHHbBrNItVLT5DDquRBOoDnrUpgqSvIIymdz67XbA=;
-        b=NZrOB5RgqscSru55svi/ZKjfdzqWbOne67Tfu8bqHX955TBLyuKMqIGaHH/XBd8dAz
-         uUS2+d6mPbQdYR6NJoR9gbuO9kvfyIRDdTrM3xNG1drH6GNoo/J5zpd2N29hk5DEZjgT
-         EPHUHPifO+vGT8CX8hcqw6wcG7CoK9RK9gbVKT26pSuLFj3HmqBLvECPl9QXv1EyaIUB
-         9ybI+54269YSGi7ljWpvTlAfNLGroy9eK4RtyNP6iIbGkG8GjfCoAgEhy7Ypy03YOpzm
-         htf6AdnEqzz3CR9eM4wbEDoVDZr/ys5w8T550YoJmSkD4mx9UaKD4QHvwkORPqAq+Dxx
-         gBSw==
+        bh=nX9u5Fipz7QbP1G6lS7SK8y5UdXxGb4XBtSgvsH1ex8=;
+        b=HGg1XUBOCu82ZW+TXKFrDzMOhzT3qhH5/0+upzC/MFORU/djS9EShs8RWQGhA54loM
+         +k6NJCRNXDJNxM6sbRBwiIBo/OcIM0fhyianG1qSBJ5Wmx9QHrGTh/KbDnS09g3nvbmJ
+         NIG9Wvn+WzT/MVyJpUH04RIow7GXkhx9+9THVjE7EmjkRTjfj4u5BeRoil9YD6Y73UzQ
+         Egf8NgiZqcJh1NuoRJc0KeI1QHGOtEM9BO/x9WU+eKo1jVIZEfrKLgh68gIcU2WSTHEv
+         p6AhzxuMSRWx4Jq0+gGOvstl9MGxxHf483dY52Nn2Lyndh6M1j7/s5mIL65cOYy3UIGy
+         gwdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bClHHbBrNItVLT5DDquRBOoDnrUpgqSvIIymdz67XbA=;
-        b=Oq+QyJ/T9hAdxrN/jKZOvKEwYf4Se9Es4wN9HrK8gNOvzCwBsEg4BzGeiSRpJNBS9y
-         /DVXYxCY7zWEQDopfc35f8o5eSqo29XUSh5foLWwaJJWCUy8fLz4Wc72McU3ibIuN0vt
-         Mu3np+u8viIJ6WYQpzF0PMqGfvCc83bg/MHBv4S4E7NAtDNcd9HGbly4AgNDTCLLV+3n
-         Fk7O75emwkuzYR/D1puFgW6GU2yQVA2H3wVxfmJjBAf7qed/GV+UX4nB9LZiYXwTV9rS
-         H5kl5hgWwemkBizU3PJQSnqplKWprVyj8w/CjOjS2gCUl3KH1wr1kwjMwyP4MqyKAN5B
-         o8xQ==
-X-Gm-Message-State: ANoB5pkBSwyicTC/U+r1D1Ro6lpSbBOvn7w2Fe0xXIK6CzbvdLZs6PQT
-        08qvDxjmoPfhP5jht0i3DwY=
-X-Google-Smtp-Source: AA0mqf6Vb17rCV6Meg7pI5D8DKJb2nuwYFBlEbNIxw4WL6YgvAsugpHi/F06JEXCyveu7kiKRErAvA==
-X-Received: by 2002:a17:90a:4c:b0:218:b187:d7da with SMTP id 12-20020a17090a004c00b00218b187d7damr48639485pjb.68.1669797707580;
-        Wed, 30 Nov 2022 00:41:47 -0800 (PST)
+        bh=nX9u5Fipz7QbP1G6lS7SK8y5UdXxGb4XBtSgvsH1ex8=;
+        b=RC1oF1PIGiiKJCZWWoij6uUGlNbJeLxnZHA9lFtpabg84n0C7WldFuN9K+ZR9co/QW
+         TMC0XKbyd0tQDCe9qUs+AZiMvivcfii5Z1FNQMUl6jBAx4SpZQMI/bXVc8kc/4MDBlrx
+         VId2pwWbgLhwvQMIQT6Z3S7hvHZmMYUQtHrOBOPI1ZrfPwYbCN9RleA70H2pDANww+9r
+         VRJsjcEuPN9WiB/LCdjHZkAhmTGiu4uPyLZ/K5zn5F+CR8YEXhJldVx8IwqZE8KFF095
+         sWUgT0P0QfcUIfVK4hIYfrAAHCNrwqRNyLK7bG30BQGjMVDByYBSOz2Zp28mv3LSzTDt
+         D/mA==
+X-Gm-Message-State: ANoB5pn0XuM0oiRrgNvyIE6dWYYU/nrxRNvZbHay1gmsYCkbCNLx0++B
+        0Hqkxn435x/MYDp7HlECyjM=
+X-Google-Smtp-Source: AA0mqf4Ab9AZLI8b84EDfh+GAUEJl6G7DQN191GfDQhhfMYBYdtvBwlJZMVGLiQBmQ3LOIRPPWBB+w==
+X-Received: by 2002:a17:90a:7b82:b0:219:629a:8ad8 with SMTP id z2-20020a17090a7b8200b00219629a8ad8mr2465244pjc.159.1669797859148;
+        Wed, 30 Nov 2022 00:44:19 -0800 (PST)
 Received: from [192.168.43.80] (subs02-180-214-232-19.three.co.id. [180.214.232.19])
-        by smtp.gmail.com with ESMTPSA id d12-20020a17090a2a4c00b0021952b5e9bcsm2512980pjg.53.2022.11.30.00.41.39
+        by smtp.gmail.com with ESMTPSA id c6-20020a170902d48600b0017f72a430adsm824570plg.71.2022.11.30.00.44.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Nov 2022 00:41:47 -0800 (PST)
-Message-ID: <fd28321c-5f00-ba94-daed-2b8da2292c1f@gmail.com>
-Date:   Wed, 30 Nov 2022 15:41:37 +0700
+        Wed, 30 Nov 2022 00:44:18 -0800 (PST)
+Message-ID: <7c5e0ca5-0ad1-452d-60b9-50dbb63d2dee@gmail.com>
+Date:   Wed, 30 Nov 2022 15:44:11 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
- oom killed
+Subject: Re: [RFC PATCH v2] mm: Add nodes= arg to memory.reclaim
 Content-Language: en-US
-To:     chengkaitao <pilgrimtao@gmail.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        akpm@linux-foundation.org, songmuchun@bytedance.com
-Cc:     cgel.zte@gmail.com, ran.xiaokai@zte.com.cn,
-        viro@zeniv.linux.org.uk, zhengqi.arch@bytedance.com,
-        ebiederm@xmission.com, Liam.Howlett@Oracle.com,
-        chengzhihao1@huawei.com, haolee.swjtu@gmail.com, yuzhao@google.com,
-        willy@infradead.org, vasily.averin@linux.dev, vbabka@suse.cz,
-        surenb@google.com, sfr@canb.auug.org.au, mcgrof@kernel.org,
-        sujiaxun@uniontech.com, feng.tang@intel.com,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20221130070158.44221-1-chengkaitao@didiglobal.com>
+To:     Mina Almasry <almasrymina@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
+        shakeelb@google.com, gthelen@google.com, fvdl@google.com,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20221130020328.1009347-1-almasrymina@google.com>
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <20221130070158.44221-1-chengkaitao@didiglobal.com>
+In-Reply-To: <20221130020328.1009347-1-almasrymina@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/30/22 14:01, chengkaitao wrote:
-> From: chengkaitao <pilgrimtao@gmail.com>
+On 11/30/22 09:03, Mina Almasry wrote:
+> -	This file accepts a single key, the number of bytes to reclaim.
+> -	No nested keys are currently supported.
+> +	This file accepts a string which contains the number of bytes to
+> +	reclaim.
 > 
+Amount of memory to reclaim?
 
-Yikes! Another patch from ZTE guys.
+> +	This file also allows the user to specify the nodes to reclaim from,
+> +	via the 'nodes=' key, example::
+> +
 
-I'm suspicious to patches sent from them due to bad reputation with
-kernel development community. First, they sent all patches via
-cgel.zte@gmail.com (listed in Cc) but Greg can't sure these are really
-sent from them ([1] & [2]). Then they tried to workaround by sending
-from their personal Gmail accounts, again with same response from him
-[3]. And finally they sent spoofed emails (as he pointed out in [4]) -
-they pretend to send from ZTE domain but actually sent from their
-different domain (see raw message and look for X-Google-Original-From:
-header.
+"..., for example"
 
-I was about to review documentation part of this patch, but due to
-concerns above, I have to write this reply instead. So I'm not going
-to review, sorry for inconvenience.
+> +	  echo "1G nodes=0,1" > memory.reclaim
+> +
+> +	The above instructs the kernel to reclaim memory from nodes 0,1.
+> +
 
-PS: Adding Greg to Cc: list.
-
-[1]: https://lore.kernel.org/lkml/Yw94xsOp6gvdS0UF@kroah.com/
-[2]: https://lore.kernel.org/lkml/Yylv5hbSBejJ58nt@kroah.com/
-[3]: https://lore.kernel.org/lkml/Y1EVnZS9BalesrC1@kroah.com/
-[4]: https://lore.kernel.org/lkml/Y3NrBvIV7lH2GrWz@kroah.com/
+Thanks.
 
 -- 
 An old man doll... just what I always wanted! - Clara
