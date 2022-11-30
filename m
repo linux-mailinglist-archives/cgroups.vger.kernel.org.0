@@ -2,129 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7D963D4B4
-	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 12:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669B063D5BC
+	for <lists+cgroups@lfdr.de>; Wed, 30 Nov 2022 13:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbiK3Lep (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 06:34:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        id S231377AbiK3Mj4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 07:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235308AbiK3Ldq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 06:33:46 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC6A4B9BC;
-        Wed, 30 Nov 2022 03:33:15 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id x6so6363079lji.10;
-        Wed, 30 Nov 2022 03:33:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bbgF/8QJth7Q6iZLlIiOpcOOnk+o4nClIAC+d8Lf9z0=;
-        b=cgrBYVcGGaOmhs4NUM2DMBzEteSqsnNo+s1OWAu0xrFfR8SfGHhoYWl6cON5bJQf5H
-         kBXo+HTMLYJlc0NNqyXTeNHVsKFqrN9RnSJvYMAt9wsTzoHjoBDz54HyrId55uPzhcey
-         WrkHDI90HmJoIfjTMzlxSFuMRM+ZEK+h+tp2CXCTYTjqjx+4Ho1p2q1qT5Xh0Pe1NIpw
-         kh3Ph4481EH6HJsaTRzldrzwYx9ab3Q4uT9o4p32qRaA2tLn+Hf0w3FMTq1prgn3d5jp
-         NtxVXq9wW/MEdgV2FWkhhU7TsMvsvlWqvebJsqA+xk8HaXGX4H+zuKYU5RX6czhqRUDe
-         TW5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bbgF/8QJth7Q6iZLlIiOpcOOnk+o4nClIAC+d8Lf9z0=;
-        b=NbDaJ4bhCdEyY92Rmg+X9V7pKl7RshHcGab+wiKVGu4QAM6+8t5Ejncj2PcQUpV6KY
-         gFU0yhV+uHOa/LQX1pW0KAXocC6+tvlvT2VCcdBjpHmcZrC0e4qho97BEG5UDGObbfj4
-         rinfUQSX6E7C8Sj8Me4T6C9PtIfpIAYbYpTij27qtaykZC+qqN5jQphgJgZ7MHYlhvEa
-         Y95m25M0T5qgstUdiXaVKX+mhg6+26VezlBXkryXaWn+KJ9fqgY8b+pGJ628o38ENu0c
-         M21vERilU3VlmEqEGrGtFCRfMmwdNoqwA9bZstG5EOcrlgXKs+T5KUrqe4CuBazffj7w
-         jeAg==
-X-Gm-Message-State: ANoB5pnyPrsN30UH5B9l3CRgAsLD+RGXmMmIh7QtXReycuchoadhUUx2
-        CCI7dpjJL3yVp1rHKHupyx+3qdNOumkIyflToXc=
-X-Google-Smtp-Source: AA0mqf4DNgrzSTa3qDkcM1vR3wsA4xbwLoMawo/HYfBGJ5539OEYNPmp+YyAmqJIJYo2LXuFpOGWdNGqzEgPvVjR9QQ=
-X-Received: by 2002:a2e:3815:0:b0:279:8c75:b1a8 with SMTP id
- f21-20020a2e3815000000b002798c75b1a8mr8432976lja.140.1669807993775; Wed, 30
- Nov 2022 03:33:13 -0800 (PST)
+        with ESMTP id S229515AbiK3Mjy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 07:39:54 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70432792B;
+        Wed, 30 Nov 2022 04:39:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669811993; x=1701347993;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iPuUqicRuUklAlC5NV44CDz/ub4ZDmFDWBmSCxl3Jkw=;
+  b=VmD+Tld7VK+TKKsOLApG+zWmnWS7mdPl+tG1U9gyyz5MrCD5MqP0+i/W
+   Mz5Qj5MvCTxwwUNyeK30kW31itd+mXLM6k+oAeK3vkFFxpDE+HMewrjQF
+   VXh9LlvGqtNmddQfYCuMQAWCxFRXTq+7EgvCqhniM6Z5PNfNJeNmhqJ8g
+   aDcy538050krtABGERsZGLNCIBxrLSL6ihxp5GzYeAMXIKKKNwJjUS1gf
+   cw1jmsBa3hJJmZkzcQ5oFs7ysCv7XnyEPyyI4sSIXyYLW2tzKk1jcPfWq
+   QvzhtCpAu6Ylp2JZ8u3McEZ7VoKxQuux8SjEcSmE1xEgLllhMaQt8k3kI
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="379663970"
+X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
+   d="scan'208";a="379663970"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 04:39:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10546"; a="637977002"
+X-IronPort-AV: E=Sophos;i="5.96,206,1665471600"; 
+   d="scan'208";a="637977002"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 30 Nov 2022 04:39:49 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1p0MNO-002GIz-1o;
+        Wed, 30 Nov 2022 14:39:46 +0200
+Date:   Wed, 30 Nov 2022 14:39:46 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ming Lei <ming.lei@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Yi Zhang <yi.zhang@redhat.com>
+Subject: Re: [PATCH-block v2] bdi, blk-cgroup: Fix potential UAF of blkcg
+Message-ID: <Y4dPEtGuQ2A3L+Ww@smile.fi.intel.com>
+References: <20221129203400.1456100-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20221130070158.44221-1-chengkaitao@didiglobal.com> <fd28321c-5f00-ba94-daed-2b8da2292c1f@gmail.com>
-In-Reply-To: <fd28321c-5f00-ba94-daed-2b8da2292c1f@gmail.com>
-From:   Tao pilgrim <pilgrimtao@gmail.com>
-Date:   Wed, 30 Nov 2022 19:33:01 +0800
-Message-ID: <CAAWJmAYPUK+1GBS0R460pDvDKrLr9zs_X2LT2yQTP_85kND5Ew@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
- oom killed
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, cgel.zte@gmail.com,
-        ran.xiaokai@zte.com.cn, viro@zeniv.linux.org.uk,
-        zhengqi.arch@bytedance.com, ebiederm@xmission.com,
-        Liam.Howlett@oracle.com, chengzhihao1@huawei.com,
-        haolee.swjtu@gmail.com, yuzhao@google.com, willy@infradead.org,
-        vasily.averin@linux.dev, vbabka@suse.cz, surenb@google.com,
-        sfr@canb.auug.org.au, mcgrof@kernel.org, sujiaxun@uniontech.com,
-        feng.tang@intel.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        chengkaitao@didiglobal.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221129203400.1456100-1-longman@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 30, 2022 at 4:41 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->
-> On 11/30/22 14:01, chengkaitao wrote:
-> > From: chengkaitao <pilgrimtao@gmail.com>
-> >
->
-> Yikes! Another patch from ZTE guys.
->
-> I'm suspicious to patches sent from them due to bad reputation with
-> kernel development community. First, they sent all patches via
-> cgel.zte@gmail.com (listed in Cc) but Greg can't sure these are really
-> sent from them ([1] & [2]). Then they tried to workaround by sending
-> from their personal Gmail accounts, again with same response from him
-> [3]. And finally they sent spoofed emails (as he pointed out in [4]) -
-> they pretend to send from ZTE domain but actually sent from their
-> different domain (see raw message and look for X-Google-Original-From:
-> header.
+On Tue, Nov 29, 2022 at 03:34:00PM -0500, Waiman Long wrote:
+> Commit 59b57717fff8 ("blkcg: delay blkg destruction until after
+> writeback has finished") delayed call to blkcg_destroy_blkgs() to
+> cgwb_release_workfn(). However, it is done after a css_put() of blkcg
+> which may be the final put that causes the blkcg to be freed as RCU
+> read lock isn't held.
+> 
+> By adding a css_tryget() into blkcg_destroy_blkgs() and warning its
+> failure, the following stack trace was produced in a test system on
+> bootup.
+> 
+> [   34.254240] RIP: 0010:blkcg_destroy_blkgs+0x16a/0x1a0
+>       :
+> [   34.339943] Call Trace:
+> [   34.342395]  <TASK>
+> [   34.344510]  blkcg_unpin_online+0x38/0x60
+> [   34.348523]  cgwb_release_workfn+0x6a/0x200
+> [   34.352708]  process_one_work+0x1e5/0x3b0
+> [   34.356742]  ? rescuer_thread+0x390/0x390
+> [   34.360758]  worker_thread+0x50/0x3a0
+> [   34.364425]  ? rescuer_thread+0x390/0x390
+> [   34.368447]  kthread+0xd9/0x100
+> [   34.371592]  ? kthread_complete_and_exit+0x20/0x20
+> [   34.376386]  ret_from_fork+0x22/0x30
+> [   34.379982]  </TASK>
 
-Hi Bagas Sanjaya,
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#backtraces-in-commit-messages
 
-I'm not an employee of ZTE, just an ordinary developer. I really don't know
-all the details about community and ZTE, The reason why I cc cgel.zte@gmail.com
-is because the output of the script <get_maintainer.pl> has the
-address <cgel.zte@gmail.com>.
 
-If there is any error in the format of the email, I will try my best
-to correct it.
-
->
-> I was about to review documentation part of this patch, but due to
-> concerns above, I have to write this reply instead. So I'm not going
-> to review, sorry for inconvenience.
->
-> PS: Adding Greg to Cc: list.
->
-> [1]: https://lore.kernel.org/lkml/Yw94xsOp6gvdS0UF@kroah.com/
-> [2]: https://lore.kernel.org/lkml/Yylv5hbSBejJ58nt@kroah.com/
-> [3]: https://lore.kernel.org/lkml/Y1EVnZS9BalesrC1@kroah.com/
-> [4]: https://lore.kernel.org/lkml/Y3NrBvIV7lH2GrWz@kroah.com/
->
-> --
-> An old man doll... just what I always wanted! - Clara
->
-
+> This confirms that a potential UAF situation can happen.
+> 
+> Fix that by delaying the css_put() until after the blkcg_unpin_online()
+> call. Also use css_tryget() in blkcg_destroy_blkgs() and issue a warning
+> if css_tryget() fails with no RCU read lock held.
+> 
+> The reproducing system can no longer produce a warning with this patch.
+> All the runnable block/0* tests including block/027 were run successfully
+> without failure.
 
 -- 
-Yours,
-Kaitao Cheng
+With Best Regards,
+Andy Shevchenko
+
+
