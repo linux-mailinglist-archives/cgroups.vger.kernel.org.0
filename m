@@ -2,84 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A98B63F2DE
-	for <lists+cgroups@lfdr.de>; Thu,  1 Dec 2022 15:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E488063F31C
+	for <lists+cgroups@lfdr.de>; Thu,  1 Dec 2022 15:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbiLAOaY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Dec 2022 09:30:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        id S230200AbiLAOtS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Dec 2022 09:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiLAOaV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Dec 2022 09:30:21 -0500
-Received: from mx6.didiglobal.com (mx6.didiglobal.com [111.202.70.123])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9BD5BA7AB5;
-        Thu,  1 Dec 2022 06:30:17 -0800 (PST)
-Received: from mail.didiglobal.com (unknown [10.79.71.35])
-        by mx6.didiglobal.com (Maildata Gateway V2.8) with ESMTPS id 5AA13110363200;
-        Thu,  1 Dec 2022 22:30:12 +0800 (CST)
-Received: from ZJY03-ACTMBX-05.didichuxing.com (10.79.71.35) by
- ZJY03-ACTMBX-05.didichuxing.com (10.79.71.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Thu, 1 Dec 2022 22:30:12 +0800
-Received: from ZJY03-ACTMBX-05.didichuxing.com ([fe80::1dcd:f7bf:746e:c769])
- by ZJY03-ACTMBX-05.didichuxing.com ([fe80::1dcd:f7bf:746e:c769%8]) with mapi
- id 15.01.2375.017; Thu, 1 Dec 2022 22:30:11 +0800
-X-MD-Sfrom: chengkaitao@didiglobal.com
-X-MD-SrcIP: 10.79.71.35
-From:   =?utf-8?B?56iL5Z6y5rabIENoZW5na2FpdGFvIENoZW5n?= 
-        <chengkaitao@didiglobal.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Tao pilgrim <pilgrimtao@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "cgel.zte@gmail.com" <cgel.zte@gmail.com>,
-        "ran.xiaokai@zte.com.cn" <ran.xiaokai@zte.com.cn>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "Bagas Sanjaya" <bagasdotme@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
- oom killed
-Thread-Topic: [PATCH] mm: memcontrol: protect the memory in cgroup from being
- oom killed
-Thread-Index: AQHZBK+NwNVzWF9Xk0ibAn/rxGrWSq5XnGYA//+FgwCAAVYiAP//vByAgACohID//5lJgAAA0fUAABOecIA=
-Date:   Thu, 1 Dec 2022 14:30:11 +0000
-Message-ID: <C9FFF5A4-B883-4C0D-A802-D94080D6C3A4@didiglobal.com>
-In-Reply-To: <Y4inSsNpmomzRt8J@dhcp22.suse.cz>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.79.64.101]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C0A32D731A459844B8D5001BAE8B8536@didichuxing.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229503AbiLAOtR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Dec 2022 09:49:17 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B337CAB033;
+        Thu,  1 Dec 2022 06:49:15 -0800 (PST)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D60F51F896;
+        Thu,  1 Dec 2022 14:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1669906153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dd9BUaTXE6j4+vzi40ih8oFoObulnm4Q4kCMQiHn+lw=;
+        b=CO3pI57IjBHMWPHpcREHsoXcv4WM2js/ae4G2ZCn5aJsvVWxfMJZzGE55vP+gkvVjmX92U
+        SlS42h1BQgpNHHEwpgk4jH8z1Sypc4vhyaYK1/12bhVuKRe2o/e8ZdkWVXYhphUnb8MJN1
+        ipySaGjBsJlfIv0+V3FAJEJlzhy/38g=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C56C713503;
+        Thu,  1 Dec 2022 14:49:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id iNREL+m+iGMhPgAAGKfGzw
+        (envelope-from <mhocko@suse.com>); Thu, 01 Dec 2022 14:49:13 +0000
+Date:   Thu, 1 Dec 2022 15:49:13 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Huang Ying <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
+        shakeelb@google.com, gthelen@google.com, fvdl@google.com,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2] mm: Add nodes= arg to memory.reclaim
+Message-ID: <Y4i+6bjLGy/GF7uM@dhcp22.suse.cz>
+References: <20221130020328.1009347-1-almasrymina@google.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221130020328.1009347-1-almasrymina@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,53 +70,281 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-QXQgMjAyMi0xMi0wMSAyMTowODoyNiwgIk1pY2hhbCBIb2NrbyIgPG1ob2Nrb0BzdXNlLmNvbT4g
-d3JvdGU6DQo+T24gVGh1IDAxLTEyLTIyIDEzOjQ0OjU4LCBNaWNoYWwgSG9ja28gd3JvdGU6DQo+
-PiBPbiBUaHUgMDEtMTItMjIgMTA6NTI6MzUsIOeoi+Wesua2myBDaGVuZ2thaXRhbyBDaGVuZyB3
-cm90ZToNCj4+ID4gQXQgMjAyMi0xMi0wMSAxNjo0OToyNywgIk1pY2hhbCBIb2NrbyIgPG1ob2Nr
-b0BzdXNlLmNvbT4gd3JvdGU6DQo+Wy4uLl0NCj4+IFRoZXJlIGlzIGEgbWlzdW5kZXJzdGFuZGlu
-Zywgb29tLnByb3RlY3QgZG9lcyBub3QgcmVwbGFjZSB0aGUgdXNlcidzIA0KPj4gdGFpbGVkIHBv
-bGljaWVzLCBJdHMgcHVycG9zZSBpcyB0byBtYWtlIGl0IGVhc2llciBhbmQgbW9yZSBlZmZpY2ll
-bnQgZm9yIA0KPj4gdXNlcnMgdG8gY3VzdG9taXplIHBvbGljaWVzLCBvciB0cnkgdG8gYXZvaWQg
-dXNlcnMgY29tcGxldGVseSBhYmFuZG9uaW5nIA0KPj4gdGhlIG9vbSBzY29yZSB0byBmb3JtdWxh
-dGUgbmV3IHBvbGljaWVzLg0KPg0KPiBUaGVuIHlvdSBzaG91bGQgZm9jdXMgb24gZXhwbGFpbmlu
-ZyBvbiBob3cgdGhpcyBtYWtlcyB0aG9zZSBwb2xpY2llcyBhbmQNCj4gZWFzaWVyIGFuZCBtb2Ug
-ZWZmaWNpZW50LiBJIGRvIG5vdCBzZWUgaXQuDQoNCkluIGZhY3QsIHRoZXJlIGFyZSBzb21lIHJl
-bGV2YW50IGNvbnRlbnRzIGluIHRoZSBwcmV2aW91cyBjaGF0IHJlY29yZHMuIA0KSWYgb29tLnBy
-b3RlY3QgaXMgYXBwbGllZCwgaXQgd2lsbCBoYXZlIHRoZSBmb2xsb3dpbmcgYmVuZWZpdHMNCjEu
-IFVzZXJzIG9ubHkgbmVlZCB0byBmb2N1cyBvbiB0aGUgbWFuYWdlbWVudCBvZiB0aGUgbG9jYWwg
-Y2dyb3VwLCBub3QgdGhlIA0KaW1wYWN0IG9uIG90aGVyIHVzZXJzJyBjZ3JvdXBzLg0KMi4gVXNl
-cnMgYW5kIHN5c3RlbSBkbyBub3QgbmVlZCB0byBzcGVuZCBleHRyYSB0aW1lIG9uIGNvbXBsaWNh
-dGVkIGFuZCANCnJlcGVhdGVkIHNjYW5uaW5nIGFuZCBjb25maWd1cmF0aW9uLiBUaGV5IGp1c3Qg
-bmVlZCB0byBjb25maWd1cmUgdGhlIA0Kb29tLnByb3RlY3Qgb2Ygc3BlY2lmaWMgY2dyb3Vwcywg
-d2hpY2ggaXMgYSBvbmUtdGltZSB0YXNrDQoNCj4+ID4gPldoeSBjYW5ub3QgeW91IHNpbXBseSBk
-aXNjb3VudCB0aGUgcHJvdGVjdGlvbiBmcm9tIGFsbCBwcm9jZXNzZXMNCj4+ID4gPmVxdWFsbHk/
-IEkgZG8gbm90IGZvbGxvdyB3aHkgdGhlIHRhc2tfdXNhZ2UgaGFzIHRvIHBsYXkgYW55IHJvbGUg
-aW4NCj4+ID4gPnRoYXQuDQo+PiA+IA0KPj4gPiBJZiBhbGwgcHJvY2Vzc2VzIGFyZSBwcm90ZWN0
-ZWQgZXF1YWxseSwgdGhlIG9vbSBwcm90ZWN0aW9uIG9mIGNncm91cCBpcyANCj4+ID4gbWVhbmlu
-Z2xlc3MuIEZvciBleGFtcGxlLCBpZiB0aGVyZSBhcmUgbW9yZSBwcm9jZXNzZXMgaW4gdGhlIGNn
-cm91cCwgDQo+PiA+IHRoZSBjZ3JvdXAgY2FuIHByb3RlY3QgbW9yZSBtZW1zLCBpdCBpcyB1bmZh
-aXIgdG8gY2dyb3VwcyB3aXRoIGZld2VyIA0KPj4gPiBwcm9jZXNzZXMuIFNvIHdlIG5lZWQgdG8g
-a2VlcCB0aGUgdG90YWwgYW1vdW50IG9mIG1lbW9yeSB0aGF0IGFsbCANCj4+ID4gcHJvY2Vzc2Vz
-IGluIHRoZSBjZ3JvdXAgbmVlZCB0byBwcm90ZWN0IGNvbnNpc3RlbnQgd2l0aCB0aGUgdmFsdWUg
-b2YgDQo+PiA+IGVvb20ucHJvdGVjdC4NCj4+IA0KPj4gWW91IGFyZSBtaXhpbmcgdHdvIGRpZmZl
-cmVudCBjb25jZXB0cyB0b2dldGhlciBJIGFtIGFmcmFpZC4gVGhlIHBlcg0KPj4gbWVtY2cgcHJv
-dGVjdGlvbiBzaG91bGQgcHJvdGVjdCB0aGUgY2dyb3VwIChpLmUuIGFsbCBwcm9jZXNzZXMgaW4g
-dGhhdA0KPj4gY2dyb3VwKSB3aGlsZSB5b3Ugd2FudCBpdCB0byBiZSBhbHNvIHByb2Nlc3MgYXdh
-cmUuIFRoaXMgcmVzdWx0cyBpbiBhDQo+PiB2ZXJ5IHVuY2xlYXIgcnVudGltZSBiZWhhdmlvciB3
-aGVuIGEgcHJvY2VzcyBmcm9tIGEgbW9yZSBwcm90ZWN0ZWQgbWVtY2cNCj4+IGlzIHNlbGVjdGVk
-IGJhc2VkIG9uIGl0cyBpbmRpdmlkdWFsIG1lbW9yeSB1c2FnZS4NCj4NClRoZSBjb3JyZWN0IHN0
-YXRlbWVudCBoZXJlIHNob3VsZCBiZSB0aGF0IGVhY2ggbWVtY2cgcHJvdGVjdGlvbiBzaG91bGQg
-DQpwcm90ZWN0IHRoZSBudW1iZXIgb2YgbWVtcyBzcGVjaWZpZWQgYnkgdGhlIG9vbS5wcm90ZWN0
-LiBGb3IgZXhhbXBsZSwgDQphIGNncm91cCdzIHVzYWdlIGlzIDZHLCBhbmQgaXQncyBvb20ucHJv
-dGVjdCBpcyAyRywgd2hlbiBhbiBvb20ga2lsbGVyIG9jY3VycywgDQpJbiB0aGUgd29yc3QgY2Fz
-ZSwgd2Ugd2lsbCBvbmx5IHJlZHVjZSB0aGUgbWVtb3J5IHVzZWQgYnkgdGhpcyBjZ3JvdXAgdG8g
-MkcgDQp0aHJvdWdoIHRoZSBvbSBraWxsZXIuDQoNCj5MZXQgbWUgYmUgbW9yZSBzcGVjaWZpYyBo
-ZXJlLiBBbHRob3VnaCBpdCBpcyBwcmltYXJpbHkgcHJvY2Vzc2VzIHdoaWNoDQo+YXJlIHRoZSBw
-cmltYXJ5IHNvdXJjZSBvZiBtZW1jZyBjaGFyZ2VzIHRoZSBtZW1vcnkgYWNjb3VudGVkIGZvciB0
-aGUgb29tDQo+YmFkbmVzcyBwdXJwb3NlcyBpcyBub3QgcmVhbGx5IGNvbXBhcmFibGUgdG8gdGhl
-IG92ZXJhbCBtZW1jZyBjaGFyZ2VkDQo+bWVtb3J5LiBLZXJuZWwgbWVtb3J5LCBub24tbWFwcGVk
-IG1lbW9yeSBhbGwgdGhhdCBjYW4gZ2VuZXJhdGUgcmF0aGVyDQo+aW50ZXJlc3RpbmcgY29ybmVy
-Y2FzZXMuDQoNClNvcnJ5LCBJJ20gdGhvdWdodGxlc3MgZW5vdWdoIGFib3V0IHNvbWUgc3BlY2lh
-bCBtZW1vcnkgc3RhdGlzdGljcy4gSSB3aWxsIGZpeCANCml0IGluIHRoZSBuZXh0IHZlcnNpb24N
-CiANClRoYW5rcyBmb3IgeW91ciBjb21tZW50IQ0KY2hlbmdrYWl0YW8NCg0K
+On Tue 29-11-22 18:03:27, Mina Almasry wrote:
+> The nodes= arg instructs the kernel to only scan the given nodes for
+> proactive reclaim. For example use cases, consider a 2 tier memory system:
+> 
+> nodes 0,1 -> top tier
+> nodes 2,3 -> second tier
+> 
+> $ echo "1m nodes=0" > memory.reclaim
+> 
+> This instructs the kernel to attempt to reclaim 1m memory from node 0.
+> Since node 0 is a top tier node, demotion will be attempted first. This
+> is useful to direct proactive reclaim to specific nodes that are under
+> pressure.
+> 
+> $ echo "1m nodes=2,3" > memory.reclaim
+> 
+> This instructs the kernel to attempt to reclaim 1m memory in the second tier,
+> since this tier of memory has no demotion targets the memory will be
+> reclaimed.
+> 
+> $ echo "1m nodes=0,1" > memory.reclaim
+> 
+> Instructs the kernel to reclaim memory from the top tier nodes, which can
+> be desirable according to the userspace policy if there is pressure on
+> the top tiers. Since these nodes have demotion targets, the kernel will
+> attempt demotion first.
+> 
+> Since commit 3f1509c57b1b ("Revert "mm/vmscan: never demote for memcg
+> reclaim""), the proactive reclaim interface memory.reclaim does both
+> reclaim and demotion. Reclaim and demotion incur different latency costs
+> to the jobs in the cgroup. Demoted memory would still be addressable
+> by the userspace at a higher latency, but reclaimed memory would need to
+> incur a pagefault.
+> 
+> The 'nodes' arg is useful to allow the userspace to control demotion
+> and reclaim independently according to its policy: if the memory.reclaim
+> is called on a node with demotion targets, it will attempt demotion first;
+> if it is called on a node without demotion targets, it will only attempt
+> reclaim.
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+
+Thanks for making this per node rather than tier based. This is a more
+generic interface.
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 15 +++---
+>  include/linux/swap.h                    |  3 +-
+>  mm/memcontrol.c                         | 67 ++++++++++++++++++++-----
+>  mm/vmscan.c                             |  4 +-
+>  4 files changed, 68 insertions(+), 21 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 74cec76be9f2..ac5fcbcd5ae6 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1245,17 +1245,13 @@ PAGE_SIZE multiple when read back.
+>  	This is a simple interface to trigger memory reclaim in the
+>  	target cgroup.
+> 
+> -	This file accepts a single key, the number of bytes to reclaim.
+> -	No nested keys are currently supported.
+> +	This file accepts a string which contains the number of bytes to
+> +	reclaim.
+> 
+>  	Example::
+> 
+>  	  echo "1G" > memory.reclaim
+> 
+> -	The interface can be later extended with nested keys to
+> -	configure the reclaim behavior. For example, specify the
+> -	type of memory to reclaim from (anon, file, ..).
+> -
+>  	Please note that the kernel can over or under reclaim from
+>  	the target cgroup. If less bytes are reclaimed than the
+>  	specified amount, -EAGAIN is returned.
+> @@ -1267,6 +1263,13 @@ PAGE_SIZE multiple when read back.
+>  	This means that the networking layer will not adapt based on
+>  	reclaim induced by memory.reclaim.
+> 
+> +	This file also allows the user to specify the nodes to reclaim from,
+> +	via the 'nodes=' key, example::
+> +
+> +	  echo "1G nodes=0,1" > memory.reclaim
+> +
+> +	The above instructs the kernel to reclaim memory from nodes 0,1.
+> +
+>    memory.peak
+>  	A read-only single value file which exists on non-root
+>  	cgroups.
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index b61e2007d156..f542c114dffd 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -419,7 +419,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  						  unsigned long nr_pages,
+>  						  gfp_t gfp_mask,
+> -						  unsigned int reclaim_options);
+> +						  unsigned int reclaim_options,
+> +						  nodemask_t nodemask);
+>  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
+>  						gfp_t gfp_mask, bool noswap,
+>  						pg_data_t *pgdat,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 23750cec0036..a0d7850173a9 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -63,6 +63,7 @@
+>  #include <linux/resume_user_mode.h>
+>  #include <linux/psi.h>
+>  #include <linux/seq_buf.h>
+> +#include <linux/parser.h>
+>  #include "internal.h"
+>  #include <net/sock.h>
+>  #include <net/ip.h>
+> @@ -2392,7 +2393,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+>  		psi_memstall_enter(&pflags);
+>  		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
+>  							gfp_mask,
+> -							MEMCG_RECLAIM_MAY_SWAP);
+> +							MEMCG_RECLAIM_MAY_SWAP,
+> +							NODE_MASK_ALL);
+>  		psi_memstall_leave(&pflags);
+>  	} while ((memcg = parent_mem_cgroup(memcg)) &&
+>  		 !mem_cgroup_is_root(memcg));
+> @@ -2683,7 +2685,8 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> 
+>  	psi_memstall_enter(&pflags);
+>  	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
+> -						    gfp_mask, reclaim_options);
+> +						    gfp_mask, reclaim_options,
+> +						    NODE_MASK_ALL);
+>  	psi_memstall_leave(&pflags);
+> 
+>  	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
+> @@ -3503,7 +3506,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+>  		}
+> 
+>  		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> -					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
+> +					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP,
+> +					NODE_MASK_ALL)) {
+>  			ret = -EBUSY;
+>  			break;
+>  		}
+> @@ -3614,7 +3618,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
+>  			return -EINTR;
+> 
+>  		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> -						  MEMCG_RECLAIM_MAY_SWAP))
+> +						  MEMCG_RECLAIM_MAY_SWAP,
+> +						  NODE_MASK_ALL))
+>  			nr_retries--;
+>  	}
+> 
+> @@ -6407,7 +6412,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  		}
+> 
+>  		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> -					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
+> +					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
+> +					NODE_MASK_ALL);
+> 
+>  		if (!reclaimed && !nr_retries--)
+>  			break;
+> @@ -6456,7 +6462,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+> 
+>  		if (nr_reclaims) {
+>  			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
+> -					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
+> +					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
+> +					NODE_MASK_ALL))
+>  				nr_reclaims--;
+>  			continue;
+>  		}
+> @@ -6579,21 +6586,54 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+>  	return nbytes;
+>  }
+> 
+> +enum {
+> +	MEMORY_RECLAIM_NODES = 0,
+> +	MEMORY_RECLAIM_NULL,
+> +};
+> +
+> +static const match_table_t if_tokens = {
+> +	{ MEMORY_RECLAIM_NODES, "nodes=%s" },
+> +	{ MEMORY_RECLAIM_NULL, NULL },
+> +};
+> +
+>  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  			      size_t nbytes, loff_t off)
+>  {
+>  	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+>  	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+>  	unsigned long nr_to_reclaim, nr_reclaimed = 0;
+> -	unsigned int reclaim_options;
+> -	int err;
+> +	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
+> +				       MEMCG_RECLAIM_PROACTIVE;
+> +	char *old_buf, *start;
+> +	substring_t args[MAX_OPT_ARGS];
+> +	int token;
+> +	char value[256];
+> +	nodemask_t nodemask = NODE_MASK_ALL;
+> 
+>  	buf = strstrip(buf);
+> -	err = page_counter_memparse(buf, "", &nr_to_reclaim);
+> -	if (err)
+> -		return err;
+> 
+> -	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
+> +	old_buf = buf;
+> +	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
+> +	if (buf == old_buf)
+> +		return -EINVAL;
+> +
+> +	buf = strstrip(buf);
+> +
+> +	while ((start = strsep(&buf, " ")) != NULL) {
+> +		if (!strlen(start))
+> +			continue;
+> +		token = match_token(start, if_tokens, args);
+> +		match_strlcpy(value, args, sizeof(value));
+> +		switch (token) {
+> +		case MEMORY_RECLAIM_NODES:
+> +			if (nodelist_parse(value, nodemask) < 0)
+> +				return -EINVAL;
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+>  	while (nr_reclaimed < nr_to_reclaim) {
+>  		unsigned long reclaimed;
+> 
+> @@ -6610,7 +6650,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> 
+>  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+>  						nr_to_reclaim - nr_reclaimed,
+> -						GFP_KERNEL, reclaim_options);
+> +						GFP_KERNEL, reclaim_options,
+> +						nodemask);
+> 
+>  		if (!reclaimed && !nr_retries--)
+>  			return -EAGAIN;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 7b8e8e43806b..23fc5b523764 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -6735,7 +6735,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+>  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  					   unsigned long nr_pages,
+>  					   gfp_t gfp_mask,
+> -					   unsigned int reclaim_options)
+> +					   unsigned int reclaim_options,
+> +					   nodemask_t nodemask)
+>  {
+>  	unsigned long nr_reclaimed;
+>  	unsigned int noreclaim_flag;
+> @@ -6750,6 +6751,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  		.may_unmap = 1,
+>  		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+>  		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+> +		.nodemask = &nodemask,
+>  	};
+>  	/*
+>  	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+> --
+> 2.38.1.584.g0f3c55d4c2-goog
+
+-- 
+Michal Hocko
+SUSE Labs
