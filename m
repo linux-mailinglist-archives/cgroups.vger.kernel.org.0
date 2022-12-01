@@ -2,154 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D715E63EBD5
-	for <lists+cgroups@lfdr.de>; Thu,  1 Dec 2022 10:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E3563ED1E
+	for <lists+cgroups@lfdr.de>; Thu,  1 Dec 2022 11:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbiLAJCQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Dec 2022 04:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
+        id S229568AbiLAKAp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Dec 2022 05:00:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbiLAJCM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Dec 2022 04:02:12 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29BD41999;
-        Thu,  1 Dec 2022 01:02:07 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BAD041FD63;
-        Thu,  1 Dec 2022 09:02:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1669885325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oLNRgcULxl39VgjFJbWNAjDoQ3yDDlm/yFmMG9HhK6M=;
-        b=Ave28KB7tNiE9ZkiI7R4ytVUUUAZgkBbdNR7IQHcXtu89ZpGOoODAgfa8xscLtJtg0hMJJ
-        6gquAn4cxI2y631J5knFx5hUq5LZS8Udhl8vNAHpi6IWv8yq74McDglEEoEtre9bBwt6TB
-        9OFPwbsrQMhymA6Fhqf+pMPYOfRnQhE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3D9E13B4A;
-        Thu,  1 Dec 2022 09:02:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YsXwJ41tiGOJIQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 01 Dec 2022 09:02:05 +0000
-Date:   Thu, 1 Dec 2022 10:02:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
-        <chengkaitao@didiglobal.com>
-Cc:     "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        Tao pilgrim <pilgrimtao@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "cgel.zte@gmail.com" <cgel.zte@gmail.com>,
-        "ran.xiaokai@zte.com.cn" <ran.xiaokai@zte.com.cn>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] mm: memcontrol: protect the memory in cgroup from being
- oom killed
-Message-ID: <Y4htjRAX1v7ZzC/z@dhcp22.suse.cz>
-References: <E5A5BCC3-460E-4E81-8DD3-88B4A2868285@didiglobal.com>
- <5019F6D4-D341-4A5E-BAA1-1359A090114A@didiglobal.com>
+        with ESMTP id S229520AbiLAKAo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Dec 2022 05:00:44 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C50B1D1;
+        Thu,  1 Dec 2022 02:00:42 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id o5-20020a17090a678500b00218cd5a21c9so1485970pjj.4;
+        Thu, 01 Dec 2022 02:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RvAcF4yt3U38ulka5v5lZO8tAA6N2kN/9W8fhnuQ3DA=;
+        b=PthsZ+Q8Y6NJRwPCIBP8MuFSXijY5REyP5RtsSO9OPxZiWTEKKwFMOos6DjWLQvBKM
+         9+68aLFA2KJibeLzcXKW+TRr0f8kBeVJPCy/2qKzfHy90Fie4M+cp5nPkc4pk11SeAia
+         jH57uge2Q/jZXwDKyyUdiowPc6qMj7ayVGHpMarZsh6DN2oGN8wu5NKo3Iqfpk4ydUIY
+         gmi0PquZQL7ahFmfCvPlElkpeJ25wvgTILpt2DQBpdv8azUNSn4Cu5/LBB5hDW8mQ6bU
+         yoe5DDNTuabeiXazVGv43j+CRYcNSOCynorXMDyO4wEWc21G3Ob/mnt/+/tlpaqSP8bC
+         8inw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RvAcF4yt3U38ulka5v5lZO8tAA6N2kN/9W8fhnuQ3DA=;
+        b=KGQeTFmVefap1I1F7sL06aLc30TWe4O2+9GFZ9OinTb9IwPYT8SAkPFZubmSnEPpGK
+         CeLVcsJTp3yhFsVJNdRk5un3j+iz2LK0ehiOpmPnjcX0kZ9fh8JHMDO2nR+MiIL4DI0N
+         GCCCKH94/wsD5w7gs6hVIP+WK70ox5kqyuioagD6Y4zjf0bLgFy9yTNj0W6JrXVlYAtO
+         GIoLO94QtXwsc3W97n61SAmBgyL/r3d/HlRM/Kj5VQAit5IjM+5YTqQSaJv6760K1OTR
+         r5HxasWm9ZgfPtnRq3TBoH+entgf7FMoeVNgvVTG78QRDsal2ET3BYA8M9OVU2vR930n
+         f/Gw==
+X-Gm-Message-State: ANoB5pmjI+OwdBzoqBeuyxqsKdA4sVfPZ8/duxEhcAdtMqPV98kgT5Ju
+        qe1eMc1ZnDnTNrxeNaWj85M=
+X-Google-Smtp-Source: AA0mqf4q2CFgsKrPNGmoGiXBxaXgDpo6jm9FaGZY3ctXH6/vkBqjnYSGyNASdEdM2/KZINfk539FIw==
+X-Received: by 2002:a17:902:ab89:b0:185:3659:1ce9 with SMTP id f9-20020a170902ab8900b0018536591ce9mr44744790plr.26.1669888841580;
+        Thu, 01 Dec 2022 02:00:41 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id m13-20020a170902f64d00b001891ea4d133sm3185378plg.12.2022.12.01.02.00.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Dec 2022 02:00:41 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 1 Dec 2022 00:00:39 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Li Nan <linan122@huawei.com>, josef@toxicpanda.com,
+        axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH -next v2 9/9] blk-iocost: fix walk_list corruption
+Message-ID: <Y4h7RxdT83g+zFN0@slm.duckdns.org>
+References: <20221130132156.2836184-1-linan122@huawei.com>
+ <20221130132156.2836184-10-linan122@huawei.com>
+ <Y4fEKZy4rTE5rG/5@slm.duckdns.org>
+ <c028dd77-cabf-edd6-c893-8ee24762ac8c@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5019F6D4-D341-4A5E-BAA1-1359A090114A@didiglobal.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c028dd77-cabf-edd6-c893-8ee24762ac8c@huaweicloud.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 01-12-22 07:49:04, 程垲涛 Chengkaitao Cheng wrote:
-> At 2022-12-01 07:29:11, "Roman Gushchin" <roman.gushchin@linux.dev> wrote:
-[...]
-> >The problem is that the decision which process(es) to kill or preserve
-> >is individual to a specific workload (and can be even time-dependent
-> >for a given workload). 
+On Thu, Dec 01, 2022 at 09:19:54AM +0800, Yu Kuai wrote:
+> > > diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+> > > index 710cf63a1643..d2b873908f88 100644
+> > > --- a/block/blk-iocost.c
+> > > +++ b/block/blk-iocost.c
+> > > @@ -2813,13 +2813,14 @@ static void ioc_rqos_exit(struct rq_qos *rqos)
+> > >   {
+> > >   	struct ioc *ioc = rqos_to_ioc(rqos);
+> > > +	del_timer_sync(&ioc->timer);
+> > > +
+> > >   	blkcg_deactivate_policy(rqos->q, &blkcg_policy_iocost);
+> > >   	spin_lock_irq(&ioc->lock);
+> > >   	ioc->running = IOC_STOP;
+> > >   	spin_unlock_irq(&ioc->lock);
+> > > -	del_timer_sync(&ioc->timer);
+> > 
+> > I don't about this workaround. Let's fix properly?
 > 
-> It is correct to kill a process with high workload, but it may not be the 
-> most appropriate. I think the specific process to kill needs to be decided 
-> by the user. I think it is the original intention of score_adj design.
+> Ok, and by the way, is there any reason to delete timer after
+> deactivate policy? This seems a litter wreid to me.
 
-I guess what Roman tries to say here is that there is no obviously _correct_
-oom victim candidate. Well, except for a very narrow situation when
-there is a memory leak that consumes most of the memory over time. But
-that is really hard to identify by the oom selection algorithm in
-general.
- 
-> >So it's really hard to come up with an in-kernel
-> >mechanism which is at the same time flexible enough to work for the majority
-> >of users and reliable enough to serve as the last oom resort measure (which
-> >is the basic goal of the kernel oom killer).
-> >
-> Our goal is to find a method that is less intrusive to the existing 
-> mechanisms of the kernel, and find a more reasonable supplement 
-> or alternative to the limitations of score_adj.
-> 
-> >Previously the consensus was to keep the in-kernel oom killer dumb and reliable
-> >and implement complex policies in userspace (e.g. systemd-oomd etc).
-> >
-> >Is there a reason why such approach can't work in your case?
-> 
-> I think that as kernel developers, we should try our best to provide 
-> users with simpler and more powerful interfaces. It is clear that the 
-> current oom score mechanism has many limitations. Users need to 
-> do a lot of timed loop detection in order to complete work similar 
-> to the oom score mechanism, or develop a new mechanism just to 
-> skip the imperfect oom score mechanism. This is an inefficient and 
-> forced behavior
+ioc->running is what controls whether the timer gets rescheduled or not. If
+we don't shut that down, the timer may as well get rescheduled after being
+deleted. Here, the only extra activation point is IO issue which shouldn't
+trigger during rq_qos_exit, so the ordering shouldn't matter but this is the
+right order for anything which can get restarted.
 
-You are right that it makes sense to address typical usecases in the
-kernel if that is possible. But oom victim selection is really hard
-without a deeper understanding of the actual workload. The more clever
-we try to be the more corner cases we can produce. Please note that this
-has proven to be the case in the long oom development history. We used
-to sacrifice child processes over a large process to preserve work or
-prefer younger processes. Both those strategies led to problems.
-
-Memcg protection based mechanism sounds like an interesting idea because
-it mimics a reclaim protection scheme but I am a bit sceptical it will
-be practically useful. Most for 2 reasons. a) memory reclaim protection
-can be dynamically tuned because on reclaim/refault/psi metrics. oom
-events are rare and mostly a failure situation. This limits any feedback
-based approach IMHO. b) Hierarchical nature of the protection will make
-it quite hard to configure properly with predictable outcome.
+Thanks.
 
 -- 
-Michal Hocko
-SUSE Labs
+tejun
