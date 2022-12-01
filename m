@@ -2,188 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E1163E758
-	for <lists+cgroups@lfdr.de>; Thu,  1 Dec 2022 02:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171F763E78A
+	for <lists+cgroups@lfdr.de>; Thu,  1 Dec 2022 03:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiLABxN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Nov 2022 20:53:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S229516AbiLACMW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Nov 2022 21:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbiLABwb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 20:52:31 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F204D9B78E;
-        Wed, 30 Nov 2022 17:52:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1669859549; x=1701395549;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=Vk+5RQ6gIF2GbcRS2BKVQnyGwTJY0fP3SV/tnFs8Kn8=;
-  b=lQoCuEEgktqDxAdNqOKysFgCkB7Fg23XarQksfg1XLY+mGlUjBG5ChRb
-   jw19aMnk+UisfpcN9jT0e4kPUOZ1N5onOdZiTsvAhIxG0WmUzOnmuWVQq
-   8z8vwBcUvbLXfOzwL0QWwGtfF1ohniHLL3LGv+HCg2hIfdP1iHzaYXJEY
-   fsQJp1JpfEbmhb0AjF3M2B/eiaUFlcmqpj7D7ZfP+kE17S13jvyI4CjzA
-   Y6jeRSh5GDDMuprqjtVzr5CkMOIQcj8XY4DWQETU4Y3WcVByKQ2DUn4V2
-   UaYd2xRlTUn0/t/kp1lgojZwh53nxluUCjOKD5CrMFQLEbePZvyp7t/S9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10547"; a="377727133"
-X-IronPort-AV: E=Sophos;i="5.96,207,1665471600"; 
-   d="scan'208";a="377727133"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 17:52:09 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10547"; a="889529302"
-X-IronPort-AV: E=Sophos;i="5.96,207,1665471600"; 
-   d="scan'208";a="889529302"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2022 17:52:05 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, weixugc@google.com,
-        shakeelb@google.com, gthelen@google.com, fvdl@google.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH V1] mm: Disable demotion from proactive reclaim
-In-Reply-To: <CAHbLzkr_njh2xtAf6RME_Fe0TgTKdC4mcsUe24orqVScjibUrA@mail.gmail.com>
-        (Yang Shi's message of "Wed, 30 Nov 2022 10:49:15 -0800")
-References: <20221122203850.2765015-1-almasrymina@google.com>
-        <Y35fw2JSAeAddONg@cmpxchg.org>
-        <CAHS8izN+xqM67XLT4y5qyYnGQMUWRQCJrdvf2gjTHd8nZ_=0sw@mail.gmail.com>
-        <Y36XchdgTCsMP4jT@cmpxchg.org>
-        <874juonbmv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkrmxyzH4R7a9sJQavrUyKCEiNYeA543+sdJLsgRPrwBwQ@mail.gmail.com>
-        <87a64ad1iz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkpVZf-3K0Ys8HG8x6D_XpPChB-H2XMYar7UwnNDeMiw8w@mail.gmail.com>
-        <87ilixatyw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkr_njh2xtAf6RME_Fe0TgTKdC4mcsUe24orqVScjibUrA@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Thu, 01 Dec 2022 09:51:08 +0800
-Message-ID: <87h6yfao37.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        with ESMTP id S229515AbiLACMV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Nov 2022 21:12:21 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF6254465;
+        Wed, 30 Nov 2022 18:12:19 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NN02N574Rz4f3s8m;
+        Thu,  1 Dec 2022 10:12:12 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgC3YK99DYhjepV1BQ--.2209S3;
+        Thu, 01 Dec 2022 10:12:15 +0800 (CST)
+Subject: Re: [PATCH -next v2 8/9] block: fix null-pointer dereference in
+ ioc_pd_init
+To:     Tejun Heo <tj@kernel.org>, Li Nan <linan122@huawei.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20221130132156.2836184-1-linan122@huawei.com>
+ <20221130132156.2836184-9-linan122@huawei.com>
+ <Y4fCE7XxcpDfWyDJ@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <9ca2b7ab-7fd3-a9a3-12a6-021a78886b54@huaweicloud.com>
+Date:   Thu, 1 Dec 2022 10:12:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y4fCE7XxcpDfWyDJ@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgC3YK99DYhjepV1BQ--.2209S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF4DCFWrZw4rZr1kWF17Jrb_yoW8Ww4UpF
+        WfWF1Yy34jqrs3t3WDAw4xAryYqrs5WF1fZ3s8A3sI9FZruw1Yq3W2kFWqgayxZrs8Zr1F
+        qayjqw17Xry0yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
+Hi,
 
-> On Tue, Nov 29, 2022 at 9:33 PM Huang, Ying <ying.huang@intel.com> wrote:
+ÔÚ 2022/12/01 4:50, Tejun Heo Ð´µÀ:
+> On Wed, Nov 30, 2022 at 09:21:55PM +0800, Li Nan wrote:
+>> Remove block device when iocost is initializing may cause
+>> null-pointer dereference:
 >>
->> Yang Shi <shy828301@gmail.com> writes:
+>> 	CPU1				   CPU2
+>>    ioc_qos_write
+>>     blkcg_conf_open_bdev
+>>      blkdev_get_no_open
+>>       kobject_get_unless_zero
+>>      blk_iocost_init
+>>       rq_qos_add
+>>    					del_gendisk
+>>    					 rq_qos_exit
+>>    					  q->rq_qos = rqos->next
+>>    					   //iocost is removed from q->roqs
+>>        blkcg_activate_policy
+>>         pd_init_fn
+>>          ioc_pd_init
+>>    	 ioc = q_to_ioc(blkg->q)
+>>   	  //cant find iocost and return null
 >>
->> > On Mon, Nov 28, 2022 at 4:54 PM Huang, Ying <ying.huang@intel.com> wrote:
->> >>
->> >> Yang Shi <shy828301@gmail.com> writes:
->> >>
->> >> > On Wed, Nov 23, 2022 at 9:52 PM Huang, Ying <ying.huang@intel.com> wrote:
->> >> >>
->> >> >> Hi, Johannes,
->> >> >>
->> >> >> Johannes Weiner <hannes@cmpxchg.org> writes:
->> >> >> [...]
->> >> >> >
->> >> >> > The fallback to reclaim actually strikes me as wrong.
->> >> >> >
->> >> >> > Think of reclaim as 'demoting' the pages to the storage tier. If we
->> >> >> > have a RAM -> CXL -> storage hierarchy, we should demote from RAM to
->> >> >> > CXL and from CXL to storage. If we reclaim a page from RAM, it means
->> >> >> > we 'demote' it directly from RAM to storage, bypassing potentially a
->> >> >> > huge amount of pages colder than it in CXL. That doesn't seem right.
->> >> >> >
->> >> >> > If demotion fails, IMO it shouldn't satisfy the reclaim request by
->> >> >> > breaking the layering. Rather it should deflect that pressure to the
->> >> >> > lower layers to make room. This makes sure we maintain an aging
->> >> >> > pipeline that honors the memory tier hierarchy.
->> >> >>
->> >> >> Yes.  I think that we should avoid to fall back to reclaim as much as
->> >> >> possible too.  Now, when we allocate memory for demotion
->> >> >> (alloc_demote_page()), __GFP_KSWAPD_RECLAIM is used.  So, we will trigger
->> >> >> kswapd reclaim on lower tier node to free some memory to avoid fall back
->> >> >> to reclaim on current (higher tier) node.  This may be not good enough,
->> >> >> for example, the following patch from Hasan may help via waking up
->> >> >> kswapd earlier.
->> >> >
->> >> > For the ideal case, I do agree with Johannes to demote the page tier
->> >> > by tier rather than reclaiming them from the higher tiers. But I also
->> >> > agree with your premature OOM concern.
->> >> >
->> >> >>
->> >> >> https://lore.kernel.org/linux-mm/b45b9bf7cd3e21bca61d82dcd1eb692cd32c122c.1637778851.git.hasanalmaruf@fb.com/
->> >> >>
->> >> >> Do you know what is the next step plan for this patch?
->> >> >>
->> >> >> Should we do even more?
->> >> >
->> >> > In my initial implementation I implemented a simple throttle logic
->> >> > when the demotion is not going to succeed if the demotion target has
->> >> > not enough free memory (just check the watermark) to make migration
->> >> > succeed without doing any reclamation. Shall we resurrect that?
->> >>
->> >> Can you share the link to your throttle patch?  Or paste it here?
->> >
->> > I just found this on the mailing list.
->> > https://lore.kernel.org/linux-mm/1560468577-101178-8-git-send-email-yang.shi@linux.alibaba.com/
->>
->> Per my understanding, this patch will avoid demoting if there's no free
->> space on demotion target?  If so, I think that we should trigger kswapd
->> reclaiming on demotion target before that.  And we can simply avoid to
->> fall back to reclaim firstly, then avoid to scan as an improvement as
->> that in your patch above.
->
-> Yes, it should. The rough idea looks like:
->
-> if (the demote target is contended)
->     wake up kswapd
->     reclaim_throttle(VMSCAN_THROTTLE_DEMOTION)
->     retry demotion
->
-> The kswapd is responsible for clearing the contention flag.
+>> Fix problem by moving rq_qos_exit() to disk_release(). ioc_qos_write() get
+>> bd_device.kobj in blkcg_conf_open_bdev(), so disk_release will not be
+>> actived until iocost initialization is complited.
+> 
+> I think it'd be better to make del_gendisk wait for these in-flight
+> operations because this might fix the above particular issue but now all the
+> policies are exposed to request_queue in a state it never expected before.
+> 
+> del_gendisk() is quiescing the queue around rq_qos_exit(), so maybe we can
+> piggyback on that and update blkcg_conf_open_bdev() to provide such
+> exclusion?
 
-We may do this, at least for demotion in kswapd.  But I think that this
-could be the second step optimization after we make correct choice
-between demotion/reclaim.  What if the pages in demotion target is too
-hot to be reclaimed first?  Should we reclaim in fast memory node to
-avoid OOM?
+Let del_gendisk waiting for that sounds good, but I'm litter confused
+how to do that. Following are what I think about:
 
-Best Regards,
-Huang, Ying
+1) By mentioning that "del_gendisk() is quiescing the queue", do you
+suggest to add rcu_read_lock()? This seems wrong because blk_iocost_init
+requires memory allocation.
 
->>
->> > But it didn't have the throttling logic, I may not submit that version
->> > to the mailing list since we decided to drop this and merge mine and
->> > Dave's.
->> >
->> > Anyway it is not hard to add the throttling logic, we already have a
->> > few throttling cases in vmscan, for example, "mm/vmscan: throttle
->> > reclaim until some writeback completes if congested".
->> >>
->> >> > Waking kswapd sooner is fine to me, but it may be not enough, for
->> >> > example, the kswapd may not keep up so remature OOM may happen on
->> >> > higher tiers or reclaim may still happen. I think throttling the
->> >> > reclaimer/demoter until kswapd makes progress could avoid both. And
->> >> > since the lower tiers memory typically is quite larger than the higher
->> >> > tiers, so the throttle should happen very rarely IMHO.
->> >> >
->> >> >>
->> >> >> From another point of view, I still think that we can use falling back
->> >> >> to reclaim as the last resort to avoid OOM in some special situations,
->> >> >> for example, most pages in the lowest tier node are mlock() or too hot
->> >> >> to be reclaimed.
->> >> >>
->> >> >> > So I'm hesitant to design cgroup controls around the current behavior.
->> >>
->> >> Best Regards,
->> >> Huang, Ying
+2) Hold gendisk open mutex
+
+3) Use q_usage_counter, and in the meantime, rq_qos_add() and
+blkcg_activate_policy() will need refactoring to factor out freeze
+queue.
+
+4) Define a new metux
+
+Thanks,
+Kuai
+> 
+> Thanks.
+> 
+
