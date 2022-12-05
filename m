@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A3642218
+	by mail.lfdr.de (Postfix) with ESMTP id 07D43642216
 	for <lists+cgroups@lfdr.de>; Mon,  5 Dec 2022 04:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbiLED6J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 4 Dec 2022 22:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
+        id S231453AbiLED6H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 4 Dec 2022 22:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbiLED6C (ORCPT
+        with ESMTP id S231336AbiLED6C (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Sun, 4 Dec 2022 22:58:02 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62764FCCD;
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FBEFD29;
         Sun,  4 Dec 2022 19:58:00 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NQVBW2jCQz4f3rq6;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NQVBW1ZTyz4f3pG9;
         Mon,  5 Dec 2022 11:57:55 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP1 (Coremail) with SMTP id cCh0CgDXfq1CbI1jRaRVBg--.57323S9;
-        Mon, 05 Dec 2022 11:57:57 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgDXfq1CbI1jRaRVBg--.57323S10;
+        Mon, 05 Dec 2022 11:57:58 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, shikemeng@huawei.com,
         linfeilong@huawei.com, liuzhiqiang26@huawei.com
-Subject: [PATCH v3 7/9] blk-throttle: remove incorrect comment for tg_last_low_overflow_time
-Date:   Mon,  5 Dec 2022 19:57:07 +0800
-Message-Id: <20221205115709.251489-8-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 8/9] blk-throttle: remove repeat check of elapsed time from last upgrade in throtl_hierarchy_can_downgrade
+Date:   Mon,  5 Dec 2022 19:57:08 +0800
+Message-Id: <20221205115709.251489-9-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20221205115709.251489-1-shikemeng@huaweicloud.com>
 References: <20221205115709.251489-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDXfq1CbI1jRaRVBg--.57323S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7WrWkGF47tr4UWrW7Cr4UJwb_yoW8Jw43pr
-        W7tFW8GrsrXws7Kr4Yq3ZxWFWUtw4xJrW3t3sI9rW3AF4fXw1DWFn7CF1rXa1FvF97C3y0
-        yF43try8G3WUXFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: cCh0CgDXfq1CbI1jRaRVBg--.57323S10
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWrJFyUAF4xGF4UJr1rXrb_yoW8XFyrpF
+        W3ArWUKr1kWrsFkr43t3ZxWay8Kw4xGry5t3s8Wr43AF4Uuw1UGF13CF1Fqa40vF9a9w40
+        yr4ayry8Ka1UXrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
         8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
@@ -62,42 +62,44 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Kemeng Shi <shikemeng@huawei.com>
 
-Function tg_last_low_overflow_time is called with intermediate node as
-following:
-throtl_hierarchy_can_downgrade
-  throtl_tg_can_downgrade
-    tg_last_low_overflow_time
-
-throtl_hierarchy_can_upgrade
-  throtl_tg_can_upgrade
-    tg_last_low_overflow_time
-
-throtl_hierarchy_can_downgrade/throtl_hierarchy_can_upgrade will traverse
-from leaf node to sub-root node and pass traversed intermediate node
-to tg_last_low_overflow_time.
-
-No such limit could be found from context and implementation of
-tg_last_low_overflow_time, so remove this limit in comment.
+There is no need to check elapsed time from last upgrade for each node in
+hierarchy. Move this check before traversing as throtl_can_upgrade do
+to remove repeat check.
 
 Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com>
 Acked-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- block/blk-throttle.c | 1 -
- 1 file changed, 1 deletion(-)
+ block/blk-throttle.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 7db8592dae38..e6a087de414d 100644
+index e6a087de414d..413e668249cf 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -1762,7 +1762,6 @@ static unsigned long __tg_last_low_overflow_time(struct throtl_grp *tg)
- 	return min(rtime, wtime);
- }
+@@ -1955,8 +1955,7 @@ static bool throtl_tg_can_downgrade(struct throtl_grp *tg)
+ 	 * If cgroup is below low limit, consider downgrade and throttle other
+ 	 * cgroups
+ 	 */
+-	if (time_after_eq(now, td->low_upgrade_time + td->throtl_slice) &&
+-	    time_after_eq(now, tg_last_low_overflow_time(tg) +
++	if (time_after_eq(now, tg_last_low_overflow_time(tg) +
+ 					td->throtl_slice) &&
+ 	    (!throtl_tg_is_idle(tg) ||
+ 	     !list_empty(&tg_to_blkg(tg)->blkcg->css.children)))
+@@ -1966,6 +1965,11 @@ static bool throtl_tg_can_downgrade(struct throtl_grp *tg)
  
--/* tg should not be an intermediate node */
- static unsigned long tg_last_low_overflow_time(struct throtl_grp *tg)
+ static bool throtl_hierarchy_can_downgrade(struct throtl_grp *tg)
  {
- 	struct throtl_service_queue *parent_sq;
++	struct throtl_data *td = tg->td;
++
++	if (time_before(jiffies, td->low_upgrade_time + td->throtl_slice))
++		return false;
++
+ 	while (true) {
+ 		if (!throtl_tg_can_downgrade(tg))
+ 			return false;
 -- 
 2.30.0
 
