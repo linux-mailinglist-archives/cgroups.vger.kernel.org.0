@@ -2,97 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB24643064
-	for <lists+cgroups@lfdr.de>; Mon,  5 Dec 2022 19:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D997643302
+	for <lists+cgroups@lfdr.de>; Mon,  5 Dec 2022 20:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbiLESa0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Dec 2022 13:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
+        id S234325AbiLETdd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Dec 2022 14:33:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbiLESaJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Dec 2022 13:30:09 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D462124A;
-        Mon,  5 Dec 2022 10:26:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670264771; x=1701800771;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=6Ibb9FHX6sDZCVR/tQ45ZXWV1fgsrR8xYe8426ATKDs=;
-  b=HVMyzuTQbjCHl37OyUHWo8Au1jNGjK6PCJu/rEwXb5T1I+vX6zUg1SeL
-   AiIZkD6DjHACUvWoTkHXmlo86d+mcTrMou7nbbggUZA4d08ulznikMv5p
-   Cowst5sCHeBKcseF/aBKwiY9did2pruwWU6m24z9kOSza6JHGRwdcc1fr
-   ej5YZUT4tMsJhWY+dRXZ7ugMxcMaJM71JIRhSrHB69exUOONwTU88eR3n
-   nK3YBtYuXQ1i4xSUhvHb7Tmz0n0ECDgd3QhVdVW5ap7c4naHa/3yvVkjs
-   bRmpycocOsyPv7lF6W/1sguczneZRphn6gVy0eeueos+lSrNWNRhUsL+S
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10552"; a="317570171"
-X-IronPort-AV: E=Sophos;i="5.96,220,1665471600"; 
-   d="scan'208";a="317570171"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2022 10:25:59 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10552"; a="752302027"
-X-IronPort-AV: E=Sophos;i="5.96,220,1665471600"; 
-   d="scan'208";a="752302027"
-Received: from almamunm-mobl.amr.corp.intel.com (HELO [10.209.53.139]) ([10.209.53.139])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2022 10:25:57 -0800
-Message-ID: <7017151a739c42516ace0de439679b37016b031c.camel@linux.intel.com>
-Subject: Re: [PATCH v2 07/18] x86/sgx: Use a list to track to-be-reclaimed
- pages during reclaim
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     zhiquan1.li@intel.com, Sean Christopherson <seanjc@google.com>
-Date:   Mon, 05 Dec 2022 10:25:56 -0800
-In-Reply-To: <6668e428-8e4a-0a44-d77c-a540c04d72ed@intel.com>
-References: <20221202183655.3767674-1-kristen@linux.intel.com>
-         <20221202183655.3767674-8-kristen@linux.intel.com>
-         <0646275c-0ab9-2fad-8db1-7098656d6e1d@intel.com>
-         <931e48dc399eddf8ad9f9dec8783f57df776daa9.camel@linux.intel.com>
-         <6668e428-8e4a-0a44-d77c-a540c04d72ed@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234267AbiLETdR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Dec 2022 14:33:17 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2B8286C0
+        for <cgroups@vger.kernel.org>; Mon,  5 Dec 2022 11:28:16 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id z11-20020a170903018b00b00189b992aad7so11417482plg.11
+        for <cgroups@vger.kernel.org>; Mon, 05 Dec 2022 11:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t2eV37n1EV50KN4L5BF+kL5AM4qRwzFeAkejJliXYvE=;
+        b=OXixcqr3xZZ9Hudft/Jy24A4UlcW/Yb6EPf+E30B+Y3SrNhoNoQK+pCDrL/PMBDL82
+         IKcAOaMUGYH18Gh0odJqUTEELnNAropoi9gMTbXzIRbC6SljHGZd+rT95xqsGFvPic/v
+         sTqJEV88g2wzK30Nz1wYLyY6DgGQm7B8iNTPT1bVcf6ZiPyuFIGsvVEKRmmfY1gdc5xm
+         9MA2j56JA5130vszUlvLjOLBg1AOC0touX+NmNhzcvJ20NgsWpDoctpN+DZtaHkTWw+x
+         l6O4Rzr7mT+phIJg/gOMUY7jYqiscVkkTUPHYdYGsO2cFfNeKeOJ/nb0kIBvUXlCC+kj
+         Uwuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t2eV37n1EV50KN4L5BF+kL5AM4qRwzFeAkejJliXYvE=;
+        b=onnX/iS1Hf4HYoWCjzbwFjslndT12uR/yTjSwmWA+vMXQuagSy6LcK07Tp5UEe7Obc
+         X5zb6vTkKzAdBB/dsRqI+oPVsiHi+dyX78urU5aWHyoR/F/CSMCwTk4AgmgJQE8bxODA
+         VMef3LMCw8KDVsC1rMzJXYKIAEnhqeesZJqY9BsABoaEZ3N0BiVpK4zKpXA0/CfSaOMO
+         as3IA1aeFPzx/2oL/E8+oUDYofmSv7exNO/SYd5Yu/COON7EiqxGuWtiAFcWMMfEQC/3
+         h4Qv0DB3kkDolYdF8ezMNH1NkAuZ8KRsj6p4qRD4fqsY+07V4mBWCm9sElzI1x1PutfZ
+         N4IA==
+X-Gm-Message-State: ANoB5pkbJBqqU/SEdsvzviptIEAchne8bMPWONBJIxaXfprhkd/z4kiK
+        FKGTUNOpXS0NgOC/XclZc7v0N6xYn5syJA==
+X-Google-Smtp-Source: AA0mqf5iSLEojI6ymm5KY4Cvy/sEXpzhv0X25vL6jTq1Tlafmy0Z146Re+y1UCBZXZ4Atx9lOXv0PbiZWzYBTQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:c006:b0:219:158d:b19a with SMTP
+ id p6-20020a17090ac00600b00219158db19amr51964448pjt.152.1670268496206; Mon,
+ 05 Dec 2022 11:28:16 -0800 (PST)
+Date:   Mon, 5 Dec 2022 19:28:14 +0000
+In-Reply-To: <Y4T43Tc54vlKjTN0@cmpxchg.org>
+Mime-Version: 1.0
+References: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
+ <Y30rdnZ+lrfOxjTB@cmpxchg.org> <CABWYdi3PqipLxnqeepXeZ471pfeBg06-PV0Uw04fU-LHnx_A4g@mail.gmail.com>
+ <CABWYdi0qhWs56WK=k+KoQBAMh+Tb6Rr0nY4kJN+E5YqfGhKTmQ@mail.gmail.com> <Y4T43Tc54vlKjTN0@cmpxchg.org>
+Message-ID: <20221205192814.diiwtktsrgxzccw2@google.com>
+Subject: Re: Low TCP throughput due to vmpressure with swap enabled
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Ivan Babrou <ivan@cloudflare.com>, Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, cgroups@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 2022-12-05 at 09:03 -0800, Dave Hansen wrote:
-> On 12/5/22 08:33, Kristen Carlson Accardi wrote:
-> > The helpers were added because Jarrko requested a queue abstraction
-> > for
-> > the sgx_epc_lru_lists data structure in the first round of reviews.
-> > the
-> > simple one line inlines are effectively just renaming to make the
-> > queue
-> > abstraction more obvious to the reader.
->=20
-> Jarkko,
->=20
-> Do you have any issues with zapping these helpers?=C2=A0 I really don't
-> think
-> they add to readability.=C2=A0 The "reclaimable" versus "unreclaimable"
-> naming is patently obvious from the structure member names.=C2=A0 I'm not
-> sure what value it adds to have them in the function names too.
->=20
->=20
+On Mon, Nov 28, 2022 at 01:07:25PM -0500, Johannes Weiner wrote:
+> 
+[...]
+> > With the patch applied I'm capped at ~120MB/s, which is a symptom of a
+> > clamped window.
+> > 
+> > I can't find any sockets with memcg->socket_pressure = 1, but at the
+> > same time I only see the following rcv_ssthresh assigned to sockets:
+> 
+> Hm, I don't see how socket accounting would alter the network behavior
+> other than through socket_pressure=1.
+> 
 
+I think what is happening is that the tcp stack is calling
+tcp_under_memory_pressure() and making decisions without going through
+the memcg charge codepath which set or reset memcg->socket_pressure.
+Most probably the socket is clamped due to memcg->socket_pressure and
+then the kernel never tried to grow its buffers because
+memcg->socket_pressure is still set and thus never tried the memcg
+charge codepath which would have reset memcg->socket_pressure. (Maybe)
+That is my guess but network experts CCed can correct me.
 
-Well, there's sort of 2 things I would want clarity on before my next
-revision. One is obviously deleting the wrappers for unreclaimable and
-reclaimable pushes etc. The other is deleting the wrappers for the list
-operations (the push/pop/peek queue abstractions) and whether those are
-desired.
+Anyways, I don't think the pressure mechanism which relies on successful
+charging will work. I am brainstorming towards memory.high based network
+throttling. Basically use penalty_jiffies (or something similar) to set
+memcg->socket_pressure. However I want this to be opt-in as we do have
+applications which prefer to be killed than be throttled. So, still
+working on the fine details how this can be done without introducing a
+rigid API.
 
