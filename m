@@ -2,102 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 989496427EE
-	for <lists+cgroups@lfdr.de>; Mon,  5 Dec 2022 12:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782AB642CAC
+	for <lists+cgroups@lfdr.de>; Mon,  5 Dec 2022 17:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbiLEL7i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Dec 2022 06:59:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
+        id S230110AbiLEQUB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Dec 2022 11:20:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbiLEL7f (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Dec 2022 06:59:35 -0500
-X-Greylist: delayed 577 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 05 Dec 2022 03:59:31 PST
-Received: from njjs-sys-mailin02.njjs.baidu.com (mx315.baidu.com [180.101.52.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D99DBE034
-        for <cgroups@vger.kernel.org>; Mon,  5 Dec 2022 03:59:31 -0800 (PST)
-Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by njjs-sys-mailin02.njjs.baidu.com (Postfix) with ESMTP id 5A4211654004B;
-        Mon,  5 Dec 2022 19:49:52 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id 4601AD9932;
-        Mon,  5 Dec 2022 19:49:52 +0800 (CST)
-From:   lirongqing@baidu.com
-To:     linux-mm@kvack.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        songmuchun@bytedance.com, akpm@linux-foundation.org
-Subject: [PATCH] mm: memcontrol: speedup memory cgroup resize
-Date:   Mon,  5 Dec 2022 19:49:52 +0800
-Message-Id: <1670240992-28563-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230309AbiLEQUA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Dec 2022 11:20:00 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CAC1D333
+        for <cgroups@vger.kernel.org>; Mon,  5 Dec 2022 08:19:58 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id v70so5216996oie.3
+        for <cgroups@vger.kernel.org>; Mon, 05 Dec 2022 08:19:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=MWS/JvZcJY4EX4Ib+4OihgA0OkKSjDFs6+tKdwzxspueAWB4Fn2g+xKTKxYaa7nexn
+         r2F1GJzzo6LHchbmEjQvlx80FEGDEkEZKp6vf6o9B/JUvfeH+VRksZPjcnKE2j/qYbjy
+         U4ka9KuEn4J4mAgAPf8PKGI8I1hLPYWVWcQeyD2fVi3HIcvq+HtXVP1x2DKeR2fp9w7X
+         al77m9cj5dzVMv4gADpiNdwiJHpCNA0wdInBKyPIfKxis6h1ByVTeYQvjssoOHngimO/
+         NralOY8A7K5rlhI7MEWYPkFues8oa1G/Vjvi1VUn5snwpYglbh0edUzjgRwpukgbPAmo
+         E+rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4WPtqOs6pYDke8VCfpzwsIX+8zN33o8tLS2XMy/lFU=;
+        b=X2ZElgmTm302fJx2qc6fSHnGFGvVJAzk3oQ7+sGxkY6lhn0pOvBk3SUkz+GxRw7Xvc
+         kdjDxwu9yrW1cLdhor7uh9PdehrMSC36vAC4irq5GGn3kwC7wHMOrc9R+T33mK27kfk7
+         PVgDjKeCVzoO6A5zVJv50kZ/9+1tnlJvdi9Lu9lgqBNqjLNt177eQJzEul4GcVwkaQ2N
+         cboX8QNU50KTVcf2imoZ6y5Rm0H543ig5bOR1R6yZdYVuSgOSndV+tMprnbPwWy+pbAS
+         o/EjPpd6LKnoRU2qBP94RQXlFqGgKo1Dfh/gardZo37L+nvvglsmzUiA6l/7dlmTf7dz
+         jxXA==
+X-Gm-Message-State: ANoB5pm0NIvEp9q/PsCfMzyJyfsZpzWYg1x5mTl+1JUUzd+lYZiUEJXv
+        lU06wS/pXHn7O0TUag5l1Jm+SKwys4O1e2XBtBw=
+X-Google-Smtp-Source: AA0mqf4uRGKJ3oooc36JNyAWEF37CrYjULOinQvEyC3sVRqncK/YSl2TY80IxChZQEj+8UWY8RTR4aQHpiPdCp9T8b0=
+X-Received: by 2002:a05:6808:1905:b0:35b:e3c4:c1ab with SMTP id
+ bf5-20020a056808190500b0035be3c4c1abmr9883226oib.204.1670257198329; Mon, 05
+ Dec 2022 08:19:58 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a05:6870:5ccc:b0:143:84e0:abae with HTTP; Mon, 5 Dec 2022
+ 08:19:57 -0800 (PST)
+Reply-To: phmanu212@hotmail.com
+From:   Philip Manul <phmanu005@gmail.com>
+Date:   Mon, 5 Dec 2022 08:19:57 -0800
+Message-ID: <CAFKg=da0EWkSKYRYDQ_5Oahkxs+dkp2LZf0PFquCgKUSm5Q_sQ@mail.gmail.com>
+Subject: REP:
+To:     in <in@proposal.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Li RongQing <lirongqing@baidu.com>
-
-when resize memory cgroup, avoid to free memory cgroup page
-one by one, and try to free needed number pages once
-
-same to emtpy a memory cgroup memory
-
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- mm/memcontrol.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2d8549ae1b30..86993d055d86 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3464,6 +3464,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 	bool drained = false;
- 	int ret;
- 	bool limits_invariant;
-+	unsigned long nr_pages;
- 	struct page_counter *counter = memsw ? &memcg->memsw : &memcg->memory;
- 
- 	do {
-@@ -3498,7 +3499,13 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 			continue;
- 		}
- 
--		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-+		nr_pages = page_counter_read(counter);
-+
-+		if (nr_pages > max)
-+			nr_pages = nr_pages - max;
-+		else
-+			nr_pages = 1;
-+		if (!try_to_free_mem_cgroup_pages(memcg, nr_pages, GFP_KERNEL,
- 					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
- 			ret = -EBUSY;
- 			break;
-@@ -3598,6 +3605,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- {
- 	int nr_retries = MAX_RECLAIM_RETRIES;
-+	unsigned long nr_pages;
- 
- 	/* we call try-to-free pages for make this cgroup empty */
- 	lru_add_drain_all();
-@@ -3605,11 +3613,11 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 	drain_all_stock(memcg);
- 
- 	/* try to free all pages in this cgroup */
--	while (nr_retries && page_counter_read(&memcg->memory)) {
-+	while (nr_retries && (nr_pages = page_counter_read(&memcg->memory))) {
- 		if (signal_pending(current))
- 			return -EINTR;
- 
--		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-+		if (!try_to_free_mem_cgroup_pages(memcg, nr_pages, GFP_KERNEL,
- 						  MEMCG_RECLAIM_MAY_SWAP))
- 			nr_retries--;
- 	}
--- 
-2.27.0
-
+--=20
+Guten tag,
+Mein Name ist Philip Manul. Ich bin von Beruf Rechtsanwalt. Ich habe
+einen verstorbenen Kunden, der zuf=C3=A4llig denselben Namen mit Ihnen
+teilt. Ich habe alle Papierdokumente in meinem Besitz. Ihr Verwandter,
+mein verstorbener Kunde, hat hier in meinem Land einen nicht
+beanspruchten Fonds zur=C3=BCckgelassen. Ich warte auf Ihre Antwort zum
+Verfahren.
+Philip Manul.
