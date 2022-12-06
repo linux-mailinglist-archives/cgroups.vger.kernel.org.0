@@ -2,68 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 733AE644A14
-	for <lists+cgroups@lfdr.de>; Tue,  6 Dec 2022 18:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546EB644C22
+	for <lists+cgroups@lfdr.de>; Tue,  6 Dec 2022 20:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235712AbiLFROu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Dec 2022 12:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
+        id S229571AbiLFTAX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Dec 2022 14:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235770AbiLFRO3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Dec 2022 12:14:29 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EDE32044
-        for <cgroups@vger.kernel.org>; Tue,  6 Dec 2022 09:14:25 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id l11so21264250edb.4
-        for <cgroups@vger.kernel.org>; Tue, 06 Dec 2022 09:14:25 -0800 (PST)
+        with ESMTP id S229546AbiLFTAW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Dec 2022 14:00:22 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498E52FFEE
+        for <cgroups@vger.kernel.org>; Tue,  6 Dec 2022 11:00:20 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id t62so17987177oib.12
+        for <cgroups@vger.kernel.org>; Tue, 06 Dec 2022 11:00:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i7DLHKnfgUHUqbOM/z8uZ79UX5oa3K/ENnh6OCW5tqs=;
-        b=SVtFnYIHXMecHvxYJx77nJRHucuFwk5/9UG0Gzc0VixuyFsGI76/q4dIZTOj1/SyqT
-         O82nl1FhPWAuz6lthA4angI6hMP1oZ1qGqag/8sKuVxBGm3pxTJTOWSvPrnOqtbj5jfd
-         dswMPCRu9hqrDyIeHIcBn4yV+mIpsTk4mtqkiH6YM7R3FEaAd3SHSxjIa0Zn6WW0paME
-         3RAvrTuiv3qqMZnPDfVp3gFd0wYptMFNXnJ/2pl0ugruoWzEj4p0JQBQjH47NBbb0t+v
-         fuorAUnWM8LTnOrOiOvW4DKQWz57wcJP0qAtpCExb4/f/oq8NDnkZRVOa6F4b3YFJBO1
-         Hedg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7gB/zC3m6z18bCMXQvK6wTNUYxsgfiVZcwxTbNoVdos=;
+        b=jSdWy/gKx+It09U4YF2P+7xcTqOoHTZQEmqSGvfz9HpmcbbClVtZE1IzBXcVMDNmQh
+         /h5mKFAGvqvDXiBofNHhhwRBK8cXilalcdNBwy3k3nycfKb5Qq8XdOTZ/Yv0eMff8lGF
+         PTlfpLzpt648yElTTUJ+j9l5P1RWsJwM3C7imX/tozIrGN8qmsVglIuZelLVy8uo9kc1
+         XyFSqwU+0gg6mGrzZ48w6PfB/T3bAJ/MwyYLZ2LVOqjWfMd0fxClG5leO3aMSdR75LIQ
+         OsqM1DzXnsZN7JMTM+xDMgY+FlV/ibArwPYxMrV/vWC0evdlh4/17g2nr/QvvYw05ezi
+         dcBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i7DLHKnfgUHUqbOM/z8uZ79UX5oa3K/ENnh6OCW5tqs=;
-        b=FgRx7GDXhpQCW7E12pjCiupZu44YmGLtUl29BT4HLRySI5ShgP+PUBYLgX8rItCC8D
-         XtT+zALYGKMz3Dw/R4Zr0Zeod7yDZNI2TW/tR4GNPGrlhXGwjXF14gQU5O2IpHIMLjl+
-         YyjHwLs3kqnxcsLESYCHkiJfoLe5P6/xkQYzaTeloaeCVGFLbs3MT4pX8TpxiuTfqqal
-         4yLCkFbNn4sHElnG9FJ1nwZaOkYMF90CeIMpY+m78omiHqm+sHbJzQRjPWrlRHugDBeS
-         kG0ZbuRcpiiqjoJC7gGP1O4gS6aOOsZVuBFOzV9PXD20KJ8o+MqukJZq2NKY4FUqLJh+
-         UbDA==
-X-Gm-Message-State: ANoB5pmwX2jpEBoK6OGLirlapWuHj1A71YPeTmgZodjp9bzwHPIkZNE3
-        6HOC6cBnuTxl74SLsxxY7T/Qvg==
-X-Google-Smtp-Source: AA0mqf4zM0Xfm3o50FPw1HED00hbjDIYwQEpUTYuG4CSMG/pv2gDG2TkVQ9Z4W/PFOBStf5o5pM4yg==
-X-Received: by 2002:a05:6402:2213:b0:46b:1d60:f60a with SMTP id cq19-20020a056402221300b0046b1d60f60amr37331636edb.193.1670346865233;
-        Tue, 06 Dec 2022 09:14:25 -0800 (PST)
-Received: from localhost ([2a02:8070:6387:ab20:15aa:3c87:c206:d15e])
-        by smtp.gmail.com with ESMTPSA id kw25-20020a170907771900b007c0ae8569d6sm1458481ejc.146.2022.12.06.09.14.23
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7gB/zC3m6z18bCMXQvK6wTNUYxsgfiVZcwxTbNoVdos=;
+        b=2DFWIZ9k8D9lJ9hLqoaXV+6fn0DWreCgL/EtRuIWgfwniOVikTL1Du1WqIu1ZybHzD
+         v8e3DexRCeuAk21oO4Ihp2Ul9/4N9X24jSiN/1cwYBKolCyEOUvuY05THL+9dXeOn77R
+         tUjszruzZEN4uv7r/IpR8onStESDTCODaL4DANPUSuMboVPaL4P2Nr6GqpoNYoyVBxfn
+         UsboKjVwZLh2E2kKcqypjbwTY9ChX09hBBWndFRK6tmxPtX0jSpj4EmTnBSXCwduojF8
+         bxFLcRhffrAh6vWlgNdtOSgHf43UtFuF2v73EVhC/ykD7ak0b1IUbl+ab3Gvu8mP+WLY
+         7rcA==
+X-Gm-Message-State: ANoB5pl3KG+JhRu8oozl57ObsVL9NdPh5zdo+s3cS7gqek1lYfAE5CdD
+        RxLH/OPlzM/20HchJzqLf2e2dw==
+X-Google-Smtp-Source: AA0mqf7WwnFub6n+tLxpktEHW3bX4yd+fxESVtOraSVHeb5gxz1kb/mdwZf60nStByF+LhNeIgOoig==
+X-Received: by 2002:aca:4545:0:b0:359:f445:e03e with SMTP id s66-20020aca4545000000b00359f445e03emr33440702oia.180.1670353219576;
+        Tue, 06 Dec 2022 11:00:19 -0800 (PST)
+Received: from localhost ([107.116.82.99])
+        by smtp.gmail.com with ESMTPSA id m6-20020a056870a40600b0012d939eb0bfsm11101496oal.34.2022.12.06.11.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 09:14:24 -0800 (PST)
+        Tue, 06 Dec 2022 11:00:19 -0800 (PST)
+Date:   Tue, 6 Dec 2022 20:00:14 +0100
 From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mm: memcontrol: deprecate charge moving
-Date:   Tue,  6 Dec 2022 18:13:41 +0100
-Message-Id: <20221206171340.139790-4-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221206171340.139790-1-hannes@cmpxchg.org>
-References: <20221206171340.139790-1-hannes@cmpxchg.org>
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, cgroups@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: Low TCP throughput due to vmpressure with swap enabled
+Message-ID: <Y4+RPry2tfbWFdSA@cmpxchg.org>
+References: <CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfNkXUE+Uw@mail.gmail.com>
+ <Y30rdnZ+lrfOxjTB@cmpxchg.org>
+ <CABWYdi3PqipLxnqeepXeZ471pfeBg06-PV0Uw04fU-LHnx_A4g@mail.gmail.com>
+ <CABWYdi0qhWs56WK=k+KoQBAMh+Tb6Rr0nY4kJN+E5YqfGhKTmQ@mail.gmail.com>
+ <Y4T43Tc54vlKjTN0@cmpxchg.org>
+ <CABWYdi0z6-46PrNWumSXWki6Xf4G_EP1Nvc-2t00nEi0PiOU3Q@mail.gmail.com>
+ <CABWYdi25hricmGUqaK1K0EB-pAm04vGTg=eiqRF99RJ7hM7Gyg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABWYdi25hricmGUqaK1K0EB-pAm04vGTg=eiqRF99RJ7hM7Gyg@mail.gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -73,87 +88,301 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Charge moving mode in cgroup1 allows memory to follow tasks as they
-migrate between cgroups. This is, and always has been, a questionable
-thing to do - for several reasons.
+On Mon, Dec 05, 2022 at 04:50:46PM -0800, Ivan Babrou wrote:
+> And now I can see plenty of this:
+> 
+> [  108.156707][ T5175] socket pressure[2]: 4294673429
+> [  108.157050][ T5175] socket pressure[2]: 4294673429
+> [  108.157301][ T5175] socket pressure[2]: 4294673429
+> [  108.157581][ T5175] socket pressure[2]: 4294673429
+> [  108.157874][ T5175] socket pressure[2]: 4294673429
+> [  108.158254][ T5175] socket pressure[2]: 4294673429
+> 
+> I think the first result below is to blame:
+> 
+> $ rg '.->socket_pressure' mm
+> mm/memcontrol.c
+> 5280: memcg->socket_pressure = jiffies;
+> 7198: memcg->socket_pressure = 0;
+> 7201: memcg->socket_pressure = 1;
+> 7211: memcg->socket_pressure = 0;
+> 7215: memcg->socket_pressure = 1;
 
-First, it's expensive. Pages need to be identified, locked and
-isolated from various MM operations, and reassigned, one by one.
+Hoo boy, that's a silly mistake indeed. Thanks for tracking it down.
 
-Second, it's unreliable. Once pages are charged to a cgroup, there
-isn't always a clear owner task anymore. Cache isn't moved at all, for
-example. Mapped memory is moved - but if trylocking or isolating a
-page fails, it's arbitrarily left behind. Frequent moving between
-domains may leave a task's memory scattered all over the place.
+> While we set socket_pressure to either zero or one in
+> mem_cgroup_charge_skmem, it is still initialized to jiffies on memcg
+> creation. Zero seems like a more appropriate starting point. With that
+> change I see it working as expected with no TCP speed bumps. My
+> ebpf_exporter program also looks happy and reports zero clamps in my
+> brief testing.
 
-Third, it isn't really needed. Launcher tasks can kick off workload
-tasks directly in their target cgroup. Using dedicated per-workload
-groups allows fine-grained policy adjustments - no need to move tasks
-and their physical pages between control domains. The feature was
-never forward-ported to cgroup2, and it hasn't been missed.
+Excellent, now this behavior makes sense.
 
-Despite it being a niche usecase, the maintenance overhead of
-supporting it is enormous. Because pages are moved while they are live
-and subject to various MM operations, the synchronization rules are
-complicated. There are lock_page_memcg() in MM and FS code, which
-non-cgroup people don't understand. In some cases we've been able to
-shift code and cgroup API calls around such that we can rely on native
-locking as much as possible. But that's fragile, and sometimes we need
-to hold MM locks for longer than we otherwise would (pte lock e.g.).
+> I also think we should downgrade socket_pressure from "unsigned long"
+> to "bool", as it only holds zero and one now.
 
-Mark the feature deprecated. Hopefully we can remove it soon.
+Sounds good to me!
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Attaching the updated patch below. If nobody has any objections, I'll
+add a proper changelog, reported-bys, sign-off etc and send it out.
+
 ---
- Documentation/admin-guide/cgroup-v1/memory.rst | 11 ++++++++++-
- mm/memcontrol.c                                |  4 ++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ include/linux/memcontrol.h |  8 +++---
+ include/linux/vmpressure.h |  7 ++---
+ mm/memcontrol.c            | 20 +++++++++----
+ mm/vmpressure.c            | 58 ++++++--------------------------------
+ mm/vmscan.c                | 15 +---------
+ 5 files changed, 30 insertions(+), 78 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 60370f2c67b9..87d7877b98ec 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -86,6 +86,8 @@ Brief summary of control files.
-  memory.swappiness		     set/show swappiness parameter of vmscan
- 				     (See sysctl's vm.swappiness)
-  memory.move_charge_at_immigrate     set/show controls of moving charges
-+                                     This knob is deprecated and shouldn't be
-+                                     used.
-  memory.oom_control		     set/show oom controls.
-  memory.numa_stat		     show the number of memory usage per numa
- 				     node
-@@ -717,9 +719,16 @@ Soft limits can be setup by using the following commands (in this example we
-        It is recommended to set the soft limit always below the hard limit,
-        otherwise the hard limit will take precedence.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e1644a24009c..ef1c388be5b3 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -283,11 +283,11 @@ struct mem_cgroup {
+ 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
+ 	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
  
--8. Move charges at task migration
-+8. Move charges at task migration (DEPRECATED!)
- =================================
+-	unsigned long		socket_pressure;
++	/* Socket memory allocations have failed */
++	bool			socket_pressure;
  
-+THIS IS DEPRECATED!
-+
-+It's expensive and unreliable! It's better practice to launch workload
-+tasks directly from inside their target cgroup. Use dedicated workload
-+cgroups to allow fine-grained policy adjustments without having to
-+move physical pages between control domains.
-+
- Users can move charges associated with a task along with task migration, that
- is, uncharge task's pages from the old cgroup and charge them to the new cgroup.
- This feature is not supported in !CONFIG_MMU environments because of lack of
+ 	/* Legacy tcp memory accounting */
+ 	bool			tcpmem_active;
+-	int			tcpmem_pressure;
+ 
+ #ifdef CONFIG_MEMCG_KMEM
+ 	int kmemcg_id;
+@@ -1701,10 +1701,10 @@ void mem_cgroup_sk_alloc(struct sock *sk);
+ void mem_cgroup_sk_free(struct sock *sk);
+ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+ {
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->socket_pressure)
+ 		return true;
+ 	do {
+-		if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
++		if (memcg->socket_pressure)
+ 			return true;
+ 	} while ((memcg = parent_mem_cgroup(memcg)));
+ 	return false;
+diff --git a/include/linux/vmpressure.h b/include/linux/vmpressure.h
+index 6a2f51ebbfd3..20d93de37a17 100644
+--- a/include/linux/vmpressure.h
++++ b/include/linux/vmpressure.h
+@@ -11,9 +11,6 @@
+ #include <linux/eventfd.h>
+ 
+ struct vmpressure {
+-	unsigned long scanned;
+-	unsigned long reclaimed;
+-
+ 	unsigned long tree_scanned;
+ 	unsigned long tree_reclaimed;
+ 	/* The lock is used to keep the scanned/reclaimed above in sync. */
+@@ -30,7 +27,7 @@ struct vmpressure {
+ struct mem_cgroup;
+ 
+ #ifdef CONFIG_MEMCG
+-extern void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
++extern void vmpressure(gfp_t gfp, struct mem_cgroup *memcg,
+ 		       unsigned long scanned, unsigned long reclaimed);
+ extern void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio);
+ 
+@@ -44,7 +41,7 @@ extern int vmpressure_register_event(struct mem_cgroup *memcg,
+ extern void vmpressure_unregister_event(struct mem_cgroup *memcg,
+ 					struct eventfd_ctx *eventfd);
+ #else
+-static inline void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
++static inline void vmpressure(gfp_t gfp, struct mem_cgroup *memcg,
+ 			      unsigned long scanned, unsigned long reclaimed) {}
+ static inline void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg,
+ 				   int prio) {}
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b696354c1b21..e650a38d9a90 100644
+index 2d8549ae1b30..0d4b9dbe775a 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -3919,6 +3919,10 @@ static int mem_cgroup_move_charge_write(struct cgroup_subsys_state *css,
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+@@ -5277,7 +5277,6 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ 	vmpressure_init(&memcg->vmpressure);
+ 	INIT_LIST_HEAD(&memcg->event_list);
+ 	spin_lock_init(&memcg->event_list_lock);
+-	memcg->socket_pressure = jiffies;
+ #ifdef CONFIG_MEMCG_KMEM
+ 	memcg->kmemcg_id = -1;
+ 	INIT_LIST_HEAD(&memcg->objcg_list);
+@@ -7195,10 +7194,10 @@ bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages,
+ 		struct page_counter *fail;
  
-+	pr_warn_once("Cgroup memory moving is deprecated. "
-+		     "Please report your usecase to linux-mm@kvack.org if you "
-+		     "depend on this functionality.\n");
+ 		if (page_counter_try_charge(&memcg->tcpmem, nr_pages, &fail)) {
+-			memcg->tcpmem_pressure = 0;
++			memcg->socket_pressure = false;
+ 			return true;
+ 		}
+-		memcg->tcpmem_pressure = 1;
++		memcg->socket_pressure = true;
+ 		if (gfp_mask & __GFP_NOFAIL) {
+ 			page_counter_charge(&memcg->tcpmem, nr_pages);
+ 			return true;
+@@ -7206,12 +7205,21 @@ bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages,
+ 		return false;
+ 	}
+ 
+-	if (try_charge(memcg, gfp_mask, nr_pages) == 0) {
+-		mod_memcg_state(memcg, MEMCG_SOCK, nr_pages);
+-		return true;
++	if (try_charge(memcg, gfp_mask & ~__GFP_NOFAIL, nr_pages) == 0) {
++		memcg->socket_pressure = false;
++		goto success;
++	}
++	memcg->socket_pressure = true;
++	if (gfp_mask & __GFP_NOFAIL) {
++		try_charge(memcg, gfp_mask, nr_pages);
++		goto success;
+ 	}
+ 
+ 	return false;
 +
- 	if (val & ~MOVE_MASK)
- 		return -EINVAL;
++success:
++	mod_memcg_state(memcg, MEMCG_SOCK, nr_pages);
++	return true;
+ }
+ 
+ /**
+diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+index b52644771cc4..4cec90711cf4 100644
+--- a/mm/vmpressure.c
++++ b/mm/vmpressure.c
+@@ -219,7 +219,6 @@ static void vmpressure_work_fn(struct work_struct *work)
+  * vmpressure() - Account memory pressure through scanned/reclaimed ratio
+  * @gfp:	reclaimer's gfp mask
+  * @memcg:	cgroup memory controller handle
+- * @tree:	legacy subtree mode
+  * @scanned:	number of pages scanned
+  * @reclaimed:	number of pages reclaimed
+  *
+@@ -227,16 +226,9 @@ static void vmpressure_work_fn(struct work_struct *work)
+  * "instantaneous" memory pressure (scanned/reclaimed ratio). The raw
+  * pressure index is then further refined and averaged over time.
+  *
+- * If @tree is set, vmpressure is in traditional userspace reporting
+- * mode: @memcg is considered the pressure root and userspace is
+- * notified of the entire subtree's reclaim efficiency.
+- *
+- * If @tree is not set, reclaim efficiency is recorded for @memcg, and
+- * only in-kernel users are notified.
+- *
+  * This function does not return any value.
+  */
+-void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
++void vmpressure(gfp_t gfp, struct mem_cgroup *memcg,
+ 		unsigned long scanned, unsigned long reclaimed)
+ {
+ 	struct vmpressure *vmpr;
+@@ -271,46 +263,14 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 	if (!scanned)
+ 		return;
+ 
+-	if (tree) {
+-		spin_lock(&vmpr->sr_lock);
+-		scanned = vmpr->tree_scanned += scanned;
+-		vmpr->tree_reclaimed += reclaimed;
+-		spin_unlock(&vmpr->sr_lock);
+-
+-		if (scanned < vmpressure_win)
+-			return;
+-		schedule_work(&vmpr->work);
+-	} else {
+-		enum vmpressure_levels level;
+-
+-		/* For now, no users for root-level efficiency */
+-		if (!memcg || mem_cgroup_is_root(memcg))
+-			return;
+-
+-		spin_lock(&vmpr->sr_lock);
+-		scanned = vmpr->scanned += scanned;
+-		reclaimed = vmpr->reclaimed += reclaimed;
+-		if (scanned < vmpressure_win) {
+-			spin_unlock(&vmpr->sr_lock);
+-			return;
+-		}
+-		vmpr->scanned = vmpr->reclaimed = 0;
+-		spin_unlock(&vmpr->sr_lock);
++	spin_lock(&vmpr->sr_lock);
++	scanned = vmpr->tree_scanned += scanned;
++	vmpr->tree_reclaimed += reclaimed;
++	spin_unlock(&vmpr->sr_lock);
+ 
+-		level = vmpressure_calc_level(scanned, reclaimed);
+-
+-		if (level > VMPRESSURE_LOW) {
+-			/*
+-			 * Let the socket buffer allocator know that
+-			 * we are having trouble reclaiming LRU pages.
+-			 *
+-			 * For hysteresis keep the pressure state
+-			 * asserted for a second in which subsequent
+-			 * pressure events can occur.
+-			 */
+-			WRITE_ONCE(memcg->socket_pressure, jiffies + HZ);
+-		}
+-	}
++	if (scanned < vmpressure_win)
++		return;
++	schedule_work(&vmpr->work);
+ }
+ 
+ /**
+@@ -340,7 +300,7 @@ void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio)
+ 	 * to the vmpressure() basically means that we signal 'critical'
+ 	 * level.
+ 	 */
+-	vmpressure(gfp, memcg, true, vmpressure_win, 0);
++	vmpressure(gfp, memcg, vmpressure_win, 0);
+ }
+ 
+ #define MAX_VMPRESSURE_ARGS_LEN	(strlen("critical") + strlen("hierarchy") + 2)
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 04d8b88e5216..d348366d58d4 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -6035,8 +6035,6 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+ 	memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
+ 	do {
+ 		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+-		unsigned long reclaimed;
+-		unsigned long scanned;
+ 
+ 		/*
+ 		 * This loop can become CPU-bound when target memcgs
+@@ -6068,20 +6066,9 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+ 			memcg_memory_event(memcg, MEMCG_LOW);
+ 		}
+ 
+-		reclaimed = sc->nr_reclaimed;
+-		scanned = sc->nr_scanned;
+-
+ 		shrink_lruvec(lruvec, sc);
+-
+ 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+ 			    sc->priority);
+-
+-		/* Record the group's reclaim efficiency */
+-		if (!sc->proactive)
+-			vmpressure(sc->gfp_mask, memcg, false,
+-				   sc->nr_scanned - scanned,
+-				   sc->nr_reclaimed - reclaimed);
+-
+ 	} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
+ }
+ 
+@@ -6111,7 +6098,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 
+ 	/* Record the subtree's reclaim efficiency */
+ 	if (!sc->proactive)
+-		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
++		vmpressure(sc->gfp_mask, sc->target_mem_cgroup,
+ 			   sc->nr_scanned - nr_scanned,
+ 			   sc->nr_reclaimed - nr_reclaimed);
  
 -- 
 2.38.1
