@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B850645191
-	for <lists+cgroups@lfdr.de>; Wed,  7 Dec 2022 02:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A0A64519E
+	for <lists+cgroups@lfdr.de>; Wed,  7 Dec 2022 02:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbiLGByZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Dec 2022 20:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S229937AbiLGB6T (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Dec 2022 20:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbiLGBx7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Dec 2022 20:53:59 -0500
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C329B3AB
-        for <cgroups@vger.kernel.org>; Tue,  6 Dec 2022 17:52:33 -0800 (PST)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-142b72a728fso19664810fac.9
-        for <cgroups@vger.kernel.org>; Tue, 06 Dec 2022 17:52:33 -0800 (PST)
+        with ESMTP id S229613AbiLGB6S (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Dec 2022 20:58:18 -0500
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58498532C6
+        for <cgroups@vger.kernel.org>; Tue,  6 Dec 2022 17:58:17 -0800 (PST)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1442977d77dso18558312fac.6
+        for <cgroups@vger.kernel.org>; Tue, 06 Dec 2022 17:58:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2g4EnU2Zj/9WIHBvH/VdPM01QEtKqmAnMzJgcZ6VHQ=;
-        b=qApXaWmIPSsbt1t37N/UXspIRY2YX9G+lCexd6I3+q6DAhcxsVtC5HiGEtNK+yKsla
-         fR5UsohH8fXItmA4XTxpP+SWfNUOP6XeF7COYuJhZ2CCNwm6hOTCPy8fm6TzWBrx1cOC
-         tYSILyxmygDVz91nN0ryG2YtYMT7+JzTDgNBIBbZb+WOJsypItnaG1ncTsMp2zqGaZMm
-         feEYFcfotDSARSmqNRvtE4qiibFVHHWf5vwwoy0DFxFgN+j5ExbVRoG6P9Qpu5OD2dhD
-         Bd8sp/0CuRHT2nZ8/5uuq9OOF9Dgh8lToFyOEbRhV+EDLbRGT4zlvs4W7ik63KUpAUU+
-         sKrg==
+        bh=L8963QVuWzMlre8yLN4891ujCBmWo5SyqcLZ8tSbZjQ=;
+        b=eBRBdaHXvgKpW6/nBEGd/saUzFoozLpzIKQmkJccf22pFYLqqUwQmUXP7zz+NHarWr
+         y6oNwxxTkbGSuO+M05BGsjg+XcnEor7+ZxHUaOF9F0dTgXN7JIhH9mxY69OxgcpyIJtb
+         qj/GNdr7md0XD0zM0Hpy6wzMv9vqEvJfEd51lxXbNqMjf1P3z2dC4uoPY6R4fKcFL2FB
+         9h3S323dKwW0PyiDSM/OYs9Vn6du77A0CRL7M/dX4DwA8nNcujWN5Rkdp2SbA9XC6Lsj
+         UTrD1polfnjmptxxWF4CLi5v3jR2pGansFPDF0QCUdjds6TL4/tG/rF5tcpCKINWjhf6
+         5Gaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2g4EnU2Zj/9WIHBvH/VdPM01QEtKqmAnMzJgcZ6VHQ=;
-        b=ueVXQDr0zzcXo7gclFCPZpm/WCNek72+D6V0EuUCkxPsEYM/gEZhzT0CDs3U2JTMAp
-         38KvC20wp2QneTwqjSJyPJ3FZYtMDtQkCMNXY/y/egi3C7JfVMnSKgh8gOv3YrOV/Yr9
-         bEu+ozmT71VxkY9gAplfY5WRFE5xIsnIVd+6Ev2TJ1UY0eMO+PLUrg89onjw6BrGbkQY
-         gLPuOC+n7QPhbLH9vtSiymMRD1UOXXEM0jrT3SnkVeXVBKXUDYtSrIAdw3zSn1O+g2F5
-         fxdKplzWQ4S1Q3K1IIElDqWRG6C3/i+WSkhPltnUWdGfjfGD7gfPH3+0YbdEpnoX93ie
-         AQfg==
-X-Gm-Message-State: ANoB5pmTbr6lgHzd26nF324QPt+LQgpaUe0mkL5rIkKD0NI4W22f6f6e
-        ks/ifH0mkXQf2iedSfXQLPJUlg==
-X-Google-Smtp-Source: AA0mqf4cXyGL0A42a2mTKQwSekTuTxTQXhOz0FH3P94K3qPwPpOrqkXbj3XjCtzEjrVmenSz6bWusA==
-X-Received: by 2002:a05:6870:638f:b0:144:cbb4:7fd4 with SMTP id t15-20020a056870638f00b00144cbb47fd4mr2395995oap.136.1670377952773;
-        Tue, 06 Dec 2022 17:52:32 -0800 (PST)
+        bh=L8963QVuWzMlre8yLN4891ujCBmWo5SyqcLZ8tSbZjQ=;
+        b=vUlviM3H8x65bpoZEZoanbUd1HCYQZF9uyDV5qHyssqbFBkHtB6eM4aWkSw6DTDi1Y
+         z7LWj6+szw2pzbCJF1VWMK0n5wgceh9zU7lN0j6/91IWiEZXDQlbo14JOaC/o8ZGt2F7
+         +DxXW6Rwot6a84ko34OAp+u544kgg3QzGetf91dcMPZ5EWgAPT8c2CoGKxaCAvfxVHRy
+         QyTLfcJU4eaSo7phEdlpfHUcu9AvdIZO+rZtCNE2UcHz+5+Z6zoyZ+QDj4HQowtwIEkL
+         c5I1KQ3aYhjtNMoD2n7W+lN6X69bKgoGyRGEPAMwr6PqxvWlm7NTjFOaLDBshRwvqbJC
+         DMrg==
+X-Gm-Message-State: ANoB5pnjgd6wEAEsA1lAC4EsM79xyrBngjQewLcawfqQuVd3cJskzxbP
+        OE5pdDj10EZ/d/bvVNvLFEbOTA==
+X-Google-Smtp-Source: AA0mqf5/RI59FAboxfx2566HImOLKq9uSfCZXsGND07TLSEOb93NMRKIOCrF49q2VX8skzs0kz/enw==
+X-Received: by 2002:a05:6870:8882:b0:132:6f79:9ffb with SMTP id m2-20020a056870888200b001326f799ffbmr41793603oam.61.1670378296550;
+        Tue, 06 Dec 2022 17:58:16 -0800 (PST)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b24-20020a9d5d18000000b0066da36d2c45sm9763064oti.22.2022.12.06.17.52.31
+        by smtp.gmail.com with ESMTPSA id k7-20020a056830168700b006705cddb73fsm1205278otr.31.2022.12.06.17.58.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 17:52:32 -0800 (PST)
-Date:   Tue, 6 Dec 2022 17:52:30 -0800 (PST)
+        Tue, 06 Dec 2022 17:58:16 -0800 (PST)
+Date:   Tue, 6 Dec 2022 17:58:14 -0800 (PST)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.attlocal.net
 To:     Johannes Weiner <hannes@cmpxchg.org>
@@ -57,16 +57,16 @@ cc:     Andrew Morton <akpm@linux-foundation.org>,
         Shakeel Butt <shakeelb@google.com>,
         Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mm: rmap: remove lock_page_memcg()
-In-Reply-To: <20221206171340.139790-3-hannes@cmpxchg.org>
-Message-ID: <424a805a-28b8-afe1-ad61-f4fdc42aaa8@google.com>
-References: <20221206171340.139790-1-hannes@cmpxchg.org> <20221206171340.139790-3-hannes@cmpxchg.org>
+Subject: Re: [PATCH 3/3] mm: memcontrol: deprecate charge moving
+In-Reply-To: <20221206171340.139790-4-hannes@cmpxchg.org>
+Message-ID: <02b9663-4377-bd67-8da2-aad72240da@google.com>
+References: <20221206171340.139790-1-hannes@cmpxchg.org> <20221206171340.139790-4-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,88 +76,94 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Tue, 6 Dec 2022, Johannes Weiner wrote:
 
-> The previous patch made sure charge moving only touches pages for
-> which page_mapped() is stable. lock_page_memcg() is no longer needed.
+> Charge moving mode in cgroup1 allows memory to follow tasks as they
+> migrate between cgroups. This is, and always has been, a questionable
+> thing to do - for several reasons.
+> 
+> First, it's expensive. Pages need to be identified, locked and
+> isolated from various MM operations, and reassigned, one by one.
+> 
+> Second, it's unreliable. Once pages are charged to a cgroup, there
+> isn't always a clear owner task anymore. Cache isn't moved at all, for
+> example. Mapped memory is moved - but if trylocking or isolating a
+> page fails, it's arbitrarily left behind. Frequent moving between
+> domains may leave a task's memory scattered all over the place.
+> 
+> Third, it isn't really needed. Launcher tasks can kick off workload
+> tasks directly in their target cgroup. Using dedicated per-workload
+> groups allows fine-grained policy adjustments - no need to move tasks
+> and their physical pages between control domains. The feature was
+> never forward-ported to cgroup2, and it hasn't been missed.
+> 
+> Despite it being a niche usecase, the maintenance overhead of
+> supporting it is enormous. Because pages are moved while they are live
+> and subject to various MM operations, the synchronization rules are
+> complicated. There are lock_page_memcg() in MM and FS code, which
+> non-cgroup people don't understand. In some cases we've been able to
+> shift code and cgroup API calls around such that we can rely on native
+> locking as much as possible. But that's fragile, and sometimes we need
+> to hold MM locks for longer than we otherwise would (pte lock e.g.).
+> 
+> Mark the feature deprecated. Hopefully we can remove it soon.
 > 
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Acked-by: Hugh Dickins <hughd@google.com>
 
+but I wonder if it would be helpful to mention move_charge_at_immigrate
+in the deprecation message: maybe the first line should be
+"Cgroup memory moving (move_charge_at_immigrate) is deprecated.\n"
+
 > ---
->  mm/rmap.c | 26 ++++++++------------------
->  1 file changed, 8 insertions(+), 18 deletions(-)
+>  Documentation/admin-guide/cgroup-v1/memory.rst | 11 ++++++++++-
+>  mm/memcontrol.c                                |  4 ++++
+>  2 files changed, 14 insertions(+), 1 deletion(-)
 > 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index b616870a09be..32e48b1c5847 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1222,9 +1222,6 @@ void page_add_anon_rmap(struct page *page,
->  	bool compound = flags & RMAP_COMPOUND;
->  	bool first = true;
+> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+> index 60370f2c67b9..87d7877b98ec 100644
+> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+> @@ -86,6 +86,8 @@ Brief summary of control files.
+>   memory.swappiness		     set/show swappiness parameter of vmscan
+>  				     (See sysctl's vm.swappiness)
+>   memory.move_charge_at_immigrate     set/show controls of moving charges
+> +                                     This knob is deprecated and shouldn't be
+> +                                     used.
+>   memory.oom_control		     set/show oom controls.
+>   memory.numa_stat		     show the number of memory usage per numa
+>  				     node
+> @@ -717,9 +719,16 @@ Soft limits can be setup by using the following commands (in this example we
+>         It is recommended to set the soft limit always below the hard limit,
+>         otherwise the hard limit will take precedence.
 >  
-> -	if (unlikely(PageKsm(page)))
-> -		lock_page_memcg(page);
-> -
->  	/* Is page being mapped by PTE? Is this its first map to be added? */
->  	if (likely(!compound)) {
->  		first = atomic_inc_and_test(&page->_mapcount);
-> @@ -1262,15 +1259,14 @@ void page_add_anon_rmap(struct page *page,
->  	if (nr)
->  		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
+> -8. Move charges at task migration
+> +8. Move charges at task migration (DEPRECATED!)
+>  =================================
 >  
-> -	if (unlikely(PageKsm(page)))
-> -		unlock_page_memcg(page);
-> -
-> -	/* address might be in next vma when migration races vma_adjust */
-> -	else if (first)
-> -		__page_set_anon_rmap(page, vma, address,
-> -				     !!(flags & RMAP_EXCLUSIVE));
-> -	else
-> -		__page_check_anon_rmap(page, vma, address);
-> +	if (likely(!PageKsm(page))) {
-> +		/* address might be in next vma when migration races vma_adjust */
-> +		if (first)
-> +			__page_set_anon_rmap(page, vma, address,
-> +					     !!(flags & RMAP_EXCLUSIVE));
-> +		else
-> +			__page_check_anon_rmap(page, vma, address);
-> +	}
+> +THIS IS DEPRECATED!
+> +
+> +It's expensive and unreliable! It's better practice to launch workload
+> +tasks directly from inside their target cgroup. Use dedicated workload
+> +cgroups to allow fine-grained policy adjustments without having to
+> +move physical pages between control domains.
+> +
+>  Users can move charges associated with a task along with task migration, that
+>  is, uncharge task's pages from the old cgroup and charge them to the new cgroup.
+>  This feature is not supported in !CONFIG_MMU environments because of lack of
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b696354c1b21..e650a38d9a90 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3919,6 +3919,10 @@ static int mem_cgroup_move_charge_write(struct cgroup_subsys_state *css,
+>  {
+>  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
 >  
->  	mlock_vma_page(page, vma, compound);
->  }
-> @@ -1329,7 +1325,6 @@ void page_add_file_rmap(struct page *page,
->  	bool first;
->  
->  	VM_BUG_ON_PAGE(compound && !PageTransHuge(page), page);
-> -	lock_page_memcg(page);
->  
->  	/* Is page being mapped by PTE? Is this its first map to be added? */
->  	if (likely(!compound)) {
-> @@ -1365,7 +1360,6 @@ void page_add_file_rmap(struct page *page,
->  			NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmapped);
->  	if (nr)
->  		__mod_lruvec_page_state(page, NR_FILE_MAPPED, nr);
-> -	unlock_page_memcg(page);
->  
->  	mlock_vma_page(page, vma, compound);
->  }
-> @@ -1394,8 +1388,6 @@ void page_remove_rmap(struct page *page,
->  		return;
->  	}
->  
-> -	lock_page_memcg(page);
-> -
->  	/* Is page being unmapped by PTE? Is this its last map to be removed? */
->  	if (likely(!compound)) {
->  		last = atomic_add_negative(-1, &page->_mapcount);
-> @@ -1451,8 +1443,6 @@ void page_remove_rmap(struct page *page,
->  	 * and remember that it's only reliable while mapped.
->  	 */
->  
-> -	unlock_page_memcg(page);
-> -
->  	munlock_vma_page(page, vma, compound);
->  }
+> +	pr_warn_once("Cgroup memory moving is deprecated. "
+> +		     "Please report your usecase to linux-mm@kvack.org if you "
+> +		     "depend on this functionality.\n");
+> +
+>  	if (val & ~MOVE_MASK)
+>  		return -EINVAL;
 >  
 > -- 
 > 2.38.1
