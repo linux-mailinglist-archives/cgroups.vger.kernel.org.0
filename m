@@ -2,57 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6AD6465F0
-	for <lists+cgroups@lfdr.de>; Thu,  8 Dec 2022 01:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5916465F4
+	for <lists+cgroups@lfdr.de>; Thu,  8 Dec 2022 01:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbiLHAgX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Dec 2022 19:36:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
+        id S229462AbiLHAgx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Dec 2022 19:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbiLHAgW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Dec 2022 19:36:22 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF768DBD8
-        for <cgroups@vger.kernel.org>; Wed,  7 Dec 2022 16:36:20 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id y135so20356250yby.12
-        for <cgroups@vger.kernel.org>; Wed, 07 Dec 2022 16:36:20 -0800 (PST)
+        with ESMTP id S229761AbiLHAgw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Dec 2022 19:36:52 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4E08D67A
+        for <cgroups@vger.kernel.org>; Wed,  7 Dec 2022 16:36:51 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-3b10392c064so204889327b3.0
+        for <cgroups@vger.kernel.org>; Wed, 07 Dec 2022 16:36:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hnwjKeWBS3gGbPLTonrsO/3QESDmxRzIhrG9LgstSBg=;
-        b=NlFKm5a2bnfBu0WaavUk4T4534i2Ffeaod/IcsY3hbfl5pfgAHlWwatoI96o/JhxVY
-         wv4jmxKJolkcLNfPjePOus4PgAoxfKxZa11QwswwKUrxbVgfpHCGZsLmLLpLRBARa5FD
-         KNO2NlvY1X3gGX7GblLaLaMZ6NYgxW2EGxv2OS1UPupWVD0MOlRVlBmqHZ/ZU6UtEOYh
-         XmzzI29PN659tu4HW9S9xkSazS6K1wt/sjeiwL4GMroztNtIq1BewgZTmaHVRqjEebmV
-         rsbYmjDqi2YDUT9xod5OiRzgobIh9Oc1bvJH3yUAIXl2GAmgY4Qg039o4TksWbGj30XX
-         26lw==
+        bh=qeBXIqzSfIuH6SAUQWNL+jPx2S1sL9td+8nqZ4xaU5o=;
+        b=i8izx+NjrAcYy4Azi2gqPWXEKbDGdCxrPDPu+ynSN5Bk59ImL6T95Oo1WQs/o3O4Dv
+         psw4F81s8kACsalYuCfa3YKVBUaWdt1dN1dLAoYO2bURSF/UvH71sAocuPgjbCHFDXAM
+         /BfpE2un7nJiG6xpMzVfPOtcBBwkYXRlKNKXsR8yKpQI5Y5Asgu0Pbzs6N11XFobKotf
+         IkSSSNBiGAgpC/2Dnet7amfL8e3kbgaIJuFInroYam92GkAtxrLFF98Ng380oqEdtEKn
+         aDEn6p51I0QgovKxUPDyJugKpODyKOUt14FWakO7ddAbM+U7UBLTPVLiByTMRh8LYTJs
+         2hHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hnwjKeWBS3gGbPLTonrsO/3QESDmxRzIhrG9LgstSBg=;
-        b=5QtevFP7Ooyykh16flVDhMaVFoLG9iUgx958xg3mxpiWvOkabWbIpOI8P6sKWFIugu
-         BwbtbLul65VpGQRlKd5dXTkblT4ZxAEyqj/Ei1yIcxbWan9VigERyEby6KroV7dBxFid
-         VdlXhOSVXpiGVOfDYOToM3LUyksdve/j843SKj/63dpU+puKL3re7jB8eRMBZJgfgE8R
-         vZ4vakX34xnmKXv6xQyiSKK6gcQlimsvLxcP+KFM06Yc0IJJlHadR1dwIT7hZ2gt9HwC
-         sNCT0TNL002+Dp3OI2esEoapRZV+UtTMhY2dx22Xb4QE77e5qUlhTOEyJR2eMfjNPTBw
-         YfvA==
-X-Gm-Message-State: ANoB5pmkdaW4j910tZcDCJTBGNudUxF/9MMVzPy2OWEtR+tfmxVl843r
-        W3yPLzZs8Ql57INUZBrOPu7ggFlS/oLLy90s/kyLAg==
-X-Google-Smtp-Source: AA0mqf44mxItNX5PwT9MTa3hg1zlUCr++yyxhZxDgD0aQCIBH9N+vMHnKh56DdTmLwzu6ryOqzvZ33Tn8sstjnmqriQ=
-X-Received: by 2002:a25:cb4e:0:b0:6f0:b3ae:6392 with SMTP id
- b75-20020a25cb4e000000b006f0b3ae6392mr63654400ybg.245.1670459779288; Wed, 07
- Dec 2022 16:36:19 -0800 (PST)
+        bh=qeBXIqzSfIuH6SAUQWNL+jPx2S1sL9td+8nqZ4xaU5o=;
+        b=LuL823imMhBrGOKYyWkdynBo9KoVFQ3W4auLLwIwcXnw4K1HptqkHC9jgbqicAuCJQ
+         /c8w0G/Ps4sTvltp+xLEwjtOh4vIHdigAx81WOcVJ42O59Mywnv8ilxTYHwCwLnFhrfb
+         m6qlboe3/VxYj33aQDmdZT1g04e/c+EXZ24iemOh94KpvRVUobHQ3y2LcBKzlru5XB9L
+         8ciw4Pg/k7ZZfbKSusK1XUBLROOppwmzMm2LKB3NffASGZzyTUBqP4xtPYjWYNmqE/PR
+         VqOUH+dtHH185dqqsLiwllE+DG5fVb20Osw+N9JNeJweq9ODo2xMnIAmM41JJ5Bt+9Uo
+         dBtg==
+X-Gm-Message-State: ANoB5pklcs/gz0wcxjnqlbIeUXyh9O53F/wRbqHB1LnMsTKBn/jgCYH3
+        /MSJAy6l3RufCpTXbxyFru3jTIQt+cUOBRRScIKbdQ==
+X-Google-Smtp-Source: AA0mqf7PFHyJxnhF8UTAf6SKwPztX0jqaTFvncPAyztKcb/I1POSkrTKztXHbKBwNImmsTxtr74ZufQdHvhbUfFc0uI=
+X-Received: by 2002:a0d:f645:0:b0:3ba:76ae:dade with SMTP id
+ g66-20020a0df645000000b003ba76aedademr56402285ywf.93.1670459810480; Wed, 07
+ Dec 2022 16:36:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20221206171340.139790-1-hannes@cmpxchg.org> <20221206171340.139790-2-hannes@cmpxchg.org>
-In-Reply-To: <20221206171340.139790-2-hannes@cmpxchg.org>
+References: <20221206171340.139790-1-hannes@cmpxchg.org> <20221206171340.139790-3-hannes@cmpxchg.org>
+In-Reply-To: <20221206171340.139790-3-hannes@cmpxchg.org>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 7 Dec 2022 16:36:07 -0800
-Message-ID: <CALvZod4RxpYOeVurV-vrTc7MY7m8tDCJPOsX+JNGv5BsuFMEFA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mm: memcontrol: skip moving non-present pages that
- are mapped elsewhere
+Date:   Wed, 7 Dec 2022 16:36:39 -0800
+Message-ID: <CALvZod7jy0gvXRHhsJ2aaj+rP=3if5c4+p+-kC-qo3WSU+tRqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: rmap: remove lock_page_memcg()
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
@@ -63,7 +62,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,23 +72,9 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Tue, Dec 6, 2022 at 9:14 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> During charge moving, the pte lock and the page lock cover nearly all
-> cases of stabilizing page_mapped(). The only exception is when we're
-> looking at a non-present pte and find a page in the page cache or in
-> the swapcache: if the page is mapped elsewhere, it can become unmapped
-> outside of our control. For this reason, rmap needs lock_page_memcg().
+> The previous patch made sure charge moving only touches pages for
+> which page_mapped() is stable. lock_page_memcg() is no longer needed.
 >
-> We don't like cgroup-specific locks in generic MM code - especially in
-> performance-critical MM code - and for a legacy feature that's
-> unlikely to have many users left - if any.
->
-> So remove the exception. Arguably that's better semantics anyway: the
-> page is shared, and another process seems to be the more active user.
->
-> Once we stop moving such pages, rmap doesn't need lock_page_memcg()
-> anymore. The next patch will remove it.
->
-> Suggested-by: Hugh Dickins <hughd@google.com>
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Acked-by: Shakeel Butt <shakeelb@google.com>
