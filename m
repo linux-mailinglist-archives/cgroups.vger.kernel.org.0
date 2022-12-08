@@ -2,189 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AA1647565
-	for <lists+cgroups@lfdr.de>; Thu,  8 Dec 2022 19:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FDC6476DA
+	for <lists+cgroups@lfdr.de>; Thu,  8 Dec 2022 20:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbiLHSNn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Dec 2022 13:13:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
+        id S229746AbiLHT54 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Dec 2022 14:57:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbiLHSNm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Dec 2022 13:13:42 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0B776831;
-        Thu,  8 Dec 2022 10:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670523221; x=1702059221;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=shZLSFSHk7cyvEmOvu+L1aGeUnOVtdDfgOpI+fJT6U0=;
-  b=jGsTzc/gs7x0Njwy136HESDctZZYcE/RPI1wV4KiXlf8v21pVZ1ezSu8
-   8zvAmS+pAVaU5qpftXu89kbsZY3xgvjzQj1DRJPkjFU/a9hGx/slbMYEA
-   Py/w1CZo/USI6mbVAzmUyLJkRV11nyGovmTsaskKyqwbcr/8AYfMG/Urb
-   9cZmgdnCusjeD6Q2syeW8vvsKJMh0tYnBDZvdppaATZaK3voedZEbMBpp
-   4S7+RHPLj4yrBkH5oZSuFvvda1E84G0bmcQhK1tSS5tnWBG45KrtDMwGh
-   lgH7lQN9vXNQ4I2p0R3k0biG7jnDvfjHxQUUIBJAEZynAmi1owZxN6llf
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="318408992"
-X-IronPort-AV: E=Sophos;i="5.96,227,1665471600"; 
-   d="scan'208";a="318408992"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2022 10:13:40 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="710576019"
-X-IronPort-AV: E=Sophos;i="5.96,227,1665471600"; 
-   d="scan'208";a="710576019"
-Received: from nmanikan-mobl1.amr.corp.intel.com (HELO [10.251.3.168]) ([10.251.3.168])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2022 10:13:37 -0800
-Message-ID: <dd0c92b47496be5f59cc416c6e135ef573184c66.camel@linux.intel.com>
-Subject: Re: [PATCH v2 06/18] x86/sgx: Introduce RECLAIM_IN_PROGRESS flag
- for EPC pages
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        zhiquan1.li@intel.com, Sean Christopherson <seanjc@google.com>
-Date:   Thu, 08 Dec 2022 10:13:36 -0800
-In-Reply-To: <Y5IGzbNxOBkRoaRx@kernel.org>
-References: <20221202183655.3767674-1-kristen@linux.intel.com>
-         <20221202183655.3767674-7-kristen@linux.intel.com>
-         <Y5IGzbNxOBkRoaRx@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        with ESMTP id S229468AbiLHT54 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Dec 2022 14:57:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316F45C0DC
+        for <cgroups@vger.kernel.org>; Thu,  8 Dec 2022 11:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670529423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TZRYE/zC/NinxkpytfI2ULEuvdHw2Fkmlz2Sq9exJ+g=;
+        b=SXyxWtaBKS9Y5auEhcUtLIjtfx+Wn3vRt+SvNQ0r6tPYITavcYpnMCf6DwTE0MZjGKlF8N
+        rL+7yWQGIS+Xe0CAC+EhfN/mRyqnYq87AU8Sn4vbhY0+JC8Se8jhhZgRBIooGE9E0oY+A8
+        hfXWcgUBQdfBi3jJM5KK+oPN8PApPyk=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-369-mJNRIKvbPRyvoEdVyoa9MA-1; Thu, 08 Dec 2022 14:56:59 -0500
+X-MC-Unique: mJNRIKvbPRyvoEdVyoa9MA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 684BF2A59564;
+        Thu,  8 Dec 2022 19:56:59 +0000 (UTC)
+Received: from llong.com (dhcp-17-153.bos.redhat.com [10.18.17.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD14F492B04;
+        Thu,  8 Dec 2022 19:56:58 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/2] cgroup/cpuset: Task migration optimization
+Date:   Thu,  8 Dec 2022 14:56:32 -0500
+Message-Id: <20221208195634.2604362-1-longman@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-T24gVGh1LCAyMDIyLTEyLTA4IGF0IDE1OjQ2ICswMDAwLCBKYXJra28gU2Fra2luZW4gd3JvdGU6
-Cj4gT24gRnJpLCBEZWMgMDIsIDIwMjIgYXQgMTA6MzY6NDJBTSAtMDgwMCwgS3Jpc3RlbiBDYXJs
-c29uIEFjY2FyZGkKPiB3cm90ZToKPiA+IEZyb206IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW4u
-ai5jaHJpc3RvcGhlcnNvbkBpbnRlbC5jb20+Cj4gPiAKPiA+IFdoZW4gc2VsZWN0aW5nIHBhZ2Vz
-IHRvIGJlIHJlY2xhaW1lZCBmcm9tIHRoZSBwYWdlIHBvb2wKPiA+IChzZ3hfZ2xvYmFsX2xydSks
-Cj4gPiB0aGUgbGlzdCBvZiByZWNsYWltYWJsZSBwYWdlcyBpcyB3YWxrZWQsIGFuZCBhbnkgcGFn
-ZSB0aGF0IGlzIGJvdGgKPiA+IHJlY2xhaW1hYmxlIGFuZCBub3QgaW4gdGhlIHByb2Nlc3Mgb2Yg
-YmVpbmcgZnJlZWQgaXMgYWRkZWQgdG8gYQo+ID4gbGlzdCBvZgo+ID4gcG90ZW50aWFsIGNhbmRp
-ZGF0ZXMgdG8gYmUgcmVjbGFpbWVkLiBBZnRlciB0aGF0LCB0aGlzIHNlcGFyYXRlCj4gPiBsaXN0
-IGlzCj4gPiBmdXJ0aGVyIGV4YW1pbmVkIGFuZCBtYXkgb3IgbWF5IG5vdCB1bHRpbWF0ZWx5IGJl
-IHJlY2xhaW1lZC4gSW4KPiA+IG9yZGVyCj4gPiB0byBwcmV2ZW50IHRoaXMgcGFnZSBmcm9tIGJl
-aW5nIHJlbW92ZWQgZnJvbSB0aGUgc2d4X2VwY19scnVfbGlzdHMKPiA+IHN0cnVjdCBpbiBhIHNl
-cGFyYXRlIHRocmVhZCBieSBzZ3hfZHJvcF9lcGNfcGFnZSgpLCBrZWVwIHRyYWNrIG9mCj4gPiB3
-aGV0aGVyIHRoZSBFUEMgcGFnZSBpcyBpbiB0aGUgbWlkZGxlIG9mIGJlaW5nIHJlY2xhaW1lZCB3
-aXRoCj4gPiB0aGUgYWRkdGlvbiBvZiBhIFJFQ0xBSU1fSU5fUFJPR1JFU1MgZmxhZywgYW5kIGRv
-IG5vdCBkZWxldGUgdGhlCj4gPiBwYWdlCj4gPiBvZmYgdGhlIExSVSBpbiBzZ3hfZHJvcF9lcGNf
-cGFnZSgpIGlmIGl0IGhhcyBub3QgeWV0IGZpbmlzaGVkIGJlaW5nCj4gPiByZWNsYWltZWQuCj4g
-PiAKPiA+IFNpZ25lZC1vZmYtYnk6IFNlYW4gQ2hyaXN0b3BoZXJzb24KPiA+IDxzZWFuLmouY2hy
-aXN0b3BoZXJzb25AaW50ZWwuY29tPgo+ID4gU2lnbmVkLW9mZi1ieTogS3Jpc3RlbiBDYXJsc29u
-IEFjY2FyZGkgPGtyaXN0ZW5AbGludXguaW50ZWwuY29tPgo+ID4gQ2M6IFNlYW4gQ2hyaXN0b3Bo
-ZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPgo+ID4gLS0tCj4gPiDCoGFyY2gveDg2L2tlcm5lbC9j
-cHUvc2d4L21haW4uYyB8IDE1ICsrKysrKysrKystLS0tLQo+ID4gwqBhcmNoL3g4Ni9rZXJuZWwv
-Y3B1L3NneC9zZ3guaMKgIHzCoCAyICsrCj4gPiDCoDIgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0
-aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tl
-cm5lbC9jcHUvc2d4L21haW4uYwo+ID4gYi9hcmNoL3g4Ni9rZXJuZWwvY3B1L3NneC9tYWluLmMK
-PiA+IGluZGV4IGVjZDdmOGU3MDRjYy4uYmFkNzI0OThiMGE3IDEwMDY0NAo+ID4gLS0tIGEvYXJj
-aC94ODYva2VybmVsL2NwdS9zZ3gvbWFpbi5jCj4gPiArKysgYi9hcmNoL3g4Ni9rZXJuZWwvY3B1
-L3NneC9tYWluLmMKPiA+IEBAIC0zMDUsMTMgKzMwNSwxNSBAQCBzdGF0aWMgdm9pZCBfX3NneF9y
-ZWNsYWltX3BhZ2VzKHZvaWQpCj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBlbmNsX3BhZ2UgPSBlcGNfcGFnZS0+ZW5jbF9vd25lcjsKPiA+IMKgCj4gPiAtwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKGtyZWZfZ2V0X3VubGVzc196ZXJvKCZlbmNsX3Bh
-Z2UtPmVuY2wtCj4gPiA+cmVmY291bnQpICE9IDApCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgaWYgKGtyZWZfZ2V0X3VubGVzc196ZXJvKCZlbmNsX3BhZ2UtPmVuY2wtCj4gPiA+
-cmVmY291bnQpICE9IDApIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgZXBjX3BhZ2UtPmZsYWdzIHw9Cj4gPiBTR1hfRVBDX1BBR0VfUkVDTEFJTV9J
-Tl9QUk9HUkVTUzsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoGNodW5rW2NudCsrXSA9IGVwY19wYWdlOwo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoGVsc2UKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9IGVsc2Ug
-ewo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyog
-VGhlIG93bmVyIGlzIGZyZWVpbmcgdGhlIHBhZ2UuIE5vIG5lZWQKPiA+IHRvIGFkZCB0aGUKPiA+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIHBhZ2Ug
-YmFjayB0byB0aGUgbGlzdCBvZiByZWNsYWltYWJsZQo+ID4gcGFnZXMuCj4gPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8KPiA+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVwY19wYWdlLT5mbGFncyAmPQo+
-ID4gflNHWF9FUENfUEFHRV9SRUNMQUlNRVJfVFJBQ0tFRDsKPiA+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqB9Cj4gPiDCoMKgwqDCoMKgwqDCoMKgfQo+ID4gwqDCoMKgwqDCoMKgwqDC
-oHNwaW5fdW5sb2NrKCZzZ3hfZ2xvYmFsX2xydS5sb2NrKTsKPiA+IMKgCj4gPiBAQCAtMzM3LDYg
-KzMzOSw3IEBAIHN0YXRpYyB2b2lkIF9fc2d4X3JlY2xhaW1fcGFnZXModm9pZCkKPiA+IMKgCj4g
-PiDCoHNraXA6Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNwaW5fbG9jaygm
-c2d4X2dsb2JhbF9scnUubG9jayk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ZXBjX3BhZ2UtPmZsYWdzICY9Cj4gPiB+U0dYX0VQQ19QQUdFX1JFQ0xBSU1fSU5fUFJPR1JFU1M7
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNneF9lcGNfcHVzaF9yZWNsYWlt
-YWJsZSgmc2d4X2dsb2JhbF9scnUsCj4gPiBlcGNfcGFnZSk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoHNwaW5fdW5sb2NrKCZzZ3hfZ2xvYmFsX2xydS5sb2NrKTsKPiA+IMKg
-Cj4gPiBAQCAtMzYwLDcgKzM2Myw4IEBAIHN0YXRpYyB2b2lkIF9fc2d4X3JlY2xhaW1fcGFnZXMo
-dm9pZCkKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2d4X3JlY2xhaW1lcl93
-cml0ZShlcGNfcGFnZSwgJmJhY2tpbmdbaV0pOwo+ID4gwqAKPiA+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKga3JlZl9wdXQoJmVuY2xfcGFnZS0+ZW5jbC0+cmVmY291bnQsCj4gPiBz
-Z3hfZW5jbF9yZWxlYXNlKTsKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBlcGNf
-cGFnZS0+ZmxhZ3MgJj0gflNHWF9FUENfUEFHRV9SRUNMQUlNRVJfVFJBQ0tFRDsKPiA+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBlcGNfcGFnZS0+ZmxhZ3MgJj0gfihTR1hfRVBDX1BB
-R0VfUkVDTEFJTUVSX1RSQUNLRUQKPiA+IHwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCj4gPiBTR1hfRVBD
-X1BBR0VfUkVDTEFJTV9JTl9QUk9HUkVTUyk7Cj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBzZ3hfZnJlZV9lcGNfcGFnZShlcGNfcGFnZSk7Cj4gPiDCoMKgwqDCoMKg
-wqDCoMKgfQo+ID4gQEAgLTUwOCw3ICs1MTIsOCBAQCBzdHJ1Y3Qgc2d4X2VwY19wYWdlICpfX3Nn
-eF9hbGxvY19lcGNfcGFnZSh2b2lkKQo+ID4gwqB2b2lkIHNneF9yZWNvcmRfZXBjX3BhZ2Uoc3Ry
-dWN0IHNneF9lcGNfcGFnZSAqcGFnZSwgdW5zaWduZWQgbG9uZwo+ID4gZmxhZ3MpCj4gPiDCoHsK
-PiA+IMKgwqDCoMKgwqDCoMKgwqBzcGluX2xvY2soJnNneF9nbG9iYWxfbHJ1LmxvY2spOwo+ID4g
-LcKgwqDCoMKgwqDCoMKgV0FSTl9PTihwYWdlLT5mbGFncyAmIFNHWF9FUENfUEFHRV9SRUNMQUlN
-RVJfVFJBQ0tFRCk7Cj4gPiArwqDCoMKgwqDCoMKgwqBXQVJOX09OKHBhZ2UtPmZsYWdzICYgKFNH
-WF9FUENfUEFHRV9SRUNMQUlNRVJfVFJBQ0tFRCB8Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTR1hfRVBDX1BBR0VfUkVDTEFJ
-TV9JTl9QUk9HUkVTUykpOwo+ID4gwqDCoMKgwqDCoMKgwqDCoHBhZ2UtPmZsYWdzIHw9IGZsYWdz
-Owo+ID4gwqDCoMKgwqDCoMKgwqDCoGlmIChmbGFncyAmIFNHWF9FUENfUEFHRV9SRUNMQUlNRVJf
-VFJBQ0tFRCkKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2d4X2VwY19wdXNo
-X3JlY2xhaW1hYmxlKCZzZ3hfZ2xvYmFsX2xydSwgcGFnZSk7Cj4gPiBAQCAtNTMyLDcgKzUzNyw3
-IEBAIGludCBzZ3hfZHJvcF9lcGNfcGFnZShzdHJ1Y3Qgc2d4X2VwY19wYWdlCj4gPiAqcGFnZSkK
-PiA+IMKgwqDCoMKgwqDCoMKgwqBzcGluX2xvY2soJnNneF9nbG9iYWxfbHJ1LmxvY2spOwo+ID4g
-wqDCoMKgwqDCoMKgwqDCoGlmIChwYWdlLT5mbGFncyAmIFNHWF9FUENfUEFHRV9SRUNMQUlNRVJf
-VFJBQ0tFRCkgewo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKiBUaGUgcGFn
-ZSBpcyBiZWluZyByZWNsYWltZWQuICovCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgaWYgKGxpc3RfZW1wdHkoJnBhZ2UtPmxpc3QpKSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgaWYgKHBhZ2UtPmZsYWdzICYgU0dYX0VQQ19QQUdFX1JFQ0xBSU1fSU5fUFJP
-R1JFU1MpCj4gPiB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqBzcGluX3VubG9jaygmc2d4X2dsb2JhbF9scnUubG9jayk7Cj4gPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVCVVNZOwo+ID4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC94
-ODYva2VybmVsL2NwdS9zZ3gvc2d4LmgKPiA+IGIvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvc2d4
-LmgKPiA+IGluZGV4IGJhNDMzOGI3MzAzZi4uMzdkNjZiYzZjYTI3IDEwMDY0NAo+ID4gLS0tIGEv
-YXJjaC94ODYva2VybmVsL2NwdS9zZ3gvc2d4LmgKPiA+ICsrKyBiL2FyY2gveDg2L2tlcm5lbC9j
-cHUvc2d4L3NneC5oCj4gPiBAQCAtMzAsNiArMzAsOCBAQAo+ID4gwqAjZGVmaW5lIFNHWF9FUENf
-UEFHRV9JU19GUkVFwqDCoMKgwqDCoMKgwqDCoMKgwqDCoEJJVCgxKQo+ID4gwqAvKiBQYWdlcyBh
-bGxvY2F0ZWQgZm9yIEtWTSBndWVzdCAqLwo+ID4gwqAjZGVmaW5lIFNHWF9FUENfUEFHRV9LVk1f
-R1VFU1TCoMKgwqDCoMKgwqDCoMKgwqBCSVQoMikKPiA+ICsvKiBwYWdlIGZsYWcgdG8gaW5kaWNh
-dGUgcmVjbGFpbSBpcyBpbiBwcm9ncmVzcyAqLwo+ID4gKyNkZWZpbmUgU0dYX0VQQ19QQUdFX1JF
-Q0xBSU1fSU5fUFJPR1JFU1MgQklUKDMpCj4gPiDCoAo+ID4gwqBzdHJ1Y3Qgc2d4X2VwY19wYWdl
-IHsKPiA+IMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBpbnQgc2VjdGlvbjsKPiA+IC0tIAo+ID4g
-Mi4zOC4xCj4gPiAKPiAKPiBJIHdvdWxkIGNyZWF0ZToKPiAKPiBlbnVtIHNneF9lcGNfc3RhdGUg
-e8KgwqDCoCAKPiDCoMKgwqDCoMKgwqDCoCBTR1hfRVBDX1NUQVRFX1JFQURZID0gMCwKPiDCoMKg
-wqDCoMKgwqDCoCBTR1hfRVBDX1NUQVRFX1JFQ0xBSU1FUl9UUkFDS0VEID0gMSwKPiDCoMKgwqDC
-oMKgwqDCoCBTR1hfRVBDX1NUQVRFX1JFQ0xBSU1fSU5fUFJPR1JFU1MgPSAyLAo+IH07Cj4gCj4g
-SS5lLiBub3QgYSBiaXRtYXNrIGJlY2F1c2UgcGFnZSBzaG91bGQgaGF2ZSBvbmx5IG9uZSBzdGF0
-ZSBhdAo+IGEgdGltZSBmb3IgYW55IG9mIHRoaXMgdG8gbWFrZSBhbnkgc2Vuc2UuIFdlIGhhdmUg
-YW4gRlNNLAo+IHJpZ2h0Pwo+IAoKSSBjYW4gZXhwZXJpbWVudCB3aXRoIGl0IGFuZCBzZWUgaWYg
-aXQgY2FuIHdvcmsgZm9yIHRoZSBmbGFncyB0bwpyZXByZXNlbnQgYSBzdGF0ZSBtYWNoaW5lLiBU
-aGV5IGRvbid0IHdvcmsgbGlrZSB0aGF0IHJpZ2h0IG5vdwpvYnZpb3VzbHksIHNpbmNlIHlvdSBj
-YW4gaGF2ZSBib3RoIFJFQ0xBSU1FUl9UUkFDS0VEIGFuZApSRUNMQUlNX0lOX1BST0dSRVNTIHNl
-dCBhdCB0aGUgc2FtZSB0aW1lLgoKCj4gQW5kIHRoZW4gYWxsb2NhdGUgMiB1cHBlciBiaXRzIHRv
-IHN0b3JlIHRoaXMgaW5mb3JtYXRpb24gZnJvbQo+IGZsYWdzLgo+IAo+IEFuZCBwcm9iYWJseSB3
-b3VsZCBtYWtlIHNlbnNlIHRvIGhhdmUgaW5saW5lIGhlbHBlciBmdW5jdGlvbnMKPiB0byBzZXR0
-aW5nIGFuZCBnZXR0aW5nIHRoZSBzdGF0ZSB0aGF0IGRvZXMgdGhlIGJpdHNoaWZ0aW5nIGFuZAo+
-IG1hc2tpbmcgc2hlbmFuaWdhbmdzLgo+IAo+IFRoaXMgd291bGQgYmUgYSBwYXRjaCBwcmVwZW5k
-aW5nIHRoaXMuCj4gCj4gSW4gdGhpcyBwYXRjaCB5b3Ugc2hvdWxkIHRoZW4gZGVzY3JpYmUgaW4g
-dGhlIGNvbnRleHQgb2YgRlNNCj4gaG93IEVQQyBwYWdlIG1vdmVzIGJldHdlZW4gdGhlc2Ugc3Rh
-dGVzLiBXaXRoIHRoYXQga25vd2xlZGdlCj4gd2UgY2FuIHRoZW4gcmVmbGVjdCB0aGUgYWN0dWFs
-IGNvZGUgY2hhbmdlLgo+IAo+IFRoZSBwb2ludCBpcyBub3QgdG8gZ2V0IHJpZ2h0IGJ1dCBtb3Jl
-IGxpa2UgYSBtaW5kc2V0IHRoYXQgd2UKPiBjYW4gZGlzY3VzcyByaWdodCBvciB3cm9uZyBpbiB0
-aGVlIGZpcnN0IHBsYWNlIHNvIGp1c3QgZG8geW91cgo+IGJlc3QgYnV0IGRvbid0IHN0cmVzcyB0
-b28gbXVjaC4KPiAKPiBCUiwgSmFya2tvCgo=
+It is found that workloads that generate a lot of task migrations
+among different cpusets are severely throttled because of the use
+of percpu rwsem in cpuset_rwsem. It is the same problem that led to
+commit 3942a9bd7b58 ("locking, rcu, cgroup: Avoid synchronize_sched()
+in __cgroup_procs_write()") and commit 6a010a49b63a ("cgroup: Make
+!percpu threadgroup_rwsem operations optional").
+
+The first patch in this series changes cpuset_can_attach() to use
+the read lock instead of the write lock. The second patch allows
+disabling of percpu reader fast path depending on the presence of
+CGRP_ROOT_FAVOR_DYNMODS flag in the cgroup root.
+
+Waiman Long (2):
+  cgroup/cpuset: Use cpuset_rwsem read lock in cpuset_can_attach()
+  cgroup/cpuset: Make percpu cpuset_rwsem operation depending on DYNMODS
+    state
+
+ kernel/cgroup/cpuset.c | 75 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 58 insertions(+), 17 deletions(-)
+
+-- 
+2.31.1
 
