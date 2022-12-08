@@ -2,146 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BE2646A39
-	for <lists+cgroups@lfdr.de>; Thu,  8 Dec 2022 09:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEFB646BD9
+	for <lists+cgroups@lfdr.de>; Thu,  8 Dec 2022 10:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbiLHIOb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Dec 2022 03:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        id S229685AbiLHJ0i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Dec 2022 04:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbiLHIOU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Dec 2022 03:14:20 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770615B595;
-        Thu,  8 Dec 2022 00:14:12 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229772AbiLHJ0i (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Dec 2022 04:26:38 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45425E3E4;
+        Thu,  8 Dec 2022 01:26:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 28E733369B;
-        Thu,  8 Dec 2022 08:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1670487251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u0hWHCxU1/envycw51Ct9du7tEezNa6pk2WQ6bJqy/w=;
-        b=qSOLY1dx+vkJzivbCTsCM6e4XSENfZXkIpKv/uIg1CATNmHjNY4qQmbEfTF1zBvlpfBfZT
-        kuFp6GA6Rdwoo2SHhC7mZK5EewUghzIzzQc8AXOLSmLt0/rP/+25c/0VjGpPh0kd2FCN9f
-        GxRQzJWB1DXd3jhReywaSOAFI2wqhaE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE926138E0;
-        Thu,  8 Dec 2022 08:14:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Uy66OdKckWMOHgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 08 Dec 2022 08:14:10 +0000
-Date:   Thu, 8 Dec 2022 09:14:10 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
-        <chengkaitao@didiglobal.com>
-Cc:     chengkaitao <pilgrimtao@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] mm: memcontrol: protect the memory in cgroup from
- being oom killed
-Message-ID: <Y5Gc0jiDlWlRlMYH@dhcp22.suse.cz>
-References: <Y5GTM5HLhGrx9zFO@dhcp22.suse.cz>
- <CEFD5AB7-17FB-4CC0-B818-1988484B8E55@didiglobal.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 548BC61E37;
+        Thu,  8 Dec 2022 09:26:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 366D0C433D7;
+        Thu,  8 Dec 2022 09:26:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670491596;
+        bh=TNqJerM9UR1fg07xX3h23a2j69g0XEpwAAYXPgA4ZEI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s6CZZHIqy2xxLR3jpTBP+mtBdBxj+rY6+ATpzcxHIKjvPsU3xfYS23x1cuKm0NQk+
+         e968/2VYe1r14ryWx5aHvjSKkXQ4zjUGk7Hgtk/Hzv8hDAuO+++M1V1bQydOn6A/N0
+         2W/r+n3CWFatZLQsHsAuP4sjEd2PJlz+jkd6B62gzFpcAeYYBeoKWUqbWjvfnZ1ni7
+         yF2MmE2sGvH57azEdUviynHwYkog9ABiYbMYnpbBLFPbzauFUeeOsRoXkF+ATDOjY/
+         aDptE0IvKxRc/b5rhT68YTFEMuVzo7jJ4aXGihkgIMomwPzb5CTZeY/8KO3gUGZwM9
+         zquRZ/oh754XQ==
+Date:   Thu, 8 Dec 2022 09:26:32 +0000
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc:     dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        zhiquan1.li@intel.com, Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH v2 08/18] x86/sgx: Allow reclaiming up to 32 pages, but
+ scan 16 by default
+Message-ID: <Y5GtyM92jE5/UJT3@kernel.org>
+References: <20221202183655.3767674-1-kristen@linux.intel.com>
+ <20221202183655.3767674-9-kristen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CEFD5AB7-17FB-4CC0-B818-1988484B8E55@didiglobal.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221202183655.3767674-9-kristen@linux.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 08-12-22 07:59:27, 程垲涛 Chengkaitao Cheng wrote:
-> At 2022-12-08 15:33:07, "Michal Hocko" <mhocko@suse.com> wrote:
-> >On Thu 08-12-22 11:46:44, chengkaitao wrote:
-> >> From: chengkaitao <pilgrimtao@gmail.com>
-> >> 
-> >> We created a new interface <memory.oom.protect> for memory, If there is
-> >> the OOM killer under parent memory cgroup, and the memory usage of a
-> >> child cgroup is within its effective oom.protect boundary, the cgroup's
-> >> tasks won't be OOM killed unless there is no unprotected tasks in other
-> >> children cgroups. It draws on the logic of <memory.min/low> in the
-> >> inheritance relationship.
-> >> 
-> >> It has the following advantages,
-> >> 1. We have the ability to protect more important processes, when there
-> >> is a memcg's OOM killer. The oom.protect only takes effect local memcg,
-> >> and does not affect the OOM killer of the host.
-> >> 2. Historically, we can often use oom_score_adj to control a group of
-> >> processes, It requires that all processes in the cgroup must have a
-> >> common parent processes, we have to set the common parent process's
-> >> oom_score_adj, before it forks all children processes. So that it is
-> >> very difficult to apply it in other situations. Now oom.protect has no
-> >> such restrictions, we can protect a cgroup of processes more easily. The
-> >> cgroup can keep some memory, even if the OOM killer has to be called.
-> >> 
-> >> Signed-off-by: chengkaitao <pilgrimtao@gmail.com>
-> >> ---
-> >> v2: Modify the formula of the process request memcg protection quota.
-> >
-> >The new formula doesn't really address concerns expressed previously.
-> >Please read my feedback carefully again and follow up with questions if
-> >something is not clear.
+On Fri, Dec 02, 2022 at 10:36:44AM -0800, Kristen Carlson Accardi wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 > 
-> The previous discussion was quite scattered. Can you help me summarize
-> your concerns again?
+> Modify sgx_reclaim_pages() to take a parameter that specifies the
+> number of pages to scan for reclaiming. Specify a max value of
+> 32, but scan 16 in the usual case. This allows the number of pages
+> sgx_reclaim_pages() scans to be specified by the caller, and adjusted
+> in future patches.
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 25 +++++++++++++++----------
+>  1 file changed, 15 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 83aaf5cea7b9..f201ca85212f 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -18,6 +18,8 @@
+>  #include "encl.h"
+>  #include "encls.h"
+>  
+> +#define SGX_MAX_NR_TO_RECLAIM	32
 
-The most important part is http://lkml.kernel.org/r/Y4jFnY7kMdB8ReSW@dhcp22.suse.cz
-: Let me just emphasise that we are talking about fundamental disconnect.
-: Rss based accounting has been used for the OOM killer selection because
-: the memory gets unmapped and _potentially_ freed when the process goes
-: away. Memcg changes are bound to the object life time and as said in
-: many cases there is no direct relation with any process life time.
+SGX_NR_TO_SCAN_MAX
 
-That is to the per-process discount based on rss or any per-process
-memory metrics.
-
-Another really important question is the actual configurability. The
-hierarchical protection has to be enforced and that means that same as
-memory reclaim protection it has to be enforced top-to-bottom in the
-cgroup hierarchy. That makes the oom protection rather non-trivial to
-configure without having a good picture of a larger part of the cgroup
-hierarchy as it cannot be tuned based on a reclaim feedback.
--- 
-Michal Hocko
-SUSE Labs
+BR, Jarkko
