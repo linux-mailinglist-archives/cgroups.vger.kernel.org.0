@@ -2,118 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AB364860B
-	for <lists+cgroups@lfdr.de>; Fri,  9 Dec 2022 16:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B728648630
+	for <lists+cgroups@lfdr.de>; Fri,  9 Dec 2022 17:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbiLIP7d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 9 Dec 2022 10:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
+        id S229783AbiLIQHZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 9 Dec 2022 11:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiLIP7c (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 9 Dec 2022 10:59:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80374379D5
-        for <cgroups@vger.kernel.org>; Fri,  9 Dec 2022 07:58:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670601517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XJPm4fwaRggOYMPWB+4OQhr2AoXrB0vtei9ZF45OHV8=;
-        b=P/kRoZGJ3sfZDKob9s9hbZmclMguAm+O0rrbTY0xZhUTyjEOHmo9LLqWK93tjeTm5wRYm6
-        ooBTX8OoA3twHIRQTvXMkQhnOZpbEZ2YEB9NuAq9TcAHS/HwScBtN7C2KpKDigS9B9zZ1L
-        NoFRILfKcGP5Us8OL0tqeU6W4j30GWU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-486-B696t4EsMfiGoAAspXHKFA-1; Fri, 09 Dec 2022 10:58:36 -0500
-X-MC-Unique: B696t4EsMfiGoAAspXHKFA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A33E429AA2EF;
-        Fri,  9 Dec 2022 15:58:35 +0000 (UTC)
-Received: from [10.22.9.164] (unknown [10.22.9.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E1AE1401C30;
-        Fri,  9 Dec 2022 15:58:34 +0000 (UTC)
-Message-ID: <8641d4a4-4d60-0f31-120c-56628f477ba2@redhat.com>
-Date:   Fri, 9 Dec 2022 10:58:32 -0500
+        with ESMTP id S229675AbiLIQHE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 9 Dec 2022 11:07:04 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F45A384A;
+        Fri,  9 Dec 2022 08:05:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670601959; x=1702137959;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=XWRLIvNaPSbx3qgHOle8bZTzrcu0wd+pVGPi5uuTaLg=;
+  b=Dx9A1LP4Rj3v31a86MkFcPaEXndEZ3bJeuWd/xZMw8foA+g2pK5lyz5p
+   3b3qtM5ZMPz8j4I4cqo5O2xKt4cQclKM8vcfnFgvr9xwM3Ak3OrBbbtD/
+   fBJpLEFmWsQ1YqrQ5B6AzrS6ekOI1XPU8/X+7bQ8qTYQxLIjnh+Y31502
+   RGIqHNxUFjDmndfbdOn58pD8ZpjR064rV3nVNYb/bucsLE3YpBvMJWhwx
+   KV9F5aBPxE1RSh4o4S6Py4ZBqhuzo37dJmtkmbJ+MnpqY30aE9/Roz0Zq
+   6Xf58jz4dLmH5QQGrZW1lSj1vzgCdkvSt0p78jxwQqeMPNeEiQWknyxdu
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="316194344"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; 
+   d="scan'208";a="316194344"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2022 08:05:58 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="976319943"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; 
+   d="scan'208";a="976319943"
+Received: from pphiri-mobl1.amr.corp.intel.com (HELO [10.212.198.173]) ([10.212.198.173])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2022 08:05:57 -0800
+Message-ID: <cb5abce531c1b14118de419ba68c2a501b016873.camel@linux.intel.com>
+Subject: Re: [PATCH v2 14/18] x86/sgx: Add EPC OOM path to forcefully
+ reclaim EPC
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        zhiquan1.li@intel.com, Sean Christopherson <seanjc@google.com>
+Date:   Fri, 09 Dec 2022 08:05:56 -0800
+In-Reply-To: <Y5IBCOuF8X7jEK3+@kernel.org>
+References: <20221202183655.3767674-1-kristen@linux.intel.com>
+         <20221202183655.3767674-15-kristen@linux.intel.com>
+         <Y5IBCOuF8X7jEK3+@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH-block 3/3] blk-cgroup: Flush stats at blkgs destruction
- path
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        "Dennis Zhou (Facebook)" <dennisszhou@gmail.com>
-References: <20221208220141.2625775-1-longman@redhat.com>
- <20221208220141.2625775-4-longman@redhat.com>
- <e8a09f5d-afce-608f-220b-6b32b3ae37b9@kernel.dk>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <e8a09f5d-afce-608f-220b-6b32b3ae37b9@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/8/22 18:00, Jens Axboe wrote:
-> On 12/8/22 3:01?PM, Waiman Long wrote:
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index 793ecff29038..910e633869b0 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
->> @@ -281,6 +281,26 @@ void cgroup_rstat_flush_release(void)
->>   	spin_unlock_irq(&cgroup_rstat_lock);
->>   }
->>   
->> +/**
->> + * cgroup_rstat_css_cpu_flush - flush stats for the given css and cpu
->> + * @css: target css to be flush
->> + * @cpu: the cpu that holds the stats to be flush
->> + *
->> + * A lightweight rstat flush operation for a given css and cpu.
->> + * Only the cpu_lock is being held for mutual exclusion, the cgroup_rstat_lock
->> + * isn't used.
->> + */
->> +void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu)
->> +{
->> +	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
->> +
->> +	raw_spin_lock_irq(cpu_lock);
->> +	rcu_read_lock();
->> +	css->ss->css_rstat_flush(css, cpu);
->> +	rcu_read_unlock();
->> +	raw_spin_unlock_irq(cpu_lock);
->> +}
->> +
->>   int cgroup_rstat_init(struct cgroup *cgrp)
->>   {
->>   	int cpu;
-> As I mentioned last time, raw_spin_lock_irq() will be equivalent to an
-> RCU protected section anyway, so you don't need to do both. Just add a
-> comment on why rcu_read_lock()/rcu_read_unlock() isn't needed inside the
-> raw irq safe lock.
+On Thu, 2022-12-08 at 15:21 +0000, Jarkko Sakkinen wrote:
+> On Fri, Dec 02, 2022 at 10:36:50AM -0800, Kristen Carlson Accardi
+> wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> >=20
+> > Introduce the OOM path for killing an enclave with the reclaimer
+> > is no longer able to reclaim enough EPC pages. Find a victim
+> > enclave,
+> > which will be an enclave with EPC pages remaining that are not
+> > accessible to the reclaimer ("unreclaimable"). Once a victim is
+> > identified, mark the enclave as OOM and zap the enclaves entire
+> > page range. Release all the enclaves resources except for the
+> > struct sgx_encl memory itself.
+> >=20
+> > Signed-off-by: Sean Christopherson
+> > <sean.j.christopherson@intel.com>
+> > Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+>=20
+> Why this patch is dependent of all 13 patches before it?
+>=20
+> Looks like something that is orthogonal to cgroups and could be
+> live by its own. At least it probably does not require all of
+> those patches, or does it?
+>=20
+> Even without cgroups it would make sense to killing enclaves if
+> reclaimer gets stuck.
+>=20
+> BR, Jarkko
 
-Yes, you are right.  We don't need rcu_read_lock() here. I put it there 
-to follow the locking pattern in cgroup_rstat_flush_locked(). I will 
-remove it in the next version.
+It is dependent first of all of having the LRU struct with the
+unreclaimable/reclaimable lists. Which means it requires storing the
+enclave pointer in the page as well. It's dependent on knowing how many
+pages are available, being able to ignore the age of a page etc. Right
+now, without cgroups, sgx will be unable to allocate memory when an
+enclave is created if it cannot reclaim enough memory from the existing
+in use enclaves.
 
-Cheers,
-Longman
+Aside from that though, I don't think that killing enclaves makes sense
+outside the context of cgroup limits. Without cgroup limits, you have a
+max number of EPC pages that you can have active at any one time. If an
+enclave attempts to allocate a new page and the reclaimer can't free up
+any, how would you decide whether it's ok to kill an entire enclave in
+order to grant this other enclave the higher priority for getting a
+page? With a cgroup limit, the system owner explicitly can decide what
+the limits on usage will be, but without that, you'd have a situation
+where one new enclave could kill others I would think. Better to just
+have it the way it is - new page allocations fail if there are not free
+pages, but you don't kill enclaves that already exist.
 
