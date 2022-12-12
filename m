@@ -2,74 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D14649A79
-	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 09:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8BC649A7E
+	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 09:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbiLLIx6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Dec 2022 03:53:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
+        id S231178AbiLLIz7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Dec 2022 03:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231466AbiLLIxk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 03:53:40 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B918DC29;
-        Mon, 12 Dec 2022 00:53:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UihVLPIukW76e6Gh9tWRjReOJ5OZce6kDic8r4IuSmU=; b=qQfZ2XqQABCzgYROcbAC+dV6vV
-        AzZ9femTZMLYhSeXz6ZMH3q3bLXKukUXNn60OdfWE5u5teHQXFA5JGlrFYflhYtplVeRn5uxxl7bO
-        mS3bAHKx9NiXUyqNkMI8izrJgxpK4imqcuaw3MbPRBdkUYQFVzUtxNndISwnQanEDHy/Cak7W/pQ4
-        VJWAo6B1+AH/stAEuUwC+Lx5mMvyDFWUfVFKgAUkn8t3SLCVGVLuRVSyzmnxdRWxjAgUOpB56mAOC
-        3w0n7+9i6g6PCzuaoMZrgeAJFsEU822SKnduSJP+JWTrQbOgkCBEAQrM8fWZ4up4G2v55wXR8j8ld
-        3iA0wyXQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p4eYw-00AcCC-Cv; Mon, 12 Dec 2022 08:53:26 +0000
-Date:   Mon, 12 Dec 2022 00:53:26 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, darklight2357@icloud.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/2 block/for-6.2] blk-iolatency: Make initialization lazy
-Message-ID: <Y5bsBuwjcbHEjhIw@infradead.org>
-References: <Y5TQ5gm3O4HXrXR3@slm.duckdns.org>
- <Y5TRU2+s379DhUbj@slm.duckdns.org>
+        with ESMTP id S229726AbiLLIz5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 03:55:57 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F009C09;
+        Mon, 12 Dec 2022 00:55:56 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D6ACF338A2;
+        Mon, 12 Dec 2022 08:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1670835354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TGVOMJbI5VSuu2tCry8NVGy56zUSkKbZBynEIgKf3Ms=;
+        b=e7WlOo+Kk87BEbCBNwskXM7yzdzJaKGsFfe8oyqFNEfXIitKdo5y7ay8NCB+3SVFXff3cJ
+        GR5vhrP/1xCsq6oCvRi6mNucyOzWGdMku6SHUqxKcvu0y7JCY81V/IY3luS2NOgA/C0S7+
+        YTMgtj+HVc6jHmGNR/MARafPRYQAziM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B449913456;
+        Mon, 12 Dec 2022 08:55:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CQPRKZrslmMoGgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 12 Dec 2022 08:55:54 +0000
+Date:   Mon, 12 Dec 2022 09:55:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
+        fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm: Add nodes= arg to memory.reclaim
+Message-ID: <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
+References: <20221202223533.1785418-1-almasrymina@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y5TRU2+s379DhUbj@slm.duckdns.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20221202223533.1785418-1-almasrymina@google.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> +static int blk_iolatency_try_init(char *input)
-> +{
-> +	static DEFINE_MUTEX(init_mutex);
-> +	struct block_device *bdev;
-> +	int ret = 0;
-> +
-> +	bdev = blkcg_conf_open_bdev(&input);
-> +	if (IS_ERR(bdev))
-> +		return PTR_ERR(bdev);
+On Fri 02-12-22 14:35:31, Mina Almasry wrote:
+> The nodes= arg instructs the kernel to only scan the given nodes for
+> proactive reclaim. For example use cases, consider a 2 tier memory system:
+> 
+> nodes 0,1 -> top tier
+> nodes 2,3 -> second tier
+> 
+> $ echo "1m nodes=0" > memory.reclaim
+> 
+> This instructs the kernel to attempt to reclaim 1m memory from node 0.
+> Since node 0 is a top tier node, demotion will be attempted first. This
+> is useful to direct proactive reclaim to specific nodes that are under
+> pressure.
+> 
+> $ echo "1m nodes=2,3" > memory.reclaim
+> 
+> This instructs the kernel to attempt to reclaim 1m memory in the second tier,
+> since this tier of memory has no demotion targets the memory will be
+> reclaimed.
+> 
+> $ echo "1m nodes=0,1" > memory.reclaim
+> 
+> Instructs the kernel to reclaim memory from the top tier nodes, which can
+> be desirable according to the userspace policy if there is pressure on
+> the top tiers. Since these nodes have demotion targets, the kernel will
+> attempt demotion first.
+> 
+> Since commit 3f1509c57b1b ("Revert "mm/vmscan: never demote for memcg
+> reclaim""), the proactive reclaim interface memory.reclaim does both
+> reclaim and demotion. Reclaim and demotion incur different latency costs
+> to the jobs in the cgroup. Demoted memory would still be addressable
+> by the userspace at a higher latency, but reclaimed memory would need to
+> incur a pagefault.
+> 
+> The 'nodes' arg is useful to allow the userspace to control demotion
+> and reclaim independently according to its policy: if the memory.reclaim
+> is called on a node with demotion targets, it will attempt demotion first;
+> if it is called on a node without demotion targets, it will only attempt
+> reclaim.
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-> +retry:
->  	ret = blkg_conf_prep(blkcg, &blkcg_policy_iolatency, buf, &ctx);
-> +	if (ret == -EOPNOTSUPP) {
-> +		ret = blk_iolatency_try_init(buf);
+After discussion in [1] I have realized that I haven't really thought
+through all the consequences of this patch and therefore I am retracting
+my ack here. I am not nacking the patch at this statge but I also think
+this shouldn't be merged now and we should really consider all the
+consequences.
 
-It's a little sad to do two block device lookups here (even if it
-obviously doesn't matter for performance).  I wonder if it would
-make sense to explicitly support the lazy init pattern
-in blkg_conf_prep somehow.
+Let me summarize my main concerns here as well. The proposed
+implementation doesn't apply the provided nodemask to the whole reclaim
+process. This means that demotion can happen outside of the mask so the
+the user request cannot really control demotion targets and that limits
+the interface should there be any need for a finer grained control in
+the future (see an example in [2]).
+Another problem is that this can limit future reclaim extensions because
+of existing assumptions of the interface [3] - specify only top-tier
+node to force the aging without actually reclaiming any charges and
+(ab)use the interface only for aging on multi-tier system. A change to
+the reclaim to not demote in some cases could break this usecase.
 
-Otherwise I'm all for the lazy init.
+My counter proposal would be to define the nodemask for memory.reclaim
+as a domain to constrain the charge reclaim. That means both aging and
+reclaim including demotion which is a part of aging. This will allow
+to control where to demote for balancing purposes (e.g. demote to node 2
+rather than 3) which is impossible with the proposed scheme.
+
+[1] http://lkml.kernel.org/r/20221206023406.3182800-1-almasrymina@google.com
+[2] http://lkml.kernel.org/r/Y5bnRtJ6sojtjgVD@dhcp22.suse.cz
+[3] http://lkml.kernel.org/r/CAAPL-u8rgW-JACKUT5ChmGSJiTDABcDRjNzW_QxMjCTk9zO4sg@mail.gmail.com
+-- 
+Michal Hocko
+SUSE Labs
