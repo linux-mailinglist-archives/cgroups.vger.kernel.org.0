@@ -2,102 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB7864A6B3
-	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 19:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9156F64A702
+	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 19:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbiLLSMM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Dec 2022 13:12:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
+        id S231779AbiLLSYd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Dec 2022 13:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbiLLSLY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 13:11:24 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F526178A7
-        for <cgroups@vger.kernel.org>; Mon, 12 Dec 2022 10:09:50 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id jl24so12896429plb.8
-        for <cgroups@vger.kernel.org>; Mon, 12 Dec 2022 10:09:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=caT/eR3o2xI61xv4gQNQ+fDkRVtZB1sOkBNJmlEN+N4=;
-        b=btZ4GA2g/VsRjxBZWyd9Ot4NYl23XggbHAYppoWAJmTxlei8M5/a+b75/69vjs6/GH
-         I6tP0ipoDef613AM61HoV+CINKngTjD8WS0TtXzjvi7PemuFIO0aVViEu8P6/zlMroeA
-         /rz2PU13KL9/wCcPniQNnwBMvXDHGjycV7BnTq/mTjEiO803KNc18d/0d7ajvdY3QB7c
-         0dxIjjg5xtkMMm5gLHj3U0CnOt1GX8A52AptPekUmyPv2lyy1JN1gm/Yf/39hMlDWIAm
-         iDow4z0quQ16cubZl80/hIZjTver2Aez811DpWbpe/dWEi1fggZISJ8ob8bsgCwH30Wl
-         Vy1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=caT/eR3o2xI61xv4gQNQ+fDkRVtZB1sOkBNJmlEN+N4=;
-        b=onRtu8XwgtDTuWAcJTYoDBmlj612PmfR1EYnSAwvUR3Wu7VPMeOGgG2nAFKcxlO4GG
-         UjVq2dEVquVCt+XIJkfK3ufQTWTYy9ewgR5BcIoyxOJiPDG4jd1hY0tdn+fUv2JniMy3
-         KIxwZYPC2fTZzCYG1WBhn/zBftvkNCcbzndcHvgqaJvaG4QB7pVOcbTLy1T180g5Gmf3
-         20wSrAe2xacRg/KKSMUqUhtHkhN67mGq0VJ2sKbEQJ/tt4+0b5q+OGiMbfhijxsYmHLp
-         ZTlfghFlNQ0u4ayZ2n+r4H/vUHn/j7sRZPxH1ViIPTRFxkQAziBEPe5bxxXHF5okvQJK
-         Vfvg==
-X-Gm-Message-State: ANoB5pmbsDx53pmrJvHXuTy82B6eEZjcyk/ugKNnba48mjyQKFJKD8Ja
-        uv25EGmq2NDN5S0bY/K2vi3/Gw==
-X-Google-Smtp-Source: AA0mqf7zO/WZ6W2GV+EwOLWI4vx4kth8/QRN5S0b70Tpme+OTbmVntr3N2mA7+gmAJy9/GblRagCKg==
-X-Received: by 2002:a17:90b:3b86:b0:218:84a0:65eb with SMTP id pc6-20020a17090b3b8600b0021884a065ebmr813368pjb.1.1670868583486;
-        Mon, 12 Dec 2022 10:09:43 -0800 (PST)
-Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
-        by smtp.gmail.com with ESMTPSA id ep11-20020a17090ae64b00b00210c84b8ae5sm5717900pjb.35.2022.12.12.10.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 10:09:43 -0800 (PST)
-Date:   Mon, 12 Dec 2022 18:09:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        zhiquan1.li@intel.com
-Subject: Re: [PATCH v2 14/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Message-ID: <Y5duYxIHtSpK1qkj@google.com>
-References: <20221202183655.3767674-1-kristen@linux.intel.com>
- <20221202183655.3767674-15-kristen@linux.intel.com>
- <Y5IBCOuF8X7jEK3+@kernel.org>
- <cb5abce531c1b14118de419ba68c2a501b016873.camel@linux.intel.com>
- <e5aff02b-713c-ccd8-7211-d07ff6d7adb2@intel.com>
+        with ESMTP id S232679AbiLLSY1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 13:24:27 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9067310B59
+        for <cgroups@vger.kernel.org>; Mon, 12 Dec 2022 10:23:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670869412; x=1702405412;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Je6X+s01mDoT2Sf7Kwx1QyNMCpd9G+wHiFeag94YT4Y=;
+  b=QlGrbi58tdRMY3jNuiXp/H3EOaVOkVXhT/8A4LtFSYxpbNBfXHT/ikna
+   jPLCxUYvWM6pISN/905MxaG6uWrc1hun2bGIFoOx2/k+YRsoui9tNHRB+
+   ohJe7phwE0ACrN/g2T8TlBFEg54sh9ZN/FNshwjTc96R78HkiqX+RrJEG
+   M9/LTgwEm+ISc4k/9wvEkSqoWuh+2xNyUQHQALgsc1d/6oDgf8wV8aDvY
+   HAYVlGO6It3cGScTw4RmcftKYqKkGLNhEiYkTD7jBX62UUfYM0Fe4qPF/
+   WFUoIK1gEDJ+6a9GSgDLd6rbArDX4Rs9KPgRfZf3rD+H1nZesxCfcNX2D
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10559"; a="316626069"
+X-IronPort-AV: E=Sophos;i="5.96,239,1665471600"; 
+   d="scan'208";a="316626069"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2022 10:23:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10559"; a="755048809"
+X-IronPort-AV: E=Sophos;i="5.96,239,1665471600"; 
+   d="scan'208";a="755048809"
+Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 12 Dec 2022 10:23:30 -0800
+Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1p4nSc-0003qt-0X;
+        Mon, 12 Dec 2022 18:23:30 +0000
+Date:   Tue, 13 Dec 2022 02:23:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:test-merge-for-6.2] BUILD SUCCESS
+ 2d9b8d3cdccefbe671c36772bae76c1f0192c3de
+Message-ID: <63977191.wvtuRWB8Cv3ECZnE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5aff02b-713c-ccd8-7211-d07ff6d7adb2@intel.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Dec 09, 2022, Dave Hansen wrote:
-> On 12/9/22 08:05, Kristen Carlson Accardi wrote:
-> > Aside from that though, I don't think that killing enclaves makes sense
-> > outside the context of cgroup limits. 
-> 
-> I think it makes a lot of sense in theory.  Whatever situation we get
-> into with a cgroup's EPC we can also get into with the whole system's EPC.
-> 
-> *But*, it's orders of magnitude harder to hit on the whole system.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge-for-6.2
+branch HEAD: 2d9b8d3cdccefbe671c36772bae76c1f0192c3de  Merge branch 'for-6.2' into test-merge-for-6.2
 
-...
+elapsed time: 725m
 
-> If someone wants to extend this OOM support to system-wide EPC later, then go
-> ahead.  But, I don't think it makes a lot of sense to invert this series for
-> it.
+configs tested: 97
+configs skipped: 3
 
-+1 from the peanut gallery.  With VMM EPC oversubscription suport, no sane VMM
-will oversubscribe VEPC pages.  And for VA pages, supporting swap of VA pages is
-likely a more userspace-friendly approach if system-wide EPC OOM is a concern.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+powerpc                           allnoconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                                 defconfig
+alpha                               defconfig
+i386                 randconfig-a013-20221212
+i386                 randconfig-a014-20221212
+x86_64                            allnoconfig
+i386                 randconfig-a012-20221212
+x86_64                              defconfig
+i386                 randconfig-a011-20221212
+s390                             allmodconfig
+x86_64                           rhel-8.3-bpf
+i386                                defconfig
+x86_64                               rhel-8.3
+ia64                             allmodconfig
+i386                 randconfig-a015-20221212
+s390                                defconfig
+i386                 randconfig-a016-20221212
+x86_64                           allyesconfig
+x86_64                           rhel-8.3-syz
+m68k                             allyesconfig
+x86_64                          rhel-8.3-rust
+m68k                             allmodconfig
+x86_64               randconfig-a012-20221212
+x86_64                         rhel-8.3-kunit
+arm                                 defconfig
+x86_64               randconfig-a014-20221212
+x86_64               randconfig-a013-20221212
+arc                              allyesconfig
+alpha                            allyesconfig
+x86_64               randconfig-a011-20221212
+x86_64                           rhel-8.3-kvm
+x86_64               randconfig-a015-20221212
+x86_64                          rhel-8.3-func
+s390                             allyesconfig
+x86_64                    rhel-8.3-kselftests
+riscv                randconfig-r042-20221212
+arm64                            allyesconfig
+x86_64               randconfig-a016-20221212
+arm                              allyesconfig
+sh                               allmodconfig
+i386                             allyesconfig
+arc                  randconfig-r043-20221211
+mips                             allyesconfig
+powerpc                          allmodconfig
+arc                  randconfig-r043-20221212
+arm                  randconfig-r046-20221211
+i386                          randconfig-c001
+s390                 randconfig-r044-20221212
+powerpc                 mpc837x_mds_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                      ppc40x_defconfig
+xtensa                              defconfig
+m68k                           sun3_defconfig
+sparc                               defconfig
+powerpc                         wii_defconfig
+nios2                         10m50_defconfig
+nios2                               defconfig
+mips                          rb532_defconfig
+m68k                         amcore_defconfig
+arm                            hisi_defconfig
+arm                         lpc18xx_defconfig
+arm                            xcep_defconfig
+sh                            migor_defconfig
+arm                        multi_v7_defconfig
+sh                        edosk7760_defconfig
+arc                            hsdk_defconfig
+powerpc                       ppc64_defconfig
+powerpc                 mpc8540_ads_defconfig
+sh                             espt_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                      pcm030_defconfig
+powerpc                mpc7448_hpc2_defconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+
+clang tested configs:
+i386                 randconfig-a002-20221212
+i386                 randconfig-a003-20221212
+i386                 randconfig-a001-20221212
+x86_64               randconfig-a002-20221212
+i386                 randconfig-a004-20221212
+x86_64               randconfig-a001-20221212
+i386                 randconfig-a006-20221212
+x86_64               randconfig-a004-20221212
+i386                 randconfig-a005-20221212
+x86_64               randconfig-a003-20221212
+x86_64               randconfig-a006-20221212
+arm                  randconfig-r046-20221212
+x86_64               randconfig-a005-20221212
+riscv                randconfig-r042-20221211
+hexagon              randconfig-r045-20221211
+hexagon              randconfig-r041-20221211
+hexagon              randconfig-r045-20221212
+s390                 randconfig-r044-20221211
+hexagon              randconfig-r041-20221212
+x86_64                        randconfig-k001
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
