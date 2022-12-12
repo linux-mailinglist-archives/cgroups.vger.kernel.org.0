@@ -2,81 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBA764A9B3
-	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 22:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD9E64AA05
+	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 23:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbiLLVrI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Dec 2022 16:47:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        id S233066AbiLLWNw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Dec 2022 17:13:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233558AbiLLVrD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 16:47:03 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8711C192A4;
-        Mon, 12 Dec 2022 13:47:02 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id c13so872065pfp.5;
-        Mon, 12 Dec 2022 13:47:02 -0800 (PST)
+        with ESMTP id S233476AbiLLWNv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 17:13:51 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3321A232;
+        Mon, 12 Dec 2022 14:13:50 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gt4so1332634pjb.1;
+        Mon, 12 Dec 2022 14:13:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6qiAQ7WTwZr4dVTtMKJayehUb8HIRKe6ZlI8Mkp+Y78=;
-        b=bQdgiHkGAhLziF8YrE6lY1CbCjAd+Q93tt3s7B8OuQurw+fBLJSpXapeoQaWoGZaCu
-         pW23g/hLxu3YE+Ri3icoxByE0NpQbPuYRKm0O44+zvDAKNWI4dZPRINx9W16HsUoSdCB
-         mDygSc6MDZPTYGJWHfRTLiZugJJLsljMh9rjcxrw5rIm3xd4N2+rOrwUJVhkj4WFAt9O
-         ps7VSjNuawEnABvIeNBm++nfKVPatwvO+Yt/cH+xxUCqdqlwTio2ARN+cmMZ3TnCRgL8
-         HMNsEYRtDBw2k4+p9EeEBSbg9SZxYykoFL4ShGXYiCZ683mFThj8DLxwmff6vHfGqwzS
-         q1uA==
+        bh=n2XZBEP0JR3u42vjkud6u2pf7wcC2jLfekfdtsMKR2o=;
+        b=CFHCFDtE98y5A8aGdBtghjU5l9CphTqaYy8+bNqMg2oj+xvRkpTz+CiNOXnOGa+xmH
+         aFRyuXYMB56A8Qaj2sKuwGcPdNQ8AoKGDqpSvvk1nupxWCQ6HeVJMNeCoCndqgy4KHMa
+         gtTajfL2mnJdmGIF83EGfF+l6DuCgA8QoD2TcFhwAK1WOdR4yW8jtgwKhOVlWo2htGf2
+         5VbW7laZOO8WJeDhfUU061bT5bwJcSuhhe/E7n8AUutbCBMyf/ER4mfE68WrEqJxoo3a
+         6h3bRzsp+lesOssSJTDJcFigURcJGHNh6iZ62bkwx4gVc0a+Cg6S4v/6y1LTDsSJtivC
+         4Slg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6qiAQ7WTwZr4dVTtMKJayehUb8HIRKe6ZlI8Mkp+Y78=;
-        b=LJpHuVbzmpDI31qWHHKvkR7wWWLgpHMBkZu7chjcMt4xULpJVSIGXwfevS6ptZkUyi
-         44HXF4JW53DeHRdK4Y+XFscTWzN0PYVetDtwD3+jynGuTdQH5ksw1vOMm8KFx4AQnQWd
-         O4rfTYtoKe5eajmYzpMwwNqscnNRdqCAUlWWHIl+J6u9IKNZgdD4S1FO0BeOAvg+KP74
-         ivs2CZNPL9R5gKzLF61ZUty/cZGOgp2xKrVtLH3cf4LwWBFPB+xVBPrOAbycdtTy4ORv
-         VsRAieBWHq98GhO5QduIZmR7/8DNK7wRHwqNOsmAOEnhJPtlqpgQeZSSmHsyoQC80dfX
-         HunQ==
-X-Gm-Message-State: ANoB5plY+PXTXqR9WyqOjYPsa3ipjKVSn9NQWmgL4C7S2BFvWhA4wUgs
-        uNFVZ5MLmAYWT1Oj7R4wDIc=
-X-Google-Smtp-Source: AA0mqf6FYZFa62ntzOFykUefdpR0zUL84rPMRalzLreyTNxWJpv2jD0oJuR8N24+bpAwNeG7dA7ydg==
-X-Received: by 2002:a05:6a00:1411:b0:574:a541:574a with SMTP id l17-20020a056a00141100b00574a541574amr20784128pfu.0.1670881621860;
-        Mon, 12 Dec 2022 13:47:01 -0800 (PST)
+        bh=n2XZBEP0JR3u42vjkud6u2pf7wcC2jLfekfdtsMKR2o=;
+        b=yr9pfWf4kDhLvyvVeZvMHFhe9i++qnF7ZY1ko2LAtz0mzB7opjeuu9/lb9XhM/29rK
+         HyJ1k3TZdoW7QRFQvCDtFeBi8lYvwoFUvX09WmAjLx0M2s07RiWHo/Qc9bTD4Y7fkOKh
+         8PJzdRFkLi1ehXNhS06W3TcC+uc/P/rWj+brvrN9QQMu187L7KgBIEJb6ehIbVaScwLv
+         cQ2zKqydLzn0XhLE8SKmOBBaHspHUagEmav789Q0Scj5N43FfYSv296Pd/ozkp1oU6D7
+         wt9rYep5VD87ssv1U0sOpHk2VJkk/fn+4kHBjPDUR1wlKeARTO5CGs6lDGN5O23iQc/f
+         YCrA==
+X-Gm-Message-State: ANoB5pmsKokylVe94ZRK3+INeVfHnz9ncE4Vpt4lVWs2aY/y7X8ENm1Y
+        fiAABasnnhk1XKr45O6YRbb2EBoWVJoLWA==
+X-Google-Smtp-Source: AA0mqf67w1m5VItBX9PGVatqIjNwsKAAmChP+SvVKw5BDzUrHAocCOyWg7+eIfj//6EU5zpEYbFhbQ==
+X-Received: by 2002:a05:6a20:8e02:b0:a0:462f:8e3f with SMTP id y2-20020a056a208e0200b000a0462f8e3fmr31554587pzj.53.1670883229447;
+        Mon, 12 Dec 2022 14:13:49 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id o24-20020aa79798000000b005745eb7eccasm6236062pfp.112.2022.12.12.13.47.00
+        by smtp.gmail.com with ESMTPSA id z29-20020aa7991d000000b00575afe3c188sm6255061pff.150.2022.12.12.14.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 13:47:01 -0800 (PST)
+        Mon, 12 Dec 2022 14:13:48 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 12 Dec 2022 11:46:59 -1000
-From:   'Tejun Heo' <tj@kernel.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Martin Liska <mliska@suse.cz>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: Re: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
- prints
-Message-ID: <Y5ehU524daymEKgf@slm.duckdns.org>
-References: <20221031114520.10518-1-jirislaby@kernel.org>
- <Y1++fLJXkeZgtXR2@infradead.org>
- <Y2AMcSPAJpj6obSA@slm.duckdns.org>
- <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
- <Y2FNa4bGhJoevRKT@slm.duckdns.org>
- <2b975ee3117e45aaa7882203cf9a4db8@AcuMS.aculab.com>
- <Y2Kaghnu/sPvl0+g@slm.duckdns.org>
- <Y2KePvYRRMOrqzOe@slm.duckdns.org>
- <320c939e-a3f0-1b1e-77e4-f3ecca00465d@kernel.org>
+Date:   Mon, 12 Dec 2022 12:13:47 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        "Dennis Zhou (Facebook)" <dennisszhou@gmail.com>,
+        Yi Zhang <yi.zhang@redhat.com>
+Subject: Re: [PATCH-block v2 1/3] bdi, blk-cgroup: Fix potential UAF of blkcg
+Message-ID: <Y5enmzQM7BIiEv9n@slm.duckdns.org>
+References: <20221211222058.2946830-1-longman@redhat.com>
+ <20221211222058.2946830-2-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <320c939e-a3f0-1b1e-77e4-f3ecca00465d@kernel.org>
+In-Reply-To: <20221211222058.2946830-2-longman@redhat.com>
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -87,17 +80,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 01:14:31PM +0100, Jiri Slaby wrote:
-> > If so, my suggestion is just sticking with the old behavior until we switch
-> > to --std=g2x and then make one time adjustment at that point.
-> 
-> So is the enum split OK under these circumstances?
+On Sun, Dec 11, 2022 at 05:20:56PM -0500, Waiman Long wrote:
+>  static void blkcg_destroy_blkgs(struct blkcg *blkcg)
+>  {
+> +	/*
+> +	 * blkcg_destroy_blkgs() shouldn't be called with all the blkcg
+> +	 * references gone.
+> +	 */
+> +	if (WARN_ON_ONCE(!css_tryget(&blkcg->css)))
+> +		return;
 
-Oh man, it's kinda crazy that the compiler is changing in a way that the
-same piece of code can't be compiled the same way across two adjoining
-versions of the same compiler. But, yeah, if that's what gcc is gonna do and
-splitting enums is the only way to be okay across the compiler versions,
-there isn't any other choice we can make.
+Wouldn't it make more sense to use percpu_ref_is_zero()? It's not like the
+obtained extra reference does anything, right?
 
 Thanks.
 
