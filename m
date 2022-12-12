@@ -2,113 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 876D864A3D9
-	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 15:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB7864A6B3
+	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 19:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbiLLO7c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Dec 2022 09:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        id S232981AbiLLSMM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Dec 2022 13:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbiLLO7b (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 09:59:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F8DD119
-        for <cgroups@vger.kernel.org>; Mon, 12 Dec 2022 06:58:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670857114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GkbQCXweWiVyxQliOP1BrMo+NMG+D0texQS/7HCzGIk=;
-        b=iavd982NdMl66Cwh2YkOfXITq2hmic+9WCUN1ek+7v0r+CEvHbgWFk8pbi+Hfne/QJvRF4
-        t9Vz6apeOuONkQJ3qKwSsAppE8Xe48VN8aMT/AxZwCcLQe0qcx588tM7rtFsImDm6VDibX
-        0wkGIS71VL/loLsktQIUAjggtMPLqpc=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-215-7kbTmcn2MbORoJ9Q6BS7PQ-1; Mon, 12 Dec 2022 09:58:30 -0500
-X-MC-Unique: 7kbTmcn2MbORoJ9Q6BS7PQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0C3CA29AB409;
-        Mon, 12 Dec 2022 14:58:30 +0000 (UTC)
-Received: from [10.22.34.84] (unknown [10.22.34.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 46545C15BAD;
-        Mon, 12 Dec 2022 14:58:29 +0000 (UTC)
-Message-ID: <ac3ec28b-929d-59e3-49c3-f7a548b01ebe@redhat.com>
-Date:   Mon, 12 Dec 2022 09:58:27 -0500
+        with ESMTP id S233131AbiLLSLY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 13:11:24 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F526178A7
+        for <cgroups@vger.kernel.org>; Mon, 12 Dec 2022 10:09:50 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id jl24so12896429plb.8
+        for <cgroups@vger.kernel.org>; Mon, 12 Dec 2022 10:09:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=caT/eR3o2xI61xv4gQNQ+fDkRVtZB1sOkBNJmlEN+N4=;
+        b=btZ4GA2g/VsRjxBZWyd9Ot4NYl23XggbHAYppoWAJmTxlei8M5/a+b75/69vjs6/GH
+         I6tP0ipoDef613AM61HoV+CINKngTjD8WS0TtXzjvi7PemuFIO0aVViEu8P6/zlMroeA
+         /rz2PU13KL9/wCcPniQNnwBMvXDHGjycV7BnTq/mTjEiO803KNc18d/0d7ajvdY3QB7c
+         0dxIjjg5xtkMMm5gLHj3U0CnOt1GX8A52AptPekUmyPv2lyy1JN1gm/Yf/39hMlDWIAm
+         iDow4z0quQ16cubZl80/hIZjTver2Aez811DpWbpe/dWEi1fggZISJ8ob8bsgCwH30Wl
+         Vy1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=caT/eR3o2xI61xv4gQNQ+fDkRVtZB1sOkBNJmlEN+N4=;
+        b=onRtu8XwgtDTuWAcJTYoDBmlj612PmfR1EYnSAwvUR3Wu7VPMeOGgG2nAFKcxlO4GG
+         UjVq2dEVquVCt+XIJkfK3ufQTWTYy9ewgR5BcIoyxOJiPDG4jd1hY0tdn+fUv2JniMy3
+         KIxwZYPC2fTZzCYG1WBhn/zBftvkNCcbzndcHvgqaJvaG4QB7pVOcbTLy1T180g5Gmf3
+         20wSrAe2xacRg/KKSMUqUhtHkhN67mGq0VJ2sKbEQJ/tt4+0b5q+OGiMbfhijxsYmHLp
+         ZTlfghFlNQ0u4ayZ2n+r4H/vUHn/j7sRZPxH1ViIPTRFxkQAziBEPe5bxxXHF5okvQJK
+         Vfvg==
+X-Gm-Message-State: ANoB5pmbsDx53pmrJvHXuTy82B6eEZjcyk/ugKNnba48mjyQKFJKD8Ja
+        uv25EGmq2NDN5S0bY/K2vi3/Gw==
+X-Google-Smtp-Source: AA0mqf7zO/WZ6W2GV+EwOLWI4vx4kth8/QRN5S0b70Tpme+OTbmVntr3N2mA7+gmAJy9/GblRagCKg==
+X-Received: by 2002:a17:90b:3b86:b0:218:84a0:65eb with SMTP id pc6-20020a17090b3b8600b0021884a065ebmr813368pjb.1.1670868583486;
+        Mon, 12 Dec 2022 10:09:43 -0800 (PST)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id ep11-20020a17090ae64b00b00210c84b8ae5sm5717900pjb.35.2022.12.12.10.09.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Dec 2022 10:09:43 -0800 (PST)
+Date:   Mon, 12 Dec 2022 18:09:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        zhiquan1.li@intel.com
+Subject: Re: [PATCH v2 14/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+Message-ID: <Y5duYxIHtSpK1qkj@google.com>
+References: <20221202183655.3767674-1-kristen@linux.intel.com>
+ <20221202183655.3767674-15-kristen@linux.intel.com>
+ <Y5IBCOuF8X7jEK3+@kernel.org>
+ <cb5abce531c1b14118de419ba68c2a501b016873.camel@linux.intel.com>
+ <e5aff02b-713c-ccd8-7211-d07ff6d7adb2@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH-block v2 2/3] blk-cgroup: Don't flush a blkg if destroyed
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        "Dennis Zhou (Facebook)" <dennisszhou@gmail.com>
-References: <20221211222058.2946830-1-longman@redhat.com>
- <20221211222058.2946830-3-longman@redhat.com>
- <20221212125953.GE16456@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20221212125953.GE16456@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5aff02b-713c-ccd8-7211-d07ff6d7adb2@intel.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri, Dec 09, 2022, Dave Hansen wrote:
+> On 12/9/22 08:05, Kristen Carlson Accardi wrote:
+> > Aside from that though, I don't think that killing enclaves makes sense
+> > outside the context of cgroup limits. 
+> 
+> I think it makes a lot of sense in theory.  Whatever situation we get
+> into with a cgroup's EPC we can also get into with the whole system's EPC.
+> 
+> *But*, it's orders of magnitude harder to hit on the whole system.
 
-On 12/12/22 07:59, Michal Koutný wrote:
-> Hello.
->
-> On Sun, Dec 11, 2022 at 05:20:57PM -0500, Waiman Long <longman@redhat.com> wrote:
->> Before commit 3b8cc6298724 ("blk-cgroup: Optimize blkcg_rstat_flush()"),
->> blkg's stats is only flushed if they are online.
-> I'm not sure I follow -- css_release_work_fn/cgroup_rstat_flush may be
-> called on an offlined blkcg (offlined!=released). There's no invariant
-> ensuring offlined blkcg won't be flushed. (There is only current
-> situation when there is no reader of io data that'd need them flushed
-> [1].)
-The original cgroup_rstat_flush() iterates the list of blkg's in the 
-blkg_list. A blkg will be removed from the list when it is offlined. 
-This patch just reverts its behavior to that previous behavior.
->
->> In addition, the stat flushing of blkgs in blkcg_rstat_flush()
->> includes propagating the rstat data to its parent. However, if a blkg
->> has been destroyed (offline), the validity of its parent may be
->> questionable.
-> Parents won't be freed (neither offlined) before children (see
-> css_killed_work_fn). It should be regularly OK to pass data into a
-> parent of an offlined blkcg.
-I guess it is likely to be safe to flush an offline blkg. I am just 
-being conservative in case there is any corner case where it may be a 
-problem which I haven't foreseen.
->
->> For safety, revert back to the old behavior by ignoring offline
->> blkg's.
-> I don't know if this is a good reasoning. If you argue that offlined
-> children needn't be taken into parent's account, then I think it's more
-> efficient to exclude the offlined blkcgs from update. (With the caveat I
-> have in [1].)
+...
 
-It is possible that a blkg may be updated before it becomes offline, but 
-the flush isn't done in time before that happens. The next patch will 
-catch some of that.
+> If someone wants to extend this OOM support to system-wide EPC later, then go
+> ahead.  But, I don't think it makes a lot of sense to invert this series for
+> it.
 
-Cheers,
-Longman
-
++1 from the peanut gallery.  With VMM EPC oversubscription suport, no sane VMM
+will oversubscribe VEPC pages.  And for VA pages, supporting swap of VA pages is
+likely a more userspace-friendly approach if system-wide EPC OOM is a concern.
