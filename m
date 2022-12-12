@@ -2,144 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8BC649A7E
-	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 09:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA404649E7E
+	for <lists+cgroups@lfdr.de>; Mon, 12 Dec 2022 13:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbiLLIz7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Dec 2022 03:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
+        id S231448AbiLLMOj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Dec 2022 07:14:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbiLLIz5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 03:55:57 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F009C09;
-        Mon, 12 Dec 2022 00:55:56 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D6ACF338A2;
-        Mon, 12 Dec 2022 08:55:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1670835354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TGVOMJbI5VSuu2tCry8NVGy56zUSkKbZBynEIgKf3Ms=;
-        b=e7WlOo+Kk87BEbCBNwskXM7yzdzJaKGsFfe8oyqFNEfXIitKdo5y7ay8NCB+3SVFXff3cJ
-        GR5vhrP/1xCsq6oCvRi6mNucyOzWGdMku6SHUqxKcvu0y7JCY81V/IY3luS2NOgA/C0S7+
-        YTMgtj+HVc6jHmGNR/MARafPRYQAziM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B449913456;
-        Mon, 12 Dec 2022 08:55:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CQPRKZrslmMoGgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 12 Dec 2022 08:55:54 +0000
-Date:   Mon, 12 Dec 2022 09:55:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
-        fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm: Add nodes= arg to memory.reclaim
-Message-ID: <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
-References: <20221202223533.1785418-1-almasrymina@google.com>
+        with ESMTP id S231362AbiLLMOg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Dec 2022 07:14:36 -0500
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3D9D4C;
+        Mon, 12 Dec 2022 04:14:35 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id l11so12559295edb.4;
+        Mon, 12 Dec 2022 04:14:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lE6rZOS9ffH/Yk3dYNMYdk596yZemDJvPNi7MI+99fc=;
+        b=wnBZ9r/FllzC/yJIVEmUOXCq7I6LwZdd5Ex+Yg26YM7CxqsSXw+gZgRZ1Xi7FNENuR
+         0FgQaF3p6nRRsH2/MICEle6LWXpGRSNI1/bxmgsZzpaGfAo3pih8Eyb86fBjyD/kqOBg
+         JnW32jqoRTDMgLYWSlJOEFi6nMqZClp7Vmalunkq4yHVibfkpN4A5EXnTVuQ+f4q6E3s
+         zAZZmR6XBBTBF8LS6AHwvx/+xWHtx9Zk4jwBzCXVyvuLM3rfLJldvVLYQEOe068YiUfz
+         IlBDFuY5vwla4g2lmwyUeC4MVuDZs1p5MmDsjG5q77I+a3MWjIGq25UjqEJo26C0jB3A
+         lmpQ==
+X-Gm-Message-State: ANoB5plh0DbbZgdmkz8bH6sUEyCr8lJYOIL05sC4OyAzCgDako0CLdod
+        oMTBmiB1oOP0pCcr0umit8DnHtx4a2I=
+X-Google-Smtp-Source: AA0mqf5cQ1XTq4teqMLyzufekz56JM7/B1EWW7eTmW9tnCed3w16O9QrHsNa0l5R4gTL/V4YViR3Bw==
+X-Received: by 2002:aa7:c614:0:b0:46c:ab70:c009 with SMTP id h20-20020aa7c614000000b0046cab70c009mr13965869edq.27.1670847273463;
+        Mon, 12 Dec 2022 04:14:33 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:49? ([2a0b:e7c0:0:107::aaaa:49])
+        by smtp.gmail.com with ESMTPSA id s25-20020aa7d799000000b0045b910b0542sm3695122edq.15.2022.12.12.04.14.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Dec 2022 04:14:32 -0800 (PST)
+Message-ID: <320c939e-a3f0-1b1e-77e4-f3ecca00465d@kernel.org>
+Date:   Mon, 12 Dec 2022 13:14:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221202223533.1785418-1-almasrymina@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Content-Language: en-US
+To:     'Tejun Heo' <tj@kernel.org>, David Laight <David.Laight@aculab.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Martin Liska <mliska@suse.cz>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+References: <20221031114520.10518-1-jirislaby@kernel.org>
+ <Y1++fLJXkeZgtXR2@infradead.org> <Y2AMcSPAJpj6obSA@slm.duckdns.org>
+ <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
+ <Y2FNa4bGhJoevRKT@slm.duckdns.org>
+ <2b975ee3117e45aaa7882203cf9a4db8@AcuMS.aculab.com>
+ <Y2Kaghnu/sPvl0+g@slm.duckdns.org> <Y2KePvYRRMOrqzOe@slm.duckdns.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
+ prints
+In-Reply-To: <Y2KePvYRRMOrqzOe@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 02-12-22 14:35:31, Mina Almasry wrote:
-> The nodes= arg instructs the kernel to only scan the given nodes for
-> proactive reclaim. For example use cases, consider a 2 tier memory system:
+On 02. 11. 22, 17:43, 'Tejun Heo' wrote:
+> On Wed, Nov 02, 2022 at 06:27:46AM -1000, 'Tejun Heo' wrote:
+>> On Wed, Nov 02, 2022 at 08:35:34AM +0000, David Laight wrote:
+>>> I think the enums have to be split.
+>>> There will be other side effects of promoting the constants to 64bit
+>>> that are much more difficult to detect than the warnings from printf.
+>>
+>> idk, I think I can just add LLU to everything and it should be fine.
+>>
+>>> I'm also not sure whether the type is even consistent for 32bit
+>>> and 64bit builds.
+>>> Casts are (sort of) horrid.
+>>
+>> Yeah, I don't think casts are the solution either. Lemme add LLU to
+>> everything and see how it works.
 > 
-> nodes 0,1 -> top tier
-> nodes 2,3 -> second tier
+> So adding LLU to initializers don't make the specific enum's type follow
+> suit. I guess type determination is really based on the value range. Oh man,
+> what a mess.
 > 
-> $ echo "1m nodes=0" > memory.reclaim
-> 
-> This instructs the kernel to attempt to reclaim 1m memory from node 0.
-> Since node 0 is a top tier node, demotion will be attempted first. This
-> is useful to direct proactive reclaim to specific nodes that are under
-> pressure.
-> 
-> $ echo "1m nodes=2,3" > memory.reclaim
-> 
-> This instructs the kernel to attempt to reclaim 1m memory in the second tier,
-> since this tier of memory has no demotion targets the memory will be
-> reclaimed.
-> 
-> $ echo "1m nodes=0,1" > memory.reclaim
-> 
-> Instructs the kernel to reclaim memory from the top tier nodes, which can
-> be desirable according to the userspace policy if there is pressure on
-> the top tiers. Since these nodes have demotion targets, the kernel will
-> attempt demotion first.
-> 
-> Since commit 3f1509c57b1b ("Revert "mm/vmscan: never demote for memcg
-> reclaim""), the proactive reclaim interface memory.reclaim does both
-> reclaim and demotion. Reclaim and demotion incur different latency costs
-> to the jobs in the cgroup. Demoted memory would still be addressable
-> by the userspace at a higher latency, but reclaimed memory would need to
-> incur a pagefault.
-> 
-> The 'nodes' arg is useful to allow the userspace to control demotion
-> and reclaim independently according to its policy: if the memory.reclaim
-> is called on a node with demotion targets, it will attempt demotion first;
-> if it is called on a node without demotion targets, it will only attempt
-> reclaim.
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> If we end up having to split the enum defs, that's what we'll do but this
+> doesn't sense to me. It's one thing to make one time adjustment when we
+> adopt -std=g2x. That's fine, but it makes no sense for the compiler to
+> change type behavior underneath existing code bases in a way that prevents
+> the same code to mean the same thing in adjacent and recent compiler
+> versions. Even if gcc goes for that for whatever reason, there gotta be an
+> option to keep the original behavior, right?
 
-After discussion in [1] I have realized that I haven't really thought
-through all the consequences of this patch and therefore I am retracting
-my ack here. I am not nacking the patch at this statge but I also think
-this shouldn't be merged now and we should really consider all the
-consequences.
+Unfortunately not, see:
+   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=107405#c8
+(linked also from the commit log). We'd use such an option if there were 
+one.
 
-Let me summarize my main concerns here as well. The proposed
-implementation doesn't apply the provided nodemask to the whole reclaim
-process. This means that demotion can happen outside of the mask so the
-the user request cannot really control demotion targets and that limits
-the interface should there be any need for a finer grained control in
-the future (see an example in [2]).
-Another problem is that this can limit future reclaim extensions because
-of existing assumptions of the interface [3] - specify only top-tier
-node to force the aging without actually reclaiming any charges and
-(ab)use the interface only for aging on multi-tier system. A change to
-the reclaim to not demote in some cases could break this usecase.
+> If so, my suggestion is just sticking with the old behavior until we switch
+> to --std=g2x and then make one time adjustment at that point.
 
-My counter proposal would be to define the nodemask for memory.reclaim
-as a domain to constrain the charge reclaim. That means both aging and
-reclaim including demotion which is a part of aging. This will allow
-to control where to demote for balancing purposes (e.g. demote to node 2
-rather than 3) which is impossible with the proposed scheme.
+So is the enum split OK under these circumstances?
 
-[1] http://lkml.kernel.org/r/20221206023406.3182800-1-almasrymina@google.com
-[2] http://lkml.kernel.org/r/Y5bnRtJ6sojtjgVD@dhcp22.suse.cz
-[3] http://lkml.kernel.org/r/CAAPL-u8rgW-JACKUT5ChmGSJiTDABcDRjNzW_QxMjCTk9zO4sg@mail.gmail.com
+thanks,
 -- 
-Michal Hocko
-SUSE Labs
+js
+suse labs
+
