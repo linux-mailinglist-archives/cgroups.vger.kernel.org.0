@@ -2,121 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6D464B3F4
-	for <lists+cgroups@lfdr.de>; Tue, 13 Dec 2022 12:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACD864B40E
+	for <lists+cgroups@lfdr.de>; Tue, 13 Dec 2022 12:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbiLMLQc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Dec 2022 06:16:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S234974AbiLMLWF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Dec 2022 06:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235404AbiLMLPn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Dec 2022 06:15:43 -0500
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CD1E4C;
-        Tue, 13 Dec 2022 03:15:07 -0800 (PST)
-Received: by mail-ej1-f49.google.com with SMTP id u19so17155940ejm.8;
-        Tue, 13 Dec 2022 03:15:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JxAbmC5fTjrJjV2pr7W0uw74csIsAjG9pytfI1WxJUI=;
-        b=f4Bzn5C1xckKlqT5014puwng2kD1E2/F4R2LPJBkKi5fyiSKUCgk3qlhN0w+M3YRw8
-         R2qBtROLfXXYXfW/CaOW8tVaZ1IvxgzIef448d2VEy0/bGr2SQGvZWc/WQsjMnWl9Uih
-         JPiKxX4UEbtTTfF7PAJn4FL3owWaEEEnmcj1n6eWrAQljH7IKZcvkotFF87yqEZF0Dg1
-         OJUGHjbABmzWtQfB3GBoTcEZqVvHsSZljsvhEtoesWzE4jK+j6gFNTsiJnXEEbFmjiHJ
-         MPj+z8Bo8R+0ytTp83MU+N2xI+5BmbitlSmrYttAsSjDoivADrQb3nOKIYhaJbR16tHv
-         d/iQ==
-X-Gm-Message-State: ANoB5pks9Wu9jfXco/7mfwkUb4dVht1zFSE9JlNwzB7aR0z/zoGb256N
-        eDXvMfqqayvL+vu8tI2nYOk=
-X-Google-Smtp-Source: AA0mqf7k1PUD5wczDK8PXN/VI6k3wtfoATIqdvkLuEay8VuzZbEuikeolbb22HXRTTkIcT+gQkSg8w==
-X-Received: by 2002:a17:907:d609:b0:7c1:4fea:cf2 with SMTP id wd9-20020a170907d60900b007c14fea0cf2mr11156996ejc.0.1670930106256;
-        Tue, 13 Dec 2022 03:15:06 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:49? ([2a0b:e7c0:0:107::aaaa:49])
-        by smtp.gmail.com with ESMTPSA id bq19-20020a170906d0d300b007bf5250b515sm4414853ejb.29.2022.12.13.03.15.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Dec 2022 03:15:05 -0800 (PST)
-Message-ID: <9d2ead31-efab-cf49-08d4-1e613382d89f@kernel.org>
-Date:   Tue, 13 Dec 2022 12:15:03 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] block/blk-iocost (gcc13): cast enum members to int in
- prints
-To:     David Laight <David.Laight@ACULAB.COM>, 'Tejun Heo' <tj@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        with ESMTP id S234979AbiLMLV6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Dec 2022 06:21:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95D01181B;
+        Tue, 13 Dec 2022 03:21:53 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A11D6148A;
+        Tue, 13 Dec 2022 11:21:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B54A2C433F0;
+        Tue, 13 Dec 2022 11:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670930512;
+        bh=J8x8Q0IckMxnqDnsgI2Wl/DvLqCZm0+N48vFcdoYvvQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fXVbA9CX1PAN+uCX6/B5dIVEqPM79vKoPn75G/RWzE33kElapIjl38ecyLeGmocUI
+         DazJiamEFfuCOhcni70skTH0I/4Xebq3I3BDyVGAj/Z/8ZDwz1UyJfVfJG7fwpkqmy
+         /I8LLBYn6eabc1baaFDwqmOmW1RuCIzwkr5H01N3mjYlUpzzfvV9UlfSftkBLImPpz
+         /XUI5V2yWA4hiIDTMT5KV0YmPDVKMMQW2h1fWKsUBfYCKbMp5CtFaCUqmOVipccH3I
+         0VmDj6YSFV07jFiXv6tS94CY3SIWBi0XIrFVm3+2T2oIgcEFcmQqUKlp5d2XR/hIFl
+         pDQiJSCts1Zbg==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
         Martin Liska <mliska@suse.cz>,
         Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-References: <20221031114520.10518-1-jirislaby@kernel.org>
- <Y1++fLJXkeZgtXR2@infradead.org> <Y2AMcSPAJpj6obSA@slm.duckdns.org>
- <d833ad15-f458-d43d-cab7-de62ff54a939@kernel.org>
- <Y2FNa4bGhJoevRKT@slm.duckdns.org>
- <2b975ee3117e45aaa7882203cf9a4db8@AcuMS.aculab.com>
- <Y2Kaghnu/sPvl0+g@slm.duckdns.org> <Y2KePvYRRMOrqzOe@slm.duckdns.org>
- <320c939e-a3f0-1b1e-77e4-f3ecca00465d@kernel.org>
- <Y5ehU524daymEKgf@slm.duckdns.org>
- <f5220f08bd7f45248d718f1919503261@AcuMS.aculab.com>
-Content-Language: en-US
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <f5220f08bd7f45248d718f1919503261@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: [PATCH v2] block/blk-iocost (gcc13): move large values to a new enum
+Date:   Tue, 13 Dec 2022 12:21:48 +0100
+Message-Id: <20221213112148.15235-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.39.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 13. 12. 22, 9:30, David Laight wrote:
-> From: Tejun Heo <htejun@gmail.com> On Behalf Of 'Tejun Heo'
->> Sent: 12 December 2022 21:47
->> To: Jiri Slaby <jirislaby@kernel.org>
->> Cc: David Laight <David.Laight@ACULAB.COM>; Christoph Hellwig <hch@infradead.org>; linux-
->> kernel@vger.kernel.org; Martin Liska <mliska@suse.cz>; Josef Bacik <josef@toxicpanda.com>; Jens Axboe
->> <axboe@kernel.dk>; cgroups@vger.kernel.org; linux-block@vger.kernel.org
->> Subject: Re: [PATCH] block/blk-iocost (gcc13): cast enum members to int in prints
->>
->> On Mon, Dec 12, 2022 at 01:14:31PM +0100, Jiri Slaby wrote:
->>>> If so, my suggestion is just sticking with the old behavior until we switch
->>>> to --std=g2x and then make one time adjustment at that point.
->>>
->>> So is the enum split OK under these circumstances?
->>
->> Oh man, it's kinda crazy that the compiler is changing in a way that the
->> same piece of code can't be compiled the same way across two adjoining
->> versions of the same compiler. But, yeah, if that's what gcc is gonna do and
->> splitting enums is the only way to be okay across the compiler versions,
->> there isn't any other choice we can make.
-> 
-> It is also a silent code-breaker.
-> Compile this for 32bit x86:
-> 
-> enum { a = 1, b = ~0ull};
+Since gcc13, each member of an enum has the same type as the enum [1]. And
+that is inherited from its members. Provided:
+  VTIME_PER_SEC_SHIFT     = 37,
+  VTIME_PER_SEC           = 1LLU << VTIME_PER_SEC_SHIFT,
+the named type is unsigned long.
 
-But having ull in an enum is undefined anyway. C99 allows only int 
-constants. gnuC supports ulong expressions (IIRC).
+This generates warnings with gcc-13:
+  block/blk-iocost.c: In function 'ioc_weight_prfill':
+  block/blk-iocost.c:3037:37: error: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'long unsigned int'
 
-> extern int foo(int, ...);
-> int f(void)
-> {
->      return foo(0, a, 2);
-> }
-> 
-> gcc13 pushes an extra zero onto the stack between the 1 and 2.
+  block/blk-iocost.c: In function 'ioc_weight_show':
+  block/blk-iocost.c:3047:34: error: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'long unsigned int'
 
-So this is sort of "expected".
+So move the large VTIME values away to a separate enum, so that they
+don't affect other members. Move also VRATE ones as they depend on
+VTIME.
 
-thanks,
+[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36113
+
+Cc: Martin Liska <mliska@suse.cz>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: cgroups@vger.kernel.org
+Cc: linux-block@vger.kernel.org
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+---
+
+Notes:
+    [v2] move to a new enum
+
+ block/blk-iocost.c | 48 ++++++++++++++++++++++++----------------------
+ 1 file changed, 25 insertions(+), 23 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index d1bdc12deaa7..49d6e5aec3d5 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -233,29 +233,6 @@ enum {
+ 	/* 1/64k is granular enough and can easily be handled w/ u32 */
+ 	WEIGHT_ONE		= 1 << 16,
+ 
+-	/*
+-	 * As vtime is used to calculate the cost of each IO, it needs to
+-	 * be fairly high precision.  For example, it should be able to
+-	 * represent the cost of a single page worth of discard with
+-	 * suffificient accuracy.  At the same time, it should be able to
+-	 * represent reasonably long enough durations to be useful and
+-	 * convenient during operation.
+-	 *
+-	 * 1s worth of vtime is 2^37.  This gives us both sub-nanosecond
+-	 * granularity and days of wrap-around time even at extreme vrates.
+-	 */
+-	VTIME_PER_SEC_SHIFT	= 37,
+-	VTIME_PER_SEC		= 1LLU << VTIME_PER_SEC_SHIFT,
+-	VTIME_PER_USEC		= VTIME_PER_SEC / USEC_PER_SEC,
+-	VTIME_PER_NSEC		= VTIME_PER_SEC / NSEC_PER_SEC,
+-
+-	/* bound vrate adjustments within two orders of magnitude */
+-	VRATE_MIN_PPM		= 10000,	/* 1% */
+-	VRATE_MAX_PPM		= 100000000,	/* 10000% */
+-
+-	VRATE_MIN		= VTIME_PER_USEC * VRATE_MIN_PPM / MILLION,
+-	VRATE_CLAMP_ADJ_PCT	= 4,
+-
+ 	/* if IOs end up waiting for requests, issue less */
+ 	RQ_WAIT_BUSY_PCT	= 5,
+ 
+@@ -310,6 +287,31 @@ enum {
+ 	LCOEF_RANDIO_PAGES	= 4096,
+ };
+ 
++enum {
++	/*
++	 * As vtime is used to calculate the cost of each IO, it needs to
++	 * be fairly high precision.  For example, it should be able to
++	 * represent the cost of a single page worth of discard with
++	 * suffificient accuracy.  At the same time, it should be able to
++	 * represent reasonably long enough durations to be useful and
++	 * convenient during operation.
++	 *
++	 * 1s worth of vtime is 2^37.  This gives us both sub-nanosecond
++	 * granularity and days of wrap-around time even at extreme vrates.
++	 */
++	VTIME_PER_SEC_SHIFT	= 37,
++	VTIME_PER_SEC		= 1LLU << VTIME_PER_SEC_SHIFT,
++	VTIME_PER_USEC		= VTIME_PER_SEC / USEC_PER_SEC,
++	VTIME_PER_NSEC		= VTIME_PER_SEC / NSEC_PER_SEC,
++
++	/* bound vrate adjustments within two orders of magnitude */
++	VRATE_MIN_PPM		= 10000,	/* 1% */
++	VRATE_MAX_PPM		= 100000000,	/* 10000% */
++
++	VRATE_MIN		= VTIME_PER_USEC * VRATE_MIN_PPM / MILLION,
++	VRATE_CLAMP_ADJ_PCT	= 4,
++};
++
+ enum ioc_running {
+ 	IOC_IDLE,
+ 	IOC_RUNNING,
 -- 
-js
-suse labs
+2.39.0
 
