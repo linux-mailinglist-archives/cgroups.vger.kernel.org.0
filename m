@@ -2,166 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 051CF64BC41
-	for <lists+cgroups@lfdr.de>; Tue, 13 Dec 2022 19:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3686964BD49
+	for <lists+cgroups@lfdr.de>; Tue, 13 Dec 2022 20:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbiLMSpp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Dec 2022 13:45:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
+        id S236580AbiLMT3s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Dec 2022 14:29:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235719AbiLMSpn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Dec 2022 13:45:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5079A24BD9
-        for <cgroups@vger.kernel.org>; Tue, 13 Dec 2022 10:45:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1670957105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+iH+gyUSP9RmZybF0rRU4rA5/id1U9+eBsl2PUnAPQ=;
-        b=YP5lnMduBFZ6I4jUYCaTX44pr3sGK8e8jIJw7ETVcFG0uil2Ay6Ux+3oPx0q9xIauDu7RZ
-        bcDg68Y7NvU7w/gRFRHbbFcDmwAylfx79mjv8t9fIwVM8vuWgFSdQW2ZLA7J7nTl+mfuv2
-        PV9W9dEnzDVPorBwCDwYCuUjeIlZCgA=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-617-cFUaBO_WOZqWlEoTA3QSDA-1; Tue, 13 Dec 2022 13:45:00 -0500
-X-MC-Unique: cFUaBO_WOZqWlEoTA3QSDA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 66E001C008A7;
-        Tue, 13 Dec 2022 18:44:59 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A8242C15BA0;
-        Tue, 13 Dec 2022 18:44:58 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
+        with ESMTP id S236842AbiLMT3g (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Dec 2022 14:29:36 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11F0248F5;
+        Tue, 13 Dec 2022 11:29:28 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id 4so902563plj.3;
+        Tue, 13 Dec 2022 11:29:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l7iej3uCNn9r6CuK7MDwP9bcqGiFhUgLAt5WQq2ePLA=;
+        b=k8gA9BVoaw8yYqfb3WcJbE9PU/wx0MjT4ZBH29rHEE3YZ3p83vX1GakjNnqCAcr3Oa
+         w6DCBxMko8Pkra2ttxA70QRGC/qJ8u41XaQk/aQRUMqKMu+9EdRMvNNYiUYtXquHXbXW
+         EQBcIUH+jFUoC1easz32DDyL/LrE0eqZAquVXbEF0JdQmPFImn+DaIcmGyYqrao9JnnG
+         OqVnsgPQT6iPNsOraxbEg1fuzcRSct08BKWiI60WV2gSktSzVsDtIzV38eWQE8AeXzko
+         Cbhu8ACMVwRUIkiXKZM9+47YNbVzzb9o1LPbCLTf34DBbTVzKUMCElxP8GsBdL+gZDZL
+         cnfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l7iej3uCNn9r6CuK7MDwP9bcqGiFhUgLAt5WQq2ePLA=;
+        b=uFpWPXzF3/lVyOHoS0sXiRkp8oXhpU0n1k0pxbR/I+FRCC/S0cVWqSdHq0aeSleve/
+         fW0xJ9B6oSwGnV0MxMugqxUsFdlVB2sSIfIMVfndWUEtavTNxvErzMuSTTPx/eVAbTqg
+         Fb9UWFv1E/RkQWScObh1APLkQ9vvUKSCnT9iXrecKuTdqcQM0qfHS2tkpy0mERjkaise
+         rX3PtkP1ThSyHZsnUUT7M4BAgF7SCaVBgCwQI2L72+djxGT13kWLqchs+eb5McWcD/1h
+         TNv2AYU5zXRBz84HWt0XBuikg3aIwB+YZQBMJvOBCRO60B0nUqE/+4XniekjIz4ymzRg
+         X9mA==
+X-Gm-Message-State: ANoB5pmlOQs7gkOcV0LYv26HBleiTdR1JN9zGxx+V7gkNx5kFHrCGFa9
+        D0Uii5Hujy7XfMDFla1qkUk=
+X-Google-Smtp-Source: AA0mqf6MdMEtUXS7LxRhF8TBNyTlFws6dl5XBJuxnFV3lLin82JfRprzqq7+XQGJPVPWfRJCnOOBeQ==
+X-Received: by 2002:a05:6a20:9c8f:b0:a2:17a6:3e86 with SMTP id mj15-20020a056a209c8f00b000a217a63e86mr5501167pzb.55.1670959768196;
+        Tue, 13 Dec 2022 11:29:28 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:c415])
+        by smtp.gmail.com with ESMTPSA id c197-20020a624ece000000b005745788f44csm8017095pfb.124.2022.12.13.11.29.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Dec 2022 11:29:27 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 13 Dec 2022 09:29:26 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         "Dennis Zhou (Facebook)" <dennisszhou@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH-block v3 2/2] blk-cgroup: Flush stats at blkgs destruction path
-Date:   Tue, 13 Dec 2022 13:44:46 -0500
-Message-Id: <20221213184446.50181-3-longman@redhat.com>
-In-Reply-To: <20221213184446.50181-1-longman@redhat.com>
+        Yi Zhang <yi.zhang@redhat.com>
+Subject: Re: [PATCH-block v3 1/2] bdi, blk-cgroup: Fix potential UAF of blkcg
+Message-ID: <Y5jSllwwBdmQ1jQz@slm.duckdns.org>
 References: <20221213184446.50181-1-longman@redhat.com>
+ <20221213184446.50181-2-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221213184446.50181-2-longman@redhat.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As noted by Michal, the blkg_iostat_set's in the lockless list
-hold reference to blkg's to protect against their removal. Those
-blkg's hold reference to blkcg. When a cgroup is being destroyed,
-cgroup_rstat_flush() is only called at css_release_work_fn() which is
-called when the blkcg reference count reaches 0. This circular dependency
-will prevent blkcg from being freed until some other events cause
-cgroup_rstat_flush() to be called to flush out the pending blkcg stats.
+On Tue, Dec 13, 2022 at 01:44:45PM -0500, Waiman Long wrote:
+> Commit 59b57717fff8 ("blkcg: delay blkg destruction until after
+> writeback has finished") delayed call to blkcg_destroy_blkgs() to
+> cgwb_release_workfn(). However, it is done after a css_put() of blkcg
+> which may be the final put that causes the blkcg to be freed as RCU
+> read lock isn't held.
+> 
+> Another place where blkcg_destroy_blkgs() can be called indirectly via
+> blkcg_unpin_online() is from the offline_css() function called from
+> css_killed_work_fn(). Over there, the potentially final css_put() call
+> is issued after offline_css().
+> 
+> By adding a css_tryget() into blkcg_destroy_blkgs() and warning its
+> failure, the following stack trace was produced in a test system on
+> bootup.
 
-To prevent this delayed blkcg removal, add a new cgroup_rstat_css_flush()
-function to flush stats for a given css and cpu and call it at the blkgs
-destruction path, blkcg_destroy_blkgs(), whenever there are still some
-pending stats to be flushed. This will ensure that blkcg reference
-count can reach 0 ASAP.
+This doesn't agree with the code anymore. Otherwise
 
-Signed-off-by: Waiman Long <longman@redhat.com>
 Acked-by: Tejun Heo <tj@kernel.org>
----
- block/blk-cgroup.c     | 15 +++++++++++++++
- include/linux/cgroup.h |  1 +
- kernel/cgroup/rstat.c  | 18 ++++++++++++++++++
- 3 files changed, 34 insertions(+)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index ca28306aa1b1..ddd27a714d3e 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1084,6 +1084,8 @@ struct list_head *blkcg_get_cgwb_list(struct cgroup_subsys_state *css)
-  */
- static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- {
-+	int cpu;
-+
- 	/*
- 	 * blkcg_destroy_blkgs() shouldn't be called with all the blkcg
- 	 * references gone.
-@@ -1093,6 +1095,19 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- 
- 	might_sleep();
- 
-+	/*
-+	 * Flush all the non-empty percpu lockless lists so as to release
-+	 * the blkg references held by those lists which, in turn, may
-+	 * allow the blkgs to be freed and release their references to
-+	 * blkcg speeding up its freeing.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		struct llist_head *lhead = per_cpu_ptr(blkcg->lhead, cpu);
-+
-+		if (!llist_empty(lhead))
-+			cgroup_rstat_css_cpu_flush(&blkcg->css, cpu);
-+	}
-+
- 	spin_lock_irq(&blkcg->lock);
- 
- 	while (!hlist_empty(&blkcg->blkg_list)) {
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 528bd44b59e2..6c4e66b3fa84 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -766,6 +766,7 @@ void cgroup_rstat_flush(struct cgroup *cgrp);
- void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp);
- void cgroup_rstat_flush_hold(struct cgroup *cgrp);
- void cgroup_rstat_flush_release(void);
-+void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu);
- 
- /*
-  * Basic resource stats.
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 793ecff29038..2e44be44351f 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -281,6 +281,24 @@ void cgroup_rstat_flush_release(void)
- 	spin_unlock_irq(&cgroup_rstat_lock);
- }
- 
-+/**
-+ * cgroup_rstat_css_cpu_flush - flush stats for the given css and cpu
-+ * @css: target css to be flush
-+ * @cpu: the cpu that holds the stats to be flush
-+ *
-+ * A lightweight rstat flush operation for a given css and cpu.
-+ * Only the cpu_lock is being held for mutual exclusion, the cgroup_rstat_lock
-+ * isn't used.
-+ */
-+void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu)
-+{
-+	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
-+
-+	raw_spin_lock_irq(cpu_lock);
-+	css->ss->css_rstat_flush(css, cpu);
-+	raw_spin_unlock_irq(cpu_lock);
-+}
-+
- int cgroup_rstat_init(struct cgroup *cgrp)
- {
- 	int cpu;
+Thanks.
+
 -- 
-2.31.1
-
+tejun
