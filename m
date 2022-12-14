@@ -2,130 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3028D64C28E
-	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 04:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D93F64C2FA
+	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 05:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237202AbiLNDLR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Dec 2022 22:11:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
+        id S237381AbiLNEDG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Dec 2022 23:03:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236626AbiLNDLO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Dec 2022 22:11:14 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E942AE6;
-        Tue, 13 Dec 2022 19:11:13 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NX0kN0kgQz4f3pFb;
-        Wed, 14 Dec 2022 11:11:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgDHONbMPpljNSzJCA--.62944S6;
-        Wed, 14 Dec 2022 11:11:11 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org,
-        josef@toxicpanda.com
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH 2/2] block, bfq: replace 0/1 with false/true in bic apis
-Date:   Wed, 14 Dec 2022 11:31:55 +0800
-Message-Id: <20221214033155.3455754-3-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221214033155.3455754-1-yukuai1@huaweicloud.com>
-References: <20221214033155.3455754-1-yukuai1@huaweicloud.com>
+        with ESMTP id S237390AbiLNEDB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Dec 2022 23:03:01 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB25B2715E
+        for <cgroups@vger.kernel.org>; Tue, 13 Dec 2022 20:02:58 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id e7-20020a17090a77c700b00216928a3917so5795100pjs.4
+        for <cgroups@vger.kernel.org>; Tue, 13 Dec 2022 20:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/fCrMB9cQt2MX8YzEWi0sGLkBMAE2dTTyW94AFZn9pA=;
+        b=fgjO1qQIwaV1ipZKA8klXdP4Ve8zlCH05WM04DBeAuVhT2gV0/NDQjwzHWxvy6vjoo
+         Z8Wpdy4M8ga+fRK0sYnPreKKUxfL63DTSNOd+GnpDA5wFIEeY2UZ6ZizffNy5TSem3fD
+         OASi7zyrHG3s4Cefq1ZVxzjAlDEwOJdGHqEyh+ePjyV/tbXz8S0ksLLjPOSMBw+VUGLc
+         h6l+EOVvIc7rBKKXCwQ0L0ko7MdR1a95ECuIGMulh2iJaSWH0s7Fjmc9D+aOWAorlGYa
+         11LUxOEneebX67UHldEWM+Vgc3beULPdhg7ncK0q2+MFuQACLqTCu2dc15pdEWPK5h2K
+         FgzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/fCrMB9cQt2MX8YzEWi0sGLkBMAE2dTTyW94AFZn9pA=;
+        b=MsgJGVW31thL9uhi87NWf1xcJ4g9FMXC+ghs9InddnsTKMKp0FUoP1EdPOb59x8fPe
+         3h2h5Yx4asNDN0gRSM2AStg5pGds6/JYXySlLFHoRcSgXLvfDGw15Zmeodeq1q1xii6N
+         iDzWikD8l6ZxKajQKxVkwA/eFfmpdZpm4r5rN2giDz4Bf21/12pbrnSakdDb1iM/dyjG
+         R3tW6rnpcLIzQfgB965LWfFphBy4O1SxozPGmtGhs6EMncwqxqQ2XV0zt3Q4zamdkNYU
+         UjcOhvUZdb5G/LWBR3D08ByOqVXRnkdM7XTsDCKtXP81bz518Lr9TqP2FpIRLusQVsUu
+         tZdw==
+X-Gm-Message-State: ANoB5pmaf1JkCZNpY+1RVG8hQqOyW6ZAuqqoow0hQ6nMPdEDFRczGFGU
+        IkbBWhr9XZ5s0OmZtq/pmpBLrw==
+X-Google-Smtp-Source: AA0mqf4eQdsVDxhyLdxJPM3HETuo0Ym+0gSGYwMuYtLjp51oYGKdeufiEWmH06tCm5OiFbgvmqG6Sg==
+X-Received: by 2002:a17:902:a502:b0:186:7a6b:24d9 with SMTP id s2-20020a170902a50200b001867a6b24d9mr21682666plq.23.1670990578230;
+        Tue, 13 Dec 2022 20:02:58 -0800 (PST)
+Received: from [10.5.231.247] ([139.177.225.227])
+        by smtp.gmail.com with ESMTPSA id s15-20020a170902b18f00b00189393ab02csm675922plr.99.2022.12.13.20.02.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Dec 2022 20:02:57 -0800 (PST)
+Message-ID: <1e53592f-b1f1-df85-3edb-eba4c5a5f989@bytedance.com>
+Date:   Wed, 14 Dec 2022 12:02:53 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [External] Re: [RFC PATCH] blk-throtl: Introduce sync queue for
+ write ios
+To:     Tejun Heo <tj@kernel.org>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221206163826.10700-1-hanjinke.666@bytedance.com>
+ <Y5et48VryiKgL/eD@slm.duckdns.org>
+From:   hanjinke <hanjinke.666@bytedance.com>
+In-Reply-To: <Y5et48VryiKgL/eD@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHONbMPpljNSzJCA--.62944S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyUJryrtFWfKFW5Cr1DGFg_yoW8ZFyfp3
-        ZFqwsruw18Xr4rXr1UG3WqqF1xJ3Z5A34vyFy3X3yavry7WrnFqF4qv348Zrs2grs3CrW3
-        Zry09ayvqr13GrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6rxdM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-        v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjYiiDUUUUU=
-        =
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
 
-Just to make the code a litter cleaner, there are no functional changes.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/bfq-cgroup.c  | 8 ++++----
- block/bfq-iosched.c | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+在 2022/12/13 上午6:40, Tejun Heo 写道:
+> On Wed, Dec 07, 2022 at 12:38:26AM +0800, Jinke Han wrote:
+>> From: Jinke Han <hanjinke.666@bytedance.com>
+>>
+>> Now we don't distinguish sync write ios from normal buffer write ios
+>> in blk-throtl. A bio with REQ_SYNC tagged always mean it will be wait
+>> until write completion soon after it submit. So it's reasonable for sync
+>> io to complete as soon as possible.
+>>
+>> In our test, fio writes a 100g file in sequential 4k blocksize in
+>> a container with low bps limit configured (wbps=10M). More than 1200
+>> ios were throttled in blk-throtl queue and the avarage throtle time
+>> of each io is 140s. At the same time, the operation of saving a small
+>> file by vim will be blocked amolst 140s. As a fsync will be send by vim,
+>> the sync ios of fsync will be blocked by a huge amount of buffer write
+>> ios ahead. This is also a priority inversion problem within one cgroup.
+>> In the database scene, things got really bad with blk-throtle enabled
+>> as fsync is called very often.
+>>
+>> This patch introduces a independent sync queue for write ios and gives
+>> a huge priority to sync write ios. I think it's a nice respond to the
+>> semantics of REQ_SYNC. Bios with REQ_META and REQ_PRIO gains the same
+>> priority as they are important to fs. This may avoid some potential
+>> priority inversion problems.
+> 
+> I think the idea makes sense but wonder whether the implementation would be
+> cleaner / simpler if the sq->queued[] are indexed by SYNC, ASYNC and the
+> sync writes are queued in the sync queue together with reads.
+> 
+> Thanks.
+> 
+Should we keep the main category of io based READ and WRITE, and within 
+READ / WRITE the subcategory were SYNC and ASYNC ? This may give less 
+intrusion into existing frameworks.
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 23dc355a106d..1b2829e99dad 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -728,15 +728,15 @@ static void __bfq_bic_change_cgroup(struct bfq_data *bfqd,
- 				    struct bfq_io_cq *bic,
- 				    struct bfq_group *bfqg)
- {
--	struct bfq_queue *async_bfqq = bic_to_bfqq(bic, 0);
--	struct bfq_queue *sync_bfqq = bic_to_bfqq(bic, 1);
-+	struct bfq_queue *async_bfqq = bic_to_bfqq(bic, false);
-+	struct bfq_queue *sync_bfqq = bic_to_bfqq(bic, true);
- 	struct bfq_entity *entity;
- 
- 	if (async_bfqq) {
- 		entity = &async_bfqq->entity;
- 
- 		if (entity->sched_data != &bfqg->sched_data) {
--			bic_set_bfqq(bic, NULL, 0);
-+			bic_set_bfqq(bic, NULL, false);
- 			bfq_release_process_ref(bfqd, async_bfqq);
- 		}
- 	}
-@@ -772,7 +772,7 @@ static void __bfq_bic_change_cgroup(struct bfq_data *bfqd,
- 				 */
- 				bfq_put_cooperator(sync_bfqq);
- 				bfq_release_process_ref(bfqd, sync_bfqq);
--				bic_set_bfqq(bic, NULL, 1);
-+				bic_set_bfqq(bic, NULL, true);
- 			}
- 		}
- 	}
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index b111a7b8dca6..dc576b90ddfe 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -3114,7 +3114,7 @@ bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
- 	/*
- 	 * Merge queues (that is, let bic redirect its requests to new_bfqq)
- 	 */
--	bic_set_bfqq(bic, new_bfqq, 1);
-+	bic_set_bfqq(bic, new_bfqq, true);
- 	bfq_mark_bfqq_coop(new_bfqq);
- 	/*
- 	 * new_bfqq now belongs to at least two bics (it is a shared queue):
-@@ -6562,7 +6562,7 @@ bfq_split_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq)
- 		return bfqq;
- 	}
- 
--	bic_set_bfqq(bic, NULL, 1);
-+	bic_set_bfqq(bic, NULL, true);
- 
- 	bfq_put_cooperator(bfqq);
- 
--- 
-2.31.1
-
+Thanks.
