@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B231364D299
-	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 23:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C9664D29C
+	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 23:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiLNWvu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Dec 2022 17:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S229636AbiLNWwD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Dec 2022 17:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiLNWvt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 17:51:49 -0500
+        with ESMTP id S229656AbiLNWvw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 17:51:52 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A1530F79
-        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 14:51:48 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 195-20020a2505cc000000b0071163981d18so1502279ybf.13
-        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 14:51:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E796A37FAF
+        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 14:51:51 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id r7-20020a25c107000000b006ff55ac0ee7so1479902ybf.15
+        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 14:51:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUc+v5HwD46tRHbZWt0mN+PX65Kt87vRY2PWRTrdra8=;
-        b=D1ZGqVZqRfjR4k+QCHfaRDc8HXpG/JxiKLnotRDm7Q0jKKMK98yfDAMjKF0CLGdkeO
-         BVF5VEcuWQxJx6HnJzNbK6mWrwXtEdlrjzqRS0tZNCszk9P+OwNxJmLtbk++RNZ3MJ2G
-         CZO/woce3dSyn1ylx7eIxBwwxjPYWeaDpc35wLuMTka2EBsXgXps1k6sEw7ixcsNXF9p
-         XS/ySLs5INBD64ztnBLJmjS2xKhcPb2uQ8HO5xHRDe3Z59Zo8PPRKLq8X555tFBm+KIb
-         asLhS5yiHmEdXlSIpeEqhJHQ5RCV8f1SRahCwzobKiTodVo1k1IFYKNhqPiusXTCOodl
-         f8fQ==
+        bh=pP1HscS3NBizlWxdjalcxiOCxdTFFXWst9Um78lFYew=;
+        b=T1vg6NpxLo6/eIwoy3Qed3mwYZrRcOaXUysYifLHaPi+vYhazUnDs6UDkTZlfRIw7V
+         Y5hy6nvWH1kyT8kmze9eEa6nJSZiNVpW3N3UXMgfEqMuN0e25TVhuhO9D7VqOL/r6JiD
+         44j5nrRtBPJjeCrY/eBcV76Ko9qHQL7Uf12YDUe97/+MP0nkOYsl4soDy9ktZnmEK6x+
+         JG4eyDx3Gz2L0H7brEud6mnsIZbHYNBVEQ+rFXpJSg7KtZwCH9Hw29QGY6vvNpzSWtha
+         wOUPLTllmlPcjgFW+I/5/U+W1WIJ6SDoiC88ehNVmoHhh1WhKqr8mBzhsap235RbUrOI
+         kVPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUc+v5HwD46tRHbZWt0mN+PX65Kt87vRY2PWRTrdra8=;
-        b=r+ukuqSxIoOEkUCgm1FNR4qXJq8n0mvSxUzLh+64CZ/6cOFkMR0pQ99qGGLCCIf7yw
-         Lm1XtC0Gl36qIlZGlqv3C8oEHiKz2oG/8gcj4CNDHoY/L7+1dGZTJLTxm5j/H6O7xq2b
-         JyElAuFTdnAT3QOSDw1nLiSvUpUsTxMcmpnG58ZgBQ8gd1hdkd8yAEAKKhrlfTrTR5SH
-         1ei7iVKPFBzgWn2hN0tGji6pDW1xqqJTgLicc5/qevbnRvDaOi6OVsMRvByqfEGJrSQT
-         ugeY06LDFXO8DOX3lowAkoKfcPZyl9AhzZE9ZlQTXdcgZh7SU5vnz5GMKFoCbLJbmGJ5
-         lqvg==
-X-Gm-Message-State: ANoB5pmdX5vdo7h9HwlIjJW/zciWuhTGjOhYNiZB2PJeQKC3fx09MbgZ
-        GoX8DuMwsgdr69HFG0g8Q/e/kLmbIl7W
-X-Google-Smtp-Source: AA0mqf7DGDIJUfC4VIyKgAVtfwcgyC3fcmhOUgkP+R5oeIkqE2QVIN7CL/qi6/psX2VJUox0PiyWM7a9fBN1
+        bh=pP1HscS3NBizlWxdjalcxiOCxdTFFXWst9Um78lFYew=;
+        b=wo3fsBnrP0/WT09q/YkH5zA1Dw2oRs8bB2VDZ2jfflSHUPwxiN+Saec7OeggCMZjQ1
+         pNolLqNLcjjSHC5dgmVYOvjXUAVq1IV+U5GLv4VRf0GtoBNmVeqXIUHZualNmUFd+UCk
+         Kwdtitc5GqtcZGL85l22p2ShRXrOPzhIJV+eBVc/HiSr01/o8HPe4jASNboEEjvoUggn
+         6aYnr41znHTsPdvD51w8fMW81xJBGoKsxTpF77dtpeDc+awIUL2WKuxHShq4kDpDx3He
+         +XoxLamHZcvR8pM3B5XBlfTWs+4+wLzgcb0vfes9v1YbKwD88/fJKNFIFKFCLp6NrcZZ
+         PDOA==
+X-Gm-Message-State: ANoB5plLrdLHSyIGLai+yBIDcHkjcJyKd6yNDTMmR0wXGu1kthZsZuhU
+        XYJ20rG8o2rOq+zXx+hEUYLTT/DAdlPJ
+X-Google-Smtp-Source: AA0mqf7P1hKr2kxnLCk/QZ1080xuaZc9TM+496Hb5ZsvxrM7pi3Lu6mK+r3cvFJ2NP34V6PpPdiHlgQapjM1
 X-Received: from yuanchu.svl.corp.google.com ([2620:15c:2d4:203:1311:60bc:9e2a:ab1])
- (user=yuanchu job=sendgmr) by 2002:a05:690c:583:b0:3bd:4b7a:c0b1 with SMTP id
- bo3-20020a05690c058300b003bd4b7ac0b1mr1390108ywb.220.1671058307326; Wed, 14
- Dec 2022 14:51:47 -0800 (PST)
-Date:   Wed, 14 Dec 2022 14:51:22 -0800
+ (user=yuanchu job=sendgmr) by 2002:a25:dfc3:0:b0:6f3:2748:7469 with SMTP id
+ w186-20020a25dfc3000000b006f327487469mr55315847ybg.564.1671058311228; Wed, 14
+ Dec 2022 14:51:51 -0800 (PST)
+Date:   Wed, 14 Dec 2022 14:51:23 -0800
 In-Reply-To: <20221214225123.2770216-1-yuanchu@google.com>
 Mime-Version: 1.0
 References: <20221214225123.2770216-1-yuanchu@google.com>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Message-ID: <20221214225123.2770216-2-yuanchu@google.com>
-Subject: [RFC PATCH 1/2] mm: multi-gen LRU: periodic aging
+Message-ID: <20221214225123.2770216-3-yuanchu@google.com>
+Subject: [RFC PATCH 2/2] mm: multi-gen LRU: cgroup working set stats
 From:   Yuanchu Xie <yuanchu@google.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -73,400 +73,177 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Periodically age MGLRU-enabled lruvecs to turn MGLRU generations into
-time-based working set information. This includes an interface to set
-the periodic aging interval and a new kthread to perform aging.
-
-memory.periodic_aging: a new root-level only file in cgroupfs
-Writing to memory.periodic aging sets the aging interval and opts into
-periodic aging.
-kold: a new kthread that ages memcgs based on the set aging interval.
+Expose MGLRU generations as working set stats in cgroupfs as
+memory.page_idle_age, where we group pages into idle age ranges, and
+present the number of pages per node per pagetype in each range. This
+aggregates the time information from MGLRU generations hierarchically.
 
 Signed-off-by: Yuanchu Xie <yuanchu@google.com>
 ---
- include/linux/kold.h   |  44 ++++++++++++
- include/linux/mmzone.h |   4 +-
- mm/Makefile            |   3 +
- mm/kold.c              | 150 +++++++++++++++++++++++++++++++++++++++++
- mm/memcontrol.c        |  52 ++++++++++++++
- mm/vmscan.c            |  35 +++++++++-
- 6 files changed, 286 insertions(+), 2 deletions(-)
- create mode 100644 include/linux/kold.h
- create mode 100644 mm/kold.c
+ mm/memcontrol.c | 136 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 136 insertions(+)
 
-diff --git a/include/linux/kold.h b/include/linux/kold.h
-new file mode 100644
-index 000000000000..10b0dbe09a5c
---- /dev/null
-+++ b/include/linux/kold.h
-@@ -0,0 +1,44 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-+ * Periodic aging for multi-gen LRU
-+ *
-+ * Copyright (C) 2022 Yuanchu Xie <yuanchu@google.com>
-+ */
-+#ifndef KOLD_H_
-+#define KOLD_H_
-+
-+#include <linux/memcontrol.h>
-+
-+struct kold_stats {
-+	/* late is defined as spending an entire interval aging without sleep
-+	 * stat is aggregated every aging interval
-+	 */
-+	unsigned int late_count;
-+};
-+
-+int kold_set_interval(unsigned int interval);
-+unsigned int kold_get_interval(void);
-+int kold_get_stats(struct kold_stats *stats);
-+
-+/* returns the creation timestamp of the youngest generation */
-+unsigned long lru_gen_force_age_lruvec(struct mem_cgroup *memcg, int nid,
-+				      unsigned long min_ttl);
-+
-+#ifndef CONFIG_MEMCG
-+int kold_set_interval(unsigned int interval)
-+{
-+	return 0;
-+}
-+
-+unsigned int kold_get_interval(void)
-+{
-+	return 0;
-+}
-+
-+int kold_get_stats(struct kold_stats *stats)
-+{
-+	return -1;
-+}
-+#endif	/* CONFIG_MEMCG */
-+
-+#endif	/* KOLD_H_ */
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 5f74891556f3..929c777b826a 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1218,7 +1218,9 @@ typedef struct pglist_data {
- 
- #ifdef CONFIG_LRU_GEN
- 	/* kswap mm walk data */
--	struct lru_gen_mm_walk	mm_walk;
-+	struct lru_gen_mm_walk mm_walk;
-+	/* kold periodic aging walk data */
-+	struct lru_gen_mm_walk kold_mm_walk;
- #endif
- 
- 	CACHELINE_PADDING(_pad2_);
-diff --git a/mm/Makefile b/mm/Makefile
-index 8e105e5b3e29..8bd554a6eb7d 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -98,6 +98,9 @@ obj-$(CONFIG_DEVICE_MIGRATION) += migrate_device.o
- obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
- obj-$(CONFIG_PAGE_COUNTER) += page_counter.o
- obj-$(CONFIG_MEMCG) += memcontrol.o vmpressure.o
-+ifdef CONFIG_LRU_GEN
-+obj-$(CONFIG_MEMCG) += kold.o
-+endif
- ifdef CONFIG_SWAP
- obj-$(CONFIG_MEMCG) += swap_cgroup.o
- endif
-diff --git a/mm/kold.c b/mm/kold.c
-new file mode 100644
-index 000000000000..094574177968
---- /dev/null
-+++ b/mm/kold.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2022 Yuanchu Xie <yuanchu@google.com>
-+ */
-+#include <linux/stddef.h>
-+#include <linux/topology.h>
-+#include <linux/cpumask.h>
-+#include <linux/mmzone.h>
-+#include <linux/nodemask.h>
-+#include <linux/sched/mm.h>
-+#include <linux/swap.h>
-+#include <linux/memcontrol.h>
-+#include <linux/err.h>
-+#include <linux/jiffies.h>
-+#include <linux/sched.h>
-+#include <linux/cache.h>
-+#include <linux/init.h>
-+#include <linux/mutex.h>
-+#include <linux/kold.h>
-+#include <linux/kthread.h>
-+#include <linux/module.h>
-+#include <linux/mm_inline.h>
-+
-+static struct task_struct *kold_thread __read_mostly;
-+/* protects kold_thread */
-+static DEFINE_MUTEX(kold_mutex);
-+
-+static unsigned int aging_interval __read_mostly;
-+static unsigned int late_count;
-+
-+/* try to move to a cpu on the target node */
-+static void try_move_current_to_node(int nid)
-+{
-+	struct cpumask node_cpus;
-+
-+	cpumask_and(&node_cpus, cpumask_of_node(nid), cpu_online_mask);
-+	if (!cpumask_empty(&node_cpus))
-+		set_cpus_allowed_ptr(current, &node_cpus);
-+}
-+
-+static int kold_run(void *none)
-+{
-+	int nid;
-+	unsigned int flags;
-+	unsigned long last_interval_start_time = jiffies;
-+	bool sleep_since_last_full_scan = false;
-+	struct mem_cgroup *memcg;
-+	struct reclaim_state reclaim_state = {};
-+
-+	while (!kthread_should_stop()) {
-+		unsigned long interval =
-+			(unsigned long)(READ_ONCE(aging_interval)) * HZ;
-+		unsigned long next_wakeup_tick = jiffies + interval;
-+		long timeout_ticks;
-+
-+		current->reclaim_state = &reclaim_state;
-+		flags = memalloc_noreclaim_save();
-+
-+		for_each_node_state(nid, N_MEMORY) {
-+			pg_data_t *pgdat = NODE_DATA(nid);
-+
-+			try_move_current_to_node(nid);
-+			reclaim_state.mm_walk = &pgdat->kold_mm_walk;
-+
-+			memcg = mem_cgroup_iter(NULL, NULL, NULL);
-+			do {
-+				unsigned long young_timestamp =
-+					lru_gen_force_age_lruvec(memcg, nid,
-+								 interval);
-+
-+				if (time_before(young_timestamp + interval,
-+						next_wakeup_tick)) {
-+					next_wakeup_tick = young_timestamp + interval;
-+				}
-+			} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)));
-+		}
-+
-+		memalloc_noreclaim_restore(flags);
-+		current->reclaim_state = NULL;
-+
-+		/* late_count stats update */
-+		if (time_is_before_jiffies(last_interval_start_time + interval)) {
-+			last_interval_start_time += interval;
-+			if (!sleep_since_last_full_scan) {
-+				WRITE_ONCE(late_count,
-+					   READ_ONCE(late_count) + 1);
-+			}
-+			sleep_since_last_full_scan = false;
-+		}
-+
-+		/* sleep until next aging */
-+		timeout_ticks = -(long)(jiffies - next_wakeup_tick);
-+		if (timeout_ticks > 0 && timeout_ticks != MAX_SCHEDULE_TIMEOUT) {
-+			sleep_since_last_full_scan = true;
-+			schedule_timeout_idle(timeout_ticks);
-+		}
-+	}
-+	return 0;
-+}
-+
-+int kold_get_stats(struct kold_stats *stats)
-+{
-+	stats->late_count = READ_ONCE(late_count);
-+	return 0;
-+}
-+
-+unsigned int kold_get_interval(void)
-+{
-+	return READ_ONCE(aging_interval);
-+}
-+
-+int kold_set_interval(unsigned int interval)
-+{
-+	int err = 0;
-+
-+	mutex_lock(&kold_mutex);
-+	if (interval && !kold_thread) {
-+		if (!lru_gen_enabled()) {
-+			err = -EOPNOTSUPP;
-+			goto cleanup;
-+		}
-+		kold_thread = kthread_create(kold_run, NULL, "kold");
-+
-+		if (IS_ERR(kold_thread)) {
-+			pr_err("kold: kthread_run(kold_run) failed\n");
-+			err = PTR_ERR(kold_thread);
-+			kold_thread = NULL;
-+			goto cleanup;
-+		}
-+		WRITE_ONCE(aging_interval, interval);
-+		wake_up_process(kold_thread);
-+	} else {
-+		if (!interval && kold_thread) {
-+			kthread_stop(kold_thread);
-+			kold_thread = NULL;
-+		}
-+		WRITE_ONCE(aging_interval, interval);
-+	}
-+
-+cleanup:
-+	mutex_unlock(&kold_mutex);
-+	return err;
-+}
-+
-+static int __init kold_init(void)
-+{
-+	return 0;
-+}
-+
-+module_init(kold_init);
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2d8549ae1b30..7d2fb3fc4580 100644
+index 7d2fb3fc4580..86554e17be58 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -63,6 +63,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/kold.h>
- #include "internal.h"
- #include <net/sock.h>
- #include <net/ip.h>
-@@ -6569,6 +6570,49 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
+@@ -1655,6 +1655,130 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ 	pr_info("%s", buf);
  }
  
 +#ifdef CONFIG_LRU_GEN
-+static int memory_periodic_aging_show(struct seq_file *m, void *v)
++static const unsigned long page_idle_age_ranges[] = {
++	1,   2,	  5,   10,  20,	 30,   45,   60,   90,	 120, 180,
++	240, 360, 480, 720, 960, 1440, 1920, 2880, 3840, -1
++};
++
++#define PAGE_IDLE_AGE_NR_RANGES ARRAY_SIZE(page_idle_age_ranges)
++
++static unsigned int lru_gen_time_to_page_idle_age_range(unsigned long timestamp)
 +{
-+	unsigned int interval = kold_get_interval();
-+	struct kold_stats stats;
-+	int err;
++	unsigned int i;
++	unsigned long gen_age = jiffies_to_msecs(jiffies - timestamp) / MSEC_PER_SEC;
 +
-+	err = kold_get_stats(&stats);
++	for (i = 0; i < PAGE_IDLE_AGE_NR_RANGES - 1; ++i)
++		if (gen_age <= page_idle_age_ranges[i])
++			return i;
 +
-+	if (err)
-+		return err;
-+
-+	seq_printf(m, "aging_interval %u\n", interval);
-+	seq_printf(m, "late_count %u\n", stats.late_count);
-+	return 0;
++	return PAGE_IDLE_AGE_NR_RANGES - 1;
 +}
 +
-+static ssize_t memory_periodic_aging_write(struct kernfs_open_file *of,
-+				       char *buf, size_t nbytes,
-+				       loff_t off)
++static void lru_gen_fill_page_idle_age_table(unsigned long *table,
++					     struct lru_gen_struct *lrugen,
++					     int nid)
 +{
-+	unsigned int new_interval;
-+	int err;
++	unsigned long max_seq = READ_ONCE(lrugen->max_seq);
++	unsigned long min_seq[ANON_AND_FILE] = {
++		READ_ONCE(lrugen->min_seq[LRU_GEN_ANON]),
++		READ_ONCE(lrugen->min_seq[LRU_GEN_FILE]),
++	};
++	unsigned long seq;
++	unsigned int pagetype;
 +
-+	if (!lru_gen_enabled())
-+		return -EOPNOTSUPP;
++	/*
++	 * what do we want to do here?
++	 * iterate over all the generations, for each anon and file
++	 */
 +
-+	buf = strstrip(buf);
-+	if (!buf)
-+		return -EINVAL;
++	for (pagetype = LRU_GEN_ANON; pagetype < ANON_AND_FILE; ++pagetype) {
++		for (seq = min_seq[pagetype]; seq <= max_seq; ++seq) {
++			unsigned int zone;
++			unsigned int gen = lru_gen_from_seq(seq);
++			unsigned int idle_age = lru_gen_time_to_page_idle_age_range(
++				READ_ONCE(lrugen->timestamps[gen]));
++			unsigned long page_count = 0;
 +
-+	err = kstrtouint(buf, 0, &new_interval);
-+	if (err)
-+		return err;
++			for (zone = 0; zone < MAX_NR_ZONES; ++zone) {
++				page_count += READ_ONCE(
++					lrugen->nr_pages[gen][pagetype][zone]);
++			}
++			table[pagetype * PAGE_IDLE_AGE_NR_RANGES *
++				      nr_node_ids +
++			      PAGE_IDLE_AGE_NR_RANGES * nid + idle_age] +=
++				page_count;
++		}
++	}
++}
 +
-+	err = kold_set_interval(new_interval);
-+	if (err)
-+		return err;
++static void memory_page_idle_age_print(struct seq_file *m, unsigned long *table)
++{
++	static const char *type_str[ANON_AND_FILE] = { "anon", "file" };
++	unsigned int i, nid, pagetype;
++	unsigned int lower = 0;
 +
-+	return nbytes;
++	for (i = 0; i < PAGE_IDLE_AGE_NR_RANGES; ++i) {
++		unsigned int upper = page_idle_age_ranges[i];
++
++		for (pagetype = LRU_GEN_ANON; pagetype < ANON_AND_FILE;
++		     ++pagetype) {
++			if (upper == -1)
++				seq_printf(m, "%u-inf %s", lower,
++					  type_str[pagetype]);
++			else
++				seq_printf(m, "%u-%u %s", lower, upper,
++					   type_str[pagetype]);
++			for_each_node_state(nid, N_MEMORY) {
++				unsigned long page_count = table
++					[pagetype *
++						 PAGE_IDLE_AGE_NR_RANGES *
++						 nr_node_ids +
++					 PAGE_IDLE_AGE_NR_RANGES * nid +
++					 i];
++				seq_printf(m, " N%u=%lu", nid, page_count);
++			}
++			seq_puts(m, "\n");
++		}
++
++		lower = upper;
++	}
++}
++
++static int memory_page_idle_age_format(struct mem_cgroup *root,
++				       struct seq_file *m)
++{
++	struct mem_cgroup *memcg;
++	unsigned long *table;
++
++	/*
++	 * table contains PAGE_IDLE_AGE_NR_RANGES entries
++	 * per node per pagetype
++	 */
++	table = kmalloc_array(PAGE_IDLE_AGE_NR_RANGES * nr_node_ids *
++				      ANON_AND_FILE,
++			      sizeof(*table), __GFP_ZERO | GFP_KERNEL);
++
++	if (!table)
++		return -ENOMEM;
++
++	memcg = mem_cgroup_iter(root, NULL, NULL);
++	do {
++		int nid;
++
++		for_each_node_state(nid, N_MEMORY) {
++			struct lru_gen_struct *lrugen =
++				&memcg->nodeinfo[nid]->lruvec.lrugen;
++
++			lru_gen_fill_page_idle_age_table(table, lrugen, nid);
++		}
++	} while ((memcg = mem_cgroup_iter(root, memcg, NULL)));
++
++	memory_page_idle_age_print(m, table);
++	return 0;
 +}
 +#endif /* CONFIG_LRU_GEN */
 +
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
-@@ -6679,6 +6723,14 @@ static struct cftype memory_files[] = {
- 		.flags = CFTYPE_NS_DELEGATABLE,
- 		.write = memory_reclaim,
- 	},
-+#ifdef CONFIG_LRU_GEN
-+	{
-+		.name = "periodic_aging",
-+		.flags = CFTYPE_ONLY_ON_ROOT,
-+		.seq_show = memory_periodic_aging_show,
-+		.write = memory_periodic_aging_write,
-+	},
-+#endif
- 	{ }	/* terminate */
- };
+ /*
+  * Return the memory (and swap, if configured) limit for a memcg.
+  */
+@@ -6571,6 +6695,13 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+ }
  
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 04d8b88e5216..0fea21366fc8 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -54,6 +54,7 @@
- #include <linux/shmem_fs.h>
- #include <linux/ctype.h>
- #include <linux/debugfs.h>
-+#include <linux/kold.h>
- 
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
-@@ -5279,8 +5280,10 @@ static void lru_gen_change_state(bool enabled)
- 
- 	if (enabled)
- 		static_branch_enable_cpuslocked(&lru_gen_caps[LRU_GEN_CORE]);
--	else
-+	else {
- 		static_branch_disable_cpuslocked(&lru_gen_caps[LRU_GEN_CORE]);
-+		kold_set_interval(0);
-+	}
- 
- 	memcg = mem_cgroup_iter(NULL, NULL, NULL);
- 	do {
-@@ -5760,6 +5763,36 @@ static const struct file_operations lru_gen_ro_fops = {
- 	.release = seq_release,
- };
- 
-+/******************************************************************************
-+ *                      periodic aging (kold)
-+ ******************************************************************************/
-+
-+/* age lruvec as long as it is older than min_ttl,
-+ * return the timestamp of the youngest generation
-+ */
-+unsigned long lru_gen_force_age_lruvec(struct mem_cgroup *memcg, int nid,
-+				      unsigned long min_ttl)
+ #ifdef CONFIG_LRU_GEN
++static int memory_page_idle_age_show(struct seq_file *m, void *v)
 +{
-+	struct scan_control sc = {
-+		.may_writepage = true,
-+		.may_unmap = true,
-+		.may_swap = true,
-+		.reclaim_idx = MAX_NR_ZONES - 1,
-+		.gfp_mask = GFP_KERNEL,
-+	};
-+	struct lruvec *lruvec = get_lruvec(memcg, nid);
-+	DEFINE_MAX_SEQ(lruvec);
-+	int gen = lru_gen_from_seq(max_seq);
-+	unsigned long birth_timestamp =
-+		READ_ONCE(lruvec->lrugen.timestamps[gen]);
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 +
-+	if (time_is_before_jiffies(birth_timestamp + min_ttl))
-+		try_to_inc_max_seq(lruvec, max_seq, &sc, true, true);
-+
-+	return READ_ONCE(lruvec->lrugen.timestamps[lru_gen_from_seq(
-+		READ_ONCE((lruvec)->lrugen.max_seq))]);
++	return memory_page_idle_age_format(memcg, m);
 +}
 +
- /******************************************************************************
-  *                          initialization
-  ******************************************************************************/
+ static int memory_periodic_aging_show(struct seq_file *m, void *v)
+ {
+ 	unsigned int interval = kold_get_interval();
+@@ -6724,6 +6855,11 @@ static struct cftype memory_files[] = {
+ 		.write = memory_reclaim,
+ 	},
+ #ifdef CONFIG_LRU_GEN
++	{
++		.name = "page_idle_age",
++		.flags = CFTYPE_NS_DELEGATABLE,
++		.seq_show = memory_page_idle_age_show,
++	},
+ 	{
+ 		.name = "periodic_aging",
+ 		.flags = CFTYPE_ONLY_ON_ROOT,
 -- 
 2.39.0.314.g84b9a713c41-goog
 
