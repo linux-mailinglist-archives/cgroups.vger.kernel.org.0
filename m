@@ -2,106 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBF564CD90
-	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 16:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB3C64CE6D
+	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 17:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238607AbiLNP7e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Dec 2022 10:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        id S238266AbiLNQzD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Dec 2022 11:55:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238619AbiLNP7M (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 10:59:12 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDC829820;
-        Wed, 14 Dec 2022 07:57:52 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BDCC61F894;
-        Wed, 14 Dec 2022 15:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1671033470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B4OheqqFLoHea6X9Q+7CKodDyXD/mYyUFNDiEKU1Y5I=;
-        b=gM4CtN/H82jW/oj+L6LHZBSQM+xE8svPLl+esaPN/+znII72XqlZuXtzN6I1VjHphNJbpv
-        SY9r/eNd2pP+aatAc50bRAnumdhVsD654mDL9oxtED4JTWzWmz3o8gaxnS5zEXN2JILnFA
-        6GH8jLaXg7OjDsL0vDtaS/4pDYI/zBk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1671033470;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B4OheqqFLoHea6X9Q+7CKodDyXD/mYyUFNDiEKU1Y5I=;
-        b=pqf2UoRr2rrqpTMHTqmuFmGlDOxvQL89y779TNDsxBWmGUrKnocMzBcNQ7gL0FN/4ggy2c
-        fIG1BshGhkAotNAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEA9C138F6;
-        Wed, 14 Dec 2022 15:57:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id u4ihKn7ymWPgWgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 14 Dec 2022 15:57:50 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 1275DA0727; Wed, 14 Dec 2022 16:57:50 +0100 (CET)
-Date:   Wed, 14 Dec 2022 16:57:50 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Jan Kara <jack@suse.cz>, paolo.valente@linaro.org, axboe@kernel.dk,
-        tj@kernel.org, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH 0/2] block, bfq: minor cleanups
-Message-ID: <20221214155750.ivc43jgkfvxlp6y4@quack3>
-References: <20221214033155.3455754-1-yukuai1@huaweicloud.com>
- <79d587ef-66c3-e84d-0904-41da2c8e7146@huaweicloud.com>
+        with ESMTP id S239191AbiLNQyl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 11:54:41 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C37F21E3A
+        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 08:54:40 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id i25so6814671ila.8
+        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 08:54:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VdMn8MdKqERVq83/l+YeYkH6HVsbE2k4JfbE9pJ1Ypo=;
+        b=D+E7a9btXDFAY4h9/TXp95QlTJDLO1Qdr8/uyyoZeUcYY1BfJx680/GCWVnOYNkdrC
+         uwS3Ihcc6GS/HH9FobTHT4q6/yO/h+HBfyzj5KqJll1QRfuD/cigJ7qaCfbC/qYDusnQ
+         p93GRasXxxai4ma/lZuwCAwp9RWztMdrtx9AesUYzDCJXCmlEp6LHO7VShoahengkD68
+         Hf/JvqDQimnkUXDnJN0+2zEWVpAP3EbQTCR7j9G2i942JRgJLzpPlD0zzTUpMUsDn7PK
+         JBIA/baZ7ShOWi9jmmY46XJNtwUyQq0zo5jo/71jmEjhytxo9rcE5br8fy/UlWnNStMf
+         8xZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VdMn8MdKqERVq83/l+YeYkH6HVsbE2k4JfbE9pJ1Ypo=;
+        b=SZduvyZP7QVfmdMA3+uKLsU2ASTHho6sR2dAi73NYS/zu2K9sjiH9BrVoOZVCbU7Jc
+         +Q+uB7c8XEzI0XGGHZxVoGpqMcru4sO0WKKJa/rh+LLeqswKutt7fAMZUg+JJaAuZWXi
+         MN028v7XseYnm2ohLB9B95g03SbY9rN91riYCrZUQ1PxjSzfcGEVYxxXukDnX95/6uzu
+         47sYZYO7SkHI9J62YeV38bZeviPffTcvfD4MExkG0/72uanSN0A2A4m37fdCZs+CDhq3
+         B4LOS+T6Hf/58datqh3E+VOD77TWYjlQbacDA7kTSY1aEQvD7rlHRtGPsfLVHRwVMx8m
+         eE3g==
+X-Gm-Message-State: ANoB5pnm+HAV80p6dhGRpXQagk6aZpWVWq2fzGpS2wgzGHt65cajmqDT
+        KVpISEW3JcQsXaaeHJP4At2tHA==
+X-Google-Smtp-Source: AA0mqf7yTYbzA6kWuOn6T+CbG+tkLnt+dK8fzRI3Qj4rvvrUlMRd1H7Wf+1zoOKPsSDPOqMLe3AHuA==
+X-Received: by 2002:a05:6e02:ed0:b0:304:ac4f:a79b with SMTP id i16-20020a056e020ed000b00304ac4fa79bmr1862392ilk.3.1671036879545;
+        Wed, 14 Dec 2022 08:54:39 -0800 (PST)
+Received: from [192.168.1.94] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id h9-20020a056e020d4900b00300df8bfcf5sm1913591ilj.14.2022.12.14.08.54.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Dec 2022 08:54:38 -0800 (PST)
+Message-ID: <5fbaea42-14a7-27a8-cea1-3a59161ceba0@kernel.dk>
+Date:   Wed, 14 Dec 2022 09:54:35 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH-block v3 1/2] bdi, blk-cgroup: Fix potential UAF of blkcg
+To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        "Dennis Zhou (Facebook)" <dennisszhou@gmail.com>,
+        Yi Zhang <yi.zhang@redhat.com>
+References: <20221213184446.50181-1-longman@redhat.com>
+ <20221213184446.50181-2-longman@redhat.com>
+ <Y5jSllwwBdmQ1jQz@slm.duckdns.org>
+ <34a8c4a7-a58d-63fc-4599-accf1cbb6aae@redhat.com>
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <34a8c4a7-a58d-63fc-4599-accf1cbb6aae@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <79d587ef-66c3-e84d-0904-41da2c8e7146@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 14-12-22 11:14:49, Yu Kuai wrote:
-> Hi, Jan
+On 12/13/22 12:53 PM, Waiman Long wrote:
 > 
-> Sorry that I forgot to cc you.
-
-Both patches look good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> On 12/13/22 14:29, Tejun Heo wrote:
+>> On Tue, Dec 13, 2022 at 01:44:45PM -0500, Waiman Long wrote:
+>>> Commit 59b57717fff8 ("blkcg: delay blkg destruction until after
+>>> writeback has finished") delayed call to blkcg_destroy_blkgs() to
+>>> cgwb_release_workfn(). However, it is done after a css_put() of blkcg
+>>> which may be the final put that causes the blkcg to be freed as RCU
+>>> read lock isn't held.
+>>>
+>>> Another place where blkcg_destroy_blkgs() can be called indirectly via
+>>> blkcg_unpin_online() is from the offline_css() function called from
+>>> css_killed_work_fn(). Over there, the potentially final css_put() call
+>>> is issued after offline_css().
+>>>
+>>> By adding a css_tryget() into blkcg_destroy_blkgs() and warning its
+>>> failure, the following stack trace was produced in a test system on
+>>> bootup.
+>> This doesn't agree with the code anymore. Otherwise
+>>
+>> Acked-by: Tejun Heo <tj@kernel.org>
 > 
-> Thanks,
-> Kuai
+> Sorry, I overlooked the commit log in my update. I will update it if I need another version, or Jens can make the following edit:
 > 
-> 在 2022/12/14 11:31, Yu Kuai 写道:
-> > From: Yu Kuai <yukuai3@huawei.com>
-> > 
-> > Yu Kuai (2):
-> >    block, bfq: don't return bfqg from __bfq_bic_change_cgroup()
-> >    block, bfq: replace 0/1 with false/true in bic apis
-> > 
-> >   block/bfq-cgroup.c  | 16 +++++++---------
-> >   block/bfq-iosched.c |  4 ++--
-> >   2 files changed, 9 insertions(+), 11 deletions(-)
-> > 
-> 
+> css_tryget() -> percpu_ref_is_zero().
+
+Since the other one also needs an edit, would be great if you could
+just send out a v4.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jens Axboe
+
+
