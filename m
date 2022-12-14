@@ -2,71 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A5D64C702
-	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 11:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E88B64C74E
+	for <lists+cgroups@lfdr.de>; Wed, 14 Dec 2022 11:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237731AbiLNKXj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Dec 2022 05:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
+        id S237878AbiLNKnY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Dec 2022 05:43:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbiLNKXf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 05:23:35 -0500
+        with ESMTP id S229660AbiLNKnX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 05:43:23 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FE61CFE9;
-        Wed, 14 Dec 2022 02:23:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CFD14038;
+        Wed, 14 Dec 2022 02:43:22 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 73346220F3;
-        Wed, 14 Dec 2022 10:23:33 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 202AB22181;
+        Wed, 14 Dec 2022 10:43:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1671013413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1671014601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fxBVCTztKvCx7NZz2W8gthEPH9JUIWAZ4+V+PfsVmzY=;
-        b=IojBzwyziVtYiucjSQDvGHnCXVjXg2p/sHVYk80E3xfs7e5jBbeS9JU65R1LNQ8A+RlA3V
-        nVZqvAW9UjKHw/QmPgCvEjbeBUhDxCLc2YH+bnaeQwiWi1j0MPSlkXpy3rHQMIUkQMDreQ
-        Z/LmeErn8iJyWo5NQRig0Hzxee4+ACc=
+        bh=pOLj6orCcUIQaK1bmDnm+LNeXET6CuRHzqb6smtqDhg=;
+        b=tjmQwSC5l46EbQoMLj96F7w8R2nfE0/DWBVttEI5sO7CPV/4mkrC5QCI+5wL64xI56tI7L
+        5hAXErj/GwBzqruajdRn2lNn/w4NwtVCIjzOJxpqurEpCJwoK24hFs04eu91K98KkKeLZ+
+        B2dlnycoWRyJ6RfyHL2Jp/tyTWWG/KA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 517C61333E;
-        Wed, 14 Dec 2022 10:23:33 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EB6B61333E;
+        Wed, 14 Dec 2022 10:43:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id XCt/ESWkmWMbHwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 14 Dec 2022 10:23:33 +0000
-Date:   Wed, 14 Dec 2022 11:23:32 +0100
+        id lEwKN8iomWPJKQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 14 Dec 2022 10:43:20 +0000
+Date:   Wed, 14 Dec 2022 11:43:20 +0100
 From:   Michal Hocko <mhocko@suse.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Mina Almasry <almasrymina@google.com>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Huang Ying <ying.huang@intel.com>,
         Yang Shi <yang.shi@linux.alibaba.com>,
         Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
         fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
 Subject: Re: [PATCH v3] mm: Add nodes= arg to memory.reclaim
-Message-ID: <Y5mkJL6I5Zlc1k97@dhcp22.suse.cz>
+Message-ID: <Y5moyNXfgQ6cfLbO@dhcp22.suse.cz>
 References: <20221202223533.1785418-1-almasrymina@google.com>
  <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
  <CAHS8izM-XdLgFrQ1k13X-4YrK=JGayRXV_G3c3Qh4NLKP7cH_g@mail.gmail.com>
- <87k02volwe.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Y5h+gHBneexFQcR3@cmpxchg.org>
- <Y5iGJ/9PMmSCwqLj@dhcp22.suse.cz>
- <CAHS8izOuT_-p-N1xPApi+BPJQ+P--2YVSUeiWBROGvGinN0vcg@mail.gmail.com>
+ <Y5g41HF2TcLzro4o@dhcp22.suse.cz>
+ <Y5iet+ch24YrvExA@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHS8izOuT_-p-N1xPApi+BPJQ+P--2YVSUeiWBROGvGinN0vcg@mail.gmail.com>
+In-Reply-To: <Y5iet+ch24YrvExA@cmpxchg.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -76,103 +74,117 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 13-12-22 11:29:45, Mina Almasry wrote:
-> On Tue, Dec 13, 2022 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 13-12-22 14:30:40, Johannes Weiner wrote:
-> > > On Tue, Dec 13, 2022 at 02:30:57PM +0800, Huang, Ying wrote:
-> > [...]
-> > > > After these discussion, I think the solution maybe use different
-> > > > interfaces for "proactive demote" and "proactive reclaim".  That is,
-> > > > reconsider "memory.demote".  In this way, we will always uncharge the
-> > > > cgroup for "memory.reclaim".  This avoid the possible confusion there.
-> > > > And, because demotion is considered aging, we don't need to disable
-> > > > demotion for "memory.reclaim", just don't count it.
-> > >
-> > > Hm, so in summary:
-> > >
-> > > 1) memory.reclaim would demote and reclaim like today, but it would
-> > >    change to only count reclaimed pages against the goal.
-> > >
-> > > 2) memory.demote would only demote.
-> > >
+On Tue 13-12-22 16:58:50, Johannes Weiner wrote:
+> On Tue, Dec 13, 2022 at 09:33:24AM +0100, Michal Hocko wrote:
+> > I do recognize your need to control the demotion but I argue that it is
+> > a bad idea to rely on an implicit behavior of the memory reclaim and an
+> > interface which is _documented_ to primarily _reclaim_ memory.
 > 
-> If the above 2 points are agreeable then yes, this sounds good to me
-> and does address our use case.
-> 
-> > >    a) What if the demotion targets are full? Would it reclaim or fail?
-> > >
-> 
-> Wei will chime in if he disagrees, but I think we _require_ that it
-> fails, not falls back to reclaim. The interface is asking for
-> demotion, and is called memory.demote. For such an interface to fall
-> back to reclaim would be very confusing to userspace and may trigger
-> reclaim on a high priority job that we want to shield from proactive
-> reclaim.
+> I think memory.reclaim should demote as part of page aging. What I'd
+> like to avoid is *having* to manually control the aging component in
+> the interface (e.g. making memory.reclaim *only* reclaim, and
+> *requiring* a coordinated use of memory.demote to ensure progress.)
 
-But what should happen if the immediate demotion target is full but
-lower tiers are still usable. Should the first one demote before
-allowing to demote from the top tier?
- 
-> > > 3) Would memory.reclaim and memory.demote still need nodemasks?
+Yes, I do agree with that. Demotion is a part of the aging. I meant to say
+that the result of the operation should be reclaimed charges but that
+doesn't mean that demotion is not a part of that process.
+
+I am mostly concerned about demote only behavior that Mina is targetting
+and want to use memory.reclaim interface.
+
+> > Really, consider that the current demotion implementation will change
+> > in the future and based on a newly added heuristic memory reclaim or
+> > compression would be preferred over migration to a different tier.  This
+> > might completely break your current assumptions and break your usecase
+> > which relies on an implicit demotion behavior.  Do you see that as a
+> > potential problem at all? What shall we do in that case? Special case
+> > memory.reclaim behavior?
 > 
-> memory.demote will need a nodemask, for sure. Today the nodemask would
-> be useful if there is a specific node in the top tier that is
-> overloaded and we want to reduce the pressure by demoting. In the
-> future there will be N tiers and the nodemask says which tier to
-> demote from.
-
-OK, so what is the exact semantic of the node mask. Does it control
-where to demote from or to or both?
-
-> I don't think memory.reclaim would need a nodemask anymore? At least I
-> no longer see the use for it for us.
+> Shouldn't that be derived from the distance propertiers in the tier
+> configuration?
 > 
-> > >    Would
-> > >    they return -EINVAL if a) memory.reclaim gets passed only toptier
-> > >    nodes or b) memory.demote gets passed any lasttier nodes?
-> >
+> I.e. if local compression is faster than demoting to a slower node, we
+> should maybe have a separate tier for that. Ignoring proactive reclaim
+> or demotion commands for a second: on that node, global memory
+> pressure should always compress first, while the oldest pages from the
+> compression cache should demote to the other node(s) - until they
+> eventually get swapped out.
 > 
-> Honestly it would be great if memory.reclaim can force reclaim from a
-> top tier nodes. It breaks the aginig pipeline, yes, but if the user is
-> specifically asking for that because they decided in their usecase
-> it's a good idea then the kernel should comply IMO. Not a strict
-> requirement for us. Wei will chime in if he disagrees.
-
-That would require a nodemask to say which nodes to reclaim, no? The
-default behavior should be in line with what standard memory reclaim
-does. If the demotion is a part of that process so should be
-memory.reclaim part of it. If we want to have a finer control then a
-nodemask is really a must and then the nodemaks should constrain both
-agining and reclaim.
-
-> memory.demote returning -EINVAL for lasttier nodes makes sense to me.
+> However fine-grained we make proactive reclaim control over these
+> stages, it should at least be possible for the user to request the
+> default behavior that global pressure follows, without jumping through
+> hoops or requiring the coordinated use of multiple knobs. So IMO there
+> is an argument for having a singular knob that requests comprehensive
+> aging and reclaiming across the configured hierarchy.
 > 
-> > I would also add
-> > 4) Do we want to allow to control the demotion path (e.g. which node to
-> >    demote from and to) and how to achieve that?
+> As far as explicit control over the individual stages goes - no idea
+> if you would call the compression stage demotion or reclaim. The
+> distinction still does not make much of sense to me, since reclaim is
+> just another form of demotion.
+
+From the external visibility POV the major difference between the two is
+that the reclaim decreases the overall charged memory. And there are
+pro-active reclaim usecases which rely on that. Demotion is mostly
+memory placement rebalancing. Sure still visible in per-node stats and
+with implications to performance but that is a different story.
+
+> Sure, page faults have a different
+> access latency than dax to slower memory. But you could also have 3
+> tiers of memory where the difference between tier 1 and 2 is much
+> smaller than the difference between 2 and 3, and you might want to
+> apply different demotion rates between them as well.
 > 
-> We care deeply about specifying which node to demote _from_. That
-> would be some node that is approaching pressure and we're looking for
-> proactive saving from. So far I haven't seen any reason to control
-> which nodes to demote _to_. The kernel deciding that based on the
-> aging pipeline and the node distances sounds good to me. Obviously
-> someone else may find that useful.
+> The other argument is that demotion does not free cgroup memory,
+> whereas reclaim does. But with multiple memory tiers of vastly
+> different performance, isn't there also an argument for granting
+> cgroups different shares of each memory?
 
-Please keep in mind that the interface should be really prepared for
-future extensions so try to abstract from your immediate usecases.
+Yes. We have already had requests for per node limits in the past. And I
+do expect this will show up as a problem here as well but with a
+reasonable memory.reclaim and potentially memory.demote interfaces the
+balancing and policy making can be outsourced to the userspace .
 
-> > 5) Is the demotion api restricted to multi-tier systems or any numa
-> >    configuration allowed as well?
-> >
+> So that a higher priority
+> group has access to a bigger share of the fastest memory, and lower
+> prio cgroups are relegated to lower tiers. If we split those pools,
+> then "demotion" will actually free memory in a cgroup.
 > 
-> demotion will of course not work on single tiered systems. The
-> interface may return some failure on such systems or not be available
-> at all.
+> This is why I liked adding a nodes= argument to memory.reclaim the
+> best. It doesn't encode a distinction that may not last for long.
+> 
+> The problem comes from how to interpret the input argument and the
+> return value, right? Could we solve this by requiring the passed
+> nodes= to all be of the same memory tier? Then there is no confusion
+> around what is requested and what the return value means.
 
-Is there any strong reason for that? We do not have any interface to
-control NUMA balancing from userspace. Why cannot we use the interface
-for that purpose? 
+Just to make sure I am on the same page. This means that if a node mask
+is specified then it always implies demotion without any control over
+how the demotion is done, right?
+
+> And if no nodes are passed, it means reclaim (from the lowest memory
+> tier) X pages and demote as needed, then return the reclaimed pages.
+
+IMO this is rather constrained semantic which will completely rule out
+some potentially interesting usecases. E.g. fine grained control over
+the demotion path or enforced reclaim for node balancing. Also if we
+ever want a promote interface then it would better fit with demote
+counterpart.
+
+> > Now to your specific usecase. If there is a need to do a memory
+> > distribution balancing then fine but this should be a well defined
+> > interface. E.g. is there a need to not only control demotion but
+> > promotions as well? I haven't heard anybody requesting that so far
+> > but I can easily imagine that like outsourcing the memory reclaim to
+> > the userspace someone might want to do the same thing with the numa
+> > balancing because $REASONS. Should that ever happen, I am pretty sure
+> > hooking into memory.reclaim is not really a great idea.
+> 
+> Should this ever happen, it would seem fair that that be a separate
+> knob anyway, no? One knob to move the pipeline in one direction
+> (aging), one knob to move it the other way.
+
+Yes, this is what I am inclining to as well.
+
 -- 
 Michal Hocko
 SUSE Labs
