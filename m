@@ -2,175 +2,194 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEF364D59E
-	for <lists+cgroups@lfdr.de>; Thu, 15 Dec 2022 04:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC11164D644
+	for <lists+cgroups@lfdr.de>; Thu, 15 Dec 2022 06:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbiLODcl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Dec 2022 22:32:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44286 "EHLO
+        id S229614AbiLOFvS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Dec 2022 00:51:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbiLODci (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Dec 2022 22:32:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F18254375
-        for <cgroups@vger.kernel.org>; Wed, 14 Dec 2022 19:31:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671075109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P/pLznPGQVdkseYoFw2OMUXPOTJl7XFp+0+LqLupem4=;
-        b=A5l3Yp0IYh7jB5T04zh0ldDq0/a9tDNuk5RCgLG+Nkgo0FTKPjwtskhUYRv9MiyLq+ifHW
-        AEGBWadcGcpr4BlZr1qYuFLcUzYmeySKgxgJYZnzuPXcQJurIXUHSVQGGjiQDlCEMgU1K3
-        Femu0LawMLrtoUIqmN6+tkFHkQl+xRM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-80-Ufz3riySO5yZc8WkBp7EUA-1; Wed, 14 Dec 2022 22:31:46 -0500
-X-MC-Unique: Ufz3riySO5yZc8WkBp7EUA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B953D85D060;
-        Thu, 15 Dec 2022 03:31:45 +0000 (UTC)
-Received: from llong.com (unknown [10.22.16.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 42B11400D796;
-        Thu, 15 Dec 2022 03:31:45 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S229588AbiLOFvR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Dec 2022 00:51:17 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EAF2B1A3;
+        Wed, 14 Dec 2022 21:51:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1671083476; x=1702619476;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=Vy1nnsBUMyfJdWB0HL7AxX9ZAnGiu08F+Oqh6ALowk0=;
+  b=Y0f6k6Ob/PVLCF7ZV8Cn8u4/Y1FeG0TEP0ks29g7L98rs+pRQZAf2s8Y
+   isvFerH0xEt7LpCCtQhIKfSkyOdnMtCjlSHnRlo9UAz+pD7ppom6yf6tx
+   yJUrPh6QisJo/160AOUnw6Tae0JrP7H/8dunmntoAiruoKWdUyfidhzaV
+   M4TvNwcONIR0ApnfGb32+Cv61rkwDp4Sn9Dp/jPVVpgsOb/dyDU39luec
+   KaL+8l1IDb4V7QdvHHbmMVQ86EFqb1GvypxhYFb/OzC3RxbJTILNta/qi
+   WRVbKIgyUiYrEcQXV2UW/5l4BN2RpDoJcaewaKWR1DrIEYeJITWO/YO1E
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="320448563"
+X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; 
+   d="scan'208";a="320448563"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2022 21:51:15 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="978080190"
+X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; 
+   d="scan'208";a="978080190"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2022 21:51:10 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        "Dennis Zhou (Facebook)" <dennisszhou@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 2/2] blk-cgroup: Flush stats at blkgs destruction path
-Date:   Wed, 14 Dec 2022 22:31:32 -0500
-Message-Id: <20221215033132.230023-3-longman@redhat.com>
-In-Reply-To: <20221215033132.230023-1-longman@redhat.com>
-References: <20221215033132.230023-1-longman@redhat.com>
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
+        fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm: Add nodes= arg to memory.reclaim
+References: <20221202223533.1785418-1-almasrymina@google.com>
+        <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
+        <CAHS8izM-XdLgFrQ1k13X-4YrK=JGayRXV_G3c3Qh4NLKP7cH_g@mail.gmail.com>
+        <87k02volwe.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <Y5h+gHBneexFQcR3@cmpxchg.org> <Y5iGJ/9PMmSCwqLj@dhcp22.suse.cz>
+        <CAHS8izOuT_-p-N1xPApi+BPJQ+P--2YVSUeiWBROGvGinN0vcg@mail.gmail.com>
+        <Y5mkJL6I5Zlc1k97@dhcp22.suse.cz>
+Date:   Thu, 15 Dec 2022 13:50:14 +0800
+In-Reply-To: <Y5mkJL6I5Zlc1k97@dhcp22.suse.cz> (Michal Hocko's message of
+        "Wed, 14 Dec 2022 11:23:32 +0100")
+Message-ID: <87mt7pdxm1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As noted by Michal, the blkg_iostat_set's in the lockless list
-hold reference to blkg's to protect against their removal. Those
-blkg's hold reference to blkcg. When a cgroup is being destroyed,
-cgroup_rstat_flush() is only called at css_release_work_fn() which
-is called when the blkcg reference count reaches 0. This circular
-dependency will prevent blkcg and some blkgs from being freed after
-they are made offline.
+Michal Hocko <mhocko@suse.com> writes:
 
-It is less a problem if the cgroup to be destroyed also has other
-controllers like memory that will call cgroup_rstat_flush() which will
-clean up the reference count. If block is the only controller that uses
-rstat, these offline blkcg and blkgs may never be freed leaking more
-and more memory over time.
+> On Tue 13-12-22 11:29:45, Mina Almasry wrote:
+>> On Tue, Dec 13, 2022 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
+>> >
+>> > On Tue 13-12-22 14:30:40, Johannes Weiner wrote:
+>> > > On Tue, Dec 13, 2022 at 02:30:57PM +0800, Huang, Ying wrote:
+>> > [...]
+>> > > > After these discussion, I think the solution maybe use different
+>> > > > interfaces for "proactive demote" and "proactive reclaim".  That is,
+>> > > > reconsider "memory.demote".  In this way, we will always uncharge the
+>> > > > cgroup for "memory.reclaim".  This avoid the possible confusion there.
+>> > > > And, because demotion is considered aging, we don't need to disable
+>> > > > demotion for "memory.reclaim", just don't count it.
+>> > >
+>> > > Hm, so in summary:
+>> > >
+>> > > 1) memory.reclaim would demote and reclaim like today, but it would
+>> > >    change to only count reclaimed pages against the goal.
+>> > >
+>> > > 2) memory.demote would only demote.
+>> > >
+>> 
+>> If the above 2 points are agreeable then yes, this sounds good to me
+>> and does address our use case.
+>> 
+>> > >    a) What if the demotion targets are full? Would it reclaim or fail?
+>> > >
+>> 
+>> Wei will chime in if he disagrees, but I think we _require_ that it
+>> fails, not falls back to reclaim. The interface is asking for
+>> demotion, and is called memory.demote. For such an interface to fall
+>> back to reclaim would be very confusing to userspace and may trigger
+>> reclaim on a high priority job that we want to shield from proactive
+>> reclaim.
+>
+> But what should happen if the immediate demotion target is full but
+> lower tiers are still usable. Should the first one demote before
+> allowing to demote from the top tier?
+>  
+>> > > 3) Would memory.reclaim and memory.demote still need nodemasks?
+>> 
+>> memory.demote will need a nodemask, for sure. Today the nodemask would
+>> be useful if there is a specific node in the top tier that is
+>> overloaded and we want to reduce the pressure by demoting. In the
+>> future there will be N tiers and the nodemask says which tier to
+>> demote from.
+>
+> OK, so what is the exact semantic of the node mask. Does it control
+> where to demote from or to or both?
+>
+>> I don't think memory.reclaim would need a nodemask anymore? At least I
+>> no longer see the use for it for us.
+>> 
+>> > >    Would
+>> > >    they return -EINVAL if a) memory.reclaim gets passed only toptier
+>> > >    nodes or b) memory.demote gets passed any lasttier nodes?
+>> >
+>> 
+>> Honestly it would be great if memory.reclaim can force reclaim from a
+>> top tier nodes. It breaks the aginig pipeline, yes, but if the user is
+>> specifically asking for that because they decided in their usecase
+>> it's a good idea then the kernel should comply IMO. Not a strict
+>> requirement for us. Wei will chime in if he disagrees.
+>
+> That would require a nodemask to say which nodes to reclaim, no? The
+> default behavior should be in line with what standard memory reclaim
+> does. If the demotion is a part of that process so should be
+> memory.reclaim part of it. If we want to have a finer control then a
+> nodemask is really a must and then the nodemaks should constrain both
+> agining and reclaim.
+>
+>> memory.demote returning -EINVAL for lasttier nodes makes sense to me.
+>> 
+>> > I would also add
+>> > 4) Do we want to allow to control the demotion path (e.g. which node to
+>> >    demote from and to) and how to achieve that?
+>> 
+>> We care deeply about specifying which node to demote _from_. That
+>> would be some node that is approaching pressure and we're looking for
+>> proactive saving from. So far I haven't seen any reason to control
+>> which nodes to demote _to_. The kernel deciding that based on the
+>> aging pipeline and the node distances sounds good to me. Obviously
+>> someone else may find that useful.
+>
+> Please keep in mind that the interface should be really prepared for
+> future extensions so try to abstract from your immediate usecases.
 
-To prevent this potential memory leak, a new cgroup_rstat_css_cpu_flush()
-function is added to flush stats for a given css and cpu. This new
-function will be called at blkgs destruction path, blkcg_destroy_blkgs(),
-whenever there are still pending stats to be flushed. This will release
-the references to blkgs allowing them to be freed and indirectly allow
-the freeing of blkcg.
+I see two requirements here, one is to control the demotion source, that
+is, which nodes to free memory.  The other is to control the demotion
+path.  I think that we can use two different parameters for them, for
+example, "from=<demotion source nodes>" and "to=<demotion target
+nodes>".  In most cases we don't need to control the demotion path.
+Because in current implementation, the nodes in the lower tiers in the
+same socket (local nodes) will be preferred.  I think that this is
+the desired behavior in most cases.
 
-Fixes: 3b8cc6298724 ("blk-cgroup: Optimize blkcg_rstat_flush()")
-Signed-off-by: Waiman Long <longman@redhat.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
- block/blk-cgroup.c     | 16 ++++++++++++++++
- include/linux/cgroup.h |  1 +
- kernel/cgroup/rstat.c  | 18 ++++++++++++++++++
- 3 files changed, 35 insertions(+)
+>> > 5) Is the demotion api restricted to multi-tier systems or any numa
+>> >    configuration allowed as well?
+>> >
+>> 
+>> demotion will of course not work on single tiered systems. The
+>> interface may return some failure on such systems or not be available
+>> at all.
+>
+> Is there any strong reason for that? We do not have any interface to
+> control NUMA balancing from userspace. Why cannot we use the interface
+> for that purpose? 
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index ca28306aa1b1..a2a1081d9d1d 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1084,6 +1084,8 @@ struct list_head *blkcg_get_cgwb_list(struct cgroup_subsys_state *css)
-  */
- static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- {
-+	int cpu;
-+
- 	/*
- 	 * blkcg_destroy_blkgs() shouldn't be called with all the blkcg
- 	 * references gone.
-@@ -1093,6 +1095,20 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- 
- 	might_sleep();
- 
-+	/*
-+	 * Flush all the non-empty percpu lockless lists to release the
-+	 * blkg references held by those lists which, in turn, will
-+	 * allow those blkgs to be freed and release their references to
-+	 * blkcg. Otherwise, they may not be freed at all becase of this
-+	 * circular dependency resulting in memory leak.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		struct llist_head *lhead = per_cpu_ptr(blkcg->lhead, cpu);
-+
-+		if (!llist_empty(lhead))
-+			cgroup_rstat_css_cpu_flush(&blkcg->css, cpu);
-+	}
-+
- 	spin_lock_irq(&blkcg->lock);
- 
- 	while (!hlist_empty(&blkcg->blkg_list)) {
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 528bd44b59e2..6c4e66b3fa84 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -766,6 +766,7 @@ void cgroup_rstat_flush(struct cgroup *cgrp);
- void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp);
- void cgroup_rstat_flush_hold(struct cgroup *cgrp);
- void cgroup_rstat_flush_release(void);
-+void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu);
- 
- /*
-  * Basic resource stats.
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 793ecff29038..2e44be44351f 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -281,6 +281,24 @@ void cgroup_rstat_flush_release(void)
- 	spin_unlock_irq(&cgroup_rstat_lock);
- }
- 
-+/**
-+ * cgroup_rstat_css_cpu_flush - flush stats for the given css and cpu
-+ * @css: target css to be flush
-+ * @cpu: the cpu that holds the stats to be flush
-+ *
-+ * A lightweight rstat flush operation for a given css and cpu.
-+ * Only the cpu_lock is being held for mutual exclusion, the cgroup_rstat_lock
-+ * isn't used.
-+ */
-+void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu)
-+{
-+	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
-+
-+	raw_spin_lock_irq(cpu_lock);
-+	css->ss->css_rstat_flush(css, cpu);
-+	raw_spin_unlock_irq(cpu_lock);
-+}
-+
- int cgroup_rstat_init(struct cgroup *cgrp)
- {
- 	int cpu;
--- 
-2.31.1
+Do you mean to demote the cold pages from the specified source nodes to
+the specified target nodes in different sockets?  We don't do that to
+avoid loop in the demotion path.  If we prevent the target nodes from
+demoting cold pages to the source nodes at the same time, it seems
+doable.
 
+Best Regards,
+Huang, Ying
