@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E109064E635
-	for <lists+cgroups@lfdr.de>; Fri, 16 Dec 2022 04:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235AC64E638
+	for <lists+cgroups@lfdr.de>; Fri, 16 Dec 2022 04:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbiLPDNl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Dec 2022 22:13:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S229939AbiLPDNm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Dec 2022 22:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiLPDNe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Dec 2022 22:13:34 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D39B2AE3E;
+        with ESMTP id S229789AbiLPDNf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Dec 2022 22:13:35 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813F12B267;
         Thu, 15 Dec 2022 19:13:34 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NYDh84F29z4f4Dwx;
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NYDh86GhFz4f43lm;
         Fri, 16 Dec 2022 11:13:28 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXiNVW4ptjHYxACQ--.50238S8;
+        by APP4 (Coremail) with SMTP id gCh0CgAXiNVW4ptjHYxACQ--.50238S9;
         Fri, 16 Dec 2022 11:13:31 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
@@ -26,18 +26,18 @@ To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linfeilong@huawei.com,
         liuzhiqiang@26.com, shikemeng@huaweicloud.com
-Subject: [PATCH v2 06/10] block, bfq: remove redundant bfqd->rq_in_driver > 0 check in bfq_add_request
-Date:   Fri, 16 Dec 2022 19:12:26 +0800
-Message-Id: <20221216111230.3638832-7-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 07/10] block, bfq: remove redundant check in bfq_put_cooperator
+Date:   Fri, 16 Dec 2022 19:12:27 +0800
+Message-Id: <20221216111230.3638832-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20221216111230.3638832-1-shikemeng@huaweicloud.com>
 References: <20221216111230.3638832-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXiNVW4ptjHYxACQ--.50238S8
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw48Cw4xJw1xGw4UWryrXrb_yoWfArb_Ca
-        18Grn7Gr1kGr45Arn0y3W5Zw10yF4fXFn5AryY9r1aqF17Ga1vy39Fqry5KF4DCa9rJ3Wa
-        yr4FvFyrJrWvvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: gCh0CgAXiNVW4ptjHYxACQ--.50238S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrWxAFWUXr1xWw48Gw1Utrb_yoWxtrg_t3
+        sYkFWrJrW8Gry5Ar1ftas8Aw1UAayrJF1DJFyFqw4DXF15GF4rCa92gFWayFs8Way7Ga4a
+        yFy0q3WDtr4DKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbvkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
@@ -62,29 +62,28 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The bfqd->rq_in_driver > 0 check is along with previous
-"bfqd->rq_in_driver == 0 ||" check, so no need to re-check
-bfqd->rq_in_driver > 0.
+We have already avoided a circular list in bfq_setup_merge (see comments
+in bfq_setup_merge() for details), so bfq_queue will not appear in it's
+new_bfqq list. Just remove this check.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- block/bfq-iosched.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ block/bfq-iosched.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index ebcafe3c4c3b..7c91d16dbf6f 100644
+index 7c91d16dbf6f..89995815dbae 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -2204,8 +2204,7 @@ static void bfq_add_request(struct request *rq)
- 		 */
- 		if (bfqq == bfqd->in_service_queue &&
- 		    (bfqd->rq_in_driver == 0 ||
--		     (bfqq->last_serv_time_ns > 0 &&
--		      bfqd->rqs_injected && bfqd->rq_in_driver > 0)) &&
-+		     (bfqq->last_serv_time_ns > 0 && bfqd->rqs_injected)) &&
- 		    time_is_before_eq_jiffies(bfqq->decrease_time_jif +
- 					      msecs_to_jiffies(10))) {
- 			bfqd->last_empty_occupied_ns = ktime_get_ns();
+@@ -5273,8 +5273,6 @@ void bfq_put_cooperator(struct bfq_queue *bfqq)
+ 	 */
+ 	__bfqq = bfqq->new_bfqq;
+ 	while (__bfqq) {
+-		if (__bfqq == bfqq)
+-			break;
+ 		next = __bfqq->new_bfqq;
+ 		bfq_put_queue(__bfqq);
+ 		__bfqq = next;
 -- 
 2.30.0
 
