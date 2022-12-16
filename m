@@ -2,99 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D03364E63C
-	for <lists+cgroups@lfdr.de>; Fri, 16 Dec 2022 04:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061F864E834
+	for <lists+cgroups@lfdr.de>; Fri, 16 Dec 2022 09:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbiLPDNp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Dec 2022 22:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S229655AbiLPIki (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Dec 2022 03:40:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbiLPDNg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Dec 2022 22:13:36 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16562A951;
-        Thu, 15 Dec 2022 19:13:35 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NYDhB3Pnhz4f41hk;
-        Fri, 16 Dec 2022 11:13:30 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXiNVW4ptjHYxACQ--.50238S12;
-        Fri, 16 Dec 2022 11:13:33 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linfeilong@huawei.com,
-        liuzhiqiang@26.com, shikemeng@huaweicloud.com
-Subject: [PATCH v2 10/10] block, bfq: remove check of bfq_wr_max_softrt_rate which is always greater than 0
-Date:   Fri, 16 Dec 2022 19:12:30 +0800
-Message-Id: <20221216111230.3638832-11-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20221216111230.3638832-1-shikemeng@huaweicloud.com>
-References: <20221216111230.3638832-1-shikemeng@huaweicloud.com>
+        with ESMTP id S229453AbiLPIkh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Dec 2022 03:40:37 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0184E36C50;
+        Fri, 16 Dec 2022 00:40:35 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A2AD021064;
+        Fri, 16 Dec 2022 08:40:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1671180034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3nvimj2ZFEx9YlSQKEbscjAQshU+naWh0RT6szJpxbY=;
+        b=Bw8en1xmr0xlc033t59Fmd9xvJ/ey7A/H7JtocX065COY8g9zeA9OnNx20n2Ecsfjj43n/
+        FWc+JP9gV724C3PypNeuOfBOmHNZKslYtZkGj1Kg9xqrZxwikmlBC/Kr73SRMVPlE6A53h
+        68JY5QsKr1zGoq1BIgq+jwbjwvzffq0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F403138FD;
+        Fri, 16 Dec 2022 08:40:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IE7GIQIvnGM2NAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 16 Dec 2022 08:40:34 +0000
+Date:   Fri, 16 Dec 2022 09:40:34 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Wei Xu <weixugc@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>, fvdl@google.com,
+        bagasdotme@gmail.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm: Add nodes= arg to memory.reclaim
+Message-ID: <Y5wvAnroJHaWQbCV@dhcp22.suse.cz>
+References: <20221202223533.1785418-1-almasrymina@google.com>
+ <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
+ <CAHS8izM-XdLgFrQ1k13X-4YrK=JGayRXV_G3c3Qh4NLKP7cH_g@mail.gmail.com>
+ <87k02volwe.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <Y5h+gHBneexFQcR3@cmpxchg.org>
+ <Y5iGJ/9PMmSCwqLj@dhcp22.suse.cz>
+ <CAHS8izOuT_-p-N1xPApi+BPJQ+P--2YVSUeiWBROGvGinN0vcg@mail.gmail.com>
+ <Y5mkJL6I5Zlc1k97@dhcp22.suse.cz>
+ <CAAPL-u_KFTScyd1hxDGb-nHf6hW5_pCsh5a0NDZCr5v5AGq88A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXiNVW4ptjHYxACQ--.50238S12
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cry7Zr47CFyUZFyfJF13Arb_yoW8Gr1kpa
-        yaqr4UWF45Ka1F9F4UtF18Ww1jyan3W3srKw1DZw1DtrW7ZFn3ua9akwnYva92qFn7Crsx
-        ZF1DKa4kXF1DA37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUmq14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
-        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
-        IIjxv20xvEc7CjxVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vE
-        x4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2
-        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4U
-        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I64
-        8v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-        AF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1l
-        IxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
-        1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIY
-        CTnIWIevJa73UjIFyTuYvjTRKfOwUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAPL-u_KFTScyd1hxDGb-nHf6hW5_pCsh5a0NDZCr5v5AGq88A@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-bfqd->bfq_wr_max_softrt_rate is assigned with 7000 in bfq_init_queue and
-never changed. So we can remove bfqd->bfq_wr_max_softrt_rate > 0 check
-which is always true.
+On Thu 15-12-22 09:58:12, Wei Xu wrote:
+> On Wed, Dec 14, 2022 at 2:23 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 13-12-22 11:29:45, Mina Almasry wrote:
+> > > On Tue, Dec 13, 2022 at 6:03 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Tue 13-12-22 14:30:40, Johannes Weiner wrote:
+> > > > > On Tue, Dec 13, 2022 at 02:30:57PM +0800, Huang, Ying wrote:
+> > > > [...]
+> > > > > > After these discussion, I think the solution maybe use different
+> > > > > > interfaces for "proactive demote" and "proactive reclaim".  That is,
+> > > > > > reconsider "memory.demote".  In this way, we will always uncharge the
+> > > > > > cgroup for "memory.reclaim".  This avoid the possible confusion there.
+> > > > > > And, because demotion is considered aging, we don't need to disable
+> > > > > > demotion for "memory.reclaim", just don't count it.
+> > > > >
+> > > > > Hm, so in summary:
+> > > > >
+> > > > > 1) memory.reclaim would demote and reclaim like today, but it would
+> > > > >    change to only count reclaimed pages against the goal.
+> > > > >
+> > > > > 2) memory.demote would only demote.
+> > > > >
+> > >
+> > > If the above 2 points are agreeable then yes, this sounds good to me
+> > > and does address our use case.
+> > >
+> > > > >    a) What if the demotion targets are full? Would it reclaim or fail?
+> > > > >
+> > >
+> > > Wei will chime in if he disagrees, but I think we _require_ that it
+> > > fails, not falls back to reclaim. The interface is asking for
+> > > demotion, and is called memory.demote. For such an interface to fall
+> > > back to reclaim would be very confusing to userspace and may trigger
+> > > reclaim on a high priority job that we want to shield from proactive
+> > > reclaim.
+> >
+> > But what should happen if the immediate demotion target is full but
+> > lower tiers are still usable. Should the first one demote before
+> > allowing to demote from the top tier?
+> 
+> In that case, the demotion will fall back to the lower tiers.  See
+> node_get_allowed_targets() and establish_demotion_targets()..
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- block/bfq-iosched.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+I am not talking about an implicit behavior that we do not want to cast
+into interface. If we want to allow a fine grained control over demotion
+then the implementation shouldn't rely on the current behavior.
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 91bc68fba72d..00cdd42ac02a 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -1788,8 +1788,7 @@ static void bfq_bfqq_handle_idle_busy_switch(struct bfq_data *bfqd,
- 	 *   to control its weight explicitly)
- 	 */
- 	in_burst = bfq_bfqq_in_large_burst(bfqq);
--	soft_rt = bfqd->bfq_wr_max_softrt_rate > 0 &&
--		!BFQQ_TOTALLY_SEEKY(bfqq) &&
-+	soft_rt = !BFQQ_TOTALLY_SEEKY(bfqq) &&
- 		!in_burst &&
- 		time_is_before_jiffies(bfqq->soft_rt_next_start) &&
- 		bfqq->dispatched == 0 &&
-@@ -4284,8 +4283,7 @@ void bfq_bfqq_expire(struct bfq_data *bfqd,
- 	if (bfqd->low_latency && bfqq->wr_coeff == 1)
- 		bfqq->last_wr_start_finish = jiffies;
- 
--	if (bfqd->low_latency && bfqd->bfq_wr_max_softrt_rate > 0 &&
--	    RB_EMPTY_ROOT(&bfqq->sort_list)) {
-+	if (bfqd->low_latency && RB_EMPTY_ROOT(&bfqq->sort_list)) {
- 		/*
- 		 * If we get here, and there are no outstanding
- 		 * requests, then the request pattern is isochronous
+[...]
+> > Is there any strong reason for that? We do not have any interface to
+> > control NUMA balancing from userspace. Why cannot we use the interface
+> > for that purpose?
+> 
+> A demotion interface such as memory.demote will trigger the demotion
+> code path in the kernel, which depends on multiple memory tiers.
+
+Demotion is just a fancy name of a directed migration. There is no realy
+dependency on the HW nor the technology.
+
+> I think what you are getting is a more general page migration
+> interface for memcg, which will need both source and target nodes as
+> arguments. I think this can be a great idea.  It should be able to
+> support our demotion use cases as well.
+
+yes.
+
 -- 
-2.30.0
-
+Michal Hocko
+SUSE Labs
