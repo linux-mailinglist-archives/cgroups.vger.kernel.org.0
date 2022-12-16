@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9A164E63B
-	for <lists+cgroups@lfdr.de>; Fri, 16 Dec 2022 04:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0FE64E63F
+	for <lists+cgroups@lfdr.de>; Fri, 16 Dec 2022 04:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbiLPDNo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Dec 2022 22:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S229955AbiLPDNn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Dec 2022 22:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbiLPDNf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Dec 2022 22:13:35 -0500
+        with ESMTP id S229816AbiLPDNg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Dec 2022 22:13:36 -0500
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F002A435;
-        Thu, 15 Dec 2022 19:13:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0DF2A715;
+        Thu, 15 Dec 2022 19:13:35 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NYDh941NDz4f4DxP;
-        Fri, 16 Dec 2022 11:13:29 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NYDhB07bVz4f4GD9;
+        Fri, 16 Dec 2022 11:13:30 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXiNVW4ptjHYxACQ--.50238S10;
+        by APP4 (Coremail) with SMTP id gCh0CgAXiNVW4ptjHYxACQ--.50238S11;
         Fri, 16 Dec 2022 11:13:32 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
@@ -26,32 +26,32 @@ To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linfeilong@huawei.com,
         liuzhiqiang@26.com, shikemeng@huaweicloud.com
-Subject: [PATCH v2 08/10] block, bfq: remove unnecessary goto tag in bfq_dispatch_rq_from_bfqq
-Date:   Fri, 16 Dec 2022 19:12:28 +0800
-Message-Id: <20221216111230.3638832-9-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 09/10] block, bfq: remove unused bfq_wr_max_time in struct bfq_data
+Date:   Fri, 16 Dec 2022 19:12:29 +0800
+Message-Id: <20221216111230.3638832-10-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20221216111230.3638832-1-shikemeng@huaweicloud.com>
 References: <20221216111230.3638832-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXiNVW4ptjHYxACQ--.50238S10
-X-Coremail-Antispam: 1UD129KBjvdXoWruF4UWF4DWFyxKr47GF15urg_yoWkZFXEyF
-        409r9ayFWkCF98Wr4YkFsrJF1jyFW2qa1DtF1Fg3y2g3W7J3ZYyF9IqrsIka95WrWIkFyY
-        qFs0q343Jr1UXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbvAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
-        A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
-        M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2I
-        x0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2
-        z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
-        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErc
-        IFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-        bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-        CI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsG
-        vfC2KfnxnUUI43ZEXa7sRiVbyDUUUUU==
+X-CM-TRANSID: gCh0CgAXiNVW4ptjHYxACQ--.50238S11
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyUJw1kCr15GFyUtw4rAFb_yoW8WF15pa
+        nrK347WF17Kr4FgF1DAa4rXFnxta13uF9rKa1a9w4YyFW8XF1a93ZYyw1fX3Z2vFZ3Cr4f
+        Zw4Fqa4Dtw18K3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUmq14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
+        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
+        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
+        IIjxv20xvEc7CjxVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vE
+        x4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2
+        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4U
+        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I64
+        8v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+        1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIY
+        CTnIWIevJa73UjIFyTuYvjTRKfOwUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -62,42 +62,51 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We jump to tag only for returning current rq. Return directly to
-remove this tag.
+bfqd->bfq_wr_max_time is set to 0 in bfq_init_queue and is never changed.
+It is only used in bfq_wr_duration when bfq_wr_max_time > 0 which never
+meets, so bfqd->bfq_wr_max_time is not used actually. Just remove it.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- block/bfq-iosched.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ block/bfq-iosched.c | 4 ----
+ block/bfq-iosched.h | 2 --
+ 2 files changed, 6 deletions(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 89995815dbae..195cdc6be087 100644
+index 195cdc6be087..91bc68fba72d 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -4965,7 +4965,7 @@ static struct request *bfq_dispatch_rq_from_bfqq(struct bfq_data *bfqd,
- 	bfq_dispatch_remove(bfqd->queue, rq);
+@@ -1068,9 +1068,6 @@ static unsigned int bfq_wr_duration(struct bfq_data *bfqd)
+ {
+ 	u64 dur;
  
- 	if (bfqq != bfqd->in_service_queue)
--		goto return_rq;
-+		return rq;
- 
- 	/*
- 	 * If weight raising has to terminate for bfqq, then next
-@@ -4985,12 +4985,9 @@ static struct request *bfq_dispatch_rq_from_bfqq(struct bfq_data *bfqd,
- 	 * belongs to CLASS_IDLE and other queues are waiting for
- 	 * service.
- 	 */
--	if (!(bfq_tot_busy_queues(bfqd) > 1 && bfq_class_idle(bfqq)))
--		goto return_rq;
-+	if ((bfq_tot_busy_queues(bfqd) > 1 && bfq_class_idle(bfqq)))
-+		bfq_bfqq_expire(bfqd, bfqq, false, BFQQE_BUDGET_EXHAUSTED);
- 
--	bfq_bfqq_expire(bfqd, bfqq, false, BFQQE_BUDGET_EXHAUSTED);
+-	if (bfqd->bfq_wr_max_time > 0)
+-		return bfqd->bfq_wr_max_time;
 -
--return_rq:
- 	return rq;
- }
+ 	dur = bfqd->rate_dur_prod;
+ 	do_div(dur, bfqd->peak_rate);
  
+@@ -7079,7 +7076,6 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
+ 	 */
+ 	bfqd->bfq_wr_coeff = 30;
+ 	bfqd->bfq_wr_rt_max_time = msecs_to_jiffies(300);
+-	bfqd->bfq_wr_max_time = 0;
+ 	bfqd->bfq_wr_min_idle_time = msecs_to_jiffies(2000);
+ 	bfqd->bfq_wr_min_inter_arr_async = msecs_to_jiffies(500);
+ 	bfqd->bfq_wr_max_softrt_rate = 7000; /*
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index 9fa89577322d..0b1a5438046a 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -719,8 +719,6 @@ struct bfq_data {
+ 	 * is multiplied.
+ 	 */
+ 	unsigned int bfq_wr_coeff;
+-	/* maximum duration of a weight-raising period (jiffies) */
+-	unsigned int bfq_wr_max_time;
+ 
+ 	/* Maximum weight-raising duration for soft real-time processes */
+ 	unsigned int bfq_wr_rt_max_time;
 -- 
 2.30.0
 
