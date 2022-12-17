@@ -2,59 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A6064F731
-	for <lists+cgroups@lfdr.de>; Sat, 17 Dec 2022 03:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98C764F88F
+	for <lists+cgroups@lfdr.de>; Sat, 17 Dec 2022 10:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbiLQCse (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Dec 2022 21:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
+        id S229526AbiLQJ5L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 17 Dec 2022 04:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbiLQCsc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Dec 2022 21:48:32 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36E4A453;
-        Fri, 16 Dec 2022 18:48:30 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NYr4n1m64z4f3lXl;
-        Sat, 17 Dec 2022 10:48:25 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgB3m9j5LZ1jmxh7CQ--.11469S8;
-        Sat, 17 Dec 2022 10:48:28 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     tj@kernel.org, hch@infradead.org, josef@toxicpanda.com,
-        axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH -next 4/4] blk-cgroup: synchronize del_gendisk() with configuring cgroup policy
-Date:   Sat, 17 Dec 2022 11:09:08 +0800
-Message-Id: <20221217030908.1261787-5-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221217030908.1261787-1-yukuai1@huaweicloud.com>
-References: <20221217030908.1261787-1-yukuai1@huaweicloud.com>
+        with ESMTP id S229496AbiLQJ5K (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 17 Dec 2022 04:57:10 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBB21D6;
+        Sat, 17 Dec 2022 01:57:09 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CEDBC608B2;
+        Sat, 17 Dec 2022 09:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1671271027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SoLRNQRrRqUNC0cGrLyDcGJ7nXiwl9BQ5rqnla0AEQg=;
+        b=LzEcwgGhGGz8nj03JB5W4TiSbEKztKdG7hrQa5MIO0bwc5t2NC30MAA0U3vd2UhSj4T2Pz
+        Tx7x3OMd+ZGReDRDIwwbXqxis7W8upuGmgfxuw87vV+OuG3oq1SRHDCSet4bS0DJKP0ag6
+        XpG0vDOWegM0J6b+oztGV495X5UdU2I=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A96941326D;
+        Sat, 17 Dec 2022 09:57:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id St90JnOSnWOFNQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Sat, 17 Dec 2022 09:57:07 +0000
+Date:   Sat, 17 Dec 2022 10:57:06 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mina Almasry <almasrymina@google.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
+        fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] Revert "mm: add nodes= arg to memory.reclaim"
+Message-ID: <Y52Scge3ynvn/mB4@dhcp22.suse.cz>
+References: <20221202223533.1785418-1-almasrymina@google.com>
+ <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
+ <Y5xASNe1x8cusiTx@dhcp22.suse.cz>
+ <20221216101820.3f4a370af2c93d3c2e78ed8a@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3m9j5LZ1jmxh7CQ--.11469S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxur1DZrykJF4kCw4rXrW3Awb_yoW5Jw18pa
-        9IgF13CrWIgrsrZa1DGa1fZrsavw40gr1fA3yfA3yayrW7Kr1IvF1kAF9rZrWfZFsxJrsx
-        Xr4FgrZ0kr1UCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF18B
-        UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221216101820.3f4a370af2c93d3c2e78ed8a@linux-foundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,99 +73,40 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Fri 16-12-22 10:18:20, Andrew Morton wrote:
+> On Fri, 16 Dec 2022 10:54:16 +0100 Michal Hocko <mhocko@suse.com> wrote:
+> 
+> > I have noticed that the patch made it into Linus tree already. Can we
+> > please revert it because the semantic is not really clear and we should
+> > really not create yet another user API maintenance problem.
+> 
+> Well dang.  I was waiting for the discussion to converge, blissfully
+> unaware that the thing was sitting in mm-stable :(  I guess the
+> 
+> 	Acked-by: Michal Hocko <mhocko@suse.com>
+> 	Acked-by: Shakeel Butt <shakeelb@google.com>
+> 	Acked-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> fooled me.
 
-iocost is initialized when it's configured the first time, and iocost
-initializing can race with del_gendisk(), which will cause null pointer
-dereference:
+Hmm, as pointed out in http://lkml.kernel.org/r/Y5bsmpCyeryu3Zz1@dhcp22.suse.cz
+I've failed to see through all the consequences of the implementation.
+SO my bad here to add my ack before fully understanding all the
+implications.
 
-t1				t2
-ioc_qos_write
- blk_iocost_init
-  rq_qos_add
-  				del_gendisk
-  				 rq_qos_exit
-  				 //iocost is removed from q->roqs
-  blkcg_activate_policy
-   pd_init_fn
-    ioc_pd_init
-     ioc = q_to_ioc(blkg->q)
-     //can't find iocost and return null
+> I think it's a bit premature to revert at this stage.  Possibly we can
+> get to the desired end state by modifying the existing code.  Possibly
+> we can get to the desired end state by reverting this and by adding
+> something new.
 
-Fix the problem by adding a new mutex in request_queue, and use it to
-synchronize rq_qos_exit() from del_gendisk() with configuring cgroup
-policy.
+Sure if we can converge to a proper implementation during the rc phase
+then it would be ok. I cannot speak for others but at least for me
+upcoming 2 weeks would be mostly offline so I cannot really contribute
+much. A revert would be much more easier from the coordination POV IMHO.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-cgroup.c     | 3 +++
- block/blk-rq-qos.c     | 8 ++++++++
- include/linux/blkdev.h | 1 +
- 3 files changed, 12 insertions(+)
+Also I do not think there is any strong reason to rush this in. I do not
+really see any major problems to have this extension in 6.2
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index ad612148cf3b..8dcdaacb52a1 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -658,12 +658,14 @@ struct block_device *blkcg_conf_open_bdev(char **inputp)
- 		return ERR_PTR(-ENODEV);
- 	}
- 
-+	mutex_lock(&bdev->bd_queue->blkcg_pols_lock);
- 	*inputp = input;
- 	return bdev;
- }
- 
- void blkcg_conf_close_bdev(struct block_device *bdev)
- {
-+	mutex_unlock(&bdev->bd_queue->blkcg_pols_lock);
- 	blkdev_put_no_open(bdev);
- }
- 
-@@ -1277,6 +1279,7 @@ int blkcg_init_disk(struct gendisk *disk)
- 	int ret;
- 
- 	INIT_LIST_HEAD(&q->blkg_list);
-+	mutex_init(&q->blkcg_pols_lock);
- 
- 	new_blkg = blkg_alloc(&blkcg_root, disk, GFP_KERNEL);
- 	if (!new_blkg)
-diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
-index efffc6fa55db..86bccdfa1a43 100644
---- a/block/blk-rq-qos.c
-+++ b/block/blk-rq-qos.c
-@@ -290,6 +290,10 @@ void rq_qos_exit(struct request_queue *q)
- {
- 	struct rq_qos *rqos;
- 
-+#ifdef CONFIG_BLK_CGROUP
-+	mutex_lock(&q->blkcg_pols_lock);
-+#endif
-+
- 	spin_lock_irq(&q->queue_lock);
- 	rqos = q->rq_qos;
- 	q->rq_qos = NULL;
-@@ -300,4 +304,8 @@ void rq_qos_exit(struct request_queue *q)
- 			rqos->ops->exit(rqos);
- 		rqos = rqos->next;
- 	} while (rqos);
-+
-+#ifdef CONFIG_BLK_CGROUP
-+	mutex_unlock(&q->blkcg_pols_lock);
-+#endif
- }
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 301cf1cf4f2f..824d68a41a83 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -484,6 +484,7 @@ struct request_queue {
- 	DECLARE_BITMAP		(blkcg_pols, BLKCG_MAX_POLS);
- 	struct blkcg_gq		*root_blkg;
- 	struct list_head	blkg_list;
-+	struct mutex		blkcg_pols_lock;
- #endif
- 
- 	struct queue_limits	limits;
 -- 
-2.31.1
-
+Michal Hocko
+SUSE Labs
