@@ -2,45 +2,45 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F67E64F71F
-	for <lists+cgroups@lfdr.de>; Sat, 17 Dec 2022 03:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090E564F71C
+	for <lists+cgroups@lfdr.de>; Sat, 17 Dec 2022 03:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbiLQCow (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S229469AbiLQCow (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Fri, 16 Dec 2022 21:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbiLQCou (ORCPT
+        with ESMTP id S229548AbiLQCou (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Fri, 16 Dec 2022 21:44:50 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79287020E;
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB90070216;
         Fri, 16 Dec 2022 18:44:49 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NYr0W4lMkz4f3nqB;
-        Sat, 17 Dec 2022 10:44:43 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NYr0X2DGDz4f3w0C;
+        Sat, 17 Dec 2022 10:44:44 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgBni9gcLZ1j2O96CQ--.47195S6;
-        Sat, 17 Dec 2022 10:44:46 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgBni9gcLZ1j2O96CQ--.47195S7;
+        Sat, 17 Dec 2022 10:44:47 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     tj@kernel.org, hch@infradead.org, josef@toxicpanda.com,
         axboe@kernel.dk
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH -next 2/4] blk-iocost: don't throttle bio if iocg is offlined
-Date:   Sat, 17 Dec 2022 11:05:25 +0800
-Message-Id: <20221217030527.1250083-3-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 3/4] blk-iocost: dispatch all throttled bio in ioc_pd_offline
+Date:   Sat, 17 Dec 2022 11:05:26 +0800
+Message-Id: <20221217030527.1250083-4-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221217030527.1250083-1-yukuai1@huaweicloud.com>
 References: <20221217030527.1250083-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBni9gcLZ1j2O96CQ--.47195S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw17tw45ZFW8trykWr4kZwb_yoW5Gr4fpF
-        43Ww15AayDAr4xu3ZxJF47Z3ySka1kurW7KrW3Zw13tr1DKr92q3WkAry8AFyrAFWfCr13
-        XFn5KrWxGa1j9wUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgBni9gcLZ1j2O96CQ--.47195S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWkXw1xtw4DXF15GrW5Awb_yoW5Jr48pF
+        43W3WFya48Zr17Ka1rtF1DXrySy393Wan7tr43K3Z5AF1xGr12qFn5CryxCFyFvrZ3WFZ3
+        AF4rKrWfCw4q937anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
         Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
         A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
         0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -50,7 +50,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXw17tw45ZFW8trykWr4kZwb_yoW5Gr4fpF
         6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2
         Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
         Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
-        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUc6pPUUUUU
+        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU
         =
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
@@ -64,83 +64,79 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-bio will grab blkg reference, however, blkcg->online_pin is not grabbed,
-hence cgroup can be removed after thread exit while bio is still in
-progress. Bypass io in this case since it doesn't make sense to
-throttle bio while cgroup is removed.
+Currently, if cgroup is removed while some bio is still throttled, such
+bio will still wait for timer to dispatch. On the one hand, it
+doesn't make sense to throttle bio while cgroup is removed, on the other
+hand, this behaviour makes it hard to guarantee the exit order for
+iocg(in ioc_pd_free() currently).
+
+This patch make iocg->online updated under both 'ioc->lock' and
+'iocg->waitq.lock', so it can be guaranteed that iocg will stay online
+while holding any lock. In the meantime, all throttled bio will be
+dispatched immediately in ioc_pd_offline().
 
 This patch also prepare to move operations on iocg from ioc_pd_free()
 to ioc_pd_offline().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-iocost.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ block/blk-iocost.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 1498879c4a52..23cc734dbe43 100644
+index 23cc734dbe43..b63ecfdd815c 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -695,6 +695,20 @@ static struct ioc_cgrp *blkcg_to_iocc(struct blkcg *blkcg)
- 			    struct ioc_cgrp, cpd);
+@@ -1448,14 +1448,18 @@ static int iocg_wake_fn(struct wait_queue_entry *wq_entry, unsigned mode,
+ {
+ 	struct iocg_wait *wait = container_of(wq_entry, struct iocg_wait, wait);
+ 	struct iocg_wake_ctx *ctx = key;
+-	u64 cost = abs_cost_to_cost(wait->abs_cost, ctx->hw_inuse);
+ 
+-	ctx->vbudget -= cost;
++	if (ctx->iocg->online) {
++		u64 cost = abs_cost_to_cost(wait->abs_cost, ctx->hw_inuse);
+ 
+-	if (ctx->vbudget < 0)
+-		return -1;
++		ctx->vbudget -= cost;
++
++		if (ctx->vbudget < 0)
++			return -1;
++
++		iocg_commit_bio(ctx->iocg, wait->bio, wait->abs_cost, cost);
++	}
+ 
+-	iocg_commit_bio(ctx->iocg, wait->bio, wait->abs_cost, cost);
+ 	wait->committed = true;
+ 
+ 	/*
+@@ -3003,9 +3007,14 @@ static void ioc_pd_offline(struct blkg_policy_data *pd)
+ 	unsigned long flags;
+ 
+ 	if (ioc) {
+-		spin_lock_irqsave(&ioc->lock, flags);
++		struct iocg_wake_ctx ctx = { .iocg = iocg };
++
++		iocg_lock(iocg, true, &flags);
+ 		iocg->online = false;
+-		spin_unlock_irqrestore(&ioc->lock, flags);
++		iocg_unlock(iocg, true, &flags);
++
++		hrtimer_cancel(&iocg->waitq_timer);
++		__wake_up(&iocg->waitq, TASK_NORMAL, 0, &ctx);
+ 	}
  }
  
-+static struct ioc_gq *ioc_bio_iocg(struct bio *bio)
-+{
-+	struct blkcg_gq *blkg = bio->bi_blkg;
-+
-+	if (blkg && blkg->online) {
-+		struct ioc_gq *iocg = blkg_to_iocg(blkg);
-+
-+		if (iocg && iocg->online)
-+			return iocg;
-+	}
-+
-+	return NULL;
-+}
-+
- /*
-  * Scale @abs_cost to the inverse of @hw_inuse.  The lower the hierarchical
-  * weight, the more expensive each IO.  Must round up.
-@@ -1262,6 +1276,9 @@ static bool iocg_activate(struct ioc_gq *iocg, struct ioc_now *now)
+@@ -3030,8 +3039,6 @@ static void ioc_pd_free(struct blkg_policy_data *pd)
+ 		WARN_ON_ONCE(!list_empty(&iocg->surplus_list));
  
- 	spin_lock_irq(&ioc->lock);
- 
-+	if (!iocg->online)
-+		goto fail_unlock;
-+
- 	ioc_now(ioc, now);
- 
- 	/* update period */
-@@ -2561,9 +2578,8 @@ static u64 calc_size_vtime_cost(struct request *rq, struct ioc *ioc)
- 
- static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- {
--	struct blkcg_gq *blkg = bio->bi_blkg;
- 	struct ioc *ioc = rqos_to_ioc(rqos);
--	struct ioc_gq *iocg = blkg_to_iocg(blkg);
-+	struct ioc_gq *iocg = ioc_bio_iocg(bio);
- 	struct ioc_now now;
- 	struct iocg_wait wait;
- 	u64 abs_cost, cost, vtime;
-@@ -2697,7 +2713,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
- 			   struct bio *bio)
- {
--	struct ioc_gq *iocg = blkg_to_iocg(bio->bi_blkg);
-+	struct ioc_gq *iocg = ioc_bio_iocg(bio);
- 	struct ioc *ioc = rqos_to_ioc(rqos);
- 	sector_t bio_end = bio_end_sector(bio);
- 	struct ioc_now now;
-@@ -2755,7 +2771,7 @@ static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
- 
- static void ioc_rqos_done_bio(struct rq_qos *rqos, struct bio *bio)
- {
--	struct ioc_gq *iocg = blkg_to_iocg(bio->bi_blkg);
-+	struct ioc_gq *iocg = ioc_bio_iocg(bio);
- 
- 	if (iocg && bio->bi_iocost_cost)
- 		atomic64_add(bio->bi_iocost_cost, &iocg->done_vtime);
+ 		spin_unlock_irqrestore(&ioc->lock, flags);
+-
+-		hrtimer_cancel(&iocg->waitq_timer);
+ 	}
+ 	free_percpu(iocg->pcpu_stat);
+ 	kfree(iocg);
 -- 
 2.31.1
 
