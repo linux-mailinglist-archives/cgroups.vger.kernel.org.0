@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 655F5650716
-	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 05:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C36650719
+	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 05:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbiLSEWm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 18 Dec 2022 23:22:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S231437AbiLSEWq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 18 Dec 2022 23:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbiLSEW0 (ORCPT
+        with ESMTP id S231344AbiLSEW0 (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Sun, 18 Dec 2022 23:22:26 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6A465BC;
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2024965BA;
         Sun, 18 Dec 2022 20:22:25 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id u5so7819873pjy.5;
+Received: by mail-pl1-x62d.google.com with SMTP id d15so7857630pls.6;
         Sun, 18 Dec 2022 20:22:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lRDhbAuFFMtCfx+H7ZJIpQoYnynck5HVInZvHowpBNk=;
-        b=aJ8LYUErJn/ZPG6EC26fQcgCJgiRXAOf+Wbw+PidOOWMUaiVUsUcSgo8htcy1YlFQ7
-         5bm1d9ZM3R2uYEKryoIQ4t6aV5PBbAJSRU1yzOikLW9IDPs009uccbn2P3EEMCtnWvJR
-         +CyqWbBcyowHmuqUUkGyOLvHs1ktvjGk7UMvLkomuT7rgqpvddtVJC/vMnYvTDSX4Uz9
-         unhqp0K6PAkA6+9AIErzHE/RGpYjG/w/jfoTnxq83m5DMytP1sh8csjErB9nFyUidNm+
-         woDrW5wk2XJcVeUrU1oFu23rb7xClFXHHQdRWDYcarrITAEVGSjXIOwCNx5JycJ7tL5+
-         /HOA==
+        bh=agWt8CECL43NEhVRFwvhtAXySMNGigcHHGw9DmNksyg=;
+        b=Rw+DM6QWhhdQXktWp+em/fBiFTj3BUilx3MP8RgeQvvsMgLuECpixEMst4FxDtn7zH
+         rAtjr2VM4z0g7bvXq3KMTUQq427rHE6DpnzawpIYLHC4ZJe5B2U5vgtq/CW3nPXjtUXL
+         EOTbYjZFPwUdqOlRePgXbAKfKz3l/dBEmZ/BsZAW7kFA+JnMNfrmriDf/smpetfVAs8V
+         zlEYA+1aASqKs5fLj9Ca+PsuWMPAqfGTOCRjtX4FPTomYaN9JIrxcQ83tuhIlGF3dTo6
+         tPX6UhACp5qTOwk+LxN3dvDkAeg+v22HECunwHxAfPX9gvjE+loAvHbiB0LNKPyfzp2b
+         PG0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lRDhbAuFFMtCfx+H7ZJIpQoYnynck5HVInZvHowpBNk=;
-        b=bcywHCPh7axeisrc5YGteKjrtZDDc2NLkxdQhJ/cObMs2wM+7UBtSDJnYAvItExPhK
-         rK24tm+V40xE2afERfITvPPl8PMyvfEhUBENcGIElxGYJdQ8HfIekVP7L/oYjIxStsps
-         /By5+61R+BWGP87bqggWFDzBxoaZNPRmFU5ziTEVOr6DR4aP3zAeSEE8sz2WwEmni/Al
-         /4Toa1JAsouSz2BsLKJ2emEwSupT8xVfiVCBSatRH9s79XbrmjZOiZ/6vlOXJpv4MVMW
-         5r2ip8++DUutYrmgMqaAF3kFf1pYymx5e7BGst9W9ClKLjKq/oloV2rbWPb8wgimntn4
-         9GjA==
-X-Gm-Message-State: ANoB5pknj+buOToeQ6E8bZFIT53p3muC56dS9v0gYtbm/Oi7eouLEFhF
-        7sCUD1kQkJ1yfx7ip6ul2VA=
-X-Google-Smtp-Source: AA0mqf50Q60/cHOKADaVTGJceXn1H4SLjSKCSi1WgOTYDrJ97ZGoPbiT1Y4BH9GfoxR8lLFlpaar3Q==
-X-Received: by 2002:a17:90a:1b0b:b0:219:396c:9e32 with SMTP id q11-20020a17090a1b0b00b00219396c9e32mr43342946pjq.16.1671423745034;
-        Sun, 18 Dec 2022 20:22:25 -0800 (PST)
+        bh=agWt8CECL43NEhVRFwvhtAXySMNGigcHHGw9DmNksyg=;
+        b=ZUsoY/D51Yvu1FG8IcBtlP6jdRo3nfPdVvyKxNqe6bTOxBX8/0G6ITdRp7s1BxUXQQ
+         aMiXK1L7SBj4+wiB+2jbx6bfTD6P6jByji7BIBc2R/AKFmXcTiuKioCnxXIqL7r+MB9f
+         U7yVYySA1bdU4uHoOKIUHnYIX030MKqj9nhMo+Uj91LJKUSy+CddzucSWhu2/8yXk1dY
+         FjUKfnXFN6P+l7QMGLSSmUi0tMGZ0z7jQAnUqL2w5zPCrv9L2Udoj5CAPrHBXdwH/c4u
+         hUe/YTMorZc3dQiFEVoUPtZM7q+Hea/OIMjwLO4JOkOzLnto1PQjcJzV4m/T30ZDSEma
+         Up8A==
+X-Gm-Message-State: ANoB5pmqaZFzUvqeYZkDhNLGhYFyJEYhCIGPL2HEMw4NIXGldDQS9sEc
+        5oAy0NDNmFytk3NRY1K0HPU=
+X-Google-Smtp-Source: AA0mqf6BCBYy+YpcHUop3GwiAxAif950akyz01hjK7kttTKC1Ch/bGKyJy+8RAzPOIHGCelhPQJrwQ==
+X-Received: by 2002:a17:902:c183:b0:189:854e:93a3 with SMTP id d3-20020a170902c18300b00189854e93a3mr40668144pld.69.1671423744594;
+        Sun, 18 Dec 2022 20:22:24 -0800 (PST)
 Received: from debian.me (subs32-116-206-28-20.three.co.id. [116.206.28.20])
-        by smtp.gmail.com with ESMTPSA id nn11-20020a17090b38cb00b00212cf2fe8c3sm16638727pjb.1.2022.12.18.20.22.23
+        by smtp.gmail.com with ESMTPSA id z14-20020a170903018e00b00174c0dd29f0sm5897250plg.144.2022.12.18.20.22.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 18 Dec 2022 20:22:23 -0800 (PST)
 Received: by debian.me (Postfix, from userid 1000)
-        id 1437210164A; Mon, 19 Dec 2022 11:22:14 +0700 (WIB)
+        id 669B810405A; Mon, 19 Dec 2022 11:22:14 +0700 (WIB)
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
 To:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
@@ -63,14 +63,14 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Hugh Dickins <hughd@google.com>,
         Shakeel Butt <shakeelb@google.com>,
         Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH 07/10] docs: cgroup-v1: use bullet lists for list of stat file tables
-Date:   Mon, 19 Dec 2022 11:22:06 +0700
-Message-Id: <20221219042209.22898-8-bagasdotme@gmail.com>
+Subject: [PATCH 08/10] docs: cgroup-v1: use make swap extension subsections subsections
+Date:   Mon, 19 Dec 2022 11:22:07 +0700
+Message-Id: <20221219042209.22898-9-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20221219042209.22898-1-bagasdotme@gmail.com>
 References: <20221219042209.22898-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6795; i=bagasdotme@gmail.com; h=from:subject; bh=Qv/IUrGqp6BPq2cwpkOiVBXASeOlAsriWizhHWQnHq4=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMnzn703LdK1T/66R/jyZrvEyVzW0yr0r//Oum3vofGLRydv z+/ijlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAExk+lVGhjki233c9qqJ3Zpyt+jn+o gkR7uyW9yffms/71tXPOvhEVZGhmurJaxWvK0rVNIV2j5n64a4vZzP7l50Cfn0u+h7TswiJh4A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1657; i=bagasdotme@gmail.com; h=from:subject; bh=YB2axwGgINIOaNnBOhZC/NJ3W2+BU7qyWgI/kX2Gj+s=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMnzn33I21Y795n3xfn/orzeP5p9r4RP8LZ3u0nrvSUhWSsM Gs4s7ihlYRDjYpAVU2SZlMjXdHqXkciF9rWOMHNYmUCGMHBxCsBEHv5jZNj57tBtd/9bL4qZdyzn+b l3XeqJ8pQY9pMtkqu/q8zcUvyfkeF0rtX/9u2rLSbq3bjgea+r+adr3/YLwY3svLk39z+RXsQNAA==
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,126 +83,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The stat file section contains three tables, where the leading texts for
-them are subsection heading. Organize them in the bullet list, while
-demoting headings into normal text.
+Subsections text of swap extension section is marked up as bold text,
+whereas making them proper subsection is more appropriate.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- .../admin-guide/cgroup-v1/memory.rst          | 93 +++++++++----------
- 1 file changed, 46 insertions(+), 47 deletions(-)
+ Documentation/admin-guide/cgroup-v1/memory.rst | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 3b365a72996be5..01104b459b4cbd 100644
+index 01104b459b4cbd..863e0f17ca0067 100644
 --- a/Documentation/admin-guide/cgroup-v1/memory.rst
 +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -521,60 +521,59 @@ will be charged as a new owner of it.
- 5.2 stat file
- -------------
+@@ -246,7 +246,8 @@ In this case, setting memsw.limit_in_bytes=3G will prevent bad use of swap.
+ By using the memsw limit, you can avoid system OOM which can be caused by swap
+ shortage.
  
--memory.stat file includes following statistics
-+memory.stat file includes following statistics:
+-**why 'memory+swap' rather than swap**
++2.4.1 why 'memory+swap' rather than swap
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
--per-memory cgroup local status
--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+  * per-memory cgroup local status
+ The global LRU(kswapd) can swap out arbitrary pages. Swap-out means
+ to move account from memory to swap...there is no change in usage of
+@@ -254,7 +255,8 @@ memory+swap. In other words, when we want to limit the usage of swap without
+ affecting global LRU, memory+swap limit is better than just limiting swap from
+ an OS point of view.
  
--=============== ===============================================================
--cache		# of bytes of page cache memory.
--rss		# of bytes of anonymous and swap cache memory (includes
--		transparent hugepages).
--rss_huge	# of bytes of anonymous transparent hugepages.
--mapped_file	# of bytes of mapped file (includes tmpfs/shmem)
--pgpgin		# of charging events to the memory cgroup. The charging
--		event happens each time a page is accounted as either mapped
--		anon page(RSS) or cache page(Page Cache) to the cgroup.
--pgpgout		# of uncharging events to the memory cgroup. The uncharging
--		event happens each time a page is unaccounted from the cgroup.
--swap		# of bytes of swap usage
--dirty		# of bytes that are waiting to get written back to the disk.
--writeback	# of bytes of file/anon cache that are queued for syncing to
--		disk.
--inactive_anon	# of bytes of anonymous and swap cache memory on inactive
--		LRU list.
--active_anon	# of bytes of anonymous and swap cache memory on active
--		LRU list.
--inactive_file	# of bytes of file-backed memory and MADV_FREE anonymous memory(
--                LazyFree pages) on inactive LRU list.
--active_file	# of bytes of file-backed memory on active LRU list.
--unevictable	# of bytes of memory that cannot be reclaimed (mlocked etc).
--=============== ===============================================================
-+    =============== ===============================================================
-+    cache           # of bytes of page cache memory.
-+    rss             # of bytes of anonymous and swap cache memory (includes
-+                    transparent hugepages).
-+    rss_huge        # of bytes of anonymous transparent hugepages.
-+    mapped_file     # of bytes of mapped file (includes tmpfs/shmem)
-+    pgpgin          # of charging events to the memory cgroup. The charging
-+                    event happens each time a page is accounted as either mapped
-+                    anon page(RSS) or cache page(Page Cache) to the cgroup.
-+    pgpgout         # of uncharging events to the memory cgroup. The uncharging
-+                    event happens each time a page is unaccounted from the
-+                    cgroup.
-+    swap            # of bytes of swap usage
-+    dirty           # of bytes that are waiting to get written back to the disk.
-+    writeback       # of bytes of file/anon cache that are queued for syncing to
-+                    disk.
-+    inactive_anon   # of bytes of anonymous and swap cache memory on inactive
-+                    LRU list.
-+    active_anon     # of bytes of anonymous and swap cache memory on active
-+                    LRU list.
-+    inactive_file   # of bytes of file-backed memory and MADV_FREE anonymous
-+                    memory (LazyFree pages) on inactive LRU list.
-+    active_file     # of bytes of file-backed memory on active LRU list.
-+    unevictable     # of bytes of memory that cannot be reclaimed (mlocked etc).
-+    =============== ===============================================================
+-**What happens when a cgroup hits memory.memsw.limit_in_bytes**
++2.4.2. What happens when a cgroup hits memory.memsw.limit_in_bytes
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
--status considering hierarchy (see memory.use_hierarchy settings)
--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+  * status considering hierarchy (see memory.use_hierarchy settings):
- 
--========================= ===================================================
--hierarchical_memory_limit # of bytes of memory limit with regard to hierarchy
--			  under which the memory cgroup is
--hierarchical_memsw_limit  # of bytes of memory+swap limit with regard to
--			  hierarchy under which memory cgroup is.
-+    ========================= ===================================================
-+    hierarchical_memory_limit # of bytes of memory limit with regard to
-+                              hierarchy
-+                              under which the memory cgroup is
-+    hierarchical_memsw_limit  # of bytes of memory+swap limit with regard to
-+                              hierarchy under which memory cgroup is.
- 
--total_<counter>		  # hierarchical version of <counter>, which in
--			  addition to the cgroup's own value includes the
--			  sum of all hierarchical children's values of
--			  <counter>, i.e. total_cache
--========================= ===================================================
-+    total_<counter>           # hierarchical version of <counter>, which in
-+                              addition to the cgroup's own value includes the
-+                              sum of all hierarchical children's values of
-+                              <counter>, i.e. total_cache
-+    ========================= ===================================================
- 
--The following additional stats are dependent on CONFIG_DEBUG_VM
--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+  * additional vm parameters (depends on CONFIG_DEBUG_VM):
- 
--========================= ========================================
--recent_rotated_anon	  VM internal parameter. (see mm/vmscan.c)
--recent_rotated_file	  VM internal parameter. (see mm/vmscan.c)
--recent_scanned_anon	  VM internal parameter. (see mm/vmscan.c)
--recent_scanned_file	  VM internal parameter. (see mm/vmscan.c)
--========================= ========================================
-+    ========================= ========================================
-+    recent_rotated_anon       VM internal parameter. (see mm/vmscan.c)
-+    recent_rotated_file       VM internal parameter. (see mm/vmscan.c)
-+    recent_scanned_anon       VM internal parameter. (see mm/vmscan.c)
-+    recent_scanned_file       VM internal parameter. (see mm/vmscan.c)
-+    ========================= ========================================
- 
- .. hint::
- 	recent_rotated means recent frequency of LRU rotation.
+ When a cgroup hits memory.memsw.limit_in_bytes, it's useless to do swap-out
+ in this cgroup. Then, swap-out will not be done by cgroup routine and file
 -- 
 An old man doll... just what I always wanted! - Clara
 
