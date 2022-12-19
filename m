@@ -2,98 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B35C56514F0
-	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 22:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1B36515AA
+	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 23:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbiLSVcB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Dec 2022 16:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S229993AbiLSWm4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Dec 2022 17:42:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232190AbiLSVbp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 16:31:45 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1211CDFB5;
-        Mon, 19 Dec 2022 13:31:44 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id gt4so10438705pjb.1;
-        Mon, 19 Dec 2022 13:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BomEC32AM6ovoRGRoa2VDMC3YGhwNtq2L7oOB+Yvsps=;
-        b=hCitRNCAgCMGc3lcKkdvYuqgyJSbzuhh31Zq8cJgEQT9EaoWFJ4aaOrosn+xToc3qi
-         i1v64YtOXP8bUBG2wBWvL3mACkuvAEqwNgDKAG6u4/MgUwZ5ofzcTqTlTzO/cafayrhX
-         uuoevjjPURg+Ytr/7jBe4iZ071G7h9or/VaEgqEhoC9cxHoQALhUfGrA6q/OK33NDmwW
-         Nhvldk7qZX1BtpNwDwRXjvJsUUwiVSDEmZYFfa4e4fD9V7uRTWxS0fX7QN63JVA/ov7x
-         wSFKzrHlRIyTMaFo/oCDtArYOtAWDuYathCiaB4iq0hsIW9+zQ8SamE8trjHALAgXHL6
-         aTNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BomEC32AM6ovoRGRoa2VDMC3YGhwNtq2L7oOB+Yvsps=;
-        b=mfGwH3Pw9WvwKJ8c2ZuN2G4YCwOoPf1927N4UVmzm8PRy29659QJHQ/n6Np2cbIv7G
-         gcMZ74T1M5HcyqpmtkXbyhbDf1IgeU0kkfyz/bado+t3q0YTcgcUk/l4VKy2rPjHDbxq
-         +u8kRwE22et/ZpuhCbhirigWE92kBQAaTduf9OoPYFGkyyLeH3/jwD1M63+vC5CyLbfJ
-         /aI65NNmc0PX8hj0Az7AifYshPdAeytBhoVO8APuJYh/tJhM/xrVjqu8vHR/wN+sgIVx
-         mrl1wP9U0t2wA3gxyOHFF/rvTgbhybouPF/Rhpa/vFlvhgnGshcGFU5LvQlanRRzSwa1
-         XMzQ==
-X-Gm-Message-State: ANoB5pmN9wJWHsAmYPtrKO5utW/EjmrpGw7lnVjpOHgVQbC8/2ZwFnvg
-        qI3a4J/AL7LgS1FBqB3cGFQ=
-X-Google-Smtp-Source: AA0mqf5C3DCy52F4RhlKBSSQx08e7sswRSHWI5ALknED64q7XQN1PpKUj9UthgLFpr86oXElbB+1hA==
-X-Received: by 2002:a17:902:bb8a:b0:189:abdd:400a with SMTP id m10-20020a170902bb8a00b00189abdd400amr48029480pls.15.1671485503409;
-        Mon, 19 Dec 2022 13:31:43 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id y3-20020a655a03000000b00478b2d5d148sm6806566pgs.5.2022.12.19.13.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Dec 2022 13:31:43 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 19 Dec 2022 11:31:41 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH -next 3/4] blk-iocost: dispatch all throttled bio in
- ioc_pd_offline
-Message-ID: <Y6DYPRWtEAfUrH4Q@slm.duckdns.org>
-References: <20221217030527.1250083-1-yukuai1@huaweicloud.com>
- <20221217030527.1250083-4-yukuai1@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221217030527.1250083-4-yukuai1@huaweicloud.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S229489AbiLSWmz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 17:42:55 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FE113F36;
+        Mon, 19 Dec 2022 14:42:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 797E961184;
+        Mon, 19 Dec 2022 22:42:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 362ACC433EF;
+        Mon, 19 Dec 2022 22:42:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1671489773;
+        bh=BGre2r5SHKHnb8b4Q50Q+a/dxymK6XCdQgeYGSWrbak=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lpbVP7fJ/uOaGEd9aeQZ3P2o/kt4VheUXmT+dpCikhKJTLyA5nZhN69lTh+1W5j/d
+         qcDyiIudJ3f7/d8OI3zQmbTIiBqFrdiZTeEfCcpiXrHtRWQxjBK5P9AVk4mTHu/NqH
+         JSYoHx0maXMcg7CuyoiiZnQARL/sW0ZOGa8qWNEY=
+Date:   Mon, 19 Dec 2022 14:42:52 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mina Almasry <almasrymina@google.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
+        fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] Revert "mm: add nodes= arg to memory.reclaim"
+Message-Id: <20221219144252.f3da256e75e176905346b4d1@linux-foundation.org>
+In-Reply-To: <Y52Scge3ynvn/mB4@dhcp22.suse.cz>
+References: <20221202223533.1785418-1-almasrymina@google.com>
+        <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
+        <Y5xASNe1x8cusiTx@dhcp22.suse.cz>
+        <20221216101820.3f4a370af2c93d3c2e78ed8a@linux-foundation.org>
+        <Y52Scge3ynvn/mB4@dhcp22.suse.cz>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 11:05:26AM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Sat, 17 Dec 2022 10:57:06 +0100 Michal Hocko <mhocko@suse.com> wrote:
+
+> > I think it's a bit premature to revert at this stage.  Possibly we can
+> > get to the desired end state by modifying the existing code.  Possibly
+> > we can get to the desired end state by reverting this and by adding
+> > something new.
 > 
-> Currently, if cgroup is removed while some bio is still throttled, such
-> bio will still wait for timer to dispatch. On the one hand, it
-> doesn't make sense to throttle bio while cgroup is removed, on the other
-> hand, this behaviour makes it hard to guarantee the exit order for
-> iocg(in ioc_pd_free() currently).
+> Sure if we can converge to a proper implementation during the rc phase
+> then it would be ok. I cannot speak for others but at least for me
+> upcoming 2 weeks would be mostly offline so I cannot really contribute
+> much. A revert would be much more easier from the coordination POV IMHO.
+> 
+> Also I do not think there is any strong reason to rush this in. I do not
+> really see any major problems to have this extension in 6.2
 
-Yeah, idk about this. So, now if you're in a cgroup with IO restriction, you
-can create a sub-cgroup shove all the IOs in there and then kill the cgroup
-and escape control and do so repeatedly.
+I'll queue the revert in mm-unstable with a plan to merge it upstream
+around the -rc5 timeframe if there hasn't been resolution.
 
-The refcnting is rather complicated in blkcg world because it gets pulled
-from several different directions but the problem you're trying to address
-likely should be addressed through refcnting.
+Please check Mina's issues with this revert's current changelog and
+perhaps send along a revised one.
 
-Thanks.
-
--- 
-tejun
