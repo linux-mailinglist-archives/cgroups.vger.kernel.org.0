@@ -2,113 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C32650B24
-	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 13:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4401B65112C
+	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 18:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbiLSMHT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Dec 2022 07:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
+        id S231959AbiLSRV4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Dec 2022 12:21:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbiLSMG4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 07:06:56 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E14D1106;
-        Mon, 19 Dec 2022 04:06:53 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 753FD607DC;
-        Mon, 19 Dec 2022 12:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1671451611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vcYyeovvyeIUt7S0vbCFAC7dHaOjTv+mzzbe5d276WA=;
-        b=cKH6lPcm6qTERFkgfs95izoDW3LTVijdvzrmfJn690l+1owObw0m+Kz7Y06qsjOaD6EqbN
-        1nQu1wgzRFe45utSi3lZdgUiSHYfJhsXYSCl4AiM7stbZoFRgU5YJjZf7vof2Pl0jVnVap
-        3Cb7KuvdLUWZo1lmVQy5c4TDx9dQfMk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6005B13910;
-        Mon, 19 Dec 2022 12:06:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ScRpF9tToGMUbwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 19 Dec 2022 12:06:51 +0000
-Date:   Mon, 19 Dec 2022 13:06:51 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
-        <chengkaitao@didiglobal.com>
-Cc:     chengkaitao <pilgrimtao@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] mm: memcontrol: protect the memory in cgroup from
- being oom killed
-Message-ID: <Y6Atfc8ijws/A/f5@dhcp22.suse.cz>
-References: <395B1998-38A9-4A68-96F8-6EDF44686231@didiglobal.com>
- <BE56B09A-7C70-4152-B4D4-B8433A37465D@didiglobal.com>
+        with ESMTP id S232243AbiLSRVx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 12:21:53 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC15C1B
+        for <cgroups@vger.kernel.org>; Mon, 19 Dec 2022 09:21:52 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id fa4-20020a17090af0c400b002198d1328a0so14529470pjb.0
+        for <cgroups@vger.kernel.org>; Mon, 19 Dec 2022 09:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eSN/Hlv/5HI+5br/xw+yoZ8A3PY4ltv42IV6oSp+bf4=;
+        b=GU3Iqx7TE/nIcLU9/rUE+9n0oR0xwjOzb98XevQ/KERqjPTJ9LQClvSxkPYnJaszYx
+         0wBPIsZ4KiGyGuf8OFpVI7OCiVDaprpOQrNBIqYk27NgibTsReLANi9P5gtu+Kyeylsq
+         oeu1AIovcst6uT1EqIDmFLZtouMnUslUbvhYcfnB8ugjacfkoglICWeKjTrKi6Q2Mp/L
+         o6qUGgYK05xLDL9t65FeDh9ZlGMaxQmTz53/scE4MfDDq/1XsFUN0Q23m/f5XKnOfMoa
+         wfb1hV5TdfezRUEflgIvTdZ53ndH1zUZmxY8eldsGsCnSLqa8hYOvwMx1KMYBkfXkmak
+         /erA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eSN/Hlv/5HI+5br/xw+yoZ8A3PY4ltv42IV6oSp+bf4=;
+        b=CruBXlKU2wjI8G8qqqxohlhf47GDxD1jenzwpxjVYn1/q1R6+OALNTCC2Q5EHN5HoN
+         UNUOFIHCmZ48SDPgZydY5pj6Olrf+r/23BpB913FMrx1830t5A1cdCHpV83xicxejN3R
+         JlF0hsXF9LBZ4+3e7MDGWQMgmNJNlwXaaJxNQA3sQHavg89NTIQwb2fvfdbmOeHayqF9
+         g02/YsrjT18iK4bWzug3+QuuKxwKjFtRE92AeUdOYQLmIXCJjvUhGxcOykBuXHCWA8Zn
+         05syrnRPl6vILRbiksJi8J9tMp0afW6iHVpiInueTCYnoW3X1FRUgeu8zkihWdN29Gia
+         x2zQ==
+X-Gm-Message-State: ANoB5pnnlYbyvIkxeohe2/zOFZjW7DlhxEM/YSKGX2Z/+20FP6l6xQiV
+        7e91X+YqhsdDPyabwiIHWs1C/tDagOZfAA==
+X-Google-Smtp-Source: AA0mqf7Ukj3aS4cP9jwhrTsVBFHeA4mbn5ea+1U93jTCb08q8eqxx8xqMDtmhFrWF1rGFesgG7va3g==
+X-Received: by 2002:a17:90a:d594:b0:219:ed0b:f11a with SMTP id v20-20020a17090ad59400b00219ed0bf11amr44416140pju.8.1671470511663;
+        Mon, 19 Dec 2022 09:21:51 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id ne18-20020a17090b375200b00219f8eb271fsm9868621pjb.5.2022.12.19.09.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Dec 2022 09:21:51 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 19 Dec 2022 07:21:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Nikolay Borisov <nikolay.borisov@virtuozzo.com>
+Cc:     cgroups@vger.kernel.org, paul@paul-moore.com, kernel@openvz.org
+Subject: Re: [PATCH 0/2] Defer checking wildcard exceptions to parent
+Message-ID: <Y6CdrYdbiBnUSxQi@slm.duckdns.org>
+References: <20221219114052.1582992-1-nikolay.borisov@virtuozzo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BE56B09A-7C70-4152-B4D4-B8433A37465D@didiglobal.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221219114052.1582992-1-nikolay.borisov@virtuozzo.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 19-12-22 03:16:33, 程垲涛 Chengkaitao Cheng wrote:
-> Hi Michal Hocko,
-> Looking forward to your reply.
+Hello, Nikolay.
 
-I am sorry, I do not have anything to add to my previous concerns. But
-let me summarize. I think your way of mixing per memcg protection with
-the per-process oom_score is very dubious. This is not an unfixable
-problem. All you need to do is the discount all processes in the same
-memcg equally. A bigger problem is, though, that I am not convinced the
-memory protection based interface is really viable. Based on experiences
-with the existing reclaim protection interface this is not really
-trivial interface to use. You either have to have a good overview of the
-working set size or you have to auto-tune it based on a feedback
-mechanism (e.g. PSI). Auto-tuning based on oom which should be a
-rare event is rather problematic I would say.
+On Mon, Dec 19, 2022 at 01:40:50PM +0200, Nikolay Borisov wrote:
+> The situation I described is how systemd functions, in particular when setting up
+> a devcg for a service it would first disable all devices, then add a bunch of
+> well-known characters devices and finally evaluate the respective cgroup-related
+> directives in the service file, in particular that's how systemd is being run.
 
-All that being said I am not convinced that the interface is practically
-usable and you haven't really provided good examples to prove me wrong.
+I agree that this would have been the right thing to do in the first place.
+That said, the behavior has been like this since the beginning and it's
+difficult to rule out there may be users that depend on the current behavior
+of a child config being rejected if it contains anything beyond the
+parent's.
+
+> Without this series systemd-udevd service ends up in a cgroup whose devices.list
+> contains:
+>
+...
+> 
+> But its .service file also instructs it to add 'b *:* rwm' and 'c *:* rwm'. The
+> parent cg in turn contains:
+> 
+...
+> 
+> In this case we'd want wildcard exceptions in the child to match any of the
+> exceptions in the parent.
+
+and as your example illustrates users already implemented the needed
+semantics on top of the existing interface or moved to cgroup2.
+
+I'm not sure about introducing a behavior change this drastic now when users
+would expect stability than anything else.
+
+Thanks.
+
 -- 
-Michal Hocko
-SUSE Labs
+tejun
