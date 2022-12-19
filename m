@@ -2,179 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811FA650AD1
-	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 12:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C32650B24
+	for <lists+cgroups@lfdr.de>; Mon, 19 Dec 2022 13:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbiLSLlZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Dec 2022 06:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        id S231370AbiLSMHT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Dec 2022 07:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbiLSLlY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 06:41:24 -0500
-Received: from relay.virtuozzo.com (relay.virtuozzo.com [130.117.225.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162BB2FE
-        for <cgroups@vger.kernel.org>; Mon, 19 Dec 2022 03:41:22 -0800 (PST)
-Received: from [192.168.16.45] (helo=fisk.sw.ru)
-        by relay.virtuozzo.com with esmtp (Exim 4.95)
-        (envelope-from <nikolay.borisov@virtuozzo.com>)
-        id 1p7EVt-00EvES-8Y;
-        Mon, 19 Dec 2022 12:40:57 +0100
-From:   Nikolay Borisov <nikolay.borisov@virtuozzo.com>
-To:     tj@kernel.org
-Cc:     cgroups@vger.kernel.org, paul@paul-moore.com, kernel@openvz.org,
-        Nikolay Borisov <nikolay.borisov@virtuozzo.com>
-Subject: [PATCH 2/2] devcg: Allow wildcard exceptions in DENY child cgroups PSBM-144033
-Date:   Mon, 19 Dec 2022 13:40:52 +0200
-Message-Id: <20221219114052.1582992-3-nikolay.borisov@virtuozzo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221219114052.1582992-1-nikolay.borisov@virtuozzo.com>
-References: <20221219114052.1582992-1-nikolay.borisov@virtuozzo.com>
+        with ESMTP id S231516AbiLSMG4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 07:06:56 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E14D1106;
+        Mon, 19 Dec 2022 04:06:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 753FD607DC;
+        Mon, 19 Dec 2022 12:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1671451611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vcYyeovvyeIUt7S0vbCFAC7dHaOjTv+mzzbe5d276WA=;
+        b=cKH6lPcm6qTERFkgfs95izoDW3LTVijdvzrmfJn690l+1owObw0m+Kz7Y06qsjOaD6EqbN
+        1nQu1wgzRFe45utSi3lZdgUiSHYfJhsXYSCl4AiM7stbZoFRgU5YJjZf7vof2Pl0jVnVap
+        3Cb7KuvdLUWZo1lmVQy5c4TDx9dQfMk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6005B13910;
+        Mon, 19 Dec 2022 12:06:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ScRpF9tToGMUbwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 19 Dec 2022 12:06:51 +0000
+Date:   Mon, 19 Dec 2022 13:06:51 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
+        <chengkaitao@didiglobal.com>
+Cc:     chengkaitao <pilgrimtao@gmail.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
+        "yuzhao@google.com" <yuzhao@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "surenb@google.com" <surenb@google.com>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm: memcontrol: protect the memory in cgroup from
+ being oom killed
+Message-ID: <Y6Atfc8ijws/A/f5@dhcp22.suse.cz>
+References: <395B1998-38A9-4A68-96F8-6EDF44686231@didiglobal.com>
+ <BE56B09A-7C70-4152-B4D4-B8433A37465D@didiglobal.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <BE56B09A-7C70-4152-B4D4-B8433A37465D@didiglobal.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-In containerized environments there arise cases where we might want to
-allow wildcard exceptions when the parent cg doesn't have such. This for
-example arises when systemd services are being setup in containers. In
-order to allow systemd to function we must allow it to write wildcard
-(i.e b *:* rwm) rules in the child group. At the same time in order not
-to break the fundamental invariant of the device cgroup hierarchy that
-children cannot be more permissive than their parents instead of blindly
-trusting those rules, simply skip them in the child cgroup and defer to
-the parent's exceptions.
+On Mon 19-12-22 03:16:33, 程垲涛 Chengkaitao Cheng wrote:
+> Hi Michal Hocko,
+> Looking forward to your reply.
 
-For example assume we have A/B, where A has default behavior 'deny' and
-B was created afterwards and subsequently also has 'deny' default
-behavior. With this patch it's possible to write "b *:* rwm" in B which
-would also result in EPERM when trying to access any device that doesn't
-contain an exception in A:
+I am sorry, I do not have anything to add to my previous concerns. But
+let me summarize. I think your way of mixing per memcg protection with
+the per-process oom_score is very dubious. This is not an unfixable
+problem. All you need to do is the discount all processes in the same
+memcg equally. A bigger problem is, though, that I am not convinced the
+memory protection based interface is really viable. Based on experiences
+with the existing reclaim protection interface this is not really
+trivial interface to use. You either have to have a good overview of the
+working set size or you have to auto-tune it based on a feedback
+mechanism (e.g. PSI). Auto-tuning based on oom which should be a
+rare event is rather problematic I would say.
 
-    mkdir A
-    echo "a" > A/devices.deny
-    mkdir A/B
-    echo "c *:*" > A/B/devices.allow <-- allows to create the exception
-					 but it's essentially a noop
-
-    echo "c 1:3 rw" > A < -- now trying to open /dev/nul (matching 1:3)
-			     by a process in B would succeed.
-
-Implementing this doesn't really break the main invariant that children
-shouldn't have more access than their ancestors.
-
-Signed-off-by: Nikolay Borisov <nikolay.borisov@virtuozzo.com>
----
- security/device_cgroup.c | 44 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 8 deletions(-)
-
-diff --git a/security/device_cgroup.c b/security/device_cgroup.c
-index 2d234e7c0c70..1d91c3e9aa99 100644
---- a/security/device_cgroup.c
-+++ b/security/device_cgroup.c
-@@ -46,6 +46,11 @@ struct dev_cgroup {
- 	enum devcg_behavior behavior;
- };
-
-+static bool is_wildcard_exception(struct dev_exception_item *ex)
-+{
-+	return ex->minor == ~0 || ex->major == ~0;
-+}
-+
- static inline struct dev_cgroup *css_to_devcgroup(struct cgroup_subsys_state *s)
- {
- 	return s ? container_of(s, struct dev_cgroup, css) : NULL;
-@@ -364,16 +369,20 @@ static bool match_exception_partial(struct list_head *exceptions, short type,
-  * @major: device file major number, ~0 to match all
-  * @minor: device file minor number, ~0 to match all
-  * @access: permission mask (DEVCG_ACC_READ, DEVCG_ACC_WRITE, DEVCG_ACC_MKNOD)
-+ * @check_parent: defer wild card exception checking to parent
-  *
-  * It is considered a complete match if an exception is found that will
-  * contain the entire range of provided parameters.
-  *
-  * Return: true in case it matches an exception completely
-  */
--static bool match_exception(struct list_head *exceptions, short type,
--			    u32 major, u32 minor, short access)
-+static bool match_exception(struct dev_cgroup *devcg, short type, u32 major,
-+			    u32 minor, short access, bool check_parent)
- {
-+	struct list_head *exceptions = &devcg->exceptions;
- 	struct dev_exception_item *ex;
-+	bool wildcard_matched = false;
-+	struct cgroup_subsys_state *parent = devcg->css.parent;
-
- 	list_for_each_entry_rcu(ex, exceptions, list) {
- 		if ((type & DEVCG_DEV_BLOCK) && !(ex->type & DEVCG_DEV_BLOCK))
-@@ -384,11 +393,30 @@ static bool match_exception(struct list_head *exceptions, short type,
- 			continue;
- 		if (ex->minor != ~0 && ex->minor != minor)
- 			continue;
-+		if (is_wildcard_exception(ex) && parent) {
-+			wildcard_matched = true;
-+			continue;
-+		}
- 		/* provided access cannot have more than the exception rule */
- 		if (access & (~ex->access))
- 			continue;
- 		return true;
- 	}
-+
-+	/* We matched a wildcard rule, so let's see if the parent allows it */
-+	if (wildcard_matched && check_parent) {
-+		struct dev_cgroup *devcg_parent = css_to_devcgroup(parent);
-+
-+		if (devcg_parent->behavior == DEVCG_DEFAULT_ALLOW)
-+			/* Can't match any of the exceptions, even partially */
-+			return  !match_exception_partial(&devcg_parent->exceptions,
-+						      type, major, minor, access);
-+		else
-+			/* Need to match completely one exception to be allowed */
-+			return match_exception(devcg_parent, type, major, minor,
-+					       access, false);
-+	}
-+
- 	return false;
- }
-
-@@ -441,9 +469,8 @@ static bool verify_new_ex(struct dev_cgroup *dev_cgroup,
- 		 * be contained completely in an parent's exception to be
- 		 * allowed
- 		 */
--		match = match_exception(&dev_cgroup->exceptions, refex->type,
--					refex->major, refex->minor,
--					refex->access);
-+		match = match_exception(dev_cgroup, refex->type, refex->major,
-+					refex->minor, refex->access, false);
-
- 		if (match)
- 			/* parent has an exception that matches the proposed */
-@@ -755,7 +782,8 @@ static int devcgroup_update_access(struct dev_cgroup *devcgroup,
- 			break;
- 		}
-
--		if (!parent_has_perm(devcgroup, &ex))
-+		if (!is_wildcard_exception(&ex) &&
-+		    !parent_has_perm(devcgroup, &ex))
- 			return -EPERM;
- 		rc = dev_exception_add(devcgroup, &ex);
- 		break;
-@@ -844,8 +872,8 @@ static int devcgroup_legacy_check_permission(short type, u32 major, u32 minor,
- 					      type, major, minor, access);
- 	else
- 		/* Need to match completely one exception to be allowed */
--		rc = match_exception(&dev_cgroup->exceptions, type, major,
--				     minor, access);
-+		rc = match_exception(dev_cgroup, type, major, minor, access,
-+				     true);
- 	rcu_read_unlock();
-
- 	if (!rc)
---
-2.34.1
-
+All that being said I am not convinced that the interface is practically
+usable and you haven't really provided good examples to prove me wrong.
+-- 
+Michal Hocko
+SUSE Labs
