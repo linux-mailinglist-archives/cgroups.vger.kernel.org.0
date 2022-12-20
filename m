@@ -2,106 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8317C65247C
-	for <lists+cgroups@lfdr.de>; Tue, 20 Dec 2022 17:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2A865250F
+	for <lists+cgroups@lfdr.de>; Tue, 20 Dec 2022 17:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbiLTQOu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Dec 2022 11:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        id S233773AbiLTQ7y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Dec 2022 11:59:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234039AbiLTQOT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Dec 2022 11:14:19 -0500
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7621ADB4
-        for <cgroups@vger.kernel.org>; Tue, 20 Dec 2022 08:14:18 -0800 (PST)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1322d768ba7so15931317fac.5
-        for <cgroups@vger.kernel.org>; Tue, 20 Dec 2022 08:14:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VJHuqJnIx074BMYbiEwAJgSYfRr5by7w1jzdSrWW5qI=;
-        b=ibF8DFYdkfowditrzS3NSpUfJNk+8zPRcVurcCvGmvcPGh3zUg4HX1uTe1ubZ1ClG0
-         7F8C7kUrzFpoJ3xsa1H1gwU+91jDaQ/kpAgBzOlWXWKn8LEA8GquTqQmSdDQgP6aWLwS
-         yEfalmyzAv/GLlHCra69nz0NHpnGy7d1Nqxg4bCq7PDVK2+hTbcJqSsKZzjCwnKy3kJ1
-         xo6NytgGq0LN2CJjDrict7GyNj93Zoj7lBn5FnRSMHCBMCqw+km9+rAovYkh9tTULEpV
-         /WMU5mujyzR2/9jNYdt6zVwTm5n3UICIOfx0b4jqri2XjpjYXrsoVb59qMYKpANeZ1e5
-         TbhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VJHuqJnIx074BMYbiEwAJgSYfRr5by7w1jzdSrWW5qI=;
-        b=toX7sBE7RoqsPCsLy6j4B/8Hf9tjlKlBoROhwkMRIQw+090F5I2TVu5hsoZ2W6+wK2
-         Mb7Cxb5CIgyAZM7NzHiR08uK5sDrmMP+XIy4TIL2Zt38gUhtbfJaXsVSOnAAh8b2pR0G
-         oYQmbrQew5s/n89mdq2RvUgabfnZaX5+Qsa7dMYdYclyhW+vwDhb8EiA2ydPR8AnIiES
-         UA5CcVVfKkeU5y6sN3rFExRjBHWlireP8vs8Jt2Qzn0u8zGRlpHV5qvqUmBfZJubir0W
-         oofoBp89ObuzuvGx843RA8vuLmKkppFuvRMi8e8duePjWj/0qSIfG+AqS3xgXwiotKPc
-         Xq6Q==
-X-Gm-Message-State: AFqh2kofFoc1fXTZyK3+oHMJmhmUXnOzFEcYyNyGh8LTzJF5E89Mp6Lk
-        +zukfRkNykm5G50vV5XxxQiRTpQgrYsJSEsbBA==
-X-Google-Smtp-Source: AMrXdXtKiDi5p0yyexDJq+M6tUx/On1MBAShE0ElF6wYYE+tzpLHXd9C6zZtuPvpZKSGzFCe1ReP4gXZwtrecfwiWLM=
-X-Received: by 2002:a05:6870:698b:b0:148:2c02:5323 with SMTP id
- my11-20020a056870698b00b001482c025323mr2897616oab.298.1671552857814; Tue, 20
- Dec 2022 08:14:17 -0800 (PST)
+        with ESMTP id S233685AbiLTQ7v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Dec 2022 11:59:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8005618695
+        for <cgroups@vger.kernel.org>; Tue, 20 Dec 2022 08:59:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1671555545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KRZ5NBQkSBEMSzVXiSUDsWEBTOjISuGVrqOh0e75EmM=;
+        b=gUb1ar3FA9jIQMgMFmjoB3CAfUSSsRO80YQAz8kSE0/QxXF22l8G4cCH7+e3V9zWd9zsHC
+        9KOxqbaOTi7Wg0ECmL7Mf6yTX3ef7Q16Ets7EAqEHk7FjNoU2+xZkHltPHY/SrVDuBGAYx
+        gmCU/fYxr4rLwbIYERL6/MCIdDCo7vw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-44-16qy3JQhNAGn_wza0obbDw-1; Tue, 20 Dec 2022 11:59:02 -0500
+X-MC-Unique: 16qy3JQhNAGn_wza0obbDw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7819B88B7A7;
+        Tue, 20 Dec 2022 16:59:01 +0000 (UTC)
+Received: from [10.22.18.106] (unknown [10.22.18.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EE61112132C;
+        Tue, 20 Dec 2022 16:59:01 +0000 (UTC)
+Message-ID: <9295b73a-5a3c-b1f6-d892-0da1d356ab9f@redhat.com>
+Date:   Tue, 20 Dec 2022 11:59:00 -0500
 MIME-Version: 1.0
-Received: by 2002:a05:6870:5d05:b0:144:f6f0:4dc5 with HTTP; Tue, 20 Dec 2022
- 08:14:17 -0800 (PST)
-Reply-To: anitaphilip415@gmail.com
-From:   Anita Philip <anitaphilip415@gmail.com>
-Date:   Tue, 20 Dec 2022 17:14:17 +0100
-Message-ID: <CAJeCp6L+QnjmdsR=hYtX=3zOcwH31RtpWKdYSw2jy8ftHc5dnQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.0 required=5.0 tests=ADVANCE_FEE_3_NEW,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY,YOU_INHERIT
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:35 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5006]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [anitaphilip415[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [anitaphilip415[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [anitaphilip415[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 YOU_INHERIT Discussing your inheritance
-        *  3.5 ADVANCE_FEE_3_NEW Appears to be advance fee fraud (Nigerian
-        *      419)
-        *  2.4 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH] cgroup/cpuset: no need to explicitly init a global static
+ variable
+Content-Language: en-US
+To:     Daniel Vacek <neelx@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221220151415.856093-1-neelx@redhat.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20221220151415.856093-1-neelx@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Good day,
+On 12/20/22 10:14, Daniel Vacek wrote:
+> cpuset_rwsem is a static variable. It's initialized at build time and so
+> there's no need for explicit runtime init leaking one percpu int.
+>
+> Signed-off-by: Daniel Vacek <neelx@redhat.com>
+> ---
+>   kernel/cgroup/cpuset.c | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index a29c0b13706bb..87fe410361b3d 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3281,8 +3281,6 @@ struct cgroup_subsys cpuset_cgrp_subsys = {
+>   
+>   int __init cpuset_init(void)
+>   {
+> -	BUG_ON(percpu_init_rwsem(&cpuset_rwsem));
+> -
+>   	BUG_ON(!alloc_cpumask_var(&top_cpuset.cpus_allowed, GFP_KERNEL));
+>   	BUG_ON(!alloc_cpumask_var(&top_cpuset.effective_cpus, GFP_KERNEL));
+>   	BUG_ON(!zalloc_cpumask_var(&top_cpuset.subparts_cpus, GFP_KERNEL));
 
-My name is Miss. Anita Philip, I am 19 years old the only daughter to
-my late parents. I am contacting you with tears in my eyes because I
-really need your help to secure my inheritance that my late father
-kept for me before he died. I really need your help to be my guardian
-on this. Please can I trust you?? I wait for your reply for more
-information on how you can help.
+It will be clearer if you mention that DEFINE_STATIC_PERCPU_RWSEM() is 
+used to set up cpuset_rwsem at build time. Other than that, the patch 
+looks good to me.
 
-Best regards,
-Miss. Anita Philip
+Cheers,
+Longman
+
