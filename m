@@ -2,159 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BDE6518D7
-	for <lists+cgroups@lfdr.de>; Tue, 20 Dec 2022 03:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406EE651D10
+	for <lists+cgroups@lfdr.de>; Tue, 20 Dec 2022 10:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbiLTCis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Dec 2022 21:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
+        id S233336AbiLTJTU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Dec 2022 04:19:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbiLTCik (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Dec 2022 21:38:40 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80F911A17
-        for <cgroups@vger.kernel.org>; Mon, 19 Dec 2022 18:38:13 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id f9so7454596pgf.7
-        for <cgroups@vger.kernel.org>; Mon, 19 Dec 2022 18:38:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XdsW29O/6Xn6rXQsu5aPcLciaxL4xlcszGahdv8fEa4=;
-        b=JX+Yf4WHK86OHRDqIF+sLMufhIcZDg+3+srs173HnZoa49DGsPAWF5Dr5GAckDMRWz
-         FKHkNX+zSoaW4T6mj7PFoBB+R7aIPFkoDT6C/zaKh7Fr6YFcJKKB+3TP03RHpygnFjIk
-         zT4pk334VL7ur7W5QNW3BqlUa/W794r2umr3pX1aAVp3AXfUJGFwSzJu8dGpw7ZCgTEG
-         4NVifBZ8i6VMj0URqFcOG+fZKYrG0HAfPsGfyCS0BgcNENC/nKgRAk4PMZc5vosOwenc
-         Y434W1ZNjXPpGBrbmjcVPOpgMpveICUYsPsb8oI5lQrxmvtyQ5C3+4gEoXEATonYs6ZV
-         7YBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XdsW29O/6Xn6rXQsu5aPcLciaxL4xlcszGahdv8fEa4=;
-        b=4dMzMEyvQLPmMrVU2ZPv5N6GKezEZ3mkTnZhPvOrnd1uOpn5z3xE+FDY4XXGsXDUJy
-         slVk78l6WfiADaoHxCUD+xVR3WNlzXgno7RB5OMKZKC7CqV7iSEOKF2ZUMsan1dd2NPU
-         ixRYhQotDHLg8Nv+t5clB5gK00Nsqk/h6pWSMVW0hASgdPLVL4ujEt1BtdQiP0SHAKdT
-         lMUtZ7TJV7JrNpOehtjRdG5d1FuiZn53nYSuSzeSIfEq7Z38I2RKVAbJjIRYWruybqVF
-         tezCO0BNlVGMOuY1yySBLIf3+j/gK/j+vEtI3nSKGrkTqsRCyD65tI4+cYSL8jr8QRgV
-         /aZw==
-X-Gm-Message-State: ANoB5pnjjEx8m4Z8R/LOhfFQuDI8Ubq+TvCB3nqPEMVCeb9dHalDXNUX
-        l+EsJfPsq42dIkkKqJg3Ry7oBg==
-X-Google-Smtp-Source: AA0mqf56VtST1wkF2n8PGxLj9I+dEzc6pW0gRfjpWT3uBZx2CydeTcTnKx4AzFZWXiGsSCMKonwciw==
-X-Received: by 2002:aa7:956f:0:b0:576:e1f0:c812 with SMTP id x15-20020aa7956f000000b00576e1f0c812mr42718289pfq.30.1671503893422;
-        Mon, 19 Dec 2022 18:38:13 -0800 (PST)
-Received: from [10.254.36.84] ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id 81-20020a621654000000b00574740c99e9sm7306038pfw.129.2022.12.19.18.38.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Dec 2022 18:38:12 -0800 (PST)
-Message-ID: <78028f86-4fb4-e24e-a01b-d1f8a51cff87@bytedance.com>
-Date:   Tue, 20 Dec 2022 10:38:08 +0800
+        with ESMTP id S233326AbiLTJTT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Dec 2022 04:19:19 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5179FE3;
+        Tue, 20 Dec 2022 01:19:17 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NbrcH5FcQz4f3pG0;
+        Tue, 20 Dec 2022 17:19:11 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgCnD7MQfqFjEZfHAA--.28932S3;
+        Tue, 20 Dec 2022 17:19:14 +0800 (CST)
+Subject: Re: [PATCH -next 0/4] blk-cgroup: synchronize del_gendisk() with
+ configuring cgroup policy
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20221217030908.1261787-1-yukuai1@huaweicloud.com>
+ <Y6DP3aOSad8+D1yY@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <e01daffe-a3e3-8bf2-40ee-192a9e70d911@huaweicloud.com>
+Date:   Tue, 20 Dec 2022 17:19:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [External] Re: [PATCH] blk-throtl: Introduce sync and async
- queues for blk-throtl
-To:     Tejun Heo <tj@kernel.org>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yinxin.x@bytedance.com
-References: <20221218111314.55525-1-hanjinke.666@bytedance.com>
- <Y6DWGBQSP/DA7apC@slm.duckdns.org>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <Y6DWGBQSP/DA7apC@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <Y6DP3aOSad8+D1yY@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgCnD7MQfqFjEZfHAA--.28932S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFWUAF15Aw4UZw17ur1UGFg_yoW8uFW8pF
+        WagrnxZ3yDtrZ7ZrnIgr1xAFySgw4rW345tFW5Gr9xAr4j9rn0va1xAFWxuF4xXrsrGr4S
+        qFW8J398Cr1UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
+        04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi,
 
-
-åœ¨ 2022/12/20 ä¸Šåˆ5:22, Tejun Heo å†™é“:
+ÔÚ 2022/12/20 4:55, Tejun Heo Ð´µÀ:
 > Hello,
 > 
-> This looks generally fine to me. Some nits below.
+> On Sat, Dec 17, 2022 at 11:09:04AM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> iocost is initialized when it's configured the first time, and iocost
+>> initializing can race with del_gendisk(), which will cause null pointer
+>> dereference:
+>>
+>> t1				t2
+>> ioc_qos_write
+>>   blk_iocost_init
+>>    rq_qos_add
+>>    				del_gendisk
+>>    				 rq_qos_exit
+>>    				 //iocost is removed from q->roqs
+>>    blkcg_activate_policy
+>>     pd_init_fn
+>>      ioc_pd_init
+>>       ioc = q_to_ioc(blkg->q)
+>>       //can't find iocost and return null
+>>
+>> And iolatency is about to switch to the same lazy initialization.
+>>
+>> This patchset fix this problem by synchronize rq_qos_add() and
+>> blkcg_activate_policy() with rq_qos_exit().
 > 
->> +static inline struct bio *throtl_qnode_bio_peek(struct throtl_qnode *qn)
->> +{
->> +	struct bio *bio1, *bio2;
->> +
->> +	/* qn for read ios */
->> +	if (qn->dispatch_sync_cnt == UINT_MAX)
->> +		return bio_list_peek(&qn->bios[SYNC]);
->> +
->> +	/* qn for write ios */
->> +	bio1 = bio_list_peek(&qn->bios[SYNC]);
->> +	bio2 = bio_list_peek(&qn->bios[ASYNC]);
->> +
->> +	if (bio1 && bio2) {
->> +		if (qn->dispatch_sync_cnt == THROTL_SYNC_FACTOR)
->> +			return bio2;
->> +		return bio1;
->> +	}
->> +
->> +	return bio1 ?: bio2;
->> +}
+> So, the patchset seems a bit overly complicated to me. What do you think
+> about the following?
 > 
-> Wouldn't it be simpler to write:
+> * These init/exit paths are super cold path, just protecting them with a
+>    global mutex is probably enough. If we encounter a scalability problem,
+>    it's easy to fix down the line.
 > 
->          if (qn->dispatch_sync_count < THROTL_SYNC_FACTOR)
->                  return bio1 ?: bio2;
->          else
->                  return bio2 ?: bio1;
+> * If we're synchronizing this with a mutex anyway, no need to grab the
+>    queue_lock, right? rq_qos_add/del/exit() can all just hold the mutex.
 > 
->> +/**
->> + * throtl_qnode_bio_pop: pop a bio from a qnode
->> + * @qn: the qnode to pop a bio from
->> + *
->> + * For read io qn, just pop bio from sync queu and return.
->> + * For write io qn, the target queue to pop was determined by the dispatch_sync_cnt.
->> + * Try to pop bio from target queue, fetch the bio and return when it is not empty.
->> + * If the target queue empty, pop bio from other queue instead.
->> + */
->> +static inline struct bio *throtl_qnode_bio_pop(struct throtl_qnode *qn)
->> +{
->> +	struct bio *bio;
->> +
->> +	/* qn for read ios */
->> +	if (qn->dispatch_sync_cnt == UINT_MAX)
->> +		return bio_list_pop(&qn->bios[SYNC]);
->> +
->> +	/* try to dispatch sync io */
->> +	if (qn->dispatch_sync_cnt < THROTL_SYNC_FACTOR) {
->> +		bio = bio_list_pop(&qn->bios[SYNC]);
->> +		if (bio) {
->> +			qn->dispatch_sync_cnt++;
->> +			return bio;
->> +		}
->> +		bio = bio_list_pop(&qn->bios[ASYNC]);
->> +		qn->dispatch_sync_cnt = 0;
->> +		return bio;
->> +	}
->> +
->> +	/* try to dispatch async io */
->> +	bio = bio_list_pop(&qn->bios[ASYNC]);
->> +	if (bio) {
->> +		qn->dispatch_sync_cnt = 0;
->> +		return bio;
->> +	}
->> +	bio = bio_list_pop(&qn->bios[SYNC]);
->> +
->> +	return bio;
->> +}
-> 
-> This also seems like it can be simplified a bit.
+> * And we can keep the state tracking within rq_qos. When rq_qos_exit() is
+>    called, mark it so that future adds will fail - be that a special ->next
+>    value a queue flag or whatever.
+
+Yes, that sounds good. BTW, queue_lock is also used to protect
+pd_alloc_fn/pd_init_fn£¬and we found that blkcg_activate_policy() is
+problematic:
+
+blkcg_activate_policy
+  spin_lock_irq(&q->queue_lock);
+  list_for_each_entry_reverse(blkg, &q->blkg_list
+   pd_alloc_fn(GFP_NOWAIT | __GFP_NOWARN,...) -> failed
+
+   spin_unlock_irq(&q->queue_lock);
+   // release queue_lock here is problematic, this will cause
+pd_offline_fn called without pd_init_fn.
+   pd_alloc_fn(__GFP_NOWARN,...)
+
+If we are using a mutex to protect rq_qos ops, it seems the right thing
+to do do also using the mutex to protect blkcg_policy ops, and this
+problem can be fixed because mutex can be held to alloc memroy with
+GFP_KERNEL. What do you think?
+
+Thanks,
+Kuai
 > 
 > Thanks.
 > 
 
-Indeed, I will make it more clear and send the v2.
-
-Thanks.
