@@ -2,88 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F68C652772
-	for <lists+cgroups@lfdr.de>; Tue, 20 Dec 2022 20:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA876527C2
+	for <lists+cgroups@lfdr.de>; Tue, 20 Dec 2022 21:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbiLTT4r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Dec 2022 14:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39316 "EHLO
+        id S234341AbiLTUU2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Dec 2022 15:20:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233010AbiLTT4V (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Dec 2022 14:56:21 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD8A1AD8D
-        for <cgroups@vger.kernel.org>; Tue, 20 Dec 2022 11:55:46 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id b16so14236619yba.0
-        for <cgroups@vger.kernel.org>; Tue, 20 Dec 2022 11:55:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T6Ibv8lELNGtBRxXq2xqbZ6XNIWdISjKd5l36khEMAE=;
-        b=KSZwcjFTFFO55WSmVmRgONnRwskWoYawCL4xr2GcTp5EfCyO5dWsx7AbSD6Ir/ybby
-         C7hVXroJGbjMZ6JZecHbZizIkqMntO9LCfTQjh70KYV62x3n7GT3pigY+IdDXJ6+hW0U
-         mEwxE2cJuzhZ473p3CRLSLMKt5y1k+WqODiXLaurmLprlQIu83KIRui/7aB62vVSerFG
-         oJ6BbA0p2cayN9RAavaPE83CL3JFmwg8mr83/EY4R4NMFXcDSamu5fqDMXFsJi4+yNTL
-         KYFBpfYMu9bW5ttoTGe9B6d7fqichfkqe1iiFZLjZZbtB+BAkuBEyxDREF+RcnvyviBH
-         sPNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T6Ibv8lELNGtBRxXq2xqbZ6XNIWdISjKd5l36khEMAE=;
-        b=iB5vMPu8Bv50DYazuwBZsD8oAuU1UJ2sVRa4G2ibW25t/PHlAu28CDbEPk5oqbHXzm
-         lS+iNOPEFBKwzQaiZOUem6trhwgaHxUJFxFuWyMkN/p3Xa0TcMI0DkTr0ckJTkaM+aS+
-         jbrc1pWhXRuJWkPk0Rc+ATkGOpxdHp43LN3anPjzwu0FXzYVUQyV+qDyN9OojzPv16xK
-         pWWlKolNclqIfoplJ+SpUUNt4jcM4P2nfeui7JQRWkLpX38DxZAWPyMb7FEbtM0DYWE9
-         2m5xE0YA6bAYsY5OY7BCSkBDY+vlmWQ/enp3LNcFiUWZBq5STGvE0OU/lONmFlp3DGP9
-         CRHw==
-X-Gm-Message-State: ANoB5pnBtNPmcnPPSqJHT05XquwfmKpi4O+QG/KsL5aBK2CkH6FQSKNE
-        N9gCr4+r200HdNATtEgAiCIeOqM0HAlqoSHyuVt82Q==
-X-Google-Smtp-Source: AA0mqf7NCtlgUgNd0Hd1SP3QL7km2fBfAOvVUDERTH4v4MYwU6+4xOVJ3IJ4IDEzTj4uQn7xjEc4O/4GfJxHa4RW258=
-X-Received: by 2002:a25:5047:0:b0:70b:e651:d1e6 with SMTP id
- e68-20020a255047000000b0070be651d1e6mr6047265ybb.363.1671566145422; Tue, 20
- Dec 2022 11:55:45 -0800 (PST)
+        with ESMTP id S234291AbiLTUUA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Dec 2022 15:20:00 -0500
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5FB1FCE2;
+        Tue, 20 Dec 2022 12:18:34 -0800 (PST)
+Received: from localhost (unknown [IPv6:2a01:e35:39f2:1220:dc8b:b602:9bcd:3004])
+        by smtp6-g21.free.fr (Postfix) with ESMTPS id 7B28D780350;
+        Tue, 20 Dec 2022 21:18:23 +0100 (CET)
+From:   Yann Droneaud <ydroneaud@opteya.com>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yann Droneaud <ydroneaud@opteya.com>
+Subject: [PATCH] blk-iocost: don't make all constants unsigned long long
+Date:   Tue, 20 Dec 2022 21:18:19 +0100
+Message-Id: <20221220201819.1497577-1-ydroneaud@opteya.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-References: <20221220182745.1903540-1-roman.gushchin@linux.dev> <20221220182745.1903540-2-roman.gushchin@linux.dev>
-In-Reply-To: <20221220182745.1903540-2-roman.gushchin@linux.dev>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 20 Dec 2022 11:55:34 -0800
-Message-ID: <CALvZod5q0koAckpTr4VBq-_KiQpsmC86bE4eP9gzX71PzRdicA@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] mm: kmem: optimize get_obj_cgroup_from_current()
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 10:28 AM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> Manually inline memcg_kmem_bypass() and active_memcg() to speed up
-> get_obj_cgroup_from_current() by avoiding duplicate in_task() checks
-> and active_memcg() readings.
->
-> Also add a likely() macro to __get_obj_cgroup_from_memcg():
-> obj_cgroup_tryget() should succeed at almost all times except
-> a very unlikely race with the memcg deletion path.
->
-> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+My shiny new compiler (GCC 13) is reporting the following
+warnings:
 
-Can you please add your performance experiment setup and result of
-this patch in the commit description of this patch as well?
+  ../block/blk-iocost.c: In function 'ioc_weight_prfill':
+  ../block/blk-iocost.c:3035:37: warning: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'long unsigned int' [-Wformat=]
+   3035 |                 seq_printf(sf, "%s %u\n", dname, iocg->cfg_weight / WEIGHT_ONE);
+        |                                    ~^            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        |                                     |                             |
+        |                                     unsigned int                  long unsigned int
+        |                                    %lu
+  ../block/blk-iocost.c: In function 'ioc_weight_show':
+  ../block/blk-iocost.c:3045:34: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'long unsigned int' [-Wformat=]
+   3045 |         seq_printf(sf, "default %u\n", iocc->dfl_weight / WEIGHT_ONE);
+        |                                 ~^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        |                                  |                      |
+        |                                  unsigned int           long unsigned int
+        |                                 %lu
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+It appears WEIGHT_ONE enum is unnecessarly unsigned long
+(or unsigned long long on 32bit) because of VTIME_PER_SEC
+and/or AUTOP_CYCLE_NSEC need the enum to be that large.
+
+Addressed by lazy splitting the "catch all" anonymous
+enum and placing the unsigned long long constants in
+their own anonymous enums.
+
+Signed-off-by: Yann Droneaud <ydroneaud@opteya.com>
+---
+ block/blk-iocost.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 495396425bad..bb1f8522c0f1 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -232,7 +232,9 @@ enum {
+ 
+ 	/* 1/64k is granular enough and can easily be handled w/ u32 */
+ 	WEIGHT_ONE		= 1 << 16,
++};
+ 
++enum {
+ 	/*
+ 	 * As vtime is used to calculate the cost of each IO, it needs to
+ 	 * be fairly high precision.  For example, it should be able to
+@@ -255,7 +257,9 @@ enum {
+ 
+ 	VRATE_MIN		= VTIME_PER_USEC * VRATE_MIN_PPM / MILLION,
+ 	VRATE_CLAMP_ADJ_PCT	= 4,
++};
+ 
++enum {
+ 	/* if IOs end up waiting for requests, issue less */
+ 	RQ_WAIT_BUSY_PCT	= 5,
+ 
+@@ -293,10 +297,14 @@ enum {
+ 
+ 	/* don't let cmds which take a very long time pin lagging for too long */
+ 	MAX_LAGGING_PERIODS	= 10,
++};
+ 
++enum {
+ 	/* switch iff the conditions are met for longer than this */
+ 	AUTOP_CYCLE_NSEC	= 10LLU * NSEC_PER_SEC,
++};
+ 
++enum {
+ 	/*
+ 	 * Count IO size in 4k pages.  The 12bit shift helps keeping
+ 	 * size-proportional components of cost calculation in closer
+-- 
+2.37.2
+
