@@ -2,67 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF4E652B98
-	for <lists+cgroups@lfdr.de>; Wed, 21 Dec 2022 03:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CC0652CD5
+	for <lists+cgroups@lfdr.de>; Wed, 21 Dec 2022 07:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbiLUCs3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Dec 2022 21:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
+        id S229491AbiLUGU1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Dec 2022 01:20:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbiLUCs2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Dec 2022 21:48:28 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6475FF8;
-        Tue, 20 Dec 2022 18:48:24 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NcHtq18mDz4f3k6H;
-        Wed, 21 Dec 2022 10:48:19 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgDX9zHzc6JjgyDjAA--.18550S3;
-        Wed, 21 Dec 2022 10:48:21 +0800 (CST)
-Subject: Re: [PATCH -next 0/4] blk-cgroup: synchronize del_gendisk() with
- configuring cgroup policy
-To:     Yu Kuai <yukuai1@huaweicloud.com>, Tejun Heo <tj@kernel.org>
-Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20221217030908.1261787-1-yukuai1@huaweicloud.com>
- <Y6DP3aOSad8+D1yY@slm.duckdns.org>
- <e01daffe-a3e3-8bf2-40ee-192a9e70d911@huaweicloud.com>
- <Y6HcWiJbaWjN3jlt@slm.duckdns.org>
- <c2fecf04-6e9e-25a1-f14c-47862837cc54@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <ebfd3d01-9fd1-3453-6cf5-05e8540359c7@huaweicloud.com>
-Date:   Wed, 21 Dec 2022 10:48:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S232174AbiLUGUZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Dec 2022 01:20:25 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ED71EC6A;
+        Tue, 20 Dec 2022 22:20:25 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BL66hTq023832;
+        Wed, 21 Dec 2022 06:20:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=bmZs5x1Uo0vIxNOpNufK8v9HsHBzoKzBVIakLqwAiFU=;
+ b=hum+6+XmnsXTqdDSRzsYZmKoYTEYe7oMOOaQePpnNXk1EkNJ9zYfOtXtBrc5O0WPLJpH
+ FgeTcclUWHyeAjj7ls4jDN/2j8kN5B/BoeDIauXR+oXF8hwLBQ7+3hjBZlGBkycxxbKY
+ PWn996zcSTiWwryNWYshbt6yBUPIKJ+szAa+e2jVyJcqsV6NZEZH+ZxAmwXJw0hGEL05
+ O2YuwkPtOdr5hy+AdquKUiRDtTUti6hMPT5N13ZG9fSUUngDLTUtjgcN5AKGySLEuLBl
+ SEeGryXXUUnajvbJ4coOiOyK3HI9FPOFG09YFqSEwFgvzSxkcOMBANtRUs4jvPjEQC1B XA== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mk39tb531-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Dec 2022 06:20:01 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BL6K0E8021281
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Dec 2022 06:20:00 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Tue, 20 Dec
+ 2022 22:19:57 -0800
+Message-ID: <f4c63e18-9666-b1db-8474-ea32da9daccb@quicinc.com>
+Date:   Wed, 21 Dec 2022 11:49:55 +0530
 MIME-Version: 1.0
-In-Reply-To: <c2fecf04-6e9e-25a1-f14c-47862837cc54@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDX9zHzc6JjgyDjAA--.18550S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF43tw4DWr1kXF4fJrW3trb_yoW8ArW7pF
-        9IgF93A3yqvw1v939Fkr1xZFWFgw4DW3y5Jr43W3s3Z3yqv3sYgr47ArZ5uF1fZF4kGF4Y
-        va15t398Jr48Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] cgroup/cpuset: no need to explicitly init a global static
+ variable
+Content-Language: en-US
+To:     Daniel Vacek <neelx@redhat.com>, Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20221220151415.856093-1-neelx@redhat.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20221220151415.856093-1-neelx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZESUfIjrA2TvwbOqH1XYbh1ZzuKkyAES
+X-Proofpoint-GUID: ZESUfIjrA2TvwbOqH1XYbh1ZzuKkyAES
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-21_02,2022-12-20_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=963 spamscore=0 clxscore=1011 adultscore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212210046
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,57 +81,29 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hi,
 
-在 2022/12/21 9:10, Yu Kuai 写道:
-> Hi,
+On 12/20/2022 8:44 PM, Daniel Vacek wrote:
+> cpuset_rwsem is a static variable. It's initialized at build time and so
+> there's no need for explicit runtime init leaking one percpu int.
 > 
-> 在 2022/12/21 0:01, Tejun Heo 写道:
->> Hello,
->>
->> On Tue, Dec 20, 2022 at 05:19:12PM +0800, Yu Kuai wrote:
->>> Yes, that sounds good. BTW, queue_lock is also used to protect
->>> pd_alloc_fn/pd_init_fn，and we found that blkcg_activate_policy() is
->>> problematic:
->>>
->>> blkcg_activate_policy
->>>   spin_lock_irq(&q->queue_lock);
->>>   list_for_each_entry_reverse(blkg, &q->blkg_list
->>>    pd_alloc_fn(GFP_NOWAIT | __GFP_NOWARN,...) -> failed
->>>
->>>    spin_unlock_irq(&q->queue_lock);
->>>    // release queue_lock here is problematic, this will cause
->>> pd_offline_fn called without pd_init_fn.
->>>    pd_alloc_fn(__GFP_NOWARN,...)
->>
->> So, if a blkg is destroyed while a policy is being activated, right?
-> Yes, remove cgroup can race with this, for bfq null pointer deference
-> will be triggered in bfq_pd_offline().
+> Signed-off-by: Daniel Vacek <neelx@redhat.com>
+> ---
+>   kernel/cgroup/cpuset.c | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index a29c0b13706bb..87fe410361b3d 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3281,8 +3281,6 @@ struct cgroup_subsys cpuset_cgrp_subsys = {
+>   
+>   int __init cpuset_init(void)
+>   {
+> -	BUG_ON(percpu_init_rwsem(&cpuset_rwsem));
+> -
+>   	BUG_ON(!alloc_cpumask_var(&top_cpuset.cpus_allowed, GFP_KERNEL));
+>   	BUG_ON(!alloc_cpumask_var(&top_cpuset.effective_cpus, GFP_KERNEL));
+>   	BUG_ON(!zalloc_cpumask_var(&top_cpuset.subparts_cpus, GFP_KERNEL));
 
-BTW, We just found that pd_online_fn() is missed in
-blkcg_activate_policy()... Currently this is not a problem because only
-bl-throttle implement it, and blk-throttle is activated while creating
-blkg.
+Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-Thanks,
-Kuai
-> 
->>
->>> If we are using a mutex to protect rq_qos ops, it seems the right thing
->>> to do do also using the mutex to protect blkcg_policy ops, and this
->>> problem can be fixed because mutex can be held to alloc memroy with
->>> GFP_KERNEL. What do you think?
->>
->> One worry is that switching to mutex can be more headache due to destroy
->> path synchronization. Another approach would be using a per-blkg flag to
->> track whether a blkg has been initialized.
-> I think perhaps you mean per blkg_policy_data flag? per blkg flag should
-> not work in this case.
-> 
-> Thanks,
-> Kuai
->>
->> Thanks.
->>
-> 
-> .
-> 
-
+-Mukesh
