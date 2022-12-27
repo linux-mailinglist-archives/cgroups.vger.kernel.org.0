@@ -2,99 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D910A656504
-	for <lists+cgroups@lfdr.de>; Mon, 26 Dec 2022 21:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8DB6566F3
+	for <lists+cgroups@lfdr.de>; Tue, 27 Dec 2022 03:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbiLZUoJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Dec 2022 15:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        id S229447AbiL0CzT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Dec 2022 21:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbiLZUoI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Dec 2022 15:44:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8503325EC;
-        Mon, 26 Dec 2022 12:44:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4041FB80D68;
-        Mon, 26 Dec 2022 20:44:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51726C433EF;
-        Mon, 26 Dec 2022 20:44:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672087444;
-        bh=VLhGkOHxbqetrgJSPLuZfKUGT1KN0pIDoxofw9mA2Jw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BaRZ3mCREa+kLUp5TDH7ap3HWYze/UUbPBAAOV501rVkFpg9IJfJfco0Mduf/PHuM
-         WbmConD42iTDblIo9JtxYbuxDPU5LV969xNFTFJChhok3zLYN4OeG7Xh8XiSwbDDLq
-         vFrxVIqMZU9AGAD/f1N5vbJsPUBuGgDPVdGNuv+w6DswNVS8v6JZItJmucQAi4BILf
-         R9pBjahfOUYA9ib/VwrBG3df6NOyUcMYJ6isZYIyfjCS29DR4UU0RJf3ukanPAtPwd
-         wjZUERuQRSJ4en+w/QHiEG/2bVBzhfMUrNPBsHyVpvLj1XLcpS8KRAoNi6F21B/S0Y
-         Ru9W5pX2h0lYQ==
-Date:   Mon, 26 Dec 2022 20:43:58 +0000
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        zhiquan1.li@intel.com
-Subject: Re: [PATCH v2 14/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Message-ID: <Y6oHjrLCbDzWh7nE@kernel.org>
-References: <20221202183655.3767674-1-kristen@linux.intel.com>
- <20221202183655.3767674-15-kristen@linux.intel.com>
- <Y5IBCOuF8X7jEK3+@kernel.org>
- <cb5abce531c1b14118de419ba68c2a501b016873.camel@linux.intel.com>
- <e5aff02b-713c-ccd8-7211-d07ff6d7adb2@intel.com>
- <Y5duYxIHtSpK1qkj@google.com>
+        with ESMTP id S229445AbiL0CzS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Dec 2022 21:55:18 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39E2F05;
+        Mon, 26 Dec 2022 18:55:16 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ngzlz0B4Sz4f3nqj;
+        Tue, 27 Dec 2022 10:55:11 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rGPXqpjDHZaAg--.54074S4;
+        Tue, 27 Dec 2022 10:55:13 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     jack@suse.cz, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        paolo.valente@linaro.org
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com
+Subject: [PATCH RFC] block, bfq: switch 'bfqg->ref' to use atomic refcount apis
+Date:   Tue, 27 Dec 2022 11:15:41 +0800
+Message-Id: <20221227031541.2595647-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y5duYxIHtSpK1qkj@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH_rGPXqpjDHZaAg--.54074S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFyfuw15Jr4xAryUXFWUJwb_yoW8Cry3pF
+        nIq3W5J34rJr1fXF4UAa4UXry8Jw1fCryrK3yqg39Yyry7Xw1Sg3Z0yrWrJ34SvF93ArZr
+        Zr1Ygayvvr12q3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 06:09:39PM +0000, Sean Christopherson wrote:
-> On Fri, Dec 09, 2022, Dave Hansen wrote:
-> > On 12/9/22 08:05, Kristen Carlson Accardi wrote:
-> > > Aside from that though, I don't think that killing enclaves makes sense
-> > > outside the context of cgroup limits. 
-> > 
-> > I think it makes a lot of sense in theory.  Whatever situation we get
-> > into with a cgroup's EPC we can also get into with the whole system's EPC.
-> > 
-> > *But*, it's orders of magnitude harder to hit on the whole system.
-> 
-> ...
-> 
-> > If someone wants to extend this OOM support to system-wide EPC later, then go
-> > ahead.  But, I don't think it makes a lot of sense to invert this series for
-> > it.
-> 
-> +1 from the peanut gallery.  With VMM EPC oversubscription suport, no sane VMM
-> will oversubscribe VEPC pages.  And for VA pages, supporting swap of VA pages is
-> likely a more userspace-friendly approach if system-wide EPC OOM is a concern.
+From: Yu Kuai <yukuai3@huawei.com>
 
-When swapping VA pages the topology of the VA page cache for swapped VA
-pages is the main question. It is compromise between how long swap-in and
-swap-out can take, and how generic solution it be, meaning how deep
-hierarchies you want to build, or is just a flat list of parent VA pages
-"good enough".
+The updating of 'bfqg->ref' should be protected by 'bfqd->lock', however,
+during code review, we found that bfq_pd_free() update 'bfqg->ref'
+without holding the lock, which is problematic:
 
-Also, there's the question whether it should be a global cache, per cgroup
-and so forth.
+1) bfq_pd_free() triggered by removing cgroup is called asynchronously;
+2) bfqq will grab bfqg reference, and exit bfqq will drop the reference,
+which can concurrenty with 1).
 
-Implementing any solution is not overly complicated. Locking in these
-options is what puzzles me.
+Unfortunately, 'bfqd->lock' can't be held here because 'bfqd' might already
+be freed in bfq_pd_free(). Fix the problem by using atomic refcount apis.
 
-BR, Jarkko
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/bfq-cgroup.c  | 8 +++-----
+ block/bfq-iosched.h | 2 +-
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 1b2829e99dad..aa9c4f02e3a3 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -316,14 +316,12 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq)
+ 
+ static void bfqg_get(struct bfq_group *bfqg)
+ {
+-	bfqg->ref++;
++	refcount_inc(&bfqg->ref);
+ }
+ 
+ static void bfqg_put(struct bfq_group *bfqg)
+ {
+-	bfqg->ref--;
+-
+-	if (bfqg->ref == 0)
++	if (refcount_dec_and_test(bfqg->ref))
+ 		kfree(bfqg);
+ }
+ 
+@@ -530,7 +528,7 @@ static struct blkg_policy_data *bfq_pd_alloc(gfp_t gfp, struct request_queue *q,
+ 	}
+ 
+ 	/* see comments in bfq_bic_update_cgroup for why refcounting */
+-	bfqg_get(bfqg);
++	refcount_set(&bfqg->ref, 1);
+ 	return &bfqg->pd;
+ }
+ 
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index 41aa151ccc22..466e4865ace6 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -928,7 +928,7 @@ struct bfq_group {
+ 	char blkg_path[128];
+ 
+ 	/* reference counter (see comments in bfq_bic_update_cgroup) */
+-	int ref;
++	refcount_t ref;
+ 	/* Is bfq_group still online? */
+ 	bool online;
+ 
+-- 
+2.31.1
+
