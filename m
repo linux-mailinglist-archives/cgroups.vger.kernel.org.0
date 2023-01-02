@@ -2,68 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B2F65AE46
-	for <lists+cgroups@lfdr.de>; Mon,  2 Jan 2023 09:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8539365B079
+	for <lists+cgroups@lfdr.de>; Mon,  2 Jan 2023 12:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjABIkg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Jan 2023 03:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S232673AbjABLXi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Jan 2023 06:23:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbjABIkf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Jan 2023 03:40:35 -0500
-Received: from mail.loanfly.pl (mail.loanfly.pl [141.94.250.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496B0DB3
-        for <cgroups@vger.kernel.org>; Mon,  2 Jan 2023 00:40:34 -0800 (PST)
-Received: by mail.loanfly.pl (Postfix, from userid 1002)
-        id 9ED7AA4681; Mon,  2 Jan 2023 08:40:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=loanfly.pl; s=mail;
-        t=1672648831; bh=flSgn4+IJB03yMaHNopPnR0v50wun3P5Hd/CkHJx2Bc=;
-        h=Date:From:To:Subject:From;
-        b=PbuvOWQlTNp88Vp9X32YVEvMjiw4+87ahIyh7RST9+0saLth7wydgQ7a4sCzjYDZR
-         SqmsNnbDHJCIW8+HHDQNEOKfy1v9b40iENjkCbga16fSlA3D/aSegO/Q04tBgHIi7p
-         llxCxgMQm2lgMC75bmbBuYzyERnxgenprmuufnVusqJyUeZMmBTg1J0sYl+YL2XiHi
-         MpUzSz2FDmie3K2iulGih9f9seZ/ofngTScTRk9VbB0gQVdFGLxs5WIuwWcZq5cu09
-         UaEDCKt4z89qAXfx2EG3u/L3T10DXKiPLKamJhURJT+j2qn3cvqnVctXv8Zfluom7N
-         O66FYekfPMSWA==
-Received: by mail.loanfly.pl for <cgroups@vger.kernel.org>; Mon,  2 Jan 2023 08:40:28 GMT
-Message-ID: <20230102074500-0.1.7j.jwwx.0.krbe8p0qgp@loanfly.pl>
-Date:   Mon,  2 Jan 2023 08:40:28 GMT
-From:   "Damian Cichocki" <damian.cichocki@loanfly.pl>
-To:     <cgroups@vger.kernel.org>
-Subject: Prezentacja
-X-Mailer: mail.loanfly.pl
+        with ESMTP id S232752AbjABLXE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Jan 2023 06:23:04 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4C35FAB;
+        Mon,  2 Jan 2023 03:23:00 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ECDDF3407E;
+        Mon,  2 Jan 2023 11:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1672658578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VqwR+u//1iVHsLjS8ecEfHM3m/I8nXvJ9KjV1eh5WXs=;
+        b=QhMvVVMsVf6x5AViodhwkQFpoKLW/PYRa0Ijf7o3mskGYh6S4+61ZECF9G3TYScuIp7trv
+        mK8+RjALUdvmq5ZNuTg5/Tz5jodjLfufzWzjON0Kq+iFv13oOJ9np0a2VmyjWDhzfGRKVI
+        EWhorYbh0tj61v8YqB35xiUgkTRvk6A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1672658578;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VqwR+u//1iVHsLjS8ecEfHM3m/I8nXvJ9KjV1eh5WXs=;
+        b=K0tV4Q/xIo8tj99PVm3YZoJHBPvz4Lgq/VAnMDEUg/pj96U16eNquZmpyyQjnPO+/riu1/
+        l4ZdCXpQqX/S11Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9C1913427;
+        Mon,  2 Jan 2023 11:22:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jt8kNZK+smOqbgAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 02 Jan 2023 11:22:58 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 4ACF3A073E; Mon,  2 Jan 2023 12:22:58 +0100 (CET)
+Date:   Mon, 2 Jan 2023 12:22:58 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     jack@suse.cz, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        paolo.valente@linaro.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH RFC] block, bfq: switch 'bfqg->ref' to use atomic
+ refcount apis
+Message-ID: <20230102112258.3fixhuialamu6pkd@quack3>
+References: <20221227031541.2595647-1-yukuai1@huaweicloud.com>
+ <ba5e74a6-b3de-844d-16b8-84eb429c7058@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,URIBL_DBL_SPAM,
-        URIBL_SBL_A autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ba5e74a6-b3de-844d-16b8-84eb429c7058@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dzie=C5=84 dobry!
+On Tue 27-12-22 14:09:40, Yu Kuai wrote:
+> Hi, Jan!
+> 
+> 在 2022/12/27 11:15, Yu Kuai 写道:
+> > From: Yu Kuai <yukuai3@huawei.com>
+> > 
+> > The updating of 'bfqg->ref' should be protected by 'bfqd->lock', however,
+> > during code review, we found that bfq_pd_free() update 'bfqg->ref'
+> > without holding the lock, which is problematic:
+> > 
+> > 1) bfq_pd_free() triggered by removing cgroup is called asynchronously;
+> > 2) bfqq will grab bfqg reference, and exit bfqq will drop the reference,
+> > which can concurrenty with 1).
+> > 
+> > Unfortunately, 'bfqd->lock' can't be held here because 'bfqd' might already
+> > be freed in bfq_pd_free(). Fix the problem by using atomic refcount apis.
+> > 
+> > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > ---
+> >   block/bfq-cgroup.c  | 8 +++-----
+> >   block/bfq-iosched.h | 2 +-
+> >   2 files changed, 4 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+> > index 1b2829e99dad..aa9c4f02e3a3 100644
+> > --- a/block/bfq-cgroup.c
+> > +++ b/block/bfq-cgroup.c
+> > @@ -316,14 +316,12 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq)
+> >   static void bfqg_get(struct bfq_group *bfqg)
+> >   {
+> > -	bfqg->ref++;
+> > +	refcount_inc(&bfqg->ref);
+> >   }
+> >   static void bfqg_put(struct bfq_group *bfqg)
+> >   {
+> > -	bfqg->ref--;
+> > -
+> > -	if (bfqg->ref == 0)
+> > +	if (refcount_dec_and_test(bfqg->ref))
+> Sorry that here should be '&bfqg->ref'.
+> 
+> Anyway, I'll wait for you, and send a new version if you think this
+> patch make sense.
 
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
-=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
-zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
+Yes, the patch makes sense to me so feel free to send fixed version.
 
-Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
-=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
-dostaw.
-
-Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
-nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
- co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
-
-Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
-=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
-zania w Pa=C5=84stwa firmie.
-
-
-Pozdrawiam,
-Damian Cichocki
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
