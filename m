@@ -2,91 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F58765B834
-	for <lists+cgroups@lfdr.de>; Tue,  3 Jan 2023 00:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6ED465BC59
+	for <lists+cgroups@lfdr.de>; Tue,  3 Jan 2023 09:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjABXfW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Jan 2023 18:35:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S236934AbjACIiB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Jan 2023 03:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjABXfW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Jan 2023 18:35:22 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6351CBCB6;
-        Mon,  2 Jan 2023 15:35:21 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232898AbjACIh5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Jan 2023 03:37:57 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E007BDB1;
+        Tue,  3 Jan 2023 00:37:56 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E4C0C6D6;
-        Mon,  2 Jan 2023 23:35:20 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E4C0C6D6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1672702521; bh=8Urwkhnl8X2pfaw1kHAwUmTLLQL4RD3KeQARX6NwZkU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=b3dpElX9lrF8bY2SqAacBRKrkzHM/rKdJm2qvbaZ+Hq0pJel6SdXe+SVKo2vkg2ds
-         FjDMKwPXOpB3z4WVlZwhla8yaU+9gbuymFblf/2XWo3Syos1WdOjC31p3sg+hXVpZl
-         33hFPhk3NLwKAU0hmi6X2N2HqCfOSnGCnC2VvGnoKwMXC1HMKeucfgxnUJT/uDnQ9p
-         C9wg1Wfdc8Y531+MydMRDCBCsMxrnn9SRzLAMjbmm9Br9vrlqhaNQxoWw06emOMgzh
-         iQLz6aa13KRJyP2ZKmV3DmjQjPHhsn7pUOyowBykiaGdmwhHByNMM9oEFwBeUVM4G+
-         3dzHBtJRU6qVQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 656C260C46;
+        Tue,  3 Jan 2023 08:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1672735075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cxucqJyzfnCNVadtYHxDXtyUdE5BQ5o27Kjd3R83JAg=;
+        b=pB+jvQ4LqFEtRQBnhrTspiYshQvgyQetx3pEFEuajdpgDTi17C9MFciV3ESup3uhcsSOzj
+        /TQS3rxhGPtDbogm4hadF52JYRROPgu0QbRk5MeKfowBOv1rpXcYMrimuSK9YBgnfQRH5I
+        3l4+qWHER2nf3zdpdyBBsQePl9eBXWA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D0921390C;
+        Tue,  3 Jan 2023 08:37:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TiStDGPps2OnCwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 03 Jan 2023 08:37:55 +0000
+Date:   Tue, 3 Jan 2023 09:37:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mina Almasry <almasrymina@google.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Re: [PATCH 00/10] docs: cgroup-v1: formatting improv for "Memory
- Resource Controller" doc
-In-Reply-To: <20221219042209.22898-1-bagasdotme@gmail.com>
-References: <20221219042209.22898-1-bagasdotme@gmail.com>
-Date:   Mon, 02 Jan 2023 16:35:20 -0700
-Message-ID: <87a630h5mv.fsf@meer.lwn.net>
+        Muchun Song <songmuchun@bytedance.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yosry Ahmed <yosryahmed@google.com>, weixugc@google.com,
+        fvdl@google.com, bagasdotme@gmail.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] Revert "mm: add nodes= arg to memory.reclaim"
+Message-ID: <Y7PpYsbv1xC6m/Hu@dhcp22.suse.cz>
+References: <20221202223533.1785418-1-almasrymina@google.com>
+ <Y5bsmpCyeryu3Zz1@dhcp22.suse.cz>
+ <Y5xASNe1x8cusiTx@dhcp22.suse.cz>
+ <20221216101820.3f4a370af2c93d3c2e78ed8a@linux-foundation.org>
+ <Y52Scge3ynvn/mB4@dhcp22.suse.cz>
+ <20221219144252.f3da256e75e176905346b4d1@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221219144252.f3da256e75e176905346b4d1@linux-foundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
+[Sorry I was offline]
 
-> "Memory Resource Controller" CGroup v1 documentation has been in reST
-> since 99c8b231ae6c6c ("docs: cgroup-v1: convert docs to ReST and rename to *.rst"). The current doc look is kinda ugly, so improve the formatting (only
-> htmldocs is tested).
->
-> The first patch is a fix for recently reported htmldocs warning, which can
-> be pickup separately from rest of the series.
->
-> Bagas Sanjaya (10):
->   docs: cgroup-v1: extend underline of section 8
->   docs: cgroup-v1: replace custom note constructs with appropriate
->     admonition blocks
->   docs: cgroup-v1: wrap remaining admonitions in admonition blocks
->   docs: cgroup-v1: use code block for locking order schema
->   docs: cgroup-v1: fix footnotes
->   docs: cgroup-v1: move hierarchy of accounting caption
->   docs: cgroup-v1: use bullet lists for list of stat file tables
->   docs: cgroup-v1: use make swap extension subsections subsections
->   docs: cgroup-v1: add internal cross-references
->   docs: cgroup-v1: use numbered lists for user interface setup
->
->  .../admin-guide/cgroup-v1/cgroups.rst         |   2 +
->  .../admin-guide/cgroup-v1/memory.rst          | 290 ++++++++++--------
->  2 files changed, 158 insertions(+), 134 deletions(-)
+On Mon 19-12-22 14:42:52, Andrew Morton wrote:
+> On Sat, 17 Dec 2022 10:57:06 +0100 Michal Hocko <mhocko@suse.com> wrote:
+> 
+> > > I think it's a bit premature to revert at this stage.  Possibly we can
+> > > get to the desired end state by modifying the existing code.  Possibly
+> > > we can get to the desired end state by reverting this and by adding
+> > > something new.
+> > 
+> > Sure if we can converge to a proper implementation during the rc phase
+> > then it would be ok. I cannot speak for others but at least for me
+> > upcoming 2 weeks would be mostly offline so I cannot really contribute
+> > much. A revert would be much more easier from the coordination POV IMHO.
+> > 
+> > Also I do not think there is any strong reason to rush this in. I do not
+> > really see any major problems to have this extension in 6.2
+> 
+> I'll queue the revert in mm-unstable with a plan to merge it upstream
+> around the -rc5 timeframe if there hasn't been resolution.
 
-Tejun, do you have an opinion on these?  I'm not really sure we need to
-be tweaking the v1 docs at this point, but I don't see anything in here
-that seems harmful either...
+Thanks! I do not really think we need to rush node based reclaim and
+better have a reasonable and more futureproof interface.
 
-Thanks,
+> Please check Mina's issues with this revert's current changelog and
+> perhaps send along a revised one.
 
-jon
+Yes, I believe, I have addressed all the feedback but I am open to alter
+the wording of course. The biggest concern by Mina IIRC was that the
+nr_reclaimed reporting has been a pre-existing problem. And I agree with
+that. The thing is that this doesn't matter without node specification
+because the memory gets reclaimed even if the reported value is over
+accounted. With nodemask specification the value becomes bogus if no
+demotion nodes are specified because no memory gets reclaimed
+potentially while the success is still reported. Mina has tried to
+address that but I am not convinced the fix is actually future proof.
+
+This really requires more discussion.
+
+-- 
+Michal Hocko
+SUSE Labs
