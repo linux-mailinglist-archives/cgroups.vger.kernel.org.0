@@ -2,75 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CA165DF0F
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jan 2023 22:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD7E65DF13
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jan 2023 22:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240440AbjADV3q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Jan 2023 16:29:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        id S235429AbjADVbF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Jan 2023 16:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240557AbjADV30 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Jan 2023 16:29:26 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C68DC0;
-        Wed,  4 Jan 2023 13:27:41 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id k137so19045499pfd.8;
-        Wed, 04 Jan 2023 13:27:41 -0800 (PST)
+        with ESMTP id S240391AbjADVav (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Jan 2023 16:30:51 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E98213F64;
+        Wed,  4 Jan 2023 13:30:36 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id 17so37325703pll.0;
+        Wed, 04 Jan 2023 13:30:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xdMyQrIHWeXBS5vaDhN2cRckBSGcEP38oOfunYml57w=;
-        b=iX1y43d8OBGxLwGmJscAlBFVnoWSPofv9iXyHsuaXj45BXH9vjeirS5X7+rIV9ZZhI
-         kgmsMBU1MysDrFbe5rtEWFt3D2dmZmvt2X51oLkbTZJaWB5ewxlLnwJhiMW7BreTmtfW
-         gUO9PK9xlkX5hzeZQafxvgzJNW1B/yl2HD4O0wLbybwd/pYpO6kvt2y4c332bDDpWc17
-         buMOo5EORzykQc5P1bAlU++s1JKjLPniSHO9H1zEkv4emgaz3yQe4kJPFanSwrCTgIK3
-         /Q+NYDb2RAQraD1dbEv0ycfBtTFyFeBCuk0miK7rATtvKPXxIMcj5DbUXdFZIDn6+JSO
-         5q5w==
+        bh=QUxjPqi8cIjWiZ4wgk9iUZ3U2OAiaNP4OQpT53WV9V4=;
+        b=XHg29x/xZNjdTm//dbuc775EIoI9HMgi3iyEYs8SyHdybx5CB84wsv0dt8CY18Rb6+
+         n8NNZRGZm0EPHN/tL8w/1pzIx1GCaTryX0QV0R/UI7JrYWTUAr3hJ9Qp2iaYPtOg+Jh3
+         QQXIhBzb9qDYiD98zixXkhWfzrJE7RUj7UBTHemmMDjKssASMTxLBNyimWO/IxlX6Qt/
+         QEocTqc3A9MZWTqSmLuiUkNXiDDCNW0hU43r/6bkTwpt+uHX7/FZV+cRc5ctkX2YDPo+
+         gToPpHWLhdLXOpMYeN/OnEstNepYdbn2ikoN7J3fOEsl9CLGMAKYzCAEXEqPHzd1cFm2
+         hzCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xdMyQrIHWeXBS5vaDhN2cRckBSGcEP38oOfunYml57w=;
-        b=6NSBQ9KIrx47UwI7BTO3Qw3sOYBIqpDi31eiIWxDY+tufgVlbeHBCg5ZsHOSydFJOE
-         IkXQtUDresDR+EoXgNRW6h8VnW87alQcLrrdo4agD691EK91T6ChT7ferX5Gk48EiK0g
-         lJE6ya/kyq8NqCDSXEYWKXN7y7nFrUFYaFN3qh7yVv+sK9Fx6XiS7n18cn9WgEst4xtX
-         y9vxLXvmZuOqOlrGMfoAoqPvlddLJKYH015e3zM2jz29LyCXB9bXoS+fk40igs5tDjbR
-         EtkIN6aAwctS5osBJjnq6UDjblYLv/I/8CPJMM/t41ZCVsjhj0hDimMJ5afhZMK7uruH
-         ShAQ==
-X-Gm-Message-State: AFqh2koLIQ5VklFdXsBpUycJ7rOmfyaCasK/IYnZPO/BwLsFRgIAk2OP
-        RP2s+020kGZTDTaeDWatxKGroHmv0i8=
-X-Google-Smtp-Source: AMrXdXvhpuwOOVfrKEsoZWgSrWme3m5gOzE/qQ8ObvZGAs31erUxihR0pPQenvtgB+5fhqu4d5DaQg==
-X-Received: by 2002:aa7:8594:0:b0:581:f301:23fc with SMTP id w20-20020aa78594000000b00581f30123fcmr21332893pfn.12.1672867661193;
-        Wed, 04 Jan 2023 13:27:41 -0800 (PST)
+        bh=QUxjPqi8cIjWiZ4wgk9iUZ3U2OAiaNP4OQpT53WV9V4=;
+        b=Q2hyHQqXaMh+wkv+57mC7Jb/0ui3A9Wbjcw8eF39NShtODNRVEZ3S2TJLcXsZNQZ6e
+         9TRXSLla/zV4RxO7hbnN+caehH1yHISUhmgCK4ESUgRZlCDerRfhlYB68yIxKCsnTrhd
+         FA9wHv1rOnv5rqIpO32QqQokUykAHLGPKzP6EA5NBXx3M2lVMbGZZJ9kefo0pOqfJYRR
+         6COVrXQIbMgCgPfZsC9txdZEYbZHaBvk9OgU1clGOldBdWPF5qV5DBKGxae7jlDEmGFS
+         YptKGM5i6+hK/WOzXtphdekAnnm9il2iCn0qstZwFCqq2eyVaIP3kSHi3+dTdjR81Snu
+         1+Rw==
+X-Gm-Message-State: AFqh2kqqp9fQUWIz+L5L2YmKphV5YYTyl8PtqjbReG1If9vDZ1kh9z2r
+        1DEdzslIdmkRlBls80VyhFM=
+X-Google-Smtp-Source: AMrXdXvfV+Dp6BhUSY78RXOZsV1BB6OX4Lwe5b3z206ag2kVX4WoXI3kxQe7VIec8wieciL5C18zTA==
+X-Received: by 2002:a17:90a:c24a:b0:225:f3e6:424e with SMTP id d10-20020a17090ac24a00b00225f3e6424emr35633894pjx.17.1672867835855;
+        Wed, 04 Jan 2023 13:30:35 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id a184-20020a624dc1000000b00576cc60e5c9sm22939324pfb.87.2023.01.04.13.27.40
+        by smtp.gmail.com with ESMTPSA id om5-20020a17090b3a8500b002192a60e900sm2505pjb.47.2023.01.04.13.30.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 13:27:40 -0800 (PST)
+        Wed, 04 Jan 2023 13:30:35 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 4 Jan 2023 11:27:39 -1000
+Date:   Wed, 4 Jan 2023 11:30:34 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH 00/10] docs: cgroup-v1: formatting improv for "Memory
- Resource Controller" doc
-Message-ID: <Y7XvS5LJK01lWq48@slm.duckdns.org>
-References: <20221219042209.22898-1-bagasdotme@gmail.com>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next 1/4] block/rq_qos: move implementions of init/exit
+ rq-qos apis to blk-rq-qos.c
+Message-ID: <Y7Xv+rtqXQM8gf+A@slm.duckdns.org>
+References: <20230104085354.2343590-1-yukuai1@huaweicloud.com>
+ <20230104085354.2343590-2-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221219042209.22898-1-bagasdotme@gmail.com>
+In-Reply-To: <20230104085354.2343590-2-yukuai1@huaweicloud.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -81,33 +76,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 11:21:59AM +0700, Bagas Sanjaya wrote:
-> "Memory Resource Controller" CGroup v1 documentation has been in reST
-> since 99c8b231ae6c6c ("docs: cgroup-v1: convert docs to ReST and rename to *.rst"). The current doc look is kinda ugly, so improve the formatting (only
-> htmldocs is tested).
+On Wed, Jan 04, 2023 at 04:53:51PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> The first patch is a fix for recently reported htmldocs warning, which can
-> be pickup separately from rest of the series.
+> These init/exit rq-qos apis are super cold path, there is no need to
+> inline them to improve performance. This patch also prepare to use a
+> global mutex to protect these apis, move these implementions to
+> blk-rq-qos.c so that the global mutex won't be exposed. There are no
+> functional changes.
 > 
-> Bagas Sanjaya (10):
->   docs: cgroup-v1: extend underline of section 8
->   docs: cgroup-v1: replace custom note constructs with appropriate
->     admonition blocks
->   docs: cgroup-v1: wrap remaining admonitions in admonition blocks
->   docs: cgroup-v1: use code block for locking order schema
->   docs: cgroup-v1: fix footnotes
->   docs: cgroup-v1: move hierarchy of accounting caption
->   docs: cgroup-v1: use bullet lists for list of stat file tables
->   docs: cgroup-v1: use make swap extension subsections subsections
->   docs: cgroup-v1: add internal cross-references
->   docs: cgroup-v1: use numbered lists for user interface setup
-> 
->  .../admin-guide/cgroup-v1/cgroups.rst         |   2 +
->  .../admin-guide/cgroup-v1/memory.rst          | 290 ++++++++++--------
->  2 files changed, 158 insertions(+), 134 deletions(-)
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Patchset doesn't apply. Can you please rebase on top of linus#master and
-drop reference to the commit in -next?
+Acked-by: Tejun Heo <tj@kernel.org>
 
 Thanks.
 
