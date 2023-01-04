@@ -2,68 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FD965DFA6
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jan 2023 23:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B29165DFB2
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jan 2023 23:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240467AbjADWME (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Jan 2023 17:12:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        id S235558AbjADWPL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Jan 2023 17:15:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240460AbjADWMD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Jan 2023 17:12:03 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73CF193E7;
-        Wed,  4 Jan 2023 14:12:01 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id j8-20020a17090a3e0800b00225fdd5007fso26336316pjc.2;
-        Wed, 04 Jan 2023 14:12:01 -0800 (PST)
+        with ESMTP id S231244AbjADWPJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Jan 2023 17:15:09 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15591CFDE;
+        Wed,  4 Jan 2023 14:15:08 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id h192so18418019pgc.7;
+        Wed, 04 Jan 2023 14:15:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pKNXM54CWmj3ArGU8axmSVIl3xxiHyUVTW8v6DzGRHA=;
-        b=XeyuieaOtOOzRKGFjqn1IrRy3FbUpNBsXgm5p31jD6s62WfLwgMNey9QWnbRAniiTI
-         ffWLGD3JyLqTrn3kDeC6Ye79OjQ9b6aI1KxXAOg5mJ3cnwHIaz/XNdSIgPHgKy092C/9
-         z/dU/KUeru7A2hoGC84bFrOi1V8+5haTDs+DANlEuNy538SPL7H6GGtJAlBRJoSfsWdV
-         Q5EHgRKCpgfbJ0J0+VAKOYZIV9+y4JrXs1V78W16MvAFzweAYYPwAeOe3Zszj6osT6jl
-         1qtpRy83+l5cPjnq5rwOlsAona6qhEYXLVJlPd/jFHHWHQMNjHm+7F8OCm59Q09zUY3F
-         CrIg==
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+kzAyESGIRnB6ZoSVhFAu0vNg+AUYHAiTR9t3Vdi7JU=;
+        b=Sm7k5yc8eAeCWJuIWszMzn0BI6Xk9vvIxlP99m51CZibkPqgb8elOeZc+T9mUlBitS
+         edlD7jRkd3DA/q8mxg6/HyqAL/6jk/0lW27/1T85ruIg5A4wDlAmsU/67pdL66/UTQiZ
+         rdS4lX+t3IhGQj4dk5LPZgatM3yoEXkAJn7skS9Z0UbJOAzqMARu3xFse8xSZ5BeWNU/
+         tcdTOBTQH+yD/AdIA+1zkQjz6Ij/GMzHceHAgWPUtPDhGofk9yVI2IamUUxKEbHS/EI/
+         JgV67fFIprq5ljOHqEOcuRnWPic/BbU8T6QuU+E0pgzQr6WZIvCzoUMFbbMxkhCJQBLJ
+         bYvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pKNXM54CWmj3ArGU8axmSVIl3xxiHyUVTW8v6DzGRHA=;
-        b=gFceMz74KirvnQCckeC5eiDGAHrdHOu3NYzfDxYwKhDxI5bqexhI2tgMMaJ9aWOrFZ
-         I0EfptFfOHgqINO4j/+t65xrV/EUFPBHh8u41IRjb7AjlM21oDte2Z6gv6o0Bkmc9WV7
-         xu7xT2Jy9qwV1oOlOb1CsWZztXC0ghlAaRAIJHmfj8y55BuHsrKFWSMsk7V4RzQqk4Ua
-         hib1zbEL+z8241VjdZ0OFTE4VzOE56OXGp0R5qC1yadLcpMVWfGBmmkKQXlCavZZpRQz
-         ABBWB2WUPFV94CeWZKihCgIIjmGE6CcsUPh+De+U5KzJqgbl2voJWC8sj0gGIFMWPkEA
-         Ning==
-X-Gm-Message-State: AFqh2kphq1NrnPVyY/q6YfGbjkU+snuYNO9ogTkZ2YzP3TWDZbbvbCP5
-        1j20vuHL0mOE5XxhPOt8kZ0=
-X-Google-Smtp-Source: AMrXdXs5iIsV2LNtOVaok+0Pnio9CVJpFiNtbSeHyJGNSVLtmvYrSX0k9cih/OS/l8px84TfOjAu0Q==
-X-Received: by 2002:a17:902:f791:b0:192:5ec4:6656 with SMTP id q17-20020a170902f79100b001925ec46656mr48694739pln.3.1672870321040;
-        Wed, 04 Jan 2023 14:12:01 -0800 (PST)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+kzAyESGIRnB6ZoSVhFAu0vNg+AUYHAiTR9t3Vdi7JU=;
+        b=7maWBBdIpJB6Loqt9dJdGJlaY2tpw7pXlmPUtVrADcdO5XriWsgjs71MHPLw6J8gVY
+         R+Cc/899PV+a/G4FWgO3SVsBdLOvBXYZiHPT0lQfzvzOXay94TLdPrR7U+v9iKDBwXHy
+         0BlcMADMxHCu56biwaPOfow3ZY6Uln2vJN9JnDL95fzpd01Rsw1DneRCFgm6h2R37p4n
+         D0geDlxOrn1cMlH4h972vnMjTdXBLz+lqKkNMr7O5QXu7cOdLY9DUvy/4WiZaipYmv/o
+         +Hp0wlHMiIfob4GtNfHlo+1VTGhGaM1eWZMp+TG+MqzgyngtnxD3ACSpss/3FawVHRKw
+         bTtQ==
+X-Gm-Message-State: AFqh2koerQuHrqzKogjQZ4cKbZmVNvXkTa7FcpnSekOhFOEE2NSDl3Ji
+        2KMx5j+ZuP6aaDwR3E0+A6ZGAHrxebc=
+X-Google-Smtp-Source: AMrXdXuDfDknXDpgtszrfF8LHudkp37yQtPEIcZD1Nl4F+p7LnXHv2X0D+QpRx+c6OQ8oZm6rVXB9w==
+X-Received: by 2002:aa7:9210:0:b0:577:8bae:29a7 with SMTP id 16-20020aa79210000000b005778bae29a7mr47870372pfo.33.1672870508235;
+        Wed, 04 Jan 2023 14:15:08 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id s24-20020a170902a51800b0018996404dd5sm16780685plq.109.2023.01.04.14.11.59
+        by smtp.gmail.com with ESMTPSA id c6-20020a624e06000000b00580ff8ff1c7sm19418055pfb.144.2023.01.04.14.15.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jan 2023 14:12:00 -0800 (PST)
+        Wed, 04 Jan 2023 14:15:07 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 4 Jan 2023 12:11:58 -1000
+Date:   Wed, 4 Jan 2023 12:15:06 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Jinke Han <hanjinke.666@bytedance.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yinxin.x@bytedance.com
-Subject: Re: [PATCH v3] blk-throtl: Introduce sync and async queues for
- blk-throtl
-Message-ID: <Y7X5rsnYCAAYRGQd@slm.duckdns.org>
-References: <20221226130505.7186-1-hanjinke.666@bytedance.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Yann Droneaud <ydroneaud@opteya.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-iocost: don't make all constants unsigned long long
+Message-ID: <Y7X6ajqnPrtFAL0C@slm.duckdns.org>
+References: <20221220201819.1497577-1-ydroneaud@opteya.com>
+ <20221222135855.GC20830@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20221226130505.7186-1-hanjinke.666@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221222135855.GC20830@blackbody.suse.cz>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -74,89 +76,22 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Thu, Dec 22, 2022 at 02:58:55PM +0100, Michal Koutný wrote:
+> On Tue, Dec 20, 2022 at 09:18:19PM +0100, Yann Droneaud <ydroneaud@opteya.com> wrote:
+> > +enum {
+> >  	/* switch iff the conditions are met for longer than this */
+> >  	AUTOP_CYCLE_NSEC	= 10LLU * NSEC_PER_SEC,
+> > +};
+> 
+> This looks gratuitous.
+> 
+> What about indivudial #defines with typed literals instead of the "lazy
+> splitting"?
 
-On Mon, Dec 26, 2022 at 09:05:05PM +0800, Jinke Han wrote:
->  static void throtl_pending_timer_fn(struct timer_list *t);
-> +static inline struct bio *throtl_qnode_bio_list_pop(struct throtl_qnode *qn);
-
-Just define it before the first usage? Also, I think it'd be fine to let the
-compiler decide whether to inline.
-
-> +#define BLK_THROTL_SYNC(bio) (bio->bi_opf & (REQ_SYNC | REQ_META | REQ_PRIO))
-
-Nitpick but the above is used only in one place. Does it help to define it
-as a macro?
-
-> +/**
-> + * throtl_qnode_bio_peek - peek a bio for a qn
-> + * @qn: the qnode to peek from
-> + *
-> + * For read qn, just peek bio from the SYNC queue and return.
-> + * For write qn, we first ask the next_to_disp for bio and will pop a bio
-> + * to fill it if it's NULL. The next_to_disp is used to pin the bio for
-> + * next to dispatch. It is necessary. In the dispatching  process, a peeked
-> + * bio may can't be dispatched due to lack of budget and has to wait, the
-> + * dispatching process may give up and the spin lock of the request queue
-> + * will be released. New bio may be queued in as the spin lock were released.
-> + * When it's time to dispatch the waiting bio, another bio may be selected to
-> + * check the limit and may be dispatched. If the dispatched bio is smaller
-> + * than the waiting bio, the bandwidth may be hard to satisfied as we may
-> + * trim the slice after each dispatch.
-> + * So pinning the next_to_disp to make sure that the waiting bio and the
-> + * dispatched one later always the same one in case that the spin lock of
-> + * queue was released and re-holded.
-
-Can you please format it better and proof-read it. I can mostly understand
-what it's saying but it can be improved quite a bit. Can you elaborate the
-starvation scenario further? What about the [a]sync queue split makes this
-more likely?
-
-> +/**
-> + * throtl_qnode_bio_pop: pop a bio from sync/async queue
-> + * @qn: the qnode to pop a bio from
-> + *
-> + * For write io qn, the target queue to pop was determined by the disp_sync_cnt.
-> + * Try to pop bio from target queue, fetch the bio and return it when it is not
-> + * empty. If the target queue empty, pop bio from another queue instead.
-
-How about:
-
-        For reads, always pop from the ASYNC queue. For writes, target SYNC
-        or ASYNC queue based on disp_sync_cnt. If empty, try the other
-        queue.
-
-> +static inline struct bio *throtl_qnode_bio_list_pop(struct throtl_qnode *qn)
-> +{
-> +	struct bio *bio;
-> +	int from = SYNC;
-> +
-> +	if (qn->disp_sync_cnt == THROTL_SYNC_FACTOR)
-> +		from = ASYNC;
-
-?: often is less readable but I wonder whether it'd be more readable here:
-
-        from = qn->disp_sync_cnt == THROTL_SYNC_FACTOR ? ASYNC : SYNC;
-
-> +
-> +	bio = bio_list_pop(&qn->bios[from]);
-> +	if (!bio) {
-> +		from = 1 - from;
-> +		bio = bio_list_pop(&qn->bios[from]);
-> +	}
-> +
-> +	if ((qn->disp_sync_cnt < THROTL_SYNC_FACTOR) &&
-> +		(from == SYNC))
-
-Why the line break? Also, this may be more personal preference but I'm not
-sure the parentheses are helping much here.
-
-> +		qn->disp_sync_cnt++;
-> +	else
-> +		qn->disp_sync_cnt = 0;
-> +
-> +	return bio;
-> +}
+enums are so much better for debugging and tracing. This is a gcc caused
+problem where there's no other way to generate the same code between two gcc
+versions without splitting the enum definitions. I'm kinda baffled that this
+is what they chose to do but can't think of a better way to work around it.
 
 Thanks.
 
