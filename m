@@ -2,87 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C9165BE99
-	for <lists+cgroups@lfdr.de>; Tue,  3 Jan 2023 12:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B22765CE03
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jan 2023 09:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbjACLEP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Jan 2023 06:04:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        id S233767AbjADIGG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Jan 2023 03:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237327AbjACLEB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Jan 2023 06:04:01 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EB6FADF;
-        Tue,  3 Jan 2023 03:03:59 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NmVGf0XJnz4f3lK9;
-        Tue,  3 Jan 2023 19:03:54 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgBXwLOaC7RjvUsZBA--.2391S4;
-        Tue, 03 Jan 2023 19:03:56 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH] blk-cgroup: fix missing pd_online_fn() while activating policy
-Date:   Tue,  3 Jan 2023 19:28:33 +0800
-Message-Id: <20230103112833.2013432-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S231201AbjADIGG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Jan 2023 03:06:06 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB93B7CD
+        for <cgroups@vger.kernel.org>; Wed,  4 Jan 2023 00:06:05 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id c34so40924566edf.0
+        for <cgroups@vger.kernel.org>; Wed, 04 Jan 2023 00:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AgsU3TKYj1ea+xyRd1YeQ6QbaDveXYDp3sPPYkvfdzA=;
+        b=PGGZz/errlCrdY54pcd746i5wphxwqlHHQZTpmvHbkziVFDwBH3p1fjq1HPo7m6oGa
+         Ip77e2Xqiv0Ce3/H6xiz1BRH15s82Ta6jriYBpIePjN+ACyPoIBeOI5bBI+LWCw7zS6L
+         UvzPzZiR1hx0g09BqfZloDE657RqDb7VduajESitX5XabBC+DMc7NlSXKF5OLz7CvvIU
+         HG+L3FK/vmxxqVqXry9oWiivZtvtvE5Dy8nbJtpCVMrCE4Gwbj82M67ueOIa29fnqn+9
+         cbZhj8AaPfgB9GMg8it6S2l+OJqDdtPATjmWe9ZNdx9hw7lpVziuzEcorJiSIrfskwsL
+         7omQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgsU3TKYj1ea+xyRd1YeQ6QbaDveXYDp3sPPYkvfdzA=;
+        b=mSDxcJJh72PlU459niNtvAe2bwqE/hInjGnnTeSom9fbxoBovG1Tyo/9Ya7taLoE7l
+         iA4evjPMF/o5dHmlADdfrykaYrz+OWP6dWwcl4ss6RV3B5Jv5Jxj4w4L0BDYup20d8lz
+         5XklIRGbSIZ+Vf8Jehgs8Uc0j+5kdHmfIOGkO0S2J2tqMaarSyM/UqeGlkDxqkHhk0+H
+         QjIqIGGasWcLQagSnJtYmm7QlNB0M+GNKvOkZSwTC5P10uzsNOSQu0X7Fgjh4RWANPOT
+         /X3nCeFPPulUhCU7sZrVqRilgJkjBX7L7QxlydMXP2uhD3dehW0Yn5RaXZ+gUC1a/eeX
+         KiAg==
+X-Gm-Message-State: AFqh2kpOmWpjU6OF7cIhCLdqnemXlxRaaNugt/VqZK8QwOCzbVQeAMvL
+        SZPnhAANVJg9q35KXwClfp0lpvjlhbR2+sa4uw==
+X-Google-Smtp-Source: AMrXdXtr5L5Dcm7ltz+fyueRNf/R3RAJ6jzLPh33R/YUjK8u9bl6NwAMAhyD4rdn+79XOoBfOV94dutFme8n3Zc0o2g=
+X-Received: by 2002:a05:6402:1394:b0:48a:eac7:2b9f with SMTP id
+ b20-20020a056402139400b0048aeac72b9fmr1553016edv.91.1672819563408; Wed, 04
+ Jan 2023 00:06:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBXwLOaC7RjvUsZBA--.2391S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKry5ur47Ar1kZFyfKr18AFb_yoW3ZFgE9a
-        4kZFyxtFsxAa1IkrnYyFyrXrZYkrW0qrW7WF93KryxAF1DJay2ya1agrnxWay7CFy3CFyr
-        uFWqgr4ktr93ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        XdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7208:8297:b0:5e:de3b:d9a6 with HTTP; Wed, 4 Jan 2023
+ 00:06:02 -0800 (PST)
+Reply-To: Gregdenzell9@gmail.com
+From:   Greg Denzell <denzellgreg392@gmail.com>
+Date:   Wed, 4 Jan 2023 08:06:02 +0000
+Message-ID: <CALb=U3mbQW1W02JBjSMyzhOGtQ6dzWrdSpLaxzrDem0=9b3KNg@mail.gmail.com>
+Subject: Happy new year,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+Happy new year,
 
-If the policy defines pd_online_fn(), it should be called after
-pd_init_fn(), like blkg_create().
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-cgroup.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index ce6a2b7d3dfb..4c94a6560f62 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1455,6 +1455,10 @@ int blkcg_activate_policy(struct request_queue *q,
- 		list_for_each_entry_reverse(blkg, &q->blkg_list, q_node)
- 			pol->pd_init_fn(blkg->pd[pol->plid]);
- 
-+	if (pol->pd_online_fn)
-+		list_for_each_entry_reverse(blkg, &q->blkg_list, q_node)
-+			pol->pd_online_fn(blkg->pd[pol->plid]);
-+
- 	__set_bit(pol->plid, q->blkcg_pols);
- 	ret = 0;
- 
--- 
-2.31.1
-
+This will remind you again that I have not yet received your reply to
+my last message to you.
