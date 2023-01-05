@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 493FE65ECB8
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 14:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0563265ECB4
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 14:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbjAENRs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Jan 2023 08:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S232698AbjAENRr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Jan 2023 08:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234258AbjAENRW (ORCPT
+        with ESMTP id S234263AbjAENRW (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 08:17:22 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B76D5AC61;
-        Thu,  5 Jan 2023 05:17:06 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id j8-20020a17090a3e0800b00225fdd5007fso1988680pjc.2;
-        Thu, 05 Jan 2023 05:17:06 -0800 (PST)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3C45C1E1;
+        Thu,  5 Jan 2023 05:17:05 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id c6so6090671pls.4;
+        Thu, 05 Jan 2023 05:17:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EUYjmNJNX3EIHXC0Kg1oUFxJ9a1dGF+07OElWAzi70E=;
-        b=pEf0tlDI14cg718e2UjLbBPIw6gz58pcBgl/mZqJb17JoDKmf4ebY3uoHvhwaYGc4d
-         8//GhUDyynq9lR7EUZ6Jb13SOAUrqpVKd3I8d21JPwfc6OPxpWpQ3e7FAmPPoc503j4S
-         Saszua8tfPTYOLVLfysVYmuwwkXPJjRc8sW4V2nJr++VrhuhpD8By2lx30peHyeKkghC
-         MUn4aOiX7owa3KzqTQvF1fQL88hv2v21axjD4RoOxUlymmV266wrh+fKvf7Pv32Z7vLr
-         lKQwQgQpgQdJ/DCU0VBUNvyV70VCzFBQKoJebskRh4/uNFBWOhqX2wTM8loT+ohIZLAf
-         yj3A==
+        bh=XHKqH/mTeMAtJX+k1fwhOFwTW56tZzYBJVqR/bzkhlc=;
+        b=XkW/T1soWfm4Rl1XX1uhjbNQfx1mx3n00vAID2EM9vtxWbYXinFO4hH0F/Sh76u8Nt
+         T+gnK2msfrDFO1KmUccj24rF4UB8vifHeM6vVJGG4BqzWmkF5LR+KlioizvkKNFhtzGI
+         DqZ08ByEgPPDNotBdzpS9VmCEyShtWZsvx3n8EAJPOHu1HX5kpNBORHmuWbj2c2tqTYV
+         kKkA+xB6Fxx4Jc5iZgdCkvewR5ElvC1Q8mCbRjR5m0aVPDHOhmprl5Z6bpMJhV7aZOd2
+         jqwuT8bQYA/2qPzKPL/nYTtz+E24L3VfdAWrshv08AHCMMHGZLUBryatFJX7kP89y92r
+         Wa8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EUYjmNJNX3EIHXC0Kg1oUFxJ9a1dGF+07OElWAzi70E=;
-        b=7m1fiC2fpla59L/zi0+jaHF1x1sNejBYLyVJ+rw3878YMtDEF7uGBGgGZjpkvhUMR9
-         uJXDqn2H5GP0Wf4UKHnJRKTx6EcBKDgmanqYZT3a46s4qKw9tuU2weicOi+Cvmm1XN0S
-         FHzgR85M89iBI+iiRR7qulDhAdpsaPKUNmmj60WoL/OET/vd/Dq4+w18RA5W6Ds3B6oJ
-         m5qJ2FgJnqxC8R/dkpDLe6atTV9sfHdvuQKC0Wgm4JlBpuZ2DpJXGquXxHhfTAbNld3J
-         0mWZtMwfCWCy9vIe/tjyI59JONkasBz4rvnDZM6SCgTiq0d1qriPbGfyTVQxLcJU6qaa
-         gwVg==
-X-Gm-Message-State: AFqh2kpAclPZKtSkp2/GOnNMPuyKIpgJw8Rswuugw7DC2O50zjg+7EXt
-        89jjhnv2ccwPd+mHcYghy5o=
-X-Google-Smtp-Source: AMrXdXv80mGohLQSKP7xW+IpL76jo1fslPpxki49NJnSCNujtCj69FbgIT810EatTBYqeEsTWpBMLw==
-X-Received: by 2002:a17:902:8e81:b0:192:d5dc:c842 with SMTP id bg1-20020a1709028e8100b00192d5dcc842mr11888101plb.44.1672924625628;
+        bh=XHKqH/mTeMAtJX+k1fwhOFwTW56tZzYBJVqR/bzkhlc=;
+        b=OTnm15MrmWvEsb1fHRhF7/EhgHWSnSUPd3G5hi+g8G02IKZK2NB9F+jVNMki++uv3l
+         hJBPp7rkIE15AE4m2XnyN3WN/omFDH74iCZsYhGG9QtTgFjY4YdvHQNLjVpI7XCnq/Bv
+         gslPwL7Upzm3X9QhR4E9A8oD1va6p31RCt7ji9kFc+sKfMBGz2I8hWeMhZxJgQRs2bf2
+         C+Lo1o1Q66iiB6XJyFGBmAKFMgQp053z9PT/VyYoLf+sW8kteOuTa6IyqNgym5chiAoa
+         ic9Y9m0mIQAgrDma9EffSidmUB2fqSgwQMEbEaFxsg+2BJzy6N+SJhYJcyhgt0uJau3y
+         V5BA==
+X-Gm-Message-State: AFqh2kqA52J4xnV0TNSqPeQalVBUQx3NSw0xYBvgriIl/PNssCvitAcB
+        TBdJwvuAmPfWPe3vYUCCvdI=
+X-Google-Smtp-Source: AMrXdXuI/wFI9NZprHDOZ4C4Pqbm5J8rbYDJ/NE13dBSqovxsPA/Y3l0huJb190MwMO5oSrbIdxjoA==
+X-Received: by 2002:a17:902:d491:b0:192:ad82:dc98 with SMTP id c17-20020a170902d49100b00192ad82dc98mr31433592plg.34.1672924625229;
         Thu, 05 Jan 2023 05:17:05 -0800 (PST)
 Received: from debian.me (subs02-180-214-232-68.three.co.id. [180.214.232.68])
-        by smtp.gmail.com with ESMTPSA id t7-20020a1709027fc700b00192d3e7eb8fsm7232005plb.252.2023.01.05.05.17.04
+        by smtp.gmail.com with ESMTPSA id i2-20020a170902c94200b00189618fc2d8sm26053948pla.242.2023.01.05.05.17.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 05 Jan 2023 05:17:04 -0800 (PST)
 Received: by debian.me (Postfix, from userid 1000)
-        id AFE841048CD; Thu,  5 Jan 2023 20:16:59 +0700 (WIB)
+        id 9720A1043E8; Thu,  5 Jan 2023 20:16:59 +0700 (WIB)
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
 To:     Linux CGroups <cgroups@vger.kernel.org>,
         Linux Documentation <linux-doc@vger.kernel.org>,
@@ -64,14 +64,14 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Hugh Dickins <hughd@google.com>,
         Shakeel Butt <shakeelb@google.com>,
         Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH v2 2/9] docs: cgroup-v1: wrap remaining admonitions in admonition blocks
-Date:   Thu,  5 Jan 2023 20:16:27 +0700
-Message-Id: <20230105131633.553574-3-bagasdotme@gmail.com>
+Subject: [PATCH v2 3/9] docs: cgroup-v1: use code block for locking order schema
+Date:   Thu,  5 Jan 2023 20:16:28 +0700
+Message-Id: <20230105131633.553574-4-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230105131633.553574-1-bagasdotme@gmail.com>
 References: <20230105131633.553574-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1148; i=bagasdotme@gmail.com; h=from:subject; bh=lVJicFMEl6ad4fCfED8HKHDv/aSeW7ylfz8qS3An+no=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMnbzq4vNBYKCd3bmcV9+5uUy0z7o9MXVf7QviLr+cXonYRX St7jjlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAEzk9CKGf9b/N0rf1hF0ce5oufcnok N88nLxF9U6JlvWFldayGfc9WVkWGDful9O0+7A0yDvRIf/St5zCg7L64uXOU4pVkrT0bXgBgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=903; i=bagasdotme@gmail.com; h=from:subject; bh=IgqigKn9DkjPklU4lRTNbnqTt63GfYY/akiSBYrKIlo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMnbzq4XDnK5Z2Dspp/XK6O/hDH/vy9jfrHcT7XO5Wcey2i5 SQp3lLIwiHExyIopskxK5Gs6vctI5EL7WkeYOaxMIEMYuDgFYCICVQz/a/lu5hjddea89ev3r8tRkp XRb02+MnYu/XFlWaNkJntyKyPDAc1vbdt6LNecrSx/q+j+h/XJHfs98c6Fk0yPFO7av6OBHQA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,11 +84,9 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Wrap two other admonitions in appropriate blocks in order for readers to
-pay more attention to block contents:
-
-  * hint:: for editor's note
-  * warning:: for move charges deprecation
+The locking order schema is a figure (like diagram), which should have
+been formatted with literal code block for consistency with other
+figures.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
@@ -96,18 +94,18 @@ Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index d0d8c780cb6bd9..b0353c40639b7e 100644
+index b0353c40639b7e..2b807fc128c662 100644
 --- a/Documentation/admin-guide/cgroup-v1/memory.rst
 +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -13,7 +13,7 @@ Memory Resource Controller
-       memory controller in this document. Do not confuse memory controller
-       used here with the memory controller that is used in hardware.
+@@ -287,7 +287,7 @@ When oom event notifier is registered, event will be delivered.
+ 2.6 Locking
+ -----------
  
--(For editors) In this document:
-+.. hint::
-       When we mention a cgroup (cgroupfs's directory) with memory controller,
-       we call it "memory cgroup". When you see git-log and source code, you'll
-       see patch's title and function names tend to use "memcg".
+-Lock order is as follows:
++Lock order is as follows::
+ 
+   Page lock (PG_locked bit of page->flags)
+     mm->page_table_lock or split pte_lock
 -- 
 An old man doll... just what I always wanted! - Clara
 
