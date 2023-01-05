@@ -2,112 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A740C65E936
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 11:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7EB65ECD0
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 14:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbjAEKpu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Jan 2023 05:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S232452AbjAENSV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Jan 2023 08:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbjAEKpU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 05:45:20 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147CB3D9D8;
-        Thu,  5 Jan 2023 02:45:19 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 12EDC33B5B;
-        Thu,  5 Jan 2023 10:45:10 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C65FC138DF;
-        Thu,  5 Jan 2023 10:45:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cmPILjWqtmNLGgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 05 Jan 2023 10:45:09 +0000
-Date:   Thu, 5 Jan 2023 11:45:08 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH] blk-cgroup: fix missing pd_online_fn() while activating
- policy
-Message-ID: <20230105104241.GA16920@blackbody.suse.cz>
-References: <20230103112833.2013432-1-yukuai1@huaweicloud.com>
- <20230104151241.GA13268@blackbody.suse.cz>
- <4b559d1d-31e4-6049-4548-451bf7afb4f4@huaweicloud.com>
+        with ESMTP id S234308AbjAENRZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 08:17:25 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7315F921;
+        Thu,  5 Jan 2023 05:17:06 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id 17so39358235pll.0;
+        Thu, 05 Jan 2023 05:17:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HUkOkbYzuv5WTxnO2sv3n0IBM4omUdA6IheQF/z4HEk=;
+        b=NGtacwLgGIfh31U+j37UAkxT1pREhpEa5I7Zke513uzhR7ayCdgCJbrs6KJiPvm06G
+         fFnCmYRv+PHI1g5DcOZktq7IN/66rGcEzHoW3YjMbKRqEvewBDT8rUuYaoaaHqHZ78QP
+         PtEv4zWfcdWbJYB7ILQwRDe/bGViy3ZC63cJeYMXvm8MbStVEc3cjzLQnVHYp+FNYSb5
+         PQNcD40i+b5wMdGICjjhXSmU5X7aytJ1yHYPs94FSKOKHIuzzpjLwfEopRxYZyhe2GU3
+         nrs86tF5hzi0AXjOlJujcpTA+Bmag6mafIsPZcuIeq6mpMF3FF8GB3vZHPbXUaTjKHqL
+         Jn2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HUkOkbYzuv5WTxnO2sv3n0IBM4omUdA6IheQF/z4HEk=;
+        b=vS7ymXYw2F1mZ6u3l2JqFEzx6kMCIIzRkSLJgMRX2jsej7kp4AOfsrTkjfur/MTB/9
+         fbTFtbX5rvzw3+DallsYk1Q1GJ75tkhf/Er5n0xn5Jrax23F1fWtBhdW53PzeMt2NR8U
+         +WMovphqlCybv82HwTnK5fNNVwCqbTwOmuhJkj/pggLaFEOBHZM6ZfXaC5NgbHQCQe/Q
+         CBzx4u8bzg/GrQDOKyOYpCVKIx3dd5rYsOnOSuD/XRTN/ZdXv839r94wJ3wbw3uhyDR2
+         8vQpV/h1PP7zZnM0pnV2akJ8PuUBHSMafHFP604vQkYIcXKyG61XWpDf7aP3aD4hEWXe
+         /A/g==
+X-Gm-Message-State: AFqh2kp3/bHsovkmMo6d9iAcnR9q5A2amsbty+DWjdCi6M8GExmsweNm
+        u1YdDjnreYMreb85FYHJRmU=
+X-Google-Smtp-Source: AMrXdXu6rCc1zuGeZNCk5kWS9i/EY+REle4fGbOLkNgWpwIL6oVfmjfm6n/aQtbOiutCYncfzkjHxw==
+X-Received: by 2002:a05:6a20:4655:b0:aa:23f9:7314 with SMTP id eb21-20020a056a20465500b000aa23f97314mr52845051pzb.46.1672924626119;
+        Thu, 05 Jan 2023 05:17:06 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-68.three.co.id. [180.214.232.68])
+        by smtp.gmail.com with ESMTPSA id p28-20020aa79e9c000000b00575caf8478dsm12597033pfq.41.2023.01.05.05.17.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jan 2023 05:17:05 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 3792010447A; Thu,  5 Jan 2023 20:16:59 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux CGroups <cgroups@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH v2 0/9] docs: cgroup-v1: formatting improv for "Memory Resource Controller" doc
+Date:   Thu,  5 Jan 2023 20:16:25 +0700
+Message-Id: <20230105131633.553574-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
-Content-Disposition: inline
-In-Reply-To: <4b559d1d-31e4-6049-4548-451bf7afb4f4@huaweicloud.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.20
-X-Spamd-Result: default: False [-2.20 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3353; i=bagasdotme@gmail.com; h=from:subject; bh=/kf4xrQxZdifPynYl0ZAE3ZdLLa3+RCO1xkFVH/rr78=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDMnbzq74Oaf24mtmL1epe2kFR1t/Gskr2N2/xXXUT5Cp7Mit N8vOdJSyMIhxMciKKbJMSuRrOr3LSORC+1pHmDmsTCBDGLg4BWAiAWcZGU5FLnntdv6I4smC0myPyx r1nxvn7So4dqmS6VnI/EmdLxYx/FOWCK2cymic2LvpZ6Cq+MkLArusbB7tVZ543rpZb8f/2WwA
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+"Memory Resource Controller" CGroup v1 documentation has been in reST since
+99c8b231ae6c6c ("docs: cgroup-v1: convert docs to ReST and rename to *.rst").
+The current doc look is kinda ugly, so improve the formatting (only htmldocs is
+tested).
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes since v1 [1]:
+  * Drop the underline fix, since the blamed commit had been dropped
+  * Rebase on top of current cgroup tree (for-next branch)
 
-On Thu, Jan 05, 2023 at 09:43:02AM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> This is based only on code review, currently the only negative effects
-> is that root blkg from blk-throtl won't call pd_online_fn().
+Range-diff against v1:
 
-Good, that's a NOP and there are no other uses of pd_online_fn.
+ 1:  e0f2b878ad6435 <  -:  -------------- docs: cgroup-v1: extend underline of section 8
+ 2:  4e26b743ce9b42 =  1:  cb31249cacdad6 docs: cgroup-v1: replace custom note constructs with appropriate admonition blocks
+ 3:  c89f9aa1e6dac9 <  -:  -------------- docs: cgroup-v1: wrap remaining admonitions in admonition blocks
+ -:  -------------- >  2:  8e03baf289c4f2 docs: cgroup-v1: wrap remaining admonitions in admonition blocks
+ 4:  b901b2b0407e23 =  3:  790ac70bcf31e1 docs: cgroup-v1: use code block for locking order schema
+ 5:  f4112d2f9990ce =  4:  2af22c24977a38 docs: cgroup-v1: fix footnotes
+ 6:  d5d16831555e6b =  5:  9788d0e8c87cc5 docs: cgroup-v1: move hierarchy of accounting caption
+ 7:  92db959851e2c8 =  6:  b191e2bd87871b docs: cgroup-v1: use bullet lists for list of stat file tables
+ 8:  767988658f58b8 !  7:  56e4ba363e4e65 docs: cgroup-v1: use make swap extension subsections subsections
+    @@ Metadata
+     Author: Bagas Sanjaya <bagasdotme@gmail.com>
+     
+      ## Commit message ##
+    -    docs: cgroup-v1: use make swap extension subsections subsections
+    +    docs: cgroup-v1: make swap extension subsections subsections
+     
+         Subsections text of swap extension section is marked up as bold text,
+         whereas making them proper subsection is more appropriate.
+ 9:  a502f09f9a3c33 !  8:  6895ee7c84e840 docs: cgroup-v1: add internal cross-references
+    @@ Documentation/admin-guide/cgroup-v1/memory.rst: If we want to change this to 1G,
+      
+     +.. _cgroup-v1-memory-move-charges:
+     +
+    - 8. Move charges at task migration (DEPRECATED!)
+    - ===============================================
+    + 8. Move charges at task migration
+    + =================================
+      
+     @@ Documentation/admin-guide/cgroup-v1/memory.rst: If you want to enable it::
+      
+10:  895b1f1aa37d33 =  9:  b179c2788f2a36 docs: cgroup-v1: use numbered lists for user interface setup
 
-I wonder are the separate pd_init_fn and pd_online_fn callbacks
-necessary today?
-(IOW your fixup is a good catch and looks correct to me; I'd suggest
-more of a clean up. Shall I look into that?)
+[1]: https://lore.kernel.org/linux-doc/20221219042209.22898-1-bagasdotme@gmail.com/
 
-> No, this is not true, before blkcg_activate_policy() is called,
-> blkg_create() won't see this policy, hence pd_init_fn/pd_online_fn won't
-> be called from blkg_create().
+Bagas Sanjaya (9):
+  docs: cgroup-v1: replace custom note constructs with appropriate
+    admonition blocks
+  docs: cgroup-v1: wrap remaining admonitions in admonition blocks
+  docs: cgroup-v1: use code block for locking order schema
+  docs: cgroup-v1: fix footnotes
+  docs: cgroup-v1: move hierarchy of accounting caption
+  docs: cgroup-v1: use bullet lists for list of stat file tables
+  docs: cgroup-v1: make swap extension subsections subsections
+  docs: cgroup-v1: add internal cross-references
+  docs: cgroup-v1: use numbered lists for user interface setup
 
-Thanks, I missed the q->blkcg_pols bit.
+ .../admin-guide/cgroup-v1/cgroups.rst         |   2 +
+ .../admin-guide/cgroup-v1/memory.rst          | 268 ++++++++++--------
+ 2 files changed, 146 insertions(+), 124 deletions(-)
 
-Michal
 
---mojUlQ0s9EVzWg2t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+base-commit: 21786e5cb375a1e58a9175fee423e1d7f892d965
+-- 
+An old man doll... just what I always wanted! - Clara
 
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY7aqMgAKCRAkDQmsBEOq
-udG/AP443o4fnN2JypjVdH6EZJPRY/O5O0N3ywlBupWqtBkSeQD8DIJhUF+tVjlL
-zXTyjDqKPgE2Ri3wEWklUqmarfiGJg4=
-=7FAl
------END PGP SIGNATURE-----
-
---mojUlQ0s9EVzWg2t--
