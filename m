@@ -2,75 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4753265F197
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 17:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7178F65F1A0
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 18:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbjAEQ7r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Jan 2023 11:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S230190AbjAERAq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Jan 2023 12:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234772AbjAEQ7j (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 11:59:39 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D325C938;
-        Thu,  5 Jan 2023 08:59:28 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id fz16-20020a17090b025000b002269d6c2d83so3981769pjb.0;
-        Thu, 05 Jan 2023 08:59:28 -0800 (PST)
+        with ESMTP id S234803AbjAERAh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 12:00:37 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C33754DAA;
+        Thu,  5 Jan 2023 09:00:37 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d15so39939047pls.6;
+        Thu, 05 Jan 2023 09:00:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W6/pyn3vLiTu4LQPjq1YDQtDVZvW+kSX5YHBAxRyFO8=;
-        b=pAjIbIyMHaELzfUibrA3v9W+sRKujPM33MXbNJU5pgHSE0PXYNtxJxzhKIuEhbYX2I
-         //w0bNp5rM4kUuyqlJjg7UH2U6kdWagMOCFswiNMHO+MP5kKQmUJ0lnzwkYYNOWZOZVn
-         EdugV+lRv0hIvf8c7FMNOtMle0x7h2E6Qnb049/E/YE/sTad3y00z5hxyx+IYbCfMZQc
-         Peeez2SyIRJYa/Cj1o+eYfzKr7hFOa5Ue+JIcn3JJ8BHQ6F4lmQkn177ETZTiaIvddtn
-         Kr2lAChV22biUhSCqdGzYEksLBQahie9+eCOp4KdEsgpyAzBOn9evh4V+o6ZsiU80js2
-         jV2g==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lWuNYcgMRUdXt3lrKpOOAhpTNHvmJnhLtWA6WFPkqzw=;
+        b=Ip639JaYOV1aW93fhR9fwRH10jtovSU7bc+87GLEpQ+7rAxYP89lDQrJAJsr2FX6W4
+         aI4VpoefbHI4W7mUgseXFMeB3elqfgJAmZIvaMFo5/s6Z0OjDK3eHaWaHAmCn0uFnX6t
+         kOHaQWZWvNX8ogHf+qeBkzT3vQbBpAo48dSLguLwXtrFfBJXmtjwkHNqJUhPzdXc6PkS
+         BDkw7vuxKXEyvEu4F9Bk2v+2c9TDA3TXClOaIDNfSxIYjOkAwt6/suSKu1swOAB2Ut44
+         rhTI0gv4n6qsAGEuBQGHyBx0fZFcj9lXGw6KBaKYwIypB0W5q90hjWTlQKrYwgVG5yUy
+         JbhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W6/pyn3vLiTu4LQPjq1YDQtDVZvW+kSX5YHBAxRyFO8=;
-        b=LNE++JbH4C6eqUwPggnyrlPOVGBXUM7uJZKpNQKKbnEeFL+rIE8hNnPEhT50JFaQz3
-         qe8IxfPgy4MwRbt94Q5XhF0Pfsyd3c9jJAlofw3uwmT6hSMTza6gPhPRJjbKMDPTwyJS
-         7oXpoApUK7nY0Rqq0I3js8tgrCHEI2DsUDAQ1CYaMl4lCHDSpjFZymFO3yQVsX8rluvV
-         PoOZB2bRZesn1c1VMMYPq8lUf5zw59pj8vGcJAtAbOtweUesF2AfO7GWihFF1RUhVAVT
-         a60rcqL5LhtDqA11BRTQgZD9jaG0kqZ4G3G1b/WS9lpyc2pXOcwG+E4sYSKCXKdd/phZ
-         lPUg==
-X-Gm-Message-State: AFqh2koDqV5jzRxALMUccAjw4bHPy2h77pCEIrpnwCZj4VvVbbNkwikd
-        74UH62pzjT5tYLO3Bq8XCuIx2rmv0mc=
-X-Google-Smtp-Source: AMrXdXuDyUGyV/XJrWFjFnkkcvkqRgsKtzwm6TwmyvBHXxb32lJHO9KtvdBYppQq8dRbKT93jTqqyQ==
-X-Received: by 2002:a05:6a20:d819:b0:b2:3b40:32b1 with SMTP id iv25-20020a056a20d81900b000b23b4032b1mr60554726pzb.57.1672937967583;
-        Thu, 05 Jan 2023 08:59:27 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lWuNYcgMRUdXt3lrKpOOAhpTNHvmJnhLtWA6WFPkqzw=;
+        b=TAxQWxHlVfoOXJz22YiBaCVYN5qXikQAt+XDMMYkIhY/1dwueouziYYRK0x2Q5MUjz
+         HMgaYEWZAa29YFa1RvdPREukV4RYQZLfw+MHX0cd/RAYWQdPZtnGncMn3ruuqdnI0DGw
+         C8QNVNbgEfhAoT8p6AWBl+CJLhJa520Zkb26q+ovJqP6Th+mCmdT/YDsrkiJGqtH2NdR
+         kljw9sv3q6icY0BpQWnvscN1KY8oAkAQOUySXyDFSbWiLzw14qUv1aGu1FDOvd1siOvA
+         B8fV+yqRbt8Vp/bCLS2WpNvUYtQ6o/8sVsKcOEhQ0SHf1GlXAZEY276Cy2ZVE8dC9yZH
+         8DHQ==
+X-Gm-Message-State: AFqh2krxoqiVhl4JxsxIDaU4/aYBkQg8hp4NzxaceQ0aq7ZAHaKWsqT3
+        17w5v7tMMqkWJzJdV/kE1eA=
+X-Google-Smtp-Source: AMrXdXt4uRQVRgPNn+82sQpY7HLkRbMOO20I+dRTWJJ/bfU20RYAkQ2J+eEF8mhTo+v0yZuvmxdXlA==
+X-Received: by 2002:a05:6a20:9591:b0:ad:7428:d326 with SMTP id iu17-20020a056a20959100b000ad7428d326mr70011472pzb.30.1672938036598;
+        Thu, 05 Jan 2023 09:00:36 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id g7-20020a625207000000b00573a9d13e9esm21345455pfb.36.2023.01.05.08.59.26
+        by smtp.gmail.com with ESMTPSA id k201-20020a6284d2000000b005822ce3b2acsm10560119pfd.115.2023.01.05.09.00.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 08:59:26 -0800 (PST)
+        Thu, 05 Jan 2023 09:00:36 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 5 Jan 2023 06:59:25 -1000
+Date:   Thu, 5 Jan 2023 07:00:35 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
 Subject: Re: [PATCH] blk-cgroup: fix missing pd_online_fn() while activating
  policy
-Message-ID: <Y7cB7f98+PNdXUnj@slm.duckdns.org>
+Message-ID: <Y7cCM60kalx+MnYu@slm.duckdns.org>
 References: <20230103112833.2013432-1-yukuai1@huaweicloud.com>
- <20230104151241.GA13268@blackbody.suse.cz>
- <4b559d1d-31e4-6049-4548-451bf7afb4f4@huaweicloud.com>
- <20230105104241.GA16920@blackbody.suse.cz>
- <6f54c858-be91-0fd3-d377-1aabb8a70c6f@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6f54c858-be91-0fd3-d377-1aabb8a70c6f@huaweicloud.com>
+In-Reply-To: <20230103112833.2013432-1-yukuai1@huaweicloud.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -81,35 +74,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 09:52:29PM +0800, Yu Kuai wrote:
-> Hi,
+On Tue, Jan 03, 2023 at 07:28:33PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> 在 2023/01/05 18:45, Michal Koutný 写道:
-> > On Thu, Jan 05, 2023 at 09:43:02AM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> > > This is based only on code review, currently the only negative effects
-> > > is that root blkg from blk-throtl won't call pd_online_fn().
-> > 
-> > Good, that's a NOP and there are no other uses of pd_online_fn.
-> > 
-> > I wonder are the separate pd_init_fn and pd_online_fn callbacks
-> > necessary today?
+> If the policy defines pd_online_fn(), it should be called after
+> pd_init_fn(), like blkg_create().
 > 
-> I think online can combine to init, consider that only blk-throttle
-> implement pd_online_fn(), but I'm not sure...
-> 
-> It seems to me the policies(bfq, iocost...) seem don't honor how pd
-> apis works: alloc->init->online->offline->free, bfq combines online to
-> init, iocost combines offline to free, ...
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-So, the distinction between alloc and online is that a pd which gets
-allocated may be freed without ever going online if later allocations fail.
-This is following cgroup init/exit pattern. Maybe it's a bit too elaborate
-but the distinction is meaningful, at least in principle.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-What seems truly spurious is pd_init_fn(). All that pd_init_fn() can do
-should be achievable between pd_alloc_fn() and pd_online_fn(). The overlap
-seems at least partially historical and we used to have pd_exit_fn() too.
-So, yeah, getting rid of pd_init_fn() would be a nice first step.
+However, it'd be useful to note the practical implication of the bug in the
+patch description, which seems like not much as discussed in the thread.
 
 Thanks.
 
