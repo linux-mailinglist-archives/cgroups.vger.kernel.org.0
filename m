@@ -2,139 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D85C65E2B2
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 02:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1893E65E60A
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 08:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjAEBxs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Jan 2023 20:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        id S230480AbjAEH22 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Jan 2023 02:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbjAEBxq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Jan 2023 20:53:46 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1DF43A1F;
-        Wed,  4 Jan 2023 17:53:43 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NnTyn4yxfz4f3mSC;
-        Thu,  5 Jan 2023 09:53:37 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAHvbCiLbZjBgh8BA--.64460S3;
-        Thu, 05 Jan 2023 09:53:40 +0800 (CST)
-Subject: Re: [PATCH v3 4/5] blk-iocost: fix divide by 0 error in calc_lcoefs()
-To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+        with ESMTP id S230369AbjAEH20 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 02:28:26 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1C752764
+        for <cgroups@vger.kernel.org>; Wed,  4 Jan 2023 23:28:24 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id v23so38991334pju.3
+        for <cgroups@vger.kernel.org>; Wed, 04 Jan 2023 23:28:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qt1/1jt/A2jfQF0MWqTApdHyZ/eifCsttJnc6t5bAhc=;
+        b=ljjg/ss9Lr0VO0mLUyc8ixTvn6Ok2pFNoVH+NGeMcx1aPc7QRcxbtAKSBTSKNkWSJL
+         Nb/hAeuEZCNR9DsrceMmOedZ/y3fCBj7dVamRS83iFoMnySckQHIqS9y2lWDvFGNmUKQ
+         LZQZwPi91qAHOF/LoG+aTj8j0fkARFuKmXRNt4gAia446UDCDgELl3oY78P8vDyEEn1A
+         QbJNDLj/IvL8GY6MRRNWNXXGYhMsgxi2LRYKivmjdjG8Cn0zSBNmLK+lGzTdFKTDrxVM
+         eu7DTiCavtT8mJeqwi0Thp1Sj87Sn9tp9v1eS6DoCk9AdWdne67kBmKDkumdQyFuaVqx
+         9ivQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qt1/1jt/A2jfQF0MWqTApdHyZ/eifCsttJnc6t5bAhc=;
+        b=L6NDg7FlJADhuU8kWCSxPIT5flC7Ltw6NcYbYJZpd60QgZbl7rOLJQ1DJJIkTyoQi+
+         ddJ6+xxVJkIfpcVPJ0WXTZOxY8Ptaz6Rt0zWNqP7Q5jgcmEe7w5exSHu9GJV6dYcjRo1
+         +rZ+DUILVO9+i7df2AU2RCqUvHG/Mi3eIe1Q9ZTZa1mpWRhPDUrtUESU9iDyG7P8bIXT
+         HFMUPLMY0DlPGP21SppQ81Sdc82lBxGpQiqdHAhxoMa9faGt0IZSPSqh5o+DUdPM592H
+         huKy1vANgtoqS23BkREmOzd7E1qnLmLayp4nl4B1rH52MhZeCktuDaOXLWNH66Gc/Scw
+         HpBw==
+X-Gm-Message-State: AFqh2krgbk18V/bM2J6CnJr7ftsTmay3riE3MbHcpSkbrJqAgPWrLtsm
+        8Uw6MQxODuHPNcYKU6qPle/QbA==
+X-Google-Smtp-Source: AMrXdXsnbMemu2nVkzxSdqMRJx7ZyMX5+UPy2NhBqROjcigZp5T+NspeFAmJU3SqyL94m5ik8saxFw==
+X-Received: by 2002:a17:902:c9d2:b0:192:ee98:664c with SMTP id q18-20020a170902c9d200b00192ee98664cmr3888405pld.54.1672903703559;
+        Wed, 04 Jan 2023 23:28:23 -0800 (PST)
+Received: from [10.3.153.16] ([61.213.176.8])
+        by smtp.gmail.com with ESMTPSA id x4-20020a1709029a4400b00189af02aba4sm25421862plv.3.2023.01.04.23.28.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Jan 2023 23:28:23 -0800 (PST)
+Message-ID: <4d4f0a3f-6906-0c9b-1b56-22b9ff8795d4@bytedance.com>
+Date:   Thu, 5 Jan 2023 15:28:17 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.2
+Subject: Re: [External] Re: [PATCH v3] blk-throtl: Introduce sync and async
+ queues for blk-throtl
+To:     Tejun Heo <tj@kernel.org>
 Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20221226085859.2701195-1-yukuai1@huaweicloud.com>
- <20221226085859.2701195-5-yukuai1@huaweicloud.com>
- <Y7X1fFO4UP7QnwkC@slm.duckdns.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <9b23b5a9-c730-1156-cd59-772f5559b4f7@huaweicloud.com>
-Date:   Thu, 5 Jan 2023 09:53:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <Y7X1fFO4UP7QnwkC@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
+        yinxin.x@bytedance.com
+References: <20221226130505.7186-1-hanjinke.666@bytedance.com>
+ <Y7X5rsnYCAAYRGQd@slm.duckdns.org>
+From:   hanjinke <hanjinke.666@bytedance.com>
+In-Reply-To: <Y7X5rsnYCAAYRGQd@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHvbCiLbZjBgh8BA--.64460S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WrWkZF17Jr18KrWxWw1DGFg_yoW8uw1xpr
-        Wfu3W5uFnagrnrCFWIqF1IqFySvrs2qF10qw1xtwnIgry7Arn3K3Wqgw1jgrWkArWxJ3yF
-        9ayIvry5uw1Yk37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9
-        -UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
 
-ÔÚ 2023/01/05 5:54, Tejun Heo Ð´µÀ:
-> On Mon, Dec 26, 2022 at 04:58:58PM +0800, Yu Kuai wrote:
->> From: Li Nan <linan122@huawei.com>
->>
->> echo max of u64 to cost.model can cause divide by 0 error.
->>
->>    # echo 8:0 rbps=18446744073709551615 > /sys/fs/cgroup/io.cost.model
->>
->>    divide error: 0000 [#1] PREEMPT SMP
->>    RIP: 0010:calc_lcoefs+0x4c/0xc0
->>    Call Trace:
->>     <TASK>
->>     ioc_refresh_params+0x2b3/0x4f0
->>     ioc_cost_model_write+0x3cb/0x4c0
->>     ? _copy_from_iter+0x6d/0x6c0
->>     ? kernfs_fop_write_iter+0xfc/0x270
->>     cgroup_file_write+0xa0/0x200
->>     kernfs_fop_write_iter+0x17d/0x270
->>     vfs_write+0x414/0x620
->>     ksys_write+0x73/0x160
->>     __x64_sys_write+0x1e/0x30
->>     do_syscall_64+0x35/0x80
->>     entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> calc_lcoefs() uses the input value of cost.model in DIV_ROUND_UP_ULL,
->> overflow would happen if bps plus IOC_PAGE_SIZE is greater than
->> ULLONG_MAX, it can cause divide by 0 error.
->>
->> Fix the problem by setting basecost
->>
->> Signed-off-by: Li Nan <linan122@huawei.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   block/blk-iocost.c | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
->> index f8726e20da20..c6b39024117b 100644
->> --- a/block/blk-iocost.c
->> +++ b/block/blk-iocost.c
->> @@ -866,9 +866,13 @@ static void calc_lcoefs(u64 bps, u64 seqiops, u64 randiops,
->>   
->>   	*page = *seqio = *randio = 0;
->>   
->> -	if (bps)
->> -		*page = DIV64_U64_ROUND_UP(VTIME_PER_SEC,
->> -					   DIV_ROUND_UP_ULL(bps, IOC_PAGE_SIZE));
->> +	if (bps) {
->> +		if (bps >= U64_MAX - IOC_PAGE_SIZE)
->> +			*page = 1;
->> +		else
->> +			*page = DIV64_U64_ROUND_UP(VTIME_PER_SEC,
->> +					DIV_ROUND_UP_ULL(bps, IOC_PAGE_SIZE));
+
+åœ¨ 2023/1/5 ä¸Šåˆ6:11, Tejun Heo å†™é“:
+> Hello,
+> 
+> On Mon, Dec 26, 2022 at 09:05:05PM +0800, Jinke Han wrote:
+>>   static void throtl_pending_timer_fn(struct timer_list *t);
+>> +static inline struct bio *throtl_qnode_bio_list_pop(struct throtl_qnode *qn);
+> 
+> Just define it before the first usage? Also, I think it'd be fine to let the
+> compiler decide whether to inline.
+> 
+>> +#define BLK_THROTL_SYNC(bio) (bio->bi_opf & (REQ_SYNC | REQ_META | REQ_PRIO))
+> 
+> Nitpick but the above is used only in one place. Does it help to define it
+> as a macro?
+> 
+>> +/**
+>> + * throtl_qnode_bio_peek - peek a bio for a qn
+>> + * @qn: the qnode to peek from
+>> + *
+>> + * For read qn, just peek bio from the SYNC queue and return.
+>> + * For write qn, we first ask the next_to_disp for bio and will pop a bio
+>> + * to fill it if it's NULL. The next_to_disp is used to pin the bio for
+>> + * next to dispatch. It is necessary. In the dispatching  process, a peeked
+>> + * bio may can't be dispatched due to lack of budget and has to wait, the
+>> + * dispatching process may give up and the spin lock of the request queue
+>> + * will be released. New bio may be queued in as the spin lock were released.
+>> + * When it's time to dispatch the waiting bio, another bio may be selected to
+>> + * check the limit and may be dispatched. If the dispatched bio is smaller
+>> + * than the waiting bio, the bandwidth may be hard to satisfied as we may
+>> + * trim the slice after each dispatch.
+>> + * So pinning the next_to_disp to make sure that the waiting bio and the
+>> + * dispatched one later always the same one in case that the spin lock of
+>> + * queue was released and re-holded.
+> 
+> Can you please format it better and proof-read it. I can mostly understand
+> what it's saying but it can be improved quite a bit. Can you elaborate the
+> starvation scenario further? What about the [a]sync queue split makes this
+> more likely?
+> 
+>> +/**
+>> + * throtl_qnode_bio_pop: pop a bio from sync/async queue
+>> + * @qn: the qnode to pop a bio from
+>> + *
+>> + * For write io qn, the target queue to pop was determined by the disp_sync_cnt.
+>> + * Try to pop bio from target queue, fetch the bio and return it when it is not
+>> + * empty. If the target queue empty, pop bio from another queue instead.
+> 
+> How about:
+> 
+>          For reads, always pop from the ASYNC queue. For writes, target SYNC
+>          or ASYNC queue based on disp_sync_cnt. If empty, try the other
+>          queue.
+> 
+>> +static inline struct bio *throtl_qnode_bio_list_pop(struct throtl_qnode *qn)
+>> +{
+>> +	struct bio *bio;
+>> +	int from = SYNC;
+>> +
+>> +	if (qn->disp_sync_cnt == THROTL_SYNC_FACTOR)
+>> +		from = ASYNC;
+> 
+> ?: often is less readable but I wonder whether it'd be more readable here:
+> 
+>          from = qn->disp_sync_cnt == THROTL_SYNC_FACTOR ? ASYNC : SYNC;
+> 
+>> +
+>> +	bio = bio_list_pop(&qn->bios[from]);
+>> +	if (!bio) {
+>> +		from = 1 - from;
+>> +		bio = bio_list_pop(&qn->bios[from]);
 >> +	}
+>> +
+>> +	if ((qn->disp_sync_cnt < THROTL_SYNC_FACTOR) &&
+>> +		(from == SYNC))
 > 
-> This is a nitpick but wouldn't something like the following be easier to
-> understand?
+> Why the line break? Also, this may be more personal preference but I'm not
+> sure the parentheses are helping much here.
 > 
->          if (bps) {
->                  u64 bps_pages = DIV_ROUND_UP_ULL(bps, IOC_PAGE_SIZE);
+>> +		qn->disp_sync_cnt++;
+>> +	else
+>> +		qn->disp_sync_cnt = 0;
+>> +
+>> +	return bio;
+>> +}
 > 
->                  if (bps_pages)
->                          *pages = DIV64_U64_ROUND_UP(VTIME_PER_SEC, bps_pages);
->                  else
->                          *pages = 1;
->          }
+> Thanks.
 > 
-Yes, I agree that this is better to understand. I'll send a new version.
 
-Thanks,
-Kuai
+Thanks. Your suggestion is detailed and helpful. I will accept it and 
+send the v4.
 
+Thanks.
