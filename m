@@ -2,129 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4D365F0F6
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 17:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4753265F197
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jan 2023 17:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbjAEQTH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Jan 2023 11:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
+        id S234782AbjAEQ7r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Jan 2023 11:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbjAEQTG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 11:19:06 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B514E42F;
-        Thu,  5 Jan 2023 08:19:05 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 59D3F17846;
-        Thu,  5 Jan 2023 16:18:56 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 271F213338;
-        Thu,  5 Jan 2023 16:18:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bxuMCHD4tmM3QwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 05 Jan 2023 16:18:56 +0000
-Date:   Thu, 5 Jan 2023 17:18:54 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Jinke Han <hanjinke.666@bytedance.com>
-Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yinxin.x@bytedance.com, jack@suse.cz
-Subject: Re: [PATCH v3] blk-throtl: Introduce sync and async queues for
- blk-throtl
-Message-ID: <20230105161854.GA1259@blackbody.suse.cz>
-References: <20221226130505.7186-1-hanjinke.666@bytedance.com>
+        with ESMTP id S234772AbjAEQ7j (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Jan 2023 11:59:39 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D325C938;
+        Thu,  5 Jan 2023 08:59:28 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id fz16-20020a17090b025000b002269d6c2d83so3981769pjb.0;
+        Thu, 05 Jan 2023 08:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W6/pyn3vLiTu4LQPjq1YDQtDVZvW+kSX5YHBAxRyFO8=;
+        b=pAjIbIyMHaELzfUibrA3v9W+sRKujPM33MXbNJU5pgHSE0PXYNtxJxzhKIuEhbYX2I
+         //w0bNp5rM4kUuyqlJjg7UH2U6kdWagMOCFswiNMHO+MP5kKQmUJ0lnzwkYYNOWZOZVn
+         EdugV+lRv0hIvf8c7FMNOtMle0x7h2E6Qnb049/E/YE/sTad3y00z5hxyx+IYbCfMZQc
+         Peeez2SyIRJYa/Cj1o+eYfzKr7hFOa5Ue+JIcn3JJ8BHQ6F4lmQkn177ETZTiaIvddtn
+         Kr2lAChV22biUhSCqdGzYEksLBQahie9+eCOp4KdEsgpyAzBOn9evh4V+o6ZsiU80js2
+         jV2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W6/pyn3vLiTu4LQPjq1YDQtDVZvW+kSX5YHBAxRyFO8=;
+        b=LNE++JbH4C6eqUwPggnyrlPOVGBXUM7uJZKpNQKKbnEeFL+rIE8hNnPEhT50JFaQz3
+         qe8IxfPgy4MwRbt94Q5XhF0Pfsyd3c9jJAlofw3uwmT6hSMTza6gPhPRJjbKMDPTwyJS
+         7oXpoApUK7nY0Rqq0I3js8tgrCHEI2DsUDAQ1CYaMl4lCHDSpjFZymFO3yQVsX8rluvV
+         PoOZB2bRZesn1c1VMMYPq8lUf5zw59pj8vGcJAtAbOtweUesF2AfO7GWihFF1RUhVAVT
+         a60rcqL5LhtDqA11BRTQgZD9jaG0kqZ4G3G1b/WS9lpyc2pXOcwG+E4sYSKCXKdd/phZ
+         lPUg==
+X-Gm-Message-State: AFqh2koDqV5jzRxALMUccAjw4bHPy2h77pCEIrpnwCZj4VvVbbNkwikd
+        74UH62pzjT5tYLO3Bq8XCuIx2rmv0mc=
+X-Google-Smtp-Source: AMrXdXuDyUGyV/XJrWFjFnkkcvkqRgsKtzwm6TwmyvBHXxb32lJHO9KtvdBYppQq8dRbKT93jTqqyQ==
+X-Received: by 2002:a05:6a20:d819:b0:b2:3b40:32b1 with SMTP id iv25-20020a056a20d81900b000b23b4032b1mr60554726pzb.57.1672937967583;
+        Thu, 05 Jan 2023 08:59:27 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id g7-20020a625207000000b00573a9d13e9esm21345455pfb.36.2023.01.05.08.59.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jan 2023 08:59:26 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 5 Jan 2023 06:59:25 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH] blk-cgroup: fix missing pd_online_fn() while activating
+ policy
+Message-ID: <Y7cB7f98+PNdXUnj@slm.duckdns.org>
+References: <20230103112833.2013432-1-yukuai1@huaweicloud.com>
+ <20230104151241.GA13268@blackbody.suse.cz>
+ <4b559d1d-31e4-6049-4548-451bf7afb4f4@huaweicloud.com>
+ <20230105104241.GA16920@blackbody.suse.cz>
+ <6f54c858-be91-0fd3-d377-1aabb8a70c6f@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221226130505.7186-1-hanjinke.666@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.20
-X-Spamd-Result: default: False [-2.20 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6f54c858-be91-0fd3-d377-1aabb8a70c6f@huaweicloud.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Jan 05, 2023 at 09:52:29PM +0800, Yu Kuai wrote:
+> Hi,
+> 
+> 在 2023/01/05 18:45, Michal Koutný 写道:
+> > On Thu, Jan 05, 2023 at 09:43:02AM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> > > This is based only on code review, currently the only negative effects
+> > > is that root blkg from blk-throtl won't call pd_online_fn().
+> > 
+> > Good, that's a NOP and there are no other uses of pd_online_fn.
+> > 
+> > I wonder are the separate pd_init_fn and pd_online_fn callbacks
+> > necessary today?
+> 
+> I think online can combine to init, consider that only blk-throttle
+> implement pd_online_fn(), but I'm not sure...
+> 
+> It seems to me the policies(bfq, iocost...) seem don't honor how pd
+> apis works: alloc->init->online->offline->free, bfq combines online to
+> init, iocost combines offline to free, ...
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So, the distinction between alloc and online is that a pd which gets
+allocated may be freed without ever going online if later allocations fail.
+This is following cgroup init/exit pattern. Maybe it's a bit too elaborate
+but the distinction is meaningful, at least in principle.
 
-Hello Jinke.
+What seems truly spurious is pd_init_fn(). All that pd_init_fn() can do
+should be achievable between pd_alloc_fn() and pd_online_fn(). The overlap
+seems at least partially historical and we used to have pd_exit_fn() too.
+So, yeah, getting rid of pd_init_fn() would be a nice first step.
 
-On Mon, Dec 26, 2022 at 09:05:05PM +0800, Jinke Han <hanjinke.666@bytedance.com> wrote:
-> In our test, fio writes a 100g file in sequential 4k blocksize in
-> a container with low bps limit configured (wbps=10M).
-> [...]
-> At the same time, the operation of saving a small file by vim will be
-> blocked amolst 140s.
+Thanks.
 
-Could you please elaborate why is this specific to blk-throtl?
-
-I guess similar problem would arise for devices that are "naturally"
-slow.
-Then:
-a) it must have been solved elsewhere in the block layer (but it's
-   broken),
-b) it should be solved generically in the block layer (thus this is only
-   a partial solution).
-
-Alternatively, I imagine your problem could be reduced with
-corresponding memory limits on IO-constrained cgroups. (The memory limit
-would increase cgwb's dirty throttling and consequently leaves more
-IO bandwidth for sync IOs.)
-
-Could you describe how the submitted solution compares to memory
-limiting?
-
-> This patch splits bio queue into sync and async queues for blk-throtl
-> and gives a huge priority to sync write ios.
-
-The "huge priority" corresponds to the THROTL_SYNC_FACTOR, right?
-I'm slightly concerned about the introduction of the magical value.
-What is the reasoning behind this? (E.g. I'd expect 1:1 could work as
-well, while 1:4 suggests this is somehow better (empirically?).)
-
-Thanks,
-Michal
-
-
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY7b4bAAKCRAkDQmsBEOq
-uQrgAQDs2aA08ChLFwdUU9xtUvTksAkbg4kIOJ6eonBHzYLMmQD9Eku/xsu7q+JO
-bkt+bgPn6r1by/lxIByZFdvliq70/g0=
-=VUBu
------END PGP SIGNATURE-----
-
---9jxsPFA5p3P2qPhR--
+-- 
+tejun
