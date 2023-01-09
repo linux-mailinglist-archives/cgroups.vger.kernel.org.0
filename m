@@ -2,78 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA340661E02
-	for <lists+cgroups@lfdr.de>; Mon,  9 Jan 2023 05:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B26B661EBB
+	for <lists+cgroups@lfdr.de>; Mon,  9 Jan 2023 07:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbjAIEvc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 8 Jan 2023 23:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        id S233477AbjAIGh4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Jan 2023 01:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233814AbjAIEv2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 8 Jan 2023 23:51:28 -0500
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BCD64E4
-        for <cgroups@vger.kernel.org>; Sun,  8 Jan 2023 20:51:27 -0800 (PST)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1322d768ba7so7582579fac.5
-        for <cgroups@vger.kernel.org>; Sun, 08 Jan 2023 20:51:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RGBJdUhLvGpLg0IkWbTVUsItZJ0ILG7BPRGCq35WdVY=;
-        b=AkViJTiBNYMerAGZgvQiB/d9Sk2tEL+U6ZHX1c7qEcgGydFKOKfGGYbp0cDbIlNHHq
-         O4xD0BkD6+/NUwVbl6AbHaFP+XvC2LNykVXrvNoFTqc35qDrvt2zW9B0P0g+n5+c8fpM
-         6blBcecNYUUV1RT6jr3lUV4DazFS/XGEOUtuUHbU2R0fOMVohZgdf+EEPtRLerlW4hDV
-         uvPOHvgtCKrzN9IPBYb2AdHJ860ueT59x3TkfZedpheQ02e8Sdpujelf+vnI74AioOvT
-         K37OZuLnM+BJxHRc1cmeSFiyn8V/EbQxu/tFI5dGyMhmWxqUB1U+DsQaHqJPDvHZrAPF
-         z4LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RGBJdUhLvGpLg0IkWbTVUsItZJ0ILG7BPRGCq35WdVY=;
-        b=1cUkxMiy5ImHaF8h3Lu6hvDaLzsR/Ej2mzPuagxWw2kaajpJv9UvP51SEZpy5TLX63
-         CaHvppLp0pGGZRoTLnQ3kMD8Dcmomkv5hkxzCSml375oj4ta2PyuaP+dXKy5QihGkhkP
-         GbwJZek4DE1pxAiU62HnJAepLoYr++bhniOxYRPi+UCqtjE77vX3vf+ASG68ehlxxKeK
-         AM8ahI7Jyr8/riIfw1kBbynSajxgYKmhSep0Oxo6bLc0qQ3ado6vPW/bLCheI9yuoIZa
-         YmT6K0nRhZKmAjDAZG8RSoyD2GqsjhWQpV402ZpRrMMNuozG37G0fl2V8JUZ0Or62lKg
-         ZQNw==
-X-Gm-Message-State: AFqh2krhonw6Vi6HzTfCqT7ZD3GJMEz6ArV7/ZDFN/RzJjIhDI7mWhcQ
-        XkgQgpZn2LeetraTGk41C0IPu40AfrzZ9Tjkksg=
-X-Google-Smtp-Source: AMrXdXs9Pe4VZuN7oYRSzbX7UlnzH49IEYe+u8dXKi9id6wZiyiqZeZSwan2RRBf0koxM+ZywAZ7GW97ZUGI7J7bzxk=
-X-Received: by 2002:a05:6870:ee10:b0:14f:b933:fd54 with SMTP id
- ga16-20020a056870ee1000b0014fb933fd54mr4720361oab.84.1673239886159; Sun, 08
- Jan 2023 20:51:26 -0800 (PST)
+        with ESMTP id S233780AbjAIGhz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Jan 2023 01:37:55 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF92FAC8;
+        Sun,  8 Jan 2023 22:37:52 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Nr44n2dKWz4f41pg;
+        Mon,  9 Jan 2023 14:37:45 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgCnD7M6trtjzDiGBQ--.21789S3;
+        Mon, 09 Jan 2023 14:37:48 +0800 (CST)
+Subject: Re: [PATCH -next 3/4] block/rq_qos: use a global mutex to protect
+ rq_qos apis
+To:     Yu Kuai <yukuai1@huaweicloud.com>, Tejun Heo <tj@kernel.org>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230104085354.2343590-1-yukuai1@huaweicloud.com>
+ <20230104085354.2343590-4-yukuai1@huaweicloud.com>
+ <Y7XyIzGptuqO8EAt@slm.duckdns.org> <Y7YZnM/nqb0gxOei@slm.duckdns.org>
+ <df2f7a60-467f-08ce-2a3e-1dc7853424aa@huaweicloud.com>
+ <Y7cYKdOwSlfHtj7t@slm.duckdns.org>
+ <ef55a0f1-d3c2-3979-963e-2fa10ba3c2ff@huaweicloud.com>
+ <Y7hnH9GT6D469Vuu@slm.duckdns.org>
+ <31e57528-39a5-84ed-8ea0-5c61bab00541@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <5633d865-8a8a-ef34-82e6-a2eacf943253@huaweicloud.com>
+Date:   Mon, 9 Jan 2023 14:37:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Sender: skerlwindy2827@gmail.com
-Received: by 2002:a05:6850:d456:b0:3dc:ab78:6362 with HTTP; Sun, 8 Jan 2023
- 20:51:25 -0800 (PST)
-From:   TOM HUDDLESTON <tomhuddleston1jr@gmail.com>
-Date:   Mon, 9 Jan 2023 07:51:25 +0300
-X-Google-Sender-Auth: DVA64Eca7fyVLhg0nC4JDsz0KUQ
-Message-ID: <CANz9-WSETgehcyVtXeWqx1Ghwjaam2tDh2E+OrtKj5XcG65i9A@mail.gmail.com>
-Subject: Ich habe Ihnen bis zu 3 E-Mails gesendet
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <31e57528-39a5-84ed-8ea0-5c61bab00541@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCnD7M6trtjzDiGBQ--.21789S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr43WFWxurWUGw1UKF1DAwb_yoW8Gry3pr
+        W3Ww1rAr4kAr10k34DAFy8Wryrtws3Jay5GF1UWrn2vr43Ar18Xr40gr4FvFy8A395Kw4j
+        vr1xKw1ruw4UCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---=20
-Ich habe Ihnen 3 E-Mails bez=C3=BCglich Ihrer Spende gesendet, aber keine
-Antwort. Bitte melden Sie sich mit Ihrem vollst=C3=A4ndigen Namen und Ihrer
-WhatsApp-Nummer bei mir, um dieses Geld an Sie weiterzuleiten.
+Hi,
 
-Ignorieren Sie diese Nachricht nicht, wenn Sie sie in Ihrem Spam oder
-Posteingang finden
+ÔÚ 2023/01/09 9:38, Yu Kuai Ð´µÀ:
+>> So, it's not sysfs_lock but sysfs file deletion. When a kernfs, which 
+>> backs
+>> sysfs, file is removed, it disables future operations and drains all
+>> inflight ones before returning, so you remove the interface files before
+>> cleaning up the object that it interacts with, you don't have to worry 
+>> about
+>> racing against file operations as none can be in flight at that point.
+> 
 
-Gr=C3=BC=C3=9Fe
-Tom Huddleston
+I understand this know, kernfs_fop_write_iter() will grab
+kernfs_node->active, and kobject_del() will wait for active to be
+dropped in kernfs_drain().
+
+>> Sorry that I've been asking you to go round and round but block device
+>> add/remove paths have always been really tricky and we wanna avoid adding
+>> more complications if at all possible. Can you see why the device is 
+>> being
+>> destroyed before the queue attr is removed?
+> 
+
+Sorry that I actually tested with patch 4 applied, and this is a bug
+introduced by patch 4, my apologies. It set rqos to ERR_PTR() in
+rq_qos_exit, and follow up rq_qos_issue() just check if rqos is NULL.
+
+I'll wait for your patchset to be apllied, and then send a new version.
+Just one thing to confirm, do you think it's better to use a global
+mutex rather than a disk level mutex? I'm not sure because this will
+cause different cgroup configurations from different disk can't
+concurrent.
+
+Thanks,
+Kuai
+
