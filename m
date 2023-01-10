@@ -2,134 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3473C664662
-	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 17:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645C1664B64
+	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 19:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbjAJQo0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Jan 2023 11:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S239284AbjAJSmy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Jan 2023 13:42:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234851AbjAJP7Q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Jan 2023 10:59:16 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2B04FCDF
-        for <cgroups@vger.kernel.org>; Tue, 10 Jan 2023 07:59:15 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s8so5324792plk.5
-        for <cgroups@vger.kernel.org>; Tue, 10 Jan 2023 07:59:15 -0800 (PST)
+        with ESMTP id S239153AbjAJSmY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Jan 2023 13:42:24 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BA91A3B1;
+        Tue, 10 Jan 2023 10:36:09 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id c6so14132441pls.4;
+        Tue, 10 Jan 2023 10:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2R/55S8jT4stsBsiIv+FPNzG31bz0/CdEe06+rGUk1k=;
-        b=61Jwo1uWFCLRsb3ILZ7lkZPW4qjqzqjsluq35w5Ij+AWN0s+nRwdMCrbrPRVqY6nN4
-         kJw2BfytRBn2Xj5nvil9XL8+SySFkSZVuinHm5JYtCQJScp6fmHnmG6IHt9qVVYSyJIl
-         oyHjT+6SxrvHACnLSAWNBfs/s7CcN3GwNIOnYbS1EQmf35tp84dIIAXZs7qNWpDSb4Jb
-         mAGGBh5GBCKZCjT8iF+nmoo1/PwiD+qN5ypq8MpGcw1BXdgExhO4T3cENLzzkT5bV1eW
-         tw1eyptt7PA5nbcLQnjfM4ALqtFktFZBHc3iI46z67WOClTyJPZx73W7zUo8eWFHq9vu
-         8IzQ==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Mx/8qw1hk0L/Apnt3h31WEr91WdxE2C/9NCB2yBSTjc=;
+        b=o2u7cWdt7toQAtBB1r2+RF8CrYllIElK6OiiBW7wEL36HiAiGM6Y5Y+GSqXBnLwxof
+         J2CX/fG3C6YW+hxVwI3eD3mFXEqOg0pczDLmkdUuC7ijnZVTZ7zLy8TTI6d+2SWSJE0P
+         mCu0rClnWtooXrdXjRBb8yufcNeAk4c5ASu97PPYq1oL91DFQ3NbFOeFtPDTcRxTIHV6
+         0ZcAcwd7KaO6JwF8M6jRYCQZJZ4RdGVQVHB6czKnlkllG/V4R2epPHHYLQ7H3JDqT7kq
+         XbFF1cm+bjAAjJG7jXWjXI6N0/DHD9dcbNGLAB3FHCwiCggwtAh63+EFIxdhADoi3qPZ
+         yIHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2R/55S8jT4stsBsiIv+FPNzG31bz0/CdEe06+rGUk1k=;
-        b=515+0eeXm8di5vUAgwpgrhyuyV8hUCPb5dVRPxAXojC5q8g7lSLWLJlYj21qzEzgAx
-         nHCapngyLQhIUbkNhTGXwj74WyT4rlibXJCvYvLaPKH2ktzJ2cI/G8JTKsxST8D8rMod
-         pk1pWZcMe+z/RL3Ou7zn5IY83jdKXN2MbZ5QpqkuqUgMBQ7YsigRvEX9tDgo9ARMbtpG
-         AD3hnLy0Rr2/Dfmqq6uIwf+A5NpChJf/TmNhVsRMLxn+YWZNbSKjoo698/kaGtpxyjMd
-         5GEcaXmJ9QoYQKgzOHFmomZypy6k6Y+TAyRgN3j9P0f3sMFaxsu2XBBPBIFumeUNmF5g
-         pHDQ==
-X-Gm-Message-State: AFqh2kqc41c3tL8AHfP/wcJE+OgeQVPiXxsvEc4d+gL/mzJ4Heoxf1g6
-        dxTmEmvZFDX9ncFvx+tFs+CpsAqBapjw0fb3ni2fVA==
-X-Google-Smtp-Source: AMrXdXurVMOG3vgv5T3G0tCOwgHzJpPmQi1SFa+S16AnjjZBHiJDViS424FIrRfLpoVzzEJ+hx8mvQ==
-X-Received: by 2002:a05:6a21:3d04:b0:b6:8c6:5e6a with SMTP id bi4-20020a056a213d0400b000b608c65e6amr4256944pzc.0.1673366354682;
-        Tue, 10 Jan 2023 07:59:14 -0800 (PST)
-Received: from [10.254.85.126] ([139.177.225.248])
-        by smtp.gmail.com with ESMTPSA id h18-20020a656392000000b0046b1dabf9a8sm6948417pgv.70.2023.01.10.07.59.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Jan 2023 07:59:14 -0800 (PST)
-Message-ID: <b4cf040e-a9d9-8b7a-10cf-80b01d02848f@bytedance.com>
-Date:   Tue, 10 Jan 2023 23:59:09 +0800
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mx/8qw1hk0L/Apnt3h31WEr91WdxE2C/9NCB2yBSTjc=;
+        b=mVbt596gOWi/X6C6mR2Orfg5kK1t0jYkQA97l1AY5Jg8Nl9GB6g2tFxssTCBRb8a9T
+         ENx+vufP+tt4M8ztY7pvuc4LYJZ8Szk9aNwDuiy08Vak+6Rz4tSAFyS3mS78zW2yVYt1
+         HjGULkzZomFrSlJ9KK8+32Du+YruaUTbOVTGWfTBL2xOClx1NyITgBhEWwSqyadHv7SQ
+         LJ71nz766SCZfburfXOi3jM0Iw8CHN1W2ukUht/iZPHto16rj1awpz44KLp3u4wwDoXQ
+         eC7D6fFR2dx2d453s/ML0kvF3entqbyh8hmfM7qTwI8vXtxxrACHsz7kMh2mfPeQHKG8
+         mMjw==
+X-Gm-Message-State: AFqh2kow/bhCmdvalKLzPWh9ky5UuhVM8HepdH5Wsn+PBf1OvqxNX9r5
+        e35Zu9osEfwTvzj8IejmTzI=
+X-Google-Smtp-Source: AMrXdXswPvuUZzjiQeCSIHXu5b7E+7xSQKPZzb3L4Aa1cDzvqY6vbRP36+lZVtpXaGaPBT/2hjKevA==
+X-Received: by 2002:a05:6a20:d695:b0:a2:c1f4:3c70 with SMTP id it21-20020a056a20d69500b000a2c1f43c70mr81785231pzb.8.1673375769225;
+        Tue, 10 Jan 2023 10:36:09 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id g38-20020a635666000000b004768b74f208sm7108097pgm.4.2023.01.10.10.36.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Jan 2023 10:36:08 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 10 Jan 2023 08:36:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH v2 1/2] blk-iocost: add refcounting for iocg
+Message-ID: <Y72wF/b0/xNRmP7f@slm.duckdns.org>
+References: <20221227125502.541931-1-yukuai1@huaweicloud.com>
+ <20221227125502.541931-2-yukuai1@huaweicloud.com>
+ <Y7XzUee5Bq+DoIC1@slm.duckdns.org>
+ <c63ee2ad-23d5-3be0-c731-28494398b391@huaweicloud.com>
+ <Y7cX0SJ0y6+EIY5Q@slm.duckdns.org>
+ <7dcdaef3-65c1-8175-fea7-53076f39697f@huaweicloud.com>
+ <Y7iCId3pnEnLqY8G@slm.duckdns.org>
+ <875eb43e-202d-5b81-0bff-ef0434358d99@huaweicloud.com>
+ <Y7xbpidpq7+DqJan@slm.duckdns.org>
+ <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [External] Re: [PATCH v4] blk-throtl: Introduce sync and async
- queues for blk-throtl
-To:     Tejun Heo <tj@kernel.org>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yinxin.x@bytedance.com
-References: <20230107130738.75640-1-hanjinke.666@bytedance.com>
- <Y7x7yq5YmcXhVkQf@slm.duckdns.org>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <Y7x7yq5YmcXhVkQf@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
+On Tue, Jan 10, 2023 at 09:39:44AM +0800, Yu Kuai wrote:
+> As I tried to explain before, we can make sure blkg_free() is called
+> in order, but blkg_free() from remove cgroup can concurrent with
+> deactivate policy, and we can't guarantee the order of ioc_pd_free()
+> that is called both from blkg_free() and blkcg_deactivate_policy().
+> Hence I don't think #3 is possible.
 
-在 2023/1/10 上午4:40, Tejun Heo 写道:
-> On Sat, Jan 07, 2023 at 09:07:38PM +0800, Jinke Han wrote:
->> + * Assumed that there were only bios queued in ASYNC queue and the SYNC
->> + * queue was empty. The ASYNC bio was selected to dispatch and the
->> + * disp_sync_cnt was set to 0 after each dispatching. If a ASYNC bio
->> + * can't be dispatched because of overlimit in current slice, the process
->> + * of dispatch should give up and the spin lock of the request queue
->> + * may be released. A new SYNC bio may be queued in the SYNC queue then.
->> + * When it's time to dispatch this tg, the SYNC bio was selected and pop
->> + * to dispatch as the disp_sync_cnt is 0 and the SYNC queue is no-empty.
->> + * If the dispatched bio is smaller than the waiting bio, the bandwidth
->> + * may be hard to satisfied as the slice may be trimed after each dispatch.
-> 
-> I still can't make a good sense of this scenario. Can you give concrete
-> example scenarios with IOs and why it would matter?
-> 
-> Thanks.
-> 
+Hahaha, sorry that I keep forgetting that. This doesn't really feel like
+that important or difficult part of the problem tho. Can't it be solved by
+synchronizing blkg free work item against the deactivate path with a mutex?
 
-Assumed that there are many buffer write bios queued in ASYNC queue and 
-the SYNC queue is empty. The buffer write bios are all 1M in size and 
-the bps limit is 1M/s. The throtl_slice is 100ms.
+Thanks.
 
-Assumed that the start/end_slice is [jiffies1, jiffies1+100] and 
-bytes_disp[w] = 0. The next ASYNC bio can't dispatch because of 
-overlimit within this slice. The wait time is 900ms and the slice will 
-be extended to [jiffies1, jiffies1 + 1000] in tg_may_dispatch.
-
-During the waiting of the ASYNC bio, a SYNC 4k bio be queued in SYNC 
-queue. After 900ms, it's time to dispatch the ASYNC io, but the SYNC 4k 
-bio be selected to be dispatched. Now the slice is [jiffies1, 
-jiffies1+1000] and the byte_disp[w] = 4k. The slice may be extended to
-[jiffies1, jiffies1+1100]. In tg_dispatch_one_bio, the slice will be 
-trimed to [jiffies1+1000, jiffies1+1100], the byte_disp[w] will set 0.
-
-After the 4k SYNC bio be dispatched, the WAITING ASYNC bio still cann't
-be dispatched because of overlimit within this slice.
-
-The same thing may happen DISPACH_SYNC_FACTOR times if alway there is a 
-SYNC bio be queued in the SYNC queue when the ASYNC bio is waiting.
-
-This means that in nearly 5s, we have dispathed 4 4k SYNC bios and a 1m 
-ASYNC bio.
-
-In our test, with 100M/s bps limit setted, the bps only reach to ~80m/s
-when a fio generate buffer write ios and fsync continuous generated by 
-dbench in same cgroup.
-
-Thanks
-Jinke.
-
-
-
-
-
-
+-- 
+tejun
