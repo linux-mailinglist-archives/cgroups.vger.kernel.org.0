@@ -2,150 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1228066361C
-	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 01:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41B86636C5
+	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 02:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237072AbjAJAS2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Jan 2023 19:18:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        id S234413AbjAJBjy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Jan 2023 20:39:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235639AbjAJAS0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Jan 2023 19:18:26 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFB52DE4
-        for <cgroups@vger.kernel.org>; Mon,  9 Jan 2023 16:18:24 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-4c15c4fc8ccso135051957b3.4
-        for <cgroups@vger.kernel.org>; Mon, 09 Jan 2023 16:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sgQCt0va7Fj5/9fGcldqaAxXWYK8cBxGZmP9xyPfdn4=;
-        b=CjxZ1mdpIhqu8VGPVCMoqsbsDlIhqCjEmsPqq5qkb1qszkge1Jm7eoOuPAcP/ZV3bk
-         wPP+sf8id+ynxeTBPKOWQaibXFQF9VkirxIevCIzpGAQ21ueiyMyljdoDpqBwv6iADhp
-         JWDpspg8gxuUz/g8o8f3Q/TpOZXD4wUkStfMnP3bNMTdaoT8E8PrN4XpF0W1y5T9lIyj
-         m9H9otSUCpmNvNlNujrmOWTRlgks+Pwp+EXc1GX8tr1KUVIqmZXacuPH98ZfnNVZNFn8
-         /a3FCftCVuu8stwkCKaAOtd2Rf8qgv7JUkOT3SOOPfRdmX4H3QpcqFd3fI60DVZdrWVr
-         exyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sgQCt0va7Fj5/9fGcldqaAxXWYK8cBxGZmP9xyPfdn4=;
-        b=SZH5ooOVnMefXM5cOCAMss5m8ItXUU1IBzFp2YwYA1Tgb7Zu+8/AlwXXx//W2SMqhU
-         oT2JK9AXJTxe6paCjgKUazXXPot1QsctDEulZIYP0AFBl5kzloxNK4regCEKsiDjn8C/
-         9LVYfvzbXWgIO/R0aRVHOHqNnHipubxGVT3MYwKwQyNgZ79xUfMInduELQjbvKu0x2eo
-         btUo0iyirXIThZoDcuEUK27UGr62F5+d4JCgAX02IuoNIUqbwCY6121DCh88e404ktA+
-         SIuyL4gLcj2UxSQr1TzJLRhkv83AwmdOrugk47HhU3De983qybSnkXqzAu1iVuJFdTH9
-         ugIA==
-X-Gm-Message-State: AFqh2koJTxvGTk3UIJbuXHSkHe0eAxGkb/2wCWDRzhKYYnEWZl2EGtkI
-        Jy3k437mPO9PZnl94Pbrbz1C6bSAcTdRlO0IuEVPnw==
-X-Google-Smtp-Source: AMrXdXvykUOk6Aq29zKPFweeZ5QLOqVr0VtGabuLWKsdUabDXPvAWtUyFW1w97fkSV+2AQTk/rtQ4CJ6GNWf2U6U44A=
-X-Received: by 2002:a81:7386:0:b0:391:c415:f872 with SMTP id
- o128-20020a817386000000b00391c415f872mr1094430ywc.318.1673309903890; Mon, 09
- Jan 2023 16:18:23 -0800 (PST)
+        with ESMTP id S230026AbjAJBjx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Jan 2023 20:39:53 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63882027;
+        Mon,  9 Jan 2023 17:39:50 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NrYQS2HGGz4f3tq5;
+        Tue, 10 Jan 2023 09:39:44 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgBXxC7hwbxjr2xaBQ--.9417S3;
+        Tue, 10 Jan 2023 09:39:46 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] blk-iocost: add refcounting for iocg
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20221227125502.541931-1-yukuai1@huaweicloud.com>
+ <20221227125502.541931-2-yukuai1@huaweicloud.com>
+ <Y7XzUee5Bq+DoIC1@slm.duckdns.org>
+ <c63ee2ad-23d5-3be0-c731-28494398b391@huaweicloud.com>
+ <Y7cX0SJ0y6+EIY5Q@slm.duckdns.org>
+ <7dcdaef3-65c1-8175-fea7-53076f39697f@huaweicloud.com>
+ <Y7iCId3pnEnLqY8G@slm.duckdns.org>
+ <875eb43e-202d-5b81-0bff-ef0434358d99@huaweicloud.com>
+ <Y7xbpidpq7+DqJan@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
+Date:   Tue, 10 Jan 2023 09:39:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20230109213809.418135-1-tjmercier@google.com>
-In-Reply-To: <20230109213809.418135-1-tjmercier@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 9 Jan 2023 16:18:12 -0800
-Message-ID: <CALvZod4ru7F38tAO-gM9ZFKaEhS0w3KqFbPwhwcTvgJs4xMUow@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Track exported dma-buffers with memcg
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, daniel.vetter@ffwll.ch,
-        android-mm@google.com, jstultz@google.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y7xbpidpq7+DqJan@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBXxC7hwbxjr2xaBQ--.9417S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur1DGF4kur4DXrWDtr1kZrb_yoW8Wr18pF
+        Z3Gay3G39xtrySkr17Za1xXa4rtws5Ja45G3yfGw4rur45X3s3Aw1ayryfCF1DZFs5Za4j
+        qr409FyDGr1qya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi T.J.,
+Hi,
 
-On Mon, Jan 9, 2023 at 1:38 PM T.J. Mercier <tjmercier@google.com> wrote:
->
-> Based on discussions at LPC, this series adds a memory.stat counter for
-> exported dmabufs. This counter allows us to continue tracking
-> system-wide total exported buffer sizes which there is no longer any
-> way to get without DMABUF_SYSFS_STATS, and adds a new capability to
-> track per-cgroup exported buffer sizes. The total (root counter) is
-> helpful for accounting in-kernel dmabuf use (by comparing with the sum
-> of child nodes or with the sum of sizes of mapped buffers or FD
-> references in procfs) in addition to helping identify driver memory
-> leaks when in-kernel use continually increases over time. With
-> per-application cgroups, the per-cgroup counter allows us to quickly
-> see how much dma-buf memory an application has caused to be allocated.
-> This avoids the need to read through all of procfs which can be a
-> lengthy process, and causes the charge to "stick" to the allocating
-> process/cgroup as long as the buffer is alive, regardless of how the
-> buffer is shared (unless the charge is transferred).
->
-> The first patch adds the counter to memcg. The next two patches allow
-> the charge for a buffer to be transferred across cgroups which is
-> necessary because of the way most dmabufs are allocated from a central
-> process on Android. The fourth patch adds a SELinux hook to binder in
-> order to control who is allowed to transfer buffer charges.
->
-> [1] https://lore.kernel.org/all/20220617085702.4298-1-christian.koenig@amd.com/
->
+ÔÚ 2023/01/10 2:23, Tejun Heo Ð´µÀ:
+> Yeah, that's unfortunate. There are several options here:
+> 
+> 1. Do what you originally suggested - bypass to root after offline. I feel
+>     uneasy about this. Both iolatency and throtl clear their configs on
+>     offline but that's punting to the parent. For iocost it'd be bypassing
+>     all controls, which can actually be exploited.
+> 
+> 2. Make all possible IO issuers use blkcg_[un]pin_online() and shift the
+>     iocost shutdown to pd_offline_fn(). This likely is the most canonical
+>     solution given the current situation but it's kinda nasty to add another
+>     layer of refcnting all over the place.
+> 
+> 3. Order blkg free so that parents are never freed before children. You did
+>     this by adding refcnts in iocost but shouldn't it be possible to simply
+>     shift blkg_put(blkg->parent) in __blkg_release() to blkg_free_workfn()?
 
-I am a bit confused by the term "charge" used in this patch series.
-From the patches, it seems like only a memcg stat is added and nothing
-is charged to the memcg.
+As I tried to explain before, we can make sure blkg_free() is called
+in order, but blkg_free() from remove cgroup can concurrent with
+deactivate policy, and we can't guarantee the order of ioc_pd_free()
+that is called both from blkg_free() and blkcg_deactivate_policy().
+Hence I don't think #3 is possible.
 
-This leads me to the question: Why add this stat in memcg if the
-underlying memory is not charged to the memcg and if we don't really
-want to limit the usage?
+I personaly prefer #1, I don't see any real use case about the defect
+that you described, and actually in cgroup v1 blk-throtl is bypassed to
+no limit as well.
 
-I see two ways forward:
+I'm not sure about #2, that sounds a possible solution but I'm not quite
+familiar with the implementations here.
 
-1. Instead of memcg, use bpf-rstat [1] infra to implement the
-per-cgroup stat for dmabuf. (You may need an additional hook for the
-stat transfer).
+Consider that bfq already has such refcounting for bfqg, perhaps
+similiar refcounting is acceptable?
 
-2. Charge the actual memory to the memcg. Since the size of dmabuf is
-immutable across its lifetime, you will not need to do accounting at
-page level and instead use something similar to the network memory
-accounting interface/mechanism (or even more simple). However you
-would need to handle the reclaim, OOM and charge context and failure
-cases. However if you are not looking to limit the usage of dmabuf
-then this option is an overkill.
+Thanks,
+Kuai
 
-Please let me know if I misunderstood something.
-
-[1] https://lore.kernel.org/all/20220824233117.1312810-1-haoluo@google.com/
-
-thanks,
-Shakeel
