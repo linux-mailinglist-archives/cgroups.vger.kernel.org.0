@@ -2,75 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0792C664139
-	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 14:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3473C664662
+	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 17:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjAJNHz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Jan 2023 08:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        id S233030AbjAJQo0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Jan 2023 11:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232324AbjAJNHx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Jan 2023 08:07:53 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A583158D2B
-        for <cgroups@vger.kernel.org>; Tue, 10 Jan 2023 05:07:31 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 36so8165164pgp.10
-        for <cgroups@vger.kernel.org>; Tue, 10 Jan 2023 05:07:31 -0800 (PST)
+        with ESMTP id S234851AbjAJP7Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Jan 2023 10:59:16 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2B04FCDF
+        for <cgroups@vger.kernel.org>; Tue, 10 Jan 2023 07:59:15 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id s8so5324792plk.5
+        for <cgroups@vger.kernel.org>; Tue, 10 Jan 2023 07:59:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
          :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0b3RSYe8mQauTsHJUs6ykMcTgur4za2xftvbQNqIJa0=;
-        b=RLUlg0vAPGTz4hMSALnOAbA95CQ2QhiAPu67CW1t5ndi5fYQvoHNRfl2s9mmbfxynC
-         n5Hl26i2wnPo3Po7VVrtnQueuJ9LNMFdRz54SOR0UzQpuEPMsDS42Z/bO4BEb4COnlqZ
-         Yhl/RGwxFnAkY+cH1otEhavspwfCl0FOYahc2kH+YxTr3TQTFwyb+jOHwd6AbOmhbT/k
-         UrCTqXrRr5OpYjY6+L/mYlkYPUtgEqwUoG1lp5ywtifFjrif5++oGbE8puNRSkItokP8
-         ieNDdz1XkqTFKhhlST3mTca31Q50kVpZqKIC7YfgyJEYf+TFUH4gcW9m3mBKjOdd53dv
-         s+jQ==
+        bh=2R/55S8jT4stsBsiIv+FPNzG31bz0/CdEe06+rGUk1k=;
+        b=61Jwo1uWFCLRsb3ILZ7lkZPW4qjqzqjsluq35w5Ij+AWN0s+nRwdMCrbrPRVqY6nN4
+         kJw2BfytRBn2Xj5nvil9XL8+SySFkSZVuinHm5JYtCQJScp6fmHnmG6IHt9qVVYSyJIl
+         oyHjT+6SxrvHACnLSAWNBfs/s7CcN3GwNIOnYbS1EQmf35tp84dIIAXZs7qNWpDSb4Jb
+         mAGGBh5GBCKZCjT8iF+nmoo1/PwiD+qN5ypq8MpGcw1BXdgExhO4T3cENLzzkT5bV1eW
+         tw1eyptt7PA5nbcLQnjfM4ALqtFktFZBHc3iI46z67WOClTyJPZx73W7zUo8eWFHq9vu
+         8IzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
          :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=0b3RSYe8mQauTsHJUs6ykMcTgur4za2xftvbQNqIJa0=;
-        b=yRC4LAxrhsFKzu9FHxzLfM7H/rzLcy28pYX5ZfHIwCtfWQyyWLI1jfyqlHUAsD4W25
-         uJXCCMibJdmxJSYGXQtcqOOcsM2/R7823L7sRqGkACuEG4IlGEDejOm/pKW6zRXfDNfw
-         tNR+6x1bDo5CXNce4Qzpcv753qIWnkNo1ozC+m5ZXzB3p0e/IoUZ2M4YsOmJQ5cjio9U
-         fcBuQvJh0my0EWngLOeJqDEVMm7xZPS1eua3KdM1jdj3x1oihivlU7T276huuiSMvBpD
-         noJzbXVmd+aMtxJScaDezFE/3AzNBUbMvdWjc/1IP76arwWkN57vE1NHUWOE9p5QZUk6
-         k1kA==
-X-Gm-Message-State: AFqh2kq0mAq3uGQBOUNGOxDCaPCDfF/3P17w7t9DWRt+VgDbMkU1+I/j
-        u1BBxhjNt8nZ7hAbnJNz5YRmkQ==
-X-Google-Smtp-Source: AMrXdXuOnsxeqzWi+BrT/XazxVd/FkhSHxizdXq9xmqS2MG3LGJFCe4KApI5JgYxg1Fm6XPKXt5zLA==
-X-Received: by 2002:aa7:85c8:0:b0:588:14ce:7e64 with SMTP id z8-20020aa785c8000000b0058814ce7e64mr7017731pfn.30.1673356051158;
-        Tue, 10 Jan 2023 05:07:31 -0800 (PST)
-Received: from [10.3.157.223] ([61.213.176.11])
-        by smtp.gmail.com with ESMTPSA id v67-20020a622f46000000b00581ad007a9fsm8004776pfv.153.2023.01.10.05.07.27
+        bh=2R/55S8jT4stsBsiIv+FPNzG31bz0/CdEe06+rGUk1k=;
+        b=515+0eeXm8di5vUAgwpgrhyuyV8hUCPb5dVRPxAXojC5q8g7lSLWLJlYj21qzEzgAx
+         nHCapngyLQhIUbkNhTGXwj74WyT4rlibXJCvYvLaPKH2ktzJ2cI/G8JTKsxST8D8rMod
+         pk1pWZcMe+z/RL3Ou7zn5IY83jdKXN2MbZ5QpqkuqUgMBQ7YsigRvEX9tDgo9ARMbtpG
+         AD3hnLy0Rr2/Dfmqq6uIwf+A5NpChJf/TmNhVsRMLxn+YWZNbSKjoo698/kaGtpxyjMd
+         5GEcaXmJ9QoYQKgzOHFmomZypy6k6Y+TAyRgN3j9P0f3sMFaxsu2XBBPBIFumeUNmF5g
+         pHDQ==
+X-Gm-Message-State: AFqh2kqc41c3tL8AHfP/wcJE+OgeQVPiXxsvEc4d+gL/mzJ4Heoxf1g6
+        dxTmEmvZFDX9ncFvx+tFs+CpsAqBapjw0fb3ni2fVA==
+X-Google-Smtp-Source: AMrXdXurVMOG3vgv5T3G0tCOwgHzJpPmQi1SFa+S16AnjjZBHiJDViS424FIrRfLpoVzzEJ+hx8mvQ==
+X-Received: by 2002:a05:6a21:3d04:b0:b6:8c6:5e6a with SMTP id bi4-20020a056a213d0400b000b608c65e6amr4256944pzc.0.1673366354682;
+        Tue, 10 Jan 2023 07:59:14 -0800 (PST)
+Received: from [10.254.85.126] ([139.177.225.248])
+        by smtp.gmail.com with ESMTPSA id h18-20020a656392000000b0046b1dabf9a8sm6948417pgv.70.2023.01.10.07.59.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Jan 2023 05:07:30 -0800 (PST)
-Message-ID: <f9b8e682-92aa-c39c-4d91-d77d104e0767@bytedance.com>
-Date:   Tue, 10 Jan 2023 21:07:25 +0800
+        Tue, 10 Jan 2023 07:59:14 -0800 (PST)
+Message-ID: <b4cf040e-a9d9-8b7a-10cf-80b01d02848f@bytedance.com>
+Date:   Tue, 10 Jan 2023 23:59:09 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [External] Re: [PATCH v3] blk-throtl: Introduce sync and async
+Subject: Re: [External] Re: [PATCH v4] blk-throtl: Introduce sync and async
  queues for blk-throtl
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         yinxin.x@bytedance.com
-References: <20221226130505.7186-1-hanjinke.666@bytedance.com>
- <20230105161854.GA1259@blackbody.suse.cz>
- <20230106153813.4ttyuikzaagkk2sc@quack3> <Y7hTHZQYsCX6EHIN@slm.duckdns.org>
- <c839ba6c-80ac-6d92-af64-5c0e1956ae93@bytedance.com>
- <Y7hlX4T1UOmQHiGf@slm.duckdns.org>
- <e499f088-8ed9-2e19-b2e5-efaa4f9738f0@bytedance.com>
- <Y7xYJfRLSMYk9tj9@slm.duckdns.org>
+References: <20230107130738.75640-1-hanjinke.666@bytedance.com>
+ <Y7x7yq5YmcXhVkQf@slm.duckdns.org>
 From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <Y7xYJfRLSMYk9tj9@slm.duckdns.org>
+In-Reply-To: <Y7x7yq5YmcXhVkQf@slm.duckdns.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,71 +77,59 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-在 2023/1/10 上午2:08, Tejun Heo 写道:
-> Hello,
+在 2023/1/10 上午4:40, Tejun Heo 写道:
+> On Sat, Jan 07, 2023 at 09:07:38PM +0800, Jinke Han wrote:
+>> + * Assumed that there were only bios queued in ASYNC queue and the SYNC
+>> + * queue was empty. The ASYNC bio was selected to dispatch and the
+>> + * disp_sync_cnt was set to 0 after each dispatching. If a ASYNC bio
+>> + * can't be dispatched because of overlimit in current slice, the process
+>> + * of dispatch should give up and the spin lock of the request queue
+>> + * may be released. A new SYNC bio may be queued in the SYNC queue then.
+>> + * When it's time to dispatch this tg, the SYNC bio was selected and pop
+>> + * to dispatch as the disp_sync_cnt is 0 and the SYNC queue is no-empty.
+>> + * If the dispatched bio is smaller than the waiting bio, the bandwidth
+>> + * may be hard to satisfied as the slice may be trimed after each dispatch.
 > 
-> On Sat, Jan 07, 2023 at 12:44:35PM +0800, hanjinke wrote:
->> For cost.model setting, We first use the tools iocost provided to test the
->> benchmark model parameters of different types of disks online, and then save
->> these benchmark parameters to a parametric Model Table. During the
->> deployment process, pull and set the corresponding model parameters
->> according to the type of disk.
->>
->> The setting of cost.qos should be considered slightly more，we need to make
->> some compromises between overall disk throughput and io latency.
->> The average disk utilization of the entire disk on a specific business and
->> the RLA（if it is io sensitive） of key businesses will be taken as
->> important input considerations. The cost.qos will be dynamically fine-tuned
->> according to the health status monitoring of key businesses.
-> 
-> Ah, I see. Do you use the latency targets and min/max ranges or just fixate
-> the vrate by setting min == max?
-
-Currently we use the former.
-
-> 
->> For cost.weight setting, high-priority services  will gain greater
->> advantages through weight settings to deal with a large number of io
->> requests in a short period of time. It works fine as work-conservation
->> of iocost works well according to our observation.
-> 
-> Glad to hear.
-> 
->> These practices can be done better and I look forward to your better
->> suggestions.
-> 
-> It's still in progress but resctl-bench's iocost-tune benchmark is what
-> we're starting to use:
-> 
->   https://github.com/facebookexperimental/resctl-demo/blob/main/resctl-bench/doc/iocost-tune.md
-> 
-> The benchmark takes like 6 hours and what it does is probing the whole vrate
-> range looking for behavior inflection points given the scenario of
-> protecting a latency sensitive workload against memory leak. On completion,
-> it provides several solutions based on the behavior observed.
-> 
-> The benchmark is destructive (to the content on the target ssd) and can be
-> tricky to set up. There's installable image to help setting up and running
-> the benchmark:
-> 
->   https://github.com/iocost-benchmark/resctl-demo-image-recipe/actions
-> 
-> The eventual goal is collecting these benchmark results in the following git
-> repo:
-> 
->   https://github.com/iocost-benchmark/iocost-benchmarks
-> 
-> which generates hwdb files describing all the found solution and make
-> systemd apply the appropriate configuration on boot automatically.
-> 
-> It's still all a work in progress but hopefully we should be able to
-> configure iocost reasonably on boot on most SSDs.
+> I still can't make a good sense of this scenario. Can you give concrete
+> example scenarios with IOs and why it would matter?
 > 
 > Thanks.
 > 
 
-These methodologies are worthy of our study and will definitely help our 
-future deployment of iocost. Thanks a lot.
+Assumed that there are many buffer write bios queued in ASYNC queue and 
+the SYNC queue is empty. The buffer write bios are all 1M in size and 
+the bps limit is 1M/s. The throtl_slice is 100ms.
 
-Thanks.
+Assumed that the start/end_slice is [jiffies1, jiffies1+100] and 
+bytes_disp[w] = 0. The next ASYNC bio can't dispatch because of 
+overlimit within this slice. The wait time is 900ms and the slice will 
+be extended to [jiffies1, jiffies1 + 1000] in tg_may_dispatch.
+
+During the waiting of the ASYNC bio, a SYNC 4k bio be queued in SYNC 
+queue. After 900ms, it's time to dispatch the ASYNC io, but the SYNC 4k 
+bio be selected to be dispatched. Now the slice is [jiffies1, 
+jiffies1+1000] and the byte_disp[w] = 4k. The slice may be extended to
+[jiffies1, jiffies1+1100]. In tg_dispatch_one_bio, the slice will be 
+trimed to [jiffies1+1000, jiffies1+1100], the byte_disp[w] will set 0.
+
+After the 4k SYNC bio be dispatched, the WAITING ASYNC bio still cann't
+be dispatched because of overlimit within this slice.
+
+The same thing may happen DISPACH_SYNC_FACTOR times if alway there is a 
+SYNC bio be queued in the SYNC queue when the ASYNC bio is waiting.
+
+This means that in nearly 5s, we have dispathed 4 4k SYNC bios and a 1m 
+ASYNC bio.
+
+In our test, with 100M/s bps limit setted, the bps only reach to ~80m/s
+when a fio generate buffer write ios and fsync continuous generated by 
+dbench in same cgroup.
+
+Thanks
+Jinke.
+
+
+
+
+
 
