@@ -2,110 +2,201 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C41B86636C5
-	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 02:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5A166394F
+	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 07:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234413AbjAJBjy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Jan 2023 20:39:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S231248AbjAJG0A (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Jan 2023 01:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbjAJBjx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Jan 2023 20:39:53 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63882027;
-        Mon,  9 Jan 2023 17:39:50 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NrYQS2HGGz4f3tq5;
-        Tue, 10 Jan 2023 09:39:44 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgBXxC7hwbxjr2xaBQ--.9417S3;
-        Tue, 10 Jan 2023 09:39:46 +0800 (CST)
-Subject: Re: [PATCH v2 1/2] blk-iocost: add refcounting for iocg
-To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20221227125502.541931-1-yukuai1@huaweicloud.com>
- <20221227125502.541931-2-yukuai1@huaweicloud.com>
- <Y7XzUee5Bq+DoIC1@slm.duckdns.org>
- <c63ee2ad-23d5-3be0-c731-28494398b391@huaweicloud.com>
- <Y7cX0SJ0y6+EIY5Q@slm.duckdns.org>
- <7dcdaef3-65c1-8175-fea7-53076f39697f@huaweicloud.com>
- <Y7iCId3pnEnLqY8G@slm.duckdns.org>
- <875eb43e-202d-5b81-0bff-ef0434358d99@huaweicloud.com>
- <Y7xbpidpq7+DqJan@slm.duckdns.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
-Date:   Tue, 10 Jan 2023 09:39:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S231455AbjAJGZ6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Jan 2023 01:25:58 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC792FDB;
+        Mon,  9 Jan 2023 22:25:56 -0800 (PST)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30A5HmNF011788;
+        Tue, 10 Jan 2023 06:25:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=8JkCv+NV6PqjEH1P0gWr8z4uuHVpN6agMR3v9eR6cvI=;
+ b=kCcwpnH4+b1RbstOT3uVHLY4VspyvOm/FKnghDg7Rqzqr48xe0pGs3eMBTJtHzcdiWTR
+ EbBQyv3BGiFOXSby2qPvL+O+hVLNeVQO5SA3j+p/0E1gteNizesk0omen8N4HKDCbleT
+ /hHE3GiZEM+ie3k+EGqYJ+nLPDEyKnz3Hy+mZfH6zEjkMjdxzNfXJnGzzHnfnwckeXr2
+ 4qYFZACJNxHHyWPVI+mRrVQzMOdEbtps7/i7H9k9a8qsdgjPBMazC0kePgx6jd4G/i5f
+ BKrsvHhVxtmjTc3d3LzT7GHj2t0Bh3dDGh/jDWW7Rl6sy3ziW9lWILYL4YacZ3A1dSik 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3n111qt7a6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Jan 2023 06:25:28 +0000
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30A6LxiU005977;
+        Tue, 10 Jan 2023 06:25:28 GMT
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3n111qt79y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Jan 2023 06:25:28 +0000
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30A3U4Ev007443;
+        Tue, 10 Jan 2023 06:25:27 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([9.208.129.120])
+        by ppma02dal.us.ibm.com (PPS) with ESMTPS id 3my0c7m6d7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Jan 2023 06:25:27 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30A6PQnL66388314
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Jan 2023 06:25:26 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06EF95805D;
+        Tue, 10 Jan 2023 06:25:26 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 083335805C;
+        Tue, 10 Jan 2023 06:25:22 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.109.205.160])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 10 Jan 2023 06:25:21 +0000 (GMT)
+X-Mailer: emacs 29.0.60 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Yuanchu Xie <yuanchu@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Yuanchu Xie <yuanchu@google.com>
+Subject: Re: [RFC PATCH 0/2] mm: multi-gen LRU: working set extensions
+In-Reply-To: <20221214225123.2770216-1-yuanchu@google.com>
+References: <20221214225123.2770216-1-yuanchu@google.com>
+Date:   Tue, 10 Jan 2023 11:55:18 +0530
+Message-ID: <87k01ulxdd.fsf@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <Y7xbpidpq7+DqJan@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBXxC7hwbxjr2xaBQ--.9417S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur1DGF4kur4DXrWDtr1kZrb_yoW8Wr18pF
-        Z3Gay3G39xtrySkr17Za1xXa4rtws5Ja45G3yfGw4rur45X3s3Aw1ayryfCF1DZFs5Za4j
-        qr409FyDGr1qya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
-        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NbtpzACN7KtQ6ZN1evE6-1wqWOfuGVBn
+X-Proofpoint-GUID: 17EcHdWVxE5URnXUJJgzbWcprYSI_xok
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-10_01,2023-01-09_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=506 lowpriorityscore=0
+ clxscore=1011 adultscore=0 bulkscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301100038
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Yuanchu Xie <yuanchu@google.com> writes:
 
-ÔÚ 2023/01/10 2:23, Tejun Heo Ð´µÀ:
-> Yeah, that's unfortunate. There are several options here:
-> 
-> 1. Do what you originally suggested - bypass to root after offline. I feel
->     uneasy about this. Both iolatency and throtl clear their configs on
->     offline but that's punting to the parent. For iocost it'd be bypassing
->     all controls, which can actually be exploited.
-> 
-> 2. Make all possible IO issuers use blkcg_[un]pin_online() and shift the
->     iocost shutdown to pd_offline_fn(). This likely is the most canonical
->     solution given the current situation but it's kinda nasty to add another
->     layer of refcnting all over the place.
-> 
-> 3. Order blkg free so that parents are never freed before children. You did
->     this by adding refcnts in iocost but shouldn't it be possible to simply
->     shift blkg_put(blkg->parent) in __blkg_release() to blkg_free_workfn()?
+> Introduce a way of monitoring the working set of a workload, per page
+> type and per NUMA node, with granularity in minutes. It has page-level
+> granularity and minimal memory overhead by building on the
+> Multi-generational LRU framework, which already has most of the
+> infrastructure and is just missing a useful interface.
+>
+> MGLRU organizes pages in generations, where an older generation contains
+> colder pages, and aging promotes the recently used pages into the young
+> generation and creates a new one. The working set size is how much
+> memory an application needs to keep working, the amount of "hot" memory
+> that's frequently used. The only missing pieces between MGLRU
+> generations and working set estimation are a consistent aging cadence
+> and an interface; we introduce the two additions.
 
-As I tried to explain before, we can make sure blkg_free() is called
-in order, but blkg_free() from remove cgroup can concurrent with
-deactivate policy, and we can't guarantee the order of ioc_pd_free()
-that is called both from blkg_free() and blkcg_deactivate_policy().
-Hence I don't think #3 is possible.
+So with kold kthread do we need aging in reclaim ? Should we switch reciam
+to wakeup up kold kthread to do aging instead of doing try_to_inc_max_seq?
+This would also help us to try different aging mechanism which can run
+better in a kthread. 
 
-I personaly prefer #1, I don't see any real use case about the defect
-that you described, and actually in cgroup v1 blk-throtl is bypassed to
-no limit as well.
 
-I'm not sure about #2, that sounds a possible solution but I'm not quite
-familiar with the implementations here.
-
-Consider that bfq already has such refcounting for bfqg, perhaps
-similiar refcounting is acceptable?
-
-Thanks,
-Kuai
-
+>
+> Periodic aging
+> ======
+> MGLRU Aging is currently driven by reclaim, so the amount of time
+> between generations is non-deterministic. With memcgs being aged
+> regularly, MGLRU generations become time-based working set information.
+>
+> - memory.periodic_aging: a new root-level only file in cgroupfs
+> Writing to memory.periodic_aging sets the aging interval and opts into
+> periodic aging.
+> - kold: a new kthread that ages memcgs based on the set aging interval.
+>
+> Page idle age stats
+> ======
+> - memory.page_idle_age: we group pages into idle age ranges, and present
+>   the number of pages per node per pagetype in each range. This
+>   aggregates the time information from MGLRU generations hierarchically.
+>
+> Use case: proactive reclaimer
+> ======
+> The proactive reclaimer sets the aging interval, and periodically reads
+> the page idle age stats, forming a working set estimation, which it then
+> calculates an amount to write to memory.reclaim.
+>
+> With the page idle age stats, a proactive reclaimer could calculate a
+> precise amount of memory to reclaim without continuously probing and
+> inducing reclaim.
+>
+> A proactive reclaimer that uses a similar interface is used in the
+> Google data centers.
+>
+> Use case: workload introspection
+> ======
+> A workload may use the working set estimates to adjust application
+> behavior as needed, e.g. preemptively killing some of its workers to
+> avoid its working set thrashing, or dropping caches to fit within a
+> limit.
+> It can also be valuable to application developers, who can benefit from
+> an out-of-the-box overview of the application's usage behaviors.
+>
+> TODO List
+> ======
+> - selftests
+> - a userspace demonstrator combining periodic aging, page idle age
+>   stats, memory.reclaim, and/or PSI
+>
+> Open questions
+> ======
+> - MGLRU aging mechanism has a flag called force_scan. With
+>   force_scan=false, invoking MGLRU aging when an lruvec has a maximum
+>   number of generations does not actually perform aging.
+>   However, with force_scan=true, MGLRU moves the pages in the oldest
+>   generation to the second oldest generation. The force_scan=true flag
+>   also disables some optimizations in MGLRU's page table walks.
+>   The current patch sets force_scan=true, so that periodic aging would
+>   work without a proactive reclaimer evicting the oldest generation.
+>
+> - The page idle age format uses a fixed set of time ranges in seconds.
+>   I have considered having it be based on the aging interval, or just
+>   compiling the raw timestamps.
+>   With the age ranges based on the aging interval, a memcg that's
+>   undergoing memcg reclaim might have its generations in the 10
+>   seconds range, and a much longer aging interval would obscure this
+>   fact.
+>   The raw timestamps from MGLRU could lead to a very large file when
+>   aggregated hierarchically.
+>
+> Yuanchu Xie (2):
+>   mm: multi-gen LRU: periodic aging
+>   mm: multi-gen LRU: cgroup working set stats
+>
+>  include/linux/kold.h   |  44 ++++++++++
+>  include/linux/mmzone.h |   4 +-
+>  mm/Makefile            |   3 +
+>  mm/kold.c              | 150 ++++++++++++++++++++++++++++++++
+>  mm/memcontrol.c        | 188 +++++++++++++++++++++++++++++++++++++++++
+>  mm/vmscan.c            |  35 +++++++-
+>  6 files changed, 422 insertions(+), 2 deletions(-)
+>  create mode 100644 include/linux/kold.h
+>  create mode 100644 mm/kold.c
+>
+> -- 
+> 2.39.0.314.g84b9a713c41-goog
