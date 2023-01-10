@@ -2,63 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03970663343
-	for <lists+cgroups@lfdr.de>; Mon,  9 Jan 2023 22:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1228066361C
+	for <lists+cgroups@lfdr.de>; Tue, 10 Jan 2023 01:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237260AbjAIVkE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Jan 2023 16:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
+        id S237072AbjAJAS2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Jan 2023 19:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238136AbjAIVjp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Jan 2023 16:39:45 -0500
-Received: from mail-oi1-x24a.google.com (mail-oi1-x24a.google.com [IPv6:2607:f8b0:4864:20::24a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782A91DF2F
-        for <cgroups@vger.kernel.org>; Mon,  9 Jan 2023 13:38:32 -0800 (PST)
-Received: by mail-oi1-x24a.google.com with SMTP id bh17-20020a056808181100b003633ad83115so3073030oib.3
-        for <cgroups@vger.kernel.org>; Mon, 09 Jan 2023 13:38:32 -0800 (PST)
+        with ESMTP id S235639AbjAJAS0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Jan 2023 19:18:26 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFB52DE4
+        for <cgroups@vger.kernel.org>; Mon,  9 Jan 2023 16:18:24 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-4c15c4fc8ccso135051957b3.4
+        for <cgroups@vger.kernel.org>; Mon, 09 Jan 2023 16:18:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bWOMIyzYML+GnCVLadZ/bfKF2vZbEfEtiwoUNHe8I8g=;
-        b=B/4nGCkbSar9JPAjXdE2nMB2agrlgj7EbvSmEmaJ+FSJY/iiSdTcvg5MdvBrbYHsHT
-         aJRIFm3Wr5pW8VLrvwXyFhP3E3TT9U5sZcpJvG8FV1JDpbHJwB7rtgFFGgNK9LDaVjog
-         Pxt5yN9L6hOC7uq/3GfuD7+lUUQyPP+3VSsa17lsU0G2BkfMYQpcL3C/SsXM7xi372Zn
-         fNO5FJJkb2PUBmghvakzxN8uNK9UFoT5CrG30MTZzLQBuir0MX/aQWG2h1G8i+8H8PX5
-         4fz1y8odBf62yg98vv3M9x+vuJXu9iZH5joEdWq+vYgTfLpmFQLvIEwSeteAmim8RvJX
-         MOWw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sgQCt0va7Fj5/9fGcldqaAxXWYK8cBxGZmP9xyPfdn4=;
+        b=CjxZ1mdpIhqu8VGPVCMoqsbsDlIhqCjEmsPqq5qkb1qszkge1Jm7eoOuPAcP/ZV3bk
+         wPP+sf8id+ynxeTBPKOWQaibXFQF9VkirxIevCIzpGAQ21ueiyMyljdoDpqBwv6iADhp
+         JWDpspg8gxuUz/g8o8f3Q/TpOZXD4wUkStfMnP3bNMTdaoT8E8PrN4XpF0W1y5T9lIyj
+         m9H9otSUCpmNvNlNujrmOWTRlgks+Pwp+EXc1GX8tr1KUVIqmZXacuPH98ZfnNVZNFn8
+         /a3FCftCVuu8stwkCKaAOtd2Rf8qgv7JUkOT3SOOPfRdmX4H3QpcqFd3fI60DVZdrWVr
+         exyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bWOMIyzYML+GnCVLadZ/bfKF2vZbEfEtiwoUNHe8I8g=;
-        b=F2277dDpbskKSVmspymCsHP57NLXnTJrB5CAVOLfLpcQRd4ZdoR2HHTXMvXDy5vpT5
-         Trn0IrWcr8qJRwzI+1/peEuCtMdjLNH1wAHIlf6grjlUvR+YGGWA9R8Ji5YnXlDZWgcq
-         /taJlJueeU+4qBbO/ytPmhASTuAAD5rAbdKuaHVWeSxwnYg9W8+FC93jNMGRztNSpoO8
-         810PTDfp7fCBDaiNGh9mLrsfit2PMWsQDtgw4YIc0ipJe0kTBSyxc0XsEHpYoaHsRquI
-         M0y6QnSwQfxR7KidW5SSpcN3BynnvvsUU+qM0rf6M6ETB6tqvrxxy6WVZRgiYSJbiEyT
-         OTQA==
-X-Gm-Message-State: AFqh2ko4AnJcf5xg+IXBUgIHxmDW320yYMPfRV04vw4dKBPz/2iLVckN
-        gKDF5ZiGLPqQPw0eR54wG/dE+EPWod0NixA=
-X-Google-Smtp-Source: AMrXdXt2b4GmnQbBAnictl+P9Qid5OxsP4Aa+Rreix4gjPXQPZYSTzo2urBLSPG5NnFGp9zwycV58Z5FT1JxcHQ=
-X-Received: from tj.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:53a])
- (user=tjmercier job=sendgmr) by 2002:a05:6870:6327:b0:15b:d2e:d059 with SMTP
- id s39-20020a056870632700b0015b0d2ed059mr587093oao.179.1673300311796; Mon, 09
- Jan 2023 13:38:31 -0800 (PST)
-Date:   Mon,  9 Jan 2023 21:38:06 +0000
-In-Reply-To: <20230109213809.418135-1-tjmercier@google.com>
-Mime-Version: 1.0
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sgQCt0va7Fj5/9fGcldqaAxXWYK8cBxGZmP9xyPfdn4=;
+        b=SZH5ooOVnMefXM5cOCAMss5m8ItXUU1IBzFp2YwYA1Tgb7Zu+8/AlwXXx//W2SMqhU
+         oT2JK9AXJTxe6paCjgKUazXXPot1QsctDEulZIYP0AFBl5kzloxNK4regCEKsiDjn8C/
+         9LVYfvzbXWgIO/R0aRVHOHqNnHipubxGVT3MYwKwQyNgZ79xUfMInduELQjbvKu0x2eo
+         btUo0iyirXIThZoDcuEUK27UGr62F5+d4JCgAX02IuoNIUqbwCY6121DCh88e404ktA+
+         SIuyL4gLcj2UxSQr1TzJLRhkv83AwmdOrugk47HhU3De983qybSnkXqzAu1iVuJFdTH9
+         ugIA==
+X-Gm-Message-State: AFqh2koJTxvGTk3UIJbuXHSkHe0eAxGkb/2wCWDRzhKYYnEWZl2EGtkI
+        Jy3k437mPO9PZnl94Pbrbz1C6bSAcTdRlO0IuEVPnw==
+X-Google-Smtp-Source: AMrXdXvykUOk6Aq29zKPFweeZ5QLOqVr0VtGabuLWKsdUabDXPvAWtUyFW1w97fkSV+2AQTk/rtQ4CJ6GNWf2U6U44A=
+X-Received: by 2002:a81:7386:0:b0:391:c415:f872 with SMTP id
+ o128-20020a817386000000b00391c415f872mr1094430ywc.318.1673309903890; Mon, 09
+ Jan 2023 16:18:23 -0800 (PST)
+MIME-Version: 1.0
 References: <20230109213809.418135-1-tjmercier@google.com>
-X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-Message-ID: <20230109213809.418135-4-tjmercier@google.com>
-Subject: [PATCH 3/4] binder: Add flags to relinquish ownership of fds
-From:   "T.J. Mercier" <tjmercier@google.com>
-To:     tjmercier@google.com, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+In-Reply-To: <20230109213809.418135-1-tjmercier@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 9 Jan 2023 16:18:12 -0800
+Message-ID: <CALvZod4ru7F38tAO-gM9ZFKaEhS0w3KqFbPwhwcTvgJs4xMUow@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Track exported dma-buffers with memcg
+To:     "T.J. Mercier" <tjmercier@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
         Todd Kjos <tkjos@android.com>,
         Martijn Coenen <maco@android.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -66,16 +65,26 @@ To:     tjmercier@google.com, Tejun Heo <tj@kernel.org>,
         Carlos Llamas <cmllamas@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>
-Cc:     daniel.vetter@ffwll.ch, android-mm@google.com, jstultz@google.com,
-        Hridya Valsaraju <hridya@google.com>, cgroups@vger.kernel.org,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, daniel.vetter@ffwll.ch,
+        android-mm@google.com, jstultz@google.com, cgroups@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
+        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,237 +92,60 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Hridya Valsaraju <hridya@google.com>
+Hi T.J.,
 
-This patch introduces flags BINDER_FD_FLAG_XFER_CHARGE, and
-BINDER_FD_FLAG_XFER_CHARGE that a process sending an individual fd or
-fd array to another process over binder IPC can set to relinquish
-ownership of the fd(s) being sent for memory accounting purposes. If the
-flag is found to be set during the fd or fd array translation and the
-fd is for a DMA-BUF, the buffer is uncharged from the sender's cgroup
-and charged to the receiving process's cgroup instead.
+On Mon, Jan 9, 2023 at 1:38 PM T.J. Mercier <tjmercier@google.com> wrote:
+>
+> Based on discussions at LPC, this series adds a memory.stat counter for
+> exported dmabufs. This counter allows us to continue tracking
+> system-wide total exported buffer sizes which there is no longer any
+> way to get without DMABUF_SYSFS_STATS, and adds a new capability to
+> track per-cgroup exported buffer sizes. The total (root counter) is
+> helpful for accounting in-kernel dmabuf use (by comparing with the sum
+> of child nodes or with the sum of sizes of mapped buffers or FD
+> references in procfs) in addition to helping identify driver memory
+> leaks when in-kernel use continually increases over time. With
+> per-application cgroups, the per-cgroup counter allows us to quickly
+> see how much dma-buf memory an application has caused to be allocated.
+> This avoids the need to read through all of procfs which can be a
+> lengthy process, and causes the charge to "stick" to the allocating
+> process/cgroup as long as the buffer is alive, regardless of how the
+> buffer is shared (unless the charge is transferred).
+>
+> The first patch adds the counter to memcg. The next two patches allow
+> the charge for a buffer to be transferred across cgroups which is
+> necessary because of the way most dmabufs are allocated from a central
+> process on Android. The fourth patch adds a SELinux hook to binder in
+> order to control who is allowed to transfer buffer charges.
+>
+> [1] https://lore.kernel.org/all/20220617085702.4298-1-christian.koenig@amd.com/
+>
 
-It is up to the sending process to ensure that it closes the fds
-regardless of whether the transfer failed or succeeded.
+I am a bit confused by the term "charge" used in this patch series.
+From the patches, it seems like only a memcg stat is added and nothing
+is charged to the memcg.
 
-Most graphics shared memory allocations in Android are done by the
-graphics allocator HAL process. On requests from clients, the HAL
-process allocates memory and sends the fds to the clients over binder
-IPC. The graphics allocator HAL will not retain any references to the
-buffers. When the HAL sets *_FLAG_XFER_CHARGE for fd arrays holding
-DMA-BUF fds, or individual fd objects, binder will transfer the charge
-for the buffer from the allocator process cgroup to the client process
-cgroup.
+This leads me to the question: Why add this stat in memcg if the
+underlying memory is not charged to the memcg and if we don't really
+want to limit the usage?
 
-The pad [1] and pad_flags [2] fields of binder_fd_object and
-binder_fda_array_object come from alignment with flat_binder_object and
-have never been exposed for use from userspace. This new flags use
-follows the pattern set by binder_buffer_object.
+I see two ways forward:
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/uapi/linux/android/binder.h?id=feba3900cabb8e7c87368faa28e7a6936809ba22
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/uapi/linux/android/binder.h?id=5cdcf4c6a638591ec0e98c57404a19e7f9997567
+1. Instead of memcg, use bpf-rstat [1] infra to implement the
+per-cgroup stat for dmabuf. (You may need an additional hook for the
+stat transfer).
 
-Signed-off-by: Hridya Valsaraju <hridya@google.com>
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
----
- Documentation/admin-guide/cgroup-v2.rst |  3 ++-
- drivers/android/binder.c                | 31 +++++++++++++++++++++----
- drivers/dma-buf/dma-buf.c               |  4 +---
- include/linux/dma-buf.h                 |  1 +
- include/uapi/linux/android/binder.h     | 23 ++++++++++++++----
- 5 files changed, 50 insertions(+), 12 deletions(-)
+2. Charge the actual memory to the memcg. Since the size of dmabuf is
+immutable across its lifetime, you will not need to do accounting at
+page level and instead use something similar to the network memory
+accounting interface/mechanism (or even more simple). However you
+would need to handle the reclaim, OOM and charge context and failure
+cases. However if you are not looking to limit the usage of dmabuf
+then this option is an overkill.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 538ae22bc514..d225295932c0 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1457,7 +1457,8 @@ PAGE_SIZE multiple when read back.
- 
- 	  dmabuf (npn)
- 		Amount of memory used for exported DMA buffers allocated by the cgroup.
--		Stays with the allocating cgroup regardless of how the buffer is shared.
-+		Stays with the allocating cgroup regardless of how the buffer is shared
-+		unless explicitly transferred.
- 
- 	  workingset_refault_anon
- 		Number of refaults of previously evicted anonymous pages.
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 880224ec6abb..9830848c8d25 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -42,6 +42,7 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/dma-buf.h>
- #include <linux/fdtable.h>
- #include <linux/file.h>
- #include <linux/freezer.h>
-@@ -2237,7 +2238,7 @@ static int binder_translate_handle(struct flat_binder_object *fp,
- 	return ret;
- }
- 
--static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
-+static int binder_translate_fd(u32 fd, binder_size_t fd_offset, __u32 flags,
- 			       struct binder_transaction *t,
- 			       struct binder_thread *thread,
- 			       struct binder_transaction *in_reply_to)
-@@ -2275,6 +2276,26 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
- 		goto err_security;
- 	}
- 
-+	if (IS_ENABLED(CONFIG_MEMCG) && (flags & BINDER_FD_FLAG_XFER_CHARGE)) {
-+		struct dma_buf *dmabuf;
-+
-+		if (unlikely(!is_dma_buf_file(file))) {
-+			binder_user_error(
-+				"%d:%d got transaction with XFER_CHARGE for non-dmabuf fd, %d\n",
-+				proc->pid, thread->pid, fd);
-+			ret = -EINVAL;
-+			goto err_dmabuf;
-+		}
-+
-+		dmabuf = file->private_data;
-+		ret = dma_buf_transfer_charge(dmabuf, target_proc->tsk);
-+		if (ret) {
-+			pr_warn("%d:%d Unable to transfer DMA-BUF fd charge to %d\n",
-+				proc->pid, thread->pid, target_proc->pid);
-+			goto err_xfer;
-+		}
-+	}
-+
- 	/*
- 	 * Add fixup record for this transaction. The allocation
- 	 * of the fd in the target needs to be done from a
-@@ -2294,6 +2315,8 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
- 	return ret;
- 
- err_alloc:
-+err_xfer:
-+err_dmabuf:
- err_security:
- 	fput(file);
- err_fget:
-@@ -2604,7 +2627,7 @@ static int binder_translate_fd_array(struct list_head *pf_head,
- 
- 		ret = copy_from_user(&fd, sender_ufda_base + sender_uoffset, sizeof(fd));
- 		if (!ret)
--			ret = binder_translate_fd(fd, offset, t, thread,
-+			ret = binder_translate_fd(fd, offset, fda->flags, t, thread,
- 						  in_reply_to);
- 		if (ret)
- 			return ret > 0 ? -EINVAL : ret;
-@@ -3383,8 +3406,8 @@ static void binder_transaction(struct binder_proc *proc,
- 			struct binder_fd_object *fp = to_binder_fd_object(hdr);
- 			binder_size_t fd_offset = object_offset +
- 				(uintptr_t)&fp->fd - (uintptr_t)fp;
--			int ret = binder_translate_fd(fp->fd, fd_offset, t,
--						      thread, in_reply_to);
-+			int ret = binder_translate_fd(fp->fd, fd_offset, fp->flags,
-+						      t, thread, in_reply_to);
- 
- 			fp->pad_binder = 0;
- 			if (ret < 0 ||
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index fd6c5002032b..a65b42433099 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -34,8 +34,6 @@
- 
- #include "dma-buf-sysfs-stats.h"
- 
--static inline int is_dma_buf_file(struct file *);
--
- struct dma_buf_list {
- 	struct list_head head;
- 	struct mutex lock;
-@@ -527,7 +525,7 @@ static const struct file_operations dma_buf_fops = {
- /*
-  * is_dma_buf_file - Check if struct file* is associated with dma_buf
-  */
--static inline int is_dma_buf_file(struct file *file)
-+int is_dma_buf_file(struct file *file)
- {
- 	return file->f_op == &dma_buf_fops;
- }
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 6aa128d76aa7..092d572ce528 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -595,6 +595,7 @@ dma_buf_attachment_is_dynamic(struct dma_buf_attachment *attach)
- 	return !!attach->importer_ops;
- }
- 
-+int is_dma_buf_file(struct file *file);
- struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
- 					  struct device *dev);
- struct dma_buf_attachment *
-diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
-index e72e4de8f452..696c2bdb8a7e 100644
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -91,14 +91,14 @@ struct flat_binder_object {
- /**
-  * struct binder_fd_object - describes a filedescriptor to be fixed up.
-  * @hdr:	common header structure
-- * @pad_flags:	padding to remain compatible with old userspace code
-+ * @flags:	One or more BINDER_FD_FLAG_* flags
-  * @pad_binder:	padding to remain compatible with old userspace code
-  * @fd:		file descriptor
-  * @cookie:	opaque data, used by user-space
-  */
- struct binder_fd_object {
- 	struct binder_object_header	hdr;
--	__u32				pad_flags;
-+	__u32				flags;
- 	union {
- 		binder_uintptr_t	pad_binder;
- 		__u32			fd;
-@@ -107,6 +107,17 @@ struct binder_fd_object {
- 	binder_uintptr_t		cookie;
- };
- 
-+enum {
-+	/**
-+	 * @BINDER_FD_FLAG_XFER_CHARGE
-+	 *
-+	 * When set, the sender of a binder_fd_object wishes to relinquish ownership of the fd for
-+	 * memory accounting purposes. If the fd is for a DMA-BUF, the buffer is uncharged from the
-+	 * sender's cgroup and charged to the receiving process's cgroup instead.
-+	 */
-+	BINDER_FD_FLAG_XFER_CHARGE = 0x01,
-+};
-+
- /* struct binder_buffer_object - object describing a userspace buffer
-  * @hdr:		common header structure
-  * @flags:		one or more BINDER_BUFFER_* flags
-@@ -141,7 +152,7 @@ enum {
- 
- /* struct binder_fd_array_object - object describing an array of fds in a buffer
-  * @hdr:		common header structure
-- * @pad:		padding to ensure correct alignment
-+ * @flags:		One or more BINDER_FDA_FLAG_* flags
-  * @num_fds:		number of file descriptors in the buffer
-  * @parent:		index in offset array to buffer holding the fd array
-  * @parent_offset:	start offset of fd array in the buffer
-@@ -162,12 +173,16 @@ enum {
-  */
- struct binder_fd_array_object {
- 	struct binder_object_header	hdr;
--	__u32				pad;
-+	__u32				flags;
- 	binder_size_t			num_fds;
- 	binder_size_t			parent;
- 	binder_size_t			parent_offset;
- };
- 
-+enum {
-+	BINDER_FDA_FLAG_XFER_CHARGE = BINDER_FD_FLAG_XFER_CHARGE,
-+};
-+
- /*
-  * On 64-bit platforms where user code may run in 32-bits the driver must
-  * translate the buffer (and local binder) addresses appropriately.
--- 
-2.39.0.314.g84b9a713c41-goog
+Please let me know if I misunderstood something.
 
+[1] https://lore.kernel.org/all/20220824233117.1312810-1-haoluo@google.com/
+
+thanks,
+Shakeel
