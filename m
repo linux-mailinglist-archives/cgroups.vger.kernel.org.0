@@ -2,115 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6888666B25
-	for <lists+cgroups@lfdr.de>; Thu, 12 Jan 2023 07:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE84666BE7
+	for <lists+cgroups@lfdr.de>; Thu, 12 Jan 2023 08:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjALGSY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Jan 2023 01:18:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        id S229863AbjALH4i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Jan 2023 02:56:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236566AbjALGSX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Jan 2023 01:18:23 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D931263E;
-        Wed, 11 Jan 2023 22:18:22 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NsvVv0tWQz4f3wQw;
-        Thu, 12 Jan 2023 14:18:15 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgCXtjAnpr9jeF7hBQ--.43940S3;
-        Thu, 12 Jan 2023 14:18:17 +0800 (CST)
-Subject: Re: [PATCH v2 1/2] blk-iocost: add refcounting for iocg
-To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <Y7XzUee5Bq+DoIC1@slm.duckdns.org>
- <c63ee2ad-23d5-3be0-c731-28494398b391@huaweicloud.com>
- <Y7cX0SJ0y6+EIY5Q@slm.duckdns.org>
- <7dcdaef3-65c1-8175-fea7-53076f39697f@huaweicloud.com>
- <Y7iCId3pnEnLqY8G@slm.duckdns.org>
- <875eb43e-202d-5b81-0bff-ef0434358d99@huaweicloud.com>
- <Y7xbpidpq7+DqJan@slm.duckdns.org>
- <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
- <Y72wF/b0/xNRmP7f@slm.duckdns.org>
- <53b30ac8-d608-ba0b-8b1b-7fe5cfed6d61@huaweicloud.com>
- <Y77s0f741mFfGlTO@slm.duckdns.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <4aeef320-c6c8-d9b4-8826-d58f00ea6264@huaweicloud.com>
-Date:   Thu, 12 Jan 2023 14:18:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <Y77s0f741mFfGlTO@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgCXtjAnpr9jeF7hBQ--.43940S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF15Aw4UGr1kXr1kZryxZrb_yoW8GFW8pF
-        WfG3sagrWvyw1IyrnFyw4xX34Ska1UAr15KFyDG3yfCr4Fgr92kFyfAr1DAF93JFs5tFyY
-        gFyYgF17W39rAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
-        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S236644AbjALH4g (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Jan 2023 02:56:36 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAF95FFB
+        for <cgroups@vger.kernel.org>; Wed, 11 Jan 2023 23:56:35 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id y2-20020a17090a784200b00225c0839b80so7659658pjl.5
+        for <cgroups@vger.kernel.org>; Wed, 11 Jan 2023 23:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vg6nAgYjZ4wYYlTqMF3jbo791ipG8SuFLzs8v41dmTI=;
+        b=kL0UvQite/urbN7Yp3NlzfzFTECRjRM1K7T5g4ZxG3zHylBlslAyzr6qxrAi9aysJM
+         RDeACOZIgRrgriXoR4Pb3FUm6siAnl76A15BakL+7xmzzyJYvBrIKvFGmqzOdrHuLyHw
+         eLCWL5a84U7mTNiiuZkhyyW//9BsTntHFbTMWG3xqNxmoxumrT4tac24HiqQmCacQxb7
+         hWUb45XPnPy09DrO6jQeVMIxbVjfhO/QXKCL83ehtKjjTMjBps8fFK6gPa75SmpeTyw8
+         vcf4DzdsP5Yv5ETLXzCGGp7Lotol2entUVESDqjWMyWKfU3XQsKSss8PleO3BkZomuWi
+         ioIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vg6nAgYjZ4wYYlTqMF3jbo791ipG8SuFLzs8v41dmTI=;
+        b=6V9YvIgezmgklN70XEInNrJ0G0wXGn97Koeg1CUwvJFK+ttORl9mh+1xmbBv3giXY8
+         +gon5v5SjsI8F2LvgJEZIO4Cn5twSl6gJvdwFMee4xI1MESmX8dYj+oJZQo85V7jeKJB
+         XEPIOMERflWEzR/4VRDdaQ2XOUTD6W8K85IR3azKwTEysSCpw5Xpoq87dyMCxYTZwrpI
+         vd+F4kYUCcofWRUJvFQUHcu8mvdMQBP3tuyfhTD/dCnlA258rGFzwfvMJ8oN2ad86aQa
+         iUOQtydBsD6hi0yNoSjQoasm2bXectYfM4YEgTClOdxh29flVfFrEgNSygIq2wOVeZeG
+         FwjA==
+X-Gm-Message-State: AFqh2kqGR2ezxj2YQ3Tg4x3Kc5dgss2zbcxfdPZiH8BJFR52dBXpY1g/
+        XdcBWovHALBt1LAznrACvsYMcHZrY3HY9A==
+X-Google-Smtp-Source: AMrXdXv29WhmagcsXxW5VJTVWoRrJdV9U6Gev8NYUGOd+PwEKkvAbufkJGb0qU84S3rueo4liZ5Ei6F1OKpY1Q==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a62:1488:0:b0:581:85ab:16b3 with SMTP id
+ 130-20020a621488000000b0058185ab16b3mr4558933pfu.67.1673510194669; Wed, 11
+ Jan 2023 23:56:34 -0800 (PST)
+Date:   Thu, 12 Jan 2023 07:56:31 +0000
+In-Reply-To: <Y78+rfzXPq5XGs9O@phenom.ffwll.local>
+Mime-Version: 1.0
+References: <20230109213809.418135-1-tjmercier@google.com> <CALvZod4ru7F38tAO-gM9ZFKaEhS0w3KqFbPwhwcTvgJs4xMUow@mail.gmail.com>
+ <Y78+rfzXPq5XGs9O@phenom.ffwll.local>
+Message-ID: <20230112075631.wc6fd54ci55drhkp@google.com>
+Subject: Re: [PATCH 0/4] Track exported dma-buffers with memcg
+From:   Shakeel Butt <shakeelb@google.com>
+To:     "T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Arve =?utf-8?B?SGrDuG5uZXbDpWc=?=" <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, android-mm@google.com,
+        jstultz@google.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
-
-在 2023/01/12 1:07, Tejun Heo 写道:
-> Hello,
+On Wed, Jan 11, 2023 at 11:56:45PM +0100, Daniel Vetter wrote:
 > 
-> On Wed, Jan 11, 2023 at 09:36:25AM +0800, Yu Kuai wrote:
->> I'm not sure, of course this can fix the problem, but two spinlock
->> 'blkcg->lock' and 'q->queue_lock' are used to protect blkg_destroy()
->> currently, add a mutex（disk level?) requires a refactor, which seems
->> complex to me.
+[...]
+> I think eventually, at least for other "account gpu stuff in cgroups" use
+> case we do want to actually charge the memory.
 > 
-> The fact that the two paths can race each other already seems buggy. e.g.
-> What prevents them from running pd_free on the same pd twice? So, it needs
-
-I think the root cause is that blkg is tracked from two different list,
-blkcg->blkg_list from cgroup level and q->blkg_list from disk level. And
-pd_free_fn is also called from both blkg_destroy() and deactivate policy
-for a disk.
-
-I just thought about another solution:
-
-remove the blkcg_deactivate_policy() from rq_qos_exit() from deleting
-the device, and delay the policy cleanup and free to blkg_destroy_all().
-Then the policies(other than bfq) can only call pd_free_fn() from
-blkg_destroy(), and it's easy to guarantee the order. For bfq, it can
-stay the same since bfq has refcounting itself.
-
-Then for the problem that ioc can be freed in pd_free_fn(), we can fix
-it by freeing ioc in ioc_pd_free() for root blkg instead of
-rq_qos_exit().
-
-What do you think?
-
-Thanks,
-Kuai
-> to be fixed anyway and the intention always has been that these callbacks
-> are called in the correct traversal order.
-> 
-> Thanks.
+> The problem is a bit that with gpu allocations reclaim is essentially "we
+> pass the error to userspace and they get to sort the mess out". There are
+> some exceptions (some gpu drivers to have shrinkers) would we need to make
+> sure these shrinkers are tied into the cgroup stuff before we could enable
+> charging for them?
 > 
 
+No, there is no requirement to have shrinkers or making such memory
+reclaimable before charging it. Though existing shrinkers and the
+possible future shrinkers would need to be converted into memcg aware
+shrinkers.
+
+Though there will be a need to update user expectations that if they 
+use memcgs with hard limits, they may start seeing memcg OOMs after the
+charging of dmabuf.
+
+> Also note that at least from the gpu driver side this is all a huge
+> endeavour, so if we can split up the steps as much as possible (and get
+> something interim useable that doesn't break stuff ofc), that is
+> practically need to make headway here. 
+
+This sounds reasonable to me.
