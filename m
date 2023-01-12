@@ -2,108 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262AF666998
-	for <lists+cgroups@lfdr.de>; Thu, 12 Jan 2023 04:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6888666B25
+	for <lists+cgroups@lfdr.de>; Thu, 12 Jan 2023 07:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbjALD04 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Jan 2023 22:26:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S231394AbjALGSY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Jan 2023 01:18:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235894AbjALD0v (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Jan 2023 22:26:51 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A9CC77E
-        for <cgroups@vger.kernel.org>; Wed, 11 Jan 2023 19:26:49 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id b17so11396359pld.7
-        for <cgroups@vger.kernel.org>; Wed, 11 Jan 2023 19:26:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SsH0mjnH0SeMzrOGfLla9s5TybpBmyzM+PHEYBJpLrQ=;
-        b=8NifJggs/yh5SMPhQK1Rns2F/N9YHJzl2Ypi9i9jYMCq8JvNLfeXx0wDvwNbHAEYZS
-         aiNsnWSqgv0g2jFpnl9MK1Y2zgFOOtY1/Cr1ukz7V2f3c//7jqoojUzeAWiPtkAkNsu3
-         y5NrTN9VglZvUCli+KS+Fuep2brgdFlSuTBp++iYWwI3HI8Urzjnp02w/NY3kipmZii8
-         UqqCazVNBK5ELchNv1pdLGUa9DDY77/ME9StIercWWbZEJGmjbAcWyWNj+BuzivqdALs
-         /zWjgQfVGjobtikFVWg83AqJJYWvGhvXR0D+XrKxLiyTjTVPhVt3cnyakg9mR7p1e29N
-         I3Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SsH0mjnH0SeMzrOGfLla9s5TybpBmyzM+PHEYBJpLrQ=;
-        b=1t9rxs/Rgr9EwvWr/zfekMhm+CY3ua6BtSt0IPWlMCvFZs3dnEqUmFR5lbXytCKNma
-         rc3nnERySsrv3JYhhnN1xg0Bei84kQiF2LNhZM22Ifem2weo0K44cTqWCQxqhfCZMBLt
-         gf1WEeD/E9+SFBbtGGiqyYjJQwVkui5ui9E28YSkUTty1I89ANdIZc+wkK+z6UoGT1y2
-         v5SGzKZOInOhrnBlN48KP0t09smhdEOUj+oK1o20wiOSE2Gay94elZirknDU5LvNbTqx
-         Vs9tFNvw9F8AV5czCKP3AfDwy+39dWQhAhkQvPEOrX4YWx2RY+qIgp81O0TaK9UU4nMA
-         lePQ==
-X-Gm-Message-State: AFqh2kogszP76zHboLGzht//hs1ctWH+U5WZSinXffo3JgxGU9owgIM0
-        4CppdfjJUO2t/xQgHzizU61Gog==
-X-Google-Smtp-Source: AMrXdXs4Ye9cDgkUChsXanRTIAebOqSR6oXMlmyQWNMKcPppTo5A7P42knpZBvwRXjZt+s2Vc/cKow==
-X-Received: by 2002:a17:902:76cb:b0:18d:dd85:303c with SMTP id j11-20020a17090276cb00b0018ddd85303cmr4554834plt.8.1673494008887;
-        Wed, 11 Jan 2023 19:26:48 -0800 (PST)
-Received: from [10.254.85.126] ([139.177.225.248])
-        by smtp.gmail.com with ESMTPSA id t1-20020a170902d14100b00186b3c3e2dasm10959022plt.155.2023.01.11.19.26.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jan 2023 19:26:48 -0800 (PST)
-Message-ID: <0e03867e-54ea-fb10-1f8a-f098c9dbb026@bytedance.com>
-Date:   Thu, 12 Jan 2023 11:26:42 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [External] Re: [PATCH v3] blk-throtl: Introduce sync and async
- queues for blk-throtl
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, josef@toxicpanda.com, axboe@kernel.dk,
+        with ESMTP id S236566AbjALGSX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Jan 2023 01:18:23 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D931263E;
+        Wed, 11 Jan 2023 22:18:22 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NsvVv0tWQz4f3wQw;
+        Thu, 12 Jan 2023 14:18:15 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgCXtjAnpr9jeF7hBQ--.43940S3;
+        Thu, 12 Jan 2023 14:18:17 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] blk-iocost: add refcounting for iocg
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yinxin.x@bytedance.com
-References: <20221226130505.7186-1-hanjinke.666@bytedance.com>
- <20230105161854.GA1259@blackbody.suse.cz>
- <20230106153813.4ttyuikzaagkk2sc@quack3> <Y7hTHZQYsCX6EHIN@slm.duckdns.org>
- <c839ba6c-80ac-6d92-af64-5c0e1956ae93@bytedance.com>
- <20230111123532.GB3673@blackbody.suse.cz>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <20230111123532.GB3673@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <Y7XzUee5Bq+DoIC1@slm.duckdns.org>
+ <c63ee2ad-23d5-3be0-c731-28494398b391@huaweicloud.com>
+ <Y7cX0SJ0y6+EIY5Q@slm.duckdns.org>
+ <7dcdaef3-65c1-8175-fea7-53076f39697f@huaweicloud.com>
+ <Y7iCId3pnEnLqY8G@slm.duckdns.org>
+ <875eb43e-202d-5b81-0bff-ef0434358d99@huaweicloud.com>
+ <Y7xbpidpq7+DqJan@slm.duckdns.org>
+ <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
+ <Y72wF/b0/xNRmP7f@slm.duckdns.org>
+ <53b30ac8-d608-ba0b-8b1b-7fe5cfed6d61@huaweicloud.com>
+ <Y77s0f741mFfGlTO@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <4aeef320-c6c8-d9b4-8826-d58f00ea6264@huaweicloud.com>
+Date:   Thu, 12 Jan 2023 14:18:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <Y77s0f741mFfGlTO@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CM-TRANSID: cCh0CgCXtjAnpr9jeF7hBQ--.43940S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF15Aw4UGr1kXr1kZryxZrb_yoW8GFW8pF
+        WfG3sagrWvyw1IyrnFyw4xX34Ska1UAr15KFyDG3yfCr4Fgr92kFyfAr1DAF93JFs5tFyY
+        gFyYgF17W39rAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi,
 
-
-在 2023/1/11 下午8:35, Michal Koutný 写道:
-> Hello.
+在 2023/01/12 1:07, Tejun Heo 写道:
+> Hello,
 > 
-> Thanks all for sharing ideas and more details (in time-previous messages).
+> On Wed, Jan 11, 2023 at 09:36:25AM +0800, Yu Kuai wrote:
+>> I'm not sure, of course this can fix the problem, but two spinlock
+>> 'blkcg->lock' and 'q->queue_lock' are used to protect blkg_destroy()
+>> currently, add a mutex（disk level?) requires a refactor, which seems
+>> complex to me.
 > 
-> On Sat, Jan 07, 2023 at 02:07:38AM +0800, hanjinke <hanjinke.666@bytedance.com> wrote:
->> But for some specific scenarios with old kernel versions, blk-throtl
->> is alose needed. The scenario described in my email is in the early stage of
->> research and extensive testing for it. During this period，some priority
->> inversion issues amoug cgroups or within one cgroup have been observed. So I
->> send this patch to try to fix or mitigate some of these issues.
+> The fact that the two paths can race each other already seems buggy. e.g.
+> What prevents them from running pd_free on the same pd twice? So, it needs
+
+I think the root cause is that blkg is tracked from two different list,
+blkcg->blkg_list from cgroup level and q->blkg_list from disk level. And
+pd_free_fn is also called from both blkg_destroy() and deactivate policy
+for a disk.
+
+I just thought about another solution:
+
+remove the blkcg_deactivate_policy() from rq_qos_exit() from deleting
+the device, and delay the policy cleanup and free to blkg_destroy_all().
+Then the policies(other than bfq) can only call pd_free_fn() from
+blkg_destroy(), and it's easy to guarantee the order. For bfq, it can
+stay the same since bfq has refcounting itself.
+
+Then for the problem that ioc can be freed in pd_free_fn(), we can fix
+it by freeing ioc in ioc_pd_free() for root blkg instead of
+rq_qos_exit().
+
+What do you think?
+
+Thanks,
+Kuai
+> to be fixed anyway and the intention always has been that these callbacks
+> are called in the correct traversal order.
 > 
-> Jinke, do you combine blk-throtl with memory limits? (As that could in theory
-> indirectly reduce async requests as dirtier would be slowed down.)
+> Thanks.
 > 
 
-Hi
-
-In fact, some of those tests above are done in vm with only total 16g 
-memory.
-
-Agree with what you said, if we further tighten the memory usage, things 
-will get better because this will indirectly reduces writeback pages in
-blk-throtl queue.
-
-Thanks.
