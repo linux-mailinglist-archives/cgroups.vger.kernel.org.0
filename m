@@ -2,181 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81234666CBA
-	for <lists+cgroups@lfdr.de>; Thu, 12 Jan 2023 09:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDEA666EB8
+	for <lists+cgroups@lfdr.de>; Thu, 12 Jan 2023 10:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239776AbjALIoY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Jan 2023 03:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
+        id S229546AbjALJyo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Jan 2023 04:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239928AbjALInr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Jan 2023 03:43:47 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AC84A962
-        for <cgroups@vger.kernel.org>; Thu, 12 Jan 2023 00:42:06 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id v13-20020a17090a6b0d00b00219c3be9830so20058957pjj.4
-        for <cgroups@vger.kernel.org>; Thu, 12 Jan 2023 00:42:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oEg4bQ6lpGrIUrq1T+gt3Ejj1Swr0qeWVL35vq5Po6U=;
-        b=taeeV0OMcAkInTg8vAnOBHKivystFadZ28hvDI0CRtwa+zGUkmuuJu7s9CY8olfEfk
-         qYZrKNb6EcrIunkCdUNwZOAq4VfeqVujcPa7tVQc8BA76qqjKZhZAhBzWc+jX2sqof7r
-         ul7kG0Bjc5Tc10dUdtw0rTwQte2dYX1xBwWVBKzngl1A8MkFOwgTRwbnDYREbIb+YN4k
-         6hOeggaxJLEhFqPiB2Pt7c7cFL+PaDDjC86ZHH2OgweCaxY+gCMRhjR3u7Lo0awYAExv
-         3KMpqRcm6JSeIgk5HKR3aosi302Hjr+guXh7/sC/IeC0DvalkGby20ZNib2af+AOc5Fc
-         AJsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oEg4bQ6lpGrIUrq1T+gt3Ejj1Swr0qeWVL35vq5Po6U=;
-        b=zTP2UWX5zKI3pfVtZtb7ZZq1iEoYyj9QaaX9VPBEDEpY/3lSdBm4gqiN2pwOVE0p4D
-         BU5CFIqr7R+w+kixeiBOBdU4pzJQhei94KCGLQk50PmVLaS2la7jRpIMioG0GqpFRpPy
-         SdmYWpiHgp5IT3Ny/a372H5d8TnLwshzrYeKO9akO2iy172pNzwh4qFW+RlbycY4pqzN
-         58h9LV0kBxBYWLYHAeOx/DYMtFue3TGmutdQv2+ItRfrjjz8y71TnwDhdb7obNluUqJz
-         b3+44jfQQn6wbrkSFuU+uSk85hoRmO7j+/jFTJqJ1M8jKcpr5kr8JdLhcpQiLZs67eVW
-         YGnw==
-X-Gm-Message-State: AFqh2kpN05VWffUA1oYWJkQyXMfaNzB5/x4kBWuZuyk5n9SXEY630Pd4
-        6bmGYaxCBGHiwXDzpxRhzaoIPQ==
-X-Google-Smtp-Source: AMrXdXtKyU3I2NR2YXrzW14f3Qypnb5R1CkBKI+EepMfwkROtVQP9h0wsQxWgy9dbYBQVA3lyM/SgQ==
-X-Received: by 2002:a17:903:1355:b0:193:3a92:f4bd with SMTP id jl21-20020a170903135500b001933a92f4bdmr5929867plb.47.1673512925646;
-        Thu, 12 Jan 2023 00:42:05 -0800 (PST)
-Received: from [10.254.85.126] ([139.177.225.248])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170902b40b00b001931c37da2dsm10242468plr.20.2023.01.12.00.42.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Jan 2023 00:42:05 -0800 (PST)
-Message-ID: <7a348aec-0e5c-ec6a-36cd-30a844d276ad@bytedance.com>
-Date:   Thu, 12 Jan 2023 16:42:00 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [External] Re: [PATCH v5] blk-throtl: Introduce sync and async
- queues for blk-throtl
-To:     Tejun Heo <tj@kernel.org>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        with ESMTP id S236621AbjALJyJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Jan 2023 04:54:09 -0500
+X-Greylist: delayed 379 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Jan 2023 01:50:25 PST
+Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FDC8E25;
+        Thu, 12 Jan 2023 01:50:25 -0800 (PST)
+Received: from localhost.biz (unknown [10.81.81.211])
+        by gw.red-soft.ru (Postfix) with ESMTPA id 89C1F3E0EB4;
+        Thu, 12 Jan 2023 12:44:03 +0300 (MSK)
+From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
+To:     Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yinxin.x@bytedance.com
-References: <20230111162030.31094-1-hanjinke.666@bytedance.com>
- <Y77sVSbS6fIXh3jp@slm.duckdns.org>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <Y77sVSbS6fIXh3jp@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        lvc-project@linuxtesting.org,
+        Anton Fadeev <anton.fadeev@red-soft.ru>
+Subject: [PATCH] block: bfq fix null pointer dereference of bfqg in bfq_bio_bfqg()
+Date:   Thu, 12 Jan 2023 12:43:58 +0300
+Message-Id: <20230112094358.451029-1-artem.chernyshev@red-soft.ru>
+X-Mailer: git-send-email 2.30.3
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 174659 [Jan 12 2023]
+X-KLMS-AntiSpam-Version: 5.9.59.0
+X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 502 502 69dee8ef46717dd3cb3eeb129cb7cc8dab9e30f6, {Tracking_from_domain_doesnt_match_to}, localhost.biz:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;red-soft.ru:7.1.1;127.0.0.199:7.1.2
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2023/01/12 08:47:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/01/12 05:58:00 #20761738
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+It is possible for bfqg to be NULL after being initialized as result of
+blkg_to_bfqg() function.
 
+That was achieved on kernel 5.15.78, but should exist in mainline as
+well
 
-在 2023/1/12 上午1:05, Tejun Heo 写道:
-> On Thu, Jan 12, 2023 at 12:20:30AM +0800, Jinke Han wrote:
->> From: Jinke Han <hanjinke.666@bytedance.com>
->>
->> Now we don't distinguish sync write ios from normal buffer write ios
->> in blk-throtl. A bio with REQ_SYNC tagged always mean it will be wait
->> until write completion soon after it submit. So it's reasonable for sync
->> io to complete as soon as possible.
->>
->> In our test, fio writes a 100g file in sequential 4k blocksize in
->> a container with low bps limit configured (wbps=10M). More than 1200
->> ios were throttled in blk-throtl queue and the avarage throtle time
->> of each io is 140s. At the same time, the operation of saving a small
->> file by vim will be blocked amolst 140s. As a fsync will be send by vim,
->> the sync ios of fsync will be blocked by a huge amount of buffer write
->> ios ahead. This is also a priority inversion problem within one cgroup.
->> In the database scene, things got really bad with blk-throtle enabled
->> as fsync is called very often.
->>
->> This patch splits bio queue into sync and async queues for blk-throtl
->> and gives a huge priority to sync write ios. Sync queue only make sense
->> for write ios as we treat all read io as sync io. I think it's a nice
->> respond to the semantics of REQ_SYNC. Bios with REQ_META and REQ_PRIO
->> gains the same priority as they are important to fs. This may avoid
->> some potential priority inversion problems.
->>
->> With this patch, do the same test above, the duration of the fsync sent
->> by vim drops to several hundreds of milliseconds.
->>
->> Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
->> Signed-off-by: Xin Yin <yinxin.x@bytedance.com>
-> 
-> Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> with some nits below:
-> 
->> +/**
->> + * throtl_qnode_bio_peek - peek a bio from a qn
->> + * @qn: the qnode to peek from
->> + *
->> + * For read, always peek bio from the SYNC queue.
->> + *
->> + * For write, we always peek bio from next_to_disp. If it's NULL, a bio
->                      ^
->                      first
-> 
->> + * will be popped from SYNC or ASYNC queue to fill it. The next_to_disp
->> + * is used to make sure that the peeked bio and the next popped bio are
->                                     ^
->                                     previously
-> 
->> + * always the same even in case that the spinlock of queue was released
->> + * and re-holded.
->            ^
->            re-grabbed / re-acquired
->> + *
->> + * Without the next_to_disp, consider the following situation:
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^
->        maybe drop this part and move the latter part to the end of the
->        previous para?
-> 
->> + * Assumed that there are only bios queued in ASYNC queue and the SYNC
->        ^
->        Assume
-> 
->> + * queue is empty and all ASYNC bios are 1M in size and the bps limit is
->> + * 1M/s. The throtl_slice is 100ms. The current slice is [jiffies1,
->> + * jiffies1+100] and the bytes_disp[w] is 0.
->> + *
->> + * The disp_sync_cnt is 0 as it was set 0 after each dispatching of a
->> + * ASYNC bio. A ASYNC bio wil be peeked to check in tg_may_dispatch.
->> + * Obviously, it can't be dispatched in current slice and the wait time
->> + * is 900ms. The slice will be extended to [jiffies1, jiffies1+1000] in
->> + * tg_may_dispatch. The spinlock of the queue will be released after the
->> + * process of dispatch giving up. A 4k size SYNC bio was queued in and
->> + * the SYNC queue becomes no-empty. After 900ms, it's time to dispatch
->> + * the tg, the SYNC bio will be popped to dispatched as the disp_sync_cnt
->> + * is 0 and the SYNC queue is no-empty. The slice will be extended to
->        ^
->   Maybe combine the previous several sentences like:
-> 
->   The queue lock is released and a 4k SYNC bio gets queued during the 900ms
->   wait.
-> 
->> + * [jiffies1, jiffies1+1100] in tg_may_dispatch. Then the slice will be
->> + * trimed to [jiffies1+1000, jiffies1+1100] after the SYNC bio was
->> + * dispatched. Then the former 1M size ASYNC bio will be peeked to be
->> + * checked and still can't be dispatched because of overlimit within
->> + * the current slice. The same thing may happen DISPACH_SYNC_FACTOR times
->> + * if always there is a SYNC bio be queued in the SYNC queue when the
->> + * ASYNC bio is waiting. This means that in nearly 5s, we have dispathed
->> + * four 4k SYNC bios and one  1M ASYNC bio. It is hard to fill up the
->> + * bandwidth considering that the bps limit is 1M/s.
-> 
-> Simiarly I think the information can be conveyed in a more compact form.
-> 
-> Thanks.
-> 
-The comment will be further adjusted based on your suggestions and the
-v6 with your Acked-by will be send.
+host1 login: [ 460.855794] watchdog: watchdog0: watchdog did not stop!
+[  898.944512] BUG: kernel NULL pointer dereference, address: 0000000000000094
+[  899.285776] #PF: supervisor read access in kernel mode
+[  899.536511] #PF: error_code(0x0000) - not-present page
+[  899.647305]  connection4:0: detected conn error (1020)
+[  899.786794] PGD 0 P4D 0
+[  899.786799] Oops: 0000 [#1] SMP PTI
+[  899.786802] CPU: 15 PID: 6073 Comm: ID iothread1 Not tainted 5.15.78-1.el7virt.x86_64 #1
+[  899.786804] Hardware name: HP ProLiant DL360 Gen9/ProLiant DL360 Gen9, BIOS P89 10/21/2019
+[  899.786806] RIP: 0010:bfq_bio_bfqg+0x26/0x80
+[  901.325944] Code: 0f 1f 40 00 0f 1f 44 00 00 55 48 89 fd 48 89 f7 53 48 8b 56 48 48 85 d2
+74 32 48 63 05 83 7f 35 01 48 83 c0 16 48 8b 5c c2 08 <80> bb 94 00 00 00 00 00
+[  902.237825] RSP: 0018:ffffae2649437688 EFLAGS: 00010002
+[  902.493396] RAX: 0000000000000019 RBX: 0000000000000000 RCX: dead000000000122
+[  902.841529] RDX: ffff8b6012cb3a00 RSI: ffff8b71002bbed0 RDI: ffff8b71002bbed0
+[  903.189374] RBP: ffff8b601c46e800 R08: ffffae26494377c8 R09: 0000000000000000
+[  903.532985] R10: 0000000000000001 R11: 0000000000000008 R12: ffff8b6f844c5b30
+[  903.880809] R13: ffff8b601c46e800 R14: ffffae2649437760 R15: ffff8b601c46e800
+[  904.220054] FS:  00007fec2fc4a700(0000) GS:ffff8b7f7f640000(0000) kn1GS:00000000000000000
+[  904.614349] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  904.894717] CR2: 0000000000000094 CR3: 0000000111fd8002 CR4: 00000000003726e0
+[  905.243702] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  905.592493] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  905.936859] Call Trace:
+[  906.055955] <TASK>
+[  906.158109] bfq_bic_update_cgroup+0x2c/0x1f0
+[  906.371057] bfq_insert_requests+0x2c2/0x1fb0
+[  906.579207] blk_mq_sched_insert_request+0xc2/0x140
+[  906.817640] __blk_mq_try_issue_directly+0xe0/0x1f0
+[  907.055737] blk_mq_request_issue_directly+0x4e/0xa0
+[  907.298547] dm_mq_queue_rq+0x217/0x3e0
+[  907.485935] blk_mq_dispatch_rq_list+0x14b/0x860
+[  907.711973] ? sbitmap_get+0x87/0x1a0
+[  907.890370] blk_mq_do_dispatch_sched+0x350/0x3b0
+[  908.074869] NMI watchdog: Watchdog detected hard LOCKUP on cpu 40
 
-Thanks
-Jinke
+Fixes: 075a53b78b81 ("bfq: Make sure bfqg for which we are queueing requests is online")
+Co-developed-by: Anton Fadeev <anton.fadeev@red-soft.ru>
+Signed-off-by: Anton Fadeev <anton.fadeev@red-soft.ru>
+Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+---
+ block/bfq-cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 1b2829e99dad..d4e9428cdbe5 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -616,7 +616,7 @@ struct bfq_group *bfq_bio_bfqg(struct bfq_data *bfqd, struct bio *bio)
+ 			continue;
+ 		}
+ 		bfqg = blkg_to_bfqg(blkg);
+-		if (bfqg->online) {
++		if (bfqg && bfqg->online) {
+ 			bio_associate_blkg_from_css(bio, &blkg->blkcg->css);
+ 			return bfqg;
+ 		}
+-- 
+2.30.3
+
