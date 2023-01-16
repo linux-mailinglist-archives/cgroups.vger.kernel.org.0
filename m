@@ -2,123 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F12A66B29D
-	for <lists+cgroups@lfdr.de>; Sun, 15 Jan 2023 17:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5536A66B61E
+	for <lists+cgroups@lfdr.de>; Mon, 16 Jan 2023 04:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbjAOQlx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 Jan 2023 11:41:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
+        id S231952AbjAPD03 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 Jan 2023 22:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbjAOQlw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 15 Jan 2023 11:41:52 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9660D9030
-        for <cgroups@vger.kernel.org>; Sun, 15 Jan 2023 08:41:51 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id fl11-20020a05600c0b8b00b003daf72fc844so949983wmb.0
-        for <cgroups@vger.kernel.org>; Sun, 15 Jan 2023 08:41:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wyXeq2MEr1J+e0QY6nAt4hvGGGXhRFe/SJyt1uQjd+M=;
-        b=HVKsp/vf0AVRuU856/IGt6skrRZgxXhP5I4Y/qoLNwpTmzYThPiVRxsVlvJJmA2Hg8
-         tV7IHYq1EnC+YIpW7nqTWWsd259d0i6s++jbssfomjbxGF0jqnK5YIE9DH/SkAO3JLxM
-         uS3s6sDNNElol4/q/sxBwK4HKwEwolb4mt0ZDnNTvQYzoD6hXCHFYV8wQWFiWwjYg7Rl
-         uoYg9AkFXmyKNC4d7x4HjFxlkLF43etPXh1w5UD9EU9MiBBJ1CV7f6PikjHHNpIaCbMk
-         Hgh+DGvyf19Jvt03Vhtv6xgnvLiGGsToOPXr97ilY6D6nQjhYAwKouUCVxcIeq3VXDwf
-         A3bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wyXeq2MEr1J+e0QY6nAt4hvGGGXhRFe/SJyt1uQjd+M=;
-        b=Ae5Bp5o0tEezOXliekTe5iEb7Iy/WkecPvyVccKrbUxTf6ytauRjmYM5GmAByIsIYb
-         a8I29E/Nzsa9yqNZTP2hfmcCfEGJ9g9sRfywvQNPbnVn8cCZ0BLPxSAqaP6rrQJDqVQk
-         C5jeN7wU+OwP1TX4mQ+9a8opMiZ2nDIlljNM6dDXi096o8OTypm+OJlOWI2QbbzmLD1H
-         T4hKCGYgkktQzL1kt+kKxs99u5fkomf63Idj0jI2pxB3/aahoqxF65jRTbXP9tYJiZyL
-         pj19ZXbtUxssxNHjVNv4I1VnkhO0xcRBOtd9pc8z3mHT1xRJ1UM6C4XootjjuxpI3rk+
-         J3WA==
-X-Gm-Message-State: AFqh2kq5AeP8Xm22beLFZW0KpHNb7dcNMQ8gjCBy/XkMIvkGHFOWg0xj
-        m5O5mPuUVidngyK06Ym9GavP/w==
-X-Google-Smtp-Source: AMrXdXuLY36cyQqAcwRVTO690f1UhyNmBsCwlXmkS44xRrGENHV8GwdmqHv1oESJrNIujBaVma3e0A==
-X-Received: by 2002:a05:600c:34d3:b0:3c6:e61e:ae74 with SMTP id d19-20020a05600c34d300b003c6e61eae74mr76812959wmq.4.1673800910197;
-        Sun, 15 Jan 2023 08:41:50 -0800 (PST)
-Received: from airbuntu (host86-130-134-87.range86-130.btcentralplus.com. [86.130.134.87])
-        by smtp.gmail.com with ESMTPSA id j18-20020a05600c191200b003d9dee823a3sm34029777wmq.5.2023.01.15.08.41.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Jan 2023 08:41:49 -0800 (PST)
-Date:   Sun, 15 Jan 2023 16:41:48 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, peterz@infradead.org,
-        mingo@redhat.com, rostedt@goodmis.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org, lizefan@huawei.com,
-        longman@redhat.com, dietmar.eggemann@arm.com,
-        cgroups@vger.kernel.org, Wei Wang <wvw@google.com>,
-        Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v9 3/8] cpuset: Rebuild root domain deadline accounting
- information
-Message-ID: <20230115164148.lnoqfpg7em334ts3@airbuntu>
-References: <20190719140000.31694-1-juri.lelli@redhat.com>
- <20190719140000.31694-4-juri.lelli@redhat.com>
- <20221216233501.gh6m75e7s66dmjgo@airbuntu>
- <CAKfTPtA0M5XOP4UdkFeSNen98e842OfKTBDOt0r-y_TD4w54jw@mail.gmail.com>
- <20221220114309.coi2o4ewosgouy6o@airbuntu>
+        with ESMTP id S231624AbjAPD0L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 15 Jan 2023 22:26:11 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DC093CF;
+        Sun, 15 Jan 2023 19:25:16 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NwHTH157Jz4f459W;
+        Mon, 16 Jan 2023 11:25:07 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgBnFCKTw8RjVwmYBg--.39784S3;
+        Mon, 16 Jan 2023 11:25:09 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] blk-iocost: add refcounting for iocg
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <Y7xbpidpq7+DqJan@slm.duckdns.org>
+ <a71f997f-6cae-d57b-85dd-2fd499d238f6@huaweicloud.com>
+ <Y72wF/b0/xNRmP7f@slm.duckdns.org>
+ <53b30ac8-d608-ba0b-8b1b-7fe5cfed6d61@huaweicloud.com>
+ <Y77s0f741mFfGlTO@slm.duckdns.org>
+ <4aeef320-c6c8-d9b4-8826-d58f00ea6264@huaweicloud.com>
+ <Y8CrloCDGhbU42OH@slm.duckdns.org>
+ <efa1c73b-e94f-373f-e535-2cfc32ce2433@huaweicloud.com>
+ <Y8CwwghZ0adMsHFC@slm.duckdns.org>
+ <ac95dfb8-b1b6-8916-bde8-1edb573e7ca5@huaweicloud.com>
+ <Y8GR3V3RsdS+XYzh@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <e27ea63a-8dd5-afad-b5d6-deabf879d191@huaweicloud.com>
+Date:   Mon, 16 Jan 2023 11:25:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20221220114309.coi2o4ewosgouy6o@airbuntu>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <Y8GR3V3RsdS+XYzh@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgBnFCKTw8RjVwmYBg--.39784S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrur4DJw48JF1UXw45uw17ZFb_yoWDJFb_ua
+        4rt34DGw4rWr4kCr13JrnYqa9FgryxJry8Wry0qFyxtryIq3srKFsrGr9xuF4fC3yrAFn8
+        Grs0g3yIq3yUujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUba8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/20/22 11:43, Qais Yousef wrote:
-> On 12/19/22 09:07, Vincent Guittot wrote:
-> > On Sat, 17 Dec 2022 at 00:35, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > Hi
-> > >
-> > > On 07/19/19 15:59, Juri Lelli wrote:
-> > > > When the topology of root domains is modified by CPUset or CPUhotplug
-> > > > operations information about the current deadline bandwidth held in the
-> > > > root domain is lost.
-> > > >
-> > > > This patch addresses the issue by recalculating the lost deadline
-> > > > bandwidth information by circling through the deadline tasks held in
-> > > > CPUsets and adding their current load to the root domain they are
-> > > > associated with.
-> > > >
-> > > > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> > > > ---
-> > >
-> > > We see that rebuild_root_domain() can take 10+ ms (I get a max of 20ms quite
-> > > consistently) on suspend/resume.
-> > >
-> > > Do we actually need to rebuild_root_domain() if we're going through
-> > > a suspend/resume cycle?
-> > 
-> > During suspend to ram, there are cpus hotplug operation but If you use
-> > suspend to idle, you will skip cpus hotplug operation and its
-> > associated rebuild.
+Hi,
+
+在 2023/01/14 1:16, Tejun Heo 写道:
+> As we discussed before, you'd have to order the actual freeing by shifting
+> the ref puts into the free_work. If you move `blkg_put(blkg->parent)` and
+> `list_del_init(&blkg->q_node)` to blkg_free_workfn() (this will require
+> adjustments as these things are used from other places too), the free work
+> items will be ordered and the blkg would remain iterable - IOW,
+> deactivate_policy would be able to see it allowing the two paths to
+> synchronize, right?
+
+That sounds reasonable to only remove blkg from queue list if
+pd_free_fn() is done.
+
+It's right this way deactivate_policy will be able to see it, and if
+deactivate_policy is called first, pd_free_fn() can be called here, and
+later blkg_free_workfn() should skip pd_free_fn().
+
+It's glad that we come up with suitable solution finially. 😃
+
+BTW, it might take some time before I send a new patchset cause Spring
+Festival is coming.
+
+Thanks,
+Kuai
 > 
-> Thanks Vincent. I'll check on that - but if we want to keep suspend to ram?
-> Do we really to incur this hit?
+> Thanks.
+> 
 
-Using s2idle is not an option actually. I'll prepare v2 to address Waiman
-comment if I don't get more feedback in the next few days.
-
-
-Thanks!
-
---
-Qais Yousef
