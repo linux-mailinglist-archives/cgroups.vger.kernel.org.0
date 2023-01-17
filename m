@@ -2,44 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B3166E309
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jan 2023 17:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6353E66E388
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jan 2023 17:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjAQQEz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Jan 2023 11:04:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S230132AbjAQQ1O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Jan 2023 11:27:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbjAQQEx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Jan 2023 11:04:53 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A12E3A861;
-        Tue, 17 Jan 2023 08:04:51 -0800 (PST)
+        with ESMTP id S230162AbjAQQ1N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Jan 2023 11:27:13 -0500
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BACD18173;
+        Tue, 17 Jan 2023 08:27:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673971492; x=1705507492;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=83QUm+B1soJY7/5R+o87e442WuYAgBdKXUVW9VPPJwY=;
-  b=IubsWkpoktWBNxNWo8Q20thw0LC165CNAyzo7Oolz9r+RtyZIgAjm3Rp
-   A/KNXhaa+IEwcTMt5Ph+RxLkBkgsEQZY9LVP3tYJxmTFH/aLk88lXdWnt
-   aFtxpoz1uPdcB4ouCvVb7boRTeDp7yz3qtCWa3OfyL3MqBKtYNQlJ3nGJ
-   hmC67UgXtRZghYLUei/7ZifIEYnggj8toKfMSOwe4PP5alA9kxuXsqbBq
-   8qnV9g5hcBbyOUZcFx2FQQ352MwtCF5o1BYUroOLBp46aa6EV7XzLXvI8
-   /SebZ+j30dkD1d3Jsvwwu9gZjHcHjt04nFfviYG1V2k9Nmx8AeVxDu4gp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="323427596"
+  t=1673972832; x=1705508832;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HxFIc/F4tODmGWHQvVFrU/McHRhB0/99ZlsYIwoeLug=;
+  b=g+Lr213l0P00HO48cbQgG1Eup8Iytd2hTmWn8Hr8Fhc7oQXteO37unsu
+   LN+PSDyiVcfuUfWw8gQgarHqFdKp3S34XzPur9gCHNpzigx2ku8Vecji7
+   uxp912XJBzlRYnwrUCOgQz5a/GiY8YxRuJ4HqnXIjFE/39y6k8nPZ2cQe
+   OOHtlPi4WJZZ+vwQ3h7vfe9wnz4hEv5DEKimxKs00bOphjPDDa8z9zFLO
+   /ZMLPiN99clwfOcFPaZCkaVq0pRzFvrNGaxxr2ZRXqfZggOEuNd0yZ3sb
+   3Sr14Xriw7krGlDi/jHths8FfeAY3qZ+IE7sRy0J9erEQOnmdPGJhYqPZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="410977281"
 X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
-   d="scan'208";a="323427596"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 08:03:20 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="904695680"
+   d="scan'208";a="410977281"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 08:25:15 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="833230009"
 X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
-   d="scan'208";a="904695680"
-Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 08:03:13 -0800
-Date:   Tue, 17 Jan 2023 17:03:11 +0100
-From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+   d="scan'208";a="833230009"
+Received: from rdaly-mobl.ger.corp.intel.com (HELO [10.213.212.83]) ([10.213.212.83])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 08:25:11 -0800
+Message-ID: <db60bb1d-51b6-6830-5a4c-100ba38a2dbc@linux.intel.com>
+Date:   Tue, 17 Jan 2023 16:25:09 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [RFC 04/12] drm/cgroup: Track clients per owning process
+Content-Language: en-US
+To:     Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
 Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         Rob Clark <robdclark@chromium.org>,
         Brian Welty <brian.welty@intel.com>, Kenny.Ho@amd.com,
@@ -47,76 +52,83 @@ Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Johannes Weiner <hannes@cmpxchg.org>,
         linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Dave Airlie <airlied@redhat.com>, Tejun Heo <tj@kernel.org>,
         cgroups@vger.kernel.org, "T . J . Mercier" <tjmercier@google.com>
-Subject: Re: [RFC 04/12] drm/cgroup: Track clients per owning process
-Message-ID: <20230117160311.GA15842@linux.intel.com>
 References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
  <20230112165609.1083270-5-tvrtko.ursulin@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230112165609.1083270-5-tvrtko.ursulin@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+ <20230117160311.GA15842@linux.intel.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <20230117160311.GA15842@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi
 
-On Thu, Jan 12, 2023 at 04:56:01PM +0000, Tvrtko Ursulin wrote:
-> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+On 17/01/2023 16:03, Stanislaw Gruszka wrote:
+> Hi
 > 
-> To enable propagation of settings from the cgroup drm controller to drm we
-> need to start tracking which processes own which drm clients.
+> On Thu, Jan 12, 2023 at 04:56:01PM +0000, Tvrtko Ursulin wrote:
+>> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+>>
+>> To enable propagation of settings from the cgroup drm controller to drm we
+>> need to start tracking which processes own which drm clients.
+>>
+>> Implement that by tracking the struct pid pointer of the owning process in
+>> a new XArray, pointing to a structure containing a list of associated
+>> struct drm_file pointers.
+>>
+>> Clients are added and removed under the filelist mutex and RCU list
+>> operations are used below it to allow for lockless lookup.
+>>
+>> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 > 
-> Implement that by tracking the struct pid pointer of the owning process in
-> a new XArray, pointing to a structure containing a list of associated
-> struct drm_file pointers.
+> <snip>
 > 
-> Clients are added and removed under the filelist mutex and RCU list
-> operations are used below it to allow for lockless lookup.
+>> +int drm_clients_open(struct drm_file *file_priv)
+>> +{
+>> +	struct drm_device *dev = file_priv->minor->dev;
+>> +	struct drm_pid_clients *clients;
+>> +	bool new_client = false;
+>> +	unsigned long pid;
+>> +
+>> +	lockdep_assert_held(&dev->filelist_mutex);
+>> +
+>> +	pid = (unsigned long)rcu_access_pointer(file_priv->pid);
+>> +	clients = xa_load(&drm_pid_clients, pid);
+>> +	if (!clients) {
+>> +		clients = __alloc_clients();
+>> +		if (!clients)
+>> +			return -ENOMEM;
+>> +		new_client = true;
+>> +	}
+>> +	atomic_inc(&clients->num);
+>> +	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
+>> +	if (new_client) {
+>> +		void *xret;
+>> +
+>> +		xret = xa_store(&drm_pid_clients, pid, clients, GFP_KERNEL);
+>> +		if (xa_err(xret)) {
+>> +			list_del_init(&file_priv->clink);
+>> +			kfree(clients);
+>> +			return PTR_ERR(clients);
 > 
-> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> This looks incorrect, rather xa_err(xret) should be returned.
 
-<snip>
+Thanks, looks like a copy & paste error. Noted to correct before next 
+public post.
 
-> +int drm_clients_open(struct drm_file *file_priv)
-> +{
-> +	struct drm_device *dev = file_priv->minor->dev;
-> +	struct drm_pid_clients *clients;
-> +	bool new_client = false;
-> +	unsigned long pid;
-> +
-> +	lockdep_assert_held(&dev->filelist_mutex);
-> +
-> +	pid = (unsigned long)rcu_access_pointer(file_priv->pid);
-> +	clients = xa_load(&drm_pid_clients, pid);
-> +	if (!clients) {
-> +		clients = __alloc_clients();
-> +		if (!clients)
-> +			return -ENOMEM;
-> +		new_client = true;
-> +	}
-> +	atomic_inc(&clients->num);
-> +	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
-> +	if (new_client) {
-> +		void *xret;
-> +
-> +		xret = xa_store(&drm_pid_clients, pid, clients, GFP_KERNEL);
-> +		if (xa_err(xret)) {
-> +			list_del_init(&file_priv->clink);
-> +			kfree(clients);
-> +			return PTR_ERR(clients);
+Regards,
 
-This looks incorrect, rather xa_err(xret) should be returned.
-
-Regards
-Stanislaw
+Tvrtko
