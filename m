@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C8666D7BA
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jan 2023 09:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B787966D7BB
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jan 2023 09:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236041AbjAQINW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Jan 2023 03:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
+        id S236051AbjAQIN2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Jan 2023 03:13:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236033AbjAQINU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Jan 2023 03:13:20 -0500
+        with ESMTP id S236040AbjAQINW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Jan 2023 03:13:22 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B65C27497;
-        Tue, 17 Jan 2023 00:13:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AFC2196A;
+        Tue, 17 Jan 2023 00:13:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=jx0+z4sewRKyF57abQbFfPczcNWgcnK3YOHYiEUejSk=; b=i8Jyanlb6xPGz76gOf1BNGV8Sn
-        FNrj//wXlrGdQmsdg9DO4RKYPLHAA3GFTpofuRB5r0IXsNhD6eRtJzAMXIhobYGoxWVuJvQPG05ms
-        Zkvz9eJTcFBct2l5MJXIvVLSXCBEgAWafeXW5QeLYu5psk7eD5xUzMVp6+8B7mEG88wJ6Ob4uKbny
-        FvaOnl7FMkylzJf7F0Rmj2cBzCdP6xhLG6SlFkV1fOt0/vw1m9/POe9MdKfGCA1R6ZXQEhys63T30
-        X7UWcWROqQ1c5k3ZTbLdTtnBU81YfLJxmxqH/KEfC8pmS9B2NnQPLfwUAZAYpTFNyWjTFyB5wr/MW
-        mz8rp8Yg==;
+        bh=M14grjLMYCiI1fyql6U5DXfzrN2Vd5HBIdsYVLgwjjE=; b=qPfLPqGwZY3TNDf6jXNSA23jJT
+        DRqwTwYQBe83r1GOLlzI8Bb1quLI9aeg5k4avSLhWctgRnt4SzjTYq7+xl9fhJapFfyzweIm+rOKS
+        ItgK4tzV65E+JCo/xwHxokoqveFxuz52wn99h3uW3S8z9i5usLg8EIZSP7i5cycF0ppievCZlhwD/
+        iaE9hl7ffhE7tWFNleMT5oo59/PrDcZBXPTI9mmQtr4hK3zW0rLb2mHpWRlVgPjRm4gbYbpbyzhzG
+        rglUMZKpf+AHf0Z8fm5CVqGrs1kdC4k33Lrt97V7si7TGbnGPcpTlwazLgHDqCgPEFGrgtBmhaPIn
+        g7xGfUQg==;
 Received: from [2001:4bb8:19a:2039:eaa2:3b9e:be2e:bd2a] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pHh5o-00DHjF-7h; Tue, 17 Jan 2023 08:13:16 +0000
+        id 1pHh5r-00DHk1-01; Tue, 17 Jan 2023 08:13:19 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH 06/15] blk-wbt: pass a gendisk to wbt_{enable,disable}_default
-Date:   Tue, 17 Jan 2023 09:12:48 +0100
-Message-Id: <20230117081257.3089859-7-hch@lst.de>
+Subject: [PATCH 07/15] blk-wbt: pass a gendisk to wbt_init
+Date:   Tue, 17 Jan 2023 09:12:49 +0100
+Message-Id: <20230117081257.3089859-8-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230117081257.3089859-1-hch@lst.de>
 References: <20230117081257.3089859-1-hch@lst.de>
@@ -50,127 +50,75 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Pass a gendisk to wbt_enable_default and wbt_disable_default to
-prepare for phasing out usage of the request_queue in the blk-cgroup
-code.
+Pass a gendisk to wbt_init to prepare for phasing out usage of the
+request_queue in the blk-cgroup code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/bfq-iosched.c | 4 ++--
- block/blk-iocost.c  | 4 ++--
- block/blk-sysfs.c   | 2 +-
- block/blk-wbt.c     | 7 ++++---
- block/blk-wbt.h     | 8 ++++----
- 5 files changed, 13 insertions(+), 12 deletions(-)
+ block/blk-sysfs.c | 2 +-
+ block/blk-wbt.c   | 5 +++--
+ block/blk-wbt.h   | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 815b884d6c5acf..68062243f2c142 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -7165,7 +7165,7 @@ static void bfq_exit_queue(struct elevator_queue *e)
- 
- 	blk_stat_disable_accounting(bfqd->queue);
- 	clear_bit(ELEVATOR_FLAG_DISABLE_WBT, &e->flags);
--	wbt_enable_default(bfqd->queue);
-+	wbt_enable_default(bfqd->queue->disk);
- 
- 	kfree(bfqd);
- }
-@@ -7354,7 +7354,7 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
- 	blk_queue_flag_set(QUEUE_FLAG_SQ_SCHED, q);
- 
- 	set_bit(ELEVATOR_FLAG_DISABLE_WBT, &eq->flags);
--	wbt_disable_default(q);
-+	wbt_disable_default(q->disk);
- 	blk_stat_enable_accounting(q);
- 
- 	return 0;
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 3b965d6b037970..6f39ca99e9d76f 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3270,11 +3270,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 		blk_stat_enable_accounting(disk->queue);
- 		blk_queue_flag_set(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = true;
--		wbt_disable_default(disk->queue);
-+		wbt_disable_default(disk);
- 	} else {
- 		blk_queue_flag_clear(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = false;
--		wbt_enable_default(disk->queue);
-+		wbt_enable_default(disk);
- 	}
- 
- 	if (user) {
 diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 5486b6c57f6b8a..2074103865f45b 100644
+index 2074103865f45b..c2adf640e5c816 100644
 --- a/block/blk-sysfs.c
 +++ b/block/blk-sysfs.c
-@@ -826,7 +826,7 @@ int blk_register_queue(struct gendisk *disk)
- 		goto out_elv_unregister;
+@@ -500,7 +500,7 @@ static ssize_t queue_wb_lat_store(struct request_queue *q, const char *page,
  
- 	blk_queue_flag_set(QUEUE_FLAG_REGISTERED, q);
--	wbt_enable_default(q);
-+	wbt_enable_default(disk);
- 	blk_throtl_register(disk);
- 
- 	/* Now everything is ready and send out KOBJ_ADD uevent */
+ 	rqos = wbt_rq_qos(q);
+ 	if (!rqos) {
+-		ret = wbt_init(q);
++		ret = wbt_init(q->disk);
+ 		if (ret)
+ 			return ret;
+ 	}
 diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index 68a774d7a7c9c0..8f9302134339c5 100644
+index 8f9302134339c5..542271fa99e8f7 100644
 --- a/block/blk-wbt.c
 +++ b/block/blk-wbt.c
-@@ -650,8 +650,9 @@ void wbt_set_write_cache(struct request_queue *q, bool write_cache_on)
- /*
-  * Enable wbt if defaults are configured that way
-  */
--void wbt_enable_default(struct request_queue *q)
-+void wbt_enable_default(struct gendisk *disk)
+@@ -671,7 +671,7 @@ void wbt_enable_default(struct gendisk *disk)
+ 		return;
+ 
+ 	if (queue_is_mq(q) && !disable_flag)
+-		wbt_init(q);
++		wbt_init(disk);
+ }
+ EXPORT_SYMBOL_GPL(wbt_enable_default);
+ 
+@@ -835,8 +835,9 @@ static struct rq_qos_ops wbt_rqos_ops = {
+ #endif
+ };
+ 
+-int wbt_init(struct request_queue *q)
++int wbt_init(struct gendisk *disk)
  {
 +	struct request_queue *q = disk->queue;
- 	struct rq_qos *rqos;
- 	bool disable_flag = q->elevator &&
- 		    test_bit(ELEVATOR_FLAG_DISABLE_WBT, &q->elevator->flags);
-@@ -718,9 +719,9 @@ static void wbt_exit(struct rq_qos *rqos)
- /*
-  * Disable wbt, if enabled by default.
-  */
--void wbt_disable_default(struct request_queue *q)
-+void wbt_disable_default(struct gendisk *disk)
- {
--	struct rq_qos *rqos = wbt_rq_qos(q);
-+	struct rq_qos *rqos = wbt_rq_qos(disk->queue);
  	struct rq_wb *rwb;
- 	if (!rqos)
- 		return;
+ 	int i;
+ 	int ret;
 diff --git a/block/blk-wbt.h b/block/blk-wbt.h
-index e3ea6e7e290076..7ab1cba55c25f7 100644
+index 7ab1cba55c25f7..b673da41a867d3 100644
 --- a/block/blk-wbt.h
 +++ b/block/blk-wbt.h
-@@ -91,8 +91,8 @@ static inline unsigned int wbt_inflight(struct rq_wb *rwb)
+@@ -90,7 +90,7 @@ static inline unsigned int wbt_inflight(struct rq_wb *rwb)
+ 
  #ifdef CONFIG_BLK_WBT
  
- int wbt_init(struct request_queue *);
--void wbt_disable_default(struct request_queue *);
--void wbt_enable_default(struct request_queue *);
-+void wbt_disable_default(struct gendisk *disk);
-+void wbt_enable_default(struct gendisk *disk);
+-int wbt_init(struct request_queue *);
++int wbt_init(struct gendisk *disk);
+ void wbt_disable_default(struct gendisk *disk);
+ void wbt_enable_default(struct gendisk *disk);
  
- u64 wbt_get_min_lat(struct request_queue *q);
- void wbt_set_min_lat(struct request_queue *q, u64 val);
-@@ -108,10 +108,10 @@ static inline int wbt_init(struct request_queue *q)
+@@ -104,7 +104,7 @@ u64 wbt_default_latency_nsec(struct request_queue *);
+ 
+ #else
+ 
+-static inline int wbt_init(struct request_queue *q)
++static inline int wbt_init(struct gendisk *disk)
  {
  	return -EINVAL;
  }
--static inline void wbt_disable_default(struct request_queue *q)
-+static inline void wbt_disable_default(struct gendisk *disk)
- {
- }
--static inline void wbt_enable_default(struct request_queue *q)
-+static inline void wbt_enable_default(struct gendisk *disk)
- {
- }
- static inline void wbt_set_write_cache(struct request_queue *q, bool wc)
 -- 
 2.39.0
 
