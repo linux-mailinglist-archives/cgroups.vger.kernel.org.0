@@ -2,52 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86420671C6C
-	for <lists+cgroups@lfdr.de>; Wed, 18 Jan 2023 13:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB259671C72
+	for <lists+cgroups@lfdr.de>; Wed, 18 Jan 2023 13:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbjARMp3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Jan 2023 07:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S230381AbjARMpc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Jan 2023 07:45:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbjARMnX (ORCPT
+        with ESMTP id S230426AbjARMnX (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Wed, 18 Jan 2023 07:43:23 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF55210A83;
-        Wed, 18 Jan 2023 04:07:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0BD1042E;
+        Wed, 18 Jan 2023 04:07:41 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NxkzB6RLTz4f3m7B;
-        Wed, 18 Jan 2023 20:07:34 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NxkzC1z5fz4f41Fj;
+        Wed, 18 Jan 2023 20:07:35 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgCHgR8G4cdjY2MdBw--.48220S4;
-        Wed, 18 Jan 2023 20:07:36 +0800 (CST)
+        by APP3 (Coremail) with SMTP id _Ch0CgCHgR8G4cdjY2MdBw--.48220S5;
+        Wed, 18 Jan 2023 20:07:37 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     tj@kernel.org, hch@lst.de, josef@toxicpanda.com, axboe@kernel.dk
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next v2 0/3] blk-cgroup: make sure pd_free_fn() is called in order
-Date:   Wed, 18 Jan 2023 20:31:49 +0800
-Message-Id: <20230118123152.1926314-1-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v2 1/3] blk-cgroup: dropping parent refcount after pd_free_fn() is done
+Date:   Wed, 18 Jan 2023 20:31:50 +0800
+Message-Id: <20230118123152.1926314-2-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230118123152.1926314-1-yukuai1@huaweicloud.com>
+References: <20230118123152.1926314-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgCHgR8G4cdjY2MdBw--.48220S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFyfKF4DGryfAr1xuw1DGFg_yoWkXFgEka
-        4vgryrC34UA3W2kF92krn0vFZ8KrWjqr18XayqqrWxWF17Xw4xtan3K34ruF47ua109r15
-        Jasavrs2qrnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
-        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoO
-        J5UUUUU
+X-CM-TRANSID: _Ch0CgCHgR8G4cdjY2MdBw--.48220S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1kGF4DuFW5Ar4xCr4rZrb_yoW8Wr4Upa
+        nxKr45KrWFgF1qva17t3WDX34rCF4rG348GrWrGa1Fkry3Cryv9Fn5Ars5XFWFvFZ7JFW5
+        Zr4vqa4UJa1jkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v2
+        6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2
+        Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
+        Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
+        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU2_M3UUUUU
+        =
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -60,30 +63,49 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-The problem was found in iocost orignally([1]) that ioc can be freed in
-ioc_pd_free(). And later we found that there are more problem in
-iocost([2]).
+Some cgroup policies will access parent pd through child pd even
+after pd_offline_fn() is done. If pd_free_fn() for parent is called
+before child, then UAF can be triggered. Hence it's better to guarantee
+the order of pd_free_fn().
 
-After some discussion, as suggested by Tejun([3]), we decide to fix the
-problem that parent pd can be freed before child pd in cgroup layer
-first. And the problem in [1] will be fixed later if this patchset is
-applied.
+Currently refcount of parent blkg is dropped in __blkg_release(), which
+is before pd_free_fn() is called in blkg_free_work_fn() while
+blkg_free_work_fn() is called asynchronously.
 
-[1] https://lore.kernel.org/all/20221130132156.2836184-8-linan122@huawei.com/
-[2] https://lore.kernel.org/all/aa924294-2f54-1b53-fc6e-e4f8fa019b14@huaweicloud.com/
-[3] https://lore.kernel.org/all/20221227125502.541931-1-yukuai1@huaweicloud.com/
+This patch make sure pd_free_fn() called from removing cgroup is ordered
+by delaying dropping parent refcount after calling pd_free_fn() for
+child.
 
-Yu Kuai (3):
-  blk-cgroup: dropping parent refcount after pd_free_fn() is done
-  blk-cgroup: support to track if policy is online
-  blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and
-    blkcg_deactivate_policy()
+BTW, pd_free_fn() will also be called from blkcg_deactivate_policy()
+from deleting device, and following patches will guarantee the order.
 
- block/blk-cgroup.c     | 61 +++++++++++++++++++++++++++++++-----------
- block/blk-cgroup.h     |  1 +
- include/linux/blkdev.h |  1 +
- 3 files changed, 48 insertions(+), 15 deletions(-)
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 4c94a6560f62..c6d7d1fce65a 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -124,6 +124,8 @@ static void blkg_free_workfn(struct work_struct *work)
+ 		if (blkg->pd[i])
+ 			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
+ 
++	if (blkg->parent)
++		blkg_put(blkg->parent);
+ 	if (blkg->q)
+ 		blk_put_queue(blkg->q);
+ 	free_percpu(blkg->iostat_cpu);
+@@ -158,8 +160,6 @@ static void __blkg_release(struct rcu_head *rcu)
+ 
+ 	/* release the blkcg and parent blkg refs this blkg has been holding */
+ 	css_put(&blkg->blkcg->css);
+-	if (blkg->parent)
+-		blkg_put(blkg->parent);
+ 	blkg_free(blkg);
+ }
+ 
 -- 
 2.31.1
 
