@@ -2,133 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6353E66E388
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jan 2023 17:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEC06716B0
+	for <lists+cgroups@lfdr.de>; Wed, 18 Jan 2023 09:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjAQQ1O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Jan 2023 11:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        id S229481AbjARIz3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Jan 2023 03:55:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjAQQ1N (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Jan 2023 11:27:13 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BACD18173;
-        Tue, 17 Jan 2023 08:27:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673972832; x=1705508832;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HxFIc/F4tODmGWHQvVFrU/McHRhB0/99ZlsYIwoeLug=;
-  b=g+Lr213l0P00HO48cbQgG1Eup8Iytd2hTmWn8Hr8Fhc7oQXteO37unsu
-   LN+PSDyiVcfuUfWw8gQgarHqFdKp3S34XzPur9gCHNpzigx2ku8Vecji7
-   uxp912XJBzlRYnwrUCOgQz5a/GiY8YxRuJ4HqnXIjFE/39y6k8nPZ2cQe
-   OOHtlPi4WJZZ+vwQ3h7vfe9wnz4hEv5DEKimxKs00bOphjPDDa8z9zFLO
-   /ZMLPiN99clwfOcFPaZCkaVq0pRzFvrNGaxxr2ZRXqfZggOEuNd0yZ3sb
-   3Sr14Xriw7krGlDi/jHths8FfeAY3qZ+IE7sRy0J9erEQOnmdPGJhYqPZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="410977281"
-X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
-   d="scan'208";a="410977281"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 08:25:15 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="833230009"
-X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
-   d="scan'208";a="833230009"
-Received: from rdaly-mobl.ger.corp.intel.com (HELO [10.213.212.83]) ([10.213.212.83])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 08:25:11 -0800
-Message-ID: <db60bb1d-51b6-6830-5a4c-100ba38a2dbc@linux.intel.com>
-Date:   Tue, 17 Jan 2023 16:25:09 +0000
+        with ESMTP id S229974AbjARIwj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Jan 2023 03:52:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71EB5AA4F;
+        Wed, 18 Jan 2023 00:07:15 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A148EB81B3E;
+        Wed, 18 Jan 2023 08:07:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2522C433D2;
+        Wed, 18 Jan 2023 08:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674029233;
+        bh=jV7i9GOJFI/Ud+m8L/XR9u5kzqRqvbbtkxuVTnegFv0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hE9uf9tA9pYO+pI66/xY5O8+jR+zScqB63M3U6aiTPIAe1bwEzMc5i+1ivbvdYs8C
+         Y/NoVnKf6GSXY6DmNtXLL4WutHYj2zCjiy9q9zxjgrBaHX44DOd0ym+L63Z0kr54AN
+         uChgkqEihIGa9nIoOMWtS/qJCBpC8iEYmTq7BipJKGEUHhnYs1Yw9BERk97XugR8+P
+         D8JHi4jthfx/TajyRznKPg8X9J6MV6SzVBWukSRwkeO+TClzAywpoK6izRxeZsVvNV
+         O9RzDY6EQnSELfSMmuOsjcagdPrNhauThPFk+Azop9nDovIJ6gZoYMfbc5HQgb+3iz
+         i1t2zSYZ5Jw8A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kemeng Shi <shikemeng@huawei.com>,
+        Andreas Herrmann <aherrmann@suse.de>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Jinke Han <hanjinke.666@bytedance.com>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] blk-iocost: avoid 64-bit division in ioc_timer_fn
+Date:   Wed, 18 Jan 2023 09:07:01 +0100
+Message-Id: <20230118080706.3303186-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [RFC 04/12] drm/cgroup: Track clients per owning process
-Content-Language: en-US
-To:     Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Brian Welty <brian.welty@intel.com>, Kenny.Ho@amd.com,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, "T . J . Mercier" <tjmercier@google.com>
-References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
- <20230112165609.1083270-5-tvrtko.ursulin@linux.intel.com>
- <20230117160311.GA15842@linux.intel.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <20230117160311.GA15842@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 17/01/2023 16:03, Stanislaw Gruszka wrote:
-> Hi
-> 
-> On Thu, Jan 12, 2023 at 04:56:01PM +0000, Tvrtko Ursulin wrote:
->> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
->>
->> To enable propagation of settings from the cgroup drm controller to drm we
->> need to start tracking which processes own which drm clients.
->>
->> Implement that by tracking the struct pid pointer of the owning process in
->> a new XArray, pointing to a structure containing a list of associated
->> struct drm_file pointers.
->>
->> Clients are added and removed under the filelist mutex and RCU list
->> operations are used below it to allow for lockless lookup.
->>
->> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-> 
-> <snip>
-> 
->> +int drm_clients_open(struct drm_file *file_priv)
->> +{
->> +	struct drm_device *dev = file_priv->minor->dev;
->> +	struct drm_pid_clients *clients;
->> +	bool new_client = false;
->> +	unsigned long pid;
->> +
->> +	lockdep_assert_held(&dev->filelist_mutex);
->> +
->> +	pid = (unsigned long)rcu_access_pointer(file_priv->pid);
->> +	clients = xa_load(&drm_pid_clients, pid);
->> +	if (!clients) {
->> +		clients = __alloc_clients();
->> +		if (!clients)
->> +			return -ENOMEM;
->> +		new_client = true;
->> +	}
->> +	atomic_inc(&clients->num);
->> +	list_add_tail_rcu(&file_priv->clink, &clients->file_list);
->> +	if (new_client) {
->> +		void *xret;
->> +
->> +		xret = xa_store(&drm_pid_clients, pid, clients, GFP_KERNEL);
->> +		if (xa_err(xret)) {
->> +			list_del_init(&file_priv->clink);
->> +			kfree(clients);
->> +			return PTR_ERR(clients);
-> 
-> This looks incorrect, rather xa_err(xret) should be returned.
+The behavior of 'enum' types has changed in gcc-13, so now the
+UNBUSY_THR_PCT constant is interpreted as a 64-bit number because
+it is defined as part of the same enum definition as some other
+constants that do not fit within a 32-bit integer. This in turn
+leads to some inefficient code on 32-bit architectures as well
+as a link error:
 
-Thanks, looks like a copy & paste error. Noted to correct before next 
-public post.
+arm-linux-gnueabi/bin/arm-linux-gnueabi-ld: block/blk-iocost.o: in function `ioc_timer_fn':
+blk-iocost.c:(.text+0x68e8): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: blk-iocost.c:(.text+0x6908): undefined reference to `__aeabi_uldivmod'
 
-Regards,
+Split the enum definition to keep the 64-bit timing constants in
+a separate enum type from those constants that can clearly fit
+within a smaller type.
 
-Tvrtko
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ block/blk-iocost.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 6955605629e4..b691b6bb498f 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -258,6 +258,11 @@ enum {
+ 	VRATE_MIN		= VTIME_PER_USEC * VRATE_MIN_PPM / MILLION,
+ 	VRATE_CLAMP_ADJ_PCT	= 4,
+ 
++	/* switch iff the conditions are met for longer than this */
++	AUTOP_CYCLE_NSEC	= 10LLU * NSEC_PER_SEC,
++};
++
++enum {
+ 	/* if IOs end up waiting for requests, issue less */
+ 	RQ_WAIT_BUSY_PCT	= 5,
+ 
+@@ -296,9 +301,6 @@ enum {
+ 	/* don't let cmds which take a very long time pin lagging for too long */
+ 	MAX_LAGGING_PERIODS	= 10,
+ 
+-	/* switch iff the conditions are met for longer than this */
+-	AUTOP_CYCLE_NSEC	= 10LLU * NSEC_PER_SEC,
+-
+ 	/*
+ 	 * Count IO size in 4k pages.  The 12bit shift helps keeping
+ 	 * size-proportional components of cost calculation in closer
+-- 
+2.39.0
+
