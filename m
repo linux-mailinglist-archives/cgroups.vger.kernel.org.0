@@ -2,68 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4130675014
-	for <lists+cgroups@lfdr.de>; Fri, 20 Jan 2023 10:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2BF675053
+	for <lists+cgroups@lfdr.de>; Fri, 20 Jan 2023 10:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjATJA7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Jan 2023 04:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S229591AbjATJLf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Jan 2023 04:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjATJA6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Jan 2023 04:00:58 -0500
+        with ESMTP id S229509AbjATJLe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Jan 2023 04:11:34 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06C540DF;
-        Fri, 20 Jan 2023 01:00:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2388F6C7;
+        Fri, 20 Jan 2023 01:10:55 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 83F31228D8;
-        Fri, 20 Jan 2023 09:00:55 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EC0492291C;
+        Fri, 20 Jan 2023 09:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1674205255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1674205812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bqzOV/Iv6aZGmhpj9C+RqWOJmqu+Ctue2fjtEzP4yH4=;
-        b=velkg0L7SxjsHBOqYT+6tMAKhONYwZ3ifUwnZVFNT0JXcsFyvdoySKvCW1k7nAwD8iEWHt
-        Ff040TOvcRxOW3pk4PH5QmxTqoQ2NxENgeMg/6McancT7UEffC6JBa+gTeQ3ypA8R1R6jP
-        Wv3yUlFQm3vwApsY5ZoDiUsbulR62is=
+        bh=gQvwlZMlLhRv3E/CFHmtorftMkqrnoEikLGHcn0eaZ8=;
+        b=cwSe/024H0Ps9K0/fv9ijiamNZt38pVrrjCO3vm+bx7YWl0RFzqHkMiAY4x2FMHH9OXLXZ
+        UFv1eTXrshzg1SIUSbTacalDXjuV5dpiCuLOgS5Au3MyNyJG8/tuG13CDV0nVDFc5NL6ju
+        C8tdBGPnKl1vYLz1FfkPdftYvpA+U/s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1674205255;
+        s=susede2_ed25519; t=1674205812;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bqzOV/Iv6aZGmhpj9C+RqWOJmqu+Ctue2fjtEzP4yH4=;
-        b=niSXmgnKh0jSdn+019P+rsXUDASphFEl10alKXPUnPSIyW8rBNF8fokRUohcM5mD3JED/f
-        cCVmj7+BwHW2PKDg==
+        bh=gQvwlZMlLhRv3E/CFHmtorftMkqrnoEikLGHcn0eaZ8=;
+        b=kAZLPtlEMUw8KrJ79GcfE6CIQkExNnuQLOsWoVNpf/48FNBfI6Em5HZq1YVHMrnTv3Iz69
+        UWU/zhSAyHbiCzDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A91913251;
-        Fri, 20 Jan 2023 09:00:54 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8CC7213251;
+        Fri, 20 Jan 2023 09:10:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yxXJOUZYymMkIwAAMHmgww
-        (envelope-from <aherrmann@suse.de>); Fri, 20 Jan 2023 09:00:54 +0000
-Date:   Fri, 20 Jan 2023 10:00:53 +0100
+        id 0Wj9H3RaymNxKAAAMHmgww
+        (envelope-from <aherrmann@suse.de>); Fri, 20 Jan 2023 09:10:12 +0000
+Date:   Fri, 20 Jan 2023 10:10:10 +0100
 From:   Andreas Herrmann <aherrmann@suse.de>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>,
         linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 05/15] blk-cgroup: store a gendisk to throttle in struct
- task_struct
-Message-ID: <Y8pYReOp6VW3Va4O@suselix>
+Subject: Re: [PATCH 06/15] blk-wbt: pass a gendisk to
+ wbt_{enable,disable}_default
+Message-ID: <Y8pacnRf2wDqJTcK@suselix>
 References: <20230117081257.3089859-1-hch@lst.de>
- <20230117081257.3089859-6-hch@lst.de>
+ <20230117081257.3089859-7-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230117081257.3089859-6-hch@lst.de>
+In-Reply-To: <20230117081257.3089859-7-hch@lst.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -73,161 +73,131 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 09:12:47AM +0100, Christoph Hellwig wrote:
-> Switch from a request_queue pointer and reference to a gendisk once
-> for the throttle information in struct task_struct.
-> 
-> Move the check for the dead disk to the latest place now that is is
-                                                                ^^
-								it
-> unboundled from the reference grab.
-  ^^^^^^^^^^
-  unbundled
+On Tue, Jan 17, 2023 at 09:12:48AM +0100, Christoph Hellwig wrote:
+> Pass a gendisk to wbt_enable_default and wbt_disable_default to
+> prepare for phasing out usage of the request_queue in the blk-cgroup
+> code.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  block/blk-cgroup.c    | 37 +++++++++++++++++++------------------
->  include/linux/sched.h |  2 +-
->  kernel/fork.c         |  2 +-
->  mm/swapfile.c         |  2 +-
->  4 files changed, 22 insertions(+), 21 deletions(-)
+>  block/bfq-iosched.c | 4 ++--
+>  block/blk-iocost.c  | 4 ++--
+>  block/blk-sysfs.c   | 2 +-
+>  block/blk-wbt.c     | 7 ++++---
+>  block/blk-wbt.h     | 8 ++++----
+>  5 files changed, 13 insertions(+), 12 deletions(-)
 
 Looks good to me. Feel free to add
 Reviewed-by: Andreas Herrmann <aherrmann@suse.de>
 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index f5a634ed098db0..603e911d1350db 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -1334,9 +1334,9 @@ static void blkcg_bind(struct cgroup_subsys_state *root_css)
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 815b884d6c5acf..68062243f2c142 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -7165,7 +7165,7 @@ static void bfq_exit_queue(struct elevator_queue *e)
 >  
->  static void blkcg_exit(struct task_struct *tsk)
->  {
-> -	if (tsk->throttle_queue)
-> -		blk_put_queue(tsk->throttle_queue);
-> -	tsk->throttle_queue = NULL;
-> +	if (tsk->throttle_disk)
-> +		put_disk(tsk->throttle_disk);
-> +	tsk->throttle_disk = NULL;
+>  	blk_stat_disable_accounting(bfqd->queue);
+>  	clear_bit(ELEVATOR_FLAG_DISABLE_WBT, &e->flags);
+> -	wbt_enable_default(bfqd->queue);
+> +	wbt_enable_default(bfqd->queue->disk);
+>  
+>  	kfree(bfqd);
 >  }
+> @@ -7354,7 +7354,7 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
+>  	blk_queue_flag_set(QUEUE_FLAG_SQ_SCHED, q);
 >  
->  struct cgroup_subsys io_cgrp_subsys = {
-> @@ -1778,29 +1778,32 @@ static void blkcg_maybe_throttle_blkg(struct blkcg_gq *blkg, bool use_memdelay)
->   *
->   * This is only called if we've been marked with set_notify_resume().  Obviously
->   * we can be set_notify_resume() for reasons other than blkcg throttling, so we
-> - * check to see if current->throttle_queue is set and if not this doesn't do
-> + * check to see if current->throttle_disk is set and if not this doesn't do
->   * anything.  This should only ever be called by the resume code, it's not meant
->   * to be called by people willy-nilly as it will actually do the work to
->   * throttle the task if it is setup for throttling.
->   */
->  void blkcg_maybe_throttle_current(void)
->  {
-> -	struct request_queue *q = current->throttle_queue;
-> +	struct gendisk *disk = current->throttle_disk;
->  	struct blkcg *blkcg;
->  	struct blkcg_gq *blkg;
->  	bool use_memdelay = current->use_memdelay;
+>  	set_bit(ELEVATOR_FLAG_DISABLE_WBT, &eq->flags);
+> -	wbt_disable_default(q);
+> +	wbt_disable_default(q->disk);
+>  	blk_stat_enable_accounting(q);
 >  
-> -	if (!q)
-> +	if (!disk)
->  		return;
->  
-> -	current->throttle_queue = NULL;
-> +	current->throttle_disk = NULL;
->  	current->use_memdelay = false;
->  
-> +	if (test_bit(GD_DEAD, &disk->state))
-> +		goto out_put_disk;
-> +
->  	rcu_read_lock();
->  	blkcg = css_to_blkcg(blkcg_css());
->  	if (!blkcg)
->  		goto out;
-> -	blkg = blkg_lookup(blkcg, q);
-> +	blkg = blkg_lookup(blkcg, disk->queue);
->  	if (!blkg)
->  		goto out;
->  	if (!blkg_tryget(blkg))
-> @@ -1809,11 +1812,12 @@ void blkcg_maybe_throttle_current(void)
->  
->  	blkcg_maybe_throttle_blkg(blkg, use_memdelay);
->  	blkg_put(blkg);
-> -	blk_put_queue(q);
-> +	put_disk(disk);
->  	return;
->  out:
->  	rcu_read_unlock();
-> -	blk_put_queue(q);
-> +out_put_disk:
-> +	put_disk(disk);
->  }
->  
->  /**
-> @@ -1835,18 +1839,15 @@ void blkcg_maybe_throttle_current(void)
->   */
->  void blkcg_schedule_throttle(struct gendisk *disk, bool use_memdelay)
->  {
-> -	struct request_queue *q = disk->queue;
-> -
->  	if (unlikely(current->flags & PF_KTHREAD))
->  		return;
->  
-> -	if (current->throttle_queue != q) {
-> -		if (!blk_get_queue(q))
-> -			return;
-> +	if (current->throttle_disk != disk) {
-> +		get_device(disk_to_dev(disk));
->  
-> -		if (current->throttle_queue)
-> -			blk_put_queue(current->throttle_queue);
-> -		current->throttle_queue = q;
-> +		if (current->throttle_disk)
-> +			put_disk(current->throttle_disk);
-> +		current->throttle_disk = disk;
+>  	return 0;
+> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+> index 3b965d6b037970..6f39ca99e9d76f 100644
+> --- a/block/blk-iocost.c
+> +++ b/block/blk-iocost.c
+> @@ -3270,11 +3270,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
+>  		blk_stat_enable_accounting(disk->queue);
+>  		blk_queue_flag_set(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
+>  		ioc->enabled = true;
+> -		wbt_disable_default(disk->queue);
+> +		wbt_disable_default(disk);
+>  	} else {
+>  		blk_queue_flag_clear(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
+>  		ioc->enabled = false;
+> -		wbt_enable_default(disk->queue);
+> +		wbt_enable_default(disk);
 >  	}
 >  
->  	if (use_memdelay)
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 853d08f7562bda..6f6ce9ca709798 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1436,7 +1436,7 @@ struct task_struct {
->  #endif
+>  	if (user) {
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index 5486b6c57f6b8a..2074103865f45b 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -826,7 +826,7 @@ int blk_register_queue(struct gendisk *disk)
+>  		goto out_elv_unregister;
 >  
->  #ifdef CONFIG_BLK_CGROUP
-> -	struct request_queue		*throttle_queue;
-> +	struct gendisk			*throttle_disk;
->  #endif
+>  	blk_queue_flag_set(QUEUE_FLAG_REGISTERED, q);
+> -	wbt_enable_default(q);
+> +	wbt_enable_default(disk);
+>  	blk_throtl_register(disk);
 >  
->  #ifdef CONFIG_UPROBES
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 9f7fe354189785..d9c97704b7c9a4 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1044,7 +1044,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
->  #endif
->  
->  #ifdef CONFIG_BLK_CGROUP
-> -	tsk->throttle_queue = NULL;
-> +	tsk->throttle_disk = NULL;
->  	tsk->use_memdelay = 0;
->  #endif
->  
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 908a529bca12c9..3e0a742fb7bbff 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3642,7 +3642,7 @@ void __cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
->  	 * We've already scheduled a throttle, avoid taking the global swap
->  	 * lock.
->  	 */
-> -	if (current->throttle_queue)
-> +	if (current->throttle_disk)
+>  	/* Now everything is ready and send out KOBJ_ADD uevent */
+> diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+> index 68a774d7a7c9c0..8f9302134339c5 100644
+> --- a/block/blk-wbt.c
+> +++ b/block/blk-wbt.c
+> @@ -650,8 +650,9 @@ void wbt_set_write_cache(struct request_queue *q, bool write_cache_on)
+>  /*
+>   * Enable wbt if defaults are configured that way
+>   */
+> -void wbt_enable_default(struct request_queue *q)
+> +void wbt_enable_default(struct gendisk *disk)
+>  {
+> +	struct request_queue *q = disk->queue;
+>  	struct rq_qos *rqos;
+>  	bool disable_flag = q->elevator &&
+>  		    test_bit(ELEVATOR_FLAG_DISABLE_WBT, &q->elevator->flags);
+> @@ -718,9 +719,9 @@ static void wbt_exit(struct rq_qos *rqos)
+>  /*
+>   * Disable wbt, if enabled by default.
+>   */
+> -void wbt_disable_default(struct request_queue *q)
+> +void wbt_disable_default(struct gendisk *disk)
+>  {
+> -	struct rq_qos *rqos = wbt_rq_qos(q);
+> +	struct rq_qos *rqos = wbt_rq_qos(disk->queue);
+>  	struct rq_wb *rwb;
+>  	if (!rqos)
 >  		return;
+> diff --git a/block/blk-wbt.h b/block/blk-wbt.h
+> index e3ea6e7e290076..7ab1cba55c25f7 100644
+> --- a/block/blk-wbt.h
+> +++ b/block/blk-wbt.h
+> @@ -91,8 +91,8 @@ static inline unsigned int wbt_inflight(struct rq_wb *rwb)
+>  #ifdef CONFIG_BLK_WBT
 >  
->  	spin_lock(&swap_avail_lock);
+>  int wbt_init(struct request_queue *);
+> -void wbt_disable_default(struct request_queue *);
+> -void wbt_enable_default(struct request_queue *);
+> +void wbt_disable_default(struct gendisk *disk);
+> +void wbt_enable_default(struct gendisk *disk);
+>  
+>  u64 wbt_get_min_lat(struct request_queue *q);
+>  void wbt_set_min_lat(struct request_queue *q, u64 val);
+> @@ -108,10 +108,10 @@ static inline int wbt_init(struct request_queue *q)
+>  {
+>  	return -EINVAL;
+>  }
+> -static inline void wbt_disable_default(struct request_queue *q)
+> +static inline void wbt_disable_default(struct gendisk *disk)
+>  {
+>  }
+> -static inline void wbt_enable_default(struct request_queue *q)
+> +static inline void wbt_enable_default(struct gendisk *disk)
+>  {
+>  }
+>  static inline void wbt_set_write_cache(struct request_queue *q, bool wc)
 > -- 
 > 2.39.0
 > 
