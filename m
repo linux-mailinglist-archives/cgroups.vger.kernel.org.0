@@ -2,100 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E097D67414F
-	for <lists+cgroups@lfdr.de>; Thu, 19 Jan 2023 19:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240C0674F4C
+	for <lists+cgroups@lfdr.de>; Fri, 20 Jan 2023 09:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbjASSyF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Jan 2023 13:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        id S229943AbjATIVB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Jan 2023 03:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjASSyE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Jan 2023 13:54:04 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0942230E97
-        for <cgroups@vger.kernel.org>; Thu, 19 Jan 2023 10:54:03 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id o15so1621866ill.11
-        for <cgroups@vger.kernel.org>; Thu, 19 Jan 2023 10:54:03 -0800 (PST)
+        with ESMTP id S229529AbjATIVA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Jan 2023 03:21:00 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFB14CE7C;
+        Fri, 20 Jan 2023 00:20:59 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id b10so4920061pjo.1;
+        Fri, 20 Jan 2023 00:20:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sa8Oz+7EARYAtQ0WLnCqgtp/WsCMus/3I6/+CNJ1OPw=;
-        b=sPzq1KJuKnyasXRpxYhl2vyV/bYi9yVZ56Vqego/VjuHdzz/5dWCi47UX2CUDpoDNC
-         CcC5wYt/hUVVEpFkHtyZ89U3S4NTWky0LrDtrtiFDdFrjZELyHOpVBHxbNELtKnQ2iw4
-         nr1fs0E0gGKpdnwRST07vzvNPYUzWsF4Vi012BPK68GyqhQejq7mymG62LbNctNk1H5z
-         ANiECjUYn3uY98+hJ+kIU7gfPJH2vu/HOgNnNuH23TbDVW4pbv+weD5qebAzq+j5ja3T
-         n2GpBO55V9L6Il8+jeulDNzuo2GKi68Gu59deOK6KEDsKNVjB9594cAWwGeunxMF6FhC
-         vCiQ==
+        bh=TWumMt67h30adlz6lQSPu1lCC0nb5fEUVVbRzQpjcvo=;
+        b=XBjIbyJ7l70xuIKKldJeINNaWQ8MoXJ2Y/IACHV3SKahghX1ofznCaFuqGW1pcNIrS
+         /mQX+uH0K7q9Z85U4Zg0+Nhfh9kvQVske4+pMpxH4+noV2FZqhlur1tMARaScb7+swgL
+         HP+ymXJohkaaOYNcvpqPxkFjADs7X2By3yuHk3nFAMRciZQP25ZKFHIi79Nzc8Q+sVN7
+         /Q2vJvKvy3qgGoi5RquanqEymtWxjCpnToEuU0rIlItKIRSRrLnwjoceRgGbiPKtyY8h
+         e7/hrk2T+i2IJfhBSHY1R++kGn+FX0Bhttu1kx/RuUDEPTse+DyMk6Fq8qa6EQC39VoW
+         Fz5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sa8Oz+7EARYAtQ0WLnCqgtp/WsCMus/3I6/+CNJ1OPw=;
-        b=bl9wAIYz+I4DAw0/Z8wf7SU1kLxDFXDo/vs59gLJdiO9QcXb/UdJ407BUzwoXXad0+
-         BX5Us4igEuNx+j8EKeZ6EkNrb7Yr2HASy/KqBRTTV484SL5lT/lzrEcY62dLF+VPKnAC
-         7ayXMexwoOzfQuKL5q8bMRgYNXKV6nClmuDa4p1Jx7RgfikZABpTY8lHEkw8rLs5fxaP
-         qz8QyYXZz3R4kL2SuRfq09z7x4hsBpRjIkSIYoopOVtsssi5Jgz/rWS0oIk/aGiROQlG
-         gDWiaADMqSyRB6ZBg4kyLTjPB7W3+Mg/7Nni7Yz0YJgMlFD6TCx39YB7oaLM0vRdXoAf
-         4xqQ==
-X-Gm-Message-State: AFqh2krXDkKKOSnTRxAxUEpmNWzEd1NmKCm/5hBEnkxI+8VuCpNeGW83
-        DIs2T63qpzGVPqSK+FeDngyR7g==
-X-Google-Smtp-Source: AMrXdXuIIp/c0w2El/LzauKFa6i872EXwxoi+fHEVHbXfB+cDnoMsFA/jCYUDrbbR0SKLLTI269Tgg==
-X-Received: by 2002:a92:cda4:0:b0:30d:bf1a:b174 with SMTP id g4-20020a92cda4000000b0030dbf1ab174mr2555528ild.1.1674154442314;
-        Thu, 19 Jan 2023 10:54:02 -0800 (PST)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e36-20020a028627000000b003a7c2e97005sm763264jai.126.2023.01.19.10.54.01
+        bh=TWumMt67h30adlz6lQSPu1lCC0nb5fEUVVbRzQpjcvo=;
+        b=16IbEA985ZfSmQjjOgZPKBuqSU55VIRIQdfpSMB/ePNNZqvSp8dhEpjbFGFWo0QscB
+         Uy21xyFpBSkXOKGGc37KZ0ZPmEnfRIoJkLHIqisMCYb+AUAXXxnJ4pSZ401wbLh38Qw5
+         ViftVBWsbJBHVwH9QCbIW+UsNQysSjGTAL4BKv9oi0U/HEKBGL6L0ZKpA7rh65bwF4yu
+         tVuapYdYNR81ym/liLb7zNRZvabdVVlNPp4axRuJ87Op4KKH0vv+241XhNYWDPjT6/bx
+         OhEJ1cL1GALggJVUC3xecEwj/iG+N3nOkjY1maSbhfx3td29dKDqSzuRbs8qR/xB2KBZ
+         pSvA==
+X-Gm-Message-State: AFqh2kooVOl+r7auWUwhksPxWrZ9BoPLTjjFvHfyutZG8DwPrVAQaLQD
+        kwl7YEj7d3UkT6WI9cofd21+skbrHBQwgQ==
+X-Google-Smtp-Source: AMrXdXti1lKiCaXlNSRE2JW5nczFpDOhKStlFPEZ4CPRBcdvSua4WfixHLy18+8Z4IvbaX1P92mffA==
+X-Received: by 2002:a17:902:ba8b:b0:194:7227:84db with SMTP id k11-20020a170902ba8b00b00194722784dbmr14540982pls.37.1674202858751;
+        Fri, 20 Jan 2023 00:20:58 -0800 (PST)
+Received: from [192.168.43.80] (subs02-180-214-232-14.three.co.id. [180.214.232.14])
+        by smtp.gmail.com with ESMTPSA id d8-20020a170903230800b001948107490csm11422906plh.19.2023.01.20.00.20.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Jan 2023 10:54:01 -0800 (PST)
-Message-ID: <bd1c347b-cbf8-3917-401a-ed85c6ccb956@kernel.dk>
-Date:   Thu, 19 Jan 2023 11:54:00 -0700
+        Fri, 20 Jan 2023 00:20:58 -0800 (PST)
+Message-ID: <2c19bec4-c4e7-7ac4-d612-27e531b1a022@gmail.com>
+Date:   Fri, 20 Jan 2023 15:20:51 +0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH -next v3 0/3] blk-cgroup: make sure pd_free_fn() is called
- in order
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] docs: cgroup-v1: wrap charge moving deprecation in
+ warning block
 Content-Language: en-US
-To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, hch@lst.de,
-        josef@toxicpanda.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-References: <20230119110350.2287325-1-yukuai1@huaweicloud.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230119110350.2287325-1-yukuai1@huaweicloud.com>
+To:     Linux CGroups <cgroups@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <20230106034836.23708-1-bagasdotme@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20230106034836.23708-1-bagasdotme@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 1/19/23 4:03 AM, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On 1/6/23 10:48, Bagas Sanjaya wrote:
+> Commit 4ddb1a2aa1a3c4 ("docs: cgroup-v1: wrap remaining admonitions in
+> admonition blocks") in cgroups tree states that it also wraps charge
+> moving deprecation notice in admonition block (specifically warning).
+> However, the notice isn't in cgroups tree when the v2 of formatting
+> improv series [1] is submitted (and then applied), but rather in mm tree
+> instead.
 > 
-> Changes in v3:
->  - add ack tag from Tejun for patch 1,2
->  - as suggested by Tejun, update commit message and comments in patch 3
+> Wrap the notice to fulfill the intention of referred commit.
 > 
-> The problem was found in iocost orignally([1]) that ioc can be freed in
-> ioc_pd_free(). And later we found that there are more problem in
-> iocost([2]).
-> 
-> After some discussion, as suggested by Tejun([3]), we decide to fix the
-> problem that parent pd can be freed before child pd in cgroup layer
-> first. And the problem in [1] will be fixed later if this patchset is
-> applied.
 
-Doesn't apply against for-6.3/block (or linux-next or my for-next, for
-that matter). Can you resend a tested one against for-6.3/block?
+Ping?
 
 -- 
-Jens Axboe
-
+An old man doll... just what I always wanted! - Clara
 
