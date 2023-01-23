@@ -2,72 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A525676007
-	for <lists+cgroups@lfdr.de>; Fri, 20 Jan 2023 23:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9BC678033
+	for <lists+cgroups@lfdr.de>; Mon, 23 Jan 2023 16:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjATWRt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Jan 2023 17:17:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        id S231626AbjAWPnH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 Jan 2023 10:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjATWRs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Jan 2023 17:17:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB0E1735
-        for <cgroups@vger.kernel.org>; Fri, 20 Jan 2023 14:17:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674253020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PymHzUQySveMLAeF0IwXdw52bO+MwC9kbQnHrMu8WUY=;
-        b=CW6Ozsn7//fTUgxjZQSr5IOxvgVYkfJdQ7448gAJZN/FAouMSRAZJ2Vf3oZlasD6qydlCk
-        5ppD7tIKWvAcuHBKJ3Kt+uoTmp3vR/5sFL1gis3uH8jgATu+OhZn98mCV5UhwWnsZh9S8X
-        DqQTIpAVpXTDCU5ussFdjn7DkgIw39M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-610-bKRJsAD2Mz-gc6apOXEULA-1; Fri, 20 Jan 2023 17:16:57 -0500
-X-MC-Unique: bKRJsAD2Mz-gc6apOXEULA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S232862AbjAWPnF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 Jan 2023 10:43:05 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45725592;
+        Mon, 23 Jan 2023 07:42:42 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DD91E185A78B;
-        Fri, 20 Jan 2023 22:16:56 +0000 (UTC)
-Received: from [10.22.17.220] (unknown [10.22.17.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CC49C15BAD;
-        Fri, 20 Jan 2023 22:16:55 +0000 (UTC)
-Message-ID: <c4c2dec6-a72b-d675-fb42-be40e384ea2c@redhat.com>
-Date:   Fri, 20 Jan 2023 17:16:55 -0500
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 78F42339C7;
+        Mon, 23 Jan 2023 15:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1674488561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=55apZeYnu6RO07C6lWHKMqZeQ9QD+dZi2oV45IYgqR8=;
+        b=NwZHaPnSdW0sTqWIpW2Ep2zUuQal9AFNwBLp9xUmbUjAfDGelZ/xsCQDuUGJM72HmTIzWD
+        OVGHfd0I8eI2RL5CanevYwNgICrTG+L9yMtGcFVikSQMyfesIE/B6sHkF1jegMTYHs7TtI
+        KIBufBqOPxkvvdIyiJwOXwaUEQXgNhs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 236FB1357F;
+        Mon, 23 Jan 2023 15:42:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Gh6oB/GqzmNMXgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 23 Jan 2023 15:42:41 +0000
+Date:   Mon, 23 Jan 2023 16:42:39 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [RFC v3 00/12] DRM scheduling cgroup controller
+Message-ID: <20230123154239.GA24348@blackbody.suse.cz>
+References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v2] sched: cpuset: Don't rebuild sched domains on
- suspend-resume
-To:     Qais Yousef <qyousef@layalina.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>
-References: <20230120194822.962958-1-qyousef@layalina.io>
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230120194822.962958-1-qyousef@layalina.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
+In-Reply-To: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -75,68 +73,84 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
-On 1/20/23 14:48, Qais Yousef wrote:
-> Commit f9a25f776d78 ("cpusets: Rebuild root domain deadline accounting information")
-> enabled rebuilding sched domain on cpuset and hotplug operations to
-> correct deadline accounting.
->
-> Rebuilding sched domain is a slow operation and we see 10+ ms delay on
-> suspend-resume because of that.
->
-> Since nothing is expected to change on suspend-resume operation; skip
-> rebuilding the sched domains to regain the time lost.
->
-> Debugged-by: Rick Yiu <rickyiu@google.com>
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
->
->      Changes in v2:
->      
->      	* Remove redundant check in update_tasks_root_domain() (Thanks Waiman)
->      
->      v1 link:
->      
->      	https://lore.kernel.org/lkml/20221216233501.gh6m75e7s66dmjgo@airbuntu/
->
->   kernel/cgroup/cpuset.c  | 3 +++
->   kernel/sched/deadline.c | 3 +++
->   2 files changed, 6 insertions(+)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index a29c0b13706b..9a45f083459c 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1088,6 +1088,9 @@ static void rebuild_root_domains(void)
->   	lockdep_assert_cpus_held();
->   	lockdep_assert_held(&sched_domains_mutex);
->   
-> +	if (cpuhp_tasks_frozen)
-> +		return;
-> +
->   	rcu_read_lock();
->   
->   	/*
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 0d97d54276cc..42c1143a3956 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -2575,6 +2575,9 @@ void dl_clear_root_domain(struct root_domain *rd)
->   {
->   	unsigned long flags;
->   
-> +	if (cpuhp_tasks_frozen)
-> +		return;
-> +
->   	raw_spin_lock_irqsave(&rd->dl_bw.lock, flags);
->   	rd->dl_bw.total_bw = 0;
->   	raw_spin_unlock_irqrestore(&rd->dl_bw.lock, flags);
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-cpuhp_tasks_frozen is set when thaw_secondary_cpus() or 
-freeze_secondary_cpus() is called. I don't know the exact suspend/resume 
-calling sequences, will cpuhp_tasks_frozen be cleared at the end of 
-resume sequence? Maybe we should make sure that rebuild_root_domain() is 
-called at least once at the end of resume operation.
+Hello Tvrtko.
 
-Cheers,
-Longman
+Interesting work.
 
+On Thu, Jan 12, 2023 at 04:55:57PM +0000, Tvrtko Ursulin <tvrtko.ursulin@li=
+nux.intel.com> wrote:
+> Because of the heterogenous hardware and driver DRM capabilities, soft li=
+mits
+> are implemented as a loose co-operative (bi-directional) interface betwee=
+n the
+> controller and DRM core.
+
+IIUC, this periodic scanning, calculating and applying could be partly
+implemented with userspace utilities. (As you write, these limits are
+best effort only, so it sounds to me such a total implementation is
+unnecessary.)
+
+I think a better approach would be to avoid the async querying and
+instead require implementing explicit foo_charge_time(client, dur) API
+(similar to how other controllers achieve this).
+Your argument is the heterogenity of devices -- does it mean there are
+devices/drivers that can't implement such a synchronous charging?=20
+
+> DRM core provides an API to query per process GPU utilization and 2nd API=
+ to
+> receive notification from the cgroup controller when the group enters or =
+exits
+> the over budget condition.
+
+The return value of foo_charge_time() would substitute such a
+notification synchronously. (By extension all clients in an affected
+cgroup could be notified to achieve some broader actions.)
+
+> Individual DRM drivers which implement the interface are expected to act =
+on this
+> in the best-effort manner only. There are no guarantees that the soft lim=
+its
+> will be respected.
+
+Back to original concern -- must all code reside in the kernel when it's
+essentially advisory resource control?
+
+>  * DRM core is required to track all DRM clients belonging to processes s=
+o it
+>    can answer when asked how much GPU time is a process using.
+>  [...]
+>  * Individual drivers need to implement two similar hooks, but which work=
+ for
+>    a single DRM client. Over budget callback and GPU utilisation query.
+
+This information is eventually aggregated for each process in a cgroup.
+(And the action is carried on a single client, not a process.)
+The per-process tracking seems like an additional indirection.
+Could be the clients associated directly with DRM cgroup? [1]
+
+
+Regards,
+Michal
+
+[1] I understand the sending a fd of a client is a regular operation, so
+    I'm not sure how cross-cg migrations would have to be handled in any
+    case.
+
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY86q5AAKCRAkDQmsBEOq
+ueEGAQDI5fZQTAIasuzhXqvhso/sSZM6kjJABNN/jGexID1/AgEA7ESyKCV82koM
+JsjtlGG3kRl/Y0LhTvA4J7akVFgGdQo=
+=vAYz
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
