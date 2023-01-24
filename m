@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 670E467916F
-	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 07:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FDD679172
+	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 07:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjAXG55 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Jan 2023 01:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        id S233373AbjAXG6F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Jan 2023 01:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233376AbjAXG5y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 01:57:54 -0500
+        with ESMTP id S233391AbjAXG6D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 01:58:03 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D557D89;
-        Mon, 23 Jan 2023 22:57:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D771259A;
+        Mon, 23 Jan 2023 22:57:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=uWkrArfjuUhlfffQ0P1IPKAit66kvvYiFVr/571osGw=; b=A63/5NNpZ/L5wVObUfVISsvHZh
-        O/U3iJpwGbYKBVSQI8/ucy0rRMNxwWJnVfzam/NhaQ3y3+zjUCtPkk73Jk5ZxBsV2/vZvs8sOL/dy
-        lUopbiEDFnhSzwxehhhQMM1xbVEBZ8vsWq38D+ycqrn7HvUY1m+cPTkwwsarTVvOYbUZfV/e67qZY
-        pgz8JUEz8ulV3oCnty/BCprhlAVf0uLoQwuxtc5mN5fBEO2BDsuPLtGuwBp7Qm9H7seEW30Je+drD
-        d6BNg8lMSo/LkE6L7GAryUGdg0dD1rq9zl63udHnjoDRFQOeTSU7g39IfwfKVSfSn6p2stZL2rKQt
-        IPSM0gWg==;
+        bh=CRD9xGFigFtQZLz8cjISqqqYXVR9m5z56wwuZvkw9eM=; b=c0y9VuCt0h7v449ogpzhLzge2O
+        qSh4Hb8GD/D0Wm06jH4AGO9rThbI6EZt035n9mYp0TrwVhT1ukQsgntIczJ7oN2CLJUrxJZi1FxBt
+        mhQBTuNhFWCLaW3sXVSicAKSrjcUaWubIGeHaRad3cEv1XNPqPkUD8G2HU1SIIery6WHoR/GuSKkK
+        2qqybEbRgwuVwnYkhqXfOE8t49i0kshFYy6DJhI85QrjaNQcBXWZV+tzareFbsgeXVA3k2T6HJjsn
+        peGt1P0ud8n8CirTGsSdjiriWh89MnJSKu2fAem6b38ImowMFVXs5aScdNut57l92yxNJpQ5az7N/
+        s27qaujg==;
 Received: from [2001:4bb8:19a:27af:ea4c:1aa8:8f64:2866] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pKDFe-002aTK-Ag; Tue, 24 Jan 2023 06:57:50 +0000
+        id 1pKDFh-002aU7-4E; Tue, 24 Jan 2023 06:57:53 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         Andreas Herrmann <aherrmann@suse.de>
-Subject: [PATCH 08/15] blk-wbt: open code wbt_queue_depth_changed in wbt_update_limits
-Date:   Tue, 24 Jan 2023 07:57:08 +0100
-Message-Id: <20230124065716.152286-9-hch@lst.de>
+Subject: [PATCH 09/15] blk-rq-qos: make rq_qos_add and rq_qos_del more useful
+Date:   Tue, 24 Jan 2023 07:57:09 +0100
+Message-Id: <20230124065716.152286-10-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230124065716.152286-1-hch@lst.de>
 References: <20230124065716.152286-1-hch@lst.de>
@@ -51,31 +51,279 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-No real need to all the method here, so open code to it to prepare
-for some paramter passing changes.
+Switch to passing a gendisk, and make rq_qos_add initialize all required
+fields and drop the not required q argument from rq_qos_del.  Also move
+the code out of line given how large it is.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Andreas Herrmann <aherrmann@suse.de>
 ---
- block/blk-wbt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ block/blk-iocost.c    | 13 ++-------
+ block/blk-iolatency.c | 14 +++------
+ block/blk-rq-qos.c    | 67 +++++++++++++++++++++++++++++++++++++++++++
+ block/blk-rq-qos.h    | 62 ++-------------------------------------
+ block/blk-wbt.c       |  5 +---
+ 5 files changed, 78 insertions(+), 83 deletions(-)
 
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index dbb93f4f68d979..5f28463cba0afe 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2843,9 +2843,7 @@ static struct rq_qos_ops ioc_rqos_ops = {
+ 
+ static int blk_iocost_init(struct gendisk *disk)
+ {
+-	struct request_queue *q = disk->queue;
+ 	struct ioc *ioc;
+-	struct rq_qos *rqos;
+ 	int i, cpu, ret;
+ 
+ 	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
+@@ -2868,11 +2866,6 @@ static int blk_iocost_init(struct gendisk *disk)
+ 		local64_set(&ccs->rq_wait_ns, 0);
+ 	}
+ 
+-	rqos = &ioc->rqos;
+-	rqos->id = RQ_QOS_COST;
+-	rqos->ops = &ioc_rqos_ops;
+-	rqos->q = q;
+-
+ 	spin_lock_init(&ioc->lock);
+ 	timer_setup(&ioc->timer, ioc_timer_fn, 0);
+ 	INIT_LIST_HEAD(&ioc->active_iocgs);
+@@ -2896,17 +2889,17 @@ static int blk_iocost_init(struct gendisk *disk)
+ 	 * called before policy activation completion, can't assume that the
+ 	 * target bio has an iocg associated and need to test for NULL iocg.
+ 	 */
+-	ret = rq_qos_add(q, rqos);
++	ret = rq_qos_add(&ioc->rqos, disk, RQ_QOS_COST, &ioc_rqos_ops);
+ 	if (ret)
+ 		goto err_free_ioc;
+ 
+-	ret = blkcg_activate_policy(q, &blkcg_policy_iocost);
++	ret = blkcg_activate_policy(disk->queue, &blkcg_policy_iocost);
+ 	if (ret)
+ 		goto err_del_qos;
+ 	return 0;
+ 
+ err_del_qos:
+-	rq_qos_del(q, rqos);
++	rq_qos_del(&ioc->rqos);
+ err_free_ioc:
+ 	free_percpu(ioc->pcpu_stat);
+ 	kfree(ioc);
+diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+index b55eac2cf91944..1c394bd77aa0b4 100644
+--- a/block/blk-iolatency.c
++++ b/block/blk-iolatency.c
+@@ -757,24 +757,18 @@ static void blkiolatency_enable_work_fn(struct work_struct *work)
+ 
+ int blk_iolatency_init(struct gendisk *disk)
+ {
+-	struct request_queue *q = disk->queue;
+ 	struct blk_iolatency *blkiolat;
+-	struct rq_qos *rqos;
+ 	int ret;
+ 
+ 	blkiolat = kzalloc(sizeof(*blkiolat), GFP_KERNEL);
+ 	if (!blkiolat)
+ 		return -ENOMEM;
+ 
+-	rqos = &blkiolat->rqos;
+-	rqos->id = RQ_QOS_LATENCY;
+-	rqos->ops = &blkcg_iolatency_ops;
+-	rqos->q = q;
+-
+-	ret = rq_qos_add(q, rqos);
++	ret = rq_qos_add(&blkiolat->rqos, disk, RQ_QOS_LATENCY,
++			 &blkcg_iolatency_ops);
+ 	if (ret)
+ 		goto err_free;
+-	ret = blkcg_activate_policy(q, &blkcg_policy_iolatency);
++	ret = blkcg_activate_policy(disk->queue, &blkcg_policy_iolatency);
+ 	if (ret)
+ 		goto err_qos_del;
+ 
+@@ -784,7 +778,7 @@ int blk_iolatency_init(struct gendisk *disk)
+ 	return 0;
+ 
+ err_qos_del:
+-	rq_qos_del(q, rqos);
++	rq_qos_del(&blkiolat->rqos);
+ err_free:
+ 	kfree(blkiolat);
+ 	return ret;
+diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
+index 88f0fe7dcf5451..14bee1bd761362 100644
+--- a/block/blk-rq-qos.c
++++ b/block/blk-rq-qos.c
+@@ -294,3 +294,70 @@ void rq_qos_exit(struct request_queue *q)
+ 		rqos->ops->exit(rqos);
+ 	}
+ }
++
++int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
++		struct rq_qos_ops *ops)
++{
++	struct request_queue *q = disk->queue;
++
++	rqos->q = q;
++	rqos->id = id;
++	rqos->ops = ops;
++
++	/*
++	 * No IO can be in-flight when adding rqos, so freeze queue, which
++	 * is fine since we only support rq_qos for blk-mq queue.
++	 *
++	 * Reuse ->queue_lock for protecting against other concurrent
++	 * rq_qos adding/deleting
++	 */
++	blk_mq_freeze_queue(q);
++
++	spin_lock_irq(&q->queue_lock);
++	if (rq_qos_id(q, rqos->id))
++		goto ebusy;
++	rqos->next = q->rq_qos;
++	q->rq_qos = rqos;
++	spin_unlock_irq(&q->queue_lock);
++
++	blk_mq_unfreeze_queue(q);
++
++	if (rqos->ops->debugfs_attrs) {
++		mutex_lock(&q->debugfs_mutex);
++		blk_mq_debugfs_register_rqos(rqos);
++		mutex_unlock(&q->debugfs_mutex);
++	}
++
++	return 0;
++ebusy:
++	spin_unlock_irq(&q->queue_lock);
++	blk_mq_unfreeze_queue(q);
++	return -EBUSY;
++}
++
++void rq_qos_del(struct rq_qos *rqos)
++{
++	struct request_queue *q = rqos->q;
++	struct rq_qos **cur;
++
++	/*
++	 * See comment in rq_qos_add() about freezing queue & using
++	 * ->queue_lock.
++	 */
++	blk_mq_freeze_queue(q);
++
++	spin_lock_irq(&q->queue_lock);
++	for (cur = &q->rq_qos; *cur; cur = &(*cur)->next) {
++		if (*cur == rqos) {
++			*cur = rqos->next;
++			break;
++		}
++	}
++	spin_unlock_irq(&q->queue_lock);
++
++	blk_mq_unfreeze_queue(q);
++
++	mutex_lock(&q->debugfs_mutex);
++	blk_mq_debugfs_unregister_rqos(rqos);
++	mutex_unlock(&q->debugfs_mutex);
++}
+diff --git a/block/blk-rq-qos.h b/block/blk-rq-qos.h
+index 1ef1f7d4bc3cbc..22552785aa31ed 100644
+--- a/block/blk-rq-qos.h
++++ b/block/blk-rq-qos.h
+@@ -85,65 +85,9 @@ static inline void rq_wait_init(struct rq_wait *rq_wait)
+ 	init_waitqueue_head(&rq_wait->wait);
+ }
+ 
+-static inline int rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+-{
+-	/*
+-	 * No IO can be in-flight when adding rqos, so freeze queue, which
+-	 * is fine since we only support rq_qos for blk-mq queue.
+-	 *
+-	 * Reuse ->queue_lock for protecting against other concurrent
+-	 * rq_qos adding/deleting
+-	 */
+-	blk_mq_freeze_queue(q);
+-
+-	spin_lock_irq(&q->queue_lock);
+-	if (rq_qos_id(q, rqos->id))
+-		goto ebusy;
+-	rqos->next = q->rq_qos;
+-	q->rq_qos = rqos;
+-	spin_unlock_irq(&q->queue_lock);
+-
+-	blk_mq_unfreeze_queue(q);
+-
+-	if (rqos->ops->debugfs_attrs) {
+-		mutex_lock(&q->debugfs_mutex);
+-		blk_mq_debugfs_register_rqos(rqos);
+-		mutex_unlock(&q->debugfs_mutex);
+-	}
+-
+-	return 0;
+-ebusy:
+-	spin_unlock_irq(&q->queue_lock);
+-	blk_mq_unfreeze_queue(q);
+-	return -EBUSY;
+-
+-}
+-
+-static inline void rq_qos_del(struct request_queue *q, struct rq_qos *rqos)
+-{
+-	struct rq_qos **cur;
+-
+-	/*
+-	 * See comment in rq_qos_add() about freezing queue & using
+-	 * ->queue_lock.
+-	 */
+-	blk_mq_freeze_queue(q);
+-
+-	spin_lock_irq(&q->queue_lock);
+-	for (cur = &q->rq_qos; *cur; cur = &(*cur)->next) {
+-		if (*cur == rqos) {
+-			*cur = rqos->next;
+-			break;
+-		}
+-	}
+-	spin_unlock_irq(&q->queue_lock);
+-
+-	blk_mq_unfreeze_queue(q);
+-
+-	mutex_lock(&q->debugfs_mutex);
+-	blk_mq_debugfs_unregister_rqos(rqos);
+-	mutex_unlock(&q->debugfs_mutex);
+-}
++int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
++		struct rq_qos_ops *ops);
++void rq_qos_del(struct rq_qos *rqos);
+ 
+ typedef bool (acquire_inflight_cb_t)(struct rq_wait *rqw, void *private_data);
+ typedef void (cleanup_cb_t)(struct rq_wait *rqw, void *private_data);
 diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index 542271fa99e8f7..473ae72befaf1a 100644
+index 473ae72befaf1a..0b339850fb761a 100644
 --- a/block/blk-wbt.c
 +++ b/block/blk-wbt.c
-@@ -863,9 +863,9 @@ int wbt_init(struct gendisk *disk)
- 	rwb->enable_state = WBT_STATE_ON_DEFAULT;
- 	rwb->wc = test_bit(QUEUE_FLAG_WC, &q->queue_flags);
- 	rwb->rq_depth.default_depth = RWB_DEF_DEPTH;
-+	rwb->rq_depth.queue_depth = blk_queue_depth(q);
- 	rwb->min_lat_nsec = wbt_default_latency_nsec(q);
--
--	wbt_queue_depth_changed(&rwb->rqos);
-+	wbt_update_limits(rwb);
+@@ -855,9 +855,6 @@ int wbt_init(struct gendisk *disk)
+ 	for (i = 0; i < WBT_NUM_RWQ; i++)
+ 		rq_wait_init(&rwb->rq_wait[i]);
  
+-	rwb->rqos.id = RQ_QOS_WBT;
+-	rwb->rqos.ops = &wbt_rqos_ops;
+-	rwb->rqos.q = q;
+ 	rwb->last_comp = rwb->last_issue = jiffies;
+ 	rwb->win_nsec = RWB_WINDOW_NSEC;
+ 	rwb->enable_state = WBT_STATE_ON_DEFAULT;
+@@ -870,7 +867,7 @@ int wbt_init(struct gendisk *disk)
  	/*
  	 * Assign rwb and add the stats callback.
+ 	 */
+-	ret = rq_qos_add(q, &rwb->rqos);
++	ret = rq_qos_add(&rwb->rqos, disk, RQ_QOS_WBT, &wbt_rqos_ops);
+ 	if (ret)
+ 		goto err_free;
+ 
 -- 
 2.39.0
 
