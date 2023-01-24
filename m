@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F7D67917A
-	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 07:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BBE67917C
+	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 07:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbjAXG6S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Jan 2023 01:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
+        id S232697AbjAXG6V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Jan 2023 01:58:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbjAXG6R (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 01:58:17 -0500
+        with ESMTP id S229838AbjAXG6U (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 01:58:20 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9092E15CBF;
-        Mon, 23 Jan 2023 22:58:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D211117C;
+        Mon, 23 Jan 2023 22:58:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=qpzgbZoPCKpHE8yCbvHgG2m5cAsudGm05C47k8Gaxvs=; b=ktu4WiwHkb7pKSBOX6Xb4Mm2gZ
-        1tyPfsb24vdQmpTq2wS3b8qFWdZJMi7K9t685h4jQQqLAXEfmxUGBO+2IZpR9AaxZJav5j0tYP5NK
-        vfd17QM31tIkX56pbjexz03UIeKxcPBtyR37iupnvDtBXMnAuyY5UUWD2dTUyF8SL845d22DAHpyl
-        UTL2QeSm8QLEIRvy2HMjMoZiAn5FzlQoEMMos4YZeO/MpqODkPM8PpbVKvbsEBVyYx+db4mZM/olX
-        2a6HbkXCLdteN2L2O/t8swMj//YBjqTVD0tWrJQZsnEg6qB76ZeGCYk+44yKjn6JKsCMydpDQmEqI
-        UT8G34ag==;
+        bh=NZLDUBJPrIYcuYYeQA8bitp+4kRAGVy+hKmq8vSRtu4=; b=nJxhx4L3fpUuOv8BfSgUgk0fpa
+        wTktovZaSEq6CHhB+1SCJgTxo4RdJgrM0VTkqvg+sUXA5/bUFp1KJ2MEAxoqUFTSrcksJHyalFpdr
+        qzHrdexdwNll5/1RIP/E3ftSgsaED7jRWVFXqJ7fBjP/d81NvTPmYUt/uaq2Gb0r2Cpr0mFpylkXD
+        M+YlH6QJH2vGEVzBLqhYqrYPNbOknJL5//y/38dvK1w/hBoax4f8ATPagWXxUrwosc4zO9dDcg5ZW
+        2k6aJ1pAYuI2Yk+AwJdP6PjemnsuNcmPakV8IT1Q/IkbHS3qlVmRUNZY1yiYZ21d3MPkURoKhcok0
+        5hBdZZ+A==;
 Received: from [2001:4bb8:19a:27af:ea4c:1aa8:8f64:2866] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pKDFu-002aWi-AL; Tue, 24 Jan 2023 06:58:06 +0000
+        id 1pKDFx-002aX4-0P; Tue, 24 Jan 2023 06:58:09 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         Andreas Herrmann <aherrmann@suse.de>
-Subject: [PATCH 13/15] blk-cgroup: pass a gendisk to pd_alloc_fn
-Date:   Tue, 24 Jan 2023 07:57:13 +0100
-Message-Id: <20230124065716.152286-14-hch@lst.de>
+Subject: [PATCH 14/15] blk-cgroup: pass a gendisk to blkg_lookup
+Date:   Tue, 24 Jan 2023 07:57:14 +0100
+Message-Id: <20230124065716.152286-15-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230124065716.152286-1-hch@lst.de>
 References: <20230124065716.152286-1-hch@lst.de>
@@ -51,168 +51,149 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-No need to the request_queue here, pass a gendisk and extract the
-node ids from that.
+Pass a gendisk to blkg_lookup and use that to find the match as part
+of phasing out usage of the request_queue in the blk-cgroup code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Andreas Herrmann <aherrmann@suse.de>
 ---
- block/bfq-cgroup.c    |  6 +++---
- block/blk-cgroup.c    | 10 +++++-----
- block/blk-cgroup.h    |  4 ++--
- block/blk-iocost.c    |  7 ++++---
- block/blk-iolatency.c |  7 +++----
- block/blk-ioprio.c    |  2 +-
- block/blk-throttle.c  |  7 +++----
- 7 files changed, 21 insertions(+), 22 deletions(-)
+ block/blk-cgroup.c | 16 ++++++++--------
+ block/blk-cgroup.h | 20 ++++++++++----------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index b1b8eca99d988f..055f9684c1c502 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -515,12 +515,12 @@ static void bfq_cpd_free(struct blkcg_policy_data *cpd)
- 	kfree(cpd_to_bfqgd(cpd));
- }
- 
--static struct blkg_policy_data *bfq_pd_alloc(gfp_t gfp, struct request_queue *q,
--					     struct blkcg *blkcg)
-+static struct blkg_policy_data *bfq_pd_alloc(struct gendisk *disk,
-+		struct blkcg *blkcg, gfp_t gfp)
- {
- 	struct bfq_group *bfqg;
- 
--	bfqg = kzalloc_node(sizeof(*bfqg), gfp, q->node);
-+	bfqg = kzalloc_node(sizeof(*bfqg), gfp, disk->node_id);
- 	if (!bfqg)
- 		return NULL;
- 
 diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 43cd02631162f8..2fa42b5b538069 100644
+index 2fa42b5b538069..b9883ea81ad0da 100644
 --- a/block/blk-cgroup.c
 +++ b/block/blk-cgroup.c
-@@ -268,7 +268,7 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 			continue;
+@@ -320,7 +320,7 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
  
- 		/* alloc per-policy data and attach it to blkg */
--		pd = pol->pd_alloc_fn(gfp_mask, disk->queue, blkcg);
-+		pd = pol->pd_alloc_fn(disk, blkcg, gfp_mask);
- 		if (!pd)
- 			goto err_free;
+ 	/* link parent */
+ 	if (blkcg_parent(blkcg)) {
+-		blkg->parent = blkg_lookup(blkcg_parent(blkcg), disk->queue);
++		blkg->parent = blkg_lookup(blkcg_parent(blkcg), disk);
+ 		if (WARN_ON_ONCE(!blkg->parent)) {
+ 			ret = -ENODEV;
+ 			goto err_put_css;
+@@ -389,12 +389,12 @@ static struct blkcg_gq *blkg_lookup_create(struct blkcg *blkcg,
  
-@@ -1404,8 +1404,8 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
- 			pd = pd_prealloc;
- 			pd_prealloc = NULL;
- 		} else {
--			pd = pol->pd_alloc_fn(GFP_NOWAIT | __GFP_NOWARN, q,
--					      blkg->blkcg);
-+			pd = pol->pd_alloc_fn(disk, blkg->blkcg,
-+					      GFP_NOWAIT | __GFP_NOWARN);
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 
+-	blkg = blkg_lookup(blkcg, q);
++	blkg = blkg_lookup(blkcg, disk);
+ 	if (blkg)
+ 		return blkg;
+ 
+ 	spin_lock_irqsave(&q->queue_lock, flags);
+-	blkg = blkg_lookup(blkcg, q);
++	blkg = blkg_lookup(blkcg, disk);
+ 	if (blkg) {
+ 		if (blkcg != &blkcg_root &&
+ 		    blkg != rcu_dereference(blkcg->blkg_hint))
+@@ -413,7 +413,7 @@ static struct blkcg_gq *blkg_lookup_create(struct blkcg *blkcg,
+ 		struct blkcg_gq *ret_blkg = q->root_blkg;
+ 
+ 		while (parent) {
+-			blkg = blkg_lookup(parent, q);
++			blkg = blkg_lookup(parent, disk);
+ 			if (blkg) {
+ 				/* remember closest blkg */
+ 				ret_blkg = blkg;
+@@ -692,7 +692,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		goto fail_unlock;
+ 	}
+ 
+-	blkg = blkg_lookup(blkcg, q);
++	blkg = blkg_lookup(blkcg, disk);
+ 	if (blkg)
+ 		goto success;
+ 
+@@ -706,7 +706,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		struct blkcg_gq *new_blkg;
+ 
+ 		parent = blkcg_parent(blkcg);
+-		while (parent && !blkg_lookup(parent, q)) {
++		while (parent && !blkg_lookup(parent, disk)) {
+ 			pos = parent;
+ 			parent = blkcg_parent(parent);
+ 		}
+@@ -736,7 +736,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 			goto fail_preloaded;
  		}
  
- 		if (!pd) {
-@@ -1422,8 +1422,8 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
- 
- 			if (pd_prealloc)
- 				pol->pd_free_fn(pd_prealloc);
--			pd_prealloc = pol->pd_alloc_fn(GFP_KERNEL, q,
--						       blkg->blkcg);
-+			pd_prealloc = pol->pd_alloc_fn(disk, blkg->blkcg,
-+						       GFP_KERNEL);
- 			if (pd_prealloc)
- 				goto retry;
- 			else
+-		blkg = blkg_lookup(pos, q);
++		blkg = blkg_lookup(pos, disk);
+ 		if (blkg) {
+ 			blkg_free(new_blkg);
+ 		} else {
+@@ -1804,7 +1804,7 @@ void blkcg_maybe_throttle_current(void)
+ 	blkcg = css_to_blkcg(blkcg_css());
+ 	if (!blkcg)
+ 		goto out;
+-	blkg = blkg_lookup(blkcg, disk->queue);
++	blkg = blkg_lookup(blkcg, disk);
+ 	if (!blkg)
+ 		goto out;
+ 	if (!blkg_tryget(blkg))
 diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index e9e0c00d13d64d..9a2cd3c71a94a2 100644
+index 9a2cd3c71a94a2..3e7508907f33d8 100644
 --- a/block/blk-cgroup.h
 +++ b/block/blk-cgroup.h
-@@ -150,8 +150,8 @@ typedef struct blkcg_policy_data *(blkcg_pol_alloc_cpd_fn)(gfp_t gfp);
- typedef void (blkcg_pol_init_cpd_fn)(struct blkcg_policy_data *cpd);
- typedef void (blkcg_pol_free_cpd_fn)(struct blkcg_policy_data *cpd);
- typedef void (blkcg_pol_bind_cpd_fn)(struct blkcg_policy_data *cpd);
--typedef struct blkg_policy_data *(blkcg_pol_alloc_pd_fn)(gfp_t gfp,
--				struct request_queue *q, struct blkcg *blkcg);
-+typedef struct blkg_policy_data *(blkcg_pol_alloc_pd_fn)(struct gendisk *disk,
-+		struct blkcg *blkcg, gfp_t gfp);
- typedef void (blkcg_pol_init_pd_fn)(struct blkg_policy_data *pd);
- typedef void (blkcg_pol_online_pd_fn)(struct blkg_policy_data *pd);
- typedef void (blkcg_pol_offline_pd_fn)(struct blkg_policy_data *pd);
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 078b7770951962..7a2dc9dc8e3ba0 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2923,13 +2923,14 @@ static void ioc_cpd_free(struct blkcg_policy_data *cpd)
- 	kfree(container_of(cpd, struct ioc_cgrp, cpd));
+@@ -230,30 +230,30 @@ static inline bool bio_issue_as_root_blkg(struct bio *bio)
  }
  
--static struct blkg_policy_data *ioc_pd_alloc(gfp_t gfp, struct request_queue *q,
--					     struct blkcg *blkcg)
-+static struct blkg_policy_data *ioc_pd_alloc(struct gendisk *disk,
-+		struct blkcg *blkcg, gfp_t gfp)
+ /**
+- * blkg_lookup - lookup blkg for the specified blkcg - q pair
++ * blkg_lookup - lookup blkg for the specified blkcg - disk pair
+  * @blkcg: blkcg of interest
+- * @q: request_queue of interest
++ * @disk: gendisk of interest
+  *
+- * Lookup blkg for the @blkcg - @q pair.
++ * Lookup blkg for the @blkcg - @disk pair.
+ 
+  * Must be called in a RCU critical section.
+  */
+ static inline struct blkcg_gq *blkg_lookup(struct blkcg *blkcg,
+-					   struct request_queue *q)
++					   struct gendisk *disk)
  {
- 	int levels = blkcg->css.cgroup->level + 1;
- 	struct ioc_gq *iocg;
+ 	struct blkcg_gq *blkg;
  
--	iocg = kzalloc_node(struct_size(iocg, ancestors, levels), gfp, q->node);
-+	iocg = kzalloc_node(struct_size(iocg, ancestors, levels), gfp,
-+			    disk->node_id);
- 	if (!iocg)
- 		return NULL;
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
  
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index 39853fc5c2b02f..bc0d217f5c1723 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -946,13 +946,12 @@ static void iolatency_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
- 			iolat->max_depth, avg_lat, cur_win);
+ 	if (blkcg == &blkcg_root)
+-		return q->root_blkg;
++		return disk->queue->root_blkg;
+ 
+ 	blkg = rcu_dereference(blkcg->blkg_hint);
+-	if (blkg && blkg->disk->queue == q)
++	if (blkg && blkg->disk == disk)
+ 		return blkg;
+ 
+-	blkg = radix_tree_lookup(&blkcg->blkg_tree, q->id);
+-	if (blkg && blkg->disk->queue != q)
++	blkg = radix_tree_lookup(&blkcg->blkg_tree, disk->queue->id);
++	if (blkg && blkg->disk != disk)
+ 		blkg = NULL;
+ 	return blkg;
  }
+@@ -353,7 +353,7 @@ static inline void blkg_put(struct blkcg_gq *blkg)
+ #define blkg_for_each_descendant_pre(d_blkg, pos_css, p_blkg)		\
+ 	css_for_each_descendant_pre((pos_css), &(p_blkg)->blkcg->css)	\
+ 		if (((d_blkg) = blkg_lookup(css_to_blkcg(pos_css),	\
+-					    (p_blkg)->disk->queue)))
++					    (p_blkg)->disk)))
  
--static struct blkg_policy_data *iolatency_pd_alloc(gfp_t gfp,
--						   struct request_queue *q,
--						   struct blkcg *blkcg)
-+static struct blkg_policy_data *iolatency_pd_alloc(struct gendisk *disk,
-+		struct blkcg *blkcg, gfp_t gfp)
- {
- 	struct iolatency_grp *iolat;
+ /**
+  * blkg_for_each_descendant_post - post-order walk of a blkg's descendants
+@@ -368,7 +368,7 @@ static inline void blkg_put(struct blkcg_gq *blkg)
+ #define blkg_for_each_descendant_post(d_blkg, pos_css, p_blkg)		\
+ 	css_for_each_descendant_post((pos_css), &(p_blkg)->blkcg->css)	\
+ 		if (((d_blkg) = blkg_lookup(css_to_blkcg(pos_css),	\
+-					    (p_blkg)->disk->queue)))
++					    (p_blkg)->disk)))
  
--	iolat = kzalloc_node(sizeof(*iolat), gfp, q->node);
-+	iolat = kzalloc_node(sizeof(*iolat), gfp, disk->node_id);
- 	if (!iolat)
- 		return NULL;
- 	iolat->stats = __alloc_percpu_gfp(sizeof(struct latency_stat),
-diff --git a/block/blk-ioprio.c b/block/blk-ioprio.c
-index 8194826cc824bc..055529b9b92bab 100644
---- a/block/blk-ioprio.c
-+++ b/block/blk-ioprio.c
-@@ -116,7 +116,7 @@ static ssize_t ioprio_set_prio_policy(struct kernfs_open_file *of, char *buf,
- }
- 
- static struct blkg_policy_data *
--ioprio_alloc_pd(gfp_t gfp, struct request_queue *q, struct blkcg *blkcg)
-+ioprio_alloc_pd(struct gendisk *disk, struct blkcg *blkcg, gfp_t gfp)
- {
- 	struct ioprio_blkg *ioprio_blkg;
- 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index efc0a9092c6942..74bb1e753ea09d 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -335,14 +335,13 @@ static void throtl_service_queue_init(struct throtl_service_queue *sq)
- 	timer_setup(&sq->pending_timer, throtl_pending_timer_fn, 0);
- }
- 
--static struct blkg_policy_data *throtl_pd_alloc(gfp_t gfp,
--						struct request_queue *q,
--						struct blkcg *blkcg)
-+static struct blkg_policy_data *throtl_pd_alloc(struct gendisk *disk,
-+		struct blkcg *blkcg, gfp_t gfp)
- {
- 	struct throtl_grp *tg;
- 	int rw;
- 
--	tg = kzalloc_node(sizeof(*tg), gfp, q->node);
-+	tg = kzalloc_node(sizeof(*tg), gfp, disk->node_id);
- 	if (!tg)
- 		return NULL;
+ bool __blkcg_punt_bio_submit(struct bio *bio);
  
 -- 
 2.39.0
