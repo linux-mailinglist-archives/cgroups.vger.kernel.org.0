@@ -2,65 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB53E67A1F4
-	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 19:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8179867A351
+	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 20:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbjAXS41 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Jan 2023 13:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S234709AbjAXTqh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Jan 2023 14:46:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjAXS4W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 13:56:22 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F28311164
-        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 10:55:58 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-4c24993965eso231595487b3.12
-        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 10:55:58 -0800 (PST)
+        with ESMTP id S234621AbjAXTqg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 14:46:36 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE13279A9
+        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 11:46:31 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id y187-20020a638ac4000000b004cf52d8bb9bso7359388pgd.21
+        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 11:46:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5iP8zaH4qhJm7u23Me24MfP0ksC5myih/koifVjd6bQ=;
-        b=L97ftDdvRyPqQWji9bbudEKZD0LDLmKOVOT0VCiZU2LCV4qkff4lF/IdPTXrUURWIL
-         ff9SdNebMBFiJK7tO0W11Q1G3UAXgTPUqwqhK5wAl6n35fMRrabPmvj7OKd4VEXabKNe
-         fPfG1+wRSo+CGN8gb1ygCJ4/kEeW/hVXaBUNrg4mvfNQT/BKe7VDh8MR1pAOAXvVpeRH
-         iSMTwWB8dLyPnn97HzVO9MptWE6TkOpSAkEtIzxtQqNOTsOqkk7JQsVXrGtclwnaZu3B
-         HwIb13tYMPFn1tPWBxylMI8CnFv9i3PBeFrmGSlZCW+l6NJP5u3gl1vi0n9snU8rYOV/
-         xPKA==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/GyNyIeeVhsFfDVzo3Uv5K6TJGpkGDF80R1/yVGfsGs=;
+        b=s+S6NvStNDfxmLH+7HdkNoMxBGNFu15nS1JbU3o7kKshlx447vodpqXHX0di6WuhDZ
+         a1MO4rwyUgw2LrSCtGq08zPjHV51A98+yZHCXgSTngUgV4XXVXDeDPcjG7CuFBAKTuAR
+         kTHeE5yNP/OikYuovflyL/aEcJ+JOgjIm+SFfej2Z5ILJ8d5oy9l9Ll/yZqUaJp+iWXi
+         DD5HNZQ0qbq4VEtW0G8okZMv8molLKQ44+tNH1Nu8KJ7B9jWjxkED24jWjgeRCFRcQ8I
+         izZ99IapQOypOy9ZAzpJglu0Rf0PFoxX1xa78gNX6tsRtckWTeEuw1Q3Oze2b7gqQYar
+         JRcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5iP8zaH4qhJm7u23Me24MfP0ksC5myih/koifVjd6bQ=;
-        b=Qrf+nLZEVdlHY0zaDJDiWYmLM29ASF7jqUSi/dCyJlhFYZMENE7XzMk1MCVW4kob+8
-         XfAZaH1uUKKr7QIeTZWjQZPrUdEnuYMclC0IGzAm8FCSQ3vgUEUFbLfQu/oahol+0BHR
-         JkPNj8blapbO/yrPvhrTqUte6lkgt9SfYeRlb7xf/GaUNKe6vli8oDQ6MF+M9dqBCFeu
-         k/gsljZH484tcch42WuWXqrNRgTgHDNG/4x+dzRjzbp6jYW5lRhXCKwuiLtPmD5NrOYr
-         z/l/U+Et0/uVFjllwZKay135iNOELC3s4dQzIz4TFJkmf2seOo3MLIgu8qtyWntf7ov7
-         8jhw==
-X-Gm-Message-State: AFqh2koOTQLTgO5ognzJ7FXpOTw3fYuScs3JdptFokJBDo21SDmVJD+a
-        bikev5SgCMo+erY0ljcpnXQ1fSVws6Ah5VdfBlBGJg==
-X-Google-Smtp-Source: AMrXdXvYfqSwoaAvj+x6Y8rOABSC1o3UELoBjL8mxdEcOy8itZdY1Gyy4qtRJtS0OI19YGFM9lWbjo9sqQUT8b8rESs=
-X-Received: by 2002:a81:ee03:0:b0:4ec:8f55:59f7 with SMTP id
- l3-20020a81ee03000000b004ec8f5559f7mr3333976ywm.317.1674586532265; Tue, 24
- Jan 2023 10:55:32 -0800 (PST)
-MIME-Version: 1.0
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/GyNyIeeVhsFfDVzo3Uv5K6TJGpkGDF80R1/yVGfsGs=;
+        b=mlFA17UvJ5u0xX/ujUf64cUzFAFjGs+uwerSzt+WWId4R8jSXcrgMwom/aE9GlZ0jY
+         lkvuoRXU+HYtlBwTSvkdULxzGofxpmkLvTJZHvpTG+Au3Cym3An1DLxTbJTrR/GVFbYL
+         tFQhrBAZ+vZvqeuOFB9bX5zhlVBDEaFd/l0hoNIZ9mxv2+yPM407ZMla56jjjSRZ0u1m
+         5G1oyL9pg/Xz4idjKzN+F7UOgFmUNJY06re+0xHqgXeSxeZajhRWTyEYdzeL8St+UUQE
+         TTRl3RUCATT9TZKVF2OMmbjsQEH4IngXdEKlhytcUQJ7+NZXtsLC9lPo6N7miFRhy+mL
+         pVuQ==
+X-Gm-Message-State: AFqh2kogwpZB1AlRms7neqIvvwy/2fav0/N0uVcaU3d9Ok8Vt4F3H5y2
+        kIT6yDtSRm3a9g2RNpW7UGhUX0TLGD2sIA==
+X-Google-Smtp-Source: AMrXdXukkwsl/ioqg+fD35BqMTHaPjz5qGGy0gbqkxllMlQZ94JVGByIXE/sjuoEMUouo8MXOIoUEVSlfpldQQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a62:30c7:0:b0:58d:af10:5831 with SMTP id
+ w190-20020a6230c7000000b0058daf105831mr2987930pfw.24.1674589591181; Tue, 24
+ Jan 2023 11:46:31 -0800 (PST)
+Date:   Tue, 24 Jan 2023 19:46:28 +0000
+In-Reply-To: <Y8/ybgp2FW+e3bjc@dhcp22.suse.cz>
+Mime-Version: 1.0
 References: <20230123191728.2928839-1-tjmercier@google.com>
  <20230123191728.2928839-2-tjmercier@google.com> <Y8/ybgp2FW+e3bjc@dhcp22.suse.cz>
-In-Reply-To: <Y8/ybgp2FW+e3bjc@dhcp22.suse.cz>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Tue, 24 Jan 2023 10:55:21 -0800
-Message-ID: <CABdmKX1c_8LdJJboENnZhwGjrszDWOOVt-Do93-sJW46mZMD6A@mail.gmail.com>
+Message-ID: <20230124194628.d44rtcfsv23fndxw@google.com>
 Subject: Re: [PATCH v2 1/4] memcg: Track exported dma-buffers
+From:   Shakeel Butt <shakeelb@google.com>
 To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+Cc:     "T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
         daniel.vetter@ffwll.ch, android-mm@google.com, jstultz@google.com,
@@ -70,11 +70,10 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
         linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,61 +81,71 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 7:00 AM Michal Hocko <mhocko@suse.com> wrote:
->
+On Tue, Jan 24, 2023 at 03:59:58PM +0100, Michal Hocko wrote:
 > On Mon 23-01-23 19:17:23, T.J. Mercier wrote:
 > > When a buffer is exported to userspace, use memcg to attribute the
 > > buffer to the allocating cgroup until all buffer references are
 > > released.
->
+> 
 > Is there any reason why this memory cannot be charged during the
 > allocation (__GFP_ACCOUNT used)?
-
-My main motivation was to keep code changes away from exporters and
-implement the accounting in one common spot for all of them. This is a
-bit of a carryover from a previous approach [1] where there was some
-objection to pushing off this work onto exporters and forcing them to
-adapt, but __GFP_ACCOUNT does seem like a smaller burden than before
-at least initially. However in order to support charge transfer
-between cgroups with __GFP_ACCOUNT we'd need to be able to get at the
-pages backing dmabuf objects, and the exporters are the ones with that
-access. Meaning I think we'd have to add some additional dma_buf_ops
-to achieve that, which was the objection from [1].
-
-[1] https://lore.kernel.org/lkml/5cc27a05-8131-ce9b-dea1-5c75e994216d@amd.com/
-
->
 > Also you do charge and account the memory but underlying pages do not
 > know about their memcg (this is normally done with commit_charge for
 > user mapped pages). This would become a problem if the memory is
 > migrated for example.
 
-Hmm, what problem do you see in this situation? If the backing pages
-are to be migrated that requires the cooperation of the exporter,
-which currently has no influence on how the cgroup charging is done
-and that seems fine. (Unless you mean migrating the charge across
-cgroups? In which case that's the next patch.)
+I don't think this is movable memory.
 
 > This also means that you have to maintain memcg
 > reference outside of the memcg proper which is not really nice either.
 > This mimicks tcp kmem limit implementation which I really have to say I
 > am not a great fan of and this pattern shouldn't be coppied.
->
-Ah, what can I say. This way looked simple to me. I think otherwise
-we're back to making all exporters do more stuff for the accounting.
+> 
 
-> Also you are not really saying anything about the oom behavior. With
-> this implementation the kernel will try to reclaim the memory and even
-> trigger the memcg oom killer if the request size is <= 8 pages. Is this
-> a desirable behavior?
+I think we should keep the discussion on technical merits instead of
+personal perference. To me using skmem like interface is totally fine
+but the pros/cons need to be very explicit and the clear reasons to
+select that option should be included.
 
-It will try to reclaim some memory, but not the dmabuf pages right?
-Not *yet* anyway. This behavior sounds expected to me. I would only
-expect it to be surprising for cgroups making heavy use of dmabufs
-(that weren't accounted before) *and* with hard limits already very
-close to actual usage. I remember Johannes mentioning that what counts
-under memcg use is already a bit of a moving target.
+To me there are two options:
 
-> --
-> Michal Hocko
-> SUSE Labs
+1. Using skmem like interface as this patch series:
+
+The main pros of this option is that it is very simple. Let me list down
+the cons of this approach:
+
+a. There is time window between the actual memory allocation/free and
+the charge and uncharge and [un]charge happen when the whole memory is
+allocated or freed. I think for the charge path that might not be a big
+issue but on the uncharge, this can cause issues. The application and
+the potential shrinkers have freed some of this dmabuf memory but until
+the whole dmabuf is freed, the memcg uncharge will not happen. This can
+consequences on reclaim and oom behavior of the application.
+
+b. Due to the usage model i.e. a central daemon allocating the dmabuf
+memory upfront, there is a requirement to have a memcg charge transfer
+functionality to transfer the charge from the central daemon to the
+client applications. This does introduce complexity and avenues of weird
+reclaim and oom behavior.
+
+
+2. Allocate and charge the memory on page fault by actual user
+
+In this approach, the memory is not allocated upfront by the central
+daemon but rather on the page fault by the client application and the
+memcg charge happen at the same time.
+
+The only cons I can think of is this approach is more involved and may
+need some clever tricks to track the page on the free patch i.e. we to
+decrement the dmabuf memcg stat on free path. Maybe a page flag.
+
+The pros of this approach is there is no need have a charge transfer
+functionality and the charge/uncharge being closely tied to the actual
+memory allocation and free.
+
+Personally I would prefer the second approach but I don't want to just
+block this work if the dmabuf folks are ok with the cons mentioned of
+the first approach.
+
+thanks,
+Shakeel
