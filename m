@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB446799E6
-	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 14:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC51679A21
+	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 14:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjAXNnI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Jan 2023 08:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        id S233986AbjAXNo7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Jan 2023 08:44:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234319AbjAXNmw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 08:42:52 -0500
+        with ESMTP id S234414AbjAXNoj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 08:44:39 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2893C45235;
-        Tue, 24 Jan 2023 05:42:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FB615540;
+        Tue, 24 Jan 2023 05:43:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DA42F611F4;
-        Tue, 24 Jan 2023 13:42:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2256C4339B;
-        Tue, 24 Jan 2023 13:42:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9782860FAC;
+        Tue, 24 Jan 2023 13:43:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A5DEC4339C;
+        Tue, 24 Jan 2023 13:43:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674567726;
-        bh=jmVxCeavWO+FBi8yxOKCkQ7COU927JaLBNSDf/y4n/w=;
+        s=k20201202; t=1674567802;
+        bh=mJLPCi/3sB+LqCzxEK11/00G7g5mPE/RTW6D4kkkB5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XZiqvLF9hbEAvczjGpp92ZDbSuAVa9Qz0SgHgCspWhVMk8ai5oJf2O3FlWZ5E/ufT
-         Lxe2w1pwYf05JzI6XCqBVJ+9/pHA0qHGsMTxC643ZBtSoAqGGv5g1hEMAuHHDKBqbQ
-         EuqpTOnMbtaAUzijwY0joCM4aCKYWi2iI9xZHWli1MnKRyE4WZPaX9qIPSCEYP8TPv
-         Ssy9RocH4KI+PTJZdYvGycNeEM7ZHQy/IH4jDEPnQNxXoBnlSv8D9ygsPfeWySwFLz
-         r9ST88QPiE1jMOqucbDXRNq3VXknxEG1ine+8iUN6RjAccxJpLWb3H12cBEHGrEk+h
-         0O4OS7HC+td3Q==
+        b=LgVisdwT7H50R31VxcMgggTZ/I+BfDpDMu5lJkWRV/Uucmd+7TdF50iNL3EeyoCNa
+         Hwslc4OfTaLpJ1vXQN5YSx8XXjyZUsqbDIyOpyeey4UQY7tR6J2kynBSnOT/YEA4Vb
+         MZoHR16vtZ4zxKakbIWexi07SAcTF4kFJ2yjOOxJ+NvSvrgBKJ5XQ0nLFmNuWaq66b
+         DzvrAj8T7s+5pp8f0sD3LUMDxGndlA7qMjj+QWJxABV0xGphiCiaW3lqW0O/vn7ScH
+         Hpr4yV9vsrYqoFtcIGWSbdmTyDSdfVmkYHqAqBZV1eR8sm58nAScdI+iIAbEhEFzHl
+         BPL8rad4CcrlQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yu Kuai <yukuai3@huawei.com>, Tejun Heo <tj@kernel.org>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
         josef@toxicpanda.com, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 16/35] blk-cgroup: fix missing pd_online_fn() while activating policy
-Date:   Tue, 24 Jan 2023 08:41:12 -0500
-Message-Id: <20230124134131.637036-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 10/14] blk-cgroup: fix missing pd_online_fn() while activating policy
+Date:   Tue, 24 Jan 2023 08:42:53 -0500
+Message-Id: <20230124134257.637523-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230124134131.637036-1-sashal@kernel.org>
-References: <20230124134131.637036-1-sashal@kernel.org>
+In-Reply-To: <20230124134257.637523-1-sashal@kernel.org>
+References: <20230124134257.637523-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -73,10 +73,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index fcf9cf49f5de..7c91d9195da8 100644
+index ce5858dadca5..3ee4c1217b63 100644
 --- a/block/blk-cgroup.c
 +++ b/block/blk-cgroup.c
-@@ -1408,6 +1408,10 @@ int blkcg_activate_policy(struct request_queue *q,
+@@ -1360,6 +1360,10 @@ int blkcg_activate_policy(struct request_queue *q,
  		list_for_each_entry_reverse(blkg, &q->blkg_list, q_node)
  			pol->pd_init_fn(blkg->pd[pol->plid]);
  
