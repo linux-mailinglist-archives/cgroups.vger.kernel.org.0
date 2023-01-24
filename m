@@ -2,76 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBB06790E9
-	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 07:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2A4679157
+	for <lists+cgroups@lfdr.de>; Tue, 24 Jan 2023 07:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbjAXGap (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Jan 2023 01:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S233339AbjAXG5X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Jan 2023 01:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232847AbjAXG37 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 01:29:59 -0500
+        with ESMTP id S233340AbjAXG5W (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Jan 2023 01:57:22 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B7F3E09C;
-        Mon, 23 Jan 2023 22:29:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB13C3D937;
+        Mon, 23 Jan 2023 22:57:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4u7sdeygL2SI0vuOn3AQXqOOeojipj5nJ8JBXiSMSP4=; b=Y1N1Bp85zWT1Yc4mWO5RM/5swn
-        z1s/ae7nZBU1XI2LeDBAOv+06U0Bu1PJWHXCDrEjlbbph1xr+oh6cmoXIod4hdcTSIhg05KsUMsH6
-        Mt0SAUZbeNMdj95LikeyPio6/J/WyHzPQbupOE2KMJ+OXZv8xSLLdBNtO7Ot/A8dx2JalSA7ubKi2
-        aFuBB1XW7qW1wiu2y2b/BJd4x/N6dLqevlGltWAruZGC7j2J5NPe6Xz6f5IgVH1uIF87LFk4mGzQ9
-        1iI2DWcT8gQ30YpVU8YQ5BM2WIzRNm5oNr5lR1NU6lLpwGy0B15qzrZcjDOK9MRUi3zNGYFfM5749
-        r4m38yZA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pKCny-002Vim-8c; Tue, 24 Jan 2023 06:29:14 +0000
-Date:   Mon, 23 Jan 2023 22:29:14 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
-        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
-        mkoutny@suse.com, daniel@ffwll.ch, linuxppc-dev@lists.ozlabs.org,
-        linux-fpga@vger.kernel.org, linux-rdma@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org,
-        bpf@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 01/19] mm: Introduce vm_account
-Message-ID: <Y896ugI8HoXDRjp3@infradead.org>
-References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
- <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VmYGANj5EWw8Lo4TLS15TVfS0hjnPfIXbECc6g3JZec=; b=cFatyu2CSvkHizkSFbuyleHtBb
+        LKYY2w1tKlWZ+BbxR6ZL26qnFDlAAH8L5jxJuAZhSbVqrGHQhFzRfII0g0uCo67pZBYa5azgqsD07
+        NTmLTs0ctgryv5x47YoyMMnbNSNQGhReS/ofPuPK15kBY84vcmuRjJtRVCDQABhTL6wJuf+tWLZrL
+        4upq31PcJ1eLUXeyurgvIMS5bCj+3iS4iCFEedpi6As62PNJmu2+4RgCuS+ToKByb0QgKjCxjEUz0
+        FRX5eU4qOsjmMyt21MrFfF18RVfejlLOLwy2NpHzMpyhc/52L1f+QaQbinrHP9Rud6i2uTbBsmPOk
+        GxIcU5KA==;
+Received: from [2001:4bb8:19a:27af:ea4c:1aa8:8f64:2866] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pKDF8-002aQJ-7V; Tue, 24 Jan 2023 06:57:18 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org
+Subject: switch blk-cgroup to work on gendisk v2
+Date:   Tue, 24 Jan 2023 07:57:00 +0100
+Message-Id: <20230124065716.152286-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
+Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> +/**
-> + * vm_account_init - Initialise a new struct vm_account.
-> + * @vm_account: pointer to uninitialised vm_account.
-> + * @task: task to charge against.
-> + * @user: user to charge against. Must be non-NULL for VM_ACCOUNT_USER.
-> + * @flags: flags to use when charging to vm_account.
-> + *
-> + * Initialise a new uninitialiused struct vm_account. Takes references
-> + * on the task/mm/user/cgroup as required although callers must ensure
-> + * any references passed in remain valid for the duration of this
-> + * call.
-> + */
-> +void vm_account_init(struct vm_account *vm_account, struct task_struct *task,
-> +		struct user_struct *user, enum vm_account_flags flags);
+Hi all,
 
+blk-cgroup works on only on live disks and "file system" I/O from bios.
+This all the information should be in the gendisk, and not the
+request_queue that also exists for pure passthrough request based
+devices.
 
-kerneldoc comments are supposed to be next to the implementation, and
-not the declaration in the header.
+Changes since v1:
+ - use the local disk variable in wbt_init instead of q->disk
+ - various spelling fixes
 
+Diffstat:
+ block/bfq-cgroup.c        |   18 ++--
+ block/bfq-iosched.c       |    6 -
+ block/blk-cgroup-rwstat.c |    2 
+ block/blk-cgroup.c        |  185 +++++++++++++++++++++-------------------------
+ block/blk-cgroup.h        |   41 ++++------
+ block/blk-iocost.c        |   40 ++++-----
+ block/blk-iolatency.c     |   41 ++++------
+ block/blk-ioprio.c        |    6 -
+ block/blk-mq-debugfs.c    |   10 --
+ block/blk-rq-qos.c        |   67 ++++++++++++++++
+ block/blk-rq-qos.h        |   66 +---------------
+ block/blk-stat.c          |    3 
+ block/blk-sysfs.c         |    4 
+ block/blk-throttle.c      |   31 ++++---
+ block/blk-wbt.c           |   39 ++++-----
+ block/blk-wbt.h           |   12 +-
+ block/genhd.c             |   17 ++--
+ include/linux/blkdev.h    |   10 +-
+ include/linux/sched.h     |    2 
+ kernel/fork.c             |    2 
+ mm/swapfile.c             |    2 
+ 21 files changed, 292 insertions(+), 312 deletions(-)
