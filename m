@@ -2,72 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A39EC67B90A
-	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 19:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4672067B935
+	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 19:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbjAYSLn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Jan 2023 13:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
+        id S235306AbjAYSXP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Jan 2023 13:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235552AbjAYSLm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 13:11:42 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CA846090;
-        Wed, 25 Jan 2023 10:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674670301; x=1706206301;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=JuYjKJS9gbqNnrhb2oKijdYn0zeQyxwNNDDSL14po5s=;
-  b=MUzoJvJRgjC8StWM9h5gzXFN+rMqNyjVZrQ+nvIRBy+x8MzBrDdVPbq0
-   dmTgjJ9LN1ACosLtt3f/Icjzi0853RZE+fhlupUhfDi5ZytyQfjcKm3Ii
-   W8PdaBMCpkXtRgeVjhvAj1D/UFJJT/1BO5snjkJcR7wZV2D5+23K10QEd
-   SbfGTpxuAbFwL4LlG4Xw1yF+M9vXtUDGBwnCbHykvfa1qgWgwToKnseAX
-   d+IrMlQqhOl2ZHU2aPLoBrMX3RyH5+IszUJviSDPTfwfQ4UbAJ6rhnlxZ
-   Ltw1u+3OtLwgsxv0iFhaQJgyuet+FosIUvpUkIoxzWiy3a0DcBB0EE2aX
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="306291660"
-X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; 
-   d="scan'208";a="306291660"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2023 10:11:40 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="731143891"
-X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; 
-   d="scan'208";a="731143891"
-Received: from dodonnel-mobl.ger.corp.intel.com (HELO [10.213.233.83]) ([10.213.233.83])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2023 10:11:36 -0800
-Message-ID: <371f3ce5-3468-b91d-d688-7e89499ff347@linux.intel.com>
-Date:   Wed, 25 Jan 2023 18:11:35 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [RFC v3 00/12] DRM scheduling cgroup controller
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>,
+        with ESMTP id S234955AbjAYSXO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 13:23:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADA459B46
+        for <cgroups@vger.kernel.org>; Wed, 25 Jan 2023 10:22:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1674670944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8TAHgioL+cbo0qEgcEaZEdMYDgI4uLoD69uULXZCMWk=;
+        b=GiIH3wCAjUSKVpIdNPg9Vm0hAhs5WpCkx/XQVx4mx+QuTHj2ZGz/e5zCPZNffNQu34Hyqp
+        fNl/kSvYjqPLVWZwdwNpw56+nFOykdmmIWb9RpMhwjgcHVf8r/YaYz4RTKeq97LInytD2x
+        iD2cWdRXCzHcvXyOKR7moZ9K0xREjzM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-292-deB-As1LMKysAVKBxmpPAg-1; Wed, 25 Jan 2023 13:22:21 -0500
+X-MC-Unique: deB-As1LMKysAVKBxmpPAg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BADC885C073;
+        Wed, 25 Jan 2023 18:22:20 +0000 (UTC)
+Received: from tpad.localdomain (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6EFB5492B01;
+        Wed, 25 Jan 2023 18:22:20 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+        id 94285403C674B; Wed, 25 Jan 2023 15:22:00 -0300 (-03)
+Date:   Wed, 25 Jan 2023 15:22:00 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
- <20230123154239.GA24348@blackbody.suse.cz>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <20230123154239.GA24348@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
+Message-ID: <Y9FzSBw10MGXm2TK@tpad>
+References: <20230125073502.743446-1-leobras@redhat.com>
+ <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
+ <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+In-Reply-To: <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,101 +71,88 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-Hi,
-
-On 23/01/2023 15:42, Michal KoutnÃ½ wrote:
-> Hello Tvrtko.
+On Wed, Jan 25, 2023 at 08:06:46AM -0300, Leonardo Brás wrote:
+> On Wed, 2023-01-25 at 09:33 +0100, Michal Hocko wrote:
+> > On Wed 25-01-23 04:34:57, Leonardo Bras wrote:
+> > > Disclaimer:
+> > > a - The cover letter got bigger than expected, so I had to split it in
+> > >     sections to better organize myself. I am not very confortable with it.
+> > > b - Performance numbers below did not include patch 5/5 (Remove flags
+> > >     from memcg_stock_pcp), which could further improve performance for
+> > >     drain_all_stock(), but I could only notice the optimization at the
+> > >     last minute.
+> > > 
+> > > 
+> > > 0 - Motivation:
+> > > On current codebase, when drain_all_stock() is ran, it will schedule a
+> > > drain_local_stock() for each cpu that has a percpu stock associated with a
+> > > descendant of a given root_memcg.
+> > > 
+> > > This happens even on 'isolated cpus', a feature commonly used on workloads that
+> > > are sensitive to interruption and context switching such as vRAN and Industrial
+> > > Control Systems.
+> > > 
+> > > Since this scheduling behavior is a problem to those workloads, the proposal is
+> > > to replace the current local_lock + schedule_work_on() solution with a per-cpu
+> > > spinlock.
+> > 
+> > If IIRC we have also discussed that isolated CPUs can simply opt out
+> > from the pcp caching and therefore the problem would be avoided
+> > altogether without changes to the locking scheme. I do not see anything
+> > regarding that in this submission. Could you elaborate why you have
+> > abandoned this option?
 > 
-> Interesting work.
-
-Thanks!
-
-> On Thu, Jan 12, 2023 at 04:55:57PM +0000, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
->> Because of the heterogenous hardware and driver DRM capabilities, soft limits
->> are implemented as a loose co-operative (bi-directional) interface between the
->> controller and DRM core.
+> Hello Michal,
 > 
-> IIUC, this periodic scanning, calculating and applying could be partly
-> implemented with userspace utilities. (As you write, these limits are
-> best effort only, so it sounds to me such a total implementation is
-> unnecessary.)
+> I understand pcp caching is a nice to have.
+> So while I kept the idea of disabling pcp caching in mind as an option, I first
+> tried to understand what kind of impacts we would be seeing when trying to
+> change the locking scheme.
 
-I don't immediately see how you envisage the half-userspace 
-implementation would look like in terms of what functionality/new APIs 
-would be provided by the kernel?
+Remote draining reduces interruptions whether CPU 
+is marked as isolated or not:
 
-> I think a better approach would be to avoid the async querying and
-> instead require implementing explicit foo_charge_time(client, dur) API
-> (similar to how other controllers achieve this).
-> Your argument is the heterogenity of devices -- does it mean there are
-> devices/drivers that can't implement such a synchronous charging?
+- Allows isolated CPUs from benefiting of pcp caching.
+- Removes the interruption to non isolated CPUs. See for example 
 
-Problem there is to find a suitable point to charge at. If for a moment 
-we limit the discussion to i915, out of the box we could having charging 
-happening at several thousand times per second to effectively never. 
-This is to illustrate the GPU context execution dynamics which range 
-from many small packets of work to multi-minute, or longer. For the 
-latter to be accounted for we'd still need some periodic scanning, which 
-would then perhaps go per driver. For the former we'd have thousands of 
-needless updates per second.
+https://lkml.org/lkml/2022/6/13/2769
 
-Hence my thinking was to pay both the cost of accounting and collecting 
-the usage data once per actionable event, where the latter is controlled 
-by some reasonable scanning period/frequency.
+"Minchan Kim tested this independently and reported;
 
-In addition to that, a few DRM drivers already support GPU usage 
-querying via fdinfo, so that being externally triggered, it is next to 
-trivial to wire all those DRM drivers into such common DRM cgroup 
-controller framework. All that every driver needs to implement on top is 
-the "over budget" callback.
+       My workload is not NOHZ CPUs but run apps under heavy memory
+       pressure so they goes to direct reclaim and be stuck on
+       drain_all_pages until work on workqueue run.
 
->> DRM core provides an API to query per process GPU utilization and 2nd API to
->> receive notification from the cgroup controller when the group enters or exits
->> the over budget condition.
+       unit: nanosecond
+       max(dur)        avg(dur)                count(dur)
+       166713013       487511.77786438033      1283
+
+       From traces, system encountered the drain_all_pages 1283 times and
+       worst case was 166ms and avg was 487us.
+
+       The other problem was alloc_contig_range in CMA. The PCP draining
+       takes several hundred millisecond sometimes though there is no
+       memory pressure or a few of pages to be migrated out but CPU were
+       fully booked.
+
+       Your patch perfectly removed those wasted time."
+
+
+> After I raised the data in the cover letter, I found that the performance impact
+> appears not be that big. So in order to try keeping the pcp cache on isolated
+> cpus active, I decided to focus effort on the locking scheme change.
 > 
-> The return value of foo_charge_time() would substitute such a
-> notification synchronously. (By extension all clients in an affected
-> cgroup could be notified to achieve some broader actions.)
-
-Right, it is doable in theory, but as mention above some rate limit 
-would have to be added. And the notification would still need to have 
-unused budget propagation through the tree, so it wouldn't work to 
-localize the action to the single cgroup (the one getting the charge).
-
->> Individual DRM drivers which implement the interface are expected to act on this
->> in the best-effort manner only. There are no guarantees that the soft limits
->> will be respected.
+> I mean, my rationale is: if is there a non-expensive way of keeping the feature,
+> why should we abandon it?
 > 
-> Back to original concern -- must all code reside in the kernel when it's
-> essentially advisory resource control?
-> 
->>   * DRM core is required to track all DRM clients belonging to processes so it
->>     can answer when asked how much GPU time is a process using.
->>   [...]
->>   * Individual drivers need to implement two similar hooks, but which work for
->>     a single DRM client. Over budget callback and GPU utilisation query.
-> 
-> This information is eventually aggregated for each process in a cgroup.
-> (And the action is carried on a single client, not a process.)
-> The per-process tracking seems like an additional indirection.
-> Could be the clients associated directly with DRM cgroup? [1]
-
-I think you could be right here - with some deeper integration with the 
-cgroup subsystem this could probably be done. It would require moving 
-the list of drm clients into the cgroup css state itself. Let me try and 
-sketch that out in the following weeks because it would be a nice 
-simplification if it indeed worked out.
-
-Regards,
-
-Tvrtko
-
+> Best regards,
+> Leo
 > 
 > 
-> Regards,
-> Michal
 > 
-> [1] I understand the sending a fd of a client is a regular operation, so
->      I'm not sure how cross-cg migrations would have to be handled in any
->      case.
+> 
+> 
+> 
+> 
+> 
+
