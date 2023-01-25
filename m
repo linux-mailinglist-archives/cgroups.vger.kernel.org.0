@@ -2,149 +2,207 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCE767B247
-	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 13:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9B667B6FD
+	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 17:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234869AbjAYMGT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Jan 2023 07:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
+        id S234613AbjAYQfv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Jan 2023 11:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjAYMGS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 07:06:18 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DED58675;
-        Wed, 25 Jan 2023 04:05:53 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BDBC621DAC;
-        Wed, 25 Jan 2023 12:05:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1674648350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M6ZhLLcIfUWj0Dx+OmAWrztylazBquGZXcGl1z85yuQ=;
-        b=tjJPeQ8m8W5P71g2m3JXDLxSp72HbJQftZy3vAdP9Nl5ZEHWbqPcQpFn4uWOw77aDGRZxH
-        61qkk+aV/38b489Z7WPEGg5c6TfyGOai2/nQeNkVYrNH/43gA/P/ON4+Sm72XqAf9C3oEF
-        fsOYWoE2wspY0mKU/zUs0DzufjAsLUw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96D241358F;
-        Wed, 25 Jan 2023 12:05:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WtVTJB4b0WMbdgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 12:05:50 +0000
-Date:   Wed, 25 Jan 2023 13:05:49 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        daniel.vetter@ffwll.ch, android-mm@google.com, jstultz@google.com,
-        jeffv@google.com, cmllamas@google.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2 1/4] memcg: Track exported dma-buffers
-Message-ID: <Y9EbHW84ydBzpTTO@dhcp22.suse.cz>
-References: <20230123191728.2928839-1-tjmercier@google.com>
- <20230123191728.2928839-2-tjmercier@google.com>
- <Y8/ybgp2FW+e3bjc@dhcp22.suse.cz>
- <CABdmKX1c_8LdJJboENnZhwGjrszDWOOVt-Do93-sJW46mZMD6A@mail.gmail.com>
+        with ESMTP id S229884AbjAYQfv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 11:35:51 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F512BED9
+        for <cgroups@vger.kernel.org>; Wed, 25 Jan 2023 08:35:49 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id q10so693364wrm.4
+        for <cgroups@vger.kernel.org>; Wed, 25 Jan 2023 08:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ASFlQvqBFf2+5cfZFM0tnDhN0cmGUnXdcMgd/XrWuzI=;
+        b=bFW8Q0SAsCFre+6x3yP+2SyUjrYalHBu1AKf3hNSB3DS1ve3TjqfAiABaHJ5k7x2yg
+         Gok2XiNmpaqk4Q9Y4N/bQFHHH/FwypWdbgr1tdGmBsJT6g10gQrO17U9epFhwJ8QHo5O
+         VFAE54N8hQmLOeUt2/8ZCAEwHDyGS3SrOoj3rxkt1zQoBmfIZ7wqtBFSRKAyF/tLO9Fv
+         pWfsizlSv7z/p7DRtpl/9zp+5P2OLKTeTLNPXQdDSb7x7e6wl/dusiCZlqtUpju+8abF
+         3j57gQHnefwvp6xfyjI1y3cAn0Oar1juPv7Fnqzb6fQbvcXsERA1w8EZhEkcOuojnGTZ
+         O4YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ASFlQvqBFf2+5cfZFM0tnDhN0cmGUnXdcMgd/XrWuzI=;
+        b=pte2rQ3yo/Q8vJcH9F4d3FcqqVoYen+9WtlHfXRNE+TJnC087GrUbkeVutBsuYhEPw
+         Nx6ki+OxnDET7w749yRrzlH14+qMA+5SZ/llgC3WlctY3zNcPertA/1Cj3J4sltqibJg
+         zzDUMnfWttgSFFFDuoxLi05I5VGEugNZ2kFsCXP9l9zpBEAL+A2FNaKxHIzYdNKyq22R
+         fABVY83yznJ2rMmY0iQ3VQPmWwZuUSHsOM5YL56EEje2fiJ/xJRA63PWx8umz6C5h1mj
+         R822PEc0JYVPUI+xrgoICt78KG8Skparmm2IINmVQwlK0H4H/b/DkyEz/eFDEhVv8193
+         N0nw==
+X-Gm-Message-State: AO0yUKUXeCIU9oDT0pcVBZTPQTF4dZgpZJrvjB0e6oCwoKUegVVlf/4Q
+        ThKfdddejqPsvMnIOA+RmSV3eDs/Ydim7Qpj
+X-Google-Smtp-Source: AK7set877JoLU/rLX1cYG/9G0z1LOBdfsORkeGVXzsa+7RkiPtt94c3q8kdsrRc/y95JrLfIqt3qvQ==
+X-Received: by 2002:a5d:694f:0:b0:2bf:b743:f035 with SMTP id r15-20020a5d694f000000b002bfb743f035mr3371024wrw.28.1674664548237;
+        Wed, 25 Jan 2023 08:35:48 -0800 (PST)
+Received: from airbuntu (host86-163-35-10.range86-163.btcentralplus.com. [86.163.35.10])
+        by smtp.gmail.com with ESMTPSA id t9-20020adff049000000b002bddaea7a0bsm4846651wro.57.2023.01.25.08.35.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jan 2023 08:35:47 -0800 (PST)
+Date:   Wed, 25 Jan 2023 16:35:46 +0000
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v2] sched: cpuset: Don't rebuild sched domains on
+ suspend-resume
+Message-ID: <20230125163546.pspvigh4groiwjy7@airbuntu>
+References: <20230120194822.962958-1-qyousef@layalina.io>
+ <c4c2dec6-a72b-d675-fb42-be40e384ea2c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CABdmKX1c_8LdJJboENnZhwGjrszDWOOVt-Do93-sJW46mZMD6A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c4c2dec6-a72b-d675-fb42-be40e384ea2c@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 24-01-23 10:55:21, T.J. Mercier wrote:
-> On Tue, Jan 24, 2023 at 7:00 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 23-01-23 19:17:23, T.J. Mercier wrote:
-> > > When a buffer is exported to userspace, use memcg to attribute the
-> > > buffer to the allocating cgroup until all buffer references are
-> > > released.
-> >
-> > Is there any reason why this memory cannot be charged during the
-> > allocation (__GFP_ACCOUNT used)?
+On 01/20/23 17:16, Waiman Long wrote:
 > 
-> My main motivation was to keep code changes away from exporters and
-> implement the accounting in one common spot for all of them. This is a
-> bit of a carryover from a previous approach [1] where there was some
-> objection to pushing off this work onto exporters and forcing them to
-> adapt, but __GFP_ACCOUNT does seem like a smaller burden than before
-> at least initially. However in order to support charge transfer
-> between cgroups with __GFP_ACCOUNT we'd need to be able to get at the
-> pages backing dmabuf objects, and the exporters are the ones with that
-> access. Meaning I think we'd have to add some additional dma_buf_ops
-> to achieve that, which was the objection from [1].
+> On 1/20/23 14:48, Qais Yousef wrote:
+> > Commit f9a25f776d78 ("cpusets: Rebuild root domain deadline accounting information")
+> > enabled rebuilding sched domain on cpuset and hotplug operations to
+> > correct deadline accounting.
+> > 
+> > Rebuilding sched domain is a slow operation and we see 10+ ms delay on
+> > suspend-resume because of that.
+> > 
+> > Since nothing is expected to change on suspend-resume operation; skip
+> > rebuilding the sched domains to regain the time lost.
+> > 
+> > Debugged-by: Rick Yiu <rickyiu@google.com>
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > ---
+> > 
+> >      Changes in v2:
+> >      	* Remove redundant check in update_tasks_root_domain() (Thanks Waiman)
+> >      v1 link:
+> >      	https://lore.kernel.org/lkml/20221216233501.gh6m75e7s66dmjgo@airbuntu/
+> > 
+> >   kernel/cgroup/cpuset.c  | 3 +++
+> >   kernel/sched/deadline.c | 3 +++
+> >   2 files changed, 6 insertions(+)
+> > 
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index a29c0b13706b..9a45f083459c 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -1088,6 +1088,9 @@ static void rebuild_root_domains(void)
+> >   	lockdep_assert_cpus_held();
+> >   	lockdep_assert_held(&sched_domains_mutex);
+> > +	if (cpuhp_tasks_frozen)
+> > +		return;
+> > +
+> >   	rcu_read_lock();
+> >   	/*
+> > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > index 0d97d54276cc..42c1143a3956 100644
+> > --- a/kernel/sched/deadline.c
+> > +++ b/kernel/sched/deadline.c
+> > @@ -2575,6 +2575,9 @@ void dl_clear_root_domain(struct root_domain *rd)
+> >   {
+> >   	unsigned long flags;
+> > +	if (cpuhp_tasks_frozen)
+> > +		return;
+> > +
+> >   	raw_spin_lock_irqsave(&rd->dl_bw.lock, flags);
+> >   	rd->dl_bw.total_bw = 0;
+> >   	raw_spin_unlock_irqrestore(&rd->dl_bw.lock, flags);
 > 
-> [1] https://lore.kernel.org/lkml/5cc27a05-8131-ce9b-dea1-5c75e994216d@amd.com/
-> 
-> >
-> > Also you do charge and account the memory but underlying pages do not
-> > know about their memcg (this is normally done with commit_charge for
-> > user mapped pages). This would become a problem if the memory is
-> > migrated for example.
-> 
-> Hmm, what problem do you see in this situation? If the backing pages
-> are to be migrated that requires the cooperation of the exporter,
-> which currently has no influence on how the cgroup charging is done
-> and that seems fine. (Unless you mean migrating the charge across
-> cgroups? In which case that's the next patch.)
+> cpuhp_tasks_frozen is set when thaw_secondary_cpus() or
+> freeze_secondary_cpus() is called. I don't know the exact suspend/resume
+> calling sequences, will cpuhp_tasks_frozen be cleared at the end of resume
+> sequence? Maybe we should make sure that rebuild_root_domain() is called at
+> least once at the end of resume operation.
 
-My main concern was that page migration could lose the external tracking
-without some additional steps on the dmabuf front.
+Very good questions. It made me look at the logic again and I realize now that
+the way force_build behaves is causing this issue.
 
-> > This also means that you have to maintain memcg
-> > reference outside of the memcg proper which is not really nice either.
-> > This mimicks tcp kmem limit implementation which I really have to say I
-> > am not a great fan of and this pattern shouldn't be coppied.
-> >
-> Ah, what can I say. This way looked simple to me. I think otherwise
-> we're back to making all exporters do more stuff for the accounting.
-> 
-> > Also you are not really saying anything about the oom behavior. With
-> > this implementation the kernel will try to reclaim the memory and even
-> > trigger the memcg oom killer if the request size is <= 8 pages. Is this
-> > a desirable behavior?
-> 
-> It will try to reclaim some memory, but not the dmabuf pages right?
-> Not *yet* anyway. This behavior sounds expected to me.
+I *think* we should just make the call rebuild_root_domains() only if
+cpus_updated in cpuset_hotplug_workfn().
 
-Yes, we have discussed that shrinkers will follow up later which is
-fine. The question is how much reclaim actually makes sense at this
-stage. Charging interface usually copes with sizes resulting from
-allocation requests (so usually 1<<order based). I can imagine that a
-batch charge like implemented here could easily be 100s of MBs and it is
-much harder to define reclaim targets for. At least that is something
-the memcg charging hasn't really considered yet.  Maybe the existing
-try_charge implementation can cope with that just fine but it would be
-really great to have the expected behavior described.
+cpuset_cpu_active() seems to be the source of force_rebuild in my case; which
+seems to be called only after the last cpu is back online (what you suggest).
+In this case we can end up with cpus_updated = false, but force_rebuild = true.
 
-E.g. should be memcg OOM killer be invoked? Should reclaim really target
-regular memory at all costs or just a lightweight memory reclaim is
-preferred (is the dmabuf charge failure an expensive operation wrt.
-memory refault due to reclaim).
--- 
-Michal Hocko
-SUSE Labs
+Now you added a couple of new users to force_rebuild in 4b842da276a8a; I'm
+trying to figure out what the conditions would be there. It seems we can have
+corner cases for cpus_update might not trigger correctly?
+
+Could the below be a good cure?
+
+AFAICT we must rebuild the root domains if something has changed in cpuset.
+Which should be captured by either having:
+
+	* cpus_updated = true
+	* force_rebuild && !cpuhp_tasks_frozen
+
+/me goes to test the patch
+
+--->8---
+
+	diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+	index a29c0b13706b..363e4459559f 100644
+	--- a/kernel/cgroup/cpuset.c
+	+++ b/kernel/cgroup/cpuset.c
+	@@ -1079,6 +1079,8 @@ static void update_tasks_root_domain(struct cpuset *cs)
+		css_task_iter_end(&it);
+	 }
+
+	+static bool need_rebuild_rd = true;
+	+
+	 static void rebuild_root_domains(void)
+	 {
+		struct cpuset *cs = NULL;
+	@@ -1088,6 +1090,9 @@ static void rebuild_root_domains(void)
+		lockdep_assert_cpus_held();
+		lockdep_assert_held(&sched_domains_mutex);
+
+	+       if (!need_rebuild_rd)
+	+               return;
+	+
+		rcu_read_lock();
+
+		/*
+	@@ -3627,7 +3632,9 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+		/* rebuild sched domains if cpus_allowed has changed */
+		if (cpus_updated || force_rebuild) {
+			force_rebuild = false;
+	+               need_rebuild_rd = cpus_updated || (force_rebuild && !cpuhp_tasks_frozen);
+			rebuild_sched_domains();
+	+               need_rebuild_rd = true;
+		}
+
+		free_cpumasks(NULL, ptmp);
+
+
+--->8---
+
+Thanks!
+
+--
+Qais Yousef
