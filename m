@@ -2,79 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 707B767B899
-	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 18:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39EC67B90A
+	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 19:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbjAYRbY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Jan 2023 12:31:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        id S233235AbjAYSLn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Jan 2023 13:11:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbjAYRbU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 12:31:20 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E543A870;
-        Wed, 25 Jan 2023 09:31:13 -0800 (PST)
+        with ESMTP id S235552AbjAYSLm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 13:11:42 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CA846090;
+        Wed, 25 Jan 2023 10:11:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674667873; x=1706203873;
+  t=1674670301; x=1706206301;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=b/qAzqJTvFy4xiZPmOAm7JkVbr9jZZbEQu9s5cua2Is=;
-  b=AWcklGPuXD/+9cf1Hhwl+Js//5W4kdegH/s0Gsfid2lOqlLRlb+x3I2W
-   +pbkW5XILBBx4R1+PNuSE8oRW4FgaWulShnBLOkKWlS+uhbh0zDiFg18b
-   B0HjcV5HkJ4l49rkjRSObzCRk/cdHpbAxDpFpDh9wOMFKiS95tbPYl1Kq
-   Ot2LLUNYqUoPmFYD48gejB0bRZ7kz1QxWT4du2BC+j37+/OrVu5C1QCzU
-   vGmNQIWiZblHr58LJMtiiQZtjmG4bpn6uWsBsR9DRE/KcVtOiJMs/A0FN
-   nj/2SCV6VpRy4QFDaAIqFZ5mJzJilrDWScKgr3pC/WGhkgPoafYyLKp3x
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="310194555"
+  bh=JuYjKJS9gbqNnrhb2oKijdYn0zeQyxwNNDDSL14po5s=;
+  b=MUzoJvJRgjC8StWM9h5gzXFN+rMqNyjVZrQ+nvIRBy+x8MzBrDdVPbq0
+   dmTgjJ9LN1ACosLtt3f/Icjzi0853RZE+fhlupUhfDi5ZytyQfjcKm3Ii
+   W8PdaBMCpkXtRgeVjhvAj1D/UFJJT/1BO5snjkJcR7wZV2D5+23K10QEd
+   SbfGTpxuAbFwL4LlG4Xw1yF+M9vXtUDGBwnCbHykvfa1qgWgwToKnseAX
+   d+IrMlQqhOl2ZHU2aPLoBrMX3RyH5+IszUJviSDPTfwfQ4UbAJ6rhnlxZ
+   Ltw1u+3OtLwgsxv0iFhaQJgyuet+FosIUvpUkIoxzWiy3a0DcBB0EE2aX
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="306291660"
 X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; 
-   d="scan'208";a="310194555"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2023 09:30:52 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="805079453"
+   d="scan'208";a="306291660"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2023 10:11:40 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="731143891"
 X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; 
-   d="scan'208";a="805079453"
+   d="scan'208";a="731143891"
 Received: from dodonnel-mobl.ger.corp.intel.com (HELO [10.213.233.83]) ([10.213.233.83])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2023 09:30:45 -0800
-Message-ID: <347560bc-d06a-92b7-8003-133d2b8af2df@linux.intel.com>
-Date:   Wed, 25 Jan 2023 17:30:43 +0000
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2023 10:11:36 -0800
+Message-ID: <371f3ce5-3468-b91d-d688-7e89499ff347@linux.intel.com>
+Date:   Wed, 25 Jan 2023 18:11:35 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.1
-Subject: Re: [PATCH v2 1/4] memcg: Track exported dma-buffers
+Subject: Re: [RFC v3 00/12] DRM scheduling cgroup controller
 Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>
-Cc:     linux-doc@vger.kernel.org, daniel.vetter@ffwll.ch,
-        Roman Gushchin <roman.gushchin@linux.dev>, cmllamas@google.com,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        jstultz@google.com, Zefan Li <lizefan.x@bytedance.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>, android-mm@google.com,
-        Jonathan Corbet <corbet@lwn.net>, jeffv@google.com,
-        linux-media@vger.kernel.org, selinux@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, cgroups@vger.kernel.org,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <20230123191728.2928839-1-tjmercier@google.com>
- <20230123191728.2928839-2-tjmercier@google.com>
- <Y8/ybgp2FW+e3bjc@dhcp22.suse.cz>
- <20230124194628.d44rtcfsv23fndxw@google.com>
- <Y9EX+usSpAjZ/8LS@dhcp22.suse.cz>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
+ <20230123154239.GA24348@blackbody.suse.cz>
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 Organization: Intel Corporation UK Plc
-In-Reply-To: <Y9EX+usSpAjZ/8LS@dhcp22.suse.cz>
+In-Reply-To: <20230123154239.GA24348@blackbody.suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
-        version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,98 +78,98 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hi,
 
-On 25/01/2023 11:52, Michal Hocko wrote:
-> On Tue 24-01-23 19:46:28, Shakeel Butt wrote:
->> On Tue, Jan 24, 2023 at 03:59:58PM +0100, Michal Hocko wrote:
->>> On Mon 23-01-23 19:17:23, T.J. Mercier wrote:
->>>> When a buffer is exported to userspace, use memcg to attribute the
->>>> buffer to the allocating cgroup until all buffer references are
->>>> released.
->>>
->>> Is there any reason why this memory cannot be charged during the
->>> allocation (__GFP_ACCOUNT used)?
->>> Also you do charge and account the memory but underlying pages do not
->>> know about their memcg (this is normally done with commit_charge for
->>> user mapped pages). This would become a problem if the memory is
->>> migrated for example.
->>
->> I don't think this is movable memory.
->>
->>> This also means that you have to maintain memcg
->>> reference outside of the memcg proper which is not really nice either.
->>> This mimicks tcp kmem limit implementation which I really have to say I
->>> am not a great fan of and this pattern shouldn't be coppied.
->>>
->>
->> I think we should keep the discussion on technical merits instead of
->> personal perference. To me using skmem like interface is totally fine
->> but the pros/cons need to be very explicit and the clear reasons to
->> select that option should be included.
+On 23/01/2023 15:42, Michal Koutný wrote:
+> Hello Tvrtko.
 > 
-> I do agree with that. I didn't want sound to be personal wrt tcp kmem
-> accounting but the overall code maintenance cost is higher because
-> of how tcp take on accounting differs from anything else in the memcg
-> proper. I would prefer to not grow another example like that.
-> 
->> To me there are two options:
->>
->> 1. Using skmem like interface as this patch series:
->>
->> The main pros of this option is that it is very simple. Let me list down
->> the cons of this approach:
->>
->> a. There is time window between the actual memory allocation/free and
->> the charge and uncharge and [un]charge happen when the whole memory is
->> allocated or freed. I think for the charge path that might not be a big
->> issue but on the uncharge, this can cause issues. The application and
->> the potential shrinkers have freed some of this dmabuf memory but until
->> the whole dmabuf is freed, the memcg uncharge will not happen. This can
->> consequences on reclaim and oom behavior of the application.
->>
->> b. Due to the usage model i.e. a central daemon allocating the dmabuf
->> memory upfront, there is a requirement to have a memcg charge transfer
->> functionality to transfer the charge from the central daemon to the
->> client applications. This does introduce complexity and avenues of weird
->> reclaim and oom behavior.
->>
->>
->> 2. Allocate and charge the memory on page fault by actual user
->>
->> In this approach, the memory is not allocated upfront by the central
->> daemon but rather on the page fault by the client application and the
->> memcg charge happen at the same time.
->>
->> The only cons I can think of is this approach is more involved and may
->> need some clever tricks to track the page on the free patch i.e. we to
->> decrement the dmabuf memcg stat on free path. Maybe a page flag.
->>
->> The pros of this approach is there is no need have a charge transfer
->> functionality and the charge/uncharge being closely tied to the actual
->> memory allocation and free.
->>
->> Personally I would prefer the second approach but I don't want to just
->> block this work if the dmabuf folks are ok with the cons mentioned of
->> the first approach.
-> 
-> I am not familiar with dmabuf internals to judge complexity on their end
-> but I fully agree that charge-when-used is much more easier to reason
-> about and it should have less subtle surprises.
+> Interesting work.
 
-Disclaimer that I don't seem to see patches 3&4 on dri-devel so maybe I 
-am missing something, but in principle yes, I agree that the 2nd option 
-(charge the user, not exporter) should be preferred. Thing being that at 
-export time there may not be any backing store allocated, plus if the 
-series is restricting the charge transfer to just Android clients then 
-it seems it has the potential to miss many other use cases. At least 
-needs to outline a description on how the feature will be useful outside 
-Android.
+Thanks!
 
-Also stepping back for a moment - is a new memory category really 
-needed, versus perhaps attempting to charge the actual backing store 
-memory to the correct client? (There might have been many past 
-discussions on this so it's okay to point me towards something in the 
-archives.)
+> On Thu, Jan 12, 2023 at 04:55:57PM +0000, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
+>> Because of the heterogenous hardware and driver DRM capabilities, soft limits
+>> are implemented as a loose co-operative (bi-directional) interface between the
+>> controller and DRM core.
+> 
+> IIUC, this periodic scanning, calculating and applying could be partly
+> implemented with userspace utilities. (As you write, these limits are
+> best effort only, so it sounds to me such a total implementation is
+> unnecessary.)
+
+I don't immediately see how you envisage the half-userspace 
+implementation would look like in terms of what functionality/new APIs 
+would be provided by the kernel?
+
+> I think a better approach would be to avoid the async querying and
+> instead require implementing explicit foo_charge_time(client, dur) API
+> (similar to how other controllers achieve this).
+> Your argument is the heterogenity of devices -- does it mean there are
+> devices/drivers that can't implement such a synchronous charging?
+
+Problem there is to find a suitable point to charge at. If for a moment 
+we limit the discussion to i915, out of the box we could having charging 
+happening at several thousand times per second to effectively never. 
+This is to illustrate the GPU context execution dynamics which range 
+from many small packets of work to multi-minute, or longer. For the 
+latter to be accounted for we'd still need some periodic scanning, which 
+would then perhaps go per driver. For the former we'd have thousands of 
+needless updates per second.
+
+Hence my thinking was to pay both the cost of accounting and collecting 
+the usage data once per actionable event, where the latter is controlled 
+by some reasonable scanning period/frequency.
+
+In addition to that, a few DRM drivers already support GPU usage 
+querying via fdinfo, so that being externally triggered, it is next to 
+trivial to wire all those DRM drivers into such common DRM cgroup 
+controller framework. All that every driver needs to implement on top is 
+the "over budget" callback.
+
+>> DRM core provides an API to query per process GPU utilization and 2nd API to
+>> receive notification from the cgroup controller when the group enters or exits
+>> the over budget condition.
+> 
+> The return value of foo_charge_time() would substitute such a
+> notification synchronously. (By extension all clients in an affected
+> cgroup could be notified to achieve some broader actions.)
+
+Right, it is doable in theory, but as mention above some rate limit 
+would have to be added. And the notification would still need to have 
+unused budget propagation through the tree, so it wouldn't work to 
+localize the action to the single cgroup (the one getting the charge).
+
+>> Individual DRM drivers which implement the interface are expected to act on this
+>> in the best-effort manner only. There are no guarantees that the soft limits
+>> will be respected.
+> 
+> Back to original concern -- must all code reside in the kernel when it's
+> essentially advisory resource control?
+> 
+>>   * DRM core is required to track all DRM clients belonging to processes so it
+>>     can answer when asked how much GPU time is a process using.
+>>   [...]
+>>   * Individual drivers need to implement two similar hooks, but which work for
+>>     a single DRM client. Over budget callback and GPU utilisation query.
+> 
+> This information is eventually aggregated for each process in a cgroup.
+> (And the action is carried on a single client, not a process.)
+> The per-process tracking seems like an additional indirection.
+> Could be the clients associated directly with DRM cgroup? [1]
+
+I think you could be right here - with some deeper integration with the 
+cgroup subsystem this could probably be done. It would require moving 
+the list of drm clients into the cgroup css state itself. Let me try and 
+sketch that out in the following weeks because it would be a nice 
+simplification if it indeed worked out.
 
 Regards,
 
 Tvrtko
+
+> 
+> 
+> Regards,
+> Michal
+> 
+> [1] I understand the sending a fd of a client is a regular operation, so
+>      I'm not sure how cross-cg migrations would have to be handled in any
+>      case.
