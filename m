@@ -2,77 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2281467AB05
-	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 08:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE5867AB22
+	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 08:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbjAYHhR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Jan 2023 02:37:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S229646AbjAYHpN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Jan 2023 02:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235092AbjAYHhC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 02:37:02 -0500
+        with ESMTP id S235125AbjAYHpM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 02:45:12 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDC63E63C
-        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 23:36:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5259B3D0BA
+        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 23:44:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674632171;
+        s=mimecast20190719; t=1674632664;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NWp8AY96vdXmiMbopROrFgs2cU/VADiUd7iIJJXBCxY=;
-        b=el/47FiS49Sk8mreZ2OWz2iX8VjGh8taqZbHwZv74qFL3bVKOKHuGUe1yFvUTuI0sjc6m5
-        llrVLhXki9/43TklZkbLmHtvBtMoQwdOMp6NRXwtztEQzAPcDlrBLP9En/LYAUcaV9QHtN
-        FG92PPC+IlBX9V4mlINT0wPRgM/jh1U=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=BkeMwblj9hneaBAEGr4WY7HayLEL2jAXC1+f00C91Gc=;
+        b=ecETXQha7bGH2bR2B1N0BH8X1pQUXfLZ4I8+4UaPB33qDQsHmssB0pul9kyW1idN8dnSSK
+        6DPqAA9X7zf0BqvwgrIOHHWHn8IXbebSkh0nVMrCUejl5UJFFa/f5IeoOkRMPyje9qkpiO
+        xxUtIsB0edwvRtVrZQhzNi1SVZImVB4=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-490-BSKUDslqMQSSOQpakjMXLQ-1; Wed, 25 Jan 2023 02:36:10 -0500
-X-MC-Unique: BSKUDslqMQSSOQpakjMXLQ-1
-Received: by mail-oo1-f71.google.com with SMTP id m4-20020a4a8444000000b004efb1a1aeebso4774689oog.4
-        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 23:36:09 -0800 (PST)
+ us-mta-110-PTxXu5QzO8awMsiGmhh0DA-1; Wed, 25 Jan 2023 02:44:23 -0500
+X-MC-Unique: PTxXu5QzO8awMsiGmhh0DA-1
+Received: by mail-oi1-f200.google.com with SMTP id w131-20020aca6289000000b003686285a4a8so5506772oib.7
+        for <cgroups@vger.kernel.org>; Tue, 24 Jan 2023 23:44:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NWp8AY96vdXmiMbopROrFgs2cU/VADiUd7iIJJXBCxY=;
-        b=ydW6CxkDhqM924zL4zqffFbXm3QRLTUu2wKduie4cP+YCF0htYlH+Qni0K/ttHv5fh
-         AbHNRmJ2ONE3+hbBAXMsdbvO6m+VzyuY5cgZxPU26/Riv4jK7vWRI36mJdPYhArB7Spy
-         2pGqw9Ob2TxztTwnybzwZp56vvy0NOj1o+EsBq9NFoDly1pBQ7juUSexf8W6AUg0s/bf
-         67RbRA3nIE3p2rSdwQwInh6P9vtEAD3JyuxnRiPxj7dnGydchGcoBax0Cqqfki3Pejdo
-         rDctwSB38DCnuVttpNBpF5z+lFzbOT1lnwuw+m3jLhheJV9B390Pu2l4e00XIAHeDEQq
-         lz7g==
-X-Gm-Message-State: AFqh2krjY8VH8ac2Osy51xxUc7WQWwtYLuazzCrmpeOXov7DN0qG87Nc
-        QM2hOCOZSYj+4ifFNqdZU0EY2X0qxB7UqYPdjiV03fG0vE/8Jsz1pzLo+Q9tp4B90gKA8uRo4K/
-        8MWo07xgDYT9IUS00IQ==
-X-Received: by 2002:a05:6870:e0ce:b0:15f:3bb9:7b3d with SMTP id a14-20020a056870e0ce00b0015f3bb97b3dmr17462989oab.28.1674632169342;
-        Tue, 24 Jan 2023 23:36:09 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXv6r5ehrqKjuOqxpudgJdHfNcykat5kT9ZAeiiKrUzWSSAJYK3YalJM5sJ2WYW3DmqLUhiPTw==
-X-Received: by 2002:a05:6870:e0ce:b0:15f:3bb9:7b3d with SMTP id a14-20020a056870e0ce00b0015f3bb97b3dmr17462978oab.28.1674632169128;
-        Tue, 24 Jan 2023 23:36:09 -0800 (PST)
-Received: from LeoBras.redhat.com ([2804:1b3:a800:14fa:9361:c141:6c70:c877])
-        by smtp.gmail.com with ESMTPSA id x189-20020a4a41c6000000b0050dc79bb80esm1538802ooa.27.2023.01.24.23.36.04
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BkeMwblj9hneaBAEGr4WY7HayLEL2jAXC1+f00C91Gc=;
+        b=3Jn5V4iRf/vvL3IJPHsBi6GVOOgf/XgWloHok3DCzg/CHiPKKuSdGiCXhsrw0eTlPR
+         3tvRBkrNNEE9/5BrIuscjOlChsU0J+qb4CGp7Q+EFIuipMFnkp7rrLB/TP+p/nFcCZ1g
+         JJS/qU8/IFSvK/UY52VM1ZTzJU/10cZWN5aBYyllOGYe50Bn1GuutRx7dTRPULXMwObI
+         1PKj7M4+i0aa8IP+msGMhtX5Y25+CaqcMMFM/tU0VxGwYo1/Ud1RaeJvlkcP8rZPz1rE
+         niwcJTdAyF8e4E7AhQeKN+bkwYZlADLmVqP+oEr3GgzahGW8DTN6fe4/hPNGHWEad2Ij
+         aMxA==
+X-Gm-Message-State: AFqh2kp1+a5paSPma/3qfrgakFcr+UAGpaiDor3mSp5O5lJY/5/PswM8
+        iuVp7OS+QO2UV1u4+ZVbVDpbKNZGnTP7aOJyayvcYy9/eLNz3B2Tp0Zxo2KfboFV1gtsvOyH0Qb
+        OJfTceDglEItDxuQ4rA==
+X-Received: by 2002:a05:6870:4288:b0:15e:e50c:1813 with SMTP id y8-20020a056870428800b0015ee50c1813mr17604051oah.55.1674632662619;
+        Tue, 24 Jan 2023 23:44:22 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXsmOOC0na3goHYTCuYUR80h3zsrixqTPIdufe5WuJ2AFLGjawvqUoIdakZTwJYrZcPAxvXVeg==
+X-Received: by 2002:a05:6870:4288:b0:15e:e50c:1813 with SMTP id y8-20020a056870428800b0015ee50c1813mr17604031oah.55.1674632662379;
+        Tue, 24 Jan 2023 23:44:22 -0800 (PST)
+Received: from ?IPv6:2804:1b3:a800:14fa:9361:c141:6c70:c877? ([2804:1b3:a800:14fa:9361:c141:6c70:c877])
+        by smtp.gmail.com with ESMTPSA id p9-20020a4ad449000000b004fb2935d0e7sm1574351oos.36.2023.01.24.23.44.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 23:36:08 -0800 (PST)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        Tue, 24 Jan 2023 23:44:21 -0800 (PST)
+Message-ID: <958969c204e1041dead005d1c801cf3c54ab86f1.camel@redhat.com>
+Subject: Re: [PATCH v1 0/3] Avoid scheduling cache draining to isolated cpus
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Leonardo Bras <leobras@redhat.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] mm/memcontrol: Remove flags from memcg_stock_pcp
-Date:   Wed, 25 Jan 2023 04:35:02 -0300
-Message-Id: <20230125073502.743446-6-leobras@redhat.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230125073502.743446-1-leobras@redhat.com>
-References: <20230125073502.743446-1-leobras@redhat.com>
+        Frederic Weisbecker <frederic@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Date:   Wed, 25 Jan 2023 04:44:12 -0300
+In-Reply-To: <Y2tfSAgt/lBVcdvf@dhcp22.suse.cz>
+References: <20221102020243.522358-1-leobras@redhat.com>
+         <Y2IwHVdgAJ6wfOVH@dhcp22.suse.cz>
+         <07810c49ef326b26c971008fb03adf9dc533a178.camel@redhat.com>
+         <Y2Pe45LHANFxxD7B@dhcp22.suse.cz>
+         <0183b60e79cda3a0f992d14b4db5a818cd096e33.camel@redhat.com>
+         <Y2TQLavnLVd4qHMT@dhcp22.suse.cz>
+         <3c4ae3bb70d92340d9aaaa1856928476641a8533.camel@redhat.com>
+         <Y2i9h+TRdX9EOs0T@dhcp22.suse.cz>
+         <4a4a6c73f3776d65f70f7ca92eb26fc90ed3d51a.camel@redhat.com>
+         <Y2tfSAgt/lBVcdvf@dhcp22.suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -83,64 +104,101 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The flags member of struct memcg_stock_pcp has only one used bit:
-FLUSHING_CACHED_CHARGE
+On Wed, 2022-11-09 at 09:05 +0100, Michal Hocko wrote:
+> On Tue 08-11-22 20:09:25, Leonardo Br=C3=A1s wrote:
+> [...]
+> > > Yes, with a notable difference that with your spin lock option there =
+is
+> > > still a chance that the remote draining could influence the isolated =
+CPU
+> > > workload throug that said spinlock. If there is no pcp cache for that
+> > > cpu being used then there is no potential interaction at all.
+> >=20
+> > I see.=20
+> > But the slow path is slow for some reason, right?
+> > Does not it make use of any locks also? So on normal operation there co=
+uld be a
+> > potentially larger impact than a spinlock, even though there would be n=
+o
+> > scheduled draining.
+>=20
+> Well, for the regular (try_charge) path that is essentially page_counter_=
+try_charge
+> which boils down to atomic_long_add_return of the memcg counter + all
+> parents up the hierarchy and high memory limit evaluation (essentially 2
+> atomic_reads for the memcg + all parents up the hierchy). That is not
+> whole of a lot - especially when the memcg hierarchy is not very deep.
+>=20
+> Per cpu batch amortizes those per hierarchy updates as well as atomic
+> operations + cache lines bouncing on updates.
+>=20
+> On the other hand spinlock would do the unconditional atomic updates as
+> well and even much more on CONFIG_RT. A plus is that the update will be
+> mostly local so cache line bouncing shouldn't be terrible. Unless
+> somebody heavily triggers pcp cache draining but this shouldn't be all
+> that common (e.g. when a memcg triggers its limit.
+>=20
+> All that being said, I am still not convinced that the pcp cache bypass
+> for isolated CPUs would make a dramatic difference. Especially in the
+> context of workloads that tend to run on isolated CPUs and rarely enter
+> kernel.
+> =20
+> > > It is true true that appart from user
+> > > space memory which can be under full control of the userspace there a=
+re
+> > > kernel allocations which can be done on behalf of the process and tho=
+se
+> > > could be charged to memcg as well. So I can imagine the pcp cache cou=
+ld
+> > > be populated even if the process is not faulting anything in during R=
+T
+> > > sensitive phase.
+> >=20
+> > Humm, I think I will apply the change and do a comparative testing with
+> > upstream. This should bring good comparison results.
+>=20
+> That would be certainly appreciated!
+>  (
+> > > > On the other hand, compared to how it works now now, this should be=
+ a more
+> > > > controllable way of introducing latency than a scheduled cache drai=
+n.
+> > > >=20
+> > > > Your suggestion on no-stocks/caches in isolated CPUs would be great=
+ for
+> > > > predictability, but I am almost sure the cost in overall performanc=
+e would not
+> > > > be fine.
+> > >=20
+> > > It is hard to estimate the overhead without measuring that. Do you th=
+ink
+> > > you can give it a try? If the performance is not really acceptable
+> > > (which I would be really surprised) then we can think of a more compl=
+ex
+> > > solution.
+> >=20
+> > Sure, I can try that.
+> > Do you suggest any specific workload that happens to stress the percpu =
+cache
+> > usage, with usual drains and so? Maybe I will also try with synthetic w=
+orloads
+> > also.
+>=20
+> I really think you want to test it on the isolcpu aware workload.
+> Artificial benchmark are not all that useful in this context.
 
-Both struct member and flag were created to avoid scheduling multiple
-instances of kworkers running drain_local_stock() for a single cpu.
+Hello Michael,
+I just sent a v2 for this patchset with a lot of changes.
+https://lore.kernel.org/lkml/20230125073502.743446-1-leobras@redhat.com/
 
-How could this scenario happen before:
-- drain_all_stock() gets called, get ownership of percpu_charge_mutex,
-  schedules a drain_local_stock() on cpu X, and drops ownership of
-  percpu_charge_mutex.
-- Another thread calls drain_all_stock(), get ownership of
-  percpu_charge_mutex, schedules a drain_local_stock() on cpu X, ...
+I have tried to gather some data on the performance numbers as suggested, b=
+ut I
+got carried away and the cover letter ended up too big. I hope it's not too=
+ much
+trouble.
 
-Since the stock draining is now performed by the thread running
-drain_all_stock(), and happens before letting go of the
-percpu_charge_mutex, there is no chance of another drain happening
-between test_and_set_bit() and clear_bit(), so flags is now useless.
+Best regards,
+Leo
 
-Remove the flags member of memcg_stock_pcp, its usages and the
-FLUSHING_CACHED_CHARGE define.
 
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
----
- mm/memcontrol.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 5b7f7c2e0232f..60712f69595e4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2183,9 +2183,6 @@ struct memcg_stock_pcp {
- 	int nr_slab_reclaimable_b;
- 	int nr_slab_unreclaimable_b;
- #endif
--
--	unsigned long flags;
--#define FLUSHING_CACHED_CHARGE	0
- };
- 
- static DEFINE_PER_CPU_SHARED_ALIGNED(struct memcg_stock_pcp, memcg_stock) = {
-@@ -2281,7 +2278,6 @@ static void drain_stock_from(struct memcg_stock_pcp *stock)
- 
- 	old = drain_obj_stock(stock);
- 	drain_stock(stock);
--	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
- 
- 	spin_unlock_irqrestore(&stock->stock_lock, flags);
- 	if (old)
-@@ -2351,8 +2347,7 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
- 			flush = true;
- 		rcu_read_unlock();
- 
--		if (flush &&
--		    !test_and_set_bit(FLUSHING_CACHED_CHARGE, &stock->flags))
-+		if (flush)
- 			drain_stock_from(stock);
- 	}
- 	migrate_enable();
--- 
-2.39.1
 
