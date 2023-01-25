@@ -2,63 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD27767B098
-	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 12:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FA067B1A7
+	for <lists+cgroups@lfdr.de>; Wed, 25 Jan 2023 12:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbjAYLHo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Jan 2023 06:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        id S235024AbjAYLkM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Jan 2023 06:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbjAYLHn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 06:07:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A045205
-        for <cgroups@vger.kernel.org>; Wed, 25 Jan 2023 03:06:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674644814;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S235691AbjAYLjo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Jan 2023 06:39:44 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10B0CA29;
+        Wed, 25 Jan 2023 03:39:27 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 64AD61FEB4;
+        Wed, 25 Jan 2023 11:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1674646766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kGyxR4QjlvV59Dun3XoNVcSY9X+5yxzcZa0pgXIqYKk=;
-        b=CVrJQR+jUmAmjeYhXbJ57y6uz+YKFzSC8NjpviCW0rpJQcPJC+wUDmXofV13UmFmlA8/Fg
-        wm5K5y4Bzk24aLFmmKrweq2TxgBzr6fGmZzomd/LQ4cG//A1XX+BmTqC/DmERdKENt7Zff
-        K9mwQZj9H6zzJe49zrbAAn2kv8zDVjg=
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-18-H5D1r1hiP8iPcr9n8FIkTQ-1; Wed, 25 Jan 2023 06:06:53 -0500
-X-MC-Unique: H5D1r1hiP8iPcr9n8FIkTQ-1
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-15fddea3ee9so5297000fac.21
-        for <cgroups@vger.kernel.org>; Wed, 25 Jan 2023 03:06:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kGyxR4QjlvV59Dun3XoNVcSY9X+5yxzcZa0pgXIqYKk=;
-        b=w6jzYs/DxiVdt6SgGeFjf/HGqRBynf34H9yKyHTe+jDpGnvArVYCbjuBxgbl0DfM//
-         z7AkJlEH5kPKXdMwVEWO3fR26fwtqXY4RnhmOBxEF4econ+UrYsLscY+h257l3V4t+Wi
-         9A1thCTurvGWRXJr0Tty3+nFu9enfsq+pYbtaFSI/Y1RNO2qc9Kxj6KdVmhgsJ8CW6fx
-         9OlvmHaixeK3dAtlATRG4gvirI0hUr0g09ZMMou4hdNFW3O3MJpa9LTTe1evHxCVCie3
-         DYlvaBAuewGninfiNTqCKqmooGExI0rwN52GDW7hsE9BLufvNx1EHSFFwjV5xEkFuWAB
-         8rrQ==
-X-Gm-Message-State: AFqh2krMUN7IUAXAfnkAafUHoSqE8HiEuKcY+HNo64xbPG/ydhlRJX4v
-        KYZiCfDuYtSG2klQk+Hq+FgQFgFKc4bAn7+2e54HLYiMLyG3bqssgrbBnzqWpNf34TazQG/pgq7
-        dTay0RPr6u9RayAJMtw==
-X-Received: by 2002:a05:6871:54c:b0:15e:d38a:9991 with SMTP id t12-20020a056871054c00b0015ed38a9991mr17058749oal.33.1674644812542;
-        Wed, 25 Jan 2023 03:06:52 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXteDxAqH1GaOU55z1R+UFAi798mOZdTrbwTOsUY2uvJOL3tH8LlrKWLzh+yPmUG1KRgX8GokQ==
-X-Received: by 2002:a05:6871:54c:b0:15e:d38a:9991 with SMTP id t12-20020a056871054c00b0015ed38a9991mr17058741oal.33.1674644812295;
-        Wed, 25 Jan 2023 03:06:52 -0800 (PST)
-Received: from ?IPv6:2804:1b3:a800:14fa:9361:c141:6c70:c877? ([2804:1b3:a800:14fa:9361:c141:6c70:c877])
-        by smtp.gmail.com with ESMTPSA id pq3-20020a0568709c8300b0011d02a3fa63sm1746840oab.14.2023.01.25.03.06.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 03:06:51 -0800 (PST)
-Message-ID: <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
-Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
+        bh=Oqqka9Owzafd2X56BISD/lkkMSHTDdTB9S6csfU4aLY=;
+        b=KYsnXNxxrnUiZeznqoi+EbhT2L0rtf5QYqic6aQTX5P5VQ1STxtKjbDnMPgtlg7/Y1p61L
+        KvRwG/pY12Ow/MVHYy249SOWJfTwl35GWdrSy9yvyhUV3hBWnCJBOumPvpNF2+dJ1WFAWP
+        qn7IAe/rCU0k7ivrlr77GeNUyPbpS2M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 432E61339E;
+        Wed, 25 Jan 2023 11:39:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Uts0D+4U0WNkZAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 11:39:26 +0000
+Date:   Wed, 25 Jan 2023 12:39:25 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
@@ -66,84 +49,85 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Marcelo Tosatti <mtosatti@redhat.com>, cgroups@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Wed, 25 Jan 2023 08:06:46 -0300
-In-Reply-To: <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
+Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
+Message-ID: <Y9EU7awmpZaqbFtP@dhcp22.suse.cz>
 References: <20230125073502.743446-1-leobras@redhat.com>
-         <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.2 
+ <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
+ <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 2023-01-25 at 09:33 +0100, Michal Hocko wrote:
-> On Wed 25-01-23 04:34:57, Leonardo Bras wrote:
-> > Disclaimer:
-> > a - The cover letter got bigger than expected, so I had to split it in
-> >     sections to better organize myself. I am not very confortable with =
-it.
-> > b - Performance numbers below did not include patch 5/5 (Remove flags
-> >     from memcg_stock_pcp), which could further improve performance for
-> >     drain_all_stock(), but I could only notice the optimization at the
-> >     last minute.
-> >=20
-> >=20
-> > 0 - Motivation:
-> > On current codebase, when drain_all_stock() is ran, it will schedule a
-> > drain_local_stock() for each cpu that has a percpu stock associated wit=
-h a
-> > descendant of a given root_memcg.
-> >=20
-> > This happens even on 'isolated cpus', a feature commonly used on worklo=
-ads that
-> > are sensitive to interruption and context switching such as vRAN and In=
-dustrial
-> > Control Systems.
-> >=20
-> > Since this scheduling behavior is a problem to those workloads, the pro=
-posal is
-> > to replace the current local_lock + schedule_work_on() solution with a =
-per-cpu
-> > spinlock.
->=20
-> If IIRC we have also discussed that isolated CPUs can simply opt out
-> from the pcp caching and therefore the problem would be avoided
-> altogether without changes to the locking scheme. I do not see anything
-> regarding that in this submission. Could you elaborate why you have
-> abandoned this option?
+On Wed 25-01-23 08:06:46, Leonardo Brás wrote:
+> On Wed, 2023-01-25 at 09:33 +0100, Michal Hocko wrote:
+> > On Wed 25-01-23 04:34:57, Leonardo Bras wrote:
+> > > Disclaimer:
+> > > a - The cover letter got bigger than expected, so I had to split it in
+> > >     sections to better organize myself. I am not very confortable with it.
+> > > b - Performance numbers below did not include patch 5/5 (Remove flags
+> > >     from memcg_stock_pcp), which could further improve performance for
+> > >     drain_all_stock(), but I could only notice the optimization at the
+> > >     last minute.
+> > > 
+> > > 
+> > > 0 - Motivation:
+> > > On current codebase, when drain_all_stock() is ran, it will schedule a
+> > > drain_local_stock() for each cpu that has a percpu stock associated with a
+> > > descendant of a given root_memcg.
+> > > 
+> > > This happens even on 'isolated cpus', a feature commonly used on workloads that
+> > > are sensitive to interruption and context switching such as vRAN and Industrial
+> > > Control Systems.
+> > > 
+> > > Since this scheduling behavior is a problem to those workloads, the proposal is
+> > > to replace the current local_lock + schedule_work_on() solution with a per-cpu
+> > > spinlock.
+> > 
+> > If IIRC we have also discussed that isolated CPUs can simply opt out
+> > from the pcp caching and therefore the problem would be avoided
+> > altogether without changes to the locking scheme. I do not see anything
+> > regarding that in this submission. Could you elaborate why you have
+> > abandoned this option?
+> 
+> Hello Michal,
+> 
+> I understand pcp caching is a nice to have.
+> So while I kept the idea of disabling pcp caching in mind as an option, I first
+> tried to understand what kind of impacts we would be seeing when trying to
+> change the locking scheme.
+> 
+> After I raised the data in the cover letter, I found that the performance impact
+> appears not be that big. So in order to try keeping the pcp cache on isolated
+> cpus active, I decided to focus effort on the locking scheme change.
+> 
+> I mean, my rationale is: if is there a non-expensive way of keeping the feature,
+> why should we abandon it?
 
-Hello Michal,
+Because any locking to pcp adds a potential contention. You haven't been
+able to trigger that contention by your testing but that doesn't really
+mean it is non-existent.
 
-I understand pcp caching is a nice to have.
-So while I kept the idea of disabling pcp caching in mind as an option, I f=
-irst
-tried to understand what kind of impacts we would be seeing when trying to
-change the locking scheme.
+Besided that opt-out for isolated cpus should be a much smaller change
+with a much more predictable behavior. The overall performance for
+charging on isolated cpus will be slightly worse but it hasn't been seen
+this is anything really noticeable. Most workloads which do care about
+isolcpus tend to not enter kernel much AFAIK so this should have
+relatively small impact.
 
-After I raised the data in the cover letter, I found that the performance i=
-mpact
-appears not be that big. So in order to try keeping the pcp cache on isolat=
-ed
-cpus active, I decided to focus effort on the locking scheme change.
-
-I mean, my rationale is: if is there a non-expensive way of keeping the fea=
-ture,
-why should we abandon it?
-
-Best regards,
-Leo
-
-
-
-
-
-
-
+All that being said I would prefer a simpler solution which seems to be
+to simply opt out from pcp caching and if the performance for real
+world workloads shows regressions then we can start thinking about a
+more complex solution.
+-- 
+Michal Hocko
+SUSE Labs
