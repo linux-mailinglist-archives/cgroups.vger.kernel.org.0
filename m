@@ -2,84 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA1167D5F0
-	for <lists+cgroups@lfdr.de>; Thu, 26 Jan 2023 21:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F0E67D3A2
+	for <lists+cgroups@lfdr.de>; Thu, 26 Jan 2023 18:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbjAZUIS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Jan 2023 15:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        id S229510AbjAZR5d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Jan 2023 12:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbjAZUIQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Jan 2023 15:08:16 -0500
-X-Greylist: delayed 5433 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Jan 2023 12:08:15 PST
-Received: from sp12.canonet.ne.jp (sp12.canonet.ne.jp [210.134.168.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 11FE416AD7;
-        Thu, 26 Jan 2023 12:08:12 -0800 (PST)
-Received: from csp12.canonet.ne.jp (unknown [172.21.160.132])
-        by sp12.canonet.ne.jp (Postfix) with ESMTP id F3BBF1E045C;
-        Fri, 27 Jan 2023 02:57:21 +0900 (JST)
-Received: from echeck12.canonet.ne.jp ([172.21.160.122])
-        by csp2 with ESMTP
-        id L6UzpL5JNyh2rL6UzplHBk; Fri, 27 Jan 2023 02:57:21 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.4 cv=HvXIp2fS c=1 sm=1 tr=0
- ts=63d2bf01 cx=g_jp:t_eml p=jICtXCb1Bd4A:10 p=QA8zHFxAwLBQ4A9MkZgA:9
- p=WKcvGfCz9DfGexK3dBCb:22 a=5J8QHEf9WaWkijFsPIoXCQ==:117
- a=yr9NA9NbXb0B05yJHQEWeQ==:17 a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10
- a=RvmDmJFTN0MA:10 a=x7bEGLp0ZPQA:10 a=CjuIK1q_8ugA:10 a=0iaRBTTaEecA:10
- a=xo5jKAKm-U-Zyk2_beg_:22"
-X-CNT-CMCheck-Score: 100.00
-Received: from echeck12.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id AFC7F1C0263;
-        Fri, 27 Jan 2023 02:57:21 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp12.canonet.ne.jp (unknown [172.21.160.102])
-        by echeck12.canonet.ne.jp (Postfix) with ESMTP id 84C821C0257;
-        Fri, 27 Jan 2023 02:57:21 +0900 (JST)
-Received: from daime.co.jp (webmail.canonet.ne.jp [210.134.169.250])
-        by smtp12.canonet.ne.jp (Postfix) with ESMTPA id BF5A115F962;
-        Fri, 27 Jan 2023 02:57:20 +0900 (JST)
+        with ESMTP id S229459AbjAZR5c (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Jan 2023 12:57:32 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A63CEC72;
+        Thu, 26 Jan 2023 09:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674755851; x=1706291851;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=BQUEAqzlE148mAgRStfAJ82IWpXoVVw/1OpuqObioe4=;
+  b=aNCjuJfx62MGdq9qxugYoSpKZ5Bp6IoB3jukXxZvZzeqyRuo+w3GQgz9
+   UkVdHyIBzMhxikOjsESo4VC7Y4H+y9DDthS0afiyZVzFf5gBWT0FcnrKJ
+   RS3AR5UNp6+xuS/RZiwKE8/geG5w8+Lpo1Glj9ylhDvONq3w1LMeObUIF
+   btxXZDpH+wvryLm3h3wcdFN0R6Gz7hlaJXT49I1yZb041+YcNGSQa6UlN
+   LrkTm4TqIx8RU0rZ+yMuQZsUSmxUH2Ysur9QubcToJGt9f33GVoXkJ2sy
+   eBrf1jKt8d2P9NWbj0bu3nusW7UrXOmc6/5qMHbqlESD5CYAJCkKr5lGl
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="326917862"
+X-IronPort-AV: E=Sophos;i="5.97,249,1669104000"; 
+   d="scan'208";a="326917862"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 09:57:31 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="695203757"
+X-IronPort-AV: E=Sophos;i="5.97,249,1669104000"; 
+   d="scan'208";a="695203757"
+Received: from kbrennan-mobl.ger.corp.intel.com (HELO [10.213.233.58]) ([10.213.233.58])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 09:57:26 -0800
+Message-ID: <b8a0872c-fe86-b174-ca3b-0fc04a98e224@linux.intel.com>
+Date:   Thu, 26 Jan 2023 17:57:24 +0000
 MIME-Version: 1.0
-Message-ID: <20230126175720.0000479E.0056@daime.co.jp>
-Date:   Fri, 27 Jan 2023 02:57:20 +0900
-From:   "Mrs Alice Walton" <daime@daime.co.jp>
-To:     <INQUIRY@daime.co.jp>
-Reply-To: <alicewaltton1@gmail.com>
-Subject: INQUIRY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-ORGANIZATION: Mrs Alice Walton
-X-MAILER: Active! mail
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1674755841;VERSION=7944;MC=1259806066;TRN=0;CRV=0;IPC=210.134.169.250;SP=4;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=0;RNP=
-X-ESET-Antispam: OK
-X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        LOCALPART_IN_SUBJECT,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_MR_MRS,UNRESOLVED_TEMPLATE,
-        XPRIO_SHORT_SUBJ autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5001]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [210.134.168.89 listed in bl.score.senderscore.com]
-        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
-        *      [210.134.168.89 listed in wl.mailspike.net]
-        *  1.1 LOCALPART_IN_SUBJECT Local part of To: address appears in
-        *      Subject
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [alicewaltton1[at]gmail.com]
-        *  1.3 UNRESOLVED_TEMPLATE Headers contain an unresolved template
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 T_HK_NAME_MR_MRS No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  1.0 XPRIO_SHORT_SUBJ Has X Priority header + short subject
-X-Spam-Level: *******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [RFC v3 00/12] DRM scheduling cgroup controller
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
+ <20230123154239.GA24348@blackbody.suse.cz>
+ <371f3ce5-3468-b91d-d688-7e89499ff347@linux.intel.com>
+ <20230126130050.GA22442@blackbody.suse.cz> <Y9KyiCPYj2Mzym3Z@slm.duckdns.org>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <Y9KyiCPYj2Mzym3Z@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -87,12 +78,129 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
-Greetings,
+Hi,
 
-I trust you are well. I sent you an email yesterday, I just want to confirm if you received it.
-Please let me know as soon as possible,
+(Two replies in one, hope you will manage to navigate it.)
 
-Regard
-Mrs Alice Walton
+On 26/01/2023 17:04, Tejun Heo wrote:
+> Hello,
+> 
+> On Thu, Jan 26, 2023 at 02:00:50PM +0100, Michal Koutný wrote:
+>> On Wed, Jan 25, 2023 at 06:11:35PM +0000, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
+>>> I don't immediately see how you envisage the half-userspace implementation
+>>> would look like in terms of what functionality/new APIs would be provided by
+>>> the kernel?
+>>
+>> Output:
+>> 	drm.stat (with consumed time(s))
+>>
+>> Input:
+>> 	drm.throttle (alternatives)
+>> 	- a) writing 0,1 (in rough analogy to your proposed
+>> 	     notifications)
+>> 	- b) writing duration (in loose analogy to memory.reclaim)
+>> 	     - for how long GPU work should be backed off
+>>
+>> An userspace agent sitting between these two and it'd do the measurement
+>> and calculation depending on given policies (weighting, throttling) and
+>> apply respective controls.
 
+Right, I wouldn't recommend drm.throttle as ABI since my idea is to 
+enable drivers to do as good job as they individually can. Eg. some may 
+be able to be much smarter than simple throttling, or some may start of 
+simpler and later gain a better implementation. Some may even have 
+differing capability or granularity depending on the GPU model they are 
+driving, like in the case of i915.
 
+So even if the RFC shows just a simple i915 implementation, the 
+controller itself shouldn't prevent a smarter approach (via exposed 
+ABI). And neither this simple i915 implementation works equally well for 
+all supported GPU generations! This will be a theme common for many DRM 
+drivers.
+
+Secondly, doing this in userspace would require the ability to get some 
+sort of an atomic snapshot of the whole tree hierarchy to account for 
+changes in layout of the tree and task migrations. Or some retry logic 
+with some added ABI fields to enable it.
+
+Even then I think the only thing we would be able to move to userspace 
+is the tree-walking logic and that sounds like not that much kernel code 
+saved to trade for increased inefficiency.
+
+>> (In resemblance of e.g. https://denji.github.io/cpulimit/)
+> 
+> Yeah, things like this can be done from userspace but if we're gonna build
+> the infrastructure to allow that in gpu drivers and so on, I don't see why
+> we wouldn't add a generic in-kernel control layer if we can implement a
+> proper weight based control. We can of course also expose .max style
+> interface to allow userspace to do whatever they wanna do with it.
+
+Yes agreed, and to re-stress out, the ABI as proposed does not preclude 
+changing from scanning to charging or whatever. The idea was for it to 
+be compatible in concept with the CPU controller and also avoid baking 
+in the controlling method to individual drivers.
+
+>>> Problem there is to find a suitable point to charge at. If for a moment we
+>>> limit the discussion to i915, out of the box we could having charging
+>>> happening at several thousand times per second to effectively never. This is
+>>> to illustrate the GPU context execution dynamics which range from many small
+>>> packets of work to multi-minute, or longer. For the latter to be accounted
+>>> for we'd still need some periodic scanning, which would then perhaps go per
+>>> driver. For the former we'd have thousands of needless updates per second.
+>>>
+>>> Hence my thinking was to pay both the cost of accounting and collecting the
+>>> usage data once per actionable event, where the latter is controlled by some
+>>> reasonable scanning period/frequency.
+>>>
+>>> In addition to that, a few DRM drivers already support GPU usage querying
+>>> via fdinfo, so that being externally triggered, it is next to trivial to
+>>> wire all those DRM drivers into such common DRM cgroup controller framework.
+>>> All that every driver needs to implement on top is the "over budget"
+>>> callback.
+>>
+>> I'd also like show comparison with CPU accounting and controller.
+>> There is tick-based (~sampling) measurement of various components of CPU
+>> time (task_group_account_field()). But the actual schedulling (weights)
+>> or throttling is based on precise accounting (update_curr()).
+>>
+>> So, if the goal is to have precise and guaranteed limits, it shouldn't
+>> (cannot) be based on sampling. OTOH, if it must be sampling based due to
+>> variability of the device landscape, it could be advisory mechanism with
+>> the userspace component.
+
+I don't think precise and guaranteed limits are feasible given the 
+heterogeneous nature of DRM driver capabilities, but I also don't think 
+sticking an userspace component in the middle is the way to go.
+
+> As for the specific control mechanism, yeah, charge based interface would be
+> more conventional and my suspicion is that transposing the current
+> implementation that way likely isn't too difficult. It just pushes "am I
+> over the limit?" decisions to the specific drivers with the core layer
+> telling them how much under/over budget they are. I'm curious what other 
+
+As I have tried to explain in my previous reply, I don't think real time 
+charging is feasible. Because frequency of charging events can both be 
+too high and too low. Too high that it doesn't bring value apart from 
+increased processing times, where it is not useful to send out 
+notification at the same rate, and too low in the sense that some sort 
+of periodic query would then be needed in every driver implementation to 
+enable all classes of GPU clients to be properly handled.
+
+I just don't see any positives to the charging approach in the DRM 
+landscape, but for sure see some negatives. (If we ignore the positive 
+of it being a more typical approach, but then I think that is not enough 
+to outweigh the negatives.)
+
+gpu
+> driver folks think about the current RFC tho. Is at least AMD on board with
+> the approach?
+
+Yes I am keenly awaiting comments from the DRM colleagues as well.
+
+Regards,
+
+Tvrtko
+
+P.S. Note that Michal's idea to simplify client tracking is on my TODO 
+list. If that works out some patches, the series itself actually, would 
+become even simpler.
