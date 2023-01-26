@@ -2,74 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F0E67D3A2
-	for <lists+cgroups@lfdr.de>; Thu, 26 Jan 2023 18:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8F067D453
+	for <lists+cgroups@lfdr.de>; Thu, 26 Jan 2023 19:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjAZR5d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Jan 2023 12:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S232087AbjAZSiP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Jan 2023 13:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjAZR5c (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Jan 2023 12:57:32 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A63CEC72;
-        Thu, 26 Jan 2023 09:57:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674755851; x=1706291851;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BQUEAqzlE148mAgRStfAJ82IWpXoVVw/1OpuqObioe4=;
-  b=aNCjuJfx62MGdq9qxugYoSpKZ5Bp6IoB3jukXxZvZzeqyRuo+w3GQgz9
-   UkVdHyIBzMhxikOjsESo4VC7Y4H+y9DDthS0afiyZVzFf5gBWT0FcnrKJ
-   RS3AR5UNp6+xuS/RZiwKE8/geG5w8+Lpo1Glj9ylhDvONq3w1LMeObUIF
-   btxXZDpH+wvryLm3h3wcdFN0R6Gz7hlaJXT49I1yZb041+YcNGSQa6UlN
-   LrkTm4TqIx8RU0rZ+yMuQZsUSmxUH2Ysur9QubcToJGt9f33GVoXkJ2sy
-   eBrf1jKt8d2P9NWbj0bu3nusW7UrXOmc6/5qMHbqlESD5CYAJCkKr5lGl
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="326917862"
-X-IronPort-AV: E=Sophos;i="5.97,249,1669104000"; 
-   d="scan'208";a="326917862"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 09:57:31 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="695203757"
-X-IronPort-AV: E=Sophos;i="5.97,249,1669104000"; 
-   d="scan'208";a="695203757"
-Received: from kbrennan-mobl.ger.corp.intel.com (HELO [10.213.233.58]) ([10.213.233.58])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2023 09:57:26 -0800
-Message-ID: <b8a0872c-fe86-b174-ca3b-0fc04a98e224@linux.intel.com>
-Date:   Thu, 26 Jan 2023 17:57:24 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [RFC v3 00/12] DRM scheduling cgroup controller
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        with ESMTP id S230229AbjAZSiK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Jan 2023 13:38:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7687C48A12
+        for <cgroups@vger.kernel.org>; Thu, 26 Jan 2023 10:37:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1674758237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8a5V2BYq9UP1RYMhw23cgt6o5VR9Kg9O+b7IjGs+oHs=;
+        b=Xf9I4wHJC1gUUtMapRknsH4efL6SHhaamgscG7tM8Aiq+ogEHWOEie0QbmH6JZRYdGV6te
+        j7VbUxq+N10u3ALrzQEQe4giqc/aDGBHtm2l2tAlRjaM+wadVf8hG1TyIkW8h/V1GZzqNf
+        Ir+ksHaw26qabbF+ETU0b4oK3v888tI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-281-LadZCE_4Pd2ISTYMta3MVA-1; Thu, 26 Jan 2023 13:37:13 -0500
+X-MC-Unique: LadZCE_4Pd2ISTYMta3MVA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B5C9F857F82;
+        Thu, 26 Jan 2023 18:37:12 +0000 (UTC)
+Received: from tpad.localdomain (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5CAC12166B26;
+        Thu, 26 Jan 2023 18:37:12 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+        id 8108A403D528D; Thu, 26 Jan 2023 15:03:43 -0300 (-03)
+Date:   Thu, 26 Jan 2023 15:03:43 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
- <20230123154239.GA24348@blackbody.suse.cz>
- <371f3ce5-3468-b91d-d688-7e89499ff347@linux.intel.com>
- <20230126130050.GA22442@blackbody.suse.cz> <Y9KyiCPYj2Mzym3Z@slm.duckdns.org>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <Y9KyiCPYj2Mzym3Z@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
+Message-ID: <Y9LAf4pRyClZ1vfx@tpad>
+References: <20230125073502.743446-1-leobras@redhat.com>
+ <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
+ <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
+ <Y9FzSBw10MGXm2TK@tpad>
+ <Y9G36AiqPPFDlax3@P9FQF9L96D.corp.robot.car>
+ <Y9Iurktut9B9T+Tl@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <Y9Iurktut9B9T+Tl@dhcp22.suse.cz>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,130 +74,101 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-Hi,
-
-(Two replies in one, hope you will manage to navigate it.)
-
-On 26/01/2023 17:04, Tejun Heo wrote:
-> Hello,
+On Thu, Jan 26, 2023 at 08:41:34AM +0100, Michal Hocko wrote:
+> On Wed 25-01-23 15:14:48, Roman Gushchin wrote:
+> > On Wed, Jan 25, 2023 at 03:22:00PM -0300, Marcelo Tosatti wrote:
+> > > On Wed, Jan 25, 2023 at 08:06:46AM -0300, Leonardo Brás wrote:
+> > > > On Wed, 2023-01-25 at 09:33 +0100, Michal Hocko wrote:
+> > > > > On Wed 25-01-23 04:34:57, Leonardo Bras wrote:
+> > > > > > Disclaimer:
+> > > > > > a - The cover letter got bigger than expected, so I had to split it in
+> > > > > >     sections to better organize myself. I am not very confortable with it.
+> > > > > > b - Performance numbers below did not include patch 5/5 (Remove flags
+> > > > > >     from memcg_stock_pcp), which could further improve performance for
+> > > > > >     drain_all_stock(), but I could only notice the optimization at the
+> > > > > >     last minute.
+> > > > > > 
+> > > > > > 
+> > > > > > 0 - Motivation:
+> > > > > > On current codebase, when drain_all_stock() is ran, it will schedule a
+> > > > > > drain_local_stock() for each cpu that has a percpu stock associated with a
+> > > > > > descendant of a given root_memcg.
+> > 
+> > Do you know what caused those drain_all_stock() calls? I wonder if we should look
+> > into why we have many of them and whether we really need them?
+> > 
+> > It's either some user's actions (e.g. reducing memory.max), either some memcg
+> > is entering pre-oom conditions. In the latter case a lot of drain calls can be
+> > scheduled without a good reason (assuming the cgroup contain multiple tasks running
+> > on multiple cpus).
 > 
-> On Thu, Jan 26, 2023 at 02:00:50PM +0100, Michal KoutnÃ½ wrote:
->> On Wed, Jan 25, 2023 at 06:11:35PM +0000, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
->>> I don't immediately see how you envisage the half-userspace implementation
->>> would look like in terms of what functionality/new APIs would be provided by
->>> the kernel?
->>
->> Output:
->> 	drm.stat (with consumed time(s))
->>
->> Input:
->> 	drm.throttle (alternatives)
->> 	- a) writing 0,1 (in rough analogy to your proposed
->> 	     notifications)
->> 	- b) writing duration (in loose analogy to memory.reclaim)
->> 	     - for how long GPU work should be backed off
->>
->> An userspace agent sitting between these two and it'd do the measurement
->> and calculation depending on given policies (weighting, throttling) and
->> apply respective controls.
+> I believe I've never got a specific answer to that. We
+> have discussed that in the previous version submission
+> (20221102020243.522358-1-leobras@redhat.com and specifically
+> Y2TQLavnLVd4qHMT@dhcp22.suse.cz). Leonardo has mentioned a mix of RT and
+> isolcpus. I was wondering about using memcgs in RT workloads because
+> that just sounds weird but let's say this is the case indeed. 
 
-Right, I wouldn't recommend drm.throttle as ABI since my idea is to 
-enable drivers to do as good job as they individually can. Eg. some may 
-be able to be much smarter than simple throttling, or some may start of 
-simpler and later gain a better implementation. Some may even have 
-differing capability or granularity depending on the GPU model they are 
-driving, like in the case of i915.
+This could be the case. You can consider an "edge device" where it is
+necessary to run a RT workload. It might also be useful to run 
+non realtime applications on the same system.
 
-So even if the RFC shows just a simple i915 implementation, the 
-controller itself shouldn't prevent a smarter approach (via exposed 
-ABI). And neither this simple i915 implementation works equally well for 
-all supported GPU generations! This will be a theme common for many DRM 
-drivers.
+> Then an RT task or whatever task that is running on an isolated
+> cpu can have pcp charges.
 
-Secondly, doing this in userspace would require the ability to get some 
-sort of an atomic snapshot of the whole tree hierarchy to account for 
-changes in layout of the tree and task migrations. Or some retry logic 
-with some added ABI fields to enable it.
+Usually the RT task (or more specifically the realtime sensitive loop
+of the application) runs entirely on userspace. But i suppose there
+could be charges on application startup.
 
-Even then I think the only thing we would be able to move to userspace 
-is the tree-walking logic and that sounds like not that much kernel code 
-saved to trade for increased inefficiency.
-
->> (In resemblance of e.g. https://denji.github.io/cpulimit/)
+> > Essentially each cpu will try to grab the remains of the memory quota
+> > and move it locally. I wonder in such circumstances if we need to disable the pcp-caching
+> > on per-cgroup basis.
 > 
-> Yeah, things like this can be done from userspace but if we're gonna build
-> the infrastructure to allow that in gpu drivers and so on, I don't see why
-> we wouldn't add a generic in-kernel control layer if we can implement a
-> proper weight based control. We can of course also expose .max style
-> interface to allow userspace to do whatever they wanna do with it.
+> I think it would be more than sufficient to disable pcp charging on an
+> isolated cpu. This is not a per memcg property. I can imagine that
+> different tasks running in the same memcg can run on a mix of CPUs (e.g.
+> only part of it on isolated CPUs). It is a recipe for all sorts of
+> priority inversions but well, memcg and RT is there already.
 
-Yes agreed, and to re-stress out, the ABI as proposed does not preclude 
-changing from scanning to charging or whatever. The idea was for it to 
-be compatible in concept with the CPU controller and also avoid baking 
-in the controlling method to individual drivers.
+I suppose the more general the solution, the better.
 
->>> Problem there is to find a suitable point to charge at. If for a moment we
->>> limit the discussion to i915, out of the box we could having charging
->>> happening at several thousand times per second to effectively never. This is
->>> to illustrate the GPU context execution dynamics which range from many small
->>> packets of work to multi-minute, or longer. For the latter to be accounted
->>> for we'd still need some periodic scanning, which would then perhaps go per
->>> driver. For the former we'd have thousands of needless updates per second.
->>>
->>> Hence my thinking was to pay both the cost of accounting and collecting the
->>> usage data once per actionable event, where the latter is controlled by some
->>> reasonable scanning period/frequency.
->>>
->>> In addition to that, a few DRM drivers already support GPU usage querying
->>> via fdinfo, so that being externally triggered, it is next to trivial to
->>> wire all those DRM drivers into such common DRM cgroup controller framework.
->>> All that every driver needs to implement on top is the "over budget"
->>> callback.
->>
->> I'd also like show comparison with CPU accounting and controller.
->> There is tick-based (~sampling) measurement of various components of CPU
->> time (task_group_account_field()). But the actual schedulling (weights)
->> or throttling is based on precise accounting (update_curr()).
->>
->> So, if the goal is to have precise and guaranteed limits, it shouldn't
->> (cannot) be based on sampling. OTOH, if it must be sampling based due to
->> variability of the device landscape, it could be advisory mechanism with
->> the userspace component.
+> > Generally speaking, draining of pcpu stocks is useful only if an idle cpu is holding some
+> > charges/memcg references (it might be not completely idle, but running some very special
+> > workload which is not doing any kernel allocations or a process belonging to the root memcg).
+> > In all other cases pcpu stock will be either drained naturally by an allocation from another
+> > memcg or an allocation from the same memcg will "restore" it, making draining useless.
+> > 
+> > We also can into drain_all_pages() opportunistically, without waiting for the result.
+> > On a busy system it's most likely useless, we might oom before scheduled works will be executed.
+> 
+> I think the primary objective is that no userspace unintended execution
+> happens on isolated cpus.
 
-I don't think precise and guaranteed limits are feasible given the 
-heterogeneous nature of DRM driver capabilities, but I also don't think 
-sticking an userspace component in the middle is the way to go.
+No interruptions to the userspace code (time sensitive code) running on
+isolated CPUs: no IPIs, no task switches.
 
-> As for the specific control mechanism, yeah, charge based interface would be
-> more conventional and my suspicion is that transposing the current
-> implementation that way likely isn't too difficult. It just pushes "am I
-> over the limit?" decisions to the specific drivers with the core layer
-> telling them how much under/over budget they are. I'm curious what other 
+> > I admit I planned to do some work around and even started, but then never had enough time to
+> > finish it.
+> > 
+> > Overall I'm somewhat resistant to an idea of making generic allocation & free paths slower
+> > for an improvement of stock draining. It's not a strong objection, but IMO we should avoid
+> > doing this without a really strong reason.
+> 
+> Are you OK with a simple opt out on isolated CPUs? That would make
+> charges slightly slower (atomic on the hierarchy counters vs. a single
+> pcp adjustment) but it would guarantee that the isolated workload is
+> predictable which is the primary objective AFAICS.
 
-As I have tried to explain in my previous reply, I don't think real time 
-charging is feasible. Because frequency of charging events can both be 
-too high and too low. Too high that it doesn't bring value apart from 
-increased processing times, where it is not useful to send out 
-notification at the same rate, and too low in the sense that some sort 
-of periodic query would then be needed in every driver implementation to 
-enable all classes of GPU clients to be properly handled.
+This would make isolated CPUs "second class citizens": it would be nice
+to be able to execute non realtime apps on isolated CPUs as well
+(think of different periods of time during a day, one where 
+more realtime apps are required, another where less 
+realtime apps are required).
 
-I just don't see any positives to the charging approach in the DRM 
-landscape, but for sure see some negatives. (If we ignore the positive 
-of it being a more typical approach, but then I think that is not enough 
-to outweigh the negatives.)
+Concrete example: think of a computer handling vRAN traffic near a 
+cell tower. The traffic (therefore amount of processing required
+by realtime applications) might vary during the day.
 
-gpu
-> driver folks think about the current RFC tho. Is at least AMD on board with
-> the approach?
+User might want to run containers that depend on good memcg charging
+performance on isolated CPUs.
 
-Yes I am keenly awaiting comments from the DRM colleagues as well.
-
-Regards,
-
-Tvrtko
-
-P.S. Note that Michal's idea to simplify client tracking is on my TODO 
-list. If that works out some patches, the series itself actually, would 
-become even simpler.
