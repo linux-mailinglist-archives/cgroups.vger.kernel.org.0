@@ -2,127 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E9C67E605
-	for <lists+cgroups@lfdr.de>; Fri, 27 Jan 2023 14:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C7267E6C2
+	for <lists+cgroups@lfdr.de>; Fri, 27 Jan 2023 14:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbjA0NEH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 27 Jan 2023 08:04:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S231981AbjA0NcE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Jan 2023 08:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjA0NEG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Jan 2023 08:04:06 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1099C1E1F5;
-        Fri, 27 Jan 2023 05:04:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C463AB820C6;
-        Fri, 27 Jan 2023 13:04:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 228A9C433D2;
-        Fri, 27 Jan 2023 13:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674824642;
-        bh=5/c2AB+sVfBr3bN7TBwjNlpfu3p70/0YG6h0yWH9Mpg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UHJpxk7EFq6ak/R8ldY7KoUAXIlE2dZyXktge26XKHv9g66w8Izx9NuNibJZEOrwz
-         HxgvWvRBRErjHhikZlfyKKCHqBxbFM3JYu6q2pUincrQeHyB5ye561Ic/ed1NnY5wC
-         znydMQCtv2iEuj6odOpLLra+NAdugUihIlaD7nwrbZnuZI8L9JMr2az2IqhC5Lsy+h
-         y45Gis+7DoDk/XNeosPI979PPqlzsCRl6GF73eF9/yUAZxdtDwFVVvgxEQudOUhGH7
-         ZY1rOejeZI0pqRMK2/Wk+85B4AZ/IhS29y6GRuxXlaDIuQ5CWk6Zg/qxpmyau11j8o
-         rSLXu+bX8FWaw==
-Date:   Fri, 27 Jan 2023 14:03:59 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
-Message-ID: <Y9PLvzI8WU0vYWUt@lothringen>
-References: <20230125073502.743446-1-leobras@redhat.com>
- <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
- <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
- <Y9FzSBw10MGXm2TK@tpad>
- <Y9G36AiqPPFDlax3@P9FQF9L96D.corp.robot.car>
- <Y9Iurktut9B9T+Tl@dhcp22.suse.cz>
- <Y9MI42NSLooyVZNu@P9FQF9L96D.corp.robot.car>
- <Y9N5CI8PpsfiaY9c@dhcp22.suse.cz>
- <52a0f1e593b1ec0ca7e417ba37680d65df22de82.camel@redhat.com>
- <601fc35a8cc2167e53e45c636fccb2d899fd7c50.camel@redhat.com>
+        with ESMTP id S233836AbjA0NcD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Jan 2023 08:32:03 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EF77448F;
+        Fri, 27 Jan 2023 05:32:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674826320; x=1706362320;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7mC15fOVSE6NegzxHk/BX7UWkKB1AkE7p5o74pyZvt0=;
+  b=FQuWs8hjrBVGcHF4IWhbLkPxigoAJ+8TMm+tL72Kw5mBIlLc8FtqUxj4
+   y0H9jw3H9709it7RHmVedqxV9OYZ791r5l1PEVPP9AZmygWJH0xpyhkDM
+   uyv8UvptWrsYwsR05TGEbQAith9JmLUHHovB5ZESjuBIravMUaH57sbIv
+   8kM1tTcNFZSwoRNsPsOofO8pRwPnjlNK3KpcWILu2Rci+cTUDCeyFK37y
+   UO/xJ8cUjyIx+ApHq8D6CJZJrEVXl/xcXELFppdczC5OyKxIhVOYQgyt8
+   azQl7EcmGoNi0Kz5wLJ4U/8CHcJHsJkegGkc1FWoHvZjcDHvT9fJ9rHMK
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="325757614"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; 
+   d="scan'208";a="325757614"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2023 05:32:00 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="731836563"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; 
+   d="scan'208";a="731836563"
+Received: from jgeary-mobl1.ger.corp.intel.com (HELO [10.213.233.162]) ([10.213.233.162])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2023 05:31:56 -0800
+Message-ID: <a96e6b5c-b538-f7e7-d603-cabb29137de7@linux.intel.com>
+Date:   Fri, 27 Jan 2023 13:31:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [RFC 10/12] cgroup/drm: Introduce weight based drm cgroup control
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+References: <20230112165609.1083270-1-tvrtko.ursulin@linux.intel.com>
+ <20230112165609.1083270-11-tvrtko.ursulin@linux.intel.com>
+ <20230127130134.GA15846@blackbody.suse.cz>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <20230127130134.GA15846@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <601fc35a8cc2167e53e45c636fccb2d899fd7c50.camel@redhat.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 27, 2023 at 05:12:13AM -0300, Leonardo Brás wrote:
-> On Fri, 2023-01-27 at 04:22 -0300, Leonardo Brás wrote:
-> > > Hmm, OK, I have misunderstood your proposal. Yes, the overal pcp charges
-> > > potentially left behind should be small and that shouldn't really be a
-> > > concern for memcg oom situations (unless the limit is very small and
-> > > workloads on isolated cpus using small hard limits is way beyond my
-> > > imagination).
-> > > 
-> > > My first thought was that those charges could be left behind without any
-> > > upper bound but in reality sooner or later something should be running
-> > > on those cpus and if the memcg is gone the pcp cache would get refilled
-> > > and old charges gone.
-> > > 
-> > > So yes, this is actually a better and even simpler solution. All we need
-> > > is something like this
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index ab457f0394ab..13b84bbd70ba 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2344,6 +2344,9 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
-> > >  		struct mem_cgroup *memcg;
-> > >  		bool flush = false;
-> > >  
-> > > +		if (cpu_is_isolated(cpu))
-> > > +			continue;
-> > > +
-> > >  		rcu_read_lock();
-> > >  		memcg = stock->cached;
-> > >  		if (memcg && stock->nr_pages &&
-> > > 
-> > > There is no such cpu_is_isolated() AFAICS so we would need a help from
-> > > NOHZ and cpuisol people to create one for us. Frederic, would such an
-> > > abstraction make any sense from your POV?
-> > 
-> > 
-> > IIUC, 'if (cpu_is_isolated())' would be instead:
-> > 
-> > if (!housekeeping_cpu(smp_processor_id(), HK_TYPE_DOMAIN) ||
-> > !housekeeping_cpu(smp_processor_id(), HK_TYPE_WQ)
+
+On 27/01/2023 13:01, Michal KoutnÃ½ wrote:
+> On Thu, Jan 12, 2023 at 04:56:07PM +0000, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> wrote:
+>> +static int drmcs_can_attach(struct cgroup_taskset *tset)
+>> +{
+>> +	int ret;
+>> +
+>> +	/*
+>> +	 * As processes are getting moved between groups we need to ensure
+>> +	 * both that the old group does not see a sudden downward jump in the
+>> +	 * GPU utilisation, and that the new group does not see a sudden jump
+>> +	 * up with all the GPU time clients belonging to the migrated process
+>> +	 * have accumulated.
+>> +	 *
+>> +	 * To achieve that we suspend the scanner until the migration is
+>> +	 * completed where the resume at the end ensures both groups start
+>> +	 * observing GPU utilisation from a reset state.
+>> +	 */
+>> +
+>> +	ret = mutex_lock_interruptible(&drmcg_mutex);
+>> +	if (ret)
+>> +		return ret;
+>> +	start_suspend_scanning();
+>> +	mutex_unlock(&drmcg_mutex);
+>> +
+>> +	finish_suspend_scanning();
 > 
-> oh, sorry 's/smp_processor_id()/cpu/' here:
+> Here's scanning suspension, communicated via
 > 
-> if(!housekeeping_cpu(cpu, HK_TYPE_DOMAIN) || !housekeeping_cpu(cpu, HK_TYPE_WQ))
+> 	root_drmcs.scanning_suspended = true;
+> 	root_drmcs.suspended_period_us = root_drmcs.period_us;
+> 	root_drmcs.period_us = 0;
+> 
+> but I don't see those used in scan_worker() and the scanning traversal
+> can apparently run concurrently with a task migration.
 
-Do you also need to handle cpuset.sched_load_balance=0 (aka. cpuset v2 "isolated"
-partition type). It has the same effect as isolcpus=, but it can be changed at
-runtime.
+I think you missed the finish_suspend_scanning() part:
 
-And then on_null_domain() look like what you need. You'd have to make that API
-more generally available though, and rename it to something like
-"bool cpu_has_null_domain(int cpu)".
+	if (root_drmcs.suspended_period_us)
+		cancel_delayed_work_sync(&root_drmcs.scan_work);
 
-But then you also need to handle concurrent cpuset changes. If you can tolerate
-it to be racy, then RCU alone is fine.
+So if scanning was in progress migration will wait until it finishes. 
+And re-start only when migration is done (drmcs_attach), or it failed 
+(drmcs_cancel_attach).
 
-Thanks.
+Not claiming I did not miss something because I was totally new with 
+cgroup internals when I started working on this. So it is definitely 
+useful to have more eyes looking.
+
+>> [...]
+>> +static bool
+>> +__start_scanning(struct drm_cgroup_state *root, unsigned int period_us)
+>> [...]
+>> +	css_for_each_descendant_post(node, &root->css) {
+>> [...]
+>> +		active = drmcs_get_active_time_us(drmcs);
+>> +		if (period_us && active > drmcs->prev_active_us)
+>> +			drmcs->active_us += active - drmcs->prev_active_us;
+>> +		drmcs->prev_active_us = active;
+> 
+> drmcs_get_active_time_us() could count a task's contribution here,
+> the task would migrate to a different drmcs,
+> and it'd be counted 2nd time.
+
+Lets see.. __start_scanning() can be called from the worker, so max one 
+instance at a time, no issue.
+
+Then from resume scanning, so it is guaranteed worker is not running and 
+can't restart since mutex guards the re-start.
+
+Finally from drmcs_write_period_us() - yes there __start_scanning() can 
+race with it being invoked by the worker - oops! However.. this is just 
+a debugging aid as the cover letter explains. This file is not intended 
+to be present in the final version, rather as per earlier discussion 
+with Tejun the idea is to only have boot time option to control the 
+functionality (enable/disable or period).
+
+I will nevertheless try to fix this race up for the next posting to 
+avoid further confusion!
+
+Regards,
+
+Tvrtko
