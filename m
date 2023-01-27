@@ -2,148 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 606CE67DE97
-	for <lists+cgroups@lfdr.de>; Fri, 27 Jan 2023 08:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CDF67DEA8
+	for <lists+cgroups@lfdr.de>; Fri, 27 Jan 2023 08:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbjA0HgV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 27 Jan 2023 02:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49584 "EHLO
+        id S232786AbjA0HnW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Jan 2023 02:43:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbjA0HgU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Jan 2023 02:36:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4C416332
-        for <cgroups@vger.kernel.org>; Thu, 26 Jan 2023 23:35:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674804931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S232784AbjA0HnV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Jan 2023 02:43:21 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C12D39282;
+        Thu, 26 Jan 2023 23:43:20 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 19A1E21D67;
+        Fri, 27 Jan 2023 07:43:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1674805399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AOQxAgAAK0FHDcI+jB5U3fyhR/dhMwJss/kdGg+mJds=;
-        b=OTJdla4B0I5vIO9iaS9DdJ4jFJsMWMyyYHH6sQj+Ax8UtU8oEF2bkCuwcHAGUvjAhRBy2U
-        Q5+K14TqQDcUFQCuQj6GtCw00nx9M+CvBGSvZSDbbUGbCvDPHoVHmPTtHBiNstkQ+12Y0Z
-        H7U1L2AbOK0FNj8HTxi2rPhWOx5dpdY=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-446-fxRqE1WYP3eQ4DXgTDZLCA-1; Fri, 27 Jan 2023 02:35:27 -0500
-X-MC-Unique: fxRqE1WYP3eQ4DXgTDZLCA-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-160645a57b5so1486036fac.4
-        for <cgroups@vger.kernel.org>; Thu, 26 Jan 2023 23:35:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AOQxAgAAK0FHDcI+jB5U3fyhR/dhMwJss/kdGg+mJds=;
-        b=OVzvXsTuX5U3qSj3MLil3y1of7v/NuP6+PtaBREaFYQTQ/75WctK7swLF6Lvs3AauV
-         FP54ZPPuVOlgwPQXh16hoRiTUGQkIk3mUoUzmyoOat/tJ1nflhsrHw9LICOA0fNK2sHd
-         6gSNqF7opbnnNIgk2zsJ1l+ukVkPxvCLTIkgh4HIxb1GMgMAIEiZ0UzLNbpdZYwgPDRG
-         re4PGkZQ+LGCwFoni4aGT7vN6wUGFP9101T4qy+k9esZgnWxVRmC2vak/xt/Xj3orqVI
-         vwReQB1oRyZJQEo3zhrdcWaJbv+als5SxdEB7f2X9hzApWTzosn0/q5p8zZ9Sx9V0QaT
-         QQVA==
-X-Gm-Message-State: AFqh2kp0YCdW+jOCMXgIcZRcdeEB5eaDY0dyvcrLf8bDySmQEqvREFvZ
-        nPGwfn+jxn+asyFZGkwmpRKaoWXbdzob7m5AzGLBbFQiaVujDPp/pNpadl227BR9Ap5oNXpnj5S
-        s0BMh4rBV+FuRXrr5rA==
-X-Received: by 2002:a05:6830:2477:b0:686:6cf1:1cb3 with SMTP id x55-20020a056830247700b006866cf11cb3mr13732069otr.13.1674804927000;
-        Thu, 26 Jan 2023 23:35:27 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXtTdCpwGeK5oWchZcZI01VdWJ8sxsZP+9IEvbdt5720U4H1aYd/ws6aYZNtqySF3kyS2GdjQQ==
-X-Received: by 2002:a05:6830:2477:b0:686:6cf1:1cb3 with SMTP id x55-20020a056830247700b006866cf11cb3mr13732060otr.13.1674804926780;
-        Thu, 26 Jan 2023 23:35:26 -0800 (PST)
-Received: from ?IPv6:2804:1b3:a800:6912:c477:c73a:cf7c:3a27? ([2804:1b3:a800:6912:c477:c73a:cf7c:3a27])
-        by smtp.gmail.com with ESMTPSA id cp11-20020a056830660b00b0066ca61230casm1476844otb.8.2023.01.26.23.35.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jan 2023 23:35:26 -0800 (PST)
-Message-ID: <15c605f27f87d732e80e294f13fd9513697b65e3.camel@redhat.com>
-Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 27 Jan 2023 04:35:22 -0300
-In-Reply-To: <Y9N7UMrLTyZT71uA@dhcp22.suse.cz>
-References: <20230125073502.743446-1-leobras@redhat.com>
-         <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
-         <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
-         <Y9FzSBw10MGXm2TK@tpad> <Y9G36AiqPPFDlax3@P9FQF9L96D.corp.robot.car>
-         <Y9Iurktut9B9T+Tl@dhcp22.suse.cz>
-         <Y9MI42NSLooyVZNu@P9FQF9L96D.corp.robot.car>
-         <55ac6e3cbb97c7d13c49c3125c1455d8a2c785c3.camel@redhat.com>
-         <Y9N7UMrLTyZT71uA@dhcp22.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.2 
+        bh=4JI/wpxgIv1o0sTmnkxzVSGkE+8mTK7sPuU0QG23TKI=;
+        b=EqIDPXJijHRpJFC0wlMxMNVbRlqW2RwIS8I1Lqz9jGoxXM7jFvfzghk13Grp77m1uFVnV8
+        0KDjgbR+/TI8SY5RIb/Bd2ltnat8wZ7zyvXGhGVSgzg7yZv+ZeDD6CDKa8FAcUSu1euLsj
+        JHx9EI5fDMCuR5gvKu+XrvSaFggUC5w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1674805399;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4JI/wpxgIv1o0sTmnkxzVSGkE+8mTK7sPuU0QG23TKI=;
+        b=/twYLq2i4LDG1Ix54DAMhGZf7aVUb/GyfOdsvaMgkiHhWCxxpyHc+eCrPChILIYvin406D
+        zv8pa6Mqh0Ai25Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECDE0138E3;
+        Fri, 27 Jan 2023 07:43:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id oY3hOJaA02PLZAAAMHmgww
+        (envelope-from <hare@suse.de>); Fri, 27 Jan 2023 07:43:18 +0000
+Message-ID: <df9c772c-6fb5-1ebe-6b9a-7d052d9f05f0@suse.de>
+Date:   Fri, 27 Jan 2023 08:43:18 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH 01/15] blk-cgroup: don't defer blkg_free to a workqueue
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org
+References: <20230117081257.3089859-1-hch@lst.de>
+ <20230117081257.3089859-2-hch@lst.de>
+ <b4622942-67e7-969b-4439-0aea7c5bd165@suse.de> <20230127070754.GB4180@lst.de>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230127070754.GB4180@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, 2023-01-27 at 08:20 +0100, Michal Hocko wrote:
-> On Fri 27-01-23 04:14:19, Leonardo Br=C3=A1s wrote:
-> > On Thu, 2023-01-26 at 15:12 -0800, Roman Gushchin wrote:
-> [...]
-> > > I'd rather opt out of stock draining for isolated cpus: it might slig=
-htly reduce
-> > > the accuracy of memory limits and slightly increase the memory footpr=
-int (all
-> > > those dying memcgs...), but the impact will be limited. Actually it i=
-s limited
-> > > by the number of cpus.
-> >=20
-> > I was discussing this same idea with Marcelo yesterday morning.
-> >=20
-> > The questions had in the topic were:
-> > a - About how many pages the pcp cache will hold before draining them i=
-tself?=C2=A0
->=20
-> MEMCG_CHARGE_BATCH (64 currently). And one more clarification. The cache
-> doesn't really hold any pages. It is a mere counter of how many charges
-> have been accounted for the memcg page counter. So it is not really
-> consuming proportional amount of resources. It just pins the
-> corresponding memcg. Have a look at consume_stock and refill_stock
+On 1/27/23 08:07, Christoph Hellwig wrote:
+> On Fri, Jan 27, 2023 at 07:59:23AM +0100, Hannes Reinecke wrote:
+>> On 1/17/23 09:12, Christoph Hellwig wrote:
+>>> Now that blk_put_queue can be called from process context, ther is no
+>>> need for the asynchronous execution.
+>>>
+>> Can you clarify 'now'?
+>> IE point to the commit introducing the change?
+> 
+> 49e4d04f0486117ac57a97890eb1db6d52bf82b3
+> Author: Tejun Heo <tj@kernel.org>
+> Date:   Fri Jan 6 10:34:10 2023 -1000
+> 
+>      block: Drop spurious might_sleep() from blk_put_queue()
+> 
+Can we please have it in the patch comment?
+To clarify that this is a pre-requisite for this patch?
 
-I see. Thanks for pointing that out!
+Thanks.
 
-So in worst case scenario the memcg would have reserved 64 pages * (numcpus=
- - 1)
-that are not getting used, and may cause an 'earlier' OOM if this amount is
-needed but can't be freed.
+Cheers,
 
-In the wave of worst case, supposing a big powerpc machine, 256 CPUs, each
-holding 64k * 64 pages =3D> 1GB memory - 4MB (one cpu using resources).
-It's starting to get too big, but still ok for a machine this size.
-
-The thing is that it can present an odd behavior:=20
-You have a cgroup created before, now empty, and try to run given applicati=
-on,
-and hits OOM.
-You then restart the cgroup, run the same application without an issue.
-
-Even though it looks a good possibility, this can be perceived by user as
-instability.
-
->=20
-> > b - Would it cache any kind of bigger page, or huge page in this same a=
-spect?
->=20
-> The above should answer this as well as those following up I hope. If
-> not let me know.
-
-IIUC we are talking normal pages, is that it?
-
-Best regards,
-Leo
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
 
