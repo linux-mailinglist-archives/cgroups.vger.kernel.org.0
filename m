@@ -2,242 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67329680E56
-	for <lists+cgroups@lfdr.de>; Mon, 30 Jan 2023 14:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C89C680EAB
+	for <lists+cgroups@lfdr.de>; Mon, 30 Jan 2023 14:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236090AbjA3NAp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 Jan 2023 08:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        id S235183AbjA3NUr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 Jan 2023 08:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbjA3NAo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 Jan 2023 08:00:44 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE1D8692
-        for <cgroups@vger.kernel.org>; Mon, 30 Jan 2023 05:00:43 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id m2so30999882ejb.8
-        for <cgroups@vger.kernel.org>; Mon, 30 Jan 2023 05:00:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPi27oxB4DF456BzhJqV6TJpIF6QgAwWPIaoiwGORiA=;
-        b=42fVBR9gT45Z7+QeYw7RXcYPaPHLdXd1EVx/6xfDdHi2QPOL1d4jGzIxEkrDKdqh8c
-         D6eE4DC7H2ZHrixFV7BuysO5lIcaLcB3WrhCzUcM9SZ0gCs5a9QMbikE0jEMBMETXT5P
-         rMFNAla6oqwPQJggUkX8CeTbdU2TUE8iQMm04aalE0s1TxucGm1enAH8FLdLRT71RNYm
-         Y2790LlDWUbSr4OORzPtdMRrdtCX2xbgRyUhqMZG6wxwRVlW90YNy3yVshgaMS6qU7aE
-         /QbVR+4nNhV5plpNAVmVA/qbfm6cfkP4yXsg3slx1ynwlaph0DLQS56SuKb3zAe71tXx
-         qy1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZPi27oxB4DF456BzhJqV6TJpIF6QgAwWPIaoiwGORiA=;
-        b=slk0i11QUUpnZ1OMN560HZEbHUN9OJ1EUIWMfz5cqrP4hY+iZ3vVkdbMimnAv9CuDU
-         zRyan9d/fLDv4GysFgkEFZTTzBToU46VymM5jDBr3bjV2XINetjJeUcX0J2NXQe2+oR1
-         NCL2pF5omXa4BJiFYIu13K3iCR5xMB3gIJmwlArlHZpP+2oME6+7kx/4whPk+jtfw8vu
-         YRybeFkkoIPkNKxzVbVr4Irj9VZVy+T+PRcMCwWzZDVN37znCIonJPGuYq7YxDAALvyJ
-         dBD2VzirFwnVcWiw1u2Wjp3ojzNXrwN7Ld7rlLgs2l9DXvFCF5fW/+dRH3nx2wT5U4iU
-         1bgA==
-X-Gm-Message-State: AO0yUKVNOltaeksr/qejRsRRLF7qO8PVVGecjLOboVuPrTZRLAnBPE+c
-        aW9xjILIJHZSk4cvrQ1Y0P5I5Q==
-X-Google-Smtp-Source: AK7set8Xfa66K7VRZaYWl5ez9KA/EvZzuz2RkEN1pPEdogJHLCk63Neah94a5EhT0rA7J8fayVqXTQ==
-X-Received: by 2002:a17:906:d7b3:b0:884:9b56:e418 with SMTP id pk19-20020a170906d7b300b008849b56e418mr8242349ejb.57.1675083641759;
-        Mon, 30 Jan 2023 05:00:41 -0800 (PST)
-Received: from airbuntu (host86-163-35-10.range86-163.btcentralplus.com. [86.163.35.10])
-        by smtp.gmail.com with ESMTPSA id v9-20020a170906380900b008786619684csm6766741ejc.125.2023.01.30.05.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 05:00:41 -0800 (PST)
-Date:   Mon, 30 Jan 2023 13:00:38 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v2] sched: cpuset: Don't rebuild sched domains on
- suspend-resume
-Message-ID: <20230130130038.2qx3pkzut6ypqdub@airbuntu>
-References: <20230120194822.962958-1-qyousef@layalina.io>
- <c4c2dec6-a72b-d675-fb42-be40e384ea2c@redhat.com>
- <20230125163546.pspvigh4groiwjy7@airbuntu>
- <45e0f8ea-d229-1ae7-5c12-7f0a64c6767a@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        with ESMTP id S229694AbjA3NUq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 Jan 2023 08:20:46 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2053.outbound.protection.outlook.com [40.107.237.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F782DE6B;
+        Mon, 30 Jan 2023 05:20:45 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gbrVvO0aLJr5PYwELFXcje3V+qtd0Xl3rtxut3QVAtMLanLMGT7EGNHfiz6LOpWUhY+OAHzMIXbPdRcObV97mN3DRa21UzAquEObaN+VqGGjgoDryC1N9eO+5GgoFhWITkvz+KWwb5RZX1LjjRcVE6dtA3lyAg2qOXZed1/AsbBfE2BXaSPkWAmlFHjKSj39GjgxT8nwVgYyKOdydbCMWhrm9C3MzpdVXacL6VbtqCAdfKoltlEOCz/Y+RUi+3RWdJe2emHK+Sc11M7gGVVfTWXjvTNzlnzkxs7+uz2X8oo7HpzNnT3RZvOF5VjWkSruFeFVcZizg3VaLUYwr5iQpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZwyiM/7B2+SHU43XMWs9J8BzG/ABfrNrQW3lGga4pEg=;
+ b=GFqm28lFRFaSXJccgRjDoLBaAhU23XM3vyzK//bR6L7WhTxB7ae72/48p9mtMEYWLEasqE3EExvxPqPAyHFERk1mVgOYLWR6XQjTg6oOY1aHYoZU3q1OVdZTVin/sgYsDIinty/Fzk6KCelOQRg7q4A1oKGem58l7Uid7NN0CjnRL4D3IsftUQz+9h78uq5mYx5C/I4OYmWvQG7LQD0voBhstWLDPx8YuG2XubRlp3Gdf9HYvdIIeZJMPniMQSTOQEeVCjBMO8LboIOYOB4pvITDtjWGIUjxURayOOp/8LpOMRR+mxIylUOVdqebcc2kOag/LttbjGEc5f9x6bir5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZwyiM/7B2+SHU43XMWs9J8BzG/ABfrNrQW3lGga4pEg=;
+ b=E8kVImaomP0YB58nSm2C2vU7XQXds3bJ5ojEKT2kncJIYnuIoYSjsOOEIoB5v8vhJehbYSI+chfB1bPv3aexXhYZaNHNpTA7jFWLRlGk41NIqGDBgNIG5G/U5l+xMg5e8YE4hAQXQIHHhcBy68v2RBRa2OpwGXHcsMpKzoKrAAoDFQTPvY7fR/dBxbiJe/Vr5hJBXKVUx8+Lk7O9J+9oeGgm36gZH26wHfBeI5q3/6lCgBOqNEF0Eso9RFU3+kpVDNejXvLxsGqE0dcanYONBkKGfFtu+huWBTeCqbRCZQJjVDXYM81ulI7G9b/8KlGDi3H1xlswd6jw8i/NFkE3ug==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH3PR12MB7500.namprd12.prod.outlook.com (2603:10b6:610:148::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.36; Mon, 30 Jan
+ 2023 13:20:42 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6043.033; Mon, 30 Jan 2023
+ 13:20:42 +0000
+Date:   Mon, 30 Jan 2023 09:20:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tejun Heo <tj@kernel.org>,
+        "Daniel P. Berrange" <berrange@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhubbard@nvidia.com, tjmercier@google.com, hannes@cmpxchg.org,
+        surenb@google.com, mkoutny@suse.com, daniel@ffwll.ch,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        Laine Stump <laine@redhat.com>
+Subject: Re: [RFC PATCH 14/19] mm: Introduce a cgroup for pinned memory
+Message-ID: <Y9fEKfdlL+hCiWpz@nvidia.com>
+References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
+ <183372b80aac73e640d9f5ac3c742d505fc6c1f2.1674538665.git-series.apopple@nvidia.com>
+ <Y9RFs+90TyzVMs83@slm.duckdns.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <45e0f8ea-d229-1ae7-5c12-7f0a64c6767a@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <Y9RFs+90TyzVMs83@slm.duckdns.org>
+X-ClientProxiedBy: MN2PR10CA0030.namprd10.prod.outlook.com
+ (2603:10b6:208:120::43) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB7500:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5bc8978f-06c7-43d8-1347-08db02c4c98b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t98HT0VlBKwnAg9ub+nw1bW6gT5y7z9WheG5m47NX155jkijreiHHjl2JCGwkgZpSV+btJn2cM6uvg92qlooSifGMSWNEtwbs7YYBCLI6j2G8bLdr9/35RG2zbHIz5HaMDGfrP9gqlVdBS59kXF03K368u2zmXEByRhoZ9K0/0jiFpTLKnu3b2TqXEn/TSLLQ1Oc0a/vyvhUCGeez0HoHNPDK2F+lZWNG3BdiFmEU6jrTq6nrV3RVal/JHRAc2s6wh3wOnI9uroWn+f6n+LXp288MJEJIp2zUA7xXO6YmJKq0p7t2CsiMGLHtC4yH3dZp3jfviNNm5zhVvNxBQ3A4XbE+vUk6nA1YNUTnelc5XgOtkh62KIecBzennwn+cOJO8i9ggfSPuNTRSQ8ZVd2lKae9bvitjFLJbsuIIK5SJp7OpEhEWsFE4nAUCEbfBBqP3xDi5aLP1IPr3gtsX49eoO2DdboPwK7rbwE/06PhSRFZgw4sD7nv4b+/hwYLzogXnC91IBfOyM70EvVbB1EL8nXyKTXNFC7qQ6Ro6nnc7yDCBPc/L5h3tUKWprZUHQMyFRSk4jqjasF8WlZ/ApWb07vyp7bw7JssoLzndMsEf1dbWKYf0aI1lgu4RjEf9KXpUUlTWfr0gEBbEMKZEUq8YtkBIU3MIcJS8IJVxYjQbYhcvTNdIexiEwLrPtDPaDi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(376002)(366004)(346002)(396003)(136003)(451199018)(8936002)(41300700001)(86362001)(5660300002)(7416002)(83380400001)(2616005)(110136005)(54906003)(316002)(66556008)(66476007)(66946007)(38100700002)(4326008)(8676002)(6512007)(26005)(186003)(6506007)(36756003)(6486002)(478600001)(2906002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0B6AcIKgj37S/hSkjtTjqQ/ObqsxPAOt0kzUfCyxtdHwiOeI859IiwLM8i5v?=
+ =?us-ascii?Q?P4UyeN5lmiJiQjYuXh21JeLcbZI0H9kSNEyUXM3mO6XYObapupSKxzl8gRfQ?=
+ =?us-ascii?Q?6/5fbUw0gcOxMFHPdWWmttu4MEVFjnw98yNLVFYfTaIDYMi+UN97On6+nhea?=
+ =?us-ascii?Q?nNP3eKDkcV/6Zsz6mNiViS2ZNHqJln5M3sbHCFGOk9uMlW5l0wUlw9tffsMQ?=
+ =?us-ascii?Q?2+IpQw3WlPRhOKl2GIkajicQT69UeIXP3GfWlZcz23v61iXG9Ga2F2FO8OW2?=
+ =?us-ascii?Q?GQme0zezTn+A1J28A6dajidc8ENB/jkYaDTSwBr62J5X2LVaKFpnZ1Q6lpYH?=
+ =?us-ascii?Q?79tKDGZdtjV4GDBlb0mVCzUoY2/q96WJbMQUACjWgx9wf19VIikf3DVw7opw?=
+ =?us-ascii?Q?iY/uudCbUxl2G9qlPuVzDn9Ohq7d15dKrRFEtQei2FBX1qN/5HXV/uHcaI9n?=
+ =?us-ascii?Q?w5mw62lUWlWf9DM505R3wVa17sKtzSzOMkgbUcVenK0zT5mREme8crS+LB6r?=
+ =?us-ascii?Q?CghAFzDiRLAOMeTl2NoLloBGKEroxOPIbY/h1hF3KW5R1vpjIXPIJH6xHAk+?=
+ =?us-ascii?Q?FZm5J5yhKPPY50ZaefVpoPfhUL7l5/VrgMu+4CbEQhJ+SOwlFU5jrpPjvy/7?=
+ =?us-ascii?Q?m6o0e4SqvugC2chARi/PwP8vyygMP8ynBdUqKlySzDggdFLCk1BmCKCYjWQE?=
+ =?us-ascii?Q?gsZo3l4ElkRX1CEwBYFpjTzTQuFlEPp/ONyAMf8bIb9SyGz+tZ6eCacB5ZH8?=
+ =?us-ascii?Q?UobXEXHirPgldeMl6DQ49JANedNPXgpLwsk0ZinPFzVDxpn2SVmvzT27DOGr?=
+ =?us-ascii?Q?gQQZsHmMP5sNvsj/KL6jOQfR8mZFBHbCOw4myS3WY1PJ07iqx0G/EjnZBqpg?=
+ =?us-ascii?Q?Htqjr4fWyrPTndED1Gb2umMK4sezr+7sBWx5gj/pTNUocaPgnptp62TrAYu4?=
+ =?us-ascii?Q?2el3qDWUT2rvK5/tJAYEU981DClSLdsVotqbLqZh52PG+QvS9lavjsgjkJn+?=
+ =?us-ascii?Q?NpBUuPw7gQwt8YhPMYZN6FSebZETffR7AH66xjI23a3dJY7Kt26f7m3IM99m?=
+ =?us-ascii?Q?UIIsADCPcEG6TFoeG4j+AkHICsIEj7hSuP0mPlEJqmRJWceKu8vJwT6qb5Dl?=
+ =?us-ascii?Q?RqMMDcqVrUyjOVK4MmyGzqBLa2MhSlw/Z1K41yIyHRAgIDxaJhmsU9sZ4F/F?=
+ =?us-ascii?Q?3qNoQixC6Sp9b4Tp7F+QXR3VZLwgIq+N6KD57nXh45FLsA+ApkAk3SuIZ4Ui?=
+ =?us-ascii?Q?oLV3GuKmdgz5k1LcFbcgwvBNoucVWPm3LxanmSBshjRDJT5ddydz7dp0pYp2?=
+ =?us-ascii?Q?fYG2xUp8NuqocHGh1mwlySntB7gHQZ85y0NbAo7PIUikVMZHEdav+gfVs7gH?=
+ =?us-ascii?Q?AbOFCYOmIJLQm4vAv/9aOue/r1lGzOq9sZf9gNak7YGyAMWTlRPdd7QUm24q?=
+ =?us-ascii?Q?X8nZY7saRVZn/PFTbACTWxciE78ZrWwSA16ALFqutxlGykvxeWMvpKx2enCZ?=
+ =?us-ascii?Q?KmcMd8+d5rqr9yrhlABd5olA6QyH7/z0MG6uKWd1rqmsW4Lookl7TePHxejb?=
+ =?us-ascii?Q?JAxqPGb8/pDLqbp/iWnLomd2JWQrXMub9EMLD2Hp?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bc8978f-06c7-43d8-1347-08db02c4c98b
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2023 13:20:42.3112
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qAPUbRrKUzMTHz3zHcwuLTVaw5U2wShSkTyvQZOlJ1aJFdeeHzSMdPxmoN7gHwNK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7500
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 01/29/23 21:49, Waiman Long wrote:
-> On 1/25/23 11:35, Qais Yousef wrote:
-> > On 01/20/23 17:16, Waiman Long wrote:
-> > > On 1/20/23 14:48, Qais Yousef wrote:
-> > > > Commit f9a25f776d78 ("cpusets: Rebuild root domain deadline accounting information")
-> > > > enabled rebuilding sched domain on cpuset and hotplug operations to
-> > > > correct deadline accounting.
-> > > > 
-> > > > Rebuilding sched domain is a slow operation and we see 10+ ms delay on
-> > > > suspend-resume because of that.
-> > > > 
-> > > > Since nothing is expected to change on suspend-resume operation; skip
-> > > > rebuilding the sched domains to regain the time lost.
-> > > > 
-> > > > Debugged-by: Rick Yiu <rickyiu@google.com>
-> > > > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> > > > ---
-> > > > 
-> > > >       Changes in v2:
-> > > >       	* Remove redundant check in update_tasks_root_domain() (Thanks Waiman)
-> > > >       v1 link:
-> > > >       	https://lore.kernel.org/lkml/20221216233501.gh6m75e7s66dmjgo@airbuntu/
-> > > > 
-> > > >    kernel/cgroup/cpuset.c  | 3 +++
-> > > >    kernel/sched/deadline.c | 3 +++
-> > > >    2 files changed, 6 insertions(+)
-> > > > 
-> > > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > > > index a29c0b13706b..9a45f083459c 100644
-> > > > --- a/kernel/cgroup/cpuset.c
-> > > > +++ b/kernel/cgroup/cpuset.c
-> > > > @@ -1088,6 +1088,9 @@ static void rebuild_root_domains(void)
-> > > >    	lockdep_assert_cpus_held();
-> > > >    	lockdep_assert_held(&sched_domains_mutex);
-> > > > +	if (cpuhp_tasks_frozen)
-> > > > +		return;
-> > > > +
-> > > >    	rcu_read_lock();
-> > > >    	/*
-> > > > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> > > > index 0d97d54276cc..42c1143a3956 100644
-> > > > --- a/kernel/sched/deadline.c
-> > > > +++ b/kernel/sched/deadline.c
-> > > > @@ -2575,6 +2575,9 @@ void dl_clear_root_domain(struct root_domain *rd)
-> > > >    {
-> > > >    	unsigned long flags;
-> > > > +	if (cpuhp_tasks_frozen)
-> > > > +		return;
-> > > > +
-> > > >    	raw_spin_lock_irqsave(&rd->dl_bw.lock, flags);
-> > > >    	rd->dl_bw.total_bw = 0;
-> > > >    	raw_spin_unlock_irqrestore(&rd->dl_bw.lock, flags);
-> > > cpuhp_tasks_frozen is set when thaw_secondary_cpus() or
-> > > freeze_secondary_cpus() is called. I don't know the exact suspend/resume
-> > > calling sequences, will cpuhp_tasks_frozen be cleared at the end of resume
-> > > sequence? Maybe we should make sure that rebuild_root_domain() is called at
-> > > least once at the end of resume operation.
-> > Very good questions. It made me look at the logic again and I realize now that
-> > the way force_build behaves is causing this issue.
+On Fri, Jan 27, 2023 at 11:44:19AM -1000, Tejun Heo wrote:
+> On Tue, Jan 24, 2023 at 04:42:43PM +1100, Alistair Popple wrote:
+> > If too much memory in a system is pinned or locked it can lead to
+> > problems such as performance degredation or in the worst case
+> > out-of-memory errors as such memory cannot be moved or paged out.
 > > 
-> > I *think* we should just make the call rebuild_root_domains() only if
-> > cpus_updated in cpuset_hotplug_workfn().
+> > In order to prevent users without CAP_IPC_LOCK from causing these
+> > issues the amount of memory that can be pinned is typically limited by
+> > RLIMIT_MEMLOCK. However this is inflexible as limits can't be shared
+> > between tasks and the enforcement of these limits is inconsistent
+> > between in-kernel users of pinned memory such as mlock() and device
+> > drivers which may also pin pages with pin_user_pages().
 > > 
-> > cpuset_cpu_active() seems to be the source of force_rebuild in my case; which
-> > seems to be called only after the last cpu is back online (what you suggest).
-> > In this case we can end up with cpus_updated = false, but force_rebuild = true.
-> > 
-> > Now you added a couple of new users to force_rebuild in 4b842da276a8a; I'm
-> > trying to figure out what the conditions would be there. It seems we can have
-> > corner cases for cpus_update might not trigger correctly?
-> > 
-> > Could the below be a good cure?
-> > 
-> > AFAICT we must rebuild the root domains if something has changed in cpuset.
-> > Which should be captured by either having:
-> > 
-> > 	* cpus_updated = true
-> > 	* force_rebuild && !cpuhp_tasks_frozen
-> > 
-> > /me goes to test the patch
-> > 
-> > --->8---
-> > 
-> > 	diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > 	index a29c0b13706b..363e4459559f 100644
-> > 	--- a/kernel/cgroup/cpuset.c
-> > 	+++ b/kernel/cgroup/cpuset.c
-> > 	@@ -1079,6 +1079,8 @@ static void update_tasks_root_domain(struct cpuset *cs)
-> > 		css_task_iter_end(&it);
-> > 	 }
-> > 
-> > 	+static bool need_rebuild_rd = true;
-> > 	+
-> > 	 static void rebuild_root_domains(void)
-> > 	 {
-> > 		struct cpuset *cs = NULL;
-> > 	@@ -1088,6 +1090,9 @@ static void rebuild_root_domains(void)
-> > 		lockdep_assert_cpus_held();
-> > 		lockdep_assert_held(&sched_domains_mutex);
-> > 
-> > 	+       if (!need_rebuild_rd)
-> > 	+               return;
-> > 	+
-> > 		rcu_read_lock();
-> > 
-> > 		/*
-> > 	@@ -3627,7 +3632,9 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
-> > 		/* rebuild sched domains if cpus_allowed has changed */
-> > 		if (cpus_updated || force_rebuild) {
-> > 			force_rebuild = false;
-> > 	+               need_rebuild_rd = cpus_updated || (force_rebuild && !cpuhp_tasks_frozen);
-> > 			rebuild_sched_domains();
-> > 	+               need_rebuild_rd = true;
+> > To allow for a single limit to be set introduce a cgroup controller
+> > which can be used to limit the number of pages being pinned by all
+> > tasks in the cgroup.
 > 
-> You do the force_check check after it is set to false in the previous
-> statement which is definitely not correct. So it will be false whenever
-> cpus_updated is false.
-> 
-> If you just want to skip rebuild_sched_domains() call for hotplug, why don't
+> The use case makes some sense to me but I wonder whether this'd fit a lot
+> better in memcg rather than being its own controller.
 
-We just need to skip rebuild_root_domains(). I think rebuild_sched_domains()
-should still happen.
+As long as the pinned limitation has its own bucket it is probably
+fine? The underlying memory allocations should have already been
+charged to the memcg - so we don't want to double account.
 
-The issue, AFAIU, is that we assume this hotplug operation results in changes
-in cpuset and the DEADLINE accounting is now wrong and must be re-calculated.
-But s2ram will cause hotplug operation without actually changing the cpuset
-configuration - the re-calculation is not required. But it'd be good to get
-a confirmation from Juri.
+Alex and Daniel were looking at this from the qemu/libvirt
+perspective, perhaps they have some insight what they would like to
+see?
 
-> just skip the call here if the condition is right? Like
-> 
->         /* rebuild sched domains if cpus_allowed has changed */
->         if (cpus_updated || (force_rebuild && !cpuhp_tasks_frozen)) {
->                 force_rebuild = false;
->                 rebuild_sched_domains();
->         }
-> 
-> Still, we will need to confirm that cpuhp_tasks_frozen will be cleared
-> outside of the suspend/resume cycle.
-
-I think it's fine to use this variable from the cpuhp callback context only.
-Which I think this cpuset workfn is considered an extension of.
-
-But you're right, I can't use cpuhp_tasks_frozen directly in
-rebuild_root_domains() as I did in v1 because it doesn't get cleared after
-calling the last _cpu_up(). force_rebuild will only be set after the last cpu
-is brought online though - so this should happen once at the end.
-
-(will update the comment too)
-
-It seems I still need more time to study the code. What appeared simple, looks
-is actually not..
-
-
-Cheers
-
---
-Qais Yousef
+Thanks,
+Jason
