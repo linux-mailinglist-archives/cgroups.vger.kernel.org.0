@@ -2,120 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85D668389D
-	for <lists+cgroups@lfdr.de>; Tue, 31 Jan 2023 22:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B718D683922
+	for <lists+cgroups@lfdr.de>; Tue, 31 Jan 2023 23:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbjAaV1x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 Jan 2023 16:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        id S230360AbjAaWR3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 Jan 2023 17:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbjAaV1t (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Jan 2023 16:27:49 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0725618F;
-        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 78so11035266pgb.8;
-        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AzK7zbHqMHdeBmanV3yZyUjocxSjOS0P2zK4GlPV5fg=;
-        b=D6wvD2En7fL/J4jxZGOIQBNq1r2srmO4HOmSSPNUtrliYfnfu+LBoGk5BxIcMiuq2I
-         +zwJ+mRwxgYtBtoDsGT1p7nE5JifYqFUf8hP1sgEtkOKyHfWhW4umWi9ewBl4h6lpann
-         1FKRMTut+C+QYs/Mg9T/XGdMWHxAvc4vm7coGsd3WvOgoQt73PDTLpV3MfO+X+lC2HD/
-         QNpAi6vLbe5SEo1NIxJIxqYOYG4hgDKEIE7e8sbyQhb8Yes6j5hPRgz/GjUPNoMDssZL
-         IfTNvheB70L2NHCzBcWcOzJp3YlrWN80ciuNtnhhN2fCo38Ky5KInmRB9oeQm46P5CX+
-         WVnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AzK7zbHqMHdeBmanV3yZyUjocxSjOS0P2zK4GlPV5fg=;
-        b=6YN+Wct8BdUN/kT/tPaAhOxv0QX3gGAPiyGCpIXh0VS2nANxzdChcTdyHeEL7AoI8k
-         B1pmLVfHVlIx/VHBopABxBSjinwofhX5Tne0P4DOnLlR9FHZ2EGE584s2wlAhvWs/JoO
-         vDMi7plbtRR8se3VgzQ+4nZsKO5YeWJVI137PqkdUuNRS4292df026XnBCci7pNVoXvE
-         9bCq/mJZ/QOUAEAOqW0HpN5H6yVhiA4Lt96VIa/eEsdi3t7MvcNuH+q9da03pNtYcOCp
-         CfRSPdZQ9Tsfc2q3mJDdEzXyiqLfeShghq2R8t6j9MBRjHJFfFirWPa5bJCGLbkXaDSR
-         glLA==
-X-Gm-Message-State: AO0yUKU8ZF9dr9W733ACgh7KdsDFgLjCsYpxU37Zt7ID71+3Si/py76l
-        7Z5K4K99sEKpbkriHVwvLjY=
-X-Google-Smtp-Source: AK7set+AB9728U0/MEi1UBcwr36wg/R1RBbFv281U6594rkVfdnrCQy9OnZENcOw/xOdf9mhMZ4riA==
-X-Received: by 2002:a62:7b0e:0:b0:593:a131:3692 with SMTP id w14-20020a627b0e000000b00593a1313692mr4489pfc.13.1675200466095;
-        Tue, 31 Jan 2023 13:27:46 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:1ad6])
-        by smtp.gmail.com with ESMTPSA id j14-20020a62e90e000000b00590684f016bsm9913968pfh.137.2023.01.31.13.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Jan 2023 13:27:45 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 31 Jan 2023 11:27:44 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        stable@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
- page
-Message-ID: <Y9mH0PCcZoGPryXw@slm.duckdns.org>
-References: <20230129121851.2248378-1-willy@infradead.org>
- <Y9a2m8uvmXmCVYvE@sol.localdomain>
- <Y9bkoasmAmtQ2nSV@casper.infradead.org>
+        with ESMTP id S230104AbjAaWR2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Jan 2023 17:17:28 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB45460BA;
+        Tue, 31 Jan 2023 14:17:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 119C1B81EB5;
+        Tue, 31 Jan 2023 22:17:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 072CBC433EF;
+        Tue, 31 Jan 2023 22:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675203444;
+        bh=PJSvYLHcRpS9dbzIMih0FP+oXT/wdW6kY7rfhEtLzKA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ygi679fQSEyO7ZcNdesDQOCNvrDlqqi9yDKz0+2k+46LCplrJWbu3qpXPqlXlDrJG
+         QY8NBhs15zL+jPwDO0nUDIOp+boS9DL3iHtCvLm7tMJhdw90KfyR/OJVb/HPVsrGtU
+         8Ple7yv1+7V3P84CupQNlbh4jk5O+fFai9HoF0qEUQaaG0e94OfCG9D5GxC9d4SIGu
+         lxHe3tEjzeARnmfifNmlcwkk7chXl4elUZsJg25f9dmss5Ec/GM7zWMdwjQaTM7LxJ
+         ORI4ojxwz/tDR6G3fmco+u6Nf+tOIZ9mLTlzAnjoRVSwU/SzfAnJ5aK7vzthufb2A8
+         F/6OV29psiVEQ==
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [PATCH 0/2] Fix broken cpuset affinity handling on heterogeneous systems
+Date:   Tue, 31 Jan 2023 22:17:17 +0000
+Message-Id: <20230131221719.3176-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9bkoasmAmtQ2nSV@casper.infradead.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hi folks,
 
-On Sun, Jan 29, 2023 at 09:26:57PM +0000, Matthew Wilcox wrote:
-> > > diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-> > > index e78be66bbf01..a4e76f96f291 100644
-> > > --- a/fs/crypto/crypto.c
-> > > +++ b/fs/crypto/crypto.c
-> > > @@ -205,6 +205,9 @@ struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
-> > >  	}
-> > >  	SetPagePrivate(ciphertext_page);
-> > >  	set_page_private(ciphertext_page, (unsigned long)page);
-> > > +#ifdef CONFIG_MEMCG
-> > > +	ciphertext_page->memcg_data = page->memcg_data;
-> > > +#endif
-> > >  	return ciphertext_page;
-> > >  }
-> > 
-> > Nothing outside mm/ and include/linux/memcontrol.h does anything with memcg_data
-> > directly.  Are you sure this is the right thing to do here?
-> 
-> Nope ;-)  Happy to hear from people who know more about cgroups than I
-> do.  Adding some more ccs.
-> 
-> > Also, this patch causes the following:
-> 
-> Oops.  Clearly memcg_data needs to be set to NULL before we free it.
+These two patches fix a couple of CPU affinity issues involving cpusets
+on heterogeneous systems. A concrete example of this is running 32-bit
+tasks on recent arm64 SoCs, where some of the cores are only capable of
+64-bit execution.
 
-These can usually be handled by explicitly associating the bio's to the
-desired cgroups using one of bio_associate_blkg*() or
-bio_clone_blkg_association(). It is possible to go through memcg ownership
-too using set_active_memcg() so that the page is owned by the target cgroup;
-however, the page ownership doesn't directly map to IO ownership as the
-relationship depends on the type of the page (e.g. IO ownership for
-pagecache writeback is determined per-inode, not per-page). If the in-flight
-pages are limited, it probably is better to set bio association directly.
+The first patch (from Peter) fixes a regression introduced during the
+recent merge window which is causing test failures in Android where the
+problematic patches have been backported. The second patch fixes a
+longer-standing issue, which I noticed while testing fixes for the
+initial regression.
 
-Thanks.
+Ideally, both of these would land together, but fixing the regression
+for 6.2 is my main concern.
+
+Anyway, I don't think either Peter or I would call ourselves cpuset
+experts (far from it!), so please have a look.
+
+Cheers,
+
+Will
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+
+--->8
+
+Peter Zijlstra (1):
+  cpuset: Fix cpuset_cpus_allowed() to not filter offline CPUs
+
+Will Deacon (1):
+  cpuset: Call set_cpus_allowed_ptr() with appropriate mask for task
+
+ kernel/cgroup/cpuset.c | 57 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 45 insertions(+), 12 deletions(-)
 
 -- 
-tejun
+2.39.1.456.gfc5497dd1b-goog
+
