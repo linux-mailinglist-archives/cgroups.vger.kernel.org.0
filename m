@@ -2,187 +2,245 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E48A6836A1
-	for <lists+cgroups@lfdr.de>; Tue, 31 Jan 2023 20:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310A46836CF
+	for <lists+cgroups@lfdr.de>; Tue, 31 Jan 2023 20:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjAaTe3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 Jan 2023 14:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
+        id S229972AbjAaTuE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 Jan 2023 14:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjAaTe2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Jan 2023 14:34:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234223B0E3
-        for <cgroups@vger.kernel.org>; Tue, 31 Jan 2023 11:33:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675193628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eK2YYGBTOGyQmg247Ozw7C64TaiZCT3FrZlIk4YE0l4=;
-        b=Zm/9jE1EXcu6K7pyIbCkq9bW7Jvt0x4DWnTYGUFPt3I9dtif7j9c1gyvVGhl3TIf6gITHO
-        6DPt5XVVh8ypSWug8taGJzy2n/hNDPNBBwg2gpNXPXiAEnWX7OMWhDV6e9MZvKvRpTITAo
-        zc/WraYftqYj4fU6IfQ2mZYtuP40CP0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-617-NH5JaXWDOGKi356MyyEi9g-1; Tue, 31 Jan 2023 14:33:42 -0500
-X-MC-Unique: NH5JaXWDOGKi356MyyEi9g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF8E43847980;
-        Tue, 31 Jan 2023 19:33:41 +0000 (UTC)
-Received: from [10.22.9.39] (unknown [10.22.9.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BCAA12026D4B;
-        Tue, 31 Jan 2023 19:33:40 +0000 (UTC)
-Message-ID: <6587af4f-5012-ef33-8e0e-d6c43d662e43@redhat.com>
-Date:   Tue, 31 Jan 2023 14:33:40 -0500
+        with ESMTP id S229891AbjAaTuD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Jan 2023 14:50:03 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A711018B0A
+        for <cgroups@vger.kernel.org>; Tue, 31 Jan 2023 11:50:00 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id bk15so44875054ejb.9
+        for <cgroups@vger.kernel.org>; Tue, 31 Jan 2023 11:50:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gBGYSHhxIz39bWAegoggfzJ6ks2CGggvwHv6lw1lI78=;
+        b=j+D8hqiIH8+0MHEgypl/+feUSt1xb9I4p44epkjKOGrtZCbmzJpfq0vEEe9dimZZau
+         kceU273RfoWQlTCrCqXG3zlBYya9fH3W5qskHtSh1WsHIWMEwvrR8OCQCIC/OzRpzbHz
+         qijkEebgtWzYDmlwg4BtVyfwpNWhTAx6qkmVu2Oo0JwVPwZJKTCCsBB+s+hUi0ihKmCq
+         Ios8NnaF3PeUQNEYLrm03TZw2T/lel7fUC0TAyU7sDgeAmnIQYuxWpqgFvF0EG1MBXj8
+         TU8NhYgga/8N758Tk/jmeirtaqmG4gbyaK8lmyb2SA/5dtq3HV6DOUHDX91VqroXe0qA
+         eF6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gBGYSHhxIz39bWAegoggfzJ6ks2CGggvwHv6lw1lI78=;
+        b=RniNfxU1RGXvfw8ti8jKugnQ+tY71UkGOeKoiuzKGBppfsXYCMlcTeDh31iQDAG9sG
+         DZOGzsOqTimB12S7uAesQxwHhoZL99NOqgfBG5EulRJ2v2Ey/hnLB31MdqhgFjsnJsHz
+         7JHratlIhnwkcv935YvmzOSjyiXdWTpB5yK7xv/CAMiSCUyvFIgFChay22mt7FmK9KaO
+         QeVjtMxXT7wUV53i3HcogLegcVUs+e+mfUseJI9+jPQ8U1TIz0K1NXJcV1IMEZbY20a3
+         Vz7XdBSrTW6w+2Py1AsLLdhtbKidaWCKeyWW15RvztTo6DN9f5J/x44NowVxfRAnoEK3
+         hDyw==
+X-Gm-Message-State: AFqh2krd/tSffLpP0mMwlr+2EA/al46Yv+PNukbAST5gEwZs2t5kxDBy
+        qxYQLA32JLycGXmS0pAsvGGS9UZvgKN4C+DBtO5Uy0+rDfau0VuR
+X-Google-Smtp-Source: AMrXdXtlD2H62LuEgeMz9hIErCWgvd2CYQ+BQJFo3dbnKHljO0E+6b0SAW0EkxZKbHKcQ+AjVM17kUdIdLR3DbZEBec=
+X-Received: by 2002:a17:906:6049:b0:84d:457b:b987 with SMTP id
+ p9-20020a170906604900b0084d457bb987mr8544970ejj.161.1675194598847; Tue, 31
+ Jan 2023 11:49:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v2] sched: cpuset: Don't rebuild sched domains on
- suspend-resume
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>
-References: <20230120194822.962958-1-qyousef@layalina.io>
- <c4c2dec6-a72b-d675-fb42-be40e384ea2c@redhat.com>
- <20230125163546.pspvigh4groiwjy7@airbuntu>
- <45e0f8ea-d229-1ae7-5c12-7f0a64c6767a@redhat.com>
- <20230130130038.2qx3pkzut6ypqdub@airbuntu>
- <253ced33-c3a8-269f-90cc-b69e66b10370@redhat.com>
- <20230130194826.rxwk4ryvpyxemflm@airbuntu>
- <17537d7f-8734-2186-b27c-f39f3110ffe5@redhat.com>
- <20230131192223.jf3aydhafpmjg5z4@airbuntu>
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230131192223.jf3aydhafpmjg5z4@airbuntu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
+ <CAJD7tkavoSu9WOnw4Nbxz41nq+Rm6Sq5EeOjh3CTyA=AT5=ujg@mail.gmail.com>
+ <874js7zf38.fsf@nvidia.com> <CAJD7tkZTvXjoNZYC99yekbA0zHkD4iFj0J3+8dsOMht6rxrRcQ@mail.gmail.com>
+ <87r0vblzf3.fsf@nvidia.com>
+In-Reply-To: <87r0vblzf3.fsf@nvidia.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 31 Jan 2023 11:49:22 -0800
+Message-ID: <CAJD7tkZcZ2mzEAv5x5TQk8of9A7w2p_fY3dGJAM29sXPvS7_RA@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/19] mm: Introduce a cgroup to limit the amount of
+ locked and pinned memory
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
+        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
+        mkoutny@suse.com, daniel@ffwll.ch
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, Jan 31, 2023 at 3:24 AM Alistair Popple <apopple@nvidia.com> wrote:
+>
+>
+> Yosry Ahmed <yosryahmed@google.com> writes:
+>
+> > On Mon, Jan 30, 2023 at 5:07 PM Alistair Popple <apopple@nvidia.com> wrote:
+> >>
+> >>
+> >> Yosry Ahmed <yosryahmed@google.com> writes:
+> >>
+> >> > On Mon, Jan 23, 2023 at 9:43 PM Alistair Popple <apopple@nvidia.com> wrote:
+> >> >>
+> >> >> Having large amounts of unmovable or unreclaimable memory in a system
+> >> >> can lead to system instability due to increasing the likelihood of
+> >> >> encountering out-of-memory conditions. Therefore it is desirable to
+> >> >> limit the amount of memory users can lock or pin.
+> >> >>
+> >> >> From userspace such limits can be enforced by setting
+> >> >> RLIMIT_MEMLOCK. However there is no standard method that drivers and
+> >> >> other in-kernel users can use to check and enforce this limit.
+> >> >>
+> >> >> This has lead to a large number of inconsistencies in how limits are
+> >> >> enforced. For example some drivers will use mm->locked_mm while others
+> >> >> will use mm->pinned_mm or user->locked_mm. It is therefore possible to
+> >> >> have up to three times RLIMIT_MEMLOCKED pinned.
+> >> >>
+> >> >> Having pinned memory limited per-task also makes it easy for users to
+> >> >> exceed the limit. For example drivers that pin memory with
+> >> >> pin_user_pages() it tends to remain pinned after fork. To deal with
+> >> >> this and other issues this series introduces a cgroup for tracking and
+> >> >> limiting the number of pages pinned or locked by tasks in the group.
+> >> >>
+> >> >> However the existing behaviour with regards to the rlimit needs to be
+> >> >> maintained. Therefore the lesser of the two limits is
+> >> >> enforced. Furthermore having CAP_IPC_LOCK usually bypasses the rlimit,
+> >> >> but this bypass is not allowed for the cgroup.
+> >> >>
+> >> >> The first part of this series converts existing drivers which
+> >> >> open-code the use of locked_mm/pinned_mm over to a common interface
+> >> >> which manages the refcounts of the associated task/mm/user
+> >> >> structs. This ensures accounting of pages is consistent and makes it
+> >> >> easier to add charging of the cgroup.
+> >> >>
+> >> >> The second part of the series adds the cgroup and converts core mm
+> >> >> code such as mlock over to charging the cgroup before finally
+> >> >> introducing some selftests.
+> >> >
+> >> >
+> >> > I didn't go through the entire series, so apologies if this was
+> >> > mentioned somewhere, but do you mind elaborating on why this is added
+> >> > as a separate cgroup controller rather than an extension of the memory
+> >> > cgroup controller?
+> >>
+> >> One of my early prototypes actually did add this to the memcg
+> >> controller. However pinned pages fall under their own limit, and we
+> >> wanted to always account pages to the cgroup of the task using the
+> >> driver rather than say folio_memcg(). So adding it to memcg didn't seem
+> >> to have much benefit as we didn't end up using any of the infrastructure
+> >> provided by memcg. Hence I thought it was clearer to just add it as it's
+> >> own controller.
+> >
+> > To clarify, you account and limit pinned memory based on the cgroup of
+> > the process pinning the pages, not based on the cgroup that the pages
+> > are actually charged to? Is my understanding correct?
+>
+> That's correct.
 
-On 1/31/23 14:22, Qais Yousef wrote:
-> On 01/30/23 14:57, Waiman Long wrote:
->> On 1/30/23 14:48, Qais Yousef wrote:
->>> On 01/30/23 11:29, Waiman Long wrote:
->>>> On 1/30/23 08:00, Qais Yousef wrote:
->>>>
->>>>           just skip the call here if the condition is right? Like
->>>>
->>>>                   /* rebuild sched domains if cpus_allowed has changed */
->>>>                   if (cpus_updated || (force_rebuild && !cpuhp_tasks_frozen)) {
->>>>                           force_rebuild = false;
->>>>                           rebuild_sched_domains();
->>>>                   }
->>>>
->>>>           Still, we will need to confirm that cpuhp_tasks_frozen will be cleared
->>>>           outside of the suspend/resume cycle.
->>>>
->>>>       I think it's fine to use this variable from the cpuhp callback context only.
->>>>       Which I think this cpuset workfn is considered an extension of.
->>>>
->>>>       But you're right, I can't use cpuhp_tasks_frozen directly in
->>>>       rebuild_root_domains() as I did in v1 because it doesn't get cleared after
->>>>       calling the last _cpu_up().
->>>>
->>>> That is what I suspect. So we can't use that cpuhp_tasks_frozen variable here
->>>> in cpuset.
->>>>
->>>>        force_rebuild will only be set after the last cpu
->>>>       is brought online though - so this should happen once at the end.
->>>>
->>>> Perhaps you can add another tracking variable for detecting if suspend/resume
->>>> is in progress.
->>> I think cpuhp_tasks_frozen is meant for that. All users who cared so far
->>> belonged to the cpuhp callback. I think reading it from cpuset_hotplug_workfn()
->>> is fine too as this function will only run as a consequence of the cpuhp
->>> callback AFAICS. cpuset_cpu_active() takes care of not forcing a rebuild of
->>> sched_domains until the last cpu becomes active - so the part of it being done
->>> once at the end at resume is handled too.
->> Well we will have to add code to clear cpuhp_tasks_frozen at the end of
->> resume then. We don't want to affect other callers unless we are sure that
->> it won't affect them.
-> Actually I think since the cpuset_hotplug_workfn() is called later, there's
-> a chance to race with another cpuhp operation just after resume.
->
-> Anyway. I think we don't have to use this flag. But we'd have to better distill
-> the reasons of why we force_rebuild.
->
-> Your 2 new users are tripping me so far - do they handle errors where the shape
-> of cpuset changes? If yes, then we must take dl accounting update into
-> consideration for these errors.
-The 2 new users is for the cpuset cpu partition which is used to create 
-a secondary scheduling domain and hence have to call 
-rebuilds_sched_domains() to set it up. Those should not be used that 
-frequently.
+Interesting.
 
 >
-> Juri, I'd still would appreciate a confirmation from you that I'm not
-> understanding things completely wrong.
+> > IOW, you limit the amount of memory that processes in a cgroup can
+> > pin, not the amount of memory charged to a cgroup that can be pinned?
 >
->>> It's just rebuild_sched_domains() will always assume it needs to clear and
->>> rebuild deadline accounting - which is not true for suspend/resume case. But
->>> now looking at other users of rebuild_sched_domains(), others might be getting
->>> the hit too. For example rebuild_sched_domains_locked() is called on
->>> update_relax_domain_level() which AFAIU should not impact dl accounting.
->>>
->>> FWIW, I did capture a worst case scenario of 21ms because of
->>> rebuild_root_domains().
->>>
->>> /me thinks rebuild_root_domains() is a misleading name too as it just fixes
->>> dl accounting but not rebuild the rd itself.
->>>
->>> What makes sense to me now is to pass whether dl accounting requires updating
->>> to rebuild_sched_domains() as an arg so that the caller can decide whether the
->>> reason can affect dl accounting.
->>>
->>> Or maybe pull rebuild_root_domains() out of the chain and let the caller call
->>> it directly. And probably rename it to update_do_rd_accounting() or something.
->>>
->>> I'll continue to dig more..
->> Looking forward to see that.
-> Another thought I had is maybe worth trying to optimize the rebuild root domain
-> process. Interestingly in my system there are no dl tasks but
+> Right, that's a good clarification which I might steal and add to the
+> cover letter.
+
+Feel free to :)
+
+Please also clarify this in the code/docs. Glancing through the
+patches I was asking myself multiple times why this is not
+"memory.pinned.[current/max]" or similar.
+
 >
-> 	rebuilds_sched_domains()
-> 	  cpuset_for_each_descendant_pre()
-> 	    update_tasks_root_domain()
-> 	      css_task_iter_next()
-> 	        dl_add_task_root_domain()
+> >>
+> >>  - Alistair
+> >>
+> >> >>
+> >> >>
+> >> >> As I don't have access to systems with all the various devices I
+> >> >> haven't been able to test all driver changes. Any help there would be
+> >> >> appreciated.
+> >> >>
+> >> >> Alistair Popple (19):
+> >> >>   mm: Introduce vm_account
+> >> >>   drivers/vhost: Convert to use vm_account
+> >> >>   drivers/vdpa: Convert vdpa to use the new vm_structure
+> >> >>   infiniband/umem: Convert to use vm_account
+> >> >>   RMDA/siw: Convert to use vm_account
+> >> >>   RDMA/usnic: convert to use vm_account
+> >> >>   vfio/type1: Charge pinned pages to pinned_vm instead of locked_vm
+> >> >>   vfio/spapr_tce: Convert accounting to pinned_vm
+> >> >>   io_uring: convert to use vm_account
+> >> >>   net: skb: Switch to using vm_account
+> >> >>   xdp: convert to use vm_account
+> >> >>   kvm/book3s_64_vio: Convert account_locked_vm() to vm_account_pinned()
+> >> >>   fpga: dfl: afu: convert to use vm_account
+> >> >>   mm: Introduce a cgroup for pinned memory
+> >> >>   mm/util: Extend vm_account to charge pages against the pin cgroup
+> >> >>   mm/util: Refactor account_locked_vm
+> >> >>   mm: Convert mmap and mlock to use account_locked_vm
+> >> >>   mm/mmap: Charge locked memory to pins cgroup
+> >> >>   selftests/vm: Add pins-cgroup selftest for mlock/mmap
+> >> >>
+> >> >>  MAINTAINERS                              |   8 +-
+> >> >>  arch/powerpc/kvm/book3s_64_vio.c         |  10 +-
+> >> >>  arch/powerpc/mm/book3s64/iommu_api.c     |  29 +--
+> >> >>  drivers/fpga/dfl-afu-dma-region.c        |  11 +-
+> >> >>  drivers/fpga/dfl-afu.h                   |   1 +-
+> >> >>  drivers/infiniband/core/umem.c           |  16 +-
+> >> >>  drivers/infiniband/core/umem_odp.c       |   6 +-
+> >> >>  drivers/infiniband/hw/usnic/usnic_uiom.c |  13 +-
+> >> >>  drivers/infiniband/hw/usnic/usnic_uiom.h |   1 +-
+> >> >>  drivers/infiniband/sw/siw/siw.h          |   2 +-
+> >> >>  drivers/infiniband/sw/siw/siw_mem.c      |  20 +--
+> >> >>  drivers/infiniband/sw/siw/siw_verbs.c    |  15 +-
+> >> >>  drivers/vdpa/vdpa_user/vduse_dev.c       |  20 +--
+> >> >>  drivers/vfio/vfio_iommu_spapr_tce.c      |  15 +-
+> >> >>  drivers/vfio/vfio_iommu_type1.c          |  59 +----
+> >> >>  drivers/vhost/vdpa.c                     |   9 +-
+> >> >>  drivers/vhost/vhost.c                    |   2 +-
+> >> >>  drivers/vhost/vhost.h                    |   1 +-
+> >> >>  include/linux/cgroup.h                   |  20 ++-
+> >> >>  include/linux/cgroup_subsys.h            |   4 +-
+> >> >>  include/linux/io_uring_types.h           |   3 +-
+> >> >>  include/linux/kvm_host.h                 |   1 +-
+> >> >>  include/linux/mm.h                       |   5 +-
+> >> >>  include/linux/mm_types.h                 |  88 ++++++++-
+> >> >>  include/linux/skbuff.h                   |   6 +-
+> >> >>  include/net/sock.h                       |   2 +-
+> >> >>  include/net/xdp_sock.h                   |   2 +-
+> >> >>  include/rdma/ib_umem.h                   |   1 +-
+> >> >>  io_uring/io_uring.c                      |  20 +--
+> >> >>  io_uring/notif.c                         |   4 +-
+> >> >>  io_uring/notif.h                         |  10 +-
+> >> >>  io_uring/rsrc.c                          |  38 +---
+> >> >>  io_uring/rsrc.h                          |   9 +-
+> >> >>  mm/Kconfig                               |  11 +-
+> >> >>  mm/Makefile                              |   1 +-
+> >> >>  mm/internal.h                            |   2 +-
+> >> >>  mm/mlock.c                               |  76 +------
+> >> >>  mm/mmap.c                                |  76 +++----
+> >> >>  mm/mremap.c                              |  54 +++--
+> >> >>  mm/pins_cgroup.c                         | 273 ++++++++++++++++++++++++-
+> >> >>  mm/secretmem.c                           |   6 +-
+> >> >>  mm/util.c                                | 196 +++++++++++++++--
+> >> >>  net/core/skbuff.c                        |  47 +---
+> >> >>  net/rds/message.c                        |   9 +-
+> >> >>  net/xdp/xdp_umem.c                       |  38 +--
+> >> >>  tools/testing/selftests/vm/Makefile      |   1 +-
+> >> >>  tools/testing/selftests/vm/pins-cgroup.c | 271 ++++++++++++++++++++++++-
+> >> >>  virt/kvm/kvm_main.c                      |   3 +-
+> >> >>  48 files changed, 1114 insertions(+), 401 deletions(-)
+> >> >>  create mode 100644 mm/pins_cgroup.c
+> >> >>  create mode 100644 tools/testing/selftests/vm/pins-cgroup.c
+> >> >>
+> >> >> base-commit: 2241ab53cbb5cdb08a6b2d4688feb13971058f65
+> >> >> --
+> >> >> git-series 0.9.1
+> >> >>
+> >>
 >
-> seems to be going through every task in the hierarchy anyway which would
-> explain the slow down. We can have special variants to iterate through
-> hierarchies that ever seen a dl task attached to them and a special variant to
-> iterate through dl tasks only in a css - but I'm not sure if I'm brave enough
-> to go down this rabbit hole :D
-
-Yes, it seems like we have to check every tasks in the system to see if 
-they are dl tasks. It can be expensive if there are a large number of 
-tasks. Maybe we should track the # of dl tasks in each cgroup and skip 
-this operation if there is none.
-
-Cheers,
-Longman
-
