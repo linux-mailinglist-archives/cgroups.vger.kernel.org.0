@@ -2,59 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCEC686492
-	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 11:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D5F686580
+	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 12:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbjBAKmk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Feb 2023 05:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
+        id S230340AbjBALmS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Feb 2023 06:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbjBAKm3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 05:42:29 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DB69756
-        for <cgroups@vger.kernel.org>; Wed,  1 Feb 2023 02:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675248124; x=1706784124;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=g6n1pzIxc/IThPSoKWzX6Ba49VHs2cTMTP6K0bCIqrw=;
-  b=iAsvweJMcRHt1W0pk5jXVqKP2iezDcMrQ8Ix3ht+c3dRypviFkFOusAs
-   gS27KFyse5zf/8YEMz9XTKpg9c8rwYtx6DzbddeM2DpCAif0+lKdVJSeo
-   qKKAxqlZNX8zLEVKnry3P2S7AxOwLAaStLl6HrNN38AUYP4A0SbEjeBDQ
-   XTB1Qj6LVAlzwKHSL6DmgEOjBuDpwDB7feHBPhx5AcuF4O/E3F/2+9+pH
-   BKLy0s0XLOtBjkDO5FIRoZMTmEQ0iflQ2AyG4M3PUMfr5TzTLvzoBByJM
-   DjLtyp947VB96/3EVLwDzSy4T2aqxnN/UcBq6iIslnnFb0pBXejmBm4EI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="390497642"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
-   d="scan'208";a="390497642"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2023 02:41:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="773392647"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
-   d="scan'208";a="773392647"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Feb 2023 02:41:21 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pNAYK-0005MK-2l;
-        Wed, 01 Feb 2023 10:41:20 +0000
-Date:   Wed, 01 Feb 2023 18:40:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.2-fixes] BUILD SUCCESS
- e5ae8803847b80fe9d744a3174abe2b7bfed222a
-Message-ID: <63da41bb.2l41rZ/Q0vluO1ic%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229483AbjBALmR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 06:42:17 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04985474D6;
+        Wed,  1 Feb 2023 03:42:16 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4P6KlP6dxzz4f3nTl;
+        Wed,  1 Feb 2023 19:42:09 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP3 (Coremail) with SMTP id _Ch0CgA35CESUNpjcwg6Cg--.7807S4;
+        Wed, 01 Feb 2023 19:42:12 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     jack@suse.cz, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        paolo.valente@linaro.org
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH -next] block, bfq: cleanup 'bfqg->online'
+Date:   Wed,  1 Feb 2023 20:06:09 +0800
+Message-Id: <20230201120609.4151432-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgA35CESUNpjcwg6Cg--.7807S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWxZF1xZr18JF1ktF4Utwb_yoW8Wr4kpF
+        sFqF4UGa43tFn5XFW5C3WUXr1rtwn5u34DK3y8X34YyFy3Jrn29Fn0yw4rAFWIgF4fCFZ8
+        Zw10grW8CF17K3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,89 +59,59 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.2-fixes
-branch HEAD: e5ae8803847b80fe9d744a3174abe2b7bfed222a  cgroup/cpuset: Fix wrong check in update_parent_subparts_cpumask()
+From: Yu Kuai <yukuai3@huawei.com>
 
-elapsed time: 738m
+After commit dfd6200a0954 ("blk-cgroup: support to track if policy is
+online"), there is no need to do this again in bfq.
 
-configs tested: 68
-configs skipped: 2
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/bfq-cgroup.c  | 4 +---
+ block/bfq-iosched.h | 2 --
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-x86_64                            allnoconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-s390                                defconfig
-s390                             allyesconfig
-ia64                             allmodconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-x86_64               randconfig-a001-20230130
-x86_64               randconfig-a003-20230130
-x86_64               randconfig-a004-20230130
-x86_64               randconfig-a002-20230130
-arc                  randconfig-r043-20230129
-arm                  randconfig-r046-20230129
-x86_64               randconfig-a006-20230130
-arm                  randconfig-r046-20230130
-arc                  randconfig-r043-20230130
-x86_64               randconfig-a005-20230130
-x86_64                              defconfig
-powerpc                           allnoconfig
-x86_64                               rhel-8.3
-sh                               allmodconfig
-x86_64                           allyesconfig
-i386                 randconfig-a002-20230130
-i386                 randconfig-a001-20230130
-mips                             allyesconfig
-i386                 randconfig-a004-20230130
-i386                 randconfig-a003-20230130
-i386                 randconfig-a005-20230130
-i386                 randconfig-a006-20230130
-x86_64                           rhel-8.3-syz
-x86_64                           rhel-8.3-kvm
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-bpf
-i386                                defconfig
-i386                             allyesconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-powerpc                          allmodconfig
-
-clang tested configs:
-x86_64                          rhel-8.3-rust
-hexagon              randconfig-r041-20230129
-hexagon              randconfig-r045-20230130
-hexagon              randconfig-r041-20230130
-hexagon              randconfig-r045-20230129
-s390                 randconfig-r044-20230129
-riscv                randconfig-r042-20230129
-riscv                randconfig-r042-20230130
-s390                 randconfig-r044-20230130
-i386                 randconfig-a013-20230130
-i386                 randconfig-a011-20230130
-i386                 randconfig-a012-20230130
-i386                 randconfig-a014-20230130
-i386                 randconfig-a015-20230130
-i386                 randconfig-a016-20230130
-x86_64               randconfig-a013-20230130
-x86_64               randconfig-a011-20230130
-x86_64               randconfig-a012-20230130
-x86_64               randconfig-a014-20230130
-x86_64               randconfig-a015-20230130
-x86_64               randconfig-a016-20230130
-
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index b42956ab5550..a35136dae713 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -551,7 +551,6 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
+ 	bfqg->bfqd = bfqd;
+ 	bfqg->active_entities = 0;
+ 	bfqg->num_queues_with_pending_reqs = 0;
+-	bfqg->online = true;
+ 	bfqg->rq_pos_tree = RB_ROOT;
+ }
+ 
+@@ -614,7 +613,7 @@ struct bfq_group *bfq_bio_bfqg(struct bfq_data *bfqd, struct bio *bio)
+ 			continue;
+ 		}
+ 		bfqg = blkg_to_bfqg(blkg);
+-		if (bfqg->online) {
++		if (bfqg->pd.online) {
+ 			bio_associate_blkg_from_css(bio, &blkg->blkcg->css);
+ 			return bfqg;
+ 		}
+@@ -985,7 +984,6 @@ static void bfq_pd_offline(struct blkg_policy_data *pd)
+ 
+ put_async_queues:
+ 	bfq_put_async_queues(bfqd, bfqg);
+-	bfqg->online = false;
+ 
+ 	spin_unlock_irqrestore(&bfqd->lock, flags);
+ 	/*
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index 75cc6a324267..69aaee52285a 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -1009,8 +1009,6 @@ struct bfq_group {
+ 
+ 	/* reference counter (see comments in bfq_bic_update_cgroup) */
+ 	refcount_t ref;
+-	/* Is bfq_group still online? */
+-	bool online;
+ 
+ 	struct bfq_entity entity;
+ 	struct bfq_sched_data sched_data;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.31.1
+
