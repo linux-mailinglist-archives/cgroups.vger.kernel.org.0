@@ -2,205 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D34EA686278
-	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 10:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0123568629B
+	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 10:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbjBAJIc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Feb 2023 04:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        id S231131AbjBAJOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Feb 2023 04:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbjBAJIY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 04:08:24 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC19562252;
-        Wed,  1 Feb 2023 01:07:53 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id ha3-20020a17090af3c300b00230222051a6so1343180pjb.2;
-        Wed, 01 Feb 2023 01:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VyDJoRO+eavlOXGc4Q5SqoZUyZeya7RZ/BUKNVX/+dM=;
-        b=n2kJU8RU6IvD/ch8vvXg1MhGLeamnUTDDdUpFRbfmE/2i6Ns4J1BaSL67JvbV163yV
-         WLDUX8LreB1zUVzjU5huvP/DhUdx0OlMmaXyLeIqjQ20kONQkXYsh0nT6objM+1J9L9p
-         TsXk8BbhOP4NR7MvpmjdH/b7f/HZLcE3nSk5xD196RrOLQcd9SoYhGIZQQ/PRx6gdqv+
-         0JYWD1DjJul12kanXB2l9mLvaSkxRdWlMHuy6g5+8EfbeVNCEJVz9KpaScfTG6zbLTd+
-         J8xEigI1i6MGnIcts/aAzTCezN5DIBtI1pbH7OcvOgofhi3tK4yNrr6W0Gh1TYgnTjTu
-         WB+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VyDJoRO+eavlOXGc4Q5SqoZUyZeya7RZ/BUKNVX/+dM=;
-        b=u+dL6zkycS5Vtt+rObBfs1ezkJeLTlyR/n8scL+kEwWZknsRzhKZkp01wHBMgYjCUI
-         kB1wTy+R1QpYG3OdVVtuoa/W5spai2tS94/S35xZ3E7BuWUDrdRz28NNwdiEAiK5xhB8
-         LDoYjlIqgVG3hOFiXpLGFnIyLPcVJvi1atn9YfG3BKDZJ34bedl9iouVOJMGlDMtkz23
-         dq+sAkDbD81ojmHe/wh6sNjBNr0r8AHwNkzJ7e++XoYmA+kqSuvVIJ4vP1CMN6SsU92M
-         JBLzWlYLNVT6sHhcvss4ZtK7XVHqw+U77LoGgUPJMpJ8biG+pRTY6CEXBAyKqNRdlwvY
-         Dbig==
-X-Gm-Message-State: AO0yUKU1NDSW6dMtSlcQEmW1eW1tj5qlbEBIE3YCPaVZXGI51uTSpHnX
-        POEFrxGvNWNXoQpx083IKhI=
-X-Google-Smtp-Source: AK7set9sYNzoDhM3lbLZDZLS4ZpRhW4FYff6fKjTlS1Ej2P5it/rfKiNfSxJmx6GlLRjg3DcvPuFyQ==
-X-Received: by 2002:a17:90b:3812:b0:22c:24c0:7106 with SMTP id mq18-20020a17090b381200b0022c24c07106mr1447738pjb.21.1675242472898;
-        Wed, 01 Feb 2023 01:07:52 -0800 (PST)
-Received: from debian.me (subs02-180-214-232-18.three.co.id. [180.214.232.18])
-        by smtp.gmail.com with ESMTPSA id e16-20020a633710000000b004efe1f24522sm1050777pga.23.2023.02.01.01.07.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 01:07:52 -0800 (PST)
-Received: by debian.me (Postfix, from userid 1000)
-        id BEAED104F9E; Wed,  1 Feb 2023 16:07:48 +0700 (WIB)
-Date:   Wed, 1 Feb 2023 16:07:48 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Hou Tao <houtao@huaweicloud.com>, linux-block@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, houtao1@huawei.com
-Subject: Re: [PATCH] blk-ioprio: Introduce promote-to-rt policy
-Message-ID: <Y9or5PkdXj/D94fR@debian.me>
-References: <20230201045227.2203123-1-houtao@huaweicloud.com>
+        with ESMTP id S230189AbjBAJOW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 04:14:22 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B9B3A84E;
+        Wed,  1 Feb 2023 01:14:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1tLYxflxPSmAMG06qYmYTYHHUzBsNv1g6cb5uWR7Y7Y=; b=ZZ19OwLB4nKNX+PqIaL8kGijQx
+        L3wytC4ExmF6f/6+g6NTTnSTbrVw7R37f+rwAYIBEWwIJGdFHDBH4yi/uHEyzYpxj+Nye+EbljqzM
+        3vJ8qTSv7d+DT94pY7foEUvNxSrLh3gieRaGj8yYN/aQjwMZAhLae5t2FwGeJeZmCRLZ5XkKz1DMW
+        Otudq5PYNqREom8fDOZgJBMi/Gxph6eERFCNw5V7jmskp1L31US6ARr5gsGXKG9dWX1tbouZ/KSy6
+        iwGl6n0Yl4yMyLq9Hn7Ma63r1/OW6RHjFmEvNzLnoH+d5Aa0fusQvVcqmRxhLh8w/q+l+VAeCkbJU
+        BJlZCblg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pN9BH-004i5B-1d;
+        Wed, 01 Feb 2023 09:13:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5201E300472;
+        Wed,  1 Feb 2023 10:14:01 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2D31123CDCE2E; Wed,  1 Feb 2023 10:14:01 +0100 (CET)
+Date:   Wed, 1 Feb 2023 10:14:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
+ offline CPUs
+Message-ID: <Y9otWX+MGOLDKU6t@hirez.programming.kicks-ass.net>
+References: <20230131221719.3176-1-will@kernel.org>
+ <20230131221719.3176-2-will@kernel.org>
+ <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OS7Ho6/EPKDu6yfb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230201045227.2203123-1-houtao@huaweicloud.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, Jan 31, 2023 at 11:14:27PM -0500, Waiman Long wrote:
+> On 1/31/23 17:17, Will Deacon wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > 
+> > There is a difference in behaviour between CPUSET={y,n} that is now
+> > wrecking havoc with {relax,force}_compatible_cpus_allowed_ptr().
+> > 
+> > Specifically, since commit 8f9ea86fdf99 ("sched: Always preserve the
+> > user requested cpumask")  relax_compatible_cpus_allowed_ptr() is
+> > calling __sched_setaffinity() unconditionally.
+> > 
+> > But the underlying problem goes back a lot further, possibly to
+> > commit: ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}") which
+> > switched cpuset_cpus_allowed() from cs->cpus_allowed to
+> > cs->effective_cpus.
+> > 
+> > The problem is that for CPUSET=y cpuset_cpus_allowed() will filter out
+> > all offline CPUs. For tasks that are part of a (!root) cpuset this is
+> > then later fixed up by the cpuset hotplug notifiers that re-evaluate
+> > and re-apply cs->effective_cpus, but for (normal) tasks in the root
+> > cpuset this does not happen and they will forever after be excluded
+> > from CPUs onlined later.
+> > 
+> > As such, rewrite cpuset_cpus_allowed() to return a wider mask,
+> > including the offline CPUs.
+> > 
+> > Fixes: 8f9ea86fdf99 ("sched: Always preserve the user requested cpumask")
+> > Reported-by: Will Deacon <will@kernel.org>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Link: https://lkml.kernel.org/r/20230117160825.GA17756@willie-the-truck
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> 
+> Before cgroup v2, cpuset had only one cpumask - cpus_allowed. It only
+> tracked online cpus and ignored the offline ones. It behaves more like
+> effective_cpus in cpuset v2. With v2, we have 2 cpumasks - cpus_allowed and
+> effective_cpus. When cpuset v1 is mounted, cpus_allowed and effective_cpus
+> are effectively the same and track online cpus. With cpuset v2, cpus_allowed
+> contains what the user has written into and it won't be changed until
+> another write happen. However, what the user written may not be what the
+> system can give it and effective_cpus is what the system decides a cpuset
+> can use.
+> 
+> Cpuset v2 is able to handle hotplug correctly and update the task's cpumask
+> accordingly. So missing previously offline cpus won't happen with v2.
+> 
+> Since v1 keeps the old behavior, previously offlined cpus are lost in the
+> cpuset's cpus_allowed. However tasks in the root cpuset will still be fine
+> with cpu hotplug as its cpus_allowed should track cpu_online_mask. IOW, only
+> tasks in a non-root cpuset suffer this problem.
+> 
+> It was a known issue in v1 and I believe is one of the major reasons of the
+> cpuset v2 redesign.
+> 
+> A major concern I have is the overhead of creating a poor man version of v2
+> cpus_allowed. This issue can be worked around even for cpuset v1 if it is
+> mounted with the cpuset_v2_mode option to behave more like v2 in its cpumask
+> handling. Alternatively we may be able to provide a config option to make
+> this the default for v1 without the special mount option, if necessary.
 
---OS7Ho6/EPKDu6yfb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You're still not getting it -- even cpuset (be it v1 or v2) *MUST* *NOT*
+mask offline cpus for root cgroup tasks, ever. (And the only reason it
+gets away with masking offline for !root is that it re-applies the mask
+every time it changes.)
 
-On Wed, Feb 01, 2023 at 12:52:27PM +0800, Hou Tao wrote:
->  The following numerical values are associated with the I/O priority poli=
-cies:
-> =20
-> -+-------------+---+
-> -| no-change   | 0 |
-> -+-------------+---+
-> -| none-to-rt  | 1 |
-> -+-------------+---+
-> -| rt-to-be    | 2 |
-> -+-------------+---+
-> -| all-to-idle | 3 |
-> -+-------------+---+
-> +
-> ++---------------+---------+-----+
-> +| policy        | inst    | num |
-> ++---------------+---------+-----+
-> +| no-change     | demote  | 0   |
-> ++---------------+---------+-----+
-> +| none-to-rt    | demote  | 1   |
-> ++---------------+---------+-----+
-> +| rt-to-be      | demote  | 2   |
-> ++---------------+---------+-----+
-> +| idle          | demote  | 3   |
-> ++---------------+---------+-----+
-> +| promote-to-rt | promote | 1   |
-> ++---------------+---------+-----+
-> =20
+Yes it did that for a fair while -- but it is wrong and broken and a
+very big behavioural difference between CONFIG_CPUSET={y,n}. This must
+not be.
 
-The first row should have been header row:
+Arguably cpuset-v2 is still wrong for masking offline cpus in it's
+effective_cpus mask, but I really didn't want to go rewrite cpuset.c for
+something that needs to go into /urgent *now*.
 
----- >8 ----
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
-guide/cgroup-v2.rst
-index e0b9f73ef62a9e..55f9b579716564 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2048,7 +2048,7 @@ The following numerical values are associated with th=
-e I/O priority policies:
-=20
- +---------------+---------+-----+
- | policy        | inst    | num |
--+---------------+---------+-----+
-++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-+=3D=3D=3D=3D=3D+
- | no-change     | demote  | 0   |
- +---------------+---------+-----+
- | none-to-rt    | demote  | 1   |
+Hence this minimal patch that at least lets sched_setaffinity() work as
+intended.
 
-> @@ -2064,9 +2074,13 @@ The numerical value that corresponds to each I/O p=
-riority class is as follows:
-> =20
->  The algorithm to set the I/O priority class for a request is as follows:
-> =20
-> -- Translate the I/O priority class policy into a number.
-> -- Change the request I/O priority class into the maximum of the I/O prio=
-rity
-> -  class policy number and the numerical I/O priority class.
-> +-- Translate the I/O priority class policy into an instruction and a num=
-ber
-> +-- If the instruction is demotion, change the request I/O priority class
-> +-  into the maximum of the I/O priority class policy number and the nume=
-rical
-> +-  I/O priority class.
-> +-- If the instruction is promotion, change the request I/O priority class
-> +-  into the minimum of the I/O priority class policy number and the nume=
-rical
-> +-  I/O priority class.
-> =20
 
-Remove the excessive bullet list marker or the list above become paragraph
-instead:
-
----- >8 ----
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
-guide/cgroup-v2.rst
-index 55f9b579716564..c3f16386c47bdf 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2074,12 +2074,12 @@ The numerical value that corresponds to each I/O pr=
-iority class is as follows:
-=20
- The algorithm to set the I/O priority class for a request is as follows:
-=20
---- Translate the I/O priority class policy into an instruction and a number
---- If the instruction is demotion, change the request I/O priority class
---  into the maximum of the I/O priority class policy number and the numeri=
-cal
---  I/O priority class.
---- If the instruction is promotion, change the request I/O priority class
---  into the minimum of the I/O priority class policy number and the numeri=
-cal
-+- Translate the I/O priority class policy into an instruction-number pair.
-+- If the instruction is demotion, change the request I/O priority class
-+  into the maximum of the I/O priority class policy number and the numeric=
-al
-+  I/O priority class.
-+- If the instruction is promotion, change the request I/O priority class
-+  into the minimum of the I/O priority class policy number and the numeric=
-al
- -  I/O priority class.
-=20
- PID
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---OS7Ho6/EPKDu6yfb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY9or3wAKCRD2uYlJVVFO
-o58vAQD9CxSaIpA4AdTyvw0fuMNPOIuLSy4uqbVbnlwCHskJ8AD+IKwJnyzxD6Z5
-kesBn69iDFNMECytC+QbcW0GkzPXZw0=
-=iRGq
------END PGP SIGNATURE-----
-
---OS7Ho6/EPKDu6yfb--
