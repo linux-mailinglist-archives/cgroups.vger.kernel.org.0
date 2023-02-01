@@ -2,59 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA598686E47
-	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 19:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFCE686E5B
+	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 19:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbjBASlc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Feb 2023 13:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
+        id S232168AbjBASrJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Feb 2023 13:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjBASlb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 13:41:31 -0500
-X-Greylist: delayed 571 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Feb 2023 10:41:18 PST
-Received: from out-4.mta1.migadu.com (out-4.mta1.migadu.com [IPv6:2001:41d0:203:375::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2BF10AA9
-        for <cgroups@vger.kernel.org>; Wed,  1 Feb 2023 10:41:18 -0800 (PST)
-Date:   Wed, 1 Feb 2023 10:31:40 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1675276305;
+        with ESMTP id S232173AbjBASrG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 13:47:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA72E44B9
+        for <cgroups@vger.kernel.org>; Wed,  1 Feb 2023 10:46:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675277179;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2k9RdWKbuchR7Tzph+cOMm2F328+gYOorWNDRphKPTY=;
-        b=lmsm5EJw7Ag76Ab2u0I+odcANv0IJvSUVxiwTozoluqHE0itOLpy3pK5ukk3jFQ+0ZbszO
-        cTqWApnPoXqtuihkawaz9n7RekvDrLJlvDoGpCOwa9TN/xc5xpQlU5QClV/g0GZuhsQm6f
-        dndefcr6GKweZLSl45WWLTr2WF3u46E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
-Message-ID: <Y9qwDGXZviWdtonc@P9FQF9L96D.corp.robot.car>
-References: <20230125073502.743446-1-leobras@redhat.com>
- <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
- <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
- <Y9FzSBw10MGXm2TK@tpad>
- <Y9G36AiqPPFDlax3@P9FQF9L96D.corp.robot.car>
- <Y9Iurktut9B9T+Tl@dhcp22.suse.cz>
- <Y9LAf4pRyClZ1vfx@tpad>
- <Y9LSjnNEEUiF/70R@dhcp22.suse.cz>
+        bh=WMJxGKUxICdJkr3IJm0KcD0HtsJ23RP/wU90pxKymkc=;
+        b=CoARRrjKtZiwemYPGXGI0z6wkLCemDMnXi91JXigpXtkzhJd2piDw6MtR6btdrDGnvCmH4
+        /fKwW0uZNLfKZ3ZlJoHxN538oE3OTQ+GgCCsAuoKzuWLo+Ch7mrB6n8L3UM24okLBCxqtw
+        u2jlv2sBB5jovJjXQCDyKGphmHmtTb0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-441-sSPZQ4WkOkmzIKi8gGgpHQ-1; Wed, 01 Feb 2023 13:46:13 -0500
+X-MC-Unique: sSPZQ4WkOkmzIKi8gGgpHQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C25F1885622;
+        Wed,  1 Feb 2023 18:46:11 +0000 (UTC)
+Received: from [10.18.17.153] (dhcp-17-153.bos.redhat.com [10.18.17.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 250102166B33;
+        Wed,  1 Feb 2023 18:46:11 +0000 (UTC)
+Message-ID: <a892d340-ea99-1562-0e70-176f02f195c2@redhat.com>
+Date:   Wed, 1 Feb 2023 13:46:11 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
+ offline CPUs
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+References: <20230131221719.3176-1-will@kernel.org>
+ <20230131221719.3176-2-will@kernel.org>
+ <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
+ <Y9otWX+MGOLDKU6t@hirez.programming.kicks-ass.net>
+ <83e53632-27ed-8dde-84f4-68c6776d6da8@redhat.com>
+In-Reply-To: <83e53632-27ed-8dde-84f4-68c6776d6da8@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y9LSjnNEEUiF/70R@dhcp22.suse.cz>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,92 +70,127 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 08:20:46PM +0100, Michal Hocko wrote:
-> On Thu 26-01-23 15:03:43, Marcelo Tosatti wrote:
-> > On Thu, Jan 26, 2023 at 08:41:34AM +0100, Michal Hocko wrote:
-> > > On Wed 25-01-23 15:14:48, Roman Gushchin wrote:
-> > > > On Wed, Jan 25, 2023 at 03:22:00PM -0300, Marcelo Tosatti wrote:
-> > > > > On Wed, Jan 25, 2023 at 08:06:46AM -0300, Leonardo Br�s wrote:
-> > > > > > On Wed, 2023-01-25 at 09:33 +0100, Michal Hocko wrote:
-> > > > > > > On Wed 25-01-23 04:34:57, Leonardo Bras wrote:
-> > > > > > > > Disclaimer:
-> > > > > > > > a - The cover letter got bigger than expected, so I had to split it in
-> > > > > > > >     sections to better organize myself. I am not very confortable with it.
-> > > > > > > > b - Performance numbers below did not include patch 5/5 (Remove flags
-> > > > > > > >     from memcg_stock_pcp), which could further improve performance for
-> > > > > > > >     drain_all_stock(), but I could only notice the optimization at the
-> > > > > > > >     last minute.
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 0 - Motivation:
-> > > > > > > > On current codebase, when drain_all_stock() is ran, it will schedule a
-> > > > > > > > drain_local_stock() for each cpu that has a percpu stock associated with a
-> > > > > > > > descendant of a given root_memcg.
-> > > > 
-> > > > Do you know what caused those drain_all_stock() calls? I wonder if we should look
-> > > > into why we have many of them and whether we really need them?
-> > > > 
-> > > > It's either some user's actions (e.g. reducing memory.max), either some memcg
-> > > > is entering pre-oom conditions. In the latter case a lot of drain calls can be
-> > > > scheduled without a good reason (assuming the cgroup contain multiple tasks running
-> > > > on multiple cpus).
-> > > 
-> > > I believe I've never got a specific answer to that. We
-> > > have discussed that in the previous version submission
-> > > (20221102020243.522358-1-leobras@redhat.com and specifically
-> > > Y2TQLavnLVd4qHMT@dhcp22.suse.cz). Leonardo has mentioned a mix of RT and
-> > > isolcpus. I was wondering about using memcgs in RT workloads because
-> > > that just sounds weird but let's say this is the case indeed. 
-> > 
-> > This could be the case. You can consider an "edge device" where it is
-> > necessary to run a RT workload. It might also be useful to run 
-> > non realtime applications on the same system.
-> > 
-> > > Then an RT task or whatever task that is running on an isolated
-> > > cpu can have pcp charges.
-> > 
-> > Usually the RT task (or more specifically the realtime sensitive loop
-> > of the application) runs entirely on userspace. But i suppose there
-> > could be charges on application startup.
-> 
-> What is the role of memcg then? If the memory limit is in place and the
-> workload doesn't fit in then it will get reclaimed during start up and
-> memory would need to be refaulted if not mlocked. If it is mlocked then
-> the limit cannot be enforced and the start up would likely fail as a
-> result of the memcg oom killer.
-> 
-> [...]
-> > > > Overall I'm somewhat resistant to an idea of making generic allocation & free paths slower
-> > > > for an improvement of stock draining. It's not a strong objection, but IMO we should avoid
-> > > > doing this without a really strong reason.
-> > > 
-> > > Are you OK with a simple opt out on isolated CPUs? That would make
-> > > charges slightly slower (atomic on the hierarchy counters vs. a single
-> > > pcp adjustment) but it would guarantee that the isolated workload is
-> > > predictable which is the primary objective AFAICS.
-> > 
-> > This would make isolated CPUs "second class citizens": it would be nice
-> > to be able to execute non realtime apps on isolated CPUs as well
-> > (think of different periods of time during a day, one where 
-> > more realtime apps are required, another where less 
-> > realtime apps are required).
-> 
-> An alternative requires to make the current implementation that is
-> lockless to use locks and introduce potential lock contention. This
-> could be harmful to regular workloads. Not using pcp caching would make
-> a fast path using few atomics rather than local pcp update. That is not
-> a terrible cost to pay for special cased workloads which use isolcpus.
-> Really we are not talking about a massive cost to be payed. At least
-> nobody has shown that in any numbers.
+On 2/1/23 10:16, Waiman Long wrote:
+> On 2/1/23 04:14, Peter Zijlstra wrote:
+>> On Tue, Jan 31, 2023 at 11:14:27PM -0500, Waiman Long wrote:
+>>> On 1/31/23 17:17, Will Deacon wrote:
+>>>> From: Peter Zijlstra <peterz@infradead.org>
+>>>>
+>>>> There is a difference in behaviour between CPUSET={y,n} that is now
+>>>> wrecking havoc with {relax,force}_compatible_cpus_allowed_ptr().
+>>>>
+>>>> Specifically, since commit 8f9ea86fdf99 ("sched: Always preserve the
+>>>> user requested cpumask") relax_compatible_cpus_allowed_ptr() is
+>>>> calling __sched_setaffinity() unconditionally.
+>>>>
+>>>> But the underlying problem goes back a lot further, possibly to
+>>>> commit: ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}") which
+>>>> switched cpuset_cpus_allowed() from cs->cpus_allowed to
+>>>> cs->effective_cpus.
+>>>>
+>>>> The problem is that for CPUSET=y cpuset_cpus_allowed() will filter out
+>>>> all offline CPUs. For tasks that are part of a (!root) cpuset this is
+>>>> then later fixed up by the cpuset hotplug notifiers that re-evaluate
+>>>> and re-apply cs->effective_cpus, but for (normal) tasks in the root
+>>>> cpuset this does not happen and they will forever after be excluded
+>>>> from CPUs onlined later.
+>>>>
+>>>> As such, rewrite cpuset_cpus_allowed() to return a wider mask,
+>>>> including the offline CPUs.
+>>>>
+>>>> Fixes: 8f9ea86fdf99 ("sched: Always preserve the user requested 
+>>>> cpumask")
+>>>> Reported-by: Will Deacon <will@kernel.org>
+>>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>>> Link: 
+>>>> https://lkml.kernel.org/r/20230117160825.GA17756@willie-the-truck
+>>>> Signed-off-by: Will Deacon <will@kernel.org>
+>>> Before cgroup v2, cpuset had only one cpumask - cpus_allowed. It only
+>>> tracked online cpus and ignored the offline ones. It behaves more like
+>>> effective_cpus in cpuset v2. With v2, we have 2 cpumasks - 
+>>> cpus_allowed and
+>>> effective_cpus. When cpuset v1 is mounted, cpus_allowed and 
+>>> effective_cpus
+>>> are effectively the same and track online cpus. With cpuset v2, 
+>>> cpus_allowed
+>>> contains what the user has written into and it won't be changed until
+>>> another write happen. However, what the user written may not be what 
+>>> the
+>>> system can give it and effective_cpus is what the system decides a 
+>>> cpuset
+>>> can use.
+>>>
+>>> Cpuset v2 is able to handle hotplug correctly and update the task's 
+>>> cpumask
+>>> accordingly. So missing previously offline cpus won't happen with v2.
+>>>
+>>> Since v1 keeps the old behavior, previously offlined cpus are lost 
+>>> in the
+>>> cpuset's cpus_allowed. However tasks in the root cpuset will still 
+>>> be fine
+>>> with cpu hotplug as its cpus_allowed should track cpu_online_mask. 
+>>> IOW, only
+>>> tasks in a non-root cpuset suffer this problem.
+>>>
+>>> It was a known issue in v1 and I believe is one of the major reasons 
+>>> of the
+>>> cpuset v2 redesign.
+>>>
+>>> A major concern I have is the overhead of creating a poor man 
+>>> version of v2
+>>> cpus_allowed. This issue can be worked around even for cpuset v1 if 
+>>> it is
+>>> mounted with the cpuset_v2_mode option to behave more like v2 in its 
+>>> cpumask
+>>> handling. Alternatively we may be able to provide a config option to 
+>>> make
+>>> this the default for v1 without the special mount option, if necessary.
+>> You're still not getting it -- even cpuset (be it v1 or v2) *MUST* *NOT*
+>> mask offline cpus for root cgroup tasks, ever. (And the only reason it
+>> gets away with masking offline for !root is that it re-applies the mask
+>> every time it changes.)
+>>
+>> Yes it did that for a fair while -- but it is wrong and broken and a
+>> very big behavioural difference between CONFIG_CPUSET={y,n}. This must
+>> not be.
+>>
+>> Arguably cpuset-v2 is still wrong for masking offline cpus in it's
+>> effective_cpus mask, but I really didn't want to go rewrite cpuset.c for
+>> something that needs to go into /urgent *now*.
+>>
+>> Hence this minimal patch that at least lets sched_setaffinity() work as
+>> intended.
+>
+> I don't object to the general idea of keeping offline cpus in a task's 
+> cpu affinity. In the case of cpu offline event, we can skip removing 
+> that offline cpu from the task's cpu affinity. That will partially 
+> solve the problem here and is also simpler.
+>
+> I believe a main reason why effective_cpus holds only online cpus is 
+> because of the need to detect when there is no online cpus available 
+> in a given cpuset. In this case, it will fall back to the nearest 
+> ancestors with online cpus.
+>
+> This offline cpu problem with cpuset v1 is a known problem for a long 
+> time. It is not a recent regression.
 
-Can't agree more.
-I also agree that the whole pcpu stock draining code can be enhanced,
-but I believe we should go into the direction almost directly opposite
-to what's being proposed here.
+Note that using cpus_allowed directly in cgroup v2 may not be right 
+because cpus_allowed may have no relationship to effective_cpus at all 
+in some cases, e.g.
 
-Can we please return to the original problem which the patchset aims to solve?
-Is it the latency introduced by execution of draining works on isolated cpus?
-Maybe schedule these works with a delay and cancel them if the draining
-occurred naturally during the delay?
+    root
+     |
+     V
+     A (cpus_allowed = 1-4, effective_cpus = 1-4)
+     |
+     V
+     B (cpus_allowed = 5-8, effective_cpus = 1-4)
 
-Thanks!
+In the case of cpuset B, passing back cpus 5-8 as the allowed_cpus is wrong.
+
+I wonder how often is cpu hotplug happening in those arm64 cpu systems 
+that only have a subset of cpus that can run 32-bit programs.
+
+Cheers,
+Longman
+
