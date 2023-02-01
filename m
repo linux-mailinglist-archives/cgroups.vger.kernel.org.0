@@ -2,310 +2,181 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A3C685E61
-	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 05:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012EC685F73
+	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 07:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbjBAEYJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 Jan 2023 23:24:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        id S230043AbjBAGEa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Feb 2023 01:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjBAEYH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Jan 2023 23:24:07 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1279C38641;
-        Tue, 31 Jan 2023 20:24:05 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4P681q2G67z4f3jJF;
-        Wed,  1 Feb 2023 12:23:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLBf6dljLNYlCw--.26190S4;
-        Wed, 01 Feb 2023 12:24:01 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     linux-block@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, houtao1@huawei.com
-Subject: [PATCH] blk-ioprio: Introduce promote-to-rt policy
-Date:   Wed,  1 Feb 2023 12:52:27 +0800
-Message-Id: <20230201045227.2203123-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+        with ESMTP id S231725AbjBAGEU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 01:04:20 -0500
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4308E5CD1F;
+        Tue, 31 Jan 2023 22:04:10 -0800 (PST)
+X-UUID: 3c714904a1f611eda06fc9ecc4dadd91-20230201
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=yzvs+YvZPWqNwv/4NYDDD2VPWghmfGCFkmwOGLsLv80=;
+        b=Ia5xwtaPZzabpQtAtLr17Zd65MdHk9j20LQE4vRy6Glkf5Mgup9Qlupcq3Q4kSm57twDQKabz4v+RnoaQY8Wr4yLvdkb+oFYR0YDbJuy7NDhioQSxhp9dY/+P4nU+yGULhwPQzkpcmIA3jsK01K8UmWy+7KNuSN37XU3HEQmlHM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.18,REQID:9fbdba0f-5ba3-4c3f-86bb-7e45428cc475,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:3ca2d6b,CLOUDID:42018c8d-8530-4eff-9f77-222cf6e2895b,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0
+X-CID-BVR: 0,NGT
+X-UUID: 3c714904a1f611eda06fc9ecc4dadd91-20230201
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+        (envelope-from <lixiong.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 331953373; Wed, 01 Feb 2023 14:04:06 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Wed, 1 Feb 2023 14:04:06 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.239)
+ by mtkmbs10n1.mediatek.com (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Wed, 1 Feb 2023 14:04:06 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CVOxFKSuIRagGHkwQhjMlZejDvhKXfmkqMUSEwqXDJusOmvvjUrwscQxdOR/sIVfjWkHCDygXMyVKCyWX02HWrr1CoOK7kVOhNwRr5qyNqIwAz6mWCMC0H3B8MsjgTI6aUbYj9m+PTll5zQW5FdykMoVlzVGgxl/Nn5vkugDqNNwfUPDxsBIQzyd7v2Lg+HtHmsinB7gbAhHq7hkOLBRpFsh2t/O9rJz6468M6NUC5N1IfB6rynGc+1+a2SMitG3mpK0fwrOR/hNh877FZrcEF5EDs3flEuig//pIvg7+lALjgA322QftLw8p7xg8OB97KFIMQ7sd9seJkDQ/jMsKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yzvs+YvZPWqNwv/4NYDDD2VPWghmfGCFkmwOGLsLv80=;
+ b=aMcLKX5DuWjBuhL26gfP072zOZFjbMZxJ2LiBlS2cOFbcaEYHh7yOMM5a5OU5HDBquqjLkRhcZQ5x9XqGlmWtckqIfoCTAtKFuTs5yMMWUdvUaJ5mxzn4YzQPisOfbJhvBeoTcIBjL8oYQDOBbSv6zkxLVDw2TIobL+KH/urbI8hIxZO6ebDHgDYjmesa2w61HS81Tl8jZroU5zrDLUZX1ond5BjdyGBWnGZkJwk3bTfkxGMGbdLFt+QlGaes2HREX7/VIxzB1+n2dkAp1pBdbyV9fROV0hs+xqh1fM22jVqrU+Ru8PrGAqHLv5fbIGK2B4f8OgJV61m+CcJZb+0lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yzvs+YvZPWqNwv/4NYDDD2VPWghmfGCFkmwOGLsLv80=;
+ b=iFFDfg9B/QexmaEKnag4XuFBs4a/g6a9JsZdss94cEnVWkWaVBZ5480dMXrmFCG3c9TWxbWVEuyf6vMeiVjV8N8jUFMChh5EEfiTY+S7cqxoI7MfrL7mrO3csTKkwHcoU9SyXsmdpcNEAR8AZDYHSmi5sJbXXzdHcbER0o87J00=
+Received: from SL2PR03MB3947.apcprd03.prod.outlook.com (2603:1096:100:45::15)
+ by SI2PR03MB5529.apcprd03.prod.outlook.com (2603:1096:4:128::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.24; Wed, 1 Feb
+ 2023 06:04:04 +0000
+Received: from SL2PR03MB3947.apcprd03.prod.outlook.com
+ ([fe80::cdc4:41f3:5ffc:d0dd]) by SL2PR03MB3947.apcprd03.prod.outlook.com
+ ([fe80::cdc4:41f3:5ffc:d0dd%5]) with mapi id 15.20.6043.036; Wed, 1 Feb 2023
+ 06:04:04 +0000
+From:   =?utf-8?B?TGl4aW9uZyBMaXUgKOWImOWIqembhCk=?= 
+        <Lixiong.Liu@mediatek.com>
+To:     "tj@kernel.org" <tj@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        =?utf-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <Wenju.Xu@mediatek.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        =?utf-8?B?SmluZy1UaW5nIFd1ICjlkLPpnZzlqbcp?= 
+        <Jing-Ting.Wu@mediatek.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        =?utf-8?B?V0ogV2FuZyAo546L5YabKQ==?= <wj.wang@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        =?utf-8?B?QW5kcmVzcyBLdW8gKOmDreWtn+S/rik=?= 
+        <Andress.Kuo@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Subject: Re: cgroup user-after-free
+Thread-Topic: cgroup user-after-free
+Thread-Index: AQHZJmsW9ZxsTkmTF0qxxstxXHzhsq6bi+8AgABKN4CAHeL7gA==
+Date:   Wed, 1 Feb 2023 06:04:04 +0000
+Message-ID: <3bb8e65797b905e4e9d4fad93a8f4fe26b8958a4.camel@mediatek.com>
+References: <697032f2331a92eec0e03e85e46cb78bd975a788.camel@mediatek.com>
+         <Y8Cwdsk5pYNd8fX8@slm.duckdns.org>
+         <f8b24df3bd009d112479e9d5db36ec4afff9bb71.camel@mediatek.com>
+In-Reply-To: <f8b24df3bd009d112479e9d5db36ec4afff9bb71.camel@mediatek.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SL2PR03MB3947:EE_|SI2PR03MB5529:EE_
+x-ms-office365-filtering-correlation-id: 40ce1dca-71ce-43ea-9fed-08db041a1f4b
+x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uF8+VTcGyjznmFbDHF875+a/ofBproZgOLpqmesbsSvsiAWtDQSbJTZHIM6KlJM8C4B4fzs4rPIeI2KBc30OjWjEsfav3u5TOxutDAI7o4yW3RRSY8Q7ziX+lnPOctHNg7rnNI9UK6JTUQ2hQRu8Js/szp4L+r8CVRGqteM9AdwmdZIVN7riCQKVz2oQrKUR8E9oCGePfpZAOlSOQFy9D17/WO+Ll1OIDjHlVLz3sRNJDaQGu8H0Ocwh5g4CZmZxNRY7+stfV6BbuhNAw5rZt6YiKdea6GuV3yBpXYBpA4UAFuixXBDviqBVH9w4hR0i7FIJw6oL0XIJuFu/EX1scdVFIt7iKxxSz6b0OAByD+Uwut0OyRpLEstc26lbFmKmtKD33P49NI85Epx4gqA/aEHXHMB4PNfYcQoNySuZwCIc8qAedKIQ0Q6+G0l8oGTbLA/JdqHk6oTmDyeqljn9kVT2ew9f4GEQpS7K8cgUAif5aZngjP7GOl/c0QzeiNgddN1nxN/Jvd5vpwnGwUpkqmfp/ADI9ytGe0TJ0AhHwyKx7uUely5KM66lFVQ4NNHFJ23smOZcAsuwdF0w7vLwBVwy8TLNMF9RE2GVRAE98isZsFGVCz5wUdo4JX6BZFkj6QH9zP/cIa/Hpn7m/exuXnh2eEsDanD4X3QOEv6EUWdVeuKSf3dPW83hWSceTLcGT/LCYFPqsGu6sb+t0lMMxg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR03MB3947.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(376002)(136003)(39860400002)(396003)(366004)(451199018)(2906002)(6506007)(186003)(2616005)(4744005)(26005)(6512007)(76116006)(5660300002)(91956017)(66946007)(86362001)(66476007)(66556008)(85182001)(3480700007)(8936002)(83380400001)(66446008)(478600001)(6916009)(4326008)(36756003)(6486002)(71200400001)(8676002)(54906003)(41300700001)(122000001)(38070700005)(64756008)(316002)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T0xkMk1oMU9QVW5iSXhHM1pTcWpSYzAvdS9CWkFtMVJRTXFZMWlneXNGOStT?=
+ =?utf-8?B?TDlwZ3k5azRKMDZCK3haSzJ3QlgzUk96YnQrV3F0RGprOGU0SHgvYUFiMSsy?=
+ =?utf-8?B?dUpSZW9HY2F0Sm94STQ1a3FSU3BuNjF0bHNuRlFaUjNYQ2RGNU12UUZaNjhh?=
+ =?utf-8?B?YWE0empUSkxjMWpzWkxKWHU1V2ptY0paY0tRWFhiRHBsRGVKZmZ6ZnAwd3M5?=
+ =?utf-8?B?ZnZ2S0NMSUlLNEdSZU9LNDRVZzQyQnk2YXFDUjBxUHlMdzI1bWNnMU9weEZi?=
+ =?utf-8?B?c2tiM0Z6ZFpmT1RLYnE1QWZmVWovalR6L016SlEvSVM2MGNDbTh5dVAwVjhx?=
+ =?utf-8?B?TE00VUF3aFVYWmFyQTluTkh4cFNVbmo0dEt1UVJmTElJZzhWMU9vaVhYcWNN?=
+ =?utf-8?B?dXdQRWZoS2FVMWJ2RE9uQ3dXWitCM1IxQWF0cWJOMmthdGdzMmZLQkFkV1M4?=
+ =?utf-8?B?SVFnMDJuQnVQU0F4c2N6cTIzZ2xmSytnRHRWNkp0YzczbTQvYjB0RTZUb0pZ?=
+ =?utf-8?B?SGdiMEZDVHVCeWJXVExqcDVOSkcvMnJCU1l5eU1hYTkwZUc4Ri9IakFPZUdS?=
+ =?utf-8?B?N2U0a2ZJR2xOZGlHZG9ZUEpLaC9Hb0NNUHhUSWlIMGVIbndORGlQMWtwelA4?=
+ =?utf-8?B?Qy9telkxMmUrdnI1RXdKWUFVbDdvdGc2aHMrU3kwV1ExTEhNTHJWRlUwUitX?=
+ =?utf-8?B?VTQ1ODAvSElCdk1vMnM0MmRHUGRxb1R1TjhkUmdHYSsvY3ZkbExnRWQ3SG1l?=
+ =?utf-8?B?REtoTTZacnJHRDl6ZGtaSm4xeFFOS1hGa2tsZlFiMm9MUmxIRndPTUVPZWlJ?=
+ =?utf-8?B?RG5zM3hIMDRRejVRSEFqaG9TTXl6WkQ1M1oxcnl1SktWVStNZkp4eXlRNTJl?=
+ =?utf-8?B?RG5ad3VqUlptanRNdW1wY1BlbWpqTVl0S3JTdE5CZFlyZ3hLa1lNRmFXdERa?=
+ =?utf-8?B?UER3Mm1PWnVlVm5uN1BBMzJMRW5xSDhQdk00VHZQeTM5UkM5NUYvRHdnZVdn?=
+ =?utf-8?B?bGdiWXVJeFZSVDJ4OFhjM2lwRUx6bEtCN21GN2FJb0JRNHBQcHY1MGwyRGp2?=
+ =?utf-8?B?MlVMZmdWU2NkTEhrU1BrME9oOTlRK3NicDZpSGZ2TllXVll1RTBZVnZGTTNn?=
+ =?utf-8?B?YkJCYlBuWFpGeDVCUFJjRHpUQlAvWUlvb0dtOFZhbk8vTDdWU0hMRko3RENR?=
+ =?utf-8?B?SGkrWmY3NGliN3NWMkpqMXJWUGEweS9OeVBiQ0VIOUhDbk9TK1lJanVMWkxV?=
+ =?utf-8?B?dFArSnhwMklGcGtha2JydlY3QXVGQmhsS3ZJTHlkbGxFTzZiMXlYY0JlMC9W?=
+ =?utf-8?B?TXFjdWtTUURwUjJqY2I3NE5iOVNuRGtIbkFGQ29MVGQzTDZFV0FmOW9OTlU3?=
+ =?utf-8?B?dmhZMTdMam9RMDRTTExIR2E5Wm5XUHptOFFYdzE0MU42bkwyTE5QZ2tRb05X?=
+ =?utf-8?B?VkZZblRlUzUvaEk2UnA1S2NidGtPc213S3pYdStKbWZhTU5qNTBZcWs2SUF0?=
+ =?utf-8?B?dGU0REdMQjljc2pRbHlrckVoSmFLSGlWNGdybzYwc1BjbXFWa29VcFJKZlVZ?=
+ =?utf-8?B?T3NmcVpES29KVkRqakFXd1MzL2M5NWk3V2xTV3dQK2lsSmVUYS9KTWNycEl1?=
+ =?utf-8?B?U3JVTC96UGhFSnNLRnFqZnkwNndzR1Rydm5MYnBXdXdPK1dtVHhpNVZPTEtW?=
+ =?utf-8?B?eUxZQzQ0K0ZrZjhPeWFnbkxVVURnRXJwTkVvZHYrMXVldi9FK1Fra1NHenVp?=
+ =?utf-8?B?VHJ2R05Td0kxTlUvWUcrNUlrTGRXZW43MGNiczY3eFNLTFJqYi80dlBxTUt6?=
+ =?utf-8?B?UEdjZXc1TTUzVFcrbGxuT1g3RjBoUkN1SjAvdmZRWVYybjlqVWtoK3M3Vm93?=
+ =?utf-8?B?bk5pNlZHeERQV08vQ3NRUkRGUVhyWWIzVVlQd2RweTFhRWRUYjZoZElSQmQ2?=
+ =?utf-8?B?c3VlLzh3NWx5WnViMjF4QldKM0ZkU3U5ZVg0dVJ1bEc3cG01SVo1elprTFVj?=
+ =?utf-8?B?c2tBNmxUd2Q5a0Y5SEtJVzNIM0FhWktBcmtDZm9Ld1NFejhqVjMyTlJGQmNI?=
+ =?utf-8?B?am1Ed0ZnUEJwazVucWdvSTFtWm9PSXVBTEtRTTFSVmZMZWJ6ZTViMXIyTzBr?=
+ =?utf-8?B?RjFYMUtPNVF3QnBTSCtRSE9HT0JIemxpR2dpOHZySVFaUXAwcTdMdFVRVlQx?=
+ =?utf-8?B?SXc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <07E3047408019941B471670B8603DAC7@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLBf6dljLNYlCw--.26190S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3GF1ftF4UWrW3Zw1ruFW3Jrb_yoWfJrWfpF
-        4fArZxCF9YqF1xtrnrXa18Xryrtw4fAw4UJF43GFWF9w1jvw1vgw10yrn7XFyfArWDXrZ8
-        JrZ8JrWUuF1UAr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR03MB3947.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40ce1dca-71ce-43ea-9fed-08db041a1f4b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2023 06:04:04.3611
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RCvgzHp/R9eiqLSLj3V5/Ww1s0UKwEPDVhbHa3TpClzjl8wjkrX6x/XthnIFEsmcLJysXRmVjl7g8bmomz9gc9tF1f32U2YJnR/vYLBEsnM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB5529
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
-
-Since commit a78418e6a04c ("block: Always initialize bio IO priority on
-submit"), bio->bi_ioprio will never be IOPRIO_CLASS_NONE when calling
-blkcg_set_ioprio(), so there will be no way to promote the io-priority
-of one cgroup to IOPRIO_CLASS_RT, because bi_ioprio will always be
-greater than or equals to IOPRIO_CLASS_RT.
-
-It seems possible to call blkcg_set_ioprio() first then try to
-initialize bi_ioprio later in bio_set_ioprio(), but this doesn't work
-for bio in which bi_ioprio is already initialized (e.g., direct-io), so
-introduce a new ioprio policy to promote the iopriority of bio to
-IOPRIO_CLASS_RT if the ioprio is not already RT.
-
-To distinguish between the demotion policy and the promotion policy,
-use a bit in upper 16-bits of the policy to accomplish that and handle
-the bit accordingly in blkcg_set_ioprio().
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 38 ++++++----
- block/blk-ioprio.c                      | 94 +++++++++++++++++--------
- 2 files changed, 92 insertions(+), 40 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index c8ae7c897f14..e0b9f73ef62a 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2038,17 +2038,27 @@ that attribute:
- 	Change the I/O priority class of all requests into IDLE, the lowest
- 	I/O priority class.
- 
-+  promote-to-rt
-+	For requests that have I/O priority class BE or that have I/O priority
-+        class IDLE, change it into RT. Do not modify the I/O priority class
-+        of requests that have priority class RT.
-+
- The following numerical values are associated with the I/O priority policies:
- 
--+-------------+---+
--| no-change   | 0 |
--+-------------+---+
--| none-to-rt  | 1 |
--+-------------+---+
--| rt-to-be    | 2 |
--+-------------+---+
--| all-to-idle | 3 |
--+-------------+---+
-+
-++---------------+---------+-----+
-+| policy        | inst    | num |
-++---------------+---------+-----+
-+| no-change     | demote  | 0   |
-++---------------+---------+-----+
-+| none-to-rt    | demote  | 1   |
-++---------------+---------+-----+
-+| rt-to-be      | demote  | 2   |
-++---------------+---------+-----+
-+| idle          | demote  | 3   |
-++---------------+---------+-----+
-+| promote-to-rt | promote | 1   |
-++---------------+---------+-----+
- 
- The numerical value that corresponds to each I/O priority class is as follows:
- 
-@@ -2064,9 +2074,13 @@ The numerical value that corresponds to each I/O priority class is as follows:
- 
- The algorithm to set the I/O priority class for a request is as follows:
- 
--- Translate the I/O priority class policy into a number.
--- Change the request I/O priority class into the maximum of the I/O priority
--  class policy number and the numerical I/O priority class.
-+-- Translate the I/O priority class policy into an instruction and a number
-+-- If the instruction is demotion, change the request I/O priority class
-+-  into the maximum of the I/O priority class policy number and the numerical
-+-  I/O priority class.
-+-- If the instruction is promotion, change the request I/O priority class
-+-  into the minimum of the I/O priority class policy number and the numerical
-+-  I/O priority class.
- 
- PID
- ---
-diff --git a/block/blk-ioprio.c b/block/blk-ioprio.c
-index 8bb6b8eba4ce..0d400bee9c72 100644
---- a/block/blk-ioprio.c
-+++ b/block/blk-ioprio.c
-@@ -20,6 +20,13 @@
- #include "blk-ioprio.h"
- #include "blk-rq-qos.h"
- 
-+/*
-+ * Upper 16-bits are reserved for special flags.
-+ *
-+ * @IOPRIO_POL_PROMOTION: Promote bi_ioprio instead of demote it.
-+ */
-+#define IOPRIO_POL_PROMOTION (1U << 17)
-+
- /**
-  * enum prio_policy - I/O priority class policy.
-  * @POLICY_NO_CHANGE: (default) do not modify the I/O priority class.
-@@ -27,21 +34,30 @@
-  * @POLICY_RESTRICT_TO_BE: modify IOPRIO_CLASS_NONE and IOPRIO_CLASS_RT into
-  *		IOPRIO_CLASS_BE.
-  * @POLICY_ALL_TO_IDLE: change the I/O priority class into IOPRIO_CLASS_IDLE.
-- *
-+ * @POLICY_PROMOTE_TO_RT: modify IOPRIO_CLASS_NONE and IOPRIO_CLASS_BE into
-+ * 		IOPRIO_CLASS_RT.
-  * See also <linux/ioprio.h>.
-  */
- enum prio_policy {
--	POLICY_NO_CHANGE	= 0,
--	POLICY_NONE_TO_RT	= 1,
--	POLICY_RESTRICT_TO_BE	= 2,
--	POLICY_ALL_TO_IDLE	= 3,
-+	POLICY_NO_CHANGE	= IOPRIO_CLASS_NONE,
-+	POLICY_NONE_TO_RT	= IOPRIO_CLASS_RT,
-+	POLICY_RESTRICT_TO_BE	= IOPRIO_CLASS_BE,
-+	POLICY_ALL_TO_IDLE	= IOPRIO_CLASS_IDLE,
-+	POLICY_PROMOTE_TO_RT	= IOPRIO_CLASS_RT | IOPRIO_POL_PROMOTION,
-+};
-+
-+struct ioprio_policy_tuple {
-+	const char *name;
-+	enum prio_policy policy;
- };
- 
--static const char *policy_name[] = {
--	[POLICY_NO_CHANGE]	= "no-change",
--	[POLICY_NONE_TO_RT]	= "none-to-rt",
--	[POLICY_RESTRICT_TO_BE]	= "restrict-to-be",
--	[POLICY_ALL_TO_IDLE]	= "idle",
-+/* ioprio_alloc_cpd() needs POLICY_NO_CHANGE to be the first policy */
-+static const struct ioprio_policy_tuple ioprio_policies[] = {
-+	{ "no-change",		POLICY_NO_CHANGE },
-+	{ "none-to-rt",		POLICY_NONE_TO_RT },
-+	{ "restrict-to-be",	POLICY_RESTRICT_TO_BE },
-+	{ "idle",		POLICY_ALL_TO_IDLE },
-+	{ "promote-to-rt",	POLICY_PROMOTE_TO_RT }
- };
- 
- static struct blkcg_policy ioprio_policy;
-@@ -57,11 +73,11 @@ struct ioprio_blkg {
- /**
-  * struct ioprio_blkcg - Per cgroup data.
-  * @cpd: blkcg_policy_data structure.
-- * @prio_policy: One of the IOPRIO_CLASS_* values. See also <linux/ioprio.h>.
-+ * @ioprio: Policy name and definition.
-  */
- struct ioprio_blkcg {
- 	struct blkcg_policy_data cpd;
--	enum prio_policy	 prio_policy;
-+	const struct ioprio_policy_tuple *ioprio;
- };
- 
- static inline struct ioprio_blkg *pd_to_ioprio(struct blkg_policy_data *pd)
-@@ -95,23 +111,35 @@ static int ioprio_show_prio_policy(struct seq_file *sf, void *v)
- {
- 	struct ioprio_blkcg *blkcg = ioprio_blkcg_from_css(seq_css(sf));
- 
--	seq_printf(sf, "%s\n", policy_name[blkcg->prio_policy]);
-+	seq_printf(sf, "%s\n", blkcg->ioprio->name);
- 	return 0;
- }
- 
-+static const struct ioprio_policy_tuple *ioprio_match_policy(const char *buf)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ioprio_policies); i++) {
-+		if (sysfs_streq(ioprio_policies[i].name, buf))
-+			return &ioprio_policies[i];
-+	}
-+
-+	return NULL;
-+}
-+
- static ssize_t ioprio_set_prio_policy(struct kernfs_open_file *of, char *buf,
- 				      size_t nbytes, loff_t off)
- {
- 	struct ioprio_blkcg *blkcg = ioprio_blkcg_from_css(of_css(of));
--	int ret;
-+	const struct ioprio_policy_tuple *ioprio;
- 
- 	if (off != 0)
- 		return -EIO;
- 	/* kernfs_fop_write_iter() terminates 'buf' with '\0'. */
--	ret = sysfs_match_string(policy_name, buf);
--	if (ret < 0)
--		return ret;
--	blkcg->prio_policy = ret;
-+	ioprio = ioprio_match_policy(buf);
-+	if (!ioprio)
-+		return -EINVAL;
-+	blkcg->ioprio = ioprio;
- 	return nbytes;
- }
- 
-@@ -141,7 +169,7 @@ static struct blkcg_policy_data *ioprio_alloc_cpd(gfp_t gfp)
- 	blkcg = kzalloc(sizeof(*blkcg), gfp);
- 	if (!blkcg)
- 		return NULL;
--	blkcg->prio_policy = POLICY_NO_CHANGE;
-+	blkcg->ioprio = &ioprio_policies[0];
- 	return &blkcg->cpd;
- }
- 
-@@ -186,20 +214,30 @@ void blkcg_set_ioprio(struct bio *bio)
- 	struct ioprio_blkcg *blkcg = ioprio_blkcg_from_bio(bio);
- 	u16 prio;
- 
--	if (!blkcg || blkcg->prio_policy == POLICY_NO_CHANGE)
-+	if (!blkcg || blkcg->ioprio->policy == POLICY_NO_CHANGE)
- 		return;
- 
-+	WARN_ON_ONCE(bio->bi_ioprio == IOPRIO_CLASS_NONE);
-+
- 	/*
- 	 * Except for IOPRIO_CLASS_NONE, higher I/O priority numbers
--	 * correspond to a lower priority. Hence, the max_t() below selects
--	 * the lower priority of bi_ioprio and the cgroup I/O priority class.
--	 * If the bio I/O priority equals IOPRIO_CLASS_NONE, the cgroup I/O
--	 * priority is assigned to the bio.
-+	 * correspond to a lower priority.
-+	 *
-+	 * When IOPRIO_POL_PROMOTION is enabled, the min_t() below selects
-+	 * the higher priority of bi_ioprio and the cgroup I/O priority class,
-+	 * otherwise the lower priority is selected.
- 	 */
--	prio = max_t(u16, bio->bi_ioprio,
--			IOPRIO_PRIO_VALUE(blkcg->prio_policy, 0));
--	if (prio > bio->bi_ioprio)
--		bio->bi_ioprio = prio;
-+	if (blkcg->ioprio->policy & IOPRIO_POL_PROMOTION) {
-+		prio = min_t(u16, bio->bi_ioprio,
-+				IOPRIO_PRIO_VALUE(blkcg->ioprio->policy, 0));
-+		if (prio < bio->bi_ioprio)
-+			bio->bi_ioprio = prio;
-+	} else {
-+		prio = max_t(u16, bio->bi_ioprio,
-+				IOPRIO_PRIO_VALUE(blkcg->ioprio->policy, 0));
-+		if (prio > bio->bi_ioprio)
-+			bio->bi_ioprio = prio;
-+	}
- }
- 
- void blk_ioprio_exit(struct gendisk *disk)
--- 
-2.29.2
-
+T24gRnJpLCAyMDIzLTAxLTEzIGF0IDEzOjQwICswODAwLCBsaXhpb25nIGxpdSB3cm90ZToNCj4g
+PiA+IFJvb3QgY2F1c2U6IA0KPiA+ID4gY2dyb3VwX21pZ3JhdGVfZmluaXNoIGZyZWUgY3NldOKA
+mXMgY2dyb3VwLA0KPiA+ID4gDQo+ID4gPiBidXQgY2dyb3VwX3NrX2FsbG9jIHVzZSB0aGUgZnJl
+ZWQgY2dyb3VwLA0KPiA+ID4gDQo+ID4gPiB0aGVuIHVzZS1hZnRlci1mcmVlIGhhcHBlbmVkLg0K
+PiA+IA0KPiA+IFNvdW5kcyBzaW1pbGFyIHRvIHRoZSBwcm9ibGVtIGZpeGVkIGJ5IDA3ZmQ1YjZj
+ZGYzYyAoImNncm91cDogVXNlDQo+ID4gc2VwYXJhdGUNCj4gPiBzcmMvZHN0IG5vZGVzIHdoZW4g
+cHJlbG9hZGluZyBjc3Nfc2V0cyBmb3IgbWlncmF0aW9uIikuIENhbiB5b3UgdHJ5DQo+ID4gaXQg
+b3V0Pw0KPiA+IA0KPiA+IFRoYW5rcy4NCj4gPiANCj4gDQo+IA0KPiBUaGFua3MgZm9yIHlvdXIg
+cXVpY2sgZmVlZGJhY2suDQo+IA0KPiANCj4gICANCj4gQnV0IHdlIGVuY291bnRlcmVkIHVzZS1h
+ZnRlci1mcmVlIHZlcnNpb24NCj4gDQo+IGFscmVhZHkgY29udGFpbnMgdGhpcyBwYXRjaC4NCj4g
+DQo+IA0KPiANCj4gU28sIHdpdGggdGhpcyBwYXRjaCB3aWxsIGFsc28gZW5jb3VudGVyDQo+IA0K
+PiB0aGlzIHVzZS1hZnRlci1mcmVlLg0KPiANCj4gVGhhbmtzIQ0KPiANCj4gDQogIERvIHlvdSBo
+YXZlIGFueSBzdWdnZXN0aW9uIGZvciB0aGlzIGlzc3VlPw0KDQogIEJlc3QgcmVnYXJkcywNCiAg
+TGl4aW9uZyBMaXUNCg==
