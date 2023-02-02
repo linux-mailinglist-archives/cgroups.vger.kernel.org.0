@@ -2,51 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3586886D2
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 19:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BFA6886FD
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 19:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbjBBSlW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 13:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
+        id S232949AbjBBSrd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 13:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbjBBSlU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 13:41:20 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE6611161;
-        Thu,  2 Feb 2023 10:40:46 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id b5so2789095plz.5;
-        Thu, 02 Feb 2023 10:40:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=44Tbffij6x8u6hWa9nzBypn4C/WCHwZ/yEGRnTnWNXY=;
-        b=rjnWzErP110NEcFFiTyfqcQ6xcLE5gMNRpNMeRBoWB1t6rDsl7kuyEWITkxTo/NNQm
-         4pSwc3LkFezu3cPR0AV+rOsT6/su4KFBIuOsAeMVmBoNtmyx5g8paPDsyZJm622BaDjB
-         Vi2nT0WFruIPR/CpxyQPtw2Sltf0xMZOXlg0m/ekKYQFL2l7mT0iN4OTg3i9whljpcO5
-         dM3WwIqFA2ei2fbrxWtqpJKK5du9htLMypIbdtQOXqJOaYdIUVH3d0aK1guSY3rkiGhg
-         cZEHSXDPXvGI7Ca9N8GhylUQAfUB6BIq+Rb7qQ9yk8Z7chjtOm3yB1l5/pDnVaUh5cQR
-         2vzA==
-X-Gm-Message-State: AO0yUKVQxXVwwbz+Tfey46h2aYEzSK/KTJRzmbxJv3o4bF5UkokGMbII
-        5XxwsUg3dQ2JFZfo/EPCUoc=
-X-Google-Smtp-Source: AK7set8fNbiiFYW7OdcSiJFzCCcd6PnkVskd+HRqyruGtnlqpt0Vn1V/D3WSUtrSKyM8at7NMHKKxw==
-X-Received: by 2002:a17:902:c403:b0:196:6599:3538 with SMTP id k3-20020a170902c40300b0019665993538mr8710126plk.22.1675363146577;
-        Thu, 02 Feb 2023 10:39:06 -0800 (PST)
-Received: from ?IPV6:2620:15c:211:201:bf7f:37aa:6a01:bf09? ([2620:15c:211:201:bf7f:37aa:6a01:bf09])
-        by smtp.gmail.com with ESMTPSA id l2-20020a170902ec0200b00198a96c6b7csm4082247pld.305.2023.02.02.10.39.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Feb 2023 10:39:05 -0800 (PST)
-Message-ID: <8540c721-6bb9-3542-d9bd-940b59d3a7a4@acm.org>
-Date:   Thu, 2 Feb 2023 10:39:02 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [dm-devel] [PATCH 0/9] Documentation: correct lots of spelling
- errors (series 2)
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+        with ESMTP id S232953AbjBBSra (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 13:47:30 -0500
+X-Greylist: delayed 2270 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Feb 2023 10:46:56 PST
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B732D163;
+        Thu,  2 Feb 2023 10:46:56 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A8666739;
+        Thu,  2 Feb 2023 18:46:55 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A8666739
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1675363615; bh=LWxEU72zl68liFRHK4qAaq/94gJ5U5MPeKaaBgQ+tzQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IluSlawEh1lqfD3VE0Kr0lf7AKU/1bsSpHf52ekCzPrJkyCmWEesOx8n/34iWHP1l
+         YD6uRTgtbiEoHnDflnOcd8eq+mn9Zn15QuGp5+ldYfwirT8bYSUtM7ZIcF3jyllkhj
+         M+MnpPLKVT1BvMPHS66IlPs6NRg02abR7lsUptRqLdHVwbeynKQFpd8BBcH/vtII6Q
+         LmA0cxt3YulQtJZ+Cun0ZxE0YMAy7/yWq2Z1kr0HTa/FZuk6yWVcv208QpTU9nFFpY
+         4VpgeQhgD3zIAIfVS7Q5LBHM6BfRyr3e67CdEoQ7rkJ00JLai/QvRb7zJDsh4QSj6W
+         nCzlihE+cuqeA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
 Cc:     nvdimm@lists.linux.dev, linux-doc@vger.kernel.org,
         Song Liu <song@kernel.org>, dm-devel@redhat.com,
         netdev@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
@@ -76,40 +63,44 @@ Cc:     nvdimm@lists.linux.dev, linux-doc@vger.kernel.org,
         Vinod Koul <vkoul@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         dmaengine@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+Subject: Re: [dm-devel] [PATCH 0/9] Documentation: correct lots of spelling
+ errors (series 2)
+In-Reply-To: <8540c721-6bb9-3542-d9bd-940b59d3a7a4@acm.org>
 References: <20230129231053.20863-1-rdunlap@infradead.org>
  <875yckvt1b.fsf@meer.lwn.net>
  <a2c560bb-3b5c-ca56-c5c2-93081999281d@infradead.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <a2c560bb-3b5c-ca56-c5c2-93081999281d@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+ <8540c721-6bb9-3542-d9bd-940b59d3a7a4@acm.org>
+Date:   Thu, 02 Feb 2023 11:46:54 -0700
+Message-ID: <87o7qbvra9.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/2/23 10:33, Randy Dunlap wrote:
-> On 2/2/23 10:09, Jonathan Corbet wrote:
->> Randy Dunlap <rdunlap@infradead.org> writes:
->>>   [PATCH 6/9] Documentation: scsi/ChangeLog*: correct spelling
->>>   [PATCH 7/9] Documentation: scsi: correct spelling
->>
->> I've left these for the SCSI folks for now.  Do we *really* want to be
->> fixing spelling in ChangeLog files from almost 20 years ago?
-> 
-> That's why I made it a separate patch -- so the SCSI folks can decide that...
+Bart Van Assche <bvanassche@acm.org> writes:
 
-How about removing the Documentation/scsi/ChangeLog.* files? I'm not 
-sure these changelogs are still useful since these duplicate information 
-that is already available in the output of git log ${driver_directory}.
+> On 2/2/23 10:33, Randy Dunlap wrote:
+>> On 2/2/23 10:09, Jonathan Corbet wrote:
+>>> Randy Dunlap <rdunlap@infradead.org> writes:
+>>>>   [PATCH 6/9] Documentation: scsi/ChangeLog*: correct spelling
+>>>>   [PATCH 7/9] Documentation: scsi: correct spelling
+>>>
+>>> I've left these for the SCSI folks for now.  Do we *really* want to be
+>>> fixing spelling in ChangeLog files from almost 20 years ago?
+>> 
+>> That's why I made it a separate patch -- so the SCSI folks can decide that...
+>
+> How about removing the Documentation/scsi/ChangeLog.* files? I'm not 
+> sure these changelogs are still useful since these duplicate information 
+> that is already available in the output of git log ${driver_directory}.
 
-Thanks,
+Actually, the information in those files mostly predates the git era, so
+you won't find it that way.  I *still* question their value, though...
 
-Bart.
-
-
+jon
