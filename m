@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAAD688652
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 19:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511C56886C3
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 19:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbjBBS1a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 13:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S231614AbjBBSjg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 13:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjBBS13 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 13:27:29 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F6A61D40
-        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 10:27:28 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id x139so3305407ybe.13
-        for <cgroups@vger.kernel.org>; Thu, 02 Feb 2023 10:27:28 -0800 (PST)
+        with ESMTP id S232102AbjBBSjc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 13:39:32 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FD039B83
+        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 10:39:08 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id d8so2836781ljq.9
+        for <cgroups@vger.kernel.org>; Thu, 02 Feb 2023 10:39:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjDgomZIywp7e6CSQ2Vxhlha4qbmdscu2vXAz8lYKTA=;
-        b=kBmTcd8o1o1lVFPHTCamTTlrH1XgzC6/Lm8P51JWY63/kZfoZBGAxxVnl7fM/nB325
-         IxzufFGHbol1OmmWvAiywYQ+Fy1QBuXWrZwLlN1qQ9z7IxRm32vgeSaVK119yYYHHSqD
-         TChuw3JNRefL7J6YRb8mNWhTuYUswyasUCYKhDwn09eouJjPhcFUN0BUZQV2duIsSs/+
-         fYf40hTpoQqE25xwSQupwMUMWfX4lPXh6vDLt1AW/718EH/LIEdCdGVP5lsYKzieKxN9
-         ASVVs6xST3c54vncqQG/W+tR2N8h6Dj53Uzd1jGD1vjnvlqo65wzLMf6u8eqeM5CeZar
-         VTgw==
+        bh=KAbO+NGYMMBiRGmoWvlyv/VWZlOHs7HzWvQI05DtDaQ=;
+        b=LDbZ5uYL7OA/3my6XOP4T51z1xT3UdJzNpZXZ+C0QAlG7OmRPWc/yZCZuH0y0zioRG
+         uS0f+mq+upPFV+n8dvEUMUuySH5pvxg2/iJ7UKvSV2ku5bY4+RPaurbhnbpVRx2U3m3n
+         oJEQn8w+Defn6Q0hpiTzExqk5nDpibuhRam5J8YumCAvehgO5RbMAIEZK7Aimy66+56k
+         AKSawVpHyTSbwC8PmpeW6pQ1/SzCd6xZ+xAkYcRitTMhzpiIRocnHVkpJf1jIxtS/Vme
+         S1PiFEPev5QdWe6uDFlIaQZtAyNZJ82aLqaB8K9nGZFNnJGat3HYP8edfXeMDkfdcPIX
+         qjSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pjDgomZIywp7e6CSQ2Vxhlha4qbmdscu2vXAz8lYKTA=;
-        b=KTgLAl+VyqniSkYXemMbZ6/A/ci9Fca2sFpcYephcOjJeWG4KSRB+smiEZLtzU7aFV
-         e+2BGCeox95Kz8bOmK15NUWYm4ifFcLD2B1eUAEz3ChMMJ926HQ7YbkBy0bAIgsSuBF6
-         jZnZiuHRiGsBhtdJkW1NJN2dgoQb+zggZsGcqnJLemAW6a08lVIEfdtLWJ9XZaCga9e2
-         vMqTpBvTj61RFJ/7EkgzgVlFuiKsB88mjnZAbPsT6kr4qO6RL1gG5CvA5ISgGnCtxBH0
-         1dwCQdN5RO2iWSseIZ/9R95yz/o4ly+yRbJ8Ib+kkDfRzD+vjst+dpzUzwbmc5oQDhFM
-         j8gw==
-X-Gm-Message-State: AO0yUKXBM9C6voVF3Co0Z3FY2o6T/hXEarKHiR9U2xokwIp/91cF0ZcF
-        XSWHFtOGC1nddOQs6JnlwQ5P4eTUOL9oYFnEs+7aoQ==
-X-Google-Smtp-Source: AK7set/Hnx6lJHCqj73tIGeDFi1YJ8GWSUaM63IsKEvF4eFWlNkSiVnp42bGA0R4p4mwFHS+jEPi0S9fHu83FSWWH1Y=
-X-Received: by 2002:a25:ada8:0:b0:836:46e3:fa42 with SMTP id
- z40-20020a25ada8000000b0083646e3fa42mr593380ybi.228.1675362447371; Thu, 02
- Feb 2023 10:27:27 -0800 (PST)
+        bh=KAbO+NGYMMBiRGmoWvlyv/VWZlOHs7HzWvQI05DtDaQ=;
+        b=pKmylIoDqsQj635ljUwm7ZptVMNTDmUhW9dKbWsFvyh/EZzgtKYzVI4DFGEeOZPefG
+         ktpQUyyirmqy0Ze70QYfGQh+YuHvanmo4NehPSWxxWTjS8Z4wiaCrAJ6M0wdl2cCn4yI
+         72Cu5KM2D+0I0F9lF5qKQqIo7/4YRCBWjRhhxi3nHzvPj9d/nHW/VHXJKN5mF4LNifN6
+         PO0NQkr6+iBXdjeYhaeTH0x39BmyTtKwo29o371yqKsnxwt+NpAYNh7dOPwUg6ZI/7hV
+         OgpZqojeBkvD6NV0IChN1N5rT+HUMLNd0uNWYDr4qBn/OBNz30ukOVZWMa+6lenXoS2d
+         xBHg==
+X-Gm-Message-State: AO0yUKVy0xM/D1xO4/ygIRlth/Dy/mPT+1gCZb75KwcAdPDKrGPUnjM5
+        h/vRscgdGbbAKYiE2Czfu1chNQjvsxfPIatxGfkfeXyFxklC2X/T
+X-Google-Smtp-Source: AK7set9Z1HSNUrxErEjCY9FIwYAXch2A7hSs5PckDTeqVPlsEoRDUWckZV5TPaeVMXzzhxSnsOB38bqNUdqp6lBWfKo=
+X-Received: by 2002:a17:906:c241:b0:7c0:b3a8:a5f9 with SMTP id
+ bl1-20020a170906c24100b007c0b3a8a5f9mr2108862ejb.154.1675362677201; Thu, 02
+ Feb 2023 10:31:17 -0800 (PST)
 MIME-Version: 1.0
 References: <20230202155626.1829121-1-hannes@cmpxchg.org>
 In-Reply-To: <20230202155626.1829121-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 2 Feb 2023 10:27:16 -0800
-Message-ID: <CALvZod6m-XOb6LvjAD0wXv1doP_LJb1yUJ-QRpJt3H+G=xyQXg@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 2 Feb 2023 10:30:40 -0800
+Message-ID: <CAJD7tkaCpD0LpzdA+NsZj2WK=iQCLn7RS9qc7K53Qonxhp4TgA@mail.gmail.com>
 Subject: Re: [RFC PATCH] mm: memcontrol: don't account swap failures not due
  to cgroup limits
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -95,6 +95,11 @@ On Thu, Feb 2, 2023 at 7:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
 >    Arguably, though, the user would like to know if their cgroup's
 >    swap limit is causing high rates of THP splitting during swapout.
+
+We have the option to add THP_SWPOUT_FALLBACK (and THP_SWPOUT for
+completeness) to memcg events for this if/when a use case arises,
+right?
+
 >
 > b) Only count cgroup swap events when they are actually due to a
 >    cgroup's own limit. Exclude failures that are due to physical swap
@@ -106,6 +111,18 @@ On Thu, Feb 2, 2023 at 7:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >    memory.max events are counted.
 >
 >    However, it's a change in documented behavior.
+
+This option makes sense to me, but I can't speak to the change of
+documented behavior. However, looking at the code, it seems like if we do this
+the "max" & "fail" counters become effectively the same. "fail" would
+not provide much value then.
+
+I wonder if it makes sense to have both, and clarify that "fail" -
+"max" would be non-limit based failures (e.g. ran out of swap space),
+or would this cause confusion as to whether those non-limit failures
+were transient (THP fallback) or eventual?
+
+
 >
 > c) Leave it as is. The documentation says system-level events are
 >    counted, so stick to that.
@@ -116,13 +133,73 @@ On Thu, Feb 2, 2023 at 7:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >    difficult to id root causes and configure the system properly.
 >
 > Implement option b).
-
-I prefer option b too.
-
 >
 > Reported-by: Christian Brauner <brauner@kernel.org>
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Acked-by: Shakeel Butt <shakeelb@google.com>
-
-I think we should CC stable as well for early exposure.
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst |  6 +++---
+>  mm/memcontrol.c                         | 12 +++++-------
+>  mm/swap_slots.c                         |  2 +-
+>  3 files changed, 9 insertions(+), 11 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index c8ae7c897f14..a8ffb89a4169 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1605,9 +1605,9 @@ PAGE_SIZE multiple when read back.
+>                 failed.
+>
+>           fail
+> -               The number of times swap allocation failed either
+> -               because of running out of swap system-wide or max
+> -               limit.
+> +
+> +               The number of times swap allocation failed because of
+> +               the max limit.
+>
+>         When reduced under the current usage, the existing swap
+>         entries are reclaimed gradually and the swap usage may stay
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ab457f0394ab..c2a6206ce84b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7470,17 +7470,15 @@ int __mem_cgroup_try_charge_swap(struct folio *folio, swp_entry_t entry)
+>         if (!memcg)
+>                 return 0;
+>
+> -       if (!entry.val) {
+> -               memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
+> -               return 0;
+> -       }
+> -
+>         memcg = mem_cgroup_id_get_online(memcg);
+>
+>         if (!mem_cgroup_is_root(memcg) &&
+>             !page_counter_try_charge(&memcg->swap, nr_pages, &counter)) {
+> -               memcg_memory_event(memcg, MEMCG_SWAP_MAX);
+> -               memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
+> +               struct mem_cgroup *swap_over_limit;
+> +
+> +               swap_over_limit = mem_cgroup_from_counter(counter, swap);
+> +               memcg_memory_event(swap_over_limit, MEMCG_SWAP_MAX);
+> +               memcg_memory_event(swap_over_limit, MEMCG_SWAP_FAIL);
+>                 mem_cgroup_id_put(memcg);
+>                 return -ENOMEM;
+>         }
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index 0bec1f705f8e..66076bd60e2b 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -342,7 +342,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+>
+>         get_swap_pages(1, &entry, 1);
+>  out:
+> -       if (mem_cgroup_try_charge_swap(folio, entry)) {
+> +       if (entry.val && mem_cgroup_try_charge_swap(folio, entry) < 0) {
+>                 put_swap_folio(folio, entry);
+>                 entry.val = 0;
+>         }
+> --
+> 2.39.1
+>
+>
