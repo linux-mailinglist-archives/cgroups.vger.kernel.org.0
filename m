@@ -2,109 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37806888BF
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 22:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D9A688905
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 22:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjBBVGW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 16:06:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        id S232775AbjBBVat (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 16:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbjBBVGQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 16:06:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9FC83961
-        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 13:05:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675371921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WEHQNucTuGpLdaQhxf42z+oDGAmuQAok38hbITp7osg=;
-        b=DohaSiLi8Mo0U1aIn9gm6BYbbAPDo6s457rXLutDyDu1KtkQO5CT7srPfCmtGH6pLxps8t
-        NDd2w5c7SnfV88mwVNKE3SZCKXwiCpIqRipW3M48vKBZ1lxkgwOwerOUO/d210Yp5yLpys
-        Mf7cQtW5fNpp44mBtEFyM2kTndOkRhE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-390-RO-UAXgBO3qOXis0u0hiwg-1; Thu, 02 Feb 2023 16:05:16 -0500
-X-MC-Unique: RO-UAXgBO3qOXis0u0hiwg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF83A101B44E;
-        Thu,  2 Feb 2023 21:05:15 +0000 (UTC)
-Received: from [10.22.8.157] (unknown [10.22.8.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 187F4140EBF6;
-        Thu,  2 Feb 2023 21:05:15 +0000 (UTC)
-Message-ID: <8787b5f7-9822-e49b-0357-d0ce224ca920@redhat.com>
-Date:   Thu, 2 Feb 2023 16:05:14 -0500
+        with ESMTP id S231819AbjBBVas (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 16:30:48 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA262712;
+        Thu,  2 Feb 2023 13:30:45 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id n13so3236702plf.11;
+        Thu, 02 Feb 2023 13:30:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
+        b=EEWpC85Vt6Nu9fYfzP562UwxgqEfKGDl+Svi44sV6+yCnSHoJaS5NtrLqfIY5P3Mta
+         xzu7914vju2do7ooaEpdLyCJFOPe1YtRoXLOhvrSWoTw/XqN+Pakt0t7I1nsWreEZgif
+         5L0/iFVQnExE645NHL6Nz6upvotE/mY94j1kjr/To9E80Yzxuac8JGv6w05Iy0Ozx1ev
+         iNwrsUJ12hpCriwk28MItcJtsvVib34zGVBLKQT6dQl3MXbsHw19dJrjarP+3DErMzVN
+         sTvfSBLMm1JhY4jnyRwr/iiGBO9Kn0TJMrDkTUrkeEhH5Q+LkJ3Oy/Xl7fsQhIpbbylX
+         /0cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
+        b=LD8fkexDwUmJE68ye5+2evTj7U2wkGQ1pBYfUJcbWhbrVW+tsw/LiexDrMu0BKej/f
+         eyWqKL5xt36Z739xKjmUXubGCbscqomrsFaCFE/mNB3R7+QWR/ezh6n6dmGM1SKTS133
+         TLBkZTGEdcRSj6aqrwbxhmz+o35k39rOa98c0K08/8WZYSvz6IsYu38LsqF/XXDMxWaY
+         HaD8nBTPFo6nX927u1Tx43uxlOVkLs8hMmKxDae2yq/YRN2vKQLPV9ky99SR1rWpJ7DZ
+         /0B0btP2i1aC24DeeKT7Y3KwTUnNfBIefXlGqR5CCYIXIvsXbq5b/+8dfIkYueVRuMGY
+         JUBw==
+X-Gm-Message-State: AO0yUKXa00USBlFYB1sPK2cGHPJpM4rYCE+rqvJPBrWuXr5CW+gbY+tI
+        02NW+Fe51LePUCFcxPPFAkfkE10i5tg=
+X-Google-Smtp-Source: AK7set8xILWDeKLdsoPmaeC+WBsqixXUKuHo6IuDnFV/HVdfnKuGG0DTdtoKhq33sbxB8mVxSURO+Q==
+X-Received: by 2002:a17:903:30c9:b0:191:24d1:8af6 with SMTP id s9-20020a17090330c900b0019124d18af6mr6517030plc.42.1675373444647;
+        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:48a9])
+        by smtp.gmail.com with ESMTPSA id a21-20020a170902b59500b00186748fe6ccsm118158pls.214.2023.02.02.13.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 2 Feb 2023 11:30:42 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        stable@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
+ page
+Message-ID: <Y9wrglzrfzTiCjh8@slm.duckdns.org>
+References: <20230129121851.2248378-1-willy@infradead.org>
+ <Y9a2m8uvmXmCVYvE@sol.localdomain>
+ <Y9bkoasmAmtQ2nSV@casper.infradead.org>
+ <Y9mH0PCcZoGPryXw@slm.duckdns.org>
+ <Y9oHQ6MfRbfwmFyK@sol.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
- offline CPUs
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-References: <20230131221719.3176-1-will@kernel.org>
- <20230131221719.3176-2-will@kernel.org>
- <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
- <Y9t1sP/6nFht7RSN@hirez.programming.kicks-ass.net>
- <d630ca53-71f0-c735-fbc3-e826479aa86b@redhat.com>
- <Y9wSC1Wxlm8CKKlN@hirez.programming.kicks-ass.net>
- <2bc730db-704d-080b-6869-02f6d0035fad@redhat.com>
- <Y9whrU4IUeleqdrt@slm.duckdns.org>
- <75de91db-d3bc-0c0e-6199-ef00591e8878@redhat.com>
-In-Reply-To: <75de91db-d3bc-0c0e-6199-ef00591e8878@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9oHQ6MfRbfwmFyK@sol.localdomain>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
-On 2/2/23 15:53, Waiman Long wrote:
->
-> On 2/2/23 15:48, Tejun Heo wrote:
->> On Thu, Feb 02, 2023 at 03:46:02PM -0500, Waiman Long wrote:
->>>>> I will work on a patchset to do that as a counter offer.
->>>> We will need a small and simple patch for /urgent, or I will need to
->>>> revert all your patches -- your call.
->>>>
->>>> I also don't tihnk you fully appreciate the ramifications of
->>>> task_cpu_possible_mask(), cpuset currently gets that quite wrong.
->>> OK, I don't realize the urgency of that. If it is that urgent, I 
->>> will have
->>> no objection to get it in for now. We can improve it later on. So 
->>> are you
->>> planning to get it into the current 6.2 rc or 6.3?
->>>
->>> Tejun, are you OK with that as you are the cgroup maintainer?
->> Yeah, gotta fix the regression but is there currently a solution 
->> which fixes
->> the regression but doesn't further break other stuff?
->
-> I believe there is a better way to do that, but it will need more time 
-> to flex out. Since cpuset_cpus_allowed() is only used by 
-> kernel/sched/core.c, Peter will be responsible if it somehow breaks 
-> other stuff.
+On Tue, Jan 31, 2023 at 10:31:31PM -0800, Eric Biggers wrote:
+> > These can usually be handled by explicitly associating the bio's to the
+> > desired cgroups using one of bio_associate_blkg*() or
+> > bio_clone_blkg_association().
+> 
+> Here that already happens in wbc_init_bio(), called from io_submit_init_bio() in
+> fs/ext4/page-io.c.
 
-Maybe my cpuset patch that don't update task's cpumask on cpu offline 
-event can help. However, I don't know the exact scenario where the 
-regression happen, so it may not.
+Yeah, without bouncing, that's usually how writeback IOs are associated with
+their cgroups.
 
-Cheers,
-Longman
+> > It is possible to go through memcg ownership
+> > too using set_active_memcg() so that the page is owned by the target cgroup;
+> > however, the page ownership doesn't directly map to IO ownership as the
+> > relationship depends on the type of the page (e.g. IO ownership for
+> > pagecache writeback is determined per-inode, not per-page). If the in-flight
+> > pages are limited, it probably is better to set bio association directly.
+> 
+> ext4 also calls wbc_account_cgroup_owner() for each pagecache page that's
+> written out.  It seems this is for a different purpose -- it looks like the
+> fs-writeback code is trying to figure out which cgroup "owns" the inode based on
+> which cgroup "owns" most of the pagecache pages?
 
+Yeah, there's a difference between how memory and IO track cgroup ownership.
+Memory ownership is per-page but IO ownership is per-inode. This is because
+splitting writeback IOs of the same inode can perform really badly, so we
+try to find the majority dirty page owner cgroup of a given inode and
+associate the whole inode to that cgroup.
+
+So, something like md / dm, which gets a bio from filesystem and then
+bounces it to another bio, would use either bio_clone_blkg_association() to
+copy the association of the original bio (which probably is set through
+wbc_init_bio()) or determine the cgroup the bio should belong to somehow and
+set it explicitly with bio_associate_blkg(). However, here, as the
+filesystem is the one bouncing I guess it can be simpler.
+
+> The bug we're discussing here is that when ext4 writes out a pagecache page in
+> an encrypted file, it first encrypts the data into a bounce page, then passes
+> the bounce page (which don't have a memcg) to wbc_account_cgroup_owner().  Maybe
+> the proper fix is to just pass the pagecache page to wbc_account_cgroup_owner()
+> instead?  See below for ext4 (a separate patch would be needed for f2fs):
+
+Yeah, this makes sense to me and is the right thing to do no matter what.
+wbc_account_cgroup_owner() should be fed the origin page so that the IO can
+be blamed on the owner of that page.
+
+Thanks.
+
+-- 
+tejun
