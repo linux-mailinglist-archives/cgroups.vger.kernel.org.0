@@ -2,127 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007466887AF
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 20:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD666887C4
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 20:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbjBBTmj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 14:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
+        id S232341AbjBBTuM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 14:50:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbjBBTmh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 14:42:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B2280171;
-        Thu,  2 Feb 2023 11:42:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eKs4vAUwEv0arCZAQ6y5NgakMpLZsicc4cD1nO/mnYw=; b=I2dAg18TWwn0J9HsHUU4oS/mwI
-        ZIg0D78vzxqetQTkb+D+GnPnsU+n84veLlmahHdfkrLFyYyvAtBNwpAmIP2jSuGeZuJZlxs8yyvCI
-        wzU+QRCsATbApLYTsE9fOUHlWPbYtiGA3vQl4tYW4tVqLLq9nN1Lqqr4ugR3TRTP1xUs7bk1VIUad
-        o3fe+JORg8EF9KEtmOdw4YOx10+VeCTbdsJVmTnM/tFlFpHXdWnhaNaWTKIOcKuIAZvlicxrcejVn
-        qMUMNBzbZt/GbcUmKToJBycax+vU24XD41FR+VRzgEXO3XX/13Tlu7d4IpuIjsTkRyx5YwtLL4TQF
-        S5ItgR+w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pNfTB-00Dfix-Oc; Thu, 02 Feb 2023 19:42:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BEF9E30012F;
-        Thu,  2 Feb 2023 20:42:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 979DA2136B3B2; Thu,  2 Feb 2023 20:42:03 +0100 (CET)
-Date:   Thu, 2 Feb 2023 20:42:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
- offline CPUs
-Message-ID: <Y9wSC1Wxlm8CKKlN@hirez.programming.kicks-ass.net>
-References: <20230131221719.3176-1-will@kernel.org>
- <20230131221719.3176-2-will@kernel.org>
- <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
- <Y9t1sP/6nFht7RSN@hirez.programming.kicks-ass.net>
- <d630ca53-71f0-c735-fbc3-e826479aa86b@redhat.com>
+        with ESMTP id S232085AbjBBTuL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 14:50:11 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A6F28876;
+        Thu,  2 Feb 2023 11:50:11 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id o13so2917408pjg.2;
+        Thu, 02 Feb 2023 11:50:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0XqCItSDIlA9UN2KgN+ixgTMg/eGZMlJcrANVyohEDY=;
+        b=iNBaT8Z+Ig7zrOQHc1RHN6iLOys2Q0io9gpYMeH9LzsUki6o83huVNzd3aSQV5JEzL
+         QaQrK6iF24BTp/OaynHeDuVzOKVK72wVPLciBF0niO4O89anZ3czxsEFPo9KcbK3hZOt
+         xG4jzE2Scyetx+HzYrSSxtl9aOcoJWt7DO4NNuUYH0sVPe9PeEABvNn+l8pjQ4rYu3hh
+         1m/ogKgjMf6hFOFKPOWgr9Yndv0LRIChXjzkP0tt8mBZy2lLUtpjoTvaLh+fjVvLr1Kj
+         EyoozxTzk5b4ThayMM0cCuOkOqWvXk59XVYxSz5oynrw23D0jagogoyMumcW0Jk+MF/k
+         NQKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0XqCItSDIlA9UN2KgN+ixgTMg/eGZMlJcrANVyohEDY=;
+        b=wMMiQFzHw7S22X1skFrobeXSOElW/CGRmNgFRIJdZSSD9QdGcXheDPZd1X19+kvw08
+         jhvdqhH/C+cYf+ZH9pjRUQvKq4C/XtPWfgSoeCDvj8c/LRI+jPkFBGazkN0jx0jT/WOf
+         uWsSxe5tFQw5wfnyj3nt1B6glfQSLUD0HZgKQHh95FNS981Lbfadc+pnC8MTU9hZhBgc
+         IwZy2m55Y5TrYQUOYQH7AWaIkHXVYhfZDmHw2RpVJhSKxD8dtKGuJPv7aQWAi1Q4iirT
+         dd9PQC+AlA6DWn6K55dAYm9w03hgAl2NTc1sJfElHSIRCl7gZ8f7ENlFz8NABILEStzA
+         e0cg==
+X-Gm-Message-State: AO0yUKVDpJH2yUzcwQ8aRlISgyzZBN0vbbYRWF8HQxC65VQd7x4PcM5z
+        78lRdlN/0p9xyde4LFIk6/M=
+X-Google-Smtp-Source: AK7set8UdMNY7Vm2C0NqcIGMDxS2MwKLVQ9fsxr+QAUN2RaNXftZlJ9+zwp/GclwyjOof6sss5w9Qg==
+X-Received: by 2002:a05:6a21:33a7:b0:be:a9c7:5d12 with SMTP id yy39-20020a056a2133a700b000bea9c75d12mr9659198pzb.18.1675367410339;
+        Thu, 02 Feb 2023 11:50:10 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:48a9])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b001892af9472esm37767pln.261.2023.02.02.11.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 11:50:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 2 Feb 2023 09:50:08 -1000
+From:   "tj@kernel.org" <tj@kernel.org>
+To:     Lixiong Liu =?utf-8?B?KOWImOWIqembhCk=?= 
+        <Lixiong.Liu@mediatek.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Wenju Xu =?utf-8?B?KOiuuOaWh+S4vik=?= <Wenju.Xu@mediatek.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Jing-Ting Wu =?utf-8?B?KOWQs+mdnOWptyk=?= 
+        <Jing-Ting.Wu@mediatek.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        WJ Wang =?utf-8?B?KOeOi+WGmyk=?= <wj.wang@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Andress Kuo =?utf-8?B?KOmDreWtn+S/rik=?= 
+        <Andress.Kuo@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Subject: Re: cgroup user-after-free
+Message-ID: <Y9wT8At0MF1S5v0k@slm.duckdns.org>
+References: <697032f2331a92eec0e03e85e46cb78bd975a788.camel@mediatek.com>
+ <Y8Cwdsk5pYNd8fX8@slm.duckdns.org>
+ <f8b24df3bd009d112479e9d5db36ec4afff9bb71.camel@mediatek.com>
+ <3bb8e65797b905e4e9d4fad93a8f4fe26b8958a4.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d630ca53-71f0-c735-fbc3-e826479aa86b@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3bb8e65797b905e4e9d4fad93a8f4fe26b8958a4.camel@mediatek.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 11:06:51AM -0500, Waiman Long wrote:
+On Wed, Feb 01, 2023 at 06:04:04AM +0000, Lixiong Liu (刘利雄) wrote:
+> On Fri, 2023-01-13 at 13:40 +0800, lixiong liu wrote:
+> > > > Root cause: 
+> > > > cgroup_migrate_finish free cset’s cgroup,
+> > > > 
+> > > > but cgroup_sk_alloc use the freed cgroup,
+> > > > 
+> > > > then use-after-free happened.
+> > > 
+> > > Sounds similar to the problem fixed by 07fd5b6cdf3c ("cgroup: Use
+> > > separate
+> > > src/dst nodes when preloading css_sets for migration"). Can you try
+> > > it out?
+> > > 
+> > > Thanks.
+> > > 
+> > 
+> > 
+> > Thanks for your quick feedback.
+> > 
+> > 
+> >   
+> > But we encountered use-after-free version
+> > 
+> > already contains this patch.
+> > 
+> > 
+> > 
+> > So, with this patch will also encounter
+> > 
+> > this use-after-free.
+> > 
+> > Thanks!
+> > 
+> > 
+>   Do you have any suggestion for this issue?
 
-> After taking a close look at the patch, my understanding of what it is doing
-> is as follows:
-> 
-> v2: cpus_allowed will not be affected by hotplug. So the new
-> cpuset_cpus_allowed() will return effective_cpus + offline cpus that should
-> have been part of effective_cpus if online before masking it with allowable
-> cpus and then go up the cpuset hierarchy if necessary.
-> 
-> v1: cpus_allowed is equivalent to v2 effective_cpus. It starts at the
-> current cpuset and move up the hierarchy if necessary to find a cpuset that
-> have at least one allowable cpu.
-> 
-> First of all, it does not take into account of the v2 partition feature that
-> may cause it to produce incorrect result if partition is enabled somewhere.
+Unfortunately, there isn't a lot to latch onto. It's on an older kernel and
+there's no reproducer. Refcnting in the path is tricky and it wouldn't be
+too surprising for some bugs to be there. If you can repro on a recent
+kernel, that'd help a lot.
 
-How so? For a partition the cpus_allowed mask should be the parition
-CPUs. The only magical bit about partitions is that any one CPU cannot
-belong to two partitions and load-balancing is split.
+Thanks.
 
-> Secondly, I don't see any benefit other than having some additional offline
-> cpu available in a task's cpumask which the scheduler will ignore anyway.
-
-Those CPUs can come online again -- you're *again* dismissing the true
-bug :/
-
-If you filter out the offline CPUs at sched_setaffinity() time, you
-forever lose those CPUs, the task will never again move to those CPUs,
-even if they do come online after.
-
-It is really simple to reproduce this:
-
- - boot machine
- - offline all CPUs except one
- - taskset -p ffffffff $$
- - online all CPUs
-
-and observe your shell (and all its decendants) being stuck to the one
-CPU. Do the same thing on a CPUSET=n build and note the difference (you
-retain the full mask).
-
-> v2 is able to recover a previously offlined cpu. So we don't gain any
-> net benefit other than the going up the cpuset hierarchy part.
-
-Only for !root tasks. Not even v2 will re-set the affinity of root tasks
-afaict.
-
-> For v1, I agree we should go up the cpuset hierarchy to find a usable
-> cpuset. Instead of introducing such a complexity in cpuset_cpus_allowed(),
-> my current preference is to do the hierarchy climbing part in an enhanced
-> cpuset_cpus_allowed_fallback() after an initial failure of
-> cpuset_cpus_allowed(). That will be easier to understand than having such
-> complexity and overhead in cpuset_cpus_allowed() alone.
-> 
-> I will work on a patchset to do that as a counter offer.
-
-We will need a small and simple patch for /urgent, or I will need to
-revert all your patches -- your call.
-
-I also don't tihnk you fully appreciate the ramifications of
-task_cpu_possible_mask(), cpuset currently gets that quite wrong.
-
+-- 
+tejun
