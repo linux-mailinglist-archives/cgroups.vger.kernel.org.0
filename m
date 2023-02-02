@@ -2,40 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1EA688029
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 15:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834B368802A
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 15:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbjBBOc7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 09:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        id S232108AbjBBOdD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 09:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjBBOc7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 09:32:59 -0500
+        with ESMTP id S231989AbjBBOdB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 09:33:01 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB39712F0
-        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 06:32:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DCA712F2
+        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 06:32:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675348337;
+        s=mimecast20190719; t=1675348347;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rb40jJZP+p+46lzXWGfp2d9j5iJL9Oz8USeC7Urj69w=;
-        b=Vm9cLRazNKGQMQfq1ZEAQokeeLYVmA/ICs8BoVvba1e+WF4HZLs/xSq/Pl/+GpoKSFRcdq
-        sdNrvQf1NE6JIgt6t0ieTFJAP9CrZjA1KyKZsKvKfwRFcFHm1Dzy8wfdE6khVbCcM3HY04
-        eSRxjZ7eNgXZSILNcpBWwUw3gMsQSdg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rONQLTKynqTykPVaxa5ORG7HhLk0Eh/0pOKFH75qGhM=;
+        b=UFIcsgUMGNsaKEcJerP+5jgFo+/viC/4fVw2T7linEmxQmBblBx/+TGmngqMZ9CLIHi1hi
+        sW0Z9XVIhxiLYwJvUIg5Rs2OmPC2HraG0XMKTcR3otjtFZwpl62HGtRsSTiVcbX1ldt7hP
+        pSY3HNLW9GnxBZV8W41Ti+1ytvR/Quk=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-48-epyUifJSMGma_Yeffp4yeQ-1; Thu, 02 Feb 2023 09:32:15 -0500
-X-MC-Unique: epyUifJSMGma_Yeffp4yeQ-1
+ us-mta-186-dF4EuN8SP2yr32K7wSMSyQ-1; Thu, 02 Feb 2023 09:32:25 -0500
+X-MC-Unique: dF4EuN8SP2yr32K7wSMSyQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3BF9085CBE3;
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A4EE62804138;
         Thu,  2 Feb 2023 14:32:10 +0000 (UTC)
 Received: from llong.com (unknown [10.22.8.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B05FD51E5;
-        Thu,  2 Feb 2023 14:32:09 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4923F51E5;
+        Thu,  2 Feb 2023 14:32:10 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -43,9 +44,11 @@ To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         kernel-team@android.com, Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 0/2] cgroup/cpuset: Make hotplug code more efficient
-Date:   Thu,  2 Feb 2023 09:31:58 -0500
-Message-Id: <20230202143200.128753-1-longman@redhat.com>
+Subject: [PATCH v2 1/2] cgroup/cpuset: Skip task update if hotplug doesn't affect current cpuset
+Date:   Thu,  2 Feb 2023 09:31:59 -0500
+Message-Id: <20230202143200.128753-2-longman@redhat.com>
+In-Reply-To: <20230202143200.128753-1-longman@redhat.com>
+References: <20230202143200.128753-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
@@ -59,26 +62,36 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
- v2:
-  - It turns out it works around the v1 cpuset missing offline cpu
-    problem better than I originally thought. So the patch description
-    is updated accordingly.
+If a hotplug event doesn't affect the current cpuset, there is no point
+to call hotplug_update_tasks() or hotplug_update_tasks_legacy(). So
+just skip it.
 
-This small patch series makes the cpuset hotplug a bit more efficient
-by eliminating unnecessary task iteration and cpu/node masks update
-when a cpu hotplug event (online/offline) happens.
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cpuset.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-It can also largely work around the known problem of missing previously
-offlined cpus in v1 cpuset with some exceptions.
-
-Waiman Long (2):
-  cgroup/cpuset: Skip task update if hotplug doesn't affect current
-    cpuset
-  cgroup/cpuset: Don't update tasks' cpumasks for cpu offline events
-
- kernel/cgroup/cpuset.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 205dc9edcaa9..cbf749fc05d9 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3506,6 +3506,8 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+ update_tasks:
+ 	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+ 	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
++	if (!cpus_updated && !mems_updated)
++		goto unlock;	/* Hotplug doesn't affect this cpuset */
+ 
+ 	if (mems_updated)
+ 		check_insane_mems_config(&new_mems);
+@@ -3517,6 +3519,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+ 		hotplug_update_tasks_legacy(cs, &new_cpus, &new_mems,
+ 					    cpus_updated, mems_updated);
+ 
++unlock:
+ 	percpu_up_write(&cpuset_rwsem);
+ }
+ 
 -- 
 2.31.1
 
