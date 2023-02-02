@@ -2,179 +2,183 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0089D68802D
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 15:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05D2688391
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 16:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbjBBOdL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 09:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
+        id S233517AbjBBP6u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 10:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbjBBOdF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 09:33:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F2A712FC
-        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 06:32:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675348339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K4+oxLjiheAOZOYbU74GypHSVXBNjbH6+0gElb58eD0=;
-        b=IsbLE3BPfbFR54UlN1UJDel7bNeWhSny5JMk9aHNfAHXBOg9a68c7jtdNZyia5IbU+ZfmN
-        qAvuTfQZ4F0eHtOYUqgCa8ope6ZYapnU1srbb9VAxkC8kqcwS2ArhPk6Cgd4T8H+r/l+bB
-        YN18BREkq4fERjzeiq/w0L7s1soAYQs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-134-T59fjzIaMl-1DX2bA2x_8A-1; Thu, 02 Feb 2023 09:32:15 -0500
-X-MC-Unique: T59fjzIaMl-1DX2bA2x_8A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1BAD98030CB;
-        Thu,  2 Feb 2023 14:32:11 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B359451E5;
-        Thu,  2 Feb 2023 14:32:10 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel-team@android.com, Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 2/2] cgroup/cpuset: Don't update tasks' cpumasks for cpu offline events
-Date:   Thu,  2 Feb 2023 09:32:00 -0500
-Message-Id: <20230202143200.128753-3-longman@redhat.com>
-In-Reply-To: <20230202143200.128753-1-longman@redhat.com>
-References: <20230202143200.128753-1-longman@redhat.com>
+        with ESMTP id S233160AbjBBP63 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 10:58:29 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50BC6B9A9
+        for <cgroups@vger.kernel.org>; Thu,  2 Feb 2023 07:57:33 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id s4so1238785qvo.3
+        for <cgroups@vger.kernel.org>; Thu, 02 Feb 2023 07:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IcK2j7GaecPZ1Vx44z6AigZg/DHMEIHlEpQ2CSXmGNM=;
+        b=0/2QcsVnBHC20DmS2GdpIB11iAxP9z1WAI7Y8vitVSx3DLYzJM2Yap61ooPAdTvQ4q
+         6zU45QD9XPGJ9qh9EXvxA0vwy6ap0T+oeZtY4OHAkqmn7NF5bF+ci2FkIN57tcMuT8Cj
+         qdmgblY3QKvKhbbDgPQhgpoIWKPDxp3A1mA/1WXAhGY+Jbzhq0TNnLoK1kYzgyfE6gvs
+         B6ZDalOl0eVh2kgFGsonC2DbI9vwH4laWAp2OkcqNZbB5BKsiJ/uHHgxcuuyL/CDAKRo
+         U/Iw2hQ+ONWFW22h4t20EWnb/CLcg4oCnPZyaQC//Z12zJBJkX4sd9HWdXQnJM7+Ldjv
+         Vr/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IcK2j7GaecPZ1Vx44z6AigZg/DHMEIHlEpQ2CSXmGNM=;
+        b=0DjlZmjc5Fyos0I7Q1SzBEaCDLIzMXqPI5AQa5t9Jx8KUDItko4h2Jw3CbVG8QGNYs
+         oUnB8ORzE2BJBQOKmkwceG8293bGZiD7KFE+6M+W+ym796jp0z9rFcV0rsqMrDHoQ6lg
+         r+N5CkPMHiAu7Du6G0ujzAif9KOmm1pxK3qrNBc0HrjvHTd5nT5cLiLNdRyF8D8pwcHS
+         aT/kmwWe/nSp+tKr3H2zIxHTnndyAIEOqMBowG+PtnlCMMhOaKyOZMXsY0k7orlaIT8X
+         mHW5Xosf0i/8zWMEgemZxuYceY+YpBDSjpodZxNMQp9XzbG/ZQ+6GKE2jvCwRfwznP9P
+         Z6DQ==
+X-Gm-Message-State: AO0yUKVlX5kZU4E04KHgXeF0PVVOXXxXpdDPbBlY5tbzgso2+gWct9np
+        vp4DUkcb69TVnM6M8+pRZebVZg==
+X-Google-Smtp-Source: AK7set/JFU+snISJEv3RhRVGviz46AiF1b1OLNWcNoUU+KaFBG5vpNUKkelttsvbOGif1nFM9oGDow==
+X-Received: by 2002:a05:6214:4202:b0:542:adcb:60d7 with SMTP id nd2-20020a056214420200b00542adcb60d7mr8723122qvb.39.1675353387251;
+        Thu, 02 Feb 2023 07:56:27 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:c833])
+        by smtp.gmail.com with ESMTPSA id w14-20020a05620a444e00b0071f0054b094sm8692489qkp.43.2023.02.02.07.56.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 07:56:26 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Tejun Heo <tj@kernel.org>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>
+Subject: [RFC PATCH] mm: memcontrol: don't account swap failures not due to cgroup limits
+Date:   Thu,  2 Feb 2023 10:56:26 -0500
+Message-Id: <20230202155626.1829121-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-It is a known issue that when a task is in a non-root v1 cpuset, a cpu
-offline event will cause that cpu to be lost from the task's cpumask
-permanently as the cpuset's cpus_allowed mask won't get back that cpu
-when it becomes online again. A possible workaround for this type of
-cpu offline/online sequence is to leave the offline cpu in the task's
-cpumask and do the update only if new cpus are added. It also has the
-benefit of reducing the overhead of a cpu offline event.
+Christian reports the following situation in a cgroup that doesn't
+have memory.swap.max configured:
 
-Note that the scheduler is able to ignore the offline cpus and so
-leaving offline cpus in the cpumask won't do any harm.
+  $ cat memory.swap.events
+  high 0
+  max 0
+  fail 6218
 
-Now with v2, only the cpu online events will cause a call to
-hotplug_update_tasks() to update the tasks' cpumasks. For tasks
-in a non-root v1 cpuset, the situation is a bit different. The cpu
-offline event will not cause change to a task's cpumask. Neither does a
-subsequent cpu online event because "cpuset.cpus" had that offline cpu
-removed and its subsequent onlining won't be registered as a change
-to the cpuset. An exception is when all the cpus in the original
-"cpuset.cpus" have gone offline once. In that case, "cpuset.cpus" will
-become empty which will force task migration to its parent. A task's
-cpumask will also be changed if set_cpus_allowed_ptr() is somehow called
-for whatever reason.
+Upon closer examination, this is an ARM64 machine that doesn't support
+swapping out THPs. In that case, the first get_swap_page() fails, and
+the kernel falls back to splitting the THP and swapping the 4k
+constituents one by one. /proc/vmstat confirms this with a high rate
+of thp_swpout_fallback events.
 
-Of course, this patch can cause a discrepancy between v1's "cpuset.cpus"
-and and its tasks' cpumasks. Howver, it can also largely work around
-the offline cpu losing problem with v1 cpuset.
+While the behavior can ultimately be explained, it's unexpected and
+confusing. I see three choices how to address this:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
+a) Specifically exlude THP fallbacks from being counted, as the
+   failure is transient and the memory is ultimately swapped.
+
+   Arguably, though, the user would like to know if their cgroup's
+   swap limit is causing high rates of THP splitting during swapout.
+
+b) Only count cgroup swap events when they are actually due to a
+   cgroup's own limit. Exclude failures that are due to physical swap
+   shortage or other system-level conditions (like !THP_SWAP). Also
+   count them at the level where the limit is configured, which may be
+   above the local cgroup that holds the page-to-be-swapped.
+
+   This is in line with how memory.swap.high, memory.high and
+   memory.max events are counted.
+
+   However, it's a change in documented behavior.
+
+c) Leave it as is. The documentation says system-level events are
+   counted, so stick to that.
+
+   This is the conservative option, but isn't very user friendly.
+   Cgroup events are usually due to a local control choice made by the
+   user. Mixing in events that are beyond the user's control makes it
+   difficult to id root causes and configure the system properly.
+
+Implement option b).
+
+Reported-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- kernel/cgroup/cpuset.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst |  6 +++---
+ mm/memcontrol.c                         | 12 +++++-------
+ mm/swap_slots.c                         |  2 +-
+ 3 files changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index cbf749fc05d9..207bafdb05e8 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -3332,7 +3332,7 @@ static void remove_tasks_in_empty_cpuset(struct cpuset *cs)
- static void
- hotplug_update_tasks_legacy(struct cpuset *cs,
- 			    struct cpumask *new_cpus, nodemask_t *new_mems,
--			    bool cpus_updated, bool mems_updated)
-+			    bool update_task_cpus, bool mems_updated)
- {
- 	bool is_empty;
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index c8ae7c897f14..a8ffb89a4169 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1605,9 +1605,9 @@ PAGE_SIZE multiple when read back.
+ 		failed.
  
-@@ -3347,7 +3347,7 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
- 	 * Don't call update_tasks_cpumask() if the cpuset becomes empty,
- 	 * as the tasks will be migrated to an ancestor.
- 	 */
--	if (cpus_updated && !cpumask_empty(cs->cpus_allowed))
-+	if (update_task_cpus && !cpumask_empty(cs->cpus_allowed))
- 		update_tasks_cpumask(cs);
- 	if (mems_updated && !nodes_empty(cs->mems_allowed))
- 		update_tasks_nodemask(cs);
-@@ -3371,11 +3371,14 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
- static void
- hotplug_update_tasks(struct cpuset *cs,
- 		     struct cpumask *new_cpus, nodemask_t *new_mems,
--		     bool cpus_updated, bool mems_updated)
-+		     bool update_task_cpus, bool mems_updated)
- {
- 	/* A partition root is allowed to have empty effective cpus */
--	if (cpumask_empty(new_cpus) && !is_partition_valid(cs))
-+	if (cpumask_empty(new_cpus) && !is_partition_valid(cs)) {
- 		cpumask_copy(new_cpus, parent_cs(cs)->effective_cpus);
-+		update_task_cpus = true;
-+	}
+ 	  fail
+-		The number of times swap allocation failed either
+-		because of running out of swap system-wide or max
+-		limit.
 +
- 	if (nodes_empty(*new_mems))
- 		*new_mems = parent_cs(cs)->effective_mems;
++		The number of times swap allocation failed because of
++		the max limit.
  
-@@ -3384,7 +3387,7 @@ hotplug_update_tasks(struct cpuset *cs,
- 	cs->effective_mems = *new_mems;
- 	spin_unlock_irq(&callback_lock);
+ 	When reduced under the current usage, the existing swap
+ 	entries are reclaimed gradually and the swap usage may stay
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ab457f0394ab..c2a6206ce84b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7470,17 +7470,15 @@ int __mem_cgroup_try_charge_swap(struct folio *folio, swp_entry_t entry)
+ 	if (!memcg)
+ 		return 0;
  
--	if (cpus_updated)
-+	if (update_task_cpus)
- 		update_tasks_cpumask(cs);
- 	if (mems_updated)
- 		update_tasks_nodemask(cs);
-@@ -3410,7 +3413,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- {
- 	static cpumask_t new_cpus;
- 	static nodemask_t new_mems;
--	bool cpus_updated;
-+	bool cpus_updated, update_task_cpus;
- 	bool mems_updated;
- 	struct cpuset *parent;
- retry:
-@@ -3512,12 +3515,21 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	if (mems_updated)
- 		check_insane_mems_config(&new_mems);
+-	if (!entry.val) {
+-		memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
+-		return 0;
+-	}
+-
+ 	memcg = mem_cgroup_id_get_online(memcg);
  
-+	/*
-+	 * Update tasks' cpumasks only if new cpus are added. Some offline
-+	 * cpus may be left, but the scheduler has no problem ignoring those.
-+	 * The case of empty new_cpus will be handled inside
-+	 * hotplug_update_tasks().
-+	 */
-+	update_task_cpus = cpus_updated &&
-+			   !cpumask_subset(&new_cpus, cs->effective_cpus);
+ 	if (!mem_cgroup_is_root(memcg) &&
+ 	    !page_counter_try_charge(&memcg->swap, nr_pages, &counter)) {
+-		memcg_memory_event(memcg, MEMCG_SWAP_MAX);
+-		memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
++		struct mem_cgroup *swap_over_limit;
 +
- 	if (is_in_v2_mode())
- 		hotplug_update_tasks(cs, &new_cpus, &new_mems,
--				     cpus_updated, mems_updated);
-+				     update_task_cpus, mems_updated);
- 	else
- 		hotplug_update_tasks_legacy(cs, &new_cpus, &new_mems,
--					    cpus_updated, mems_updated);
-+					    update_task_cpus, mems_updated);
++		swap_over_limit = mem_cgroup_from_counter(counter, swap);
++		memcg_memory_event(swap_over_limit, MEMCG_SWAP_MAX);
++		memcg_memory_event(swap_over_limit, MEMCG_SWAP_FAIL);
+ 		mem_cgroup_id_put(memcg);
+ 		return -ENOMEM;
+ 	}
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 0bec1f705f8e..66076bd60e2b 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -342,7 +342,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
  
- unlock:
- 	percpu_up_write(&cpuset_rwsem);
+ 	get_swap_pages(1, &entry, 1);
+ out:
+-	if (mem_cgroup_try_charge_swap(folio, entry)) {
++	if (entry.val && mem_cgroup_try_charge_swap(folio, entry) < 0) {
+ 		put_swap_folio(folio, entry);
+ 		entry.val = 0;
+ 	}
 -- 
-2.31.1
+2.39.1
 
