@@ -2,75 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D9A688905
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 22:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B0F688940
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 22:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbjBBVat (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 16:30:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        id S232861AbjBBVvO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 16:51:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbjBBVas (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 16:30:48 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA262712;
-        Thu,  2 Feb 2023 13:30:45 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id n13so3236702plf.11;
-        Thu, 02 Feb 2023 13:30:45 -0800 (PST)
+        with ESMTP id S232353AbjBBVvN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 16:51:13 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB37EAD17;
+        Thu,  2 Feb 2023 13:50:57 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id m13so3281762plx.13;
+        Thu, 02 Feb 2023 13:50:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
-        b=EEWpC85Vt6Nu9fYfzP562UwxgqEfKGDl+Svi44sV6+yCnSHoJaS5NtrLqfIY5P3Mta
-         xzu7914vju2do7ooaEpdLyCJFOPe1YtRoXLOhvrSWoTw/XqN+Pakt0t7I1nsWreEZgif
-         5L0/iFVQnExE645NHL6Nz6upvotE/mY94j1kjr/To9E80Yzxuac8JGv6w05Iy0Ozx1ev
-         iNwrsUJ12hpCriwk28MItcJtsvVib34zGVBLKQT6dQl3MXbsHw19dJrjarP+3DErMzVN
-         sTvfSBLMm1JhY4jnyRwr/iiGBO9Kn0TJMrDkTUrkeEhH5Q+LkJ3Oy/Xl7fsQhIpbbylX
-         /0cw==
+        bh=lyvgXXfLdb8BqZbi4tqxl6AzdTG+8pKKl4n84qa8mHw=;
+        b=FLARCyjXgCWruhv8HxY2D5u3alu0rFNTa28H7ltJbldeBu+27e3g7SsbgllMXeH6wc
+         IchjL6Q5AgVhtRULvKVvTSdrhps+qiuYSVxaw7Ph9ZiKz7rTLwcR9lvtCtQiTaUEecnr
+         BhpWtyT24fdu0gq7RUEn2DfHm/BR3zfVa2fs+WOUa9JeTTG7H9IlAbp1IBcnyYpv42xz
+         tcddBjqKwnNaTZTaiedcXvaZwKWG3VhVBNi601iKp72PEot/UPog3ESgRLSBl2Dxyp+o
+         fS+QRYK1upK+Ixt60oiHU+Ax5uR2vMb+G7pMO3yqreEVMZahc0/jqs+Xyu7rglFu3Uo1
+         BNRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nrz3TSmcgrSpTyZCmW79h4FBugW4tEaSs53yJ16o+LY=;
-        b=LD8fkexDwUmJE68ye5+2evTj7U2wkGQ1pBYfUJcbWhbrVW+tsw/LiexDrMu0BKej/f
-         eyWqKL5xt36Z739xKjmUXubGCbscqomrsFaCFE/mNB3R7+QWR/ezh6n6dmGM1SKTS133
-         TLBkZTGEdcRSj6aqrwbxhmz+o35k39rOa98c0K08/8WZYSvz6IsYu38LsqF/XXDMxWaY
-         HaD8nBTPFo6nX927u1Tx43uxlOVkLs8hMmKxDae2yq/YRN2vKQLPV9ky99SR1rWpJ7DZ
-         /0B0btP2i1aC24DeeKT7Y3KwTUnNfBIefXlGqR5CCYIXIvsXbq5b/+8dfIkYueVRuMGY
-         JUBw==
-X-Gm-Message-State: AO0yUKXa00USBlFYB1sPK2cGHPJpM4rYCE+rqvJPBrWuXr5CW+gbY+tI
-        02NW+Fe51LePUCFcxPPFAkfkE10i5tg=
-X-Google-Smtp-Source: AK7set8xILWDeKLdsoPmaeC+WBsqixXUKuHo6IuDnFV/HVdfnKuGG0DTdtoKhq33sbxB8mVxSURO+Q==
-X-Received: by 2002:a17:903:30c9:b0:191:24d1:8af6 with SMTP id s9-20020a17090330c900b0019124d18af6mr6517030plc.42.1675373444647;
-        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
+        bh=lyvgXXfLdb8BqZbi4tqxl6AzdTG+8pKKl4n84qa8mHw=;
+        b=eDTQ9nfiiRKjN2swswxDDgtLFYBMIgT5un5+tZ0AZti8J0OHIdwcY2nrpxR9QuY+Pp
+         pdKlIKR6rB0J0xV6Zcvs48AHhkzGu05gO7yxWHBiUksD3dVVOFDv9oASLfqy69X93nFk
+         ye4i/hhtEDHYSFogsSa696pwkdXbPql2d+IPvDE93qgHbRZp20sm1dbuUc/QYmsm/YHW
+         5POkw2p0ORhG/WC6uzg0/Jp4ChUt4g2G2/XZhHyU5vAUnfBLUakQGxoRBXmspKTJLK4h
+         yMbLq5g1ZiqxGIXnS8eXJI25NjmQtZV3TkS4pd651ak2wCZqtPUX8++d2xVix0uc6Nqw
+         62Xw==
+X-Gm-Message-State: AO0yUKX6D7AKzNZy3fYfHVY4O+1QttmUACBHTBYUNrMRoiqAQsxJ71rc
+        kUqF88bH84k6QLDt9FDmE1w=
+X-Google-Smtp-Source: AK7set/C7FbmGENcIZWZX7WnwCsAGxvyQdusGMtjvbz1oTcV5nJt56jD76z6ClTKSt3A8sj8YsnJPQ==
+X-Received: by 2002:a05:6a20:439f:b0:be:c874:b7d9 with SMTP id i31-20020a056a20439f00b000bec874b7d9mr8407805pzl.21.1675374657275;
+        Thu, 02 Feb 2023 13:50:57 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::5:48a9])
-        by smtp.gmail.com with ESMTPSA id a21-20020a170902b59500b00186748fe6ccsm118158pls.214.2023.02.02.13.30.43
+        by smtp.gmail.com with ESMTPSA id x3-20020a63aa43000000b004d4547cc0f7sm260666pgo.18.2023.02.02.13.50.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 13:30:44 -0800 (PST)
+        Thu, 02 Feb 2023 13:50:56 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 2 Feb 2023 11:30:42 -1000
+Date:   Thu, 2 Feb 2023 11:50:55 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        stable@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: Copy the memcg information to the ciphertext
- page
-Message-ID: <Y9wrglzrfzTiCjh8@slm.duckdns.org>
-References: <20230129121851.2248378-1-willy@infradead.org>
- <Y9a2m8uvmXmCVYvE@sol.localdomain>
- <Y9bkoasmAmtQ2nSV@casper.infradead.org>
- <Y9mH0PCcZoGPryXw@slm.duckdns.org>
- <Y9oHQ6MfRbfwmFyK@sol.localdomain>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
+ offline CPUs
+Message-ID: <Y9wwP4LF9vgreO3U@slm.duckdns.org>
+References: <20230131221719.3176-1-will@kernel.org>
+ <20230131221719.3176-2-will@kernel.org>
+ <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
+ <Y9t1sP/6nFht7RSN@hirez.programming.kicks-ass.net>
+ <d630ca53-71f0-c735-fbc3-e826479aa86b@redhat.com>
+ <Y9wSC1Wxlm8CKKlN@hirez.programming.kicks-ass.net>
+ <2bc730db-704d-080b-6869-02f6d0035fad@redhat.com>
+ <Y9whrU4IUeleqdrt@slm.duckdns.org>
+ <75de91db-d3bc-0c0e-6199-ef00591e8878@redhat.com>
+ <8787b5f7-9822-e49b-0357-d0ce224ca920@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9oHQ6MfRbfwmFyK@sol.localdomain>
+In-Reply-To: <8787b5f7-9822-e49b-0357-d0ce224ca920@redhat.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -81,53 +84,42 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Tue, Jan 31, 2023 at 10:31:31PM -0800, Eric Biggers wrote:
-> > These can usually be handled by explicitly associating the bio's to the
-> > desired cgroups using one of bio_associate_blkg*() or
-> > bio_clone_blkg_association().
+On Thu, Feb 02, 2023 at 04:05:14PM -0500, Waiman Long wrote:
 > 
-> Here that already happens in wbc_init_bio(), called from io_submit_init_bio() in
-> fs/ext4/page-io.c.
-
-Yeah, without bouncing, that's usually how writeback IOs are associated with
-their cgroups.
-
-> > It is possible to go through memcg ownership
-> > too using set_active_memcg() so that the page is owned by the target cgroup;
-> > however, the page ownership doesn't directly map to IO ownership as the
-> > relationship depends on the type of the page (e.g. IO ownership for
-> > pagecache writeback is determined per-inode, not per-page). If the in-flight
-> > pages are limited, it probably is better to set bio association directly.
+> On 2/2/23 15:53, Waiman Long wrote:
+> > 
+> > On 2/2/23 15:48, Tejun Heo wrote:
+> > > On Thu, Feb 02, 2023 at 03:46:02PM -0500, Waiman Long wrote:
+> > > > > > I will work on a patchset to do that as a counter offer.
+> > > > > We will need a small and simple patch for /urgent, or I will need to
+> > > > > revert all your patches -- your call.
+> > > > > 
+> > > > > I also don't tihnk you fully appreciate the ramifications of
+> > > > > task_cpu_possible_mask(), cpuset currently gets that quite wrong.
+> > > > OK, I don't realize the urgency of that. If it is that urgent, I
+> > > > will have
+> > > > no objection to get it in for now. We can improve it later on.
+> > > > So are you
+> > > > planning to get it into the current 6.2 rc or 6.3?
+> > > > 
+> > > > Tejun, are you OK with that as you are the cgroup maintainer?
+> > > Yeah, gotta fix the regression but is there currently a solution
+> > > which fixes
+> > > the regression but doesn't further break other stuff?
+> > 
+> > I believe there is a better way to do that, but it will need more time
+> > to flex out. Since cpuset_cpus_allowed() is only used by
+> > kernel/sched/core.c, Peter will be responsible if it somehow breaks
+> > other stuff.
 > 
-> ext4 also calls wbc_account_cgroup_owner() for each pagecache page that's
-> written out.  It seems this is for a different purpose -- it looks like the
-> fs-writeback code is trying to figure out which cgroup "owns" the inode based on
-> which cgroup "owns" most of the pagecache pages?
+> Maybe my cpuset patch that don't update task's cpumask on cpu offline event
+> can help. However, I don't know the exact scenario where the regression
+> happen, so it may not.
 
-Yeah, there's a difference between how memory and IO track cgroup ownership.
-Memory ownership is per-page but IO ownership is per-inode. This is because
-splitting writeback IOs of the same inode can perform really badly, so we
-try to find the majority dirty page owner cgroup of a given inode and
-associate the whole inode to that cgroup.
-
-So, something like md / dm, which gets a bio from filesystem and then
-bounces it to another bio, would use either bio_clone_blkg_association() to
-copy the association of the original bio (which probably is set through
-wbc_init_bio()) or determine the cgroup the bio should belong to somehow and
-set it explicitly with bio_associate_blkg(). However, here, as the
-filesystem is the one bouncing I guess it can be simpler.
-
-> The bug we're discussing here is that when ext4 writes out a pagecache page in
-> an encrypted file, it first encrypts the data into a bounce page, then passes
-> the bounce page (which don't have a memcg) to wbc_account_cgroup_owner().  Maybe
-> the proper fix is to just pass the pagecache page to wbc_account_cgroup_owner()
-> instead?  See below for ext4 (a separate patch would be needed for f2fs):
-
-Yeah, this makes sense to me and is the right thing to do no matter what.
-wbc_account_cgroup_owner() should be fed the origin page so that the IO can
-be blamed on the owner of that page.
+Neither patch looks like they would break anything. That said, the patches
+aren't trivial and we're really close to the merge window, so I'd really
+appreciate if you can take a look and test a bit before we send these
+Linus's way. We can replace it with a better solution afterwards.
 
 Thanks.
 
