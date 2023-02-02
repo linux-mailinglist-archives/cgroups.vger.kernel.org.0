@@ -2,106 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFB268705B
-	for <lists+cgroups@lfdr.de>; Wed,  1 Feb 2023 22:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 025406872E1
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 02:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjBAVL0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Feb 2023 16:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
+        id S229671AbjBBBQ7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Feb 2023 20:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbjBAVLZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 16:11:25 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AC02D7F;
-        Wed,  1 Feb 2023 13:11:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=eQ62sI2LaH5K93mDteIKKvfXZlAXtr2Rm8TFfldgNso=; b=i5XQu02i0rUZkkaMlzRQPLcq6n
-        c15AesJp084H/0wYTlUcdNMnfX6McXTm88rbMrGAIO1WhNY8ud/aPxhaWn2bmBd6Dal/a/8qATMZ9
-        60qWxuyRtROY/s6+MWvfT0Y7hSCdyaxN1mCwWG5+KgS61otXliI5GJpPoAN2JM3CeC2IgQpHR5Il3
-        65uMjyrak7qWnWZ5I+2ajEJ72rOS/BWQLnM4PmzzccnZokOIjeu5hIXVsUL8sRumyVLPPwhDKxn/h
-        6egXjLvlI67XNJIDJc21H787lqbAel0wYy6PzotdyneH9zZA/gIG+zBCPTpWCdK9F+65Q9p7yQyBr
-        5MgXYw7w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pNKMv-004uBg-36;
-        Wed, 01 Feb 2023 21:10:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC2E830013F;
-        Wed,  1 Feb 2023 22:10:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8E8E5200DCC72; Wed,  1 Feb 2023 22:10:46 +0100 (CET)
-Date:   Wed, 1 Feb 2023 22:10:46 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
- offline CPUs
-Message-ID: <Y9rVVldS19oyIZ+g@hirez.programming.kicks-ass.net>
-References: <20230131221719.3176-1-will@kernel.org>
- <20230131221719.3176-2-will@kernel.org>
- <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
- <Y9otWX+MGOLDKU6t@hirez.programming.kicks-ass.net>
- <83e53632-27ed-8dde-84f4-68c6776d6da8@redhat.com>
- <a892d340-ea99-1562-0e70-176f02f195c2@redhat.com>
+        with ESMTP id S229662AbjBBBQ6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Feb 2023 20:16:58 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9AEB468;
+        Wed,  1 Feb 2023 17:16:57 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4P6gqS19g3z4f3p1C;
+        Thu,  2 Feb 2023 09:16:52 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgCnUyEED9tjk3haCg--.4548S3;
+        Thu, 02 Feb 2023 09:16:54 +0800 (CST)
+Subject: Re: [PATCH -next] block, bfq: cleanup 'bfqg->online'
+To:     Jan Kara <jack@suse.cz>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        paolo.valente@linaro.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230201120609.4151432-1-yukuai1@huaweicloud.com>
+ <20230201131037.6frw2kpc54k4sx7a@quack3>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <76f00d0a-b8d9-ab04-329c-3ba33d12d884@huaweicloud.com>
+Date:   Thu, 2 Feb 2023 09:16:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20230201131037.6frw2kpc54k4sx7a@quack3>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a892d340-ea99-1562-0e70-176f02f195c2@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: _Ch0CgCnUyEED9tjk3haCg--.4548S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrur4kCF4xWw15AF1UZrW5Wrg_yoWxuwcEkF
+        ZF9Fnayw13Ga1xZws8JF1YqFWkuw4agrZIgFWYg348Z3W8Xa92yFnrKF97Ar4fWFs7Gr1Y
+        yay7uFW8tr13XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 01, 2023 at 01:46:11PM -0500, Waiman Long wrote:
+Hi, Jan!
 
-> Note that using cpus_allowed directly in cgroup v2 may not be right because
-> cpus_allowed may have no relationship to effective_cpus at all in some
-> cases, e.g.
+ÔÚ 2023/02/01 21:10, Jan Kara Ð´µÀ:
+> On Wed 01-02-23 20:06:09, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> After commit dfd6200a0954 ("blk-cgroup: support to track if policy is
+>> online"), there is no need to do this again in bfq.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > 
->    root
->     |
->     V
->     A (cpus_allowed = 1-4, effective_cpus = 1-4)
->     |
->     V
->     B (cpus_allowed = 5-8, effective_cpus = 1-4)
+> So I agree this is nice to do but it isn't so simple. BFQ relies on the
+> fact that 'online' is cleared under bfqd->lock so we cannot associate bio
+> in bfq_bio_bfqg() with a bfqg that has already its bfq_pd_offline()
+> function run.
 > 
-> In the case of cpuset B, passing back cpus 5-8 as the allowed_cpus is wrong.
+> Maybe if you set 'online' to false before calling ->pd_offline() things
+> would work fine for BFQ.
 
-I think my patch as written does the right thing here. Since the
-intersection of (1-4) and (5-8) is empty it will move up the hierarchy
-and we'll end up with (1-4) from the cgroup side of things.
+Yes, you're right. Thanks for the explanation.
 
-So the purpose of __cs_cpus_allowed() is to override the cpus_allowed of
-the root set and force it to cpu_possible_mask.
-
-Then cs_cpus_allowed() computes the intersection of cs->cpus_allowed and
-all it's parents. This will, in the case of B above, result in the empty
-mask.
-
-Then cpuset_cpus_allowed() has a loop that starts with
-task_cpu_possible_mask(), intersects that with cs_cpus_allowed() and if
-the intersection of that and cpu_online_mask is empty, moves up the
-hierarchy. Given cs_cpus_allowed(B) is the empty mask, we'll move to A.
-
-Note that since we force the mask of root to cpu_possible_mask,
-cs_cpus_allowed(root) will be a no-op and if we guarantee (in arch code)
-that cpu_online_mask always has a non-empty intersection with
-task_cpu_possible_mask(), this loop is guaranteed to terminate with a
-viable mask.
-
+Kuai
 
