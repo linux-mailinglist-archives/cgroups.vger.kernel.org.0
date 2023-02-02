@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2165687E7D
-	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 14:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBC1687E98
+	for <lists+cgroups@lfdr.de>; Thu,  2 Feb 2023 14:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbjBBNWC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Feb 2023 08:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
+        id S232422AbjBBNZ3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Feb 2023 08:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbjBBNV5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 08:21:57 -0500
+        with ESMTP id S232432AbjBBNZ0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Feb 2023 08:25:26 -0500
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAA58EB56;
-        Thu,  2 Feb 2023 05:21:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD4F8F27D;
+        Thu,  2 Feb 2023 05:25:21 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4P6zv66Ww4z4f3kKs;
-        Thu,  2 Feb 2023 21:21:06 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4P6zzv09Cgz4f3v5n;
+        Thu,  2 Feb 2023 21:25:15 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgBnFCLDuNtjkVh3Cg--.20113S4;
-        Thu, 02 Feb 2023 21:21:09 +0800 (CST)
+        by APP3 (Coremail) with SMTP id _Ch0CgC3YiC8udtjhYJ3Cg--.29944S4;
+        Thu, 02 Feb 2023 21:25:17 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     jack@suse.cz, paolo.valente@linaro.org, axboe@kernel.dk,
         tj@kernel.org, josef@toxicpanda.com
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next v2] block, bfq: cleanup 'bfqg->online'
-Date:   Thu,  2 Feb 2023 21:45:04 +0800
-Message-Id: <20230202134504.2353787-1-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v3] block, bfq: cleanup 'bfqg->online'
+Date:   Thu,  2 Feb 2023 21:49:13 +0800
+Message-Id: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgBnFCLDuNtjkVh3Cg--.20113S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFWxZF4UWw1fKw4rWw45ZFb_yoW5JF1xpF
-        sFqF1UC3W3tFn5XFWj93WUZr10qan5C34jk3y8W390yFy7Cr1I9Fn0vw4rAFWIqFZxCFW5
-        Zr1rtrW8C3WjkFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: _Ch0CgC3YiC8udtjhYJ3Cg--.29944S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr4kZry8ArW3Zw4xGw43GFg_yoW5GrWfpF
+        sFqF1UCw43tF1kXFWj93WUZryFqan5C34UK3y8W3s0yFy7Cr1IvFn0y3yrAFZ2qFZxCFW5
+        ZF1rtrW8C3Wjka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
         1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
         JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
         CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
         W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
         Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
         xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
         MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        fUoOJ5UUUUU
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1
+        a9aPUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -64,14 +64,17 @@ From: Yu Kuai <yukuai3@huawei.com>
 After commit dfd6200a0954 ("blk-cgroup: support to track if policy is
 online"), there is no need to do this again in bfq.
 
-However, 'pd->online' is protected by 'bfqd->lock', in order to make
+However, 'pd->online' is not protected by 'bfqd->lock', in order to make
 sure bfq won't see that 'pd->online' is still set after bfq_pd_offline(),
-clear it before bfq_pd_offline_() is called. This is fine because
-'pd->online' is only used in bfq policy and bfq_pd_offline() will move
-active bfqq to root cgroup anyway.
+clear it before bfq_pd_offline() is called. This is fine because other
+polices doesn't use 'pd->online' and bfq_pd_offline() will move active
+bfqq to root cgroup anyway.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
+Changes in v3:
+ - in commit message: protected -> not protected, bfq_pd_offline_() ->
+ bfq_pd_offline().
 Changes in v2:
  - clear 'pd->online' before calling bfq_pd_offline()
 
