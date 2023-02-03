@@ -2,68 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEC468A282
-	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 20:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB6768A2D2
+	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 20:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbjBCTHo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Feb 2023 14:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        id S232976AbjBCTTB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Feb 2023 14:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjBCTHn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 14:07:43 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5581F3432A;
-        Fri,  3 Feb 2023 11:07:42 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id bd15so4413359pfb.8;
-        Fri, 03 Feb 2023 11:07:42 -0800 (PST)
+        with ESMTP id S233697AbjBCTS7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 14:18:59 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43443402D
+        for <cgroups@vger.kernel.org>; Fri,  3 Feb 2023 11:18:43 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id g12-20020a656ccc000000b004ee62dadb95so2898348pgw.9
+        for <cgroups@vger.kernel.org>; Fri, 03 Feb 2023 11:18:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nDCfdH5PhWAgC7H11VM8lY+JRkqHaXUeMCOTn+hxrSI=;
-        b=qSODSDxdm0nViYzSarSacBlWfSm+myWU+qIIOQRW2ixEsHcB4Ir4iLBUXrvoAIsiv/
-         5R3gg/DH4h/vyp+RmgeqaYtriP/PRcXUcCizSIlbNELxTnYQHxm3QweHIRNZIgS63UR0
-         6HooxWaBJviQ6rinLCJraKMhrf9tl/BBGIcO2FajJSZ/I07j4LLi6ckhLhQXZHRZf5XD
-         Y/+N7xHv2ZR5/Kin0kfsmYWk+Koooa/xedW5wAM1cVRAfsCLLYaA1ugod6The65JU4B+
-         BcvfG655rbQzlOSFA+d4YLQcdXn/pWJAL+jW3vaCvo/CIqaVbeDEELFx+RnvaU1qXxdT
-         Sdbg==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eZSuQF+nJSrdc5oiEMr2Huwq3nLEZDXbSVvbFcSGTVg=;
+        b=kdvGxpkdksPrb8vTbUnTey3IDTfFIN/yZjMk3GpmvkGAN7QnnRU6Wm0uwX3hcaow+7
+         T2nGox0V65Lb0aAooaAgQxOALFaDDn7Qve5uGl0s7QISeFrOG8kcYQelo67MvBD7yLAI
+         wc+a19ViT+94h4/58b3oOPid3z4l2Fq2+c1avj5d4t2Zj0hB405MokIZ0ZN9mKkBjudm
+         Z/Z2WZJhC65WygoAsw1ZZUC07Rx3Inh91guxjjrPRlS60hV0i8P93hJQx8GmRA84m9T/
+         8//OzllptVYu4emQ1Ulx5izXKaecOAF8be+n3ke0lVMJtBRwjUSJrg487jTUVkl/EKPk
+         46DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nDCfdH5PhWAgC7H11VM8lY+JRkqHaXUeMCOTn+hxrSI=;
-        b=InAlDym6wXUpSvWn0XBJB68xM2bwzDukUWlkj0r0sQbbQ6IrcqKbmLpUD0PMZJib6j
-         /CUYxqkttliv8Q5z5Ytg+tscp26MRWkMCfmAwAPjFZKWjuhzpGsjYBSbYopJxnUZK1LW
-         mQNnhId0LYH9lR9ZGnArTbNs/2ib5loVTByW8/5Jm4zxejI6JQ1pi2JhRBrKyaDaMNOm
-         z0MLLYHhL+08bPdyImH4LRP+eIHXNhpRKPIoJ1FhsKAmQNOSxj7wby23vYG39b9bXQdS
-         ES3ztDSDQcVAtyBLYLN6SzX8XQeSwlPAdnP0aXa5dYbKE6jK6TJDTKL1dgWHDcxxETMX
-         qMQQ==
-X-Gm-Message-State: AO0yUKXxYIKJ7nXwv4GdQr5/YsoppX0iVfYX/N4cM1JflkILjuYjUv6M
-        8JlzUyReJStmroQ/SHCfDyuEWROVs10Y/mzHMNs=
-X-Google-Smtp-Source: AK7set+0Qos5sJ1BXqFBHaoguK79AGcVOHMbGkwS7uC6lwawsIbWcJP4GVqmTJOMcHXe5hM5II8Uxu8CP7R/HVcmU3Y=
-X-Received: by 2002:a05:6a00:1589:b0:592:7c9a:1236 with SMTP id
- u9-20020a056a00158900b005927c9a1236mr2374540pfk.26.1675451261726; Fri, 03 Feb
- 2023 11:07:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20230202155626.1829121-1-hannes@cmpxchg.org> <Y91ZsDSIr2oFHu3E@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <Y91ZsDSIr2oFHu3E@P9FQF9L96D.corp.robot.car>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 3 Feb 2023 11:07:30 -0800
-Message-ID: <CAHbLzkpk+6+kzsxmJ_MK+708rpCEjB2njnarLkzfzXX-MUyG7g@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: memcontrol: don't account swap failures not due
- to cgroup limits
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eZSuQF+nJSrdc5oiEMr2Huwq3nLEZDXbSVvbFcSGTVg=;
+        b=le644F88sVpF8yP8TzqoKGVb/qCzMNIxZi4e4vbaJXghrhFd+E9OSdPF9ZWEjIOQ4n
+         liPx/rb6Kmy/GIqMlY97I7JWXKnjmEl1RmbU4CL0Bcr32zfu97OCcgtQT///Ou5QEzqG
+         ZZ10W7NsFxpeLwfMw/u32N2uBMnwzs8NXFUf945x1axF/telNqP+ZNVIcPWrspTgDnZD
+         4v03rtKn2W9ZWHZLxE1dumlggs4ViOL27tCVrK2O7iit6BHfm7pdEHgnSBjv6YtocfH4
+         AsUdIYx8ezF/gwE+NvKBePvDZTyt9/1b1SLWGoK5vpyVzJnc33n+kL7FcudcsMc2aI/8
+         sNhw==
+X-Gm-Message-State: AO0yUKXjZdR3yi5B6rw++zDIFJiekoOoU7srjULs5NuVaa/EjS+gj53Y
+        pFfoy/0K5BUZmQyQAj6GFlPrUoykVX8JZA==
+X-Google-Smtp-Source: AK7set+KFitv4K386psersWMjOdQpsVBs7o/hvcomAg0VVFrQ/F95zkILRWihWHNvcethbqhu8oV9vtuVKl92w==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a17:902:7788:b0:198:e13d:a04a with SMTP
+ id o8-20020a170902778800b00198e13da04amr628723pll.7.1675451922818; Fri, 03
+ Feb 2023 11:18:42 -0800 (PST)
+Date:   Fri, 3 Feb 2023 19:18:40 +0000
+In-Reply-To: <Y9zM0GbmfKdvy3bL@dhcp22.suse.cz>
+Mime-Version: 1.0
+References: <1675312377-4782-1-git-send-email-zhaoyang.huang@unisoc.com>
+ <Y9tz+0J9fw+Z+O+O@dhcp22.suse.cz> <CALvZod5E0s9Vu3wq-Fuvs9z=ViMADn3aNL0f56ELGmFzxKCtkg@mail.gmail.com>
+ <Y9zM0GbmfKdvy3bL@dhcp22.suse.cz>
+Message-ID: <20230203191840.jh5akertunyk4cx7@google.com>
+Subject: Re: [PATCH] mm: introduce entrance for root_mem_cgroup's current
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, ke.wang@unisoc.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,61 +73,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 3, 2023 at 11:00 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> On Thu, Feb 02, 2023 at 10:56:26AM -0500, Johannes Weiner wrote:
-> > Christian reports the following situation in a cgroup that doesn't
-> > have memory.swap.max configured:
-> >
-> >   $ cat memory.swap.events
-> >   high 0
-> >   max 0
-> >   fail 6218
-> >
-> > Upon closer examination, this is an ARM64 machine that doesn't support
-> > swapping out THPs.
->
-> Do we expect it to be added any time soon or it's caused by some system
-> limitations?
+On Fri, Feb 03, 2023 at 09:58:56AM +0100, Michal Hocko wrote:
+[...]
+> > 
+> > One advantage I can see is if someone is looking for usage for all top
+> > containers (alive or zombie) but I wanted to know if that was the real
+> > motivation behind the patch.
+> 
+> Isn't that just a global stats that we already display via /proc files?
+> 
 
-AFAIK, it has been supported since 6.0. See commit d0637c505f8a1
-
->
-> > In that case, the first get_swap_page() fails, and
-> > the kernel falls back to splitting the THP and swapping the 4k
-> > constituents one by one. /proc/vmstat confirms this with a high rate
-> > of thp_swpout_fallback events.
-> >
-> > While the behavior can ultimately be explained, it's unexpected and
-> > confusing. I see three choices how to address this:
-> >
-> > a) Specifically exlude THP fallbacks from being counted, as the
-> >    failure is transient and the memory is ultimately swapped.
-> >
-> >    Arguably, though, the user would like to know if their cgroup's
-> >    swap limit is causing high rates of THP splitting during swapout.
->
-> I agree, but it's probably better to reflect it in a form of a per-memcg
-> thp split failure counter (e.g. in memory.stat), not as swap out failures.
-> Overall option a) looks preferable to me. Especially if in the long run
-> the arm64 limitation will be fixed.
->
-> >
-> > b) Only count cgroup swap events when they are actually due to a
-> >    cgroup's own limit. Exclude failures that are due to physical swap
-> >    shortage or other system-level conditions (like !THP_SWAP). Also
-> >    count them at the level where the limit is configured, which may be
-> >    above the local cgroup that holds the page-to-be-swapped.
-> >
-> >    This is in line with how memory.swap.high, memory.high and
-> >    memory.max events are counted.
-> >
-> >    However, it's a change in documented behavior.
->
-> I'm not sure about this option: I can easily imagine a setup with a
-> memcg-specific swap space, which would require setting an artificial
-> memory.swap.max to get the fail counter working. On the other side not a deal
-> breaker.
->
-> Thanks!
->
+Things are a bit complicated for kernel memory. Let's take a simple
+example where there are no processes in the root memcg. In this case the
+user memory stats should be similar to the global stats under /proc
+because we always charge user memory. However the kernel memory has to
+be opted-in to be accounted. So, we have a lot of allocations which are
+in the global stats but not in the memcg stats. We can traverse the top
+level memcgs to get kernel stats and subtract it from the global stats
+which will give the sum of zombie kernel memory and unaccounted kernel
+memory. For debugging and history/analysis purpose, differentiating
+between zombie and unaccounted makes sense.
