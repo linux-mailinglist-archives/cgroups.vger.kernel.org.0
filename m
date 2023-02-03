@@ -2,43 +2,43 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DFE68A334
-	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 20:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F9E68A346
+	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 20:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbjBCTpi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Feb 2023 14:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        id S232113AbjBCTvv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Feb 2023 14:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjBCTph (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 14:45:37 -0500
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C5C9DCB3;
-        Fri,  3 Feb 2023 11:45:36 -0800 (PST)
-Received: by mail-pj1-f49.google.com with SMTP id f16-20020a17090a9b1000b0023058bbd7b2so5302550pjp.0;
-        Fri, 03 Feb 2023 11:45:36 -0800 (PST)
+        with ESMTP id S229800AbjBCTvv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 14:51:51 -0500
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863FFA42A6;
+        Fri,  3 Feb 2023 11:51:50 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id u9so2073845plf.3;
+        Fri, 03 Feb 2023 11:51:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xj5Tu5E7CoXMz7arwXQAyRVyy8gsxIDydTYsQXxz6MI=;
-        b=eRHLknci8CkKlOiAS1V3rJd+h+Gz+LMf9htRD2ZP0/ZqKxX66hOUxl1nUHFDa48K5D
-         OdmegWpOsMDi6mdUh+HBIo0IDSVre4xyZ8Z1nNtmzxq9WUhXxh6pumRaeF60QEt03vCU
-         Iu7moFogf2F3oBfL7R4mFljX/L+nMUf6ggsiUAW69FANv4M/xBjFGJc+pYNUjDb7TRi1
-         qDgokkLDS4/fi4LBu61bndIHSJkaa6OlVOc0irOz5QfLsDb9MEuUHVfVI8q80MTsSxTb
-         yLEIbfHV2nhqisrCjz38tZIYxn2kE7ZyHpWpMBJwBHohDu7HMLKZPyPi7gZCSIermwuF
-         tTYw==
-X-Gm-Message-State: AO0yUKXVZShTuZhvh1pa0l8YvNpUeJMlCERhWyO8oRBBpgMfsVgoaRQI
-        NN62Ga7yZbdMa5ZXYUZZVeen+ZwSLIY=
-X-Google-Smtp-Source: AK7set8nM63+1pdXNGI6Lh0b+Jhps5kT2dzVbEI+pm1NCG1DTXT02+dcEWAhm+o+/xxoiYvyp3PF6A==
-X-Received: by 2002:a05:6a20:d906:b0:bc:e64b:e79b with SMTP id jd6-20020a056a20d90600b000bce64be79bmr7074418pzb.1.1675453535679;
-        Fri, 03 Feb 2023 11:45:35 -0800 (PST)
+        bh=qxF088S52bQwgAxLundAr5dx4dt7mnQYl5+HLZOJtj4=;
+        b=OufnVsrkdCDZnrIIO4z9mG+OmxXEYJhXTvrHKQ5i1TrGix9g4zhpmykgWn5GbeO8Hb
+         KjVBbZkI3qZ4GADHnhYlK17mNoL1tCcvGc4JKk7Zhhav0CGJC83QiWgyKrT4ZQaE3EZU
+         a9NvqYIrKTGpyS0gdUKcTKiV/dbIeZHc3SEVVs8qVFt6Z51gmeadlElp/vy9hcSr4WUi
+         65qca52xlGD+LWkNe+BswaNtofGUzOZvSb+8BVEKLWYBY4VCPad4jPinbgCUanywfNGb
+         oH5d9oxKUzYHjDFq2vIRLub8cCe0Or1OV6dqxUKcJGfZpurZKjRoyjr2gGvaUerBiHTf
+         tC6g==
+X-Gm-Message-State: AO0yUKURD5u3oevEJ1WNOo0/F5wnwKQysY6W39TL5M3qoZ6Y573DZmLQ
+        r/XrPk3+2zBUCWs7JGH1+Ek=
+X-Google-Smtp-Source: AK7set8OWiY85LqgYTIFwdPApnxkX47RN0hU8c4CbFbske6wYlFVr1lKBOZ8wL0SUra4zWcxuRwuaQ==
+X-Received: by 2002:a17:90b:3147:b0:22c:3830:d777 with SMTP id ip7-20020a17090b314700b0022c3830d777mr11876374pjb.48.1675453909925;
+        Fri, 03 Feb 2023 11:51:49 -0800 (PST)
 Received: from ?IPV6:2620:15c:211:201:b752:5d03:ec5e:7be5? ([2620:15c:211:201:b752:5d03:ec5e:7be5])
-        by smtp.gmail.com with ESMTPSA id g20-20020aa796b4000000b0058bb0fb6295sm2219377pfk.26.2023.02.03.11.45.33
+        by smtp.gmail.com with ESMTPSA id ms17-20020a17090b235100b002262ab43327sm5382865pjb.26.2023.02.03.11.51.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Feb 2023 11:45:34 -0800 (PST)
-Message-ID: <aedc240d-7c9e-248a-52d2-c9775f3e8ca1@acm.org>
-Date:   Fri, 3 Feb 2023 11:45:32 -0800
+        Fri, 03 Feb 2023 11:51:48 -0800 (PST)
+Message-ID: <a2d8d491-7410-2dd8-cc11-a0519e2025b6@acm.org>
+Date:   Fri, 3 Feb 2023 11:51:47 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
@@ -52,12 +52,8 @@ Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
         Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, houtao1@huawei.com
 References: <20230201045227.2203123-1-houtao@huaweicloud.com>
- <8c068af3-7199-11cf-5c69-a523c7c22d9a@acm.org>
- <4f7dcb3e-2d5a-cae3-0e1c-a82bcc3d2217@huaweicloud.com>
- <b6b3c498-e90b-7d1f-6ad5-a31334e433ae@acm.org>
- <beb7782e-72a4-c350-3750-23a767c88753@huaweicloud.com>
 From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <beb7782e-72a4-c350-3750-23a767c88753@huaweicloud.com>
+In-Reply-To: <20230201045227.2203123-1-houtao@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
@@ -70,83 +66,64 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/2/23 17:48, Hou Tao wrote:
-> I don't get it on how to remove IOPRIO_POL_PROMOTION when calculating the final
-> ioprio for bio. IOPRIO_POL_PROMOTION is not used for IOPRIO_CLASS values but
-> used to determinate on how to calculate the final ioprio for bio: choosing the
-> maximum or minimum between blkcg ioprio and original bio bi_ioprio.
+On 1/31/23 20:52, Hou Tao wrote:
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index c8ae7c897f14..e0b9f73ef62a 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -2038,17 +2038,27 @@ that attribute:
+>   	Change the I/O priority class of all requests into IDLE, the lowest
+>   	I/O priority class.
+>   
+> +  promote-to-rt
+> +	For requests that have I/O priority class BE or that have I/O priority
+> +        class IDLE, change it into RT. Do not modify the I/O priority class
+> +        of requests that have priority class RT.
 
-Do the block layer code changes shown below implement the functionality that you
-need?
+Please document whether or not this policy modifies the I/O priority
+(IOPRIO_PRIO_DATA()). Do you agree that the I/O priority should be preserved
+when promoting from BE to RT and that only the I/O priority class should be
+modified for such promotions?
+
+>   The following numerical values are associated with the I/O priority policies:
+>   
+> -+-------------+---+
+> -| no-change   | 0 |
+> -+-------------+---+
+> -| none-to-rt  | 1 |
+> -+-------------+---+
+> -| rt-to-be    | 2 |
+> -+-------------+---+
+> -| all-to-idle | 3 |
+> -+-------------+---+
+> +
+> ++---------------+---------+-----+
+> +| policy        | inst    | num |
+> ++---------------+---------+-----+
+> +| no-change     | demote  | 0   |
+> ++---------------+---------+-----+
+> +| none-to-rt    | demote  | 1   |
+> ++---------------+---------+-----+
+> +| rt-to-be      | demote  | 2   |
+> ++---------------+---------+-----+
+> +| idle          | demote  | 3   |
+> ++---------------+---------+-----+
+> +| promote-to-rt | promote | 1   |
+> ++---------------+---------+-----+
+
+I prefer that this table is not modified. The numerical values associated with
+policies only matters for none-to-rt, rt-to-be and all-to-idle but not for
+promote-to-rt. So I don't think that it is necessary to mention a numerical
+value for the promote-to-rt policy. Additionally, "none-to-rt" is not a policy
+that demotes the I/O priority but a policy that may promote the I/O priority.
+
+> +-- If the instruction is promotion, change the request I/O priority class
+> +-  into the minimum of the I/O priority class policy number and the numerical
+> +-  I/O priority class.
+
+Using the minimum value seems wrong to me because that will change
+IOPRIO_VALUE(IOPRIO_CLASS_RT, 1) into IOPRIO_VALUE(IOPRIO_CLASS_RT, 0).
 
 Thanks,
 
 Bart.
-
-
-
-diff --git a/block/blk-ioprio.c b/block/blk-ioprio.c
-index 8bb6b8eba4ce..4a56da95168e 100644
---- a/block/blk-ioprio.c
-+++ b/block/blk-ioprio.c
-@@ -27,6 +27,8 @@
-   * @POLICY_RESTRICT_TO_BE: modify IOPRIO_CLASS_NONE and IOPRIO_CLASS_RT into
-   *		IOPRIO_CLASS_BE.
-   * @POLICY_ALL_TO_IDLE: change the I/O priority class into IOPRIO_CLASS_IDLE.
-+ * @POLICY_PROMOTE_TO_RT: modify IOPRIO_CLASS_NONE and IOPRIO_CLASS_BE into
-+ * 		IOPRIO_CLASS_RT.
-   *
-   * See also <linux/ioprio.h>.
-   */
-@@ -35,6 +37,7 @@ enum prio_policy {
-  	POLICY_NONE_TO_RT	= 1,
-  	POLICY_RESTRICT_TO_BE	= 2,
-  	POLICY_ALL_TO_IDLE	= 3,
-+	POLICY_PROMOTE_TO_RT,
-  };
-
-  static const char *policy_name[] = {
-@@ -42,6 +45,7 @@ static const char *policy_name[] = {
-  	[POLICY_NONE_TO_RT]	= "none-to-rt",
-  	[POLICY_RESTRICT_TO_BE]	= "restrict-to-be",
-  	[POLICY_ALL_TO_IDLE]	= "idle",
-+	[POLICY_PROMOTE_TO_RT]	= "promote-to-rt",
-  };
-
-  static struct blkcg_policy ioprio_policy;
-@@ -189,17 +193,23 @@ void blkcg_set_ioprio(struct bio *bio)
-  	if (!blkcg || blkcg->prio_policy == POLICY_NO_CHANGE)
-  		return;
-
--	/*
--	 * Except for IOPRIO_CLASS_NONE, higher I/O priority numbers
--	 * correspond to a lower priority. Hence, the max_t() below selects
--	 * the lower priority of bi_ioprio and the cgroup I/O priority class.
--	 * If the bio I/O priority equals IOPRIO_CLASS_NONE, the cgroup I/O
--	 * priority is assigned to the bio.
--	 */
--	prio = max_t(u16, bio->bi_ioprio,
--			IOPRIO_PRIO_VALUE(blkcg->prio_policy, 0));
--	if (prio > bio->bi_ioprio)
--		bio->bi_ioprio = prio;
-+	if (blkcg->prio_policy == PROMOTE_TO_RT) {
-+		if (IOPRIO_PRIO_CLASS(bio->bi_ioprio) != IOPRIO_CLASS_RT)
-+			bio->bi_ioprio = IOPRIO_CLASS_RT;
-+	} else {
-+		/*
-+		 * Except for IOPRIO_CLASS_NONE, higher I/O priority numbers
-+		 * correspond to a lower priority. Hence, the max_t() below
-+		 * selects the lower priority of bi_ioprio and the cgroup I/O
-+		 * priority class.  If the bio I/O priority equals
-+		 * IOPRIO_CLASS_NONE, the cgroup I/O priority is assigned to the
-+		 * bio.
-+		 */
-+		prio = max_t(u16, bio->bi_ioprio,
-+			     IOPRIO_PRIO_VALUE(blkcg->prio_policy, 0));
-+		if (prio > bio->bi_ioprio)
-+			bio->bi_ioprio = prio;
-+	}
-  }
-
-  void blk_ioprio_exit(struct gendisk *disk)
-
