@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 044FB689C93
-	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 16:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3580689C95
+	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 16:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbjBCPE2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Feb 2023 10:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
+        id S233249AbjBCPEa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Feb 2023 10:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbjBCPE1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 10:04:27 -0500
+        with ESMTP id S233143AbjBCPE3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 10:04:29 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B75A0EA5;
-        Fri,  3 Feb 2023 07:04:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB31BA2A48;
+        Fri,  3 Feb 2023 07:04:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=T0Y/fbiJdVkSMXQHulk/tLVOE0B98gcbXNi+H2Ew5aI=; b=N3bdce+tMMUNjUFuB41D2HPTXu
-        Rgfk+2/rSSm5AINykZKPDj9Q939vlPrx9O3UPu3aI9HLviZELW7rGgb0za/PfdMeLFgVg5l+QeAQ8
-        mIwEepraOzKGSdu6MHIospEeNPvcWi7/WzuElpnwTlkKy7BZWdkuO0M2yxX+4+LzyRQuaIQsPP3E5
-        XFboBiuzYDDGrz3UoosXD1YjbC0oenjll3q4smDD/lOlN9HHXydZOvxxWs1XfsRFZuYl5Q8tlsA2T
-        cjOGcSD6C41J3+AoU9t1hfeliYev8v9W5W0vWMscJY9Gb2I45gODB3GUOptN49UfFB4K5HRMk/v2c
-        p0mk6GTQ==;
+        bh=4ynrZBg8YmufKoopXcB0+Wg6UDM5GsSQ+BkFsLsFRag=; b=fHTIalsZUz74Ini4NWdUUBC61s
+        Jr7XpSXCG86CnH0Sp8P6eOqhrsOFRgK1kj/LMzW1gnFVvWK38R4VLbMN0SMRvH4OYNdNdCAgJvs3q
+        KbQLviEuiGdIxJ79YExhrOESQGgPz/MskKLDyOZXHjKmbegR8KGraYHFRT6Q1pF3JdHnZvf+c2jT7
+        U9kD41Z71gh7wpW8Kfm9k3FO4RIcROnvUO3bF6atGrUvzj/rVp2IO/YJfEOGNLB8MlLiaYguFH82/
+        RtunhF4+XvXw5EYlWlcWB1+CxnQ7G0b+1+6IVoiVGIm3IE/IjbC4KUZ/iY2OBcMssKMZ3k6IGs6+c
+        n16VtdJQ==;
 Received: from [2001:4bb8:19a:272a:910:bb67:7287:f956] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pNxbx-002a42-Si; Fri, 03 Feb 2023 15:04:22 +0000
+        id 1pNxc1-002a5H-PA; Fri, 03 Feb 2023 15:04:26 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         Andreas Herrmann <aherrmann@suse.de>
-Subject: [PATCH 06/19] blk-cgroup: pin the gendisk in struct blkcg_gq
-Date:   Fri,  3 Feb 2023 16:03:47 +0100
-Message-Id: <20230203150400.3199230-7-hch@lst.de>
+Subject: [PATCH 07/19] blk-cgroup: store a gendisk to throttle in struct task_struct
+Date:   Fri,  3 Feb 2023 16:03:48 +0100
+Message-Id: <20230203150400.3199230-8-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230203150400.3199230-1-hch@lst.de>
 References: <20230203150400.3199230-1-hch@lst.de>
@@ -51,288 +51,147 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently each blkcg_gq holds a request_queue reference, which is what
-is used in the policies.  But a lot of these interfaces will move over to
-use a gendisk, so store a disk in struct blkcg_gq and hold a reference to
-it.
+Switch from a request_queue pointer and reference to a gendisk once
+for the throttle information in struct task_struct.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Andreas Herrmann <aherrmann@suse.de>
-Acked-by: Tejun Heo <tj@kernel.org>
 ---
- block/bfq-cgroup.c        |  6 +++---
- block/blk-cgroup-rwstat.c |  2 +-
- block/blk-cgroup.c        | 35 +++++++++++++++++------------------
- block/blk-cgroup.h        | 11 +++++------
- block/blk-iocost.c        |  2 +-
- block/blk-iolatency.c     |  4 ++--
- block/blk-throttle.c      |  4 ++--
- 7 files changed, 31 insertions(+), 33 deletions(-)
+ block/blk-cgroup.c    | 32 +++++++++++++++-----------------
+ include/linux/sched.h |  2 +-
+ kernel/fork.c         |  2 +-
+ mm/swapfile.c         |  2 +-
+ 4 files changed, 18 insertions(+), 20 deletions(-)
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index b42956ab555068..1d4a3f15049bda 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -405,7 +405,7 @@ static void bfqg_stats_xfer_dead(struct bfq_group *bfqg)
- 
- 	parent = bfqg_parent(bfqg);
- 
--	lockdep_assert_held(&bfqg_to_blkg(bfqg)->q->queue_lock);
-+	lockdep_assert_held(&bfqg_to_blkg(bfqg)->disk->queue->queue_lock);
- 
- 	if (unlikely(!parent))
- 		return;
-@@ -536,7 +536,7 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
- {
- 	struct blkcg_gq *blkg = pd_to_blkg(pd);
- 	struct bfq_group *bfqg = blkg_to_bfqg(blkg);
--	struct bfq_data *bfqd = blkg->q->elevator->elevator_data;
-+	struct bfq_data *bfqd = blkg->disk->queue->elevator->elevator_data;
- 	struct bfq_entity *entity = &bfqg->entity;
- 	struct bfq_group_data *d = blkcg_to_bfqgd(blkg->blkcg);
- 
-@@ -1201,7 +1201,7 @@ static u64 bfqg_prfill_stat_recursive(struct seq_file *sf,
- 	struct cgroup_subsys_state *pos_css;
- 	u64 sum = 0;
- 
--	lockdep_assert_held(&blkg->q->queue_lock);
-+	lockdep_assert_held(&blkg->disk->queue->queue_lock);
- 
- 	rcu_read_lock();
- 	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
-diff --git a/block/blk-cgroup-rwstat.c b/block/blk-cgroup-rwstat.c
-index 3304e841df7ce9..b8b8c82e667a3b 100644
---- a/block/blk-cgroup-rwstat.c
-+++ b/block/blk-cgroup-rwstat.c
-@@ -107,7 +107,7 @@ void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
- 	struct cgroup_subsys_state *pos_css;
- 	unsigned int i;
- 
--	lockdep_assert_held(&blkg->q->queue_lock);
-+	lockdep_assert_held(&blkg->disk->queue->queue_lock);
- 
- 	memset(sum, 0, sizeof(*sum));
- 	rcu_read_lock();
 diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 0b3226cbf3f25d..0e368387497d27 100644
+index 0e368387497d27..168b2f803238f9 100644
 --- a/block/blk-cgroup.c
 +++ b/block/blk-cgroup.c
-@@ -116,7 +116,6 @@ static bool blkcg_policy_enabled(struct request_queue *q,
+@@ -1362,9 +1362,9 @@ static void blkcg_bind(struct cgroup_subsys_state *root_css)
  
- static void blkg_free(struct blkcg_gq *blkg)
+ static void blkcg_exit(struct task_struct *tsk)
  {
--	struct request_queue *q = blkg->q;
- 	int i;
+-	if (tsk->throttle_queue)
+-		blk_put_queue(tsk->throttle_queue);
+-	tsk->throttle_queue = NULL;
++	if (tsk->throttle_disk)
++		put_disk(tsk->throttle_disk);
++	tsk->throttle_disk = NULL;
+ }
  
- 	/*
-@@ -126,16 +125,16 @@ static void blkg_free(struct blkcg_gq *blkg)
- 	 * blkcg_mutex is used to synchronize blkg_free_workfn() and
- 	 * blkcg_deactivate_policy().
- 	 */
--	mutex_lock(&q->blkcg_mutex);
-+	mutex_lock(&blkg->disk->queue->blkcg_mutex);
- 	for (i = 0; i < BLKCG_MAX_POLS; i++)
- 		if (blkg->pd[i])
- 			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
- 	if (blkg->parent)
- 		blkg_put(blkg->parent);
- 	list_del_init(&blkg->q_node);
--	mutex_unlock(&q->blkcg_mutex);
-+	mutex_unlock(&blkg->disk->queue->blkcg_mutex);
+ struct cgroup_subsys io_cgrp_subsys = {
+@@ -1815,29 +1815,29 @@ static void blkcg_maybe_throttle_blkg(struct blkcg_gq *blkg, bool use_memdelay)
+  *
+  * This is only called if we've been marked with set_notify_resume().  Obviously
+  * we can be set_notify_resume() for reasons other than blkcg throttling, so we
+- * check to see if current->throttle_queue is set and if not this doesn't do
++ * check to see if current->throttle_disk is set and if not this doesn't do
+  * anything.  This should only ever be called by the resume code, it's not meant
+  * to be called by people willy-nilly as it will actually do the work to
+  * throttle the task if it is setup for throttling.
+  */
+ void blkcg_maybe_throttle_current(void)
+ {
+-	struct request_queue *q = current->throttle_queue;
++	struct gendisk *disk = current->throttle_disk;
+ 	struct blkcg *blkcg;
+ 	struct blkcg_gq *blkg;
+ 	bool use_memdelay = current->use_memdelay;
  
+-	if (!q)
++	if (!disk)
+ 		return;
+ 
+-	current->throttle_queue = NULL;
++	current->throttle_disk = NULL;
+ 	current->use_memdelay = false;
+ 
+ 	rcu_read_lock();
+ 	blkcg = css_to_blkcg(blkcg_css());
+ 	if (!blkcg)
+ 		goto out;
+-	blkg = blkg_lookup(blkcg, q);
++	blkg = blkg_lookup(blkcg, disk->queue);
+ 	if (!blkg)
+ 		goto out;
+ 	if (!blkg_tryget(blkg))
+@@ -1846,11 +1846,10 @@ void blkcg_maybe_throttle_current(void)
+ 
+ 	blkcg_maybe_throttle_blkg(blkg, use_memdelay);
+ 	blkg_put(blkg);
 -	blk_put_queue(q);
-+	put_disk(blkg->disk);
- 	free_percpu(blkg->iostat_cpu);
- 	percpu_ref_exit(&blkg->refcnt);
- 	kfree(blkg);
-@@ -251,10 +250,12 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 	blkg->iostat_cpu = alloc_percpu_gfp(struct blkg_iostat_set, gfp_mask);
- 	if (!blkg->iostat_cpu)
- 		goto out_exit_refcnt;
--	if (!blk_get_queue(disk->queue))
-+
-+	if (test_bit(GD_DEAD, &disk->state))
- 		goto out_free_iostat;
-+	get_device(disk_to_dev(disk));
-+	blkg->disk = disk;
- 
--	blkg->q = disk->queue;
- 	INIT_LIST_HEAD(&blkg->q_node);
- 	spin_lock_init(&blkg->async_bio_lock);
- 	bio_list_init(&blkg->async_bios);
-@@ -290,7 +291,7 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 	while (--i >= 0)
- 		if (blkg->pd[i])
- 			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
--	blk_put_queue(disk->queue);
-+	put_disk(blkg->disk);
- out_free_iostat:
- 	free_percpu(blkg->iostat_cpu);
- out_exit_refcnt:
-@@ -461,7 +462,7 @@ static void blkg_destroy(struct blkcg_gq *blkg)
- 	struct blkcg *blkcg = blkg->blkcg;
- 	int i;
- 
--	lockdep_assert_held(&blkg->q->queue_lock);
-+	lockdep_assert_held(&blkg->disk->queue->queue_lock);
- 	lockdep_assert_held(&blkcg->lock);
- 
- 	/*
-@@ -485,7 +486,7 @@ static void blkg_destroy(struct blkcg_gq *blkg)
- 
- 	blkg->online = false;
- 
--	radix_tree_delete(&blkcg->blkg_tree, blkg->q->id);
-+	radix_tree_delete(&blkcg->blkg_tree, blkg->disk->queue->id);
- 	hlist_del_init_rcu(&blkg->blkcg_node);
- 
- 	/*
-@@ -572,9 +573,7 @@ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
- 
- const char *blkg_dev_name(struct blkcg_gq *blkg)
- {
--	if (!blkg->q->disk)
--		return NULL;
--	return bdi_dev_name(blkg->q->disk->bdi);
-+	return bdi_dev_name(blkg->disk->bdi);
++	put_disk(disk);
+ 	return;
+ out:
+ 	rcu_read_unlock();
+-	blk_put_queue(q);
  }
  
  /**
-@@ -606,10 +605,10 @@ void blkcg_print_blkgs(struct seq_file *sf, struct blkcg *blkcg,
+@@ -1872,18 +1871,17 @@ void blkcg_maybe_throttle_current(void)
+  */
+ void blkcg_schedule_throttle(struct gendisk *disk, bool use_memdelay)
+ {
+-	struct request_queue *q = disk->queue;
+-
+ 	if (unlikely(current->flags & PF_KTHREAD))
+ 		return;
  
- 	rcu_read_lock();
- 	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
--		spin_lock_irq(&blkg->q->queue_lock);
--		if (blkcg_policy_enabled(blkg->q, pol))
-+		spin_lock_irq(&blkg->disk->queue->queue_lock);
-+		if (blkcg_policy_enabled(blkg->disk->queue, pol))
- 			total += prfill(sf, blkg->pd[pol->plid], data);
--		spin_unlock_irq(&blkg->q->queue_lock);
-+		spin_unlock_irq(&blkg->disk->queue->queue_lock);
+-	if (current->throttle_queue != q) {
+-		if (!blk_get_queue(q))
++	if (current->throttle_disk != disk) {
++		if (test_bit(GD_DEAD, &disk->state))
+ 			return;
++		get_device(disk_to_dev(disk));
+ 
+-		if (current->throttle_queue)
+-			blk_put_queue(current->throttle_queue);
+-		current->throttle_queue = q;
++		if (current->throttle_disk)
++			put_disk(current->throttle_disk);
++		current->throttle_disk = disk;
  	}
- 	rcu_read_unlock();
  
-@@ -1033,9 +1032,9 @@ static int blkcg_print_stat(struct seq_file *sf, void *v)
+ 	if (use_memdelay)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 853d08f7562bda..6f6ce9ca709798 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1436,7 +1436,7 @@ struct task_struct {
+ #endif
  
- 	rcu_read_lock();
- 	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
--		spin_lock_irq(&blkg->q->queue_lock);
-+		spin_lock_irq(&blkg->disk->queue->queue_lock);
- 		blkcg_print_one_stat(blkg, sf);
--		spin_unlock_irq(&blkg->q->queue_lock);
-+		spin_unlock_irq(&blkg->disk->queue->queue_lock);
- 	}
- 	rcu_read_unlock();
- 	return 0;
-@@ -1105,7 +1104,7 @@ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
- 	while (!hlist_empty(&blkcg->blkg_list)) {
- 		struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
- 						struct blkcg_gq, blkcg_node);
--		struct request_queue *q = blkg->q;
-+		struct request_queue *q = blkg->disk->queue;
+ #ifdef CONFIG_BLK_CGROUP
+-	struct request_queue		*throttle_queue;
++	struct gendisk			*throttle_disk;
+ #endif
  
- 		if (need_resched() || !spin_trylock(&q->queue_lock)) {
- 			/*
-diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index b13ee84f358e85..996572a9a0b72e 100644
---- a/block/blk-cgroup.h
-+++ b/block/blk-cgroup.h
-@@ -53,8 +53,7 @@ struct blkg_iostat_set {
+ #ifdef CONFIG_UPROBES
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 9f7fe354189785..d9c97704b7c9a4 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1044,7 +1044,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+ #endif
  
- /* association between a blk cgroup and a request queue */
- struct blkcg_gq {
--	/* Pointer to the associated request_queue */
--	struct request_queue		*q;
-+	struct gendisk			*disk;
- 	struct list_head		q_node;
- 	struct hlist_node		blkcg_node;
- 	struct blkcg			*blkcg;
-@@ -255,11 +254,11 @@ static inline struct blkcg_gq *blkg_lookup(struct blkcg *blkcg,
- 		return q->root_blkg;
+ #ifdef CONFIG_BLK_CGROUP
+-	tsk->throttle_queue = NULL;
++	tsk->throttle_disk = NULL;
+ 	tsk->use_memdelay = 0;
+ #endif
  
- 	blkg = rcu_dereference(blkcg->blkg_hint);
--	if (blkg && blkg->q == q)
-+	if (blkg && blkg->disk->queue == q)
- 		return blkg;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 908a529bca12c9..3e0a742fb7bbff 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3642,7 +3642,7 @@ void __cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
+ 	 * We've already scheduled a throttle, avoid taking the global swap
+ 	 * lock.
+ 	 */
+-	if (current->throttle_queue)
++	if (current->throttle_disk)
+ 		return;
  
- 	blkg = radix_tree_lookup(&blkcg->blkg_tree, q->id);
--	if (blkg && blkg->q != q)
-+	if (blkg && blkg->disk->queue != q)
- 		blkg = NULL;
- 	return blkg;
- }
-@@ -359,7 +358,7 @@ static inline void blkg_put(struct blkcg_gq *blkg)
- #define blkg_for_each_descendant_pre(d_blkg, pos_css, p_blkg)		\
- 	css_for_each_descendant_pre((pos_css), &(p_blkg)->blkcg->css)	\
- 		if (((d_blkg) = blkg_lookup(css_to_blkcg(pos_css),	\
--					    (p_blkg)->q)))
-+					    (p_blkg)->disk->queue)))
- 
- /**
-  * blkg_for_each_descendant_post - post-order walk of a blkg's descendants
-@@ -374,7 +373,7 @@ static inline void blkg_put(struct blkcg_gq *blkg)
- #define blkg_for_each_descendant_post(d_blkg, pos_css, p_blkg)		\
- 	css_for_each_descendant_post((pos_css), &(p_blkg)->blkcg->css)	\
- 		if (((d_blkg) = blkg_lookup(css_to_blkcg(pos_css),	\
--					    (p_blkg)->q)))
-+					    (p_blkg)->disk->queue)))
- 
- bool __blkcg_punt_bio_submit(struct bio *bio);
- 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 9694394ed883c4..a2b4e7146be5f1 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2953,7 +2953,7 @@ static void ioc_pd_init(struct blkg_policy_data *pd)
- {
- 	struct ioc_gq *iocg = pd_to_iocg(pd);
- 	struct blkcg_gq *blkg = pd_to_blkg(&iocg->pd);
--	struct ioc *ioc = q_to_ioc(blkg->q);
-+	struct ioc *ioc = q_to_ioc(blkg->disk->queue);
- 	struct ioc_now now;
- 	struct blkcg_gq *tblkg;
- 	unsigned long flags;
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index ecdc1074183625..b55eac2cf91944 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -974,12 +974,12 @@ static void iolatency_pd_init(struct blkg_policy_data *pd)
- {
- 	struct iolatency_grp *iolat = pd_to_lat(pd);
- 	struct blkcg_gq *blkg = lat_to_blkg(iolat);
--	struct rq_qos *rqos = blkcg_rq_qos(blkg->q);
-+	struct rq_qos *rqos = blkcg_rq_qos(blkg->disk->queue);
- 	struct blk_iolatency *blkiolat = BLKIOLATENCY(rqos);
- 	u64 now = ktime_to_ns(ktime_get());
- 	int cpu;
- 
--	if (blk_queue_nonrot(blkg->q))
-+	if (blk_queue_nonrot(blkg->disk->queue))
- 		iolat->ssd = true;
- 	else
- 		iolat->ssd = false;
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 6fb5a2f9e1eed5..f802d8f9099430 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -388,7 +388,7 @@ static void throtl_pd_init(struct blkg_policy_data *pd)
- {
- 	struct throtl_grp *tg = pd_to_tg(pd);
- 	struct blkcg_gq *blkg = tg_to_blkg(tg);
--	struct throtl_data *td = blkg->q->td;
-+	struct throtl_data *td = blkg->disk->queue->td;
- 	struct throtl_service_queue *sq = &tg->service_queue;
- 
- 	/*
-@@ -1175,7 +1175,7 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 
- 	/* throtl_data may be gone, so figure out request queue by blkg */
- 	if (tg)
--		q = tg->pd.blkg->q;
-+		q = tg->pd.blkg->disk->queue;
- 	else
- 		q = td->queue;
- 
+ 	spin_lock(&swap_avail_lock);
 -- 
 2.39.0
 
