@@ -2,97 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CADE689E61
-	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 16:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3794C689F4D
+	for <lists+cgroups@lfdr.de>; Fri,  3 Feb 2023 17:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbjBCPgP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Feb 2023 10:36:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        id S229785AbjBCQcD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Feb 2023 11:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbjBCPgO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 10:36:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620296CC97
-        for <cgroups@vger.kernel.org>; Fri,  3 Feb 2023 07:35:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675438526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uug3Jhs3c7xaX/Rx/hsjur5gbFszvyaZzpEQCntiDz4=;
-        b=CPdK4CBF44zKDePe/148nBkJBugcYXoP0fRjksht9ED9dQddYYejzyQjcccinVdU4wAO+s
-        5StJlciAUZwg2fSYprXxf6Pz6nvb6ankkCcfwmemeI0V9GuxbOPNRmSw+tx7Gt2PNJSqSh
-        ibUjCnp+8f9BlAlODPONjm/X1i/Q6tI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-216-IX-c6cz7MPWM2dwMahZlJg-1; Fri, 03 Feb 2023 10:35:15 -0500
-X-MC-Unique: IX-c6cz7MPWM2dwMahZlJg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229448AbjBCQcC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Feb 2023 11:32:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAC6A7ED7;
+        Fri,  3 Feb 2023 08:32:02 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A4536857A93;
-        Fri,  3 Feb 2023 15:35:14 +0000 (UTC)
-Received: from [10.22.18.35] (unknown [10.22.18.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE28D40398A0;
-        Fri,  3 Feb 2023 15:35:13 +0000 (UTC)
-Message-ID: <26617070-e32b-cfc2-d741-0294d5aea0c3@redhat.com>
-Date:   Fri, 3 Feb 2023 10:35:13 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BD66B61F73;
+        Fri,  3 Feb 2023 16:32:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3663C4339B;
+        Fri,  3 Feb 2023 16:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675441921;
+        bh=UFTIrxyqBSaBuL/Jen/asagdeLrn7ViMLacqhzk3iqY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ga/Ju2aECAYei7wD+XdIoqKIixgOjy6x4f5rm3blfHPRI4mex+EtpCVdt9thBynaW
+         HnZZ1HOxTOb2MWQAAuqPNrSoI1Yj0DnxGSq9Mj70fbGX9zItgO7b5JgWAa3f0mcjjp
+         Ehycy3g0WlgXAHkG3iYsvr8rfB5tNw/ZNtVlx0LOGlA4YNAj/GwrJFbs8U1ZjD9q4Q
+         LXDPRM8NwGBZCIZsv9C4qCu++wV2u9fz8hwIWydp+WLWrklHvFEyoDdbmROzpWxteP
+         UkPZ7HMQ8Dnhn1cqGj09yQK7BLWXIjonXJBns5+cdkP+uTP7ImBWYz2c9TEO+5pieG
+         mf8EXQPA/KCYA==
+Date:   Fri, 3 Feb 2023 16:31:56 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
 Subject: Re: [PATCH 1/2] cpuset: Fix cpuset_cpus_allowed() to not filter
  offline CPUs
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Zefan Li <lizefan.x@bytedance.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-References: <20230131221719.3176-1-will@kernel.org>
- <20230131221719.3176-2-will@kernel.org>
+Message-ID: <20230203163155.GA6734@willie-the-truck>
+References: <20230131221719.3176-2-will@kernel.org>
  <6b068916-5e1b-a943-1aad-554964d8b746@redhat.com>
- <Y9otWX+MGOLDKU6t@hirez.programming.kicks-ass.net>
- <83e53632-27ed-8dde-84f4-68c6776d6da8@redhat.com>
- <a892d340-ea99-1562-0e70-176f02f195c2@redhat.com>
- <Y9rVVldS19oyIZ+g@hirez.programming.kicks-ass.net>
- <773e2f22-211e-163f-64bb-15ae29ad161b@redhat.com>
- <20230203115045.GB5927@willie-the-truck>
- <d626998b-4cb0-dd8f-fd97-21715bf2eb0b@redhat.com>
- <Y90nn9NVkEhcZ6nq@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Y90nn9NVkEhcZ6nq@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <Y9t1sP/6nFht7RSN@hirez.programming.kicks-ass.net>
+ <d630ca53-71f0-c735-fbc3-e826479aa86b@redhat.com>
+ <Y9wSC1Wxlm8CKKlN@hirez.programming.kicks-ass.net>
+ <2bc730db-704d-080b-6869-02f6d0035fad@redhat.com>
+ <Y9whrU4IUeleqdrt@slm.duckdns.org>
+ <75de91db-d3bc-0c0e-6199-ef00591e8878@redhat.com>
+ <8787b5f7-9822-e49b-0357-d0ce224ca920@redhat.com>
+ <Y9wwP4LF9vgreO3U@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9wwP4LF9vgreO3U@slm.duckdns.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Feb 02, 2023 at 11:50:55AM -1000, Tejun Heo wrote:
+> On Thu, Feb 02, 2023 at 04:05:14PM -0500, Waiman Long wrote:
+> > 
+> > On 2/2/23 15:53, Waiman Long wrote:
+> > > 
+> > > On 2/2/23 15:48, Tejun Heo wrote:
+> > > > On Thu, Feb 02, 2023 at 03:46:02PM -0500, Waiman Long wrote:
+> > > > > > > I will work on a patchset to do that as a counter offer.
+> > > > > > We will need a small and simple patch for /urgent, or I will need to
+> > > > > > revert all your patches -- your call.
+> > > > > > 
+> > > > > > I also don't tihnk you fully appreciate the ramifications of
+> > > > > > task_cpu_possible_mask(), cpuset currently gets that quite wrong.
+> > > > > OK, I don't realize the urgency of that. If it is that urgent, I
+> > > > > will have
+> > > > > no objection to get it in for now. We can improve it later on.
+> > > > > So are you
+> > > > > planning to get it into the current 6.2 rc or 6.3?
+> > > > > 
+> > > > > Tejun, are you OK with that as you are the cgroup maintainer?
+> > > > Yeah, gotta fix the regression but is there currently a solution
+> > > > which fixes
+> > > > the regression but doesn't further break other stuff?
+> > > 
+> > > I believe there is a better way to do that, but it will need more time
+> > > to flex out. Since cpuset_cpus_allowed() is only used by
+> > > kernel/sched/core.c, Peter will be responsible if it somehow breaks
+> > > other stuff.
+> > 
+> > Maybe my cpuset patch that don't update task's cpumask on cpu offline event
+> > can help. However, I don't know the exact scenario where the regression
+> > happen, so it may not.
+> 
+> Neither patch looks like they would break anything. That said, the patches
+> aren't trivial and we're really close to the merge window, so I'd really
+> appreciate if you can take a look and test a bit before we send these
+> Linus's way. We can replace it with a better solution afterwards.
 
-On 2/3/23 10:26, Peter Zijlstra wrote:
-> On Fri, Feb 03, 2023 at 10:13:10AM -0500, Waiman Long wrote:
->
->> I think I know where the problem is. It is due to the fact the cpuset
->> hotplug code doesn't update cpumasks of the tasks in the top cpuset (root)
->> at all when there is a cpu offline or online event. It is probably because
->> for some of the tasks in the top cpuset, especially the percpu kthread,
->> changing their cpumasks can be catastrophic. The hotplug code does update
->> the cpumasks of the tasks that are not in the top cpuset. This problem is
->> irrespective of whether v1 or v2 is in use.
-> I've been saying this exact thing for how many mails now?
+FWIW, I tested this series in an arm64 heterogeneous setup with things
+like hotplug and exec()ing between 32-bit and 64-bit tasks and it all
+seems good.
 
-My bad. The fact that sched_getaffinity() masks off the offline cpus 
-makes me thought incorrectly that tasks in the top cpuset were also 
-updated by the hotplug code. Further testing indicates this is the case.
+The alternative would be to revert Waiman's setaffinity changes, which
+I've had a go at here:
 
-Thanks,
-Longman
+https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=ssa-reverts
 
+and I _think_ I've rescued the UAF fix too.
+
+What do people prefer?
+
+Will
