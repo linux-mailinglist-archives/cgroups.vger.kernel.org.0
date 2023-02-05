@@ -2,52 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CDE68AE93
-	for <lists+cgroups@lfdr.de>; Sun,  5 Feb 2023 07:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8049B68AE95
+	for <lists+cgroups@lfdr.de>; Sun,  5 Feb 2023 07:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjBEG6X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 5 Feb 2023 01:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
+        id S229491AbjBEG6c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 5 Feb 2023 01:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBEG6W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 5 Feb 2023 01:58:22 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844D923108;
-        Sat,  4 Feb 2023 22:58:20 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 203so6391464pfx.6;
-        Sat, 04 Feb 2023 22:58:20 -0800 (PST)
+        with ESMTP id S229493AbjBEG6b (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 5 Feb 2023 01:58:31 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8245B22A19;
+        Sat,  4 Feb 2023 22:58:25 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id n3so755946pgr.9;
+        Sat, 04 Feb 2023 22:58:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NkWRdzEKke7GR8UIzoPrXe0fCR7Zi4RGiPc8wkbTB4w=;
-        b=XSC+bQejMiGP5TbJYVDlLreC8JI6izirwf2lFqkk+LIE4in+7ZH/gEPPm+2/e6s3sj
-         4VfBFEKjaVS6SVUHOiDcEf7TGvyMIphk/+tiH/qgiOeuZIC134Qmja6JNox0NpC+uro0
-         hq/ZslHjhPEmSkhFXVsx1E3GRLJVqS2ou2fUs/S8qLkFZCFqLLlXdfSht5fx2xt0aPTJ
-         wM7CiLm5JJpJYF40pc/jTJpxsXUv5/TfQiDb2/bNX9TsaJVq9fGsjqE8kBNFc6vae5Hm
-         FoQHwrX4C/UuNQiWXiNDSB8joi4VfJQGFFL70FV9ToCJ7K64eB+p2C2OG72S8Paoxqvp
-         hMSg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9R8PIufUvBWha2/FhSWxLkNgyIkPqx2ukwcdT04Lok=;
+        b=VbKKUeOjFCh14UcFioJqXvV7nqLa/vg7qKYxZQoGJttshn6aRrjtM0mbljrXL0sSdo
+         eoD9zvL2xe3uInT4uDMDjiP/qOwanJKqBrbwt1d1DwYYMEQZ33HOBD6TmXobYtliaD4y
+         jL7qHagWDuT/Cpw7o2NXIPpUlagzQvrXu4hNJXh/5vE4ShSSJfiDwZahWSsv83KJATSd
+         F4d2EZbJO3TWewtgx6041qZaYAkpmG9XlDGl3CNBeahJAPv1aHnjnW9jXuHbBSRsLScM
+         IxkfodJ2ct1jHAS2KZ38cmjljEGipXaGxiHVk6qRU+Gz+xGTGRPKtSLFVu9vS9T1ECfi
+         KzGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NkWRdzEKke7GR8UIzoPrXe0fCR7Zi4RGiPc8wkbTB4w=;
-        b=sqCJakAPz7ESVHGUH1oxjBxagYa/7JxV60M5JAAbfDbnDOdJ32QSgJQyDPoIsv5tvi
-         f6QfgVzGp8fquQLVkNzRhwTduTbpKSwsKY1mOzoBa/OiuLc5rXUV+YrOXwsJFKm6DxAH
-         lKL7Y1Pt0TAjEgoYeRAlVn4jwpNMIDJFb44Jd8B9E5j3D2WASk9aM7mSxPdhVrESeD6c
-         jafaLY7OkxqMg0Eh3Cts6xdg4t8MAPyHpkVN43kaF8W7LSjxV3AlMleZFoHIxAKdwZ92
-         gd/idA+DcPWDc4HOxNpp+FYiSvSA/ONkNlwNSgxQ4v1lc5EA3oXz9+Q0fcVR4hPQNwHB
-         7Usg==
-X-Gm-Message-State: AO0yUKWPz7TFLU/cqaFC6UCLYOMpIQQxIw/0tGjkViAf1S0F3IqVlv+q
-        GbJh50HqAh7d/2y0KMwN3lAwYeViz3JVoG0j
-X-Google-Smtp-Source: AK7set8ZmU5/Kpg6u1AWbZ+6T3Ym9SJiBF6LaA1AfSe3W4zcwl5v6pvvRr1kYum7Kv86G/1Ihb2+vg==
-X-Received: by 2002:a05:6a00:230c:b0:56c:232e:395e with SMTP id h12-20020a056a00230c00b0056c232e395emr18950984pfh.15.1675580299680;
-        Sat, 04 Feb 2023 22:58:19 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m9R8PIufUvBWha2/FhSWxLkNgyIkPqx2ukwcdT04Lok=;
+        b=PCMkd1bL5egGFVsb5TpzguqEhGEyLolslAo2t5Zc9uAY65kVccrmPcxMnOiXczf15W
+         IhPNcHfR7sOeASCOZgu0akdgNJqnpSrzTcRCaciw3FNuphn6PjOqF9k6B40/O6/4Lrh8
+         lwpQ8A1rUNeMleVEiupkmeGwJxXS/84Vanas+WHDrv9blHSaqguh/DtlbuJGqZVc3deP
+         6RTAkZYplgiFIYE7QvaLd9wnOELEi7Avrao5lfwPaqAeYI9QZrmZQ/lWuedVPBk7CmKC
+         6FzCvwY+0N53vu6uxVe5P3FK1HNRnXI6yUoUWvrIkijncSFwTQKtlupVQSVzSIqtN45l
+         E2og==
+X-Gm-Message-State: AO0yUKV+unu5zdc/2kwapEZGqU1n9zcKVFa0jBmQg+WanOStOgLK4Vgw
+        40zC0sLBpKOrK7G6fTI4sf0=
+X-Google-Smtp-Source: AK7set+4lyC7iUWDzKd4aGLt9mkqm7oQ24mUCgV3ZViLbOOhJZFNntqClhmQMCQjtn8CHlsGmXAruQ==
+X-Received: by 2002:a05:6a00:22cc:b0:58d:f20b:5f2e with SMTP id f12-20020a056a0022cc00b0058df20b5f2emr21243710pfj.1.1675580304922;
+        Sat, 04 Feb 2023 22:58:24 -0800 (PST)
 Received: from vultr.guest ([2401:c080:1c02:6a5:5400:4ff:fe4b:6fe6])
-        by smtp.gmail.com with ESMTPSA id 144-20020a621596000000b00593ce7ebbaasm4596114pfv.184.2023.02.04.22.58.14
+        by smtp.gmail.com with ESMTPSA id 144-20020a621596000000b00593ce7ebbaasm4596114pfv.184.2023.02.04.22.58.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Feb 2023 22:58:19 -0800 (PST)
+        Sat, 04 Feb 2023 22:58:24 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     tj@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -57,10 +58,12 @@ To:     tj@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         muchun.song@linux.dev, akpm@linux-foundation.org
 Cc:     bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 0/5] bpf, mm: introduce cgroup.memory=nobpf 
-Date:   Sun,  5 Feb 2023 06:58:00 +0000
-Message-Id: <20230205065805.19598-1-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 1/5] mm: memcontrol: add new kernel parameter cgroup.memory=nobpf
+Date:   Sun,  5 Feb 2023 06:58:01 +0000
+Message-Id: <20230205065805.19598-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230205065805.19598-1-laoar.shao@gmail.com>
+References: <20230205065805.19598-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,53 +76,114 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The bpf memory accouting has some known problems in contianer
-environment,
+Add new kernel parameter cgroup.memory=nobpf to allow user disable bpf
+memory accounting. This is a preparation for the followup patch.
 
-- The container memory usage is not consistent if there's pinned bpf
-  program
-  After the container restart, the leftover bpf programs won't account
-  to the new generation, so the memory usage of the container is not
-  consistent. This issue can be resolved by introducing selectable
-  memcg, but we don't have an agreement on the solution yet. See also
-  the discussions at https://lwn.net/Articles/905150/ .
-
-- The leftover non-preallocated bpf map can't be limited
-  The leftover bpf map will be reparented, and thus it will be limited by 
-  the parent, rather than the container itself. Furthermore, if the
-  parent is destroyed, it be will limited by its parent's parent, and so
-  on. It can also be resolved by introducing selectable memcg.
-
-- The memory dynamically allocated in bpf prog is charged into root memcg
-  only
-  Nowdays the bpf prog can dynamically allocate memory, for example via
-  bpf_obj_new(), but it only allocate from the global bpf_mem_alloc
-  pool, so it will charge into root memcg only. That needs to be
-  addressed by a new proposal.
-
-So let's give the user an option to disable bpf memory accouting.
-
-The idea of "cgroup.memory=nobpf" is originally by Tejun[1].
-
-[1]. https://lwn.net/ml/linux-mm/YxjOawzlgE458ezL@slm.duckdns.org/
-
-Yafang Shao (5):
-  mm: memcontrol: add new kernel parameter cgroup.memory=nobpf
-  bpf: use bpf_map_kvcalloc in bpf_local_storage
-  bpf: introduce bpf_memcg_flags()
-  bpf: allow to disable bpf map memory accounting
-  bpf: allow to disable bpf prog memory accounting
-
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
  Documentation/admin-guide/kernel-parameters.txt |  1 +
- include/linux/bpf.h                             | 16 ++++++++++++++++
  include/linux/memcontrol.h                      | 11 +++++++++++
- kernel/bpf/bpf_local_storage.c                  |  4 ++--
- kernel/bpf/core.c                               | 13 +++++++------
- kernel/bpf/memalloc.c                           |  3 ++-
- kernel/bpf/syscall.c                            | 20 ++++++++++++++++++--
  mm/memcontrol.c                                 | 18 ++++++++++++++++++
- 8 files changed, 75 insertions(+), 11 deletions(-)
+ 3 files changed, 30 insertions(+)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 6cfa6e3..29fb41e 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -557,6 +557,7 @@
+ 			Format: <string>
+ 			nosocket -- Disable socket memory accounting.
+ 			nokmem -- Disable kernel memory accounting.
++			nobpf -- Disable BPF memory accounting.
+ 
+ 	checkreqprot=	[SELINUX] Set initial checkreqprot flag value.
+ 			Format: { "0" | "1" }
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index d3c8203..26d4bf2 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1751,6 +1751,12 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
+ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
+ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
+ 
++extern struct static_key_false memcg_bpf_enabled_key;
++static inline bool memcg_bpf_enabled(void)
++{
++	return static_branch_likely(&memcg_bpf_enabled_key);
++}
++
+ extern struct static_key_false memcg_kmem_enabled_key;
+ 
+ static inline bool memcg_kmem_enabled(void)
+@@ -1829,6 +1835,11 @@ static inline struct obj_cgroup *get_obj_cgroup_from_page(struct page *page)
+ 	return NULL;
+ }
+ 
++static inline bool memcg_bpf_enabled(void)
++{
++	return false;
++}
++
+ static inline bool memcg_kmem_enabled(void)
+ {
+ 	return false;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ab457f0..590526f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -89,6 +89,9 @@
+ /* Kernel memory accounting disabled? */
+ static bool cgroup_memory_nokmem __ro_after_init;
+ 
++/* BPF memory accounting disabled? */
++static bool cgroup_memory_nobpf __ro_after_init;
++
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ static DECLARE_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq);
+ #endif
+@@ -348,6 +351,9 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
+  */
+ DEFINE_STATIC_KEY_FALSE(memcg_kmem_enabled_key);
+ EXPORT_SYMBOL(memcg_kmem_enabled_key);
++
++DEFINE_STATIC_KEY_FALSE(memcg_bpf_enabled_key);
++EXPORT_SYMBOL(memcg_bpf_enabled_key);
+ #endif
+ 
+ /**
+@@ -5362,6 +5368,11 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
+ 		static_branch_inc(&memcg_sockets_enabled_key);
+ 
++#if defined(CONFIG_MEMCG_KMEM)
++	if (!cgroup_memory_nobpf)
++		static_branch_inc(&memcg_bpf_enabled_key);
++#endif
++
+ 	return &memcg->css;
+ }
+ 
+@@ -5446,6 +5457,11 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_active)
+ 		static_branch_dec(&memcg_sockets_enabled_key);
+ 
++#if defined(CONFIG_MEMCG_KMEM)
++	if (!cgroup_memory_nobpf)
++		static_branch_dec(&memcg_bpf_enabled_key);
++#endif
++
+ 	vmpressure_cleanup(&memcg->vmpressure);
+ 	cancel_work_sync(&memcg->high_work);
+ 	mem_cgroup_remove_from_trees(memcg);
+@@ -7310,6 +7326,8 @@ static int __init cgroup_memory(char *s)
+ 			cgroup_memory_nosocket = true;
+ 		if (!strcmp(token, "nokmem"))
+ 			cgroup_memory_nokmem = true;
++		if (!strcmp(token, "nobpf"))
++			cgroup_memory_nobpf = true;
+ 	}
+ 	return 1;
+ }
 -- 
 1.8.3.1
 
