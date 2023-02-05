@@ -2,64 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD0568AE58
-	for <lists+cgroups@lfdr.de>; Sun,  5 Feb 2023 06:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C606268AE77
+	for <lists+cgroups@lfdr.de>; Sun,  5 Feb 2023 06:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbjBEFBX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 5 Feb 2023 00:01:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S229454AbjBEFsR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 5 Feb 2023 00:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjBEFBW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 5 Feb 2023 00:01:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE9D2197D
-        for <cgroups@vger.kernel.org>; Sat,  4 Feb 2023 21:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675573230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/39ZHnJJrBjqpsMrRv1iOmOjWEeCnAqD8v2VDFeVHc=;
-        b=ICIjr6Y8E5+wSSj2stDF+gkUc3S6CRYLxcleYtqK3aSUGIudG8ceppaGUHLZ3xjxxYOmFG
-        MLOk2ak0C6fYJj3OHdNn1TwAb2FhdnR4ACEaAk94mO2fJrMZOTURHsxVld156ddubKibDT
-        hgImll1fqaSGwD9UnQklCboMlqoLGgs=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-364-VGQ7nkP8N9unxD8_e27KAA-1; Sun, 05 Feb 2023 00:00:27 -0500
-X-MC-Unique: VGQ7nkP8N9unxD8_e27KAA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 87ADA29AA2DB;
-        Sun,  5 Feb 2023 05:00:26 +0000 (UTC)
-Received: from [10.22.16.69] (unknown [10.22.16.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA4E4C15BA0;
-        Sun,  5 Feb 2023 05:00:25 +0000 (UTC)
-Message-ID: <f356b916-1c10-1565-73fb-34027c6c510a@redhat.com>
-Date:   Sun, 5 Feb 2023 00:00:25 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] cgroup/cpuset: Don't filter offline CPUs in
- cpuset_cpus_allowed() for top cpuset tasks
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S229447AbjBEFsQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 5 Feb 2023 00:48:16 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9CE222EE;
+        Sat,  4 Feb 2023 21:48:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675576095; x=1707112095;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iEw0zlMttW4+qyyZlq9G8QxHxm7XJTMCir7vrzAuEcs=;
+  b=Ryd1yiqrDN1wP5nWzz2s/cxmTqD9mIKgqjcG28pJdhNh6eJTCnu4xRkN
+   xG9LiDmKg/Fdlha9hhsNaPMrR10Cf8vT8lHfLP1LOpbXFU5GmvP7gkR/3
+   eHoNi8mheJ46T73rHXX28j8whY6OUflHls9EYwBq+YQcshA6nwuMKNCVv
+   EMSZJH5D7NuBs2ZIo0uefPPLuEk5ZVmVAJNVRqS6ekPIjZJ0h9yYg9Y+V
+   QmGPH8DeG1jv1IttRTe8NisjwngZoDhWGYr1symHfPVWosoW9rTHXbGFE
+   CiHMXBUcwznjhLNZVVQ5CvlNNuetAiBMykLSz7c+QXsHhOkt1Es2W+58C
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10611"; a="317023737"
+X-IronPort-AV: E=Sophos;i="5.97,274,1669104000"; 
+   d="scan'208";a="317023737"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2023 21:48:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10611"; a="696544694"
+X-IronPort-AV: E=Sophos;i="5.97,274,1669104000"; 
+   d="scan'208";a="696544694"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 04 Feb 2023 21:48:09 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pOXsn-0001lo-0V;
+        Sun, 05 Feb 2023 05:48:09 +0000
+Date:   Sun, 5 Feb 2023 13:47:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@suse.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Leonardo <leobras@redhat.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, kernel-team@android.com
-References: <20230203164040.213437-1-longman@redhat.com>
- <Y94s8mzrE9VyUJLa@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Y94s8mzrE9VyUJLa@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, cgroups@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/isolation: Add cpu_is_isolated() API
+Message-ID: <202302051316.1kdX7ylk-lkp@intel.com>
+References: <20230203232409.163847-3-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230203232409.163847-3-frederic@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,117 +76,77 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/4/23 05:01, Peter Zijlstra wrote:
-> On Fri, Feb 03, 2023 at 11:40:40AM -0500, Waiman Long wrote:
->> Since commit 8f9ea86fdf99 ("sched: Always preserve the user
->> requested cpumask"), relax_compatible_cpus_allowed_ptr() is calling
->> __sched_setaffinity() unconditionally. This helps to expose a bug in
->> the current cpuset hotplug code where the cpumasks of the tasks in
->> the top cpuset are not updated at all when some CPUs become online or
->> offline. It is likely caused by the fact that some of the tasks in the
->> top cpuset, like percpu kthreads, cannot have their cpu affinity changed.
->>
->> One way to reproduce this as suggested by Peter is:
->>   - boot machine
->>   - offline all CPUs except one
->>   - taskset -p ffffffff $$
->>   - online all CPUs
->>
->> Fix this by allowing cpuset_cpus_allowed() to return a wider mask that
->> includes offline CPUs for those tasks that are in the top cpuset. For
->> tasks not in the top cpuset, the old rule applies and only online CPUs
->> will be returned in the mask since hotplug events will update their
->> cpumasks accordingly.
-> So you get the task_cpu_possible_mask() interaction vs cpusets horribly
-> wrong here, but given the very sorry state of task_cpu_possible_mask()
-> correctness of cpuset as a whole that might just not matter at this
-> point.
->
-> I do very much hate how you add exceptions on exceptions instead of
-> looking to do something right :-(
->
-> Fixing that parition case in my patch is 1 extra line and then I think
-> it fundamentally does the right thing and can serve as a basis for
-> fixing cpuset as a whole.
+Hi Frederic,
 
-I am not saying that your patch is incorrect other than handling the 
-partition case. However, it is rather complex and is hard to understand 
-especially for those that are not that familiar with the cpuset code. 
- From the maintainability point of view, a simpler solution that is 
-easier to understand is better.
+I love your patch! Yet something to improve:
 
-If we want to get it into the next merge windows, there isn't much time 
-left for linux-next testing. So a lower risk solution is better from 
-that perspective too.
+[auto build test ERROR on tip/sched/core]
+[also build test ERROR on horms-ipvs-next/master horms-ipvs/master linus/master v6.2-rc6 next-20230203]
+[cannot apply to paulmck-rcu/dev]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->> Fixes: 8f9ea86fdf99 ("sched: Always preserve the user requested cpumask")
->> Reported-by: Will Deacon <will@kernel.org>
->> Originally-from: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   kernel/cgroup/cpuset.c | 27 +++++++++++++++++++++++++--
->>   1 file changed, 25 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 207bafdb05e8..11554e5845f7 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -3707,15 +3707,38 @@ void __init cpuset_init_smp(void)
->>    * Description: Returns the cpumask_var_t cpus_allowed of the cpuset
->>    * attached to the specified @tsk.  Guaranteed to return some non-empty
->>    * subset of cpu_online_mask, even if this means going outside the
->> - * tasks cpuset.
->> + * tasks cpuset, except when the task is in the top cpuset.
->>    **/
->>   
->>   void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
->>   {
->>   	unsigned long flags;
->> +	struct cpuset *cs;
->>   
->>   	spin_lock_irqsave(&callback_lock, flags);
->> -	guarantee_online_cpus(tsk, pmask);
->> +	rcu_read_lock();
->> +
->> +	cs = task_cs(tsk);
->> +	if (cs != &top_cpuset)
->> +		guarantee_online_cpus(tsk, pmask);
->> +	/*
->> +	 * TODO: Tasks in the top cpuset won't get update to their cpumasks
->> +	 * when a hotplug online/offline event happens. So we include all
->> +	 * offline cpus in the allowed cpu list.
->> +	 */
-> I don't like TODO there, I really don't think CPUSET should update root
-> tasks, that means yet another fundamental difference between
-> CPUSET={y,n}.
-OK, I can remove the "TODO". I have no objection to that.
->
->> +	if ((cs == &top_cpuset) || cpumask_empty(pmask)) {
->> +		const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
->> +
->> +		/*
->> +		 * We first exclude cpus allocated to partitions. If there is no
->> +		 * allowable online cpu left, we fall back to all possible cpus.
->> +		 */
->> +		cpumask_andnot(pmask, possible_mask, top_cpuset.subparts_cpus);
->> +		if (!cpumask_intersects(pmask, cpu_online_mask))
->> +			cpumask_copy(pmask, possible_mask);
->> +	}
->> +
->> +	rcu_read_unlock();
->>   	spin_unlock_irqrestore(&callback_lock, flags);
->>   }
-> I really detest this patch, but if you insist it might just do :-/
+url:    https://github.com/intel-lab-lkp/linux/commits/Frederic-Weisbecker/sched-isolation-Merge-individual-nohz_full-features-into-a-common-housekeeping-flag/20230204-072510
+patch link:    https://lore.kernel.org/r/20230203232409.163847-3-frederic%40kernel.org
+patch subject: [PATCH 2/2] sched/isolation: Add cpu_is_isolated() API
+config: x86_64-randconfig-a001 (https://download.01.org/0day-ci/archive/20230205/202302051316.1kdX7ylk-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/89596a035dc10e00cb66d4e75e49d69b75413807
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Frederic-Weisbecker/sched-isolation-Merge-individual-nohz_full-features-into-a-common-housekeeping-flag/20230204-072510
+        git checkout 89596a035dc10e00cb66d4e75e49d69b75413807
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
-If we decide that we should always try to keep possible offline cpus in 
-a task's cpumask. We could adopt your solution or we can try to keep 
-that information in the cpuset structure itself. At this point, I don't 
-see any advantage in doing that except for tasks in the top cpuset 
-because the hotplug code won't update their cpumasks. Also inferring 
-offline cpus that should be in the cpuset is only possible with cgroup 
-v2. It does not work for v1. So it is also not a complete solution. To 
-be complete, we may need keep this information in the cpuset.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-Cheers,
-Longman
+All errors (new ones prefixed by >>):
 
+   In file included from drivers/pci/pci-driver.c:15:
+>> include/linux/sched/isolation.h:58:10: error: implicit declaration of function 'housekeeping_test_cpu' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+           return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
+                   ^
+   include/linux/sched/isolation.h:58:10: note: did you mean 'housekeeping_any_cpu'?
+   include/linux/sched/isolation.h:27:19: note: 'housekeeping_any_cpu' declared here
+   static inline int housekeeping_any_cpu(enum hk_type type)
+                     ^
+   1 error generated.
+--
+   In file included from kernel/sched/fair.c:38:
+>> include/linux/sched/isolation.h:58:10: error: implicit declaration of function 'housekeeping_test_cpu' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+           return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
+                   ^
+   include/linux/sched/isolation.h:58:10: note: did you mean 'housekeeping_any_cpu'?
+   include/linux/sched/isolation.h:27:19: note: 'housekeeping_any_cpu' declared here
+   static inline int housekeeping_any_cpu(enum hk_type type)
+                     ^
+   kernel/sched/fair.c:688:5: warning: no previous prototype for function 'sched_update_scaling' [-Wmissing-prototypes]
+   int sched_update_scaling(void)
+       ^
+   kernel/sched/fair.c:688:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int sched_update_scaling(void)
+   ^
+   static 
+   1 warning and 1 error generated.
+
+
+vim +/housekeeping_test_cpu +58 include/linux/sched/isolation.h
+
+    55	
+    56	static inline bool cpu_is_isolated(int cpu)
+    57	{
+  > 58		return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
+    59			 !housekeeping_test_cpu(cpu, HK_TYPE_KERNEL_NOISE);
+    60	}
+    61	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
