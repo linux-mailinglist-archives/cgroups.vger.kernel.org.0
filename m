@@ -2,44 +2,44 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 315BC68B6E9
-	for <lists+cgroups@lfdr.de>; Mon,  6 Feb 2023 08:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE0A68B6E6
+	for <lists+cgroups@lfdr.de>; Mon,  6 Feb 2023 08:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbjBFHw4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Feb 2023 02:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
+        id S230039AbjBFHwb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Feb 2023 02:52:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjBFHwy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 02:52:54 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20631.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6091E1557F;
-        Sun,  5 Feb 2023 23:52:20 -0800 (PST)
+        with ESMTP id S229954AbjBFHwX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 02:52:23 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20603.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::603])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C333D18AA0;
+        Sun,  5 Feb 2023 23:51:50 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RyP2XQnz0N73PcQxjcUT4uAOGaufarRgV3t4vLzSzzaurNS9YOcieNt9HHUpRyhwuM0ST/JTfrnniUiAz2oiucF4XvGxWynkY75nZ+/jKnYF5jyJfTFHJLzLl+inSQwhMUp8KF/KTV6R0uHjgfrLSiQzdcb1w/PvSdL/whUjfUrVgoT0XHwiTaYRCpIpkuHalxJIBNxvQkJZ+M34gmal3k7aTaYlxnf1FZs2FlRsifhjhSiiUTTYgpp7TyZLepR00cZWTRFO5Vl65rxRkGfwPYmaCuzRjYw17K5klZ03gT+QESmo5i4AZg+VzA4BP9dJ3jf92mFMPCEYcQtJMJBfzg==
+ b=Im7MEEVN4FWEx3zCb+jxDxt6oqesrmj8wEvyNhB6xZWYLmNr8YJXfqXWgxp0JvAIIXXdUnrO96MGX7+XrY25hIfkVOGBVsn2Figp5RwnKVNY70RpHmDwh8BhJCEQSoJDTvh9pWSRLJa9mJrdPdI3/timqioSJ2uD8tURUPv571Hfev7ZeKatRw7XEZcFN+Dfl08r4F0Uq+fqLnHaEKJnUOuE4ZGF8WR1sYqFACWL5xks82FH9i91x063H+8KsIGxTQVt0s+3RP9+X2Y+p8t8tPaFR4t/2KDfOMNGR3J+apzlJOvC2Uw8dS2ggut5XjsdygdkpqL6aIKTsa2gpiAu1A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kJx4d6L32xsb7lM+TLJ9IAT+Zep1O/ydPt8JKIy3HJs=;
- b=ffHCQDtLu++R1E5ReQ7NDzjd2FnKcI31hET478cSznvJlv8G0gIdRGmRi5ovquC71bWDlL3D6+QbMGZacXA/lCwmCpeTFM13yhgSlUzhUUj9KSftTbmdDfMNVcPrh4lGp8gYIzzVm9MlilIb7XqLKIR+WCii0mBFs9TLYxqUTlGDY5ZlMzx3rW6jbN5nbnTOgzU78KBoqWZVQijbW2YIpB1a2PAihRChWoHiG6qBbl8fZ7Gtjnz7uWkLhJBs3AucxGtk52dUSy3xz+Kbyvj/mGn4YsqIkOTRx+jmFqkX+P8PUHkR5ft9LW0YSUvvdsqfYgbZBBhii8UPBuVSo4TIXg==
+ bh=CGKTTJbiu7jo+yKcPAlQKTQIKt8ia+61r7AgkXzDJs4=;
+ b=S3LRHDSF95Tx4J6VA9J6urDze9zWFzHyWsmZiwRPG8JJEaOQOgkPWyZ5TuEI+DHP5JB5ZZfiLSynKg9QXeRz8TyTGWmKjNNGQUdIIiMYxeVZ1rzPnTc6JYwghRZ2SJnqTaP/389fVUpnOhQO1l2UPFGisARyo2Lciofjl+XgzaAJ5k8NSgb/lkKZPNk1RoGyA+h1u8RQklqn3wTZqKzzB5iJ1NFS9ulU19AwzNJZ2p7UQI3DVv48+ewMlfv5bmRLtjhxtXIoQztM8uw2VDRC9ISCSrT8i5KMThjR49aeeUXL6LItBPZ6225fYLdJqNy5OzmqcSmToAQHw65KtyHO5Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kJx4d6L32xsb7lM+TLJ9IAT+Zep1O/ydPt8JKIy3HJs=;
- b=ZtlV3xqkVCdEoJMfxTySEMtXYlBcu3RxzlI8GNdhznj8a3/UJ6829hjPsh6TZDRu2tpHt00m6JeVT9mO19xTSFl14OLTKMl2qMVxWKCQ08L7ww//5xTfGaLbzbp2s/s+uLONIvlAYGNugDKhqxzwxxpHpX1Q05Ec8ZZUZEusqbBXkWlLLK1Eb7YUEv1W9yawV01c44sPu3WlKPNxoO1W2hfj+pC9GmCitT/gDCXV23DrMjJW056Q12HoqU6w/6LxfLme95bxIla/oE9b5Tf8DZO97bHQwNjl3phF0Ws5x7pCH4BQc+7zmpLqeADSEpnxfCVrYTxZfdoWv2as/21C2A==
+ bh=CGKTTJbiu7jo+yKcPAlQKTQIKt8ia+61r7AgkXzDJs4=;
+ b=kVvPNwBixSEKdOtpAfVIoKMGsQdXxYk24fgyI253NvLsXcQWCV9659gz3zqc7aYzWX6DrVJfCdezr5YAvVyZt8PlxpG2J5KbszClhFSkw8xAeADMD1gLKJGkafXE9BeTlOAp+Zxs1R6FuJ2t35g4NfxRBbK9CSX9qjPG/A1wkbHG4LJTYm26ACVEBwi/Zx2Co+3SluiTDJTpDHFJv9nk6iX+beV3QuD32Ls4HdQUj33P7Ug/q0oOHp0GypmRt3kaJM57nIfalsiCFYqHdotasEmSHOdlQoYneLf21VI0x26SYY3JMnc58Xfv9QOUq3r3EdpgI4/5wnxUBYQyd69aZw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
  by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.32; Mon, 6 Feb
- 2023 07:50:13 +0000
+ 2023 07:50:20 +0000
 Received: from BYAPR12MB3176.namprd12.prod.outlook.com
  ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
  ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6064.032; Mon, 6 Feb 2023
- 07:50:13 +0000
+ 07:50:20 +0000
 From:   Alistair Popple <apopple@nvidia.com>
 To:     linux-mm@kvack.org, cgroups@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
@@ -47,65 +47,66 @@ Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
         mkoutny@suse.com, daniel@ffwll.ch,
         "Daniel P . Berrange" <berrange@redhat.com>,
         Alex Williamson <alex.williamson@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>
-Subject: [PATCH 18/19] mm/mmap: Charge locked memory to pins cgroup
-Date:   Mon,  6 Feb 2023 18:47:55 +1100
-Message-Id: <fa58b745a597a32b434b0d92d55cf0b97317cfec.1675669136.git-series.apopple@nvidia.com>
+        Alistair Popple <apopple@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: [PATCH 19/19] selftests/vm: Add pins-cgroup selftest for mlock/mmap
+Date:   Mon,  6 Feb 2023 18:47:56 +1100
+Message-Id: <2bd6038b4a1571631e7797ce0f47a133f52acd9c.1675669136.git-series.apopple@nvidia.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
 References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SYBPR01CA0114.ausprd01.prod.outlook.com
- (2603:10c6:10:1::30) To BYAPR12MB3176.namprd12.prod.outlook.com
+X-ClientProxiedBy: SYCPR01CA0045.ausprd01.prod.outlook.com
+ (2603:10c6:10:e::33) To BYAPR12MB3176.namprd12.prod.outlook.com
  (2603:10b6:a03:134::26)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DS0PR12MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 427e0896-7913-4612-52a1-08db0816c76f
+X-MS-Office365-Filtering-Correlation-Id: d11c3ca0-e577-4cea-9a76-08db0816cb58
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: N8UuAVBxTWt5/pJf6aD+fYRN9CGKIzqzua+ZekDKIw+u7Cw+ngRBnvwoB9EW06W5OR0HXypCbToXB/cTcd5hiyTJ4YX4oO9HDgWQ64BG1KiuYLkpOYZfB9slmftj8NkWdQMDICe4WBXEAudCmcOSQpCOVpdMi/UhZdvuH1pZtbZrSg0jh32quXs3bIsZh/I+WAET/3XXCpMr4+ZnA1P14qXZR1GGx+UvgPTLunxC0V3bx9EMasETCjCThtsfLbPoQlyi/xXMFqF4N5AMD6+Ggcx/PYVi46aL5nnpIQS1piY4WVYUz6r/yGju67Hw2klWH6/UgXbVn6p2oPQOrUVL/DkCe/WilMc60kJsFbu/ASymE+K8BUoQBoqefccmV2J5IQab1Nm5oQ6n6h4dYvPMCzFxe/uZ6DscTTIgCKgE3W/bhaglxgsPWqQG5+aCypZ4hqCrRcjKkIJ5hu2vhB1yUq4iQsDz1zDM6T/dgbV26YW+Jrusm+AVcjKbr59XR4/09BclrJ0OjBoo7tyF8XARfOT4an4oPbYDJvUzT34OHJaTUSauIUkw6aBmCNAH5iLUWR5hsrxp3vf3lAG59oP4GKI5Z6z2vAHJDaOLw+36QOOi0Ayqvl0QKAnlu1SkoOoCznQ1YH5U4TKxwNkqESttoA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(396003)(136003)(39860400002)(366004)(346002)(451199018)(54906003)(316002)(86362001)(6666004)(107886003)(6486002)(38100700002)(186003)(2616005)(6506007)(26005)(478600001)(6512007)(7416002)(5660300002)(83380400001)(2906002)(36756003)(66946007)(8936002)(4326008)(41300700001)(66476007)(8676002)(66556008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 9dWZD2t/+Z7V9QOIUUWaxrSGi0KuhVSIbQ77D2ROgVKVnwxGP52AevErTClN4BqAy21B5fx21j6tBiYlt8u35F60dW8g90c/XKmkVbPhuynbVr6O+4Xghv14ztWgD/29bEkInSoVrxBkn/08YV1MUq9x4RChn3IkP6M+jIQLrUT1scnll48P/ztTwbl0IDBav8icxKqw3/RCPT+PO3kX4NT2mc7s04u7e7KLHTOhOIRxPsusGcYsL6+w1r3dUct98mhm++I1+CKwtb6dFisPWefIHJTICoX53HpZ2KoOnR7lz1J6Kw1jx/cAlLFdzoiygI++gsSkhWTSxui/Jq2ERMn/UjhQYNc3jWXKcgrbJmVfemrw0U84V3963AxNslhkPWNvP3VePQFbPXj+jpugf+QzEUMAZfDn5Uk989t65iJJpKzGdK5zckXmd99UeXwsRYPQXni1J8zzETrAWXnrF4mu2rGw7OHG+AUg4/v0QVWVildJ07/HpedRKRKNeZlmwp2KU+lQBys3n/Bkfu8X/mM/uCdM5GzA5C99yWLxorPDW4JhXFApebCvHSrCvJiQ19m6bFejTrOciu3q1zeRzrRIBNA7BHN+u3vu0JBMwY+JCVbXPHThQ70b+I8B6TaT9LxCml/0t/fhHwHV+NssoA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(396003)(136003)(39860400002)(366004)(346002)(451199018)(54906003)(316002)(86362001)(6666004)(6486002)(38100700002)(186003)(2616005)(6506007)(26005)(478600001)(6512007)(7416002)(5660300002)(83380400001)(2906002)(36756003)(66946007)(8936002)(4326008)(41300700001)(66476007)(8676002)(66556008);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8l7kC3OaK8BVTwVGt5goAI8wanQmAamsLKwN4NQpQIf4Omil0phmccbSqFeG?=
- =?us-ascii?Q?1Zj6ueoJx6xMDXquKDcQe5Er2cYvwVL4XX+2VHao5jZOwFkVnR28N1Sn4fn0?=
- =?us-ascii?Q?tSRX1+dzFIipP5IPwtwykErOR0e3SkceMaAVzAQtlErlGG3oyjrFLk8oqRyf?=
- =?us-ascii?Q?Sp6gJpZZw+8PQWV9V1LO6JuAIUrR/CTzXD79JZnPtEBmhASDkMQHjJoUQ5TO?=
- =?us-ascii?Q?xO5ONGXsnwI+n6lyNQm5W9G/fVdR3JBwGneg3qghzZf8j50sqW5ZOOiTAa4k?=
- =?us-ascii?Q?xg8orZXUEuTgdmYGeAgWNpCtE2HQSKk1vvxJEJYsHzROorPqUshOjTR6tdE+?=
- =?us-ascii?Q?QrGL5cuytzC+/2qr+X1Pit8TjfmyvELisUPWATl7QwbXwk4yOOBRCnCbW2FN?=
- =?us-ascii?Q?SIzcYCDmt39TTs4w6RPni5BgIjHahkFqf5q4NFxlmctuxuHZ5eFe4T11pSkB?=
- =?us-ascii?Q?RpqdK1cVGKu0J9ulk2cBYqJ9BNm8uW8eLEYWTXUG+C8fZ89hUQxsappHro1K?=
- =?us-ascii?Q?basRoaW5vum5BgCfWUBHNcU5aMcGJVQX8rrPQ5MwtgFllVkVtAj7RWLpfe0F?=
- =?us-ascii?Q?60pGmjJyN6g+97czYDhflfKCZW7gbDXBJP8l8MFpLc6fNTJNNtm6jhsK9ZYy?=
- =?us-ascii?Q?yS3KRgKwRF+gRJk2BBcjoi0Djtpx2dOJlX+F4Ioo8q4GvL0cKkLrXbH5g6Q5?=
- =?us-ascii?Q?KNBtmmNjf3YpDhxpekbGluthLLUc2v5CCpKr9/ArAtsUb089j0p6582e7zMi?=
- =?us-ascii?Q?kLUgOQhOJ79dy9LNIY3hqH1wKTO5ieCBb/VsE5LpJpP4+WmZ0bKchrCLR2lE?=
- =?us-ascii?Q?QShlUg4cSvKBX36Zo33V0/f1MtH/lr8xbj+BrwvlrpHbSHHelW3vZf9S7bVl?=
- =?us-ascii?Q?qXuCzjKH/ulZdQDcAw+MvUsTD4vddgzeEBIE5+BoB4NxoR+FJbzLNPBGF1xv?=
- =?us-ascii?Q?/OC2WXsNaOXRWGO24ASTDFKdpJBRWDSAs51qCJ2LqdhVJqwQZ6HOr5zz8VG3?=
- =?us-ascii?Q?PTKVvQUKbflh2hf0LzJ0UDeGJ/+5xt81MysKO6VIcEElzItaP+lrrwX9ooJ+?=
- =?us-ascii?Q?sTQWdI8Htq9Lxus9hnccpTFqmaVqQfxIhDIfSyqxv2qiaAUmWYENztI8W/pd?=
- =?us-ascii?Q?TYAvSX+6Dmj4U3QQguzMoHuY/A9xU0ZXsadHFEhGh0KF2W8A5LPt4WSB6Uol?=
- =?us-ascii?Q?J8T1uaNfmqZHKrMjZ9P004V0HSzhoV3uo6ZD0Pa8I73QgtzYTsKMjTacKcbX?=
- =?us-ascii?Q?ZgbPhGioZvLA4EZTdjWrS2lzZ5HJPAT/FO8Gm2C5UWy/2Y4ndsjX+Haq9k5c?=
- =?us-ascii?Q?07U8wL0Le846YqGhqna+JnRUPv+xoJNaKPqpiutkX9qoF7mRn31zGwTrz8YY?=
- =?us-ascii?Q?XtQL+by/WxJZOa6XPJSR9TAIG0g9xFEIVNuPlXyCkNJv2CptGfhmkYmsH+3G?=
- =?us-ascii?Q?r4cF1eOWtFDCPDAkkQPXJV+ubu4+1Q4mQMhH6v5DN3cF2YZ6EV5MphqpPQOl?=
- =?us-ascii?Q?r9u3GhFBBwt0x4RCVlUeFqdEoU88XsrsQxekmUkMCAP54hc8+2jswdSuEFxk?=
- =?us-ascii?Q?vPyie5g73YQgJQXm/7CKzyMT0q01G3Bv2NS8CUew?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3j3ry8KiLXLZp8Riv1ALQgPDVgFrUuvNKw26OWlhJphF7+Hc8o5BbQbqnuN/?=
+ =?us-ascii?Q?Nw3ZHBrpWrui2J+NXfFlizPM9vjj8Gkk8/nsxRcdCKXUPkmgg0o4NXntKMUj?=
+ =?us-ascii?Q?VdiKtZDSUM7DVOfDJuzX++7b42gLeXteGJCy0kG5kM7z3oXOO++mXFnJ6ii5?=
+ =?us-ascii?Q?BDy3tLAhDpWmXTz2ZQDLsDK6+xsmS9o4ZklXY9TxRAIn+bIc8tv8SXNFT/ed?=
+ =?us-ascii?Q?9QCyK9PMb1t6a9AfxxeybPrD3Uii//c2x5XJBqhrgs64FkXT6WRwJauYz0Pa?=
+ =?us-ascii?Q?PIe5k/PHr5DRpyyXagjbFWiQQXpIQP7jshIefUMXio4CnV1gNyFVfkuhYqAW?=
+ =?us-ascii?Q?D/kcukf/vhibTuhuATZCdiJqPGD/ANt+tvqLMRy68GIE3JmimGZOsZPF/iVW?=
+ =?us-ascii?Q?wLQAmhGJbzDAp4hDYsPqIyZs6lxGLj6kB6W3AsdFkJoDOcPmAmQtTYsoKZb5?=
+ =?us-ascii?Q?DHKF4AGgM+PYmKrl93CqnaQGuuzFwHVNjiZeC1jmTwhdyTnZf4dY3XtV9l+6?=
+ =?us-ascii?Q?39GAL/aeIYNjcTjtWDmiPjx/bxvLgQ9WpBc+xwx7dE1C8idBrHUWgr8fBqDY?=
+ =?us-ascii?Q?5uFmcPBbvRZRs5HkBCMV7rSDfP6VoEENuNzqOZFoHcTrDBrCySdemrERJHMp?=
+ =?us-ascii?Q?14VFyjPf3CoCfDRS9/B0ysJNz9yzSYy/OD0YeXupBzrQ+kuEY/c3alFStwFF?=
+ =?us-ascii?Q?6UXLDiugpc2lJ4GotWmF2ANGl1WcCmD6oFbOXZ9Q4O8q6Y95ESbw7YCm5o0w?=
+ =?us-ascii?Q?4ymlzSTtu5EitAYdGMIdGgLN725Mkl/D9Is60IXpS0+4GEwnN2tqwD9AzYDU?=
+ =?us-ascii?Q?iXaetdkm+Nkd7z/YhkUs+wFMGXJDa27r7b/DPj32HyB8/r8mojOpUQzmZ7on?=
+ =?us-ascii?Q?BYXMAC3cqh9KL4DjanR2idx1m3rZMlgP9+Lw/Trucb/WuwIh7SX6gUEZRqd0?=
+ =?us-ascii?Q?qnUdwWJjpmt/AF5OkWoFp5F4cW8y4SsQYh5Igw+fN06vC36QFQyRvfkTfE0D?=
+ =?us-ascii?Q?ABMGB/C+80//St3vH5q9oezb7vFYz2IQ1DIW8wt39149HssNvsH8iiIPh9eU?=
+ =?us-ascii?Q?8KQc8eu9ixy+h1mrcjgNIk3mFI143yXkOwNCP98hh9o5R89QmczzB22Z9rRr?=
+ =?us-ascii?Q?j3JQ1JIYTD3xVspAB92wOVC1J2mMc7eK+18NzVOq4I8cNdro+7fmvMnSD5ZA?=
+ =?us-ascii?Q?RXPjWA4QkgIBxepfzCncVnjjXMka/EdSrtidSZSbzBDnjNMejFy3+ATZpC4v?=
+ =?us-ascii?Q?r0j8/qxN9oc331BV6BUfbWengLNIjpcIq00lNuNsHqPqBg0xJfrjhOzbAILu?=
+ =?us-ascii?Q?XT/pDp+V0+rY4mnIJ1er7y/HBolYTQevQz8MowdOUs6g0GSr9bzaOMnNI8ql?=
+ =?us-ascii?Q?mADJFoRv50tYLDcfza44pzces2sluUAsK3NnRId7WaB8emV/AFIgHj1ITn4X?=
+ =?us-ascii?Q?ornfziLewz5vPTuVaJBEYELm+dHxWkLvCdOt5Tc3gzv6VJg4zcuFKm8xJkag?=
+ =?us-ascii?Q?wI2oYfvVuYw2xAuTF3s8AjlPTz3l/PVaWmw1kMtSC1O1S1z3eiQAuzB1e+Xq?=
+ =?us-ascii?Q?4C3GcdolcN9UyabSP79S7wsrNNGC09EU0HhObYU9?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 427e0896-7913-4612-52a1-08db0816c76f
+X-MS-Exchange-CrossTenant-Network-Message-Id: d11c3ca0-e577-4cea-9a76-08db0816cb58
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:50:13.2727
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:50:19.9753
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tD8S4PSSN2NXQP7cLnr9ez07RFo1dGSONbQ2/RD76uWwk7J/TTGeB0H+KUhyxz4kuaksMFWXf+J2eqKvEedMsA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: KClDenTLQ/TczAn7Sbd3dGzzwGDXykfOgI4zkvGApKdmx3a7WPKSSGaevP2sFCVTgUe7bCPuUu4K9rn6fFxZFw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -116,82 +117,322 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-account_locked_vm() is used to account memory to mm->locked_vm. This
-adds accounting to the pins cgorup as it behaves similarly and should
-be accounted against the same global limit if set.
-
-This means memory must now be unaccounted for correctly, as the cgroup
-typically outlives both the mm and the task. It is assumed that
-callers of account_locked_vm() only do accounting against the current
-task. Callers that need to do accounting against remote tasks should
-use account_pinned_vm() and associated struct vm_account to hold
-references to the cgroup.
+Add some basic tests of mlock/mmap cgroup accounting for pinned
+memory.
 
 Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Cc: linux-mm@kvack.org
+Cc: Shuah Khan <shuah@kernel.org>
 Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kselftest@vger.kernel.org
+Cc: cgroups@vger.kernel.org
 ---
- mm/util.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ MAINTAINERS                              |   1 +-
+ tools/testing/selftests/vm/Makefile      |   1 +-
+ tools/testing/selftests/vm/pins-cgroup.c | 271 ++++++++++++++++++++++++-
+ 3 files changed, 273 insertions(+)
+ create mode 100644 tools/testing/selftests/vm/pins-cgroup.c
 
-diff --git a/mm/util.c b/mm/util.c
-index 1ca0dfe..755bada 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -589,15 +589,21 @@ int __account_locked_vm(struct mm_struct *mm, unsigned long pages,
- 			struct task_struct *task, bool bypass_rlim)
- {
- 	unsigned long locked_vm, limit;
-+	struct pins_cgroup *pins_cg = get_pins_cg(task);
- 	int ret = 0;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f8526e2..4c4eed9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5387,6 +5387,7 @@ L:	cgroups@vger.kernel.org
+ L:	linux-mm@kvack.org
+ S:	Maintained
+ F:	mm/pins_cgroup.c
++F:	tools/testing/selftests/vm/pins-cgroup.c
  
- 	mmap_assert_write_locked(mm);
+ CORETEMP HARDWARE MONITORING DRIVER
+ M:	Fenghua Yu <fenghua.yu@intel.com>
+diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+index 89c14e4..0653720 100644
+--- a/tools/testing/selftests/vm/Makefile
++++ b/tools/testing/selftests/vm/Makefile
+@@ -56,6 +56,7 @@ TEST_GEN_PROGS += soft-dirty
+ TEST_GEN_PROGS += split_huge_page_test
+ TEST_GEN_FILES += ksm_tests
+ TEST_GEN_PROGS += ksm_functional_tests
++TEST_GEN_FILES += pins-cgroup
  
-+	if (pins_cg && !pins_try_charge(pins_cg, pages))
-+		return -ENOMEM;
+ ifeq ($(MACHINE),x86_64)
+ CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh "$(CC)" ../x86/trivial_32bit_program.c -m32)
+diff --git a/tools/testing/selftests/vm/pins-cgroup.c b/tools/testing/selftests/vm/pins-cgroup.c
+new file mode 100644
+index 0000000..c2eabc2
+--- /dev/null
++++ b/tools/testing/selftests/vm/pins-cgroup.c
+@@ -0,0 +1,271 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "../kselftest_harness.h"
 +
- 	locked_vm = mm->locked_vm;
- 	if (!bypass_rlim) {
- 		limit = task_rlimit(task, RLIMIT_MEMLOCK) >> PAGE_SHIFT;
--		if (locked_vm + pages > limit)
-+		if (locked_vm + pages > limit) {
-+			pins_uncharge(pins_cg, pages);
- 			ret = -ENOMEM;
-+		}
- 	}
- 
- 	if (!ret)
-@@ -607,6 +613,12 @@ int __account_locked_vm(struct mm_struct *mm, unsigned long pages,
- 		 (void *)_RET_IP_, pages << PAGE_SHIFT, locked_vm << PAGE_SHIFT,
- 		task_rlimit(task, RLIMIT_MEMLOCK), ret ? " - exceeded" : "");
- 
-+	pr_debug("%s: [%d] caller %ps %lu %lu/%lu%s\n", __func__, task->pid,
-+		 (void *)_RET_IP_, pages << PAGE_SHIFT, locked_vm << PAGE_SHIFT,
-+		task_rlimit(task, RLIMIT_MEMLOCK), ret ? " - exceeded" : "");
++#define _GNU_SOURCE
++#include <fcntl.h>
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/ioctl.h>
++#include <sys/prctl.h>
++#include <sys/resource.h>
++#include <sys/capability.h>
++#include <unistd.h>
 +
-+	if (pins_cg)
-+		put_pins_cg(pins_cg);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(__account_locked_vm);
-@@ -622,8 +634,18 @@ void __unaccount_locked_vm(struct mm_struct *mm, unsigned long pages)
- {
- 	unsigned long locked_vm = mm->locked_vm;
- 
-+	/*
-+	 * TODO: Convert book3s vio to use pinned vm to ensure
-+	 * unaccounting happens to the correct cgroup.
-+	 */
-+	struct pins_cgroup *pins_cg = get_pins_cg(current);
++#define CGROUP_TEMP "/sys/fs/cgroup/pins_XXXXXX"
++#define PINS_MAX (-1UL)
 +
- 	mmap_assert_write_locked(mm);
- 	WARN_ON_ONCE(pages > locked_vm);
-+	if (pins_cg) {
-+		pins_uncharge(pins_cg, pages);
-+		put_pins_cg(pins_cg);
++FIXTURE(pins_cg)
++{
++	char *cg_path;
++	long page_size;
++};
++
++static char *cgroup_new(void)
++{
++	char *cg;
++
++	cg = malloc(sizeof(CGROUP_TEMP));
++	strcpy(cg, CGROUP_TEMP);
++	if (!mkdtemp(cg)) {
++		perror("Failed to create cgroup");
++		return NULL;
 +	}
- 	mm->locked_vm = locked_vm - pages;
- }
- EXPORT_SYMBOL_GPL(__unaccount_locked_vm);
++
++	return cg;
++}
++
++static int cgroup_add_proc(char *cg, pid_t pid)
++{
++	char *cg_proc;
++	FILE *f;
++	int ret = 0;
++
++	if (asprintf(&cg_proc, "%s/cgroup.procs", cg) < 0)
++		return -1;
++
++	f = fopen(cg_proc, "w");
++	free(cg_proc);
++	if (!f)
++		return -1;
++
++	if (fprintf(f, "%ld\n", (long) pid) < 0)
++		ret = -1;
++
++	fclose(f);
++	return ret;
++}
++
++static int cgroup_set_limit(char *cg, unsigned long limit)
++{
++	char *cg_pins_max;
++	FILE *f;
++	int ret = 0;
++
++	if (asprintf(&cg_pins_max, "%s/pins.max", cg) < 0)
++		return -1;
++
++	f = fopen(cg_pins_max, "w");
++	free(cg_pins_max);
++	if (!f)
++		return -1;
++
++	if (limit != PINS_MAX) {
++		if (fprintf(f, "%ld\n", limit) < 0)
++			ret = -1;
++	} else {
++		if (fprintf(f, "max\n") < 0)
++			ret = -1;
++	}
++
++	fclose(f);
++	return ret;
++}
++
++FIXTURE_SETUP(pins_cg)
++{
++	char *cg_subtree_control;
++	FILE *f;
++
++	if (asprintf(&cg_subtree_control,
++			"/sys/fs/cgroup/cgroup.subtree_control") < 0)
++		return;
++
++	f = fopen(cg_subtree_control, "w");
++	free(cg_subtree_control);
++	if (!f)
++		return;
++
++	fprintf(f, "+pins\n");
++	fclose(f);
++
++	self->cg_path = cgroup_new();
++	self->page_size = sysconf(_SC_PAGE_SIZE);
++}
++
++FIXTURE_TEARDOWN(pins_cg)
++{
++	cgroup_add_proc("/sys/fs/cgroup", getpid());
++
++	rmdir(self->cg_path);
++	free(self->cg_path);
++}
++
++static long cgroup_pins(char *cg)
++{
++	long pin_count;
++	char *cg_pins_current;
++	FILE *f;
++	int ret;
++
++	if (asprintf(&cg_pins_current, "%s/pins.current", cg) < 0)
++		return -1;
++
++	f = fopen(cg_pins_current, "r");
++	if (!f) {
++		printf("Can't open %s\n", cg_pins_current);
++		getchar();
++		free(cg_pins_current);
++		return -2;
++	}
++
++	free(cg_pins_current);
++
++	if (fscanf(f, "%ld", &pin_count) == EOF)
++		ret = -3;
++	else
++		ret = pin_count;
++
++	fclose(f);
++	return ret;
++}
++
++static int set_rlim_memlock(unsigned long size)
++{
++	struct rlimit rlim_memlock = {
++		.rlim_cur = size,
++		.rlim_max = size,
++	};
++	cap_t cap;
++	cap_value_t capability[1] = { CAP_IPC_LOCK };
++
++	/*
++	 * Many of the rlimit checks are skipped if a process has
++	 * CAP_IP_LOCK. As this test should be run as root we need to
++	 * explicitly drop it.
++	 */
++	cap = cap_get_proc();
++	if (!cap)
++		return -1;
++	if (cap_set_flag(cap, CAP_EFFECTIVE, 1, capability, CAP_CLEAR))
++		return -1;
++	if (cap_set_proc(cap))
++		return -1;
++	return setrlimit(RLIMIT_MEMLOCK, &rlim_memlock);
++}
++
++TEST_F(pins_cg, basic)
++{
++	pid_t child_pid;
++	long page_size = self->page_size;
++	char *p;
++
++	ASSERT_EQ(cgroup_add_proc(self->cg_path, getpid()), 0);
++	p = mmap(NULL, 32*page_size, PROT_READ | PROT_WRITE,
++		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
++	ASSERT_NE(p, MAP_FAILED);
++
++	ASSERT_EQ(cgroup_pins(self->cg_path), 0);
++	memset(p, 0, 16*page_size);
++	ASSERT_EQ(mlock(p, page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 1);
++	ASSERT_EQ(mlock(p + page_size, page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 2);
++	ASSERT_EQ(mlock(p, page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 2);
++	ASSERT_EQ(mlock(p, 4*page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 4);
++	ASSERT_EQ(munlock(p + 2*page_size, 2*page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 2);
++	ASSERT_EQ(cgroup_set_limit(self->cg_path, 8), 0);
++	ASSERT_EQ(mlock(p, 16*page_size), -1);
++	ASSERT_EQ(errno, ENOMEM);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 2);
++	ASSERT_EQ(cgroup_set_limit(self->cg_path, PINS_MAX), 0);
++
++	/* check mremap() a locked region correctly accounts locked pages */
++	ASSERT_EQ(mlock(p, 32*page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 32);
++	p = mremap(p, 32*page_size, 64*page_size, MREMAP_MAYMOVE);
++	ASSERT_NE(p, MAP_FAILED);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 64);
++	ASSERT_EQ(munmap(p + 32*page_size, 32*page_size), 0)
++	ASSERT_EQ(cgroup_pins(self->cg_path), 32);
++	p = mremap(p, 32*page_size, 32*page_size, MREMAP_MAYMOVE | MREMAP_DONTUNMAP);
++	ASSERT_NE(p, MAP_FAILED);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 32);
++	ASSERT_EQ(munlock(p, 32*page_size), 0);
++
++	/* mremap() a locked region should fail if limit exceeded */
++	ASSERT_EQ(set_rlim_memlock(32*page_size), 0);
++	ASSERT_EQ(mlock(p, 32*page_size), 0);
++	ASSERT_EQ(mremap(p, 32*page_size, 64*page_size, 0), MAP_FAILED);
++	ASSERT_EQ(munlock(p, 32*page_size), 0);
++
++	/* Exceeds rlimit, expected to fail */
++	ASSERT_EQ(set_rlim_memlock(16*page_size), 0);
++	ASSERT_EQ(mlock(p, 32*page_size), -1);
++	ASSERT_EQ(errno, ENOMEM);
++
++	/* memory in the child isn't locked so shouldn't increase pin_cg count */
++	ASSERT_EQ(mlock(p, 16*page_size), 0);
++	child_pid = fork();
++	if (!child_pid) {
++		ASSERT_EQ(cgroup_pins(self->cg_path), 16);
++		ASSERT_EQ(mlock(p, 16*page_size), 0);
++		ASSERT_EQ(cgroup_pins(self->cg_path), 32);
++		return;
++
++	}
++	waitpid(child_pid, NULL, 0);
++
++	/* check that child exit uncharged the pins */
++	ASSERT_EQ(cgroup_pins(self->cg_path), 16);
++}
++
++TEST_F(pins_cg, mmap)
++{
++	char *p;
++
++	ASSERT_EQ(cgroup_add_proc(self->cg_path, getpid()), 0);
++	p = mmap(NULL, 4*self->page_size, PROT_READ | PROT_WRITE,
++		MAP_ANONYMOUS | MAP_PRIVATE | MAP_LOCKED, -1, 0);
++	ASSERT_NE(p, MAP_FAILED);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 4);
++}
++
++/*
++ * Test moving to a different cgroup.
++ */
++TEST_F(pins_cg, move_cg)
++{
++	char *p, *new_cg;
++
++	ASSERT_EQ(cgroup_add_proc(self->cg_path, getpid()), 0);
++	p = mmap(NULL, 16*self->page_size, PROT_READ | PROT_WRITE,
++		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
++	ASSERT_NE(p, MAP_FAILED);
++	memset(p, 0, 16*self->page_size);
++	ASSERT_EQ(mlock(p, 16*self->page_size), 0);
++	ASSERT_EQ(cgroup_pins(self->cg_path), 16);
++	ASSERT_NE(new_cg = cgroup_new(), NULL);
++	ASSERT_EQ(cgroup_add_proc(new_cg, getpid()), 0);
++	ASSERT_EQ(cgroup_pins(new_cg), 16);
++	ASSERT_EQ(cgroup_add_proc(self->cg_path, getpid()), 0);
++	rmdir(new_cg);
++}
++TEST_HARNESS_MAIN
 -- 
 git-series 0.9.1
