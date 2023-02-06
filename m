@@ -2,420 +2,200 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABE768C934
-	for <lists+cgroups@lfdr.de>; Mon,  6 Feb 2023 23:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0D868C93D
+	for <lists+cgroups@lfdr.de>; Mon,  6 Feb 2023 23:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjBFWOz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Feb 2023 17:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
+        id S229740AbjBFWSR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Feb 2023 17:18:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjBFWOy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 17:14:54 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADBA17CD9
-        for <cgroups@vger.kernel.org>; Mon,  6 Feb 2023 14:14:52 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id qw12so38492601ejc.2
-        for <cgroups@vger.kernel.org>; Mon, 06 Feb 2023 14:14:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fhiw+jubOvq1uJrkxqi7dpXCXQ7Pp14PB3qH+9iBvvk=;
-        b=XGaKPmbL+LPNdhbIZ8gNyg5YsQ/9NfkANkq1Me2iOAgz6kMhGtq9KP5uTuMro2fsKV
-         97wXmiwNztvKIsr1w/ZNLTY5Gxg9oylT/9WKs2eqsl0zM4DsMM/35gAcHEhazexIXZUH
-         q+FmIXOW0ikTvR28HeB44B2X3kIRUiiMExS+6DuZddUMzM+b9pl8aVFA8kg5Z5mAPHuJ
-         YMz3p9zhVUF2cfceZu5ZHiPpL1+PIriVHBvo6xZGr+WDk4CoPD8yCCr5snlJ4xcbN6W1
-         HRrAJXhuQPMssea8gyc/xy8fY2rMbGRa+gRmRJOhSlD413QLVPC5z5mxDYDQMKX6CIBs
-         Tmug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fhiw+jubOvq1uJrkxqi7dpXCXQ7Pp14PB3qH+9iBvvk=;
-        b=1YvhIoGwy0vay0cKVbyOrEuvi19A5VhcXdf+N2ikHCA+EGJuV5teyDQdgbr6eBrlGq
-         iiFZ+/5exITa74HEDrY8rXboW6gibf+8BCU+1K+15WihL3Dg75dxRP0rJ4KWc4pvf3yo
-         4clNcnBXuYuyk5xcS+a+1zfbVuHqXmj19Km8AWIs6u1uXUNkxzihjLonIDhib7HrRITf
-         sUevYGtQRxS9xqmtG3otdSVtknpBX3ji7aplHfYQMSU6b2k9Irpa1KrgYpx8hjM7qTYS
-         gN9r1xVXqvxl0pfmGEDk30Kju8vs2qrfzrevDKfdonkAAlaDtmo6wXAhoabEOPpFboep
-         rKEA==
-X-Gm-Message-State: AO0yUKU5RAjWhg5zdHUX8XKZfg/8f6ayQwCPpf3DNwS73z8wYplsiPEz
-        y0l0OxRropQP32N3hQmy9xPKkw==
-X-Google-Smtp-Source: AK7set8nKifNoixIO1OR95D5ZT8RG9QYxkX7/QXPPznwnhZLt79MFEjgvQVv8RVJTucYIQ9//VQNzg==
-X-Received: by 2002:a17:906:5013:b0:883:5b33:e019 with SMTP id s19-20020a170906501300b008835b33e019mr845210ejj.61.1675721690843;
-        Mon, 06 Feb 2023 14:14:50 -0800 (PST)
-Received: from localhost.localdomain (host86-163-35-10.range86-163.btcentralplus.com. [86.163.35.10])
-        by smtp.gmail.com with ESMTPSA id g4-20020a170906348400b007add62dafbasm5974260ejb.157.2023.02.06.14.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 14:14:50 -0800 (PST)
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Zefan Li <lizefan.x@bytedance.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org, Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH v3] sched: cpuset: Don't rebuild root domains on suspend-resume
-Date:   Mon,  6 Feb 2023 22:14:28 +0000
-Message-Id: <20230206221428.2125324-1-qyousef@layalina.io>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229884AbjBFWSQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 17:18:16 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745DEE388
+        for <cgroups@vger.kernel.org>; Mon,  6 Feb 2023 14:18:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675721895; x=1707257895;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=vBkQGh6/0VEmRsJ8IheNAahzdjWtx0a6BuO2ZvFhNzo=;
+  b=cvNhiU6Trd0heMrLpmnbJ5sVbazUoq4ECCQDhEbmbzmktgrVeg/5u8xD
+   9HqHHZQ1QGq+GDxGjUE/ru4YVdnQSuRZOyuYhvyWgXx/vCZiGe8lqqXUX
+   RqjG1BfHXMs6WeYAIeg37+fZUPvHx3QFBIB66SeeWP+0jKxg/dAQf+mbV
+   AZLejG9lWKGPAcVPVXFUTC3VrrAtOiHCM0FrlgFaZHEpcXT5Je3MhmSzP
+   JoN9DrnlLGrBfwsZfvk11Pr1DRIfkPlYTcdTpp60yr97OdS8lq/7q3PNW
+   hj7Bzhcrj2DmLyyGegxNawPdW1YmGYcQfJgcABoIZLrQgatWjGTkii2lq
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="309663113"
+X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; 
+   d="scan'208";a="309663113"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2023 14:18:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="616585507"
+X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; 
+   d="scan'208";a="616585507"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga003.jf.intel.com with ESMTP; 06 Feb 2023 14:18:14 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Mon, 6 Feb 2023 14:18:14 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Mon, 6 Feb 2023 14:18:14 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Mon, 6 Feb 2023 14:18:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cauwqda6r1LmW8qf907pWdSH/POnlgPVfGzr212WfL8Pyy28/v7sHBITMGNipFLAnxYH9TqfCLdfNaRMrXLm54uVJ021EKbp6e3pw89vEOkxZU9NQuLNEMb35/9Eg5iZV7j46y7zibfinXGSIDSjtrYxq5bT02ktK79+i+qchYqaYV/kuyoYkLMqeikDVIrA3SvYk83jxv5O0oX/z0MKJQG4Rq6Hja9Nc02xYqBFOzV/FnVn2hfQPm+MJgX47mNG2yPlkSxibPLDzUb3A2TInitehmdoglkA4gN9VtZRPnn3etrbfE+uAqX1PuRSMtBhTXgqPnKrmO9gU1sdDu1aEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vBkQGh6/0VEmRsJ8IheNAahzdjWtx0a6BuO2ZvFhNzo=;
+ b=PmNC4E4GNLiSujfQBsj/oRq7vaKVD+9H1vDgWYQj321DTmbn09itR2NFFTrOgsHNxe/3OTlF6evWs9z4uDpWCB7pOqHY+bl1pf9cE+kiwejJnTow+FUmmJ60PnCqTHs0ha6wSzvOv16Gg/19h5XFAknreHGlwLtvcfQyXPQbmKgkBEcdE//nbAQaUi0ix+c8f3GhpIVgMWDZHH/MhN2LWyORIyUXHTBuwgMkuqjDoUjpn7UdSi3grHdlnKVl7XX9pyp1EPetoboTTv/OEII4H0mqDSDte73M2mrPgwsS6D2r4KR3hsRuLFYCF/60EA6LD9MBBd8byhkp3R79/IgzGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by BY1PR11MB8053.namprd11.prod.outlook.com (2603:10b6:a03:525::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.17; Mon, 6 Feb
+ 2023 22:18:11 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::ee6a:b9b2:6f37:86a1]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::ee6a:b9b2:6f37:86a1%8]) with mapi id 15.20.6064.034; Mon, 6 Feb 2023
+ 22:18:11 +0000
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "Thomas, Ramesh" <ramesh.thomas@intel.com>
+Subject: RE: Using cgroup membership for resource access control?
+Thread-Topic: Using cgroup membership for resource access control?
+Thread-Index: AQHZOnPnbooDlMFe40SoGw64NHt7aa7Cc06AgAADK8A=
+Date:   Mon, 6 Feb 2023 22:18:11 +0000
+Message-ID: <SJ1PR11MB6083C61BCA70A31F8C0F12ECFCDA9@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <Y+FvQbfTdcTe9GVu@agluck-desk3.sc.intel.com>
+ <Y+F0NA9iI0zlONz7@slm.duckdns.org> <Y+F0mXS9z0flDhf7@slm.duckdns.org>
+In-Reply-To: <Y+F0mXS9z0flDhf7@slm.duckdns.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|BY1PR11MB8053:EE_
+x-ms-office365-filtering-correlation-id: 8eb8e224-4c54-4e45-0ccb-08db08900890
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QGV9N7zN5DfrQ4AiG9FcjWSUDegPQwASY/LqEvg6N09D4r5Z2e2Y9ppmg9toBaspsynecRFk6kYSA28jPSklWl3ALJ1q68vz6nm9H2lmd3iwKKOXHC+nABvs2vhqESbdQ5+3PryUuKu0DbhvDOK0fDCoWkqJwZnDf1uSGuo4eOzP+xd3EI8mgGsrgz1272oZldDgakpdrna5tFBs5rQghRRGseuSfn1KDmu+0NFGBDqmJIJhdmZ67Jrte1CTcMtmvjYIclIOb6Bkno6DprYPUJcAtYGnFvtN0yrdpTYhdtuw5bg8Xql+1BOLsAoGUNsL3zG/SA1320n/VhOJEILlmY22TUkD6p1LwhZLyATlUJR4RzCPi/Tj/ceUzfWknqYNHN4TAgc9tyDLmkd59O+NwTCxW4bViYFOeNQ+JS1uoHHd2+hQXMFgcIWqGFnQFvfRvh6upI/1g5DQgKee/G41aZRW+dua3tr93docoot/O+sP8a1qIZwiH6ZIoYgb9rlEyPSbNZRFwrKJolKVN4FYBb5atr06/kpXn0iACeR/M560lBpxRy5F4G/+PTOfxKmtYYp2/FbfYJTStbdHrdLvqd0pReHlgxlMnvtX+IvxeMd73wr4ZL9jP5Q5ekGJAfqJtASAmC9+gqGl294jdf0/M+QBZfoh70Nq/EMhJyd8Kq1coJcrC3Cf1R5lrpaQukOec+6INpd2ylRCXWij3M1kzQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(136003)(346002)(396003)(366004)(39860400002)(451199018)(41300700001)(83380400001)(54906003)(8676002)(66446008)(6916009)(66946007)(4326008)(66556008)(76116006)(66476007)(64756008)(8936002)(52536014)(82960400001)(7696005)(38070700005)(55016003)(5660300002)(9686003)(316002)(2906002)(478600001)(33656002)(38100700002)(107886003)(26005)(122000001)(71200400001)(186003)(86362001)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aUCW1QWYaw2avXpeSD5ooz/pIDYMu8DOdu3nvcphaXoegxgJjFj1Dul0JG+S?=
+ =?us-ascii?Q?lNkJ8gUs9rnViijyJ2D9S96QZZEOOAHMaIp6kWB31tzULMJFIPvT9piB6p3D?=
+ =?us-ascii?Q?8YRK9oCe0ndZA3jfO68BRnUI9zdjfioWikn9yGMES3ISjD9L2JUMVMe2nz2H?=
+ =?us-ascii?Q?ubIyTnMIimudScYP1mrQUP9yuPkiiTha465f9sTtuTZkXPLacOKiu0HBif7Q?=
+ =?us-ascii?Q?z9dvSHCxI2po3TG+xK1II+CogC/cXHBKMHFg9qhTUlOhJjrIXvp2LnWDmAqJ?=
+ =?us-ascii?Q?wmxBOPd6xsS71WFhCUJVoYeCUCh31ig+7LXC4V74i0QDUvYyFzfg8pm/ru5h?=
+ =?us-ascii?Q?AKP/EWTASzHkczElpBhEkW2PiRF/8G37GD96tN7OQDt3KsV4Y/Oh+v0ngQKo?=
+ =?us-ascii?Q?SzCFGhuRFH7DWMWvOkWGRewOPbQAvSDIisIJw380Ks8rnfy022Tjyyb+cD/K?=
+ =?us-ascii?Q?LiNcpH2u4esLtD/jaoiGz963vEvjz32MrxoCHjKTrDdUzrmZwkVuEkyw8DUe?=
+ =?us-ascii?Q?3s8grAy4VqIFObaJ8gJ/A6SjQpQ+6IHeowjpNhLYe+UgGAPfBLQ5I2/CQ3gG?=
+ =?us-ascii?Q?jPbxxuYa1N7lh9gjvLewtMjlORuFJb2DmS1uNeVqi/JqsUVTSmqu6Ym+xNog?=
+ =?us-ascii?Q?0MPSuOu1BRDVONuQnZv6Xlw9NXiiatsNaqwfcmMN5Q5+IFI5aQ2tYHjYKERI?=
+ =?us-ascii?Q?EoLqPq4X84OLfsR9BHwwtbnxY9sYhd1qDhaq022ZHGvg5jwuEzRqsicUFtbK?=
+ =?us-ascii?Q?ngML25b27hINID4/zDSPXZo/KspiW2ZHWWHcxpR/F76Upilt7rJnh0k7pa5J?=
+ =?us-ascii?Q?QcVefzKa8+sZB0CTt4k8TWbtoK9wJrdsT9tabrOnUgbXMtlQw8Fw54R2UdH/?=
+ =?us-ascii?Q?iBzTmeaghkTJtRjqBZSRJtkP7iQqJnT2TpijXvRpgJCYmnbkAFwrEL6j/BaM?=
+ =?us-ascii?Q?Z0/lU3c0tt+dYbzVkjxVBFcGoef3CMjtKEb9KTLfze/qllL4Fw4EW+17ky6G?=
+ =?us-ascii?Q?aOVW/QWEJ7vhRGtfjDSnMV45Drh7LrLfOBgRgtVb6eBh5JR8q+b2VzWqJQX3?=
+ =?us-ascii?Q?lhy0d7zIUgqZKAaLaRNbA01bbhNFZBV56uLZLb5JGISBew2TN6S5/oQ70YQF?=
+ =?us-ascii?Q?WLypOEUds2p0MTJ9sPGC4BB4Ut5QloBrudGe1NYb4QqmHr1Yz8H5fxrhspyY?=
+ =?us-ascii?Q?ARJFbJC+3qXWUuk1ioBVDWN5hWyZ1MJlQC0EWMwxknBGBVZBz/Uzo5U41g73?=
+ =?us-ascii?Q?zY9mf75m9bQ5a1RZLz8zG779JJjqf6c7EiLfSm265b4mlOiVvzRe3oKeTdDu?=
+ =?us-ascii?Q?QzO7IYWtAeDHIxAlCSHteUsAOVuY2U6jXoctPIvbNGCeAai32QShE21kotBm?=
+ =?us-ascii?Q?ha94elTr/LmAY+c06tr7TxKH+fCAsyhpoVkPWPXYnaJLv2ZTnJ/C2sFj8lyP?=
+ =?us-ascii?Q?yaoTB0pEpST91PWgwbsnaPtRQJhpzVviChZ5Ad5eCXOOo9wpzY2RYQLkNm0S?=
+ =?us-ascii?Q?q/i3fszHthRhqZxaqgJYCdE6i7Lq/n65C94urZZL4stFWrWbhRX5Y5xNoRxH?=
+ =?us-ascii?Q?gqF3P5shT8y9VJdNR1LstzfZhb8UOTQfORNRU/dc?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8eb8e224-4c54-4e45-0ccb-08db08900890
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2023 22:18:11.4715
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eZqf+lQxT1q/syl7ObVZKOzBzJxmx7lW1jhyrm5kAnH8s8RMn50L/ud2zSoe/a6ZJSWyI4/RaEljD10o7UYRqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR11MB8053
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Commit f9a25f776d78 ("cpusets: Rebuild root domain deadline accounting information")
-enabled rebuilding root domain on cpuset and hotplug operations to
-correct deadline accounting.
+Tejun,
 
-Rebuilding root domain is a slow operation and we see 10+ of ms delays
-on suspend-resume because of that (worst case captures 20ms which
-happens often).
+Thanks for the quick response.
 
-Since nothing is expected to change on suspend-resume operation; skip
-rebuilding the root domains to regain the some of the time lost.
+> In case it wasn't clear - use the misc controller to restrict which cgrou=
+ps
+> can get how many but as for sharing domain, use more traditional mechanis=
+ms
+> whether that's sharing through cloning, fd passing, shared path with perm
+> checks or whatever.
 
-Achieve this by refactoring the code to pass whether dl accoutning needs
-an update to rebuild_sched_domains(). And while at it, rename
-rebuild_root_domains() to update_dl_rd_accounting() which I believe is
-a more representative name since we are not really rebuilding the root
-domains, but rather updating dl accounting at the root domain.
+That's always an option. But feels like a lot of complexity during setup th=
+at
+I'd like to explore ways to avoid.
 
-Some users of rebuild_sched_domains() will skip dl accounting update
-now:
+Some extra details of a workload that will use these shared virtual windows=
+.
 
-	* Update sched domains when relaxing the domain level in cpuset
-	  which only impacts searching level in load balance
-	* update sched domains when cpufreq governor changes and we need
-	  to create the perf domains
+Imagine some AI training application with one process running per core on
+a server with a hundred or so cores. Each of these processes wants periodic=
+ally
+to share work so far on a subset of the problem with one or more other proc=
+esses.
+The "virtual windows" allow an accelerator device to copy data between a re=
+gion
+in the source process (the owner of the virtual window) and another process=
+ that
+needs to access/supply updates.
 
-Users in arch/x86 and arch/s390 are left with the old behavior.
+Process tree is easy if the test is just "do these two tasks have the same =
+getppid()?"
+Seems harder if the process tree is more complex and I want "Are these two =
+processes
+both descended from a particular common ancestor?"
 
-Debugged-by: Rick Yiu <rickyiu@google.com>
-Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
----
+Using fd passing would involve an O(N^2) step where each process talks to e=
+ach
+other process in turn to complete a link in the mesh of connections. This w=
+ould need
+to be repeated if additional processes are started.
 
-Changes in v3:
+It would be much nicer to have an operation that matches what the applicati=
+ons
+want to do, namely "I want to broadcast-share this with all my peers".
 
-	* Change the logic to avoid using cpuhp_tasks_frozen which can be racy
-	  and have dependency on context
-	* Refactor the code to pass whether dl accounting needs to be updated
-	  down the call chain
-	* Teach cpuset_force_rebuild() to take a reason argument and convert
-	  the variable into int
-	* Rename rebuild_root_domains() into update_dl_rd_accounting() as
-	  that's what I believe it's only doing
+[N.B. I've suggested that these folks should just re-write their applicatio=
+ns to
+simply attach to a giant blob of shared memory, and thus avoid all of this.=
+ But
+that doesn't fit for various reasons]
 
-v2 discussion: https://lore.kernel.org/lkml/20230120194822.962958-1-qyousef@layalina.io/
-v1 discussion: https://lore.kernel.org/lkml/20221216233501.gh6m75e7s66dmjgo@airbuntu/
-
- arch/s390/kernel/topology.c  |  2 +-
- arch/x86/kernel/itmt.c       |  6 ++---
- drivers/base/arch_topology.c |  2 +-
- include/linux/cpuset.h       | 12 ++++++----
- kernel/cgroup/cpuset.c       | 43 ++++++++++++++++++++----------------
- kernel/sched/core.c          |  2 +-
- kernel/sched/topology.c      |  2 +-
- 7 files changed, 39 insertions(+), 30 deletions(-)
-
-diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-index c6eecd4a5302..29d57154a3f1 100644
---- a/arch/s390/kernel/topology.c
-+++ b/arch/s390/kernel/topology.c
-@@ -333,7 +333,7 @@ int arch_update_cpu_topology(void)
- 
- static void topology_work_fn(struct work_struct *work)
- {
--	rebuild_sched_domains();
-+	rebuild_sched_domains(true);
- }
- 
- void topology_schedule_update(void)
-diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
-index 9ff480e94511..6f1446223697 100644
---- a/arch/x86/kernel/itmt.c
-+++ b/arch/x86/kernel/itmt.c
-@@ -56,7 +56,7 @@ static int sched_itmt_update_handler(struct ctl_table *table, int write,
- 
- 	if (!ret && write && old_sysctl != sysctl_sched_itmt_enabled) {
- 		x86_topology_update = true;
--		rebuild_sched_domains();
-+		rebuild_sched_domains(true);
- 	}
- 
- 	mutex_unlock(&itmt_update_mutex);
-@@ -125,7 +125,7 @@ int sched_set_itmt_support(void)
- 	sysctl_sched_itmt_enabled = 1;
- 
- 	x86_topology_update = true;
--	rebuild_sched_domains();
-+	rebuild_sched_domains(true);
- 
- 	mutex_unlock(&itmt_update_mutex);
- 
-@@ -161,7 +161,7 @@ void sched_clear_itmt_support(void)
- 		/* disable sched_itmt if we are no longer ITMT capable */
- 		sysctl_sched_itmt_enabled = 0;
- 		x86_topology_update = true;
--		rebuild_sched_domains();
-+		rebuild_sched_domains(true);
- 	}
- 
- 	mutex_unlock(&itmt_update_mutex);
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index e7d6e6657ffa..90d8a42335e6 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -253,7 +253,7 @@ int topology_update_cpu_topology(void)
- static void update_topology_flags_workfn(struct work_struct *work)
- {
- 	update_topology = 1;
--	rebuild_sched_domains();
-+	rebuild_sched_domains(true);
- 	pr_debug("sched_domain hierarchy rebuilt, flags updated\n");
- 	update_topology = 0;
- }
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index d58e0476ee8e..e30d4cd35ef7 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -18,6 +18,10 @@
- #include <linux/mmu_context.h>
- #include <linux/jump_label.h>
- 
-+#define CPUSET_FORCE_REBUILD_RESET		0
-+#define CPUSET_FORCE_REBUILD_SUSPEND_RESUME	1
-+#define CPUSET_FORCE_REBUILD_PRS_ERROR		2
-+
- #ifdef CONFIG_CPUSETS
- 
- /*
-@@ -68,7 +72,7 @@ static inline bool cpusets_insane_config(void)
- 
- extern int cpuset_init(void);
- extern void cpuset_init_smp(void);
--extern void cpuset_force_rebuild(void);
-+extern void cpuset_force_rebuild(int reason);
- extern void cpuset_update_active_cpus(void);
- extern void cpuset_wait_for_hotplug(void);
- extern void cpuset_read_lock(void);
-@@ -132,7 +136,7 @@ static inline int cpuset_do_slab_mem_spread(void)
- 
- extern bool current_cpuset_is_being_rebound(void);
- 
--extern void rebuild_sched_domains(void);
-+extern void rebuild_sched_domains(bool update_dl_accounting);
- 
- extern void cpuset_print_current_mems_allowed(void);
- 
-@@ -187,7 +191,7 @@ static inline bool cpusets_insane_config(void) { return false; }
- static inline int cpuset_init(void) { return 0; }
- static inline void cpuset_init_smp(void) {}
- 
--static inline void cpuset_force_rebuild(void) { }
-+static inline void cpuset_force_rebuild(int reason) { }
- 
- static inline void cpuset_update_active_cpus(void)
- {
-@@ -276,7 +280,7 @@ static inline bool current_cpuset_is_being_rebound(void)
- 	return false;
- }
- 
--static inline void rebuild_sched_domains(void)
-+static inline void rebuild_sched_domains(bool update_dl_accounting)
- {
- 	partition_sched_domains(1, NULL, NULL);
- }
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index a29c0b13706b..e5ddc8e11e5d 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1079,7 +1079,7 @@ static void update_tasks_root_domain(struct cpuset *cs)
- 	css_task_iter_end(&it);
- }
- 
--static void rebuild_root_domains(void)
-+static void update_dl_rd_accounting(void)
- {
- 	struct cpuset *cs = NULL;
- 	struct cgroup_subsys_state *pos_css;
-@@ -1117,11 +1117,13 @@ static void rebuild_root_domains(void)
- 
- static void
- partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
--				    struct sched_domain_attr *dattr_new)
-+				    struct sched_domain_attr *dattr_new,
-+				    bool update_dl_accounting)
- {
- 	mutex_lock(&sched_domains_mutex);
- 	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
--	rebuild_root_domains();
-+	if (update_dl_accounting)
-+		update_dl_rd_accounting();
- 	mutex_unlock(&sched_domains_mutex);
- }
- 
-@@ -1136,7 +1138,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
-  *
-  * Call with cpuset_rwsem held.  Takes cpus_read_lock().
-  */
--static void rebuild_sched_domains_locked(void)
-+static void rebuild_sched_domains_locked(bool update_dl_accounting)
- {
- 	struct cgroup_subsys_state *pos_css;
- 	struct sched_domain_attr *attr;
-@@ -1185,19 +1187,19 @@ static void rebuild_sched_domains_locked(void)
- 	ndoms = generate_sched_domains(&doms, &attr);
- 
- 	/* Have scheduler rebuild the domains */
--	partition_and_rebuild_sched_domains(ndoms, doms, attr);
-+	partition_and_rebuild_sched_domains(ndoms, doms, attr, update_dl_accounting);
- }
- #else /* !CONFIG_SMP */
--static void rebuild_sched_domains_locked(void)
-+static void rebuild_sched_domains_locked(bool update_dl_accounting)
- {
- }
- #endif /* CONFIG_SMP */
- 
--void rebuild_sched_domains(void)
-+void rebuild_sched_domains(bool update_dl_accounting)
- {
- 	cpus_read_lock();
- 	percpu_down_write(&cpuset_rwsem);
--	rebuild_sched_domains_locked();
-+	rebuild_sched_domains_locked(update_dl_accounting);
- 	percpu_up_write(&cpuset_rwsem);
- 	cpus_read_unlock();
- }
-@@ -1681,7 +1683,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
- 	rcu_read_unlock();
- 
- 	if (need_rebuild_sched_domains)
--		rebuild_sched_domains_locked();
-+		rebuild_sched_domains_locked(true);
- }
- 
- /**
-@@ -2136,7 +2138,7 @@ static int update_relax_domain_level(struct cpuset *cs, s64 val)
- 		cs->relax_domain_level = val;
- 		if (!cpumask_empty(cs->cpus_allowed) &&
- 		    is_sched_load_balance(cs))
--			rebuild_sched_domains_locked();
-+			rebuild_sched_domains_locked(false);
- 	}
- 
- 	return 0;
-@@ -2202,7 +2204,7 @@ static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
- 	spin_unlock_irq(&callback_lock);
- 
- 	if (!cpumask_empty(trialcs->cpus_allowed) && balance_flag_changed)
--		rebuild_sched_domains_locked();
-+		rebuild_sched_domains_locked(true);
- 
- 	if (spread_flag_changed)
- 		update_tasks_flags(cs);
-@@ -2315,7 +2317,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 		update_sibling_cpumasks(parent, cs, &tmpmask);
- 
- 	if (!sched_domain_rebuilt)
--		rebuild_sched_domains_locked();
-+		rebuild_sched_domains_locked(true);
- out:
- 	/*
- 	 * Make partition invalid if an error happen
-@@ -3389,11 +3391,11 @@ hotplug_update_tasks(struct cpuset *cs,
- 		update_tasks_nodemask(cs);
- }
- 
--static bool force_rebuild;
-+static int force_rebuild;
- 
--void cpuset_force_rebuild(void)
-+void cpuset_force_rebuild(int reason)
- {
--	force_rebuild = true;
-+	force_rebuild = reason;
- }
- 
- /**
-@@ -3489,7 +3491,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 				WRITE_ONCE(cs->prs_err, PERR_HOTPLUG);
- 			notify_partition_change(cs, old_prs);
- 		}
--		cpuset_force_rebuild();
-+		cpuset_force_rebuild(CPUSET_FORCE_REBUILD_PRS_ERROR);
- 	}
- 
- 	/*
-@@ -3499,7 +3501,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	else if (is_partition_valid(parent) && is_partition_invalid(cs)) {
- 		update_parent_subparts_cpumask(cs, partcmd_update, NULL, tmp);
- 		if (is_partition_valid(cs))
--			cpuset_force_rebuild();
-+			cpuset_force_rebuild(CPUSET_FORCE_REBUILD_PRS_ERROR);
- 	}
- 
- update_tasks:
-@@ -3626,8 +3628,11 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
- 
- 	/* rebuild sched domains if cpus_allowed has changed */
- 	if (cpus_updated || force_rebuild) {
--		force_rebuild = false;
--		rebuild_sched_domains();
-+		bool update_dl_accounting = cpus_updated ||
-+				force_rebuild == CPUSET_FORCE_REBUILD_PRS_ERROR;
-+
-+		force_rebuild = CPUSET_FORCE_REBUILD_RESET;
-+		rebuild_sched_domains(update_dl_accounting);
- 	}
- 
- 	free_cpumasks(NULL, ptmp);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4580fe3e1d0c..d68eac04c851 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9485,7 +9485,7 @@ static void cpuset_cpu_active(void)
- 		 * restore the original sched domains by considering the
- 		 * cpuset configurations.
- 		 */
--		cpuset_force_rebuild();
-+		cpuset_force_rebuild(CPUSET_FORCE_REBUILD_SUSPEND_RESUME);
- 	}
- 	cpuset_update_active_cpus();
- }
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d93c3379e901..bf33b84c511a 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -214,7 +214,7 @@ void rebuild_sched_domains_energy(void)
- {
- 	mutex_lock(&sched_energy_mutex);
- 	sched_energy_update = true;
--	rebuild_sched_domains();
-+	rebuild_sched_domains(false);
- 	sched_energy_update = false;
- 	mutex_unlock(&sched_energy_mutex);
- }
--- 
-2.25.1
-
+-Tony
