@@ -2,44 +2,44 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7D168B6CC
-	for <lists+cgroups@lfdr.de>; Mon,  6 Feb 2023 08:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E39D68B6CE
+	for <lists+cgroups@lfdr.de>; Mon,  6 Feb 2023 08:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjBFHuz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Feb 2023 02:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
+        id S229997AbjBFHu6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Feb 2023 02:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjBFHup (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 02:50:45 -0500
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2083.outbound.protection.outlook.com [40.107.95.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97D11D917;
-        Sun,  5 Feb 2023 23:50:26 -0800 (PST)
+        with ESMTP id S230006AbjBFHuv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 02:50:51 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2054.outbound.protection.outlook.com [40.107.223.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC921D90C;
+        Sun,  5 Feb 2023 23:50:28 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tto6HDLH7veTHgG9SgcxScWU8/ZVYhlCZNpKm0CL8b/NkVFJ7mxrz2j2ozWxv8bhr5B2K6LM7xOgWRgWNgE83eRhzhAwY+TCPDrzbUVLSEAKcZuvxj7+muE8+6a73MJ5f72vKTmzAXnYDfX4Gm7ui0L3mC5QXX/WSpF1xjRqmNU5GG9pLeQU8eZIaiWWgtfjRGfnzpSD/oOe4Ou8wQ3cDlJT0xyb1I/0MWEMRK7WsD82+ClKnPP4EzxVuUoE1pq2m/4oA/4G+DX+3LifWs8opySTBxkUGgc97DVN2yKb0mi8D6OQubT2YkjKL6lBhGVbkZ+9jsKE2YgwKQFtcx9cUw==
+ b=N9bc9Rni+JvKnGuBzzNjA3HFQdH8BUD73poGipHQPVvXZk8lqhD5m5xluB82xR1ZYPlLFMMcA/XJIRBbC8IXGIDSKNVea+O+Fzii0g30tNJ3O2S4AmzxOEqW3D2Qvuon+MQVlLn7GyTXVSEfFbYsTHlDJuK1Hh6wJkvfzT3p562S43cw8vxf8oasBS4ixhxYXtmK59OEPclkXB8Mi/sY/ZofOuTGX3w5Obb8kh8yf7/SzYGIcxkB4vPovi+3a7nO8oyAqS6w8L7ZCB9708bLY1RCvTO+b/TwDEY7p5mrK76AkDmB4Tv6uTExcL3gYbtjyaIsaeoD4aj9Gzx8TKXt3g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r9iLlWenkXS+qWZNyDxmBNuM9bHSYN74X2PJc4f6L4s=;
- b=US4drmNjS2dMnPKb1UZzmNp7bdWqcuZGJy7ui+bE9RCN2vl9KjlZKq5PzGdzZyPUgw0iX3XjFKFryyzCxHuevZUltMSWyAxyyYctKsi3v91ftLDg5euJbgsQjdVhtf+O87qMSe+qq2Fd2ebTjg7bq6/eBKfAzLpcepPFcNU41TnF8SNc7MjeEqKleRSHxH3/+u4LH/7ixlp4gIvuiSu3Dt4oEyxv2xX54c0zAXpk5was2XHvWeY+05DxeH+5Jmg0OIs7ziHxKAypoD02DJTAwnBOD26i4hejAGPSWGSisg5OFIZBqoWFVrISLlFSUTZnHAkZXMEYxuJQK47fbWwudQ==
+ bh=CYW4u4ayE2LZHX01iQfnpEcejDU0yOEhVudNlOUAn3Q=;
+ b=KxpDdjzItMs7oMHnWxbFIbAiMDe//rfEgzw8Xx4uyE41tMhzwhGMc9WU4LSAvslw0x8f0uk0OFbxX2nv/Sw06BUWw1caobMo/yoVYiRhlH6HGYkzUwLy8g/qM6N5PcvasVmOrSp9ZPccZ9o0vI2mOxly+cvdsvq7uhA5PVZKkIEYzof55ofQxwt412MqxWjBKo3LnWmWsKK+phwGkyLhLdO9KT0UEjmGBGS0Rms7C+fURopd0z3Yi/4TjAmsWJX87X2CdWD8XUJJMxH0EkLPHeqOpe7bwIx5mfbz2gf0xZD1Pr8FLFxprpMCRBMBvIRkxVLTCKLm5rlGTgs8jbSMtg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r9iLlWenkXS+qWZNyDxmBNuM9bHSYN74X2PJc4f6L4s=;
- b=Gf8LWJbGXqVUQFIga30K7D5qcFdSDCuAnHvDMezj8AWMzPHRlHJmHv/EgBw3+Pek+2ot4lkY6DzrLks7zPkBQc0mKU7N/HXV7xHUHNFXe/FjnT4ImGnQ26NfbptOrwfbPeylxKJquBK2fUlZUBJFgqjueq6jhj9Ndn42XPKFEL2403dAn3q+H8JGNR3Rc+nAG+Y5bOrcbt7BXB7TdIJhzQDUiESy9IEcx2aKaP9ZQGlk6F2V1Bdp1RfcVhmntk2GLmBchLbVhbgS63AFirVVKjYGHbKotlZw1pKWYxqYi/KkYXUd4gYpnPeE0n5GIN+7ze1yk7KsDLIBPsE4ccatcw==
+ bh=CYW4u4ayE2LZHX01iQfnpEcejDU0yOEhVudNlOUAn3Q=;
+ b=LCGOkAUcbw0vOxMEIqkDhbrUyi+Q/QrFLfm8WDWZwttEqb6SGC6ytVojDYGQ3W8mMwzlLiMgJMgSnx7+zNvr2LQEVYWRea3af/eSAGZaYBm8XzYgewKMCKiq4zxplUG3zXxw671Q60xeqaEtCiKb8tpwKOhM5UdGv6OXJ9hczT+M3xm4a21xSkGcU8nGENwG9zuRr0h/SAFp2kCyXV9veXiWao7bXHNqUZXFR9Wzh29VahK6lyIG+GmV2adHPhQQ+mei1crxC3ZXczm/kChnd/igJYJxz3yWKrpKcjzz4EPYAw9JvWxNelIov5X8e2T6DgBJVaiRUgFG7UANPuk7dw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by DM4PR12MB5118.namprd12.prod.outlook.com (2603:10b6:5:391::12) with
+ by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.31; Mon, 6 Feb
- 2023 07:49:14 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.32; Mon, 6 Feb
+ 2023 07:49:21 +0000
 Received: from BYAPR12MB3176.namprd12.prod.outlook.com
  ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
  ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6064.032; Mon, 6 Feb 2023
- 07:49:14 +0000
+ 07:49:20 +0000
 From:   Alistair Popple <apopple@nvidia.com>
 To:     linux-mm@kvack.org, cgroups@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
@@ -47,69 +47,67 @@ Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
         mkoutny@suse.com, daniel@ffwll.ch,
         "Daniel P . Berrange" <berrange@redhat.com>,
         Alex Williamson <alex.williamson@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Subject: [PATCH 09/19] io_uring: convert to use vm_account
-Date:   Mon,  6 Feb 2023 18:47:46 +1100
-Message-Id: <44e6ead48bc53789191b22b0e140aeb82459e75f.1675669136.git-series.apopple@nvidia.com>
+        Alistair Popple <apopple@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Subject: [PATCH 10/19] net: skb: Switch to using vm_account
+Date:   Mon,  6 Feb 2023 18:47:47 +1100
+Message-Id: <60a51160809d14e3e4a1c681cd71e37ab303adb8.1675669136.git-series.apopple@nvidia.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
 References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SYCPR01CA0027.ausprd01.prod.outlook.com
- (2603:10c6:10:e::15) To BYAPR12MB3176.namprd12.prod.outlook.com
+X-ClientProxiedBy: SY5PR01CA0054.ausprd01.prod.outlook.com
+ (2603:10c6:10:1fc::20) To BYAPR12MB3176.namprd12.prod.outlook.com
  (2603:10b6:a03:134::26)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DM4PR12MB5118:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6c72ef4-683f-4fab-e4ad-08db0816a3f1
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DS0PR12MB8573:EE_
+X-MS-Office365-Filtering-Correlation-Id: 691012f9-8863-4506-9d29-08db0816a82e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W9IdeFq7Vrg8CD9yMMSSYTG9kGqws1YS8W2dUbffEu98uQ1Gi2Z3B6t9juAX1RdjSfZyBFpNzopuwa7jw6/x+SrXzlgcGw8isGBU+2pohoLvR01U9OX+Ml94XuHAHlblXkXIDxOJNoR4EMs4dgN1/tU21Ec4rpCw6qItcq1F4oHigpXlANsPg3/5hihtPXhGCr87JDpK6aUE6t27QIB6WMo+DqLVnxgKoRRBnYpkxcHQzMqmTEyfhuQC7Bm62o8mNGBx1I4JK9Gk1KKbPWKn/yXEaQ1VsO/4kH0WyJiWAAed/zs7hMDmKwjPjBfyOxtgmadSUSKsmjZoLjAgX/t/gbyDEEY4fYHP+okBJlHgb8vJ9Yog/ZuBJOBZ0kx/llNFtslu7PYpIpxrEeLjUaP8OmRe+jecSjMb/fhJUp2NVPG9jON6L7+V00IQdalw6NF21h5uc09+CJCtTBl47kGidM3yohwuB59O61B7TXrDZpEjZmuTgFSzA0IVwnZv1nju7x59YaTOW+XOv3mMSdBN2IBdDVFP2/a7B+h1aIyqnd8nSQggTIsEC7KqiStReFR8h+WtvIgOM/CRTzDJ13AsMoqJNt56/eDzxzmLTnTBRbbmaOldDHcWfsbYpBUNy10hjQQ6rVexiYY6IdMcVHdO7w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(39860400002)(366004)(396003)(346002)(136003)(451199018)(66946007)(66476007)(4326008)(41300700001)(8676002)(38100700002)(8936002)(6506007)(6512007)(26005)(316002)(54906003)(7416002)(66556008)(6666004)(5660300002)(478600001)(6486002)(83380400001)(186003)(2616005)(86362001)(36756003)(2906002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: xFfTjdXiD80AhU3nEngcc8g/lI3dcbeLVrSsnPMuN+fKt+EWkUDZSnio4VD5lBMIAuch6KJGUCWhOCGe97jmA4HFkA3G84zc7kOnJNo+4MLzmGCFKWZ58ld4u3ICGWJQz7E1OldMsI+Qkp4M0PUdPdY0XQctSnshwjc4Jh+DUFBvgFH+PybQOVEfBxHsKNJeWXOAK/c+8PqVrdvLNe4fb+rKjQWGawqPelgzvC8OcK88/6ZHU/RuMY5A6sb0Y3NTIxR2BENvqGg45YO4MyJgUR5pM5KB2DjSMMGNEh9GkBigxsWeRB/bequ4IIQx/LqXDxn33Oep8MGwlayGJKUN6I2Y+XmHh4tav/jy5WHFLO6H9ONAUem8VosBR63H1yAAZ/gTM+l8YEWVGnkMEN5xFaSklhZuzCwvGCE1hX1xBFWKBTMSWT8xhEji+40hdE7deebHd8hIAx9UGKslTsLOD/ropcmE6fU1gTdHIdjP54TH+bzIs+HNp29TlV+IUKyDgyjs1sld85lCV7/oy9AGHl1i651Vv2m0r3khm+xBwtzUCkLTG+sSEu/7vsvRSDbThcqMQTxrKkNw7uF//O+sdboeot1AKmC2gDR2aGH8JIw0TBdRKPXyoyfU+LbDFM5QjfCZPMny+mzgBEOiEUg7xw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(396003)(136003)(39860400002)(366004)(346002)(451199018)(54906003)(316002)(86362001)(6666004)(6486002)(38100700002)(186003)(2616005)(6506007)(26005)(478600001)(6512007)(7416002)(5660300002)(83380400001)(2906002)(36756003)(66946007)(8936002)(4326008)(41300700001)(66476007)(8676002)(66556008);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sJB/lu8SsYSUOQ3U33wUhkBHtA5BcV+QZ1uLtPiwnJiVJHTZQVsIF6mIvext?=
- =?us-ascii?Q?THE/AK9JGcVBH01l9E0igxUfiaJ1F9CooEZA/oxVGED5x7I2uI+w3gvHdaE0?=
- =?us-ascii?Q?J5CPvKJ49e5AmIXuMJucfkCzoemYHXKJ7YtogPikDfMAVySwYs+4Iuwp8Eun?=
- =?us-ascii?Q?OGxhScOVZgz98aToCyeANKipNjLexBg8RoAOjIs6IU93uLI8r3G1lkIx+SS1?=
- =?us-ascii?Q?A6wUOS5pC+1quwX0EtcS0lE2CoeRV1RWNAz2+Higf8Co3Y904daEpX9B9oaV?=
- =?us-ascii?Q?ua0T0HBASCZzamhLEmCuTR+wRbk080IjRkeaAsGUU//Rmf5LMZTOW+lBsVYu?=
- =?us-ascii?Q?RAd5KEtYxmdSDfftbu7zwId76wzC3wszaXdBDUjqvWJys46gJGIl23LWR150?=
- =?us-ascii?Q?HD+WLtpd4iStikgsKl3sUBIlkgONau7dvNbiCbyUwDYLSrv+aOSy9HTSMVbh?=
- =?us-ascii?Q?QyKnbW0fA45JwuBZB+G8wiVtFlwJ4K6mIk06mvAfq3HEHYKhQXdu66gBEkYC?=
- =?us-ascii?Q?UueVVcwv/daULbcZOSYE3di9UCclnhpf3az3qXX1bYD/tblPtltnz1NIZSza?=
- =?us-ascii?Q?9qStOUhEKyb88Mb0iqFT0+cROULMRDc1X8B5Lt7LqTs12CPYWGNHk4gmuAn+?=
- =?us-ascii?Q?DdQdKS+IwZIC5ZhoTM/NDmpTmi/0+ghuIcUqjkFB4v4o2c8tKExlbnce3caW?=
- =?us-ascii?Q?Ilwxmz0MmPKs2p9Bkucyx0tYJPUmjjeJRMdixdYybMrtITDR8amSkmpAWLq+?=
- =?us-ascii?Q?8+VG82Rn4Xxd6LzZ++Zq8vtiaF1ZHxbuFuHfJD9QbEOsQhiWQNwkdoMai3g5?=
- =?us-ascii?Q?uxcEQl/pyYmzSR6/05IwgIZWbL7RP+H/sWzqFftzBefkZKgM9znPhU/rlp9n?=
- =?us-ascii?Q?J+Jjk2zwgqrFBJRYPB7VQnZGELtveM4YZQGe365Gtd9nLLszNWXudTzPKkjM?=
- =?us-ascii?Q?FzVt6p01+YafFolfyynU1Y3z4oAy9eQv+T7cHb/izOxsG3B6ygKHxooP0OGl?=
- =?us-ascii?Q?GPQssUGVIrlPZ7434g7rpOn6/RubZoQdbP61QRc6P1mmMNMgEvRTj72nidTC?=
- =?us-ascii?Q?yES9CyHkEmhd3m3p5h+5MHHZOBNIdTnynbBpY0upXHOf36MLhbdiAe2k9k/3?=
- =?us-ascii?Q?J+NPSm+UfEaRWERCFs3fSkivY2l4YfjAMSYzexKbpGlNMv7aPhJOWtZe6uFN?=
- =?us-ascii?Q?Y+X0ktTB5RPrx+h40MjrF+S++7HzmkNoY76YxITq2J+yI5HOkx5Pg7gRjCSY?=
- =?us-ascii?Q?X0Vq6UOt+1FTHwg2A7XDBR70/zplgj7nS5aPZHxBoXsZM2soI4plGyNgJox4?=
- =?us-ascii?Q?Yd34JGVDmsfZrc/YLVl8RthC+o/kkLPGl0TPCK4WfGKY64Dd06GewbV/UGwZ?=
- =?us-ascii?Q?KHN+hopKXw07i7KXiNyI7xDy4OhkvU/02Ga2kPahSq9pBIo5lCIlDMD24I3D?=
- =?us-ascii?Q?Hg+ahuAdDGC+B80zYArW1qUR87+23ccG8j7yR/Rl1qBzr92LBFjYneJMdBYJ?=
- =?us-ascii?Q?fpKf9wu2UJYBkHLgLp7/Tgbf7tE8QHf1ExoR3vPzs8QC5QhhK+sHiycjFIpk?=
- =?us-ascii?Q?ctXOxQaJ/SoK4GIRqPrkoA+G1VXwuXoQC509DCGh?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HfySn4qGwrHdAGcR9NI3HHGKHYCbb8+FZraSoTtJ41bryVQNnyttKxXVHU+3?=
+ =?us-ascii?Q?2ojDted1A2fFyVPNEGqoAhxdnAB+J0ZjKD2qn042Bt60Mg4QqsxbSQLaEcj2?=
+ =?us-ascii?Q?LoNbEJHvpvOzCXiuNZ17/vUQQkoudgNqoypgvnHU7Jfm+ZKm5YfU7xmaCTkH?=
+ =?us-ascii?Q?elHzSnHYcJ/3n2x0SySAStQrusifTU3GZ0mxsYgyCaPn4CDQI/hvZligYWwo?=
+ =?us-ascii?Q?hJexh0AjvZ8u/VAOjKburqaoZclhK+QoC/FdYHk9ApNob4C5RPJz21mx/r12?=
+ =?us-ascii?Q?JAd7dwc+Ks1QWECAcGxnNSASPbO4JsKFD9ZFwHBOddRWq6FZliqGkqoUYPHU?=
+ =?us-ascii?Q?lDNJDrAzr5S/8H0JNp4RuHp4e3plu+7dH5+yAUAIKkiMdyyM1n7f2cDi/iLf?=
+ =?us-ascii?Q?+1sTFu/g+71qZ2aWBRFZQFZNlLXqfplApfT/QwF3FzLcKKtMeuflej8h/Pm2?=
+ =?us-ascii?Q?wIkMXLFhwbcu/Vj4CeL9wFfUcVmu9JtnnbWI9JkYNglMvP403q+JB8AFkMPp?=
+ =?us-ascii?Q?Tjb+YP6Z4c05x1B0fSdz+JvPGIm8kDHfXCbuRqZBdcPQm7joEcghy8YWUbHV?=
+ =?us-ascii?Q?A5kHCi+Zhf5l6OJC3J4InvaGpoAHbboDmvMBgxt2Unz8Tqkzbv4FjWDm2qAa?=
+ =?us-ascii?Q?jyAM0atSvgpx5nI9Lqv8RI0gsdqyJIVe9Gp290GXZasucrYdOQgEb3WikjEw?=
+ =?us-ascii?Q?S+4r2OhyT3L5lU592zbk+kf3H7J1rpojfwZC78FBtDo2kmkVkS8ZgguQBgpY?=
+ =?us-ascii?Q?Y0JYTheuAGeO+knzPQBHdHR04gDI+bKsKBaTixeUh7+6D3cdgtxxO0mbZQMP?=
+ =?us-ascii?Q?HMpAqXHcNjNYcXk0rFlABhDJ20rD/YSdQ0IPAc7C5iKr9LuLKrKAoKXBNBda?=
+ =?us-ascii?Q?a/Z1FgC7PHpWPvCRnd2FudRBU/tAKN768c8Sx9D2+9fLTJukfahYnq0w8kbq?=
+ =?us-ascii?Q?wzBAqMIfkNyTMOD+qad00i1nK+FXXa+ZgendkomXTAaVnDVb5NIT3TiA59U6?=
+ =?us-ascii?Q?nAFGCtmZeiECIHXVwrz53higNp3ExZo/LD91upJyyru3h5il3StfoSfL9Uf3?=
+ =?us-ascii?Q?QbWoMVoMvcK/WvQu93nymozXUrh5Y87oenl1sxFO5JpYGZ4eao2yzaC9lCR3?=
+ =?us-ascii?Q?hbaVtwi9EZ6WVvPcE6mkLC/E4xQ8tdTtYKOOnG0feJwuV8FfmWyl/ztSBy/t?=
+ =?us-ascii?Q?nOZS0+6Nk2guzAswhZyzCKZKu6rp3/msB3GCceYnlKuxUODxmzf5yyABMDNJ?=
+ =?us-ascii?Q?OF6Jsh8fM7d8n7Mo9dWcoyC3dvIatLEYziKUN0oI+7cHcYOPHCPwVdR4Gctl?=
+ =?us-ascii?Q?QGQ0XA4Jd4JMInxFGRTXH8gWeo3U1Is8HWkniMwMLTyfVDp/B4puew5UKe5N?=
+ =?us-ascii?Q?AgDa4GIoBJHM5mdm8RpoAlnepw3lENFQQpVUCe/92S7MJdj9nkZ/g86a3Ybi?=
+ =?us-ascii?Q?VXbzZl1wyioWtBBOHSolbOEpgAs+AOvelqCk+ysmyEeVxY0EuO0hfIYWT1GJ?=
+ =?us-ascii?Q?RVt0JVVT+qsqNlxGU0zCCt3d/3SVqQif1nGZo22fUDjJf6eSLJ5lRvVlteDh?=
+ =?us-ascii?Q?d6q3gmcaPQrKOTvMdfsP55vduCCcBo5M72Zfy1Hb?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6c72ef4-683f-4fab-e4ad-08db0816a3f1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 691012f9-8863-4506-9d29-08db0816a82e
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:49:13.7304
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:49:20.8549
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nCGlYGM5jkLy5MtbClu9G5nINFV9C9n+5uWcbYP52urB5fWT5ZaxjYfStseduUlIEppg6KcFL2431p/aXlfS9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5118
+X-MS-Exchange-CrossTenant-UserPrincipalName: dpb1f26IarNDW8rGdBUOwWkregUlG126Mwd8oOA6dUNXCiRaJC2iJ1ljjSQMDKqz02PWIBAGu0RngiLg8yUHaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -120,205 +118,220 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Convert io_uring to use vm_account instead of directly charging pages
-against the user/mm. Rather than charge pages to both user->locked_vm
-and mm->pinned_vm this will only charge pages to user->locked_vm.
+Switch to using vm_account to charge pinned pages. This will allow a
+future change to charge the pinned pages to a cgroup to limit the
+overall number of pinned pages in the system.
 
 Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Pavel Begunkov <asml.silence@gmail.com>
-Cc: io-uring@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: rds-devel@oss.oracle.com
 ---
- include/linux/io_uring_types.h |  4 ++--
- io_uring/io_uring.c            | 20 +++---------------
- io_uring/notif.c               |  4 ++--
- io_uring/notif.h               | 10 +++------
- io_uring/rsrc.c                | 38 +++--------------------------------
- io_uring/rsrc.h                |  9 +--------
- 6 files changed, 17 insertions(+), 68 deletions(-)
+ include/linux/skbuff.h |  7 +++---
+ include/net/sock.h     |  3 +++-
+ net/core/skbuff.c      | 47 +++++++++++++++----------------------------
+ net/rds/message.c      | 10 ++++++---
+ 4 files changed, 31 insertions(+), 36 deletions(-)
 
-diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
-index 128a67a..45ac75d 100644
---- a/include/linux/io_uring_types.h
-+++ b/include/linux/io_uring_types.h
-@@ -5,6 +5,7 @@
- #include <linux/task_work.h>
- #include <linux/bitmap.h>
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 4c84924..14f29a0 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -37,6 +37,7 @@
+ #include <linux/in6.h>
+ #include <linux/if_packet.h>
  #include <linux/llist.h>
 +#include <linux/vm_account.h>
- #include <uapi/linux/io_uring.h>
+ #include <net/flow.h>
+ #include <net/page_pool.h>
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+@@ -554,7 +555,6 @@ struct ubuf_info_msgzc {
+ 	};
  
- struct io_wq_work_node {
-@@ -343,8 +344,7 @@ struct io_ring_ctx {
- 	struct io_wq_hash		*hash_map;
+ 	struct mmpin {
+-		struct user_struct *user;
+ 		unsigned int num_pg;
+ 	} mmp;
+ };
+@@ -563,8 +563,9 @@ struct ubuf_info_msgzc {
+ #define uarg_to_msgzc(ubuf_ptr)	container_of((ubuf_ptr), struct ubuf_info_msgzc, \
+ 					     ubuf)
  
- 	/* Only used for accounting purposes */
--	struct user_struct		*user;
--	struct mm_struct		*mm_account;
-+	struct vm_account               vm_account;
+-int mm_account_pinned_pages(struct mmpin *mmp, size_t size);
+-void mm_unaccount_pinned_pages(struct mmpin *mmp);
++int mm_account_pinned_pages(struct vm_account *vm_account, struct mmpin *mmp,
++			size_t size);
++void mm_unaccount_pinned_pages(struct vm_account *vm_account, struct mmpin *mmp);
  
- 	/* ctx exit and cancelation */
- 	struct llist_head		fallback_llist;
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 0a4efad..912da4f 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -2744,15 +2744,11 @@ static __cold void io_ring_ctx_free(struct io_ring_ctx *ctx)
+ /* This data is invariant across clones and lives at
+  * the end of the header data, ie. at skb->end.
+diff --git a/include/net/sock.h b/include/net/sock.h
+index dcd72e6..0e756d3 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -63,6 +63,7 @@
+ #include <linux/atomic.h>
+ #include <linux/refcount.h>
+ #include <linux/llist.h>
++#include <linux/vm_account.h>
+ #include <net/dst.h>
+ #include <net/checksum.h>
+ #include <net/tcp_states.h>
+@@ -334,6 +335,7 @@ struct sk_filter;
+   *	@sk_security: used by security modules
+   *	@sk_mark: generic packet mark
+   *	@sk_cgrp_data: cgroup data for this cgroup
++  *	@sk_vm_account: data for pinned memory accounting
+   *	@sk_memcg: this socket's memory cgroup association
+   *	@sk_write_pending: a write to stream socket waits to start
+   *	@sk_state_change: callback to indicate change in the state of the sock
+@@ -523,6 +525,7 @@ struct sock {
+ 	void			*sk_security;
  #endif
- 	WARN_ON_ONCE(!list_empty(&ctx->ltimeout_list));
+ 	struct sock_cgroup_data	sk_cgrp_data;
++	struct vm_account       sk_vm_account;
+ 	struct mem_cgroup	*sk_memcg;
+ 	void			(*sk_state_change)(struct sock *sk);
+ 	void			(*sk_data_ready)(struct sock *sk);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 4a0eb55..bed3fc9 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1309,42 +1309,25 @@ struct sk_buff *skb_morph(struct sk_buff *dst, struct sk_buff *src)
+ }
+ EXPORT_SYMBOL_GPL(skb_morph);
  
--	if (ctx->mm_account) {
--		mmdrop(ctx->mm_account);
--		ctx->mm_account = NULL;
--	}
-+	vm_account_release(&ctx->vm_account);
- 	io_mem_free(ctx->rings);
- 	io_mem_free(ctx->sq_sqes);
- 
- 	percpu_ref_exit(&ctx->refs);
--	free_uid(ctx->user);
- 	io_req_caches_free(ctx);
- 	if (ctx->hash_map)
- 		io_wq_put_hash(ctx->hash_map);
-@@ -3585,8 +3581,9 @@ static __cold int io_uring_create(unsigned entries, struct io_uring_params *p,
- 		ctx->syscall_iopoll = 1;
- 
- 	ctx->compat = in_compat_syscall();
--	if (!capable(CAP_IPC_LOCK))
--		ctx->user = get_uid(current_user());
-+	vm_account_init(&ctx->vm_account, current, current_user(),
-+			VM_ACCOUNT_USER |
-+			(capable(CAP_IPC_LOCK) ? VM_ACCOUNT_BYPASS : 0));
- 
- 	/*
- 	 * For SQPOLL, we just need a wakeup, always. For !SQPOLL, if
-@@ -3619,15 +3616,6 @@ static __cold int io_uring_create(unsigned entries, struct io_uring_params *p,
- 		goto err;
- 	}
- 
--	/*
--	 * This is just grabbed for accounting purposes. When a process exits,
--	 * the mm is exited and dropped before the files, hence we need to hang
--	 * on to this mm purely for the purposes of being able to unaccount
--	 * memory (locked/pinned vm). It's not used for anything else.
--	 */
--	mmgrab(current->mm);
--	ctx->mm_account = current->mm;
+-int mm_account_pinned_pages(struct mmpin *mmp, size_t size)
++int mm_account_pinned_pages(struct vm_account *vm_account, struct mmpin *mmp,
++			    size_t size)
+ {
+-	unsigned long max_pg, num_pg, new_pg, old_pg;
+-	struct user_struct *user;
 -
- 	ret = io_allocate_scq_urings(ctx, p);
- 	if (ret)
- 		goto err;
-diff --git a/io_uring/notif.c b/io_uring/notif.c
-index c4bb793..0f589fa 100644
---- a/io_uring/notif.c
-+++ b/io_uring/notif.c
-@@ -17,8 +17,8 @@ static void io_notif_complete_tw_ext(struct io_kiocb *notif, bool *locked)
- 	if (nd->zc_report && (nd->zc_copied || !nd->zc_used))
- 		notif->cqe.res |= IORING_NOTIF_USAGE_ZC_COPIED;
+-	if (capable(CAP_IPC_LOCK) || !size)
+-		return 0;
++	unsigned int num_pg;
  
--	if (nd->account_pages && ctx->user) {
--		__io_unaccount_mem(ctx->user, nd->account_pages);
-+	if (nd->account_pages) {
-+		vm_unaccount_pinned(&ctx->vm_account, nd->account_pages);
- 		nd->account_pages = 0;
- 	}
- 	io_req_task_complete(notif, locked);
-diff --git a/io_uring/notif.h b/io_uring/notif.h
-index c88c800..e2cb44a 100644
---- a/io_uring/notif.h
-+++ b/io_uring/notif.h
-@@ -43,11 +43,9 @@ static inline int io_notif_account_mem(struct io_kiocb *notif, unsigned len)
- 	unsigned nr_pages = (len >> PAGE_SHIFT) + 2;
- 	int ret;
+ 	num_pg = (size >> PAGE_SHIFT) + 2;	/* worst case */
+-	max_pg = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-	user = mmp->user ? : current_user();
++	if (vm_account_pinned(vm_account, num_pg))
++		return -ENOBUFS;
  
--	if (ctx->user) {
--		ret = __io_account_mem(ctx->user, nr_pages);
--		if (ret)
--			return ret;
--		nd->account_pages += nr_pages;
+-	old_pg = atomic_long_read(&user->locked_vm);
+-	do {
+-		new_pg = old_pg + num_pg;
+-		if (new_pg > max_pg)
+-			return -ENOBUFS;
+-	} while (!atomic_long_try_cmpxchg(&user->locked_vm, &old_pg, new_pg));
+-
+-	if (!mmp->user) {
+-		mmp->user = get_uid(user);
+-		mmp->num_pg = num_pg;
+-	} else {
+-		mmp->num_pg += num_pg;
 -	}
-+	ret = __io_account_mem(&ctx->vm_account, nr_pages);
-+	if (ret)
-+		return ret;
-+	nd->account_pages += nr_pages;
++	mmp->num_pg += num_pg;
+ 
  	return 0;
  }
-diff --git a/io_uring/rsrc.c b/io_uring/rsrc.c
-index 18de10c..aa44528 100644
---- a/io_uring/rsrc.c
-+++ b/io_uring/rsrc.c
-@@ -42,49 +42,19 @@ void io_rsrc_refs_drop(struct io_ring_ctx *ctx)
- 	}
- }
+ EXPORT_SYMBOL_GPL(mm_account_pinned_pages);
  
--int __io_account_mem(struct user_struct *user, unsigned long nr_pages)
-+int __io_account_mem(struct vm_account *vm_account, unsigned long nr_pages)
+-void mm_unaccount_pinned_pages(struct mmpin *mmp)
++void mm_unaccount_pinned_pages(struct vm_account *vm_account, struct mmpin *mmp)
  {
--	unsigned long page_limit, cur_pages, new_pages;
--
--	if (!nr_pages)
--		return 0;
--
--	/* Don't allow more pages than we can safely lock */
--	page_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
--
--	cur_pages = atomic_long_read(&user->locked_vm);
--	do {
--		new_pages = cur_pages + nr_pages;
--		if (new_pages > page_limit)
--			return -ENOMEM;
--	} while (!atomic_long_try_cmpxchg(&user->locked_vm,
--					  &cur_pages, new_pages));
--	return 0;
-+	return vm_account_pinned(vm_account, nr_pages);
- }
- 
- static void io_unaccount_mem(struct io_ring_ctx *ctx, unsigned long nr_pages)
- {
--	if (ctx->user)
--		__io_unaccount_mem(ctx->user, nr_pages);
--
--	if (ctx->mm_account)
--		atomic64_sub(nr_pages, &ctx->mm_account->pinned_vm);
-+	vm_unaccount_pinned(&ctx->vm_account, nr_pages);
- }
- 
- static int io_account_mem(struct io_ring_ctx *ctx, unsigned long nr_pages)
- {
--	int ret;
--
--	if (ctx->user) {
--		ret = __io_account_mem(ctx->user, nr_pages);
--		if (ret)
--			return ret;
+-	if (mmp->user) {
+-		atomic_long_sub(mmp->num_pg, &mmp->user->locked_vm);
+-		free_uid(mmp->user);
 -	}
--
--	if (ctx->mm_account)
--		atomic64_add(nr_pages, &ctx->mm_account->pinned_vm);
--
--	return 0;
-+	return vm_account_pinned(&ctx->vm_account, nr_pages);
++	vm_unaccount_pinned(vm_account, mmp->num_pg);
++	vm_account_release(vm_account);
  }
+ EXPORT_SYMBOL_GPL(mm_unaccount_pinned_pages);
  
- static int io_copy_iov(struct io_ring_ctx *ctx, struct iovec *dst,
-diff --git a/io_uring/rsrc.h b/io_uring/rsrc.h
-index 2b87436..d8833d0 100644
---- a/io_uring/rsrc.h
-+++ b/io_uring/rsrc.h
-@@ -167,12 +167,5 @@ static inline u64 *io_get_tag_slot(struct io_rsrc_data *data, unsigned int idx)
- int io_files_update(struct io_kiocb *req, unsigned int issue_flags);
- int io_files_update_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
+@@ -1361,9 +1344,12 @@ static struct ubuf_info *msg_zerocopy_alloc(struct sock *sk, size_t size)
  
--int __io_account_mem(struct user_struct *user, unsigned long nr_pages);
--
--static inline void __io_unaccount_mem(struct user_struct *user,
--				      unsigned long nr_pages)
--{
--	atomic_long_sub(nr_pages, &user->locked_vm);
--}
--
-+int __io_account_mem(struct vm_account *vm_account, unsigned long nr_pages);
- #endif
+ 	BUILD_BUG_ON(sizeof(*uarg) > sizeof(skb->cb));
+ 	uarg = (void *)skb->cb;
+-	uarg->mmp.user = NULL;
++	uarg->mmp.num_pg = 0;
++	vm_account_init(&sk->sk_vm_account, current,
++			current_user(), VM_ACCOUNT_USER);
+ 
+-	if (mm_account_pinned_pages(&uarg->mmp, size)) {
++	if (mm_account_pinned_pages(&sk->sk_vm_account, &uarg->mmp, size)) {
++		vm_account_release(&sk->sk_vm_account);
+ 		kfree_skb(skb);
+ 		return NULL;
+ 	}
+@@ -1416,7 +1402,8 @@ struct ubuf_info *msg_zerocopy_realloc(struct sock *sk, size_t size,
+ 
+ 		next = (u32)atomic_read(&sk->sk_zckey);
+ 		if ((u32)(uarg_zc->id + uarg_zc->len) == next) {
+-			if (mm_account_pinned_pages(&uarg_zc->mmp, size))
++			if (mm_account_pinned_pages(&sk->sk_vm_account,
++						    &uarg_zc->mmp, size))
+ 				return NULL;
+ 			uarg_zc->len++;
+ 			uarg_zc->bytelen = bytelen;
+@@ -1466,7 +1453,7 @@ static void __msg_zerocopy_callback(struct ubuf_info_msgzc *uarg)
+ 	u32 lo, hi;
+ 	u16 len;
+ 
+-	mm_unaccount_pinned_pages(&uarg->mmp);
++	mm_unaccount_pinned_pages(&sk->sk_vm_account, &uarg->mmp);
+ 
+ 	/* if !len, there was only 1 call, and it was aborted
+ 	 * so do not queue a completion notification
+diff --git a/net/rds/message.c b/net/rds/message.c
+index b47e4f0..4595540 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -35,6 +35,7 @@
+ #include <linux/export.h>
+ #include <linux/skbuff.h>
+ #include <linux/list.h>
++#include <linux/vm_account.h>
+ #include <linux/errqueue.h>
+ 
+ #include "rds.h"
+@@ -99,7 +100,7 @@ static void rds_rm_zerocopy_callback(struct rds_sock *rs,
+ 	struct list_head *head;
+ 	unsigned long flags;
+ 
+-	mm_unaccount_pinned_pages(&znotif->z_mmp);
++	mm_unaccount_pinned_pages(&rs->rs_sk.sk_vm_account, &znotif->z_mmp);
+ 	q = &rs->rs_zcookie_queue;
+ 	spin_lock_irqsave(&q->lock, flags);
+ 	head = &q->zcookie_head;
+@@ -367,6 +368,7 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
+ 	int ret = 0;
+ 	int length = iov_iter_count(from);
+ 	struct rds_msg_zcopy_info *info;
++	struct vm_account *vm_account = &rm->m_rs->rs_sk.sk_vm_account;
+ 
+ 	rm->m_inc.i_hdr.h_len = cpu_to_be32(iov_iter_count(from));
+ 
+@@ -380,7 +382,9 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
+ 		return -ENOMEM;
+ 	INIT_LIST_HEAD(&info->rs_zcookie_next);
+ 	rm->data.op_mmp_znotifier = &info->znotif;
+-	if (mm_account_pinned_pages(&rm->data.op_mmp_znotifier->z_mmp,
++	vm_account_init(vm_account, current, current_user(), VM_ACCOUNT_USER);
++	if (mm_account_pinned_pages(vm_account,
++				    &rm->data.op_mmp_znotifier->z_mmp,
+ 				    length)) {
+ 		ret = -ENOMEM;
+ 		goto err;
+@@ -399,7 +403,7 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
+ 			for (i = 0; i < rm->data.op_nents; i++)
+ 				put_page(sg_page(&rm->data.op_sg[i]));
+ 			mmp = &rm->data.op_mmp_znotifier->z_mmp;
+-			mm_unaccount_pinned_pages(mmp);
++			mm_unaccount_pinned_pages(vm_account, mmp);
+ 			ret = -EFAULT;
+ 			goto err;
+ 		}
 -- 
 git-series 0.9.1
