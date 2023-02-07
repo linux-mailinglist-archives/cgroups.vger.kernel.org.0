@@ -2,68 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B951A68DEC8
-	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 18:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D534168E0E2
+	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 20:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbjBGRVV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Feb 2023 12:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
+        id S229777AbjBGTJa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Feb 2023 14:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjBGRVU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 12:21:20 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E271659F2
-        for <cgroups@vger.kernel.org>; Tue,  7 Feb 2023 09:21:18 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id z17so3066275ilm.7
-        for <cgroups@vger.kernel.org>; Tue, 07 Feb 2023 09:21:18 -0800 (PST)
+        with ESMTP id S229589AbjBGTJ3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 14:09:29 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644D12331E
+        for <cgroups@vger.kernel.org>; Tue,  7 Feb 2023 11:09:27 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id 5so8024924qtp.9
+        for <cgroups@vger.kernel.org>; Tue, 07 Feb 2023 11:09:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VMaLavanXS/g3XR3klgJ+AXxx5vAw+8OAiDcCfQmZ38=;
-        b=2hB7T/Tz8d1WAzTpONaDpUxhkaEVNbh0h9B8xkNZvMe43HL03tD7YHvce0HxfrvSHK
-         27TQB0k86z1+5j3w7l/y3jAOB44wuDACRwfuKfwiJN/nidqs5p29wXBUM66DXkWXEycp
-         cMWJuan9yazhuWeUKcH+IHOSqbxYNqlXD5NKddeMraXgh6GEXjdlHlHpJyW7vDpWXoDQ
-         L7leV7jz/f1xn0D1aufsFqCWMrQ/UZpU6CJ5rRTtpdlr5rsBNLqkGF0Fw8pAnEBkHHct
-         31HWrimj50t7Wu8Ne4X4ZrZcrspXj4vtQJqA7m7G8Puhuc971lLRbiah8iZFSsg9u6RA
-         55Kg==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UHT39fVUOFivmWp0T2APCxSGcvkCC5wF/f/HBMo6Tws=;
+        b=Vp05VAn6WPp0SmeMs6zBO1/zMqsCjxnlRpMUhGA4RfkU/2QVMx/BYcetk634lgBMzN
+         vGz6qsKafYu7zUfeujZ3CIqZTXkTP6o0ij0PMX/IvndsILFd6gCgqw18boVzyjeQv16a
+         IHK+fG9BfR2TVN78eQehT1uheb7Wt0mSJ52hL2fG9GJzUlDQmqlbJjAJC0F5RzcniEYa
+         XEjJ2WA3Cv/0vvaPoyFCqgaA9JCIC5flfTf5cwM89obqinQOXV9beq/i14349me5r0UG
+         uLnU8sc6RhBSHcQLRDB+EwLxUZqzOrcHe82azdOEo1M7P34MMzZybD8rV3arSC7NkQ2k
+         nxfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VMaLavanXS/g3XR3klgJ+AXxx5vAw+8OAiDcCfQmZ38=;
-        b=KsAeU5A/TZEka04qpRaTNwOSYCrFQUHed6kxSKARODjLdd+oA3mtzb+TI/r+cMzqxj
-         Vi2b0UMivamnmZQLOxPFgyE4ft/5A3fvhcxMOwrAPc4FRsHzK8ZoEUCH+rXbHjbCujI6
-         JSvxVmrLOwyD5JiYatznk+XCn1CnV80ZVvknMZ/vtGoT1QVtCBjKj8oxsTqrxPCcwV2E
-         AeIXPe22FNvXumW8L/3Hb8Rg/AP8VSqq54KEn5UNV4MhjoovqduHkgGWefWQ0gPwTtET
-         HS5slCO6NIE8pwj4MEjVHIyXMmjLyKCIWX+P81uTCz0nTgOKqohf9NMNF3TTWpZetswd
-         hXYw==
-X-Gm-Message-State: AO0yUKUinN2w0A9V7FgoMguet3xmdrypysbNEfhQU/OTS8VTa5At9UT5
-        e3UXNsID70GTFPWyEfxf7lYdEA==
-X-Google-Smtp-Source: AK7set/maPiAXbvZYUNHIhip1EuI2XjwF3XkL6fwc5FCqiezmpvNiqijmluX8zrB+uL3EvqJCHmnUA==
-X-Received: by 2002:a92:d851:0:b0:313:d6b8:dc30 with SMTP id h17-20020a92d851000000b00313d6b8dc30mr3729931ilq.0.1675790478156;
-        Tue, 07 Feb 2023 09:21:18 -0800 (PST)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id s10-20020a02cf2a000000b00374bf3b62a0sm4529598jar.99.2023.02.07.09.21.16
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UHT39fVUOFivmWp0T2APCxSGcvkCC5wF/f/HBMo6Tws=;
+        b=eWQ1v/VZZ+Hf6AY1p2ZlSykVjYgWIR8bS/TCN8yMh8RVZByxR6TatdzjcBCGHAH2MY
+         feowpFnEGU6YbAusSWyVFrVoZGBmon1z8EQqp+A4SlTb6yOQinCLHz7ib3obB5+ihNk8
+         31l9FEE1ufxJun6386L2kXKmwJ/hGGTrYeSrtmeafCLP+KkEjVjTiTUu1pEXIcKfChhG
+         KjWWE0yRpQtN8H98BQrXfQEyDuLABeOUILUXQMQx0JBaw1yUT2gBoRA+u52cpRTNzlOy
+         +vf9tM3pN05v4B0SIkBIQoEkacfkNkZetSD9pJG7JZfUYlVEfQz8ochHTXIbSodLd77f
+         KNBQ==
+X-Gm-Message-State: AO0yUKVD4ad8XWzRB9shOXFZiriY6y8ZE+PgUACX4F2NjFTIBt8Xem94
+        jIePepLHJYsFlq5ONBEx/QVB9Q==
+X-Google-Smtp-Source: AK7set+I80oe4Te9IWaWr60Et6KkoZKBvtfpwbbD7emZupy7T1ZULkHsPTNzZZaZtz5wj39Guwoh+g==
+X-Received: by 2002:ac8:5cd2:0:b0:3b6:30dd:d472 with SMTP id s18-20020ac85cd2000000b003b630ddd472mr7219677qta.44.1675796966427;
+        Tue, 07 Feb 2023 11:09:26 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id dw27-20020a05620a601b00b00706c1f7a608sm10022286qkb.89.2023.02.07.11.09.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 09:21:17 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
-        josef@toxicpanda.com, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-In-Reply-To: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
-References: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
-Subject: Re: [PATCH -next v3] block, bfq: cleanup 'bfqg->online'
-Message-Id: <167579047693.46818.10367166447142980266.b4-ty@kernel.dk>
-Date:   Tue, 07 Feb 2023 10:21:16 -0700
+        Tue, 07 Feb 2023 11:09:26 -0800 (PST)
+Date:   Tue, 7 Feb 2023 14:09:25 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>
+Subject: Re: [RFC PATCH] mm: memcontrol: don't account swap failures not due
+ to cgroup limits
+Message-ID: <Y+Kh5atM0TQmkR+R@cmpxchg.org>
+References: <20230202155626.1829121-1-hannes@cmpxchg.org>
+ <CAJD7tkaCpD0LpzdA+NsZj2WK=iQCLn7RS9qc7K53Qonxhp4TgA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkaCpD0LpzdA+NsZj2WK=iQCLn7RS9qc7K53Qonxhp4TgA@mail.gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -73,27 +74,82 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-On Thu, 02 Feb 2023 21:49:13 +0800, Yu Kuai wrote:
-> After commit dfd6200a0954 ("blk-cgroup: support to track if policy is
-> online"), there is no need to do this again in bfq.
+On Thu, Feb 02, 2023 at 10:30:40AM -0800, Yosry Ahmed wrote:
+> On Thu, Feb 2, 2023 at 7:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > Christian reports the following situation in a cgroup that doesn't
+> > have memory.swap.max configured:
+> >
+> >   $ cat memory.swap.events
+> >   high 0
+> >   max 0
+> >   fail 6218
+> >
+> > Upon closer examination, this is an ARM64 machine that doesn't support
+> > swapping out THPs. In that case, the first get_swap_page() fails, and
+> > the kernel falls back to splitting the THP and swapping the 4k
+> > constituents one by one. /proc/vmstat confirms this with a high rate
+> > of thp_swpout_fallback events.
+> >
+> > While the behavior can ultimately be explained, it's unexpected and
+> > confusing. I see three choices how to address this:
+> >
+> > a) Specifically exlude THP fallbacks from being counted, as the
+> >    failure is transient and the memory is ultimately swapped.
+> >
+> >    Arguably, though, the user would like to know if their cgroup's
+> >    swap limit is causing high rates of THP splitting during swapout.
 > 
-> However, 'pd->online' is not protected by 'bfqd->lock', in order to make
-> sure bfq won't see that 'pd->online' is still set after bfq_pd_offline(),
-> clear it before bfq_pd_offline() is called. This is fine because other
-> polices doesn't use 'pd->online' and bfq_pd_offline() will move active
-> bfqq to root cgroup anyway.
+> We have the option to add THP_SWPOUT_FALLBACK (and THP_SWPOUT for
+> completeness) to memcg events for this if/when a use case arises,
+> right?
+
+Yes, we can add that to memory.stat.
+
+> > b) Only count cgroup swap events when they are actually due to a
+> >    cgroup's own limit. Exclude failures that are due to physical swap
+> >    shortage or other system-level conditions (like !THP_SWAP). Also
+> >    count them at the level where the limit is configured, which may be
+> >    above the local cgroup that holds the page-to-be-swapped.
+> >
+> >    This is in line with how memory.swap.high, memory.high and
+> >    memory.max events are counted.
+> >
+> >    However, it's a change in documented behavior.
 > 
-> [...]
+> This option makes sense to me, but I can't speak to the change of
+> documented behavior. However, looking at the code, it seems like if we do this
+> the "max" & "fail" counters become effectively the same. "fail" would
+> not provide much value then.
 
-Applied, thanks!
+Right.
 
-[1/1] block, bfq: cleanup 'bfqg->online'
-      commit: f37bf75ca73d523ebaa7ceb44c45d8ecd05374fe
+> I wonder if it makes sense to have both, and clarify that "fail" -
+> "max" would be non-limit based failures (e.g. ran out of swap space),
+> or would this cause confusion as to whether those non-limit failures
+> were transient (THP fallback) or eventual?
 
-Best regards,
--- 
-Jens Axboe
+If we add the fallback events, the user can calculate it. I wouldn't
+split the fail counter itself. There are too many reasons why swap can
+fail, half of them implementation-defined (as in the ARM example).
 
+So I think I'll send patches either way to:
 
+1. Fix the hierarchical accounting of the events to make it consistent
+   with other counters.
 
+2. Add THP swap/fallback counts to memory.stat
+
+We could consider excluding THP fallbacks from the fail count. But it
+seems really wrong for the cgroup controller to start classifying
+individual types of failures in the swap layer and make decisions on
+how to report them to the user. Cgroups really shouldn't be in the
+business of making up its own MM events. I should provide per-cgroup
+accounting of native MM events. And nobody has felt the need to add
+native swap failure counts yet.
+
+So I'd argue we should either remove the swap fail count altogether
+for all the reasons mentioned, or just leave it as is and as a
+documented interface that is unfortunately out the door.
+
+Thoughts?
