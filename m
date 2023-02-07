@@ -2,161 +2,167 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E9568D2B3
-	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 10:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52BA68D397
+	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 11:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjBGJZE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Feb 2023 04:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
+        id S231596AbjBGKH0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Feb 2023 05:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbjBGJZA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 04:25:00 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C4C103
-        for <cgroups@vger.kernel.org>; Tue,  7 Feb 2023 01:24:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675761899; x=1707297899;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=OQnVfL3U0a2lX1wg31o5Rh9wwEzGnW1Dn3J+rQW84eE=;
-  b=AkWmEzwK+PM0zdU7CTm0+kuySGdoLx203/MCbzjDBb7jRYaH9IddP2sA
-   h7S6YR+FGYnhmxUb2GRB4MQX6LWERe9NZrXrDW4IJAFZxFOnhmGhogfW5
-   N4Vq1QDqeCmKKEwHlMeiC98P8snWj3YgIOtkqtTrsDS3Cu11oeDdZOyzV
-   Ji6lcg9sdwu/MbhNk7BLpulIE7sE59oCkMA7Dcg7xIwaQuDAgquHn0vME
-   ZCKwMqUoe2y6NeXNAv7QET9OJZ9xu5tlfhAyCa7IAE9w3NqTI8ZLrTOlm
-   MjE/iDMLAbVZ1ePnOmaSM4KvAAPeNOFnKZpOeL8DKi9h8b2ajYT6jV4JG
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="356829201"
-X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="356829201"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 01:24:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="735487306"
-X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="735487306"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Feb 2023 01:24:58 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pPKDc-0003Ol-2K;
-        Tue, 07 Feb 2023 09:24:52 +0000
-Date:   Tue, 07 Feb 2023 17:24:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.2-fixes] BUILD SUCCESS
- 7a2127e66a00e073db8d90f9aac308f4a8a64226
-Message-ID: <63e218be.rts7KrRWUOS7E2nR%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231671AbjBGKHV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 05:07:21 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD69DD51C;
+        Tue,  7 Feb 2023 02:07:16 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5793B37A0F;
+        Tue,  7 Feb 2023 10:07:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1675764435; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Te9Juz5JzX/nOCXQ+EoNePBpi22PvKhzdWL3Av9Y1p0=;
+        b=UCRF4IFGTr7DLgr/rL6w6A65hmf/9vLYCyaPOVdGLB1qZ7dYPzsg6ODe9uiH+MGNICKgZ2
+        T5c2ZvBtxaUZ2t+ql6ebKBafNqzGUsAYHMxuTaQpieph11q/xM8RDbwf7QZt0OgHEbCv/w
+        D27iFFr8Hxj8m/Egwiauxzi0zUWULo4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1675764435;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Te9Juz5JzX/nOCXQ+EoNePBpi22PvKhzdWL3Av9Y1p0=;
+        b=bsD7xkqHQ3TvgFdVTSmp1oviZ73d9hcV903gE6fA2Ri1IInhW712mNezHriVVaCi48zY4S
+        En+xOuxi/CUUzsBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45BE413467;
+        Tue,  7 Feb 2023 10:07:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uG75ENMi4mOHGgAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 07 Feb 2023 10:07:15 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id BA320A06D5; Tue,  7 Feb 2023 11:07:14 +0100 (CET)
+Date:   Tue, 7 Feb 2023 11:07:14 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     jack@suse.cz, paolo.valente@linaro.org, axboe@kernel.dk,
+        tj@kernel.org, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next v3] block, bfq: cleanup 'bfqg->online'
+Message-ID: <20230207100714.fv4pfvkt56gb2iqm@quack3>
+References: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.2-fixes
-branch HEAD: 7a2127e66a00e073db8d90f9aac308f4a8a64226  cpuset: Call set_cpus_allowed_ptr() with appropriate mask for task
+On Thu 02-02-23 21:49:13, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> After commit dfd6200a0954 ("blk-cgroup: support to track if policy is
+> online"), there is no need to do this again in bfq.
+> 
+> However, 'pd->online' is not protected by 'bfqd->lock', in order to make
+> sure bfq won't see that 'pd->online' is still set after bfq_pd_offline(),
+> clear it before bfq_pd_offline() is called. This is fine because other
+> polices doesn't use 'pd->online' and bfq_pd_offline() will move active
+> bfqq to root cgroup anyway.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-elapsed time: 729m
+The patch looks good to me now. Thanks! Feel free to add:
 
-configs tested: 79
-configs skipped: 2
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+								Honza
 
-gcc tested configs:
-x86_64                            allnoconfig
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-s390                                defconfig
-s390                             allyesconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                           rhel-8.3-bpf
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-powerpc                           allnoconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-x86_64               randconfig-a014-20230206
-alpha                            allyesconfig
-x86_64               randconfig-a013-20230206
-x86_64               randconfig-a011-20230206
-x86_64               randconfig-a015-20230206
-ia64                             allmodconfig
-x86_64               randconfig-a012-20230206
-x86_64               randconfig-a016-20230206
-s390                 randconfig-r044-20230206
-arc                  randconfig-r043-20230205
-x86_64                              defconfig
-arm                  randconfig-r046-20230205
-i386                 randconfig-a011-20230206
-arc                  randconfig-r043-20230206
-i386                 randconfig-a014-20230206
-x86_64                               rhel-8.3
-i386                 randconfig-a012-20230206
-x86_64                           allyesconfig
-riscv                randconfig-r042-20230206
-i386                 randconfig-a013-20230206
-i386                 randconfig-a015-20230206
-i386                 randconfig-a016-20230206
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-i386                                defconfig
-sh                               allmodconfig
-mips                           jazz_defconfig
-sh                          r7780mp_defconfig
-um                               alldefconfig
-xtensa                  nommu_kc705_defconfig
-m68k                         amcore_defconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-m68k                          atari_defconfig
-sh                         ap325rxa_defconfig
-sh                           se7705_defconfig
-i386                             allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-
-clang tested configs:
-hexagon              randconfig-r041-20230205
-i386                 randconfig-a002-20230206
-riscv                randconfig-r042-20230205
-hexagon              randconfig-r045-20230206
-i386                 randconfig-a004-20230206
-hexagon              randconfig-r041-20230206
-i386                 randconfig-a003-20230206
-i386                 randconfig-a001-20230206
-i386                 randconfig-a006-20230206
-i386                 randconfig-a005-20230206
-arm                  randconfig-r046-20230206
-s390                 randconfig-r044-20230205
-hexagon              randconfig-r045-20230205
-x86_64               randconfig-a002-20230206
-x86_64               randconfig-a004-20230206
-x86_64               randconfig-a003-20230206
-x86_64               randconfig-a001-20230206
-x86_64               randconfig-a005-20230206
-x86_64               randconfig-a006-20230206
-powerpc                      ppc44x_defconfig
-hexagon                             defconfig
-powerpc                      obs600_defconfig
-x86_64                          rhel-8.3-rust
-
+> ---
+> Changes in v3:
+>  - in commit message: protected -> not protected, bfq_pd_offline_() ->
+>  bfq_pd_offline().
+> Changes in v2:
+>  - clear 'pd->online' before calling bfq_pd_offline()
+> 
+>  block/bfq-cgroup.c  | 4 +---
+>  block/bfq-iosched.h | 2 --
+>  block/blk-cgroup.c  | 2 +-
+>  3 files changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+> index b42956ab5550..a35136dae713 100644
+> --- a/block/bfq-cgroup.c
+> +++ b/block/bfq-cgroup.c
+> @@ -551,7 +551,6 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
+>  	bfqg->bfqd = bfqd;
+>  	bfqg->active_entities = 0;
+>  	bfqg->num_queues_with_pending_reqs = 0;
+> -	bfqg->online = true;
+>  	bfqg->rq_pos_tree = RB_ROOT;
+>  }
+>  
+> @@ -614,7 +613,7 @@ struct bfq_group *bfq_bio_bfqg(struct bfq_data *bfqd, struct bio *bio)
+>  			continue;
+>  		}
+>  		bfqg = blkg_to_bfqg(blkg);
+> -		if (bfqg->online) {
+> +		if (bfqg->pd.online) {
+>  			bio_associate_blkg_from_css(bio, &blkg->blkcg->css);
+>  			return bfqg;
+>  		}
+> @@ -985,7 +984,6 @@ static void bfq_pd_offline(struct blkg_policy_data *pd)
+>  
+>  put_async_queues:
+>  	bfq_put_async_queues(bfqd, bfqg);
+> -	bfqg->online = false;
+>  
+>  	spin_unlock_irqrestore(&bfqd->lock, flags);
+>  	/*
+> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+> index 75cc6a324267..69aaee52285a 100644
+> --- a/block/bfq-iosched.h
+> +++ b/block/bfq-iosched.h
+> @@ -1009,8 +1009,6 @@ struct bfq_group {
+>  
+>  	/* reference counter (see comments in bfq_bic_update_cgroup) */
+>  	refcount_t ref;
+> -	/* Is bfq_group still online? */
+> -	bool online;
+>  
+>  	struct bfq_entity entity;
+>  	struct bfq_sched_data sched_data;
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index cb110fc51940..a228dfe65253 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -491,9 +491,9 @@ static void blkg_destroy(struct blkcg_gq *blkg)
+>  		struct blkcg_policy *pol = blkcg_policy[i];
+>  
+>  		if (blkg->pd[i] && blkg->pd[i]->online) {
+> +			blkg->pd[i]->online = false;
+>  			if (pol->pd_offline_fn)
+>  				pol->pd_offline_fn(blkg->pd[i]);
+> -			blkg->pd[i]->online = false;
+>  		}
+>  	}
+>  
+> -- 
+> 2.31.1
+> 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
