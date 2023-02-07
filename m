@@ -2,146 +2,263 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25A768CC58
-	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 02:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B27868CD61
+	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 04:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjBGBxY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Feb 2023 20:53:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
+        id S229731AbjBGDTc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Feb 2023 22:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjBGBxX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 20:53:23 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2076.outbound.protection.outlook.com [40.107.220.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20FF1B326;
-        Mon,  6 Feb 2023 17:53:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fi3sWo+0/xV26+WtQ9LGRAUy6rJassWZOY2S3qX1UJoIp1k/dZ8Z0hF4un66BOf0Yv24zAsHuRpEM/XhbUFU1pa6orCHOdCWfl5lyJpT/ljgIL3K55aporFJArYZVT4qjDDQOKyLtG+6X0xkTxjCypffTEyczNsIRyQ3iSM2/cLV2WEpRYWENKI4dsR57eAf45vicUhNWfdZm6P++BTEwnNDloTdOi7XQcysF8GIwvW4dkmaVdRVCHbd9kv0AUhD0Suv5T1YWQQG7B01Bftzf5FZ1Vype8elGGhUzz1+qM8pQm5F+iADW8y1kTaR6RL/H7qjwp4cqDn72y0gFQlhpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gACIV1J6Aakw4ZT8mMl+C83X57q5sM9bE/vQSWr9rN8=;
- b=PHHv7eSfbdqVjvkrvF/noI06zjekwIi9IxIDQepQv2iBiNwopuPhcqP4cLKBlBIygpdY7wvxzdcCuXohnHvNnb3K0Z7ysYNrTX7cm7G+OWR1fDvFEvKwxFyqncOrxxLyhmHv9227QmdnU4Pn3JLU8wY0WdxUCKU7JtBx369mb6+qHUMUr3oCehz88qOtKHE/+ZhC9JFcQ9cdJKMDYZ5jXYngU+SbGgdR4RBOk3lGAXxHpcGkMzNK0+IxFt8oWhCxsuMX1XbWafMWb++4vIHIy4yMErgklGPWReb3dGyLBpjxxt40mnDXCnlWKJBXfqr/HyukbkZGwI4Xcf1m3PZBog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gACIV1J6Aakw4ZT8mMl+C83X57q5sM9bE/vQSWr9rN8=;
- b=G05K9hYCVW+QPPlvLzVjLnGVv2s8nJOYfjESSkZ0yoz9EL/wAlg60MyZqY3QXW1MkZUNikI7PXH5+6gcujwPktN/NUa3PWti+iGui6JEXUxOWZbzqLcB4PdV1yYdbv0RvsoyyNKeR8EUPgyFFroJvWSJA4CqyiXEa7MY18GD2Q/vLuedowfESRJYkCtqNNhLaK0Yo5qa9HFOHkZvETaxBIVWdsGgCf88YLlLeyYXnkznVdfZfCkXz2xVP/WRPq1lSGWtWFdAbf+l3r9NPqlml8gxAF2TsOpfD0zObonF0hPH03LM5C3CLLGxN+fNaSwZbNrnphnRd9btzraHQAod4A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by DM6PR12MB4960.namprd12.prod.outlook.com (2603:10b6:5:1bc::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.34; Tue, 7 Feb
- 2023 01:53:17 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6064.032; Tue, 7 Feb 2023
- 01:53:17 +0000
-References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
- <c7b5e502d1a3b9b8f6e96cbf9ca553b143c327e0.1675669136.git-series.apopple@nvidia.com>
- <Y+Fttp1ozejoSQzl@slm.duckdns.org>
- <CAJD7tkb_Cr7rTTpKc1VBpS8h=n3Hu+nGiV8dkLH-NdC1bSG9mg@mail.gmail.com>
- <Y+GA6Y7SVhAW5Xm9@slm.duckdns.org>
- <CAJD7tka6SC1ho-dffV0bK_acoZd-5DQzBOy0xg3TkOFG1zAPMg@mail.gmail.com>
- <24668a43-fb00-5240-6072-230c5f5d0943@redhat.com>
- <Y+GjSTu9vE/A/EKG@mtj.duckdns.org>
-User-agent: mu4e 1.8.10; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jgg@nvidia.com, jhubbard@nvidia.com, tjmercier@google.com,
-        hannes@cmpxchg.org, surenb@google.com, mkoutny@suse.com,
-        daniel@ffwll.ch, "Daniel P . Berrange" <berrange@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 14/19] mm: Introduce a cgroup for pinned memory
-Date:   Tue, 07 Feb 2023 12:50:24 +1100
-In-reply-to: <Y+GjSTu9vE/A/EKG@mtj.duckdns.org>
-Message-ID: <87fsbinsvq.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BY3PR05CA0056.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::31) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        with ESMTP id S229705AbjBGDT2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Feb 2023 22:19:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A80360AB
+        for <cgroups@vger.kernel.org>; Mon,  6 Feb 2023 19:18:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675739888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GIxTMZmbsJ4n4h+wodJFJ7AH4L9sE2etRukeWGfprOQ=;
+        b=eANDvVka1kzOtB2QmbX+LinmbIlao9B/6l1R7qr5DYuNkPP5NcCHal3ixbiFxYHqQPHUjP
+        lpHjTENepvTF1XjUbCwRYdyWiVnxpzpfgfss/AEiYeS586W+hN/nOymAFS8ude9b8RUq2Y
+        QjaDgif+t9OFCU9p+Vr2KitiBUw/Jhk=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-170-KtCm9zegMuKVPGYiHOUCEA-1; Mon, 06 Feb 2023 22:18:07 -0500
+X-MC-Unique: KtCm9zegMuKVPGYiHOUCEA-1
+Received: by mail-oo1-f72.google.com with SMTP id k3-20020a4a4a03000000b0051a3df506b5so3525834oob.9
+        for <cgroups@vger.kernel.org>; Mon, 06 Feb 2023 19:18:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GIxTMZmbsJ4n4h+wodJFJ7AH4L9sE2etRukeWGfprOQ=;
+        b=nHXgvAluuiqS1PRueGtbsV/rZC4mmC8rQ0CkA4x1fF/PhV4h4o5L5ncWogHYayQjfo
+         uw2xOXpTaOP9aMN9qwBZCqCd12uMegU2LDtTSJ65jeOMq3OnNUkKbyttHxeE+bd/eoZP
+         A54whkLRN/gKePeBHorpkcrxxhjX9Noi2hLsiijg4BWdQaGOcRbhPMZrpTf90XgHderJ
+         ZQkZz7fmly6vP9UoH0vwpEmpuUSrEA85cW3JVGaGofqmpuI8lMNOsCDRcs/MUBXeE5VJ
+         6CTew5GdsEdfziA8cxSczFSi8vEZkgPnrLbwZkAJ5gYOA9Oira3Ql91gI8d8Hc7Vl0W7
+         i3Pg==
+X-Gm-Message-State: AO0yUKUafjoMeEBg2X2peUG1i1On5aOG/NLwzeVpqL3vcwadhKaZvsKy
+        +Ld8FMZZ+Gnd16nSw/ZjQhk85VTCRhDk4zR2j13a1FglaFyx1ruNvxyKvKt/EInFmr2yd0dDToC
+        FyNDkw/tD2H7PhX1OFg==
+X-Received: by 2002:aca:2809:0:b0:37a:2bf0:5025 with SMTP id 9-20020aca2809000000b0037a2bf05025mr5460891oix.19.1675739886843;
+        Mon, 06 Feb 2023 19:18:06 -0800 (PST)
+X-Google-Smtp-Source: AK7set+7VS3H2qMxD1XHEeHGgHZ74B+TJyfGc4ZI4Mp5kB81qQes42VlFPDf7PJJ4nRSKOza3aEOWw==
+X-Received: by 2002:aca:2809:0:b0:37a:2bf0:5025 with SMTP id 9-20020aca2809000000b0037a2bf05025mr5460883oix.19.1675739886546;
+        Mon, 06 Feb 2023 19:18:06 -0800 (PST)
+Received: from ?IPv6:2804:1b3:a800:9aa9:fdcb:7dec:9680:8417? ([2804:1b3:a800:9aa9:fdcb:7dec:9680:8417])
+        by smtp.gmail.com with ESMTPSA id z12-20020a54458c000000b003790759c310sm5040893oib.15.2023.02.06.19.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Feb 2023 19:18:05 -0800 (PST)
+Message-ID: <4b232f47e038ab6fcaa0114f73c28d4bf8799f84.camel@redhat.com>
+Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 07 Feb 2023 00:18:01 -0300
+In-Reply-To: <Y+AIOQy0HdVXCw8m@P9FQF9L96D>
+References: <Y9DpbVF+JR/G+5Or@dhcp22.suse.cz>
+         <9e61ab53e1419a144f774b95230b789244895424.camel@redhat.com>
+         <Y9FzSBw10MGXm2TK@tpad> <Y9IvoDJbLbFcitTc@dhcp22.suse.cz>
+         <Y9LDAZmApLeffrT8@tpad> <Y9LQ615H13RmG7wL@dhcp22.suse.cz>
+         <0122005439ffb7895efda7a1a67992cbe41392fe.camel@redhat.com>
+         <Y9j9BnMwfm4TJks7@tpad> <Y9pd7AxAILUSHrpe@dhcp22.suse.cz>
+         <28e08669302ad1e7a41bdf8b9988de6a352b5fe1.camel@redhat.com>
+         <Y+AIOQy0HdVXCw8m@P9FQF9L96D>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DM6PR12MB4960:EE_
-X-MS-Office365-Filtering-Correlation-Id: e20d426d-7e29-4bc0-a1b0-08db08ae14fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9gHXwqDMpb0jB/PM8SOeVG2ELWn/M/9n5oKBeYSHD6aXXaBEQrPUC8in1n+QfaBWekuKsuGAxp8/vnujcazMKm4Wha2Z4gd9Be2txWIUdnTL7vTHjVq54P3lOoxYYQ5F7545xSgJ3b3JbaWRHyoIwGiMAdtqzf0qCUx4XMbgrxNMLSZrSK+lfA35Qx5zdMz8V/s1Blmy8u3F1UmbGznNrXDy2cJEL4B0hd+CclX+mI1hG/q3Bqpoluxh6GHiMhwyyDY0n+CX1qI8BKAQSVike1fm/GzTT6qvbLgpGwGX3w+zaBgc79cGCfTATzSdWWsAXF8+NgZKr69IbokqvjFe8fRaXMaWCUuICtjYzob81G3RjhnSWPGIfG7y6/JLX/EDKT6p7hwe3dTBpiVnesj5itNPDzz32egYd9NI2OAiIkYTsNwBZz2U4ZpTInHQ6AiGVSr0RHDAEM1n7WaaFdM9W7hnEShlOFN4se9cY7tlZTESFu3keFNCRFOQE4FnuvQEF+PoY5buL+rPt3LkCYtbwO7u6sBOt8vqdM/AhbHzUFTvIaSQqEPI5q0uZAynrugELyWIMgwFr6thqqw2a9i5smhw7gdnGAaMI+MIo2REV9OuY/dKTsqsFZ+quLBAiu+akvSWTLyQ7oNvcIjxm+Y9gQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(451199018)(36756003)(54906003)(8676002)(316002)(6506007)(4744005)(7416002)(478600001)(6666004)(66556008)(8936002)(66476007)(2906002)(66946007)(41300700001)(4326008)(6916009)(5660300002)(86362001)(26005)(186003)(38100700002)(83380400001)(6486002)(6512007)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Dh8gwN8D7lg20P4Maq6vZzi9rqJ9CGf2e5n8NrChleereHDfQSH7OEDjxdxG?=
- =?us-ascii?Q?+2W9V0QR9+Kd+lZGeG0DYgieKBA3w2BgBQ9N0nJT73aaMi3dabTwj/Gu7hur?=
- =?us-ascii?Q?mOC0F7AO5ikMmjkxpuhDWfA05mpUv+Z7T9ccAcUnmZSym9/CBoevkkg9MZtO?=
- =?us-ascii?Q?aXIggnmeq9YSXELFFzvcO5vGjBak1rhJstTcq+w4UyofBg/9OKSyln6f/RBh?=
- =?us-ascii?Q?6b7xshOaTkYflUW7lNngJD+CkK9J9jErYZxc9FJdegodRGw8CiRYUKkOX5fo?=
- =?us-ascii?Q?nY554ePE3cRaP5bcDba09goIsPUMXWW0QlYjIS/wgNb8NeAvOigA6UrKhwF5?=
- =?us-ascii?Q?F3fMJAaeJfUuYfRRukPX5JO1Ge1+2nwDvDzJI5ch3F3BjcrzrPCup5Gf+wW/?=
- =?us-ascii?Q?vEZnaSA+PXkAfIHyZ4UPGEUZf3Lrow2OiWsTjjxiWvfZL/MYF25bMC+k3B9y?=
- =?us-ascii?Q?tbRVKohA7rxVBQR6SZxIjsS7Y9VYVZt0LsQ9czjRiJik5YvpOYNZtCQta1Mv?=
- =?us-ascii?Q?n3cvnDILWRs3MbVWdXS9n4A8DPxyaFoEkr43Gb4Had6kXpSefxtxaE9fSSlo?=
- =?us-ascii?Q?6Kmai34Mm/PRu2arWTK/75tELBRMAOAFsIXliym60GRg1zT3PhvXAJemr6yq?=
- =?us-ascii?Q?yBI1BzY+5bGYXqhqlMcZ3taohjU3glJdkE2WfHPjA8Q0jbAi3umBMtTPBLA0?=
- =?us-ascii?Q?m92FjALbNA7X/jsd0eTY/b74CLGgjsvIhTr/8Vq5KnOMnwr3sKjdPO/t5a9j?=
- =?us-ascii?Q?5/dltZUAtdYHJbxeqIh/2mty3JER2cHBjzKaJm4bHNOx8AOvT/2yYNC888WH?=
- =?us-ascii?Q?WHwwTUri5Y+a10WUsjSsLadGrNlJQlGiNTqKmh3/BNm6BB3QmS24vTL3Qm4J?=
- =?us-ascii?Q?fadIoDKnShDYQhX/ler1zdqHwT91HkxWYnQnSH84SMD21GOc9MAHOhPpSgaJ?=
- =?us-ascii?Q?TixqejPPWunF0nIn0kwLKC4VP8rx8TOJnMI707PP/t4UvOHTTsVr+5XQZrq5?=
- =?us-ascii?Q?Bv3tikuc28FD1apxNj05XFsJzFhKrF3hJvweF5iDpzvAQi6KGmSIRE6aKzdg?=
- =?us-ascii?Q?JJ9f8hEYfG4qNZlgOecsD87jYT/t4G/09AItTRiVeex7eaaFYtEu9lofDx25?=
- =?us-ascii?Q?SZ4EG/wEM0n07v38s0kA2VaGmJTpuId7NFrQe8wAxd+HjqeD0GOiouj+7rkt?=
- =?us-ascii?Q?A48rbSBMnrUNYrTZrhEx0YR7e3UU9akvq7pS85fOWn6xiyWt4yU+HivUgWZJ?=
- =?us-ascii?Q?6miQL9r7Elr6Jfh6jIpUUa/XBrPR6blUvkSRT3LWuroH4NHdgKEBN0h/dKcm?=
- =?us-ascii?Q?rgrWAFYu/n/PFjdx43NMooVEJsTK4Pqym3H9KEEwx5duS5mfioPFHDnhdIUe?=
- =?us-ascii?Q?8CVnqMBXLurVWZDH3qWkYJCUNZ75/C6LPoAgqLcqS5Q0rn6wyKaXaf64Cwvs?=
- =?us-ascii?Q?8KycuIe51l4jLEEaKTuI8Pkhx/hNtKc0Tjmc55NKV1vn6qUMAgSPhR+wIA/9?=
- =?us-ascii?Q?qUctKWksh0QUtleu0kSp3DuAXiVVOGfMONLG9KrJrAsZWW8TFE4ngHdGAj8h?=
- =?us-ascii?Q?c8RUSCEqO/vsAfOHUcPhvfmMJHwEqjXh/fdAyz5x?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e20d426d-7e29-4bc0-a1b0-08db08ae14fe
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2023 01:53:17.4964
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ExMz1TtYeX/p+OtJ99JhnHlr5F72ypIZ/Nz2c9And8+7ve5AFUhgsN7kEmZQnbV+elAkazZMQPA3nuVLZDL2cA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4960
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Sun, 2023-02-05 at 11:49 -0800, Roman Gushchin wrote:
+> Hi Leonardo!
 
-Tejun Heo <tj@kernel.org> writes:
+Hello Roman,
+Thanks a lot for replying!
 
-> On Mon, Feb 06, 2023 at 08:00:54PM -0500, Waiman Long wrote:
->> If it should not be part of the memcg, does it make sense to make it a
->> resource in the existing misc controller? I believe we don't want a
->> proliferation of new cgroup controllers.
->
-> Yeah, if it's gonna be an independent knob, I suppose so, but I really think
-> the locked accounting should be tied to the page, which mostly likely would
-> mean that it'd be tied to the page ownership too making its natural place
-> memcg.
+>=20
+> > Yes, but we are exchanging an "always schedule_work_on()", which is a k=
+ind of
+> > contention, for a "sometimes we hit spinlock contention".
+> >=20
+> > For the spinlock proposal, on the local cpu side, the *worst case* cont=
+ention
+> > is:
+> > 1 - wait the spin_unlock() for a complete <percpu cache drain process>,
+> > 2 - wait a cache hit for local per-cpu cacheline=C2=A0
+> >=20
+> > What is current implemented (schedule_work_on() approach), for the loca=
+l
+> > cpu=C2=A0side there is *always* this contention:
+> > 1 - wait for a context switch,
+> > 2 - wait a cache hit from it's local per-cpu cacheline,
+> > 3 - wait a complete <percpu cache drain process>,=C2=A0
+> > 4 - then for a new context switch to the current thread.
+>=20
+> I think both Michal and me are thinking of a more generic case in which t=
+he cpu
+> is not exclusively consumed by 1 special process, so that the draining wo=
+rk can
+> be executed during an idle time. In this case the work is basically free.
 
-Yes, I think it might be possible. I looked briefly at doing it when
-initially developing the series but I would like to resolve the question
-of independent knob vs. memcg before heading too far down either path.
+Oh, it makes sense.
+But in such scenarios, wouldn't the same happens to spinlocks?
 
-> Thanks.
+I mean, most of the contention with spinlocks only happens if the remote cp=
+u is
+trying to drain the cache while the local cpu happens to be draining/chargi=
+ng,
+which is quite rare due to how fast the local cpu operations are.
+
+Also, if the cpu has some idle time, using a little more on a possible spin=
+lock
+contention should not be a problem. Right?
+
+>=20
+> And the introduction of a spin_lock() on the hot path is what we're are c=
+oncerned
+> about. I agree, that on some hardware platforms it won't be that expensiv=
+e,=C2=A0
+>=20
+
+IIRC most hardware platforms with multicore supported by the kernel should =
+have
+the same behavior, since it's better to rely on cache coherence than lockin=
+g the
+memory bus.
+
+For instance, the other popular architectures supported by Linux use the LR=
+/SC
+strategy for atomic operations (tested on ARM, POWER, RISCV) and IIRC the
+LoadReserve slow part waits for the cacheline exclusivity, which is already
+already exclusive in this perCPU structure.
+
+
+> but in general not having any spinlocks is so much better.
+
+I agree that spinlocks may bring contention, which is not ideal in many cas=
+es.
+In this case, though, it may not be a big issue, due to very rare remote ac=
+cess
+in the structure, for the usual case (non-pre-OOMCG)
+
+>=20
+> >=20
+> > So moving from schedule_work_on() to spinlocks will save 2 context swit=
+ches per
+> > cpu every time drain_all_stock() is called.
+> >=20
+> > On the remote cpu side, my tests point that doing the remote draining i=
+s faster
+> > than scheduling a local draining, so it's also a gain.
+> >=20
+> > Also, IIUC the possible contention in the spinlock approach happens onl=
+y on
+> > page-faulting and syscalls, versus the schedule_work_on() approach that=
+ can
+> > interrupt user workload at any time.=C2=A0
+> >=20
+> > In fact, not interrupting the user workload in isolated cpus is just a =
+bonus of
+> > using spinlocks.
+>=20
+> I believe it significantly depends on the preemption model: you're right =
+regarding
+> fully preemptive kernels, but with voluntary/none preemption it's exactly=
+ opposite:
+> the draining work will be executed at some point later (probably with 0 c=
+ost),
+
+So, in case of voluntary/none preemption with some free cpu time.=20
+
+> while the remote access from another cpu will potentially cause delays on=
+ the
+> spin lock as well as a need to refill the stock.
+
+But if there is some free CPU time, what is the issue of some (potential) d=
+elays
+due to spinlock contention?
+
+I am probably missing the whole picture, but when I think of performance
+improvement, I think on doing more with the same cputime. If we can use fre=
+e
+cputime to do stuff later, it's only fair to also use it in case of content=
+ion,
+right?
+
+I know there are some cases that may need to be more previsible (mostly RT)=
+, but
+when I think of memory allocation, I don't expect it to always take the sam=
+e
+time (as there are caches, pre-OOM, and so)
+
+Also, as previously discussed, in case of a busy cpu, the spinlock approach=
+ will
+probably allow more work to be done.
+
+>=20
+> Overall I'd expect a noticeable performance regression from an introducti=
+on of
+> spin locks and remote draining. Maybe not on all platforms, but at least =
+on some.
+> That's my main concern.
+>=20
+
+I see.=20
+For the platform I have tested (x86) I noticed better overall performance o=
+n
+spinlocks than upstream solution. For other popular platforms, I have brief=
+ly
+read some documentation on locking/atomicity and I think we may keep the
+performance gains.
+
+But to be sure, I could retake the tests on other platforms, such as ARM, P=
+OWER,
+RISCV, and so. Or even perform extra suggested tests.
+
+With that info, would you feel less concerned about a possible change in me=
+mcg
+pcp cache locking scheme?
+
+
+>  And I don't think the problem we're aiming to solve here
+> justifies this potential regression.
+>=20
+
+To be strict, the isolated cpu scheduling problem is already fixed by the
+housekeeping patch (with some limitations).=C2=A0
+
+At this point, I am trying to bring focus to a (possible) performance
+improvement on the memcg pcp cache locking system.
+
+
+> Thanks!
+>=20
+
+Thank you for helping me better understand your arguments and concerns.
+I really appreciate it!
+
+Best regards,
+Leo
 
