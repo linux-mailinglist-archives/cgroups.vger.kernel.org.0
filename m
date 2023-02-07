@@ -2,129 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794EF68D75C
-	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 13:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9FB68DAC5
+	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 15:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjBGM7F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Feb 2023 07:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
+        id S232605AbjBGO3B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Feb 2023 09:29:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbjBGM7E (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 07:59:04 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8653D1B56D;
-        Tue,  7 Feb 2023 04:59:03 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1E96738DC1;
-        Tue,  7 Feb 2023 12:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1675774742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7QoTLoXlIMxSw37JX85ExzUtBnHWAzOyLQ2c0uIpTLM=;
-        b=IgskfTMKEaO1jmC/N1nUWksgS2w7L8hHtYNz/l/0AgYHAEeL8SvjUTb1X8N2aT+oc21fQK
-        uVxDNfqkoggQQalEcTuNbwT7BnJg3edJ2qvl5KTiMunxb80wXQkiLAlWEaNbjCA56AE9lC
-        dWFgdQMn5ORKYrhQw9DZoNFkuARlRtw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BCE7513467;
-        Tue,  7 Feb 2023 12:59:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sMA0LRVL4mMdZQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 07 Feb 2023 12:59:01 +0000
-Date:   Tue, 7 Feb 2023 13:59:00 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Leonardo <leobras@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] sched/isolation: Merge individual nohz_full features
- into a common housekeeping flag
-Message-ID: <20230207125900.GA24523@blackbody.suse.cz>
-References: <20230203232409.163847-1-frederic@kernel.org>
- <20230203232409.163847-2-frederic@kernel.org>
- <20230206155107.GA31453@blackbody.suse.cz>
- <Y+I61dp5qPkWK4s2@lothringen>
+        with ESMTP id S231455AbjBGO3B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 09:29:01 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50DD100
+        for <cgroups@vger.kernel.org>; Tue,  7 Feb 2023 06:28:59 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id mi9so15143888pjb.4
+        for <cgroups@vger.kernel.org>; Tue, 07 Feb 2023 06:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GVbHcngcrxb+EtKZ7t6pGqbRT5EixlZslzmjZrbJg0w=;
+        b=aKxw9JI4eNRmyEHa8pZiz59fi5N4wmsEKjVGoh78GkaeojSICmHq3P/0QQJjtCGoWY
+         tVUtigRisgv/MaRvcsGvEaqU5XmI7siMb3JEJnqmaq2u6k0l1sDvsFB15Cb3uF8PyZnT
+         /lp77ze+OK18ZTdBsQRqjUyC9LLE2R/xvF10LbmVqHfJv+TZlYTm7yhVjWnSnaQ84Pyk
+         dP7pEXBu+ifEiQwpYfRYaQau+ZxgsvtXeyCfxTRkBkXPmZVSeu9YejJ+1MaIfZBocaeo
+         Nlz2geKB6sc8dNPfmPhlRaSX7xgjR7f/h34Q41hurGXg2yT6yNMdJQIYKFDQOqi2K+We
+         zc4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GVbHcngcrxb+EtKZ7t6pGqbRT5EixlZslzmjZrbJg0w=;
+        b=AS/MIFR82QJEn96Z4XCmO8HEsdg9g9LeWLyy8PLgI6fOTrPylcRmTgoQagp2RfUBzc
+         y5Y2vmnEu9cKR75tmKh8coDZjlrx1WheucR46jj/3RqJh5OqvQIVqDA20+A5QzpCL+R9
+         jBk2Wvye4aCX0dzIm2hrhqE7/iRcErOUwaYpek610ftNmS3C3SGT2gcfW6NT7UBhcm5N
+         cqOfJ5oHGfvzU9+1X6FgxbYVTaHYr3S40QLfNfKihYVcCpWz8P03UEhA9LVxOpvUKPJm
+         1s70axuXlgmku/R1NxrQlVq02ypcnafClxqptwf+PUEx0UzoYK46oouuBLkMHRp+/ukZ
+         znxA==
+X-Gm-Message-State: AO0yUKUMiElWPhtZH09w6GeQkLChU53amHJNyHD7j1c2Py/EBZy8KkEX
+        PKijauNN0Lj4X9280NS/zF2PH7jLOmTz2ufW
+X-Google-Smtp-Source: AK7set9MKzN9TnSmA0Lxp77fPjhgxhnGyzjVDYWLWGw+37wFdUVt/E4zaet+bYlKWvMXhVTK++Snvg==
+X-Received: by 2002:a05:6a20:8f17:b0:b6:7df3:4cb2 with SMTP id b23-20020a056a208f1700b000b67df34cb2mr4265712pzk.4.1675780139269;
+        Tue, 07 Feb 2023 06:28:59 -0800 (PST)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id b205-20020a621bd6000000b0058bc37f3d1csm9279979pfb.44.2023.02.07.06.28.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Feb 2023 06:28:58 -0800 (PST)
+Message-ID: <eff3cc48-7279-2fbf-fdbd-f35eff2124d0@kernel.dk>
+Date:   Tue, 7 Feb 2023 07:28:56 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <Y+I61dp5qPkWK4s2@lothringen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 09/19] io_uring: convert to use vm_account
+Content-Language: en-US
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
+        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
+        mkoutny@suse.com, daniel@ffwll.ch,
+        "Daniel P . Berrange" <berrange@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
+ <44e6ead48bc53789191b22b0e140aeb82459e75f.1675669136.git-series.apopple@nvidia.com>
+ <52d41a7e-1407-e74f-9206-6dd583b7b6b5@kernel.dk> <87k00unusm.fsf@nvidia.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <87k00unusm.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 2/6/23 6:03?PM, Alistair Popple wrote:
+> 
+> Jens Axboe <axboe@kernel.dk> writes:
+> 
+>> On 2/6/23 12:47?AM, Alistair Popple wrote:
+>>> Convert io_uring to use vm_account instead of directly charging pages
+>>> against the user/mm. Rather than charge pages to both user->locked_vm
+>>> and mm->pinned_vm this will only charge pages to user->locked_vm.
+>>
+>> Not sure how we're supposed to review this, when you just send us 9/19
+>> and vm_account_release() is supposedly an earlier patch in this series.
+>>
+>> Either CC the whole series, or at least the cover letter, core parts,
+>> and the per-subsystem parts.
+> 
+> Ok, thanks. Will be sure to add everyone to the cover letter and patch
+> 01 when I send the next version.
+> 
+> For reference the cover letter is here:
+> 
+> https://lore.kernel.org/linux-mm/cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com/
+> 
+> And the core patch that introduces vm_account is here:
+> 
+> https://lore.kernel.org/linux-mm/e80b61561f97296a6c08faeebe281cb949333d1d.1675669136.git-series.apopple@nvidia.com/
+> 
+> No problem if you want to wait for the resend/next version before
+> taking another look though.
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, that helps. Like listed in the cover letter, I also have to
+agree that this is badly named. It's way too generic, it needs to have a
+name that tells you what it does. There's tons of accounting, you need
+to be more specific.
 
-On Tue, Feb 07, 2023 at 12:49:41PM +0100, Frederic Weisbecker <frederic@kernel.org> wrote:
-> But what do we need these annotations for? The only outcome I've ever
-> seen with these is that it confuses everyone.
+Outside of that, we're now doubling the amount of memory associated with
+tracking this. That isn't necessarily a showstopper, but it is not
+ideal. I didn't take a look at the other conversions (again, because
+they were not sent to me), but seems like the task_struct and flags
+could just be passed in as they may very well be known to many/most
+callers?
 
-Take that as a note of a lone actor then who found it useful documenting
-relations between various parts of the code.
+-- 
+Jens Axboe
 
-> This way I can add the support for each part smoothly.
-
-Yeah, that makes sense.
-
-> For example first patch moves HK_TYPE_TIMER to HK_TYPE_KERNEL_NOISE
-> and unbound timers are supported by cpuset.kernel_noise, second patch
-> moves HK_TYPE_WQ to HK_TYPE_KERNEL_NOISE and unbound workqueues are
-> supported by cpuset.kernel_noise, etc until all of them turned by
-> nohz_full= are supported...
-
-So does this mean you'll re-introduce the finer grained HK_* flags
-again?
-
-The idea (not only mine?) is that this would extend
-cpuset.cpus.partition that only allows HK_TYPE_DOMAIN analogy. The
-mapping to individual flags may not be exposed to users. The graduality
-could be achieved by adding more flags under user_exposed_term.
-
-Just to be on the same page -- that's how I understand it, the original
-HK_* resolution turned out impractical for users and that's why the
-direction is towards some loose combinations representing user
-intentions. Is that right?
-
-
-Cheers,
-Michal
-
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHQEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY+JLBQAKCRAkDQmsBEOq
-udOKAPdJq+O7uJgDbO4QNyCO7NcKnOeMid700809Y9NpPfptAP94KF/OZau1bPKP
-nGKv3/uKXc7NKO/TqZ2HmKeGpdNzDg==
-=vDYK
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
