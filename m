@@ -2,122 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DFD68DE76
-	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 18:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B951A68DEC8
+	for <lists+cgroups@lfdr.de>; Tue,  7 Feb 2023 18:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbjBGRFo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Feb 2023 12:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
+        id S230207AbjBGRVV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Feb 2023 12:21:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbjBGRFm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 12:05:42 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B423D936
-        for <cgroups@vger.kernel.org>; Tue,  7 Feb 2023 09:05:38 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id j17so4016980ioa.9
-        for <cgroups@vger.kernel.org>; Tue, 07 Feb 2023 09:05:38 -0800 (PST)
+        with ESMTP id S229738AbjBGRVU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Feb 2023 12:21:20 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E271659F2
+        for <cgroups@vger.kernel.org>; Tue,  7 Feb 2023 09:21:18 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id z17so3066275ilm.7
+        for <cgroups@vger.kernel.org>; Tue, 07 Feb 2023 09:21:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RVqRghfkJYuM2PO4hknX+k72h52RQ4rzy+E+T+6Adgk=;
-        b=NrJ1K2UoJ7Rjni9tW6A0bOtgmmUrFQgp/gxeUvvugNQ779Tmwsvw5KYFn9fyaEzNI2
-         /5G3kPoaS3H1IpYLMjHsrXUlf/64rBtMzO6PBpX5X0DGSV02+wINR6dB4vVaXy45K41f
-         XNWxuGObC9U+oBPPi4D9GjlGrfjBdbY/vkPRO8HuBhCuU5uC8S5SDH27CWFzuysxygw7
-         RNXTxobeIhbufFscikOA/5TWQSQPVjJfvpiqfsSdwBcBNivb7pG1aclHAeZw9s/OSTFB
-         nydAWL8A6IzFP+jEPVNi8grdst9njJIFvsLR2YuL8FPMKspueF6CAze9GhUwyc6+9ZeH
-         zprQ==
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VMaLavanXS/g3XR3klgJ+AXxx5vAw+8OAiDcCfQmZ38=;
+        b=2hB7T/Tz8d1WAzTpONaDpUxhkaEVNbh0h9B8xkNZvMe43HL03tD7YHvce0HxfrvSHK
+         27TQB0k86z1+5j3w7l/y3jAOB44wuDACRwfuKfwiJN/nidqs5p29wXBUM66DXkWXEycp
+         cMWJuan9yazhuWeUKcH+IHOSqbxYNqlXD5NKddeMraXgh6GEXjdlHlHpJyW7vDpWXoDQ
+         L7leV7jz/f1xn0D1aufsFqCWMrQ/UZpU6CJ5rRTtpdlr5rsBNLqkGF0Fw8pAnEBkHHct
+         31HWrimj50t7Wu8Ne4X4ZrZcrspXj4vtQJqA7m7G8Puhuc971lLRbiah8iZFSsg9u6RA
+         55Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RVqRghfkJYuM2PO4hknX+k72h52RQ4rzy+E+T+6Adgk=;
-        b=Ootjv+C6p3dQCFCeRKjyKqe4LB+LcRUXNJ6qYKWXF0sS2fxXhhq+Ooev2uUpMyt8lZ
-         9ItaupwCEkymIF98QysWaMTgDPQ7XGsiglG20RafpClPuHRbrzMK25SW3sTumfTu1970
-         l02N7WDwDBx+fchnvQbNHUV3AAzYeZC3xJ6XYKvm6TputqYxjkuSYLTH0bchhBjgOAxx
-         Vl7678lpbbKfn/UUWlQIEbH+puZUUs2lsLw9mHgmpqyxrgNzMeaThZwO9O2oCEk3vmu/
-         2StBE5wDM8GrXcDU6/spV8WKEGCGqNeuSTaLT/xcHSoOailABc7ETLP4oaTSi7lw0nhR
-         Na0w==
-X-Gm-Message-State: AO0yUKV5umzYRUHHnhmpe7GepIklFc/PvZ5ffyP/hbg362ni8iEdg4YD
-        tCqwe0M66a2OIjpGgJVvjYboQw==
-X-Google-Smtp-Source: AK7set+xmdmUOHgOUZAwmkd+Yvp0LrH9xa5eKR3kv5ts8SsjojKhLGP0LY4aV6GLlDuu29ezIkGDJA==
-X-Received: by 2002:a6b:1545:0:b0:718:2903:780f with SMTP id 66-20020a6b1545000000b007182903780fmr3019564iov.2.1675789537640;
-        Tue, 07 Feb 2023 09:05:37 -0800 (PST)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id j1-20020a02cb01000000b0039e98b2fe5dsm4605239jap.179.2023.02.07.09.05.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Feb 2023 09:05:37 -0800 (PST)
-Message-ID: <53816439-6473-1c4f-2134-02cd1c46cfe8@kernel.dk>
-Date:   Tue, 7 Feb 2023 10:05:35 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 09/19] io_uring: convert to use vm_account
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhubbard@nvidia.com, tjmercier@google.com, hannes@cmpxchg.org,
-        surenb@google.com, mkoutny@suse.com, daniel@ffwll.ch,
-        "Daniel P . Berrange" <berrange@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
- <44e6ead48bc53789191b22b0e140aeb82459e75f.1675669136.git-series.apopple@nvidia.com>
- <52d41a7e-1407-e74f-9206-6dd583b7b6b5@kernel.dk> <87k00unusm.fsf@nvidia.com>
- <eff3cc48-7279-2fbf-fdbd-f35eff2124d0@kernel.dk>
- <Y+JmdMJhPEGN0Zw+@nvidia.com>
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VMaLavanXS/g3XR3klgJ+AXxx5vAw+8OAiDcCfQmZ38=;
+        b=KsAeU5A/TZEka04qpRaTNwOSYCrFQUHed6kxSKARODjLdd+oA3mtzb+TI/r+cMzqxj
+         Vi2b0UMivamnmZQLOxPFgyE4ft/5A3fvhcxMOwrAPc4FRsHzK8ZoEUCH+rXbHjbCujI6
+         JSvxVmrLOwyD5JiYatznk+XCn1CnV80ZVvknMZ/vtGoT1QVtCBjKj8oxsTqrxPCcwV2E
+         AeIXPe22FNvXumW8L/3Hb8Rg/AP8VSqq54KEn5UNV4MhjoovqduHkgGWefWQ0gPwTtET
+         HS5slCO6NIE8pwj4MEjVHIyXMmjLyKCIWX+P81uTCz0nTgOKqohf9NMNF3TTWpZetswd
+         hXYw==
+X-Gm-Message-State: AO0yUKUinN2w0A9V7FgoMguet3xmdrypysbNEfhQU/OTS8VTa5At9UT5
+        e3UXNsID70GTFPWyEfxf7lYdEA==
+X-Google-Smtp-Source: AK7set/maPiAXbvZYUNHIhip1EuI2XjwF3XkL6fwc5FCqiezmpvNiqijmluX8zrB+uL3EvqJCHmnUA==
+X-Received: by 2002:a92:d851:0:b0:313:d6b8:dc30 with SMTP id h17-20020a92d851000000b00313d6b8dc30mr3729931ilq.0.1675790478156;
+        Tue, 07 Feb 2023 09:21:18 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id s10-20020a02cf2a000000b00374bf3b62a0sm4529598jar.99.2023.02.07.09.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Feb 2023 09:21:17 -0800 (PST)
 From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <Y+JmdMJhPEGN0Zw+@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
+To:     jack@suse.cz, paolo.valente@linaro.org, tj@kernel.org,
+        josef@toxicpanda.com, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+In-Reply-To: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
+References: <20230202134913.2364549-1-yukuai1@huaweicloud.com>
+Subject: Re: [PATCH -next v3] block, bfq: cleanup 'bfqg->online'
+Message-Id: <167579047693.46818.10367166447142980266.b4-ty@kernel.dk>
+Date:   Tue, 07 Feb 2023 10:21:16 -0700
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/7/23 7:55?AM, Jason Gunthorpe wrote:
-> On Tue, Feb 07, 2023 at 07:28:56AM -0700, Jens Axboe wrote:
+
+On Thu, 02 Feb 2023 21:49:13 +0800, Yu Kuai wrote:
+> After commit dfd6200a0954 ("blk-cgroup: support to track if policy is
+> online"), there is no need to do this again in bfq.
 > 
->> Outside of that, we're now doubling the amount of memory associated with
->> tracking this. That isn't necessarily a showstopper, but it is not
->> ideal. I didn't take a look at the other conversions (again, because
->> they were not sent to me), but seems like the task_struct and flags
->> could just be passed in as they may very well be known to many/most
->> callers?
+> However, 'pd->online' is not protected by 'bfqd->lock', in order to make
+> sure bfq won't see that 'pd->online' is still set after bfq_pd_offline(),
+> clear it before bfq_pd_offline() is called. This is fine because other
+> polices doesn't use 'pd->online' and bfq_pd_offline() will move active
+> bfqq to root cgroup anyway.
 > 
-> For places doing the mm accounting type it cannot use the task struct
-> as the underlying mm can be replaced and keep the task, IIRC.
-> 
-> We just had a bug in VFIO related to this..
-> 
-> If we could go back from the mm to the task (even a from a destroyed
-> mm though) that might work to reduce storage?
+> [...]
 
-Then maybe just nest them:
+Applied, thanks!
 
-struct small_one {
-	struct mm_struct *mm;
-	struct user_struct *user;
-};
+[1/1] block, bfq: cleanup 'bfqg->online'
+      commit: f37bf75ca73d523ebaa7ceb44c45d8ecd05374fe
 
-struct big_one {
-	struct small_one foo;
-	struct task_struct *task;
-	enum vm_account_flags flags;
-};
-
-and have the real helpers deal with small_one, and wrappers around that
-taking big_one that just passes in the missing bits. Then users that
-don't need the extra bits can just use the right API.
-
+Best regards,
 -- 
 Jens Axboe
+
+
 
