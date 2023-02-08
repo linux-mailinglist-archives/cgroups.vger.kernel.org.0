@@ -2,113 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5A868F488
-	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 18:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B3768F627
+	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 18:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjBHRaM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Feb 2023 12:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        id S231195AbjBHRxq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Feb 2023 12:53:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbjBHRaA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 12:30:00 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D284697;
-        Wed,  8 Feb 2023 09:29:59 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B79B11FF10;
-        Wed,  8 Feb 2023 17:29:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1675877397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fNT7NX0+hT2aQtpy7b1M6dknJlluQx/yb2v06LJSz4M=;
-        b=sQ8cUC9PcQvWDu0lRxPN9duoXTBMmUEOh6UcpBdECsy0vXbOypH3BJoor9HNZmolDykWdc
-        TMP7tWJSYqYNS076G5wDJvHdCGx8YwFfi5J8FOVd7mm/GafpEkYcKAs/yGrkAIHWJCoKyF
-        OwspVtVsMA3fItc7ZI47R3eOL+bU9kg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A58213425;
-        Wed,  8 Feb 2023 17:29:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id m+g0HBXc42NlcgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 08 Feb 2023 17:29:57 +0000
-Date:   Wed, 8 Feb 2023 18:29:56 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Kairui Song <kasong@tencent.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kairui Song <ryncsn@gmail.com>
-Subject: Re: [PATCH 2/2] sched/psi: iterate through cgroups directly
-Message-ID: <20230208172956.GF24523@blackbody.suse.cz>
-References: <20230208161654.99556-1-ryncsn@gmail.com>
- <20230208161654.99556-3-ryncsn@gmail.com>
+        with ESMTP id S231182AbjBHRxp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 12:53:45 -0500
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BAB59E2;
+        Wed,  8 Feb 2023 09:53:44 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id k13so20227761plg.0;
+        Wed, 08 Feb 2023 09:53:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UHYPrSiTkVKIlfo8HfMdMKbV5juD4qgKqM8oSnLweE8=;
+        b=sQwEsm+G5eaUbb7aY1mSz7DJb8FYCFum2/YVoB4IJIWjliqWRFDlUam0z9NiKPYfl8
+         1tx0ZjD+WdqUjwWbtzjxx7ER0S2E5GXcsunYeS4CrkWjR9XYMWLqDJ4nEvPJCSNqIvKb
+         gfN6bySy569/MsWsXFEAkVF4qIQST4IGSFtaJH+fsb9We1LUyqwXmJ3fpzv1DjUV6AIa
+         PSgDdeytsXpAHk5wZ2tP94Rpr4UZo8amFj1z7QqvKjnOUKQEtRiAwf74C3i1O99Tgher
+         6dsKD1+ZmRXMW33Qm45LSgQRcu6PLgAZi8GhupiKbkeyVEY76bLEapaRwoODq13AOYgW
+         mzMw==
+X-Gm-Message-State: AO0yUKVCqbh/42wON6JxA3liBwlzgya8lCkqcJMjXdGNC+g/UpnwRqxD
+        1plw+3ptQzc+rGEA/FGB//Y=
+X-Google-Smtp-Source: AK7set/GrvVfRVcZ26t5iBnwWqMEPtJBrPM9dsurSPWoOG+E6492+ASW9DmosYVxi30oZtwSF3UQFQ==
+X-Received: by 2002:a17:902:e1c4:b0:195:e92e:c4d3 with SMTP id t4-20020a170902e1c400b00195e92ec4d3mr5589893pla.46.1675878824157;
+        Wed, 08 Feb 2023 09:53:44 -0800 (PST)
+Received: from ?IPV6:2620:15c:211:201:869f:66a2:40c:445d? ([2620:15c:211:201:869f:66a2:40c:445d])
+        by smtp.gmail.com with ESMTPSA id u2-20020a170902a60200b001962858f990sm11370358plq.164.2023.02.08.09.53.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Feb 2023 09:53:43 -0800 (PST)
+Message-ID: <7fcd4c38-ccbe-6411-e424-a57595ad9c0b@acm.org>
+Date:   Wed, 8 Feb 2023 09:53:41 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FoLtEtfbNGMjfgrs"
-Content-Disposition: inline
-In-Reply-To: <20230208161654.99556-3-ryncsn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] blk-ioprio: Introduce promote-to-rt policy
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     Hou Tao <houtao@huaweicloud.com>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, houtao1@huawei.com
+References: <20230201045227.2203123-1-houtao@huaweicloud.com>
+ <8c068af3-7199-11cf-5c69-a523c7c22d9a@acm.org>
+ <4f7dcb3e-2d5a-cae3-0e1c-a82bcc3d2217@huaweicloud.com>
+ <b6b3c498-e90b-7d1f-6ad5-a31334e433ae@acm.org>
+ <beb7782e-72a4-c350-3750-23a767c88753@huaweicloud.com>
+ <aedc240d-7c9e-248a-52d2-c9775f3e8ca1@acm.org>
+ <20230208134345.77bdep3kzp52haxu@quack3>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230208134345.77bdep3kzp52haxu@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 2/8/23 05:43, Jan Kara wrote:
+> On Fri 03-02-23 11:45:32, Bart Van Assche wrote:
+>> On 2/2/23 17:48, Hou Tao wrote:
+>>> I don't get it on how to remove IOPRIO_POL_PROMOTION when calculating the final
+>>> ioprio for bio. IOPRIO_POL_PROMOTION is not used for IOPRIO_CLASS values but
+>>> used to determinate on how to calculate the final ioprio for bio: choosing the
+>>> maximum or minimum between blkcg ioprio and original bio bi_ioprio.
+>>
+>> Do the block layer code changes shown below implement the functionality
+>> that you need?
+> 
+> Just one question guys: So with my a78418e6a04c ("block: Always initialize
+> bio IO priority on submit") none-to-rt policy became effectively a noop as
+> Hou properly noticed. Are we aware of any users that were broken by this?
+> Shouldn't we rather fix the code so that none-to-rt starts to operate
+> correctly again? Or maybe change the none-to-rt meaning to be actually
+> promote-to-rt?
+> 
+> I have to admit I'm wondering a bit what was the intended usecase behind
+> the introduction of none-to-rt policy. Can someone elaborate? promote-to-rt
+> makes some sense to me - we have a priviledged cgroup we want to provide
+> low latency access to IO but none-to-rt just does not make much sense to
+> me...
 
---FoLtEtfbNGMjfgrs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Jan,
 
-On Thu, Feb 09, 2023 at 12:16:54AM +0800, Kairui Song <ryncsn@gmail.com> wrote:
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> Signed-off-by: Kairui Song <ryncsn@gmail.com>
+The test results I shared some time ago show that IOPRIO_CLASS_NONE was 
+the default I/O priority two years ago (see also 
+https://lore.kernel.org/linux-block/20210927220328.1410161-5-bvanassche@acm.org/). 
+The none-to-rt policy increases the priority of bio's that have not been 
+assigned an I/O priority to RT. Does this answer your question?
 
-Typo?
+Thanks,
 
-> -static inline struct psi_group *task_psi_group(struct task_struct *task)
-> +static inline struct psi_group *psi_iter_first(struct task_struct *task, void **iter)
->  {
->  #ifdef CONFIG_CGROUPS
-> -	if (static_branch_likely(&psi_cgroups_enabled))
-> -		return cgroup_psi(task_dfl_cgroup(task));
-> +	if (static_branch_likely(&psi_cgroups_enabled)) {
-> +		struct cgroup *cgroup = task_dfl_cgroup(task);
-> +
-> +		*iter = cgroup_parent(cgroup);
+Bart.
 
-This seems to skip a cgroup level -- maybe that's the observed
-performance gain?
-
-> +		return cgroup_psi(cgroup);
-> +	}
->  #endif
->  	return &psi_system;
->  }
-
-Michal
-
---FoLtEtfbNGMjfgrs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY+PcEQAKCRAkDQmsBEOq
-ucIeAQDi16jPR5cqfDFK6ypdLlSSoGcqc6FSu2lcsoDjuvDlnwD/ZU7UkoG2cu4M
-KNiNToxChBDynyJlkRovlFTYnxMSMwg=
-=Cy+H
------END PGP SIGNATURE-----
-
---FoLtEtfbNGMjfgrs--
