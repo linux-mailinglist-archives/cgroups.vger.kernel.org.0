@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF6068F306
-	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 17:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2477368F307
+	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 17:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbjBHQSP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Feb 2023 11:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
+        id S230216AbjBHQSQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Feb 2023 11:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbjBHQSJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 11:18:09 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF3F4C23;
-        Wed,  8 Feb 2023 08:17:54 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id ay1so13437065pfb.7;
-        Wed, 08 Feb 2023 08:17:54 -0800 (PST)
+        with ESMTP id S231348AbjBHQSM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 11:18:12 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A59FF0B;
+        Wed,  8 Feb 2023 08:17:59 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id on9-20020a17090b1d0900b002300a96b358so2826326pjb.1;
+        Wed, 08 Feb 2023 08:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=CLR2LM9bOa8i4/I3y14C5vPCowOG7PM+DN198h0+VAs=;
-        b=n87yh6bfvYPCTO66tuyXJeAxOYVtR5er8Gk+eHejQ2btZam1yZWJTqT47teGvikGq3
-         phDI1MRYT59/UiaAWI2BUi+1Q4j2oVxq2XK3Ke0b25NlcjfyH1ieBcd5CkQ0WEvDGV+h
-         vADCrHGRBuuIf+qtxatJPOUIB0SG13dfhTFR45h8JE/oJDeaTp08BAIcVxxJyQ8FmMI2
-         4ZJDP/ie/FD8+Aq9LP0zmJrEW1D3ByYmyWYsj+f4RYb8Pidapbovhyko7B6avejII/Pw
-         lqDBkiZyH32dIDkG+lGBV/qDRoa1L2jKFIsHQS71X8mq/n07nyo+77OHdYAd/MxQTufX
-         0Y0g==
+        bh=rjNC6wFN/kvZ967lkXCFksTWIITOJM7ioTGLG1QbJic=;
+        b=MdKSiLU3T+U7RUPheORPcLKDLU7zFgi4JZZPO1LrJGWnN8+HPuSKx7ePw8ypb9Qs0W
+         mpXCYrc7p5qhXcIbCsRigyx7kMGe9X3C44lSu0GmHPxQCCu58gB72jbOtj0qc998vhon
+         evvzSbzMewSQOWYxNXtV9KICNvWS0hKRJIN4AVQCp1YkBUiORLlUzSlk5ANksXsUGXZq
+         A4KLYpvE4IlSmiydyMn1eaR1YquD1rjUxNDuXedEjEDrw1dsP/FVHsq+ioSwpUg2/+r0
+         eI9qsm2QsVJN53M//OSKfKaSra1vXODyLgZbJK8i0mZu539ot4MpPPSeXvnPo9imEkf9
+         +Fyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CLR2LM9bOa8i4/I3y14C5vPCowOG7PM+DN198h0+VAs=;
-        b=SQE93ar+zSydvIo9RYzye9xzLkkI22AfyaQUGEYUuWbl0EaeabwnQfZRJH2ZUDaf53
-         sxPh8SEXg4wHKrANqLy1157bVdkYFF0gg3Qi1/3sKl43x62lJDbpVNxEupopTNS2dNTf
-         t7ijIlEF5KK73C8pO5dbGdgHlmgX+wupObcYGKukDiymZOtj4NiPsvKHXybqHSSZCdrh
-         WrQwo644Aap0yV5XgQHTKFtAY/Pjp2mQkuN1Us8Nws01c6EItqIBQ37jt8QWDYytghsl
-         6q10cKze+jieGgZeCGmiTb1ifLmZ1MiPyN3415FAWFYuAcmT9ygzqnn2kk3gibz4QaJp
-         YB2Q==
-X-Gm-Message-State: AO0yUKVm/YVrlClo2QhK/Z8CFCuccpMmSIOeAQMcVy1jbx2BzP7iGH+8
-        941uK/rSgilMdvCISJXPKQY=
-X-Google-Smtp-Source: AK7set/rF4RJH6cPn5P48nOywhRtC5HwV75dLt4GS3pJ46OGetRSMumoSCqGE3klXX1yNVB8Iw/bwQ==
-X-Received: by 2002:a62:14cc:0:b0:5a8:4e08:19f9 with SMTP id 195-20020a6214cc000000b005a84e0819f9mr442565pfu.26.1675873073933;
-        Wed, 08 Feb 2023 08:17:53 -0800 (PST)
+        bh=rjNC6wFN/kvZ967lkXCFksTWIITOJM7ioTGLG1QbJic=;
+        b=3v0xa+ZI9E0slaG8BQE1hoi0K+0AjthqXbsqLixprwiwlL7qmejnegO+tCuGtX15dY
+         37Jxpd8DU6p3IOwXb3JriHP4T/wGE3MGOVnLOJLlcY8nbxbSrpaVk82T1KqqM0bzYyxb
+         MPEgEUl3ecnsrApACHq1MbO06xvjNwMiW6OoqeY7YKWqntqeh2cj+m02ncDo9WyFg3Nx
+         1EJYnnuL8t7r+FBDjFhOPte7t7L6VP92SYd88wajq02UHOMz0y2SeW2XIPQkgOioUa6k
+         iaPyfNsV9qJA33/UgqyYpOP3L8oCJtWFkF/NP+CpL/AvliWM/aJJShbpak6EBkSIWrqH
+         l33Q==
+X-Gm-Message-State: AO0yUKWHTlS7bPLNzSBLLH7jRAWDY/5lVXyaTCLC6hi/2k17OTnPbe2S
+        uPNTosd0DxEWeWbA3RZD7Ps=
+X-Google-Smtp-Source: AK7set/3AgqRNgsUdAY27Bp/tc9VBO8LsrcTbsoafKyFKft47fAqfTxgd9UC6s7+kxgrWqifxahvkg==
+X-Received: by 2002:a05:6a21:9816:b0:bc:3290:5759 with SMTP id ue22-20020a056a21981600b000bc32905759mr5598182pzb.34.1675873078997;
+        Wed, 08 Feb 2023 08:17:58 -0800 (PST)
 Received: from KASONG-MB0.tencent.com ([115.171.40.195])
-        by smtp.gmail.com with ESMTPSA id s21-20020a056a00195500b0059252afc069sm11445485pfk.64.2023.02.08.08.17.49
+        by smtp.gmail.com with ESMTPSA id s21-20020a056a00195500b0059252afc069sm11445485pfk.64.2023.02.08.08.17.54
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 08 Feb 2023 08:17:53 -0800 (PST)
+        Wed, 08 Feb 2023 08:17:58 -0800 (PST)
 From:   Kairui Song <ryncsn@gmail.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Suren Baghdasaryan <surenb@google.com>
@@ -56,10 +56,11 @@ Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
         =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
         Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>
-Subject: [PATCH 1/2] sched/psi: simplify cgroup psi retrieving
-Date:   Thu,  9 Feb 2023 00:16:53 +0800
-Message-Id: <20230208161654.99556-2-ryncsn@gmail.com>
+        linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>,
+        Kairui Song <ryncsn@gmail.com>
+Subject: [PATCH 2/2] sched/psi: iterate through cgroups directly
+Date:   Thu,  9 Feb 2023 00:16:54 +0800
+Message-Id: <20230208161654.99556-3-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.35.2
 In-Reply-To: <20230208161654.99556-1-ryncsn@gmail.com>
 References: <20230208161654.99556-1-ryncsn@gmail.com>
@@ -78,47 +79,189 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Kairui Song <kasong@tencent.com>
 
-Since the only case where cgroup_psi should return psi_system instead of
-the cgroup's psi_group is the root cgroup, just set root cgroup's psi to
-point to psi_system to remove the if branch.
+psi_group->parent has the same hierarchy as the cgroup it's in.
+So just iterate through cgroup instead.
+
+By adjusting the iteration logic, save some space in psi_group
+struct, and the performance is actually better. I see a measurable
+performance gain using mmtests/perfpipe:
+
+(AVG of 100 test, ops/sec, the higher the better)
+KVM guest on a i7-9700:
+        psi=0         root cgroup   5 levels of cgroup
+Before: 59221         55352         47821
+After:  60100         56036         50884
+
+KVM guest on a Ryzen 9 5900HX:
+        psi=0         root cgroup   5 levels of cgroup
+Before: 144566        138919        128888
+After:  145812        139580        133514
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
+Signed-off-by: Kairui Song <ryncsn@gmail.com>
 ---
- include/linux/psi.h    | 2 +-
- kernel/cgroup/cgroup.c | 7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ include/linux/psi_types.h |  1 -
+ kernel/sched/psi.c        | 47 ++++++++++++++++++++++++++++-----------
+ 2 files changed, 34 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/psi.h b/include/linux/psi.h
-index b029a847def1..9c3a1638b618 100644
---- a/include/linux/psi.h
-+++ b/include/linux/psi.h
-@@ -33,7 +33,7 @@ __poll_t psi_trigger_poll(void **trigger_ptr, struct file *file,
- #ifdef CONFIG_CGROUPS
- static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
- {
--	return cgroup_ino(cgrp) == 1 ? &psi_system : cgrp->psi;
-+	return cgrp->psi;
+diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
+index 1e0a0d7ace3a..4066b846ce4a 100644
+--- a/include/linux/psi_types.h
++++ b/include/linux/psi_types.h
+@@ -154,7 +154,6 @@ struct psi_trigger {
+ };
+ 
+ struct psi_group {
+-	struct psi_group *parent;
+ 	bool enabled;
+ 
+ 	/* Protects data used by the aggregator */
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 8ac8b81bfee6..c74f8ce46f81 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -858,15 +858,34 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 		schedule_delayed_work(&group->avgs_work, PSI_FREQ);
  }
  
- int psi_cgroup_alloc(struct cgroup *cgrp);
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index c099cf3fa02d..1491d63b06b6 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -163,7 +163,12 @@ static struct static_key_true *cgroup_subsys_on_dfl_key[] = {
- static DEFINE_PER_CPU(struct cgroup_rstat_cpu, cgrp_dfl_root_rstat_cpu);
+-static inline struct psi_group *task_psi_group(struct task_struct *task)
++static inline struct psi_group *psi_iter_first(struct task_struct *task, void **iter)
+ {
+ #ifdef CONFIG_CGROUPS
+-	if (static_branch_likely(&psi_cgroups_enabled))
+-		return cgroup_psi(task_dfl_cgroup(task));
++	if (static_branch_likely(&psi_cgroups_enabled)) {
++		struct cgroup *cgroup = task_dfl_cgroup(task);
++
++		*iter = cgroup_parent(cgroup);
++		return cgroup_psi(cgroup);
++	}
+ #endif
+ 	return &psi_system;
+ }
  
- /* the default hierarchy */
--struct cgroup_root cgrp_dfl_root = { .cgrp.rstat_cpu = &cgrp_dfl_root_rstat_cpu };
-+struct cgroup_root cgrp_dfl_root = {
-+	.cgrp.rstat_cpu = &cgrp_dfl_root_rstat_cpu,
-+#ifdef CONFIG_PSI
-+	.cgrp.psi = &psi_system
++static inline struct psi_group *psi_iter_next(void **iter)
++{
++#ifdef CONFIG_CGROUPS
++	if (static_branch_likely(&psi_cgroups_enabled)) {
++		struct cgroup *cgroup = *iter;
++
++		if (cgroup) {
++			*iter = cgroup_parent(cgroup);
++			return cgroup_psi(cgroup);
++		}
++	}
 +#endif
-+};
- EXPORT_SYMBOL_GPL(cgrp_dfl_root);
++	return NULL;
++}
++
+ static void psi_flags_change(struct task_struct *task, int clear, int set)
+ {
+ 	if (((task->psi_flags & set) ||
+@@ -886,6 +905,7 @@ void psi_task_change(struct task_struct *task, int clear, int set)
+ {
+ 	int cpu = task_cpu(task);
+ 	struct psi_group *group;
++	void *iter;
+ 	u64 now;
  
- /*
+ 	if (!task->pid)
+@@ -895,16 +915,17 @@ void psi_task_change(struct task_struct *task, int clear, int set)
+ 
+ 	now = cpu_clock(cpu);
+ 
+-	group = task_psi_group(task);
++	group = psi_iter_first(task, &iter);
+ 	do {
+ 		psi_group_change(group, cpu, clear, set, now, true);
+-	} while ((group = group->parent));
++	} while ((group = psi_iter_next(&iter)));
+ }
+ 
+ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		     bool sleep)
+ {
+ 	struct psi_group *group, *common = NULL;
++	void *iter;
+ 	int cpu = task_cpu(prev);
+ 	u64 now = cpu_clock(cpu);
+ 
+@@ -915,7 +936,7 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		 * ancestors with @prev, those will already have @prev's
+ 		 * TSK_ONCPU bit set, and we can stop the iteration there.
+ 		 */
+-		group = task_psi_group(next);
++		group = psi_iter_first(prev, &iter);
+ 		do {
+ 			if (per_cpu_ptr(group->pcpu, cpu)->state_mask &
+ 			    PSI_ONCPU) {
+@@ -924,7 +945,7 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 			}
+ 
+ 			psi_group_change(group, cpu, 0, TSK_ONCPU, now, true);
+-		} while ((group = group->parent));
++		} while ((group = psi_iter_next(&iter)));
+ 	}
+ 
+ 	if (prev->pid) {
+@@ -957,12 +978,12 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 
+ 		psi_flags_change(prev, clear, set);
+ 
+-		group = task_psi_group(prev);
++		group = psi_iter_first(prev, &iter);
+ 		do {
+ 			if (group == common)
+ 				break;
+ 			psi_group_change(group, cpu, clear, set, now, wake_clock);
+-		} while ((group = group->parent));
++		} while ((group = psi_iter_next(&iter)));
+ 
+ 		/*
+ 		 * TSK_ONCPU is handled up to the common ancestor. If there are
+@@ -972,7 +993,7 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		 */
+ 		if ((prev->psi_flags ^ next->psi_flags) & ~TSK_ONCPU) {
+ 			clear &= ~TSK_ONCPU;
+-			for (; group; group = group->parent)
++			for (; group; group = psi_iter_next(&iter))
+ 				psi_group_change(group, cpu, clear, set, now, wake_clock);
+ 		}
+ 	}
+@@ -983,6 +1004,7 @@ void psi_account_irqtime(struct task_struct *task, u32 delta)
+ {
+ 	int cpu = task_cpu(task);
+ 	struct psi_group *group;
++	void *iter;
+ 	struct psi_group_cpu *groupc;
+ 	u64 now;
+ 
+@@ -991,7 +1013,7 @@ void psi_account_irqtime(struct task_struct *task, u32 delta)
+ 
+ 	now = cpu_clock(cpu);
+ 
+-	group = task_psi_group(task);
++	group = psi_iter_first(task, &iter);
+ 	do {
+ 		if (!group->enabled)
+ 			continue;
+@@ -1007,7 +1029,7 @@ void psi_account_irqtime(struct task_struct *task, u32 delta)
+ 
+ 		if (group->poll_states & (1 << PSI_IRQ_FULL))
+ 			psi_schedule_poll_work(group, 1, false);
+-	} while ((group = group->parent));
++	} while ((group = psi_iter_next(&iter)));
+ }
+ #endif
+ 
+@@ -1089,7 +1111,6 @@ int psi_cgroup_alloc(struct cgroup *cgroup)
+ 		return -ENOMEM;
+ 	}
+ 	group_init(cgroup->psi);
+-	cgroup->psi->parent = cgroup_psi(cgroup_parent(cgroup));
+ 	return 0;
+ }
+ 
 -- 
 2.39.1
 
