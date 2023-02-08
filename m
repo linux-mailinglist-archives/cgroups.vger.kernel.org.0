@@ -2,74 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF21468F7E8
-	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 20:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4611F68F7F9
+	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 20:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjBHTUQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Feb 2023 14:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        id S231142AbjBHTYX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Feb 2023 14:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbjBHTUP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 14:20:15 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032C951C5C
-        for <cgroups@vger.kernel.org>; Wed,  8 Feb 2023 11:20:14 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id f10so22123621qtv.1
-        for <cgroups@vger.kernel.org>; Wed, 08 Feb 2023 11:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tVsdwV9x8pCvaFEYs78XN22msEhvwisTMcb5e9dXsII=;
-        b=O6kVaBh7GObE5POHa29gOoPjHf+yuXp5oQfpBtiUifMGcHJWuXDxiiTxbvtaCgcrH+
-         JXah2sFTsfCPU48pxZ5bMHLg1HMXFgMfqHMpM/cWWqCsKhLgqTUGkOp4cb6aLR8jGhNu
-         ejbQJvhMQVJtuHlCo/RkjRqmjK9nUqyHtkdyQ+GT0BECHGXdE9GnfvG04xJT/5sHEPSY
-         aNUDDcNjFBPUWOsM025Xuh2orriC0VYUsNcI2pp58m6lCEfDCRvhjRumUPlFr6G7HpjM
-         xr1y7eZHQ/cyiD6xk5TPzxQmypGL31511zZg1leyx2uj5f8C3IloDdW2aznZiueZKmIl
-         5vqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tVsdwV9x8pCvaFEYs78XN22msEhvwisTMcb5e9dXsII=;
-        b=26bqEuodHm/JNPg4QDDWBUcCBDiyxK/fTZCQ5hjxKjwa8cMsztD3xy+mJj1ll/cA6D
-         tWGfb1Y9sMv2TT2lBhsDE1uFAP4g5mhLb4ZW556CARPkd+hQ3cWKef2HtXlZHJimGLBJ
-         SsIfv262Zs7NV52s5GbvoQT4sSigkPibcEXKul0x06WqtCdD2NDNlsVmLV8UrxhKb1Jv
-         tF+bGfg+CgrgRTNUBEtw3srs81BlcVlsLfBf+j0Rc7ar/fzAw8LNqb5xVqSyDN8Nj8Zg
-         FmqKs/ClrRLHNExfmKqfm36gwlbcHrp+Yv4YJAarHJlOIIUNpuGmwIFtWEhP7ZHRZycR
-         9lwQ==
-X-Gm-Message-State: AO0yUKUzXUVgWLtnIZdelSc4BWMHvl569ZZIwi7CJJlGgriDVpVA6JEu
-        S4p52tZD91Lxhi4LKtr8xxKLwA==
-X-Google-Smtp-Source: AK7set9lzFjqgGwoXDxheN/3g248yO9nOKJnVC3Cq4KAL1FLQNtSVpDunVhGiS4AAbt55CObJUPm7w==
-X-Received: by 2002:ac8:5f83:0:b0:3bb:7702:97f5 with SMTP id j3-20020ac85f83000000b003bb770297f5mr5925842qta.15.1675884013159;
-        Wed, 08 Feb 2023 11:20:13 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
-        by smtp.gmail.com with ESMTPSA id cr17-20020a05622a429100b003b63238615fsm11927364qtb.46.2023.02.08.11.20.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 11:20:12 -0800 (PST)
-Date:   Wed, 8 Feb 2023 14:20:12 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Kairui Song <kasong@tencent.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kairui Song <ryncsn@gmail.com>
-Subject: Re: [PATCH 2/2] sched/psi: iterate through cgroups directly
-Message-ID: <Y+P17OVZZWVpYIb0@cmpxchg.org>
-References: <20230208161654.99556-1-ryncsn@gmail.com>
- <20230208161654.99556-3-ryncsn@gmail.com>
- <20230208172956.GF24523@blackbody.suse.cz>
+        with ESMTP id S229517AbjBHTYW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 14:24:22 -0500
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F387D15C91
+        for <cgroups@vger.kernel.org>; Wed,  8 Feb 2023 11:24:19 -0800 (PST)
+Date:   Wed, 8 Feb 2023 11:23:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1675884258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P/TREvcTU2ZKZKzZHmQjoKV0cBls9RA3p0pPuU4/Cfg=;
+        b=dBHuAn91UmuMSd0dpLbfmhQmO74rioQZ9qO43NYOt/gaoWOf1GRawK2w6FVay9PPAa61eU
+        dxkHEk2s1GDr66AjfQnDBwGLmkzTL8Hu6BrqxP6MCCIigV/hadn5L4CjnTwCg8urlcoYVa
+        9usytnN742sp5xIxjPQIDIPFIm9NkTw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
+Message-ID: <Y+P2xp5BfmGh5Fin@P9FQF9L96D.corp.robot.car>
+References: <Y9FzSBw10MGXm2TK@tpad>
+ <Y9IvoDJbLbFcitTc@dhcp22.suse.cz>
+ <Y9LDAZmApLeffrT8@tpad>
+ <Y9LQ615H13RmG7wL@dhcp22.suse.cz>
+ <0122005439ffb7895efda7a1a67992cbe41392fe.camel@redhat.com>
+ <Y9j9BnMwfm4TJks7@tpad>
+ <Y9pd7AxAILUSHrpe@dhcp22.suse.cz>
+ <28e08669302ad1e7a41bdf8b9988de6a352b5fe1.camel@redhat.com>
+ <Y+AIOQy0HdVXCw8m@P9FQF9L96D>
+ <4b232f47e038ab6fcaa0114f73c28d4bf8799f84.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230208172956.GF24523@blackbody.suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+In-Reply-To: <4b232f47e038ab6fcaa0114f73c28d4bf8799f84.camel@redhat.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,58 +63,136 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 06:29:56PM +0100, Michal Koutný wrote:
-> On Thu, Feb 09, 2023 at 12:16:54AM +0800, Kairui Song <ryncsn@gmail.com> wrote:
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > Signed-off-by: Kairui Song <ryncsn@gmail.com>
+On Tue, Feb 07, 2023 at 12:18:01AM -0300, Leonardo Brás wrote:
+> On Sun, 2023-02-05 at 11:49 -0800, Roman Gushchin wrote:
+> > Hi Leonardo!
 > 
-> Typo?
+> Hello Roman,
+> Thanks a lot for replying!
 > 
-> > -static inline struct psi_group *task_psi_group(struct task_struct *task)
-> > +static inline struct psi_group *psi_iter_first(struct task_struct *task, void **iter)
-> >  {
-> >  #ifdef CONFIG_CGROUPS
-> > -	if (static_branch_likely(&psi_cgroups_enabled))
-> > -		return cgroup_psi(task_dfl_cgroup(task));
-> > +	if (static_branch_likely(&psi_cgroups_enabled)) {
-> > +		struct cgroup *cgroup = task_dfl_cgroup(task);
-> > +
-> > +		*iter = cgroup_parent(cgroup);
+> > 
+> > > Yes, but we are exchanging an "always schedule_work_on()", which is a kind of
+> > > contention, for a "sometimes we hit spinlock contention".
+> > > 
+> > > For the spinlock proposal, on the local cpu side, the *worst case* contention
+> > > is:
+> > > 1 - wait the spin_unlock() for a complete <percpu cache drain process>,
+> > > 2 - wait a cache hit for local per-cpu cacheline 
+> > > 
+> > > What is current implemented (schedule_work_on() approach), for the local
+> > > cpu side there is *always* this contention:
+> > > 1 - wait for a context switch,
+> > > 2 - wait a cache hit from it's local per-cpu cacheline,
+> > > 3 - wait a complete <percpu cache drain process>, 
+> > > 4 - then for a new context switch to the current thread.
+> > 
+> > I think both Michal and me are thinking of a more generic case in which the cpu
+> > is not exclusively consumed by 1 special process, so that the draining work can
+> > be executed during an idle time. In this case the work is basically free.
 > 
-> This seems to skip a cgroup level -- maybe that's the observed
-> performance gain?
+> Oh, it makes sense.
+> But in such scenarios, wouldn't the same happens to spinlocks?
+> 
+> I mean, most of the contention with spinlocks only happens if the remote cpu is
+> trying to drain the cache while the local cpu happens to be draining/charging,
+> which is quite rare due to how fast the local cpu operations are.
+> 
+> Also, if the cpu has some idle time, using a little more on a possible spinlock
+> contention should not be a problem. Right?
+> 
+> > 
+> > And the introduction of a spin_lock() on the hot path is what we're are concerned
+> > about. I agree, that on some hardware platforms it won't be that expensive, 
+> > 
+> 
+> IIRC most hardware platforms with multicore supported by the kernel should have
+> the same behavior, since it's better to rely on cache coherence than locking the
+> memory bus.
+> 
+> For instance, the other popular architectures supported by Linux use the LR/SC
+> strategy for atomic operations (tested on ARM, POWER, RISCV) and IIRC the
+> LoadReserve slow part waits for the cacheline exclusivity, which is already
+> already exclusive in this perCPU structure.
+> 
+> 
+> > but in general not having any spinlocks is so much better.
+> 
+> I agree that spinlocks may bring contention, which is not ideal in many cases.
+> In this case, though, it may not be a big issue, due to very rare remote access
+> in the structure, for the usual case (non-pre-OOMCG)
 
-Hm, I don't think it does. It sets up *iter to point to the parent for
-the _next() call, but it returns task_dfl_cgroup()->psi. The next call
-does the same: cgroup = *iter, *iter = parent, return cgroup->psi.
+Hi Leonardo!
 
-It could be a bit more readable to have *iter always point to the
-current cgroup - but no strong preference either way from me:
+I made a very simple test: replaced pcp local_lock with a spinlock and ran
+a very simple kernel memory accounting benchmark (attached below) on
+my desktop pc (Intel Core i9-7940X).
 
-psi_groups_first(task, iter)
-{
-#ifdef CONFIG_CGROUPS
-	if (static_branch_likely(&psi_cgroups_enabled)) {
-		struct cgroup *cgroup = task_dfl_cgroup(task);
+Original (3 attempts):
+81341 us
+80973 us
+81258 us
 
-		*iter = cgroup;
-		return cgroup_psi(cgroup);
-	}
-#endif
-	return &psi_system;
-}
+Patched (3 attempts):
+99918 us
+100220 us
+100291 us
 
-psi_groups_next(iter)
-{
-#ifdef CONFIG_CGROUPS
-	if (static_branch_likely(&psi_cgroups_enabled)) {
-		struct cgroup *cgroup = *iter;
+This is without any contention and without CONFIG_LOCKDEP.
 
-		if (cgroup) {
-			*iter = cgroup_parent(cgroup);
-			return cgroup_psi(cgroup);
-		}
-	}
-	return NULL;
-#endif
-}
+Thanks!
+
+--
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 49f67176a1a2..bafd3cde4507 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6563,6 +6563,37 @@ static int memory_stat_show(struct seq_file *m, void *v)
+        return 0;
+ }
+
++static int memory_alloc_test(struct seq_file *m, void *v)
++{
++       unsigned long i, j;
++       void **ptrs;
++       ktime_t start, end;
++       s64 delta, min_delta = LLONG_MAX;
++
++       ptrs = kvmalloc(sizeof(void *) * 1024 * 1024, GFP_KERNEL);
++       if (!ptrs)
++               return -ENOMEM;
++
++       for (j = 0; j < 100; j++) {
++               start = ktime_get();
++               for (i = 0; i < 1024 * 1024; i++)
++                       ptrs[i] = kmalloc(8, GFP_KERNEL_ACCOUNT);
++               end = ktime_get();
++
++               delta = ktime_us_delta(end, start);
++               if (delta < min_delta)
++                       min_delta = delta;
++
++               for (i = 0; i < 1024 * 1024; i++)
++                       kfree(ptrs[i]);
++       }
++
++       kvfree(ptrs);
++       seq_printf(m, "%lld us\n", min_delta);
++
++       return 0;
++}
++
+ #ifdef CONFIG_NUMA
+ static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
+                                                     int item)
+@@ -6758,6 +6789,10 @@ static struct cftype memory_files[] = {
+                .name = "stat",
+                .seq_show = memory_stat_show,
+        },
++       {
++               .name = "test",
++               .seq_show = memory_alloc_test,
++       },
+ #ifdef CONFIG_NUMA
+        {
+                .name = "numa_stat",
