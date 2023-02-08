@@ -2,60 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4611F68F7F9
-	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 20:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454C368F7FC
+	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 20:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjBHTYX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Feb 2023 14:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
+        id S230167AbjBHTZW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Feb 2023 14:25:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjBHTYW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 14:24:22 -0500
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F387D15C91
-        for <cgroups@vger.kernel.org>; Wed,  8 Feb 2023 11:24:19 -0800 (PST)
-Date:   Wed, 8 Feb 2023 11:23:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1675884258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P/TREvcTU2ZKZKzZHmQjoKV0cBls9RA3p0pPuU4/Cfg=;
-        b=dBHuAn91UmuMSd0dpLbfmhQmO74rioQZ9qO43NYOt/gaoWOf1GRawK2w6FVay9PPAa61eU
-        dxkHEk2s1GDr66AjfQnDBwGLmkzTL8Hu6BrqxP6MCCIigV/hadn5L4CjnTwCg8urlcoYVa
-        9usytnN742sp5xIxjPQIDIPFIm9NkTw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] Introduce memcg_stock_pcp remote draining
-Message-ID: <Y+P2xp5BfmGh5Fin@P9FQF9L96D.corp.robot.car>
-References: <Y9FzSBw10MGXm2TK@tpad>
- <Y9IvoDJbLbFcitTc@dhcp22.suse.cz>
- <Y9LDAZmApLeffrT8@tpad>
- <Y9LQ615H13RmG7wL@dhcp22.suse.cz>
- <0122005439ffb7895efda7a1a67992cbe41392fe.camel@redhat.com>
- <Y9j9BnMwfm4TJks7@tpad>
- <Y9pd7AxAILUSHrpe@dhcp22.suse.cz>
- <28e08669302ad1e7a41bdf8b9988de6a352b5fe1.camel@redhat.com>
- <Y+AIOQy0HdVXCw8m@P9FQF9L96D>
- <4b232f47e038ab6fcaa0114f73c28d4bf8799f84.camel@redhat.com>
+        with ESMTP id S231821AbjBHTZV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 14:25:21 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACBB9010
+        for <cgroups@vger.kernel.org>; Wed,  8 Feb 2023 11:25:19 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id m12so22139088qth.4
+        for <cgroups@vger.kernel.org>; Wed, 08 Feb 2023 11:25:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NFlrkeEXgNWehBcAx33U4rHt/JekvgpyEDTdyrAYRpU=;
+        b=V22eJSdBMDmC4TCgyxOGFJrfM6rr9USfSzc03bCGt+fb1AGhUkoO4mPupY7BkmUPcW
+         9PLRYSREg9TZGrUb4untXaC0WGKlnYuiybeZG6+AEES7ANGcxhPrpvJFhYFt14ySsacP
+         zWZXSIDMuEuhKm492fjso5d4Crwy/54yXB4gdinpsDa9rrMoQL+vq94D3qXNLu1kbFqw
+         VZx/SG/pw5nT9PyCitWVS+8RXy1V9zlSbsPMp0/njff5Qd+Cx+5MGVA/bbKr8JtgDcNH
+         pjKTU/v0/+ZBzy5BZgvnetEVi41tw+lVU8tureVuK6l0DWCCnwmIZeWqP8euzinHhQcq
+         kQEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NFlrkeEXgNWehBcAx33U4rHt/JekvgpyEDTdyrAYRpU=;
+        b=3wsBKUDm7Xn+DokyH99f3+eF5EqRhQVBpNl/jlBKMsKvUj4USSLIh1IviS6U3Q3b4k
+         Iv72ExYbCSvtud5Njcfq9crSgC4Pyvb30oAPcey/91oyntAGBNPAMw3X/iRO9eakX5Ql
+         qMKk5BTTRYFoVEY5Hw2KHG7zY7JOhcih66uNDE9IUTQOGE+DMIW/3SHc6fRZxSo/G1/6
+         yUQZVjmvsbAxZn/usj/+/hxLNwDQV43JXkgBUZMSrM+HhxYTaHwhkz49wJZSvMhsf17P
+         iP6oaFXTrGRMVPksF8UjdY7D5qfgAfVVo+01m+Y09DdmHp0/RGdY44pbVTh1G5mnkHoW
+         XPJw==
+X-Gm-Message-State: AO0yUKWICYtFCFyo9zFxQj1ngqNeAmhyJWRSF1kwBaqU05zZR9LWt/Sd
+        V4YelJvzQl73THnQiNft9V2Tdg==
+X-Google-Smtp-Source: AK7set8XcNRm6tPbkByIqalkedbpySv8bjESt4jGk2jFPI2Hkasx9aKHrLecauBSzgUTWeuoxFut2A==
+X-Received: by 2002:ac8:7d4a:0:b0:3b4:a6af:a2f2 with SMTP id h10-20020ac87d4a000000b003b4a6afa2f2mr14968503qtb.34.1675884318724;
+        Wed, 08 Feb 2023 11:25:18 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id k6-20020ac80206000000b003b9bd163403sm7091871qtg.4.2023.02.08.11.25.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Feb 2023 11:25:18 -0800 (PST)
+Date:   Wed, 8 Feb 2023 14:25:17 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     tj@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH bpf-next 2/5] bpf: use bpf_map_kvcalloc in
+ bpf_local_storage
+Message-ID: <Y+P3HSLNR94wILP1@cmpxchg.org>
+References: <20230205065805.19598-1-laoar.shao@gmail.com>
+ <20230205065805.19598-3-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4b232f47e038ab6fcaa0114f73c28d4bf8799f84.camel@redhat.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+In-Reply-To: <20230205065805.19598-3-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,136 +76,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 07, 2023 at 12:18:01AM -0300, Leonardo Brás wrote:
-> On Sun, 2023-02-05 at 11:49 -0800, Roman Gushchin wrote:
-> > Hi Leonardo!
+On Sun, Feb 05, 2023 at 06:58:02AM +0000, Yafang Shao wrote:
+> Introduce new helper bpf_map_kvcalloc() for this memory allocation. Then
+> bpf_local_storage will be the same with other map's creation.
 > 
-> Hello Roman,
-> Thanks a lot for replying!
-> 
-> > 
-> > > Yes, but we are exchanging an "always schedule_work_on()", which is a kind of
-> > > contention, for a "sometimes we hit spinlock contention".
-> > > 
-> > > For the spinlock proposal, on the local cpu side, the *worst case* contention
-> > > is:
-> > > 1 - wait the spin_unlock() for a complete <percpu cache drain process>,
-> > > 2 - wait a cache hit for local per-cpu cacheline 
-> > > 
-> > > What is current implemented (schedule_work_on() approach), for the local
-> > > cpu side there is *always* this contention:
-> > > 1 - wait for a context switch,
-> > > 2 - wait a cache hit from it's local per-cpu cacheline,
-> > > 3 - wait a complete <percpu cache drain process>, 
-> > > 4 - then for a new context switch to the current thread.
-> > 
-> > I think both Michal and me are thinking of a more generic case in which the cpu
-> > is not exclusively consumed by 1 special process, so that the draining work can
-> > be executed during an idle time. In this case the work is basically free.
-> 
-> Oh, it makes sense.
-> But in such scenarios, wouldn't the same happens to spinlocks?
-> 
-> I mean, most of the contention with spinlocks only happens if the remote cpu is
-> trying to drain the cache while the local cpu happens to be draining/charging,
-> which is quite rare due to how fast the local cpu operations are.
-> 
-> Also, if the cpu has some idle time, using a little more on a possible spinlock
-> contention should not be a problem. Right?
-> 
-> > 
-> > And the introduction of a spin_lock() on the hot path is what we're are concerned
-> > about. I agree, that on some hardware platforms it won't be that expensive, 
-> > 
-> 
-> IIRC most hardware platforms with multicore supported by the kernel should have
-> the same behavior, since it's better to rely on cache coherence than locking the
-> memory bus.
-> 
-> For instance, the other popular architectures supported by Linux use the LR/SC
-> strategy for atomic operations (tested on ARM, POWER, RISCV) and IIRC the
-> LoadReserve slow part waits for the cacheline exclusivity, which is already
-> already exclusive in this perCPU structure.
-> 
-> 
-> > but in general not having any spinlocks is so much better.
-> 
-> I agree that spinlocks may bring contention, which is not ideal in many cases.
-> In this case, though, it may not be a big issue, due to very rare remote access
-> in the structure, for the usual case (non-pre-OOMCG)
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-Hi Leonardo!
-
-I made a very simple test: replaced pcp local_lock with a spinlock and ran
-a very simple kernel memory accounting benchmark (attached below) on
-my desktop pc (Intel Core i9-7940X).
-
-Original (3 attempts):
-81341 us
-80973 us
-81258 us
-
-Patched (3 attempts):
-99918 us
-100220 us
-100291 us
-
-This is without any contention and without CONFIG_LOCKDEP.
-
-Thanks!
-
---
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 49f67176a1a2..bafd3cde4507 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6563,6 +6563,37 @@ static int memory_stat_show(struct seq_file *m, void *v)
-        return 0;
- }
-
-+static int memory_alloc_test(struct seq_file *m, void *v)
-+{
-+       unsigned long i, j;
-+       void **ptrs;
-+       ktime_t start, end;
-+       s64 delta, min_delta = LLONG_MAX;
-+
-+       ptrs = kvmalloc(sizeof(void *) * 1024 * 1024, GFP_KERNEL);
-+       if (!ptrs)
-+               return -ENOMEM;
-+
-+       for (j = 0; j < 100; j++) {
-+               start = ktime_get();
-+               for (i = 0; i < 1024 * 1024; i++)
-+                       ptrs[i] = kmalloc(8, GFP_KERNEL_ACCOUNT);
-+               end = ktime_get();
-+
-+               delta = ktime_us_delta(end, start);
-+               if (delta < min_delta)
-+                       min_delta = delta;
-+
-+               for (i = 0; i < 1024 * 1024; i++)
-+                       kfree(ptrs[i]);
-+       }
-+
-+       kvfree(ptrs);
-+       seq_printf(m, "%lld us\n", min_delta);
-+
-+       return 0;
-+}
-+
- #ifdef CONFIG_NUMA
- static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
-                                                     int item)
-@@ -6758,6 +6789,10 @@ static struct cftype memory_files[] = {
-                .name = "stat",
-                .seq_show = memory_stat_show,
-        },
-+       {
-+               .name = "test",
-+               .seq_show = memory_alloc_test,
-+       },
- #ifdef CONFIG_NUMA
-        {
-                .name = "numa_stat",
+This looks good to me, but it could be helpful to explain the
+user-visible part of the bug somewhat, i.e. who is being charged right
+now for the allocation if it's not the map owner.
