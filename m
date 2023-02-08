@@ -2,107 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D358568F012
-	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 14:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B334968F304
+	for <lists+cgroups@lfdr.de>; Wed,  8 Feb 2023 17:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjBHNoe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Feb 2023 08:44:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
+        id S229781AbjBHQSD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Feb 2023 11:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjBHNoB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 08:44:01 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9CB3E0BC;
-        Wed,  8 Feb 2023 05:43:47 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 670021F8B4;
-        Wed,  8 Feb 2023 13:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1675863826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WXjM/s4PhtaTVW4aiVsTAUAHDUvK2wieBkKbPD6AkWk=;
-        b=2D010aeo1gILwXKexBL/H6YeET0ts/vT4M7BCnWuKvynMFw5ep7OJ0Xa25MaH/hW5tWE1+
-        xa+9zp/k13p2fvffFznXRS+HNe8kUteOBo0xNsodoVXkiaeo4cU3FYezFAf/GWmkQtOF8Z
-        UIhQ36DDm0ysHsF12At4bZ6c/bpL/hI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1675863826;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WXjM/s4PhtaTVW4aiVsTAUAHDUvK2wieBkKbPD6AkWk=;
-        b=HYuwSpnsyaTUN5uRxgrezcT+Rs0EYLoKxKybHs0UMdQxjwcVFJPGjarxi1zBkQ9ciulsX7
-        2Ek8luOYzvi3URBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56F441358A;
-        Wed,  8 Feb 2023 13:43:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Jq0bFRKn42OaDgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 08 Feb 2023 13:43:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A287EA06D5; Wed,  8 Feb 2023 14:43:45 +0100 (CET)
-Date:   Wed, 8 Feb 2023 14:43:45 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Hou Tao <houtao@huaweicloud.com>, linux-block@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, houtao1@huawei.com
-Subject: Re: [PATCH] blk-ioprio: Introduce promote-to-rt policy
-Message-ID: <20230208134345.77bdep3kzp52haxu@quack3>
-References: <20230201045227.2203123-1-houtao@huaweicloud.com>
- <8c068af3-7199-11cf-5c69-a523c7c22d9a@acm.org>
- <4f7dcb3e-2d5a-cae3-0e1c-a82bcc3d2217@huaweicloud.com>
- <b6b3c498-e90b-7d1f-6ad5-a31334e433ae@acm.org>
- <beb7782e-72a4-c350-3750-23a767c88753@huaweicloud.com>
- <aedc240d-7c9e-248a-52d2-c9775f3e8ca1@acm.org>
+        with ESMTP id S229512AbjBHQSC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Feb 2023 11:18:02 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CAD10FD;
+        Wed,  8 Feb 2023 08:17:50 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id ay1so13436913pfb.7;
+        Wed, 08 Feb 2023 08:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tzqq5s709T6l/w+9pi74lxvpe8BbE2WIdW1BUQhpDbQ=;
+        b=noT7JHKssXq5HEmHAxZXC82FcLwo5xxQtOr1L4ExZ113d77QoohSj2CtErhGNEPtNd
+         DmtzNw8zA34e6E8miyKkEx44kh6DySdQBGI/sfJoVSWoh3ZT6J2LfEVc2A9CFTscmziJ
+         x3UJauD26xL2f6CCeEOAjHeSy4ja/vBftnMF+2osuOJjr/S7tqbZbEPlMEOdx4zl13IM
+         BT05bjXcVILKBEJtE8WA7bJ7DzeL7Xp992kAjhLFuJ2Uden55LIMRM3meXYvwx8LmF8v
+         be44fgwHbzaZo8IeeFceI70f3HPCYFsMzdE8Nj2GelKZHOXurCHDdi8vSb/LDY1zAOPq
+         Zazw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tzqq5s709T6l/w+9pi74lxvpe8BbE2WIdW1BUQhpDbQ=;
+        b=cdfCrmaWkMM7uEhMXlWDkFHv6qYn/9bOvL6zvv4B9UBJKTyaciQFgaQ+ibhRqnrARl
+         NBsW10HCQkxr/ZhTXXXSAFReZ5bleUm//o14cEYrPba03q7txspApu3xNYQ45R/fX6Ps
+         qyCnLnJOSFBlSRn0V9ckaUyqTpdUDj+tAG1Qpa3tAd/UavQWDufy37xYNwqDmHvqvS+k
+         g2xqo6afAN7HAzU0OOkZb7fm0G5BwHzhI4v7XUvtT1BBeOaBRWtMBKQ1y2bZIslrswap
+         yoZkUIx7ZyZ8At0EQAAUVK+u3xuOU2wNoxO+vaSTZ3ZBpT+HPaGLz4CFT5SGxCBuPrxK
+         aMpw==
+X-Gm-Message-State: AO0yUKXOk4b2LUdUCnSn24EN2W1384/hE08uPPZ8YDWBQN5Pg7FFa77b
+        5gAHfmV61bMj2+Tw/13PlRc=
+X-Google-Smtp-Source: AK7set/8u8YZTzLDbOVqmCRq2fyR6KeVccW7laagNbwPWfKBO5yOmaNZEbg697DLNVa/Au+w8hgTew==
+X-Received: by 2002:a62:1792:0:b0:592:705a:5a5e with SMTP id 140-20020a621792000000b00592705a5a5emr6712838pfx.9.1675873069577;
+        Wed, 08 Feb 2023 08:17:49 -0800 (PST)
+Received: from KASONG-MB0.tencent.com ([115.171.40.195])
+        by smtp.gmail.com with ESMTPSA id s21-20020a056a00195500b0059252afc069sm11445485pfk.64.2023.02.08.08.17.45
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 08 Feb 2023 08:17:48 -0800 (PST)
+From:   Kairui Song <ryncsn@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kairui Song <ryncsn@gmail.com>
+Subject: [PATCH 0/2] sched/psi: Optimize PSI iteration
+Date:   Thu,  9 Feb 2023 00:16:52 +0800
+Message-Id: <20230208161654.99556-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.35.2
+Reply-To: Kairui Song <kasong@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aedc240d-7c9e-248a-52d2-c9775f3e8ca1@acm.org>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 03-02-23 11:45:32, Bart Van Assche wrote:
-> On 2/2/23 17:48, Hou Tao wrote:
-> > I don't get it on how to remove IOPRIO_POL_PROMOTION when calculating the final
-> > ioprio for bio. IOPRIO_POL_PROMOTION is not used for IOPRIO_CLASS values but
-> > used to determinate on how to calculate the final ioprio for bio: choosing the
-> > maximum or minimum between blkcg ioprio and original bio bi_ioprio.
-> 
-> Do the block layer code changes shown below implement the functionality
-> that you need?
+Hi all,
 
-Just one question guys: So with my a78418e6a04c ("block: Always initialize
-bio IO priority on submit") none-to-rt policy became effectively a noop as
-Hou properly noticed. Are we aware of any users that were broken by this?
-Shouldn't we rather fix the code so that none-to-rt starts to operate
-correctly again? Or maybe change the none-to-rt meaning to be actually
-promote-to-rt?
+Patch 1/2 simplify cgroup_psi, I didn't see a measurable performance
+change with this.
 
-I have to admit I'm wondering a bit what was the intended usecase behind
-the introduction of none-to-rt policy. Can someone elaborate? promote-to-rt 
-makes some sense to me - we have a priviledged cgroup we want to provide
-low latency access to IO but none-to-rt just does not make much sense to
-me...
+Patch 2/2 removed the cache, I just noticed it have the same hierarchy
+as the cgroup it's in, so I wondered if it worth adding a cache just for
+simplifying the branch, and if we can balance the branch simplification
+and minimize the memory footprint in another way, it seems this is
+doable.
 
-								Honza
+After the two patches, I see a measurable performance gain
+using mmtests/perfpipe:
+
+(AVG of 100 test, ops/sec, the higher the better)
+KVM guest on a i7-9700:
+        psi=0         root cgroup   5 levels of cgroup
+Before: 59221         55352         47821
+After:  60100         56036         50884
+
+KVM guest on a Ryzen 9 5900HX:
+        psi=0         root cgroup   5 levels of cgroup
+Before: 144566        138919        128888
+After:  145812        139580        133514
+
+Kairui Song (2):
+  sched/psi: simplify cgroup psi retrieving
+  sched/psi: iterate through cgroups directly
+
+ include/linux/psi.h       |  2 +-
+ include/linux/psi_types.h |  1 -
+ kernel/cgroup/cgroup.c    |  7 +++++-
+ kernel/sched/psi.c        | 45 ++++++++++++++++++++++++++++-----------
+ 4 files changed, 39 insertions(+), 16 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.1
+
