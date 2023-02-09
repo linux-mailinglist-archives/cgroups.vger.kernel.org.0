@@ -2,178 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7D5690DF8
-	for <lists+cgroups@lfdr.de>; Thu,  9 Feb 2023 17:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF846910FF
+	for <lists+cgroups@lfdr.de>; Thu,  9 Feb 2023 20:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjBIQJD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Feb 2023 11:09:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        id S229538AbjBITJk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Feb 2023 14:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjBIQJC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Feb 2023 11:09:02 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA0330EE;
-        Thu,  9 Feb 2023 08:09:01 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id a13so1061806ljq.6;
-        Thu, 09 Feb 2023 08:09:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YZWmpAN7z+mnIIM1VS6ygj9xj2/3VBtdPQMRi1uNDD0=;
-        b=IxGLmL0/yJ2qV/iwG4f069e7/09g6UC26Xw5OIymQepANRtD29sTgbDiRe7d36F7R7
-         jUywBAcvanvgJmhJrtfUskpENyPLxm3nVY3HxCUO6uS5EK6Ie89bctANX4HvaHLHS8MW
-         5ZPD1rP9Q5vl/Y4+B6yo6ArXQp9RpvWSwh1vBpIvs7uVD21eOWhZPLEHcuJcBTKd1rE1
-         O4Vmi+OItjh/5qnPZcVqZtwvq9J7L18CCc7FthYdoTBkv8ewHUVHSPn74wRA6fW5pOEE
-         TH24O7smcRvp2NtYoFnvFNdhFWyPklRnGXVIXijQg8SuRYGIpQCcVTHcUYbxcDQ1HXFF
-         TnAw==
+        with ESMTP id S229483AbjBITJj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Feb 2023 14:09:39 -0500
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F79658F6;
+        Thu,  9 Feb 2023 11:09:37 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id u9so3936943plr.9;
+        Thu, 09 Feb 2023 11:09:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YZWmpAN7z+mnIIM1VS6ygj9xj2/3VBtdPQMRi1uNDD0=;
-        b=jeSy369HHld24ifb5fuZTYOEOTuWZLRTHwlGNp1cDB12UfJKPSFQGGlidbhSBBp6Gg
-         TxHAo/M+zDrnQhWs7o3DSgV1wG9e1AHE0DUCJDKEDXWOeh2HUBDIGWKAULVpfmzcKvhG
-         ZyvNLn6jBDrr3w+g2lIGs9Xiep8EkorgdesF0wJKh9zWlC5poIoBB5jcsT91fIHYwNDN
-         aK0TOJ9wq49k7Lz0JpQhxt5sFmyr/DfqUrOE8ujPbkBo4Gr8qdNfB+m2vKDapzXCjVvp
-         TaqlnVpVH7nS4koDv3V9t5l8cbuvc/tpfBDYNcb1Yl1xv26Xxd/J5Gsw8MGOfVkt66bj
-         kn1Q==
-X-Gm-Message-State: AO0yUKVPRKenIBjblPmT3bY9jDL6eeosl0L3bA0B3dVxbkg8335e0usb
-        AR8bPPaZvSO7eWzpEA3Xsto52tc2wd8ginteVzQDachWMddWVcC2
-X-Google-Smtp-Source: AK7set+/Y+dwSm2KywkOQdEjmr/lHmv7PUzWUUwMUVqxw6FZ1HOyiT2uOdWtJTunIctCIsOG31ZgFPe4BfKhoa5smqQ=
-X-Received: by 2002:a05:651c:2c9:b0:287:4eeb:53dc with SMTP id
- f9-20020a05651c02c900b002874eeb53dcmr2083592ljo.27.1675958939757; Thu, 09 Feb
- 2023 08:08:59 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=03jnNn8D8Zd31Z8vK5q3T/UQbdP/Vod7or8RrPZ1S6g=;
+        b=xRROc2r07tsoL1eDQm7RaIOlFyYGNocmlEK1pie6GJxSFOAzT+HG/vTghej6w8HuMn
+         G1JJ6BVUdhU3CqClALRwxmQiS4LK/3BdOfmpM5fRStOBqiaJpK5ubL0X5oXHz5mMLmjP
+         SndGYYzVPlzW4M3MrpzaDqk2Vw1kXIZIE9QH98AfVGkxD9T1bY+L9npL/ebNcv9ntZ4k
+         AjHjHX4nJofhJ/dEWmO07tUVdzx4vxYZmn0bnY8qKKaaA6+YANtA3JzlUn+skL1PrCW1
+         lPruQ+Fqhh8K59I6vazK+C6TYdZPrDDKSoWYDT+mm5fxonZ3DhTXMy8gKjXJMbRu84WF
+         k2EA==
+X-Gm-Message-State: AO0yUKUalmO9lv3wTRCdCJG2izYSsmuAsb8GnOKE2x7bWEMzlGspPcjr
+        Qzs89fN9yjrNWQ080vpmHMCKreVLrhM=
+X-Google-Smtp-Source: AK7set9V8EYWT/iJLRXzBb9vqHUdZJNLRLMQ+tsi+3G8JKvcD91PpjY19v5/M1blxF+vYQ5PeyuYcw==
+X-Received: by 2002:a05:6a21:6716:b0:bc:6e88:7f58 with SMTP id wh22-20020a056a21671600b000bc6e887f58mr9158372pzb.51.1675969776553;
+        Thu, 09 Feb 2023 11:09:36 -0800 (PST)
+Received: from ?IPV6:2620:15c:211:201:15f5:48f5:6861:f3f6? ([2620:15c:211:201:15f5:48f5:6861:f3f6])
+        by smtp.gmail.com with ESMTPSA id g9-20020a633749000000b004db367c10b0sm1614705pgn.46.2023.02.09.11.09.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Feb 2023 11:09:35 -0800 (PST)
+Message-ID: <55a065e7-7d86-d58f-15ba-c631a427843e@acm.org>
+Date:   Thu, 9 Feb 2023 11:09:33 -0800
 MIME-Version: 1.0
-References: <20230208161654.99556-1-ryncsn@gmail.com> <20230208161654.99556-3-ryncsn@gmail.com>
- <20230208172956.GF24523@blackbody.suse.cz> <Y+P17OVZZWVpYIb0@cmpxchg.org>
-In-Reply-To: <Y+P17OVZZWVpYIb0@cmpxchg.org>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Fri, 10 Feb 2023 00:08:40 +0800
-Message-ID: <CAMgjq7Bem+8g8A_OR26PHhYYx-A7LHHO3tyQNR_tMnaaKNxkug@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched/psi: iterate through cgroups directly
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] blk-ioprio: Introduce promote-to-rt policy
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     Hou Tao <houtao@huaweicloud.com>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, houtao1@huawei.com
+References: <20230201045227.2203123-1-houtao@huaweicloud.com>
+ <8c068af3-7199-11cf-5c69-a523c7c22d9a@acm.org>
+ <4f7dcb3e-2d5a-cae3-0e1c-a82bcc3d2217@huaweicloud.com>
+ <b6b3c498-e90b-7d1f-6ad5-a31334e433ae@acm.org>
+ <beb7782e-72a4-c350-3750-23a767c88753@huaweicloud.com>
+ <aedc240d-7c9e-248a-52d2-c9775f3e8ca1@acm.org>
+ <20230208134345.77bdep3kzp52haxu@quack3>
+ <7fcd4c38-ccbe-6411-e424-a57595ad9c0b@acm.org>
+ <20230209085603.dzqfcc3pp4hacqlz@quack3>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230209085603.dzqfcc3pp4hacqlz@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> =E4=BA=8E2023=E5=B9=B42=E6=9C=889=E6=
-=97=A5=E5=91=A8=E5=9B=9B 03:20=E5=86=99=E9=81=93=EF=BC=9A
-> On Wed, Feb 08, 2023 at 06:29:56PM +0100, Michal Koutn=C3=BD wrote:
-> > On Thu, Feb 09, 2023 at 12:16:54AM +0800, Kairui Song <ryncsn@gmail.com=
-> wrote:
-> > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > > Signed-off-by: Kairui Song <ryncsn@gmail.com>
-> >
-> > Typo?
-> >
-> > > -static inline struct psi_group *task_psi_group(struct task_struct *t=
-ask)
-> > > +static inline struct psi_group *psi_iter_first(struct task_struct *t=
-ask, void **iter)
-> > >  {
-> > >  #ifdef CONFIG_CGROUPS
-> > > -   if (static_branch_likely(&psi_cgroups_enabled))
-> > > -           return cgroup_psi(task_dfl_cgroup(task));
-> > > +   if (static_branch_likely(&psi_cgroups_enabled)) {
-> > > +           struct cgroup *cgroup =3D task_dfl_cgroup(task);
-> > > +
-> > > +           *iter =3D cgroup_parent(cgroup);
-> >
-> > This seems to skip a cgroup level -- maybe that's the observed
-> > performance gain?
->
-> Hm, I don't think it does. It sets up *iter to point to the parent for
-> the _next() call, but it returns task_dfl_cgroup()->psi. The next call
-> does the same: cgroup =3D *iter, *iter =3D parent, return cgroup->psi.
->
-> It could be a bit more readable to have *iter always point to the
-> current cgroup - but no strong preference either way from me:
->
-> psi_groups_first(task, iter)
-> {
-> #ifdef CONFIG_CGROUPS
->         if (static_branch_likely(&psi_cgroups_enabled)) {
->                 struct cgroup *cgroup =3D task_dfl_cgroup(task);
->
->                 *iter =3D cgroup;
->                 return cgroup_psi(cgroup);
->         }
-> #endif
->         return &psi_system;
-> }
->
-> psi_groups_next(iter)
-> {
-> #ifdef CONFIG_CGROUPS
->         if (static_branch_likely(&psi_cgroups_enabled)) {
->                 struct cgroup *cgroup =3D *iter;
->
->                 if (cgroup) {
->                         *iter =3D cgroup_parent(cgroup);
->                         return cgroup_psi(cgroup);
->                 }
->         }
->         return NULL;
-> #endif
-> }
-> psi_groups_next(iter)
-> {
-> #ifdef CONFIG_CGROUPS
->         if (static_branch_likely(&psi_cgroups_enabled)) {
->                 struct cgroup *cgroup =3D *iter;
->
->                 if (cgroup) {
->                         *iter =3D cgroup_parent(cgroup);
->                         return cgroup_psi(cgroup);
->                 }
->         }
->         return NULL;
-> #endif
-> }
+On 2/9/23 00:56, Jan Kara wrote:
+> On Wed 08-02-23 09:53:41, Bart Van Assche wrote:
+>> The test results I shared some time ago show that IOPRIO_CLASS_NONE was the
+>> default I/O priority two years ago (see also https://lore.kernel.org/linux-block/20210927220328.1410161-5-bvanassche@acm.org/).
+>> The none-to-rt policy increases the priority of bio's that have not been
+>> assigned an I/O priority to RT. Does this answer your question?
+> 
+> Not quite. I know that historically we didn't set bio I/O priority in some
+> paths (but we did set it in other paths such as some (but not all) direct
+> IO implementations). But that was exactly a mess because how none-to-rt
+> actually behaved depended on the exact details of the kernel internal IO
+> path.  So my question is: Was none-to-rt actually just a misnomer and the
+> intended behavior was "always override to RT"? Or what was exactly the
+> expectation around when IO priority is not set and should be overridden?
+> 
+> How should it interact with AIO submissions with IOCB_FLAG_IOPRIO? How
+> should it interact with task having its IO priority modified with
+> ioprio_set(2)? And what if task has its normal scheduling priority modified
+> but that translates into different IO priority (which happens in
+> __get_task_ioprio())?
+> 
+> So I think that none-to-rt is just poorly defined and if we can just get
+> rid of it (or redefine to promote-to-rt), that would be good. But maybe I'm
+> missing some intended usecase...
 
-It should be like this, right? For psi_groups_next, retrieving cgroup
-parent should be done before "if (cgroup)".
-+ psi_groups_next(iter)
-+ {
-+ #ifdef CONFIG_CGROUPS
-+         if (static_branch_likely(&psi_cgroups_enabled)) {
-+                 struct cgroup *cgroup =3D *iter;
-+
-+                 cgroup =3D cgroup_parent(cgroup);
-+                 if (cgroup) {
-+                         *iter =3D cgroup;
-+                         return cgroup_psi(cgroup);
-+                 }
-+         }
-+         return NULL;
-+ #endif
-+ }
+Hi Jan,
 
-Thanks for the suggestion!
+We have no plans to use the ioprio_set() system call since it only 
+affects foreground I/O and not page cache writeback.
 
-I think your style is better indeed.
+While Android supports io_uring, there are no plans to support libaio in 
+the Android C library (Bionic).
 
-I tried to re-benchmark the code just in case, and found it seems my
-previous benchmark result is not accurate enough now, some results
-changed after I did a rebase to latest master, or maybe just 100 times
-of perfpipe is not enough to get a stable result.
+Regarding __get_task_ioprio(), I haven't found any code in that function 
+that derives an I/O priority from the scheduling priority. Did I perhaps 
+overlook something?
 
-With a few times of retest, the final conclusion of the commit message
-is still valid, will post V2 later just after more test.
+Until recently "none-to-rt" meant "if no I/O priority has been assigned 
+to a task, use IOPRIO_CLASS_RT". Promoting the I/O priority to 
+IOPRIO_CLASS_RT works for us. I'm fine with changing the meaning of 
+"none-to-rt" into promoting the I/O priority class to RT. Introducing 
+"promote-to-rt" as a synonym of "none-to-rt" is also fine with me.
+
+Thanks,
+
+Bart.
