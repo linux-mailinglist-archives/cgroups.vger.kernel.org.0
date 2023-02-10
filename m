@@ -2,97 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9FB691BD0
-	for <lists+cgroups@lfdr.de>; Fri, 10 Feb 2023 10:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71714691C6E
+	for <lists+cgroups@lfdr.de>; Fri, 10 Feb 2023 11:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbjBJJq1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Feb 2023 04:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
+        id S231402AbjBJKMs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Feb 2023 05:12:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjBJJq0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Feb 2023 04:46:26 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6567164F
-        for <cgroups@vger.kernel.org>; Fri, 10 Feb 2023 01:46:25 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id m2so5919199plg.4
-        for <cgroups@vger.kernel.org>; Fri, 10 Feb 2023 01:46:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ppfFWpSAcZ1aESEIi3DI7xxDUI8KrBz5/PkXTDog9ro=;
-        b=LWCJXAT7I+EECVCLtdt5TrDfY1jP64bH1PN4m10e5ID9k8mohRc90Id/D9P5YQ0zo8
-         tpNUNA/I+Y2qw21VFtzvbQq/iFU1JdeU5uWGqhcnZwqEX8DlWw+irAGC01fg4inhfNUj
-         qfVuPkwbTvxBq/JFjbEKnDjL/vfK4QSLJHUBBrCzAQJAmSckmSmlND9nVCiYZS9FwxM7
-         +mUz9uyIMg8cibzSLzifH+bR9e0N1BIuhqHHXFjp60clgMKLA9obumlPzfdkCI9SomZS
-         xSKsStJ8KUfMd4aBExGiaG0EOb+1TG/W36cWikejp1fQnLVQm6sVf36/6dWb00RBzrR7
-         nhUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ppfFWpSAcZ1aESEIi3DI7xxDUI8KrBz5/PkXTDog9ro=;
-        b=701UneXR/518qHYFp03SsL274/Bc5yGWUuTZIkAqsFizs4lR2Yw9XYibavBbKMpw+5
-         Wx8PK2xYjUEuyxdw4PlB+aJIg3CZ6mJ+nX6ZL99uebLg32WQdjP3XlmhxSbXrFxqsBfL
-         VZSB7f4HOfEtjxODEHjni/PCQ/Ns+yUu+LP75IPAcDYEW2VotyaRy5Eg51AXOq9H7CHL
-         ZlmUItoXU5fg8W1vR7bNl4UXFpoSls7ElVFdowpNRwc8H7QdbzxFQdkyoRANGyuaHVBP
-         g+elNOi0L/M89is5JnEHsTqQz72+Q2c4pBFv3O5eYIzxuQZOPtiEx2WYAISmi0zwUjP3
-         CZaQ==
-X-Gm-Message-State: AO0yUKXJXEFwbQmonGvipqJ8HsKIaf0r8HxH3FPlsZMdUZxacYFOle4W
-        iZOr2WnfySosaCMzuMXfz1n61g==
-X-Google-Smtp-Source: AK7set+b58gL6zwZfMrrWNjgCByJacYZP1DVcOGb+Rp36X4U3HgVQgr2uQ/HX09SBRwBJkNHVKaQDA==
-X-Received: by 2002:a17:902:d48e:b0:199:472b:927f with SMTP id c14-20020a170902d48e00b00199472b927fmr10878196plg.51.1676022384998;
-        Fri, 10 Feb 2023 01:46:24 -0800 (PST)
-Received: from ubuntu-haifeng.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id p11-20020a170902a40b00b0019460ac7c6asm2935186plq.283.2023.02.10.01.46.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 01:46:24 -0800 (PST)
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-To:     hannes@cmpxchg.org
-Cc:     mhocko@kernel.org, shakeelb@google.com, muchun.song@linux.dev,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH] mm/memcg: Skip high limit check in root memcg
-Date:   Fri, 10 Feb 2023 09:45:50 +0000
-Message-Id: <20230210094550.5125-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229537AbjBJKMr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Feb 2023 05:12:47 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C6060303;
+        Fri, 10 Feb 2023 02:12:46 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D20E95FA5E;
+        Fri, 10 Feb 2023 10:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1676023964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1QLhQop7MVEJVqH+irAiadIwt7myVpzIBP9m/xziqnA=;
+        b=VQtbc9tEJLFJF0Pw5PjECmBuPAKFt4AvPORe5P6oZ2MzadE81h99ZIUb7KFajj63MWUyMW
+        m5UgmHAg/UuvODkXLNiw9dIF1tepZSsyV+Ichh0V1iaRREj6quFohULxLUWN2gg5dMVrYA
+        lEdDwq+fhNH/qSTQkitEKwWN3/sfAaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1676023964;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1QLhQop7MVEJVqH+irAiadIwt7myVpzIBP9m/xziqnA=;
+        b=tUf6mwNmwxBFmfkwRwvlGR/TSOGT0glc5CsHdFA2Mg008Z7jSMcUsJAZvc1DufM4+PFeXg
+        6/fgtb2lJwC5aBAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD7F913206;
+        Fri, 10 Feb 2023 10:12:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id vIo4LpwY5mPgQQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 10 Feb 2023 10:12:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 30E0DA06D8; Fri, 10 Feb 2023 11:12:44 +0100 (CET)
+Date:   Fri, 10 Feb 2023 11:12:44 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jan Kara <jack@suse.cz>, Hou Tao <houtao@huaweicloud.com>,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, houtao1@huawei.com
+Subject: Re: [PATCH] blk-ioprio: Introduce promote-to-rt policy
+Message-ID: <20230210101244.zsmtmsoo4xjx7suj@quack3>
+References: <20230201045227.2203123-1-houtao@huaweicloud.com>
+ <8c068af3-7199-11cf-5c69-a523c7c22d9a@acm.org>
+ <4f7dcb3e-2d5a-cae3-0e1c-a82bcc3d2217@huaweicloud.com>
+ <b6b3c498-e90b-7d1f-6ad5-a31334e433ae@acm.org>
+ <beb7782e-72a4-c350-3750-23a767c88753@huaweicloud.com>
+ <aedc240d-7c9e-248a-52d2-c9775f3e8ca1@acm.org>
+ <20230208134345.77bdep3kzp52haxu@quack3>
+ <7fcd4c38-ccbe-6411-e424-a57595ad9c0b@acm.org>
+ <20230209085603.dzqfcc3pp4hacqlz@quack3>
+ <55a065e7-7d86-d58f-15ba-c631a427843e@acm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55a065e7-7d86-d58f-15ba-c631a427843e@acm.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The high limit checks the memory usage from given memcg to root memcg.
-However, there is no limit in root memcg. So this check makes no sense
-and we can ignore it.
+On Thu 09-02-23 11:09:33, Bart Van Assche wrote:
+> On 2/9/23 00:56, Jan Kara wrote:
+> > On Wed 08-02-23 09:53:41, Bart Van Assche wrote:
+> > > The test results I shared some time ago show that IOPRIO_CLASS_NONE was the
+> > > default I/O priority two years ago (see also https://lore.kernel.org/linux-block/20210927220328.1410161-5-bvanassche@acm.org/).
+> > > The none-to-rt policy increases the priority of bio's that have not been
+> > > assigned an I/O priority to RT. Does this answer your question?
+> > 
+> > Not quite. I know that historically we didn't set bio I/O priority in some
+> > paths (but we did set it in other paths such as some (but not all) direct
+> > IO implementations). But that was exactly a mess because how none-to-rt
+> > actually behaved depended on the exact details of the kernel internal IO
+> > path.  So my question is: Was none-to-rt actually just a misnomer and the
+> > intended behavior was "always override to RT"? Or what was exactly the
+> > expectation around when IO priority is not set and should be overridden?
+> > 
+> > How should it interact with AIO submissions with IOCB_FLAG_IOPRIO? How
+> > should it interact with task having its IO priority modified with
+> > ioprio_set(2)? And what if task has its normal scheduling priority modified
+> > but that translates into different IO priority (which happens in
+> > __get_task_ioprio())?
+> > 
+> > So I think that none-to-rt is just poorly defined and if we can just get
+> > rid of it (or redefine to promote-to-rt), that would be good. But maybe I'm
+> > missing some intended usecase...
+> 
+> Hi Jan,
+> 
+> We have no plans to use the ioprio_set() system call since it only affects
+> foreground I/O and not page cache writeback.
+> 
+> While Android supports io_uring, there are no plans to support libaio in the
+> Android C library (Bionic).
+> 
+> Regarding __get_task_ioprio(), I haven't found any code in that function
+> that derives an I/O priority from the scheduling priority. Did I perhaps
+> overlook something?
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- mm/memcontrol.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This condition in __get_task_ioprio():
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 73afff8062f9..a31a56598f29 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2780,6 +2780,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	do {
- 		bool mem_high, swap_high;
- 
-+		/* There is no need for root memcg to check high limit */
-+		if (mem_cgroup_is_root(memcg))
-+			break;
-+
- 		mem_high = page_counter_read(&memcg->memory) >
- 			READ_ONCE(memcg->memory.high);
- 		swap_high = page_counter_read(&memcg->swap) >
+        if (IOPRIO_PRIO_CLASS(prio) == IOPRIO_CLASS_NONE)
+                prio = IOPRIO_PRIO_VALUE(task_nice_ioclass(p),
+                                         task_nice_ioprio(p));
+
+sets task's IO priority based on scheduling priority.
+
+> Until recently "none-to-rt" meant "if no I/O priority has been assigned to a
+> task, use IOPRIO_CLASS_RT". Promoting the I/O priority to IOPRIO_CLASS_RT
+> works for us. I'm fine with changing the meaning of "none-to-rt" into
+> promoting the I/O priority class to RT. Introducing "promote-to-rt" as a
+> synonym of "none-to-rt" is also fine with me.
+
+OK, so it seems we are all in agreement here that "none-to-rt" behavior is
+not really needed. Hou, can you perhaps update your patches and the
+documentation to make "none-to-rt" just an alias for "promote-to-rt"?
+Thanks!
+
+								Honza
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
