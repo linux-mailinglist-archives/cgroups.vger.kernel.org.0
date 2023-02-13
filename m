@@ -2,83 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA25693B60
-	for <lists+cgroups@lfdr.de>; Mon, 13 Feb 2023 01:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55867694305
+	for <lists+cgroups@lfdr.de>; Mon, 13 Feb 2023 11:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjBMAeS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 12 Feb 2023 19:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        id S229557AbjBMKlt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Feb 2023 05:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjBMAeQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 12 Feb 2023 19:34:16 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4645CEFBF
-        for <cgroups@vger.kernel.org>; Sun, 12 Feb 2023 16:34:15 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id p26so28060478ejx.13
-        for <cgroups@vger.kernel.org>; Sun, 12 Feb 2023 16:34:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nametag.social; s=google;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LxA1TCaBk0GL+z3/VOAYiE8xj7jmKbbc+ETm8+jDUgU=;
-        b=KjXI8TpYcB7UD4vda6gQOkHeiQ4OFGAzfFk5l6Gm7duO8dyZlqWIhfz2tWFRHFgIk0
-         08Zps9JGkKuEMBGwt82tOpXYB0K2oT6QEf4YDHbCfyTizO76atpgcGRV1hNYwpe2XKVS
-         WzoZql8vdSoHxWLP/0eH5qjkRZp9+Gey3+AvM/XxBmOtwpEibaxVOQ3hsAiJlK7cZ8nf
-         qt9GyG4yiAeIZNEYatEZIj1N9qaMERIacAqK5pb4W1MV5fX34S3FMukm2iZonlNLwRMS
-         fDrQfG48USrTgH7DAXotpIa8Q6oFEoY4VJz3fLB9mfz6/XV2Azwr0oJprxLm/goZo7L6
-         RC2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LxA1TCaBk0GL+z3/VOAYiE8xj7jmKbbc+ETm8+jDUgU=;
-        b=exMtJQB2K+DmfywARadGpJQ2YVOSBvYqErqr5aJGCHlPwwvH3UlwZ7JlyqxEhlGi8A
-         O0vIhzr8ou6oXOVR0TG+4GPckfbftumTNvOnxD3qapUQSCDjl2nqMAP1XmOVqtejf9hN
-         hkis4VlFwkQHfGieMNhViumD3PHhMAv1V5S/z9AV7rbfTBK7PlcQgQ7C2fm3UThbe5p+
-         2okW1KgaCx5fN3Et71YaMojT82jqu4Shyev9kQh5puBeyeAo2gWWexBl4S++3mHAuACI
-         3BeGZfNiK3zoqlokfdAQXoLEeXJoXw2/8jzv1m0UpFpgtHo2X9Ema+K9Que5tTlbmnRe
-         nSrw==
-X-Gm-Message-State: AO0yUKX+dcsUwMWbYMrTXB/V6GX0r9HIdAKyH5a34o7hAdpaBMN6nUOL
-        EvVRU0Oy9h0mzWXrfjnSNC9HiUfa7a12tXrvujdL6h5wUD9xL4imeK0=
-X-Google-Smtp-Source: AK7set8u+TswiM4EC4XAhGF1keweo8t7/CLbHWqd/CHAl1v2zQREcIl6wkFWh42OjAKhIWeopm0p5cnHZYdXOQXDZL4=
-X-Received: by 2002:a17:906:3516:b0:888:6f61:cf55 with SMTP id
- r22-20020a170906351600b008886f61cf55mr3704766eja.14.1676248453623; Sun, 12
- Feb 2023 16:34:13 -0800 (PST)
+        with ESMTP id S229484AbjBMKls (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Feb 2023 05:41:48 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1268F126C3;
+        Mon, 13 Feb 2023 02:41:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=QFZ+a29GeVUTeCrKA7f2ruTlAoD7iMuLbB/uIVPnxW0=; b=rMSPJdjGCN8rptqoedEr8hCkvc
+        VjM2QSg+CneSLRfeKsGg6vl/T4GO5mQ/PUlb5AjqRH61rdqLpjL4l94ToR+lK5OytBh2g20AMNnl7
+        RRP5mfvMPEhufK2vYM2L2GM9TAoj9eTTEca6p8a8YzHmB1gQYubUbhTyCpwgiB362SFH99d8cFf3n
+        tGZ/+y+qgbAOzDxjygjZ6a05xuOrKxYeNho7mtp1Z7EF8d1NS8irPDQ/90MTPMfBp2sSLgWtBNOlu
+        SWA1qChSFjh9My1Xf+gWOD/TH0zSc7DARAEPuo1mMURewDrq0harT5Dl4m5v3kRg1lHnTbFCSE1+S
+        dIld38bw==;
+Received: from [2001:4bb8:181:6771:cbc2:a0cd:a935:7961] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pRWHF-00E99A-Er; Mon, 13 Feb 2023 10:41:43 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: fix circular disk reference in blk-cgroup
+Date:   Mon, 13 Feb 2023 11:41:31 +0100
+Message-Id: <20230213104134.475204-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-From:   Victor Stewart <v@nametag.social>
-Date:   Mon, 13 Feb 2023 00:34:02 +0000
-Message-ID: <CAM1kxwgN40r3tqdUFXPNgSAB3djMTDpDAXOACsS2zOF=LXxeyw@mail.gmail.com>
-Subject: [BUG ?]: hugetlb.xxx[.rsvd].max implicit write failure
-To:     cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-attempted to use hugetlb resource control for the first time. running 6.1.9
+Hi all,
 
-create the subdirectory, then enable the hugetlb controller. reading the
-initial value of hugetlb.2MB.rsvd.max returns "max". i write 128 and receive a
-return value of 3. but then read hugetlb.2MB.rsvd.max and it now returns 0.
-same exact thing happens for hugetlb.2MB.max
+the third patch fixes a problem in haivng a circular disk reference
+for blkgs.  The first two patches clean up blk-throttle to avoid
+queue->disk refernece that get torn down in disk_release but could
+in theory be used in the pd_free handler.
 
-so clearly the write is secretly failing somewhere even though the write
-operation return success?
-
-there are plenty of pages available:
-
-HugePages_Total:    4096
-HugePages_Free:     4096
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:       2048 kB
-Hugetlb:        13631488 kB
-
-none of the scarce documentation on this controller leads me to believe there's
-any required configuration beyond the above. so completely bewildered as to
-what's going wrong?
+Diffstat:
+ block/blk-cgroup.c     |   12 +++++++++---
+ block/blk-throttle.c   |   39 ++++++++++++++++-----------------------
+ include/linux/blkdev.h |    8 +++-----
+ 3 files changed, 28 insertions(+), 31 deletions(-)
