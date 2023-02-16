@@ -2,166 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AF9698E3E
-	for <lists+cgroups@lfdr.de>; Thu, 16 Feb 2023 09:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B391D69929B
+	for <lists+cgroups@lfdr.de>; Thu, 16 Feb 2023 12:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjBPIEI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Feb 2023 03:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S229495AbjBPLCj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Feb 2023 06:02:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjBPIEH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Feb 2023 03:04:07 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1C71DB90;
-        Thu, 16 Feb 2023 00:04:06 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 650EF21D48;
-        Thu, 16 Feb 2023 08:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676534644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229637AbjBPLCh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Feb 2023 06:02:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549571BF5
+        for <cgroups@vger.kernel.org>; Thu, 16 Feb 2023 03:01:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676545307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wWVDnYphOY4/7fmH3HtlQ3zoNYKaqCMgj+iYz5wiHqU=;
-        b=TOnrT1930l8Lkgcu/NBbAhRjWZKg7qA7CFIiJ9f3jgXUEgDo5jvDmei89J+mww7boTXZ30
-        7QV8xIJb/uirR4slpBrNXVEEZU8UdA0D1kKGj/L4LbcKjRzRhgLsw9eU+Pj6PDqovzgV1d
-        1u/+saHPl+mKURI1P8vdfypAvyKOduw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41D18139B5;
-        Thu, 16 Feb 2023 08:04:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id o2zbDXTj7WNXAwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 16 Feb 2023 08:04:04 +0000
-Date:   Thu, 16 Feb 2023 09:04:03 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Tejun Heo <tj@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhubbard@nvidia.com, tjmercier@google.com, hannes@cmpxchg.org,
-        surenb@google.com, mkoutny@suse.com, daniel@ffwll.ch,
-        "Daniel P . Berrange" <berrange@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 14/19] mm: Introduce a cgroup for pinned memory
-Message-ID: <Y+3jcw9vo4ml5p0M@dhcp22.suse.cz>
-References: <c7b5e502d1a3b9b8f6e96cbf9ca553b143c327e0.1675669136.git-series.apopple@nvidia.com>
- <Y+Fttp1ozejoSQzl@slm.duckdns.org>
- <CAJD7tkb_Cr7rTTpKc1VBpS8h=n3Hu+nGiV8dkLH-NdC1bSG9mg@mail.gmail.com>
- <Y+GA6Y7SVhAW5Xm9@slm.duckdns.org>
- <CAJD7tka6SC1ho-dffV0bK_acoZd-5DQzBOy0xg3TkOFG1zAPMg@mail.gmail.com>
- <Y+GMbWWP/YhtJQqe@slm.duckdns.org>
- <Y+GQB9I6MFN6BOFw@nvidia.com>
- <Y+GcJQRhvjqFaaSp@mtj.duckdns.org>
- <Y+0rxoM4w9nilUMZ@dhcp22.suse.cz>
- <Y+0tWZxMUx/NZ3Ne@nvidia.com>
+        bh=RT3I0H8bP1HeewuPOTi34AMMwE+sGnWigdoFWwsEuUo=;
+        b=FVn8S7/2Wj28Zj0Ty1m6tPXTbIeBn3wHG7D2mh1enYTMRiwyJi2XjzoySHrRVm1Nhpry4l
+        GdNVwPDiRlv8FgHi+4sMWpow1yIzs+KVMgUR/1emLCZUbmmBUsempa9hnN7aut/o+D+YmR
+        PLayxokyW78umRIko8Gc1ISqeAY8drk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-208-yXRXvvXaNSWlu-ZdRqUb3g-1; Thu, 16 Feb 2023 06:01:46 -0500
+X-MC-Unique: yXRXvvXaNSWlu-ZdRqUb3g-1
+Received: by mail-wr1-f72.google.com with SMTP id r11-20020a5d498b000000b002c5588d962fso194746wrq.10
+        for <cgroups@vger.kernel.org>; Thu, 16 Feb 2023 03:01:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RT3I0H8bP1HeewuPOTi34AMMwE+sGnWigdoFWwsEuUo=;
+        b=llBm5CAHzl/HTfjNFzosuh3ipr5tGTgXQGL+8zHmR+zbBTVS31VlB3EkXgy4qrDU/I
+         k1WU4+Pemq6M1aXS/CGKmW3+sJZdZR/r1m3LFtTemffb4UOP7TwMYxqe3oefXb7BU0TF
+         plDfEp92aTtB4jjp7LkGUnWwOas3ndsRREtQbtQuxNQ99TWfsWY1vyQpSR9linUjwEPI
+         1vXcowolxBpCtjUe/SwTYqP0Awsq3LbCioHcVogI2r6wtyeGcSogN/DyLkQFn+ImWsMk
+         fRExfJKcsSL3ENe8d4OkiCNrF+OyZUlVADiTP9QrhcgcvGDwDTePm5Pz50cQwi7LskaW
+         hMKg==
+X-Gm-Message-State: AO0yUKVZT5XpdDdvdY9sdrgZdVXqdJ7sxv/BiNLz5vjoXfdedsgVndSl
+        K9WEV/hv08aeS94FQagjeFoWamm8Ws62UzQUgS9PZl34tKJmNEGXOVoxEDCPRem3xjshgq0Ngbw
+        FqanSYSaZdpQRX9WVZA==
+X-Received: by 2002:a05:600c:91d:b0:3e2:668:3ed7 with SMTP id m29-20020a05600c091d00b003e206683ed7mr3338190wmp.1.1676545305251;
+        Thu, 16 Feb 2023 03:01:45 -0800 (PST)
+X-Google-Smtp-Source: AK7set+OFHhrzLoDINOIw5SqQtAninJ8ylAaeCFlYtZeD42IvN4cWNCvjf+X25DXWAkpUabrQ87eYw==
+X-Received: by 2002:a05:600c:91d:b0:3e2:668:3ed7 with SMTP id m29-20020a05600c091d00b003e206683ed7mr3338154wmp.1.1676545304870;
+        Thu, 16 Feb 2023 03:01:44 -0800 (PST)
+Received: from ?IPV6:2003:cb:c708:bc00:2acb:9e46:1412:686a? (p200300cbc708bc002acb9e461412686a.dip0.t-ipconnect.de. [2003:cb:c708:bc00:2acb:9e46:1412:686a])
+        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003dc4aae4739sm4815014wmc.27.2023.02.16.03.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Feb 2023 03:01:44 -0800 (PST)
+Message-ID: <fdd3bd7d-526d-d441-00f1-e8321441174e@redhat.com>
+Date:   Thu, 16 Feb 2023 12:01:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+0tWZxMUx/NZ3Ne@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 00/19] mm: Introduce a cgroup to limit the amount of
+ locked and pinned memory
+Content-Language: en-US
+To:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
+        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
+        mkoutny@suse.com, daniel@ffwll.ch,
+        "Daniel P . Berrange" <berrange@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 15-02-23 15:07:05, Jason Gunthorpe wrote:
-> On Wed, Feb 15, 2023 at 08:00:22PM +0100, Michal Hocko wrote:
-> > On Mon 06-02-23 14:32:37, Tejun Heo wrote:
-> > > Hello,
-> > > 
-> > > On Mon, Feb 06, 2023 at 07:40:55PM -0400, Jason Gunthorpe wrote:
-> > > > (a) kind of destroys the point of this as a sandboxing tool
-> > > > 
-> > > > It is not so harmful to use memory that someone else has been charged
-> > > > with allocating.
-> > > > 
-> > > > But it is harmful to pin memory if someone else is charged for the
-> > > > pin. It means it is unpredictable how much memory a sandbox can
-> > > > actually lock down.
-> > > > 
-> > > > Plus we have the double accounting problem, if 1000 processes in
-> > > > different cgroups open the tmpfs and all pin the memory then cgroup A
-> > > > will be charged 1000x for the memory and hit its limit, possibly
-> > > > creating a DOS from less priv to more priv
-> > > 
-> > > Let's hear what memcg people think about it. I'm not a fan of disassociating
-> > > the ownership and locker of the same page but it is true that actively
-> > > increasing locked consumption on a remote cgroup is awkward too.
-> > 
-> > One thing that is not really clear to me is whether those pins do
-> > actually have any "ownership".
+On 06.02.23 08:47, Alistair Popple wrote:
+> Having large amounts of unmovable or unreclaimable memory in a system
+> can lead to system instability due to increasing the likelihood of
+> encountering out-of-memory conditions. Therefore it is desirable to
+> limit the amount of memory users can lock or pin.
 > 
-> In most cases the ownship traces back to a file descriptor. When the
-> file is closed the pin goes away.
-
-This assumes a specific use of {un}pin_user_page*, right? IIUC the
-cgroup charging is meant to be used from vm_account but that doesn't
-really tell anything about the lifetime nor the ownership. Maybe this is
-just a matter of documentation update...
-
-> > The interface itself doesn't talk about
-> > anything like that and so it seems perfectly fine to unpin from a
-> > completely different context then pinning. 
+>  From userspace such limits can be enforced by setting
+> RLIMIT_MEMLOCK. However there is no standard method that drivers and
+> other in-kernel users can use to check and enforce this limit.
 > 
-> Yes, concievably the close of the FD can be in a totally different
-> process with a different cgroup.
-
-Wouldn't you get an unbalanced charges then? How can admin recover that
-situation?
-
-> > If there is no enforcement then Tejun is right and relying on memcg
-> > ownership is likely the only reliable way to use for tracking. The
-> > downside is sharing obviously but this is the same problem we
-> > already do deal with with shared pages.
+> This has lead to a large number of inconsistencies in how limits are
+> enforced. For example some drivers will use mm->locked_mm while others
+> will use mm->pinned_mm or user->locked_mm. It is therefore possible to
+> have up to three times RLIMIT_MEMLOCKED pinned.
 > 
-> I think this does not work well because the owner in a memcg sense is
-> unrelated to the file descriptor which is the true owner.
+> Having pinned memory limited per-task also makes it easy for users to
+> exceed the limit. For example drivers that pin memory with
+> pin_user_pages() it tends to remain pinned after fork. To deal with
+> this and other issues this series introduces a cgroup for tracking and
+> limiting the number of pages pinned or locked by tasks in the group.
 > 
-> So we can get cases where the pin is charged to the wrong cgroup which
-> is effectively fatal for sandboxing, IMHO.
-
-OK, I see. This makes it really much more complicated then.
- 
-> > Another thing that is not really clear to me is how the limit is
-> > actually going to be used in practice. As there is no concept of a
-> > reclaim for pins then I can imagine that it would be quite easy to
-> > reach the hard limit and essentially DoS any further use of pins. 
+> However the existing behaviour with regards to the rlimit needs to be
+> maintained. Therefore the lesser of the two limits is
+> enforced. Furthermore having CAP_IPC_LOCK usually bypasses the rlimit,
+> but this bypass is not allowed for the cgroup.
 > 
-> Yes, that is the purpose. It is to sandbox pin users to put some limit
-> on the effect they have on the full machine.
+> The first part of this series converts existing drivers which
+> open-code the use of locked_mm/pinned_mm over to a common interface
+> which manages the refcounts of the associated task/mm/user
+> structs. This ensures accounting of pages is consistent and makes it
+> easier to add charging of the cgroup.
 > 
-> It replaces the rlimit mess that was doing the same thing.
-
-arguably rlimit has a concept of the owner at least AFAICS. I do realize
-this is not really great wrt a high level resource control though.
-
-> > Cross cgroup pinning would make it even worse because it could
-> > become a DoS vector very easily. Practically speaking what tends to
-> > be a corner case in the memcg limit world would be norm for pin
-> > based limit.
+> The second part of the series adds the cgroup controller and converts
+> core mm code such as mlock over to charging the cgroup before finally
+> introducing some selftests.
 > 
-> This is why the cgroup charged for the pin must be tightly linked to
-> some cgroup that is obviously connected to the creator of the FD
-> owning the pin.
+> Rather than adding onto an exisiting cgroup controller such as memcg
+> we introduce a new controller. This is primarily because we wish to
+> limit the total number of pages tasks within a cgroup may pin/lock.
+> 
+> As I don't have access to systems with all the various devices I
+> haven't been able to test all driver changes. Any help there would be
+> appreciated.
+> 
+> Note that this series is based on v6.2-rc5 and
+> https://lore.kernel.org/linux-rdma/20230201115540.360353-1-bmt@zurich.ibm.com/
+> which makes updating the siw driver easier (thanks Bernard).
+> 
+> Changes from initial RFC:
+> 
+>   - Fixes to some driver error handling.
+> 
+>   - Pages charged with vm_account will always increment mm->pinned_vm
+>     and enforce the limit against user->locked_vm or mm->pinned_vm
+>     depending on initialisation flags.
+> 
+>   - Moved vm_account prototypes and struct definitions into a separate header.
+> 
+>   - Minor updates to commit messages and kernel docs (thanks to Jason,
+>     Christoph, Yosry and T.J.).
+> 
+> Outstanding issues:
+> 
+>   - David H pointed out that the vm_account naming is potentially
+>     confusing and I agree. However I have yet to come up with something
+>     better so will rename this in a subsequent version of this series
+>     (suggestions welcome).
 
-The problem I can see is that the fd is just too fluid for tracking. You
-can pass fd over to a different cgroup context and then all the tracking
-just loses any trail to an owner.
 
-I can see how the underlying memcg tracking information is not really
-feasible for your usecases but I am really worried that it is just too
-easy to misaccount without any other proper ownership tracking.
+vm_lockaccount ? vm_pinaccount ?
+
+Less confusing than reusing VM_ACCOUNT which translates to "commit 
+accounting".
+
+Might also make sense to rename VM_ACCOUNT to VM_COMMIT or sth like that.
+
 -- 
-Michal Hocko
-SUSE Labs
+Thanks,
+
+David / dhildenb
+
