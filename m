@@ -2,109 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7609A699FD7
-	for <lists+cgroups@lfdr.de>; Thu, 16 Feb 2023 23:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8987369C35E
+	for <lists+cgroups@lfdr.de>; Mon, 20 Feb 2023 00:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjBPWrD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Feb 2023 17:47:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
+        id S229717AbjBSXZ4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 19 Feb 2023 18:25:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjBPWrC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Feb 2023 17:47:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B6146164;
-        Thu, 16 Feb 2023 14:47:02 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BB05DB828B5;
-        Thu, 16 Feb 2023 22:47:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC6ACC433EF;
-        Thu, 16 Feb 2023 22:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1676587619;
-        bh=9oeCHSLszN1ZlteZIP+mKzpT4ngVcpBp4cDal0zXZL0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XklABHGuz67Jr6L6q/GiqwCZqRGFa+meW1H0YZ/7JApSIsmEX8CEMBZVPkJ8B+60O
-         FlR0T0McnQ+zkZBfm7a39gFwYc8vtAuogsrnhflLLTuwcTv+vtD/qfquyn7FMcATsT
-         3jqW32IAcaubqFDEOIYbQmm1CSWaRBHcflvOu1P0=
-Date:   Thu, 16 Feb 2023 14:46:58 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        torvalds@linux-foundation.org, sj@kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, naoya.horiguchi@nec.com,
-        linmiaohe@huawei.com, david@redhat.com, osalvador@suse.de,
-        mike.kravetz@oracle.com, damon@lists.linux.dev,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] mm: change to return bool for
- isolate_movable_page()
-Message-Id: <20230216144658.18add74d133be070f07cf1f5@linux-foundation.org>
-In-Reply-To: <Y+z91pcxAuygc92J@casper.infradead.org>
-References: <cover.1676424378.git.baolin.wang@linux.alibaba.com>
-        <cb877f73f4fff8d309611082ec740a7065b1ade0.1676424378.git.baolin.wang@linux.alibaba.com>
-        <Y+z91pcxAuygc92J@casper.infradead.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229716AbjBSXZz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Feb 2023 18:25:55 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45A61A96E;
+        Sun, 19 Feb 2023 15:25:53 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id o10-20020a17090a744a00b00233ba727724so1271840pjk.1;
+        Sun, 19 Feb 2023 15:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVsbXUpnD9I9/F1PvXMGIEd9MiHz9LD4rwNzvGPEVYo=;
+        b=RfltPZ9lK1PJDPSiB2nr1+OyTnFqPHeFURn46UrC4hgv+pd4AFDf1epKZEXn3Yk97y
+         L8XFxJkekyn6fwf+aBihZHmAHNQ4gSit4MxvGU4tyE5KVOsvdF/9rRu8n5Y9ZVyzlMZ7
+         jgvlHr/bLgAfbRRQqFoPYgzLvZCe8hlItXbpg7qVrLA69l0Jth0NeyinmWgil6aMuSQG
+         q0k6yYfk+Ul7SqUOoX1vJj9B2lX8p9VPOS/mMzSoxKCBgZQAjVW1QD/FbQ5Fv5PsrKm4
+         3dS8PNplovpOiBnj/HyPEWtBG5nQDC1puEjxKz2AXQpcM5r/53Gsj4BStYXOf3OWztjk
+         3sGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TVsbXUpnD9I9/F1PvXMGIEd9MiHz9LD4rwNzvGPEVYo=;
+        b=26Jf2nu8g10mPJDstIy1qFcPA8ZjNm7e4e3NS44qQiGBrW41jLg20oI45lfEKRgrbt
+         zFpcGYY2JpRTt2iyFc2Y3QMulNI8p5wDBjOxmRF46O+rbuQoGcUm8/ogUFxwPJ44R1Lx
+         7Kwp40/+4O9Bw5R5brWWcS9R5Vgl4nUTgXYV7fRHQnm4pGDbagDgbvyMjWUbUFf8oz6d
+         J+UmewIk482tQgdbASWST2cyYMLMuEM8OAcKAhz4bKhsYQvs1sYL5xZTM9Ziw0UXT/lX
+         gnKeHnbhC4Rd6QN8pQ3JNVRZJKOrlOnBkLCOtiViujHgsewjFsHlBEAj3Ooef/ctkka9
+         dkUg==
+X-Gm-Message-State: AO0yUKU8kkh7sNy7s/6XBKbDMgwk4gcJTHry7LPZTMbCOT1RgHum7Nwh
+        cCLA0Ruv1Sn5EU/BxQMn6xM=
+X-Google-Smtp-Source: AK7set/q3JgqHfJI0JNmKuaOZQCLc1pcYvFOF4FjvmsGQn/LqSCH7ggi9iwaZJtjDO1ZvksVGZw3ZQ==
+X-Received: by 2002:a17:90a:1917:b0:234:5e7d:6d27 with SMTP id 23-20020a17090a191700b002345e7d6d27mr1885739pjg.42.1676849152891;
+        Sun, 19 Feb 2023 15:25:52 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id nn7-20020a17090b38c700b00230befd3b2csm492375pjb.6.2023.02.19.15.25.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Feb 2023 15:25:52 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 19 Feb 2023 13:25:50 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v6.3-rc1
+Message-ID: <Y/Kv/v/zdeHfwgcc@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 15 Feb 2023 15:44:22 +0000 Matthew Wilcox <willy@infradead.org> wrote:
+The following changes since commit 512dee0c00ad9e9c7ae9f11fc6743702ea40caff:
 
-> >  extern struct page *alloc_migration_target(struct page *page, unsigned long private);
-> > -extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
-> > +extern bool isolate_movable_page(struct page *page, isolate_mode_t mode);
-> 
-> You can drop the 'extern' here.
+  Merge tag 'x86-urgent-2023-01-04' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2023-01-04 12:11:29 -0800)
 
-There are a bunch of them, so a separate patch would be better.
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.3
 
---- a/include/linux/migrate.h~a
-+++ a/include/linux/migrate.h
-@@ -62,16 +62,16 @@ extern const char *migrate_reason_names[
- 
- #ifdef CONFIG_MIGRATION
- 
--extern void putback_movable_pages(struct list_head *l);
-+void putback_movable_pages(struct list_head *l);
- int migrate_folio_extra(struct address_space *mapping, struct folio *dst,
- 		struct folio *src, enum migrate_mode mode, int extra_count);
- int migrate_folio(struct address_space *mapping, struct folio *dst,
- 		struct folio *src, enum migrate_mode mode);
--extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
--		unsigned long private, enum migrate_mode mode, int reason,
--		unsigned int *ret_succeeded);
--extern struct page *alloc_migration_target(struct page *page, unsigned long private);
--extern bool isolate_movable_page(struct page *page, isolate_mode_t mode);
-+int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
-+		  unsigned long private, enum migrate_mode mode, int reason,
-+		  unsigned int *ret_succeeded);
-+struct page *alloc_migration_target(struct page *page, unsigned long private);
-+bool isolate_movable_page(struct page *page, isolate_mode_t mode);
- 
- int migrate_huge_page_move_mapping(struct address_space *mapping,
- 		struct folio *dst, struct folio *src);
-@@ -142,8 +142,8 @@ const struct movable_operations *page_mo
- }
- 
- #ifdef CONFIG_NUMA_BALANCING
--extern int migrate_misplaced_page(struct page *page,
--				  struct vm_area_struct *vma, int node);
-+int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
-+			   int node);
- #else
- static inline int migrate_misplaced_page(struct page *page,
- 					 struct vm_area_struct *vma, int node)
-_
+for you to fetch changes up to 32a47817d07557ffca9992964c514fd79bda6fba:
 
+  cgroup/cpuset: fix a few kernel-doc warnings & coding style (2023-01-10 12:28:17 -1000)
+
+----------------------------------------------------------------
+cgroup changes for v6.3-rc1
+
+All the commits are trivial. Doc updates and a trivial code cleanup.
+
+----------------------------------------------------------------
+Bagas Sanjaya (9):
+      docs: cgroup-v1: replace custom note constructs with appropriate admonition blocks
+      docs: cgroup-v1: wrap remaining admonitions in admonition blocks
+      docs: cgroup-v1: use code block for locking order schema
+      docs: cgroup-v1: fix footnotes
+      docs: cgroup-v1: move hierarchy of accounting caption
+      docs: cgroup-v1: use bullet lists for list of stat file tables
+      docs: cgroup-v1: make swap extension subsections subsections
+      docs: cgroup-v1: add internal cross-references
+      docs: cgroup-v1: use numbered lists for user interface setup
+
+Daniel Vacek (1):
+      cgroup/cpuset: no need to explicitly init a global static variable
+
+Randy Dunlap (1):
+      cgroup/cpuset: fix a few kernel-doc warnings & coding style
+
+ Documentation/admin-guide/cgroup-v1/cgroups.rst |   2 +
+ Documentation/admin-guide/cgroup-v1/memory.rst  | 284 +++++++++++++-----------
+ kernel/cgroup/cpuset.c                          |  15 +-
+ 3 files changed, 162 insertions(+), 139 deletions(-)
+
+-- 
+tejun
