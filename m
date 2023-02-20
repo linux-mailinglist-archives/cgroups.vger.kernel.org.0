@@ -2,227 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8736369CC0B
-	for <lists+cgroups@lfdr.de>; Mon, 20 Feb 2023 14:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B683569D06B
+	for <lists+cgroups@lfdr.de>; Mon, 20 Feb 2023 16:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjBTN0S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Feb 2023 08:26:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S231872AbjBTPR1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Feb 2023 10:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbjBTN0S (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Feb 2023 08:26:18 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC461ABEE;
-        Mon, 20 Feb 2023 05:26:16 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PL38d6tS0z4f3w0Y;
-        Mon, 20 Feb 2023 21:26:09 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgBXwLPtdPNjrs7vDw--.52497S4;
-        Mon, 20 Feb 2023 21:26:07 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     linux-block@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, houtao1@huawei.com
-Subject: [PATCH v2] blk-ioprio: Introduce promote-to-rt policy
-Date:   Mon, 20 Feb 2023 21:54:28 +0800
-Message-Id: <20230220135428.2632906-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBXwLPtdPNjrs7vDw--.52497S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3GF1ftF4UWrW3uw1rJF45trb_yoWxGF4DpF
-        4fAF9xur9YqF1xJFnrJ3WkXrWrtas2yw47CFsxKFyF934UAw1q9F40yF1kWFyfA3yDXFZ8
-        XrZ8JrW8CF1Dur7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232153AbjBTPRZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Feb 2023 10:17:25 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC6720D31;
+        Mon, 20 Feb 2023 07:16:54 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id s12so1048119qtq.11;
+        Mon, 20 Feb 2023 07:16:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cqn4UGJ8kCDms9H9/KZqG5/8iucyQK2p5fp/dnG15U4=;
+        b=j6cDxs5wY9U8hZTNmaA5a6G3X37iP6qPEHkLWjF3w7xw24mwLSVZpKI7rxdjw1DpZ1
+         yY3HX6QPcbT3Hd/LyxjYTjBA05guiSfsDuxWRGGTd8aownt9eC8n/LdIYeVDC2sgMrqB
+         i6d+3SWBGt8xWt6JyP7sZYNA7Tfn5a/IpE3CJdqvtfCEjBFbjA4aEz14bA7gPajX+FsU
+         6S4ckl2T5nrl/y6w8/wgrsRceuNbaQXMGH/piHbPKDSHcxmFIqfdN2WMKCsIyshV0bsw
+         GuuYFaBlwrGuwVmo907/NUQAabfHJiFSVy4cVLHfx36k014MeW+bYodgSSyeLrJ2wMos
+         WIBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cqn4UGJ8kCDms9H9/KZqG5/8iucyQK2p5fp/dnG15U4=;
+        b=6CfQQCLj+aXkzq27lDiL8TywxAWz/60gnU6C+42BUGMZFmZTFLPWbWoaE0jckvjPGM
+         ft9InM+ZZgzaMmCyu4GZCqvEy8I5qcAYYVXPNQA6RDopvmUJTpFm92FTNuvo5kNt6ja2
+         FUmD5sfvMWRY/z+yaY7Iqg6bqSND9D40yM5xcCgFZqolggIkLm0UnwQ5P5ibjgIHQuDc
+         Qb7KncXvESfMvCpazim3RcE7pAN34ccb3x1yIFTneUIl6mbPV4GZ9GRkkh1FhWR8ps3l
+         GyUr2cAf2nxYSURun4giB4vkpS7OQbNHHLw4NncSEy3csEMe5XiEVENsNzMVGW98FWEF
+         bPiQ==
+X-Gm-Message-State: AO0yUKWjAgnV5F2DaIrV8eO04/ZFrYsl9tMawJzYMlaiOTq8hI6WJZjC
+        OcIC8Md/EYZmEfZw+N2wiEAgHPuEbldCvh1OqI0=
+X-Google-Smtp-Source: AK7set+hAg5SJUcL3lnto1FlTkGqymX3B2++g3tb10cpff1CKBCBS89E1ytt/AWMSw8GP8DfPTzNAA==
+X-Received: by 2002:ac8:7dd5:0:b0:3b4:d5be:a2e0 with SMTP id c21-20020ac87dd5000000b003b4d5bea2e0mr94419qte.20.1676906212012;
+        Mon, 20 Feb 2023 07:16:52 -0800 (PST)
+Received: from MSI-FindNS.localdomain ([107.191.40.138])
+        by smtp.gmail.com with ESMTPSA id d127-20020ae9ef85000000b0073ba92629e1sm7292448qkg.23.2023.02.20.07.16.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Feb 2023 07:16:51 -0800 (PST)
+From:   Yue Zhao <findns94@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
+        muchun.song@linux.dev, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yue Zhao <findns94@gmail.com>
+Subject: [PATCH] mm: change memcg->oom_group access with atomic operations
+Date:   Mon, 20 Feb 2023 23:16:38 +0800
+Message-Id: <20230220151638.1371-1-findns94@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+The knob for cgroup v2 memory controller: memory.oom.group
+will be read and written simultaneously by user space
+programs, thus we'd better change memcg->oom_group access
+with atomic operations to avoid concurrency problems.
 
-Since commit a78418e6a04c ("block: Always initialize bio IO priority on
-submit"), bio->bi_ioprio will never be IOPRIO_CLASS_NONE when calling
-blkcg_set_ioprio(), so there will be no way to promote the io-priority
-of one cgroup to IOPRIO_CLASS_RT, because bi_ioprio will always be
-greater than or equals to IOPRIO_CLASS_RT.
-
-It seems possible to call blkcg_set_ioprio() first then try to
-initialize bi_ioprio later in bio_set_ioprio(), but this doesn't work
-for bio in which bi_ioprio is already initialized (e.g., direct-io), so
-introduce a new ioprio policy to promote the iopriority of bio to
-IOPRIO_CLASS_RT if the ioprio is not already RT.
-
-So introduce a new promote-to-rt policy to achieve this. For none-to-rt
-policy, although it doesn't work now, but considering that its purpose
-was also to override the io-priority to RT and allow for a smoother
-transition, just keep it and treat it as an alias of the promote-to-rt
-policy.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Yue Zhao <findns94@gmail.com>
 ---
-v2:
- * Simplify the implementation of promote-to-rt (from Bart)
- * Make none-to-rt to work again by treating it as an alias of
-   the promote-to-rt policy (from Bart & Jan)
- * fix the style of new content in cgroup-v2.rst (from Bagas)
- * set the default priority level to 4 instead of 0 for promote-to-rt
+ mm/memcontrol.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-v1: https://lore.kernel.org/linux-block/20230201045227.2203123-1-houtao@huaweicloud.com
-
- Documentation/admin-guide/cgroup-v2.rst | 42 ++++++++++++++-----------
- block/blk-ioprio.c                      | 23 ++++++++++++--
- 2 files changed, 44 insertions(+), 21 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 74cec76be9f2..ccfb9fdfbc16 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2021,31 +2021,33 @@ that attribute:
-   no-change
- 	Do not modify the I/O priority class.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 73afff8062f9..e4695fb80bda 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2057,7 +2057,7 @@ struct mem_cgroup *mem_cgroup_get_oom_group(struct task_struct *victim,
+ 	 * highest-level memory cgroup with oom.group set.
+ 	 */
+ 	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+-		if (memcg->oom_group)
++		if (READ_ONCE(memcg->oom_group))
+ 			oom_group = memcg;
  
--  none-to-rt
--	For requests that do not have an I/O priority class (NONE),
--	change the I/O priority class into RT. Do not modify
--	the I/O priority class of other requests.
-+  promote-to-rt
-+	For requests that have a no-RT I/O priority class, change it into RT.
-+	Also change the priority level of these requests to 4. Do not modify
-+	the I/O priority of requests that have priority class RT.
+ 		if (memcg == oom_domain)
+@@ -6569,7 +6569,7 @@ static int memory_oom_group_show(struct seq_file *m, void *v)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
  
-   restrict-to-be
- 	For requests that do not have an I/O priority class or that have I/O
--	priority class RT, change it into BE. Do not modify the I/O priority
--	class of requests that have priority class IDLE.
-+	priority class RT, change it into BE. Also change the priority level
-+	of these requests to 0. Do not modify the I/O priority class of
-+	requests that have priority class IDLE.
+-	seq_printf(m, "%d\n", memcg->oom_group);
++	seq_printf(m, "%d\n", READ_ONCE(memcg->oom_group));
  
-   idle
- 	Change the I/O priority class of all requests into IDLE, the lowest
- 	I/O priority class.
+ 	return 0;
+ }
+@@ -6591,7 +6591,7 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+ 	if (oom_group != 0 && oom_group != 1)
+ 		return -EINVAL;
  
-+  none-to-rt
-+	Deprecated. Just an alias for promote-to-rt.
-+
- The following numerical values are associated with the I/O priority policies:
+-	memcg->oom_group = oom_group;
++	WRITE_ONCE(memcg->oom_group, oom_group);
  
--+-------------+---+
--| no-change   | 0 |
--+-------------+---+
--| none-to-rt  | 1 |
--+-------------+---+
--| rt-to-be    | 2 |
--+-------------+---+
--| all-to-idle | 3 |
--+-------------+---+
-++----------------+---+
-+| no-change      | 0 |
-++----------------+---+
-+| rt-to-be       | 2 |
-++----------------+---+
-+| all-to-idle    | 3 |
-++----------------+---+
- 
- The numerical value that corresponds to each I/O priority class is as follows:
- 
-@@ -2061,9 +2063,13 @@ The numerical value that corresponds to each I/O priority class is as follows:
- 
- The algorithm to set the I/O priority class for a request is as follows:
- 
--- Translate the I/O priority class policy into a number.
--- Change the request I/O priority class into the maximum of the I/O priority
--  class policy number and the numerical I/O priority class.
-+- If I/O priority class policy is promote-to-rt, change the request I/O
-+  priority class to IOPRIO_CLASS_RT and change the request I/O priority
-+  level to 4.
-+- If I/O priorityt class is not promote-to-rt, translate the I/O priority
-+  class policy into a number, then change the request I/O priority class
-+  into the maximum of the I/O priority class policy number and the numerical
-+  I/O priority class.
- 
- PID
- ---
-diff --git a/block/blk-ioprio.c b/block/blk-ioprio.c
-index 8bb6b8eba4ce..4eba569d4823 100644
---- a/block/blk-ioprio.c
-+++ b/block/blk-ioprio.c
-@@ -23,25 +23,28 @@
- /**
-  * enum prio_policy - I/O priority class policy.
-  * @POLICY_NO_CHANGE: (default) do not modify the I/O priority class.
-- * @POLICY_NONE_TO_RT: modify IOPRIO_CLASS_NONE into IOPRIO_CLASS_RT.
-+ * @POLICY_PROMOTE_TO_RT: modify no-IOPRIO_CLASS_RT to IOPRIO_CLASS_RT.
-  * @POLICY_RESTRICT_TO_BE: modify IOPRIO_CLASS_NONE and IOPRIO_CLASS_RT into
-  *		IOPRIO_CLASS_BE.
-  * @POLICY_ALL_TO_IDLE: change the I/O priority class into IOPRIO_CLASS_IDLE.
-+ * @POLICY_NONE_TO_RT: an alias for POLICY_PROMOTE_TO_RT.
-  *
-  * See also <linux/ioprio.h>.
-  */
- enum prio_policy {
- 	POLICY_NO_CHANGE	= 0,
--	POLICY_NONE_TO_RT	= 1,
-+	POLICY_PROMOTE_TO_RT	= 1,
- 	POLICY_RESTRICT_TO_BE	= 2,
- 	POLICY_ALL_TO_IDLE	= 3,
-+	POLICY_NONE_TO_RT	= 4,
- };
- 
- static const char *policy_name[] = {
- 	[POLICY_NO_CHANGE]	= "no-change",
--	[POLICY_NONE_TO_RT]	= "none-to-rt",
-+	[POLICY_PROMOTE_TO_RT]	= "promote-to-rt",
- 	[POLICY_RESTRICT_TO_BE]	= "restrict-to-be",
- 	[POLICY_ALL_TO_IDLE]	= "idle",
-+	[POLICY_NONE_TO_RT]	= "none-to-rt",
- };
- 
- static struct blkcg_policy ioprio_policy;
-@@ -189,6 +192,20 @@ void blkcg_set_ioprio(struct bio *bio)
- 	if (!blkcg || blkcg->prio_policy == POLICY_NO_CHANGE)
- 		return;
- 
-+	if (blkcg->prio_policy == POLICY_PROMOTE_TO_RT ||
-+	    blkcg->prio_policy == POLICY_NONE_TO_RT) {
-+		/*
-+		 * For RT threads, the default priority level is 4 because
-+		 * task_nice is 0. By promoting non-RT io-priority to RT-class
-+		 * and default level 4, those requests that are already
-+		 * RT-class but need a higher io-priority can use ioprio_set()
-+		 * to achieve this.
-+		 */
-+		if (IOPRIO_PRIO_CLASS(bio->bi_ioprio) != IOPRIO_CLASS_RT)
-+			bio->bi_ioprio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_RT, 4);
-+		return;
-+	}
-+
- 	/*
- 	 * Except for IOPRIO_CLASS_NONE, higher I/O priority numbers
- 	 * correspond to a lower priority. Hence, the max_t() below selects
+ 	return nbytes;
+ }
 -- 
-2.29.2
+2.17.1
 
