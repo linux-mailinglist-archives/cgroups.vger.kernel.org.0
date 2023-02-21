@@ -2,61 +2,43 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335D069DBDC
-	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 09:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6114B69DDE4
+	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 11:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbjBUI0L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Feb 2023 03:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
+        id S233430AbjBUK3c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Feb 2023 05:29:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjBUI0K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 03:26:10 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE8322DCB;
-        Tue, 21 Feb 2023 00:26:07 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 64C7D34636;
-        Tue, 21 Feb 2023 08:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676967966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=64nOhdqsrfC+GQvY/2yDtSkhDgrub/IRKe6PuUtaoTA=;
-        b=gL/+k88YS+b45aJgVurrBUpl0g1ZFiyovTv6aHjfZ9jSBCOegm2/HVLZmSevsnN8c27HXc
-        qiKMeeqh92MmoN1xTCabTZIByhEkYtbvvgvTGShcDF2NbBr69DSWBVaLW+5RnkbEYyf7y/
-        zzDrC4knnc0O1PBH8hBci/5ov6RFTh0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4802213223;
-        Tue, 21 Feb 2023 08:26:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DqbQDh6A9GNCCAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 21 Feb 2023 08:26:06 +0000
-Date:   Tue, 21 Feb 2023 09:26:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Yue Zhao <findns94@gmail.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hannes@cmpxchg.org,
-        muchun.song@linux.dev, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: change memcg->oom_group access with atomic operations
-Message-ID: <Y/SAHfHsljuIRBJm@dhcp22.suse.cz>
-References: <20230220151638.1371-1-findns94@gmail.com>
- <Y/PhmEPc/qYeZ52T@P9FQF9L96D>
- <20230220230624.lkobqeagycx7bi7p@google.com>
+        with ESMTP id S233416AbjBUK3c (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 05:29:32 -0500
+Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D41DE11E81
+        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 02:29:28 -0800 (PST)
+Received: from tux.applied-asynchrony.com (p5b2e8d56.dip0.t-ipconnect.de [91.46.141.86])
+        by mail.itouring.de (Postfix) with ESMTPSA id 0C56CCF1AAE;
+        Tue, 21 Feb 2023 11:19:25 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id A6BE8F01602;
+        Tue, 21 Feb 2023 11:19:21 +0100 (CET)
+Subject: Re: [PATCH] block, bfq: fix uaf for bfqq in bic_set_bfqq()
+To:     Yu Kuai <yukuai1@huaweicloud.com>, jack@suse.cz, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk, paolo.valente@linaro.org,
+        shinichiro.kawasaki@wdc.com
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+References: <20230113094410.2907223-1-yukuai3@huawei.com>
+ <ca9fefd4-7109-042c-3b25-9eb795141145@huaweicloud.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <3e8c8567-f41d-66ae-0633-dcdbed007228@applied-asynchrony.com>
+Date:   Tue, 21 Feb 2023 11:19:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230220230624.lkobqeagycx7bi7p@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <ca9fefd4-7109-042c-3b25-9eb795141145@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,41 +46,46 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 20-02-23 23:06:24, Shakeel Butt wrote:
-> On Mon, Feb 20, 2023 at 01:09:44PM -0800, Roman Gushchin wrote:
-> > On Mon, Feb 20, 2023 at 11:16:38PM +0800, Yue Zhao wrote:
-> > > The knob for cgroup v2 memory controller: memory.oom.group
-> > > will be read and written simultaneously by user space
-> > > programs, thus we'd better change memcg->oom_group access
-> > > with atomic operations to avoid concurrency problems.
-> > > 
-> > > Signed-off-by: Yue Zhao <findns94@gmail.com>
-> > 
-> > Hi Yue!
-> > 
-> > I'm curious, have any seen any real issues which your patch is solving?
-> > Can you, please, provide a bit more details.
-> > 
+On 2023-02-21 08:04, Yu Kuai wrote:
+> Hi, Jens
 > 
-> IMHO such details are not needed. oom_group is being accessed
-> concurrently and one of them can be a write access. At least
-> READ_ONCE/WRITE_ONCE is needed here. Most probably syzbot didn't
-> catch this race because it does not know about the memory.oom.group
-> interface.
+> 在 2023/01/13 17:44, Yu Kuai 写道:
+>> After commit 64dc8c732f5c ("block, bfq: fix possible uaf for 'bfqq->bic'"),
+>> bic->bfqq will be accessed in bic_set_bfqq(), however, in some context
+>> bic->bfqq will be freed first, and bic_set_bfqq() is called with the freed
+>> bic->bfqq.
+>>
+>> Fix the problem by always freeing bfqq after bic_set_bfqq().
+>>
+>> Fixes: 64dc8c732f5c ("block, bfq: fix possible uaf for 'bfqq->bic'")
+>> Reported-and-tested-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/bfq-cgroup.c  | 2 +-
+>>   block/bfq-iosched.c | 4 +++-
+>>   2 files changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+>> index a6e8da5f5cfd..feb13ac25557 100644
+>> --- a/block/bfq-cgroup.c
+>> +++ b/block/bfq-cgroup.c
+>> @@ -749,8 +749,8 @@ static void bfq_sync_bfqq_move(struct bfq_data *bfqd,
+>>            * old cgroup.
+>>            */
+>>           bfq_put_cooperator(sync_bfqq);
+>> -        bfq_release_process_ref(bfqd, sync_bfqq);
+>>           bic_set_bfqq(bic, NULL, true, act_idx);
+>> +        bfq_release_process_ref(bfqd, sync_bfqq);
+>>       }
+>>   }
+>>
+> 
+> It seems this change is missed in GIT PULL for-6.3. I'll send a seperate
+> patch to fix this...
+> 
 
-I do agree with Roman here. It is _always_ good to mention whether this
-is a tool/review or actual bug triggered fix. Also {READ,WRITE}_ONCE doesn't
-guarantee atomicity so it would be good to rephrase the changelog.
-Something like:
-The knob for cgroup v2 memory controller: memory.oom.group
-is not protected by any locking so it can be modified while it is used.
-This is not an actual problem because races are unlikely (the knob is
-usually configured long before any workloads hits actual memcg oom)
-but it is better to use READ_ONCE/WRITE_ONCE to prevent compiler from
-doing anything funky.
+It was already applied in time for 6.2 as b600de2d7d3a16f9007fad1bdae82a3951a26af2
+and also already merged to 6.1-stable.
 
-This patch is not fixing any actual user visible bug but it is in line
-of a standard practice.
--- 
-Michal Hocko
-SUSE Labs
+cheers
+Holger
