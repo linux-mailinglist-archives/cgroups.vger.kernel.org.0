@@ -2,91 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A0169E341
-	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 16:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731B269E378
+	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 16:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbjBUPVV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Feb 2023 10:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        id S233977AbjBUPcx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Feb 2023 10:32:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233810AbjBUPVU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 10:21:20 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3971C25BB2;
-        Tue, 21 Feb 2023 07:21:19 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EDEB234C14;
-        Tue, 21 Feb 2023 15:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1676992877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gzHiHoqH1FZ2e8or4vCjWdlBkU2/7QX1hNdRkugFVaM=;
-        b=LgKqeo2yQ2b1D0vJPE7Wjp9MTcodIdE2vXEn1gZ//a8FuhQ9ii4mh4H5rDAL/Tr1f9SzFB
-        sB8OPFP2fFPTN1KhtaaEvkMNx1gadQSAqlS9PRt1QrX4dncGI7ulO5iOTfM1uRSUZvsKU7
-        12M7ip+L/P6NrUrHbV8prJjVsYRv7Kk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD84313481;
-        Tue, 21 Feb 2023 15:21:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id o626L23h9GP7bwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 21 Feb 2023 15:21:17 +0000
-Date:   Tue, 21 Feb 2023 16:21:17 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     hannes@cmpxchg.org, shakeelb@google.com, muchun.song@linux.dev,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: Skip high limit check in root memcg
-Message-ID: <Y/ThbQNqrdny4+Pf@dhcp22.suse.cz>
-References: <20230210094550.5125-1-haifeng.xu@shopee.com>
- <Y+uvRKo7OQ02yB4K@dhcp22.suse.cz>
- <82918a12-d83e-10c0-0e04-eec26657b699@shopee.com>
- <Y/S3GHT1P6awZaPb@dhcp22.suse.cz>
- <99bdfbec-2de4-b432-9649-09557d3f95d6@shopee.com>
+        with ESMTP id S234123AbjBUPcv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 10:32:51 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185F2180
+        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 07:32:49 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id q189so2392894pga.9
+        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 07:32:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1676993568;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehh0eemONObY4KTgZxfTyrJ90BFUoWQW75KmGdpJJUU=;
+        b=Y2YGEjYzRv62HOvaoOMPOPH3yegCdyyoIldwK+TxmcJiHo3mLPKK2G0bDGyrWCH3FD
+         SkEmK4DcPWsY7pslsIrb4z4w+hREUjckAQRiRcvpOB0hb+WoonFfg1JVMhiSrcBS7U5z
+         xCDl0RSJXQsR6+8xr1imkZB2ZWKxTmHCxGMpzatiEdosMpvV61wkcEkN0YZtOQP5k5bI
+         3ypUuVzovLYI3ak4HSjxDy1HOYGoWTwG7+7WRCZqZsKSkmyqlM477TEvYdh2JdLMFF1g
+         plc3+kBgE7JgPFKcq75owdW2ME8rLkLd/KGBhrSzZcoxKjBZGrjq/da7V1fTU+NEfiV2
+         LrlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1676993568;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ehh0eemONObY4KTgZxfTyrJ90BFUoWQW75KmGdpJJUU=;
+        b=SyphluxOXvKM2nWSCXcznQqXA9qe8qFbzJLgJJ0M+Hjn5B9wQWSEsTwNrrl6WxZmlG
+         wCCloMr20fQUcVW2vwDDBbp8vVbWgXx+h/tm5kWcVyjZRyUQuJAaA513LiRIpHkWZ/Ko
+         7kTjh29/wt2nOSyQbUucDwUz5BLEOQ1P9laCrz3Lh91bZPp81yByIiTD7YqMeYhHpkRO
+         C9KlPmFjzQ3S0mhjofbtB2BSmbZ4gxyoK9g0Hgfe8zOiAAFwkHjD3I9UsJJLvhf94xC+
+         GrbXqk0hspCoiRrk+xu7MK6CqBovgu/6ZKFmxCUGfSHyLHW63X/Rnda97n1/LkOK0qQa
+         4Gjw==
+X-Gm-Message-State: AO0yUKWYL79L8xcDukEJYfHkjbZLjEGLVgfwAfAHhyhuOdaHkenhzPja
+        oW5cEebG28VfYHQoykFjgAvjNx8xWWPvEMP0+JFWIg==
+X-Google-Smtp-Source: AK7set+Jt29aIywCZG6ebML4pz3GWxRVcvD2HxW1SIbREXfvTywk3Jefh6bOyScGVIVpVBmtcGIVPy+qvWw94OJK+cs=
+X-Received: by 2002:a62:d441:0:b0:5ac:44d6:c260 with SMTP id
+ u1-20020a62d441000000b005ac44d6c260mr715036pfl.31.1676993568476; Tue, 21 Feb
+ 2023 07:32:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99bdfbec-2de4-b432-9649-09557d3f95d6@shopee.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230113141234.260128-1-vincent.guittot@linaro.org>
+ <20230113141234.260128-7-vincent.guittot@linaro.org> <Y/TcwkmiVXJmQ9nw@hirez.programming.kicks-ass.net>
+In-Reply-To: <Y/TcwkmiVXJmQ9nw@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 21 Feb 2023 16:32:37 +0100
+Message-ID: <CAKfTPtBsFn3SW+DLYFNLiaroqFox5sXwBy8zVWZ24F9SKg7FJg@mail.gmail.com>
+Subject: Re: [PATCH v10 6/9] sched/fair: Add sched group latency support
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, parth@linux.ibm.com,
+        cgroups@vger.kernel.org, qyousef@layalina.io,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net,
+        David.Laight@aculab.com, pjt@google.com, pavel@ucw.cz,
+        tj@kernel.org, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, youssefesmat@chromium.org,
+        joel@joelfernandes.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 21-02-23 22:21:45, Haifeng Xu wrote:
-[...]
-> >> The test result show that with or without the patch, the time taken is almost the same.
-> > 
-> > This is in line with my expectation. So the question is whether the
-> > additional check is really worth it. 
-> 
-> This patch doesn't bring any obvious benifit or harm, but the high
-> limit check in root memcg seems a little weird.  Maybe we can add this
-> check
+On Tue, 21 Feb 2023 at 16:01, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Jan 13, 2023 at 03:12:31PM +0100, Vincent Guittot wrote:
+>
+> > +static s64 cpu_latency_nice_read_s64(struct cgroup_subsys_state *css,
+> > +                                 struct cftype *cft)
+> > +{
+> > +     int prio, delta, last_delta = INT_MAX;
+> > +     s64 weight;
+> > +
+> > +     weight = css_tg(css)->latency_offset * NICE_LATENCY_WEIGHT_MAX;
+> > +     weight = div_s64(weight, get_sleep_latency(false));
+> > +
+> > +     /* Find the closest nice value to the current weight */
+>
+> This comment isn't entirely accurate, since we only have the nice_write
+> interface below, this will be an exact match. The thing with weight is
+> that we first had the raw weight value interface and then the nice
+> interface had to map random values back to a 'nice' value.
 
-Well, I do not see the code to look weird TBH. There is nothing wrong in
-doing the check for the root memcg. It is a bit pointless but it is not
-incorrect.
+Yes, there was a long discussion about the interface and without any
+simple raw value to share, we decided to only use latency_nice until
+we found a generic metric
+>
+> Arguably we can simply store the raw nice value in write and print it
+> out again here.
 
-> It all depends on your viewpoint.
+Probably, I just wanted to prevent the latency.nice being the main
+value saved in cgroup . But I suppose it could be ok to save it
+directly
 
-From my POV, I prefer changes that either fix something (correctness
-issue or a performance issue/improvement) or improve readbility. The
-check doesn't fix anything and I am not convinced about an improved
-readabilit either.
-
-Thanks for the patch anyway!
--- 
-Michal Hocko
-SUSE Labs
+>
+> > +     for (prio = 0; prio < ARRAY_SIZE(sched_latency_to_weight); prio++) {
+> > +             delta = abs(sched_latency_to_weight[prio] - weight);
+> > +             if (delta >= last_delta)
+> > +                     break;
+> > +             last_delta = delta;
+> > +     }
+> > +
+> > +     return LATENCY_TO_NICE(prio-1);
+> > +}
+> > +
+> > +static int cpu_latency_nice_write_s64(struct cgroup_subsys_state *css,
+> > +                                  struct cftype *cft, s64 nice)
+> > +{
+> > +     s64 latency_offset;
+> > +     long weight;
+> > +     int idx;
+> > +
+> > +     if (nice < MIN_LATENCY_NICE || nice > MAX_LATENCY_NICE)
+> > +             return -ERANGE;
+> > +
+> > +     idx = NICE_TO_LATENCY(nice);
+> > +     idx = array_index_nospec(idx, LATENCY_NICE_WIDTH);
+> > +     weight = sched_latency_to_weight[idx];
+> > +
+> > +     latency_offset = weight * get_sleep_latency(false);
+> > +     latency_offset = div_s64(latency_offset, NICE_LATENCY_WEIGHT_MAX);
+> > +
+> > +     return sched_group_set_latency(css_tg(css), latency_offset);
+> > +}
