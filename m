@@ -2,56 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD7369E23A
-	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 15:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9F969E240
+	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 15:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbjBUOWj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Feb 2023 09:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S233743AbjBUOZv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Feb 2023 09:25:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233507AbjBUOWh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 09:22:37 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C902BEE1
-        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 06:22:06 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s5so5106876plg.0
-        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 06:22:06 -0800 (PST)
+        with ESMTP id S233085AbjBUOZt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 09:25:49 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD86428879
+        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 06:25:47 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id u10so5083657pjc.5
+        for <cgroups@vger.kernel.org>; Tue, 21 Feb 2023 06:25:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=V7OOFYL+9a+DRriFIjyujp84znXjDZJVpnPQuMpQ90k=;
-        b=uxXrXBivm84NQWwQYwLWkE3/QZuLMx8nAcxbhDvr3LCb32j58QCfPCWF9PRiwKN4rU
-         bQcv+JQNONAnY/fDXnUVEM4w8U+O+CGCxIJG1roGRgJ7H6wvq6YF1NN4Ne530NS4O3OA
-         Zbk6VkeDag4aHh9BFe7ZRabDCWJNb8m//dz6aToW0Lr7knW8nlgSJ4p8L/tMaWefru6W
-         OK33p5NlRRDuk07EUn0aNKUfOQ9ZWZ9QliQCHlxevjzfprRpmncMGHGQP00ShcI8L1pG
-         QW4WWlvOIPACNzDF/TEj3aU5hjRkeoELxyF6v3hqo6wzD38unTh3BufChDvkRbHTShn/
-         KxJw==
+        bh=TQtwfob29dO020xR+nsdt79jc/m4GepwvY587uLem6Q=;
+        b=Qwe+BLDHlhASfFsqXwjp1sJ8Ka1JNGxR4jj5LwZCeb2yjfO7BvpBfDcIjgM3ln+WeI
+         kpKHI1DZzTnzmJLWe2O5CUhvT7nXmB7aBsEet8Tdc8gzMKdbZj1IFOzZUCIWB2XlIZux
+         dg9nOb+XQYteg6LRyLscYg9Azo4dMplNRPqA28Xugg4oJ6H6EDQpgbOVXcTy1hWC3uPp
+         yGffdErgwCUTq/1l0Xc68O15BgW3vIFTF/CnWJJC4SmbTlMIGefK7SBUlzkQFO41CFPY
+         sDMwd9U5R5r1sA88LcQruESocHnpGHkIUPYmpb6yi5t+0OVhz6uS50ACwxuZeG9aNPD1
+         rzOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=V7OOFYL+9a+DRriFIjyujp84znXjDZJVpnPQuMpQ90k=;
-        b=pBSxmzrr6Ijrp5oeAub8kQUDwlDZDPQip0d712PQOOcGgb87B8vxDwHfaBOoFQOoZY
-         X+JIzvwTetsh+VdVWin2vBG1/IJZ6bnCGrVPmrJjpire6fhXjxOB215/+rR1ZdUCVJdp
-         /WDU/sEOL8eJgnYOkT2+b8iVysWe+Echisg/7ylh/g4HHItxFez4g1b2F/GFC61TpUFW
-         9fG8uRpZWR2Gl5qSOO2PVM1C+oMHx73+7ps2McgmXgROO6ijZBNuIWXlrFVjeor59Vz0
-         t4Zo4g4NQFZNfWXTV0rrIUjR5ibbm9NYhiuTpOEy+0DDwJrBO/RxqnQjKFLjXypdG4px
-         SX1g==
-X-Gm-Message-State: AO0yUKXY40x9E7RBPQUHzoqtC6Vp7T80HnrK17wPai3/LBG+Tb5b3Nqw
-        2o89yeQTIsZe1I5c18cE9axowFUhTNlRfX+H6Q+TiA==
-X-Google-Smtp-Source: AK7set+iK43TPWam+9Zj5i0P3RH21aXfv/HEmqvUC7dXOWrzdgAtUXYZftSsp58vvsBdi194m3WuRxlbsS8NJTdyzKo=
+        bh=TQtwfob29dO020xR+nsdt79jc/m4GepwvY587uLem6Q=;
+        b=HXMCHXDMH3Rq8JmLaavx8E8UTmTL138nbStZbpA4mOxtF1yZonwr+GNDw5A5UW2rcc
+         3xDwrur6XcivPWYkjU5o57D6jQs60TDLUFztlD4F3tYPhw8icBkW8SZhaeS9Wio/qW7/
+         nOgVKq4fhJxMLgGJi9fxwutmp1PI8jqEwbkWFmhKa4sDuSNq9UTkoqoTpR2fGaS0biUZ
+         j4qpbxhUWQ3dHnnnCeKlD6NArFeb1T8gSni7bvBP9gQUYuIma7GgXyCfKBiteRbJDHPk
+         l3Ch7LKj8aQq9O8AfrrVEJ9zSzIP/eiqJb+Kz/xcYmOYZRRtgZHDbRuAcLaWwn4UM/Qa
+         VSng==
+X-Gm-Message-State: AO0yUKWuIpoaPLOy7AYJjXg1f3jQXRIDyC6K0XrN5I8nJUIljc47mUuy
+        R9V1tVx3GSDBTLbg0fNIcpDTL3gPBW6qCrea/TyjMA==
+X-Google-Smtp-Source: AK7set+YPslisVvXbDS80tJo5Qxl3/PELiXL8jZS8ZOeSMNaPgZ+EmecEkpv4R84I/CVFT5j62Ea0venY47uPYLcw0M=
 X-Received: by 2002:a17:90b:3946:b0:233:f98e:3a37 with SMTP id
- oe6-20020a17090b394600b00233f98e3a37mr1149844pjb.15.1676989325638; Tue, 21
- Feb 2023 06:22:05 -0800 (PST)
+ oe6-20020a17090b394600b00233f98e3a37mr1152541pjb.15.1676989547358; Tue, 21
+ Feb 2023 06:25:47 -0800 (PST)
 MIME-Version: 1.0
 References: <20230113141234.260128-1-vincent.guittot@linaro.org>
- <20230113141234.260128-6-vincent.guittot@linaro.org> <Y/TBdB23akBbUjqd@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y/TBdB23akBbUjqd@hirez.programming.kicks-ass.net>
+ <20230113141234.260128-6-vincent.guittot@linaro.org> <Y/S+qrschy+N+QCQ@hirez.programming.kicks-ass.net>
+ <Y/TSAivRWwm2LaPh@hirez.programming.kicks-ass.net>
+In-Reply-To: <Y/TSAivRWwm2LaPh@hirez.programming.kicks-ass.net>
 From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 21 Feb 2023 15:21:54 +0100
-Message-ID: <CAKfTPtAk2A8zPgOfpbN0s4LZv+d7ABB9=5tAEMCbVrf263XtjA@mail.gmail.com>
+Date:   Tue, 21 Feb 2023 15:25:36 +0100
+Message-ID: <CAKfTPtAHuVFx=5w0p5DBShx42eEPCPXJ+DLc3z3_3yFv9jJWeA@mail.gmail.com>
 Subject: Re: [PATCH v10 5/9] sched/fair: Take into account latency priority at wakeup
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
@@ -76,66 +77,28 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 21 Feb 2023 at 14:05, Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, 21 Feb 2023 at 15:15, Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Fri, Jan 13, 2023 at 03:12:30PM +0100, Vincent Guittot wrote:
-> > @@ -6155,6 +6159,35 @@ static int sched_idle_cpu(int cpu)
-> >  }
-> >  #endif
+> On Tue, Feb 21, 2023 at 01:52:58PM +0100, Peter Zijlstra wrote:
+> > On Fri, Jan 13, 2023 at 03:12:30PM +0100, Vincent Guittot wrote:
 > >
-> > +static void set_next_buddy(struct sched_entity *se);
-> > +
-> > +static void check_preempt_from_others(struct cfs_rq *cfs, struct sched_entity *se)
-> > +{
-> > +     struct sched_entity *next;
-> > +
-> > +     if (se->latency_offset >= 0)
-> > +             return;
-> > +
-> > +     if (cfs->nr_running <= 1)
-> > +             return;
-> > +     /*
-> > +      * When waking from another class, we don't need to check to preempt at
-> > +      * wakeup and don't set next buddy as a candidate for being picked in
-> > +      * priority.
-> > +      * In case of simultaneous wakeup when current is another class, the
-> > +      * latency sensitive tasks lost opportunity to preempt non sensitive
-> > +      * tasks which woke up simultaneously.
-> > +      */
-> > +
-> > +     if (cfs->next)
-> > +             next = cfs->next;
-> > +     else
-> > +             next = __pick_first_entity(cfs);
-> > +
-> > +     if (next && wakeup_preempt_entity(next, se) == 1)
-> > +             set_next_buddy(se);
-> > +}
-> > +
-> >  /*
-> >   * The enqueue_task method is called before nr_running is
-> >   * increased. Here we update the fair scheduling stats and
-> > @@ -6241,14 +6274,15 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> >       if (!task_new)
-> >               update_overutilized_status(rq);
+> > > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > > index 6c61bde49152..38decae3e156 100644
+> > > --- a/include/linux/sched.h
+> > > +++ b/include/linux/sched.h
+> > > @@ -568,6 +568,8 @@ struct sched_entity {
+> > >     /* cached value of my_q->h_nr_running */
+> > >     unsigned long                   runnable_weight;
+> > >  #endif
+> > > +   /* preemption offset in ns */
+> > > +   long                            latency_offset;
 > >
-> > +     if (rq->curr->sched_class != &fair_sched_class)
-> > +             check_preempt_from_others(cfs_rq_of(&p->se), &p->se);
-> > +
-> >  enqueue_throttle:
-> >       assert_list_leaf_cfs_rq(rq);
+> > I wonder about the type here; does it make sense to have it depend on
+> > the bitness; that is if s32 is big enough on 32bit then surely it is so
+> > too on 64bit, and if not, then it should be unconditionally s64.
 > >
-> >       hrtick_update(rq);
-> >  }
 >
-> Hmm.. This sets a next selection when the task gets enqueued while not
-> running a fair task -- and looses a wakeup preemption opportunity.
->
-> Should we perhaps also do this for latency_nice == 0?, in any case I
-> think this can be moved to its own patch to avoid doing too much in the
-> one patch. It seems fairly self contained.
+> The cgroup patch has this as 'int'. I'm thinking we ought to be
+> consistent :-)
 
-This function is then removed by patch 9 as the additional rb tree
-fixes all cases
-
->
+Yes, good point
