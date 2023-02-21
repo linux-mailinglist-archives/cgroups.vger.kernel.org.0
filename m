@@ -2,117 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5075B69E2F0
-	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 16:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF3869E311
+	for <lists+cgroups@lfdr.de>; Tue, 21 Feb 2023 16:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbjBUPCK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Feb 2023 10:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        id S233226AbjBUPH0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Feb 2023 10:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjBUPCG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 10:02:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C892B628;
-        Tue, 21 Feb 2023 07:02:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bCEktfZQBYOidtJzxUm4n6P8jzrl5z+36FM412yPsqs=; b=JDpD0PpWH3pnX8EYDtfDPUDLIy
-        S10rBhUk23wKDrJcvT4gwTBjEdQTEO8uKioDDQMoHCwBLn3wlR476k9xVsrPQKWksABn/2jpJ7R4w
-        aPbh/wOeH17i+dXF6Adx64cKbCrkz18407TYKbZn7U8vkTXkOtqi374xKlqiF0ra5RjDIbuSPOM70
-        6DelKoWS68hL6HpdwmIstsS/hXfpR8N301EpkJ++hWFXgZztyyV9tvQ4ILrVoPRAjwLvYIeKBwW9R
-        kVnvhJmGZU1oAwH9+P+00TX9twcvYMbmkfzBR6yZ+6ulIy60wp/Q7BKKcereIOrFkKYtQnv0mPFD+
-        zyRULY4A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pUU8z-00Ch0m-0F; Tue, 21 Feb 2023 15:01:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S232049AbjBUPHZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Feb 2023 10:07:25 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D972118;
+        Tue, 21 Feb 2023 07:07:24 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 49EA430020B;
-        Tue, 21 Feb 2023 16:01:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3107F2007A8C6; Tue, 21 Feb 2023 16:01:22 +0100 (CET)
-Date:   Tue, 21 Feb 2023 16:01:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, parth@linux.ibm.com,
-        cgroups@vger.kernel.org, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net,
-        David.Laight@aculab.com, pjt@google.com, pavel@ucw.cz,
-        tj@kernel.org, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org
-Subject: Re: [PATCH v10 6/9] sched/fair: Add sched group latency support
-Message-ID: <Y/TcwkmiVXJmQ9nw@hirez.programming.kicks-ass.net>
-References: <20230113141234.260128-1-vincent.guittot@linaro.org>
- <20230113141234.260128-7-vincent.guittot@linaro.org>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D0CBF34BC2;
+        Tue, 21 Feb 2023 15:07:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1676992042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LuoQfbt2KTtRM14/DGy4Xw84gjAGRL7EtHDJyvKijkc=;
+        b=iEs5G9H0uW0SncqaXgoZdfWT5Nfcp7Jr/y+R0YLekUASyEbj+x2ZJWa0x7T3+cTqzqm68a
+        vjZkll0GSyPg7eRu6K3kjKzzR7q1W6ekeDrWrhAAWXYJoYEhC4aBeSt271xqMNzCFxvUTS
+        tTs1+DB01YF+v0vtUlJ/Xhl9CgrQXNc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B193713223;
+        Tue, 21 Feb 2023 15:07:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 34+2KCre9GM7aAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 21 Feb 2023 15:07:22 +0000
+Date:   Tue, 21 Feb 2023 16:07:22 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Chae <matthew.chae@axis.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel@axis.com,
+        christopher.wong@axis.com, Muchun Song <muchun.song@linux.dev>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/memcontrol: add memory.peak in cgroup root
+Message-ID: <Y/TeKkhQtV7Bck8P@dhcp22.suse.cz>
+References: <20230221143421.10385-1-matthew.chae@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230113141234.260128-7-vincent.guittot@linaro.org>
+In-Reply-To: <20230221143421.10385-1-matthew.chae@axis.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 03:12:31PM +0100, Vincent Guittot wrote:
+On Tue 21-02-23 15:34:20, Matthew Chae wrote:
+> The kernel currently doesn't provide any method to show the overall
+> system's peak memory usage recorded. Instead, only each slice's peak
+> memory usage recorded except for cgroup root is shown through each
+> memory.peak.
+> 
+> Each slice might consume their peak memory at different time. This is
+> stored at memory.peak in each own slice. The sum of every memory.peak
+> doesn't mean the total system's peak memory usage recorded. The sum at
+> certain point without having a peak memory usage in their slice can have
+> the largest value.
+> 
+>        time |  slice1  |  slice2  |   sum
+>       =======================================
+>         t1  |    50    |   200    |   250
+>       ---------------------------------------
+>         t2  |   150    |   150    |   300
+>       ---------------------------------------
+>         t3  |   180    |    20    |   200
+>       ---------------------------------------
+>         t4  |    80    |    20    |   100
+> 
+> memory.peak value of slice1 is 180 and memory.peak value of slice2 is 200.
+> Only these information are provided through memory.peak value from each
+> slice without providing the overall system's peak memory usage. The total
+> sum of these two value is 380, but this doesn't represent the real peak
+> memory usage of the overall system. The peak value what we want to get is
+> shown in t2 as 300, which doesn't have any biggest number even in one
+> slice. Therefore the proper way to show the system's overall peak memory
+> usage recorded needs to be provided.
 
-> +static s64 cpu_latency_nice_read_s64(struct cgroup_subsys_state *css,
-> +				    struct cftype *cft)
-> +{
-> +	int prio, delta, last_delta = INT_MAX;
-> +	s64 weight;
-> +
-> +	weight = css_tg(css)->latency_offset * NICE_LATENCY_WEIGHT_MAX;
-> +	weight = div_s64(weight, get_sleep_latency(false));
-> +
-> +	/* Find the closest nice value to the current weight */
-
-This comment isn't entirely accurate, since we only have the nice_write
-interface below, this will be an exact match. The thing with weight is
-that we first had the raw weight value interface and then the nice
-interface had to map random values back to a 'nice' value.
-
-Arguably we can simply store the raw nice value in write and print it
-out again here.
-
-> +	for (prio = 0; prio < ARRAY_SIZE(sched_latency_to_weight); prio++) {
-> +		delta = abs(sched_latency_to_weight[prio] - weight);
-> +		if (delta >= last_delta)
-> +			break;
-> +		last_delta = delta;
-> +	}
-> +
-> +	return LATENCY_TO_NICE(prio-1);
-> +}
-> +
-> +static int cpu_latency_nice_write_s64(struct cgroup_subsys_state *css,
-> +				     struct cftype *cft, s64 nice)
-> +{
-> +	s64 latency_offset;
-> +	long weight;
-> +	int idx;
-> +
-> +	if (nice < MIN_LATENCY_NICE || nice > MAX_LATENCY_NICE)
-> +		return -ERANGE;
-> +
-> +	idx = NICE_TO_LATENCY(nice);
-> +	idx = array_index_nospec(idx, LATENCY_NICE_WIDTH);
-> +	weight = sched_latency_to_weight[idx];
-> +
-> +	latency_offset = weight * get_sleep_latency(false);
-> +	latency_offset = div_s64(latency_offset, NICE_LATENCY_WEIGHT_MAX);
-> +
-> +	return sched_group_set_latency(css_tg(css), latency_offset);
-> +}
+The problem I can see is that the root's peak value doesn't really
+represent the system peak memory usage because it only reflects memcg
+accounted memory. So there is plenty of memory consumption which is not
+covered. On top of that a lot of memory contributed to the root memcg is
+not accounted at all (see try_charge and its callers) so the cumulative
+hierarchical value is incomplete and I believe misleading as well.
+-- 
+Michal Hocko
+SUSE Labs
