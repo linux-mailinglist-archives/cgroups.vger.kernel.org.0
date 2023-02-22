@@ -2,156 +2,197 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E8969F355
-	for <lists+cgroups@lfdr.de>; Wed, 22 Feb 2023 12:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2DA69F393
+	for <lists+cgroups@lfdr.de>; Wed, 22 Feb 2023 12:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbjBVLQn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Feb 2023 06:16:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        id S231397AbjBVLmL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Feb 2023 06:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbjBVLQm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Feb 2023 06:16:42 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5275B470
-        for <cgroups@vger.kernel.org>; Wed, 22 Feb 2023 03:16:40 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id q31-20020a17090a17a200b0023750b69614so208949pja.5
-        for <cgroups@vger.kernel.org>; Wed, 22 Feb 2023 03:16:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677064600;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=x+BI276LAtkDkFkhbO8UzGamxJ+PETieQFjUz5/ET20=;
-        b=mb1mn3MhGDW6cSSFeJGsoejg4FxJ9bOZTCBKtgQJiOvDt4d1akIBSE+tToXBmRv0E5
-         V1RjjG21ff9Kjre2RNazc44d3hTcEmIkgSFqWEpspIH5YNcw2ZPZ9r0NED4OVol31OIk
-         c1FCoGYVnOwaAdFQel8Vc8L/nWNUWKWpc9TVrPyy5bJpqSeaBu3cL2aDuUSqd23BXnkF
-         51MGu3neCN1nafaepdFkzyI4Q4TgVGhAOmxvaLMeEXBCG1ZcSA74MnRquSp8+8auIb6l
-         cSay+rcKRs8F96+IAhYtQl/e9pRuw7aZmFwWgT/skm/DBXycpX/cSqdnUslHt0Ko/5Qq
-         Y5EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677064600;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x+BI276LAtkDkFkhbO8UzGamxJ+PETieQFjUz5/ET20=;
-        b=BkWx0w/C3FUswQ5JZVlX36npOhGypjlN/B4oW55EvvTMo6Sjk5Hm8EPFxm4wYCyW9e
-         nRec0C1MqvzHVlv4nwOhZKX0EEBDtT3H7Iar0CVdhXkr18T2W0pxad4BqSqMiaUH0X2p
-         db2F08yxsAmu+Z123XyaoYESoqfbk8EzXO7gfpX3LRB9FDGlkgh/Yzlwo6NJ1bU4u7uJ
-         YyzgcskKH7ucKgZPiysjfYSKTBCjXklqLEc//EcFYJUvjLxTfdSAsHQEcLmchPNwzftg
-         wrVGkz0B9Sq7QApFnrhHaBbIORoDmS4JIPodeedE1CXJGUEBPrfyzFc5A6lcY9LyTv92
-         oWZg==
-X-Gm-Message-State: AO0yUKViuRjIC6nBITfDeEugtFMm8/T0sSFcP4YLjvbD1XfFRqhAqBGW
-        +z3oG3eVOg10XB2o1CJ1DlswqkSR60ZaMsaZX9gfhw==
-X-Google-Smtp-Source: AK7set9tTntBeySGs6cc9FTifkpF6RjvarGsSFvPGNeOLLnbEAAFLpi0+jfKdQ9iNmXprDcX7nT/cq4ZTYJTOa49eLY=
-X-Received: by 2002:a17:903:110c:b0:19c:92f5:6bb3 with SMTP id
- n12-20020a170903110c00b0019c92f56bb3mr760089plh.28.1677064600194; Wed, 22 Feb
- 2023 03:16:40 -0800 (PST)
+        with ESMTP id S231857AbjBVLmD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Feb 2023 06:42:03 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B56139CE8;
+        Wed, 22 Feb 2023 03:41:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eiPzJpEV2/ckfX8zDGhDS79AcaDMMs8MAiV02+ays0YRKuLeZg2QS/v0kkDD7qhcM9qmNrBJ1/HTIeV1pLE/CQuv3/zqDRjtnfHuzVRg4elD63v8hcRIdKNspmeNsgRfgND4kE6nOymnPu2/Q3wqx41lW+KvnrIpolgDuAWAMgfihMxxxMbQKpRGrUdimFY7/+c8O6cLHwaxViqK3SYFmWc45nDTIq6mRvrJwAEi12U8dT1GefPrCrUbMBFbaeD40fGcXc8O3pRZ+sojdErT7E9Rlxdijo1gHVpBxH5Z1OwvSOkYCvOONEh/knV1kU5tVEZQQGxMC1gLCObUyDgTdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a/J2SwDBtKM0rMVHMgsxfFOGyPRVQvdH0dlElN3WvE0=;
+ b=TQYLKRLGukvEYp/Lv17NY+mc+2xwR1tZ8pOQsfEidD8/JTqTFyOz5LO7gO0hlNvDJ8Q+UFe9jlP/Xqsuib+z7jJTXyWnPdro71lZv7UGzJXEPbaP6VeQPecO68tFPH0dS75Gs4NKZdncx1OfbkG0J/X+yHG6Grl/WVpDKSImuv3qQWlF8y01QePaeaTxRKgnGSzESY7qknfxL+wu4IsLEFoLh2JQxHl0pqyCpgxRLQAmgr+OXwY+AuwAjYuBb+WLX+lHf/YM+f6QnphxtTQf00iFh4Tu1jXPl9Qo70eQtqSvcbaYBq7tuScbC3q9NeeWFLX2i64i8FPB7zKFDMiZdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a/J2SwDBtKM0rMVHMgsxfFOGyPRVQvdH0dlElN3WvE0=;
+ b=dmrFMrylJDmeUBjHxti8ni7nIurDKzJiWNwef+HFUdt8NyZ/6g63dmlbBNQGtjovhwIx02QHTpdCsPKQVphXpdnsT/jAPJa2BWTx7LTILATGyEWwYDkaJaCVh/Q+HlwIzsIueD4GSeEjBptFMGv8hdY6sqPlY8YmsBoakazmzeSFzq/Xyw6knuKrRHeKNjKh+IkMrr4Mu205afdC13+L5JnEOXh3Wcj5cssrFmBJiyIgBx4nuUlAj+yIjMgXrAIZGqspIMokuSimJUz7fgaitTMrPGAmMk6KIh0zF03w90+B9/91WiGczpFKX28tKS8sw3kRKWLcFdJ997uAammEGw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by DS0PR12MB6558.namprd12.prod.outlook.com (2603:10b6:8:d2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.19; Wed, 22 Feb
+ 2023 11:41:17 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6111.021; Wed, 22 Feb 2023
+ 11:41:17 +0000
+References: <Y+0tWZxMUx/NZ3Ne@nvidia.com> <Y+3jcw9vo4ml5p0M@dhcp22.suse.cz>
+ <Y+4lcq4Fge27TQIn@nvidia.com> <Y/T2pNQ70eMAl1sX@slm.duckdns.org>
+ <Y/T+pw25oGmKqz1k@nvidia.com> <Y/T/bkcYc9Krw4rE@slm.duckdns.org>
+ <Y/UEkNn0O65Pfi4e@nvidia.com> <Y/UIURDjR9pv+gzx@slm.duckdns.org>
+ <Y/Ua6VcNe/DFh7X4@nvidia.com> <Y/UfS8TDIXhUlJ/I@slm.duckdns.org>
+ <Y/UiQmuVwh2eqrfA@nvidia.com>
+User-agent: mu4e 1.8.10; emacs 28.2
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhubbard@nvidia.com, tjmercier@google.com, hannes@cmpxchg.org,
+        surenb@google.com, mkoutny@suse.com, daniel@ffwll.ch,
+        "Daniel P . Berrange" <berrange@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 14/19] mm: Introduce a cgroup for pinned memory
+Date:   Wed, 22 Feb 2023 22:38:25 +1100
+In-reply-to: <Y/UiQmuVwh2eqrfA@nvidia.com>
+Message-ID: <87o7pmnd0p.fsf@nvidia.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SYBPR01CA0216.ausprd01.prod.outlook.com
+ (2603:10c6:10:16::36) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-References: <20230113141234.260128-1-vincent.guittot@linaro.org>
- <20230113141234.260128-9-vincent.guittot@linaro.org> <Y/XlR+wLtn54CkE4@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y/XlR+wLtn54CkE4@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 22 Feb 2023 12:16:29 +0100
-Message-ID: <CAKfTPtBJD6So-0-S3sgFqTE1HVMypg_S23+uuH6BnGk5atxUKA@mail.gmail.com>
-Subject: Re: [PATCH v10 8/9] sched/fair: Add latency list
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, parth@linux.ibm.com,
-        cgroups@vger.kernel.org, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net,
-        David.Laight@aculab.com, pjt@google.com, pavel@ucw.cz,
-        tj@kernel.org, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DS0PR12MB6558:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67eccfb4-bd15-4b28-c535-08db14c9b5a0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VDqoo3Khvf59XCxbSCApbCP7MDIfDUPI5fagJ8R5c48LIwXlmg2KqbTkxoC/rg4dRebBBYlg0DwoUKSkn1tKCDNnwNQTAT/iHj0+W7N9FkbPw4ts17PoRsQU7hI86jslfKPkPl4UATMlhLBo//5speQeO3lZ2YLxFZr/5Cp3uwWqK6HwzCR/FB6pR0lgVH/TO1JQYOx4EQDrl0rU+ceDjhayv2/iel4I6NW/1d93jsQHTkDgiBRuTy1OPQZL9Kr+rfg/lGTGYdlTz5kC4Vf0VCXr4JdULi5DZiNjRg1q6yOzj5OlbBhwsUZwTX9HaXIFVoyAhvENV+y1oThasIncGISC49qCI00LJSL/FDEJXkM3kcXZU1qVky7V0LvsstunWPoY3sjQUJ8jDJePBcBFfXGJaLrVf5/0x4xlbNLFeuWsr/KAyW6iYHr2cPoeis+v55c4Fa26lltiQFrp+EwlFpViktAgIwRcAzDwJB+T16yicmetIYUhnuAYQ6U7IW6syEur5BLjfi0Ntuc4VFiDdTHIkDnnZ/ovvcih4bxZSt2NGsl7WIf8ecHswX16+ZaJ/QgxnR2vOp/6JQ2UmP+dn39MDl+GCcXckND/Ltvy0D61jdpsGGyqE4pHuNcMnt6RTXGYmRl5ZayFvv8tie78AQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(396003)(346002)(39860400002)(376002)(136003)(451199018)(86362001)(36756003)(37006003)(54906003)(316002)(83380400001)(478600001)(6636002)(6512007)(6506007)(6666004)(26005)(186003)(2616005)(6486002)(7416002)(8936002)(6862004)(5660300002)(4326008)(38100700002)(66946007)(41300700001)(66476007)(8676002)(66556008)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CKG6FnAEBYVIBy7MJKIejJOOBFswRMVJ/GgdKZTuQSX+qSJPqFq9xklqgQVS?=
+ =?us-ascii?Q?zOiXSENFKGQVpu9MinmSC6tTsvlxGPz5VBr17z6OLeLx9zeifjFG4RoUi9AR?=
+ =?us-ascii?Q?Itu2rl+A6AwdBj0LyWByIoEVtrNHd/yQJsBFK/ttsi4xK8byGsc6XFvswumZ?=
+ =?us-ascii?Q?S5beDgv7LWbIHVXHqzIaTWED2JL7BMSGE4IuO6yJfPdzhPXas5iTyDepd8Gt?=
+ =?us-ascii?Q?JIG+tCZhwQCNA3xjEJQMhaY6Iz15U5+XMAHLUgXKY4I3xTFBCxLKRNOXJcYh?=
+ =?us-ascii?Q?QshAcLlnOOwcyYZDJSCvicRIvRwvRYwPHUATqnogETGeTbedkSPNfjXHSLRa?=
+ =?us-ascii?Q?XBibqIR45kS1n9EHkk+ehDRHf29e1Yx2s/IQ1TjIAdeQ65mKMQpsImQpeD3q?=
+ =?us-ascii?Q?Tlv3PaBzqOyYdZCD/s+y5I+y+a0LEpcWPhQbbCFFJp6Mu1eI9OwigLqXs8jj?=
+ =?us-ascii?Q?96PfMP/JFxGXdPybM8Ijpw/fzk1fbN+JO3Z0ojSNfsUJqXx7F/R+1dMo8WpA?=
+ =?us-ascii?Q?FtjWdx0qzKROuf97qJ1fsDbH6FqhaOG1rIneMv/xIUhOSkYqlhEqVbscXZDQ?=
+ =?us-ascii?Q?oZerkix4AYhyUlfp72AKWIZe50mg0uJwghvhs95jCk+fGxTKsvokmxe36lGV?=
+ =?us-ascii?Q?7YY5KmSa72bJo1NaM9eHeqcJE4pHuX6JNocZdP8sgzbZy9IgZ9q8Nma1e74O?=
+ =?us-ascii?Q?k219BVPDln6+HFzmhUuVtSY9QiDwgWhYVpLourG9J4EQKR5a/Gm4PdzS+Tc8?=
+ =?us-ascii?Q?YE9QDsUQzUOwAw5ZcuaY4fp41sYPElcFdY52OLnvwMei5ltfiGJnJDCwEi6a?=
+ =?us-ascii?Q?zThpnVcCDdj69/yNQCLfujl1f7mCHf7KOLWKP9h1mWNjnyR0ogyK2DSEcwFq?=
+ =?us-ascii?Q?u2rRD/xDVFLacU1ug4I15c1rYKiYfM7QXdpVQhRb3X4iIFJknkB38tAgyKzj?=
+ =?us-ascii?Q?CPCHH6nnYsHey0YDMd9sQ5vS60gHGQPBMuACzmNWKfmJ656A6coVM9LviEzp?=
+ =?us-ascii?Q?+PBzuPrb/jpGKAiZ6Ace5xlPBWguu6AP8qWYxyinEHTar4uYEuYOIDDbmkUA?=
+ =?us-ascii?Q?MIzh+LIKvnwnUxlF2XyCMY065FgS0rz1ajcsdulaoflcLks6ENHnGbJ8fMmu?=
+ =?us-ascii?Q?ErNKbcWXhEL+cznexgj15u/pTndh7u7DXwbtUieSEy6jDeipAQGIXH/eKX5F?=
+ =?us-ascii?Q?OMgw+Y12DiHmlLuIjOxrQ2bqXB1mzSLmk8OZtVcbLg9RrnwDQOJN6wHYYV/o?=
+ =?us-ascii?Q?HemKvSpDlsaoVxLdUjYvnGuf9by2Ex4gJikQKwh7psAk8TFs645lcy0qNSRo?=
+ =?us-ascii?Q?a4AlXR+OgQF2NyvixTyRBQE7tn8EcqwEt5vyNZP5ecN5s1JKSJ+BuSX6cNtg?=
+ =?us-ascii?Q?lCw8wMGZOkOzbztwrSzd55vqXIwUnQvcc/x2nMWXCH2NdZXroyU8UNX+y36K?=
+ =?us-ascii?Q?KK+T42kyfykX/Fj0JmhETYOGvYU/f3Z4LgWQZtg0sCN4GsaoAvTouNdCaii0?=
+ =?us-ascii?Q?Fyt1mtK0WfisRrv6VrAD6ZbHn2KGHNzil3GjOn5WWDFOhhaoQ8K2vGNfAbz1?=
+ =?us-ascii?Q?BTmKdF8DUSSOqyhisJ0rt0hA8dKmP50IBypAx+Ms?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67eccfb4-bd15-4b28-c535-08db14c9b5a0
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2023 11:41:17.3438
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NdXOEVsSJNc8y3M44lHm8gCz/BKWz518szVvOqBjA0Fbb570N1OsbvRYViK+FhHWya+CqQiuYQODTaDvLAe0VQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6558
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 22 Feb 2023 at 10:50, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Jan 13, 2023 at 03:12:33PM +0100, Vincent Guittot wrote:
->
-> > +static void __enqueue_latency(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-> > +{
-> > +
-> > +     /* Only latency sensitive entity can be added to the list */
-> > +     if (se->latency_offset >= 0)
-> > +             return;
-> > +
-> > +     if (!RB_EMPTY_NODE(&se->latency_node))
-> > +             return;
-> > +
-> > +     /*
-> > +      * An execution time less than sysctl_sched_min_granularity means that
-> > +      * the entity has been preempted by a higher sched class or an entity
-> > +      * with higher latency constraint.
-> > +      * Put it back in the list so it gets a chance to run 1st during the
-> > +      * next slice.
-> > +      */
-> > +     if (!(flags & ENQUEUE_WAKEUP)) {
-> > +             u64 delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-> > +
-> > +             if (delta_exec >= sysctl_sched_min_granularity)
-> > +                     return;
-> > +     }
->
-> I'm not a big fan of this dynamic enqueueing condition; it makes it
-> rather hard to interpret the below addition to pick_next_entity().
->
-> Let me think about this more... at the very least the comment with
-> __pick_first_latency() use below needs to be expanded upon if we keep it
-> like so.
 
-Only the waking tasks should be added in the latency rb tree so they
-can be selected to run 1st (as long as they don't use too much
-runtime). But task A can wake up, preempts current task B thanks to
-its latency nice , starts to run few usecs but then is immediately
-preempted by a RT task C as an example. In this case, we consider that
-the task A didn't get a chance to run after its wakeup and we put it
-back to the latency rb tree just as if task A has just woken up but
-didn't preempted the new current task C.
+Jason Gunthorpe <jgg@nvidia.com> writes:
 
-I have used sysctl_sched_min_granularity has this is min runtime for a
-task before being possibly preempted at tick by another cfs task with
-a lower vruntime so if it runs less than sysctl_sched_min_granularity
-we are sure that it has been preempted by higher prio tasks and it's
-not because it used all its runtime compared to others
+>> the owner and pinner disagreeing with each other. At least
+>> conceptually, the solution is rather straight-forward - whoever pins
+>> a page should also claim the ownership of it.
+>
+> If the answer is pinner is owner, then multi-pinners must mean
+> multi-owner too. We probably can't block multi-pinner without causing
+> uAPI problems.
 
->
-> > +
-> > +     rb_add_cached(&se->latency_node, &cfs_rq->latency_timeline, __latency_less);
-> > +}
->
-> > @@ -4966,7 +5040,7 @@ static struct sched_entity *
-> >  pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
-> >  {
-> >       struct sched_entity *left = __pick_first_entity(cfs_rq);
-> > -     struct sched_entity *se;
-> > +     struct sched_entity *latency, *se;
-> >
-> >       /*
-> >        * If curr is set we have to see if its left of the leftmost entity
-> > @@ -5008,6 +5082,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
-> >               se = cfs_rq->last;
-> >       }
-> >
-> > +     /* Check for latency sensitive entity waiting for running */
-> > +     latency = __pick_first_latency(cfs_rq);
-> > +     if (latency && (latency != se) &&
-> > +         wakeup_preempt_entity(latency, se) < 1)
-> > +             se = latency;
->
-> I'm not quite sure why this condition isn't sufficient on it's own.
-> After all, if a task does a 'spurious' nanosleep it can get around the
-> 'restriction' in __enqueue_latency() without any great penalty to it's
-> actual bandwidth consumption.
+It seems the problem is how to track multiple pinners of the page. At
+the moment memcg ownership is stored in folio->memcg_data which
+basically points to the owning struct mem_cgroup *.
 
-Yes it until it used all its runtime.
+For pinning this series already introduces this data structure:
+
+struct vm_account {
+	struct task_struct *task;
+	struct mm_struct *mm;
+	struct user_struct *user;
+	enum vm_account_flags flags;
+};
+
+We could modify it to something like:
+
+struct vm_account {
+       struct list_head possible_pinners;
+       struct mem_cgroup *memcg;
+       [...]
+};
+
+When a page is pinned the first pinner takes ownership and stores it's
+memcg there, updating memcg_data to point to it. This would require a
+new page_memcg_data_flags but I think we have one left. Subsequent
+pinners create a vm_account and add it to the pinners list.
+
+When a driver unpins a page we scan the pinners list and assign
+ownership to the next driver pinning the page by updating memcg_data and
+removing the vm_account from the list.
+
+The problem with this approach is each pinner (ie. struct vm_account)
+may cover different subsets of pages. Drivers have to store a list of
+pinned pages somewhere, so we could query drivers or store the list of
+pinned pages in the vm_account. That seems like a fair bit of overhead
+though and would make unpinning expensive as we'd have to traverse
+several lists.
+
+We'd also have to ensure possible owners had enough free memory in the
+owning memcg to accept having the page charged when another pinner
+unpins. That could be done by reserving space during pinning.
+
+And of course it only works for pin_user_pages() - other users don't
+always have a list of pages conveniently available although I suppose
+they could walk the rmap, but again that adds overhead. So not sure it's
+a great solution but figured I'd leave it here in case it triggers other
+ideas.
+
+> You are not wrong on any of these remarks, but this looses sight of
+> the point - it is take the existing broken RLIMIT scheme and make it
+> incrementally better by being the same broken scheme just with
+> cgroups.
+
+Right. RLIMIT_MEMLOCK is pretty broken because most uses enforce it
+against a specific task so it can be easily bypassed. The aim here was
+to make it at least possible to enforce a meaningful limit.
+
+> If we eventually fix everything so memcg can do multi-pinners/owners
+> then would it be reasonable to phase out the new pincg at that time?
+>
+> Jason
+
