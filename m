@@ -2,53 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2DA69F393
-	for <lists+cgroups@lfdr.de>; Wed, 22 Feb 2023 12:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA4A69F4F6
+	for <lists+cgroups@lfdr.de>; Wed, 22 Feb 2023 13:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjBVLmL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Feb 2023 06:42:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
+        id S231660AbjBVM5O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Feb 2023 07:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbjBVLmD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Feb 2023 06:42:03 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B56139CE8;
-        Wed, 22 Feb 2023 03:41:27 -0800 (PST)
+        with ESMTP id S229980AbjBVM5N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Feb 2023 07:57:13 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2089.outbound.protection.outlook.com [40.107.94.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E181C36093;
+        Wed, 22 Feb 2023 04:57:11 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eiPzJpEV2/ckfX8zDGhDS79AcaDMMs8MAiV02+ays0YRKuLeZg2QS/v0kkDD7qhcM9qmNrBJ1/HTIeV1pLE/CQuv3/zqDRjtnfHuzVRg4elD63v8hcRIdKNspmeNsgRfgND4kE6nOymnPu2/Q3wqx41lW+KvnrIpolgDuAWAMgfihMxxxMbQKpRGrUdimFY7/+c8O6cLHwaxViqK3SYFmWc45nDTIq6mRvrJwAEi12U8dT1GefPrCrUbMBFbaeD40fGcXc8O3pRZ+sojdErT7E9Rlxdijo1gHVpBxH5Z1OwvSOkYCvOONEh/knV1kU5tVEZQQGxMC1gLCObUyDgTdg==
+ b=AMBPJsQpnyoHlZYHjWY9058c6WWqBoIBE9B2sCOhGls+noSTWj5PqGw/jThQK41ncUn/lhkj3MjSLlrhL9UW5OGjTc/mhRi0K0s2sj++Aw/z1zbN1+b8r8wI+TVYt0LJXT9GdMBSQgu8lf20VGI9krUyPzDqT6y8dNt9TEVUcOatzrw7LF+xPY+8wmfrL7sGKNRfz8+NAL6hD9jBAqdCV3wkihQnzodGaSQTM7NfcxrhqgyEbn7cWdlDmkTM47kjNxrOOzqQYcny3yh01vaBjYWV88NXKQwitfx1CdgHjW8cvM7lCFD8Gj2Sl9si6PN0DHBxB315IDEhXSKwMwlTZA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a/J2SwDBtKM0rMVHMgsxfFOGyPRVQvdH0dlElN3WvE0=;
- b=TQYLKRLGukvEYp/Lv17NY+mc+2xwR1tZ8pOQsfEidD8/JTqTFyOz5LO7gO0hlNvDJ8Q+UFe9jlP/Xqsuib+z7jJTXyWnPdro71lZv7UGzJXEPbaP6VeQPecO68tFPH0dS75Gs4NKZdncx1OfbkG0J/X+yHG6Grl/WVpDKSImuv3qQWlF8y01QePaeaTxRKgnGSzESY7qknfxL+wu4IsLEFoLh2JQxHl0pqyCpgxRLQAmgr+OXwY+AuwAjYuBb+WLX+lHf/YM+f6QnphxtTQf00iFh4Tu1jXPl9Qo70eQtqSvcbaYBq7tuScbC3q9NeeWFLX2i64i8FPB7zKFDMiZdA==
+ bh=8RIZyLsJETVGJGmuhJEPdBBNsg/5QmP04eJhuH91Hk0=;
+ b=ZPqpb0Y2E0XKyFOG1uxRW0AWAx3mTE6W43449jvPttIykO6aRRCFwxjk0neHBWZU2Zw3r4QwuASfM1Hc2IT6XQP4lbMt9ga3RNe7IfFN3YBEO3XMzWnp31W5Txbg0MZO5QGi+T/psRXx3/gzxVUcPTXLOw0FMx/plseWDwnKSkS+7iax3iHcs2J8e4Z3BsHqYgmlZ7oIooEUOJmIhdCUx2urHaefzfvKuL1Cg6oWRXBHOrMNzgiJ8Elq/BLrABMJ4LLNSyAhCzYc5vVhlpsMltPw7T5OxTHdvteeoXx7VBpioduQeuDjVpdxUIecLHdXHreqBlwNxqCoR9o1wbsvKw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a/J2SwDBtKM0rMVHMgsxfFOGyPRVQvdH0dlElN3WvE0=;
- b=dmrFMrylJDmeUBjHxti8ni7nIurDKzJiWNwef+HFUdt8NyZ/6g63dmlbBNQGtjovhwIx02QHTpdCsPKQVphXpdnsT/jAPJa2BWTx7LTILATGyEWwYDkaJaCVh/Q+HlwIzsIueD4GSeEjBptFMGv8hdY6sqPlY8YmsBoakazmzeSFzq/Xyw6knuKrRHeKNjKh+IkMrr4Mu205afdC13+L5JnEOXh3Wcj5cssrFmBJiyIgBx4nuUlAj+yIjMgXrAIZGqspIMokuSimJUz7fgaitTMrPGAmMk6KIh0zF03w90+B9/91WiGczpFKX28tKS8sw3kRKWLcFdJ997uAammEGw==
+ bh=8RIZyLsJETVGJGmuhJEPdBBNsg/5QmP04eJhuH91Hk0=;
+ b=TntXxiLzAo+Kamy6sH0IlJzfsvDL+LHTJlcaP+B3dP0AFGrcME0nXipcCynUyCXYRGJh4Y43dCasn+qINtYu6HzXGHUgA+7OVUnv7LGUiZjaNLLRQEB+FLEj5ztLxfXBv5j0mCwSwlFljuSSqx4ba40WI3S6GoP93hD0iDGllbGUGyxhCLw0A5VU12o9njw3dDkpXmbFHxMyq1S8TuNJ9MhYin1/h7KAIgRtZ5+rf0bxpX8D5x76Mm6xXji9nP5GN2wikXoeJl9I9zW1Dwbu5ZU2PYqo9D3WzB/JNeC5tXawEh/yOe3WVCS89cLgYVKQnuadOG0jNdI+Ici2SDhXYg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by DS0PR12MB6558.namprd12.prod.outlook.com (2603:10b6:8:d2::16) with
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS7PR12MB6046.namprd12.prod.outlook.com (2603:10b6:8:85::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.19; Wed, 22 Feb
- 2023 11:41:17 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6111.021; Wed, 22 Feb 2023
- 11:41:17 +0000
-References: <Y+0tWZxMUx/NZ3Ne@nvidia.com> <Y+3jcw9vo4ml5p0M@dhcp22.suse.cz>
- <Y+4lcq4Fge27TQIn@nvidia.com> <Y/T2pNQ70eMAl1sX@slm.duckdns.org>
- <Y/T+pw25oGmKqz1k@nvidia.com> <Y/T/bkcYc9Krw4rE@slm.duckdns.org>
- <Y/UEkNn0O65Pfi4e@nvidia.com> <Y/UIURDjR9pv+gzx@slm.duckdns.org>
- <Y/Ua6VcNe/DFh7X4@nvidia.com> <Y/UfS8TDIXhUlJ/I@slm.duckdns.org>
- <Y/UiQmuVwh2eqrfA@nvidia.com>
-User-agent: mu4e 1.8.10; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.20; Wed, 22 Feb
+ 2023 12:57:09 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6111.021; Wed, 22 Feb 2023
+ 12:57:09 +0000
+Date:   Wed, 22 Feb 2023 08:57:08 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alistair Popple <apopple@nvidia.com>
 Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
         Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -59,61 +53,70 @@ Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>
 Subject: Re: [PATCH 14/19] mm: Introduce a cgroup for pinned memory
-Date:   Wed, 22 Feb 2023 22:38:25 +1100
-In-reply-to: <Y/UiQmuVwh2eqrfA@nvidia.com>
-Message-ID: <87o7pmnd0p.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SYBPR01CA0216.ausprd01.prod.outlook.com
- (2603:10c6:10:16::36) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+Message-ID: <Y/YRJNwwvqp7nKKt@nvidia.com>
+References: <Y+4lcq4Fge27TQIn@nvidia.com>
+ <Y/T2pNQ70eMAl1sX@slm.duckdns.org>
+ <Y/T+pw25oGmKqz1k@nvidia.com>
+ <Y/T/bkcYc9Krw4rE@slm.duckdns.org>
+ <Y/UEkNn0O65Pfi4e@nvidia.com>
+ <Y/UIURDjR9pv+gzx@slm.duckdns.org>
+ <Y/Ua6VcNe/DFh7X4@nvidia.com>
+ <Y/UfS8TDIXhUlJ/I@slm.duckdns.org>
+ <Y/UiQmuVwh2eqrfA@nvidia.com>
+ <87o7pmnd0p.fsf@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o7pmnd0p.fsf@nvidia.com>
+X-ClientProxiedBy: MN2PR01CA0004.prod.exchangelabs.com (2603:10b6:208:10c::17)
+ To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DS0PR12MB6558:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67eccfb4-bd15-4b28-c535-08db14c9b5a0
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS7PR12MB6046:EE_
+X-MS-Office365-Filtering-Correlation-Id: 30214c28-0ae6-43b2-15be-08db14d44f14
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VDqoo3Khvf59XCxbSCApbCP7MDIfDUPI5fagJ8R5c48LIwXlmg2KqbTkxoC/rg4dRebBBYlg0DwoUKSkn1tKCDNnwNQTAT/iHj0+W7N9FkbPw4ts17PoRsQU7hI86jslfKPkPl4UATMlhLBo//5speQeO3lZ2YLxFZr/5Cp3uwWqK6HwzCR/FB6pR0lgVH/TO1JQYOx4EQDrl0rU+ceDjhayv2/iel4I6NW/1d93jsQHTkDgiBRuTy1OPQZL9Kr+rfg/lGTGYdlTz5kC4Vf0VCXr4JdULi5DZiNjRg1q6yOzj5OlbBhwsUZwTX9HaXIFVoyAhvENV+y1oThasIncGISC49qCI00LJSL/FDEJXkM3kcXZU1qVky7V0LvsstunWPoY3sjQUJ8jDJePBcBFfXGJaLrVf5/0x4xlbNLFeuWsr/KAyW6iYHr2cPoeis+v55c4Fa26lltiQFrp+EwlFpViktAgIwRcAzDwJB+T16yicmetIYUhnuAYQ6U7IW6syEur5BLjfi0Ntuc4VFiDdTHIkDnnZ/ovvcih4bxZSt2NGsl7WIf8ecHswX16+ZaJ/QgxnR2vOp/6JQ2UmP+dn39MDl+GCcXckND/Ltvy0D61jdpsGGyqE4pHuNcMnt6RTXGYmRl5ZayFvv8tie78AQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(396003)(346002)(39860400002)(376002)(136003)(451199018)(86362001)(36756003)(37006003)(54906003)(316002)(83380400001)(478600001)(6636002)(6512007)(6506007)(6666004)(26005)(186003)(2616005)(6486002)(7416002)(8936002)(6862004)(5660300002)(4326008)(38100700002)(66946007)(41300700001)(66476007)(8676002)(66556008)(2906002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: mUnffRxkAnIFgcgREVPBcEDe4BpYOzKadiljx/ezYgMLYMnEF1KgeyBwBX2Df9cdx7yNPgSbplJlqUBmyO/U8OG288QBNZG25lD+E/93UAym/Sb7MIxIpVpFjML+zwczjPurTmiARtZjifdbWbd4Ov0MimVJXINt8TEkpPM4n50xTNNwoWxN59vLFCnmfCgLN/hMA8D5T/T8wu/BImUHkBsLJuBG/Ywn2D7zxCUWV4SwkvBQFn1jAo2s1vRuhEbKw35drdQUq/qpntm99ie+SnGmwIs7wQOk+K9JKsvOit9MITIPnDi0QHTZqi3D77Fl5Lamw1wAPhlFilF2V3VgG5lLECUNuQYGpb/27zl2Z+FrHylC0SI8UGLrPS4gZthbRTm4J7zgANuCuo/VXiKtItsEk3WThJ+1H4KoYVyEPrqgulUHBxwQXz1I8UQAN9layhKLDpa+BOuS3MCfFbRExtuyeVmI/nrH700S9Rwx39wFZk9vp4VDDGNViDo+pNMxoH9at2bPSHJ3juSpZ3ZLmcLXdKD3JBnhadjtTCPtF4Rqcsn/qZel49EVCGrQn9SsH9a3KdkHmVlIIEhGYRX141KfajPJUPyA3xlR38BQEAg0dWmdruFJDGLpDgiPjQDvZ2xZtnbYGl8vm7aCqyU5YA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(39860400002)(136003)(366004)(346002)(396003)(451199018)(2906002)(66946007)(36756003)(5660300002)(41300700001)(4326008)(83380400001)(8676002)(66476007)(2616005)(66556008)(4744005)(7416002)(8936002)(38100700002)(186003)(26005)(6506007)(6512007)(6486002)(478600001)(316002)(6636002)(37006003)(6862004)(86362001)(54906003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CKG6FnAEBYVIBy7MJKIejJOOBFswRMVJ/GgdKZTuQSX+qSJPqFq9xklqgQVS?=
- =?us-ascii?Q?zOiXSENFKGQVpu9MinmSC6tTsvlxGPz5VBr17z6OLeLx9zeifjFG4RoUi9AR?=
- =?us-ascii?Q?Itu2rl+A6AwdBj0LyWByIoEVtrNHd/yQJsBFK/ttsi4xK8byGsc6XFvswumZ?=
- =?us-ascii?Q?S5beDgv7LWbIHVXHqzIaTWED2JL7BMSGE4IuO6yJfPdzhPXas5iTyDepd8Gt?=
- =?us-ascii?Q?JIG+tCZhwQCNA3xjEJQMhaY6Iz15U5+XMAHLUgXKY4I3xTFBCxLKRNOXJcYh?=
- =?us-ascii?Q?QshAcLlnOOwcyYZDJSCvicRIvRwvRYwPHUATqnogETGeTbedkSPNfjXHSLRa?=
- =?us-ascii?Q?XBibqIR45kS1n9EHkk+ehDRHf29e1Yx2s/IQ1TjIAdeQ65mKMQpsImQpeD3q?=
- =?us-ascii?Q?Tlv3PaBzqOyYdZCD/s+y5I+y+a0LEpcWPhQbbCFFJp6Mu1eI9OwigLqXs8jj?=
- =?us-ascii?Q?96PfMP/JFxGXdPybM8Ijpw/fzk1fbN+JO3Z0ojSNfsUJqXx7F/R+1dMo8WpA?=
- =?us-ascii?Q?FtjWdx0qzKROuf97qJ1fsDbH6FqhaOG1rIneMv/xIUhOSkYqlhEqVbscXZDQ?=
- =?us-ascii?Q?oZerkix4AYhyUlfp72AKWIZe50mg0uJwghvhs95jCk+fGxTKsvokmxe36lGV?=
- =?us-ascii?Q?7YY5KmSa72bJo1NaM9eHeqcJE4pHuX6JNocZdP8sgzbZy9IgZ9q8Nma1e74O?=
- =?us-ascii?Q?k219BVPDln6+HFzmhUuVtSY9QiDwgWhYVpLourG9J4EQKR5a/Gm4PdzS+Tc8?=
- =?us-ascii?Q?YE9QDsUQzUOwAw5ZcuaY4fp41sYPElcFdY52OLnvwMei5ltfiGJnJDCwEi6a?=
- =?us-ascii?Q?zThpnVcCDdj69/yNQCLfujl1f7mCHf7KOLWKP9h1mWNjnyR0ogyK2DSEcwFq?=
- =?us-ascii?Q?u2rRD/xDVFLacU1ug4I15c1rYKiYfM7QXdpVQhRb3X4iIFJknkB38tAgyKzj?=
- =?us-ascii?Q?CPCHH6nnYsHey0YDMd9sQ5vS60gHGQPBMuACzmNWKfmJ656A6coVM9LviEzp?=
- =?us-ascii?Q?+PBzuPrb/jpGKAiZ6Ace5xlPBWguu6AP8qWYxyinEHTar4uYEuYOIDDbmkUA?=
- =?us-ascii?Q?MIzh+LIKvnwnUxlF2XyCMY065FgS0rz1ajcsdulaoflcLks6ENHnGbJ8fMmu?=
- =?us-ascii?Q?ErNKbcWXhEL+cznexgj15u/pTndh7u7DXwbtUieSEy6jDeipAQGIXH/eKX5F?=
- =?us-ascii?Q?OMgw+Y12DiHmlLuIjOxrQ2bqXB1mzSLmk8OZtVcbLg9RrnwDQOJN6wHYYV/o?=
- =?us-ascii?Q?HemKvSpDlsaoVxLdUjYvnGuf9by2Ex4gJikQKwh7psAk8TFs645lcy0qNSRo?=
- =?us-ascii?Q?a4AlXR+OgQF2NyvixTyRBQE7tn8EcqwEt5vyNZP5ecN5s1JKSJ+BuSX6cNtg?=
- =?us-ascii?Q?lCw8wMGZOkOzbztwrSzd55vqXIwUnQvcc/x2nMWXCH2NdZXroyU8UNX+y36K?=
- =?us-ascii?Q?KK+T42kyfykX/Fj0JmhETYOGvYU/f3Z4LgWQZtg0sCN4GsaoAvTouNdCaii0?=
- =?us-ascii?Q?Fyt1mtK0WfisRrv6VrAD6ZbHn2KGHNzil3GjOn5WWDFOhhaoQ8K2vGNfAbz1?=
- =?us-ascii?Q?BTmKdF8DUSSOqyhisJ0rt0hA8dKmP50IBypAx+Ms?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jxVfF1kOMeS/g14MOy5OpOXJHRwehC+lwdB4BrqjN/vfL3A1HJAqUmVts092?=
+ =?us-ascii?Q?yec6Cd8w3UkfZG2wqtQTfW91DjD5SP+wX0NYHBg4caT5WCJxPV1r4ZMYYVth?=
+ =?us-ascii?Q?Cb4GQ7stK2Bzg1eg/BUZ58eao6vu/zvUVxDLZojYuIGQA0z+ttzlJeN8BKB9?=
+ =?us-ascii?Q?1DX8ZJU9GCaG0AUZ/rIIhit7FhEIVhucxy+Z3dLkEZv/QKQtUNKjqByQOsN/?=
+ =?us-ascii?Q?ueEHTAXRrlA11EtqbgI70eJC3tGKmDDkB4eEljUjhaZcet0+RqmlaB5lJ+Eq?=
+ =?us-ascii?Q?4EpxhhwoaEkJQyj3yxxFmcbdFo2kc2Brlwb23UkKpac4tR2h0ZQTMZnKDMX1?=
+ =?us-ascii?Q?knDY+YNk7gSCaOLeU6IWAqRmF7hA7mKASP3eDGF4u9sDkYYdqBx7gImqPgPn?=
+ =?us-ascii?Q?7ZXGalucaoaD+q4B9k1EUTHgtMwj7TZEDRKNLImBKK+M0njIAivfhsXx6SV0?=
+ =?us-ascii?Q?1F5y8LW6dP+Ft4T6MlA7zePOk8tzWS/yzzLMwr3uaGCi25UOm12DhS+BJjSU?=
+ =?us-ascii?Q?Abw1X0uU35YTpvyiwg//c0Zh5mBYhTocYLXwTaUmFbK5+3DV6U07svuX9a9z?=
+ =?us-ascii?Q?jwSf0c9CR3228EilO/o6khAyqGVaNkTRDLTANL/DwAJHHdtzBqtn+kMWUFsb?=
+ =?us-ascii?Q?NjiCDfB8fOv85LkOTQsYr5Hy8YYWwmgz6FY20pjpKTX98w7o7jbB+ttBxMjO?=
+ =?us-ascii?Q?CgJIgpiigW60MWEr6NuL+ft3aKHr+xZ5/LnQ1KVurCm9/KOUHIFJ/UY/Ka8h?=
+ =?us-ascii?Q?k+6KKRTVk52w4rAxV2P76vEn4Jg4+GZIE3O0lZEedivlNhfnT+y0MGQlO2Dl?=
+ =?us-ascii?Q?dJ9g2wzdai+GdE+j6833wXRVzg+bwgWznTpg9GJzzs7I30IEAekJYVtbUNU0?=
+ =?us-ascii?Q?/hfNdI9nSHO7hqQwtfZX/8Pzn8BomuVQ4aCnIgT7fhUUOteSVSvqaeu303v2?=
+ =?us-ascii?Q?5p1KOn5y0bhD9PaHflA+MgYuzYfP0ovAjvzh09V5ob60W+cXNJDwS0ShyNdJ?=
+ =?us-ascii?Q?IPb9or2cHcaaXxK5+vFSVQ1T9+7EIwOLd6MBrqXZ6K7sRM6j28aMuFOLuaX/?=
+ =?us-ascii?Q?SzjCE7JG0eSIgUQAvon5YcSk7D3q9nt/KGZ/i8krPSoNMlI6g1R5+Y78HpEu?=
+ =?us-ascii?Q?RioEOU9lWzexvKF+hCqRFrDfMh2GslB4HqU7Gce1j1xYnCM5dr0j/T2N7RQU?=
+ =?us-ascii?Q?bfl/Qe3m2ksUOYIoqlUFt1iTaUYJvId98fbXeXyus0zXT1xVGIhT5CXPnWem?=
+ =?us-ascii?Q?sSssSFkY9CPRfpf56qJyAOYRInhSmsOIA6ch/V1nBUwrqCRMNnim5J/RaprJ?=
+ =?us-ascii?Q?5QEzg57jT1vFIV21GcOyj0ahR51RmZ+yFZ//VbWPqJ6bfAmd6nLNu+Lw6qRa?=
+ =?us-ascii?Q?X6yLSikMvhjv60fdF/35KS3zyTk0Cg3C6GXJVHuZYdhyVfKC4l2KG6j2OHXq?=
+ =?us-ascii?Q?PawuCVkR6FWVc5S6QJ6qw45Zjb0Xm1FwhEb5E/f+7B4QBPWXP+hp89sV/sW2?=
+ =?us-ascii?Q?JKSugwW90PCdPmLufhn8rv6g8xeLF/KdPDKAKX5tBp4XVL7BZSENtrPpIJV0?=
+ =?us-ascii?Q?2zPLRtVvj2oiUeifP0XmNRdxHU8h/XQYhUmKi5tK?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67eccfb4-bd15-4b28-c535-08db14c9b5a0
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30214c28-0ae6-43b2-15be-08db14d44f14
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2023 11:41:17.3438
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2023 12:57:09.6645
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NdXOEVsSJNc8y3M44lHm8gCz/BKWz518szVvOqBjA0Fbb570N1OsbvRYViK+FhHWya+CqQiuYQODTaDvLAe0VQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6558
+X-MS-Exchange-CrossTenant-UserPrincipalName: VaU42E7bGTumRqyB/MpNaUoCWSgngUZJiRRmTMedmP/npvjv4Ab9rPrUWu+vsLSC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6046
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -124,75 +127,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, Feb 22, 2023 at 10:38:25PM +1100, Alistair Popple wrote:
+> When a driver unpins a page we scan the pinners list and assign
+> ownership to the next driver pinning the page by updating memcg_data and
+> removing the vm_account from the list.
 
-Jason Gunthorpe <jgg@nvidia.com> writes:
+I don't see how this works with just the data structure you outlined??
+Every unique page needs its own list_head in the vm_account, it is
+doable just incredibly costly.
 
->> the owner and pinner disagreeing with each other. At least
->> conceptually, the solution is rather straight-forward - whoever pins
->> a page should also claim the ownership of it.
->
-> If the answer is pinner is owner, then multi-pinners must mean
-> multi-owner too. We probably can't block multi-pinner without causing
-> uAPI problems.
-
-It seems the problem is how to track multiple pinners of the page. At
-the moment memcg ownership is stored in folio->memcg_data which
-basically points to the owning struct mem_cgroup *.
-
-For pinning this series already introduces this data structure:
-
-struct vm_account {
-	struct task_struct *task;
-	struct mm_struct *mm;
-	struct user_struct *user;
-	enum vm_account_flags flags;
-};
-
-We could modify it to something like:
-
-struct vm_account {
-       struct list_head possible_pinners;
-       struct mem_cgroup *memcg;
-       [...]
-};
-
-When a page is pinned the first pinner takes ownership and stores it's
-memcg there, updating memcg_data to point to it. This would require a
-new page_memcg_data_flags but I think we have one left. Subsequent
-pinners create a vm_account and add it to the pinners list.
-
-When a driver unpins a page we scan the pinners list and assign
-ownership to the next driver pinning the page by updating memcg_data and
-removing the vm_account from the list.
-
-The problem with this approach is each pinner (ie. struct vm_account)
-may cover different subsets of pages. Drivers have to store a list of
-pinned pages somewhere, so we could query drivers or store the list of
-pinned pages in the vm_account. That seems like a fair bit of overhead
-though and would make unpinning expensive as we'd have to traverse
-several lists.
-
-We'd also have to ensure possible owners had enough free memory in the
-owning memcg to accept having the page charged when another pinner
-unpins. That could be done by reserving space during pinning.
-
-And of course it only works for pin_user_pages() - other users don't
-always have a list of pages conveniently available although I suppose
-they could walk the rmap, but again that adds overhead. So not sure it's
-a great solution but figured I'd leave it here in case it triggers other
-ideas.
-
-> You are not wrong on any of these remarks, but this looses sight of
-> the point - it is take the existing broken RLIMIT scheme and make it
-> incrementally better by being the same broken scheme just with
-> cgroups.
-
-Right. RLIMIT_MEMLOCK is pretty broken because most uses enforce it
-against a specific task so it can be easily bypassed. The aim here was
-to make it at least possible to enforce a meaningful limit.
-
-> If we eventually fix everything so memcg can do multi-pinners/owners
-> then would it be reasonable to phase out the new pincg at that time?
->
-> Jason
-
+Jason
