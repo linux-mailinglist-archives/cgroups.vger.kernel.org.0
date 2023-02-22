@@ -2,94 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C364569F0D2
-	for <lists+cgroups@lfdr.de>; Wed, 22 Feb 2023 10:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBDB69F239
+	for <lists+cgroups@lfdr.de>; Wed, 22 Feb 2023 10:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbjBVJBR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Feb 2023 04:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S232305AbjBVJwh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Feb 2023 04:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbjBVJBR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Feb 2023 04:01:17 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14402E811
-        for <cgroups@vger.kernel.org>; Wed, 22 Feb 2023 01:01:15 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-143-23q2w5B5PN6fPRJeaTFZqg-1; Wed, 22 Feb 2023 09:01:11 +0000
-X-MC-Unique: 23q2w5B5PN6fPRJeaTFZqg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.47; Wed, 22 Feb
- 2023 09:01:05 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.047; Wed, 22 Feb 2023 09:01:05 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>
-CC:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Yue Zhao <findns94@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mm: change memcg->oom_group access with atomic operations
-Thread-Topic: [PATCH] mm: change memcg->oom_group access with atomic
- operations
-Thread-Index: AQHZRfujbWkXm/SALUSQLx6HdIkuPa7ap5/g
-Date:   Wed, 22 Feb 2023 09:01:05 +0000
-Message-ID: <e7f5f9686a5d4872a2e530550228718f@AcuMS.aculab.com>
-References: <20230220230624.lkobqeagycx7bi7p@google.com>
- <6563189C-7765-4FFA-A8F2-A5CC4860A1EF@linux.dev>
- <CALvZod55K5zbbVYptq8ud=nKVyU1xceGVf6UcambBZ3BA2TZqA@mail.gmail.com>
- <Y/TMYa8DrocppXRu@casper.infradead.org>
-In-Reply-To: <Y/TMYa8DrocppXRu@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S231648AbjBVJwW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Feb 2023 04:52:22 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D746BDE5;
+        Wed, 22 Feb 2023 01:50:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CWnrS8yusi1BbXO3lj0HE+nO+dxFdr1sf7powIMllnY=; b=cAGdOrQ9sFBf37tCEgl6JuUGL3
+        iK9sm/2HKSHxtzRUn8qnaECcfw8/wBTVlfDYtvVYXzhZLQLbDWglTmNSS/9RsLSBo+Ol/LMcHlAKj
+        lSdAvSwVnmEJFv7b9SOayYsW7JkQsyuZODB38BOwRSbdM4HiHHO7QbkXARPLiixd2uAaeGRUSlk8X
+        aXNfLIJfaa1H4u0VP813dp4RR+45ADixf8fthhiG4KfGONHheHKj207fiOv6VmNHPkRMv4ALJPzWm
+        bI8h92yMiDD37+FPSKbRGhQHlvCZ+INjWW58m1dHCkWQdthArbbYa8E9Jr33A0uqZvvFd6P7OzFIb
+        GQqF0KZQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pUllB-00CUYF-1u;
+        Wed, 22 Feb 2023 09:50:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D64EF300446;
+        Wed, 22 Feb 2023 10:49:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B4FD820EF499E; Wed, 22 Feb 2023 10:49:59 +0100 (CET)
+Date:   Wed, 22 Feb 2023 10:49:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, parth@linux.ibm.com,
+        cgroups@vger.kernel.org, qyousef@layalina.io,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net,
+        David.Laight@aculab.com, pjt@google.com, pavel@ucw.cz,
+        tj@kernel.org, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, youssefesmat@chromium.org,
+        joel@joelfernandes.org
+Subject: Re: [PATCH v10 8/9] sched/fair: Add latency list
+Message-ID: <Y/XlR+wLtn54CkE4@hirez.programming.kicks-ass.net>
+References: <20230113141234.260128-1-vincent.guittot@linaro.org>
+ <20230113141234.260128-9-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230113141234.260128-9-vincent.guittot@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-RnJvbTogTWF0dGhldyBXaWxjb3gNCj4gU2VudDogMjEgRmVicnVhcnkgMjAyMyAxMzo1MQ0KLi4u
-DQo+ID4gRm9yIHRoaXMgcGFydGljdWxhciBjYXNlLCBkb2N1bWVudGluZyBzdWNoIGFuIGFjY2Vz
-cy4gVGhvdWdoIEkgZG9uJ3QNCj4gPiB0aGluayB0aGVyZSBhcmUgYW55IGFyY2hpdGVjdHVyZXMg
-d2hpY2ggbWF5IHRlYXIgYSBvbmUgYnl0ZSByZWFkL3dyaXRlDQo+ID4gYW5kIG1lcmdpbmcvcmVm
-ZXRjaGluZyBpcyBub3QgYW4gaXNzdWUgZm9yIHRoaXMuDQo+IA0KPiBXb3VsZG4ndCBhIGNvbXBp
-bGVyIGJlIHdpdGhpbiBpdHMgcmlnaHRzIHRvIGltcGxlbWVudCBhIG9uZSBieXRlIHN0b3JlIGFz
-Og0KPiANCj4gCWxvYWQtd29yZA0KPiAJbW9kaWZ5LWJ5dGUtaW4td29yZA0KPiAJc3RvcmUtd29y
-ZA0KPiANCj4gYW5kIGlmIHRoaXMgaXMgYSBsb2NrbGVzcyBzdG9yZSB0byBhIHdvcmQgd2hpY2gg
-aGFzIGFuIGFkamFjZW50IGJ5dGUgYWxzbw0KPiBiZWluZyBtb2RpZmllZCBieSBhbm90aGVyIENQ
-VSwgb25lIG9mIHRob3NlIENQVXMgY2FuIGxvc2UgaXRzIHN0b3JlPw0KPiBBbmQgV1JJVEVfT05D
-RSB3b3VsZCBwcmV2ZW50IHRoZSBjb21waWxlciBmcm9tIGltcGxlbWVudGluZyB0aGUgc3RvcmUN
-Cj4gaW4gdGhhdCB3YXkuDQoNClNvbWUgYWxwaGEgY3B1IGNvdWxkbid0IGRvIGJ5dGUgbWVtb3J5
-IGFjY2Vzc2VzIC0gc28gYWx3YXlzDQpkaWQgMzJiaXQgcmVhZC1tb2RpZnktd3JpdGUuIEJ1dCBM
-aW51eCBkb2Vzbid0IHN1cHBvcnQgdGhvc2UNCm9uZXMgYW55IG1vcmUuDQoNCk9uIGFybSAxNmJp
-dCBzdHJ1Y3R1cmUgbWVtYmVycyBjYW4gYmUgYWNjZXNzZWQgd2l0aCAzMmJpdA0KaW5zdHJ1Y3Rp
-b25zIGJlY2F1c2UgdGhlIDE2Yml0IG9uZXMgaGF2ZSBhIHNtYWxsZXIgb2Zmc2V0Lg0KDQpPbiB4
-ODYgdGhlIGJpdCBvcGVyYXRpb25zIG1pZ2h0IGFjY2VzcyB0aGUgKHBvc3NpYmx5IG1pc2FsaWdu
-ZWQpDQozMmJpdCB3b3JkIGNvbnRhaW5pbmcgdGhlIHJlcXVpcmVkIGJpdCAtIGJ1dCB0aGV5IGFy
-ZSBsb2NrZWQuDQoNCklTVFIgYSBwcm9ibGVtIHdoZXJlIGdjYyB3YXMgdXNpbmcgd2lkZXIgaW5z
-dHJ1Y3Rpb25zIGFuZA0KZG9pbmcgYSBSTVcgb24gYW4gYWRqYWNlbnQgdm9sYXRpbGUgZmllbGQu
-DQoNCkkgcmVhbGx5IGNhbid0IHJlbWVtYmVyIHRoZSBqdXN0aWZpY2F0aW9uIGZvciBub3QgbWFy
-a2luZw0KZmllbGRzIHRoYXQgaGF2ZSB1bmxvY2tlZCBhY2Nlc3NlcyAndm9sYXRpbGUnIGluc3Rl
-YWQgb2YNCnJlcXVpcmluZyBhbGwgdGhlIGFjY2Vzc2VzIGJlIGRvbmUgYXMgZXhwbGljaXQgdm9s
-YXRpbGUgb25lcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
-QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
-aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Fri, Jan 13, 2023 at 03:12:33PM +0100, Vincent Guittot wrote:
 
+> +static void __enqueue_latency(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+> +{
+> +
+> +	/* Only latency sensitive entity can be added to the list */
+> +	if (se->latency_offset >= 0)
+> +		return;
+> +
+> +	if (!RB_EMPTY_NODE(&se->latency_node))
+> +		return;
+> +
+> +	/*
+> +	 * An execution time less than sysctl_sched_min_granularity means that
+> +	 * the entity has been preempted by a higher sched class or an entity
+> +	 * with higher latency constraint.
+> +	 * Put it back in the list so it gets a chance to run 1st during the
+> +	 * next slice.
+> +	 */
+> +	if (!(flags & ENQUEUE_WAKEUP)) {
+> +		u64 delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
+> +
+> +		if (delta_exec >= sysctl_sched_min_granularity)
+> +			return;
+> +	}
+
+I'm not a big fan of this dynamic enqueueing condition; it makes it
+rather hard to interpret the below addition to pick_next_entity().
+
+Let me think about this more... at the very least the comment with
+__pick_first_latency() use below needs to be expanded upon if we keep it
+like so.
+
+> +
+> +	rb_add_cached(&se->latency_node, &cfs_rq->latency_timeline, __latency_less);
+> +}
+
+> @@ -4966,7 +5040,7 @@ static struct sched_entity *
+>  pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>  {
+>  	struct sched_entity *left = __pick_first_entity(cfs_rq);
+> -	struct sched_entity *se;
+> +	struct sched_entity *latency, *se;
+>  
+>  	/*
+>  	 * If curr is set we have to see if its left of the leftmost entity
+> @@ -5008,6 +5082,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>  		se = cfs_rq->last;
+>  	}
+>  
+> +	/* Check for latency sensitive entity waiting for running */
+> +	latency = __pick_first_latency(cfs_rq);
+> +	if (latency && (latency != se) &&
+> +	    wakeup_preempt_entity(latency, se) < 1)
+> +		se = latency;
+
+I'm not quite sure why this condition isn't sufficient on it's own.
+After all, if a task does a 'spurious' nanosleep it can get around the
+'restriction' in __enqueue_latency() without any great penalty to it's
+actual bandwidth consumption.
