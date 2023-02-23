@@ -2,433 +2,168 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D528D6A0D2D
-	for <lists+cgroups@lfdr.de>; Thu, 23 Feb 2023 16:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5D46A0E88
+	for <lists+cgroups@lfdr.de>; Thu, 23 Feb 2023 18:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbjBWPjg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Feb 2023 10:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
+        id S229712AbjBWRSi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Feb 2023 12:18:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbjBWPjf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Feb 2023 10:39:35 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70542567B7
-        for <cgroups@vger.kernel.org>; Thu, 23 Feb 2023 07:39:03 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id t15so11115955wrz.7
-        for <cgroups@vger.kernel.org>; Thu, 23 Feb 2023 07:39:03 -0800 (PST)
+        with ESMTP id S229454AbjBWRSh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Feb 2023 12:18:37 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6099415542
+        for <cgroups@vger.kernel.org>; Thu, 23 Feb 2023 09:18:35 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-536c2a1cc07so197356467b3.5
+        for <cgroups@vger.kernel.org>; Thu, 23 Feb 2023 09:18:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cqYRKRoCrq7jTQ9UpshCoMrGxFgruAKL2elYfx3Z4j8=;
-        b=bB3kXiYuGTC1rOAkODSY/R4tAX2EfuRHva8k61RvJHdyZw4339xJ5WHn0296bBakPt
-         XxA9VRMhUIqN6iTcgxS0odtg20bEH2ETwCT+8C1XPvTLLBdNvBbrcL80j6KaK3xND13/
-         Ye1139wm6EmtUp/xouHKLJCr4IcJS0O1nn2MxGajppaX3/elhJ7IwhvcAGzx9OZIdmTI
-         FUL8ZvtqaPKt11ZDDkcMqJWItG+py/Gn0Oet42kOqG+SehTSr9GnmA9pLvbDavKhdFBx
-         V28xlMXIEALfpe0+1F+wR2CTERnGJ5YnkK20yOy6wr1vGPgh8aY6vblhUoDXPRHS6TTz
-         l6VQ==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fXkdUZpJKaU09VaQ11AXT4xG/p6acp3mSex2EZ+R/lU=;
+        b=amR2wqzsiprwfbFfrHgh/xz4XLutJ3c00Gafi0Ekj78VHQ5IN4mpuEdlqhd28ZVClG
+         NDVIiG3v9u7xZUsI/c1zW8Op2nY4ImR5hHrbVIXKjbh3AhUWJjKBUun5hc4jk5M6whAH
+         XohUicGhtRUkFJX5+lGP5KjRtM8AK0HfOk/5JreQGUPbXNDo0IaxOHgDftk2gatqvc28
+         MxifB1DnuNVrochCNXSxYqoarvF5v0iZSGIiWU+RZF4ZkxVkv8H0uZaA3FArkHB2wh1N
+         zNo5avGuoaprTtskjyY7JRz9BnJ+04L8/3li4c2c3ASaRx0txg3+0DmfnIF4Nu+Xx/QI
+         7nfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cqYRKRoCrq7jTQ9UpshCoMrGxFgruAKL2elYfx3Z4j8=;
-        b=0GKHoafPYlYkN+GbZFN3xKXzUq9adzvbc8kzNGChwG4ioi5ta1kX6VZgPqFxypk4NM
-         2cL2rS94k3I6Gss1bz/Oof+JF112hhmVUEWemuEdMo9GQd5hiSaHmDQYNeznqc4Jpsef
-         exVVjFcab2Fa4HcyCBb5jvMHjkPjKUGKRWT3UPWbrxTvCpeGh5gornGw4Sij+YZDFH3L
-         Y0mEzea5EpCb3+6ctyCIwAsn2NBKde3bPA8ivMlqWpY44ScTa3P/VaDeu/Law15H5HNQ
-         Fnd7x/hNshb/XYbOD4kxm8xYsBD6f+/K4EvtyhQ5kzIk84ZT+btUcMTueDOzSEc6sjOF
-         txTg==
-X-Gm-Message-State: AO0yUKV0ECvbfYzq+30flb3pL8ECRiAN6QewOavOeCCTU7XVOWHVStRJ
-        dqDCy6vnOnoEsCMtOZE9ErccSw==
-X-Google-Smtp-Source: AK7set8ce8JTfMMve7A1539WeMenQ3+kxrDZ9WzXp/DhNVkTjv2h3kQvN1pMh/e50xV5lZYswzrtcw==
-X-Received: by 2002:a5d:5227:0:b0:2c5:52bd:9ed3 with SMTP id i7-20020a5d5227000000b002c552bd9ed3mr10393718wra.56.1677166741829;
-        Thu, 23 Feb 2023 07:39:01 -0800 (PST)
-Received: from airbuntu ([104.132.45.105])
-        by smtp.gmail.com with ESMTPSA id s17-20020a5d4ed1000000b002c4084d3472sm7376955wrv.58.2023.02.23.07.39.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 07:39:01 -0800 (PST)
-Date:   Thu, 23 Feb 2023 15:38:59 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Zefan Li <lizefan.x@bytedance.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3] sched: cpuset: Don't rebuild root domains on
- suspend-resume
-Message-ID: <20230223153859.37tqoqk33oc6tv7o@airbuntu>
-References: <20230206221428.2125324-1-qyousef@layalina.io>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fXkdUZpJKaU09VaQ11AXT4xG/p6acp3mSex2EZ+R/lU=;
+        b=YtUVJGA8zZvrjMAJPaHpvN7K153ccV08nQCXos0b5aUtRkXMBcF87nTTpiDUf3k4gV
+         2X8jk6ydL5SXHIRmGIntX94tkVIWZplu7WJMbiF7Ta55sd1FejtIISdnYotGRdvOpm6e
+         IqrdgJ9o6tAYsw10mtAIyybEMq0sHCWaS1bVInIUbaqc79ciLqQ1MKiq54qU7iiVKi09
+         lNHtKo1B1eYWy3pfIJjq9EgEzufzWUmzYHe+ZmvzOESFNMMsoRkaZurliBATABmrq2jK
+         6Si26Ukn9ukmtItXStFi1kT5GNtuzgH1ZW9PGDh8aRBZURaZ2emImrjRZR3qgZ9bRFvB
+         dAcw==
+X-Gm-Message-State: AO0yUKXfSndm9BMi9budy8SilOhh4Gt58wdRXwM4yy5m79nLWWer6rph
+        uBtg9h/hdDbKjZtcw69Je7yNkRgidNIIo8LYYKRFug==
+X-Google-Smtp-Source: AK7set/109onC8O9mQ+fgqczof5Q1xgM8SjIoBSgBRTTXUGTsjg8B6X/1jkPbZEf5JSZ6RXqt3UYWPqhdy2n76KUnM0=
+X-Received: by 2002:a5b:c41:0:b0:8f2:9e6:47a4 with SMTP id d1-20020a5b0c41000000b008f209e647a4mr2382178ybr.7.1677172714363;
+ Thu, 23 Feb 2023 09:18:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230206221428.2125324-1-qyousef@layalina.io>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <Y/T+pw25oGmKqz1k@nvidia.com> <Y/T/bkcYc9Krw4rE@slm.duckdns.org>
+ <Y/UEkNn0O65Pfi4e@nvidia.com> <Y/UIURDjR9pv+gzx@slm.duckdns.org>
+ <Y/Ua6VcNe/DFh7X4@nvidia.com> <Y/UfS8TDIXhUlJ/I@slm.duckdns.org>
+ <Y/UiQmuVwh2eqrfA@nvidia.com> <87o7pmnd0p.fsf@nvidia.com> <Y/YRJNwwvqp7nKKt@nvidia.com>
+ <87k009nvnr.fsf@nvidia.com> <Y/bHNO7A8T3QQ5T+@nvidia.com>
+In-Reply-To: <Y/bHNO7A8T3QQ5T+@nvidia.com>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Thu, 23 Feb 2023 09:18:23 -0800
+Message-ID: <CABdmKX18MY19bnsxN5W38Z9zmoaZx+S4+zzN_5XCYDBruwPrLg@mail.gmail.com>
+Subject: Re: [PATCH 14/19] mm: Introduce a cgroup for pinned memory
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alistair Popple <apopple@nvidia.com>, Tejun Heo <tj@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhubbard@nvidia.com, hannes@cmpxchg.org, surenb@google.com,
+        mkoutny@suse.com, daniel@ffwll.ch,
+        "Daniel P . Berrange" <berrange@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 02/06/23 22:14, Qais Yousef wrote:
-> Commit f9a25f776d78 ("cpusets: Rebuild root domain deadline accounting information")
-> enabled rebuilding root domain on cpuset and hotplug operations to
-> correct deadline accounting.
-> 
-> Rebuilding root domain is a slow operation and we see 10+ of ms delays
-> on suspend-resume because of that (worst case captures 20ms which
-> happens often).
-> 
-> Since nothing is expected to change on suspend-resume operation; skip
-> rebuilding the root domains to regain the some of the time lost.
-> 
-> Achieve this by refactoring the code to pass whether dl accoutning needs
-> an update to rebuild_sched_domains(). And while at it, rename
-> rebuild_root_domains() to update_dl_rd_accounting() which I believe is
-> a more representative name since we are not really rebuilding the root
-> domains, but rather updating dl accounting at the root domain.
-> 
-> Some users of rebuild_sched_domains() will skip dl accounting update
-> now:
-> 
-> 	* Update sched domains when relaxing the domain level in cpuset
-> 	  which only impacts searching level in load balance
-> 	* update sched domains when cpufreq governor changes and we need
-> 	  to create the perf domains
-> 
-> Users in arch/x86 and arch/s390 are left with the old behavior.
-> 
-> Debugged-by: Rick Yiu <rickyiu@google.com>
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
-> 
-> Changes in v3:
-> 
-> 	* Change the logic to avoid using cpuhp_tasks_frozen which can be racy
-> 	  and have dependency on context
-> 	* Refactor the code to pass whether dl accounting needs to be updated
-> 	  down the call chain
-> 	* Teach cpuset_force_rebuild() to take a reason argument and convert
-> 	  the variable into int
-> 	* Rename rebuild_root_domains() into update_dl_rd_accounting() as
-> 	  that's what I believe it's only doing
-> 
-> v2 discussion: https://lore.kernel.org/lkml/20230120194822.962958-1-qyousef@layalina.io/
-> v1 discussion: https://lore.kernel.org/lkml/20221216233501.gh6m75e7s66dmjgo@airbuntu/
+On Wed, Feb 22, 2023 at 5:54 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Thu, Feb 23, 2023 at 09:59:35AM +1100, Alistair Popple wrote:
+> >
+> > Jason Gunthorpe <jgg@nvidia.com> writes:
+> >
+> > > On Wed, Feb 22, 2023 at 10:38:25PM +1100, Alistair Popple wrote:
+> > >> When a driver unpins a page we scan the pinners list and assign
+> > >> ownership to the next driver pinning the page by updating memcg_data and
+> > >> removing the vm_account from the list.
+> > >
+> > > I don't see how this works with just the data structure you outlined??
+> > > Every unique page needs its own list_head in the vm_account, it is
+> > > doable just incredibly costly.
+> >
+> > The idea was every driver already needs to allocate a pages array to
+> > pass to pin_user_pages(), and by necessity drivers have to keep a
+> > reference to the contents of that in one form or another. So
+> > conceptually the equivalent of:
+> >
+> > struct vm_account {
+> >        struct list_head possible_pinners;
+> >        struct mem_cgroup *memcg;
+> >        struct pages **pages;
+> >        [...]
+> > };
+> >
+> > Unpinnig involves finding a new owner by traversing the list of
+> > page->memcg_data->possible_pinners and iterating over *pages[] to figure
+> > out if that vm_account actually has this page pinned or not and could
+> > own it.
+>
+> Oh, you are focusing on Tejun's DOS scenario.
+>
+> The DOS problem is to prevent a pin users in cgroup A from keeping
+> memory charged to cgroup B that it isn't using any more.
+>
+> cgroup B doesn't need to be pinning the memory, it could just be
+> normal VMAs and "isn't using anymore" means it has unmapped all the
+> VMAs.
+>
+> Solving that problem means figuring out when every cgroup stops using
+> the memory - pinning or not. That seems to be very costly.
+>
+This is the current behavior of accounting for memfds, and I suspect
+any kind of shared memory.
 
-Is this version any good?
+If cgroup A creates a memfd, maps and faults in pages, shares the
+memfd with cgroup B and then A unmaps and closes the memfd, then
+cgroup A is still charged for the pages it faulted in.
 
+FWIW this is also the behavior I was trying to use to attribute
+dma-buffers to their original allocators. Whoever touches it first
+gets charged as long as the memory is alive somewhere.
 
-Thanks!
+Can't we do the same thing for pins?
 
---
-Qais Yousef
-
-> 
->  arch/s390/kernel/topology.c  |  2 +-
->  arch/x86/kernel/itmt.c       |  6 ++---
->  drivers/base/arch_topology.c |  2 +-
->  include/linux/cpuset.h       | 12 ++++++----
->  kernel/cgroup/cpuset.c       | 43 ++++++++++++++++++++----------------
->  kernel/sched/core.c          |  2 +-
->  kernel/sched/topology.c      |  2 +-
->  7 files changed, 39 insertions(+), 30 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-> index c6eecd4a5302..29d57154a3f1 100644
-> --- a/arch/s390/kernel/topology.c
-> +++ b/arch/s390/kernel/topology.c
-> @@ -333,7 +333,7 @@ int arch_update_cpu_topology(void)
->  
->  static void topology_work_fn(struct work_struct *work)
->  {
-> -	rebuild_sched_domains();
-> +	rebuild_sched_domains(true);
->  }
->  
->  void topology_schedule_update(void)
-> diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
-> index 9ff480e94511..6f1446223697 100644
-> --- a/arch/x86/kernel/itmt.c
-> +++ b/arch/x86/kernel/itmt.c
-> @@ -56,7 +56,7 @@ static int sched_itmt_update_handler(struct ctl_table *table, int write,
->  
->  	if (!ret && write && old_sysctl != sysctl_sched_itmt_enabled) {
->  		x86_topology_update = true;
-> -		rebuild_sched_domains();
-> +		rebuild_sched_domains(true);
->  	}
->  
->  	mutex_unlock(&itmt_update_mutex);
-> @@ -125,7 +125,7 @@ int sched_set_itmt_support(void)
->  	sysctl_sched_itmt_enabled = 1;
->  
->  	x86_topology_update = true;
-> -	rebuild_sched_domains();
-> +	rebuild_sched_domains(true);
->  
->  	mutex_unlock(&itmt_update_mutex);
->  
-> @@ -161,7 +161,7 @@ void sched_clear_itmt_support(void)
->  		/* disable sched_itmt if we are no longer ITMT capable */
->  		sysctl_sched_itmt_enabled = 0;
->  		x86_topology_update = true;
-> -		rebuild_sched_domains();
-> +		rebuild_sched_domains(true);
->  	}
->  
->  	mutex_unlock(&itmt_update_mutex);
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index e7d6e6657ffa..90d8a42335e6 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -253,7 +253,7 @@ int topology_update_cpu_topology(void)
->  static void update_topology_flags_workfn(struct work_struct *work)
->  {
->  	update_topology = 1;
-> -	rebuild_sched_domains();
-> +	rebuild_sched_domains(true);
->  	pr_debug("sched_domain hierarchy rebuilt, flags updated\n");
->  	update_topology = 0;
->  }
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index d58e0476ee8e..e30d4cd35ef7 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -18,6 +18,10 @@
->  #include <linux/mmu_context.h>
->  #include <linux/jump_label.h>
->  
-> +#define CPUSET_FORCE_REBUILD_RESET		0
-> +#define CPUSET_FORCE_REBUILD_SUSPEND_RESUME	1
-> +#define CPUSET_FORCE_REBUILD_PRS_ERROR		2
-> +
->  #ifdef CONFIG_CPUSETS
->  
->  /*
-> @@ -68,7 +72,7 @@ static inline bool cpusets_insane_config(void)
->  
->  extern int cpuset_init(void);
->  extern void cpuset_init_smp(void);
-> -extern void cpuset_force_rebuild(void);
-> +extern void cpuset_force_rebuild(int reason);
->  extern void cpuset_update_active_cpus(void);
->  extern void cpuset_wait_for_hotplug(void);
->  extern void cpuset_read_lock(void);
-> @@ -132,7 +136,7 @@ static inline int cpuset_do_slab_mem_spread(void)
->  
->  extern bool current_cpuset_is_being_rebound(void);
->  
-> -extern void rebuild_sched_domains(void);
-> +extern void rebuild_sched_domains(bool update_dl_accounting);
->  
->  extern void cpuset_print_current_mems_allowed(void);
->  
-> @@ -187,7 +191,7 @@ static inline bool cpusets_insane_config(void) { return false; }
->  static inline int cpuset_init(void) { return 0; }
->  static inline void cpuset_init_smp(void) {}
->  
-> -static inline void cpuset_force_rebuild(void) { }
-> +static inline void cpuset_force_rebuild(int reason) { }
->  
->  static inline void cpuset_update_active_cpus(void)
->  {
-> @@ -276,7 +280,7 @@ static inline bool current_cpuset_is_being_rebound(void)
->  	return false;
->  }
->  
-> -static inline void rebuild_sched_domains(void)
-> +static inline void rebuild_sched_domains(bool update_dl_accounting)
->  {
->  	partition_sched_domains(1, NULL, NULL);
->  }
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index a29c0b13706b..e5ddc8e11e5d 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1079,7 +1079,7 @@ static void update_tasks_root_domain(struct cpuset *cs)
->  	css_task_iter_end(&it);
->  }
->  
-> -static void rebuild_root_domains(void)
-> +static void update_dl_rd_accounting(void)
->  {
->  	struct cpuset *cs = NULL;
->  	struct cgroup_subsys_state *pos_css;
-> @@ -1117,11 +1117,13 @@ static void rebuild_root_domains(void)
->  
->  static void
->  partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
-> -				    struct sched_domain_attr *dattr_new)
-> +				    struct sched_domain_attr *dattr_new,
-> +				    bool update_dl_accounting)
->  {
->  	mutex_lock(&sched_domains_mutex);
->  	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
-> -	rebuild_root_domains();
-> +	if (update_dl_accounting)
-> +		update_dl_rd_accounting();
->  	mutex_unlock(&sched_domains_mutex);
->  }
->  
-> @@ -1136,7 +1138,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
->   *
->   * Call with cpuset_rwsem held.  Takes cpus_read_lock().
->   */
-> -static void rebuild_sched_domains_locked(void)
-> +static void rebuild_sched_domains_locked(bool update_dl_accounting)
->  {
->  	struct cgroup_subsys_state *pos_css;
->  	struct sched_domain_attr *attr;
-> @@ -1185,19 +1187,19 @@ static void rebuild_sched_domains_locked(void)
->  	ndoms = generate_sched_domains(&doms, &attr);
->  
->  	/* Have scheduler rebuild the domains */
-> -	partition_and_rebuild_sched_domains(ndoms, doms, attr);
-> +	partition_and_rebuild_sched_domains(ndoms, doms, attr, update_dl_accounting);
->  }
->  #else /* !CONFIG_SMP */
-> -static void rebuild_sched_domains_locked(void)
-> +static void rebuild_sched_domains_locked(bool update_dl_accounting)
->  {
->  }
->  #endif /* CONFIG_SMP */
->  
-> -void rebuild_sched_domains(void)
-> +void rebuild_sched_domains(bool update_dl_accounting)
->  {
->  	cpus_read_lock();
->  	percpu_down_write(&cpuset_rwsem);
-> -	rebuild_sched_domains_locked();
-> +	rebuild_sched_domains_locked(update_dl_accounting);
->  	percpu_up_write(&cpuset_rwsem);
->  	cpus_read_unlock();
->  }
-> @@ -1681,7 +1683,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
->  	rcu_read_unlock();
->  
->  	if (need_rebuild_sched_domains)
-> -		rebuild_sched_domains_locked();
-> +		rebuild_sched_domains_locked(true);
->  }
->  
->  /**
-> @@ -2136,7 +2138,7 @@ static int update_relax_domain_level(struct cpuset *cs, s64 val)
->  		cs->relax_domain_level = val;
->  		if (!cpumask_empty(cs->cpus_allowed) &&
->  		    is_sched_load_balance(cs))
-> -			rebuild_sched_domains_locked();
-> +			rebuild_sched_domains_locked(false);
->  	}
->  
->  	return 0;
-> @@ -2202,7 +2204,7 @@ static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
->  	spin_unlock_irq(&callback_lock);
->  
->  	if (!cpumask_empty(trialcs->cpus_allowed) && balance_flag_changed)
-> -		rebuild_sched_domains_locked();
-> +		rebuild_sched_domains_locked(true);
->  
->  	if (spread_flag_changed)
->  		update_tasks_flags(cs);
-> @@ -2315,7 +2317,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->  		update_sibling_cpumasks(parent, cs, &tmpmask);
->  
->  	if (!sched_domain_rebuilt)
-> -		rebuild_sched_domains_locked();
-> +		rebuild_sched_domains_locked(true);
->  out:
->  	/*
->  	 * Make partition invalid if an error happen
-> @@ -3389,11 +3391,11 @@ hotplug_update_tasks(struct cpuset *cs,
->  		update_tasks_nodemask(cs);
->  }
->  
-> -static bool force_rebuild;
-> +static int force_rebuild;
->  
-> -void cpuset_force_rebuild(void)
-> +void cpuset_force_rebuild(int reason)
->  {
-> -	force_rebuild = true;
-> +	force_rebuild = reason;
->  }
->  
->  /**
-> @@ -3489,7 +3491,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->  				WRITE_ONCE(cs->prs_err, PERR_HOTPLUG);
->  			notify_partition_change(cs, old_prs);
->  		}
-> -		cpuset_force_rebuild();
-> +		cpuset_force_rebuild(CPUSET_FORCE_REBUILD_PRS_ERROR);
->  	}
->  
->  	/*
-> @@ -3499,7 +3501,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->  	else if (is_partition_valid(parent) && is_partition_invalid(cs)) {
->  		update_parent_subparts_cpumask(cs, partcmd_update, NULL, tmp);
->  		if (is_partition_valid(cs))
-> -			cpuset_force_rebuild();
-> +			cpuset_force_rebuild(CPUSET_FORCE_REBUILD_PRS_ERROR);
->  	}
->  
->  update_tasks:
-> @@ -3626,8 +3628,11 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
->  
->  	/* rebuild sched domains if cpus_allowed has changed */
->  	if (cpus_updated || force_rebuild) {
-> -		force_rebuild = false;
-> -		rebuild_sched_domains();
-> +		bool update_dl_accounting = cpus_updated ||
-> +				force_rebuild == CPUSET_FORCE_REBUILD_PRS_ERROR;
-> +
-> +		force_rebuild = CPUSET_FORCE_REBUILD_RESET;
-> +		rebuild_sched_domains(update_dl_accounting);
->  	}
->  
->  	free_cpumasks(NULL, ptmp);
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 4580fe3e1d0c..d68eac04c851 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -9485,7 +9485,7 @@ static void cpuset_cpu_active(void)
->  		 * restore the original sched domains by considering the
->  		 * cpuset configurations.
->  		 */
-> -		cpuset_force_rebuild();
-> +		cpuset_force_rebuild(CPUSET_FORCE_REBUILD_SUSPEND_RESUME);
->  	}
->  	cpuset_update_active_cpus();
->  }
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index d93c3379e901..bf33b84c511a 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -214,7 +214,7 @@ void rebuild_sched_domains_energy(void)
->  {
->  	mutex_lock(&sched_energy_mutex);
->  	sched_energy_update = true;
-> -	rebuild_sched_domains();
-> +	rebuild_sched_domains(false);
->  	sched_energy_update = false;
->  	mutex_unlock(&sched_energy_mutex);
->  }
-> -- 
-> 2.25.1
-> 
+> AFAIK this problem also already exists today as the memcg of a page
+> doesn't change while it is pinned. So maybe we don't need to address
+> it.
+>
+> Arguably the pins are not the problem. If we want to treat the pin
+> like allocation then we simply charge the non-owning memcg's for the
+> pin as though it was an allocation. Eg go over every page and if the
+> owning memcg is not the current memcg then charge the current memcg
+> for an allocation of the MAP_SHARED memory. Undoing this is trivial
+> enoug.
+>
+> This doesn't fix the DOS problem but it does sort of harmonize the pin
+> accounting with the memcg by multi-accounting every pin of a
+> MAP_SHARED page.
+>
+> The other drawback is that this isn't the same thing as the current
+> rlimit. The rlimit is largely restricting the creation of unmovable
+> memory.
+>
+> Though, AFAICT memcg seems to bundle unmovable memory (eg GFP_KERNEL)
+> along with movable user pages so it would be self-consistent.
+>
+> I'm unclear if this is OK for libvirt..
+>
+> > Agree this is costly though. And I don't think all drivers keep the
+> > array around so "iterating over *pages[]" may need to be a callback.
+>
+> I think searching lists of pages is not reasonable. Things like VFIO &
+> KVM use cases effectively pin 90% of all system memory, that is
+> potentially TB of page lists that might need linear searching!
+>
+> Jason
