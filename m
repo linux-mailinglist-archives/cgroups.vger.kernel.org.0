@@ -2,102 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583556A2ECE
-	for <lists+cgroups@lfdr.de>; Sun, 26 Feb 2023 09:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3367C6A2FC8
+	for <lists+cgroups@lfdr.de>; Sun, 26 Feb 2023 14:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjBZH7y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 26 Feb 2023 02:59:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        id S229486AbjBZNRG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 26 Feb 2023 08:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjBZH7y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Feb 2023 02:59:54 -0500
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62E2C65C;
-        Sat, 25 Feb 2023 23:59:51 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id o11-20020a05600c4fcb00b003eb33ea29a8so1537864wmq.1;
-        Sat, 25 Feb 2023 23:59:51 -0800 (PST)
+        with ESMTP id S229671AbjBZNRF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Feb 2023 08:17:05 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CEE113F7;
+        Sun, 26 Feb 2023 05:17:02 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id ee7so15402330edb.2;
+        Sun, 26 Feb 2023 05:17:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677417420;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4MQkzTFY7oFLk7HS5mTlDP6H3MWtlVl305nioGoqUIs=;
+        b=Cw96/L1RHzMm7Iwoev/iq9NQQD4j4GnUH9LI9hf0FsI7wpXOyF7SPk8t4sj26swyzx
+         NoiuVoyttuLYzz6AkKaKAxzFsgN9YUejX+v/ekVf8Lt3h7MJYwNVH1SqG2XSo8NYCdlg
+         OtUI1WZf2hD8ndAhpOM+BAOjCp10hXvhXrVmiwWsI7LnC3kwhrcVfsTa/u9vbkTGukNL
+         Htl/vGkWLNa/aPzZOaw1WBlsiOeVy5wJ9T0+Tr+uWMisrEBBZ5Wqwfr6tsnjga9Los6O
+         x4PJoNWIOeFMjvXEP+/GvphKdLQcqlNsifDVayI5uePvFO70xyMmJC2L/mb0Wagx6bHh
+         vIBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DGCngb9cE5yE6M3a4MEomrCzATYJDSH8ymK+LBwgxOM=;
-        b=ONF4gXqPLX71AvJCCqRoiH0k1+wIcJTtekmSM4T92mrL6mjklpVgtJUAyWAF3BU5c+
-         ktbMVgqoj/p3AX4JXOr7UXHQA+b6NTeuk8+oOL9eLrb9SzznMdnjogCTWAylHXejtQlq
-         QJKDE45bGYm/N2l+wWmBZuHqp/0nhUBIU/sc/js09GHfDca/7isJM3osKgS5+M69gty6
-         C/6oDp1492+mxUISZqL85nh8Y4i8AtczEHJ+Yr5lL9hD/fFu4jAxGBYoxuhfOUVIOALF
-         HllvKQjwcHa/GEg8Iopsv9gz/Uy1P4gh7m5iDKJyf1eFawwzfQi1fwmZPdFv5hfW5yki
-         2c8w==
-X-Gm-Message-State: AO0yUKWr7j14CrfI55WyqvGZMxTZ0Sn42eXG+H9P5koU2TBmvZ9x73q8
-        td0bE+VDrPj8eMQHCwdisfU=
-X-Google-Smtp-Source: AK7set9unaczVbzdJ61bhZUDAp9ZSY4c0yfMIwvnYMtDVvtvVCPDBk6Sw9xH6RsTakaisDcD5DxDww==
-X-Received: by 2002:a05:600c:1895:b0:3e2:f80:3df1 with SMTP id x21-20020a05600c189500b003e20f803df1mr15890132wmp.19.1677398389950;
-        Sat, 25 Feb 2023 23:59:49 -0800 (PST)
-Received: from [10.1.0.47] ([87.224.71.110])
-        by smtp.gmail.com with ESMTPSA id l4-20020a05600c4f0400b003df7b40f99fsm9261670wmq.11.2023.02.25.23.59.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Feb 2023 23:59:49 -0800 (PST)
-Message-ID: <3130cb3e-eaca-04c2-ad97-b32ffddad397@debian.org>
-Date:   Sun, 26 Feb 2023 07:59:48 +0000
+        d=1e100.net; s=20210112; t=1677417420;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4MQkzTFY7oFLk7HS5mTlDP6H3MWtlVl305nioGoqUIs=;
+        b=SGc61OiA+fADQzJvNS0UwPPWkBj1SrwC+eMEj2xD+Afd8cxcJKEAmw7P1WfA2itEPF
+         GYf5tALIqmTfdB97W64hwtFwb+Z9Dng+0oaO5WiRyosd23byP56t4H2qTSj5dl4s61gJ
+         z2xzTOls2Ezgc0skc2t5vnJf9jrRIf+9Ue3qh1g6850kkXjmsfzMOeA/978njWnsqABi
+         yIOj01yqhxHx+5IjQLPkG1Xq5StvQz6Aqc2pxNT1nZ0/O6AUSvdo/FZIKWxoagXzumSd
+         3aTPpvq8SpcVV/7eTT6BnMb3mhePmnDJHFFAaLw/XmLmav4E+mvQ+EgGs09ORVDF4xB0
+         AoaA==
+X-Gm-Message-State: AO0yUKWmhmNcg4O25e0MEuEhuAWXuPFqpHIzUdxTqj5ZZfk7mVjhGohc
+        IeR5OFfA06W/3EIwy7DbM2w=
+X-Google-Smtp-Source: AK7set+eUagH/xey6K9nUkb+yayfzAZAtxqqWU//2CxFZ/bP4zU9yXjY1lC0f4dAaOA0Pe2LN2C+/A==
+X-Received: by 2002:a17:906:256:b0:882:bffc:f2d2 with SMTP id 22-20020a170906025600b00882bffcf2d2mr30458808ejl.2.1677417420590;
+        Sun, 26 Feb 2023 05:17:00 -0800 (PST)
+Received: from mineorpe-virtual-machine.localdomain ([37.252.81.68])
+        by smtp.gmail.com with ESMTPSA id bq7-20020a170906d0c700b008c5075f5331sm1957965ejb.165.2023.02.26.05.16.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Feb 2023 05:17:00 -0800 (PST)
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
+        lizefan.x@bytedance.com, shuah@kernel.org
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
+Subject: [PATCH] selftests: cgroup: Add 'malloc' failures checks in test_memcontrol
+Date:   Sun, 26 Feb 2023 16:16:33 +0300
+Message-Id: <20230226131634.34366-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [PATCH] blk-iocost: initialize rqos before accessing it
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        aherrmann@suse.de, linux-kernel@vger.kernel.org, hch@lst.de,
-        leit@fb.com
-References: <20230224160714.172884-1-leitao@debian.org>
- <20230224185126.bxkreilofbp2t4on@blackpad>
-Content-Language: en-US
-From:   Breno Leitao <leitao@debian.org>
-In-Reply-To: <20230224185126.bxkreilofbp2t4on@blackpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Michal,
+There are several 'malloc' calls in test_memcontrol, which can be
+unsuccessful. This patch will add 'malloc' failures checking to
+give more details about test's fail reasons and avoid possible
+undefined behavior during the future null dereference (like the
+one in alloc_anon_50M_check_swap function).
 
-On 2/24/23 18:51, Michal Koutný wrote:
->> 	blk_iocost_init (include/asm-generic/qspinlock.h:128
->> 			 include/linux/spinlock.h:203
->> 			 include/linux/spinlock_api_smp.h:158
->> 			 include/linux/spinlock.h:400
->> 			 block/blk-iocost.c:2884)
->> 	ioc_qos_write (block/blk-iocost.c:3198)
->> 	? kretprobe_perf_func (kernel/trace/trace_kprobe.c:1566)
->> 	? kernfs_fop_write_iter (include/linux/slab.h:584 fs/kernfs/file.c:311)
->> 	? __kmem_cache_alloc_node (mm/slab.h:? mm/slub.c:3452 mm/slub.c:3491)
->> 	? _copy_from_iter (arch/x86/include/asm/uaccess_64.h:46
->> 			   arch/x86/include/asm/uaccess_64.h:52
->> 			   lib/iov_iter.c:183 lib/iov_iter.c:628)
->> 	? kretprobe_dispatcher (kernel/trace/trace_kprobe.c:1693)
->> 	cgroup_file_write (kernel/cgroup/cgroup.c:4061)
->> 	kernfs_fop_write_iter (fs/kernfs/file.c:334)
->> 	vfs_write (include/linux/fs.h:1849 fs/read_write.c:491
->> 		   fs/read_write.c:584)
->> 	ksys_write (fs/read_write.c:637)
->> 	do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
->> 	entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
-> 
-> BTW, out of curiosity what tool did you use to list stack with line
-> numbers?
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+---
+ tools/testing/selftests/cgroup/test_memcontrol.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-I use the decode_stacktrace.sh from kernel's scripts directory. You 
-basically
-pipe the stack to it, and call it passing the vmlinux file. It is 
-incredible handy.
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+index 1e616a8c6a9c..f4f7c0aef702 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -98,6 +98,11 @@ static int alloc_anon_50M_check(const char *cgroup, void *arg)
+ 	int ret = -1;
+ 
+ 	buf = malloc(size);
++	if (buf == NULL) {
++		fprintf(stderr, "malloc() failed\n");
++		return -1;
++	}
++
+ 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
+ 		*ptr = 0;
+ 
+@@ -211,6 +216,11 @@ static int alloc_anon_noexit(const char *cgroup, void *arg)
+ 	char *buf, *ptr;
+ 
+ 	buf = malloc(size);
++	if (buf == NULL) {
++		fprintf(stderr, "malloc() failed\n");
++		return -1;
++	}
++
+ 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
+ 		*ptr = 0;
+ 
+@@ -778,6 +788,11 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
+ 	int ret = -1;
+ 
+ 	buf = malloc(size);
++	if (buf == NULL) {
++		fprintf(stderr, "malloc() failed\n");
++		return -1;
++	}
++
+ 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
+ 		*ptr = 0;
+ 
+-- 
+2.34.1
 
-https://elixir.bootlin.com/linux/latest/source/scripts/decode_stacktrace.sh
-
-Thanks for the review,
-Breno
