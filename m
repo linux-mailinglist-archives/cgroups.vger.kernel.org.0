@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3DF6A2D89
-	for <lists+cgroups@lfdr.de>; Sun, 26 Feb 2023 04:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4A36A2E0E
+	for <lists+cgroups@lfdr.de>; Sun, 26 Feb 2023 05:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjBZDoB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 25 Feb 2023 22:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        id S229607AbjBZEIk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 25 Feb 2023 23:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjBZDnt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Feb 2023 22:43:49 -0500
+        with ESMTP id S229486AbjBZEIj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Feb 2023 23:08:39 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027501716C;
-        Sat, 25 Feb 2023 19:43:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EBF6A57;
+        Sat, 25 Feb 2023 20:08:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9DF89B80B87;
-        Sun, 26 Feb 2023 03:43:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C8FCC4339B;
-        Sun, 26 Feb 2023 03:43:14 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4FF3CB80B8A;
+        Sun, 26 Feb 2023 03:44:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A2BFC433EF;
+        Sun, 26 Feb 2023 03:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677382995;
-        bh=13YLkNN8arX1KfUTrzx4ohq91XIJWVVsVlw+6IDq2DY=;
+        s=k20201202; t=1677383044;
+        bh=nXU1mIcE80gCuXpTLG5b3uYjUUQu4yGjMNHvMqJDQyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eP8U8UfCt1ZmZpBiqGyKKvaVgqTenzDhZfr97XiHaUcOCtgBMTwAw9KqbDi1sIs3z
-         9Zs+kunfBsMzut80hzaewUqrV0EW4+cPsvXlsXcjeI/Ac9rJERtl+fafaiFCOccOAQ
-         KAW3HwipSFhzWaf6e1lISgkMKtzXNJEg6frJBqFtadq/n5JFxI7pSrHz8MjzuPCe7c
-         eaTiQH9rYHk0x+Zu0U09TjRlLLBeGTxVHNahtrro1YOupr6yqn62tIknQQ9262areS
-         qejxb6coK2D4potebDVYp9psbDPu4bqG8y1OAVsCI/HAHbALyJZ6dJ6m31T1tthDIu
-         Q/UkH0zuomyfw==
+        b=LGLVJjQjHJJRYqoX55ITpKdOqnF+zVdiSt8GSHaCwhO1eV4eyXZm6Shoze2WBzocW
+         G4Z9LtZ9+GFNxwFwBh30sV9nYiWb7CgRXlVsnFwkzUr8BLuIOuaWF68m7Rn3ZkQXDj
+         C8c+8eeZs9moAiJVyihSMDJ+P8z0g3xC7EJw5mMNEcdIrbTNa1/PR1BW1gzSDi/ztf
+         akFw3V4mm/BB9fdP6n5fH/QubIfJT+jlerW21kMDpizmfmHrziLHGtPxjWKXmxEaqQ
+         Y+JuXGi3tqjfmFfdiAquEc86U5KrwdW4NTXckjo59kbqUKO22KWq8Ecs/FUcM+K/D0
+         6Fh7qfhm/5+xA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yu Kuai <yukuai3@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+Cc:     Li Nan <linan122@huawei.com>, Yu Kuai <yukuai3@huawei.com>,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>, josef@toxicpanda.com,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/21] blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and blkcg_deactivate_policy()
-Date:   Sat, 25 Feb 2023 22:42:45 -0500
-Message-Id: <20230226034256.771769-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 3/6] blk-iocost: fix divide by 0 error in calc_lcoefs()
+Date:   Sat, 25 Feb 2023 22:43:55 -0500
+Message-Id: <20230226034359.773806-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226034256.771769-1-sashal@kernel.org>
-References: <20230226034256.771769-1-sashal@kernel.org>
+In-Reply-To: <20230226034359.773806-1-sashal@kernel.org>
+References: <20230226034359.773806-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -56,152 +56,68 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Li Nan <linan122@huawei.com>
 
-[ Upstream commit f1c006f1c6850c14040f8337753a63119bba39b9 ]
+[ Upstream commit 984af1e66b4126cf145153661cc24c213e2ec231 ]
 
-Currently parent pd can be freed before child pd:
+echo max of u64 to cost.model can cause divide by 0 error.
 
-t1: remove cgroup C1
-blkcg_destroy_blkgs
- blkg_destroy
-  list_del_init(&blkg->q_node)
-  // remove blkg from queue list
-  percpu_ref_kill(&blkg->refcnt)
-   blkg_release
-    call_rcu
+  # echo 8:0 rbps=18446744073709551615 > /sys/fs/cgroup/io.cost.model
 
-t2: from t1
-__blkg_release
- blkg_free
-  schedule_work
-			t4: deactivate policy
-			blkcg_deactivate_policy
-			 pd_free_fn
-			 // parent of C1 is freed first
-t3: from t2
- blkg_free_workfn
-  pd_free_fn
+  divide error: 0000 [#1] PREEMPT SMP
+  RIP: 0010:calc_lcoefs+0x4c/0xc0
+  Call Trace:
+   <TASK>
+   ioc_refresh_params+0x2b3/0x4f0
+   ioc_cost_model_write+0x3cb/0x4c0
+   ? _copy_from_iter+0x6d/0x6c0
+   ? kernfs_fop_write_iter+0xfc/0x270
+   cgroup_file_write+0xa0/0x200
+   kernfs_fop_write_iter+0x17d/0x270
+   vfs_write+0x414/0x620
+   ksys_write+0x73/0x160
+   __x64_sys_write+0x1e/0x30
+   do_syscall_64+0x35/0x80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-If policy(for example, ioc_timer_fn() from iocost) access parent pd from
-child pd after pd_offline_fn(), then UAF can be triggered.
+calc_lcoefs() uses the input value of cost.model in DIV_ROUND_UP_ULL,
+overflow would happen if bps plus IOC_PAGE_SIZE is greater than
+ULLONG_MAX, it can cause divide by 0 error.
 
-Fix the problem by delaying 'list_del_init(&blkg->q_node)' from
-blkg_destroy() to blkg_free_workfn(), and using a new disk level mutex to
-synchronize blkg_free_workfn() and blkcg_deactivate_policy().
+Fix the problem by setting basecost
 
+Signed-off-by: Li Nan <linan122@huawei.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Acked-by: Tejun Heo <tj@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20230119110350.2287325-4-yukuai1@huaweicloud.com
+Link: https://lore.kernel.org/r/20230117070806.3857142-5-yukuai1@huaweicloud.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-cgroup.c     | 35 +++++++++++++++++++++++++++++------
- include/linux/blkdev.h |  1 +
- 2 files changed, 30 insertions(+), 6 deletions(-)
+ block/blk-iocost.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 8d1b7757f1e4f..f8b21bead6552 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -87,16 +87,32 @@ static void blkg_free_workfn(struct work_struct *work)
- {
- 	struct blkcg_gq *blkg = container_of(work, struct blkcg_gq,
- 					     free_work);
-+	struct request_queue *q = blkg->q;
- 	int i;
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 069193dee95b0..bd7e9ffa5d401 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -870,9 +870,14 @@ static void calc_lcoefs(u64 bps, u64 seqiops, u64 randiops,
  
-+	/*
-+	 * pd_free_fn() can also be called from blkcg_deactivate_policy(),
-+	 * in order to make sure pd_free_fn() is called in order, the deletion
-+	 * of the list blkg->q_node is delayed to here from blkg_destroy(), and
-+	 * blkcg_mutex is used to synchronize blkg_free_workfn() and
-+	 * blkcg_deactivate_policy().
-+	 */
-+	if (q)
-+		mutex_lock(&q->blkcg_mutex);
-+
- 	for (i = 0; i < BLKCG_MAX_POLS; i++)
- 		if (blkg->pd[i])
- 			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
+ 	*page = *seqio = *randio = 0;
  
- 	if (blkg->parent)
- 		blkg_put(blkg->parent);
--	if (blkg->q)
--		blk_put_queue(blkg->q);
+-	if (bps)
+-		*page = DIV64_U64_ROUND_UP(VTIME_PER_SEC,
+-					   DIV_ROUND_UP_ULL(bps, IOC_PAGE_SIZE));
++	if (bps) {
++		u64 bps_pages = DIV_ROUND_UP_ULL(bps, IOC_PAGE_SIZE);
 +
-+	if (q) {
-+		list_del_init(&blkg->q_node);
-+		mutex_unlock(&q->blkcg_mutex);
-+		blk_put_queue(q);
++		if (bps_pages)
++			*page = DIV64_U64_ROUND_UP(VTIME_PER_SEC, bps_pages);
++		else
++			*page = 1;
 +	}
-+
- 	free_percpu(blkg->iostat_cpu);
- 	percpu_ref_exit(&blkg->refcnt);
- 	kfree(blkg);
-@@ -425,9 +441,14 @@ static void blkg_destroy(struct blkcg_gq *blkg)
- 	lockdep_assert_held(&blkg->q->queue_lock);
- 	lockdep_assert_held(&blkcg->lock);
  
--	/* Something wrong if we are trying to remove same group twice */
--	WARN_ON_ONCE(list_empty(&blkg->q_node));
--	WARN_ON_ONCE(hlist_unhashed(&blkg->blkcg_node));
-+	/*
-+	 * blkg stays on the queue list until blkg_free_workfn(), see details in
-+	 * blkg_free_workfn(), hence this function can be called from
-+	 * blkcg_destroy_blkgs() first and again from blkg_destroy_all() before
-+	 * blkg_free_workfn().
-+	 */
-+	if (hlist_unhashed(&blkg->blkcg_node))
-+		return;
- 
- 	for (i = 0; i < BLKCG_MAX_POLS; i++) {
- 		struct blkcg_policy *pol = blkcg_policy[i];
-@@ -439,7 +460,6 @@ static void blkg_destroy(struct blkcg_gq *blkg)
- 	blkg->online = false;
- 
- 	radix_tree_delete(&blkcg->blkg_tree, blkg->q->id);
--	list_del_init(&blkg->q_node);
- 	hlist_del_init_rcu(&blkg->blkcg_node);
- 
- 	/*
-@@ -1226,6 +1246,7 @@ int blkcg_init_disk(struct gendisk *disk)
- 	int ret;
- 
- 	INIT_LIST_HEAD(&q->blkg_list);
-+	mutex_init(&q->blkcg_mutex);
- 
- 	new_blkg = blkg_alloc(&blkcg_root, disk, GFP_KERNEL);
- 	if (!new_blkg)
-@@ -1463,6 +1484,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
- 	if (queue_is_mq(q))
- 		blk_mq_freeze_queue(q);
- 
-+	mutex_lock(&q->blkcg_mutex);
- 	spin_lock_irq(&q->queue_lock);
- 
- 	__clear_bit(pol->plid, q->blkcg_pols);
-@@ -1481,6 +1503,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
- 	}
- 
- 	spin_unlock_irq(&q->queue_lock);
-+	mutex_unlock(&q->blkcg_mutex);
- 
- 	if (queue_is_mq(q))
- 		blk_mq_unfreeze_queue(q);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 891f8cbcd0436..1680b6e1e5362 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -487,6 +487,7 @@ struct request_queue {
- 	DECLARE_BITMAP		(blkcg_pols, BLKCG_MAX_POLS);
- 	struct blkcg_gq		*root_blkg;
- 	struct list_head	blkg_list;
-+	struct mutex		blkcg_mutex;
- #endif
- 
- 	struct queue_limits	limits;
+ 	if (seqiops) {
+ 		v = DIV64_U64_ROUND_UP(VTIME_PER_SEC, seqiops);
 -- 
 2.39.0
 
