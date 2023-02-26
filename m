@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4A36A2E0E
-	for <lists+cgroups@lfdr.de>; Sun, 26 Feb 2023 05:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72556A2E00
+	for <lists+cgroups@lfdr.de>; Sun, 26 Feb 2023 04:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbjBZEIk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 25 Feb 2023 23:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S230148AbjBZDz7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 25 Feb 2023 22:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjBZEIj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Feb 2023 23:08:39 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EBF6A57;
-        Sat, 25 Feb 2023 20:08:38 -0800 (PST)
+        with ESMTP id S230221AbjBZDzl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Feb 2023 22:55:41 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3B71714E;
+        Sat, 25 Feb 2023 19:55:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4FF3CB80B8A;
-        Sun, 26 Feb 2023 03:44:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A2BFC433EF;
-        Sun, 26 Feb 2023 03:44:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EE416B80956;
+        Sun, 26 Feb 2023 03:44:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC7FDC433D2;
+        Sun, 26 Feb 2023 03:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677383044;
-        bh=nXU1mIcE80gCuXpTLG5b3uYjUUQu4yGjMNHvMqJDQyc=;
+        s=k20201202; t=1677383053;
+        bh=LE6Cuxh0N4Eej+KJKmepjRL+51JfrcQnW1JJGA9cAOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGLVJjQjHJJRYqoX55ITpKdOqnF+zVdiSt8GSHaCwhO1eV4eyXZm6Shoze2WBzocW
-         G4Z9LtZ9+GFNxwFwBh30sV9nYiWb7CgRXlVsnFwkzUr8BLuIOuaWF68m7Rn3ZkQXDj
-         C8c+8eeZs9moAiJVyihSMDJ+P8z0g3xC7EJw5mMNEcdIrbTNa1/PR1BW1gzSDi/ztf
-         akFw3V4mm/BB9fdP6n5fH/QubIfJT+jlerW21kMDpizmfmHrziLHGtPxjWKXmxEaqQ
-         Y+JuXGi3tqjfmFfdiAquEc86U5KrwdW4NTXckjo59kbqUKO22KWq8Ecs/FUcM+K/D0
-         6Fh7qfhm/5+xA==
+        b=PM0CfhWT1wXNddcyFftkUKX74V3kaxax7cb5ZeGtCyCxwAZo27ZmSia3L6Ogj3SEV
+         bPv31BxBvVRzwlIGuvs7+/oBLsogrVJIDm43gnFM+qwiZBKMg8/YZCLEWfVGvmdJoN
+         95yYXAZRQDhv3mL82x5U6V0BTwYVGlf2uf4fSwo5X7RiRNsDigN17Dgh2Qk97miLLl
+         WwwHa5CU7qjymp7BpCuPvJLUAoq7Elf3Gdw//WA6rgNz1FpPEsovoREwk25mPXbELX
+         nZWy32sDIYfKlHvZr8y/X7OvxFiYA8xLu0Bzi2A3Ctqy8akLj4ky66SURfEyUo5SLZ
+         2XX6FnTq1qz9Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Li Nan <linan122@huawei.com>, Yu Kuai <yukuai3@huawei.com>,
         Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>, josef@toxicpanda.com,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 3/6] blk-iocost: fix divide by 0 error in calc_lcoefs()
-Date:   Sat, 25 Feb 2023 22:43:55 -0500
-Message-Id: <20230226034359.773806-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 3/5] blk-iocost: fix divide by 0 error in calc_lcoefs()
+Date:   Sat, 25 Feb 2023 22:44:06 -0500
+Message-Id: <20230226034408.774670-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226034359.773806-1-sashal@kernel.org>
-References: <20230226034359.773806-1-sashal@kernel.org>
+In-Reply-To: <20230226034408.774670-1-sashal@kernel.org>
+References: <20230226034408.774670-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,10 +97,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 069193dee95b0..bd7e9ffa5d401 100644
+index fb8f959a7f327..9255b642d6adb 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -870,9 +870,14 @@ static void calc_lcoefs(u64 bps, u64 seqiops, u64 randiops,
+@@ -872,9 +872,14 @@ static void calc_lcoefs(u64 bps, u64 seqiops, u64 randiops,
  
  	*page = *seqio = *randio = 0;
  
