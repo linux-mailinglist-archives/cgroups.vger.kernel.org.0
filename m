@@ -2,169 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8923D6A454A
-	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 15:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03436A4558
+	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 15:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjB0Ozr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Feb 2023 09:55:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S229963AbjB0O5v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Feb 2023 09:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjB0Ozq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 09:55:46 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AC62D68
-        for <cgroups@vger.kernel.org>; Mon, 27 Feb 2023 06:55:27 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id bd34so3688672pfb.3
-        for <cgroups@vger.kernel.org>; Mon, 27 Feb 2023 06:55:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=efbKjJH0/z14qy23LAnj3qOzaYlgzxY7qzc2uyxfBtM=;
-        b=bYs/Mq/rnU7wfxfHK/u5aYqdDlwXoJFuckIsoy5byLynRv5u0ZCZfVzujMy7fUFPEn
-         6CljPG9t+qcZzYvOPRKlsbFQ1295zC+HM3kdHK+Aw21LfJUDXrGkKyBvkz1UkCbGkod1
-         8QsOAwMSFfKOx2zRxSsxDd+tplnZJu04B5jPoMoM6Y7lBEa8FiuDi6EVm6xcjKxggZ2o
-         pBAgwyeu5SqnHbQCR6capDuQlaVhdJXm/4d1NPoS/xdV+oJHajwZk29IyOGFVofhS6bx
-         SbeTbNYxtfLIfmMTdZ9nFCUiE3HzxWn5Mp35zaZd14QYE7/MAE72SttksI0yLdisPLoW
-         32rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=efbKjJH0/z14qy23LAnj3qOzaYlgzxY7qzc2uyxfBtM=;
-        b=wIeJaYinl8ft1l/Q19cYUAvtm3NcgqjM4NjDLhA7Xx1UfnL36i2ctsmxDPVnhojaqT
-         G0rS4nreiwgD8OQBkNzsgLTT0RbD88NQLxb/YzCasLjcAf2+lB40VQa5ypbsfEVrbbuD
-         PljZD1wAos+4uTiWqOBgRr0PsYyy0Et1szmcBWhVvQNms4UIPb/tuDrOHyFEjCw5hvw6
-         ZSH+z8OUN0OD5R1+6a5pAGO3MPYLm0obwRh5d6WJi/DtX1SthKN87OJp8DLeXfwHQGoV
-         liyXAel9cKF30WhGuV2Jn3SF/gN7rwNHakYzBDegsiBtTyG3+tL/D1NG/ljbGyNuFibY
-         rRFQ==
-X-Gm-Message-State: AO0yUKXxPfVY1MUfGAVTueUam432LcJygOqTYPL7JCTw5SapIbj7mqer
-        ewUFnjv0DpMFCr6aTyDQwY4f0SZbQiS5Fz4gMdZk/w==
-X-Google-Smtp-Source: AK7set+8+IFz4k0JhE8UowrEtKZi4ufexRbPO1hsztdc2KHFwYzpPLuYJBmk+bqIyFARsLXmU9cVLlIeyYnM8TqhQjE=
-X-Received: by 2002:aa7:848f:0:b0:590:3183:60eb with SMTP id
- u15-20020aa7848f000000b00590318360ebmr5854937pfn.3.1677509726695; Mon, 27 Feb
- 2023 06:55:26 -0800 (PST)
+        with ESMTP id S229911AbjB0O5u (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 09:57:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211C455AE
+        for <cgroups@vger.kernel.org>; Mon, 27 Feb 2023 06:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677509824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ss2xMFtfBNj0edm2OxxXiynydqERuSjVgjdxnPnjzQc=;
+        b=KE1749iYuF7wwoAMXLnyxesjAKaYaYcK8QYIK7lVER3tb4mfRdZtv3QrBVLDDnI/wx+r1R
+        bIqJGq+Ftaic81cnEIiNfnEC+Hx8aaM6rBfpCHQhXd/Y6jDbn5xD5W7IMcP9D2Y//XO1RD
+        QV5Y6vw1thads9hAtntLgOTE1uAVVLs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-213-Bi6cNJeVNdaBYRjUsOErNA-1; Mon, 27 Feb 2023 09:57:00 -0500
+X-MC-Unique: Bi6cNJeVNdaBYRjUsOErNA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6118101A55E;
+        Mon, 27 Feb 2023 14:56:59 +0000 (UTC)
+Received: from [10.18.17.153] (dhcp-17-153.bos.redhat.com [10.18.17.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C87302166B2B;
+        Mon, 27 Feb 2023 14:56:59 +0000 (UTC)
+Message-ID: <9953284e-05da-56b0-047d-ecf18aa53892@redhat.com>
+Date:   Mon, 27 Feb 2023 09:56:59 -0500
 MIME-Version: 1.0
-References: <20230113141234.260128-1-vincent.guittot@linaro.org>
- <20230113141234.260128-9-vincent.guittot@linaro.org> <Y/XlR+wLtn54CkE4@hirez.programming.kicks-ass.net>
- <CAKfTPtBJD6So-0-S3sgFqTE1HVMypg_S23+uuH6BnGk5atxUKA@mail.gmail.com> <Y/ywN3Sz33gHO3Vj@hirez.programming.kicks-ass.net>
-In-Reply-To: <Y/ywN3Sz33gHO3Vj@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 27 Feb 2023 15:55:15 +0100
-Message-ID: <CAKfTPtDjSTEaXQ8t8gz-DS_UbMUmN3F2PnbF5m-vJcL-KxaJfQ@mail.gmail.com>
-Subject: Re: [PATCH v10 8/9] sched/fair: Add latency list
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, parth@linux.ibm.com,
-        cgroups@vger.kernel.org, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net,
-        David.Laight@aculab.com, pjt@google.com, pavel@ucw.cz,
-        tj@kernel.org, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] cpuset: Remove unused cpuset_node_allowed
+Content-Language: en-US
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230227080719.20280-1-haifeng.xu@shopee.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230227080719.20280-1-haifeng.xu@shopee.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 27 Feb 2023 at 14:29, Peter Zijlstra <peterz@infradead.org> wrote:
+On 2/27/23 03:07, Haifeng Xu wrote:
+> Commit 002f290627c2 ("cpuset: use static key better and convert to new API")
+> has used __cpuset_node_allowed instead of cpuset_node_allowed to check
+> whether we can allocate on a memory node. Now this function isn't used by
+> anyone, so we can remove it safely.
 >
-> On Wed, Feb 22, 2023 at 12:16:29PM +0100, Vincent Guittot wrote:
-> > On Wed, 22 Feb 2023 at 10:50, Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Fri, Jan 13, 2023 at 03:12:33PM +0100, Vincent Guittot wrote:
-> > >
-> > > > +static void __enqueue_latency(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-> > > > +{
-> > > > +
-> > > > +     /* Only latency sensitive entity can be added to the list */
-> > > > +     if (se->latency_offset >= 0)
-> > > > +             return;
-> > > > +
-> > > > +     if (!RB_EMPTY_NODE(&se->latency_node))
-> > > > +             return;
-> > > > +
-> > > > +     /*
-> > > > +      * An execution time less than sysctl_sched_min_granularity means that
-> > > > +      * the entity has been preempted by a higher sched class or an entity
-> > > > +      * with higher latency constraint.
-> > > > +      * Put it back in the list so it gets a chance to run 1st during the
-> > > > +      * next slice.
-> > > > +      */
-> > > > +     if (!(flags & ENQUEUE_WAKEUP)) {
-> > > > +             u64 delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-> > > > +
-> > > > +             if (delta_exec >= sysctl_sched_min_granularity)
-> > > > +                     return;
-> > > > +     }
-> > >
-> > > I'm not a big fan of this dynamic enqueueing condition; it makes it
-> > > rather hard to interpret the below addition to pick_next_entity().
-> > >
-> > > Let me think about this more... at the very least the comment with
-> > > __pick_first_latency() use below needs to be expanded upon if we keep it
-> > > like so.
-> >
-> > Only the waking tasks should be added in the latency rb tree so they
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> ---
+>   include/linux/cpuset.h | 12 ------------
+>   1 file changed, 12 deletions(-)
 >
-> But that's what I'm saying, you can game this by doing super short
-> sleeps every min_gran.
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index d58e0476ee8e..7fad5afe3bba 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -82,13 +82,6 @@ int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask);
+>   
+>   extern bool __cpuset_node_allowed(int node, gfp_t gfp_mask);
+>   
+> -static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
+> -{
+> -	if (cpusets_enabled())
+> -		return __cpuset_node_allowed(node, gfp_mask);
+> -	return true;
+> -}
+> -
+>   static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+>   {
+>   	return __cpuset_node_allowed(zone_to_nid(z), gfp_mask);
+> @@ -223,11 +216,6 @@ static inline int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask)
+>   	return 1;
+>   }
+>   
+> -static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
+> -{
+> -	return true;
+> -}
+> -
+>   static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+>   {
+>   	return true;
 
-yes, it 's for a time. But i'm not sure this will be always beneficial
-at the end because most of the time you will have your full slice
-without doing this game
+The kernel convention is to add a "__" prefix to a function name if 
+there is higher level helper without the "__" prefix that uses it. Since 
+cpuset_node_allowed() is no longer used. We should just rename 
+__cpuset_node_allowed() to cpuset_node_allowed() and get rid of the 
+unused helper. A bit more code changes are needed for this, though.
 
->
-> > can be selected to run 1st (as long as they don't use too much
-> > runtime). But task A can wake up, preempts current task B thanks to
-> > its latency nice , starts to run few usecs but then is immediately
-> > preempted by a RT task C as an example. In this case, we consider that
-> > the task A didn't get a chance to run after its wakeup and we put it
-> > back to the latency rb tree just as if task A has just woken up but
-> > didn't preempted the new current task C.
->
-> So ideally, and this is where I'm very slow with thinking, that
-> wakeup_preempt_entity() condition here:
->
-> > > > @@ -5008,6 +5082,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
-> > > >               se = cfs_rq->last;
-> > > >       }
-> > > >
-> > > > +     /* Check for latency sensitive entity waiting for running */
-> > > > +     latency = __pick_first_latency(cfs_rq);
-> > > > +     if (latency && (latency != se) &&
-> > > > +         wakeup_preempt_entity(latency, se) < 1)
-> > > > +             se = latency;
->
-> should be sufficient to provide fair bandwidth usage. The EEVDF paper
-> achieves this by selecting the leftmost elegible task, where elegibility
-> is dependent on negative lag. Only those tasks that are behind the pack
-> are allowed runtime.
->
-> Now clearly our min_vruntime is unsuited for that exact scheme, but iirc
-> wake_preempt_entity() does not allow for starvation, so we should be
-> good, even without that weird condition in __enqueue_latency(), hmm?
+Cheers,
+Longman
 
-If we unconditionally  __enqueue_latency() the task then it can end up
-providing more bandwidth to those tasks because it's like having a
-larger sleep credit than others.
-
-The original condition in __enqueue_latency() was :
-    if (!(flags & ENQUEUE_WAKEUP)) {
-        return;
-    }
-
-So that task gets a chance to preempt others only at wakeup.
-But then, I have seen such tasks being preempted immediately but RT
-tasks and as a result lost their latency advantage. Maybe I should be
-the condition above and add the weird condition in a separate patch
-with dedicated figures
