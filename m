@@ -2,115 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03436A4558
-	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 15:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5161E6A457E
+	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 16:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjB0O5v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Feb 2023 09:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S229805AbjB0PC2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Feb 2023 10:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbjB0O5u (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 09:57:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211C455AE
-        for <cgroups@vger.kernel.org>; Mon, 27 Feb 2023 06:57:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677509824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ss2xMFtfBNj0edm2OxxXiynydqERuSjVgjdxnPnjzQc=;
-        b=KE1749iYuF7wwoAMXLnyxesjAKaYaYcK8QYIK7lVER3tb4mfRdZtv3QrBVLDDnI/wx+r1R
-        bIqJGq+Ftaic81cnEIiNfnEC+Hx8aaM6rBfpCHQhXd/Y6jDbn5xD5W7IMcP9D2Y//XO1RD
-        QV5Y6vw1thads9hAtntLgOTE1uAVVLs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-213-Bi6cNJeVNdaBYRjUsOErNA-1; Mon, 27 Feb 2023 09:57:00 -0500
-X-MC-Unique: Bi6cNJeVNdaBYRjUsOErNA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229657AbjB0PC1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 10:02:27 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0458555BE;
+        Mon, 27 Feb 2023 07:02:25 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6118101A55E;
-        Mon, 27 Feb 2023 14:56:59 +0000 (UTC)
-Received: from [10.18.17.153] (dhcp-17-153.bos.redhat.com [10.18.17.153])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C87302166B2B;
-        Mon, 27 Feb 2023 14:56:59 +0000 (UTC)
-Message-ID: <9953284e-05da-56b0-047d-ecf18aa53892@redhat.com>
-Date:   Mon, 27 Feb 2023 09:56:59 -0500
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7AA48219FB;
+        Mon, 27 Feb 2023 15:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1677510144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gQdlZOcHYNl5XRcWKHNMj/kCNmWBN/fJPu/xDdRs1kc=;
+        b=MuOFW8HlHEK8azDxmhRDJhV5hwinNYrmK4nKpsf9WVDIZzds9W9IQn/s3uHbfRbvyKHbrH
+        V9X/4BR4XycqMMXkIe/QJ7cXYM+KlE8/KyncZlvdIgwIrZkp75iDVcaG/aK1zBQDKV8C/z
+        c2XEWUo5OCpZnLqG3aSu1U4cBY2takw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1677510144;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gQdlZOcHYNl5XRcWKHNMj/kCNmWBN/fJPu/xDdRs1kc=;
+        b=+5JdXbctffs1QjnpI1Z5DvF5Nfr5Hb27YR2JhzIncsyffP9hNKgiYRyB/X6OuBsp75Ch6I
+        MZUNPq4bphQuz9Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6404D13A43;
+        Mon, 27 Feb 2023 15:02:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JvRPGADG/GNyGwAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 27 Feb 2023 15:02:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id BE2B8A06F2; Mon, 27 Feb 2023 16:02:23 +0100 (CET)
+Date:   Mon, 27 Feb 2023 16:02:23 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, houtao1@huawei.com
+Subject: Re: [PATCH v2] blk-ioprio: Introduce promote-to-rt policy
+Message-ID: <20230227150223.vvjvhiesgnbfea5z@quack3>
+References: <20230220135428.2632906-1-houtao@huaweicloud.com>
+ <20230227130305.2idxwmz2kdnacolc@quack3>
+ <05eafc4f-2d60-b7e6-1d5d-9a08709916e8@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] cpuset: Remove unused cpuset_node_allowed
-Content-Language: en-US
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230227080719.20280-1-haifeng.xu@shopee.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230227080719.20280-1-haifeng.xu@shopee.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05eafc4f-2d60-b7e6-1d5d-9a08709916e8@huaweicloud.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/27/23 03:07, Haifeng Xu wrote:
-> Commit 002f290627c2 ("cpuset: use static key better and convert to new API")
-> has used __cpuset_node_allowed instead of cpuset_node_allowed to check
-> whether we can allocate on a memory node. Now this function isn't used by
-> anyone, so we can remove it safely.
->
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> ---
->   include/linux/cpuset.h | 12 ------------
->   1 file changed, 12 deletions(-)
->
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index d58e0476ee8e..7fad5afe3bba 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -82,13 +82,6 @@ int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask);
->   
->   extern bool __cpuset_node_allowed(int node, gfp_t gfp_mask);
->   
-> -static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
-> -{
-> -	if (cpusets_enabled())
-> -		return __cpuset_node_allowed(node, gfp_mask);
-> -	return true;
-> -}
-> -
->   static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
->   {
->   	return __cpuset_node_allowed(zone_to_nid(z), gfp_mask);
-> @@ -223,11 +216,6 @@ static inline int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask)
->   	return 1;
->   }
->   
-> -static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
-> -{
-> -	return true;
-> -}
-> -
->   static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
->   {
->   	return true;
+On Mon 27-02-23 21:56:25, Hou Tao wrote:
+> Hi
+> 
+> On 2/27/2023 9:03 PM, Jan Kara wrote:
+> > On Mon 20-02-23 21:54:28, Hou Tao wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> Since commit a78418e6a04c ("block: Always initialize bio IO priority on
+> >> submit"), bio->bi_ioprio will never be IOPRIO_CLASS_NONE when calling
+> >> blkcg_set_ioprio(), so there will be no way to promote the io-priority
+> >> of one cgroup to IOPRIO_CLASS_RT, because bi_ioprio will always be
+> >> greater than or equals to IOPRIO_CLASS_RT.
+> >>
+> >> It seems possible to call blkcg_set_ioprio() first then try to
+> >> initialize bi_ioprio later in bio_set_ioprio(), but this doesn't work
+> >> for bio in which bi_ioprio is already initialized (e.g., direct-io), so
+> >> introduce a new ioprio policy to promote the iopriority of bio to
+> >> IOPRIO_CLASS_RT if the ioprio is not already RT.
+> >>
+> >> So introduce a new promote-to-rt policy to achieve this. For none-to-rt
+> >> policy, although it doesn't work now, but considering that its purpose
+> >> was also to override the io-priority to RT and allow for a smoother
+> >> transition, just keep it and treat it as an alias of the promote-to-rt
+> >> policy.
+> >>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > Looks good to me. Feel free to add:
+> >
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> Thanks for the review.
+> >
+> > Just one question regarding doc below:
+> >
+> >> ++----------------+---+
+> >> +| no-change      | 0 |
+> >> ++----------------+---+
+> >> +| rt-to-be       | 2 |
+> >> ++----------------+---+
+> >> +| all-to-idle    | 3 |
+> >> ++----------------+---+
+> > Shouldn't there be preempt-to-rt somewhere in this table as well? Or why
+> > this this in the doc at all? I'd consider the numbers to be kernel internal
+> > thing?
+> These numbers are used in the algorithm paragraph below to explain how the final
+> ioprio is calculated. For prompt-to-rt policy, the algorithm is different and
+> the number is unnecessary.
 
-The kernel convention is to add a "__" prefix to a function name if 
-there is higher level helper without the "__" prefix that uses it. Since 
-cpuset_node_allowed() is no longer used. We should just rename 
-__cpuset_node_allowed() to cpuset_node_allowed() and get rid of the 
-unused helper. A bit more code changes are needed for this, though.
+I see, thanks for explanation.
 
-Cheers,
-Longman
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
