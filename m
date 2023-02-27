@@ -2,118 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B1A6A44DE
-	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 15:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C06AC6A4532
+	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 15:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjB0Omm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Feb 2023 09:42:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S229781AbjB0OwW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Feb 2023 09:52:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjB0Oml (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 09:42:41 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234AD20571;
-        Mon, 27 Feb 2023 06:42:40 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 693EB1FD67;
-        Mon, 27 Feb 2023 14:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1677508958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BdizNH1AzSr0bKpBzNhArg9yFjow/CCwchYkew7eG8k=;
-        b=pqUg/q6/MUBr1HnwOq2Z4zkg0ZwcBEX7c8zJkoNMfAMDc0o/YbFfh96lMqOWYqoEOxCR/n
-        xhGpnCZTnjAKDQ+QzC6+DypAo39hvZx0yCFYWJluxJBpy3aoDSq97ScBF2XM4x137ishdq
-        V9PWkJY+8PpVVO8KBzrfuCd9ivVQt7I=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C474F13A43;
-        Mon, 27 Feb 2023 14:42:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fOL0Ll3B/GNkEQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 27 Feb 2023 14:42:37 +0000
-Date:   Mon, 27 Feb 2023 15:42:36 +0100
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, parth@linux.ibm.com, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org,
-        qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, David.Laight@aculab.com,
-        pjt@google.com, pavel@ucw.cz, qperret@google.com,
-        tim.c.chen@linux.intel.com, joshdon@google.com, timj@gnu.org,
-        kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org
-Subject: Re: [PATCH v12 6/8] sched/fair: Add sched group latency support
-Message-ID: <20230227144236.z6zbgsaohlz6sl7o@blackpad>
-References: <20230224093454.956298-1-vincent.guittot@linaro.org>
- <20230224093454.956298-7-vincent.guittot@linaro.org>
- <20230224192919.d4fcde3dwh7betvm@blackpad>
- <CAKfTPtBorwnjU2=nprBo7aAEjoz+7x5nRYUdajZc53cuVgHSBw@mail.gmail.com>
+        with ESMTP id S229657AbjB0OwV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 09:52:21 -0500
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AE02202C;
+        Mon, 27 Feb 2023 06:52:19 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id l25so6528144wrb.3;
+        Mon, 27 Feb 2023 06:52:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject:cc
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ig4nk3MPcVVXmPaI5r91h49D/cIs37xSeKPwjDDQdOY=;
+        b=sYUD3oOmJTSqgfeF17KXwqzFpAkgQ0+n7xYj08RVLQ7K1HZoIasTJnaFkdW6iOmHKL
+         xcB52jWN+ZUBaZ7cu18qG4+n43jSRjYDVqhuRyauGdJfp2xZRultfqbjaM0RCC+fLe3M
+         6CgFAYc5cg0fZKtWpF7oy5adWDWhxgqtWtfXIy+lVUMNfNnMybjSAtoEwxqQamjIEH/Y
+         D1VtXArTD3+gkgIOmuDuXtAUyIgqGFyGJ79uwZKqdnuKY/tqSHaQz3fk92gKmsdBoiZl
+         bXc0q7PbtRCbEDWO3s+vKGjFSGpwPMCgin2NHwC7O89zajQvmHG9tJsW+LHCZEJ1ZVl2
+         k7aQ==
+X-Gm-Message-State: AO0yUKUmIq/oMDI6cGegqR4WfcTwMollSsxpKtSyJrtgMAkteG3bhw1g
+        2j1mGcYI6+MPTIAvrBw6NNs=
+X-Google-Smtp-Source: AK7set8vnaLOnleLv10OV+Ul8uVDdYp+NJiQ5huJjqDq6AiKz12FrbsCZnQjMTw3QRb3OOR6627K9g==
+X-Received: by 2002:a5d:570e:0:b0:2bf:d940:29b6 with SMTP id a14-20020a5d570e000000b002bfd94029b6mr21925697wrv.54.1677509537875;
+        Mon, 27 Feb 2023 06:52:17 -0800 (PST)
+Received: from ?IPV6:2620:10d:c0c3:1136:1486:5f6c:3f1:4b78? ([2620:10d:c092:400::5:e15])
+        by smtp.gmail.com with ESMTPSA id d10-20020a05600c3aca00b003eb369abd92sm8415664wms.2.2023.02.27.06.52.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Feb 2023 06:52:17 -0800 (PST)
+Message-ID: <2e8c8937-b027-8b20-a16b-3dfed8217ad2@debian.org>
+Date:   Mon, 27 Feb 2023 14:52:15 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k2vtvr4lfwegj6vr"
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBorwnjU2=nprBo7aAEjoz+7x5nRYUdajZc53cuVgHSBw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Cc:     leit@meta.com, axboe@kernel.dk, tj@kernel.org,
+        josef@toxicpanda.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, aherrmann@suse.de, mkoutny@suse.com,
+        linux-kernel@vger.kernel.org, leit@fb.com
+Subject: Re: [PATCH v2] blk-iocost: Pass disk queue to ioc_refresh_params
+To:     Christoph Hellwig <hch@lst.de>
+References: <20230227135610.501884-1-leitao@debian.org>
+ <20230227140847.GA18644@lst.de>
+From:   Breno Leitao <leitao@debian.org>
+In-Reply-To: <20230227140847.GA18644@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello Christoph,
 
---k2vtvr4lfwegj6vr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 27/02/2023 14:08, Christoph Hellwig wrote:
+> Hi Breno,
+> 
+> and sorry for the late reply.  This looks correct to me, but I'd
+> be much happier if the disk was passed in instead of the request_queue
+> as that's where we're generally heading.  If you don't have time to
+> respin I could live with this version for a fix, though.
 
-On Mon, Feb 27, 2023 at 02:44:22PM +0100, Vincent Guittot <vincent.guittot@linaro.org> wrote:
-> Regarding the current use of latency nice to set a latency offset, the
-> problem doesn't appear because latency offset applies between entities
-> at the same level as you mentioned above
+No worries, I can definitely do a respin passing the disk instead of
+request_queue.
 
-Splendid, it turned out that way (latency nice analogous to bandwidth
-nice).
+I hope to send a v3 in the next few hours.
 
-> Does  my explanation above make sense to you ?
-
-Yes, thank you.
-
-Thus, I'd like to propose avoiding the use of "limit" in this context and
-stress the horizontal scope. For example:
-
-> +     This interface file allows reading and setting latency using the
-> +     same values used by sched_setattr(2). The latency_nice of a group is
-> +     used to limit the impact of the latency_nice of a task outside the
-> +     group.
-
-+     This interface file allows reading and setting latency using the
-+     same values used by sched_setattr(2). The latency_nice of a group is
-+     used to modify group members' latency with respect to sibling groups.
-
-Regards,
-Michal
-
---k2vtvr4lfwegj6vr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCY/zBWgAKCRAkDQmsBEOq
-uRXXAP4nBfg1JWkFJlUphJU/HXYaqG7HKuwUDehUmhtQOcLnRQD/XqLftrr1aayr
-WcfeRCiKVdubEZX6L35zYCrcNd3hBAM=
-=FRsw
------END PGP SIGNATURE-----
-
---k2vtvr4lfwegj6vr--
