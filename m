@@ -2,182 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA556A4389
-	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 14:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1D16A4374
+	for <lists+cgroups@lfdr.de>; Mon, 27 Feb 2023 14:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjB0N7T (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Feb 2023 08:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S229720AbjB0N4g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Feb 2023 08:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjB0N7S (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 08:59:18 -0500
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B5E86B7;
-        Mon, 27 Feb 2023 05:59:15 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id fm20-20020a05600c0c1400b003ead37e6588so7208958wmb.5;
-        Mon, 27 Feb 2023 05:59:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=01vdwOPhnCC3qxNKYSax3Iv0n2lLnfqxMKTZz/Dv3X8=;
-        b=vtxuwgF6GF3tBN/dpnSn9PteSnTcKO0J26e9zPSAGRc0euIM4GMD86ns7omZxtse2r
-         QPLfa6t8xaLLaZXVfDgvNnyp1DwRRqtor12rqwDlc5znSPVle9fFJ2I3m1kzu4ljBurF
-         9hIkVzk8lnYOrMNbMMUvFfgjgstFamoeUvf8pxKp6dvon05CbSo/dJenowCvWTslnLBE
-         hV1q9PLk/FrMYv1mV9TH0gYZZukrG7OMLiLMwKwsd+w9VNLFtHqT6ZhfZJOiwvUeqose
-         1X3wXfrSRgVIXSyJzmbE6vG+zSHZ7vFJwHBzqRUrXrNfN0KEIZPtmUEJFKY2S2OIwB6o
-         CESQ==
-X-Gm-Message-State: AO0yUKVzI45+mwKNkKYsujjU3UogSGEbWKPDswzZNJYebVHog01ML8DP
-        C+LUveQNx0lPw/E3H//r5LY=
-X-Google-Smtp-Source: AK7set9FALw06c5ZOVwEnrXx5yRQRi1uB4uutUrdbpwVDPrIHiHm962pbaXpHwwgqo/rXzJCMI2/pQ==
-X-Received: by 2002:a05:600c:6023:b0:3e7:cee4:f8a with SMTP id az35-20020a05600c602300b003e7cee40f8amr19586526wmb.29.1677506354223;
-        Mon, 27 Feb 2023 05:59:14 -0800 (PST)
-Received: from localhost (fwdproxy-cln-004.fbsv.net. [2a03:2880:31ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id l1-20020a1c7901000000b003e2058a7109sm12674194wme.14.2023.02.27.05.59.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 05:59:13 -0800 (PST)
-From:   Breno Leitao <leitao@debian.org>
-To:     axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     aherrmann@suse.de, mkoutny@suse.com, linux-kernel@vger.kernel.org,
-        hch@lst.de, leit@fb.com
-Subject: [PATCH v2] blk-iocost: Pass disk queue to ioc_refresh_params
-Date:   Mon, 27 Feb 2023 05:56:10 -0800
-Message-Id: <20230227135610.501884-1-leitao@debian.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229753AbjB0N4f (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 08:56:35 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AD11F4B2;
+        Mon, 27 Feb 2023 05:56:33 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PQMVL6W5Yz4f3l81;
+        Mon, 27 Feb 2023 21:56:26 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgAXB+WJtvxjUNV0EQ--.30054S2;
+        Mon, 27 Feb 2023 21:56:28 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+Subject: Re: [PATCH v2] blk-ioprio: Introduce promote-to-rt policy
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-block@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, houtao1@huawei.com
+References: <20230220135428.2632906-1-houtao@huaweicloud.com>
+ <20230227130305.2idxwmz2kdnacolc@quack3>
+Message-ID: <05eafc4f-2d60-b7e6-1d5d-9a08709916e8@huaweicloud.com>
+Date:   Mon, 27 Feb 2023 21:56:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230227130305.2idxwmz2kdnacolc@quack3>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgAXB+WJtvxjUNV0EQ--.30054S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw4kJF1UAF4UGryrKrykZrb_yoW8CrW5pF
+        4fWas3WryktF4fCF1DXF48AFW8t397Jw1UJr1YqrWru3y3Ar9xKw12gayfXFW5CrWkGr4Y
+        q3W5ZrWvkF4UZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Current kernel (d2980d8d826554fa6981d621e569a453787472f8) crashes
-when blk_iocost_init for `nvme1` disk.
+Hi
 
-	BUG: kernel NULL pointer dereference, address: 0000000000000050
-	#PF: supervisor read access in kernel mode
-	#PF: error_code(0x0000) - not-present page
+On 2/27/2023 9:03 PM, Jan Kara wrote:
+> On Mon 20-02-23 21:54:28, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Since commit a78418e6a04c ("block: Always initialize bio IO priority on
+>> submit"), bio->bi_ioprio will never be IOPRIO_CLASS_NONE when calling
+>> blkcg_set_ioprio(), so there will be no way to promote the io-priority
+>> of one cgroup to IOPRIO_CLASS_RT, because bi_ioprio will always be
+>> greater than or equals to IOPRIO_CLASS_RT.
+>>
+>> It seems possible to call blkcg_set_ioprio() first then try to
+>> initialize bi_ioprio later in bio_set_ioprio(), but this doesn't work
+>> for bio in which bi_ioprio is already initialized (e.g., direct-io), so
+>> introduce a new ioprio policy to promote the iopriority of bio to
+>> IOPRIO_CLASS_RT if the ioprio is not already RT.
+>>
+>> So introduce a new promote-to-rt policy to achieve this. For none-to-rt
+>> policy, although it doesn't work now, but considering that its purpose
+>> was also to override the io-priority to RT and allow for a smoother
+>> transition, just keep it and treat it as an alias of the promote-to-rt
+>> policy.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> Looks good to me. Feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks for the review.
+>
+> Just one question regarding doc below:
+>
+>> ++----------------+---+
+>> +| no-change      | 0 |
+>> ++----------------+---+
+>> +| rt-to-be       | 2 |
+>> ++----------------+---+
+>> +| all-to-idle    | 3 |
+>> ++----------------+---+
+> Shouldn't there be preempt-to-rt somewhere in this table as well? Or why
+> this this in the doc at all? I'd consider the numbers to be kernel internal
+> thing?
+These numbers are used in the algorithm paragraph below to explain how the final
+ioprio is calculated. For prompt-to-rt policy, the algorithm is different and
+the number is unnecessary.
 
-	blk_iocost_init (include/asm-generic/qspinlock.h:128
-			 include/linux/spinlock.h:203
-			 include/linux/spinlock_api_smp.h:158
-			 include/linux/spinlock.h:400
-			 block/blk-iocost.c:2884)
-	ioc_qos_write (block/blk-iocost.c:3198)
-	? kretprobe_perf_func (kernel/trace/trace_kprobe.c:1566)
-	? kernfs_fop_write_iter (include/linux/slab.h:584 fs/kernfs/file.c:311)
-	? __kmem_cache_alloc_node (mm/slab.h:? mm/slub.c:3452 mm/slub.c:3491)
-	? _copy_from_iter (arch/x86/include/asm/uaccess_64.h:46
-			   arch/x86/include/asm/uaccess_64.h:52
-			   lib/iov_iter.c:183 lib/iov_iter.c:628)
-	? kretprobe_dispatcher (kernel/trace/trace_kprobe.c:1693)
-	cgroup_file_write (kernel/cgroup/cgroup.c:4061)
-	kernfs_fop_write_iter (fs/kernfs/file.c:334)
-	vfs_write (include/linux/fs.h:1849 fs/read_write.c:491
-		   fs/read_write.c:584)
-	ksys_write (fs/read_write.c:637)
-	do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
-	entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
-
-This happens because ioc_refresh_params() is being called without
-a properly initialized ioc->rqos, which is happening later in the callee
-side.
-
-ioc_refresh_params() -> ioc_autop_idx() tries to access
-ioc->rqos.disk->queue but ioc->rqos.disk is NULL, causing the BUG above.
-
-Create a function that is similar to ioc_refresh_params() but where the
-"struct request_queue" could be passed as an explicit argument. This
-function will be called when ioc->rqos.disk->queue could not be trusted.
-
-Fixes: ce57b558604e ("blk-rq-qos: make rq_qos_add and rq_qos_del more useful")
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- block/blk-iocost.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
-
----
-Changes in v2:
-- Pass the struct request_queue explictly to ioc_refresh_params()
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index ff534e9d92dc..28f9b802241d 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -800,7 +800,7 @@ static void ioc_refresh_period_us(struct ioc *ioc)
- 	ioc_refresh_margins(ioc);
- }
- 
--static int ioc_autop_idx(struct ioc *ioc)
-+static int ioc_autop_idx(struct ioc *ioc, struct request_queue *queue)
- {
- 	int idx = ioc->autop_idx;
- 	const struct ioc_params *p = &autop[idx];
-@@ -808,11 +808,11 @@ static int ioc_autop_idx(struct ioc *ioc)
- 	u64 now_ns;
- 
- 	/* rotational? */
--	if (!blk_queue_nonrot(ioc->rqos.disk->queue))
-+	if (!blk_queue_nonrot(queue))
- 		return AUTOP_HDD;
- 
- 	/* handle SATA SSDs w/ broken NCQ */
--	if (blk_queue_depth(ioc->rqos.disk->queue) == 1)
-+	if (blk_queue_depth(queue) == 1)
- 		return AUTOP_SSD_QD1;
- 
- 	/* use one of the normal ssd sets */
-@@ -901,14 +901,19 @@ static void ioc_refresh_lcoefs(struct ioc *ioc)
- 		    &c[LCOEF_WPAGE], &c[LCOEF_WSEQIO], &c[LCOEF_WRANDIO]);
- }
- 
--static bool ioc_refresh_params(struct ioc *ioc, bool force)
-+/*
-+ * struct request_queue is required as an argument because ioc->rqos.disk->queue
-+ * might not be properly initialized
-+ */
-+static bool _ioc_refresh_params(struct ioc *ioc, bool force,
-+				struct request_queue *queue)
- {
- 	const struct ioc_params *p;
- 	int idx;
- 
- 	lockdep_assert_held(&ioc->lock);
- 
--	idx = ioc_autop_idx(ioc);
-+	idx = ioc_autop_idx(ioc, queue);
- 	p = &autop[idx];
- 
- 	if (idx == ioc->autop_idx && !force)
-@@ -939,6 +944,11 @@ static bool ioc_refresh_params(struct ioc *ioc, bool force)
- 	return true;
- }
- 
-+static bool ioc_refresh_params(struct ioc *ioc, bool force)
-+{
-+	return _ioc_refresh_params(ioc, force, ioc->rqos.disk->queue);
-+}
-+
- /*
-  * When an iocg accumulates too much vtime or gets deactivated, we throw away
-  * some vtime, which lowers the overall device utilization. As the exact amount
-@@ -2880,7 +2890,7 @@ static int blk_iocost_init(struct gendisk *disk)
- 
- 	spin_lock_irq(&ioc->lock);
- 	ioc->autop_idx = AUTOP_INVALID;
--	ioc_refresh_params(ioc, true);
-+	_ioc_refresh_params(ioc, true, disk->queue);
- 	spin_unlock_irq(&ioc->lock);
- 
- 	/*
--- 
-2.30.2
+> 								Honza
 
