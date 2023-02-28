@@ -2,136 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3366A51B1
-	for <lists+cgroups@lfdr.de>; Tue, 28 Feb 2023 04:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E046A547A
+	for <lists+cgroups@lfdr.de>; Tue, 28 Feb 2023 09:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjB1DNi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Feb 2023 22:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        id S229659AbjB1IgB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Feb 2023 03:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbjB1DNh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Feb 2023 22:13:37 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC53E5BA3
-        for <cgroups@vger.kernel.org>; Mon, 27 Feb 2023 19:13:36 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id h8so5692280plf.10
-        for <cgroups@vger.kernel.org>; Mon, 27 Feb 2023 19:13:36 -0800 (PST)
+        with ESMTP id S229529AbjB1IgB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Feb 2023 03:36:01 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28219234E8
+        for <cgroups@vger.kernel.org>; Tue, 28 Feb 2023 00:35:57 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id ce7so5172778pfb.9
+        for <cgroups@vger.kernel.org>; Tue, 28 Feb 2023 00:35:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1677554016;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=shopee.com; s=shopee.com; t=1677573356;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pOmm/Vo67LFh2DeLQEl+PyGHp2QpvdcC8yMg1+l9oPo=;
-        b=R1jqaA2eIonxb4RUDB15L7AxwldFeSpdbxSp05n/iPBlv6erUG5rKVF8HpSmd3yCsS
-         l+9VL9FZS65HaOxr9D0t8IMxGDUaNU7gYPtc7boarOzEUUHtVwR2iJp4uE0euYThZJHW
-         GBp99ckTO6UbgYy2kMGQltmQSAthhenH9IgYF8AjeN4voefOBtBHBQp073UJOib6EaOs
-         ap1RxkorRzhb9lM6Cl0YvI+WoVwLn7IyBP2aGaS9ClWMPnkdR4xoQRzWGuU9accbOcug
-         bFaBu5XYT8C+Fr49LBDla0PVjKcvZiJG33QTQTAgSUyLRJi0ZJlG2VpXKl3fd6ShNLly
-         dTPg==
+        bh=2m9p8ihrgSqCDLIO8jAiryGx9X7hvTIbRelvVFuou64=;
+        b=ACFBaQ8L7Rvd7Z7rTp6gb6TlTYlIHT8zfbAJbVa5AcagjWCt/hdH7FhHf0GD6crqoE
+         l5z9Qo4ohzq6CKtz8NFnvbWScdY6X71MaG5/p8csSeWuKhQY4BGzlPfQCFhr/iuoBXTe
+         KdMAxa3t8Pg1o9Rq+V/gS+Z8ztASY/N2CJd9YQyU6fyPt1fBeNsKL5D27po31Ulr26hV
+         MMNcia3bHxxOLR9mLr08+5z20nDuCRI4xROWT9en3Ph2q41ETXd794o60DBDnwsMplUj
+         89cgOw8VNBEQT9qPIZ8E1BwDKyIfJLJAnoo4hUQk4J1IT0VikSHe9VtfV7LFDOosZo8M
+         cc6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677554016;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pOmm/Vo67LFh2DeLQEl+PyGHp2QpvdcC8yMg1+l9oPo=;
-        b=fua8ImLvWAnb69Q9jrFPVrLthHhOJh+EgbpIrTxmT7GW0YxEj4lCVzlEbTmRYQNb+H
-         4vHzCGhfrZPPyq/Vi9pC+T4jgcICjx5q6xObMNvPx3U3HykmyESjBx4QlEsXrYPmc5Ot
-         XQzvwU5gdiDfAH7arFVcYpk8c+MEur9RMEp9uKeUyH+4/OJg+7vqDAtZ8fkgjG+kf8hc
-         BBKrekSkGhaJzyF34GJpnR4eiO4HPIKVuwCOdJV1t/ZxwjU36LagvcOfGqK9tDvW+1+S
-         SLLBwNsj6xbS5HI7oqRyXnal7VX5C/PoJk1fVBpISX6Lq5Sp9tbOCcq8ttmKlCDvOTej
-         3HGg==
-X-Gm-Message-State: AO0yUKXDYcyymhen68VBTDQicMEjWyxkqopHwTmvXhiVI8T/qIIrgJeY
-        zrxWn8p+/yFyQpw/LWT3Oz9aHw==
-X-Google-Smtp-Source: AK7set+rrl6uCpBddpqmVCFPuDnIQM2HuvpUbPUFAvzzi91CzifNh1DSkVaiMLl1zKaeNl3Rw/rOfQ==
-X-Received: by 2002:a05:6a20:42a3:b0:cd:83b1:420d with SMTP id o35-20020a056a2042a300b000cd83b1420dmr1879064pzj.38.1677554016415;
-        Mon, 27 Feb 2023 19:13:36 -0800 (PST)
-Received: from [10.54.24.141] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id k10-20020aa7820a000000b005a9ea5d43ddsm5033146pfi.174.2023.02.27.19.13.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 19:13:36 -0800 (PST)
-Message-ID: <802cb319-37d9-c5a7-46f3-73e729a27239@shopee.com>
-Date:   Tue, 28 Feb 2023 11:13:33 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH] cpuset: Remove unused cpuset_node_allowed
-To:     Waiman Long <longman@redhat.com>
-Cc:     lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230227080719.20280-1-haifeng.xu@shopee.com>
- <9953284e-05da-56b0-047d-ecf18aa53892@redhat.com>
- <0222742e-3c31-b75d-6027-3b6da2be16be@shopee.com>
- <d6df5140-ed7c-2c12-8e5a-d5c3fbf30a47@redhat.com>
+        d=1e100.net; s=20210112; t=1677573356;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2m9p8ihrgSqCDLIO8jAiryGx9X7hvTIbRelvVFuou64=;
+        b=zAhBH5+2r+KI6zJU3KkocLPbHrQDHVRTwxZVc5Aby5pAslWmrvvyTao5EaH2+17YLx
+         fU3bW4FvLU/TxIkfG8VjVEo6L5T7EfSQDJtzf8czCZn+ZlinYoVEsip0rs0fqAUWrrxr
+         GasmjqMopqr5auQgZt1OWDeXeOewnfgqXp26jnZFvDciOUrQysTTZnvUk4D7Ye/fwDJ/
+         VUBE0CvwKiZddVxjugTqnNof9OPIhP+2K3HQE2Jf+OF5049gx+IyNt8Gf9SQ+XhBTfgP
+         Vt0UgureiC2yKu8/whZO6hdixDpEEMl2EPK1F/nh1p4CtQ1993cRh9cyrDd4i8a8yXcJ
+         ZfqQ==
+X-Gm-Message-State: AO0yUKX/9jF8dZbTqBBmPxhmYwW0yNje1PcdO8gDmZcJaGZHexE+wF/a
+        0cSaLc9aMT7+8ADJugKWUXn0Dg==
+X-Google-Smtp-Source: AK7set+yFaUee4hKzhTdalVFR+do2NU6CSsr0tPR0slzongxl7jDZOFyj9n8WLELfs8JPCRnaHD2BA==
+X-Received: by 2002:a62:528f:0:b0:5d9:f3a6:a925 with SMTP id g137-20020a62528f000000b005d9f3a6a925mr1784980pfb.24.1677573356533;
+        Tue, 28 Feb 2023 00:35:56 -0800 (PST)
+Received: from ubuntu-haifeng.default.svc.cluster.local ([101.127.248.173])
+        by smtp.gmail.com with ESMTPSA id bm17-20020a056a00321100b005aa80fe8be7sm5461768pfb.67.2023.02.28.00.35.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 00:35:56 -0800 (PST)
 From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <d6df5140-ed7c-2c12-8e5a-d5c3fbf30a47@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+To:     longman@redhat.com
+Cc:     lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Haifeng Xu <haifeng.xu@shopee.com>
+Subject: [PATCH] cpuset: Clean up cpuset_node_allowed
+Date:   Tue, 28 Feb 2023 08:35:37 +0000
+Message-Id: <20230228083537.102665-1-haifeng.xu@shopee.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <9953284e-05da-56b0-047d-ecf18aa53892@redhat.com>
+References: <9953284e-05da-56b0-047d-ecf18aa53892@redhat.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Commit 002f290627c2 ("cpuset: use static key better and convert to new API")
+has used __cpuset_node_allowed() instead of cpuset_node_allowed() to check
+whether we can allocate on a memory node. Now this function isn't used by
+anyone, so we can do the follow things to clean up it.
 
+1. remove unused codes
+2. rename __cpuset_node_allowed() to cpuset_node_allowed()
+3. update comments in mm/page_alloc.c
 
-On 2023/2/28 10:52, Waiman Long wrote:
-> On 2/27/23 21:40, Haifeng Xu wrote:
->>
->> On 2023/2/27 22:56, Waiman Long wrote:
->>> On 2/27/23 03:07, Haifeng Xu wrote:
->>>> Commit 002f290627c2 ("cpuset: use static key better and convert to new API")
->>>> has used __cpuset_node_allowed instead of cpuset_node_allowed to check
->>>> whether we can allocate on a memory node. Now this function isn't used by
->>>> anyone, so we can remove it safely.
->>>>
->>>> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
->>>> ---
->>>>    include/linux/cpuset.h | 12 ------------
->>>>    1 file changed, 12 deletions(-)
->>>>
->>>> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
->>>> index d58e0476ee8e..7fad5afe3bba 100644
->>>> --- a/include/linux/cpuset.h
->>>> +++ b/include/linux/cpuset.h
->>>> @@ -82,13 +82,6 @@ int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask);
->>>>      extern bool __cpuset_node_allowed(int node, gfp_t gfp_mask);
->>>>    -static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
->>>> -{
->>>> -    if (cpusets_enabled())
->>>> -        return __cpuset_node_allowed(node, gfp_mask);
->>>> -    return true;
->>>> -}
->>>> -
->>>>    static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
->>>>    {
->>>>        return __cpuset_node_allowed(zone_to_nid(z), gfp_mask);
->>>> @@ -223,11 +216,6 @@ static inline int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask)
->>>>        return 1;
->>>>    }
->>>>    -static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
->>>> -{
->>>> -    return true;
->>>> -}
->>>> -
->>>>    static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
->>>>    {
->>>>        return true;
->>> The kernel convention is to add a "__" prefix to a function name if there is higher level helper without the "__" prefix that uses it. Since cpuset_node_allowed() is no longer used. We should just rename __cpuset_node_allowed() to cpuset_node_allowed() and get rid of the unused helper. A bit more code changes are needed for this, though.
->>>
->>> Cheers,
->>> Longman
->>>
->> Maybe we can still use cpuset_node_allowed in __cpuset_zone_allowed? If so, less code need to be changed.
->>
-> mm/page_alloc.c has 2 references to __cpuset_node_allowed() in their comments. These references should also be updated as well. That is why I said a bit more code needs to be touched.
-> 
-> Cheers,
-> Longman
-> 
+Suggested-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+---
+ include/linux/cpuset.h | 16 ++--------------
+ kernel/cgroup/cpuset.c |  4 ++--
+ mm/page_alloc.c        |  4 ++--
+ 3 files changed, 6 insertions(+), 18 deletions(-)
 
-Ok. I mean maybe we could keep cpuset_node_allowed() and use it in __cpuset_zone_allowed(). So we don't need rename __cpuset_node_allowed() or update releated comments.
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index d58e0476ee8e..980b76a1237e 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -80,18 +80,11 @@ extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+ void cpuset_init_current_mems_allowed(void);
+ int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask);
+ 
+-extern bool __cpuset_node_allowed(int node, gfp_t gfp_mask);
+-
+-static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
+-{
+-	if (cpusets_enabled())
+-		return __cpuset_node_allowed(node, gfp_mask);
+-	return true;
+-}
++extern bool cpuset_node_allowed(int node, gfp_t gfp_mask);
+ 
+ static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+ {
+-	return __cpuset_node_allowed(zone_to_nid(z), gfp_mask);
++	return cpuset_node_allowed(zone_to_nid(z), gfp_mask);
+ }
+ 
+ static inline bool cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+@@ -223,11 +216,6 @@ static inline int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask)
+ 	return 1;
+ }
+ 
+-static inline bool cpuset_node_allowed(int node, gfp_t gfp_mask)
+-{
+-	return true;
+-}
+-
+ static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+ {
+ 	return true;
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 636f1c682ac0..0241b07d6f21 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3831,7 +3831,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+ }
+ 
+ /*
+- * __cpuset_node_allowed - Can we allocate on a memory node?
++ * cpuset_node_allowed - Can we allocate on a memory node?
+  * @node: is this an allowed node?
+  * @gfp_mask: memory allocation flags
+  *
+@@ -3870,7 +3870,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+  *	GFP_KERNEL   - any node in enclosing hardwalled cpuset ok
+  *	GFP_USER     - only nodes in current tasks mems allowed ok.
+  */
+-bool __cpuset_node_allowed(int node, gfp_t gfp_mask)
++bool cpuset_node_allowed(int node, gfp_t gfp_mask)
+ {
+ 	struct cpuset *cs;		/* current cpuset ancestors */
+ 	bool allowed;			/* is allocation in zone z allowed? */
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3bb3484563ed..0d170ae590d8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4175,7 +4175,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ retry:
+ 	/*
+ 	 * Scan zonelist, looking for a zone with enough free.
+-	 * See also __cpuset_node_allowed() comment in kernel/cgroup/cpuset.c.
++	 * See also cpuset_node_allowed() comment in kernel/cgroup/cpuset.c.
+ 	 */
+ 	no_fallback = alloc_flags & ALLOC_NOFRAGMENT;
+ 	z = ac->preferred_zoneref;
+@@ -4843,7 +4843,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
+ 			alloc_flags |= ALLOC_HARDER;
+ 		/*
+ 		 * Ignore cpuset mems for GFP_ATOMIC rather than fail, see the
+-		 * comment for __cpuset_node_allowed().
++		 * comment for cpuset_node_allowed().
+ 		 */
+ 		alloc_flags &= ~ALLOC_CPUSET;
+ 	} else if (unlikely(rt_task(current)) && in_task())
+-- 
+2.25.1
 
-Thanks.
