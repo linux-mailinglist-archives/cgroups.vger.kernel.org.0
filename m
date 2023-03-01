@@ -2,129 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 554976A71C5
-	for <lists+cgroups@lfdr.de>; Wed,  1 Mar 2023 18:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCFC6A7291
+	for <lists+cgroups@lfdr.de>; Wed,  1 Mar 2023 19:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjCAREF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Mar 2023 12:04:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
+        id S229816AbjCASFu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Mar 2023 13:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjCAREE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Mar 2023 12:04:04 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9AF5BA2
-        for <cgroups@vger.kernel.org>; Wed,  1 Mar 2023 09:03:26 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id l7-20020a05600c4f0700b003e79fa98ce1so8291883wmq.2
-        for <cgroups@vger.kernel.org>; Wed, 01 Mar 2023 09:03:26 -0800 (PST)
+        with ESMTP id S229525AbjCASFu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Mar 2023 13:05:50 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A351E7D92
+        for <cgroups@vger.kernel.org>; Wed,  1 Mar 2023 10:05:48 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-536cd8f6034so378902717b3.10
+        for <cgroups@vger.kernel.org>; Wed, 01 Mar 2023 10:05:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qUHKTRcQh3URDtHGlGaA089RX+46wq6JZY7f9xT1DBI=;
-        b=2O6UAvj6zfjZ/qTx+DC1jnzc4oofYRirSDiuT9o8rhJ/6BEiPA4+rcBx4atFEYGEIo
-         QVdj2yopC3IIfoL06yzTsC3ziAmJYMHVp28B/iZfCAryxbSMgsa3kgv/phahYvjdTBzb
-         Z/2osNzuFnLNlGTIvz/JMmEPzwLmZAOY13uQsvapEDGujowt6lWX6AE8hfelFeGUxisa
-         CJNyd0S6acdvftMLIIDqsimJ3mYWYm9fdb/HVEiQhLot1fGCgY3NO75b80K0cta4Mx61
-         J5BxMt3zLEk/F+OPrB+G6242679o0jxvLR4EnQao/I7ez0xvSyFY5dK4MelBSfYqGIyZ
-         x/vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20210112; t=1677693948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qUHKTRcQh3URDtHGlGaA089RX+46wq6JZY7f9xT1DBI=;
-        b=zwRtGqW8PdH7zCG7CrygAfyN5lepp8Bz0+n4G5jJiFlAIIDZSenbztPN2YmlFBqZdR
-         iz9u4wznBnuyIULsNftDMPwfCAEHC2HJ+WeLI8Ux//H+oAwzD2r4vJkZguLfhAHrVmNP
-         0l4wVK/ov6PVBEUXyMri3CRxGkSa6AKVWp2dLoIGJyFqMWjD5RO8dk9FtKP9ZnM8x0K5
-         jl4e2QyVJ0Miuea0BuJdAM4mXXPNeJxJR1osW9g+5q6Zv5WJhHONtHRFnSIODKfVEHFw
-         DbmXH5A5rDhZcY9N5Uvd0z+IN7XiHu3Xilo6yX/RbpHWAX6lLVum3Gy1uGoBzJSPU9cr
-         zalQ==
-X-Gm-Message-State: AO0yUKVXM5EN9kmPLac6jZKrW3jFe2Inh5n8zXgpkuQ61uVxzrpu0LA8
-        aDgcWxa9aoElYNrPf8LKKr03YA==
-X-Google-Smtp-Source: AK7set8vQqf910uXvU8gXb+dtW0FrWBh+y0eZXgna9uwh5OHAKzuXs0cw2hHMMTvzp4hl3cfxLpuSQ==
-X-Received: by 2002:a05:600c:3093:b0:3eb:3104:efef with SMTP id g19-20020a05600c309300b003eb3104efefmr5425757wmn.31.1677690204651;
-        Wed, 01 Mar 2023 09:03:24 -0800 (PST)
-Received: from airbuntu (host86-168-251-3.range86-168.btcentralplus.com. [86.168.251.3])
-        by smtp.gmail.com with ESMTPSA id z26-20020a1c4c1a000000b003eb395a8280sm107158wmf.37.2023.03.01.09.03.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Mar 2023 09:03:24 -0800 (PST)
-Date:   Wed, 1 Mar 2023 17:03:22 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Zefan Li <lizefan.x@bytedance.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3] sched: cpuset: Don't rebuild root domains on
- suspend-resume
-Message-ID: <20230301170322.xthlso7jfkixlyex@airbuntu>
-References: <20230206221428.2125324-1-qyousef@layalina.io>
- <20230223153859.37tqoqk33oc6tv7o@airbuntu>
- <5f087dd8-3e39-ce83-fe24-afa5179c05d9@arm.com>
- <20230227205725.dipvh3i7dvyrv4tv@airbuntu>
- <5a1e58bf-7eb2-bd7a-7e19-7864428a2b83@arm.com>
- <20230228174627.vja5aejq27dsta2u@airbuntu>
- <Y/7/SLzvK8LfB29z@localhost.localdomain>
- <20230301122852.zgzreby42lh2zf6w@airbuntu>
- <Y/9gmDRlGOChIwpf@localhost.localdomain>
+        bh=uX8jmiHZcgYXj8u2P74s/De46LZgaxk18Jsejs4CDXw=;
+        b=F4Tge1VkHhBLEu87APuX+c1FBFZuQ/236EIgqsa2CLAghV4MU4ktWNxdD4wbxYlLnG
+         8Jz5OVtY0G4gUHBsHAUXgUuH3ztxqwsOiC8zJryAUnVUICBu/WSrngNVUHUKqqlFwKRo
+         twWP+HY0so8JHoUhrK0FYhjLb3iJunbdtoZmQL+PZhLFN3CZWUPGY7tug8DPT0K0GRio
+         2y69fGAW3CjaTSWmBcVf90tdB5iHUOvM8g6UdSZK38pahBHs1bkhZI4YgUC/DBfZFEuR
+         6YZdJx6Ijq0D/SCoGQsB3SVT1Q2QZA67NO8fHXg9I5OE8119UaOTW6PvjnaS/XuMPdMa
+         4kxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677693948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uX8jmiHZcgYXj8u2P74s/De46LZgaxk18Jsejs4CDXw=;
+        b=t58fM8n4VTP7EXjkW0O3Jccw8JoWED+WwVkOlor5tepVVmGZjXkb/B1pK5YzEvSrQU
+         H9nv9cS1iK23ZXvr03J0DuEKw52AAXY0blaCP6zPTkbLE3+/CfVx5ymEDnIlCoRxGshA
+         1SklB0xVgaZh+ruYe3bfPCgZn7qukGBIhqp3OYe+eZCOC8pdnOBQ08WD2aU8gUamzi2c
+         2QsmN4t06/Z3Onf6bt4OrBXhN0FUHvOCrn4ELFLv/qpQpArQN9fpzgfBC5UrzuzIksb+
+         X654vo7m4vsMwpCiBVdfe4pdBXs/bHjnqA/YOc4OAgkuaCPRnSNNUR1/q5+4i5m5Kpg+
+         jEKQ==
+X-Gm-Message-State: AO0yUKWowtNYbqY0NcZBg5//yvGXTTis4hSttvkPRdzIUhmgqBbzHNHJ
+        /8ve+JgpCivaps5EIclBtGMis/lHatZPJ2Xtm8kb/g==
+X-Google-Smtp-Source: AK7set/dkGy44D3lzDpt1OcAlZQDAmRQia2GQABeGUlYp/z+jLLEd0bIjWbxiVlVZhq3mS1FWuYcAJPaqDINSB9WsPo=
+X-Received: by 2002:a81:ac51:0:b0:53c:6fda:b469 with SMTP id
+ z17-20020a81ac51000000b0053c6fdab469mr1569992ywj.0.1677693947655; Wed, 01 Mar
+ 2023 10:05:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Y/9gmDRlGOChIwpf@localhost.localdomain>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230301014651.1370939-1-surenb@google.com> <Y/8fNrNm1B2h/MTb@dhcp22.suse.cz>
+In-Reply-To: <Y/8fNrNm1B2h/MTb@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 1 Mar 2023 10:05:36 -0800
+Message-ID: <CAJuCfpERczW1YhEW0fN3p2zrdDj-Ec_pCONH6SQVEwTj0BHYMw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup: limit cgroup psi file writes to processes
+ with CAP_SYS_RESOURCE
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
+        peterz@infradead.org, johunt@akamai.com, quic_sudaraja@quicinc.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 03/01/23 15:26, Juri Lelli wrote:
-> On 01/03/23 12:28, Qais Yousef wrote:
-> > On 03/01/23 08:31, Juri Lelli wrote:
-> 
-> ...
-> 
-> > > Not ignoring you guys here, but it turns out I'm quite bogged down with
-> > > other stuff at the moment. :/ So, apologies and I'll try to get to this
-> > > asap. Thanks a lot for all your efforts and time reviewing so far!
-> > 
-> > Np, I can feel you :-)
-> 
-> Eh. :/
+On Wed, Mar 1, 2023 at 1:47=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Tue 28-02-23 17:46:51, Suren Baghdasaryan wrote:
+> > Currently /proc/pressure/* files can be written only by processes with
+> > CAP_SYS_RESOURCE capability to prevent any unauthorized user from
+> > creating psi triggers. However no such limitation is required for
+> > per-cgroup pressure files. Fix this inconsistency by requiring the same
+> > capability for writing per-cgroup psi files.
+> >
+> > Fixes: 6db12ee0456d ("psi: allow unprivileged users with CAP_SYS_RESOUR=
+CE to write psi files")
+>
+> Is this really a regression from this commit? 6db12ee0456d is changing
+> permissions of those files to be world writeable with the
+> CAP_SYS_RESOURCE requirement. Permissions of cgroup files is not changed
+> and the default mode is 644 (with root as an owner) so only privileged
+> processes are allowed without any delegation.
 
-I hope I did not offend. That was meant as no pressure, I understand.
+Agree, the Fixes line here is not valid. I will remove it.
 
-> 
-> BTW, do you have a repro script of some sort handy I might play with?
+>
+> I think you should instead construct this slightly differently. The
+> ultimate goal is to allow a reasonable delegation after all, no?
 
-Sorry no. You'll just need to suspend to ram. I had a simple patch to measure
-the time around the call and trace_printk'ed the result.
+Yes.
 
-I was working on a android phone which just suspends to ram if you turn the
-screen off and disconnect the usb.
+>
+> So keep your current patch and extend it by removing the min timeout
+> constrain and justify the change by the necessity of the granularity
+> tuning as reported by Sudarshan Rajagopala. If this causes any
+> regression then a revert would also return the min timeout constrain
+> back and we will have to think about a different approach.
 
-I think you can use rtcwake in normal desktop environment. Something like
+I think adding CAP_SYS_RESOURCE check is needed even if we keep the
+min timeout capped like today. Without it one could create multiple
+cgroups and add a trigger into each one, therefore creating an
+unlimited number of "psimon" kernel threads. At some point I expect
+them to affect system performance because even at high polling
+intervals they still consume some cpu resources. So, this change I
+think is needed regardless of the change to min polling period and I
+would suggest keeping them separate.
 
-	sudo rtcwake -u -s 5 -m mem
+>
+> The consistency with the global case is a valid point only partially
+> because different cgroups might have different owners which is not
+> usually the case for the global psi interface, right?
 
+Correct.
 
-Thanks!
+>
+> Makes sense?
 
---
-Qais Yousef
+Yes but hopefully my argument about keeping this and min period
+patches separate is reasonable?
+Thanks,
+Suren.
+
+> --
+> Michal Hocko
+> SUSE Labs
