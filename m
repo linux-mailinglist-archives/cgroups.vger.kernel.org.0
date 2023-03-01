@@ -2,69 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCFC6A7291
-	for <lists+cgroups@lfdr.de>; Wed,  1 Mar 2023 19:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E3F6A7359
+	for <lists+cgroups@lfdr.de>; Wed,  1 Mar 2023 19:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjCASFu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Mar 2023 13:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
+        id S229676AbjCASYH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Mar 2023 13:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjCASFu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Mar 2023 13:05:50 -0500
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A351E7D92
-        for <cgroups@vger.kernel.org>; Wed,  1 Mar 2023 10:05:48 -0800 (PST)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-536cd8f6034so378902717b3.10
-        for <cgroups@vger.kernel.org>; Wed, 01 Mar 2023 10:05:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1677693948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uX8jmiHZcgYXj8u2P74s/De46LZgaxk18Jsejs4CDXw=;
-        b=F4Tge1VkHhBLEu87APuX+c1FBFZuQ/236EIgqsa2CLAghV4MU4ktWNxdD4wbxYlLnG
-         8Jz5OVtY0G4gUHBsHAUXgUuH3ztxqwsOiC8zJryAUnVUICBu/WSrngNVUHUKqqlFwKRo
-         twWP+HY0so8JHoUhrK0FYhjLb3iJunbdtoZmQL+PZhLFN3CZWUPGY7tug8DPT0K0GRio
-         2y69fGAW3CjaTSWmBcVf90tdB5iHUOvM8g6UdSZK38pahBHs1bkhZI4YgUC/DBfZFEuR
-         6YZdJx6Ijq0D/SCoGQsB3SVT1Q2QZA67NO8fHXg9I5OE8119UaOTW6PvjnaS/XuMPdMa
-         4kxg==
+        with ESMTP id S229634AbjCASYH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Mar 2023 13:24:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0BF196B5
+        for <cgroups@vger.kernel.org>; Wed,  1 Mar 2023 10:23:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677695003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JZOs1ZrtyzBGWlUNy3rirmBNUl52qHVNx2XoNoPG8A8=;
+        b=hc76BNDgvY8IMQpJNOk3dV2Yqfhm5n4/YEELrTkp5pC3ZaZfhb7ANwv7ONetCJzdnInxJ6
+        tZp9yvzKIB03Ch0M5RUV5MaAThn+e4X0yx+//mOzUAq2BcHqVzcbhF20UU9ftVqy0n8PuC
+        HV+jAxZyvaOppOFlVNkQPut2XKvWp6A=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-326-PMYLR0qVMAyR_5hEELvYUg-1; Wed, 01 Mar 2023 13:23:22 -0500
+X-MC-Unique: PMYLR0qVMAyR_5hEELvYUg-1
+Received: by mail-wm1-f70.google.com with SMTP id e17-20020a05600c219100b003e21fa60ec1so47043wme.2
+        for <cgroups@vger.kernel.org>; Wed, 01 Mar 2023 10:23:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677693948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uX8jmiHZcgYXj8u2P74s/De46LZgaxk18Jsejs4CDXw=;
-        b=t58fM8n4VTP7EXjkW0O3Jccw8JoWED+WwVkOlor5tepVVmGZjXkb/B1pK5YzEvSrQU
-         H9nv9cS1iK23ZXvr03J0DuEKw52AAXY0blaCP6zPTkbLE3+/CfVx5ymEDnIlCoRxGshA
-         1SklB0xVgaZh+ruYe3bfPCgZn7qukGBIhqp3OYe+eZCOC8pdnOBQ08WD2aU8gUamzi2c
-         2QsmN4t06/Z3Onf6bt4OrBXhN0FUHvOCrn4ELFLv/qpQpArQN9fpzgfBC5UrzuzIksb+
-         X654vo7m4vsMwpCiBVdfe4pdBXs/bHjnqA/YOc4OAgkuaCPRnSNNUR1/q5+4i5m5Kpg+
-         jEKQ==
-X-Gm-Message-State: AO0yUKWowtNYbqY0NcZBg5//yvGXTTis4hSttvkPRdzIUhmgqBbzHNHJ
-        /8ve+JgpCivaps5EIclBtGMis/lHatZPJ2Xtm8kb/g==
-X-Google-Smtp-Source: AK7set/dkGy44D3lzDpt1OcAlZQDAmRQia2GQABeGUlYp/z+jLLEd0bIjWbxiVlVZhq3mS1FWuYcAJPaqDINSB9WsPo=
-X-Received: by 2002:a81:ac51:0:b0:53c:6fda:b469 with SMTP id
- z17-20020a81ac51000000b0053c6fdab469mr1569992ywj.0.1677693947655; Wed, 01 Mar
- 2023 10:05:47 -0800 (PST)
+        d=1e100.net; s=20210112; t=1677695001;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JZOs1ZrtyzBGWlUNy3rirmBNUl52qHVNx2XoNoPG8A8=;
+        b=YGrAhA1ycz6yKywMKQWKkK3kWlHtGiMmmW2eyGrfMfEdNuvnStkApYBkGbiRr6D5OQ
+         yE6ggPeEFGNEYMkNX+sLAwzorhwkbcq7d7FjZw7jGqMaEkmdFKTNZucO/ASfigFtvnrQ
+         9V05H6qysUYFBB8RYZPFyR5Y000h0O1r1HDugB+iEYRGUPMRCjw4usW5mE5szfMC1i3v
+         vtOaXKiyZasM+44FG8DzqMV4s3NftynTqqyN9v4uNbq1HWCZRQhMAMd03G9JUerwSUm7
+         C7dl6NG4dOOqBYyhvA2k5o1W18TqZGJSR82Q22CK9DQrji8jMxmMNAcoPMyaaHcxdVOG
+         L4Hw==
+X-Gm-Message-State: AO0yUKVEREJP0n4FlhloyjJpbgAXaUv34vLtsdNtzhhzmjCb/DhFTXF0
+        rzx/u4le9B+d6YoXnircxT2YBm+tiui28xOakneR2cvTowxf9U62l9OZ1KG3O9yJ70jAQJRaLkk
+        Fn5MWBOICJh+TkG6F1Q==
+X-Received: by 2002:adf:dd49:0:b0:2c7:ae2:56df with SMTP id u9-20020adfdd49000000b002c70ae256dfmr5831046wrm.70.1677695001015;
+        Wed, 01 Mar 2023 10:23:21 -0800 (PST)
+X-Google-Smtp-Source: AK7set+hh4qTKevxZ2Zg/AVz4ilic3h8zzImt+NubfkZPcwe1MT8NeAPx2k+sDTtoLXldr+E7Zd09Q==
+X-Received: by 2002:adf:dd49:0:b0:2c7:ae2:56df with SMTP id u9-20020adfdd49000000b002c70ae256dfmr5831036wrm.70.1677695000749;
+        Wed, 01 Mar 2023 10:23:20 -0800 (PST)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id f12-20020adfe90c000000b002c3f9404c45sm13221718wrm.7.2023.03.01.10.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Mar 2023 10:23:20 -0800 (PST)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v5 2/6] mm/memcg: Disable threshold event handlers on
+ PREEMPT_RT
+In-Reply-To: <20220226204144.1008339-3-bigeasy@linutronix.de>
+References: <20220226204144.1008339-1-bigeasy@linutronix.de>
+ <20220226204144.1008339-3-bigeasy@linutronix.de>
+Date:   Wed, 01 Mar 2023 18:23:19 +0000
+Message-ID: <xhsmh4jr4pbzc.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <20230301014651.1370939-1-surenb@google.com> <Y/8fNrNm1B2h/MTb@dhcp22.suse.cz>
-In-Reply-To: <Y/8fNrNm1B2h/MTb@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 1 Mar 2023 10:05:36 -0800
-Message-ID: <CAJuCfpERczW1YhEW0fN3p2zrdDj-Ec_pCONH6SQVEwTj0BHYMw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] cgroup: limit cgroup psi file writes to processes
- with CAP_SYS_RESOURCE
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
-        peterz@infradead.org, johunt@akamai.com, quic_sudaraja@quicinc.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,64 +87,24 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 1, 2023 at 1:47=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
+On 26/02/22 21:41, Sebastian Andrzej Siewior wrote:
+> During the integration of PREEMPT_RT support, the code flow around
+> memcg_check_events() resulted in `twisted code'. Moving the code around
+> and avoiding then would then lead to an additional local-irq-save
+> section within memcg_check_events(). While looking better, it adds a
+> local-irq-save section to code flow which is usually within an
+> local-irq-off block on non-PREEMPT_RT configurations.
 >
-> On Tue 28-02-23 17:46:51, Suren Baghdasaryan wrote:
-> > Currently /proc/pressure/* files can be written only by processes with
-> > CAP_SYS_RESOURCE capability to prevent any unauthorized user from
-> > creating psi triggers. However no such limitation is required for
-> > per-cgroup pressure files. Fix this inconsistency by requiring the same
-> > capability for writing per-cgroup psi files.
-> >
-> > Fixes: 6db12ee0456d ("psi: allow unprivileged users with CAP_SYS_RESOUR=
-CE to write psi files")
->
-> Is this really a regression from this commit? 6db12ee0456d is changing
-> permissions of those files to be world writeable with the
-> CAP_SYS_RESOURCE requirement. Permissions of cgroup files is not changed
-> and the default mode is 644 (with root as an owner) so only privileged
-> processes are allowed without any delegation.
 
-Agree, the Fixes line here is not valid. I will remove it.
+Hey, sorry for necro'ing a year-old thread - would you happen to remember
+what the issues were with memcg_check_events()? I ran tests against
+cgroupv1 using an eventfd on OOM with the usual debug arsenal and didn't
+detect anything, I'm guessing it has to do with the IRQ-off region
+memcg_check_events() is called from?
 
->
-> I think you should instead construct this slightly differently. The
-> ultimate goal is to allow a reasonable delegation after all, no?
+I want cgroupv1 to die as much as the next person, but in that specific
+situation I kinda need cgroupv1 to behave somewhat sanely on RT with
+threshold events :/
 
-Yes.
+Cheers
 
->
-> So keep your current patch and extend it by removing the min timeout
-> constrain and justify the change by the necessity of the granularity
-> tuning as reported by Sudarshan Rajagopala. If this causes any
-> regression then a revert would also return the min timeout constrain
-> back and we will have to think about a different approach.
-
-I think adding CAP_SYS_RESOURCE check is needed even if we keep the
-min timeout capped like today. Without it one could create multiple
-cgroups and add a trigger into each one, therefore creating an
-unlimited number of "psimon" kernel threads. At some point I expect
-them to affect system performance because even at high polling
-intervals they still consume some cpu resources. So, this change I
-think is needed regardless of the change to min polling period and I
-would suggest keeping them separate.
-
->
-> The consistency with the global case is a valid point only partially
-> because different cgroups might have different owners which is not
-> usually the case for the global psi interface, right?
-
-Correct.
-
->
-> Makes sense?
-
-Yes but hopefully my argument about keeping this and min period
-patches separate is reasonable?
-Thanks,
-Suren.
-
-> --
-> Michal Hocko
-> SUSE Labs
