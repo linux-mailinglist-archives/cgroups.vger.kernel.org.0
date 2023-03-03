@@ -2,88 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 172A46A89C8
-	for <lists+cgroups@lfdr.de>; Thu,  2 Mar 2023 20:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAD86A8E8C
+	for <lists+cgroups@lfdr.de>; Fri,  3 Mar 2023 02:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjCBTxA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Mar 2023 14:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S229461AbjCCBPC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Mar 2023 20:15:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCBTxA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Mar 2023 14:53:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F7B2ED64
-        for <cgroups@vger.kernel.org>; Thu,  2 Mar 2023 11:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677786735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KwpX3YFb316Y6Yz0MMigE20cUWOeVNyriSBJ2SDd4TE=;
-        b=GqtNoW/DN3JOJuswvA+ExgNcSfKlgoqRCvLy1rphrdM8pDNLtfrw8Ybrzv5Cylnbug3MJl
-        elJ1Bu3cFQ/4oYhy8CPlr6hytgbFJYrt0+IYqSr/6rBXx3AUIv5r6kCFldnbx8+D1MesRR
-        RoUGcpDz6ACIRgmgwfp7capDbZ+QiW4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-550-1OyD9CiPNMK1owDIzc10zw-1; Thu, 02 Mar 2023 14:52:14 -0500
-X-MC-Unique: 1OyD9CiPNMK1owDIzc10zw-1
-Received: by mail-wm1-f71.google.com with SMTP id k36-20020a05600c1ca400b003eac86e4387so1737019wms.8
-        for <cgroups@vger.kernel.org>; Thu, 02 Mar 2023 11:52:13 -0800 (PST)
+        with ESMTP id S229871AbjCCBOK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Mar 2023 20:14:10 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE0222DC6
+        for <cgroups@vger.kernel.org>; Thu,  2 Mar 2023 17:13:50 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id d7-20020a25adc7000000b00953ffdfbe1aso728658ybe.23
+        for <cgroups@vger.kernel.org>; Thu, 02 Mar 2023 17:13:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1677806030;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Pk7Od9lx1FvwXfe2+jCyuETO6j4UmvCkXNRwPfsPdX8=;
+        b=eawrTzCH33CbOpQRrdHF07gcS0h9D1fZAptzT+SJUwp8eltvWzEvvp9uSp3iqVbkls
+         cqD96AeE8qiN73slqQ81HuGUu6xBeCHlD/QwFmF4SWXenGr98sEL5df8aqUJgveG2cZA
+         MIRo5Gf6PS8V7+p93ejwhwPx/Zzm8icHjBpOJpQ5mT/DzAHhN1Ua/6fBWtLOS3kr55VC
+         3GEyDVbXsOkpLx5aJClCUXvSUnC7JOuxd2OR/Zbimj6cGtSwn7Ad4+TroPZDrDw3oBbW
+         2cUbgCSfRfZTug//WxNgmYlh8jp6snpqjyp3oQIgg1RyVqOYyxrglI95cfpAy3GN3cnZ
+         CAJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677786733;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KwpX3YFb316Y6Yz0MMigE20cUWOeVNyriSBJ2SDd4TE=;
-        b=3wksKHoKVtPIPlLn2YM0zq8WssfC7L91HO255l8XV+0Z1Kzhf7KloPl+ZwqGbbj2bl
-         XLLUwZr3EbweCnvhjZCAdAyU74KTlyD8Rl/JKqyKYVCcaLsNwkTkL2LgwBgUl//SiwYj
-         7O6fAJAJnzEPG5gZzRX6CJWwnzIulYPvJcgtKJgT3spM4ICpNNpfX3cnTMXXOZ1+VG7t
-         zvtAgjSv5EWhXdqJByys3DCrVKKu20YkvpqlY0SJecSZkr97Hnw5sax7pv8HhMqiI0DP
-         Mqyla778uXbcuncWulxMbIxmYHeNCx9FEJbi6ArnRNtXDhs4q9T2RKMMjSOPnFTzVM1y
-         n+Uw==
-X-Gm-Message-State: AO0yUKUzGypblgAjzpGoTepKWdBh4nlQLghPHJK+FxmKSGT8XF6OLWp+
-        RuwU47PQp7btqkZPBJRhchXWdPsRssXQ3+LcGm2V+7YJQgd3wycvnihfTqLUWpbe9SMif9i66Jp
-        xXozFAAwVDOvEnmtUfw==
-X-Received: by 2002:a05:600c:46c9:b0:3d2:392e:905f with SMTP id q9-20020a05600c46c900b003d2392e905fmr8479909wmo.24.1677786732924;
-        Thu, 02 Mar 2023 11:52:12 -0800 (PST)
-X-Google-Smtp-Source: AK7set9F1G6JtF5DGOq6j8cbXWBmcpu8b83cZrJwsXL9wg3gwV4tF1cFLK0Rsx6WeyshNzx3NRsVBQ==
-X-Received: by 2002:a05:600c:46c9:b0:3d2:392e:905f with SMTP id q9-20020a05600c46c900b003d2392e905fmr8479899wmo.24.1677786732690;
-        Thu, 02 Mar 2023 11:52:12 -0800 (PST)
-Received: from vschneid.remote.csb ([154.57.232.159])
-        by smtp.gmail.com with ESMTPSA id p14-20020a05600c468e00b003eb369abd92sm4702803wmo.2.2023.03.02.11.52.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 11:52:12 -0800 (PST)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH v5 2/6] mm/memcg: Disable threshold event handlers on
- PREEMPT_RT
-In-Reply-To: <xhsmhv8jjnrwu.mognet@vschneid.remote.csb>
-References: <20220226204144.1008339-1-bigeasy@linutronix.de>
- <20220226204144.1008339-3-bigeasy@linutronix.de>
- <xhsmh4jr4pbzc.mognet@vschneid.remote.csb>
- <ZABUMit05SZBDXRQ@dhcp22.suse.cz>
- <xhsmh1qm7pibs.mognet@vschneid.remote.csb>
- <ZACHa4wrtwpQbmP2@dhcp22.suse.cz>
- <xhsmhy1ofnxna.mognet@vschneid.remote.csb>
- <ZACdBuVBHZ/AMAh/@dhcp22.suse.cz>
- <xhsmhv8jjnrwu.mognet@vschneid.remote.csb>
-Date:   Thu, 02 Mar 2023 19:52:11 +0000
-Message-ID: <xhsmhmt4vnd78.mognet@vschneid.remote.csb>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20210112; t=1677806030;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Pk7Od9lx1FvwXfe2+jCyuETO6j4UmvCkXNRwPfsPdX8=;
+        b=xpX706/pFwO2Ntv49984Ncg5tnaZV9ocpNm/dQCIod39COfFQ1mS5sGOdIJhCR1Sfh
+         fbhaZ8tAnba+3P0ue+2tOzImRBT5lf6dHuR7Cc7tPDJCxQQ/kc85XIZLFBK284Xj8FAV
+         dSdaIGvNuBauoRQzqKlu9CJIuYZMaVtyY/ao9jmNljopErdFzoNow+zc5LToGG9ZqZ9S
+         RimvZln5Y24XgDtUcvAmS8Snujc/gFAOfFSzjUrGT/qc2tJQaExbepHZhYBarIQnM8pA
+         IFLqOom6+qL1a+SW28Md8iUQM2NUq6Ee19iyuP9lKGgNweYfj+2m1xXnavl9dgpDjL0z
+         EREg==
+X-Gm-Message-State: AO0yUKXv2Y6j606v3DKpK0R2h760S++AkHsUQHnRAEjQZ5F3IFBuQIlW
+        cbkNDRvsuOsbqD6b5nyEzozrLM0o6SE=
+X-Google-Smtp-Source: AK7set85a9u2TpY4EKigfXzI8OCBp4gfZp5TC44x/oTa8B6mXZ19XkruqBUD6Y1l4ByN/bQmQq0C7M2NxnI=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:58cd:2543:62b7:a517])
+ (user=surenb job=sendgmr) by 2002:a05:6902:344:b0:8a3:d147:280b with SMTP id
+ e4-20020a056902034400b008a3d147280bmr2337965ybs.3.1677806030055; Thu, 02 Mar
+ 2023 17:13:50 -0800 (PST)
+Date:   Thu,  2 Mar 2023 17:13:46 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.rc0.216.gc4246ad0f0-goog
+Message-ID: <20230303011346.3342233-1-surenb@google.com>
+Subject: [PATCH v2 1/1] psi: remove 500ms min window size limitation for triggers
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     tj@kernel.org
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com, peterz@infradead.org,
+        johunt@akamai.com, mhocko@suse.com, keescook@chromium.org,
+        quic_sudaraja@quicinc.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,36 +67,101 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 02/03/23 14:34, Valentin Schneider wrote:
-> On 02/03/23 13:56, Michal Hocko wrote:
->> What I am trying to evaluate here is whether it makes sense to support
->> and maintain a non-trivial code for something that might be working
->> sub-optimally or even not working properly in some corner cases. The
->> price for the maintenance is certainly not free.
->
-> That's also what I'm trying to make sense of. Either way this will be
-> frankenkernel territory, the cgroupv1 ship has already sailed for upstream
-> IMO.
+Current 500ms min window size for psi triggers limits polling interval
+to 50ms to prevent polling threads from using too much cpu bandwidth by
+polling too frequently. However the number of cgroups with triggers is
+unlimited, so this protection can be defeated by creating multiple
+cgroups with psi triggers (triggers in each cgroup are served by a single
+"psimon" kernel thread).
+Instead of limiting min polling period, which also limits the latency of
+psi events, it's better to limit psi trigger creation to authorized users
+only, like we do for system-wide psi triggers (/proc/pressure/* files can
+be written only by processes with CAP_SYS_RESOURCE capability). This also
+makes access rules for cgroup psi files consistent with system-wide ones.
+Add a CAP_SYS_RESOURCE capability check for cgroup psi file writers and
+remove the psi window min size limitation.
 
-So, if someone ends up in a similar situation and considers kludging those
-notifications back in:
+Suggested-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+Link: https://lore.kernel.org/all/cover.1676067791.git.quic_sudaraja@quicinc.com/
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ kernel/cgroup/cgroup.c | 10 ++++++++++
+ kernel/sched/psi.c     |  4 +---
+ 2 files changed, 11 insertions(+), 3 deletions(-)
 
-Don't.
-
-
-Have a look at:
-
-  memcg_check_events()
-  `\
-    mem_cgroup_threshold()
-    `\
-      __mem_cgroup_threshold()
-      `\
-        eventfd_signal()
-
-Having IRQs off, percpu reads, and the the eventfd signal is a nice recipe
-for disaster.
-
-The OOM notification sits outside of that, but any other memcg notification
-will cause pain.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 935e8121b21e..b600a6baaeca 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3867,6 +3867,12 @@ static __poll_t cgroup_pressure_poll(struct kernfs_open_file *of,
+ 	return psi_trigger_poll(&ctx->psi.trigger, of->file, pt);
+ }
+ 
++static int cgroup_pressure_open(struct kernfs_open_file *of)
++{
++	return (of->file->f_mode & FMODE_WRITE && !capable(CAP_SYS_RESOURCE)) ?
++		-EPERM : 0;
++}
++
+ static void cgroup_pressure_release(struct kernfs_open_file *of)
+ {
+ 	struct cgroup_file_ctx *ctx = of->priv;
+@@ -5266,6 +5272,7 @@ static struct cftype cgroup_psi_files[] = {
+ 	{
+ 		.name = "io.pressure",
+ 		.file_offset = offsetof(struct cgroup, psi_files[PSI_IO]),
++		.open = cgroup_pressure_open,
+ 		.seq_show = cgroup_io_pressure_show,
+ 		.write = cgroup_io_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -5274,6 +5281,7 @@ static struct cftype cgroup_psi_files[] = {
+ 	{
+ 		.name = "memory.pressure",
+ 		.file_offset = offsetof(struct cgroup, psi_files[PSI_MEM]),
++		.open = cgroup_pressure_open,
+ 		.seq_show = cgroup_memory_pressure_show,
+ 		.write = cgroup_memory_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -5282,6 +5290,7 @@ static struct cftype cgroup_psi_files[] = {
+ 	{
+ 		.name = "cpu.pressure",
+ 		.file_offset = offsetof(struct cgroup, psi_files[PSI_CPU]),
++		.open = cgroup_pressure_open,
+ 		.seq_show = cgroup_cpu_pressure_show,
+ 		.write = cgroup_cpu_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -5291,6 +5300,7 @@ static struct cftype cgroup_psi_files[] = {
+ 	{
+ 		.name = "irq.pressure",
+ 		.file_offset = offsetof(struct cgroup, psi_files[PSI_IRQ]),
++		.open = cgroup_pressure_open,
+ 		.seq_show = cgroup_irq_pressure_show,
+ 		.write = cgroup_irq_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 02e011cabe91..0945f956bf80 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -160,7 +160,6 @@ __setup("psi=", setup_psi);
+ #define EXP_300s	2034		/* 1/exp(2s/300s) */
+ 
+ /* PSI trigger definitions */
+-#define WINDOW_MIN_US 500000	/* Min window size is 500ms */
+ #define WINDOW_MAX_US 10000000	/* Max window size is 10s */
+ #define UPDATES_PER_WINDOW 10	/* 10 updates per window */
+ 
+@@ -1278,8 +1277,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 	if (state >= PSI_NONIDLE)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	if (window_us < WINDOW_MIN_US ||
+-		window_us > WINDOW_MAX_US)
++	if (window_us == 0 || window_us > WINDOW_MAX_US)
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	/* Check threshold */
+-- 
+2.40.0.rc0.216.gc4246ad0f0-goog
 
