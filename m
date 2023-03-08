@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 576F76B0EA6
-	for <lists+cgroups@lfdr.de>; Wed,  8 Mar 2023 17:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788D16B0EA9
+	for <lists+cgroups@lfdr.de>; Wed,  8 Mar 2023 17:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjCHQ0h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Mar 2023 11:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        id S230420AbjCHQ0w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Mar 2023 11:26:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjCHQ0b (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Mar 2023 11:26:31 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5E8CA1EF;
-        Wed,  8 Mar 2023 08:26:24 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id c3so18617966qtc.8;
-        Wed, 08 Mar 2023 08:26:24 -0800 (PST)
+        with ESMTP id S230309AbjCHQ0f (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Mar 2023 11:26:35 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88676CB65C;
+        Wed,  8 Mar 2023 08:26:29 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id s12so18598820qtq.11;
+        Wed, 08 Mar 2023 08:26:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678292783;
+        d=gmail.com; s=20210112; t=1678292788;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=kqeFiKRizo4EGYqriaZmF5h1PWpLfju0MvbdsBusLUQ=;
-        b=RrUABNuCm23cw7zAS2r7lcfX6PoRi1Q4A6nYTvlFu+h/X4B289H2dUHucrYXkd+iTy
-         hsSB64i59WWfc0uy40q5BicLg5T3NqA4EyM2HtbP9aMG90H7ysqkcwwRIBDQM+oKsL2c
-         jPzCGI3yBDcGPpWH5BAjJXwdZxPUUwC1rqqb3BWim1UFKIptfQROIZjUOFkUF2Ymg+N5
-         n6LeGStUZx/yL69zcRf/KOjYv/sAPzIADkPqKSYyNQGpBeLOeQvpPCva8YqeIATfzeqG
-         ztixlNoZ28CemrDp8oaWk6AisdpRAoEDS3zAo3qrU3z2NhNSc3zR/aUp1Y8rFBkKVIEI
-         GWcA==
+        bh=z+4uYXTHdSZJGlTQ4yJuaUKIcEogMIg606wt+PsHQ10=;
+        b=kswqtEU7Xj6n7CisW2qiImBeQaeJAQosHCyMQLF85hJ3RIz6SE9Rt2WZbQXfYtQarS
+         w1QOwuboYFZVWg3MH8bUqqwclcgHc3MmuZZUsydleg5jg4zMt4wgbQMRkOBzw3Zucdt8
+         bDfH1puKOJ2+Jws7pHS692luihVb02mlaXjFcfe/mkc0SVVtNkvvaMGjhmgRWz60Hrhj
+         hsoZyvjuIAA64kBJePxrgKD3g/6sRoG8j42SBuX/XEEqcwDNrw4HvoAAvVN3G64Ld9aT
+         Efv9BEBWmzR2cSAbKApAMZDiqB5AIM5zyFGrDWK2hfiWrdLkaCvW3wS224bS2oq9JkyC
+         BQvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678292783;
+        d=1e100.net; s=20210112; t=1678292788;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kqeFiKRizo4EGYqriaZmF5h1PWpLfju0MvbdsBusLUQ=;
-        b=Nz0OVDSBneAze1CZa2CpTmwZmT8ZVbWn0He3GdyDwG2GafhSJOsasdOZ7rs7KH1Thz
-         zlJfvmK37MrXMEAwpdAq3rUGaKizZr3ven9l1ajtc441hp5SkB5jDKjHo0CPdds4vKCy
-         FRU5YznokMjEpLEFxP/V2ldMCEhSv3VWHlSHgzE8Y+CihpqJHoSrfdDZjbXWIHUI4+XP
-         B5dvD5jOln5E6d3qqYxkSgCMUdf2MJ7ucL6G+hukMlQUEQgFV017TpbGpwMup6JPKLpN
-         9kDQi8mmNSbBGR+ZTTUM1/qjo3/dusHjg+Qa+Rf1uBaBg+HnwfKNqJfzQSTSJRYHLS+s
-         7/Rg==
-X-Gm-Message-State: AO0yUKWGDaQCEWZQDuL2AxlfgC2kwO0FMojB+AJtF1KQdsszI5IHTG+r
-        /a/KH3VucJGwiSsK1/5lEtA=
-X-Google-Smtp-Source: AK7set9S3qW7rerankN3AMXxiZeWoehZYZsS5K65VfhGp7RyFY4IEwJ/A1jtYx9iu85RIgpQlXI21Q==
-X-Received: by 2002:a05:622a:104c:b0:3b6:3995:2ec2 with SMTP id f12-20020a05622a104c00b003b639952ec2mr34051919qte.19.1678292783733;
-        Wed, 08 Mar 2023 08:26:23 -0800 (PST)
+        bh=z+4uYXTHdSZJGlTQ4yJuaUKIcEogMIg606wt+PsHQ10=;
+        b=nAar0eay/qUiVhrG6/siwQ138i+Btlf7NSquoM8pTduoDhdDLt81WOuYpU5Tnquuiy
+         WLQGEu4JUAhwf8338yGQ4tHRHpdHtOBUT74OvMdgUjRNVyNg3SW2z82/nlpGNmpf+luh
+         j2GGxn5OxMBCuzSmpHrbZtZt+kmOnF9RAC2Eb6A147uKkUmty+pjqLaYeUtbRITCf2Ns
+         rKtVgSadH0OB2jXdHPMCdWjWJnH0mxmX2MtGNCaShO9Sq/Ty6ei4BMPNJ3KTtpAXGv7B
+         cjgpTOpx3pOC2p1Q7td2B2vrvGcQuPhf5ch80KTV6mMkHk5hwDgyQ7+HHdjB2LDnGOwa
+         R9Hw==
+X-Gm-Message-State: AO0yUKVHtcWzUSVgvIflb4j8y2nCVapEmaSSMEXtUIsBpgKV41DZSIgE
+        zYWGkkco291ieAQgEVou4jM=
+X-Google-Smtp-Source: AK7set+0qHmJ/1GfUszz/r9Eo2DlcBq2rsqeob7MHbP84HYNS4R6ufmoVsorbLyoGDsjhwgPzL4ESw==
+X-Received: by 2002:a05:622a:4c6:b0:3bf:cd7a:dd14 with SMTP id q6-20020a05622a04c600b003bfcd7add14mr30017906qtx.12.1678292788636;
+        Wed, 08 Mar 2023 08:26:28 -0800 (PST)
 Received: from MSI-FindNS.localdomain ([107.191.40.138])
-        by smtp.gmail.com with ESMTPSA id w20-20020a05620a0e9400b0073b8459d221sm11619813qkm.31.2023.03.08.08.26.20
+        by smtp.gmail.com with ESMTPSA id w20-20020a05620a0e9400b0073b8459d221sm11619813qkm.31.2023.03.08.08.26.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 08:26:23 -0800 (PST)
+        Wed, 08 Mar 2023 08:26:28 -0800 (PST)
 From:   Yue Zhao <findns94@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -54,9 +54,9 @@ Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, tangyeechou@gmail.com,
         Yue Zhao <findns94@gmail.com>
-Subject: [PATCH v3, 3/4] mm, memcg: Prevent memory.oom_control load/store tearing
-Date:   Thu,  9 Mar 2023 00:25:54 +0800
-Message-Id: <20230308162555.14195-4-findns94@gmail.com>
+Subject: [PATCH v3, 4/4] mm, memcg: Prevent memory.soft_limit_in_bytes load/store tearing
+Date:   Thu,  9 Mar 2023 00:25:55 +0800
+Message-Id: <20230308162555.14195-5-findns94@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230308162555.14195-1-findns94@gmail.com>
 References: <20230308162555.14195-1-findns94@gmail.com>
@@ -70,71 +70,62 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The knob for cgroup v1 memory controller: memory.oom_control
+The knob for cgroup v1 memory controller: memory.soft_limit_in_bytes
 is not protected by any locking so it can be modified while it is used.
 This is not an actual problem because races are unlikely.
 But it is better to use [READ|WRITE]_ONCE to prevent compiler from
 doing anything funky.
 
-The access of memcg->oom_kill_disable is lockless,
+The access of memcg->soft_limit is lockless,
 so it can be concurrently set at the same time as we are
-trying to read it. All occurrences of memcg->oom_kill_disable
+trying to read it. All occurrences of memcg->soft_limit
 are updated with [READ|WRITE]_ONCE.
 
 Signed-off-by: Yue Zhao <findns94@gmail.com>
 ---
- mm/memcontrol.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ mm/memcontrol.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1b0112afcad3..5b7062d0f5e0 100644
+index 5b7062d0f5e0..13ec89c45389 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1929,7 +1929,7 @@ static bool mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int order)
- 	 * Please note that mem_cgroup_out_of_memory might fail to find a
- 	 * victim and then we have to bail out from the charge path.
- 	 */
--	if (memcg->oom_kill_disable) {
-+	if (READ_ONCE(memcg->oom_kill_disable)) {
- 		if (current->in_user_fault) {
- 			css_get(&memcg->css);
- 			current->memcg_in_oom = memcg;
-@@ -1999,7 +1999,7 @@ bool mem_cgroup_oom_synchronize(bool handle)
- 	if (locked)
- 		mem_cgroup_oom_notify(memcg);
+@@ -3728,7 +3728,7 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
+ 	case RES_FAILCNT:
+ 		return counter->failcnt;
+ 	case RES_SOFT_LIMIT:
+-		return (u64)memcg->soft_limit * PAGE_SIZE;
++		return (u64)READ_ONCE(memcg->soft_limit) * PAGE_SIZE;
+ 	default:
+ 		BUG();
+ 	}
+@@ -3870,7 +3870,7 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
+ 		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+ 			ret = -EOPNOTSUPP;
+ 		} else {
+-			memcg->soft_limit = nr_pages;
++			WRITE_ONCE(memcg->soft_limit, nr_pages);
+ 			ret = 0;
+ 		}
+ 		break;
+@@ -5347,7 +5347,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 		return ERR_CAST(memcg);
  
--	if (locked && !memcg->oom_kill_disable) {
-+	if (locked && !READ_ONCE(memcg->oom_kill_disable)) {
- 		mem_cgroup_unmark_under_oom(memcg);
- 		finish_wait(&memcg_oom_waitq, &owait.wait);
- 		mem_cgroup_out_of_memory(memcg, current->memcg_oom_gfp_mask,
-@@ -4515,7 +4515,7 @@ static int mem_cgroup_oom_control_read(struct seq_file *sf, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(sf);
- 
--	seq_printf(sf, "oom_kill_disable %d\n", memcg->oom_kill_disable);
-+	seq_printf(sf, "oom_kill_disable %d\n", READ_ONCE(memcg->oom_kill_disable));
- 	seq_printf(sf, "under_oom %d\n", (bool)memcg->under_oom);
- 	seq_printf(sf, "oom_kill %lu\n",
- 		   atomic_long_read(&memcg->memory_events[MEMCG_OOM_KILL]));
-@@ -4531,7 +4531,7 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
- 	if (mem_cgroup_is_root(memcg) || !((val == 0) || (val == 1)))
- 		return -EINVAL;
- 
--	memcg->oom_kill_disable = val;
-+	WRITE_ONCE(memcg->oom_kill_disable, val);
- 	if (!val)
- 		memcg_oom_recover(memcg);
- 
-@@ -5354,7 +5354,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	page_counter_set_high(&memcg->memory, PAGE_COUNTER_MAX);
+-	memcg->soft_limit = PAGE_COUNTER_MAX;
++	WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
+ #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+ 	memcg->zswap_max = PAGE_COUNTER_MAX;
+ #endif
+@@ -5502,7 +5502,7 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
+ 	page_counter_set_min(&memcg->memory, 0);
+ 	page_counter_set_low(&memcg->memory, 0);
+ 	page_counter_set_high(&memcg->memory, PAGE_COUNTER_MAX);
+-	memcg->soft_limit = PAGE_COUNTER_MAX;
++	WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
  	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
- 	if (parent) {
- 		WRITE_ONCE(memcg->swappiness, mem_cgroup_swappiness(parent));
--		memcg->oom_kill_disable = parent->oom_kill_disable;
-+		WRITE_ONCE(memcg->oom_kill_disable, READ_ONCE(parent->oom_kill_disable));
- 
- 		page_counter_init(&memcg->memory, &parent->memory);
- 		page_counter_init(&memcg->swap, &parent->swap);
+ 	memcg_wb_domain_size_changed(memcg);
+ }
 -- 
 2.17.1
 
