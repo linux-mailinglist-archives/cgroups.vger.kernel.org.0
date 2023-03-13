@@ -2,130 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6556B7F01
-	for <lists+cgroups@lfdr.de>; Mon, 13 Mar 2023 18:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FD86B81D4
+	for <lists+cgroups@lfdr.de>; Mon, 13 Mar 2023 20:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjCMRMm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Mar 2023 13:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
+        id S229712AbjCMToh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Mar 2023 15:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjCMRMb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Mar 2023 13:12:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C69F8092F;
-        Mon, 13 Mar 2023 10:12:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B529E4B3;
-        Mon, 13 Mar 2023 10:11:47 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27F5F3F64C;
-        Mon, 13 Mar 2023 10:10:58 -0700 (PDT)
-Message-ID: <7070da53-a5a7-6965-5604-abee3cae9d46@arm.com>
-Date:   Mon, 13 Mar 2023 18:10:49 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v3] sched: cpuset: Don't rebuild root domains on
- suspend-resume
-Content-Language: en-US
-To:     Juri Lelli <juri.lelli@redhat.com>,
-        Qais Yousef <qyousef@layalina.io>
-Cc:     Hao Luo <haoluo@google.com>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Zefan Li <lizefan.x@bytedance.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org
-References: <20230228174627.vja5aejq27dsta2u@airbuntu>
- <Y/7/SLzvK8LfB29z@localhost.localdomain>
- <20230301122852.zgzreby42lh2zf6w@airbuntu>
- <Y/9gmDRlGOChIwpf@localhost.localdomain>
- <20230301170322.xthlso7jfkixlyex@airbuntu>
- <ZAhhGi55BkYkc3ss@localhost.localdomain>
- <CA+khW7hmE0tECG2qfKW1HN9yLVOLUn5Zzx4Rz-wHYDtSUPYotw@mail.gmail.com>
- <ZAmCzJQZl7j/m2oN@localhost.localdomain>
- <CA+khW7iAeTALH5b6upHXs1RotFBohVeZCcAp5H+r-=L05kqnww@mail.gmail.com>
- <20230311185150.stvtcbdkoofgn3wd@airbuntu>
- <ZA9RZ3VvGXKp+1L6@localhost.localdomain>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <ZA9RZ3VvGXKp+1L6@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229493AbjCMTof (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Mar 2023 15:44:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FAE5DC95
+        for <cgroups@vger.kernel.org>; Mon, 13 Mar 2023 12:44:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 93BD4B811DA
+        for <cgroups@vger.kernel.org>; Mon, 13 Mar 2023 19:44:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC675C433D2;
+        Mon, 13 Mar 2023 19:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1678736672;
+        bh=W94HEWIftode6/6zR57Ubi2uQZUtKVwUT0RuE4adZeU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YFSLYeGI819Stzjl6ClJqdTFh/Ihg6fYTsWQvoQiC78GMGNGqG5a6KLj5e9mRpPfh
+         dnPIAQIl+j99tqT3dq7ZMEWKrX4l/K2ECdNDdtXqK1+TbyzDgcljQWvIBlqMnetHE5
+         OJlMJZ1aZJc+hhnYtMdNrG7sdM6aBZXF+dGGE81Q=
+Date:   Mon, 13 Mar 2023 12:44:31 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH] memcg: page_cgroup_ino() get memcg from
+ compound_head(page)
+Message-Id: <20230313124431.fe901d79bc8c7dc96582539c@linux-foundation.org>
+In-Reply-To: <20230313083452.1319968-1-yosryahmed@google.com>
+References: <20230313083452.1319968-1-yosryahmed@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 13/03/2023 17:37, Juri Lelli wrote:
-> On 11/03/23 18:51, Qais Yousef wrote:
->> On 03/09/23 14:23, Hao Luo wrote:
->>> On Wed, Mar 8, 2023 at 10:55 PM Juri Lelli <juri.lelli@redhat.com> wrote:
->>>>
->>>> On 08/03/23 10:01, Hao Luo wrote:
->>>>> On Wed, Mar 8, 2023 at 2:20 AM Juri Lelli <juri.lelli@redhat.com> wrote:
->>>>>>
->>>>>> On 01/03/23 17:03, Qais Yousef wrote:
->>>>>>> On 03/01/23 15:26, Juri Lelli wrote:
+On Mon, 13 Mar 2023 08:34:52 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
 
-[...]
+> From: Hugh Dickins <hughd@google.com>
+> 
+> In a kernel with added WARN_ON_ONCE(PageTail) in page_memcg_check(), we
+> observed a warning from page_cgroup_ino() when reading
+> /proc/kpagecgroup.
 
->> Yeah I am working on 5.10 too (this will need to be backported to 5.10 and 5.15
->> ultimately) and had the same crash because task is NULL.
->>
->> Fixed it this way which I think what you intended to do Juri? It moves the
->> check for dl_task(task) inside cgroup_taskset_for_each() loop.
->>
->> 	diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> 	index 83a8943467fb..06d6bb68d86b 100644
->> 	--- a/kernel/cgroup/cpuset.c
->> 	+++ b/kernel/cgroup/cpuset.c
->> 	@@ -2495,11 +2495,11 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->> 			ret = security_task_setscheduler(task);
->> 			if (ret)
->> 				goto out_unlock;
->> 	-       }
->> 	 
->> 	-       if (dl_task(task)) {
->> 	-               cs->deadline_tasks++;
->> 	-               cpuset_attach_old_cs->deadline_tasks--;
->> 	+               if (dl_task(task)) {
->> 	+                       cs->deadline_tasks++;
->> 	+                       cpuset_attach_old_cs->deadline_tasks--;
->> 	+               }
->> 		}
->> 	 
->> 		/*
-> 
-> Duh, indeed.
-> 
->> Like Hao I don't have any deadline tasks in the system. With the fix above
->> I don't notice the delay on suspend resume using your patches.
-> 
-> OK, cool.
-> 
->> If you want any debug; please feel free to add them into your branch so I can
->> run with that and give you the log.
-> 
-> Will need to find time to run some tests with DEADLINE tasks, yeah.
-> Maybe Dietmar, since you reported as well the issue above with your
-> testing, you could help with testing DEADLINE?
+If this is the only known situation in which page_memcg_check() is
+passed a tail page, why does page_memcg_check() have
 
-Ah, now I see! It's the same issue I saw. And it's not specifically
-related to DL tasks. Any tasks which you move into a cpuset will trigger
-this.
-Yeah, can do some DL tests later on this fix.
+	if (PageTail(page))
+		return NULL;
+
+?  Can we remove this to simplify, streamline and clarify?
+
+
