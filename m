@@ -2,124 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F886B9D24
-	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 18:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB436B9E17
+	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 19:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjCNReT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Mar 2023 13:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
+        id S229621AbjCNSSX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Mar 2023 14:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjCNReS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 13:34:18 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E492470B;
-        Tue, 14 Mar 2023 10:34:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5DBE621A9E;
-        Tue, 14 Mar 2023 17:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1678815253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229875AbjCNSSQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 14:18:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A9AA17F4
+        for <cgroups@vger.kernel.org>; Tue, 14 Mar 2023 11:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678817847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DupMteheALIYB1G+k5H2NhRA08uOKiRKtdEEzOCrJJQ=;
-        b=k0qqRYbdVDScAcQj0BLGPYfF2MNBj4I4FWvzeXohYfytIiiAVBtL/2rsaGxdMQHe0A9/zf
-        rjPH1AAdnOU8/n9XnRqmMXAJDTrNjxRPM1gSb6G5pxHmFuX38e4BZ3wDCrxeSxPb29mD1p
-        1pr7kbztFidXw/9STbEoEPDpUM8CwAw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=d/ZtBwgB7cTsUBrCI6syMahmMU7UxQQ3MRmKHMli2aQ=;
+        b=VqWC+wAwSXOoHwA0u0Yf260o+QNdz9PNF9+/v1BxK9rI8kl58naPgxAFbuplc9bBpYdoMw
+        m4Y84YVnp7a/DAIc22mfeLQOPVGYH9wnEb7a8m6EFF3IV0I1PlhlZ0mhN91lAnan4A5Arv
+        73SC0dLUqsFvhCl/Cv9ElqW8ebxYovI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-619-BKN_3FgsOWWNzusJqb1PPA-1; Tue, 14 Mar 2023 14:17:23 -0400
+X-MC-Unique: BKN_3FgsOWWNzusJqb1PPA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25E7913A1B;
-        Tue, 14 Mar 2023 17:34:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nVpGCBWwEGQQCgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 14 Mar 2023 17:34:13 +0000
-Date:   Tue, 14 Mar 2023 18:34:11 +0100
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/5] cgroup/cpuset: Include offline CPUs when tasks'
- cpumasks in top_cpuset are updated
-Message-ID: <20230314173411.fqaxoa2tfifnj6i3@blackpad>
-References: <20230306200849.376804-1-longman@redhat.com>
- <20230306200849.376804-3-longman@redhat.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ECF13858F09;
+        Tue, 14 Mar 2023 18:17:22 +0000 (UTC)
+Received: from [10.22.18.199] (unknown [10.22.18.199])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B2B014042AC0;
+        Tue, 14 Mar 2023 18:17:22 +0000 (UTC)
+Message-ID: <05c48a47-cfb2-af73-6709-f622fd254f89@redhat.com>
+Date:   Tue, 14 Mar 2023 14:17:22 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3qe72pixdf4dmzhs"
-Content-Disposition: inline
-In-Reply-To: <20230306200849.376804-3-longman@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] io_uring/io-wq: stop setting PF_NO_SETAFFINITY on io-wq
+ workers
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Daniel Dao <dqminh@cloudflare.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        cgroups@vger.kernel.org
+References: <0f0e791b-8eb8-fbb2-ea94-837645037fae@kernel.dk>
+ <CA+wXwBRGzfZB9tjKy5C2_pW1Z4yH2gNGxx79Fk-p3UsOWKGdqA@mail.gmail.com>
+ <20230314162559.pnyxdllzgw7jozgx@blackpad>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230314162559.pnyxdllzgw7jozgx@blackpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 3/14/23 12:25, Michal Koutný wrote:
+> Hello.
+>
+> On Tue, Mar 14, 2023 at 10:07:40AM +0000, Daniel Dao <dqminh@cloudflare.com> wrote:
+>> IMO this violated the principle of cpuset and can be confusing for end users.
+>> I think I prefer Waiman's suggestion of allowing an implicit move to cpuset
+>> when enabling cpuset with subtree_control but not explicit moves such as when
+>> setting cpuset.cpus or writing the pids into cgroup.procs. It's easier to reason
+>> about and make the failure mode more explicit.
+>>
+>> What do you think ?
+> I think cpuset should top IO worker's affinity (like sched_setaffinity(2)).
+> Thus:
+> - modifying cpuset.cpus	                update task's affinity, for sure
+> - implicit migration (enabling cpuset)  update task's affinity, effective nop
+Note that since commit 7fd4da9c158 ("cgroup/cpuset: Optimize 
+cpuset_attach() on v2") in v6.2, implicit migration (enabling cpuset) 
+will not affect the cpu affinity of the process.
+> - explicit migration (meh)              update task's affinity, ¯\_(ツ)_/¯
+>
+> My understanding of PF_NO_SETAFFINITY is that's for kernel threads that
+> do work that's functionally needed on a given CPU and thus they cannot
+> be migrated [1]. As said previously for io_uring workers, affinity is
+> for performance only.
+>
+> Hence, I'd also suggest on top of 01e68ce08a30 ("io_uring/io-wq: stop
+> setting PF_NO_SETAFFINITY on io-wq workers"):
+>
+> --- a/io_uring/sqpoll.c
+> +++ b/io_uring/sqpoll.c
+> @@ -233,7 +233,6 @@ static int io_sq_thread(void *data)
+>                  set_cpus_allowed_ptr(current, cpumask_of(sqd->sq_cpu));
+>          else
+>                  set_cpus_allowed_ptr(current, cpu_online_mask);
+> -       current->flags |= PF_NO_SETAFFINITY;
+>
+>          mutex_lock(&sqd->lock);
+>          while (1) {
+>
+> Afterall, io_uring_setup(2) already mentions:
+>> When cgroup setting cpuset.cpus changes (typically in container
+>> environment), the bounded cpu set may be changed as well.
 
---3qe72pixdf4dmzhs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Using sched_setaffiinity(2) can be another alternative. Starting from 
+v6.2, cpu affinity set by sched_affiinity(2) will be more or less 
+maintained and constrained by the current cpuset even if the cpu list is 
+being changed as long as there is overlap between the two. The 
+intersection between cpu affinity set by sched_setaffinity(2) and the 
+effective_cpus in cpuset will be the effective cpu affinity of the task.
 
-Hello Waiman.
+Cheers,
+Longman
 
-On Mon, Mar 06, 2023 at 03:08:46PM -0500, Waiman Long <longman@redhat.com> =
-wrote:
-> -		/*
-> -		 * Percpu kthreads in top_cpuset are ignored
-> -		 */
-> -		if (top_cs && (task->flags & PF_KTHREAD) &&
-> -		    kthread_is_per_cpu(task))
-> -			continue;
-> +		const struct cpumask *possible_mask =3D task_cpu_possible_mask(task);
-> =20
-> -		cpumask_and(new_cpus, cs->effective_cpus,
-> -			    task_cpu_possible_mask(task));
-> +		if (top_cs) {
-> +			/*
-> +			 * Percpu kthreads in top_cpuset are ignored
-> +			 */
-> +			if ((task->flags & PF_KTHREAD) && kthread_is_per_cpu(task))
-> +				continue;
-> +			cpumask_andnot(new_cpus, possible_mask, cs->subparts_cpus);
-> +		} else {
-> +			cpumask_and(new_cpus, cs->effective_cpus, possible_mask);
-> +		}
-
-I'm wrapping my head around this slightly.
-1) I'd suggest swapping args in of cpumask_and() to have possible_mask
-   consistently first.
-2) Then I'm wondering whether two branches are truly different when
-   effective_cpus :=3D cpus_allowed - subparts_cpus
-   top_cpuset.cpus_allowed =3D=3D possible_mask        (1)
-
-IOW, can you see a difference in what affinities are set to eligible
-top_cpuset tasks before and after this patch upon CPU hotplug?
-(Hm, (1) holds only in v2. So is this a fix for v1 only?)
-
-Thanks,
-Michal
-
---3qe72pixdf4dmzhs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZBCwEQAKCRAkDQmsBEOq
-ucEEAP9OI9c5kJhqB0QtHzHKrGbCZbzmTOwe7E5LB65IzTMi/wD/VLC97u3WoAMa
-Fjzw23hqzv+JPbXpH+rkk6P0gvPDFQw=
-=tWCP
------END PGP SIGNATURE-----
-
---3qe72pixdf4dmzhs--
