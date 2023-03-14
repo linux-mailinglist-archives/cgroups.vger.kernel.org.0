@@ -2,90 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC2E6B9EAC
-	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 19:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BDD6B9F51
+	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 20:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjCNSfs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Mar 2023 14:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
+        id S229932AbjCNTF2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Mar 2023 15:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjCNSfg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 14:35:36 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32CBB5A9B;
-        Tue, 14 Mar 2023 11:35:03 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229720AbjCNTF1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 15:05:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F80244AF
+        for <cgroups@vger.kernel.org>; Tue, 14 Mar 2023 12:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678820580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UyKkF4M/yJ9pQotECcNeo3lMpmEkLTF8MPG6ILIYAd0=;
+        b=ZSPLpLEuPfvGPpttX6+rdi3jkxESMz0kbKvUFTjC+lHzkx0R7+E8csjwTcsBWxRVUbbJKw
+        hOlV5Nl4ND4Ir/vI7rnn0kfvA7yLThL/rj0tMUG4SL2T87jU3efnB2H6K8dCMejV3ma3He
+        HAkzzOtkITAY/KW8wP/Wx+18B96Uos8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-570-8WHvWdttNuWnaDuskp9sGQ-1; Tue, 14 Mar 2023 15:02:54 -0400
+X-MC-Unique: 8WHvWdttNuWnaDuskp9sGQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8393E1F8C4;
-        Tue, 14 Mar 2023 18:33:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1678818814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0qGPjCdAtXC+XqD66XjuAi/v8OGi5D90eB+FdMZqJF4=;
-        b=JdhULJXkXMyNdDlyilRH5mWTjuWX8W63xoL7ZQRJJGxCcOiqkiWRdleW8GnbHAm050pPe7
-        mCTMJyTgkDYeCfpDOE4fv8w5FYUT+1xIsBateWg6K3b8YfoBgXr2sTO/Clhq+v7NRWWGWV
-        8Aq2YbcMiefG9VpKpNOGaRKbfhHXzu8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5616413A26;
-        Tue, 14 Mar 2023 18:33:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id c5DgE/69EGQwKQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 14 Mar 2023 18:33:34 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     io-uring@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Daniel Dao <dqminh@cloudflare.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] io_uring/sqpoll: Do not set PF_NO_SETAFFINITY on sqpoll threads
-Date:   Tue, 14 Mar 2023 19:33:32 +0100
-Message-Id: <20230314183332.25834-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.39.2
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60130882820;
+        Tue, 14 Mar 2023 19:02:54 +0000 (UTC)
+Received: from [10.22.18.199] (unknown [10.22.18.199])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A45CA140EBF4;
+        Tue, 14 Mar 2023 19:02:53 +0000 (UTC)
+Message-ID: <957bd5c2-1bae-de95-f119-483ef64dab60@redhat.com>
+Date:   Tue, 14 Mar 2023 15:02:53 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 2/5] cgroup/cpuset: Include offline CPUs when tasks'
+ cpumasks in top_cpuset are updated
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20230306200849.376804-1-longman@redhat.com>
+ <20230306200849.376804-3-longman@redhat.com>
+ <20230314173411.fqaxoa2tfifnj6i3@blackpad>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230314173411.fqaxoa2tfifnj6i3@blackpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Users may specify a CPU where the sqpoll thread would run. This may
-conflict with cpuset operations because of strict PF_NO_SETAFFINITY
-requirement. That flag is unnecessary for polling "kernel" threads, see
-the reasoning in commit 01e68ce08a30 ("io_uring/io-wq: stop setting
-PF_NO_SETAFFINITY on io-wq workers"). Drop the flag on poll threads too.
+On 3/14/23 13:34, Michal Koutný wrote:
+> Hello Waiman.
+>
+> On Mon, Mar 06, 2023 at 03:08:46PM -0500, Waiman Long <longman@redhat.com> wrote:
+>> -		/*
+>> -		 * Percpu kthreads in top_cpuset are ignored
+>> -		 */
+>> -		if (top_cs && (task->flags & PF_KTHREAD) &&
+>> -		    kthread_is_per_cpu(task))
+>> -			continue;
+>> +		const struct cpumask *possible_mask = task_cpu_possible_mask(task);
+>>   
+>> -		cpumask_and(new_cpus, cs->effective_cpus,
+>> -			    task_cpu_possible_mask(task));
+>> +		if (top_cs) {
+>> +			/*
+>> +			 * Percpu kthreads in top_cpuset are ignored
+>> +			 */
+>> +			if ((task->flags & PF_KTHREAD) && kthread_is_per_cpu(task))
+>> +				continue;
+>> +			cpumask_andnot(new_cpus, possible_mask, cs->subparts_cpus);
+>> +		} else {
+>> +			cpumask_and(new_cpus, cs->effective_cpus, possible_mask);
+>> +		}
+> I'm wrapping my head around this slightly.
+> 1) I'd suggest swapping args in of cpumask_and() to have possible_mask
+>     consistently first.
+I don't quite understand what you meant by "swapping args". It is 
+effective new_cpus = cs->effective_cpus ∩ possible_mask. What is the 
+point of swapping cs->effective_cpus and possible_mask.
+> 2) Then I'm wondering whether two branches are truly different when
+>     effective_cpus := cpus_allowed - subparts_cpus
+>     top_cpuset.cpus_allowed == possible_mask        (1)
+effective_cpus may not be equal "cpus_allowed - subparts_cpus" if some 
+of the CPUs are offline as effective_cpus contains only online CPUs. 
+subparts_cpu can include offline cpus too. That is why I choose that 
+expression. I will add a comment to clarify that.
+>
+> IOW, can you see a difference in what affinities are set to eligible
+> top_cpuset tasks before and after this patch upon CPU hotplug?
+> (Hm, (1) holds only in v2. So is this a fix for v1 only?)
 
-Fixes: 01e68ce08a30 ("io_uring/io-wq: stop setting PF_NO_SETAFFINITY on io-wq workers")
-Link: https://lore.kernel.org/all/20230314162559.pnyxdllzgw7jozgx@blackpad/
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- io_uring/sqpoll.c | 1 -
- 1 file changed, 1 deletion(-)
+This is due to the fact that cpu hotplug code currently doesn't update 
+the cpu affinity of tasks in the top cpuset. Tasks not in the top cpuset 
+can rely on the hotplug code to update the cpu affinity appropriately. 
+For the tasks in the top cpuset, we have to make sure that all the 
+offline CPUs are included.
 
-diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-index 0119d3f1a556..9db4bc1f521a 100644
---- a/io_uring/sqpoll.c
-+++ b/io_uring/sqpoll.c
-@@ -233,7 +233,6 @@ static int io_sq_thread(void *data)
- 		set_cpus_allowed_ptr(current, cpumask_of(sqd->sq_cpu));
- 	else
- 		set_cpus_allowed_ptr(current, cpu_online_mask);
--	current->flags |= PF_NO_SETAFFINITY;
- 
- 	mutex_lock(&sqd->lock);
- 	while (1) {
--- 
-2.39.2
+Cheers,
+Longman
 
