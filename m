@@ -2,121 +2,166 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB436B9E17
-	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 19:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F266B9E14
+	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 19:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjCNSSX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Mar 2023 14:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S229881AbjCNSRy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Mar 2023 14:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbjCNSSQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 14:18:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A9AA17F4
-        for <cgroups@vger.kernel.org>; Tue, 14 Mar 2023 11:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678817847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d/ZtBwgB7cTsUBrCI6syMahmMU7UxQQ3MRmKHMli2aQ=;
-        b=VqWC+wAwSXOoHwA0u0Yf260o+QNdz9PNF9+/v1BxK9rI8kl58naPgxAFbuplc9bBpYdoMw
-        m4Y84YVnp7a/DAIc22mfeLQOPVGYH9wnEb7a8m6EFF3IV0I1PlhlZ0mhN91lAnan4A5Arv
-        73SC0dLUqsFvhCl/Cv9ElqW8ebxYovI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-619-BKN_3FgsOWWNzusJqb1PPA-1; Tue, 14 Mar 2023 14:17:23 -0400
-X-MC-Unique: BKN_3FgsOWWNzusJqb1PPA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229841AbjCNSRx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 14:17:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C0D848D4;
+        Tue, 14 Mar 2023 11:17:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ECF13858F09;
-        Tue, 14 Mar 2023 18:17:22 +0000 (UTC)
-Received: from [10.22.18.199] (unknown [10.22.18.199])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B2B014042AC0;
-        Tue, 14 Mar 2023 18:17:22 +0000 (UTC)
-Message-ID: <05c48a47-cfb2-af73-6709-f622fd254f89@redhat.com>
-Date:   Tue, 14 Mar 2023 14:17:22 -0400
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D93391F8BA;
+        Tue, 14 Mar 2023 18:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1678817870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XXfCDy+DyUAKygjyGfiKxYTGe5xfVMSMGVkxJXSrpIQ=;
+        b=AOXZcoKpV9w3YCIDuYgTfnHKfE5UBefnEL82dP016q0d+5tyZEeEleZkDzhvXWCbo70DAt
+        eFzGFvQRS2krlcD2kwG+1wW3CTSTOlta0N7cRRsLL6/nkTwtwmluvBdmwCRT6Li759RnvH
+        0HjdSgwnmIiOZoUPLfnAoNgQkjh6Sc0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A168B13A26;
+        Tue, 14 Mar 2023 18:17:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YQ1zJk66EGRRIQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 14 Mar 2023 18:17:50 +0000
+Date:   Tue, 14 Mar 2023 19:17:49 +0100
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 3/5] cgroup/cpuset: Find another usable CPU if none found
+ in current cpuset
+Message-ID: <20230314181749.5b4k6selbgdhl3up@blackpad>
+References: <20230306200849.376804-1-longman@redhat.com>
+ <20230306200849.376804-4-longman@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] io_uring/io-wq: stop setting PF_NO_SETAFFINITY on io-wq
- workers
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Daniel Dao <dqminh@cloudflare.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
-        cgroups@vger.kernel.org
-References: <0f0e791b-8eb8-fbb2-ea94-837645037fae@kernel.dk>
- <CA+wXwBRGzfZB9tjKy5C2_pW1Z4yH2gNGxx79Fk-p3UsOWKGdqA@mail.gmail.com>
- <20230314162559.pnyxdllzgw7jozgx@blackpad>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230314162559.pnyxdllzgw7jozgx@blackpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="x5gbpgbolwjq6gqy"
+Content-Disposition: inline
+In-Reply-To: <20230306200849.376804-4-longman@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/14/23 12:25, Michal Koutný wrote:
-> Hello.
->
-> On Tue, Mar 14, 2023 at 10:07:40AM +0000, Daniel Dao <dqminh@cloudflare.com> wrote:
->> IMO this violated the principle of cpuset and can be confusing for end users.
->> I think I prefer Waiman's suggestion of allowing an implicit move to cpuset
->> when enabling cpuset with subtree_control but not explicit moves such as when
->> setting cpuset.cpus or writing the pids into cgroup.procs. It's easier to reason
->> about and make the failure mode more explicit.
->>
->> What do you think ?
-> I think cpuset should top IO worker's affinity (like sched_setaffinity(2)).
-> Thus:
-> - modifying cpuset.cpus	                update task's affinity, for sure
-> - implicit migration (enabling cpuset)  update task's affinity, effective nop
-Note that since commit 7fd4da9c158 ("cgroup/cpuset: Optimize 
-cpuset_attach() on v2") in v6.2, implicit migration (enabling cpuset) 
-will not affect the cpu affinity of the process.
-> - explicit migration (meh)              update task's affinity, ¯\_(ツ)_/¯
->
-> My understanding of PF_NO_SETAFFINITY is that's for kernel threads that
-> do work that's functionally needed on a given CPU and thus they cannot
-> be migrated [1]. As said previously for io_uring workers, affinity is
-> for performance only.
->
-> Hence, I'd also suggest on top of 01e68ce08a30 ("io_uring/io-wq: stop
-> setting PF_NO_SETAFFINITY on io-wq workers"):
->
-> --- a/io_uring/sqpoll.c
-> +++ b/io_uring/sqpoll.c
-> @@ -233,7 +233,6 @@ static int io_sq_thread(void *data)
->                  set_cpus_allowed_ptr(current, cpumask_of(sqd->sq_cpu));
->          else
->                  set_cpus_allowed_ptr(current, cpu_online_mask);
-> -       current->flags |= PF_NO_SETAFFINITY;
->
->          mutex_lock(&sqd->lock);
->          while (1) {
->
-> Afterall, io_uring_setup(2) already mentions:
->> When cgroup setting cpuset.cpus changes (typically in container
->> environment), the bounded cpu set may be changed as well.
 
-Using sched_setaffiinity(2) can be another alternative. Starting from 
-v6.2, cpu affinity set by sched_affiinity(2) will be more or less 
-maintained and constrained by the current cpuset even if the cpu list is 
-being changed as long as there is overlap between the two. The 
-intersection between cpu affinity set by sched_setaffinity(2) and the 
-effective_cpus in cpuset will be the effective cpu affinity of the task.
+--x5gbpgbolwjq6gqy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-Longman
+Hello.
 
+On Mon, Mar 06, 2023 at 03:08:47PM -0500, Waiman Long <longman@redhat.com> =
+wrote:
+> On a system with asymmetric CPUs, a restricted task is one that can run
+> only a selected subset of available CPUs.  When a CPU goes offline or
+> when "cpuset.cpus" is changed, it is possible that a restricted task
+> may not have any runnable CPUs left in the current cpuset even if there
+> is still some CPUs in effective_cpus. In this case, the restricted task
+> cannot be run at all.
+>=20
+> There are several ways we may be able to handle this situation. Treating
+> it like empty effective_cpus is probably too disruptive and is unfair to
+> the normal tasks. So it is better to have some special handling for these
+> restricted tasks. One possibility is to move the restricted tasks up the
+> cpuset hierarchy, but it is tricky to do it right. Another solution is
+> to assign other usable CPUs to these tasks. This patch implements the
+> later alternative by finding one usable CPU by walking up the cpuset
+> hierarchy and printing an informational message to let the users know
+> that these restricted tasks are running in a cpuset with no usable CPU.
+>=20
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/cgroup/cpuset.c | 56 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 55 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index bbf57dcb2f68..aa8225daf1d3 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1202,6 +1202,38 @@ void rebuild_sched_domains(void)
+>  	cpus_read_unlock();
+>  }
+> =20
+> [...]
+>  /**
+>   * update_tasks_cpumask - Update the cpumasks of tasks in the cpuset.
+>   * @cs: the cpuset in which each task's cpus_allowed mask needs to be ch=
+anged
+> @@ -1218,6 +1250,7 @@ static void update_tasks_cpumask(struct cpuset *cs,=
+ struct cpumask *new_cpus)
+>  	struct task_struct *task;
+>  	bool top_cs =3D cs =3D=3D &top_cpuset;
+> =20
+> +	percpu_rwsem_assert_held(&cpuset_rwsem);
+>  	css_task_iter_start(&cs->css, 0, &it);
+>  	while ((task =3D css_task_iter_next(&it))) {
+>  		const struct cpumask *possible_mask =3D task_cpu_possible_mask(task);
+> @@ -1232,7 +1265,28 @@ static void update_tasks_cpumask(struct cpuset *cs=
+, struct cpumask *new_cpus)
+>  		} else {
+>  			cpumask_and(new_cpus, cs->effective_cpus, possible_mask);
+>  		}
+> -		set_cpus_allowed_ptr(task, new_cpus);
+> +		/*
+> +		 * On systems with assymetric CPUs, it is possible that
+> +		 * cpumask will become empty or set_cpus_allowed_ptr() will
+> +		 * return an error even if we still have CPUs in
+> +		 * effective_cpus. In this case, we find a usable CPU walking
+> +		 * up the cpuset hierarchy and use that for this particular
+> +		 * task with an informational message about the change in the
+> +		 * hope that the users will adjust "cpuset.cpus" accordingly.
+> +		 */
+> +		if (cpumask_empty(new_cpus) ||
+> +		    set_cpus_allowed_ptr(task, new_cpus)) {
+
+IIUC, cpumask_empty(new_cpus) here implies
+cpumask_empty(cs->effective_cpus) but that shouldn't happen (cs should
+inherit non-empty mask from an ancestor). Do I miss/forget anything?
+
+This thus covers the case when p->user_cpus_ptr is incompatible with
+hotplug or cpuset.cpus allowance and a different affinity must be
+chosen. But doesn't that mean that the task would run _out_ of
+cs->effective_cpus?
+I guess that's unavoidable on asymmetric CPU archs but not no SMPs.
+Shouldn't the solution distinguish between the two? (I.e. never run out
+of effective_cpus on SMP.)
+
+Thanks,
+Michal
+
+--x5gbpgbolwjq6gqy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZBC6SwAKCRAkDQmsBEOq
+ubsfAP9GRE14O3/kdwbAKhko41gp/hUwOisMncJ5TvIoeuwJLwEAizS5evBXx/k8
+/zPGsyq2q3URP/Rg/A3cwE1LOhlyEgo=
+=Tteu
+-----END PGP SIGNATURE-----
+
+--x5gbpgbolwjq6gqy--
