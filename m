@@ -2,122 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BDD6B9F51
-	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 20:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8196B9FEC
+	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 20:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbjCNTF2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Mar 2023 15:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        id S229778AbjCNTqJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Mar 2023 15:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjCNTF1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 15:05:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F80244AF
-        for <cgroups@vger.kernel.org>; Tue, 14 Mar 2023 12:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678820580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UyKkF4M/yJ9pQotECcNeo3lMpmEkLTF8MPG6ILIYAd0=;
-        b=ZSPLpLEuPfvGPpttX6+rdi3jkxESMz0kbKvUFTjC+lHzkx0R7+E8csjwTcsBWxRVUbbJKw
-        hOlV5Nl4ND4Ir/vI7rnn0kfvA7yLThL/rj0tMUG4SL2T87jU3efnB2H6K8dCMejV3ma3He
-        HAkzzOtkITAY/KW8wP/Wx+18B96Uos8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-570-8WHvWdttNuWnaDuskp9sGQ-1; Tue, 14 Mar 2023 15:02:54 -0400
-X-MC-Unique: 8WHvWdttNuWnaDuskp9sGQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60130882820;
-        Tue, 14 Mar 2023 19:02:54 +0000 (UTC)
-Received: from [10.22.18.199] (unknown [10.22.18.199])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A45CA140EBF4;
-        Tue, 14 Mar 2023 19:02:53 +0000 (UTC)
-Message-ID: <957bd5c2-1bae-de95-f119-483ef64dab60@redhat.com>
-Date:   Tue, 14 Mar 2023 15:02:53 -0400
+        with ESMTP id S229464AbjCNTqI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 15:46:08 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C066F265A8
+        for <cgroups@vger.kernel.org>; Tue, 14 Mar 2023 12:46:01 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id ek18so35500669edb.6
+        for <cgroups@vger.kernel.org>; Tue, 14 Mar 2023 12:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1678823160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+daTM6MAyn6TGH4bluRXORo6ZRCtPzEVsAVbOVoNzA8=;
+        b=iqwXKiXBy/QmLohV8HdYfz7gN2eG08oii+mneuEAyxsmZrR1k3jmF+kUW+T6HVqf/t
+         bsN0+OnhObLIyRQq59ne3Q84xTZcsUOKfu5bRL9L9FD2y/g0qFB2Upm8ivyj+VEnX80x
+         3uCifVPKxb6hLEhq1Xg9/pc3awcooXRyJyI8UQAS9sNvaNXB6BBcJvLk1YgEBgyutUo9
+         XDtCFlh8sjPUnCJCdgie4OqkORdNfqth0Qet3qysMs2GmtT2XdjUu5sLdVhJjJZP1y2n
+         9wR90TB+QxK3kC08InHtuwnES6bZI0AhCoIB6dWzCrx65fXI8OvbYSaS+Vq4cePFBaAR
+         VpVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678823160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+daTM6MAyn6TGH4bluRXORo6ZRCtPzEVsAVbOVoNzA8=;
+        b=wHuF0yRW6G5xYBiRhMj0vCFd14GmVxNdo8eugCnhcbK/c2Z026cDXd01CxTfvYfv8i
+         nBrGL21IQmK/+ymysgVGsTP63VT+L9qvr/P6s4+pzTADajIAbjIq8UK4ox7V+AINfC9D
+         koq86UPeV11Kiy4dDfY1iRusBcmINP5UBOK/VVGww2NkXIPslunP/UYvQu8feFhJSgxa
+         gY7TIebeTPPrDJ6be39VU3fugB/L1x8vE/44vFJcvyw+b/XVwGEAhd76h+bYs5zI6Va9
+         iBjz1NBAZSAOfST2w5u3NyUR8jUoHy39lCxRBY0bmYQHevUkBMGxIA0yrdc5fVqNiFbe
+         KZcw==
+X-Gm-Message-State: AO0yUKVvrmGHBOT42l0Yxrqsnif/z4GA6K7xg5+HOABOFVsByggBNgt/
+        fcGWXW/RZpn7CSgvS8I/M1QIhqLRXm5DdjUshM7+GQ==
+X-Google-Smtp-Source: AK7set9eKtUKZrbuZlTP3HmSYb0MYuYPJdfb4R6d32acFEFc8+4gwQw2tQR/lMPUBgTOvd5yoGN2WTwCxwGjvxZZcMI=
+X-Received: by 2002:a50:aadd:0:b0:4fb:3dd5:e822 with SMTP id
+ r29-20020a50aadd000000b004fb3dd5e822mr133832edc.8.1678823160105; Tue, 14 Mar
+ 2023 12:46:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 2/5] cgroup/cpuset: Include offline CPUs when tasks'
- cpumasks in top_cpuset are updated
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+References: <20230313083452.1319968-1-yosryahmed@google.com>
+ <20230313124431.fe901d79bc8c7dc96582539c@linux-foundation.org>
+ <CAJD7tkZKhNRiWOrUOiHWuEQbOuDhjyHx0H01M1mQziM36viq9w@mail.gmail.com> <ZBBGGFi0U8r67S5E@dhcp22.suse.cz>
+In-Reply-To: <ZBBGGFi0U8r67S5E@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 14 Mar 2023 12:45:23 -0700
+Message-ID: <CAJD7tkbaDeRP6-WuRGuRdhnOSV26=G_jhqMnejHQFGiT8VZ0bw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: page_cgroup_ino() get memcg from compound_head(page)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230306200849.376804-1-longman@redhat.com>
- <20230306200849.376804-3-longman@redhat.com>
- <20230314173411.fqaxoa2tfifnj6i3@blackpad>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230314173411.fqaxoa2tfifnj6i3@blackpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/14/23 13:34, Michal Koutný wrote:
-> Hello Waiman.
+On Tue, Mar 14, 2023 at 3:02=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
 >
-> On Mon, Mar 06, 2023 at 03:08:46PM -0500, Waiman Long <longman@redhat.com> wrote:
->> -		/*
->> -		 * Percpu kthreads in top_cpuset are ignored
->> -		 */
->> -		if (top_cs && (task->flags & PF_KTHREAD) &&
->> -		    kthread_is_per_cpu(task))
->> -			continue;
->> +		const struct cpumask *possible_mask = task_cpu_possible_mask(task);
->>   
->> -		cpumask_and(new_cpus, cs->effective_cpus,
->> -			    task_cpu_possible_mask(task));
->> +		if (top_cs) {
->> +			/*
->> +			 * Percpu kthreads in top_cpuset are ignored
->> +			 */
->> +			if ((task->flags & PF_KTHREAD) && kthread_is_per_cpu(task))
->> +				continue;
->> +			cpumask_andnot(new_cpus, possible_mask, cs->subparts_cpus);
->> +		} else {
->> +			cpumask_and(new_cpus, cs->effective_cpus, possible_mask);
->> +		}
-> I'm wrapping my head around this slightly.
-> 1) I'd suggest swapping args in of cpumask_and() to have possible_mask
->     consistently first.
-I don't quite understand what you meant by "swapping args". It is 
-effective new_cpus = cs->effective_cpus ∩ possible_mask. What is the 
-point of swapping cs->effective_cpus and possible_mask.
-> 2) Then I'm wondering whether two branches are truly different when
->     effective_cpus := cpus_allowed - subparts_cpus
->     top_cpuset.cpus_allowed == possible_mask        (1)
-effective_cpus may not be equal "cpus_allowed - subparts_cpus" if some 
-of the CPUs are offline as effective_cpus contains only online CPUs. 
-subparts_cpu can include offline cpus too. That is why I choose that 
-expression. I will add a comment to clarify that.
+> On Mon 13-03-23 14:08:53, Yosry Ahmed wrote:
+> > On Mon, Mar 13, 2023 at 12:44=E2=80=AFPM Andrew Morton
+> > <akpm@linux-foundation.org> wrote:
+> > >
+> > > On Mon, 13 Mar 2023 08:34:52 +0000 Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+> > >
+> > > > From: Hugh Dickins <hughd@google.com>
+> > > >
+> > > > In a kernel with added WARN_ON_ONCE(PageTail) in page_memcg_check()=
+, we
+> > > > observed a warning from page_cgroup_ino() when reading
+> > > > /proc/kpagecgroup.
+> > >
+> > > If this is the only known situation in which page_memcg_check() is
+> > > passed a tail page, why does page_memcg_check() have
+> > >
+> > >         if (PageTail(page))
+> > >                 return NULL;
+> > >
+> > > ?  Can we remove this to simplify, streamline and clarify?
+> >
+> > I guess it's a safety check so that we don't end up trying to cast a
+> > tail page to a folio. My opinion is to go one step further and change
+> > page_memcg_check() to do return the memcg of the head page, i.e:
+> >
+> > static inline struct mem_cgroup *page_memcg_check(struct page *page)
+> > {
+> >     return folio_memcg_check(page_folio(page));
+> > }
 >
-> IOW, can you see a difference in what affinities are set to eligible
-> top_cpuset tasks before and after this patch upon CPU hotplug?
-> (Hm, (1) holds only in v2. So is this a fix for v1 only?)
+> I would just stick with the existing code and put a comment that this
+> function shouldn't be used in any new code and the folio counterpart
+> should be used instead.
 
-This is due to the fact that cpu hotplug code currently doesn't update 
-the cpu affinity of tasks in the top cpuset. Tasks not in the top cpuset 
-can rely on the hotplug code to update the cpu affinity appropriately. 
-For the tasks in the top cpuset, we have to make sure that all the 
-offline CPUs are included.
+Would you mind explaining the rationale?
 
-Cheers,
-Longman
+If existing users are not passing in tail pages and we are telling new
+users not to use it, what's the point of leaving the PageTail() check?
 
+Is page owner doing the right thing by discounting pages with
+page->memcg_data =3D 0 in print_page_owner_memcg() ? Wouldn't this not
+show the memcg of tail pages?
+
+If page owner also needs a compound_head()/ page_folio() call before
+checking the page memcg, perhaps we should convert both call sites to
+page_memcg_check() to folio_memcg_check() and remove it now?
+
+>
+> --
+> Michal Hocko
+> SUSE Labs
