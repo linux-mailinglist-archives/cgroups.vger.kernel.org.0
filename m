@@ -2,167 +2,306 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06086B91E1
-	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 12:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EE66B9795
+	for <lists+cgroups@lfdr.de>; Tue, 14 Mar 2023 15:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjCNLlz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Mar 2023 07:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        id S229505AbjCNOTY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Mar 2023 10:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjCNLlx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 07:41:53 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2128F9BE11;
-        Tue, 14 Mar 2023 04:41:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57C7C4B3;
-        Tue, 14 Mar 2023 04:42:33 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19EF23F67D;
-        Tue, 14 Mar 2023 04:41:45 -0700 (PDT)
-Message-ID: <f2eb03be-53dc-73db-ede9-99ecbb189782@arm.com>
-Date:   Tue, 14 Mar 2023 12:41:36 +0100
+        with ESMTP id S229730AbjCNOTV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Mar 2023 10:19:21 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8618DA18A3;
+        Tue, 14 Mar 2023 07:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678803557; x=1710339557;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3Epswvez9cgVN38uxL2Pejdg2mq8lRpB57HFYyxwu6o=;
+  b=hCEXkojArcJDx5HC8eix4nViAxHrTcETfZDlcRnBK8JUetP+2NXKOR51
+   d9W57T+6fsmSeA4RomwDnSv+V98sMWmzORlYGzs9wzpcfjlqjrTJ++6xo
+   1Dc9TUpC/ypcQB+WEEzeZgvS+Amy60YYhaE8zPlki9A7gqJkImlCPT/oh
+   tc03ZAOuyBdt7g9LSX9NdgJZ+e1j9g80r4Yoa3FOzQ4ae3t1wBnzP77KJ
+   7OqI5ayKE/A4IwC5uV9ZKSoL7AAC8T40AuWr8z7TAoCj+/jwJGuVnL/QU
+   G3DuUWZVw/qKmtxbENPdjbDMDqSPDlCtBwuv5jOPuD1BRQEpVpWwUMg4p
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="321284618"
+X-IronPort-AV: E=Sophos;i="5.98,260,1673942400"; 
+   d="scan'208";a="321284618"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2023 07:19:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="656363184"
+X-IronPort-AV: E=Sophos;i="5.98,260,1673942400"; 
+   d="scan'208";a="656363184"
+Received: from mjtillin-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.236.227])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2023 07:19:12 -0700
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+To:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?q?St=C3=A9phane=20Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: [RFC v4 00/10] DRM scheduling cgroup controller
+Date:   Tue, 14 Mar 2023 14:18:54 +0000
+Message-Id: <20230314141904.1210824-1-tvrtko.ursulin@linux.intel.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v3] sched: cpuset: Don't rebuild root domains on
- suspend-resume
-Content-Language: en-US
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Juri Lelli <juri.lelli@redhat.com>,
-        Qais Yousef <qyousef@layalina.io>
-Cc:     Hao Luo <haoluo@google.com>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Zefan Li <lizefan.x@bytedance.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org
-References: <20230228174627.vja5aejq27dsta2u@airbuntu>
- <Y/7/SLzvK8LfB29z@localhost.localdomain>
- <20230301122852.zgzreby42lh2zf6w@airbuntu>
- <Y/9gmDRlGOChIwpf@localhost.localdomain>
- <20230301170322.xthlso7jfkixlyex@airbuntu>
- <ZAhhGi55BkYkc3ss@localhost.localdomain>
- <CA+khW7hmE0tECG2qfKW1HN9yLVOLUn5Zzx4Rz-wHYDtSUPYotw@mail.gmail.com>
- <ZAmCzJQZl7j/m2oN@localhost.localdomain>
- <CA+khW7iAeTALH5b6upHXs1RotFBohVeZCcAp5H+r-=L05kqnww@mail.gmail.com>
- <20230311185150.stvtcbdkoofgn3wd@airbuntu>
- <ZA9RZ3VvGXKp+1L6@localhost.localdomain>
- <7070da53-a5a7-6965-5604-abee3cae9d46@arm.com>
-In-Reply-To: <7070da53-a5a7-6965-5604-abee3cae9d46@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 13/03/2023 18:10, Dietmar Eggemann wrote:
-> On 13/03/2023 17:37, Juri Lelli wrote:
->> On 11/03/23 18:51, Qais Yousef wrote:
->>> On 03/09/23 14:23, Hao Luo wrote:
->>>> On Wed, Mar 8, 2023 at 10:55 PM Juri Lelli <juri.lelli@redhat.com> wrote:
->>>>>
->>>>> On 08/03/23 10:01, Hao Luo wrote:
->>>>>> On Wed, Mar 8, 2023 at 2:20 AM Juri Lelli <juri.lelli@redhat.com> wrote:
->>>>>>>
->>>>>>> On 01/03/23 17:03, Qais Yousef wrote:
->>>>>>>> On 03/01/23 15:26, Juri Lelli wrote:
-> 
-> [...]
-> 
->>> Yeah I am working on 5.10 too (this will need to be backported to 5.10 and 5.15
->>> ultimately) and had the same crash because task is NULL.
->>>
->>> Fixed it this way which I think what you intended to do Juri? It moves the
->>> check for dl_task(task) inside cgroup_taskset_for_each() loop.
->>>
->>> 	diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> 	index 83a8943467fb..06d6bb68d86b 100644
->>> 	--- a/kernel/cgroup/cpuset.c
->>> 	+++ b/kernel/cgroup/cpuset.c
->>> 	@@ -2495,11 +2495,11 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->>> 			ret = security_task_setscheduler(task);
->>> 			if (ret)
->>> 				goto out_unlock;
->>> 	-       }
->>> 	 
->>> 	-       if (dl_task(task)) {
->>> 	-               cs->deadline_tasks++;
->>> 	-               cpuset_attach_old_cs->deadline_tasks--;
->>> 	+               if (dl_task(task)) {
->>> 	+                       cs->deadline_tasks++;
->>> 	+                       cpuset_attach_old_cs->deadline_tasks--;
->>> 	+               }
->>> 		}
->>> 	 
->>> 		/*
->>
->> Duh, indeed.
->>
->>> Like Hao I don't have any deadline tasks in the system. With the fix above
->>> I don't notice the delay on suspend resume using your patches.
->>
->> OK, cool.
->>
->>> If you want any debug; please feel free to add them into your branch so I can
->>> run with that and give you the log.
->>
->> Will need to find time to run some tests with DEADLINE tasks, yeah.
->> Maybe Dietmar, since you reported as well the issue above with your
->> testing, you could help with testing DEADLINE?
-> 
-> Ah, now I see! It's the same issue I saw. And it's not specifically
-> related to DL tasks. Any tasks which you move into a cpuset will trigger
-> this.
-> Yeah, can do some DL tests later on this fix.
+From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-This fix also works for my DL test.
+This series contains a proposal for a DRM scheduling cgroup controller which
+implements a weight based hierarchical GPU usage budget based controller
+similar in concept to some of the existing controllers.
 
-root@juno:~# ps2 | grep DLN
-   83    83 140      0   - DLN sugov:0
-   84    84 140      0   - DLN sugov:1
- 1601  1602 140      0   - DLN thread0-0
- 1601  1603 140      0   - DLN thread0-1
- 1601  1604 140      0   - DLN thread0-2
- 1601  1605 140      0   - DLN thread0-3
- 1601  1606 140      0   - DLN thread0-4
- 1601  1607 140      0   - DLN thread0-5
- 1601  1608 140      0   - DLN thread0-6
- 1601  1609 140      0   - DLN thread0-7
- 1601  1610 140      0   - DLN thread0-8
- 1601  1611 140      0   - DLN thread0-9
- 1601  1612 140      0   - DLN thread0-10
- 1601  1613 140      0   - DLN thread0-11
+Motivation mostly comes from my earlier proposal where I identified that GPU
+scheduling lags significantly behind what is available for CPU and IO. Whereas
+back then I was proposing to somehow tie this with process nice, feedback mostly
+was that people wanted cgroups. So here it is - in the world of heterogenous
+computing pipelines I think it is time to do something about this gap.
 
-cgroupv1
+Code is not finished but should survive some light experimenting with. I am
+sharing it early since the topic has been controversial in the past. I hope to
+demonstrate there are gains to be had in real world usage(*), today, and that
+the concepts the proposal relies are well enough established and stable.
 
-root@juno:# cd /sys/fs/cgroup/cpuset
-root@juno:# mkdir cs1
-root@juno:# echo 0 > cs1/cpuset.mems
-root@juno:# echo 0,3-5 > cs1/cpuset.cpus
+*) Specifically under ChromeOS which uses cgroups to control CPU bandwith for
+   VMs based on the window focused status. It can be demonstrated how GPU
+   scheduling control can easily be integrated into that setup.
 
-root@juno:# cgclassify -g cpuset:cs1 1602 1603 1604 $$
+*) Another real world example later in the cover letter.
 
-One remaining doubt: `cgclassify` will still move one task at a time so
-cpuset_can_attach() has to deal with one task per call. But
-cgroup_taskset_for_each() says that tset can contain multiple tasks. In
-this case we would have to think about only changing cs->deadline_tasks
-if all tasks can be moved.
-Don't know which test would trigger a tset with multiple tasks in
-cpuset_can_attach().
+There should be no conflict with this proposal and any efforts to implement
+memory usage based controller. Skeleton DRM cgroup controller is deliberatly
+purely a skeleton patch where any further functionality can be added with no
+real conflicts. [In fact, perhaps scheduling is even easier to deal with than
+memory accounting.]
+
+Structure of the series is as follows:
+
+  1-2) Improve client ownership tracking in DRM core.
+    3) Adds a skeleton DRM cgroup controller with no functionality.
+  4-7) Laying down some infrastructure to enable the controller.
+    8) The controller itself.
+ 9-10) i915 support for the controller.
+
+The proposals defines a delegation of duties between the tree parties: cgroup
+controller, DRM core and individual drivers. Two way communication interfaces
+are then defined to enable the delegation to work.
+
+DRM scheduling soft limits
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Because of the heterogenous hardware and driver DRM capabilities, soft limits
+are implemented as a loose co-operative (bi-directional) interface between the
+controller and DRM core.
+
+The controller configures the GPU time allowed per group and periodically scans
+the belonging tasks to detect the over budget condition, at which point it
+invokes a callback notifying the DRM core of the condition.
+
+DRM core provides an API to query per process GPU utilization and 2nd API to
+receive notification from the cgroup controller when the group enters or exits
+the over budget condition.
+
+Individual DRM drivers which implement the interface are expected to act on this
+in the best-effort manner only. There are no guarantees that the soft limits
+will be respected.
+
+DRM scheduling soft limits interface files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  drm.weight
+	Standard cgroup weight based control [1, 10000] used to configure the
+	relative distributing of GPU time between the sibling groups.
+
+This builds upon the per client GPU utilisation work which landed recently for a
+few drivers. My thinking is that in principle, an intersect of drivers which
+support both that and some sort of scheduling control, like  priorities, could
+also in theory support this controller.
+
+Another really interesting angle for this controller is that it mimics the same
+control menthod used by the CPU scheduler. That is the proportional/weight based
+GPU time budgeting. Which makes it easy to configure and does not need a new
+mental model.
+
+However, as the introduction mentions, GPUs are much more heterogenous and
+therefore the controller uses very "soft" wording as to what it promises. The
+general statement is that it can define budgets, notify clients when they are
+over them, and let individual drivers implement best effort handling of those
+conditions.
+
+Delegation of duties in the implementation goes likes this:
+
+ * DRM cgroup controller implements the control files, the scanning loop and
+   tracks the DRM clients associated with each cgroup. It provides API DRM
+   core needs to call to (de)register and migrate clients.
+ * DRM core defines two call-backs which the core calls directly: First for
+   querying GPU time by a client and second for notifying the client that it
+   is over budget. It calls controller API for (de)registering clients and
+   migrating then between tasks on file descriptor hand over.
+ * Individual drivers implement the above mentiopned callbacks and register
+   them with the DRM core.
+
+What I have demonstrated in practice is that when wired to i915, in a really
+primitive way where the over-budget condition simply lowers the scheduling
+priority, the concept can be almost equally effective as the static priority
+control. I say almost because the design where budget control depends on the
+periodic usage scanning has a fundamental delay, so responsiveness will depend
+on the scanning period, which may or may not be a problem for a particular use
+case.
+
+There are also interesting conversations to be had around mental models for what
+is GPU usage as a single number when faced with GPUs which have different
+execution engines. To an extent this is similar to the multi-core and cgroup
+CPU controller problems, but definitely goes further than that.
+
+I deliberately did not want to include any such complications in the controller
+itself and left the individual drivers to handle it. For instance in the i915
+over-budget callback it will not do anything unless client's GPU usage is on a
+physical engine which is oversubscribed. This enables multiple clients to be
+harmlessly over budget, as long as they are not competing for the same GPU
+resource.
+
+Example usage from within a Linux desktop
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Standard Linux distributions like Ubuntu already uses cgroups heavily for
+session management and that could easily be extended with the DRM controller.
+
+After logging into the system graphically we can enable the DRM controller
+throughout the cgroups hierarchy:
+
+echo +drm > /sys/fs/cgroup/cgroup.subtree_control
+echo +drm > /sys/fs/cgroup/user.slice/cgroup.subtree_control
+echo +drm > /sys/fs/cgroup/user.slice/user-$(id -u).slice/cgroup.subtree_control
+
+Next we will open two SSH sessions, just so separate cgroups are handily created
+by systemd for this experiment.
+
+Roughly simultaneously we run the following two benchmarks in each session
+respectively:
+
+1)
+./GpuTest /test=pixmark_julia_fp32 /width=1920 /height=1080 /fullscreen /no_scorebox /benchmark /benchmark_duration_ms=60000
+
+2)
+vblank_mode=0 bin/testfw_app --gl_api=desktop_core --width=1920 --height=1080 --fullscreen 1 --gfx=glfw -t gl_manhattan
+
+(The only reason for vsync off here is because I struggled to find an easily
+runnable and demanding enough benchmark, or to run on a screen large enough to
+make even a simpler ones demanding.)
+
+With this test we get 252fps from GpuTest and 96fps from GfxBenchmark.
+
+Premise here is that one of these GPU intensive benchmarks is intended to be ran
+by the user with lower priority. Imagine kicking off some background compute
+processing and continuing to use the UI for other tasks. Hence the user will now
+re-run the test by first lowering the weight control of the first session (DRM
+cgroup):
+
+1)
+echo 50 | sudo tee /sys/fs/cgroup/`cut -d':' -f3 /proc/self/cgroup`/drm.weight
+./GpuTest /test=pixmark_julia_fp32 /width=1920 /height=1080 /fullscreen /no_scorebox /benchmark /benchmark_duration_ms=60000
+
+2)
+vblank_mode=0 bin/testfw_app --gl_api=desktop_core --width=1920 --height=1080 --fullscreen 1 --gfx=glfw -t gl_manhattan
+
+In this case we will see that GpuTest has recorded 208fps (~18% down) and
+GfxBenchmark 114fps (18% up), demonstrating that even a very simple approach of
+wiring up i915 to the DRM cgroup controller can enable external GPU scheduling
+control.
+
+* Note here that default weight is 100, so setting 50 for the background session
+  is asking the controller to give it half as much GPU bandwidth.
+
+v2:
+ * Prefaced the series with some core DRM work as suggested by Christian.
+ * Dropped the priority based controller for now.
+ * Dropped the introspection cgroup controller file.
+ * Implemented unused budget sharing/propagation.
+ * Some small fixes/tweak as per review feedback and in general.
+
+v3:
+ * Dropped one upstreamed patch.
+ * Logging cleanup (use DRM macros where available).
+
+v4:
+ * Dropped the struct pid tracking indirection in favour of tracking individual
+   DRM clients directly in the controller. (Michal Koutný)
+ * Added boot time param for configuring the scanning period. (Tejun Heo)
+ * Improved spreading of unused budget to over budget clients, regardless of
+   their location in the tree so that all unused budget can be utilized.
+ * Made scanning more robust by not re-starting it on every client de-
+   registration and removal. Instead new baseline GPU activity data is simply
+   collected on those events and next scan invocation can proceed as scheduled.
+ * Dropped the debugging aids from the series.
+
+TODOs/Opens:
+
+ * For now (RFC) I haven't implemented the 2nd suggestion from Tejun of having
+   a shadow tree which would only contain groups with DRM clients. (Purpose
+   being less nodes to traverse in the scanning loop.)
+
+ * Is the global state passing from can_attach to attach really okay? (I need
+   source and destination css.)
+
+Tvrtko Ursulin (10):
+  drm: Track clients by tgid and not tid
+  drm: Update file owner during use
+  cgroup: Add the DRM cgroup controller
+  drm/cgroup: Track DRM clients per cgroup
+  drm/cgroup: Add ability to query drm cgroup GPU time
+  drm/cgroup: Add over budget signalling callback
+  drm/cgroup: Only track clients which are providing drm_cgroup_ops
+  cgroup/drm: Introduce weight based drm cgroup control
+  drm/i915: Wire up with drm controller GPU time query
+  drm/i915: Implement cgroup controller over budget throttling
+
+ Documentation/admin-guide/cgroup-v2.rst       |  31 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c       |   6 +-
+ drivers/gpu/drm/drm_auth.c                    |   3 +-
+ drivers/gpu/drm/drm_debugfs.c                 |  12 +-
+ drivers/gpu/drm/drm_file.c                    |  46 +-
+ drivers/gpu/drm/drm_ioctl.c                   |   3 +
+ .../gpu/drm/i915/gem/i915_gem_execbuffer.c    |  38 +-
+ drivers/gpu/drm/i915/i915_driver.c            |  11 +
+ drivers/gpu/drm/i915/i915_drm_client.c        | 209 ++++++-
+ drivers/gpu/drm/i915/i915_drm_client.h        |  13 +
+ drivers/gpu/drm/nouveau/nouveau_drm.c         |   5 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_gem.c           |   6 +-
+ include/drm/drm_drv.h                         |  36 ++
+ include/drm/drm_file.h                        |  19 +-
+ include/linux/cgroup_drm.h                    |  29 +
+ include/linux/cgroup_subsys.h                 |   4 +
+ init/Kconfig                                  |   7 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/drm.c                           | 568 ++++++++++++++++++
+ 19 files changed, 1020 insertions(+), 27 deletions(-)
+ create mode 100644 include/linux/cgroup_drm.h
+ create mode 100644 kernel/cgroup/drm.c
+
+-- 
+2.37.2
+
