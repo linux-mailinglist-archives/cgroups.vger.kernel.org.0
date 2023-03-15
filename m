@@ -2,126 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF156BB0B4
-	for <lists+cgroups@lfdr.de>; Wed, 15 Mar 2023 13:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF196BB0AD
+	for <lists+cgroups@lfdr.de>; Wed, 15 Mar 2023 13:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbjCOMUk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Mar 2023 08:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
+        id S232239AbjCOMUa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Mar 2023 08:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbjCOMUL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 08:20:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD4487379
-        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 05:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678882755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2PRbwpAoEnOZK1WgHwlMyMBfG9nGKa4R9Y3iK9sv+Ts=;
-        b=Y+tBqveNFkCebtVM4gYrrG2SGgqWwvmUO35LwZnrKiijncu5JgZeIOPiWW9AMo03pzySsS
-        w2d7NMr40pM99rtR18P+xY1wMVXJfAL5Fq93Jt4gu+3g6MpbDKfxsGIPigLPe4rJecym2C
-        p/DATnOJeUIke9vNCORpCO1liIFvNzE=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-633-awVfK6tJPquavdnPT5b8hA-1; Wed, 15 Mar 2023 08:19:14 -0400
-X-MC-Unique: awVfK6tJPquavdnPT5b8hA-1
-Received: by mail-qv1-f72.google.com with SMTP id q1-20020ad44341000000b005a676b725a2so5957095qvs.18
-        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 05:19:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678882753;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2PRbwpAoEnOZK1WgHwlMyMBfG9nGKa4R9Y3iK9sv+Ts=;
-        b=TAq1xCApe0kSnf/nChU83IuPB/AaZn+RYb3y0X8sFtFPh3gS1eEBL2rpzFOPIQazeR
-         DKj+45Si7C3cOZfmh8NcDf7I+f9bZUUgH/lNyzteaHgvk+k5s1XDtAXaOEW8ZNw6pDuu
-         94bPaiwif0hyFexJuG5FvImjj9kt9hM/ceV3vs/Fcf3o2GLeQYgqnEqum2X1M2GbAW7m
-         V6+cg2RRLSzQZuAU0Aw9gBiv1tcj6hBAt6SNOyZZiapILbtYqIJj1JAAJ70t29WnHcn6
-         ZGPlBMxDiSz7/eetr26K7ifzJGStFwz2g6FVCMLykxJVkF5XREhPFANA7NEBFlhsc961
-         T0TQ==
-X-Gm-Message-State: AO0yUKW3Ka+xMsJLKLllc7qDu3NnkfkeW1TtHDiBQtFbM2PzzIss/cTN
-        7rI336jo7QLJmswaU5KHnyQmB9yvbslBSOI5y5ftMNwSwlgJtKGODUPYR9O5aVQTZRB/rC9YPFC
-        dx+05reCPqnvBdBvnPA==
-X-Received: by 2002:ac8:7f4d:0:b0:3b9:a441:37f4 with SMTP id g13-20020ac87f4d000000b003b9a44137f4mr69515106qtk.52.1678882752880;
-        Wed, 15 Mar 2023 05:19:12 -0700 (PDT)
-X-Google-Smtp-Source: AK7set95YdMrNVK6tuMn7EYZw7rYKlJSLXs7KyFChGj5Sxcw5WbC8bIXA9Fzp2upKtYbW3ZnEHALwQ==
-X-Received: by 2002:ac8:7f4d:0:b0:3b9:a441:37f4 with SMTP id g13-20020ac87f4d000000b003b9a44137f4mr69515075qtk.52.1678882752606;
-        Wed, 15 Mar 2023 05:19:12 -0700 (PDT)
-Received: from localhost.localdomain.com ([2a00:23c6:4a21:6f01:ac73:9611:643a:5397])
-        by smtp.gmail.com with ESMTPSA id f11-20020ac8014b000000b003bd21323c80sm3672595qtg.11.2023.03.15.05.19.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 05:19:12 -0700 (PDT)
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S232105AbjCOMT7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 08:19:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015761632A
+        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 05:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=YEHaS1jbcFt6XFTHtzvHwBBDGnKA7GP1NQZcvCyxIVc=; b=ibZv7O8AfRIpW1okpk0auST6ju
+        QGUQE09QAEhtE72dYe30m3Dx/TOe/gWHxKNlcCcZ9+EUAiQ2s+8VPtKAkZlSmetzcOHPSTNtoV5vA
+        ZyUgKojS86wmMbFQw0TSsvCFRTsuh9xBIQmKbJcHkSRfozwqbyLbIBPkV3NyIaHQM55O98xXphp1a
+        zWzRoqY9juw8uxfElduAWBKt7cU6+xxk17aQQeXoLIsR4ElNNMLqtkx9VbmHi8G67IY1jSHrSgg0Y
+        +mD2lwCmLX5Xms/qJDQg6vHlcKDWhlRph2sAKiurG5rDNTp7J4rUQRu4llhEaK6aiKd82vJa78t8T
+        Q550uQfA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pcQ6B-00Dolz-7a; Wed, 15 Mar 2023 12:19:19 +0000
+Date:   Wed, 15 Mar 2023 12:19:19 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: [RFC PATCH 3/3] cgroup/cpuset: Iterate only if DEADLINE tasks are present
-Date:   Wed, 15 Mar 2023 12:18:12 +0000
-Message-Id: <20230315121812.206079-4-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230315121812.206079-1-juri.lelli@redhat.com>
-References: <20230315121812.206079-1-juri.lelli@redhat.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH] memcg: page_cgroup_ino() get memcg from
+ compound_head(page)
+Message-ID: <ZBG3xzGd6j+uByyN@casper.infradead.org>
+References: <20230313083452.1319968-1-yosryahmed@google.com>
+ <20230313124431.fe901d79bc8c7dc96582539c@linux-foundation.org>
+ <CAJD7tkZKhNRiWOrUOiHWuEQbOuDhjyHx0H01M1mQziM36viq9w@mail.gmail.com>
+ <ZBFPh6j+4Khl1Je8@casper.infradead.org>
+ <CAJD7tkYFjRPq6ATj-d0P25FhDaMzKdXfqTa_hh7TZp_Xyt4v+w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkYFjRPq6ATj-d0P25FhDaMzKdXfqTa_hh7TZp_Xyt4v+w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-update_tasks_root_domain currently iterates over all tasks even if no
-DEADLINE task is present on the cpuset/root domain for which bandwidth
-accounting is being rebuilt. This has been reported to introduce 10+ ms
-delays on suspend-resume operations.
+On Wed, Mar 15, 2023 at 12:04:10AM -0700, Yosry Ahmed wrote:
+> On Tue, Mar 14, 2023 at 9:54 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Mon, Mar 13, 2023 at 02:08:53PM -0700, Yosry Ahmed wrote:
+> > > On Mon, Mar 13, 2023 at 12:44 PM Andrew Morton
+> > > <akpm@linux-foundation.org> wrote:
+> > > >
+> > > > On Mon, 13 Mar 2023 08:34:52 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > >
+> > > > > From: Hugh Dickins <hughd@google.com>
+> > > > >
+> > > > > In a kernel with added WARN_ON_ONCE(PageTail) in page_memcg_check(), we
+> > > > > observed a warning from page_cgroup_ino() when reading
+> > > > > /proc/kpagecgroup.
+> > > >
+> > > > If this is the only known situation in which page_memcg_check() is
+> > > > passed a tail page, why does page_memcg_check() have
+> > > >
+> > > >         if (PageTail(page))
+> > > >                 return NULL;
+> > > >
+> > > > ?  Can we remove this to simplify, streamline and clarify?
+> > >
+> > > I guess it's a safety check so that we don't end up trying to cast a
+> > > tail page to a folio. My opinion is to go one step further and change
+> > > page_memcg_check() to do return the memcg of the head page, i.e:
+> > >
+> > > static inline struct mem_cgroup *page_memcg_check(struct page *page)
+> > > {
+> > >     return folio_memcg_check(page_folio(page));
+> > > }
+> >
+> > If you look at my commit becacb04fdd4, I was preserving the existing
+> > behaviour of page_memcg_check() when passed a tail page.  It would
+> > previously, rightly or wrongly, read the memcg_data from the tail page
+> > and get back NULL.
+> 
+> Right, I looked at that. I also looked at 1b7e4464d43a which added
+> folio_memcg() and changed page_memcg()'s behavior to use page_folio()
+> to retrieve the memcg from the head, which made me wonder why
+> different decisions were made for these 2 helpers.
+> 
+> Were the users of page_memcg() already passing in head pages only?
 
-Skip the costly iteration for cpusets that don't contain DEADLINE tasks.
+There were 18 months between those commits ... I'd learned to be
+more careful about maintaining the semantics instead of changing
+them to "what they should have been".
 
-Reported-by: Qais Yousef <qyousef@layalina.io>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/cgroup/cpuset.c | 3 +++
- 1 file changed, 3 insertions(+)
+> >
+> > I suspect that was not the intended behaviour, but I do not think this
+> > patch is the right fix; it simply papers over the problem and maybe
+> > creates a new one.  Callers of page_memcg_check() should be eliminated,
+> > precisely because of this ambiguity.  It's up to the people who understand
+> > each of the callers who need to make the decision to always convert the
+> > page that they have to a folio and ask about its memcg, or whether they
+> > want to preserve the existing behaviour of returning NULL for tail pages.
+> >
+> > So, I say NACK to this patch as it does not preserve existing behaviour,
+> > and does not advance our understanding of what we have wrought.
+> 
+> I am not sure which patch you are NACKing, the original patch from
+> Hugh (adding compound_head() to page_cgroup_ino()) or the suggested
+> alternative patch which changes page_memcg_check() to use
+> page_folio().
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 57bc60112618..f46192d2e97e 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1090,6 +1090,9 @@ static void update_tasks_root_domain(struct cpuset *cs)
- 	struct css_task_iter it;
- 	struct task_struct *task;
- 
-+	if (cs->nr_deadline_tasks == 0)
-+		return;
-+
- 	css_task_iter_start(&cs->css, 0, &it);
- 
- 	while ((task = css_task_iter_next(&it)))
--- 
-2.39.2
+Both patches are NACKed.  page_memcg_check() needs to go away
+because it has the tail page ambiguity.  Both callers should be using
+folio_memcg_check() directly and resolving for themselves what the
+correct behaviour is when seeing a tail page.
 
