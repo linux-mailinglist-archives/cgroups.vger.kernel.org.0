@@ -2,145 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC316BAD09
-	for <lists+cgroups@lfdr.de>; Wed, 15 Mar 2023 11:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218886BB0B1
+	for <lists+cgroups@lfdr.de>; Wed, 15 Mar 2023 13:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbjCOKHa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Mar 2023 06:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        id S232243AbjCOMUh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Mar 2023 08:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjCOKHO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 06:07:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D552941F;
-        Wed, 15 Mar 2023 03:06:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6E6512199E;
-        Wed, 15 Mar 2023 10:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1678874780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=auNt55LvkWQ3/5jHUnJWSmBV3O1aurOSCvt2OfSASXw=;
-        b=EWusQoZrHm4R+Z8gOwf+VWiGLfTg/YPBBz4ukCor9snEInG4fAo11/bMdFC5EFIdKhzZ0Q
-        htin41SUiyeWwMG+mevKr1YFOTOb489CJxVl4D+YgVVzz03EGv+stcJD7fwwWXLjvNl6HV
-        VJ2dt74dBXEM23dSMQs4clS7lCkjrS4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39D4E13A2F;
-        Wed, 15 Mar 2023 10:06:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id b20pDZyYEWRdPgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 15 Mar 2023 10:06:20 +0000
-Date:   Wed, 15 Mar 2023 11:06:18 +0100
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S232174AbjCOMUI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 08:20:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3833F94A7D
+        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 05:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1678882745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fXppUTug8j7tzXh0MhllF73tJwxX1FkvEF1tk4ChKu4=;
+        b=c9xF3/KHUaNc0z4boUNzGG2DBl2zP+JkhafBX++qhFPpcj94zF9AIjUY7Q1rtv+HutwVV3
+        BGwykW7J1sbNK5tez6H6hbHBIV55ZE2GocX0MbxfiUDhCE0MN+NMdYj/WR1JQAg/OiHMQ/
+        FkrZW0bYfLqp+h9bsU1G/+wr5YVwul0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-0MzWv8urOMGIXdAOJAZJaQ-1; Wed, 15 Mar 2023 08:19:04 -0400
+X-MC-Unique: 0MzWv8urOMGIXdAOJAZJaQ-1
+Received: by mail-qk1-f197.google.com with SMTP id s21-20020a05620a0bd500b0074234f33f24so11033091qki.3
+        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 05:19:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678882743;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fXppUTug8j7tzXh0MhllF73tJwxX1FkvEF1tk4ChKu4=;
+        b=cmHBiwsG2lUzzoRxq/r89VdScVKdfWCkiLP3s87UwGoBWkVnwmxAjq4rPCpPFxCy+s
+         ofRRekEdUgeJt3o/ArScznH4rm+jrBkiBCxn2eASa69biaZivqD73Bwer41/EE3DiW/6
+         r0GP/bBbjekmXnCvzF4M56uOr5+d6pXqVnRNTOUem/ExzD41JyqPGndxLNL+pXBySUqU
+         KghHdppYd7SCtJaeAynJYu1MJWPyZbVsgB+ZCqkKf7GlvDZG/6TSQkmD37SIvTfIRfIK
+         783sFlOvcOaTqFWAhCuzlvDeUWA2MqBtUlq9572AEAfZOIMIOpF5bQ8r+Kx+q0fyXfzw
+         Wkwg==
+X-Gm-Message-State: AO0yUKVg1JdI1827p3SoJB0HTqH1MXtdx+cbJr3iWq/4+8C9N2R/Mh9M
+        n1XJBll792E4Rn2bc1hRS1aghzrpUqbdMTBGM6rnizQRpq4lakl7Z9Wwfae+gqAyKwhSC3n6wpd
+        pgoWfx506KTLO2Uzqbw==
+X-Received: by 2002:ac8:5f88:0:b0:3bf:daae:7f24 with SMTP id j8-20020ac85f88000000b003bfdaae7f24mr38976736qta.34.1678882743709;
+        Wed, 15 Mar 2023 05:19:03 -0700 (PDT)
+X-Google-Smtp-Source: AK7set8DFaytqfR4AZ7VOdiVhG3zgN+t7wiROv/kG8aBsJKjlwT4z/JzawdGYnSKspEcO/qLUe8EQg==
+X-Received: by 2002:ac8:5f88:0:b0:3bf:daae:7f24 with SMTP id j8-20020ac85f88000000b003bfdaae7f24mr38976708qta.34.1678882743405;
+        Wed, 15 Mar 2023 05:19:03 -0700 (PDT)
+Received: from localhost.localdomain.com ([2a00:23c6:4a21:6f01:ac73:9611:643a:5397])
+        by smtp.gmail.com with ESMTPSA id f11-20020ac8014b000000b003bd21323c80sm3672595qtg.11.2023.03.15.05.19.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Mar 2023 05:19:03 -0700 (PDT)
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/5] cgroup/cpuset: Include offline CPUs when tasks'
- cpumasks in top_cpuset are updated
-Message-ID: <20230315100618.6cypp4l3vjpg2p7r@blackpad>
-References: <20230306200849.376804-1-longman@redhat.com>
- <20230306200849.376804-3-longman@redhat.com>
- <20230314173411.fqaxoa2tfifnj6i3@blackpad>
- <957bd5c2-1bae-de95-f119-483ef64dab60@redhat.com>
+        Hao Luo <haoluo@google.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [RFC PATCH 0/3] sched/deadline: cpuset: Rework DEADLINE bandwidth restoration
+Date:   Wed, 15 Mar 2023 12:18:09 +0000
+Message-Id: <20230315121812.206079-1-juri.lelli@redhat.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yqt7k42xoiztgvzs"
-Content-Disposition: inline
-In-Reply-To: <957bd5c2-1bae-de95-f119-483ef64dab60@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Qais reported [1] that iterating over all tasks when rebuilding root
+domains for finding out which ones are DEADLINE and need their bandwidth
+correctly restored on such root domains can be a costly operation (10+
+ms delays on suspend-resume). He proposed we skip rebuilding root
+domains for certain operations, but that approach seemed arch specific
+and possibly prone to errors, as paths that ultimately trigger a rebuild
+might be quite convoluted (thanks Qais for spending time on this!).
 
---yqt7k42xoiztgvzs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To fix the problem I instead would propose we
 
-On Tue, Mar 14, 2023 at 03:02:53PM -0400, Waiman Long <longman@redhat.com> =
-wrote:
-> > > +			cpumask_andnot(new_cpus, possible_mask, cs->subparts_cpus);
-> > > +		} else {
-> > > +			cpumask_and(new_cpus, cs->effective_cpus, possible_mask);
-> > > +		}
-> > I'm wrapping my head around this slightly.
-> > 1) I'd suggest swapping args in of cpumask_and() to have possible_mask
-> >     consistently first.
-> I don't quite understand what you meant by "swapping args". It is effecti=
-ve
-> new_cpus =3D cs->effective_cpus =E2=88=A9 possible_mask. What is the poin=
-t of swapping
-> cs->effective_cpus and possible_mask.
+ 1 - Bring back cpuset_mutex (so that we have write access to cpusets
+     from scheduler operations - and we also fix some problems
+     associated to percpu_cpuset_rwsem)
+ 2 - Keep track of the number of DEADLINE tasks belonging to each cpuset
+ 3 - Use this information to only perform the costly iteration if
+     DEADLINE tasks are actually present in the cpuset for which a
+     corresponding root domain is being rebuilt
 
-No effect except better readability (possible_mask comes first in the
-other branch above too, left hand arg as the "base" that's modified).
+This set is also available from
 
+https://github.com/jlelli/linux.git deadline/rework-cpusets
 
-> > 2) Then I'm wondering whether two branches are truly different when
-> >     effective_cpus :=3D cpus_allowed - subparts_cpus
-> >     top_cpuset.cpus_allowed =3D=3D possible_mask        (1)
-> effective_cpus may not be equal "cpus_allowed - subparts_cpus" if some of
-> the CPUs are offline as effective_cpus contains only online CPUs.
-> subparts_cpu can include offline cpus too. That is why I choose that
-> expression. I will add a comment to clarify that.
+Feedback is more than welcome.
 
-I see now that it returns offlined cpus to top cpuset's tasks.
+Best,
+Juri
 
-> >=20
-> > IOW, can you see a difference in what affinities are set to eligible
-> > top_cpuset tasks before and after this patch upon CPU hotplug?
-> > (Hm, (1) holds only in v2. So is this a fix for v1 only?)
->=20
-> This is due to the fact that cpu hotplug code currently doesn't update the
-> cpu affinity of tasks in the top cpuset. Tasks not in the top cpuset can
-> rely on the hotplug code to update the cpu affinity appropriately.
+1 - https://lore.kernel.org/lkml/20230206221428.2125324-1-qyousef@layalina.io/
 
-Oh, I mistook this for hotplug changing behavior but it's actually for
-updating top_cpuset when its children becomes a partition root.
+Juri Lelli (3):
+  sched/cpuset: Bring back cpuset_mutex
+  sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+  cgroup/cpuset: Iterate only if DEADLINE tasks are present
 
-	IIUC, top cpuset + hotplug has been treated specially because
-	hotplug must have taken care of affinity regardless of cpuset.
-	v1 allowed modification of top cpuset's mask (not sure if that
-	worked), v2 won't allow direct top cpuset's mask modificiation
-	but indirectly via partition root children.
+ include/linux/cpuset.h |  12 ++-
+ kernel/cgroup/cgroup.c |   4 +
+ kernel/cgroup/cpuset.c | 175 +++++++++++++++++++++++------------------
+ kernel/sched/core.c    |  32 ++++++--
+ 4 files changed, 137 insertions(+), 86 deletions(-)
 
-So this is a continuation for 3fb906e7fabb ("cgroup/cpuset: Don't filter
-offline CPUs in cpuset_cpus_allowed() for top cpuset tasks") to ensure
-hotplug offline/online cycle won't overwrite top_cpuset tasks'
-affinities (when partition change during offlined period).
-This looks correct in this regard then.
-(I wish it were simpler but that's for a different/broader top
-cpuset+hotplug approach.)
+-- 
+2.39.2
 
-Thanks,
-Michal
-
---yqt7k42xoiztgvzs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZBGYmAAKCRAkDQmsBEOq
-uaWcAQDsTN8vvkQ0WHz1vK9CcBuE+hz0udNCFVljCdlcN7YaoQD/ReBCP2l0Ow8V
-Ka835fpnfysSJql4yq+mHpTDP+XMJAk=
-=JvSg
------END PGP SIGNATURE-----
-
---yqt7k42xoiztgvzs--
