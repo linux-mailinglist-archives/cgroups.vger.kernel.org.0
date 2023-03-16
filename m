@@ -2,79 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7336BC0E1
-	for <lists+cgroups@lfdr.de>; Thu, 16 Mar 2023 00:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0986BC232
+	for <lists+cgroups@lfdr.de>; Thu, 16 Mar 2023 01:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbjCOX2b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Mar 2023 19:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
+        id S230036AbjCPAKG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Mar 2023 20:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjCOX2a (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 19:28:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C949F07B
-        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 16:27:46 -0700 (PDT)
+        with ESMTP id S233422AbjCPAJ7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 20:09:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0956F525B
+        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 17:09:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678922866;
+        s=mimecast20190719; t=1678925352;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aLYdfmD7uUlzqBMDh+BqCtiyVRmjFzYdxVqjv+siHvY=;
-        b=WhsDN8yBjGKeBpIYQBQ33jwtckxWIESrAkFhVmK4I2mHzvAkUBZ286WD/LgEaJn9qzpIh0
-        ISvS5EmMrPCC8bNfkVbtw1RCm/GbwU8DIUf9PO8mxQWfUD20+F3UoapvqHImJYE2lvCzgH
-        z/ffkuiCI1EjS8XX7IZu7g8jHDPOqH4=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=xoeBmzzz0FU9zZCf+NCdIJ+5XjbGzZmlZo/bkUXi60o=;
+        b=EZvnnr33BxwP+gbEE2sWARO0Erk9g5gckMO6LZujfKTxXlEGebwTxeIGRnhr1JDKl0CF/K
+        3iWdQKFJrwugpbkUibk/DDn3vLWCkMWMP7Gnt4F7kjKmBroUsbkBlQhTxQAg8cCyS/9+JP
+        Gh8M/SuLTlPRngIuNuEXUk6QFqwL+W0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-454-iQu2fTNxPQWME9ALvR4Hfw-1; Wed, 15 Mar 2023 19:27:43 -0400
-X-MC-Unique: iQu2fTNxPQWME9ALvR4Hfw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+ us-mta-459-v8AEuQWUOgOLUsSnft__XA-1; Wed, 15 Mar 2023 20:09:06 -0400
+X-MC-Unique: v8AEuQWUOgOLUsSnft__XA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2229B3850557;
-        Wed, 15 Mar 2023 23:27:42 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B1E23801206;
+        Thu, 16 Mar 2023 00:09:05 +0000 (UTC)
 Received: from [10.22.34.146] (unknown [10.22.34.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 85C3C400F4F;
-        Wed, 15 Mar 2023 23:27:40 +0000 (UTC)
-Message-ID: <379691d7-6926-55aa-5c6e-c6e38002164e@redhat.com>
-Date:   Wed, 15 Mar 2023 19:27:40 -0400
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F4A91121314;
+        Thu, 16 Mar 2023 00:09:04 +0000 (UTC)
+Message-ID: <8d4e1b74-6ae8-4243-d5c2-e63e8046d355@redhat.com>
+Date:   Wed, 15 Mar 2023 20:09:04 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 2/3] sched/cpuset: Keep track of SCHED_DEADLINE tasks
- in cpusets
+Subject: Re: [PATCH] memcg: page_cgroup_ino() get memcg from
+ compound_head(page)
 Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+To:     Yosry Ahmed <yosryahmed@google.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230315121812.206079-1-juri.lelli@redhat.com>
- <20230315121812.206079-3-juri.lelli@redhat.com>
- <7a3b31bf-4f6a-6525-9c6a-2bae44d7b0af@redhat.com>
- <ZBH9E7lCEXcFDBG4@localhost.localdomain>
- <2739c3ec-1e97-fc4d-8001-50283c94f4ff@redhat.com>
-In-Reply-To: <2739c3ec-1e97-fc4d-8001-50283c94f4ff@redhat.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+References: <20230313083452.1319968-1-yosryahmed@google.com>
+ <20230313124431.fe901d79bc8c7dc96582539c@linux-foundation.org>
+ <CAJD7tkZKhNRiWOrUOiHWuEQbOuDhjyHx0H01M1mQziM36viq9w@mail.gmail.com>
+ <ZBFPh6j+4Khl1Je8@casper.infradead.org>
+ <CAJD7tkYFjRPq6ATj-d0P25FhDaMzKdXfqTa_hh7TZp_Xyt4v+w@mail.gmail.com>
+ <ZBG3xzGd6j+uByyN@casper.infradead.org>
+ <CAJD7tkbcTMo1oZAa0Pa3v_6d0n4bHCo+8vTxzXGU6UBVOhrUQw@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAJD7tkbcTMo1oZAa0Pa3v_6d0n4bHCo+8vTxzXGU6UBVOhrUQw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
@@ -85,152 +80,83 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/15/23 14:01, Waiman Long wrote:
->
-> On 3/15/23 13:14, Juri Lelli wrote:
->> On 15/03/23 11:46, Waiman Long wrote:
->>> On 3/15/23 08:18, Juri Lelli wrote:
->>>> Qais reported that iterating over all tasks when rebuilding root 
->>>> domains
->>>> for finding out which ones are DEADLINE and need their bandwidth
->>>> correctly restored on such root domains can be a costly operation (10+
->>>> ms delays on suspend-resume).
->>>>
->>>> To fix the problem keep track of the number of DEADLINE tasks 
->>>> belonging
->>>> to each cpuset and then use this information (followup patch) to only
->>>> perform the above iteration if DEADLINE tasks are actually present in
->>>> the cpuset for which a corresponding root domain is being rebuilt.
->>>>
->>>> Reported-by: Qais Yousef <qyousef@layalina.io>
->>>> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
->>>> ---
->>>>    include/linux/cpuset.h |  4 ++++
->>>>    kernel/cgroup/cgroup.c |  4 ++++
->>>>    kernel/cgroup/cpuset.c | 25 +++++++++++++++++++++++++
->>>>    kernel/sched/core.c    | 10 ++++++++++
->>>>    4 files changed, 43 insertions(+)
->>>>
->>>> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
->>>> index 355f796c5f07..0348dba5680e 100644
->>>> --- a/include/linux/cpuset.h
->>>> +++ b/include/linux/cpuset.h
->>>> @@ -71,6 +71,8 @@ extern void cpuset_init_smp(void);
->>>>    extern void cpuset_force_rebuild(void);
->>>>    extern void cpuset_update_active_cpus(void);
->>>>    extern void cpuset_wait_for_hotplug(void);
->>>> +extern void inc_dl_tasks_cs(struct task_struct *task);
->>>> +extern void dec_dl_tasks_cs(struct task_struct *task);
->>>>    extern void cpuset_lock(void);
->>>>    extern void cpuset_unlock(void);
->>>>    extern void cpuset_cpus_allowed(struct task_struct *p, struct 
->>>> cpumask *mask);
->>>> @@ -196,6 +198,8 @@ static inline void cpuset_update_active_cpus(void)
->>>>    static inline void cpuset_wait_for_hotplug(void) { }
->>>> +static inline void inc_dl_tasks_cs(struct task_struct *task) { }
->>>> +static inline void dec_dl_tasks_cs(struct task_struct *task) { }
->>>>    static inline void cpuset_lock(void) { }
->>>>    static inline void cpuset_unlock(void) { }
->>>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->>>> index c099cf3fa02d..357925e1e4af 100644
->>>> --- a/kernel/cgroup/cgroup.c
->>>> +++ b/kernel/cgroup/cgroup.c
->>>> @@ -57,6 +57,7 @@
->>>>    #include <linux/file.h>
->>>>    #include <linux/fs_parser.h>
->>>>    #include <linux/sched/cputime.h>
->>>> +#include <linux/sched/deadline.h>
->>>>    #include <linux/psi.h>
->>>>    #include <net/sock.h>
->>>> @@ -6673,6 +6674,9 @@ void cgroup_exit(struct task_struct *tsk)
->>>>        list_add_tail(&tsk->cg_list, &cset->dying_tasks);
->>>>        cset->nr_tasks--;
->>>> +    if (dl_task(tsk))
->>>> +        dec_dl_tasks_cs(tsk);
->>>> +
->>>>        WARN_ON_ONCE(cgroup_task_frozen(tsk));
->>>>        if (unlikely(!(tsk->flags & PF_KTHREAD) &&
->>>>                 test_bit(CGRP_FREEZE, &task_dfl_cgroup(tsk)->flags)))
->>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>>> index 8d82d66d432b..57bc60112618 100644
->>>> --- a/kernel/cgroup/cpuset.c
->>>> +++ b/kernel/cgroup/cpuset.c
->>>> @@ -193,6 +193,12 @@ struct cpuset {
->>>>        int use_parent_ecpus;
->>>>        int child_ecpus_count;
->>>> +    /*
->>>> +     * number of SCHED_DEADLINE tasks attached to this cpuset, so 
->>>> that we
->>>> +     * know when to rebuild associated root domain bandwidth 
->>>> information.
->>>> +     */
->>>> +    int nr_deadline_tasks;
->>>> +
->>>>        /* Invalid partition error code, not lock protected */
->>>>        enum prs_errcode prs_err;
->>>> @@ -245,6 +251,20 @@ static inline struct cpuset *parent_cs(struct 
->>>> cpuset *cs)
->>>>        return css_cs(cs->css.parent);
->>>>    }
->>>> +void inc_dl_tasks_cs(struct task_struct *p)
->>>> +{
->>>> +    struct cpuset *cs = task_cs(p);
->>>> +
->>>> +    cs->nr_deadline_tasks++;
->>>> +}
->>>> +
->>>> +void dec_dl_tasks_cs(struct task_struct *p)
->>>> +{
->>>> +    struct cpuset *cs = task_cs(p);
->>>> +
->>>> +    cs->nr_deadline_tasks--;
->>>> +}
->>>> +
->>>>    /* bits in struct cpuset flags field */
->>>>    typedef enum {
->>>>        CS_ONLINE,
->>>> @@ -2472,6 +2492,11 @@ static int cpuset_can_attach(struct 
->>>> cgroup_taskset *tset)
->>>>            ret = security_task_setscheduler(task);
->>>>            if (ret)
->>>>                goto out_unlock;
->>>> +
->>>> +        if (dl_task(task)) {
->>>> +            cs->nr_deadline_tasks++;
->>>> +            cpuset_attach_old_cs->nr_deadline_tasks--;
->>>> +        }
->>>>        }
->>> Any one of the tasks in the cpuset can cause the test to fail and 
->>> abort the
->>> attachment. I would suggest that you keep a deadline task transfer 
->>> count in
->>> the loop and then update cs and cpouset_attach_old_cs only after all 
->>> the
->>> tasks have been iterated successfully.
->> Right, Dietmar I think commented pointing out something along these
->> lines. Think though we already have this problem with current
->> task_can_attach -> dl_cpu_busy which reserves bandwidth for each tasks
->> in the destination cs. Will need to look into that. Do you know which
->> sort of operation would move multiple tasks at once?
->
-> Actually, what I said previously may not be enough. There can be 
-> multiple controllers attached to a cgroup. If any of thier 
-> can_attach() calls fails, the whole transaction is aborted and 
-> cancel_attach() will be called. My new suggestion is to add a new 
-> deadline task transfer count into the cpuset structure and store the 
-> information there temporarily. If cpuset_attach() is called, it means 
-> all the can_attach calls succeed. You can then update the dl task 
-> count accordingly and clear the temporary transfer count.
->
-> I guess you may have to do something similar with dl_cpu_busy().
 
-Another possibility is that you may record the cpu where the new DL 
-bandwidth is allocated from in the task_struct. Then in 
-cpuset_cancel_attach(), you can revert the dl_cpu_busy() change if DL 
-tasks are in the css_set to be transferred. That will likely require 
-having a DL task transfer count in the cpuset and iterating all the 
-tasks to look for ones with a previously recorded cpu # if the transfer 
-count is non-zero.
+On 3/15/23 17:43, Yosry Ahmed wrote:
+> On Wed, Mar 15, 2023 at 5:19 AM Matthew Wilcox <willy@infradead.org> wrote:
+>> On Wed, Mar 15, 2023 at 12:04:10AM -0700, Yosry Ahmed wrote:
+>>> On Tue, Mar 14, 2023 at 9:54 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>>> On Mon, Mar 13, 2023 at 02:08:53PM -0700, Yosry Ahmed wrote:
+>>>>> On Mon, Mar 13, 2023 at 12:44 PM Andrew Morton
+>>>>> <akpm@linux-foundation.org> wrote:
+>>>>>> On Mon, 13 Mar 2023 08:34:52 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
+>>>>>>
+>>>>>>> From: Hugh Dickins <hughd@google.com>
+>>>>>>>
+>>>>>>> In a kernel with added WARN_ON_ONCE(PageTail) in page_memcg_check(), we
+>>>>>>> observed a warning from page_cgroup_ino() when reading
+>>>>>>> /proc/kpagecgroup.
+>>>>>> If this is the only known situation in which page_memcg_check() is
+>>>>>> passed a tail page, why does page_memcg_check() have
+>>>>>>
+>>>>>>          if (PageTail(page))
+>>>>>>                  return NULL;
+>>>>>>
+>>>>>> ?  Can we remove this to simplify, streamline and clarify?
+>>>>> I guess it's a safety check so that we don't end up trying to cast a
+>>>>> tail page to a folio. My opinion is to go one step further and change
+>>>>> page_memcg_check() to do return the memcg of the head page, i.e:
+>>>>>
+>>>>> static inline struct mem_cgroup *page_memcg_check(struct page *page)
+>>>>> {
+>>>>>      return folio_memcg_check(page_folio(page));
+>>>>> }
+>>>> If you look at my commit becacb04fdd4, I was preserving the existing
+>>>> behaviour of page_memcg_check() when passed a tail page.  It would
+>>>> previously, rightly or wrongly, read the memcg_data from the tail page
+>>>> and get back NULL.
+>>> Right, I looked at that. I also looked at 1b7e4464d43a which added
+>>> folio_memcg() and changed page_memcg()'s behavior to use page_folio()
+>>> to retrieve the memcg from the head, which made me wonder why
+>>> different decisions were made for these 2 helpers.
+>>>
+>>> Were the users of page_memcg() already passing in head pages only?
+>> There were 18 months between those commits ... I'd learned to be
+>> more careful about maintaining the semantics instead of changing
+>> them to "what they should have been".
+>>
+>>>> I suspect that was not the intended behaviour, but I do not think this
+>>>> patch is the right fix; it simply papers over the problem and maybe
+>>>> creates a new one.  Callers of page_memcg_check() should be eliminated,
+>>>> precisely because of this ambiguity.  It's up to the people who understand
+>>>> each of the callers who need to make the decision to always convert the
+>>>> page that they have to a folio and ask about its memcg, or whether they
+>>>> want to preserve the existing behaviour of returning NULL for tail pages.
+>>>>
+>>>> So, I say NACK to this patch as it does not preserve existing behaviour,
+>>>> and does not advance our understanding of what we have wrought.
+>>> I am not sure which patch you are NACKing, the original patch from
+>>> Hugh (adding compound_head() to page_cgroup_ino()) or the suggested
+>>> alternative patch which changes page_memcg_check() to use
+>>> page_folio().
+>> Both patches are NACKed.  page_memcg_check() needs to go away
+>> because it has the tail page ambiguity.  Both callers should be using
+>> folio_memcg_check() directly and resolving for themselves what the
+>> correct behaviour is when seeing a tail page.
+>>
+> I agree. I even suggested this to Michal in one of the replies.
+>
+> For page_cgroup_ino() we can simply pass in
+> folio_memcg(page_folio(page)), which would mimic what Hugh's patch is
+> doing for page_cgroup_ino().
+>
+> For page owner, I am not sure if we want to do something similar
+> (which would start printing the memcg for tail pages as well), or
+> explicitly excluding tail pages and THEN do
+> folio_memcg(page_folio(page)) to get the memcg of head pages. Waiman,
+> what do you think?
+
+I prefer the current behavior of printing information for the head page 
+only. I am open to suggestion of the best APIs to use.
 
 Cheers,
 Longman
