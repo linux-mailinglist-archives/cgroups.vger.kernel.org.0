@@ -2,100 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3F56BC3B2
-	for <lists+cgroups@lfdr.de>; Thu, 16 Mar 2023 03:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052346BC438
+	for <lists+cgroups@lfdr.de>; Thu, 16 Mar 2023 04:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjCPCUF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Mar 2023 22:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S229477AbjCPDIr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Mar 2023 23:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjCPCUE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 22:20:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62D812BEA
-        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 19:19:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678933156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6EX5i+Qe8tR7m3emFCoOQSet9tLg5nf9Z6njJr0SW8=;
-        b=VHHIX4M4ie28nnJ+7JrDUlhvbMBhHts+bM/szhKL3AqWGAGV+zXMnOBVoLsTJTKRrrQ82K
-        FrbEoYd9Hz3UBRcBVmXPOuTLJxLq2DKaBhvN2GJEZn8XLmdCe5Zn2Phg/vVqqgwCM41KCq
-        mpENXwHAUOnViBqgXUdUo1z4i8jnOrE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-647-vs5EAvEfNtyU1kYM7NFEMQ-1; Wed, 15 Mar 2023 22:19:11 -0400
-X-MC-Unique: vs5EAvEfNtyU1kYM7NFEMQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 19FC685CE66;
-        Thu, 16 Mar 2023 02:19:11 +0000 (UTC)
-Received: from [10.22.34.146] (unknown [10.22.34.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B4E882166B29;
-        Thu, 16 Mar 2023 02:19:10 +0000 (UTC)
-Message-ID: <bfbdef64-1b8c-4168-2576-f6d4a112686b@redhat.com>
-Date:   Wed, 15 Mar 2023 22:19:10 -0400
+        with ESMTP id S229784AbjCPDIZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Mar 2023 23:08:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BAD18B14
+        for <cgroups@vger.kernel.org>; Wed, 15 Mar 2023 20:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GaBSB/q5RZZv1uL/3Gq3Md5Uoooa7QyxjRaawK+7oNc=; b=W5oNDduDSzHnSn/lHr3XclBBJs
+        ZPwReYpP5TY0WawtqJ8+3M0EJlPasIOJQegxsnYSkfDL1mQalzoPS437vUWx0UptRdGYEzzETqQXW
+        1agZd7h7fAJWQeMKqlJGAo0q7NKtDOe+2tFErdTQMPlmS7hWIy8aV3OrZiVfoluTY74Sfl8wIxPJ7
+        BGcCxUJnSKrzodiaIL5vNpzajhQOjG/YhGUpIY5TUk+0SQLu6n+ryw2HbCK+zVely58ba+rYjdEvl
+        egKlXwNA1WRqkm2+pvtvzLHm/wty6mlE8f5UobHyTwcLExFjqmuEWPL+V5B/Dipi0651gmPshUgzf
+        YE8v/lRw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pcdxP-00EQIS-Vc; Thu, 16 Mar 2023 03:07:12 +0000
+Date:   Thu, 16 Mar 2023 03:07:11 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH] memcg: page_cgroup_ino() get memcg from
+ compound_head(page)
+Message-ID: <ZBKH3xT3FesWeX2c@casper.infradead.org>
+References: <20230313083452.1319968-1-yosryahmed@google.com>
+ <20230313124431.fe901d79bc8c7dc96582539c@linux-foundation.org>
+ <CAJD7tkZKhNRiWOrUOiHWuEQbOuDhjyHx0H01M1mQziM36viq9w@mail.gmail.com>
+ <ZBFPh6j+4Khl1Je8@casper.infradead.org>
+ <CAJD7tkYFjRPq6ATj-d0P25FhDaMzKdXfqTa_hh7TZp_Xyt4v+w@mail.gmail.com>
+ <ZBG3xzGd6j+uByyN@casper.infradead.org>
+ <CAJD7tkbcTMo1oZAa0Pa3v_6d0n4bHCo+8vTxzXGU6UBVOhrUQw@mail.gmail.com>
+ <8d4e1b74-6ae8-4243-d5c2-e63e8046d355@redhat.com>
+ <CAJD7tkbNtJHse5BH=FzgRGUW=oLLoORb7yb8xqUFhF097zDLyg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] cgroup: fix display of forceidle time at root
-Content-Language: en-US
-To:     Josh Don <joshdon@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230315214029.899573-1-joshdon@google.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230315214029.899573-1-joshdon@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkbNtJHse5BH=FzgRGUW=oLLoORb7yb8xqUFhF097zDLyg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/15/23 17:40, Josh Don wrote:
-> We need to reset forceidle_sum to 0 when reading from root, since the
-> bstat we accumulate into is stack allocated.
->
-> To make this more robust, just replace the existing cputime reset with a
-> memset of the overall bstat.
->
-> Signed-off-by: Josh Don <joshdon@google.com>
-> ---
->   kernel/cgroup/rstat.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> index 831f1f472bb8..0a2b4967e333 100644
-> --- a/kernel/cgroup/rstat.c
-> +++ b/kernel/cgroup/rstat.c
-> @@ -457,9 +457,7 @@ static void root_cgroup_cputime(struct cgroup_base_stat *bstat)
->   	struct task_cputime *cputime = &bstat->cputime;
->   	int i;
->   
-> -	cputime->stime = 0;
-> -	cputime->utime = 0;
-> -	cputime->sum_exec_runtime = 0;
-> +	memset(bstat, 0, sizeof(*bstat));
->   	for_each_possible_cpu(i) {
->   		struct kernel_cpustat kcpustat;
->   		u64 *cpustat = kcpustat.cpustat;
+On Wed, Mar 15, 2023 at 05:25:49PM -0700, Yosry Ahmed wrote:
+[snipped 80 lines.  please learn to trim]
+> I think instead of explicitly checking page->memcg_data, we can check
+> PageTail() and return explicitly for tail pages tails, check
+> PageSlab() to print the message for slab pages, then get the page's
+> memcg through folio_memcg_check(page_folio(page)).
+> 
+> Something like:
+> 
+> static inline int print_page_owner_memcg(char *kbuf, size_t count, int ret,
+> struct page *page)
+> {
+>     ...
+>     rcu_read_lock();
+> 
+>     /* Only head pages hold refs to a memcg */
+>     if (PageTail(page))
+>         goto out_unlock;
+> 
+>     if (PageSlab(page))
+>         ret += scnprintf(kbuf + ret, count - ret, "Slab cache page\n");
+> 
+>     memcg = folio_memcg_check(page_folio(page));
+>     if (!memcg)
+>         goto out_unlock;
+>     ...
+> }
+> 
+> Matthew, What do you think?
 
-How about adding the following fixes tag?
+Brrr, this is hard.  read_page_owner() holds no locks or references,
+so pages can transform between being head/tail/order-0 while we're
+running.
 
-Fixes: 1fcf54deb767 ("sched/core: add forced idle accounting for cgroups")
+It _tries_ to skip over tail pages in the most inefficient way possible:
 
-Cheers,
-Longman
+                if (!IS_ALIGNED(pfn, 1 << page_owner->order))
+                        goto ext_put_continue;
 
+But any attempt to use folio APIs is going to risk tripping the
+assertions in the folio code that it's not a tail.  This requires
+more thought.
