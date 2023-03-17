@@ -2,40 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4786BECAE
-	for <lists+cgroups@lfdr.de>; Fri, 17 Mar 2023 16:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B1B6BECB5
+	for <lists+cgroups@lfdr.de>; Fri, 17 Mar 2023 16:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbjCQPQh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Mar 2023 11:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
+        id S231757AbjCQPQw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Mar 2023 11:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjCQPQe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Mar 2023 11:16:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9013FBB7
+        with ESMTP id S231750AbjCQPQm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Mar 2023 11:16:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE7C28873
         for <cgroups@vger.kernel.org>; Fri, 17 Mar 2023 08:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1679066134;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=q7V46Q52rkSh11P7uwpvJlomEOhaWhBzxdnEpXedVNs=;
-        b=Su31C9U72/eD+9VorbmgT/gTe7VAKh2SprqW8q7KOSZEpkIvBvddj4BtDLTF8zwHHfPgz8
-        x8cUAXCO95VaWGHRfj0mTxszHZ0nyLwlZNyD6KgkSsY+se/ZralYSu8yoN74atiu0++ntf
-        UQ19bAkdEErXZmzrhQtv9LqQUtE/+Ak=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yyPOMwQLISxSVk5Hax7mBc5lUymcLlOh64gwiaoZAvQ=;
+        b=ONiIlOTZbNN+WO7uqhnunWa+MB/Nqs82hkns19OFv7rzJzivsWn13jAzeyfkaMfUL6KoJp
+        4tRBAgija0zFjDk+/EhXNqZ7X937vtIHX6rgNolcze92w25nd3QaTlbe1FNveQ2VIAs3zk
+        pORrr8IVSEsRqmX8ipQpisZsZiTBt5c=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-657-W1yAmKFMMy2wcEDHNLbwnw-1; Fri, 17 Mar 2023 11:15:30 -0400
-X-MC-Unique: W1yAmKFMMy2wcEDHNLbwnw-1
+ us-mta-512-dZAI30q9PRKOvWTgzcfh4g-1; Fri, 17 Mar 2023 11:15:30 -0400
+X-MC-Unique: dZAI30q9PRKOvWTgzcfh4g-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7683C29AA2E3;
-        Fri, 17 Mar 2023 15:15:29 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0602810146E3;
+        Fri, 17 Mar 2023 15:15:30 +0000 (UTC)
 Received: from llong.com (unknown [10.22.10.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BBEE7492B00;
-        Fri, 17 Mar 2023 15:15:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 83C49492B00;
+        Fri, 17 Mar 2023 15:15:29 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -46,16 +47,17 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 0/4] cgroup/cpuset: Miscellaneous updates
-Date:   Fri, 17 Mar 2023 11:15:04 -0400
-Message-Id: <20230317151508.1225282-1-longman@redhat.com>
+Subject: [PATCH v2 1/4] cgroup/cpuset: Fix partition root's cpuset.cpus update bug
+Date:   Fri, 17 Mar 2023 11:15:05 -0400
+Message-Id: <20230317151508.1225282-2-longman@redhat.com>
+In-Reply-To: <20230317151508.1225282-1-longman@redhat.com>
+References: <20230317151508.1225282-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,43 +65,64 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
- v2:
-  - Add a new patch 1 that fixes a bug introduced by recent v6.2 commit
-    7a2127e66a00 ("cpuset: Call set_cpus_allowed_ptr() with appropriate
-    mask for task").
-  - Make a small twist and additional comment to patch 2 ("cgroup/cpuset:
-    Skip task update if hotplug doesn't affect current cpuset") as
-    suggested by Michal.
-  - Remove v1 patches 3/4 for now for further discussion.
+It was found that commit 7a2127e66a00 ("cpuset: Call
+set_cpus_allowed_ptr() with appropriate mask for task") introduced a bug
+that corrupted "cpuset.cpus" of a partition root when it was updated.
 
-This patch series includes miscellaneous update to the cpuset and its
-testing code.
+It is because the tmp->new_cpus field of the passed tmp parameter
+of update_parent_subparts_cpumask() should not be used at all as
+it contains important cpumask data that should not be overwritten.
+Fix it by using tmp->addmask instead.
 
-Patch 1 fixes a bug caused by commit 7a2127e66a00 ("cpuset: Call
-set_cpus_allowed_ptr() with appropriate mask for task") in the partition
-handling code. This fix was verified by running the test_cpuset_prs.sh
-test.
+Also update update_cpumask() to make sure that trialcs->cpu_allowed
+will not be corrupted until it is no longer needed.
 
-Patch 2 is for a hotplug optimization.
+Fixes: 7a2127e66a00 ("cpuset: Call set_cpus_allowed_ptr() with appropriate mask for task")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cpuset.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-Patch 3 is actually a follow-up of commit 3fb906e7fabb ("cgroup/cpuset:
-Don't filter offline CPUs in cpuset_cpus_allowed() for top cpuset tasks").
-
-Patch 4 reduces verbosity when running test_cpuset_prs.sh test script
-unless explicitly enabled with the -v option.
-
-Waiman Long (4):
-  cgroup/cpuset: Fix partition root's cpuset.cpus update bug
-  cgroup/cpuset: Skip task update if hotplug doesn't affect current
-    cpuset
-  cgroup/cpuset: Include offline CPUs when tasks' cpumasks in top_cpuset
-    are updated
-  cgroup/cpuset: Minor updates to test_cpuset_prs.sh
-
- kernel/cgroup/cpuset.c                        | 38 +++++++++++++------
- .../selftests/cgroup/test_cpuset_prs.sh       | 25 ++++++------
- 2 files changed, 41 insertions(+), 22 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 636f1c682ac0..f310915d1257 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1513,7 +1513,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cs, int cmd,
+ 	spin_unlock_irq(&callback_lock);
+ 
+ 	if (adding || deleting)
+-		update_tasks_cpumask(parent, tmp->new_cpus);
++		update_tasks_cpumask(parent, tmp->addmask);
+ 
+ 	/*
+ 	 * Set or clear CS_SCHED_LOAD_BALANCE when partcmd_update, if necessary.
+@@ -1770,10 +1770,13 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	/*
+ 	 * Use the cpumasks in trialcs for tmpmasks when they are pointers
+ 	 * to allocated cpumasks.
++	 *
++	 * Note that update_parent_subparts_cpumask() uses only addmask &
++	 * delmask, but not new_cpus.
+ 	 */
+ 	tmp.addmask  = trialcs->subparts_cpus;
+ 	tmp.delmask  = trialcs->effective_cpus;
+-	tmp.new_cpus = trialcs->cpus_allowed;
++	tmp.new_cpus = NULL;
+ #endif
+ 
+ 	retval = validate_change(cs, trialcs);
+@@ -1838,6 +1841,11 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	}
+ 	spin_unlock_irq(&callback_lock);
+ 
++#ifdef CONFIG_CPUMASK_OFFSTACK
++	/* Now trialcs->cpus_allowed is available */
++	tmp.new_cpus = trialcs->cpus_allowed;
++#endif
++
+ 	/* effective_cpus will be updated here */
+ 	update_cpumasks_hier(cs, &tmp, false);
+ 
 -- 
 2.31.1
 
