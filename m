@@ -2,105 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAD06BEC09
-	for <lists+cgroups@lfdr.de>; Fri, 17 Mar 2023 16:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4786BECAE
+	for <lists+cgroups@lfdr.de>; Fri, 17 Mar 2023 16:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjCQPAY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Mar 2023 11:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        id S231701AbjCQPQh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Mar 2023 11:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbjCQPAX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Mar 2023 11:00:23 -0400
+        with ESMTP id S229978AbjCQPQe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Mar 2023 11:16:34 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C543CCDE2
-        for <cgroups@vger.kernel.org>; Fri, 17 Mar 2023 07:59:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9013FBB7
+        for <cgroups@vger.kernel.org>; Fri, 17 Mar 2023 08:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679065171;
+        s=mimecast20190719; t=1679066134;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4YPRVQy+Pd/j5om95dzW9EJX+zmYVWMbcmqZaHwhRU0=;
-        b=Ok0CnKCqWcsJfnL7/VQm9SoCtuTLNlATdzr2ekL976mb6aSaEToWt9VWS266RySk1Mocws
-        b5IQ+7Z+uu/kpzGv2sI7aavgm3e2e6mJx8lic6vRro74z++v+k5lWivoG8pL6kcSRus46D
-        vWdBPBJn3amAHFQ50nvU92inAT90e34=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q7V46Q52rkSh11P7uwpvJlomEOhaWhBzxdnEpXedVNs=;
+        b=Su31C9U72/eD+9VorbmgT/gTe7VAKh2SprqW8q7KOSZEpkIvBvddj4BtDLTF8zwHHfPgz8
+        x8cUAXCO95VaWGHRfj0mTxszHZ0nyLwlZNyD6KgkSsY+se/ZralYSu8yoN74atiu0++ntf
+        UQ19bAkdEErXZmzrhQtv9LqQUtE/+Ak=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-443-zQy0-OLHMeOhtnlpIQk9fw-1; Fri, 17 Mar 2023 10:59:28 -0400
-X-MC-Unique: zQy0-OLHMeOhtnlpIQk9fw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+ us-mta-657-W1yAmKFMMy2wcEDHNLbwnw-1; Fri, 17 Mar 2023 11:15:30 -0400
+X-MC-Unique: W1yAmKFMMy2wcEDHNLbwnw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 91F7D88B77F;
-        Fri, 17 Mar 2023 14:59:27 +0000 (UTC)
-Received: from [10.22.10.238] (unknown [10.22.10.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B0A1C15BA0;
-        Fri, 17 Mar 2023 14:59:27 +0000 (UTC)
-Message-ID: <ca664da8-0f47-06b2-a94c-82b2f9a1c3aa@redhat.com>
-Date:   Fri, 17 Mar 2023 10:59:26 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 3/5] cgroup/cpuset: Find another usable CPU if none found
- in current cpuset
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230306200849.376804-1-longman@redhat.com>
- <20230306200849.376804-4-longman@redhat.com>
- <20230314181749.5b4k6selbgdhl3up@blackpad>
- <58a1a878-fa0b-285d-3e43-2b5103d3c770@redhat.com>
- <20230317122708.ax3m2d4zijkfdzjq@blackpad>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7683C29AA2E3;
+        Fri, 17 Mar 2023 15:15:29 +0000 (UTC)
+Received: from llong.com (unknown [10.22.10.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BBEE7492B00;
+        Fri, 17 Mar 2023 15:15:28 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230317122708.ax3m2d4zijkfdzjq@blackpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 0/4] cgroup/cpuset: Miscellaneous updates
+Date:   Fri, 17 Mar 2023 11:15:04 -0400
+Message-Id: <20230317151508.1225282-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/17/23 08:27, Michal Koutný wrote:
-> On Tue, Mar 14, 2023 at 04:22:06PM -0400, Waiman Long <longman@redhat.com> wrote:
->> Some arm64 systems can have asymmetric CPUs where certain tasks are only
->> runnable on a selected subset of CPUs.
-> Ah, I'm catching up.
->
->> This information is not captured in the cpuset. As a result,
->> task_cpu_possible_mask() may return a mask that have no overlap with
->> effective_cpus causing new_cpus to become empty.
-> I can see that historically, there was an approach of terminating
-> unaccomodable tasks:
->     94f9c00f6460 ("arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores")
-> the removal of killing had been made possible with
->     df950811f4a8 ("arm64: Prevent offlining first CPU with 32-bit EL0 on mismatched system").
->
-> That gives two other alternatives to affinity modification:
-> 2) kill such tasks (not unlike OOM upon memory.max reduction),
-> 3) reject cpuset reduction (violates cgroup v2 delegation).
->
-> What do you think about 2)?
+ v2:
+  - Add a new patch 1 that fixes a bug introduced by recent v6.2 commit
+    7a2127e66a00 ("cpuset: Call set_cpus_allowed_ptr() with appropriate
+    mask for task").
+  - Make a small twist and additional comment to patch 2 ("cgroup/cpuset:
+    Skip task update if hotplug doesn't affect current cpuset") as
+    suggested by Michal.
+  - Remove v1 patches 3/4 for now for further discussion.
 
-Yes, killing it is one possible solution.
+This patch series includes miscellaneous update to the cpuset and its
+testing code.
 
-(3) doesn't work if the affinity change is due to hot cpu removal. So 
-that leaves this patch or (2) as the only alternative. I would like to 
-hear what Will and Tejun thinks about it.
+Patch 1 fixes a bug caused by commit 7a2127e66a00 ("cpuset: Call
+set_cpus_allowed_ptr() with appropriate mask for task") in the partition
+handling code. This fix was verified by running the test_cpuset_prs.sh
+test.
 
-I am going to remove this patch from the series for the time being.
+Patch 2 is for a hotplug optimization.
 
-Thanks,
-Longman
+Patch 3 is actually a follow-up of commit 3fb906e7fabb ("cgroup/cpuset:
+Don't filter offline CPUs in cpuset_cpus_allowed() for top cpuset tasks").
+
+Patch 4 reduces verbosity when running test_cpuset_prs.sh test script
+unless explicitly enabled with the -v option.
+
+Waiman Long (4):
+  cgroup/cpuset: Fix partition root's cpuset.cpus update bug
+  cgroup/cpuset: Skip task update if hotplug doesn't affect current
+    cpuset
+  cgroup/cpuset: Include offline CPUs when tasks' cpumasks in top_cpuset
+    are updated
+  cgroup/cpuset: Minor updates to test_cpuset_prs.sh
+
+ kernel/cgroup/cpuset.c                        | 38 +++++++++++++------
+ .../selftests/cgroup/test_cpuset_prs.sh       | 25 ++++++------
+ 2 files changed, 41 insertions(+), 22 deletions(-)
+
+-- 
+2.31.1
 
