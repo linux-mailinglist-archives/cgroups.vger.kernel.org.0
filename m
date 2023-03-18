@@ -2,74 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 195686BF992
-	for <lists+cgroups@lfdr.de>; Sat, 18 Mar 2023 12:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D886BF993
+	for <lists+cgroups@lfdr.de>; Sat, 18 Mar 2023 12:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjCRLR2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 18 Mar 2023 07:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        id S229502AbjCRLRq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 18 Mar 2023 07:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjCRLR2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Mar 2023 07:17:28 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067EA56504
-        for <cgroups@vger.kernel.org>; Sat, 18 Mar 2023 04:16:51 -0700 (PDT)
+        with ESMTP id S229478AbjCRLRp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Mar 2023 07:17:45 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4611F52F67
+        for <cgroups@vger.kernel.org>; Sat, 18 Mar 2023 04:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679138212; x=1710674212;
+  t=1679138264; x=1710674264;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=cUbj+2cgp6WsawDeMfvruxC+NjJRfDYjZ1rqtBzhA5o=;
-  b=Ql5ciseyECeDcW9G+jztutAjxXMwfM7rtM/QWbVdlcBJvvDzImTw9xnf
-   b5jpXcO74P0JpaCSH8ccCEp7dgYwcmprjdPZsQrwITWvEI9AgR8yIc7+E
-   a/D8K00VYGAKSvX4w7cIylPq3OnIRKG4/yMVtCMHiFCxllPFZGroE+Y47
-   1cex14J/5hbc6zMD//lW5Ld589TnDrUJSgAkGVxxU3itVtAiKlfvYjYxG
-   Ibnz+GMLZOrvITcR4oL6JDbravJYuU6tPhGhi5buYyQkbSMKz7dVCsKM+
-   3uGryHoRhm1pgbPpjts0EiWEVHoJb9bzBAF7HhRdpT4wbGH8fpzLdMqB9
+  bh=1N7+RKWsa6sOqJntApG0I0tuGZ6JmxGuC5S+moVW86g=;
+  b=Rypcq+aWjC75qYjzSjvn90gYoUL7VP/uA4G+r+M6+Fdu5zaNd30V50yT
+   h1FB+0m+7NVlCvgFFVFaeey87/Dy/g1CYXuR5/RVopVhWcBsgZMJUlf8H
+   /4M6PRE8XxVeKD44mI4nKrOlkTMyRhJqXp4eZuafH26N+K++VYjfR5lNB
+   7KQA2y0gGic9g4ACinBt9IoiGZK3RE3uj3jg5eZ8in81lFA9NREqF5vny
+   DsZ5yf7N+L2vQ3s59cUsfW5kRZUIZFv2Xk64UAeQBYV1KE9oBLa3TngFf
+   dlLbPON/5mvFfDstOb5IMPwAR3JfkAqR5b2X06A6jt9RTYtg1jnhKmlMa
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10652"; a="366133395"
+X-IronPort-AV: E=McAfee;i="6600,9927,10652"; a="424703571"
 X-IronPort-AV: E=Sophos;i="5.98,271,1673942400"; 
-   d="scan'208";a="366133395"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2023 04:16:48 -0700
+   d="scan'208";a="424703571"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2023 04:17:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10652"; a="769663454"
+X-IronPort-AV: E=McAfee;i="6600,9927,10652"; a="744833661"
 X-IronPort-AV: E=Sophos;i="5.98,271,1673942400"; 
-   d="scan'208";a="769663454"
+   d="scan'208";a="744833661"
 Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Mar 2023 04:16:47 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 18 Mar 2023 04:17:42 -0700
 Received: from kbuild by b613635ddfff with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pdUYD-000A12-2Z;
-        Sat, 18 Mar 2023 11:16:41 +0000
-Date:   Sat, 18 Mar 2023 19:16:32 +0800
+        id 1pdUZB-000A1E-2t;
+        Sat, 18 Mar 2023 11:17:41 +0000
+Date:   Sat, 18 Mar 2023 19:16:51 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- f7ac82ea4b457c02eeedf5bb9ceccc777448e1ce
-Message-ID: <64159d90.kQR7QpCqADvHV8dV%lkp@intel.com>
+Subject: [tj-cgroup:for-6.3-fixes] BUILD SUCCESS
+ fcdb1eda5302599045bb366e679cccb4216f3873
+Message-ID: <64159da3.oln5hYujAtZviVX2%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: f7ac82ea4b457c02eeedf5bb9ceccc777448e1ce  Merge branch 'for-6.3-fixes' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.3-fixes
+branch HEAD: fcdb1eda5302599045bb366e679cccb4216f3873  cgroup: fix display of forceidle time at root
 
-elapsed time: 732m
+elapsed time: 733m
 
-configs tested: 305
-configs skipped: 30
+configs tested: 308
+configs skipped: 31
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -112,13 +112,13 @@ arm          buildonly-randconfig-r005-20230313   gcc
 arm                                 defconfig   gcc  
 arm                  randconfig-r004-20230313   clang
 arm                  randconfig-r006-20230313   clang
+arm                  randconfig-r016-20230313   gcc  
 arm                  randconfig-r024-20230313   gcc  
 arm                  randconfig-r025-20230313   gcc  
 arm                  randconfig-r026-20230313   gcc  
 arm                  randconfig-r035-20230312   gcc  
 arm                  randconfig-r046-20230312   clang
 arm                  randconfig-r046-20230313   gcc  
-arm                  randconfig-r046-20230318   clang
 arm                           stm32_defconfig   gcc  
 arm64                            allyesconfig   gcc  
 arm64        buildonly-randconfig-r004-20230313   gcc  
@@ -137,6 +137,7 @@ csky         buildonly-randconfig-r005-20230313   gcc
 csky                                defconfig   gcc  
 csky                 randconfig-r002-20230312   gcc  
 csky                 randconfig-r003-20230312   gcc  
+csky                 randconfig-r013-20230312   gcc  
 csky                 randconfig-r022-20230313   gcc  
 csky                 randconfig-r023-20230312   gcc  
 csky                 randconfig-r025-20230313   gcc  
@@ -148,10 +149,8 @@ hexagon              randconfig-r015-20230312   clang
 hexagon              randconfig-r016-20230313   clang
 hexagon              randconfig-r041-20230312   clang
 hexagon              randconfig-r041-20230313   clang
-hexagon              randconfig-r041-20230318   clang
 hexagon              randconfig-r045-20230312   clang
 hexagon              randconfig-r045-20230313   clang
-hexagon              randconfig-r045-20230318   clang
 i386                             allyesconfig   gcc  
 i386         buildonly-randconfig-r002-20230313   gcc  
 i386         buildonly-randconfig-r003-20230313   gcc  
@@ -251,6 +250,7 @@ openrisc     buildonly-randconfig-r003-20230312   gcc
 openrisc     buildonly-randconfig-r005-20230313   gcc  
 openrisc             randconfig-r012-20230313   gcc  
 openrisc             randconfig-r014-20230312   gcc  
+openrisc             randconfig-r014-20230313   gcc  
 openrisc             randconfig-r021-20230313   gcc  
 openrisc             randconfig-r032-20230312   gcc  
 openrisc             randconfig-r036-20230312   gcc  
@@ -259,6 +259,7 @@ parisc                              defconfig   gcc
 parisc               randconfig-r005-20230312   gcc  
 parisc               randconfig-r005-20230313   gcc  
 parisc               randconfig-r013-20230312   gcc  
+parisc               randconfig-r014-20230312   gcc  
 parisc               randconfig-r021-20230313   gcc  
 parisc               randconfig-r023-20230313   gcc  
 parisc               randconfig-r026-20230313   gcc  
@@ -312,6 +313,7 @@ sh           buildonly-randconfig-r002-20230313   gcc
 sh           buildonly-randconfig-r005-20230312   gcc  
 sh           buildonly-randconfig-r006-20230313   gcc  
 sh                   randconfig-r015-20230312   gcc  
+sh                   randconfig-r016-20230312   gcc  
 sh                   randconfig-r023-20230313   gcc  
 sh                   randconfig-r024-20230312   gcc  
 sh                   randconfig-r024-20230313   gcc  
@@ -320,6 +322,7 @@ sh                   sh7770_generic_defconfig   gcc
 sparc        buildonly-randconfig-r003-20230313   gcc  
 sparc                               defconfig   gcc  
 sparc                randconfig-r002-20230313   gcc  
+sparc                randconfig-r015-20230312   gcc  
 sparc                randconfig-r021-20230312   gcc  
 sparc                randconfig-r022-20230312   gcc  
 sparc                randconfig-r023-20230312   gcc  
