@@ -2,82 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A306C0CC8
-	for <lists+cgroups@lfdr.de>; Mon, 20 Mar 2023 10:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CA86C10F2
+	for <lists+cgroups@lfdr.de>; Mon, 20 Mar 2023 12:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjCTJIF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Mar 2023 05:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        id S229975AbjCTLi3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Mar 2023 07:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjCTJIE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Mar 2023 05:08:04 -0400
-X-Greylist: delayed 646 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Mar 2023 02:08:02 PDT
-Received: from mail.arnisdale.pl (mail.arnisdale.pl [151.80.133.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E0B11E86
-        for <cgroups@vger.kernel.org>; Mon, 20 Mar 2023 02:08:02 -0700 (PDT)
-Received: by mail.arnisdale.pl (Postfix, from userid 1002)
-        id 8FB68273B4; Mon, 20 Mar 2023 08:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=arnisdale.pl; s=mail;
-        t=1679302544; bh=6DhEsVYOGxxfetVY3oiVeew+7Cm34ArcvgDq2WQYIRw=;
-        h=Date:From:To:Subject:From;
-        b=DDLkr9cLV7dJzFBWL1skjIlft4wzKvlq4kf2jtjyCRYz9Zr5FsVEObo734pRwBnUQ
-         k60IZS41t7lIFD+gNZ7hRRKhUtFhQsOaO/JPvHghHGVf5fiTsNHWa5aSEbjoI6ujSv
-         xRd66xdrNS+wU1DX5NVmlwdqgcsK7v2gsAdfLmYDQPzjI6NO8X50PjJjMOKvheG5pb
-         CZpwzKFKyk3PzAs3QHq6Z8tted443PAugeoEGvJW2jxK9GpZsIizm/ROdBqZEw+cAT
-         pEPvIwzfP3tfqzVLKxpzjDJ2EDQBjfT+nVn2OTq+48pmKDHCKvozURPeymxJhczzTk
-         ov/Rbh9JOiC4w==
-Received: by mail.arnisdale.pl for <cgroups@vger.kernel.org>; Mon, 20 Mar 2023 08:55:13 GMT
-Message-ID: <20230320071612-0.1.3f.12vzm.0.5y87gmc75s@arnisdale.pl>
-Date:   Mon, 20 Mar 2023 08:55:13 GMT
-From:   "Maciej Telka" <maciej.telka@arnisdale.pl>
-To:     <cgroups@vger.kernel.org>
-Subject: =?UTF-8?Q?Nawi=C4=85zanie_wsp=C3=B3=C5=82pracy?=
-X-Mailer: mail.arnisdale.pl
+        with ESMTP id S229527AbjCTLi2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Mar 2023 07:38:28 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CAE1448D
+        for <cgroups@vger.kernel.org>; Mon, 20 Mar 2023 04:38:27 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id c1so7421527vsk.2
+        for <cgroups@vger.kernel.org>; Mon, 20 Mar 2023 04:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679312306;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b4kWzn6pxkecn7JMiXg/VymW/f2W9szhFxBJtG2FdMw=;
+        b=M3Z/ga0yUjls8h82yHnCxWe0I9CAOuB9T9PJgEp4KBMxwHroT9HL1O/uzrcv3G3JiB
+         JiTdG6uVLIkjqvBEv5tpxVKW32Gjj6V288CSAopn9ZyiUmXdO85D5/gdvMZmF7FloWeN
+         NDoBqlQIqidMOKE/KQd3MfbPcupVJTD4+qrt41HiKYsdOb/Mwvhhg0/4Vwq8cTqMPE+U
+         1/Ugp22WRWMiPrDPQmRQBUqu46C2uLHMf6NFVtcZ6Fs5SLMyAhye/LPoQQoHCp37A0DR
+         619v0tvJ0n4gu0tjN1n+PKYwq9zUoJRpS50s6loPY9zzuec/P5YxoVyhmd8XlVmbB5bd
+         XhWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679312306;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b4kWzn6pxkecn7JMiXg/VymW/f2W9szhFxBJtG2FdMw=;
+        b=ImsgGjT4LnRtu0TBVfCwxnHHPWmAJ5CscAgPJpoaLZsOiV/PDfx0xUgQwHChuXH4xW
+         i2fDMuTIp2ta6APh4OzKiXLsiRDuGmpg9+FJ1Yljh/WNzES4/oCKdLracovDLjRY7fyG
+         n0Ooq/go+vTmsFBdYv1eoTXca0OGdSVjrnfdt2+IJI3+W+xSkHzoJo6lx8dMaFfn3cfL
+         sPhKsLI91BdLS9cQ431oxvi4qMrJkbMTXhQaXKOk88l4uIZFbj/GZCXWe1bmOmteQaoK
+         Y/gN2m2ozqvEM+KOcNu+L73eHzrrRKwGGwou6qEbWZ2R7l6jCZ8R3HbWhELDDAEt8K0e
+         okOQ==
+X-Gm-Message-State: AO0yUKXdowSDtDObWr+F316kRFsMMlnxPKdNN2mZ61l8ODjEHMBCfBTD
+        1C8bGodRRDuCA1kwpxvjzEoP2p5dzMQZg5aDKbs=
+X-Google-Smtp-Source: AK7set81l1BzxEkukKw3ORxSrI7TQLxhd4b4tKzKW1MFQqEhd4s5hSDEnLMAZn1mVstvjnPzHO0/jSnrGTCmISc8bv4=
+X-Received: by 2002:a67:ac0c:0:b0:425:8e57:7bfd with SMTP id
+ v12-20020a67ac0c000000b004258e577bfdmr3579877vse.3.1679312306642; Mon, 20 Mar
+ 2023 04:38:26 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:ab0:7a4a:0:b0:747:a875:ea9e with HTTP; Mon, 20 Mar 2023
+ 04:38:26 -0700 (PDT)
+Reply-To: contact.ninacoulibaly@inbox.eu
+From:   nina coulibaly <ninacoulibaly81.info@gmail.com>
+Date:   Mon, 20 Mar 2023 04:38:26 -0700
+Message-ID: <CAJws7AAEcN=Wx4G-Z2TAK9xuA6pEAwmRvLZEOXQA53YBMKdDXg@mail.gmail.com>
+Subject: from nina coulibaly
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: arnisdale.pl]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [151.80.133.87 listed in zen.spamhaus.org]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: arnisdale.pl]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4337]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-X-Spam-Level: ******
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Dear ,
 
-Czy jest mo=C5=BCliwo=C5=9B=C4=87 nawi=C4=85zania wsp=C3=B3=C5=82pracy z =
-Pa=C5=84stwem?
+Please grant me the permission to share important discussion with you.
+I am looking forward to hearing from you at your earliest convenience.
 
-Z ch=C4=99ci=C4=85 porozmawiam z osob=C4=85 zajmuj=C4=85c=C4=85 si=C4=99 =
-dzia=C5=82aniami zwi=C4=85zanymi ze sprzeda=C5=BC=C4=85.
+Best Regards.
 
-Pomagamy skutecznie pozyskiwa=C4=87 nowych klient=C3=B3w.
-
-Zapraszam do kontaktu.
-
-
-Pozdrawiam serdecznie
-Maciej Telka
+Mrs. Nina Coulibaly
