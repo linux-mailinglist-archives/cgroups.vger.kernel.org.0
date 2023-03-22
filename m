@@ -2,242 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E03486C4CA8
-	for <lists+cgroups@lfdr.de>; Wed, 22 Mar 2023 15:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C96626C4CE7
+	for <lists+cgroups@lfdr.de>; Wed, 22 Mar 2023 15:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjCVOAT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Mar 2023 10:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S231263AbjCVOFz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Mar 2023 10:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjCVOAQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Mar 2023 10:00:16 -0400
+        with ESMTP id S231293AbjCVOFu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Mar 2023 10:05:50 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BAF885FE6;
-        Wed, 22 Mar 2023 07:00:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26B17559D1;
+        Wed, 22 Mar 2023 07:05:41 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8590315A1;
-        Wed, 22 Mar 2023 07:00:58 -0700 (PDT)
-Received: from e125579.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EF77B3F71E;
-        Wed, 22 Mar 2023 07:00:11 -0700 (PDT)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C57894B3;
+        Wed, 22 Mar 2023 07:06:24 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 170F93F71E;
+        Wed, 22 Mar 2023 07:05:36 -0700 (PDT)
+Message-ID: <848c4fb3-d3c4-a7f0-9df8-9b25c537f42c@arm.com>
+Date:   Wed, 22 Mar 2023 15:05:25 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [RFC PATCH 2/3] sched/cpuset: Keep track of SCHED_DEADLINE tasks
+ in cpusets
+Content-Language: en-US
+To:     Waiman Long <longman@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Qais Yousef <qyousef@layalina.io>, Wei Wang <wvw@google.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [RFC PATCH 2/2] cgroup/cpuset: Free DL BW in case can_attach() fails
-Date:   Wed, 22 Mar 2023 14:59:59 +0100
-Message-Id: <20230322135959.1998790-3-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230322135959.1998790-1-dietmar.eggemann@arm.com>
-References: <20230322135959.1998790-1-dietmar.eggemann@arm.com>
-MIME-Version: 1.0
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+References: <20230315121812.206079-1-juri.lelli@redhat.com>
+ <20230315121812.206079-3-juri.lelli@redhat.com>
+ <7a3b31bf-4f6a-6525-9c6a-2bae44d7b0af@redhat.com>
+ <ZBH9E7lCEXcFDBG4@localhost.localdomain>
+ <2739c3ec-1e97-fc4d-8001-50283c94f4ff@redhat.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <2739c3ec-1e97-fc4d-8001-50283c94f4ff@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-cpuset_can_attach() can fail. Postpone DL BW allocation until all task
-have been checked. DL BW is not allocated per-task but as a sum over
-all DL tasks migrating.
+On 15/03/2023 19:01, Waiman Long wrote:
+> 
+> On 3/15/23 13:14, Juri Lelli wrote:
+>> On 15/03/23 11:46, Waiman Long wrote:
+>>> On 3/15/23 08:18, Juri Lelli wrote:
 
-If multiple controllers are attached to the cgroup next to cuset a
-non-cpuset can_attach() can fail. In this case free DL BW in
-cpuset_cancel_attach().
+[...]
 
-Finally, update cpuset DL task count (nr_deadline_tasks) only in
-cpuset_attach().
+>>>> @@ -2472,6 +2492,11 @@ static int cpuset_can_attach(struct
+>>>> cgroup_taskset *tset)
+>>>>            ret = security_task_setscheduler(task);
+>>>>            if (ret)
+>>>>                goto out_unlock;
+>>>> +
+>>>> +        if (dl_task(task)) {
+>>>> +            cs->nr_deadline_tasks++;
+>>>> +            cpuset_attach_old_cs->nr_deadline_tasks--;
+>>>> +        }
+>>>>        }
+>>> Any one of the tasks in the cpuset can cause the test to fail and
+>>> abort the
+>>> attachment. I would suggest that you keep a deadline task transfer
+>>> count in
+>>> the loop and then update cs and cpouset_attach_old_cs only after all the
+>>> tasks have been iterated successfully.
+>> Right, Dietmar I think commented pointing out something along these
+>> lines. Think though we already have this problem with current
+>> task_can_attach -> dl_cpu_busy which reserves bandwidth for each tasks
+>> in the destination cs. Will need to look into that. Do you know which
+>> sort of operation would move multiple tasks at once?
+> 
+> Actually, what I said previously may not be enough. There can be
+> multiple controllers attached to a cgroup. If any of thier can_attach()
+> calls fails, the whole transaction is aborted and cancel_attach() will
+> be called. My new suggestion is to add a new deadline task transfer
+> count into the cpuset structure and store the information there
+> temporarily. If cpuset_attach() is called, it means all the can_attach
+> calls succeed. You can then update the dl task count accordingly and
+> clear the temporary transfer count.
+> 
+> I guess you may have to do something similar with dl_cpu_busy().
 
-Suggested-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- include/linux/sched.h  |  2 +-
- kernel/cgroup/cpuset.c | 55 ++++++++++++++++++++++++++++++++++++++----
- kernel/sched/core.c    | 17 ++-----------
- 3 files changed, 53 insertions(+), 21 deletions(-)
+I gave it a shot:
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 658e997ba057..675ec74469d7 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1846,7 +1846,7 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
- }
- 
- extern int cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
--extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
-+extern int task_can_attach(struct task_struct *p);
- extern int dl_bw_alloc(int cpu, u64 dl_bw);
- extern void dl_bw_free(int cpu, u64 dl_bw);
- #ifdef CONFIG_SMP
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index f46192d2e97e..fdc476eefbed 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -198,6 +198,8 @@ struct cpuset {
- 	 * know when to rebuild associated root domain bandwidth information.
- 	 */
- 	int nr_deadline_tasks;
-+	int nr_migrate_dl_tasks;
-+	u64 sum_migrate_dl_bw;
- 
- 	/* Invalid partition error code, not lock protected */
- 	enum prs_errcode prs_err;
-@@ -2462,16 +2464,23 @@ static int fmeter_getrate(struct fmeter *fmp)
- 
- static struct cpuset *cpuset_attach_old_cs;
- 
-+static void reset_migrate_dl_data(struct cpuset *cs)
-+{
-+	cs->nr_migrate_dl_tasks = 0;
-+	cs->sum_migrate_dl_bw = 0;
-+}
-+
- /* Called by cgroups to determine if a cpuset is usable; cpuset_mutex held */
- static int cpuset_can_attach(struct cgroup_taskset *tset)
- {
- 	struct cgroup_subsys_state *css;
--	struct cpuset *cs;
-+	struct cpuset *cs, *oldcs;
- 	struct task_struct *task;
- 	int ret;
- 
- 	/* used later by cpuset_attach() */
- 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-+	oldcs = cpuset_attach_old_cs;
- 	cs = css_cs(css);
- 
- 	mutex_lock(&cpuset_mutex);
-@@ -2489,7 +2498,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 		goto out_unlock;
- 
- 	cgroup_taskset_for_each(task, css, tset) {
--		ret = task_can_attach(task, cs->effective_cpus);
-+		ret = task_can_attach(task);
- 		if (ret)
- 			goto out_unlock;
- 		ret = security_task_setscheduler(task);
-@@ -2497,11 +2506,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 			goto out_unlock;
- 
- 		if (dl_task(task)) {
--			cs->nr_deadline_tasks++;
--			cpuset_attach_old_cs->nr_deadline_tasks--;
-+			cs->nr_migrate_dl_tasks++;
-+			cs->sum_migrate_dl_bw += task->dl.dl_bw;
-+		}
-+	}
-+
-+	if (!cs->nr_migrate_dl_tasks)
-+		goto out_succes;
-+
-+	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
-+		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-+
-+		if (unlikely(cpu >= nr_cpu_ids)) {
-+			reset_migrate_dl_data(cs);
-+			ret = -EINVAL;
-+			goto out_unlock;
-+		}
-+
-+		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-+		if (ret) {
-+			reset_migrate_dl_data(cs);
-+			goto out_unlock;
- 		}
- 	}
- 
-+out_succes:
- 	/*
- 	 * Mark attach is in progress.  This makes validate_change() fail
- 	 * changes which zero cpus/mems_allowed.
-@@ -2516,11 +2545,21 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- static void cpuset_cancel_attach(struct cgroup_taskset *tset)
- {
- 	struct cgroup_subsys_state *css;
-+	struct cpuset *cs;
- 
- 	cgroup_taskset_first(tset, &css);
-+	cs = css_cs(css);
- 
- 	mutex_lock(&cpuset_mutex);
--	css_cs(css)->attach_in_progress--;
-+	cs->attach_in_progress--;
-+
-+	if (cs->nr_migrate_dl_tasks) {
-+		int cpu = cpumask_any(cs->effective_cpus);
-+
-+		dl_bw_free(cpu, cs->sum_migrate_dl_bw);
-+		reset_migrate_dl_data(cs);
-+	}
-+
- 	mutex_unlock(&cpuset_mutex);
- }
- 
-@@ -2615,6 +2654,12 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- out:
- 	cs->old_mems_allowed = cpuset_attach_nodemask_to;
- 
-+	if (cs->nr_migrate_dl_tasks) {
-+		cs->nr_deadline_tasks += cs->nr_migrate_dl_tasks;
-+		oldcs->nr_deadline_tasks -= cs->nr_migrate_dl_tasks;
-+		reset_migrate_dl_data(cs);
-+	}
-+
- 	cs->attach_in_progress--;
- 	if (!cs->attach_in_progress)
- 		wake_up(&cpuset_attach_wq);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2f07aecb7434..4fb058b72886 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9201,8 +9201,7 @@ int cpuset_cpumask_can_shrink(const struct cpumask *cur,
- 	return ret;
- }
- 
--int task_can_attach(struct task_struct *p,
--		    const struct cpumask *cs_effective_cpus)
-+int task_can_attach(struct task_struct *p)
- {
- 	int ret = 0;
- 
-@@ -9215,21 +9214,9 @@ int task_can_attach(struct task_struct *p,
- 	 * success of set_cpus_allowed_ptr() on all attached tasks
- 	 * before cpus_mask may be changed.
- 	 */
--	if (p->flags & PF_NO_SETAFFINITY) {
-+	if (p->flags & PF_NO_SETAFFINITY)
- 		ret = -EINVAL;
--		goto out;
--	}
--
--	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
--					      cs_effective_cpus)) {
--		int cpu = cpumask_any_and(cpu_active_mask, cs_effective_cpus);
- 
--		if (unlikely(cpu >= nr_cpu_ids))
--			return -EINVAL;
--		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
--	}
--
--out:
- 	return ret;
- }
- 
--- 
-2.25.1
-
+https://lkml.kernel.org/r/20230322135959.1998790-1-dietmar.eggemann@arm.com
