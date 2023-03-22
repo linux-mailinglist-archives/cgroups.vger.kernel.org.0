@@ -2,277 +2,198 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D64E96C4E7D
-	for <lists+cgroups@lfdr.de>; Wed, 22 Mar 2023 15:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBADE6C4F12
+	for <lists+cgroups@lfdr.de>; Wed, 22 Mar 2023 16:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbjCVOvN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Mar 2023 10:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S229672AbjCVPKo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Mar 2023 11:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbjCVOut (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Mar 2023 10:50:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98F2664E5
-        for <cgroups@vger.kernel.org>; Wed, 22 Mar 2023 07:48:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679496515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nv1rg/DAjDe5KwYu6JClmrs+DeW1EZyujTLakuo+/7c=;
-        b=NHt+U/+cn0m6ThoPXphxk7R9QH4seyYdZm84sjUVpYqxMXUYf6EdyWv4SNUKzIyMaQ2HNH
-        474U2WRtm7l0mmERxGdXQX5923QBQa+KYRhy3uvbr2lKLMiuOP+tG414PTHhVOLOh4BkI0
-        hF5oLIDccZM5GYRdF5OCc0IUr+fMKGI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-587-a2tnyfd8OyOpozpcAAtxNg-1; Wed, 22 Mar 2023 10:48:31 -0400
-X-MC-Unique: a2tnyfd8OyOpozpcAAtxNg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 61227185A78F;
-        Wed, 22 Mar 2023 14:48:30 +0000 (UTC)
-Received: from [10.22.8.189] (unknown [10.22.8.189])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 58BD91121314;
-        Wed, 22 Mar 2023 14:48:29 +0000 (UTC)
-Message-ID: <0473da14-81ce-74fd-4357-3142af9e3ce9@redhat.com>
-Date:   Wed, 22 Mar 2023 10:48:29 -0400
+        with ESMTP id S231470AbjCVPKj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Mar 2023 11:10:39 -0400
+X-Greylist: delayed 2027 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Mar 2023 08:10:35 PDT
+Received: from mx0a-002c1b01.pphosted.com (mx0a-002c1b01.pphosted.com [148.163.151.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642B54D28B;
+        Wed, 22 Mar 2023 08:10:35 -0700 (PDT)
+Received: from pps.filterd (m0127840.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32MDq4SE030293;
+        Wed, 22 Mar 2023 07:25:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=proofpoint20171006;
+ bh=WIFKt/lwj22OXSfQjLXjeXNCFoPB1NUDKCJV0aNbMc0=;
+ b=F3BjvSyFNQV3IsMSO4q+lTG90j9RhpO8pPEcKmBIC9ZfSJZ7QKPpsgn2azAOv5vgU95l
+ ZylBp9X0kck0I+4N8n/DGot8k27qv6SJ7hFRoBpHIXV5rKgrxUJOdObcgMDMQ2dYMEmE
+ I6nYheDT2nvNxyLNNWBhltZ420mWaOwQqC1V5iSn8lzmuGaIFE6JzLliUftAj30HIvpc
+ D5E7H6JUzlQ4cZYBLTNJjh+rNcUlsKneH3fmOF3poSJgatA7GN1D9DhnwJQZV9byoh6+
+ gIBUIbY34crtqsKGY9vQ/T701MAsrPcfSnOcfIAgGosXWUiMPzXvQ0mo9l2wx/BrkpUr dg== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
+        by mx0a-002c1b01.pphosted.com (PPS) with ESMTPS id 3pd9mvg768-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Mar 2023 07:25:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GoyyRvRcdQ9KyVVtdXiecOiJ8vDJzEKRirB2LL7QHueHoelqC5IJWuZeX3cnEdHOAvyYPjEQpqiYVy3Tw1QDFgYwRYrcnoTRUowt5NCfJPIKtaoYbSWY+5c7yrnyxVk+PwZty+p8ez7vlLKhKM2ReG2XRyR99/AwPVbE1pG22b4DCYFvDBipqO82284NCV1OO5SCWm5RGIci/8RUqyjTMERng+IT3Go+onKzLh24nG8AkGeEzFhnr7PzSv2OwUXMfoEgt0F0ejUyTs3Bt8gkfkFoUuR5owElYMVUy3hlJeBFpboapJQCDAgbHWgGok03mMkiopr7LeI4z20fJhw6vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WIFKt/lwj22OXSfQjLXjeXNCFoPB1NUDKCJV0aNbMc0=;
+ b=H6UISdgixYH93hnr7c7cBEkejZyoCqUSs4STojFkMrjiOQQeMq1qTh95p4yX8kXuUAU51oTUY9mL7J3tFG7/KEyq5eWscQbyPCrYVfYK0Tn326VfQi7pP5Di6WBKaH/g3zbQ8OLGuucwX1jm8Di54EknWlA6nEslSwdWAILpKSX4hylwwioO8EiBGSw3JtAoxG75tjd+kS6emGu9K3o4fX95mEVe73vuF0UC9NPWtHVZAPCGwQxvdTycAOBhE97dHehigdMTqG99yRAn821t3JYw42YZGO2WkQljhheeLGBusSlTVGpsDpnWDy+mUJ0oSdfqTbgr+ab6Mml+Q6H1OQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WIFKt/lwj22OXSfQjLXjeXNCFoPB1NUDKCJV0aNbMc0=;
+ b=lzSO3/GY7oO9kV+QxwvigMmMN70C+fshsKjUY8rqDvezOR3a2S6Ud3hU68zxM4DrXUCxTZ2tJlyFBn8E0c5CU2qH90rDqOevYaYZwVHpYrKL/NOgcPYu397rLCe2VTrl47dJrHRWa/5TK18KD0MhbVrwu0A6cfLE13HrVWglZmjiYv5AtTGMaC65/M33k3Op3JQwQ5ThcXTMWPZwLx1LWCWxOh5pHlQDKth5Ducj+o7cS8qKTIKiUzx0Qj1i1uUmSOOnhWk2pbwmr1TkErUVOfgGpuyd3YBXrnCXIsXoRPKoU1UFis2ygSdeAjPMHTL119sPYMAfO27fjUAKMIl2WQ==
+Received: from BL3PR02MB8217.namprd02.prod.outlook.com (2603:10b6:208:33b::20)
+ by CH0PR02MB8289.namprd02.prod.outlook.com (2603:10b6:610:fe::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Wed, 22 Mar
+ 2023 14:25:37 +0000
+Received: from BL3PR02MB8217.namprd02.prod.outlook.com
+ ([fe80::cdaf:f99e:fb15:3978]) by BL3PR02MB8217.namprd02.prod.outlook.com
+ ([fe80::cdaf:f99e:fb15:3978%3]) with mapi id 15.20.6178.037; Wed, 22 Mar 2023
+ 14:25:37 +0000
+From:   Florian Schmidt <flosch@nutanix.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Florian Schmidt <flosch@nutanix.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [RFC] memcg v1: provide read access to memory.pressure_level
+Date:   Wed, 22 Mar 2023 14:25:25 +0000
+Message-Id: <20230322142525.162469-1-flosch@nutanix.com>
+X-Mailer: git-send-email 2.32.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PH8PR21CA0015.namprd21.prod.outlook.com
+ (2603:10b6:510:2ce::12) To BL3PR02MB8217.namprd02.prod.outlook.com
+ (2603:10b6:208:33b::20)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 2/2] cgroup/cpuset: Free DL BW in case can_attach()
- fails
-Content-Language: en-US
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Qais Yousef <qyousef@layalina.io>, Wei Wang <wvw@google.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20230322135959.1998790-1-dietmar.eggemann@arm.com>
- <20230322135959.1998790-3-dietmar.eggemann@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230322135959.1998790-3-dietmar.eggemann@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL3PR02MB8217:EE_|CH0PR02MB8289:EE_
+X-MS-Office365-Filtering-Correlation-Id: 591a0444-8f06-46ca-966a-08db2ae14e89
+x-proofpoint-crosstenant: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VZxTK/N8UZhE4gIeG4cQkOooBsfGpWJxh34ZNeJ3Qk9nvwE1zub+P71nl2hqYB6BngvqwLPodbngPiUvzBBTJ2EFsLjLbWJItp+HLSfhfNZY5+vo4ZEJXEzyJVnvgj1+OcEKbpKAr6+YVi0Dq4guyD9QTEEMcF5D+5Zv+QsgXSgcX/osNj43bbWo+JFRGWaO0gQk4A2V+1eWGKAmPrIzqMWhp32azJ0AJXgpN5FgGrJqENc4aN07l4KK2nhO5F4u3+w+J4XyRQu1U5llXGOmIA9LjKgvvayIQ4Jif+vLwXro0C7Oe/ZPOo/BFBaVKujT5P7c5oJUrj4sa/Cj6j7RDIQRI0AX+gRtuyP3TT1I/CzfJ6NeqPrwuZfGvVjjbzIi5UZKM5PKDuhrBL1yA5OR54l26OQnDQ4riL/qkfOHL+8ljexv4H06WDEZqJCeP84vHCBrRVNNffB0zMVHRR5eJwusAiUkH7PmgC54Jm0B/hPBibgwXRxvXCToVtA4+HGosAOPXjBhy8V8Tc2I75TUXEyOuTwaj9DD2z5/bbzXAo1WQQZ/VsJl6cly97LVBEXpLy4SB5imX3C4kyUpOkO29DDxfP/UF7BPV2yaToRiqCD91qmWZx0Ws9AuT+9LwUaYMGwjOjClxtWZeX93CwYgccXhboEuMdpR80G3P19CwoC6KfcDRKHoo+tghv1AVd+5nEfvkuXe6wXxrAiZHPy3hg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR02MB8217.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(346002)(376002)(39860400002)(366004)(136003)(396003)(451199018)(316002)(52116002)(41300700001)(110136005)(8936002)(26005)(4326008)(1076003)(478600001)(6512007)(6506007)(186003)(6486002)(6666004)(8676002)(5660300002)(2906002)(2616005)(83380400001)(38350700002)(38100700002)(66476007)(66946007)(66556008)(36756003)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yorG/bcxx39CnBGxnMWjQ0uqVmaTChKf3DwWhO0/DTNENrM9uaPIkkFHo63f?=
+ =?us-ascii?Q?DKCzec5pvR+dGbXg4tUPxL6QuDOJTuXN+Vp5h7rctneNEv7l9BLGWFekRpcD?=
+ =?us-ascii?Q?E9XvbWqZ2GVPgpB5aHZwPzdnW3c+ro3yw4LQBNy77iRY7UoQ+yHPMsPyjZ5H?=
+ =?us-ascii?Q?liCSeJeOYAZg2okx2VdL6nQSLI4jxgftVmGuJRpd0GptdQwdzOK5aED4ufru?=
+ =?us-ascii?Q?sxQUdctWSnbvoIGrcqsun4em8pSca+5hMu3Lbe5HZHv6qvfy/rR6hRKpstYK?=
+ =?us-ascii?Q?xTgjA+MU/MGo7hdcJr5xY23spWdqB4CNJBJ+3fDVT5yCvIJdloXHpjK8Z5fm?=
+ =?us-ascii?Q?SLrgTr0S+yTdeoGP9L+D85tnTEsQM2RinGeBQO2Lg9lp/puEQTv8RpsPcbB+?=
+ =?us-ascii?Q?9ly8TEQ2mF+1+l5x5lrRDaEn1MqmsafoPS6ZyZVPk3K7uhf3s1uzd6QTJ5bi?=
+ =?us-ascii?Q?ZTzVrqim1l8zffO/xXGWnzLO41bZrlC2mSvklPJhmkFKj91FoALNDvyGOIc+?=
+ =?us-ascii?Q?Jzw2aNsoD9VTi0lAbYt2HV+c2R5jTUKWvTM5jX+DVNLkj4j0F+nsmc4U3Zyt?=
+ =?us-ascii?Q?rsLiDSgtiWg/rYD35S22SxVBK2miki6cz858KpmnybJqv+utjtD4l1fR0Yk/?=
+ =?us-ascii?Q?kor+gWXrDEgy/388K0O6W0PwFp6aJULiA39uCLIbnKlvWRKZWXJbVbiXGLyJ?=
+ =?us-ascii?Q?KxKSKue2BCjfXnMbHG3CH2jgBkhGgSGEKE852T/XRq79LPncxKy/ZBBfWHGc?=
+ =?us-ascii?Q?kbCTNOuQ9qjReV6QYRvT6PxOsI/e5JXUMFlLiWZk1+/HwkhZA4TRzhtr0vp7?=
+ =?us-ascii?Q?GHCEymUZDf1vE93iPHlDPW4AVGOKS8NSHsXI2k9cExDqS6Vj7No8xCPr1hyy?=
+ =?us-ascii?Q?O8TTzZDBVEUysM8aoBq2zqHOg+OqX8m0EE/hR5+O6kgKfRg1jpASStoImtsP?=
+ =?us-ascii?Q?EA3GgjsSCEZ7jknXrVDL4bKIRzdONnQfH/eOBrTOWxhPVg17EXCmfjuiiF7D?=
+ =?us-ascii?Q?85J6gXjGNMtuNR4AhalxYFHfDt13EWpSXwqA41XFyYhMtIF/RKo4UJkYnArB?=
+ =?us-ascii?Q?7M+YnISGhQZ/F6k4ghzhNWqPYPuQWXbXum3bG77di2N1bHZNfeKdpyPaPxqP?=
+ =?us-ascii?Q?bGmjErvVgY5LDyFghATg56mwncXl9NZRCkWepPEVsvuMVkeLzXZGy2ER+bKJ?=
+ =?us-ascii?Q?LgaUJ4tYszliX0lNrKsmgZijKpAkHFvqsgjeAl2UHLSvKvo+LM+nXNjzncrS?=
+ =?us-ascii?Q?7TsjNfHV7nvF5RV7XMARsB1qAO2KxxhSEx1yxiMuNDLe4MvhtV+YqD8OuW0O?=
+ =?us-ascii?Q?IeDgBngDg8tKEmsoWwWC/GnbBlz5ikog+tpUgsn8m0OP46DIA0K8pIYm7OCo?=
+ =?us-ascii?Q?8VFFDByHAgSx4PHLGkOHVCDVdvue8Qb7Yoyhli3HvDSaeEHvCRffJ0F8Tfze?=
+ =?us-ascii?Q?rGuEYR9Wi9NMHJpTr0KJDWLpTbrXFeD6jBO7jVclcFJJRhYirtY6e3tzGiC4?=
+ =?us-ascii?Q?1RJXThsIH4ImEg/D377pxcg7TuYbWPnSbNzWf5abzsDoeSM8RA8CtIYdDabc?=
+ =?us-ascii?Q?KB/rpiWCmD4C84mwdajsLtE0kbglOBlLlQuMX4ynasTE3FQ/zBFtI4zIk8b8?=
+ =?us-ascii?Q?Gyh6Ty1yhDsvENsjZ1cef4o=3D?=
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 591a0444-8f06-46ca-966a-08db2ae14e89
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR02MB8217.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2023 14:25:37.8267
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8Zs9+kV2NFqlTkZzAsesxpkNXi8EqlPkpCoZWth5BZd0VfH27yN/f4L6CCf+00xEPhcANceovHxoWZiIwMb0t+c8VRx1aYwRhFq8bpj4luI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR02MB8289
+X-Proofpoint-ORIG-GUID: fJRvEXj91nTNkxZdfht8Ee9FVVSoYQCk
+X-Proofpoint-GUID: fJRvEXj91nTNkxZdfht8Ee9FVVSoYQCk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-22_11,2023-03-22_01,2023-02-09_01
+X-Proofpoint-Spam-Reason: safe
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/22/23 09:59, Dietmar Eggemann wrote:
-> cpuset_can_attach() can fail. Postpone DL BW allocation until all task
-> have been checked. DL BW is not allocated per-task but as a sum over
-> all DL tasks migrating.
->
-> If multiple controllers are attached to the cgroup next to cuset a
-Typo: "cuset" -> "cpuset"
-> non-cpuset can_attach() can fail. In this case free DL BW in
-> cpuset_cancel_attach().
->
-> Finally, update cpuset DL task count (nr_deadline_tasks) only in
-> cpuset_attach().
->
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> ---
->   include/linux/sched.h  |  2 +-
->   kernel/cgroup/cpuset.c | 55 ++++++++++++++++++++++++++++++++++++++----
->   kernel/sched/core.c    | 17 ++-----------
->   3 files changed, 53 insertions(+), 21 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 658e997ba057..675ec74469d7 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1846,7 +1846,7 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
->   }
->   
->   extern int cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
-> -extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
-> +extern int task_can_attach(struct task_struct *p);
->   extern int dl_bw_alloc(int cpu, u64 dl_bw);
->   extern void dl_bw_free(int cpu, u64 dl_bw);
->   #ifdef CONFIG_SMP
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index f46192d2e97e..fdc476eefbed 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -198,6 +198,8 @@ struct cpuset {
->   	 * know when to rebuild associated root domain bandwidth information.
->   	 */
->   	int nr_deadline_tasks;
-> +	int nr_migrate_dl_tasks;
-> +	u64 sum_migrate_dl_bw;
->   
->   	/* Invalid partition error code, not lock protected */
->   	enum prs_errcode prs_err;
-> @@ -2462,16 +2464,23 @@ static int fmeter_getrate(struct fmeter *fmp)
->   
->   static struct cpuset *cpuset_attach_old_cs;
->   
-> +static void reset_migrate_dl_data(struct cpuset *cs)
-> +{
-> +	cs->nr_migrate_dl_tasks = 0;
-> +	cs->sum_migrate_dl_bw = 0;
-> +}
-> +
->   /* Called by cgroups to determine if a cpuset is usable; cpuset_mutex held */
->   static int cpuset_can_attach(struct cgroup_taskset *tset)
->   {
->   	struct cgroup_subsys_state *css;
-> -	struct cpuset *cs;
-> +	struct cpuset *cs, *oldcs;
->   	struct task_struct *task;
->   	int ret;
->   
->   	/* used later by cpuset_attach() */
->   	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> +	oldcs = cpuset_attach_old_cs;
->   	cs = css_cs(css);
->   
->   	mutex_lock(&cpuset_mutex);
-> @@ -2489,7 +2498,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   		goto out_unlock;
->   
->   	cgroup_taskset_for_each(task, css, tset) {
-> -		ret = task_can_attach(task, cs->effective_cpus);
-> +		ret = task_can_attach(task);
->   		if (ret)
->   			goto out_unlock;
->   		ret = security_task_setscheduler(task);
-> @@ -2497,11 +2506,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   			goto out_unlock;
->   
->   		if (dl_task(task)) {
-> -			cs->nr_deadline_tasks++;
-> -			cpuset_attach_old_cs->nr_deadline_tasks--;
-> +			cs->nr_migrate_dl_tasks++;
-> +			cs->sum_migrate_dl_bw += task->dl.dl_bw;
-> +		}
-> +	}
-> +
-> +	if (!cs->nr_migrate_dl_tasks)
-> +		goto out_succes;
-> +
-> +	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
-> +		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-> +
-> +		if (unlikely(cpu >= nr_cpu_ids)) {
-> +			reset_migrate_dl_data(cs);
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-> +		if (ret) {
-> +			reset_migrate_dl_data(cs);
-> +			goto out_unlock;
+cgroups v1 has a unique way of setting up memory pressure notifications:
+the user opens "memory.pressure_level" of the cgroup they want to
+monitor for pressure, then open "cgroup.event_control" and write the fd
+(among other things) to that file. memory.pressure_level has no other
+use, specifically it does not support any read or write operations.
+Consequently, no handlers are provided, and the file ends up with
+permissions 000. However, to actually use the mechanism, the subscribing
+user must have read access to the file and open the fd for reading, see
+memcg_write_event_control().
 
-I do have a question about just picking any cpu to see if there is 
-enough DL bandwidth. What happens if there are multiple DL tasks to be 
-migrated and their total bandwidth exceed any one cpu can provide?
+This is all fine as long as the subscribing process runs as root and is
+otherwise unconfined by further restrictions. However, if you add strict
+access controls such as selinux, the permission bits will be enforced,
+and opening memory.pressure_level for reading will fail, preventing the
+process from subscribing, even as root.
 
-Other than that, the overall workflow looks good to me from the cpuset 
-point of view.
+There are several ways around this issue, but adding a dummy read
+handler seems like the least invasive to me. I'd be interested to hear:
+(a) do you think there is a less invasive way? Alternatively, we could
+    add a flag in cftype in include/linux/cgroup-defs.h, but that seems
+    more invasive for what is a legacy interface.
+(b) would you be interested to take this patch, or is it too niche a fix
+    for a legacy subsystem?
+---
+ mm/memcontrol.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Cheers,
-Longman
-
->   		}
->   	}
->   
-> +out_succes:
->   	/*
->   	 * Mark attach is in progress.  This makes validate_change() fail
->   	 * changes which zero cpus/mems_allowed.
-> @@ -2516,11 +2545,21 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   static void cpuset_cancel_attach(struct cgroup_taskset *tset)
->   {
->   	struct cgroup_subsys_state *css;
-> +	struct cpuset *cs;
->   
->   	cgroup_taskset_first(tset, &css);
-> +	cs = css_cs(css);
->   
->   	mutex_lock(&cpuset_mutex);
-> -	css_cs(css)->attach_in_progress--;
-> +	cs->attach_in_progress--;
-> +
-> +	if (cs->nr_migrate_dl_tasks) {
-> +		int cpu = cpumask_any(cs->effective_cpus);
-> +
-> +		dl_bw_free(cpu, cs->sum_migrate_dl_bw);
-> +		reset_migrate_dl_data(cs);
-> +	}
-> +
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-> @@ -2615,6 +2654,12 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   out:
->   	cs->old_mems_allowed = cpuset_attach_nodemask_to;
->   
-> +	if (cs->nr_migrate_dl_tasks) {
-> +		cs->nr_deadline_tasks += cs->nr_migrate_dl_tasks;
-> +		oldcs->nr_deadline_tasks -= cs->nr_migrate_dl_tasks;
-> +		reset_migrate_dl_data(cs);
-> +	}
-> +
->   	cs->attach_in_progress--;
->   	if (!cs->attach_in_progress)
->   		wake_up(&cpuset_attach_wq);
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2f07aecb7434..4fb058b72886 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -9201,8 +9201,7 @@ int cpuset_cpumask_can_shrink(const struct cpumask *cur,
->   	return ret;
->   }
->   
-> -int task_can_attach(struct task_struct *p,
-> -		    const struct cpumask *cs_effective_cpus)
-> +int task_can_attach(struct task_struct *p)
->   {
->   	int ret = 0;
->   
-> @@ -9215,21 +9214,9 @@ int task_can_attach(struct task_struct *p,
->   	 * success of set_cpus_allowed_ptr() on all attached tasks
->   	 * before cpus_mask may be changed.
->   	 */
-> -	if (p->flags & PF_NO_SETAFFINITY) {
-> +	if (p->flags & PF_NO_SETAFFINITY)
->   		ret = -EINVAL;
-> -		goto out;
-> -	}
-> -
-> -	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
-> -					      cs_effective_cpus)) {
-> -		int cpu = cpumask_any_and(cpu_active_mask, cs_effective_cpus);
->   
-> -		if (unlikely(cpu >= nr_cpu_ids))
-> -			return -EINVAL;
-> -		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
-> -	}
-> -
-> -out:
->   	return ret;
->   }
->   
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5abffe6f8389..e48c749d9724 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3734,6 +3734,16 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
+ 	}
+ }
+ 
++/*
++ * This function doesn't do anything useful. Its only job is to provide a read
++ * handler so that the file gets read permissions when it's created.
++ */
++static int mem_cgroup_dummy_seq_show(__always_unused struct seq_file *m,
++				     __always_unused void *v)
++{
++	return -EINVAL;
++}
++
+ #ifdef CONFIG_MEMCG_KMEM
+ static int memcg_online_kmem(struct mem_cgroup *memcg)
+ {
+@@ -5064,6 +5074,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 	},
+ 	{
+ 		.name = "pressure_level",
++		.seq_show = mem_cgroup_dummy_seq_show,
+ 	},
+ #ifdef CONFIG_NUMA
+ 	{
+-- 
+2.32.0
 
