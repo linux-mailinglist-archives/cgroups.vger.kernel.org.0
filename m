@@ -2,61 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A3F6C699E
-	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 14:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C9A6C6C6B
+	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 16:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjCWNg0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Mar 2023 09:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
+        id S231851AbjCWPko (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Mar 2023 11:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbjCWNgY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 09:36:24 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361DB2914D
-        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 06:36:22 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w9so86696594edc.3
-        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 06:36:22 -0700 (PDT)
+        with ESMTP id S231796AbjCWPkn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 11:40:43 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FECE2057C
+        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 08:40:42 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id i6so25351088ybu.8
+        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 08:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679578580;
+        d=google.com; s=20210112; t=1679586041;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EuE0cJjbmK+/BhJwvJMFWgBmHM9057+RC8AkvA4HkKU=;
-        b=DcDiKscPNUA4W1/GbdqN5BhxUIYoz9Wmqq3Xmd1C+DUMMpURN79kep/XyUMFs7O6WW
-         MdqSEoZEpJh6K1uDYGXqCYwtqPCRXnq1QLfTpNV4Eo1IgdgOLTpM3R2PdOsbI+hV2kfK
-         QVD9wZK3LA17mTvY76ITqoPHiau96K56j+TNrZ6a3QUQ5L79xAReQuBw7n00P8VHIWWm
-         neNib3URA3K2d5FtCKba9hlgjdkmZkjza+ySCPA7jYZFPPJYNEHu2p+u2TV4VmmjgEJS
-         llW6op2xvHlxZkcr/ECLM2jHofYIAEetci4tarDdc6n3marMfQcOD5Xx5wNyNvIJNjGD
-         lz0Q==
+        bh=aXqZ3IJA77cnf/fukJT6xyyWj+RxTe/4tMZOB+1mbkQ=;
+        b=pZto6I+vvxaphKg4Ca9NDWCYEUNhj7BJYmHfaAG8M51g5rBMERT2pTxw32czJVRwqf
+         EXpqwyXIM77qAJ204++TM8DrNrSWXsJyryfpkiZaymGsJv+mhNCo+v4QMcuWklOwQ1zb
+         14XunBWOhtBzzFTiU3Gj8RFDbfEQ4MSASypSDfsLzNrh14XAxfBwpnKQD7EnPJaTeklc
+         QpjEu0BIrsjS593Tol8303VAwfsZeO1qSu7wHKzhAJW4G9NFMuqTCi3YV8xqFEcXgHrN
+         7FMdZFQg1MqDPNCzODUn974BlGYh8gXmdMD2HE3tXqWplxkq95RhThaIWYkoMKBBBJ0Y
+         EGwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679578580;
+        d=1e100.net; s=20210112; t=1679586041;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EuE0cJjbmK+/BhJwvJMFWgBmHM9057+RC8AkvA4HkKU=;
-        b=5ynoanLFYvRK9ZSIbTf1hn3kVeGEV/MjZG5COiti8fDqGdTplDnPKm55OQQ6cloI8P
-         A9JcNiiugT/UmifQItoTo0q/27gvpkPOG8vLc+5WdP1dG5KhagziCmkIgbtD5UB9fjzv
-         c57RReC+mQv50up2k5WxH1RbCO/qegnOw+zvMSBP6S9G53FsXu33ZN1fIpc5PfNhtxH+
-         Pb0zqhg4bQngsuSdDS6flmdnuHIk6jcXUWuDVz6ZFi0sYwBKiDH6GPQiSBh6o0Q7jRLp
-         s3x9vJ0pgNpkklK8inH5ba9kOiDHoYr0QFWWp7zI8eM39UawgyADR5qeTLwATfC6VNjj
-         cQuA==
-X-Gm-Message-State: AO0yUKXAj8khjkIq6/6wmUbrjiJ14mf0RnEe27bGs6gNc7EzFpsOeq6H
-        gF1mNctldXLsej4BVmnzJHIq6lMsF0pUM1EmYKnByQ==
-X-Google-Smtp-Source: AK7set/b903mZdRoPNoYVhLFO+mUgHONws3mpu+Ax6aYZzzVndV1mWTWBDnS8VjbuXo0x7feM2DBl3f475JvT0qkzkM=
-X-Received: by 2002:a50:d4c5:0:b0:500:5463:35de with SMTP id
- e5-20020a50d4c5000000b00500546335demr5382302edj.8.1679578580439; Thu, 23 Mar
- 2023 06:36:20 -0700 (PDT)
+        bh=aXqZ3IJA77cnf/fukJT6xyyWj+RxTe/4tMZOB+1mbkQ=;
+        b=q4eIHyHEiyVrIf7enJ1qOWdtbkirYOGVY+HFMxP/5BWbX0vh3WK3obqlUnAY2bW89i
+         5vBaC7rI/FSt8DU6lN8CGQHDfex/ob0pqnL5OEFLntWASQzvoY2725lB9bC8wjIhWba1
+         N9+5dCjBtgzgQz/QM82rXxSbLcjiNlGNNU6Y6cSk60WMIxPi6hfHOcvPSrbItHXfR2R5
+         bbLVK9jM5XO/431h70Qe9f8aKZBLaQ1KzE5eVI/4Cb793atm4LJ3EINsGC0Nhn3DHqOg
+         odZk9rKyYYxM8gV1nwhdPUkZH8bOBylj+kslBx3K9hcETLLtNm1fUBJDoVqUlbUIyQrm
+         3OtQ==
+X-Gm-Message-State: AAQBX9fxRwGdvgn4wKCIpwaUUIQCPmG3g0uaUz0ScfyxhhoMnWDRdyEb
+        4pgWkoW8VKEFmUgGCEQ15NpS9aqTjO425q3fyfi3eA==
+X-Google-Smtp-Source: AKy350a50T0eMMPyL8hbiqxSf8FqZlw1dWta2IKhAFk++fAM4XiuwKP9tfvhLOJ/p8i1fAwcvy/Zde16et8l9oC4gKw=
+X-Received: by 2002:a05:6902:1083:b0:b67:d295:d614 with SMTP id
+ v3-20020a056902108300b00b67d295d614mr2101971ybu.12.1679586041114; Thu, 23 Mar
+ 2023 08:40:41 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230323040037.2389095-1-yosryahmed@google.com>
  <20230323040037.2389095-2-yosryahmed@google.com> <CALvZod7e7dMmkhKtXPAxmXjXQoTyeBf3Bht8HJC8AtWW93As3g@mail.gmail.com>
- <CAJD7tkbziGh+6hnMysHkoNr_HGBKU+s1rSGj=gZLki0ALT-jLg@mail.gmail.com> <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com>
-In-Reply-To: <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 23 Mar 2023 06:35:44 -0700
-Message-ID: <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
+ <CAJD7tkbziGh+6hnMysHkoNr_HGBKU+s1rSGj=gZLki0ALT-jLg@mail.gmail.com>
+ <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com> <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
+In-Reply-To: <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 23 Mar 2023 08:40:29 -0700
+Message-ID: <CALvZod5mJBAQ5adym7UNEruL-tOOOi+Y_ZiKsfOYqXPmGVPUEA@mail.gmail.com>
 Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
  percpu lock
-To:     Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
         Zefan Li <lizefan.x@bytedance.com>,
@@ -82,79 +83,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 11:33=E2=80=AFPM Shakeel Butt <shakeelb@google.com>=
+On Thu, Mar 23, 2023 at 6:36=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
  wrote:
 >
-> On Wed, Mar 22, 2023 at 10:15=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
-om> wrote:
-> >
-> [...]
-> > > Couple of questions:
+[...]
 > > >
-> > > 1. What exactly is cgroup_rstat_lock protecting? Can we just remove i=
-t
-> > > altogether?
+> > > > 2. Are we really calling rstat flush in irq context?
+> > >
+> > > I think it is possible through the charge/uncharge path:
+> > > memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage(). I
+> > > added the protection against flushing in an interrupt context for
+> > > future callers as well, as it may cause a deadlock if we don't disabl=
+e
+> > > interrupts when acquiring cgroup_rstat_lock.
+> > >
+> > > > 3. The mem_cgroup_flush_stats() call in mem_cgroup_usage() is only
+> > > > done for root memcg. Why is mem_cgroup_threshold() interested in ro=
+ot
+> > > > memcg usage? Why not ignore root memcg in mem_cgroup_threshold() ?
+> > >
+> > > I am not sure, but the code looks like event notifications may be set
+> > > up on root memcg, which is why we need to check thresholds.
 > >
-> > I believe it protects the global state variables that we flush into.
-> > For example, for memcg, it protects mem_cgroup->vmstats.
-> >
-> > I tried removing the lock and allowing concurrent flushing on
-> > different cpus, by changing mem_cgroup->vmstats to use atomics
-> > instead, but that turned out to be a little expensive. Also,
-> > cgroup_rstat_lock is already contended by different flushers
-> > (mitigated by stats_flush_lock on the memcg side). If we remove it,
-> > concurrent flushers contend on every single percpu lock instead, which
-> > also seems to be expensive.
+> > This is something we should deprecate as root memcg's usage is ill defi=
+ned.
 >
-> We should add a comment on what it is protecting. I think block rstat
-> are fine but memcg and bpf would need this.
-
-I think it also protects the cpu base stats flushed by cgroup_base_stat_flu=
-sh().
-
-I will add a comment in the next version.
-
+> Right, but I think this would be orthogonal to this patch series.
 >
-> >
-> > > 2. Are we really calling rstat flush in irq context?
-> >
-> > I think it is possible through the charge/uncharge path:
-> > memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage(). I
-> > added the protection against flushing in an interrupt context for
-> > future callers as well, as it may cause a deadlock if we don't disable
-> > interrupts when acquiring cgroup_rstat_lock.
-> >
-> > > 3. The mem_cgroup_flush_stats() call in mem_cgroup_usage() is only
-> > > done for root memcg. Why is mem_cgroup_threshold() interested in root
-> > > memcg usage? Why not ignore root memcg in mem_cgroup_threshold() ?
-> >
-> > I am not sure, but the code looks like event notifications may be set
-> > up on root memcg, which is why we need to check thresholds.
->
-> This is something we should deprecate as root memcg's usage is ill define=
-d.
 
-Right, but I think this would be orthogonal to this patch series.
+I don't think we can make cgroup_rstat_lock a non-irq-disabling lock
+without either breaking a link between mem_cgroup_threshold and
+cgroup_rstat_lock or make mem_cgroup_threshold work without disabling
+irqs.
 
->
-> >
-> > Even if mem_cgroup_threshold() does not flush memcg stats, the purpose
-> > of this patch is to make sure the rstat flushing code itself is not
-> > disabling interrupts; which it currently does for any unsleepable
-> > context, even if it is interruptible.
->
-> Basically I am saying we should aim for VM_BUG_ON(!in_task()) in the
-> flush function rather than adding should_skip_flush() which does not
-> stop potential new irq flushers.
-
-I wanted to start with VM_BUG_ON(!in_task()) but I wasn't sure that
-all contexts that call rstat flushing are not in irq contexts. I added
-should_skip_flush() so that if there are existing flushers in irq
-context, or new flushers are added, we are protected against a
-deadlock.
-
-We can change should_skip_flush() to have a WARN_ON_ONCE(!in_task())
-to alert in this case. If you prefer removing should_skip_flush() and
-just adding VM_BUG_ON(!in_task()) we can do that, but personally I was
-not confident enough that we have no code paths today that may attempt
-flushing from irq context.
+So, this patch can not be applied before either of those two tasks are
+done (and we may find more such scenarios).
