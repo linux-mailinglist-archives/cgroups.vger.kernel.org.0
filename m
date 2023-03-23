@@ -2,66 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4F26C6FF8
-	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 19:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463A36C7001
+	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 19:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjCWSI1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Mar 2023 14:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S231248AbjCWSKL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Mar 2023 14:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbjCWSI0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 14:08:26 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079E2A270
-        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 11:08:25 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id r11so90490740edd.5
-        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 11:08:24 -0700 (PDT)
+        with ESMTP id S230421AbjCWSKK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 14:10:10 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB79CA30
+        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 11:10:08 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id ek18so90512656edb.6
+        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 11:10:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679594903;
+        d=google.com; s=20210112; t=1679595007;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GVEQ3jjBhRvvdROqbmTd0ErWpAgtFM7LpI2zkeVM6nc=;
-        b=iSMmzvR4nUOgFdPoIuMVdAVhXTbAdbYo7pLETlxOCbMwcNRovtBt/22dPXrSySYxbp
-         zJCQTHhPo4PFrUR62vtMimmYSgiWTsqB9tSiqzOg0nSraK9/nvwtvh334JEH2rWJQ6FS
-         97I4Xoiz7o/cACMu+o9beDqaksw/PavmXjFklptwSOqiOI8p/ig5E0vc2DDXoFcGspgE
-         dju0BzbOVvGZNQp11KXGu3UcBpKdWla8vD/e/4gAeirBuUxilCcora4A4l+Yn/h2OwD4
-         6M/kCw/eev/Mgj2sy4Ebimfd+9ZQNukVrkyECwua5LZ1YLU4Qdfjw8d4Qq5KqMIfy9SZ
-         h7Sw==
+        bh=TG6r42DnDMDxeRAZYy//5B+CwRJPcnDTegQ6DfZfbA0=;
+        b=lRkNETJE7iTItx4Oqh+NEjrOnfGYNHB2E7RmMla6GzKkIpwBLF9JrTmMnnasXhid+k
+         4GkqmkFXqD/kFADNx1MsVLXYWkgn95RMlwtqftoBICvHYDRIbDVOLp63NhjUNEROXM26
+         HENlsAwE1ibTbvJpzLEdF2luec/dHuzpc1xzDRetDxf7oeI0mlmlGL6AnXKlSsiN0V9a
+         fkI7cVYLirYeR0xKgmG0B3pMlHl7NRM2QgUtb8qKGaaoz5Ty1xY2/kTy+5DFPQzsh5PD
+         TtsaTo4siyBM23lo1jlLwtoGkyyzIpFokkg4XZiGVdC26hvQ6MBgzGvdKltKogoOZmS+
+         lKeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679594903;
+        d=1e100.net; s=20210112; t=1679595007;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GVEQ3jjBhRvvdROqbmTd0ErWpAgtFM7LpI2zkeVM6nc=;
-        b=2vmbuK892/D2gikgB2s9q0xvFg8AF3GoR6W8WI0EiaX3+h0zn4MNeNvohmzRpUuboE
-         Vq1HoFEOycFeUxATKy9lotwyle/Apu1CMoz3bP9TyLMXwpz5Jyif0piAemSiLVSZ7bLs
-         Caj7tNz5NZRFzAxNwECRm4BFs0uAV4C8q62mFRbX6kEnGpJqualjExPl+7DxyfiQ81ko
-         Y1PNxhxbvI4XRLU52UKwR1RUU2exa0u17mz7dgTW8fjI75mOCkst/ygzloorkRTU2rNS
-         iS2IQrD3mzXLQqmpdwzqFOMYG7ydX+amWW1fNkap9ksliUZpi7kRMPub9HNplerrIw9H
-         YoVg==
-X-Gm-Message-State: AO0yUKUjQi/YhVSPXGLVxITt5DpJ3SwXL0xTmPDDJb6VO8q+f1bhhBRp
-        Ttdq5zNQYo5tJREKVQhhfSpyzKz+4jg9CvSGW1DqwA==
-X-Google-Smtp-Source: AK7set9uzu0+uLVYPeW1/TKT07Y1C8fU/op63gdiSoakbq07Xp2dmMzhQ0EX2/+iZXC1dLM/RK6moL4HGFXShEgJUAY=
-X-Received: by 2002:a17:906:aac9:b0:927:912:6baf with SMTP id
- kt9-20020a170906aac900b0092709126bafmr5401952ejb.15.1679594903374; Thu, 23
- Mar 2023 11:08:23 -0700 (PDT)
+        bh=TG6r42DnDMDxeRAZYy//5B+CwRJPcnDTegQ6DfZfbA0=;
+        b=8RzkMc29dhVgoBsS4SXSs73NDPDazNbZsvCz15V2EfWTYalqJv+VNdwGCap3/znwRK
+         oWe41xehcaekstVzfxCs9/pUsHCKrrwxky8yr4eL9m+HU4SwgxzL4QBG6gcsPGb7cjIJ
+         Od62hOfBEHlXLdNlyjS3Tb/jOeM4RUguh6ROupUW2lBqpSnXDhRHofKDxbvYfemSwABz
+         XurPvOSgaPIftg3LBuIV601ba7pUc0gnrI7g8SiHllgtkFMpNfh7gbrzs8RRP3kAcGap
+         M2ko824QkenSRIRWEDf4YHF10TqGD2TB46McGrLABqOtBNVAESCKokMTDVxCobsqBhQD
+         HygA==
+X-Gm-Message-State: AO0yUKV/RHrtKF/uDczWMOiwd4c/YWNOQE8RhV9HxKWokd1Aq66+mS5n
+        9cHyz0k7kNMBgzr5iRvKjQZcd51gFK9I+0SExNUeHQ==
+X-Google-Smtp-Source: AK7set8XblrKP6hJ5Y1r/+5NyekRYrhUe9w5X4pTSV4UO9N5ONeHg6GzjPn2UmtNPP+P1Ztc6jQ53G67XRmRVO03X+A=
+X-Received: by 2002:a17:906:34cd:b0:8e5:411d:4d09 with SMTP id
+ h13-20020a17090634cd00b008e5411d4d09mr5406251ejb.15.1679595006684; Thu, 23
+ Mar 2023 11:10:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-5-yosryahmed@google.com> <20230323155613.GC739026@cmpxchg.org>
- <CAJD7tkZ7Dz9myftc9bg7jhiaOYcn7qJ+V4sxZ_2kfnb+k=zhJQ@mail.gmail.com> <20230323172732.GE739026@cmpxchg.org>
-In-Reply-To: <20230323172732.GE739026@cmpxchg.org>
+References: <20230323040037.2389095-2-yosryahmed@google.com>
+ <CALvZod7e7dMmkhKtXPAxmXjXQoTyeBf3Bht8HJC8AtWW93As3g@mail.gmail.com>
+ <CAJD7tkbziGh+6hnMysHkoNr_HGBKU+s1rSGj=gZLki0ALT-jLg@mail.gmail.com>
+ <CALvZod5GT=bZsLXsG500pNkEJpMB1o2KJau4=r0eHB-c8US53A@mail.gmail.com>
+ <CAJD7tkY6Wf2OWja+f-JeFM5DdMCyLzbXxZ8KF0MjcYOKri-vtA@mail.gmail.com>
+ <CALvZod5mJBAQ5adym7UNEruL-tOOOi+Y_ZiKsfOYqXPmGVPUEA@mail.gmail.com>
+ <CAJD7tkYWo_aB7a4SHXNQDHwcaTELonOk_Vd8q0=x8vwGy2VkYg@mail.gmail.com>
+ <CALvZod7f9Rejb_WrZ+Ajegz-NsQ7iPQegRDMdk5Ya0a0w=40kg@mail.gmail.com>
+ <CALvZod7-6F84POkNetA2XJB-24wms=5q_s495NEthO8b63rL4A@mail.gmail.com>
+ <CAJD7tkbGCgk9VkGdec0=AdHErds4XQs1LzJMhqVryXdjY5PVAg@mail.gmail.com> <20230323173343.GF739026@cmpxchg.org>
+In-Reply-To: <20230323173343.GF739026@cmpxchg.org>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 23 Mar 2023 11:07:47 -0700
-Message-ID: <CAJD7tkbtHhzOytu3hfN8tjdAyNq0BZXYN8TEipS4NTApUzkL7w@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/7] memcg: sleep during flushing stats in safe contexts
+Date:   Thu, 23 Mar 2023 11:09:30 -0700
+Message-ID: <CAJD7tkb_Zpp4PqFNBJ3__7t5eiYwuqaZc=08B1g=S_tMF+wgSQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
         Zefan Li <lizefan.x@bytedance.com>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
         Vasily Averin <vasily.averin@linux.dev>,
@@ -81,126 +89,119 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 10:27=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
+On Thu, Mar 23, 2023 at 10:33=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
 g> wrote:
 >
-> On Thu, Mar 23, 2023 at 09:01:12AM -0700, Yosry Ahmed wrote:
-> > On Thu, Mar 23, 2023 at 8:56=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
-.org> wrote:
+> On Thu, Mar 23, 2023 at 09:17:33AM -0700, Yosry Ahmed wrote:
+> > On Thu, Mar 23, 2023 at 9:10=E2=80=AFAM Shakeel Butt <shakeelb@google.c=
+om> wrote:
 > > >
-> > > On Thu, Mar 23, 2023 at 04:00:34AM +0000, Yosry Ahmed wrote:
-> > > > @@ -644,26 +644,26 @@ static void __mem_cgroup_flush_stats(void)
-> > > >               return;
+> > > On Thu, Mar 23, 2023 at 8:46=E2=80=AFAM Shakeel Butt <shakeelb@google=
+.com> wrote:
 > > > >
-> > > >       flush_next_time =3D jiffies_64 + 2*FLUSH_TIME;
-> > > > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup, false);
-> > > > +     cgroup_rstat_flush(root_mem_cgroup->css.cgroup, may_sleep);
+> > > > On Thu, Mar 23, 2023 at 8:43=E2=80=AFAM Yosry Ahmed <yosryahmed@goo=
+gle.com> wrote:
+> > > > >
+> > > > > On Thu, Mar 23, 2023 at 8:40=E2=80=AFAM Shakeel Butt <shakeelb@go=
+ogle.com> wrote:
+> > > > > >
+> > > > > > On Thu, Mar 23, 2023 at 6:36=E2=80=AFAM Yosry Ahmed <yosryahmed=
+@google.com> wrote:
+> > > > > > >
+> > > > > > [...]
+> > > > > > > > >
+> > > > > > > > > > 2. Are we really calling rstat flush in irq context?
+> > > > > > > > >
+> > > > > > > > > I think it is possible through the charge/uncharge path:
+> > > > > > > > > memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_=
+usage(). I
+> > > > > > > > > added the protection against flushing in an interrupt con=
+text for
+> > > > > > > > > future callers as well, as it may cause a deadlock if we =
+don't disable
+> > > > > > > > > interrupts when acquiring cgroup_rstat_lock.
+> > > > > > > > >
+> > > > > > > > > > 3. The mem_cgroup_flush_stats() call in mem_cgroup_usag=
+e() is only
+> > > > > > > > > > done for root memcg. Why is mem_cgroup_threshold() inte=
+rested in root
+> > > > > > > > > > memcg usage? Why not ignore root memcg in mem_cgroup_th=
+reshold() ?
+> > > > > > > > >
+> > > > > > > > > I am not sure, but the code looks like event notification=
+s may be set
+> > > > > > > > > up on root memcg, which is why we need to check threshold=
+s.
+> > > > > > > >
+> > > > > > > > This is something we should deprecate as root memcg's usage=
+ is ill defined.
+> > > > > > >
+> > > > > > > Right, but I think this would be orthogonal to this patch ser=
+ies.
+> > > > > > >
+> > > > > >
+> > > > > > I don't think we can make cgroup_rstat_lock a non-irq-disabling=
+ lock
+> > > > > > without either breaking a link between mem_cgroup_threshold and
+> > > > > > cgroup_rstat_lock or make mem_cgroup_threshold work without dis=
+abling
+> > > > > > irqs.
+> > > > > >
+> > > > > > So, this patch can not be applied before either of those two ta=
+sks are
+> > > > > > done (and we may find more such scenarios).
+> > > > >
+> > > > >
+> > > > > Could you elaborate why?
+> > > > >
+> > > > > My understanding is that with an in_task() check to make sure we =
+only
+> > > > > acquire cgroup_rstat_lock from non-irq context it should be fine =
+to
+> > > > > acquire cgroup_rstat_lock without disabling interrupts.
+> > > >
+> > > > From mem_cgroup_threshold() code path, cgroup_rstat_lock will be ta=
+ken
+> > > > with irq disabled while other code paths will take cgroup_rstat_loc=
+k
+> > > > with irq enabled. This is a potential deadlock hazard unless
+> > > > cgroup_rstat_lock is always taken with irq disabled.
 > > >
-> > > How is it safe to call this with may_sleep=3Dtrue when it's holding t=
-he
-> > > stats_flush_lock?
+> > > Oh you are making sure it is not taken in the irq context through
+> > > should_skip_flush(). Hmm seems like a hack. Normally it is recommende=
+d
+> > > to actually remove all such users instead of silently
+> > > ignoring/bypassing the functionality.
+>
+> +1
+>
+> It shouldn't silently skip the requested operation, rather it
+> shouldn't be requested from an incompatible context.
+>
+> > > So, how about removing mem_cgroup_flush_stats() from
+> > > mem_cgroup_usage(). It will break the known chain which is taking
+> > > cgroup_rstat_lock with irq disabled and you can add
+> > > WARN_ON_ONCE(!in_task()).
 > >
-> > stats_flush_lock is always called with trylock, it is only used today
-> > so that we can skip flushing if another cpu is already doing a flush
-> > (which is not 100% correct as they may have not finished flushing yet,
-> > but that's orthogonal here). So I think it should be safe to sleep as
-> > no one can be blocked waiting for this spinlock.
+> > This changes the behavior in a more obvious way because:
+> > 1. The memcg_check_events()->mem_cgroup_threshold()->mem_cgroup_usage()
+> > path is also exercised in a lot of paths outside irq context, this
+> > will change the behavior for any event thresholds on the root memcg.
+> > With proposed skipped flushing in irq context we only change the
+> > behavior in a small subset of cases.
 >
-> I see. It still cannot sleep while the lock is held, though, because
-> preemption is disabled. Make sure you have all lock debugging on while
-> testing this.
+> Can you do
+>
+>         /* Note: stale usage data when called from irq context!! */
+>         if (in_task())
+>                 mem_cgroup_flush_stats()
+>
+> directly in the callsite? Maybe even include the whole callchain in
+> the comment that's currently broken and needs fixing/removing.
 
-Thanks for pointing this out, will do.
-
->
-> > Perhaps it would be better semantically to replace the spinlock with
-> > an atomic test and set, instead of having a lock that can only be used
-> > with trylock?
->
-> It could be helpful to clarify what stats_flush_lock is protecting
-> first. Keep in mind that locks should protect data, not code paths.
->
-> Right now it's doing multiple things:
->
-> 1. It protects updates to stats_flush_threshold
-> 2. It protects updates to flush_next_time
-> 3. It serializes calls to cgroup_rstat_flush() based on those ratelimits
->
-> However,
->
-> 1. stats_flush_threshold is already an atomic
->
-> 2. flush_next_time is not atomic. The writer is locked, but the reader
->    is lockless. If the reader races with a flush, you could see this:
->
->                                         if (time_after(jiffies, flush_nex=
-t_time))
->         spin_trylock()
->         flush_next_time =3D now + delay
->         flush()
->         spin_unlock()
->                                         spin_trylock()
->                                         flush_next_time =3D now + delay
->                                         flush()
->                                         spin_unlock()
->
->    which means we already can get flushes at a higher frequency than
->    FLUSH_TIME during races. But it isn't really a problem.
->
->    The reader could also see garbled partial updates, so it needs at
->    least READ_ONCE and WRITE_ONCE protection.
->
-> 3. Serializing cgroup_rstat_flush() calls against the ratelimit
->    factors is currently broken because of the race in 2. But the race
->    is actually harmless, all we might get is the occasional earlier
->    flush. If there is no delta, the flush won't do much. And if there
->    is, the flush is justified.
->
-> In summary, it seems to me the lock can be ditched altogether. All the
-> code needs is READ_ONCE/WRITE_ONCE around flush_next_time.
-
-Thanks a lot for this analysis. I agree that the lock can be removed
-with proper READ_ONCE/WRITE_ONCE, but I think there is another purpose
-of the lock that we are missing here.
-
-I think one other purpose of the lock is avoiding a thundering herd
-problem on cgroup_rstat_lock, particularly from reclaim context, as
-mentioned by the log of  commit aa48e47e3906 ("memcg: infrastructure
-to flush memcg stats").
-
-While testing, I did notice that removing this lock indeed causes a
-thundering herd problem if we have a lot of concurrent reclaimers. The
-trylock makes sure we abort immediately if someone else is flushing --
-which is not ideal because that flusher might have just started, and
-we may end up reading stale data anyway.
-
-This is why I suggested replacing the lock by an atomic, and do
-something like this if we want to maintain the current behavior:
-
-static void __mem_cgroup_flush_stats(void)
-{
-    ...
-    if (atomic_xchg(&ongoing_flush, 1))
-        return;
-    ...
-    atomic_set(&ongoing_flush, 0)
-}
-
-Alternatively, if we want to change the behavior and wait for the
-concurrent flusher to finish flushing, we can maybe spin until
-ongoing_flush goes back to 0 and then return:
-
-static void __mem_cgroup_flush_stats(void)
-{
-    ...
-    if (atomic_xchg(&ongoing_flush, 1)) {
-        /* wait until the ongoing flusher finishes to get updated stats */
-        while (atomic_read(&ongoing_flush) {};
-        return;
-    }
-    /* flush the stats ourselves */
-    ...
-    atomic_set(&ongoing_flush, 0)
-}
-
-WDYT?
+Yeah, we can do that in mem_cgroup_usage(), which is the only context
+that I am aware of that may flush from irq context. We can also add
+WARN_ON_ONCE(!in_task()) in the rstat core flushing code to catch any
+other code paths that we are not aware of -- which may result in a
+deadlock, but hopefully if there is a violation it will be caught soon
+enough.
