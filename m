@@ -2,54 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE78B6C5DA0
-	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 05:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783FE6C5DA2
+	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 05:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbjCWEAx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Mar 2023 00:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        id S230202AbjCWEAy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Mar 2023 00:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjCWEAv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 00:00:51 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8A51F5EF
-        for <cgroups@vger.kernel.org>; Wed, 22 Mar 2023 21:00:42 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e23-20020a25e717000000b00b66ab374ba1so16091852ybh.22
-        for <cgroups@vger.kernel.org>; Wed, 22 Mar 2023 21:00:42 -0700 (PDT)
+        with ESMTP id S229495AbjCWEAw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 00:00:52 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056A11F92D
+        for <cgroups@vger.kernel.org>; Wed, 22 Mar 2023 21:00:43 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id o10-20020a17090ac08a00b0023f3196fa6fso322236pjs.2
+        for <cgroups@vger.kernel.org>; Wed, 22 Mar 2023 21:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1679544041;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dQm6vY6azaIWfVBk9OleqJiypEWxonUrfDuxGdzwvEo=;
-        b=Wqjo2gOwLuBNwjRWcqy/e97mtEalxuitp0xY/9ucFAeoVjzZqkLFNj+Kg/bS7+SLso
-         0mEqszCZOwticCjD28rnJun5qYG8zLpCe7Lgqr1Zcq77xAINPLQkmlCr1RUZ3ZFrFZLe
-         yVSSzSX2DRXw2LGgoiHCS2XSksG6+AorfME/vlcB+xENetBawM2tXFoeFxzlxQ+CDzRr
-         rABuT5MXEbil4k21Tw2rj0lLKNuTBpVjCslzrHFHpTW3cYQbR83DpY9L8+R2A0wlBskB
-         V7890htQHHBp7dpJzFMQR7ATN69oyvzWl1Z0FZ3aHCz1QscoKhEDDw6wgjhuKwrEdKtk
-         wggQ==
+        d=google.com; s=20210112; t=1679544043;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zlRHMwQCwPxTz7URsIPFYEiZ1y/NkKG6JVNDPEffcgo=;
+        b=q0IiHI38SIToezuWJ5YCNMq/43EaxUo3i4AMEPHcC9bZCfWe3qfaYbxabY9EbcCoqm
+         LUESQ/1v1D2aalE9SO+twkVNP5hnW+UNiSPbsUMxGnfaQG+8mDUTyeXBv18fXpGW3SWD
+         GCVDR2eWTWBw72p7FFHYiZQYGqUWBUdEyjEquw53iNIuEWGhIQhSBNfbqBw3sfwQmtJy
+         zq0COAvO1AYz/HqEKQJev5lhSkkjfsk/GYKhQDhBPMJgp6hmFHeDaNzuC/4om1icb3Uk
+         IS34ZPkCnh/Dxdz7tz/xvLp+bFG8mdt7D5IhxCaGQj3LQws3RSkaD2yIkaXnXsqGxGWA
+         GdAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679544041;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dQm6vY6azaIWfVBk9OleqJiypEWxonUrfDuxGdzwvEo=;
-        b=5s4AU8t6AH8Rz+Fvry6J3dt1eNeUNWJcRlSg1NnIZ/V1kSUToB0I4FpuEik8jrJ+Gq
-         zoUR/5u6RxU4OV7hxIzR6gcrQfdVxnHsnoDbYZT0VeFbjfBqIz0p54IaPbJMIhea6mIA
-         IGjLIZ5WGGD6R+HsVGXaqYfJoDdF6WrhNHJU4Wq4WabP2HsfaIGSmCVCvoUtA6Qpvg6x
-         l7ZTF55XRtv6QldJxnOIYsFT034AT0C3QCWm8Fzp8v6eTFkPOANAJmZcyaDHUcQpMmV2
-         aZsRg+bw1CJsiPNnI5O9U5pejaZ8LHA6X5HeX54sbhqa9AdMB7ti7bfDNu+u9lH5ApZ+
-         8JDA==
-X-Gm-Message-State: AAQBX9dyyaB0U7v57DVH0rMfABezgyZyxjLBtOOgKerfHdutGlXS3CZn
-        eveSOXq83pPNU/0tXMI2QyZMkFb8AefWmjsf
-X-Google-Smtp-Source: AKy350Z2wOemdLUQ3DTnBtcfhLATRQqZsbL/MHNlEb2SKIexwcp8tfmae32ViTPN5/R0R1QUYdUH7T2cgfJO0+nV
+        d=1e100.net; s=20210112; t=1679544043;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zlRHMwQCwPxTz7URsIPFYEiZ1y/NkKG6JVNDPEffcgo=;
+        b=VxjPUZujU699+1IQ6iT7Vg57+NBxESTT9zSeNk0//mqsUnL18sB7c2wYnyHtYgZ//S
+         +gllux9zwcvia/nJhmgfV+P99o1q5weGBNBjFNbLhhf84rGIBrfcnBpm3cqifvDO5cJi
+         zu9W4mjqTd4V+gk8HuqYfyRcZfd6lonU36xXOBjbXjdn5ZbYTQjxAhrd7h7OHKQ1yKhR
+         FyUEAaTPJmW0/pXcHJXOnljqhZeQncPyzCWQYAxNR9PqDTRurAbaioXeeEvYJiK7JC6t
+         1uBH6dqRX1GvZjUFRd+ruPIqY7H6iX+pFi+/lT38wa80HPAEgH9y8itRq0CbgXj7PZvz
+         KyTA==
+X-Gm-Message-State: AO0yUKXpjYPAkaubxBDnKd4SiZuZWyKuXrppJXr3gOUsTic4QXlYutQk
+        tZTPiOOSZnH/zQwB594MYVUsxxdoGVi0bVuP
+X-Google-Smtp-Source: AK7set97jrlAfVvPpHOrM2Vr0RCmWVnsZU6sMMMwHyygC2dGwvgADEuqjxobUXV27YUvQlS1Att+r/ZLiyOif2dS
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a25:840a:0:b0:b26:884:c35e with SMTP id
- u10-20020a25840a000000b00b260884c35emr1126100ybk.4.1679544041493; Wed, 22 Mar
- 2023 21:00:41 -0700 (PDT)
-Date:   Thu, 23 Mar 2023 04:00:30 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:902:e745:b0:1a0:4aa3:3a9a with SMTP
+ id p5-20020a170902e74500b001a04aa33a9amr1983132plf.2.1679544043324; Wed, 22
+ Mar 2023 21:00:43 -0700 (PDT)
+Date:   Thu, 23 Mar 2023 04:00:31 +0000
+In-Reply-To: <20230323040037.2389095-1-yosryahmed@google.com>
 Mime-Version: 1.0
+References: <20230323040037.2389095-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-Message-ID: <20230323040037.2389095-1-yosryahmed@google.com>
-Subject: [RFC PATCH 0/7] Make rstat flushing IRQ and sleep friendly
+Message-ID: <20230323040037.2389095-2-yosryahmed@google.com>
+Subject: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the percpu lock
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -75,63 +77,138 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, if rstat flushing is invoked using the irqsafe variant
-cgroup_rstat_flush_irqsafe(), we keep interrupts disabled and do not
-sleep for the entire flush operation, which is O(# cpus * # cgroups).
-This can be rather dangerous.
+Currently, when sleeping is not allowed during rstat flushing, we hold
+the global rstat lock with interrupts disabled throughout the entire
+flush operation. Flushing in an O(# cgroups * # cpus) operation, and
+having interrupts disabled throughout is dangerous.
 
-Not all contexts that use cgroup_rstat_flush_irqsafe() actually cannot
-sleep, and among those that cannot sleep, not all contexts require
-interrupts to be disabled. This patch series breaks down the
-O(# cpus * # cgroups) duration that we disable interrupts for into a
-series of O(# cgroups) durations. Disabling interrupts is deferred to
-the caller if needed.
+For some contexts, we may not want to sleep, but can be interrupted
+(e.g. while holding a spinlock or RCU read lock). As such, do not
+disable interrupts throughout rstat flushing, only when holding the
+percpu lock. This breaks down the O(# cgroups * # cpus) duration with
+interrupts disabled to a series of O(# cgroups) durations.
 
-Patch 1 mainly addresses this by not requiring interrupts to be
-disabled for the global rstat lock to be acquired. As a side effect of
-that, the we disable rstat flushing in interrupt context. See patch 1
-for more details.
+Furthermore, if a cpu spinning waiting for the global rstat lock, it
+doesn't need to spin with interrupts disabled anymore.
 
-One thing I am not sure about is whether the only caller of
-cgroup_rstat_flush_hold() -- cgroup_base_stat_cputime_show(),
-currently has any dependency on that call disabling interrupts.
+If the caller of rstat flushing needs interrupts to be disabled, it's up
+to them to decide that, and it should be fine to hold the global rstat
+lock with interrupts disabled. There is currently a single context that
+may invoke rstat flushing with interrupts disabled, the
+mem_cgroup_flush_stats() call in mem_cgroup_usage(), if called from
+mem_cgroup_threshold().
 
-Patch 2 follows suit for stats_flush_lock in the memcg code, allowing it
-to be acquired without disabling interrupts.
+To make it safe to hold the global rstat lock with interrupts enabled,
+make sure we only flush from in_task() contexts. The side effect of that
+we read stale stats in interrupt context, but this should be okay, as
+flushing in interrupt context is dangerous anyway as it is an expensive
+operation, so reading stale stats is safer.
 
-Patch 3 removes cgroup_rstat_flush_irqsafe() and updates
-cgroup_rstat_flush() to be more explicit about sleeping.
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ kernel/cgroup/rstat.c | 40 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 29 insertions(+), 11 deletions(-)
 
-Patch 4 changes memcg code paths that invoke rstat flushing to sleep
-where possible. The patch changes code paths where it is naturally saef
-to sleep: userspace reads and the background periodic flusher.
-
-Patches 5 & 6 allow sleeping while rstat flushing in reclaim context and
-refault context. I am not sure if this is okay, especially the latter,
-so I placed them in separate patches for ease of revert/drop.
-
-Patch 7 is a slightly tangential optimization that limits the work done
-by rstat flushing in some scenarios.
-
-Yosry Ahmed (7):
-  cgroup: rstat: only disable interrupts for the percpu lock
-  memcg: do not disable interrupts when holding stats_flush_lock
-  cgroup: rstat: remove cgroup_rstat_flush_irqsafe()
-  memcg: sleep during flushing stats in safe contexts
-  vmscan: memcg: sleep when flushing stats during reclaim
-  workingset: memcg: sleep when flushing stats in workingset_refault()
-  memcg: do not modify rstat tree for zero updates
-
- block/blk-cgroup.c         |  2 +-
- include/linux/cgroup.h     |  3 +--
- include/linux/memcontrol.h |  8 +++---
- kernel/cgroup/cgroup.c     |  4 +--
- kernel/cgroup/rstat.c      | 54 ++++++++++++++++++++------------------
- mm/memcontrol.c            | 52 ++++++++++++++++++++++--------------
- mm/vmscan.c                |  2 +-
- mm/workingset.c            |  4 +--
- 8 files changed, 73 insertions(+), 56 deletions(-)
-
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 831f1f472bb8..af11e28bd055 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -7,6 +7,7 @@
+ #include <linux/btf.h>
+ #include <linux/btf_ids.h>
+ 
++/* This lock should only be held from task context */
+ static DEFINE_SPINLOCK(cgroup_rstat_lock);
+ static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
+ 
+@@ -210,14 +211,24 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+ 		/* if @may_sleep, play nice and yield if necessary */
+ 		if (may_sleep && (need_resched() ||
+ 				  spin_needbreak(&cgroup_rstat_lock))) {
+-			spin_unlock_irq(&cgroup_rstat_lock);
++			spin_unlock(&cgroup_rstat_lock);
+ 			if (!cond_resched())
+ 				cpu_relax();
+-			spin_lock_irq(&cgroup_rstat_lock);
++			spin_lock(&cgroup_rstat_lock);
+ 		}
+ 	}
+ }
+ 
++static bool should_skip_flush(void)
++{
++	/*
++	 * We acquire cgroup_rstat_lock without disabling interrupts, so we
++	 * should not try to acquire from interrupt contexts to avoid deadlocks.
++	 * It can be expensive to flush stats in interrupt context anyway.
++	 */
++	return !in_task();
++}
++
+ /**
+  * cgroup_rstat_flush - flush stats in @cgrp's subtree
+  * @cgrp: target cgroup
+@@ -229,15 +240,18 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+  * This also gets all cgroups in the subtree including @cgrp off the
+  * ->updated_children lists.
+  *
+- * This function may block.
++ * This function is safe to call from contexts that disable interrupts, but
++ * @may_sleep must be set to false, otherwise the function may block.
+  */
+ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
+ {
+-	might_sleep();
++	if (should_skip_flush())
++		return;
+ 
+-	spin_lock_irq(&cgroup_rstat_lock);
++	might_sleep();
++	spin_lock(&cgroup_rstat_lock);
+ 	cgroup_rstat_flush_locked(cgrp, true);
+-	spin_unlock_irq(&cgroup_rstat_lock);
++	spin_unlock(&cgroup_rstat_lock);
+ }
+ 
+ /**
+@@ -248,11 +262,12 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
+  */
+ void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp)
+ {
+-	unsigned long flags;
++	if (should_skip_flush())
++		return;
+ 
+-	spin_lock_irqsave(&cgroup_rstat_lock, flags);
++	spin_lock(&cgroup_rstat_lock);
+ 	cgroup_rstat_flush_locked(cgrp, false);
+-	spin_unlock_irqrestore(&cgroup_rstat_lock, flags);
++	spin_unlock(&cgroup_rstat_lock);
+ }
+ 
+ /**
+@@ -267,8 +282,11 @@ void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp)
+ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
+ 	__acquires(&cgroup_rstat_lock)
+ {
++	if (should_skip_flush())
++		return;
++
+ 	might_sleep();
+-	spin_lock_irq(&cgroup_rstat_lock);
++	spin_lock(&cgroup_rstat_lock);
+ 	cgroup_rstat_flush_locked(cgrp, true);
+ }
+ 
+@@ -278,7 +296,7 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
+ void cgroup_rstat_flush_release(void)
+ 	__releases(&cgroup_rstat_lock)
+ {
+-	spin_unlock_irq(&cgroup_rstat_lock);
++	spin_unlock(&cgroup_rstat_lock);
+ }
+ 
+ int cgroup_rstat_init(struct cgroup *cgrp)
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
