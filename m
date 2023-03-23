@@ -2,111 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB516C63C9
-	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 10:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C63B6C65E0
+	for <lists+cgroups@lfdr.de>; Thu, 23 Mar 2023 11:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjCWJgF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Mar 2023 05:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
+        id S231503AbjCWK5S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Mar 2023 06:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjCWJfk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 05:35:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F67222FB
-        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 02:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679564008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UvjK3G8PubwXqQtONySfIeDtd3meQ2XWO8kr4rkCdUw=;
-        b=Zlw1Ha0OeDKk3ojOBCbTMc0J/NhGBylv+k2yRgK50nD+BJGInUxi4207Gu1mJf3s12qPZh
-        Inqjqbw/GSJL+Ck4yjAiD9JJPzGFq+e9/iuVL1EeOvF4N0iU8GJD2l9U0jky+jxnPjYg1A
-        JVTKvcvUhOYf29UpmZX41niy798HyGA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-195-NPozxKHNPxSTMbAWmjLC_g-1; Thu, 23 Mar 2023 05:33:27 -0400
-X-MC-Unique: NPozxKHNPxSTMbAWmjLC_g-1
-Received: by mail-wm1-f70.google.com with SMTP id o7-20020a05600c4fc700b003edf85f6bb1so731546wmq.3
-        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 02:33:26 -0700 (PDT)
+        with ESMTP id S231508AbjCWK45 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Mar 2023 06:56:57 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0951EFBA
+        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 03:56:31 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id z83so24228010ybb.2
+        for <cgroups@vger.kernel.org>; Thu, 23 Mar 2023 03:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679568991;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BYcZPqH3I6SUi+3HZiGlz7bBbKQQVG9vXsJL8zyyX8g=;
+        b=hGKGhrwUhF6Zr58bWw28qEqhFbGEsuGX03A+ZEtGRkcE9kRcpOye6f49Xmu5s3bHyw
+         mgDnCLlVPL5elRFxau0g/qpfHnf2fqWdkw1Ne4JJxaPFw3On3RWpPoBbD0v4JprzDFR4
+         Kz06I4B7l+6BMxKQeptg53xHWGLSGYxQ6/cM4RJ9D6D8TEyy3VIkvTECJuDf4p0+e171
+         I00dCQH3+tZDrOTrYus9JqbFpwj8QwgxZegkxlw66n5/ho5bRRBlI2fyfb0qHVnY+0S4
+         +DSPaR6S/oPz/31pb+rk6rBJjEbYiB/eMCLmPaRI60zfeqDe9v9/4GnttnifD4NIuwCC
+         zcXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679564006;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UvjK3G8PubwXqQtONySfIeDtd3meQ2XWO8kr4rkCdUw=;
-        b=HLP+dAhQfZFsFu3xxgphlwWjnaJtjL/8D7vnwq15IgK2zF0MRmN1H9yoDy32AdRf6o
-         sZQOt+0kjQnxGi+m7sev7HTxd4ILnr2T/2M1BoWhngyPmZin1bV6rxZQz+ouJl/idcGR
-         GW/BrLG1raW1xwlr9/yYA//ct0SAyTgmAs26TCMZ0+nmuouMYeNYYjP9QldvS65ijz+G
-         Lwwomm+WE8A6qP0ekHRAlUVlXUE/5pIO+hPJyiq/fYOCYmn22GeZZrjzvoBZC1JOAYzl
-         DKsK8mbbdmUFbBEmQ3Bfy3VmhMMwR2kVa3XAX7dVSLyT5kWRQ98iXvE9idnonk2p90ev
-         Zrng==
-X-Gm-Message-State: AO0yUKVUWQ6B7DWATa/B4MlfyIA5SNtoSK2Cg9u74tY7P/T67R685et8
-        xw1DGuVYMARPL/u9X0DzMZDVhKm9b0hgjF9XowRsuY4Y9FVqpkxMQz4CH/OjSdy221N//uBUNRq
-        hspWB2M6g5jHfEmgaFA==
-X-Received: by 2002:a7b:c409:0:b0:3e2:201a:5bcc with SMTP id k9-20020a7bc409000000b003e2201a5bccmr1754992wmi.33.1679564006126;
-        Thu, 23 Mar 2023 02:33:26 -0700 (PDT)
-X-Google-Smtp-Source: AK7set+dED/VZywkfBRbZ/TenSZ0T7kW9lQyYoxtjIFT5J6quinfNocd9Wx4xJUrnsA9R303Cqb0Rw==
-X-Received: by 2002:a7b:c409:0:b0:3e2:201a:5bcc with SMTP id k9-20020a7bc409000000b003e2201a5bccmr1754978wmi.33.1679564005817;
-        Thu, 23 Mar 2023 02:33:25 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.151.163])
-        by smtp.gmail.com with ESMTPSA id z21-20020a1cf415000000b003ee3e075d1csm1328198wma.22.2023.03.23.02.33.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 02:33:25 -0700 (PDT)
-Date:   Thu, 23 Mar 2023 10:33:22 +0100
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Qais Yousef <qyousef@layalina.io>, Wei Wang <wvw@google.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] sched/cpuset: Fix DL BW accounting in case
- can_attach() fails
-Message-ID: <ZBwc4l0ZyyRQPiSP@localhost.localdomain>
-References: <20230322135959.1998790-1-dietmar.eggemann@arm.com>
+        d=1e100.net; s=20210112; t=1679568991;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BYcZPqH3I6SUi+3HZiGlz7bBbKQQVG9vXsJL8zyyX8g=;
+        b=lfcR+m6h0gtmr1R1ExklUfrv6NaqTeVjtvMJsv0yGHIXY82jLXHJLndyFHWNwFJ4lg
+         NbSeUD6OleatpI3PnmxbDgBiCj3VpZfuk0DysFbEzK+w6G0XXpxRh67UFHUUljUZ7Dis
+         uh1lwlffZmXSR9T4fUzWLtwiHNSKb/QuM3kb5rmYW4MnQX7yFgIBp0ORiARDwAHrujR5
+         RlE2QHnmYtEdjVgoqbOAcpERXcsWJT85aLrUZNXsPEtInEwL2p+8IjQxDVDcCVets+RO
+         B1jY5hLlGg+kNVqeloUM62UjXuj4PcUAXtOiuQnV7dK+xVptnG82VguQpBCdzF2B5WVb
+         91oQ==
+X-Gm-Message-State: AAQBX9dT2PTSXkHDhjrw4H4dnlMXUkAw6JpayNwfU+r1Ss9Ps4MGCLZf
+        v44Jfg3Kenm1ztbAoIbaP0H6PGDo87hWHeoGAH4=
+X-Google-Smtp-Source: AKy350aalZ/8IQu2SPaqfPLEjMhYKpbdFcYf/RJwBvX/Mp7DE7PbQ7BjumNzD6O6kDRpLJsvIT6sJucdTRX4lFDUww8=
+X-Received: by 2002:a05:6902:1105:b0:b2f:bdc9:2cdc with SMTP id
+ o5-20020a056902110500b00b2fbdc92cdcmr1922153ybu.7.1679568990662; Thu, 23 Mar
+ 2023 03:56:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230322135959.1998790-1-dietmar.eggemann@arm.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:7000:c421:b0:47c:b23e:c6d4 with HTTP; Thu, 23 Mar 2023
+ 03:56:30 -0700 (PDT)
+Reply-To: annamalgorzata587@gmail.com
+From:   "Leszczynska Anna Malgorzata." <revfatherwilliamdick@gmail.com>
+Date:   Thu, 23 Mar 2023 03:56:30 -0700
+Message-ID: <CAMKwiRXAt2ALo4Tfh5JEh33NZn58r8+49QqesFPhP2P5c=mtyw@mail.gmail.com>
+Subject: Mrs. Leszczynska Anna Malgorzata.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_5_NEW,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b42 listed in]
+        [list.dnswl.org]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [revfatherwilliamdick[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [annamalgorzata587[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.8 ADVANCE_FEE_5_NEW Appears to be advance fee fraud (Nigerian
+        *      419)
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+-- 
+I am Mrs. Leszczynska Anna Malgorzatafrom Germany . Presently admitted
+ in one of the hospitals here in Ivory Coast.
 
-On 22/03/23 14:59, Dietmar Eggemann wrote:
-> I followed Longman's idea to add a `deadline task transfer count` into
-> cpuset and only update the `dl task count` in cpuset_attach().
-> 
-> Moreover, I switched from per-task DL BW request to a per-cpuset one.
-> This way we don't have to free per-task in case xxx_can_attach() fails.
-> 
-> The DL BW freeing is handled in cpuset_cancel_attach() for the case
-> `multiple controllers and one of the non-cpuset can_attach() fails`.
-> 
-> Only lightly tested on cgroup v1 with exclusive cpusets so far.
+I and my late husband do not have any child that is why I am donating
+this money to you having known my condition that I will join my late
+husband soonest.
 
-This makes sense to me. Thanks for working on it!
+I wish to donate towards education and the less privileged I ask for
+your assistance. I am suffering from colon cancer I have some few
+weeks to live according to my doctor.
 
-Guess I might incorporate these in my (RFC) series and re-post the whole
-lot?
+The money should be used for this purpose.
+Motherless babies
+Children orphaned by aids.
+Destitute children
+Widows and Widowers.
+Children who cannot afford education.
 
-Best,
-Juri
+My husband stressed the importance of education and the less
+privileged I feel that this is what he would have wanted me to do with
+the money that he left for charity.
 
+These services bring so much joy to the kids. Together we are
+transforming lives and building brighter futures - but without you, it
+just would not be possible.
+I am using translation to communicate with you in case there is any
+mistake in my writing please correct me.
+Sincerely,
+
+Mrs. Leszczynska Anna Malgorzata.
