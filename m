@@ -2,136 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C00516C7F9B
-	for <lists+cgroups@lfdr.de>; Fri, 24 Mar 2023 15:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508C96C7FEA
+	for <lists+cgroups@lfdr.de>; Fri, 24 Mar 2023 15:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbjCXONp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Mar 2023 10:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
+        id S230196AbjCXOdD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Mar 2023 10:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbjCXONl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Mar 2023 10:13:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD5C1CAEF
-        for <cgroups@vger.kernel.org>; Fri, 24 Mar 2023 07:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679667172;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADiIDdAPnjqVAbV/udpxZCAiMLd8rfZn004mVe2ENYg=;
-        b=boB6STEfazdhCem7Eln3rFOE2LzC10XnwpMztzYUkFmj6lJAAgbrkoLKLVJC3bjol1E4kW
-        DlD1CmlsHSTMYpyzTgsKEa4zeEuTo+Ip0FRPscHj05qbhBY7OrlQSK979YIDRhhWyyHx8S
-        nxcn5aXrVziRwkjSlvF7GA2npUT+fGY=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-638-1m-g8VaUM1S0ZM79i3uKWA-1; Fri, 24 Mar 2023 10:12:45 -0400
-X-MC-Unique: 1m-g8VaUM1S0ZM79i3uKWA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229551AbjCXOdC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Mar 2023 10:33:02 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE1814235;
+        Fri, 24 Mar 2023 07:33:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7BAE29AA3B5;
-        Fri, 24 Mar 2023 14:12:43 +0000 (UTC)
-Received: from [10.22.33.184] (unknown [10.22.33.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E174D140EBF4;
-        Fri, 24 Mar 2023 14:12:42 +0000 (UTC)
-Message-ID: <53582a07-81c6-35eb-10bf-7920b27483be@redhat.com>
-Date:   Fri, 24 Mar 2023 10:12:42 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-Content-Language: en-US
-To:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        by sin.source.kernel.org (Postfix) with ESMTPS id 0C17BCE2401;
+        Fri, 24 Mar 2023 14:32:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45F8AC433EF;
+        Fri, 24 Mar 2023 14:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679668377;
+        bh=yxz8D2Zg0ZMCZt9HGM8J7hviWBLk56ggtJ1KZ+DkDGY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TW4X/v31+XvxigTPEeFIQrSpqf1C0wg34BEJL4Ewk0hehRrW2ZKZsQjnGXXStCEQp
+         5VkteDkPv+sdJn+wnCp00Q7ts0BXFvbvpUPoz/O9ozOkHdjO4LnSzaJvy2Lfehdi0r
+         o0bbmMBhVD3QDLkFyY4APnSyWtyO3ymDaEdHiB8QpljXQXoAKlvYNlSVeZg+pwPPZe
+         sPryW8AHtsYhf36NHIPB0QmnPAT7HBQXA41oQKclKF0ESgsa5b9KAsNfg7nYmJrsRX
+         ucNevYIcTADp3ZgDhRMyA4mplhSlroJWECB9XeRhBSBgNHFndzP4dipMvgK5XNtnz6
+         OfNZPsFUIN1Wg==
+Date:   Fri, 24 Mar 2023 14:32:50 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-References: <20230323040037.2389095-1-yosryahmed@google.com>
- <20230323040037.2389095-2-yosryahmed@google.com>
- <ZBz/V5a7/6PZeM7S@slm.duckdns.org>
- <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 3/5] cgroup/cpuset: Find another usable CPU if none found
+ in current cpuset
+Message-ID: <20230324143247.GA27199@willie-the-truck>
+References: <20230306200849.376804-1-longman@redhat.com>
+ <20230306200849.376804-4-longman@redhat.com>
+ <20230314181749.5b4k6selbgdhl3up@blackpad>
+ <58a1a878-fa0b-285d-3e43-2b5103d3c770@redhat.com>
+ <20230317122708.ax3m2d4zijkfdzjq@blackpad>
+ <ca664da8-0f47-06b2-a94c-82b2f9a1c3aa@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ca664da8-0f47-06b2-a94c-82b2f9a1c3aa@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/24/23 03:22, Yosry Ahmed wrote:
-> On Thu, Mar 23, 2023 at 6:39â€¯PM Tejun Heo <tj@kernel.org> wrote:
->> Hello,
->>
->> On Thu, Mar 23, 2023 at 04:00:31AM +0000, Yosry Ahmed wrote:
->>> Currently, when sleeping is not allowed during rstat flushing, we hold
->>> the global rstat lock with interrupts disabled throughout the entire
->>> flush operation. Flushing in an O(# cgroups * # cpus) operation, and
->>> having interrupts disabled throughout is dangerous.
->>>
->>> For some contexts, we may not want to sleep, but can be interrupted
->>> (e.g. while holding a spinlock or RCU read lock). As such, do not
->>> disable interrupts throughout rstat flushing, only when holding the
->>> percpu lock. This breaks down the O(# cgroups * # cpus) duration with
->>> interrupts disabled to a series of O(# cgroups) durations.
->>>
->>> Furthermore, if a cpu spinning waiting for the global rstat lock, it
->>> doesn't need to spin with interrupts disabled anymore.
->> I'm generally not a fan of big spin locks w/o irq protection. They too often
->> become a source of unpredictable latency spikes. As you said, the global
->> rstat lock can be held for quite a while. Removing _irq makes irq latency
->> better on the CPU but on the other hand it makes a lot more likely that the
->> lock is gonna be held even longer, possibly significantly so depending on
->> the configuration and workload which will in turn stall other CPUs waiting
->> for the lock. Sure, irqs are being serviced quicker but if the cost is more
->> and longer !irq context multi-cpu stalls, what's the point?
->>
->> I don't think there's anything which requires the global lock to be held
->> throughout the entire flushing sequence and irq needs to be disabled when
->> grabbing the percpu lock anyway, so why not just release the global lock on
->> CPU boundaries instead? We don't really lose anything significant that way.
->> The durations of irq disabled sections are still about the same as in the
->> currently proposed solution at O(# cgroups) and we avoid the risk of holding
->> the global lock for too long unexpectedly from getting hit repeatedly by
->> irqs while holding the global lock.
-> Thanks for taking a look!
->
-> I think a problem with this approach is that we risk having to contend
-> for the global lock at every CPU boundary in atomic contexts. Right
-Isn't it the plan to just do a trylock in atomic contexts so that it 
-won't get stuck spinning for the lock for an indeterminate amount of time?
-> now we contend for the global lock once, and once we have it we go
-> through all CPUs to flush, only having to contend with updates taking
-> the percpu locks at this point. If we unconditionally release &
-> reacquire the global lock at every CPU boundary then we may contend
-> for it much more frequently with concurrent flushers.
+On Fri, Mar 17, 2023 at 10:59:26AM -0400, Waiman Long wrote:
+> On 3/17/23 08:27, Michal Koutný wrote:
+> > On Tue, Mar 14, 2023 at 04:22:06PM -0400, Waiman Long <longman@redhat.com> wrote:
+> > > Some arm64 systems can have asymmetric CPUs where certain tasks are only
+> > > runnable on a selected subset of CPUs.
+> > Ah, I'm catching up.
+> > 
+> > > This information is not captured in the cpuset. As a result,
+> > > task_cpu_possible_mask() may return a mask that have no overlap with
+> > > effective_cpus causing new_cpus to become empty.
+> > I can see that historically, there was an approach of terminating
+> > unaccomodable tasks:
+> >     94f9c00f6460 ("arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores")
+> > the removal of killing had been made possible with
+> >     df950811f4a8 ("arm64: Prevent offlining first CPU with 32-bit EL0 on mismatched system").
+> > 
+> > That gives two other alternatives to affinity modification:
+> > 2) kill such tasks (not unlike OOM upon memory.max reduction),
+> > 3) reject cpuset reduction (violates cgroup v2 delegation).
+> > 
+> > What do you think about 2)?
+> 
+> Yes, killing it is one possible solution.
+> 
+> (3) doesn't work if the affinity change is due to hot cpu removal. So that
+> leaves this patch or (2) as the only alternative. I would like to hear what
+> Will and Tejun thinks about it.
 
-Note that with the use of qspinlock in all the major arches, the impact 
-of thundering herds of lockers are much less serious than before. There 
-are certainly some overhead in doing multiple lock acquires and 
-releases, but that shouldn't been too excessive.
+The main constraint from the Android side (the lucky ecosystem where these
+SoCs tend to show up) is that existing userspace (including 32-bit binaries)
+continues to function without modification. So approaches such as killing
+tasks or rejecting system calls tend not to work as well, since you
+inevitably get divergent behaviour leading to functional breakage rather
+than e.g. performance anomalies.
 
-I am all in for reducing lock hold time as much as possible as it will 
-improve the response time.
+Having said that, the behaviour we currently have in mainline seems to
+be alright, so please don't go out of your way to accomodate these SoCs.
+I'm mainly just concerned about introducing any regressions, which is why
+I ran my tests on this series
 
 Cheers,
-Longman
 
+Will
