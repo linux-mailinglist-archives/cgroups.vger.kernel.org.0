@@ -2,120 +2,189 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C92A6C801E
-	for <lists+cgroups@lfdr.de>; Fri, 24 Mar 2023 15:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFC16C8044
+	for <lists+cgroups@lfdr.de>; Fri, 24 Mar 2023 15:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbjCXOnA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Mar 2023 10:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        id S232251AbjCXOtK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Mar 2023 10:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjCXOm7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Mar 2023 10:42:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF31610EB
-        for <cgroups@vger.kernel.org>; Fri, 24 Mar 2023 07:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679668931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=To5ecTC/X7saxKtjRIArD6KqaoPoVn1lZB9f4SzUO/k=;
-        b=gNbDuLXtNBSipPxLACH9xTrrjtXnjWWWMtIM/OYj0ajCQT/SzQR7TerSVbhNYmP0sVh5e5
-        BuBR1y1996Fj+kXuHzGf9ggCu5yCZOk+6kGSEStkzPM+/KzMx88J2LLx9RF4zwVH11Kh5G
-        fesFCx2t1imiBgwdPRjvrBXl9O4o7+U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-556-XODxuWeWN7ad9yu4e0v4Dw-1; Fri, 24 Mar 2023 10:42:10 -0400
-X-MC-Unique: XODxuWeWN7ad9yu4e0v4Dw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD3CC802314;
-        Fri, 24 Mar 2023 14:42:09 +0000 (UTC)
-Received: from [10.22.33.184] (unknown [10.22.33.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 360CD140EBF4;
-        Fri, 24 Mar 2023 14:42:09 +0000 (UTC)
-Message-ID: <c07afcbf-8473-b4e3-704e-c73695db95b6@redhat.com>
-Date:   Fri, 24 Mar 2023 10:42:09 -0400
+        with ESMTP id S232220AbjCXOtH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Mar 2023 10:49:07 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1530361B6
+        for <cgroups@vger.kernel.org>; Fri, 24 Mar 2023 07:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679669332; x=1711205332;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eFWeDb8iCiuBzcpQe4sCdQC0WsNUUx7nTa2HcxmkIKA=;
+  b=KldGnu6CiGrynvDCLaQ0aYC0I/RbAzkDLaKKFxzuX4rsv2uuoqy1B0Hh
+   E6h/g4+vt/dFlW4o2UnBCcJpaiztOHugcP/FkUDy+vfqyx/cNgOXNQpdx
+   s6bwNCxDbySBPUo+2tVvyKnFjYgnKl45QUKPREVO2P7XC8KFoK248Zvdu
+   wCu4THDxBQxKpByijrttP4mUA3wtQCOGLJimRrpu+exgcSA8otm00hVZq
+   rZNAvfU/uO6swu2bpRxiyRA0CMS1U2bKElrw+pqTzN2Ai7vFG4qTlq5F6
+   g7sbooZMYh5Ki3HWPW4ezhuQWbgVXZYaRyuPcX0vulUvFm8+AZwcZzJ8Q
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10659"; a="341358665"
+X-IronPort-AV: E=Sophos;i="5.98,288,1673942400"; 
+   d="scan'208";a="341358665"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2023 07:48:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10659"; a="682730654"
+X-IronPort-AV: E=Sophos;i="5.98,288,1673942400"; 
+   d="scan'208";a="682730654"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 24 Mar 2023 07:48:18 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pfiiI-000FNb-0e;
+        Fri, 24 Mar 2023 14:48:18 +0000
+Date:   Fri, 24 Mar 2023 22:47:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 70a0eb104712a7a657e6869aa69bec6417d4877f
+Message-ID: <641db806.2LOtWkzciExV2O8X%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 3/5] cgroup/cpuset: Find another usable CPU if none found
- in current cpuset
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230306200849.376804-1-longman@redhat.com>
- <20230306200849.376804-4-longman@redhat.com>
- <20230314181749.5b4k6selbgdhl3up@blackpad>
- <58a1a878-fa0b-285d-3e43-2b5103d3c770@redhat.com>
- <20230317122708.ax3m2d4zijkfdzjq@blackpad>
- <ca664da8-0f47-06b2-a94c-82b2f9a1c3aa@redhat.com>
- <20230324143247.GA27199@willie-the-truck>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230324143247.GA27199@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/24/23 10:32, Will Deacon wrote:
-> On Fri, Mar 17, 2023 at 10:59:26AM -0400, Waiman Long wrote:
->> On 3/17/23 08:27, Michal Koutný wrote:
->>> On Tue, Mar 14, 2023 at 04:22:06PM -0400, Waiman Long <longman@redhat.com> wrote:
->>>> Some arm64 systems can have asymmetric CPUs where certain tasks are only
->>>> runnable on a selected subset of CPUs.
->>> Ah, I'm catching up.
->>>
->>>> This information is not captured in the cpuset. As a result,
->>>> task_cpu_possible_mask() may return a mask that have no overlap with
->>>> effective_cpus causing new_cpus to become empty.
->>> I can see that historically, there was an approach of terminating
->>> unaccomodable tasks:
->>>      94f9c00f6460 ("arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores")
->>> the removal of killing had been made possible with
->>>      df950811f4a8 ("arm64: Prevent offlining first CPU with 32-bit EL0 on mismatched system").
->>>
->>> That gives two other alternatives to affinity modification:
->>> 2) kill such tasks (not unlike OOM upon memory.max reduction),
->>> 3) reject cpuset reduction (violates cgroup v2 delegation).
->>>
->>> What do you think about 2)?
->> Yes, killing it is one possible solution.
->>
->> (3) doesn't work if the affinity change is due to hot cpu removal. So that
->> leaves this patch or (2) as the only alternative. I would like to hear what
->> Will and Tejun thinks about it.
-> The main constraint from the Android side (the lucky ecosystem where these
-> SoCs tend to show up) is that existing userspace (including 32-bit binaries)
-> continues to function without modification. So approaches such as killing
-> tasks or rejecting system calls tend not to work as well, since you
-> inevitably get divergent behaviour leading to functional breakage rather
-> than e.g. performance anomalies.
->
-> Having said that, the behaviour we currently have in mainline seems to
-> be alright, so please don't go out of your way to accomodate these SoCs.
-> I'm mainly just concerned about introducing any regressions, which is why
-> I ran my tests on this series
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 70a0eb104712a7a657e6869aa69bec6417d4877f  Merge branch 'for-6.4' into for-next
 
-I agree that killing it may be too draconian. I am withholding this 
-patch for now.
+elapsed time: 727m
 
-Thanks,
-Longman
+configs tested: 109
+configs skipped: 7
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r021-20230322   gcc  
+arc                  randconfig-r036-20230322   gcc  
+arc                  randconfig-r043-20230322   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r023-20230322   clang
+arm                  randconfig-r035-20230322   gcc  
+arm                  randconfig-r046-20230322   clang
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r002-20230322   clang
+arm64        buildonly-randconfig-r006-20230322   clang
+arm64                               defconfig   gcc  
+arm64                randconfig-r023-20230322   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r024-20230322   gcc  
+csky                 randconfig-r034-20230322   gcc  
+hexagon              randconfig-r004-20230322   clang
+hexagon              randconfig-r041-20230322   clang
+hexagon              randconfig-r045-20230322   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a001   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a003   gcc  
+i386                          randconfig-a004   clang
+i386                          randconfig-a005   gcc  
+i386                          randconfig-a006   clang
+i386                          randconfig-a011   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a013   clang
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a015   clang
+i386                          randconfig-a016   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r005-20230322   gcc  
+ia64                 randconfig-r025-20230322   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r004-20230322   gcc  
+loongarch    buildonly-randconfig-r005-20230322   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r032-20230322   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r001-20230322   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r015-20230322   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      maltasmvp_defconfig   gcc  
+mips                 randconfig-r012-20230322   clang
+mips                 randconfig-r021-20230322   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r036-20230322   gcc  
+openrisc                            defconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r006-20230322   gcc  
+parisc               randconfig-r013-20230322   gcc  
+parisc               randconfig-r034-20230322   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc      buildonly-randconfig-r003-20230322   gcc  
+powerpc              randconfig-r033-20230322   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r022-20230322   gcc  
+riscv                randconfig-r042-20230322   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230322   clang
+s390                 randconfig-r003-20230322   clang
+s390                 randconfig-r044-20230322   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r016-20230322   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r014-20230322   gcc  
+sparc64              randconfig-r031-20230322   gcc  
+sparc64              randconfig-r032-20230322   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64                        randconfig-a011   gcc  
+x86_64                        randconfig-a012   clang
+x86_64                        randconfig-a013   gcc  
+x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a015   gcc  
+x86_64                        randconfig-a016   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r031-20230322   gcc  
+xtensa               randconfig-r035-20230322   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
