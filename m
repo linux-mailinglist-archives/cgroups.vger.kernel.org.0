@@ -2,108 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE246C9809
-	for <lists+cgroups@lfdr.de>; Sun, 26 Mar 2023 23:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7347B6C9917
+	for <lists+cgroups@lfdr.de>; Mon, 27 Mar 2023 02:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjCZVjG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 26 Mar 2023 17:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
+        id S229850AbjC0Atx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 26 Mar 2023 20:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjCZVjG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Mar 2023 17:39:06 -0400
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8854C1C;
-        Sun, 26 Mar 2023 14:39:05 -0700 (PDT)
-Received: by mail-qv1-f45.google.com with SMTP id t13so5610847qvn.2;
-        Sun, 26 Mar 2023 14:39:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679866743;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DIQ9eIlSpAA9+1gG0Uwa5651wmcDfg3GdDljDetIFiQ=;
-        b=iP5DTRifXkna2xG4BWLYOCPilWOenHcKn8F1BZSaU1GS7Te4U3B+bWKuQv+Q87LOoe
-         PYdMvTjfy3+tHC9omeyUbwvp1kLn2IgOhXLUrLduNELj1UqQIsUZBRkkRztl1czE8Hjm
-         W/Yfgapi8XT//anxdFk0WxC+4gMdNLVYLqcOIWomBAm1f9UaX/gXT0GSipU/Loa+IMjr
-         TzUvhWZvx2G6Dszb20A3jqO4RorhmpjLvOMFMnkJDVeBWSQ1gyZU6I5/DOZndJcIod4u
-         1CcALobgmLxOfE3h8pgPD8w2tAFUoDYmf94NMuFIuT/rAu0Rhcp49OQOhpjF4hEUoMsj
-         DeMg==
-X-Gm-Message-State: AAQBX9fxDNZxYrl7JRBhIr6vkEgzwMXG3FgjcRP9YBaB9MymKYkUna84
-        nGv/GxPqSKESfmFn1JGzVvA=
-X-Google-Smtp-Source: AKy350Z7u9qMmrS9h4j5TqP1uMWZa6oiBm2m+vreuWKuQd9iOVloKRpZ6D+Ab5O3wvFzZz+hpT3GsQ==
-X-Received: by 2002:a05:6214:4114:b0:5aa:fd43:1fbe with SMTP id kc20-20020a056214411400b005aafd431fbemr16826372qvb.46.1679866743277;
-        Sun, 26 Mar 2023 14:39:03 -0700 (PDT)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id 75-20020a370a4e000000b006ff8a122a1asm10659270qkk.78.2023.03.26.14.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Mar 2023 14:39:02 -0700 (PDT)
-Date:   Sun, 26 Mar 2023 16:39:00 -0500
-From:   David Vernet <void@manifault.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        kernel-janitors@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Jay Kamat <jgkamat@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>, cocci@inria.fr,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests: cgroup: Fix exception handling in
- test_memcg_oom_group_score_events()
-Message-ID: <20230326213900.GJ363182@maniforge>
-References: <f9303bdc-b1a7-be5e-56c6-dfa8232b8b55@web.de>
- <c383bdca-6f0d-4a75-e788-e1920faa0a62@web.de>
- <fffcd98a-bb73-41cd-8545-0f2c55dd38f9@lucifer.local>
- <5b7921c9-ee5d-c372-b19b-2701bcf33148@web.de>
+        with ESMTP id S229479AbjC0Atw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Mar 2023 20:49:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB83132;
+        Sun, 26 Mar 2023 17:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=J34aMK6n+O5EOaIOD1zXvzTxUfNPfAeP9gPFHmYCaGA=; b=4M3uK7D06M5LGjDiFkWczeT12G
+        Pr/zv02t1WWrUSI1ZtKKyr4dSQBLuK86287W6gGZfpKr49g/XufKv582wRFvV84PxJS/CZ2IbAL32
+        5mCxz4UXT6WQArvCuCArUftBki8/SVAx/KAi3kaGC+GAh0lEOvyTEVaSraNm2S5zaV29s/9QlpU2J
+        FzCW7xq/xIRFxXbxUvdR0YHhdVsF8MtMFdAEdQSEWYvt7tCvs5qrc5ZAueo2MJAM6D/9PWl8SsrdY
+        mL9PnLJs3vWh7Hl/gIwdSoBVonA7tYt1FU1XPWkCVgBFjvkZ4vussqUzn/iKmd/lFGI26P8pzmsl7
+        i13m7J7Q==;
+Received: from i114-182-241-148.s41.a014.ap.plala.or.jp ([114.182.241.148] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pgb3S-009Qrq-0K;
+        Mon, 27 Mar 2023 00:49:46 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: move bio cgroup punting into btrfs
+Date:   Mon, 27 Mar 2023 09:49:46 +0900
+Message-Id: <20230327004954.728797-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b7921c9-ee5d-c372-b19b-2701bcf33148@web.de>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Mar 26, 2023 at 10:15:31AM +0200, Markus Elfring wrote:
+Hi all,
 
-[...]
+the current code to offload bio submission into a cgroup-specific helper
+thread when sent from the btrfs internal helper threads is a bit ugly.
 
-> >>
-> >> Fixes: a987785dcd6c8ae2915460582aebd6481c81eb67 ("Add tests for memory.oom.group")
-> >
-> > Fixes what in the what now?
-> 
-> 1. Check repetition (which can be undesirable)
-> 
-> 2. Can a cg_destroy() call ever work as expected if a cg_create() call failed?
+This series moves it into btrfs with minimal interference in the core
+code.
 
-Perhaps next time you can answer your own question by spending 30
-seconds actually reading the code you're "fixing":
+I also wonder if the better way to handle this in the long would be to
+to allow multiple writeback threads per device and cgroup, which should
+remove the need for both the btrfs submission helper workqueue and the
+per-cgroup threads.
 
-int cg_destroy(const char *cgroup)
-{
-        int ret;
-
-retry:
-        ret = rmdir(cgroup);
-        if (ret && errno == EBUSY) {
-                cg_killall(cgroup);
-                usleep(100);
-                goto retry;
-        }
-
-        if (ret && errno == ENOENT) <<< that case is explicitly handled here
-                ret = 0;
-
-        return ret;
-}
+Diffstat:
+ block/Kconfig             |    3 +
+ block/blk-cgroup.c        |   78 +++++++++++++++++++++++++---------------------
+ block/blk-cgroup.h        |   15 +-------
+ block/blk-core.c          |    3 -
+ fs/btrfs/Kconfig          |    1 
+ fs/btrfs/bio.c            |   12 ++++---
+ fs/btrfs/bio.h            |    3 +
+ fs/btrfs/compression.c    |    8 ----
+ fs/btrfs/compression.h    |    1 
+ fs/btrfs/extent_io.c      |    6 +--
+ fs/btrfs/inode.c          |   37 +++++++++++----------
+ include/linux/bio.h       |    5 ++
+ include/linux/blk_types.h |   18 ++--------
+ include/linux/writeback.h |    5 --
+ 14 files changed, 94 insertions(+), 101 deletions(-)
