@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF756C991F
-	for <lists+cgroups@lfdr.de>; Mon, 27 Mar 2023 02:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7DF6C992A
+	for <lists+cgroups@lfdr.de>; Mon, 27 Mar 2023 02:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbjC0At7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 26 Mar 2023 20:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
+        id S231881AbjC0AuA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 26 Mar 2023 20:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbjC0At6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Mar 2023 20:49:58 -0400
+        with ESMTP id S231834AbjC0At7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Mar 2023 20:49:59 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDBD30C0;
-        Sun, 26 Mar 2023 17:49:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCC72723;
+        Sun, 26 Mar 2023 17:49:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=s56AsIYlw5q14zHr9Gzs0WZIFhX1rh7X7dJ8YVLzjck=; b=osaR8wPjMXD5wK8oFuegBQydlT
-        invB/3B/4gcOvmAjjqU3q+bMd4kHMkxNQR+nkpaz1ydBWTsFJ8egQ2UtHZgJYTCHXyiRmMXbRcT92
-        kMXpdyD20pAnO7e03Vx6I7WZw31bNb7/BexopC/81XGrKsRp4TSwsfjuvNN2IasoUDR9oXhh3J1WO
-        C0g7DIt3KeUJ6LpPyZUEqFg8qgX019WO/Ayhnbh4tJXCYoXm/KJg91x1/OA/di8pRCzzaRlYqxlFp
-        N6xlw6JvdVqnZRFTo3fFLm7C/HdjLeFFW8SA+LINMmA4LVtI/FvbvfgSbXSsXQvZAgD11pg8CcJWG
-        7qcEW5uw==;
+        bh=5ZhM6Yw/R1sd+MpvSA0gat2A40x7C/0Xx6SF3r7hQHg=; b=1Vta+wtQ4nJq8eCftRdshEH7bm
+        7P0fxfEiDSEXzllKTLvvoAQNLnQo1MEAQyarGNLZo2HtgnVinDCvCYQFf2Yh9yuX+TEO7SSK29P3C
+        p6XtrJeZfxO0kxks9laeZlcoJDKZU547niU6M9QOE6RXY/DZOfmsA150H4cMzGmob0jx9twN7admS
+        hZ3/kdPhzkZJGqWNVQ9Q3U3rMAI2hVvYfaPCo8UiGzCxX+6RjujT7kMlXMEbV8afHehM/M7Jd8KL3
+        gKAe7kL7PuWrW2ksiX9BcRweU0M1XpbDbK3+K8NZn7dpsYtmhThUzCo15jExkbWx4F+KjOq6JhTZz
+        e2tVuKZw==;
 Received: from i114-182-241-148.s41.a014.ap.plala.or.jp ([114.182.241.148] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pgb3Y-009Qsd-2f;
-        Mon, 27 Mar 2023 00:49:53 +0000
+        id 1pgb3a-009Qsw-2q;
+        Mon, 27 Mar 2023 00:49:55 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/7] btrfs: also use kthread_associate_blkcg for uncompressible ranges
-Date:   Mon, 27 Mar 2023 09:49:49 +0900
-Message-Id: <20230327004954.728797-4-hch@lst.de>
+Subject: [PATCH 4/7] btrfs, mm: remove the punt_to_cgroup field in struct writeback_control
+Date:   Mon, 27 Mar 2023 09:49:50 +0900
+Message-Id: <20230327004954.728797-5-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230327004954.728797-1-hch@lst.de>
 References: <20230327004954.728797-1-hch@lst.de>
@@ -53,52 +53,61 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-submit_one_async_extent needs to use submit_one_async_extent no matter
-if the range it handles ends up beeing compressed or not as the deadlock
-risk due to cgroup thottling is the same.  Call kthread_associate_blkcg
-earlier to cover submit_uncompressed_range case as well.
+punt_to_cgroup is only used by extent_write_locked_range, but that
+function also directly controls the bio flags for the actual submission.
+Remove th punt_to_cgroup field, and just set REQ_CGROUP_PUNT directly
+in extent_write_locked_range.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/inode.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/btrfs/extent_io.c      | 6 +++---
+ include/linux/writeback.h | 5 -----
+ 2 files changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7a1bfce9532fe9..713b47792b9b7e 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -982,6 +982,9 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
- 	u64 start = async_extent->start;
- 	u64 end = async_extent->start + async_extent->ram_size - 1;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1221f699ffc596..f5702b1e2b86b0 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2533,13 +2533,13 @@ int extent_write_locked_range(struct inode *inode, u64 start, u64 end)
+ 		.sync_mode	= WB_SYNC_ALL,
+ 		.range_start	= start,
+ 		.range_end	= end + 1,
+-		/* We're called from an async helper function */
+-		.punt_to_cgroup	= 1,
+ 		.no_cgroup_owner = 1,
+ 	};
+ 	struct btrfs_bio_ctrl bio_ctrl = {
+ 		.wbc = &wbc_writepages,
+-		.opf = REQ_OP_WRITE | wbc_to_write_flags(&wbc_writepages),
++		/* We're called from an async helper function */
++		.opf = REQ_OP_WRITE | REQ_CGROUP_PUNT |
++			wbc_to_write_flags(&wbc_writepages),
+ 		.extent_locked = 1,
+ 	};
  
-+	if (async_chunk->blkcg_css)
-+		kthread_associate_blkcg(async_chunk->blkcg_css);
-+
- 	/*
- 	 * If async_chunk->locked_page is in the async_extent range, we need to
- 	 * handle it.
-@@ -1052,8 +1055,6 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
- 			NULL, EXTENT_LOCKED | EXTENT_DELALLOC,
- 			PAGE_UNLOCK | PAGE_START_WRITEBACK);
+diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+index 46020373e155be..fba937999fbfd3 100644
+--- a/include/linux/writeback.h
++++ b/include/linux/writeback.h
+@@ -70,8 +70,6 @@ struct writeback_control {
+ 	 */
+ 	unsigned no_cgroup_owner:1;
  
--	if (async_chunk->blkcg_css)
--		kthread_associate_blkcg(async_chunk->blkcg_css);
- 	btrfs_submit_compressed_write(inode, start,	/* file_offset */
- 			    async_extent->ram_size,	/* num_bytes */
- 			    ins.objectid,		/* disk_bytenr */
-@@ -1061,10 +1062,10 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
- 			    async_extent->pages,	/* compressed_pages */
- 			    async_extent->nr_pages,
- 			    async_chunk->write_flags, true);
--	if (async_chunk->blkcg_css)
--		kthread_associate_blkcg(NULL);
- 	*alloc_hint = ins.objectid + ins.offset;
- done:
-+	if (async_chunk->blkcg_css)
-+		kthread_associate_blkcg(NULL);
- 	kfree(async_extent);
- 	return ret;
+-	unsigned punt_to_cgroup:1;	/* cgrp punting, see __REQ_CGROUP_PUNT */
+-
+ 	/* To enable batching of swap writes to non-block-device backends,
+ 	 * "plug" can be set point to a 'struct swap_iocb *'.  When all swap
+ 	 * writes have been submitted, if with swap_iocb is not NULL,
+@@ -97,9 +95,6 @@ static inline blk_opf_t wbc_to_write_flags(struct writeback_control *wbc)
+ {
+ 	blk_opf_t flags = 0;
  
+-	if (wbc->punt_to_cgroup)
+-		flags = REQ_CGROUP_PUNT;
+-
+ 	if (wbc->sync_mode == WB_SYNC_ALL)
+ 		flags |= REQ_SYNC;
+ 	else if (wbc->for_kupdate || wbc->for_background)
 -- 
 2.39.2
 
