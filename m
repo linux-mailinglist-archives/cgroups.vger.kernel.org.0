@@ -2,79 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6976CC128
-	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 15:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC396CC1D6
+	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 16:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbjC1NkS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 09:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
+        id S233067AbjC1OPk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Mar 2023 10:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjC1NkR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 09:40:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B295122;
-        Tue, 28 Mar 2023 06:40:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A0CA8B81CFA;
-        Tue, 28 Mar 2023 13:40:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F30C433EF;
-        Tue, 28 Mar 2023 13:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680010807;
-        bh=icUy13Xzx8zHFQYe+wcW2EESbKwQa3rKnpkk5O1qqOo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dnpLXIuxAYnWll/36a77A70//tWgi7UQv5dZoVH7VSv2/a9EAsI0GZIPnCgkhA060
-         VslmWbFGcWf79brWo36ELhrhE4YyMh5zn7QADHaduPRccfPGtc2gnmExolXu23WsLX
-         BGzcIr3YSBMUrjvDqgeyz7MYhzYeT/fh9xgr7KOr2hiZ2/rZAY3b148Sw+k6mDWbt+
-         19GUyK6xFRoVD0yvXTL2QRBWihNcViUPyY5kRqGUeNBin+6uiuKHKcmb7w40DPVFhS
-         hwBCh79JIrz2NcJEj/7c3A9x97h6lXiSofq63UTTdgyGiV5iUm9rA1aihu3tuGL1m3
-         0rCqqFWrsCoKA==
-Date:   Tue, 28 Mar 2023 14:40:01 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S233127AbjC1OP3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 10:15:29 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE02CA2D
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 07:15:26 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id k4-20020a17090aef0400b0023fcccbd7e6so3375974pjz.5
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 07:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680012925;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qjzC1AXnpW8l0xPrPEZPgxXh3c0otg2X0grqn38oTAU=;
+        b=Z21Fhu3pxXs+t1qejKjoB06mqPadXXUaJj6uhGgpRk+3gLqlDes+wtSSSWE2knRI8/
+         qiF1U6JTQdX1HxRtou/7QeC7ME871T4I2lhXvmsiB9LqWDQkJ4A+0KJwwrxD+tJ4Zz1U
+         eS8+YEXBsJWpRHPbqfmOGMvVMX3kHO1M02ByL8p7FWqBJtGrwNge2GxAveCUIe2ZNQ6v
+         dvl7/FGZwG59zro3vm/oD7ttk1pXq3InfcSBeQsKHb9wmWZOyOVM20v0sF2M0rosq1uZ
+         BvtS7Z8Fw8zE99KoUjs5+fCH5VuwRsaKfmGjaYi/I6cgKnvsxM9ic7CzcXo5qhkkLbxE
+         V9bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680012925;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qjzC1AXnpW8l0xPrPEZPgxXh3c0otg2X0grqn38oTAU=;
+        b=WftlRFBUdpiHSTTchjEnDqfhOAzuibTiTL9+XiLnQ8iRKacxx8scrXzGTY/l8axiYB
+         lhc94lnFSGEgYVPOLhwk3ecP5z0cQeJ+VF2pwkPRbqfRn0xEyUjJwYYCosZ1qTv45NTW
+         fRO8jA9mSIjlrwBLuayIfE4MlxBmT3BZFpPyCDGhMJdGZ3h66ARyJ006TM/eDggu0tvJ
+         qNguUPh+8RP3rOy9PRs/HIGJy8T17UHF1bESCzvKH5qG+ZuHJyxOrCXTU2pq8QRQ/Rdc
+         DBADfj87k2DmfTFfjl+yMtrEi48LgqTWNtQyvaBF6MinKkzLS31zgPUxpHc8ONsTQs+T
+         zIlQ==
+X-Gm-Message-State: AAQBX9e0pAfsjD+eWVoFSNFZWcAIaE7XZaM0lXhf29r6kBQmaACSO68J
+        zyLwgthNvlUx5fxeIdxLNud1Yh1jn3vTAQ==
+X-Google-Smtp-Source: AKy350YS7K4/XlK9G5uXTQxuk1NaV9HRM+JxBayP8kn09bcoJ8C7tEj08nHpJbsB9L4uvhkNT4kYeDqSgTfetg==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a63:5a43:0:b0:50a:c176:385b with SMTP id
+ k3-20020a635a43000000b0050ac176385bmr4084662pgm.0.1680012925672; Tue, 28 Mar
+ 2023 07:15:25 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 14:15:23 +0000
+In-Reply-To: <20230328061638.203420-6-yosryahmed@google.com>
+Mime-Version: 1.0
+References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-6-yosryahmed@google.com>
+Message-ID: <20230328141523.txyhl7wt7wtvssea@google.com>
+Subject: Re: [PATCH v1 5/9] memcg: replace stats_flush_lock with an atomic
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH v2 0/4] cgroup/cpuset: Miscellaneous updates
-Message-ID: <20230328134000.GA1333@willie-the-truck>
-References: <20230317151508.1225282-1-longman@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230317151508.1225282-1-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Waiman,
+On Tue, Mar 28, 2023 at 06:16:34AM +0000, Yosry Ahmed wrote:
+[...]
+> @@ -585,8 +585,8 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+>   */
+>  static void flush_memcg_stats_dwork(struct work_struct *w);
+>  static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+> -static DEFINE_SPINLOCK(stats_flush_lock);
+>  static DEFINE_PER_CPU(unsigned int, stats_updates);
+> +static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
+>  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
+>  static u64 flush_next_time;
+>  
+> @@ -636,15 +636,18 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>  
+>  static void __mem_cgroup_flush_stats(void)
+>  {
+> -	unsigned long flag;
+> -
+> -	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
+> +	/*
+> +	 * We always flush the entire tree, so concurrent flushers can just
+> +	 * skip. This avoids a thundering herd problem on the rstat global lock
+> +	 * from memcg flushers (e.g. reclaim, refault, etc).
+> +	 */
+> +	if (atomic_xchg(&stats_flush_ongoing, 1))
 
-On Fri, Mar 17, 2023 at 11:15:04AM -0400, Waiman Long wrote:
->  v2:
->   - Add a new patch 1 that fixes a bug introduced by recent v6.2 commit
->     7a2127e66a00 ("cpuset: Call set_cpus_allowed_ptr() with appropriate
->     mask for task").
->   - Make a small twist and additional comment to patch 2 ("cgroup/cpuset:
->     Skip task update if hotplug doesn't affect current cpuset") as
->     suggested by Michal.
->   - Remove v1 patches 3/4 for now for further discussion.
-> 
-> This patch series includes miscellaneous update to the cpuset and its
-> testing code.
+Have you profiled this? I wonder if we should replace the above with
+	
+	if (atomic_read(&stats_flush_ongoing) || atomic_xchg(&stats_flush_ongoing, 1))
 
-FWIW, this series also passes my asymmetric 32-bit tests.
+to not always dirty the cacheline. This would not be an issue if there
+is no cacheline sharing but I suspect percpu stats_updates is sharing
+the cacheline with it and may cause false sharing with the parallel stat
+updaters (updaters only need to read the base percpu pointer).
 
-Cheers,
-
-Will
+Other than that the patch looks good.
