@@ -2,65 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 868246CCA5A
-	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 21:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96936CCA5E
+	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 21:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjC1TAk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 15:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S229787AbjC1TCj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Mar 2023 15:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjC1TAj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 15:00:39 -0400
+        with ESMTP id S229563AbjC1TCi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 15:02:38 -0400
 Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EB32728
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 12:00:37 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id er13so12795814edb.9
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 12:00:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D11E2690
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 12:02:37 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id er13so12818390edb.9
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 12:02:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680030036;
+        d=google.com; s=20210112; t=1680030156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VaFE8MJ/rJnWu49G6qaf7Zeu9SjJjHyr+HaKIIGZlo8=;
-        b=hGNPwQWTEYe3CZmGYHi60X2aSfRWtVK8WiJ7nu3mjdJk4YmjuiqYe9pQ+CDJlPYyxd
-         /pi9trbtJtSOm7MifwcGnSBImrwX+6Z42snV0nbBlJ7UXJ/eKh48Yn/EV7NYVDSmmbPt
-         Rb0l9k4E3FCIRsq0+yQqNxV2ey483qI2f6DnbBWaNsDKB3buuC+B9cupFif5N8kLGalN
-         EqIH5K8IIPJWWoiCFHfQlnBM7LhKzgagHTbCa9LC7C/ObuzCHw9amKjqLxPdo/JKx3RO
-         c+XsEE64L2GpM8WO4QZD+clco6JbOEINCGSlyDLrWKVTxZp91kvGAVcL2J04SbpNs5mz
-         w6JQ==
+        bh=sg40HJuMXcACzrQyQIiyBgX+jk4GkAV6HLHPK6bGfcI=;
+        b=F94AXc7U8n866HMI7L7KjxQgYXVxKEX1ufZhLwHPtFEsEhbsNJOSdVF8YWOeQ5aLM0
+         HoT7pL2IYk/Ka8HSv4wRc8DPoT9LKGU6kC4eUXtYi4KUjsKzWtw4NZ0JaC2zi57+SF9k
+         PZDqO2+41We+vRG0DYNvfpsaofVI5scLONmPNLIPDmXr/Foh6mQni79zrX9y5N5of5mh
+         5ruvaxWuRzvpwbFzcBYAzS0m72Fpi2h8g9X9p1A8DJ19cKXspZUb0AuiRNq2QOi8K+0j
+         Jqq1L/VZN5Xy8eCU5G6hlRGZ7juOLMyupEtnc+rDhXRk3QeAqm8+9lQ6D3XqDbxU9TST
+         VUwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680030036;
+        d=1e100.net; s=20210112; t=1680030156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VaFE8MJ/rJnWu49G6qaf7Zeu9SjJjHyr+HaKIIGZlo8=;
-        b=FCxwgGB5BYJxeitvO0wiyw0weEnnMi6rNIti8aFs+YeaNyn5ue1RxFi423WYlJiGRj
-         FwGpNJxMm3l0kJLvamTG/YKpMUI4Gw1W3sWP5hZ5V+WeuIlcbeZzGrrQGALF3QN3loXN
-         4qR7UfbbzZgmovex6AJbEwhw6pKPTORkQTO3/Uw3E2b1q23Yynw9hKt8SZhpctK3J/LM
-         L916n93Kbr1MXBdbssxppAvjOx/42J8nYl1cDT1tg93wt6zMLdFqLjvX/nt9Flp00l0j
-         uW3fkkUvRKpMtvwqNmfkv2VNXHykBLaelaFrjADJxtP8Djsb0cOPR108EeOUiG0YelNz
-         llVA==
-X-Gm-Message-State: AAQBX9eVa1EPX/aaOzXsvq5Mfe9se8g4mSxVcP8KfbeSJ2fMrz+xwr5a
-        QWzDHTk4/QF8QXgMy22n55OEfadcUasbLqu4Y/eZlQ==
-X-Google-Smtp-Source: AKy350Yhk/i0+JPviKO6ga1I/DH2EtAh9hdlzqBienFUiCmmezrhPlteMpnkr+v35C7I9/6s8VzBjh8YFxr470tp00Q=
-X-Received: by 2002:a50:d756:0:b0:4fc:e5c:902 with SMTP id i22-20020a50d756000000b004fc0e5c0902mr8274473edj.8.1680030035893;
- Tue, 28 Mar 2023 12:00:35 -0700 (PDT)
+        bh=sg40HJuMXcACzrQyQIiyBgX+jk4GkAV6HLHPK6bGfcI=;
+        b=jpDjf2ZNjQURHGWr1wRdg965XIwmWIgd3oy6lAok0iRI0DbRfnPFIusXYeJhU8kae1
+         Ay3uwcntMEJgH2chaQYECPLaOtbXuMRXrOMcig+XxSCgNQqxgVCGhvuh0EQHXg1CE+Je
+         h8eolxEM6Unq89BgnAmVS4Utv6FnOCktpvwFClYBYBoBrxqvkADq81oeGLCof9wZvnF0
+         WdFuHmmz/BOQ0BaAv6p/jYgYvUWyLFLyI5QHc2VxipR+eCgCwiDC7E/wLpqtYnZN4vo2
+         luHwigX58dGUZPRcDPAnhL/bGtF5GZYMOJ61j7UQat+LYEWI7N9h1r7UkikSjrJyRqMG
+         PUbQ==
+X-Gm-Message-State: AAQBX9e8y3WEuXrzqEs3W4whxuzckw3rgdz73rOgP3/yC3Tr4jdKNGYB
+        GaoGRb+mKjuIAfpXSJzMdcArw/yXcsGd5O+UjgcPEg==
+X-Google-Smtp-Source: AKy350b9CmCnhINIvZWCyCyiJq5/yj1sR/7xu3MCLvibXTNZZv84Tr+hYeSE+IrQB4ragBIAsfNUY+4K5SHaoCEArvM=
+X-Received: by 2002:a17:906:a86:b0:933:f6e8:26d9 with SMTP id
+ y6-20020a1709060a8600b00933f6e826d9mr8602763ejf.15.1680030155943; Tue, 28 Mar
+ 2023 12:02:35 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230328061638.203420-1-yosryahmed@google.com>
- <20230328061638.203420-5-yosryahmed@google.com> <ZCMojk50vjiK6mBe@cmpxchg.org>
-In-Reply-To: <ZCMojk50vjiK6mBe@cmpxchg.org>
+ <20230328061638.203420-9-yosryahmed@google.com> <CALvZod7wJ-e-dHEhMynquiqQWFU2j+05wUyUe_yv_rBqJLu2rw@mail.gmail.com>
+In-Reply-To: <CALvZod7wJ-e-dHEhMynquiqQWFU2j+05wUyUe_yv_rBqJLu2rw@mail.gmail.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 28 Mar 2023 11:59:59 -0700
-Message-ID: <CAJD7tkYA=0rKSmtQzYQpZ2DuUoJq0bQcVqPgSpVEs0M4zAktnw@mail.gmail.com>
-Subject: Re: [PATCH v1 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
- outside task context
-To:     Johannes Weiner <hannes@cmpxchg.org>
+Date:   Tue, 28 Mar 2023 12:01:59 -0700
+Message-ID: <CAJD7tkaKh4w3roqau4V93Q022BG280yzdsh1YSVenZCLm0qVow@mail.gmail.com>
+Subject: Re: [PATCH v1 8/9] vmscan: memcg: sleep when flushing stats during reclaim
+To:     Shakeel Butt <shakeelb@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
         Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
         =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
@@ -81,48 +81,47 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 10:49=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
+On Tue, Mar 28, 2023 at 8:19=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
+wrote:
 >
-> On Tue, Mar 28, 2023 at 06:16:33AM +0000, Yosry Ahmed wrote:
-> > rstat flushing is too expensive to perform in irq context.
-> > The previous patch removed the only context that may invoke an rstat
-> > flush from irq context, add a WARN_ON_ONCE() to detect future
-> > violations, or those that we are not aware of.
+> On Mon, Mar 27, 2023 at 11:16=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> >
+> > Memory reclaim is a sleepable context. Allow sleeping when flushing
+> > memcg stats to avoid unnecessarily performing a lot of work without
+> > sleeping. This can slow down reclaim code if flushing stats is taking
+> > too long, but there is already multiple cond_resched()'s in reclaim
+> > code.
 > >
 > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
-> >  kernel/cgroup/rstat.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> > index d3252b0416b6..c2571939139f 100644
-> > --- a/kernel/cgroup/rstat.c
-> > +++ b/kernel/cgroup/rstat.c
-> > @@ -176,6 +176,8 @@ static void cgroup_rstat_flush_locked(struct cgroup=
- *cgrp, bool may_sleep)
-> >  {
-> >       int cpu;
-> >
-> > +     /* rstat flushing is too expensive for irq context */
-> > +     WARN_ON_ONCE(!in_task());
-> >       lockdep_assert_held(&cgroup_rstat_lock);
 >
-> This seems a bit arbitrary. Why is an irq caller forbidden, but an
-> irq-disabled, non-preemptible section caller is allowed? The latency
-> impact on the system would be the same, right?
+> Acked-by: Shakeel Butt <shakeelb@google.com>
+>
+> > ---
+> >  mm/vmscan.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index a9511ccb936f..9c1c5e8b24b8 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -2845,7 +2845,7 @@ static void prepare_scan_count(pg_data_t *pgdat, =
+struct scan_control *sc)
+> >          * Flush the memory cgroup stats, so that we read accurate per-=
+memcg
+> >          * lruvec stats for heuristics.
+> >          */
+> > -       mem_cgroup_flush_stats_atomic();
+> > +       mem_cgroup_flush_stats();
+>
+> I wonder if we should just replace this with
+> mem_cgroup_flush_stats_ratelimited().
 
-Thanks for taking a look.
+Thanks for taking a look!
 
-So in the first patch series the initial purpose was to make sure
-cgroup_rstat_lock was never acquired in an irq context, so that we can
-stop disabling irqs while holding it. Tejun disagreed with this
-approach though.
+I was hesitant about doing this because the flush call is inside the
+retry loop, and it seems like we want to get fresh stats on each
+retry. It seems very likely that we end up not flushing between
+retries with mem_cgroup_flush_stats_ratelimited().
 
-We currently have one caller that calls flushing with irqs disabled
-(mem_cgroup_usage()) -- so we cannot forbid such callers (yet), but I
-thought we can at least forbid callers from irq context now (or catch
-those that we are not aware of), and then maybe forbid irqs_disabled()
-contexts as well we can get rid of that callsite.
-
-WDYT?
+Maybe change it if we observe problems with non-atomic flushing?
