@@ -2,76 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B516CC6E6
-	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 17:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EE56CC89E
+	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 18:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbjC1Pnw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 11:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S231651AbjC1Q4F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Mar 2023 12:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbjC1Pnh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 11:43:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C122111142;
-        Tue, 28 Mar 2023 08:42:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FBBC61856;
-        Tue, 28 Mar 2023 15:42:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76B9C433EF;
-        Tue, 28 Mar 2023 15:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680018121;
-        bh=bjTXX9yzs6ldEzyQm2t7OD6dEAou4tttEBMCj7d1qu4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CaGmLRhSoe2tN/e+4Xm68kM9m9ONdejVT4hYPdtwJZHav25P4Glr1fKvju+8rHoTv
-         Ks5VTIw++WHNYpnfjS2KGT3wsn7Pt371wkiy90PmbIxs6rCKUd2H3c/elL02bnMM04
-         1lewV3w1Xo3Jz6Ybp3Byh2sBZTzShbe/Ny1G7i6cE5JQtAwtpNwmvbtPOykFU8a5OE
-         Gj7RPr4ej+xgNjTg4WuC34Dm+J/SjFesBsV+4mUTUDN1SqPlv4JALXnUNl/eIS2krJ
-         VI/KOhHK7DDkgCCpbSeduub2XAMT1m2XqcVlmwyWY39xkBNOb/mUStiuN9rjiWCaO1
-         iP0X5N+yIKT5A==
-Date:   Tue, 28 Mar 2023 17:41:56 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gscrivan@redhat.com
-Subject: Re: CLONE_INTO_CGROUP probably needs to call controller attach
- handlers
-Message-ID: <20230328154156.kcm4nha2jeej74rr@wittgenstein>
-References: <20230328153943.op62j3sw7qaixdsq@wittgenstein>
+        with ESMTP id S230384AbjC1Q4F (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 12:56:05 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E859FB747
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 09:56:03 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id h7so6651276ila.5
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 09:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1680022563; x=1682614563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LQykbIASwaSOYckFPBEJVXD9EFhn71W8gTG9pE8tJ28=;
+        b=QWR06jmFMbM35tLVtFQq3O9myToaGC9er1DxfnCBHTEDHmxan8RTCzSppq9DWOPTZT
+         HLuhb+yzXciKn+JYUvugYFEeOkuB+PWz65UHJQPVZ7MpMwXCZdxsXsCAMQTl5bEBYmua
+         Ctg48hqn1V/ZTGzdIf6s3Svpb5HEk3k8j+6B8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680022563; x=1682614563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LQykbIASwaSOYckFPBEJVXD9EFhn71W8gTG9pE8tJ28=;
+        b=sVxWCC9inc/MycIOwCDL13oXN3Mj5OjczVtiCp6fqv1j1mqVJVUHlmv1dI2lvXC8LK
+         vO/GVokRkAMAHGDUylV97W/JcQ7JxE36d4TKvnBCWmfxVFlLryE+vZpS8jVVcCd6Vekg
+         YphK3fHM+KGTNXV42w8qvpf71V+maXTMg8M+O1O3icPGypHqwO6I/fy9RdHumqPeeg1k
+         waZuesLamGhoSovyfG1J3RoajblQa3dq/1wWdCCkKyaZqgVwfZrxuDn/GSUXMat4W0vX
+         5oNSZfHOoxKXt/UIA+Ub6lDbNrnXKognesiU8Q8Za2n5218NAjKZ8XJq4yUNeMJ61NJn
+         D/rQ==
+X-Gm-Message-State: AAQBX9eQaty8xIGderqP0p3yfZdjh//xfku5WhNKXh7u2ARIpV37kAg8
+        x8RNJA1NBjYaA3JpL5W7I9Mewg==
+X-Google-Smtp-Source: AKy350ZSTXugk9eX2S1qXpaj1sPbjpqobxS+5rq+wwp5hkk3J6VeQsdK6GdG8PGaBod38GyGAtIpkA==
+X-Received: by 2002:a05:6e02:1bc1:b0:326:1d0a:cce6 with SMTP id x1-20020a056e021bc100b003261d0acce6mr1820673ilv.0.1680022563167;
+        Tue, 28 Mar 2023 09:56:03 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id j3-20020a92c203000000b0032627e754bbsm4704ilo.21.2023.03.28.09.56.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Mar 2023 09:56:02 -0700 (PDT)
+Message-ID: <e2d86dd7-16c0-3d08-a906-3c81c0905187@linuxfoundation.org>
+Date:   Tue, 28 Mar 2023 10:56:02 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230328153943.op62j3sw7qaixdsq@wittgenstein>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] selftests: cgroup: Add 'malloc' failures checks in
+ test_memcontrol
+Content-Language: en-US
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230226131634.34366-1-ivan.orlov0322@gmail.com>
+ <Y/zzVWJ5PHs5My6x@P9FQF9L96D>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <Y/zzVWJ5PHs5My6x@P9FQF9L96D>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 05:39:52PM +0200, Christian Brauner wrote:
-> Hey,
+On 2/27/23 11:15, Roman Gushchin wrote:
+> On Sun, Feb 26, 2023 at 04:16:33PM +0300, Ivan Orlov wrote:
+>> There are several 'malloc' calls in test_memcontrol, which can be
+>> unsuccessful. This patch will add 'malloc' failures checking to
+>> give more details about test's fail reasons and avoid possible
+>> undefined behavior during the future null dereference (like the
+>> one in alloc_anon_50M_check_swap function).
+>>
+>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 > 
-> Giuseppe reported that the the affinity mask isn't updated when a
-> process is spawned directly into the target cgroup via
-> CLONE_INTO_CGROUP. However, migrating a process will cause the affinity
-> mask to be updated (see the repro at [1].
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 > 
-> I took a quick look and the issue seems to be that we don't call the
-> various attach handlers during CLONE_INTO_CGROUP whereas we do for
-> migration. So the solution seems to roughly be that we need to call the
-> various attach handlers during CLONE_INTO_CGROUP as well when the
-> parent's cgroups is different from the child cgroup. I think we need to
-> call all of them, can, cancel and attach.
-> 
-> The plumbing here might be a bit intricate since the arguments that the
-> fork handlers take are different from the attach handlers.
+> Thanks!
 
-But note, as Johannes already pointed out somewhere else, that there's
-probably a lot of code that doesn't apply to the CLONE_INTO_CGROUP case
-so it might also make sense to just move the missing pieces into the
-fork handlers.
+Thank you all. Applied to linux-kselftest next for Linux 6.4-rc1
+
+thanks,
+-- Shuah
