@@ -2,74 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC396CC1D6
-	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 16:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311F86CC1FB
+	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 16:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbjC1OPk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 10:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S231913AbjC1OX0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Mar 2023 10:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233127AbjC1OP3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 10:15:29 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE02CA2D
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 07:15:26 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id k4-20020a17090aef0400b0023fcccbd7e6so3375974pjz.5
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 07:15:26 -0700 (PDT)
+        with ESMTP id S230378AbjC1OXZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 10:23:25 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB765FD6
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 07:23:23 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id d10so7289099pgt.12
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 07:23:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680012925;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qjzC1AXnpW8l0xPrPEZPgxXh3c0otg2X0grqn38oTAU=;
-        b=Z21Fhu3pxXs+t1qejKjoB06mqPadXXUaJj6uhGgpRk+3gLqlDes+wtSSSWE2knRI8/
-         qiF1U6JTQdX1HxRtou/7QeC7ME871T4I2lhXvmsiB9LqWDQkJ4A+0KJwwrxD+tJ4Zz1U
-         eS8+YEXBsJWpRHPbqfmOGMvVMX3kHO1M02ByL8p7FWqBJtGrwNge2GxAveCUIe2ZNQ6v
-         dvl7/FGZwG59zro3vm/oD7ttk1pXq3InfcSBeQsKHb9wmWZOyOVM20v0sF2M0rosq1uZ
-         BvtS7Z8Fw8zE99KoUjs5+fCH5VuwRsaKfmGjaYi/I6cgKnvsxM9ic7CzcXo5qhkkLbxE
-         V9bA==
+        d=bytedance.com; s=google; t=1680013403;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fbUthmvZJbP0uWypvRq6mwPD7H6UG/v/3UyHU90H3o0=;
+        b=NTg1JCEYXIL5mZ4LMW8DcsZJvrDf8IwNw9hp30j9TO7GBAGr0SEnuxFWhsFCWyvFD2
+         O8bQkmMtjNy8tLclBcd6RNNFBrbtlCs5oxp1OKNk02oxnYYHOFkNH8j/Q/xQ+YVNPwDP
+         ln+p36VFbYTbqUl1pKr0haZetqg2MamAFX+iM2arG8XIoKYEXwDDduY8YJCOEaEAzPcF
+         tPMHjJPM810hJNCv2O4ZNsByZFmSSIE/8vXL5oFEUfVjB7yXmRhgI+UeQlxMw1P1qnvP
+         fQT6rdeMMdTdB5xL5+pgB7wmQEhbrrZml75ao9Yh+IjqjDMfoEAv/5QPwCuNaEjh50+i
+         vAOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680012925;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qjzC1AXnpW8l0xPrPEZPgxXh3c0otg2X0grqn38oTAU=;
-        b=WftlRFBUdpiHSTTchjEnDqfhOAzuibTiTL9+XiLnQ8iRKacxx8scrXzGTY/l8axiYB
-         lhc94lnFSGEgYVPOLhwk3ecP5z0cQeJ+VF2pwkPRbqfRn0xEyUjJwYYCosZ1qTv45NTW
-         fRO8jA9mSIjlrwBLuayIfE4MlxBmT3BZFpPyCDGhMJdGZ3h66ARyJ006TM/eDggu0tvJ
-         qNguUPh+8RP3rOy9PRs/HIGJy8T17UHF1bESCzvKH5qG+ZuHJyxOrCXTU2pq8QRQ/Rdc
-         DBADfj87k2DmfTFfjl+yMtrEi48LgqTWNtQyvaBF6MinKkzLS31zgPUxpHc8ONsTQs+T
-         zIlQ==
-X-Gm-Message-State: AAQBX9e0pAfsjD+eWVoFSNFZWcAIaE7XZaM0lXhf29r6kBQmaACSO68J
-        zyLwgthNvlUx5fxeIdxLNud1Yh1jn3vTAQ==
-X-Google-Smtp-Source: AKy350YS7K4/XlK9G5uXTQxuk1NaV9HRM+JxBayP8kn09bcoJ8C7tEj08nHpJbsB9L4uvhkNT4kYeDqSgTfetg==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a63:5a43:0:b0:50a:c176:385b with SMTP id
- k3-20020a635a43000000b0050ac176385bmr4084662pgm.0.1680012925672; Tue, 28 Mar
- 2023 07:15:25 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 14:15:23 +0000
-In-Reply-To: <20230328061638.203420-6-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-6-yosryahmed@google.com>
-Message-ID: <20230328141523.txyhl7wt7wtvssea@google.com>
-Subject: Re: [PATCH v1 5/9] memcg: replace stats_flush_lock with an atomic
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        d=1e100.net; s=20210112; t=1680013403;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fbUthmvZJbP0uWypvRq6mwPD7H6UG/v/3UyHU90H3o0=;
+        b=UaRlg+RE/Ht9ZJnYkoAeY1BxKpEz+cnQMFC1h2FDGOeuHSzshD/TumsXBBbWbtueNU
+         83VmRrHCmf+fq9sqRfTqJ/we+K44B0yxPVKAmgelqD1vGhQozokTOvgNDLVSxYQRkoXN
+         xyr35QY4EAPTsUWA+/Oy5O+BqLqAJRk8zE3WbcfVyieKwvQ8sZPr/JSd9IK0YrdtMRsT
+         qLVstE9bYOj+as11uiWWqjFZPUVgp1UhwbqckJPuuHaz7/o2Rs8wLVx8UxMaItwnyRNz
+         GnZdn3xgmr3/hAtCBYdsVDCPH6S4T9fCuA3dR4Dht+XFfqkaUoq8ylbFgnkuOsdj+7MN
+         Y/2g==
+X-Gm-Message-State: AO0yUKU3GWyU6Gnb1tPTyKrtivd7eC4z6SUD6hNNtDuwRcc6yk8E7M2C
+        aoHfH+R6prXHlyq46fYq17mbSQ==
+X-Google-Smtp-Source: AK7set8BxkafKwct0/+6wDAtkPyJha1sx6HWpCvpzcdjdcFpOATI2Kzlc+6YebBnscJAdFsSJjYqDw==
+X-Received: by 2002:a05:6a00:190a:b0:626:f690:e745 with SMTP id y10-20020a056a00190a00b00626f690e745mr26435591pfi.6.1680013403339;
+        Tue, 28 Mar 2023 07:23:23 -0700 (PDT)
+Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id g6-20020a62e306000000b005a8bf239f5csm21156215pfh.193.2023.03.28.07.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 07:23:22 -0700 (PDT)
+From:   Jinke Han <hanjinke.666@bytedance.com>
+X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
+To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jinke Han <hanjinke.666@bytedance.com>
+Subject: [PATCH] blk-throttle: Fix io statistics for cgroup v1
+Date:   Tue, 28 Mar 2023 22:23:09 +0800
+Message-Id: <20230328142309.73413-1-hanjinke.666@bytedance.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,39 +69,70 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 06:16:34AM +0000, Yosry Ahmed wrote:
-[...]
-> @@ -585,8 +585,8 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
->   */
->  static void flush_memcg_stats_dwork(struct work_struct *w);
->  static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
-> -static DEFINE_SPINLOCK(stats_flush_lock);
->  static DEFINE_PER_CPU(unsigned int, stats_updates);
-> +static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
->  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
->  static u64 flush_next_time;
->  
-> @@ -636,15 +636,18 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  
->  static void __mem_cgroup_flush_stats(void)
->  {
-> -	unsigned long flag;
-> -
-> -	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
-> +	/*
-> +	 * We always flush the entire tree, so concurrent flushers can just
-> +	 * skip. This avoids a thundering herd problem on the rstat global lock
-> +	 * from memcg flushers (e.g. reclaim, refault, etc).
-> +	 */
-> +	if (atomic_xchg(&stats_flush_ongoing, 1))
+From: Jinke Han <hanjinke.666@bytedance.com>
 
-Have you profiled this? I wonder if we should replace the above with
-	
-	if (atomic_read(&stats_flush_ongoing) || atomic_xchg(&stats_flush_ongoing, 1))
+Now the io statistics of cgroup v1 are no longer accurate. Although
+in the long run it's best that rstat is a good implementation of
+cgroup v1 io statistics. But before that, we'd better fix this issue.
 
-to not always dirty the cacheline. This would not be an issue if there
-is no cacheline sharing but I suspect percpu stats_updates is sharing
-the cacheline with it and may cause false sharing with the parallel stat
-updaters (updaters only need to read the base percpu pointer).
+Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
+---
+ block/blk-cgroup.c   | 3 +++
+ block/blk-throttle.c | 6 ------
+ block/blk-throttle.h | 9 +++++++++
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
-Other than that the patch looks good.
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index bd50b55bdb61..677e4473e45e 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 	struct blkg_iostat_set *bis;
+ 	unsigned long flags;
+ 
++	if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
++		return;
++
+ 	/* Root-level stats are sourced from system-wide IO stats */
+ 	if (!cgroup_parent(blkcg->css.cgroup))
+ 		return;
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 47e9d8be68f3..2be66e9430f7 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -2174,12 +2174,6 @@ bool __blk_throtl_bio(struct bio *bio)
+ 
+ 	rcu_read_lock();
+ 
+-	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
+-		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
+-				bio->bi_iter.bi_size);
+-		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
+-	}
+-
+ 	spin_lock_irq(&q->queue_lock);
+ 
+ 	throtl_update_latency_buckets(td);
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index ef4b7a4de987..d1ccbfe9f797 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -185,6 +185,15 @@ static inline bool blk_should_throtl(struct bio *bio)
+ 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+ 	int rw = bio_data_dir(bio);
+ 
++	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
++		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
++			bio_set_flag(bio, BIO_CGROUP_ACCT);
++			blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
++					bio->bi_iter.bi_size);
++		}
++		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
++	}
++
+ 	/* iops limit is always counted */
+ 	if (tg->has_rules_iops[rw])
+ 		return true;
+-- 
+2.20.1
+
