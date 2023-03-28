@@ -2,57 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D676CC0B0
-	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 15:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6316CC0B5
+	for <lists+cgroups@lfdr.de>; Tue, 28 Mar 2023 15:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbjC1NZl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 09:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S230197AbjC1N01 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Mar 2023 09:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbjC1NZf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 09:25:35 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6295BBBAF
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 06:25:25 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5419d4c340aso229076497b3.11
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 06:25:25 -0700 (PDT)
+        with ESMTP id S229718AbjC1N01 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 09:26:27 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC9572AB
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 06:26:26 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id e65so14968539ybh.10
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 06:26:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680009924;
+        d=google.com; s=20210112; t=1680009985;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aKr9MaZxGZc9u8ZhIE9so1jdgqHxAOgc8JTrWbL9sqY=;
-        b=i9jvfdCeB9SsJnyBiAbhdPLhoxjsfRopr7eARS5rGyPO0aOs26naUPy0TOlNDXReWF
-         R5Ea79kbAr+glBAXFOfEsjm49+Nm5fB3G3LIqw9DO4pIhWqBfQICEKbBtdAas72TZMRa
-         2naeIrUIfdDmFPzU0ieyV8VHQOarplR5OZFhsLhdFTJ17Qsili22215RkxE3w61P7NqR
-         QN1VePuwazlq07Mx1/r+u1FhPyrqxDDF2mBmsHwUrqWufwHsPj0sdlguYWltwhWjNVjP
-         5VKvQ0LXJosLvebPB+Yu1xwBQd5x8bAJlaPp08d3BXWvpGTaWuuE3u78gHSrMcThnKrJ
-         Ve5g==
+        bh=8bJymL0yBKvMYTD1Xc/qu3GglkLI9FvB8Lv/yuqvRQc=;
+        b=eZy1jM+Kd53ZIzWNbOqgWbWL45Dr+Nw9ANo2PWtQbmVaWtrjCdrDAwPWv3yK9p7pwn
+         NdX2H4aYwg5QRk1CBz5Q+PDjxvTvxqOymyHBX8fhYiwV1krbMVJo3/thEa0eeD2ncqtr
+         11MW+NX2xIo4RJWivNGz5B/TSrAzZmnzZLla0MAE4rR5mfGrSLcqNM08TimNues3s+u/
+         7Y5UuSgD0RzJHWmkNAiahoW2q/TpdkuXvww90IJ4ZT0HDPDLUtzwosiL6k1Ay9MagttR
+         Xll6pq0j7ma1HAlACEp1cDHFcxilfs9tVtLUSpSaT3tswN2NAz96yvtBv6Q2jzszETWW
+         11rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680009924;
+        d=1e100.net; s=20210112; t=1680009985;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aKr9MaZxGZc9u8ZhIE9so1jdgqHxAOgc8JTrWbL9sqY=;
-        b=CNnZx371sq9cGTfbPpHoQ8cnVj2zw54TfnU06lVd08wf6VX437chr1xvti6jHl7hbg
-         P+CDF6vfGUDTMfJPDF89O40BrhUhZq47i1I1gqSNOFdj3KSNQ7jnjgSaH3ZGPzJrx4Rk
-         Vm0ngJOr2cmkCgGw4IQFdKEvf3Q/H7aQT+jaYBD9UBvyEdUtuCdkPTfhYzXDyRMj+har
-         GYxQcKowVv/gcy2eNjdPCC7AioMdnS8a3xdeuBXBxdtlbJRtZ/Frlq5vj8V2A9vFJ+kP
-         UKw8kTnzpKnT7sngwxxR68XjOodTAKYBKQWVjDgbreOPDADC1fdWMQU9pBMV6Jy/r1Ee
-         S/hw==
-X-Gm-Message-State: AAQBX9d1WjDmr8mR1m7qW9jiTD/MFc0cuuvNhfkworWo2Ceg8oiBudif
-        v9fxrfM2junvohIPyGIoMoOBO3zI7woz8w58sZudjg==
-X-Google-Smtp-Source: AKy350ZqnYLSmT7eJTq65fiNra/60hMVxVRo2NTN5O7ip/pdM6ESKQ/7QeIH3HPcBu0i1k4EPDQhyQj9uL9p9e2MRY0=
-X-Received: by 2002:a81:e546:0:b0:546:1ef:54f9 with SMTP id
- c6-20020a81e546000000b0054601ef54f9mr2180958ywm.0.1680009924474; Tue, 28 Mar
- 2023 06:25:24 -0700 (PDT)
+        bh=8bJymL0yBKvMYTD1Xc/qu3GglkLI9FvB8Lv/yuqvRQc=;
+        b=lTa3IfcGtU2bhza14WDXfri0x/kximHv3HSLZiw2HPQNPjEZaF/OJV3lqnTSMLJo56
+         gJm14VO6W/K3wJWYR+SM1ZcpebfFSEb7P/2Mzfqahcu4ePMhQV6VblJHREmDcG6k/YLN
+         sGtXMSmzNDLOHZFkFdtu5G3e6c0PMGRuvDkdgzIA0fMP5wzmOzXnqL2q8YT8D9emgpZg
+         Doc/PdvzpFUnJMJTJsKKjxbsjd59bnTLwcj8NpPJiTIyjKAcWaU/uSroxfcaK8DWrso+
+         34zitSwgSklqzR38mATp7HgCd5OZQjvLIJBye7KWZ3ag97Yhw/z5kDp0pKTYqXo308zO
+         C14g==
+X-Gm-Message-State: AAQBX9fM3mI3/kSUrHW+rr6v68yEdL8rC5Fh6gvS+mSWvQidmc5O8vbX
+        rwM9anJYVRH2vrSP9S/tCp65sZrRVLXlAyqEh0V1ug==
+X-Google-Smtp-Source: AKy350Zja1hP9WxwT3nbR4kgm/32+esIcZm0ttA35DlxybRpCP5Bjc/9FU70PICjQ5T/32D5BoknkSe4x+2lmAwB5IY=
+X-Received: by 2002:a25:e054:0:b0:b6b:d3f3:45af with SMTP id
+ x81-20020a25e054000000b00b6bd3f345afmr9852686ybg.1.1680009985214; Tue, 28 Mar
+ 2023 06:26:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-3-yosryahmed@google.com>
-In-Reply-To: <20230328061638.203420-3-yosryahmed@google.com>
+References: <20230328061638.203420-1-yosryahmed@google.com> <20230328061638.203420-4-yosryahmed@google.com>
+In-Reply-To: <20230328061638.203420-4-yosryahmed@google.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 28 Mar 2023 06:25:13 -0700
-Message-ID: <CALvZod50Kh602rFii_=8q+_xdZTqHfDJyc_XNNTixGTqgcSDHA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/9] memcg: rename mem_cgroup_flush_stats_"delayed" to "ratelimited"
+Date:   Tue, 28 Mar 2023 06:26:14 -0700
+Message-ID: <CALvZod6n64b80+ZPX13bBiJWagcMJBstAcLauQoiT=UMdx0QGw@mail.gmail.com>
+Subject: Re: [PATCH v1 3/9] memcg: do not flush stats in irq context
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -83,13 +83,17 @@ X-Mailing-List: cgroups@vger.kernel.org
 On Mon, Mar 27, 2023 at 11:16=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
 > wrote:
 >
-> mem_cgroup_flush_stats_delayed() suggests his is using a delayed_work,
-> but this is actually sometimes flushing directly from the callsite.
+> Currently, the only context in which we can invoke an rstat flush from
+> irq context is through mem_cgroup_usage() on the root memcg when called
+> from memcg_check_events(). An rstat flush is an expensive operation that
+> should not be done in irq context, so do not flush stats and use the
+> stale stats in this case.
 >
-> What it's doing is ratelimited calls. A better name would be
-> mem_cgroup_flush_stats_ratelimited().
+> Arguably, usage threshold events are not reliable on the root memcg
+> anyway since its usage is ill-defined.
 >
 > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Suggested-by: Shakeel Butt <shakeelb@google.com>
 > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
 Acked-by: Shakeel Butt <shakeelb@google.com>
