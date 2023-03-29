@@ -2,136 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005C76CF1E7
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 20:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450A36CF241
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 20:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjC2SMR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Mar 2023 14:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
+        id S229652AbjC2SiB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Mar 2023 14:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjC2SMM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 14:12:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A145C6A41
-        for <cgroups@vger.kernel.org>; Wed, 29 Mar 2023 11:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680113390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H8vliQ1ONvrTK4LTfw9x6DXO/qnrs4SgkkW8WifHRpE=;
-        b=JFWWNQyhZ3sft7xKrxptJ749a5TkK8nN03SdEkpwnDnJVlld5avqyWoq+29NMkk/GNNXbt
-        Fkhfp+6FvvekkoIUc29yU5fg+Ex18MIgd2MRpJj94+156DU8IkrFBlbcOJlBdHNYSZELGX
-        /JdDX2n9Jfsw+3KWYBkH9ZoAt5a+v2Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-323-BA8Ormx2Nd6GNGSaMivOkg-1; Wed, 29 Mar 2023 14:09:47 -0400
-X-MC-Unique: BA8Ormx2Nd6GNGSaMivOkg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 81F31811E7C;
-        Wed, 29 Mar 2023 18:09:44 +0000 (UTC)
-Received: from [10.22.34.224] (unknown [10.22.34.224])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DE05202701E;
-        Wed, 29 Mar 2023 18:09:43 +0000 (UTC)
-Message-ID: <b7ad39b1-c615-3ebc-6980-d9db0f2ab0a0@redhat.com>
-Date:   Wed, 29 Mar 2023 14:09:42 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 5/6] cgroup/cpuset: Free DL BW in case can_attach() fails
-Content-Language: en-US
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S229661AbjC2Shz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 14:37:55 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3796A5FE1;
+        Wed, 29 Mar 2023 11:37:51 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id r7-20020a17090b050700b002404be7920aso15472217pjz.5;
+        Wed, 29 Mar 2023 11:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680115070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uzLVbqgNBGN+xgE2Mcn5+0Hj/oLlv/psLQjcDCgpQr8=;
+        b=kI+OaINANyKsiK+EWK5+yOqs4+8ljyMo3j6zqxxM9CNCGiuVso5j4vGdrojGjNs0yY
+         0bWcLXqZlHNd5KEaFaq42TZPydl8CX+VZaczevLdxTDrOS+bRtk1uU3ldZcJ5GOoafYt
+         EfJ3UBHdLiykj7ApCxebT76Fae/+kGPt8b03FuNjlP2cQ+kDqjpxVP30APPgIeDDwUAK
+         JUwZpewbV42SJXpI7IZJO7GrUs0qCUeGrPItHGrUZVp9xHlP0F0DVVVfimp2uH4A+9XJ
+         cvYw6G7wBHW7jwMokNIetOkS2+pSnTcBC41bJiINKqOlqkpoX06t8GHNFjgmTOmqgrdj
+         y52A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680115070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uzLVbqgNBGN+xgE2Mcn5+0Hj/oLlv/psLQjcDCgpQr8=;
+        b=L6fhGbg9CLSQSu6g4jTsUMeukkwe8nfdTKy9YoI4OeizMFiDaprw71uD18gU5fmdV0
+         oPanxmUMEvbtvjewhzGYJoX/QLC2Lw/wVUGj8h9SKdj0eqrb4hvoJrUGAwA4WouEYc2+
+         1Kv1C3aXA2iWDr2c/ZGuSrY3wpM0RdCrxkwTAFLOmrtPmpKAFdTy5sH51lvXFkCANMKg
+         3GYXmlSXb6F7oBm+12Kz0whRbVGz4XQuzag1ZkUFEAcKwvFQzm53nbJEddOczneqeWh7
+         7zO1bvDHynMOXkj9+01CIaStGDIzVbJ+mu2KeaYY/tNMSBWqlYSqVLVgm372a5E+PvJD
+         SwSw==
+X-Gm-Message-State: AAQBX9eM5FG6Pf92rGlZ8esrPgXmI6lOrkC+aLaOoNXDmBtWTC+0WVtC
+        zu0+yAdVfM8BabwuT2hqVgl+xOxYzRs=
+X-Google-Smtp-Source: AKy350ZCdGEv1x3AcKjBXJ46+u7JThYANyD1DbTn65Mw87/MICbj1baTbv665VxjBhy7AVYPa5cehg==
+X-Received: by 2002:a17:90a:4bca:b0:23f:6830:568e with SMTP id u10-20020a17090a4bca00b0023f6830568emr20245502pjl.8.1680115070400;
+        Wed, 29 Mar 2023 11:37:50 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id bf8-20020a170902b90800b001a27ea5cb94sm487166plb.87.2023.03.29.11.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 11:37:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 29 Mar 2023 08:37:48 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
-        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
-        mathieu.poirier@linaro.org, cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230329125558.255239-1-juri.lelli@redhat.com>
- <20230329125558.255239-6-juri.lelli@redhat.com>
- <f8dfc30b-5079-2f44-7ab1-42ac25bd48b7@redhat.com>
- <f8baea06-eeda-439a-3699-1cad7cde659e@redhat.com>
- <cdede77a-5dc5-8933-a444-a2046b074b12@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <cdede77a-5dc5-8933-a444-a2046b074b12@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH v2 1/4] cgroup/cpuset: Fix partition root's cpuset.cpus
+ update bug
+Message-ID: <ZCSFfMeKRNERIBu6@slm.duckdns.org>
+References: <20230317151508.1225282-1-longman@redhat.com>
+ <20230317151508.1225282-2-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230317151508.1225282-2-longman@redhat.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/29/23 12:39, Dietmar Eggemann wrote:
-> On 29/03/2023 16:31, Waiman Long wrote:
->> On 3/29/23 10:25, Waiman Long wrote:
->>> On 3/29/23 08:55, Juri Lelli wrote:
->>>> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> [...]
->
->>>> @@ -2518,11 +2547,21 @@ static int cpuset_can_attach(struct
->>>> cgroup_taskset *tset)
->>>>    static void cpuset_cancel_attach(struct cgroup_taskset *tset)
->>>>    {
->>>>        struct cgroup_subsys_state *css;
->>>> +    struct cpuset *cs;
->>>>          cgroup_taskset_first(tset, &css);
->>>> +    cs = css_cs(css);
->>>>          mutex_lock(&cpuset_mutex);
->>>> -    css_cs(css)->attach_in_progress--;
->>>> +    cs->attach_in_progress--;
->>>> +
->>>> +    if (cs->nr_migrate_dl_tasks) {
->>>> +        int cpu = cpumask_any(cs->effective_cpus);
->>>> +
->>>> +        dl_bw_free(cpu, cs->sum_migrate_dl_bw);
->>>> +        reset_migrate_dl_data(cs);
->>>> +    }
->>>> +
->> Another nit that I have is that you may have to record also the cpu
->> where the DL bandwidth is allocated in cpuset_can_attach() and free the
->> bandwidth back into that cpu or there can be an underflow if another cpu
->> is chosen.
-> Many thanks for the review!
->
-> But isn't the DL BW control `struct dl_bw` per `struct root_domain`
-> which is per exclusive cpuset. So as long cpu is from
-> `cs->effective_cpus` shouldn't this be fine?
+On Fri, Mar 17, 2023 at 11:15:05AM -0400, Waiman Long wrote:
+> It was found that commit 7a2127e66a00 ("cpuset: Call
+> set_cpus_allowed_ptr() with appropriate mask for task") introduced a bug
+> that corrupted "cpuset.cpus" of a partition root when it was updated.
+> 
+> It is because the tmp->new_cpus field of the passed tmp parameter
+> of update_parent_subparts_cpumask() should not be used at all as
+> it contains important cpumask data that should not be overwritten.
+> Fix it by using tmp->addmask instead.
+> 
+> Also update update_cpumask() to make sure that trialcs->cpu_allowed
+> will not be corrupted until it is no longer needed.
+> 
+> Fixes: 7a2127e66a00 ("cpuset: Call set_cpus_allowed_ptr() with appropriate mask for task")
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Sorry for my ignorance on how the deadline bandwidth operation work. I 
-check the bandwidth code and find that we are storing the bandwidth 
-information in the root domain, not on the cpu. That shouldn't be a 
-concern then.
+Applied to cgroup/for-6.3-fixes w/ stable cc'd.
 
-However, I still have some question on how that works when dealing with 
-cpuset. First of all, not all the CPUs in a given root domains are in 
-the cpuset. So there may be enough bandwidth on the root domain, but it 
-doesn't mean there will be enough bandwidth in the set of CPUs in a 
-particular cpuset. Secondly, how do you deal with isolated CPUs that do 
-not have a corresponding root domain? It is now possible to create a 
-cpuset with isolated CPUs.
+Thanks.
 
-Cheers,
-Longman
-
+-- 
+tejun
