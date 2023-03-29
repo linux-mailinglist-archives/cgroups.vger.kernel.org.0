@@ -2,58 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C1C6CCE16
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 01:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38CA6CCF50
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 03:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjC1Xe5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 19:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        id S229691AbjC2BQQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Mar 2023 21:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjC1Xe4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 19:34:56 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EFF3592;
-        Tue, 28 Mar 2023 16:34:52 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 707D268BEB; Wed, 29 Mar 2023 01:34:48 +0200 (CEST)
-Date:   Wed, 29 Mar 2023 01:34:48 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@meta.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: move bio cgroup punting into btrfs
-Message-ID: <20230328233448.GA5486@lst.de>
-References: <20230327004954.728797-1-hch@lst.de> <512eaacf-3ff6-f4f9-c856-a0e03c027501@meta.com>
+        with ESMTP id S229489AbjC2BQP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 21:16:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5D899
+        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 18:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680052526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dKxuuTqWwWNukmjM2t0MLHI1t4BmxOvyVmCaNcAexzc=;
+        b=eF5XxSk20xDzXoa0B4aI8z+uUNHuJH2mHXxQXkA8kQPC/9H8vf5XvOvnBz6VdNT4kY/tBr
+        QFUqqbfo+bXwoB/qLZL8toYGtKq30Aq6rHQkoHt/BfcBl++ZH4GuNDlzkHPpjqHgx9E1Nt
+        25I3qkWsI/FnLF7D9nMAI9kjbf/P3nc=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-608-g62aqKQVM7S-aml_uceEsg-1; Tue, 28 Mar 2023 21:15:19 -0400
+X-MC-Unique: g62aqKQVM7S-aml_uceEsg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 29A9C1C05AEB;
+        Wed, 29 Mar 2023 01:15:19 +0000 (UTC)
+Received: from [10.22.18.156] (unknown [10.22.18.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 756C8492C3E;
+        Wed, 29 Mar 2023 01:15:18 +0000 (UTC)
+Message-ID: <656e9f38-4204-6e3b-f0e8-b03727a5334d@redhat.com>
+Date:   Tue, 28 Mar 2023 21:15:18 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <512eaacf-3ff6-f4f9-c856-a0e03c027501@meta.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2 0/4] cgroup/cpuset: Miscellaneous updates
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>, Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20230317151508.1225282-1-longman@redhat.com>
+ <20230328134000.GA1333@willie-the-truck>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230328134000.GA1333@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 05:18:43PM -0400, Chris Mason wrote:
-> Is btrfs really the only place using worker threads to submit IO, or are
-> we just the only ones looking for the priority inversions w/resource
-> control in place?
+On 3/28/23 09:40, Will Deacon wrote:
+> Hi Waiman,
+>
+> On Fri, Mar 17, 2023 at 11:15:04AM -0400, Waiman Long wrote:
+>>   v2:
+>>    - Add a new patch 1 that fixes a bug introduced by recent v6.2 commit
+>>      7a2127e66a00 ("cpuset: Call set_cpus_allowed_ptr() with appropriate
+>>      mask for task").
+>>    - Make a small twist and additional comment to patch 2 ("cgroup/cpuset:
+>>      Skip task update if hotplug doesn't affect current cpuset") as
+>>      suggested by Michal.
+>>    - Remove v1 patches 3/4 for now for further discussion.
+>>
+>> This patch series includes miscellaneous update to the cpuset and its
+>> testing code.
+> FWIW, this series also passes my asymmetric 32-bit tests.
 
-btrfs is the only place offloading writes from the per-cgroup writeback
-to it's own not cgroup aware workqueues.
+Thanks Will!
 
-Offloading from one writeback thread to another threadpool to just
-offload back to another thread to not deadlock is obviously not
-an actual smart thing to do, and fortunately no one else is doing
-this.
+Tejun, do you have time to take a look at this series, especially the 
+first patch which is a fix that may need to go to stable?
 
-For btrfs it is on it's way out by not doing the offload just for
-checksumming in a little bit, and even for compression the right fix
-is just to allow more than one thread per device and cgroup.  I plan
-to look into that, but there's plenty higher priority work right now.
+Cheers,
+Longman
+
