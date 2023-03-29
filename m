@@ -2,66 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F16FF6CF286
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 20:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9656CF295
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 20:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjC2Syg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Mar 2023 14:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        id S229948AbjC2S7c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Mar 2023 14:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjC2Syf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 14:54:35 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98725251;
-        Wed, 29 Mar 2023 11:54:34 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id o2so15855888plg.4;
-        Wed, 29 Mar 2023 11:54:34 -0700 (PDT)
+        with ESMTP id S229954AbjC2S7a (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 14:59:30 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027F5359B;
+        Wed, 29 Mar 2023 11:59:24 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id j13so15002296pjd.1;
+        Wed, 29 Mar 2023 11:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680116074;
+        d=gmail.com; s=20210112; t=1680116364;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SvJI0H5Hc+fTAdKMTbT6mE44kRVz6oz6/kFJz7w8sLA=;
-        b=YC5lVgwC4h2kPani96r3mkA6vwoBzUZ2d7vme5A2e7AJauPWYlwhzZTESImrRROqVc
-         g4z4UkSqsrJZMiMHOfSIT0w7fc7g+oPawMX4cbot2bSCdbhHVelHRMeh1ZpmISpBcaYc
-         1tdnnlkV0KxDHcgqQ8KnAECDBJo7YxjufIdr8syQtaPFlwzlY6EZzekoxmqlGnw8+BHn
-         p0xiVxUtS14PDNIAv9QLz4EPr/stF6xAJZ3q+TUEL8W90LyewZTGMjOgiYyqSY/73Iea
-         yGZ7v4T0swwe8GmcCLb8yb5uXhB3q1tX0vOD9hMQUot3FQKbNE4cA3HbNrKoX2pedSry
-         6okw==
+        bh=zJfV/EDnHa0A2JJ1AesjXORYSgBsKU2wVwRQ4vy/4iQ=;
+        b=FKaRnypaQDkZ4l8caHAGiLzNJrsI9T/qkI3o1WjciLQxnvIT5nqZmeoU2y2X2UJ50o
+         o+9veybnwPzpDwC216zieg0Z51t/l+P4o9agFbIL60MDJ4DWn9H6WsqPjGA7LGnzRYNH
+         t5B848SJZVl3dwJN0TDEIayEToErYSLiDNzBG1cBuA3RKKEjmh+tpz/TiIsmi5wkKebT
+         KKevTWRdYDjlS3joQpYK3peN4xY1PsjJ8nZ4DRuvuaJUr4Z3Fk6ySh0SM9O9NDV2mX8Q
+         12bwDpgiCXja6r+jdbrtZkTCWor73mD1+S1C/pRB8grwYrSRvvLKDlyn/t3OJJ36OzN5
+         /nQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680116074;
+        d=1e100.net; s=20210112; t=1680116364;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SvJI0H5Hc+fTAdKMTbT6mE44kRVz6oz6/kFJz7w8sLA=;
-        b=nH4FveNWItnp9afXtUWsRZ3xvkJa5FuuocI2M2bk3wWxOUS4T/qBTugXPacStTiIPS
-         n5E5Ojh0eqk1eBJWi21ogps1s0hbHVvmrfCNj0fDgyKnRLa/bystHRXuWR+H7vM6OWan
-         OfmVTDB0rSCbncvISuBgxwCJAzaqFFU6WB2ChO88ckLPHK9xoewvfXM6xTzFlsg9+MAz
-         rfzURZIo8CSSKlhjM07kKLY9AfknYYYM94eNylHs7FohTuHq8r2jo2JKLwLTQT9NSex8
-         O1sY5A/6wZcKG/aKSCq+q9RWV6jrGH9p7vAcwZP2wwD2+mytjs8ToXZYCeiHWF6Cmf4e
-         jDLA==
-X-Gm-Message-State: AAQBX9cKlCxRfSXNQ5NF/1W3JZpdQMykll2mIlbvPvlgcvbEY6A4Sz2d
-        sbws1qeVacd1X1oteeYpF4txmh+plDM=
-X-Google-Smtp-Source: AKy350ahFFWWrbD72Jen5A2yk5ObbvHJB1yYeHQ1sHxxiMcBibzIjUB44CuCfhMZ5cwi02S0n3jdBQ==
-X-Received: by 2002:a17:90b:4a50:b0:240:59e8:6dad with SMTP id lb16-20020a17090b4a5000b0024059e86dadmr17931802pjb.25.1680116073996;
-        Wed, 29 Mar 2023 11:54:33 -0700 (PDT)
+        bh=zJfV/EDnHa0A2JJ1AesjXORYSgBsKU2wVwRQ4vy/4iQ=;
+        b=dz+qvBBjfvLz0yDRq9nshnswOS0VKohkb0pVPNj+jsfie4Ze93EJc1y+sAjQZ3cPXf
+         LAxOdlZxAIUA/Du0HZ5ggWpCAO7QYoN4RXlWhQDItHic5J+xQHP8i5jxLCiUpX0gWunX
+         9Q93jB75Xr6ZAg0zTBxPIvfjs27/QLlOWIqp9P2evMgBKbKFN+RdKOykNnvTeg5N8Xuf
+         EC6Slf37eTCESxg+R8ORFHbyyVghIeoyz01FmJp3nTIczp64pZU3t2h4ybeYDloLQ8Ro
+         +oGmP0J1v8wNCxh1J2EB+Im82TtAIAjmG8ua7yL0Yz7UTvlEUMs7ONzenJAdS0KX4Djj
+         BeRg==
+X-Gm-Message-State: AAQBX9dCiFsexUQtVSJvyyp/VaICzBrqpFJYiehTCRDJJTrlgTyyn70B
+        86Aa4kJ+LfVMZaOJZQldLe0=
+X-Google-Smtp-Source: AKy350ZzJAxCafCSge6IqB39v2mdxiIhKLHwNPGjcalm+oY5iUDpBwEC5w5sq6pJBRu8n5FzV8dGOQ==
+X-Received: by 2002:a17:902:f9c6:b0:1a2:85f0:e748 with SMTP id kz6-20020a170902f9c600b001a285f0e748mr310378plb.20.1680116364278;
+        Wed, 29 Mar 2023 11:59:24 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id m1-20020a17090a3f8100b00230ffcb2e24sm1751009pjc.13.2023.03.29.11.54.33
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902758400b001a285269b70sm133296pll.280.2023.03.29.11.59.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 11:54:33 -0700 (PDT)
+        Wed, 29 Mar 2023 11:59:24 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 29 Mar 2023 08:54:32 -1000
+Date:   Wed, 29 Mar 2023 08:59:22 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Jinke Han <hanjinke.666@bytedance.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-throttle: Fix io statistics for cgroup v1
-Message-ID: <ZCSJaBO8i5jQFC10@slm.duckdns.org>
-References: <20230328142309.73413-1-hanjinke.666@bytedance.com>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     paolo.valente@linaro.org, axboe@kernel.dk, josef@toxicpanda.com,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] block, bfq: remove BFQ_WEIGHT_LEGACY_DFL
+Message-ID: <ZCSKirFH8f1JdQS2@slm.duckdns.org>
+References: <20230328145701.33699-1-zhouchengming@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230328142309.73413-1-hanjinke.666@bytedance.com>
+In-Reply-To: <20230328145701.33699-1-zhouchengming@bytedance.com>
 X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -72,15 +73,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 10:23:09PM +0800, Jinke Han wrote:
-> From: Jinke Han <hanjinke.666@bytedance.com>
+On Tue, Mar 28, 2023 at 10:56:58PM +0800, Chengming Zhou wrote:
+> BFQ_WEIGHT_LEGACY_DFL is the same as CGROUP_WEIGHT_DFL, which means
+> we don't need cpd_bind_fn() callback to update default weight when
+> attached to a hierarchy.
 > 
-> Now the io statistics of cgroup v1 are no longer accurate. Although
-> in the long run it's best that rstat is a good implementation of
-> cgroup v1 io statistics. But before that, we'd better fix this issue.
+> This patch remove BFQ_WEIGHT_LEGACY_DFL and cpd_bind_fn().
+> 
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Can you please expand on how the stats are wrong on v1 and how the patch
-fixes it?
+For 1-3,
+
+Acked-by: Tejun Heo <tj@kernel.org>
 
 Thanks.
 
