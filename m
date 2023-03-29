@@ -2,146 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0276CEC18
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 16:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B816CEC2A
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 16:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjC2OtY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Mar 2023 10:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        id S229974AbjC2Owh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Mar 2023 10:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjC2OtN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 10:49:13 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8005B55AF;
-        Wed, 29 Mar 2023 07:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680101340; x=1711637340;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/JwzapEZeOEBEAVO2IFsUIdXBxnyulcntsu8vKQEY0I=;
-  b=PEpHPACXgoLWWEev4d5mOiNasffK/Sbxm0fkkYdUCIWJGsCmqSNSpLy0
-   v3T8EX+qtf1OT7SRX64ApqV1IfPXNdV2RubOpNl/+630gLg8zr4DpHawX
-   A/O2RKxPUNgv8oTLH/SAhXgPRC/DiYoOL60Lt/s2eeLB6nGIWs7/HQeu+
-   eFXXneNpDuk6tTPVb+S6jxgvVGxat73KE/QW54CoLhTAi9Jmmy9Qz5z63
-   YX3KzQk6abDVyuy7WRvti99rZ0WAAnmZFNQnz17KNeMHygcacE9cpniDt
-   JOZRi6+iPrZ43rjdtcM/pDNlEVLL1/InbCvbZNu34nMbOf3TyG6OEedC1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10664"; a="340916867"
-X-IronPort-AV: E=Sophos;i="5.98,301,1673942400"; 
-   d="scan'208";a="340916867"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2023 07:49:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10664"; a="748798605"
-X-IronPort-AV: E=Sophos;i="5.98,301,1673942400"; 
-   d="scan'208";a="748798605"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Mar 2023 07:48:56 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1phX6d-000Jdg-1Y;
-        Wed, 29 Mar 2023 14:48:55 +0000
-Date:   Wed, 29 Mar 2023 22:48:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zi Yan <zi.yan@sent.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        linux-mm@kvack.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Zach O'Keefe <zokeefe@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Message-ID: <202303292237.pg39cTKv-lkp@intel.com>
-References: <20230329011712.3242298-5-zi.yan@sent.com>
+        with ESMTP id S229902AbjC2Owg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 10:52:36 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FA0DB
+        for <cgroups@vger.kernel.org>; Wed, 29 Mar 2023 07:52:34 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id r11so64450564edd.5
+        for <cgroups@vger.kernel.org>; Wed, 29 Mar 2023 07:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112; t=1680101553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l8Mqvm0nKUvf+W++zPjp5WnzzCK3tCnipop5FneNhZo=;
+        b=IZrsd/EeSRA/8xG07wwhIk5QDqYCo2hkZ6V6YXWiKJhFkN+veTM2lYH2srjQ1t4Pqu
+         guBPE8IQadmmW9YGskAXG0ekZqD94jF6lVL/45fHa6gpNpsKFR2i4IzXwJd2BE4VvlTS
+         FfgMgdPow39X+yuC3ylw/5eO//h7xOjuAjcH9IkPFfJt1ml0dX7ZPB0k6tEtb8acPCBH
+         N4BRh30oaIdgMHXnJj9GWFYjOejU8fHSlyIBo+3I2qT6I6tXtuqDnuK2x2Mw+/Y8W9zX
+         K3enTh942dzMf729kx41+mDbAzjZ9X8sEfvvXdKbH7IPwNJZzQUn7pdF8e3az0LRXPaY
+         sOaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680101553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l8Mqvm0nKUvf+W++zPjp5WnzzCK3tCnipop5FneNhZo=;
+        b=vX6KxyVJV5OvEwylRgCHEsUjYZ+ExSZWMlTeFO/b/CnQH6qXRKfDwmkl4MuW9Ddb+Z
+         ZFDxTmw+1s32Q6mAYchGtVjiIFbBnMFTphJSQ8ntPANoFUGxsPS4Jf3bpcKvKnLJU7ws
+         TKno9ueh1uVjmca0fl4tJtvFrkzwAyLMcsKLvkGKM6a90onea1lmpqE4b/9WkRoWBQzY
+         5ZQR2pyyFzsn3J5zHzD566U9TQUTzwcEUmvMQHKObQTwJXp5eqsJPNITfrkx4WKMa0RX
+         XVw+/gucloLNLOCRTOiCF8s1/ZKwnhoYpTT6l1/iOx9frHDlGzA2mG6LHtyMa2opyJpH
+         a0Hg==
+X-Gm-Message-State: AAQBX9euHjootWNpk9Lzfo2A8nJfIv8EQEyrzBvRqbbj7QIftXILEYj5
+        rq5klh1dpxTZWCUUG19ooLB9iKZtUevyWvJcWvwPjA==
+X-Google-Smtp-Source: AKy350YvW30FqsEIh5FpPPH2tKfkVMNHSheu2oVTZjOlmUYRgzCUVnZBpr2qm/uznvLeDKmlfPJJQw==
+X-Received: by 2002:a17:906:3118:b0:930:e495:b1cb with SMTP id 24-20020a170906311800b00930e495b1cbmr21614765ejx.75.1680101553341;
+        Wed, 29 Mar 2023 07:52:33 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:400::5:e994])
+        by smtp.gmail.com with ESMTPSA id x21-20020a50d615000000b004bb810e0b87sm17236293edi.39.2023.03.29.07.52.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 07:52:33 -0700 (PDT)
+Date:   Wed, 29 Mar 2023 10:52:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gscrivan@redhat.com
+Subject: Re: CLONE_INTO_CGROUP probably needs to call controller attach
+ handlers
+Message-ID: <ZCRQsAoe1lN1qCiB@cmpxchg.org>
+References: <20230328153943.op62j3sw7qaixdsq@wittgenstein>
+ <c3d9cf24-1c3a-cda4-5063-6b7d27e9116f@redhat.com>
+ <5937b51b-164a-b6b3-532d-43b46f2d49a2@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230329011712.3242298-5-zi.yan@sent.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <5937b51b-164a-b6b3-532d-43b46f2d49a2@redhat.com>
+X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Zi,
+On Tue, Mar 28, 2023 at 10:48:49PM -0400, Waiman Long wrote:
+> On 3/28/23 21:30, Waiman Long wrote:
+> > On 3/28/23 11:39, Christian Brauner wrote:
+> > > Hey,
+> > > 
+> > > Giuseppe reported that the the affinity mask isn't updated when a
+> > > process is spawned directly into the target cgroup via
+> > > CLONE_INTO_CGROUP. However, migrating a process will cause the affinity
+> > > mask to be updated (see the repro at [1].
+> > > 
+> > > I took a quick look and the issue seems to be that we don't call the
+> > > various attach handlers during CLONE_INTO_CGROUP whereas we do for
+> > > migration. So the solution seems to roughly be that we need to call the
+> > > various attach handlers during CLONE_INTO_CGROUP as well when the
+> > > parent's cgroups is different from the child cgroup. I think we need to
+> > > call all of them, can, cancel and attach.
+> > > 
+> > > The plumbing here might be a bit intricate since the arguments that the
+> > > fork handlers take are different from the attach handlers.
+> > > 
+> > > Christian
+> > > 
+> > > [1]: https://paste.centos.org/view/f434fa1a
+> > > 
+> > I saw that the current cgroup code already have the can_fork, fork and
+> > cancel_fork callbacks. Unfortunately such callbacks are not defined for
+> > cpuset yet. That is why the cpu affinity isn't correctly updated. I can
+> > post a patch to add those callback functions to cpuset which should then
+> > able to correctly address this issue.
+> 
+> Looking further into this issue, I am thinking that forking into a cgroup
+> should be equivalent to write the child pid into the "cgroup.threads" file
+> of the target cgroup. By taking this route, all the existing can_attach,
+> attach and cancel_attach methods can be used. I believe the original fork
+> method is for the limited use case of forking into the same cgroup. So right
+> now, only the pids controller has the fork methods. Otherwise, we will have
+> to modify a number of different controllers to add the necessary fork
+> methods. They will be somewhat similar to the existing attach methods and so
+> it will be a lot of duplication. What do you think about this idea?
 
-Thank you for the patch! Yet something to improve:
+That's what I thought at first too, but then I had some doubts.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.3-rc4 next-20230329]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The callback is called 'attach', but it's historically implemented
+when moving an established task between two cgroups. Many controllers
+use it to move state between groups (memcg, pids, cpuset). So in
+practice it isn't the natural fit that its name would suggest, and it
+would require reworking those controllers to handle both scenarios:
+moving tasks between groups, and new tasks attaching to a cgroup.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zi-Yan/mm-memcg-use-order-instead-of-nr-in-split_page_memcg/20230329-091809
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230329011712.3242298-5-zi.yan%40sent.com
-patch subject: [PATCH v2 4/7] mm: page_owner: add support for splitting to any order in split page_owner.
-config: x86_64-randconfig-a016 (https://download.01.org/0day-ci/archive/20230329/202303292237.pg39cTKv-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/6d1831c0e01a1a742e026454fe6e5643e08c5985
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Zi-Yan/mm-memcg-use-order-instead-of-nr-in-split_page_memcg/20230329-091809
-        git checkout 6d1831c0e01a1a742e026454fe6e5643e08c5985
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+Now I'm thinking it probably makes more sense to keep using attach for
+moving between groups, and fork for being born into a cgroup. That's
+what the pid controller does, and it handles CLONE_INTO_CGROUP fine.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303292237.pg39cTKv-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
->> mm/page_owner.c:226:14: error: implicit declaration of function 'lookup_page_ext' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                   page_ext = lookup_page_ext(page + i);
-                              ^
->> mm/page_owner.c:226:12: warning: incompatible integer to pointer conversion assigning to 'struct page_ext *' from 'int' [-Wint-conversion]
-                   page_ext = lookup_page_ext(page + i);
-                            ^ ~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning and 1 error generated.
-
-
-vim +/lookup_page_ext +226 mm/page_owner.c
-
-   213	
-   214	void __split_page_owner(struct page *page, int old_order, int new_order)
-   215	{
-   216		int i;
-   217		struct page_ext *page_ext = page_ext_get(page);
-   218		struct page_owner *page_owner;
-   219		unsigned int old_nr = 1 << old_order;
-   220		unsigned int new_nr = 1 << new_order;
-   221	
-   222		if (unlikely(!page_ext))
-   223			return;
-   224	
-   225		for (i = 0; i < old_nr; i += new_nr) {
- > 226			page_ext = lookup_page_ext(page + i);
-   227			page_owner = get_page_owner(page_ext);
-   228			page_owner->order = new_order;
-   229		}
-   230		page_ext_put(page_ext);
-   231	}
-   232	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+There is naturally some overlap between the two operations. But it
+seems cleaner to me to use common helpers for that, as opposed to
+having both attach and fork callbacks handling forks.
