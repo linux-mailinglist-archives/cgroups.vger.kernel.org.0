@@ -2,150 +2,146 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E23C36CEBD3
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 16:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0276CEC18
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 16:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbjC2Ojd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Mar 2023 10:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
+        id S229833AbjC2OtY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Mar 2023 10:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjC2OjM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 10:39:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7DF6A5F
-        for <cgroups@vger.kernel.org>; Wed, 29 Mar 2023 07:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680100504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6Qltz9GS2xYDRDWB9RaugYoeUKsxXmeQuDRMPnbUIY=;
-        b=emkoH0Yd493ttonN89IldVIZGsmkpEJK/e+45YtmBXKMCmSbedWINogqsthzUUbicsZNzt
-        3FVHmZh56EehreA7HpWfUFbJqorkMVQPB6k3loAHxYVT0Dv45WATX2Zza/3ojJV6wh2dZZ
-        J5UO/9hNSIZ6oTSCz7Exk8br5m1jcXU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-213-H0iHVYIrNgqdLy-0xl9CJw-1; Wed, 29 Mar 2023 10:35:00 -0400
-X-MC-Unique: H0iHVYIrNgqdLy-0xl9CJw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 545431C0512F;
-        Wed, 29 Mar 2023 14:34:59 +0000 (UTC)
-Received: from [10.22.34.224] (unknown [10.22.34.224])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE8FEC15BA0;
-        Wed, 29 Mar 2023 14:34:57 +0000 (UTC)
-Message-ID: <a7c4d685-a68c-5dc9-0911-3df2ce92e09d@redhat.com>
-Date:   Wed, 29 Mar 2023 10:34:57 -0400
+        with ESMTP id S229960AbjC2OtN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 10:49:13 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8005B55AF;
+        Wed, 29 Mar 2023 07:49:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680101340; x=1711637340;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/JwzapEZeOEBEAVO2IFsUIdXBxnyulcntsu8vKQEY0I=;
+  b=PEpHPACXgoLWWEev4d5mOiNasffK/Sbxm0fkkYdUCIWJGsCmqSNSpLy0
+   v3T8EX+qtf1OT7SRX64ApqV1IfPXNdV2RubOpNl/+630gLg8zr4DpHawX
+   A/O2RKxPUNgv8oTLH/SAhXgPRC/DiYoOL60Lt/s2eeLB6nGIWs7/HQeu+
+   eFXXneNpDuk6tTPVb+S6jxgvVGxat73KE/QW54CoLhTAi9Jmmy9Qz5z63
+   YX3KzQk6abDVyuy7WRvti99rZ0WAAnmZFNQnz17KNeMHygcacE9cpniDt
+   JOZRi6+iPrZ43rjdtcM/pDNlEVLL1/InbCvbZNu34nMbOf3TyG6OEedC1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10664"; a="340916867"
+X-IronPort-AV: E=Sophos;i="5.98,301,1673942400"; 
+   d="scan'208";a="340916867"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2023 07:49:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10664"; a="748798605"
+X-IronPort-AV: E=Sophos;i="5.98,301,1673942400"; 
+   d="scan'208";a="748798605"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Mar 2023 07:48:56 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1phX6d-000Jdg-1Y;
+        Wed, 29 Mar 2023 14:48:55 +0000
+Date:   Wed, 29 Mar 2023 22:48:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Zi Yan <zi.yan@sent.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Zach O'Keefe <zokeefe@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] mm: page_owner: add support for splitting to any
+ order in split page_owner.
+Message-ID: <202303292237.pg39cTKv-lkp@intel.com>
+References: <20230329011712.3242298-5-zi.yan@sent.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth
- restoration
-Content-Language: en-US
-To:     Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230329125558.255239-1-juri.lelli@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230329125558.255239-1-juri.lelli@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230329011712.3242298-5-zi.yan@sent.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/29/23 08:55, Juri Lelli wrote:
-> Qais reported [1] that iterating over all tasks when rebuilding root
-> domains for finding out which ones are DEADLINE and need their bandwidth
-> correctly restored on such root domains can be a costly operation (10+
-> ms delays on suspend-resume). He proposed we skip rebuilding root
-> domains for certain operations, but that approach seemed arch specific
-> and possibly prone to errors, as paths that ultimately trigger a rebuild
-> might be quite convoluted (thanks Qais for spending time on this!).
->
-> To fix the problem
->
->   01/06 - Rename functions deadline with DEADLINE accounting (cleanup
->           suggested by Qais) - no functional change
->   02/06 - Bring back cpuset_mutex (so that we have write access to cpusets
->           from scheduler operations - and we also fix some problems
->           associated to percpu_cpuset_rwsem)
->   03/06 - Keep track of the number of DEADLINE tasks belonging to each cpuset
->   04/06 - Create DL BW alloc, free & check overflow interface for bulk
->           bandwidth allocation/removal - no functional change
->   05/06 - Fix bandwidth allocation handling for cgroup operation
->           involving multiple tasks
->   06/06 - Use this information to only perform the costly iteration if
->           DEADLINE tasks are actually present in the cpuset for which a
->           corresponding root domain is being rebuilt
->
-> With respect to the RFC posting [2]
->
->   1 - rename DEADLINE bandwidth accounting functions - Qais
->   2 - call inc/dec_dl_tasks_cs from switched_{to,from}_dl - Qais
->   3 - fix DEADLINE bandwidth allocation with multiple tasks - Waiman,
->       contributed by Dietmar
->
-> This set is also available from
->
-> https://github.com/jlelli/linux.git deadline/rework-cpusets
->
-> Best,
-> Juri
->
-> 1 - https://lore.kernel.org/lkml/20230206221428.2125324-1-qyousef@layalina.io/
-> 2 - https://lore.kernel.org/lkml/20230315121812.206079-1-juri.lelli@redhat.com/
->
-> Dietmar Eggemann (2):
->    sched/deadline: Create DL BW alloc, free & check overflow interface
->    cgroup/cpuset: Free DL BW in case can_attach() fails
->
-> Juri Lelli (4):
->    cgroup/cpuset: Rename functions dealing with DEADLINE accounting
->    sched/cpuset: Bring back cpuset_mutex
->    sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
->    cgroup/cpuset: Iterate only if DEADLINE tasks are present
->
->   include/linux/cpuset.h  |  12 ++-
->   include/linux/sched.h   |   4 +-
->   kernel/cgroup/cgroup.c  |   4 +
->   kernel/cgroup/cpuset.c  | 232 ++++++++++++++++++++++++++--------------
->   kernel/sched/core.c     |  41 ++++---
->   kernel/sched/deadline.c |  67 +++++++++---
->   kernel/sched/sched.h    |   2 +-
->   7 files changed, 240 insertions(+), 122 deletions(-)
+Hi Zi,
 
-Other than some minor issues that I have talked in earlier emails, the 
-patch series looks good to me.
+Thank you for the patch! Yet something to improve:
 
-You can add my ack once the issues are fixed.
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.3-rc4 next-20230329]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Acked-by: Waiman Long <longman@redhat.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Zi-Yan/mm-memcg-use-order-instead-of-nr-in-split_page_memcg/20230329-091809
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230329011712.3242298-5-zi.yan%40sent.com
+patch subject: [PATCH v2 4/7] mm: page_owner: add support for splitting to any order in split page_owner.
+config: x86_64-randconfig-a016 (https://download.01.org/0day-ci/archive/20230329/202303292237.pg39cTKv-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/6d1831c0e01a1a742e026454fe6e5643e08c5985
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Zi-Yan/mm-memcg-use-order-instead-of-nr-in-split_page_memcg/20230329-091809
+        git checkout 6d1831c0e01a1a742e026454fe6e5643e08c5985
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303292237.pg39cTKv-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+>> mm/page_owner.c:226:14: error: implicit declaration of function 'lookup_page_ext' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+                   page_ext = lookup_page_ext(page + i);
+                              ^
+>> mm/page_owner.c:226:12: warning: incompatible integer to pointer conversion assigning to 'struct page_ext *' from 'int' [-Wint-conversion]
+                   page_ext = lookup_page_ext(page + i);
+                            ^ ~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning and 1 error generated.
+
+
+vim +/lookup_page_ext +226 mm/page_owner.c
+
+   213	
+   214	void __split_page_owner(struct page *page, int old_order, int new_order)
+   215	{
+   216		int i;
+   217		struct page_ext *page_ext = page_ext_get(page);
+   218		struct page_owner *page_owner;
+   219		unsigned int old_nr = 1 << old_order;
+   220		unsigned int new_nr = 1 << new_order;
+   221	
+   222		if (unlikely(!page_ext))
+   223			return;
+   224	
+   225		for (i = 0; i < old_nr; i += new_nr) {
+ > 226			page_ext = lookup_page_ext(page + i);
+   227			page_owner = get_page_owner(page_ext);
+   228			page_owner->order = new_order;
+   229		}
+   230		page_ext_put(page_ext);
+   231	}
+   232	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
