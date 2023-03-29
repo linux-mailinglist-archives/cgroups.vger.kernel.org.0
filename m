@@ -2,144 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09CE6CD71C
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 11:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95C56CD85A
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 13:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjC2J66 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Mar 2023 05:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        id S229626AbjC2LWQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Mar 2023 07:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjC2J65 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 05:58:57 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530AB19A;
-        Wed, 29 Mar 2023 02:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680083936; x=1711619936;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=L329AyF3OgVN9WsY0kOL7oj+CaQXmNshjdDst3A4NC8=;
-  b=LPiiCvEDsDa7Ajl75aAYPrUy51vTISx0HxCwD2fI3hY3eAVmlU4tlP1F
-   IkGHrVUCzKmt1veMHLlgTc2U9Bqnn6FNAchYSNfsLBiXOrdgyQ1nvkcvT
-   b54bOhHz0jJFvvEbB3plSI0BVW8kf4SaiUuMbpYdEYsPyNs/fOccTY8hh
-   kYOLa/M+Sls/8CM79iDeVZwo1op2pbCOqJfGayCgmSX1MerbPCw8r4pM+
-   gR0fweeZ08idY+anbGOXcGZWQloRjeBKWK2ez/JfqT64+Zx4BEMLN2Dl+
-   mouxUJxRbqDSlbEDJ3T5boY2q6sbBR5rxXbR2qm7bhEsjTkevtEkfvsvF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10663"; a="339557871"
-X-IronPort-AV: E=Sophos;i="5.98,300,1673942400"; 
-   d="scan'208";a="339557871"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2023 02:58:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10663"; a="634415819"
-X-IronPort-AV: E=Sophos;i="5.98,300,1673942400"; 
-   d="scan'208";a="634415819"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 29 Mar 2023 02:58:51 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1phSZp-000JQ8-0v;
-        Wed, 29 Mar 2023 09:58:45 +0000
-Date:   Wed, 29 Mar 2023 17:58:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zi Yan <zi.yan@sent.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        linux-mm@kvack.org
-Cc:     oe-kbuild-all@lists.linux.dev, Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        with ESMTP id S229477AbjC2LWQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 07:22:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9718133;
+        Wed, 29 Mar 2023 04:22:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D56F1F7AB;
+        Wed, 29 Mar 2023 11:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680088933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gebdMLUhhGELLLVSbQbSg6v4/rJOoLd9eRIXmlgXsio=;
+        b=vXmcD7WVZBRtIF0QTHnyV0Rs4Utot99+8SQdPpEeQgdw9Nt9PPFDXEaDiGG07RKvkX9o4l
+        lGXnaYncs8HwoSJ4MiI1vkPA5f/VJ3GJlKnBIUWk10zdR5ivx8u3vsRJi+RTJsPs0Xg3tS
+        /x3S3AGVNCHDf2wdcfpAeE+BafyyrcY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EBF7138FF;
+        Wed, 29 Mar 2023 11:22:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QbCbGWUfJGSgSQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 29 Mar 2023 11:22:13 +0000
+Date:   Wed, 29 Mar 2023 13:22:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Zach O'Keefe <zokeefe@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Message-ID: <202303291732.7OqWI96E-lkp@intel.com>
-References: <20230329011712.3242298-5-zi.yan@sent.com>
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+Message-ID: <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-5-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230329011712.3242298-5-zi.yan@sent.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230328221644.803272-5-yosryahmed@google.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Zi,
+On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
+> rstat flushing is too expensive to perform in irq context.
+> The previous patch removed the only context that may invoke an rstat
+> flush from irq context, add a WARN_ON_ONCE() to detect future
+> violations, or those that we are not aware of.
+> 
+> Ideally, we wouldn't flush with irqs disabled either, but we have one
+> context today that does so in mem_cgroup_usage(). Forbid callers from
+> irq context for now, and hopefully we can also forbid callers with irqs
+> disabled in the future when we can get rid of this callsite.
 
-Thank you for the patch! Yet something to improve:
+I am sorry to be late to the discussion. I wanted to follow up on
+Johannes reply in the previous version but you are too fast ;)
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.3-rc4 next-20230329]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I do agree that this looks rather arbitrary. You do not explain how the
+warning actually helps. Is the intention to be really verbose to the
+kernel log when somebody uses this interface from the IRQ context and
+get bug reports? What about configurations with panic on warn? Do we
+really want to crash their systems for something like that?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zi-Yan/mm-memcg-use-order-instead-of-nr-in-split_page_memcg/20230329-091809
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230329011712.3242298-5-zi.yan%40sent.com
-patch subject: [PATCH v2 4/7] mm: page_owner: add support for splitting to any order in split page_owner.
-config: i386-randconfig-m021 (https://download.01.org/0day-ci/archive/20230329/202303291732.7OqWI96E-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/6d1831c0e01a1a742e026454fe6e5643e08c5985
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Zi-Yan/mm-memcg-use-order-instead-of-nr-in-split_page_memcg/20230329-091809
-        git checkout 6d1831c0e01a1a742e026454fe6e5643e08c5985
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 olddefconfig
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303291732.7OqWI96E-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mm/page_owner.c: In function '__split_page_owner':
->> mm/page_owner.c:226:28: error: implicit declaration of function 'lookup_page_ext' [-Werror=implicit-function-declaration]
-     226 |                 page_ext = lookup_page_ext(page + i);
-         |                            ^~~~~~~~~~~~~~~
-   mm/page_owner.c:226:26: warning: assignment to 'struct page_ext *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     226 |                 page_ext = lookup_page_ext(page + i);
-         |                          ^
-   cc1: some warnings being treated as errors
-
-
-vim +/lookup_page_ext +226 mm/page_owner.c
-
-   213	
-   214	void __split_page_owner(struct page *page, int old_order, int new_order)
-   215	{
-   216		int i;
-   217		struct page_ext *page_ext = page_ext_get(page);
-   218		struct page_owner *page_owner;
-   219		unsigned int old_nr = 1 << old_order;
-   220		unsigned int new_nr = 1 << new_order;
-   221	
-   222		if (unlikely(!page_ext))
-   223			return;
-   224	
-   225		for (i = 0; i < old_nr; i += new_nr) {
- > 226			page_ext = lookup_page_ext(page + i);
-   227			page_owner = get_page_owner(page_ext);
-   228			page_owner->order = new_order;
-   229		}
-   230		page_ext_put(page_ext);
-   231	}
-   232	
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  kernel/cgroup/rstat.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index d3252b0416b6..c2571939139f 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -176,6 +176,8 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+>  {
+>  	int cpu;
+>  
+> +	/* rstat flushing is too expensive for irq context */
+> +	WARN_ON_ONCE(!in_task());
+>  	lockdep_assert_held(&cgroup_rstat_lock);
+>  
+>  	for_each_possible_cpu(cpu) {
+> -- 
+> 2.40.0.348.gf938b09366-goog
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Michal Hocko
+SUSE Labs
