@@ -2,110 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D496CD058
-	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 04:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A048B6CD2D4
+	for <lists+cgroups@lfdr.de>; Wed, 29 Mar 2023 09:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjC2Ctq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Mar 2023 22:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
+        id S229726AbjC2HTe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Mar 2023 03:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjC2Ctq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Mar 2023 22:49:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D3E3A9E
-        for <cgroups@vger.kernel.org>; Tue, 28 Mar 2023 19:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680058133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L6oe7fC3/mHI/luYdbPv+vw9eT1o83NLKjT6NHGcNrY=;
-        b=i/sBaK2So+BJ6VIWBbDR+1Op5OXQSEJ3Hyyz6/JW5svmUA3h4bangrMY7JqTf9VMzhUuu8
-        b30mMjwxRvC/t6yOJDxUeoMX+l2iHVrd8uo7AnoLh5QF2G3XjIuwCYcy469QQEJla70yRk
-        HkkqSiva/sZaAKhSdeyYfNccGPdLzV0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-618-jZhO2YEHONGK9_fNoXIrnA-1; Tue, 28 Mar 2023 22:48:50 -0400
-X-MC-Unique: jZhO2YEHONGK9_fNoXIrnA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229852AbjC2HTd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Mar 2023 03:19:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83D626AD;
+        Wed, 29 Mar 2023 00:19:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E94C638060E1;
-        Wed, 29 Mar 2023 02:48:49 +0000 (UTC)
-Received: from [10.22.18.156] (unknown [10.22.18.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82F43140EBF4;
-        Wed, 29 Mar 2023 02:48:49 +0000 (UTC)
-Message-ID: <5937b51b-164a-b6b3-532d-43b46f2d49a2@redhat.com>
-Date:   Tue, 28 Mar 2023 22:48:49 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 73C1E61AA0;
+        Wed, 29 Mar 2023 07:19:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EAC1C433D2;
+        Wed, 29 Mar 2023 07:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680074371;
+        bh=DJrGjjYVJpklJpi1Yq8f2deLg7xBT/QYXB70zUacqlk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wjl7AZtgidfWsFBwLpkWu6wrTOCYLeiIt/T9ZtM1cHbhm9JBWbILWp+3B0DMqyTAm
+         ZwRHtvM8wy1Wvxx5PdJScuqKzz5BTDDBZ6kC1r1zwo6Rjoy+q2g45h2PVQcU9XoK7c
+         wSNoFuQ2GqjoNIWUhFdCC6H60l9Y+6yZk5Zqf/mZS7Z8aTJoH0uIgz+eCiLD9jlzIO
+         rkuw851jOE6lFcY4HW2xdSjvLlbb9N4DedrBXMwFvir1l+n8LcB/ZDs61qtbq0XmX6
+         /mik1o1PMtNarwUWCvkq0xce+PFK4BErlxMGigSUCUYTeTLnno3D9iMVR9T3QsLqyC
+         6lk1dTHj9Th0w==
+Date:   Wed, 29 Mar 2023 09:19:26 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gscrivan@redhat.com
 Subject: Re: CLONE_INTO_CGROUP probably needs to call controller attach
  handlers
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gscrivan@redhat.com
+Message-ID: <20230329-unripe-imminent-655bed17aad2@brauner>
 References: <20230328153943.op62j3sw7qaixdsq@wittgenstein>
  <c3d9cf24-1c3a-cda4-5063-6b7d27e9116f@redhat.com>
-In-Reply-To: <c3d9cf24-1c3a-cda4-5063-6b7d27e9116f@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+ <5937b51b-164a-b6b3-532d-43b46f2d49a2@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5937b51b-164a-b6b3-532d-43b46f2d49a2@redhat.com>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/28/23 21:30, Waiman Long wrote:
-> On 3/28/23 11:39, Christian Brauner wrote:
->> Hey,
->>
->> Giuseppe reported that the the affinity mask isn't updated when a
->> process is spawned directly into the target cgroup via
->> CLONE_INTO_CGROUP. However, migrating a process will cause the affinity
->> mask to be updated (see the repro at [1].
->>
->> I took a quick look and the issue seems to be that we don't call the
->> various attach handlers during CLONE_INTO_CGROUP whereas we do for
->> migration. So the solution seems to roughly be that we need to call the
->> various attach handlers during CLONE_INTO_CGROUP as well when the
->> parent's cgroups is different from the child cgroup. I think we need to
->> call all of them, can, cancel and attach.
->>
->> The plumbing here might be a bit intricate since the arguments that the
->> fork handlers take are different from the attach handlers.
->>
->> Christian
->>
->> [1]: https://paste.centos.org/view/f434fa1a
->>
-> I saw that the current cgroup code already have the can_fork, fork and 
-> cancel_fork callbacks. Unfortunately such callbacks are not defined 
-> for cpuset yet. That is why the cpu affinity isn't correctly updated. 
-> I can post a patch to add those callback functions to cpuset which 
-> should then able to correctly address this issue.
+On Tue, Mar 28, 2023 at 10:48:49PM -0400, Waiman Long wrote:
+> On 3/28/23 21:30, Waiman Long wrote:
+> > On 3/28/23 11:39, Christian Brauner wrote:
+> > > Hey,
+> > > 
+> > > Giuseppe reported that the the affinity mask isn't updated when a
+> > > process is spawned directly into the target cgroup via
+> > > CLONE_INTO_CGROUP. However, migrating a process will cause the affinity
+> > > mask to be updated (see the repro at [1].
+> > > 
+> > > I took a quick look and the issue seems to be that we don't call the
+> > > various attach handlers during CLONE_INTO_CGROUP whereas we do for
+> > > migration. So the solution seems to roughly be that we need to call the
+> > > various attach handlers during CLONE_INTO_CGROUP as well when the
+> > > parent's cgroups is different from the child cgroup. I think we need to
+> > > call all of them, can, cancel and attach.
+> > > 
+> > > The plumbing here might be a bit intricate since the arguments that the
+> > > fork handlers take are different from the attach handlers.
+> > > 
+> > > Christian
+> > > 
+> > > [1]: https://paste.centos.org/view/f434fa1a
+> > > 
+> > I saw that the current cgroup code already have the can_fork, fork and
+> > cancel_fork callbacks. Unfortunately such callbacks are not defined for
+> > cpuset yet. That is why the cpu affinity isn't correctly updated. I can
+> > post a patch to add those callback functions to cpuset which should then
+> > able to correctly address this issue.
+> 
+> Looking further into this issue, I am thinking that forking into a cgroup
+> should be equivalent to write the child pid into the "cgroup.threads" file
+> of the target cgroup. By taking this route, all the existing can_attach,
+> attach and cancel_attach methods can be used. I believe the original fork
+> method is for the limited use case of forking into the same cgroup. So right
+> now, only the pids controller has the fork methods. Otherwise, we will have
+> to modify a number of different controllers to add the necessary fork
+> methods. They will be somewhat similar to the existing attach methods and so
+> it will be a lot of duplication. What do you think about this idea?
 
-Looking further into this issue, I am thinking that forking into a 
-cgroup should be equivalent to write the child pid into the 
-"cgroup.threads" file of the target cgroup. By taking this route, all 
-the existing can_attach, attach and cancel_attach methods can be used. I 
-believe the original fork method is for the limited use case of forking 
-into the same cgroup. So right now, only the pids controller has the 
-fork methods. Otherwise, we will have to modify a number of different 
-controllers to add the necessary fork methods. They will be somewhat 
-similar to the existing attach methods and so it will be a lot of 
-duplication. What do you think about this idea?
+The overall plan sounds good to me. I have one comment and question
+about making this equivalent to a write of the child pid into the
+cgroup.threads file.
 
-Cheers,
-Longman
+The paragraph above seems to imply that CLONE_INTO_CGROUP currently
+isn't equivalent to a write to cgroup.threads. But it's not that
+straightforward. CLONE_INTO_CGROUP needs to handle both threads and
+threadgroups aka being or-ed with CLONE_THREAD or not. It does that in
+cgroup_css_set_fork() when calling
+cgroup_attach_permissions([...] !(kargs->flags & CLONE_THREAD), [...]).
 
+What it's missing is calling the relevant handlers that would be
+executed in the migration path. They might be different between the
+CLONE_THREAD and !CLONE_THREAD case. But the crux remains that
+CLONE_INTO_CGROUP needs to handle both cases.
+
+So afaict, what you're proposing is equivalent to what I sketched in the
+initial mail? Or is there something else you mean by making this
+equivalent to cgroup.threads that goes beyond adding the missing
+handlers? Just trying to make sure we're not accidently changing
+semantics.
