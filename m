@@ -2,230 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5ED86CFA2A
-	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 06:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DA16CFC37
+	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 09:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbjC3E1H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 00:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        id S230387AbjC3HGw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Mar 2023 03:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjC3E1F (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 00:27:05 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424A95272
-        for <cgroups@vger.kernel.org>; Wed, 29 Mar 2023 21:27:03 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id t10so71408360edd.12
-        for <cgroups@vger.kernel.org>; Wed, 29 Mar 2023 21:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680150421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mPxXZwrGY9EQBVrz+rM6XeJQecrNiNwMGKoahuxks9c=;
-        b=UB9ilX9x0DFClvH2MBsafXYctyfQiMtqneVbDgIn8dlkb7SeJEzllIUHniTmROr9zA
-         QNEcN1WFlEJGxgMboHiWeAft9d3KIZB6LTea9dtS1hOwT9F0hILhYXmS0E6kIWINYTZy
-         vBEL04m8KhM3aacYuUlP7egfig+eopFO62We1ZE3+r978w7tMG7VVUF5nAvktNbztfWy
-         DPIUhgo3yBtBMUXACd+J8qLZYHzhxPnNgyVg366YOY7pdoxSIli5kTx+TEp3cf9hhDzv
-         kmAe2yK9UIVG5k/8muUa7zOO6grvclhgaCpWWvyR2kWnYuNTZ48TJfXwnL+iNuR2zeoS
-         O3lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680150421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mPxXZwrGY9EQBVrz+rM6XeJQecrNiNwMGKoahuxks9c=;
-        b=nVD19nJBMrAGA6KyCGujwk+c7LYiozasAkw5RmHwQMYQswo3et0nlIRx1La7ApYccZ
-         PZDHAoVWXcw7bOLMBEALVB+yln0q4RB4XZysgzLrDmvJgWm8GdYcrHwxxT+yMn0OD4RG
-         7dHuHxn7hP4hJ72E4qj+BZSpJxpoDB17CQ/4RWXw89MhWSeFtMKN+oOjDPxQwWFOfcTm
-         D8L0UbnUpjgY6Ul85PpnLpNsQNfBgDxExArkO22wRZ38Q+LurO73YIaX/BzHZX/dwqdW
-         Fs5lP78dKXykAnke2hrOFGdWYK6yzEAAPJVSxb/9blGPkStvTggyWIzstnETe0IYOy1X
-         qpqg==
-X-Gm-Message-State: AAQBX9c5Vug74IdacKBmQ7vEQd/hVkh2RSUZlNnTkde9TtXxFeejhAVu
-        sJqfLL8AFaDv2CZjFUGHzQNeAeiAcKGGDs0TT2PRxg==
-X-Google-Smtp-Source: AKy350Y3jW8mXAik9Znw5lXXT0a3LkoBTafwWbTIHw4pWyMN7nAmXuXsz/YasuYog2yKCeL23uzXcExl0Qv0CZmiwXM=
-X-Received: by 2002:a50:d756:0:b0:4fc:e5c:902 with SMTP id i22-20020a50d756000000b004fc0e5c0902mr10775755edj.8.1680150421386;
- Wed, 29 Mar 2023 21:27:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZBz/V5a7/6PZeM7S@slm.duckdns.org> <CAJD7tkYNZeEytm_Px9_73Y-AYJfHAxaoTmmnO71HW5hd1B5tPg@mail.gmail.com>
- <ZB5UalkjGngcBDEJ@slm.duckdns.org> <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
- <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
- <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
- <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
- <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com>
- <ZCSJDpPPOVvBYfOy@slm.duckdns.org> <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
- <ZCSY8l/jVwszF6iA@slm.duckdns.org> <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
-In-Reply-To: <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 29 Mar 2023 21:26:24 -0700
-Message-ID: <CAJD7tkaFhG39LHUNuKmxj2LEvojavOnpnREXz2vvuLrbBAHyEA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
- percpu lock
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+        with ESMTP id S230091AbjC3HGt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 03:06:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08D365B5;
+        Thu, 30 Mar 2023 00:06:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 654981FE87;
+        Thu, 30 Mar 2023 07:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680160007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QLfYeLt+TXwV+pwToLzrHHrJTaYboOCW9UaiwVxS7lA=;
+        b=mAI7MPiHSl8rJ93izo+zY41ldY7Q5UIHq3cnqnGtElFi7az9dtYt0NrZYGnhHulCp4xuiB
+        tCKde3AIvlhN6fTukiLKYF3ViOCSzqBHTGWpE8aQCHMCXW6+8GcWX7Keeil3ozJ3OOGTHK
+        IGmmNg/5vANvb4KhA3aiQh5XlXtsXR4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4169A1348E;
+        Thu, 30 Mar 2023 07:06:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yVwIDQc1JWR+bAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 30 Mar 2023 07:06:47 +0000
+Date:   Thu, 30 Mar 2023 09:06:46 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
         Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Vasily Averin <vasily.averin@linux.dev>,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+Message-ID: <ZCU1Bp+5bKNJzWIu@dhcp22.suse.cz>
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-5-yosryahmed@google.com>
+ <ZCQfZJFufkJ10o01@dhcp22.suse.cz>
+ <CAJD7tkb-UpKm2QbjYzB=B=oGk6Hyj9cbUviZUPC+7VsvBecH7g@mail.gmail.com>
+ <20230329192059.2nlme5ubshzdbpg6@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230329192059.2nlme5ubshzdbpg6@google.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks for a great discussion, Tejun and Hugh.
-
-On Wed, Mar 29, 2023 at 1:38=E2=80=AFPM Hugh Dickins <hughd@google.com> wro=
-te:
->
-> On Wed, 29 Mar 2023, Tejun Heo wrote:
->
-> > Hello, Hugh. How have you been?
-> >
-> > On Wed, Mar 29, 2023 at 12:22:24PM -0700, Hugh Dickins wrote:
-> > > Hi Tejun,
-> > > Butting in here, I'm fascinated.  This is certainly not my area, I kn=
-ow
-> > > nothing about rstat, but this is the first time I ever heard someone
-> > > arguing for more disabling of interrupts rather than less.
+On Wed 29-03-23 19:20:59, Shakeel Butt wrote:
+> On Wed, Mar 29, 2023 at 11:41:39AM -0700, Yosry Ahmed wrote:
+> > On Wed, Mar 29, 2023 at 4:22 AM Michal Hocko <mhocko@suse.com> wrote:
 > > >
-> > > An interrupt coming in while holding a contended resource can certain=
-ly
-> > > add to latencies, that I accept of course.  But until now, I thought =
-it
-> > > was agreed best practice to disable irqs only regretfully, when stric=
-tly
-> > > necessary.
+> > > On Tue 28-03-23 22:16:39, Yosry Ahmed wrote:
+> > > > rstat flushing is too expensive to perform in irq context.
+> > > > The previous patch removed the only context that may invoke an rstat
+> > > > flush from irq context, add a WARN_ON_ONCE() to detect future
+> > > > violations, or those that we are not aware of.
+> > > >
+> > > > Ideally, we wouldn't flush with irqs disabled either, but we have one
+> > > > context today that does so in mem_cgroup_usage(). Forbid callers from
+> > > > irq context for now, and hopefully we can also forbid callers with irqs
+> > > > disabled in the future when we can get rid of this callsite.
 > > >
-> > > If that has changed, I for one want to know about it.  How should we
-> > > now judge which spinlocks should disable interrupts and which should =
-not?
-> > > Page table locks are currently my main interest - should those be cha=
-nged?
-> >
-> > For rstat, it's a simple case because the global lock here wraps around
-> > per-cpu locks which have to be irq-safe, so the only difference we get
-> > between making the global irq-unsafe and keeping it so but releasing
-> > inbetween is:
-> >
-> >  Global lock held: G
-> >  IRQ disabled: I
-> >  Percpu lock held: P
-> >
-> > 1. IRQ unsafe
-> >
-> >  GGGGGGGGGGGGGGG~~GGGGG
-> >  IIII IIII IIII ~~ IIII
-> >  PPPP PPPP PPPP ~~ PPPP
-> >
-> > 2. IRQ safe released inbetween cpus
-> >
-> >  GGGG GGGG GGGG ~~ GGGG
-> >  IIII IIII IIII ~~ IIII
-> >  PPPP PPPP PPPP ~~ PPPP
-> >
-> > #2 seems like the obvious thing to do here given how the lock is used a=
-nd
-> > each P section may take a bit of time.
->
-> Many thanks for the detailed response.  I'll leave it to the rstat folks,
-> to agree or disagree with your analysis there.
+> > > I am sorry to be late to the discussion. I wanted to follow up on
+> > > Johannes reply in the previous version but you are too fast ;)
+> > >
+> > > I do agree that this looks rather arbitrary. You do not explain how the
+> > > warning actually helps. Is the intention to be really verbose to the
+> > > kernel log when somebody uses this interface from the IRQ context and
+> > > get bug reports? What about configurations with panic on warn? Do we
+> > > really want to crash their systems for something like that?
+> > 
+> > Thanks for taking a look, Michal!
+> > 
+> > The ultimate goal is not to flush in irq context or with irqs
+> > disabled, as in some cases it causes irqs to be disabled for a long
+> > time, as flushing is an expensive operation. The previous patch in the
+> > series should have removed the only context that flushes in irq
+> > context, and the purpose of the WARN_ON_ONCE() is to catch future uses
+> > or uses that we might have missed.
+> > 
+> > There is still one code path that flushes with irqs disabled (also
+> > mem_cgroup_usage()), and we cannot remove this just yet; we need to
+> > deprecate usage threshold events for root to do that. So we cannot
+> > enforce not flushing with irqs disabled yet.
+> > 
+> > So basically the patch is trying to enforce what we have now, not
+> > flushing in irq context, and hopefully at some point we will also be
+> > able to enforce not flushing with irqs disabled.
+> > 
+> > If WARN_ON_ONCE() is the wrong tool for this, please let me know.
+> > 
+> 
+> If I understand Michal's concern, the question is should be start with
+> pr_warn_once() instead of WARN_ON_ONCE() and I think yes we should start
+> with pr_warn_once().
 
-Thanks for the analysis, Tejun, it does indeed make sense. I perf'd
-releasing and reacquiring the lock at each CPU boundary and the
-overhead seems to be minimal. It would be higher with contention, but
-all memcg flushers should be held back by the memcg code, and flushers
-outside memcg are not frequent (reading blkcg and cpu base stats from
-user space, and when a cgroup is being removed).
+Yes, I do not really like the WARN_ON here. It is an overkill. pr_warn
+would much less intrusive but potentially incomplete because you won't
+know who that offender is. So if you really care about those then you
+would need to call dump_stack as well.
 
-I realized that after v2 of this patch series [1], we would only end
-up with two atomic flushing contexts, mem_cgroup_wb_stats() and
-mem_cgroup_usage(). The latter is already disabling irqs for other
-reasons, so anything we do within the rstat core code doesn't really
-help, it needs to be addressed separately. So only the call site in
-mem_cgroup_wb_stats() would benefit from not having irqs disabled
-throughout the flush.
-
-I will hold off on sending a patch until I observe that this call site
-is causing us pain and/or other atomic call sites emerge (or we have
-to revert one of the ones we made non-atomic), so that we don't hurt
-other flushers unnecessarily. Does this make sense to you?
-
-[1] https://lore.kernel.org/linux-mm/20230328221644.803272-1-yosryahmed@goo=
-gle.com/
-
->
-> >
-> > So, in the rstat case, the choice is, at least to me, obvious, but even=
- for
-> > more generic cases where the bulk of actual work isn't done w/ irq disa=
-bled,
-> > I don't think the picture is as simple as "use the least protected vari=
-ant
-> > possible" anymore because the underlying hardware changed.
-> >
-> > For an SMP kernel running on an UP system, "the least protected variant=
-" is
-> > the obvious choice to make because you don't lose anything by holding a
-> > spinlock longer than necessary. However, as you increase the number of =
-CPUs,
-> > there rises a tradeoff between local irq servicing latency and global l=
-ock
-> > contention.
-> >
-> > Imagine a, say, 128 cpu system with a few cores servicing relatively hi=
-gh
-> > frequency interrupts. Let's say there's a mildly hot lock. Usually, it =
-shows
-> > up in the system profile but only just. Let's say something happens and=
- the
-> > irq rate on those cores went up for some reason to the point where it
-> > becomes a rather common occurrence when the lock is held on one of thos=
-e
-> > cpus, irqs are likely to intervene lengthening how long the lock is hel=
-d,
-> > sometimes, signficantly. Now because the lock is on average held for mu=
-ch
-> > longer, it become a lot hotter as more CPUs would stall on it and depen=
-ding
-> > on luck or lack thereof these stalls can span many CPUs on the system f=
-or
-> > quite a while. This is actually something we saw in production.
-> >
-> > So, in general, there's a trade off between local irq service latency a=
-nd
-> > inducing global lock contention when using unprotected locks. With more=
- and
-> > more CPUs, the balance keeps shifting. The balance still very much depe=
-nds
-> > on the specifics of a given lock but yeah I think it's something we nee=
-d to
-> > be a lot more careful about now.
->
-> And this looks a very plausible argument to me: I'll let it sink in.
->
-> But I hadn't heard that the RT folks were clamouring for more irq disabli=
-ng:
-> perhaps they partition their machines with more care, and are not devotee=
-s
-> of high CPU counts.
->
-> What I hope is that others will chime in one way or the other -
-> it does sound as if a reappraisal of the balances is overdue.
->
-> Thanks,
-> Hugh (disabling interrupts for as long as he can)
+So the real question is. Do we really care so deeply? After all somebody
+might be calling this from within a spin lock or irq disabled section
+resulting in a similar situation without noticing.
+-- 
+Michal Hocko
+SUSE Labs
