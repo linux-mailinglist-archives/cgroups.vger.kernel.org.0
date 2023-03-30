@@ -2,60 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AAD6CFCA2
-	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 09:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553C56CFCE0
+	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 09:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjC3HXl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 03:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        id S229672AbjC3HgB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Mar 2023 03:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjC3HXk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 03:23:40 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0966035A2
-        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 00:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680161019; x=1711697019;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JeOnVJIFdSeUD3sDSNJpbac8JC/yWe8ezu/XalkayH8=;
-  b=hW7gvLTqpIH4YsbSrNqAblSvm4MPLDZJtlo0I/s8qYMqomcgEY8zeK0j
-   pjlUO+DOLiyP9OfwQnWjCXR9jp3MhtyRRuSEoBtkdS0KxRM1/EmGNU1xW
-   cDkjxCDWC8/5qZWU+GvfB6JCUQNrj+URVCXCv5yRz706H3WmowLy6A6eD
-   EqZxDYg2HsqiA0PxDhT7fbU7vo6hmQsLjhQ8V8+nDF6wiJ4Zi0PV+k7gh
-   MnJt3DlH05KThfrD5jFP6zo0XbkKxyiZsqGWykzjq17lnzmGr4szbe9Ww
-   UFIcn0S6/SAmCgbZOvqAKwWmDxmuWZe2KFx+ovd9laCyUN75pOFM4LKpp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10664"; a="329585082"
-X-IronPort-AV: E=Sophos;i="5.98,303,1673942400"; 
-   d="scan'208";a="329585082"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 00:23:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10664"; a="858802272"
-X-IronPort-AV: E=Sophos;i="5.98,303,1673942400"; 
-   d="scan'208";a="858802272"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 30 Mar 2023 00:23:37 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1phmdE-000KVo-2X;
-        Thu, 30 Mar 2023 07:23:36 +0000
-Date:   Thu, 30 Mar 2023 15:23:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.4] BUILD SUCCESS
- 1bf33285d98536da6b015627341e4f789fee067e
-Message-ID: <642538f4.C9gtvGJ/Fc/WCkqC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229552AbjC3HgA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 03:36:00 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2232BE3;
+        Thu, 30 Mar 2023 00:35:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D36811FE91;
+        Thu, 30 Mar 2023 07:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680161757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fU7z0yHw4Ry/tQw4NzU0o63bQ+V0Qd8kX2CYBZv5RXc=;
+        b=uykLa5wl1jleLVQ6elC+H2skYegC2uaQgOrhniRTyo0oiHO0cLN1xo67HvgCsAMt2/5tYw
+        y0woZkDkwHmuuvVJteGxd8GCR06LvcbfoPMX3TYaH3/LEK6zekWk9zhX9MHemGQoYyeukU
+        rG7ABcMf7DqojiNhm1Q+5nikcDzGNNg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1BBA1348E;
+        Thu, 30 Mar 2023 07:35:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id UFEnKd07JWTFegAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 30 Mar 2023 07:35:57 +0000
+Date:   Thu, 30 Mar 2023 09:35:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 6/9] memcg: sleep during flushing stats in safe
+ contexts
+Message-ID: <ZCU73Ghje96Q0X7A@dhcp22.suse.cz>
+References: <20230328221644.803272-1-yosryahmed@google.com>
+ <20230328221644.803272-7-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Disposition: inline
+In-Reply-To: <20230328221644.803272-7-yosryahmed@google.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,225 +72,184 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.4
-branch HEAD: 1bf33285d98536da6b015627341e4f789fee067e  cgroup/cpuset: Minor updates to test_cpuset_prs.sh
+On Tue 28-03-23 22:16:41, Yosry Ahmed wrote:
+> Currently, all contexts that flush memcg stats do so with sleeping not
+> allowed. Some of these contexts are perfectly safe to sleep in, such as
+> reading cgroup files from userspace or the background periodic flusher.
+> 
+> Refactor the code to make mem_cgroup_flush_stats() non-atomic (aka
+> sleepable), and provide a separate atomic version. The atomic version is
+> used in reclaim, refault, writeback, and in mem_cgroup_usage(). All
+> other code paths are left to use the non-atomic version. This includes
+> callbacks for userspace reads and the periodic flusher.
+> 
+> Since refault is the only caller of mem_cgroup_flush_stats_ratelimited(),
+> change it to mem_cgroup_flush_stats_atomic_ratelimited(). Reclaim and
+> refault code paths are modified to do non-atomic flushing in separate
+> later patches -- so it will eventually be changed back to
+> mem_cgroup_flush_stats_ratelimited().
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-elapsed time: 728m
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-configs tested: 206
-configs skipped: 17
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r002-20230329   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r003-20230329   gcc  
-alpha                randconfig-r005-20230329   gcc  
-alpha                randconfig-r015-20230329   gcc  
-alpha                randconfig-r023-20230329   gcc  
-alpha                randconfig-r036-20230329   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r003-20230329   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r025-20230329   gcc  
-arc                  randconfig-r033-20230329   gcc  
-arc                  randconfig-r043-20230329   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm          buildonly-randconfig-r006-20230329   gcc  
-arm                                 defconfig   gcc  
-arm                      jornada720_defconfig   gcc  
-arm                  randconfig-r023-20230329   gcc  
-arm                  randconfig-r046-20230329   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r001-20230329   gcc  
-arm64                randconfig-r003-20230329   gcc  
-arm64                randconfig-r006-20230329   gcc  
-arm64                randconfig-r014-20230329   clang
-arm64                randconfig-r025-20230329   clang
-csky         buildonly-randconfig-r006-20230329   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r003-20230329   gcc  
-csky                 randconfig-r004-20230329   gcc  
-csky                 randconfig-r011-20230329   gcc  
-csky                 randconfig-r026-20230330   gcc  
-csky                 randconfig-r031-20230329   gcc  
-csky                 randconfig-r034-20230329   gcc  
-hexagon              randconfig-r016-20230329   clang
-hexagon              randconfig-r034-20230329   clang
-hexagon              randconfig-r041-20230329   clang
-hexagon              randconfig-r045-20230329   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a011   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a013   clang
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-ia64                             allmodconfig   gcc  
-ia64         buildonly-randconfig-r001-20230329   gcc  
-ia64         buildonly-randconfig-r003-20230329   gcc  
-ia64         buildonly-randconfig-r005-20230329   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r002-20230329   gcc  
-ia64                 randconfig-r005-20230329   gcc  
-ia64                 randconfig-r006-20230329   gcc  
-ia64                 randconfig-r012-20230329   gcc  
-ia64                 randconfig-r023-20230329   gcc  
-ia64                 randconfig-r025-20230329   gcc  
-ia64                 randconfig-r026-20230329   gcc  
-ia64                 randconfig-r033-20230329   gcc  
-ia64                 randconfig-r036-20230329   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r004-20230329   gcc  
-loongarch    buildonly-randconfig-r006-20230329   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r002-20230329   gcc  
-loongarch            randconfig-r004-20230329   gcc  
-loongarch            randconfig-r006-20230329   gcc  
-loongarch            randconfig-r013-20230329   gcc  
-loongarch            randconfig-r015-20230329   gcc  
-loongarch            randconfig-r021-20230329   gcc  
-loongarch            randconfig-r036-20230329   gcc  
-m68k                             allmodconfig   gcc  
-m68k         buildonly-randconfig-r002-20230329   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r013-20230329   gcc  
-m68k                 randconfig-r014-20230329   gcc  
-m68k                 randconfig-r022-20230329   gcc  
-m68k                 randconfig-r035-20230329   gcc  
-microblaze   buildonly-randconfig-r001-20230329   gcc  
-microblaze           randconfig-r012-20230329   gcc  
-microblaze           randconfig-r016-20230329   gcc  
-microblaze           randconfig-r024-20230329   gcc  
-microblaze           randconfig-r032-20230329   gcc  
-microblaze           randconfig-r035-20230329   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r001-20230329   clang
-mips                 randconfig-r002-20230329   clang
-mips                 randconfig-r012-20230329   gcc  
-mips                 randconfig-r021-20230329   gcc  
-mips                 randconfig-r021-20230330   gcc  
-mips                 randconfig-r025-20230329   gcc  
-nios2        buildonly-randconfig-r001-20230329   gcc  
-nios2        buildonly-randconfig-r003-20230329   gcc  
-nios2        buildonly-randconfig-r004-20230329   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r011-20230329   gcc  
-nios2                randconfig-r025-20230329   gcc  
-nios2                randconfig-r033-20230329   gcc  
-openrisc     buildonly-randconfig-r002-20230329   gcc  
-openrisc     buildonly-randconfig-r004-20230329   gcc  
-openrisc             randconfig-r004-20230329   gcc  
-openrisc             randconfig-r006-20230329   gcc  
-openrisc             randconfig-r015-20230329   gcc  
-openrisc             randconfig-r021-20230329   gcc  
-openrisc             randconfig-r026-20230329   gcc  
-openrisc             randconfig-r036-20230329   gcc  
-parisc       buildonly-randconfig-r005-20230329   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230329   gcc  
-parisc               randconfig-r011-20230329   gcc  
-parisc               randconfig-r022-20230329   gcc  
-parisc               randconfig-r022-20230330   gcc  
-parisc               randconfig-r023-20230330   gcc  
-parisc               randconfig-r032-20230329   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      arches_defconfig   gcc  
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                 mpc8540_ads_defconfig   gcc  
-powerpc              randconfig-r003-20230329   gcc  
-powerpc              randconfig-r024-20230329   clang
-powerpc              randconfig-r026-20230329   clang
-powerpc              randconfig-r032-20230329   gcc  
-powerpc              randconfig-r034-20230329   gcc  
-powerpc                     tqm8555_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv        buildonly-randconfig-r006-20230329   clang
-riscv                               defconfig   gcc  
-riscv                randconfig-r005-20230329   gcc  
-riscv                randconfig-r006-20230329   gcc  
-riscv                randconfig-r022-20230329   clang
-riscv                randconfig-r031-20230329   gcc  
-riscv                randconfig-r032-20230329   gcc  
-riscv                randconfig-r035-20230329   gcc  
-riscv                randconfig-r042-20230329   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r003-20230329   clang
-s390                                defconfig   gcc  
-s390                 randconfig-r002-20230329   gcc  
-s390                 randconfig-r014-20230329   clang
-s390                 randconfig-r022-20230329   clang
-s390                 randconfig-r023-20230329   clang
-s390                 randconfig-r035-20230329   gcc  
-s390                 randconfig-r044-20230329   clang
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r005-20230329   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                   randconfig-r005-20230329   gcc  
-sh                   randconfig-r015-20230329   gcc  
-sh                   randconfig-r022-20230329   gcc  
-sh                   randconfig-r023-20230329   gcc  
-sparc        buildonly-randconfig-r003-20230329   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r005-20230329   gcc  
-sparc                randconfig-r013-20230329   gcc  
-sparc                randconfig-r022-20230329   gcc  
-sparc                randconfig-r024-20230330   gcc  
-sparc                randconfig-r031-20230329   gcc  
-sparc64      buildonly-randconfig-r005-20230329   gcc  
-sparc64      buildonly-randconfig-r006-20230329   gcc  
-sparc64              randconfig-r003-20230329   gcc  
-sparc64              randconfig-r024-20230329   gcc  
-sparc64              randconfig-r031-20230329   gcc  
-sparc64              randconfig-r034-20230329   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r004-20230329   gcc  
-xtensa               randconfig-r024-20230329   gcc  
-xtensa               randconfig-r026-20230329   gcc  
-xtensa               randconfig-r031-20230329   gcc  
-xtensa               randconfig-r032-20230329   gcc  
-xtensa               randconfig-r033-20230329   gcc  
+> ---
+>  include/linux/memcontrol.h |  9 ++++++--
+>  mm/memcontrol.c            | 45 ++++++++++++++++++++++++++++++--------
+>  mm/vmscan.c                |  2 +-
+>  mm/workingset.c            |  2 +-
+>  4 files changed, 45 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index ac3f3b3a45e2..b424ba3ebd09 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1037,7 +1037,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>  }
+>  
+>  void mem_cgroup_flush_stats(void);
+> -void mem_cgroup_flush_stats_ratelimited(void);
+> +void mem_cgroup_flush_stats_atomic(void);
+> +void mem_cgroup_flush_stats_atomic_ratelimited(void);
+>  
+>  void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+>  			      int val);
+> @@ -1535,7 +1536,11 @@ static inline void mem_cgroup_flush_stats(void)
+>  {
+>  }
+>  
+> -static inline void mem_cgroup_flush_stats_ratelimited(void)
+> +static inline void mem_cgroup_flush_stats_atomic(void)
+> +{
+> +}
+> +
+> +static inline void mem_cgroup_flush_stats_atomic_ratelimited(void)
+>  {
+>  }
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 65750f8b8259..a2ce3aa10d94 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -634,7 +634,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>  	}
+>  }
+>  
+> -static void __mem_cgroup_flush_stats(void)
+> +static void do_flush_stats(bool atomic)
+>  {
+>  	/*
+>  	 * We always flush the entire tree, so concurrent flushers can just
+> @@ -646,26 +646,46 @@ static void __mem_cgroup_flush_stats(void)
+>  		return;
+>  
+>  	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+> -	cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+> +
+> +	if (atomic)
+> +		cgroup_rstat_flush_atomic(root_mem_cgroup->css.cgroup);
+> +	else
+> +		cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> +
+>  	atomic_set(&stats_flush_threshold, 0);
+>  	atomic_set(&stats_flush_ongoing, 0);
+>  }
+>  
+> +static bool should_flush_stats(void)
+> +{
+> +	return atomic_read(&stats_flush_threshold) > num_online_cpus();
+> +}
+> +
+>  void mem_cgroup_flush_stats(void)
+>  {
+> -	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
+> -		__mem_cgroup_flush_stats();
+> +	if (should_flush_stats())
+> +		do_flush_stats(false);
+>  }
+>  
+> -void mem_cgroup_flush_stats_ratelimited(void)
+> +void mem_cgroup_flush_stats_atomic(void)
+> +{
+> +	if (should_flush_stats())
+> +		do_flush_stats(true);
+> +}
+> +
+> +void mem_cgroup_flush_stats_atomic_ratelimited(void)
+>  {
+>  	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
+> -		mem_cgroup_flush_stats();
+> +		mem_cgroup_flush_stats_atomic();
+>  }
+>  
+>  static void flush_memcg_stats_dwork(struct work_struct *w)
+>  {
+> -	__mem_cgroup_flush_stats();
+> +	/*
+> +	 * Always flush here so that flushing in latency-sensitive paths is
+> +	 * as cheap as possible.
+> +	 */
+> +	do_flush_stats(false);
+>  	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
+>  }
+>  
+> @@ -3685,9 +3705,12 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
+>  		 * done from irq context; use stale stats in this case.
+>  		 * Arguably, usage threshold events are not reliable on the root
+>  		 * memcg anyway since its usage is ill-defined.
+> +		 *
+> +		 * Additionally, other call paths through memcg_check_events()
+> +		 * disable irqs, so make sure we are flushing stats atomically.
+>  		 */
+>  		if (in_task())
+> -			mem_cgroup_flush_stats();
+> +			mem_cgroup_flush_stats_atomic();
+>  		val = memcg_page_state(memcg, NR_FILE_PAGES) +
+>  			memcg_page_state(memcg, NR_ANON_MAPPED);
+>  		if (swap)
+> @@ -4610,7 +4633,11 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+>  	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
+>  	struct mem_cgroup *parent;
+>  
+> -	mem_cgroup_flush_stats();
+> +	/*
+> +	 * wb_writeback() takes a spinlock and calls
+> +	 * wb_over_bg_thresh()->mem_cgroup_wb_stats(). Do not sleep.
+> +	 */
+> +	mem_cgroup_flush_stats_atomic();
+>  
+>  	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
+>  	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 9c1c5e8b24b8..a9511ccb936f 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2845,7 +2845,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
+>  	 * Flush the memory cgroup stats, so that we read accurate per-memcg
+>  	 * lruvec stats for heuristics.
+>  	 */
+> -	mem_cgroup_flush_stats();
+> +	mem_cgroup_flush_stats_atomic();
+>  
+>  	/*
+>  	 * Determine the scan balance between anon and file LRUs.
+> diff --git a/mm/workingset.c b/mm/workingset.c
+> index af862c6738c3..dab0c362b9e3 100644
+> --- a/mm/workingset.c
+> +++ b/mm/workingset.c
+> @@ -462,7 +462,7 @@ void workingset_refault(struct folio *folio, void *shadow)
+>  
+>  	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+>  
+> -	mem_cgroup_flush_stats_ratelimited();
+> +	mem_cgroup_flush_stats_atomic_ratelimited();
+>  	/*
+>  	 * Compare the distance to the existing workingset size. We
+>  	 * don't activate pages that couldn't stay resident even if
+> -- 
+> 2.40.0.348.gf938b09366-goog
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Michal Hocko
+SUSE Labs
