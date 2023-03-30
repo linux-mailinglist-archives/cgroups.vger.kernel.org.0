@@ -2,82 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C4A6D0AD5
-	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 18:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862AE6D0E66
+	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 21:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjC3QOy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 12:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S231981AbjC3TSG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Mar 2023 15:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjC3QOs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 12:14:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A890EB79
-        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 09:13:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680192796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i+HJ4WLfm8Z01D2cI/A0RfbJSBHfv/6mLfrOQoLhihI=;
-        b=co7ujp5qUL/OpZZaSoZ6+Dx7Tcxuhv27nma2OYyKSZKHxTZDWicCEkcpMX/2QsVDfcvpZ1
-        72Q63JbZ6o/UEXSbpTgBsjzkpgyPk8f0MhK9kMdoCC8YFiGn7Cys+wpazleH3lok4D8KU6
-        LYnLALnlx65YEs496mkG7nihTPMyyTk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-152-f7E3ZRQAP965kJ04DbTPXQ-1; Thu, 30 Mar 2023 12:13:11 -0400
-X-MC-Unique: f7E3ZRQAP965kJ04DbTPXQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7A603857FB3;
-        Thu, 30 Mar 2023 16:13:05 +0000 (UTC)
-Received: from [10.22.33.26] (unknown [10.22.33.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 36455202701F;
-        Thu, 30 Mar 2023 16:13:03 +0000 (UTC)
-Message-ID: <3268bedc-ee36-519a-de37-3c366129baae@redhat.com>
-Date:   Thu, 30 Mar 2023 12:13:02 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 5/6] cgroup/cpuset: Free DL BW in case can_attach() fails
-Content-Language: en-US
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
+        with ESMTP id S231596AbjC3TSF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 15:18:05 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654B9E1A9
+        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 12:18:04 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id g13-20020a63f40d000000b005015be7b9faso5779386pgi.15
+        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 12:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1680203884;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lrEZYZAprkJkjo6nuInD9+WtSSeLrA1vEvWYswR6SSY=;
+        b=lNkrtIAGQghUwPzFiHMiZzA3Dj60iiJHRGbQtataV8UD8wLWTyWKOGxG8u3BZQmZqh
+         5yBxB5KPXBynvEz4Q8DwJ48f04q5ziCKK5w2421MfdnykM7hZYTD7QE3qTovUgTB10rE
+         /OdTkB3vbZ9H6A+1KcS+Dt8UCQ5k6ylxqWC7L4UhAwDP+Zclc2vMHiXrKe42d7O3O4e9
+         yMvq13mWuAkYQrH23Ii0S8JTYXEyLwOzzS6RVCfoQRjcbgjsxO6V7FRVf/WhFXr1IBp2
+         ogNqPXtjlpJKSx4pNT1Fg/IoYhT5iC8WlEOAjIe+2CAkukUXdOx4ot3VDqnrD4ezj2KP
+         WfrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680203884;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lrEZYZAprkJkjo6nuInD9+WtSSeLrA1vEvWYswR6SSY=;
+        b=qxUauxAvZkEyD4flGxpB97tOk9YfHcfhiVdPcEcuQj2D8FTk4ash3tWPRhO92h2ukr
+         KipQI5zMN/IumS5Ox97ficGpLWwEZ4NQblje+QTPImX2rxyNdWU+2tYrPJxL0gDDv/2A
+         vZP5/9zk4eT+xVBd0u9UJb8mFS6q1AJ0Ysa3lpQzaCTz2W92kpTT7Dv0IIUxi9CrwrDj
+         OqS98hj+bpoeX754gdv9Jv1i15wP3KEfPeeij45UBPfcm5NjwhDZsFe8nwVZ8/xg0qgc
+         LN09a3ONfUK1hBUAI0Ce+bpf5kAMK00BbbfLwA2/zzfYspLYzzp7H4ih+LXrvYt/6kwY
+         q8XA==
+X-Gm-Message-State: AAQBX9daab1LqAD5cpMvjeUxYT/Majtu7t76rWqvrXAs7aMCbXfHkbz7
+        5c4TQGLTQDlB1hyDfqBJ/lTp1apzZz6oUViq
+X-Google-Smtp-Source: AKy350YB83aSAlfHtZ1brNy8tK94TomVrO/ck654euHQoNAhGyGIzRBJ8LL3uL8MDTRbXOo6aA3Aj9bt+0RVTLSh
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:aa7:9285:0:b0:626:1710:9b7d with SMTP
+ id j5-20020aa79285000000b0062617109b7dmr3161728pfa.0.1680203883841; Thu, 30
+ Mar 2023 12:18:03 -0700 (PDT)
+Date:   Thu, 30 Mar 2023 19:17:53 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
+Message-ID: <20230330191801.1967435-1-yosryahmed@google.com>
+Subject: [PATCH v3 0/8] memcg: avoid flushing stats atomically where possible
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
-        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
-        mathieu.poirier@linaro.org, cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230329125558.255239-1-juri.lelli@redhat.com>
- <20230329125558.255239-6-juri.lelli@redhat.com>
- <f8dfc30b-5079-2f44-7ab1-42ac25bd48b7@redhat.com>
- <f8baea06-eeda-439a-3699-1cad7cde659e@redhat.com>
- <cdede77a-5dc5-8933-a444-a2046b074b12@arm.com>
- <b7ad39b1-c615-3ebc-6980-d9db0f2ab0a0@redhat.com>
- <5ff103f9-1366-0a9b-bd97-419ced1de07f@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <5ff103f9-1366-0a9b-bd97-419ced1de07f@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>
+Cc:     Vasily Averin <vasily.averin@linux.dev>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, bpf@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,74 +76,72 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/30/23 11:14, Dietmar Eggemann wrote:
-> On 29/03/2023 20:09, Waiman Long wrote:
->> On 3/29/23 12:39, Dietmar Eggemann wrote:
->>> On 29/03/2023 16:31, Waiman Long wrote:
->>>> On 3/29/23 10:25, Waiman Long wrote:
->>>>> On 3/29/23 08:55, Juri Lelli wrote:
->>>>>> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
->>> [...]
->>>
->>>>>> @@ -2518,11 +2547,21 @@ static int cpuset_can_attach(struct
->>>>>> cgroup_taskset *tset)
->>>>>>     static void cpuset_cancel_attach(struct cgroup_taskset *tset)
->>>>>>     {
->>>>>>         struct cgroup_subsys_state *css;
->>>>>> +    struct cpuset *cs;
->>>>>>           cgroup_taskset_first(tset, &css);
->>>>>> +    cs = css_cs(css);
->>>>>>           mutex_lock(&cpuset_mutex);
->>>>>> -    css_cs(css)->attach_in_progress--;
->>>>>> +    cs->attach_in_progress--;
->>>>>> +
->>>>>> +    if (cs->nr_migrate_dl_tasks) {
->>>>>> +        int cpu = cpumask_any(cs->effective_cpus);
->>>>>> +
->>>>>> +        dl_bw_free(cpu, cs->sum_migrate_dl_bw);
->>>>>> +        reset_migrate_dl_data(cs);
->>>>>> +    }
->>>>>> +
->>>> Another nit that I have is that you may have to record also the cpu
->>>> where the DL bandwidth is allocated in cpuset_can_attach() and free the
->>>> bandwidth back into that cpu or there can be an underflow if another cpu
->>>> is chosen.
->>> Many thanks for the review!
->>>
->>> But isn't the DL BW control `struct dl_bw` per `struct root_domain`
->>> which is per exclusive cpuset. So as long cpu is from
->>> `cs->effective_cpus` shouldn't this be fine?
->> Sorry for my ignorance on how the deadline bandwidth operation work. I
->> check the bandwidth code and find that we are storing the bandwidth
->> information in the root domain, not on the cpu. That shouldn't be a
->> concern then.
->>
->> However, I still have some question on how that works when dealing with
->> cpuset. First of all, not all the CPUs in a given root domains are in
->> the cpuset. So there may be enough bandwidth on the root domain, but it
->> doesn't mean there will be enough bandwidth in the set of CPUs in a
->> particular cpuset. Secondly, how do you deal with isolated CPUs that do
->> not have a corresponding root domain? It is now possible to create a
->> cpuset with isolated CPUs.
-> Sorry, I overlooked this email somehow.
->
-> IMHO, this is only done for exclusive cpusets:
->
->    cpuset_can_attach()
->
->      if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus))
->
-> So they should have their own root_domain congruent to their cpumask.
+rstat flushing is an expensive operation that scales with the number of
+cpus and the number of cgroups in the system. The purpose of this series
+is to minimize the contexts where we flush stats atomically.
 
-I am sorry that I missed that check.
+Patches 1 and 2 are cleanups requested during reviews of prior versions
+of this series.
 
-Parallel attach is actually an existing problem in cpuset as there is a 
-shared cpuset_attach_old_cs variable being used by cpuset between 
-cpuset_can_attach() and cpuset_attach(). So any parallel attach can lead 
-to corruption of this common data causing incorrect result. So this 
-problem is not specific to this patch series. So please ignore this 
-patch for now. It has to be addressed separately.
+Patch 3 makes sure we never try to flush from within an irq context.
 
-Cheers,
-Longman
+Patches 4 to 7 introduce separate variants of mem_cgroup_flush_stats()
+for atomic and non-atomic flushing, and make sure we only flush the
+stats atomically when necessary.
+
+Patch 8 is a slightly tangential optimization that limits the work done
+by rstat flushing in some scenarios.
+
+v2 -> v3:
+- Collected more Acks (thanks everyone!).
+- Dropped controversial patch 4 from v2.
+- Improved commit logs and cover letter (Michal).
+v2: https://lore.kernel.org/linux-mm/20230328221644.803272-1-yosryahmed@google.com/
+
+v1 -> v2:
+- Added more context in patch 4's commit log.
+- Added atomic_read() before atomic_xchg() in patch 5 to avoid
+  needlessly locking the cache line (Shakeel).
+- Refactored patch 6: added a common helper, do_flush_stats(), for
+  mem_cgroup_flush_stats{_atomic}() (Johannes).
+- Renamed mem_cgroup_flush_stats_ratelimited() to
+  mem_cgroup_flush_stats_atomic_ratelimited() in patch 6. It is restored
+  in patch 7, but this maintains consistency (Johannes).
+- Added line break to keep the lock section visually separated in patch
+  7 (Johannes).
+v1: https://lore.kernel.org/lkml/20230328061638.203420-1-yosryahmed@google.com/
+
+RFC -> v1:
+- Dropped patch 1 that attempted to make the global rstat lock a non-irq
+  lock, will follow up on that separetly (Shakeel).
+- Dropped stats_flush_lock entirely, replaced by an atomic (Johannes).
+- Renamed cgroup_rstat_flush_irqsafe() to cgroup_rstat_flush_atomic()
+  instead of removing it (Johannes).
+- Added a patch to rename mem_cgroup_flush_stats_delayed() to
+  mem_cgroup_flush_stats_ratelimited() (Johannes).
+- Separate APIs for flushing memcg stats in atomic and non-atomic
+  contexts instead of a boolean argument (Johannes).
+- Added patches 3 & 4 to make sure we never flush from irq context
+  (Shakeel & Johannes).
+RFC: https://lore.kernel.org/lkml/20230323040037.2389095-1-yosryahmed@google.com/
+
+Yosry Ahmed (8):
+  cgroup: rename cgroup_rstat_flush_"irqsafe" to "atomic"
+  memcg: rename mem_cgroup_flush_stats_"delayed" to "ratelimited"
+  memcg: do not flush stats in irq context
+  memcg: replace stats_flush_lock with an atomic
+  memcg: sleep during flushing stats in safe contexts
+  workingset: memcg: sleep when flushing stats in workingset_refault()
+  vmscan: memcg: sleep when flushing stats during reclaim
+  memcg: do not modify rstat tree for zero updates
+
+ include/linux/cgroup.h     |  2 +-
+ include/linux/memcontrol.h |  9 ++++-
+ kernel/cgroup/rstat.c      |  4 +-
+ mm/memcontrol.c            | 78 ++++++++++++++++++++++++++++++--------
+ mm/workingset.c            |  5 ++-
+ 5 files changed, 76 insertions(+), 22 deletions(-)
+
+-- 
+2.40.0.348.gf938b09366-goog
 
