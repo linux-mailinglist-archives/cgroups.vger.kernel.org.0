@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FAE6CFD72
-	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 09:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DE26CFD7B
+	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 09:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjC3Hzb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 03:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
+        id S229938AbjC3H4N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Mar 2023 03:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjC3Hz3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 03:55:29 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BAC1986
-        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 00:55:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id cn12so73095808edb.4
-        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 00:55:27 -0700 (PDT)
+        with ESMTP id S229948AbjC3H4D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 03:56:03 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA02661AD
+        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 00:55:55 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r11so73090574edd.5
+        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 00:55:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680162926;
+        d=google.com; s=20210112; t=1680162954;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h5tWbYU5Ovnx4S3KN05HeMF9MQhwKdT4wgU3e8coEAg=;
-        b=CKaS6HBjsJ/8/OyRJWU/IIHaTdpRU7TNj95drpPAb7CtZThIyxrmIWaKZBQn/DOv1x
-         emhAGX3xKn00R3oNM398Sr3mFprCDzivxLy/znSI9eeZ/pw66A9v0YN2EzQHfVXPhVjT
-         kr1ryivtAD/0r4jpzHjJcrTKWfcPbeOSknV8seiKFhrH5h5lOG/fO0KWYH8a0bsfaa6/
-         abESZ4KxjVvzKKoqo8bXx7oOROI+V6YSOSpV0NkUGo8ySqAW2y434yfj/hHDPQ5dk0/W
-         XFpZ/ourVOgMxr/4/82xPsTUlLwmkDP5dfTF9DFoz5VWWBMKyueXFRzWysnxkVKprxJs
-         wttQ==
+        bh=anbj3k8bVreIFvoy5ezWKZvlLhuV6pERZy1Bnx+kNns=;
+        b=ZD9aj6n0GX26RjIgVcV8XWHXeXxhiTySnXtfLlIh2Y4ULsYer620/o/Gxai5NDEyx0
+         U9cLhrKkIyrcXCb9H0C1LsSrI3aYqgf3GO6P4vMGibxu+NJs5rV7tQbNe7/BuzZ9ngD4
+         QlTJGq/55WJCvX0baHxwlbOU546xXFXX3rhwhxfTlPe1DtgL+SZFj+3v/M/zynT9IjDn
+         ZyadAB66teMDMbs9xKwieRC4GEnlOFheMYpz1xGF7yvvoKjAofsoTZMoVDKAnSS6/+pv
+         n2YA0BsqSmXP4EqjlRt/DgekBF6qWk4ejPD+mZWis8RRK9kN76WGkT00+z0dkPShQagp
+         7beQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680162926;
+        d=1e100.net; s=20210112; t=1680162954;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h5tWbYU5Ovnx4S3KN05HeMF9MQhwKdT4wgU3e8coEAg=;
-        b=UtHzwn7zz09/ymcPCCgmDZxx8BePBMm5wex36fsJvuKQFXwH68fwb4HbQ8aiPvTITR
-         M0B5VOyJnjrtCap0C/BXTW5cZe8CGHO1IBz+lFw2GDk/yn44J3MSDf88FCvUEE669YLb
-         1KIeg3z2e/PY5nVdrLGebXr9mgyYYxG41FoXZPMCJTLQJeUxmTc2i45W9PVj1Ryq7iyC
-         LOy2YIs4F0L0FZJVMYeoaqBmSTqBfL7dC4CVfUTxYLnicx8YSKGvFqJTAw4RRHWA1oFv
-         SsvxG5Qq7aAq9JWf1L6l3A8e0HJGVJyYtDYmN6sReboJuO0yffy2V+GMvpGVx4fwCpj5
-         wuig==
-X-Gm-Message-State: AAQBX9dw+mvFRL9rkSOpkblynY94Yj9/Tpc9Nwhgopj4BMv9mBzwXwog
-        CBI5t0yfVsSIumM2VSU6b8QhnVW5uxnOP1BqMNdDuPMBTdNdINXji6Fivg==
-X-Google-Smtp-Source: AKy350YcqInxIQbykpj1GeKom6UlRjlcV90pMLr2lDnaE4i3kospZjU3y3SUnkTdHfIThJQbVclsZcWhGBL8uWlbtw8=
-X-Received: by 2002:a17:906:2a15:b0:933:7658:8b44 with SMTP id
- j21-20020a1709062a1500b0093376588b44mr9941916eje.15.1680162926191; Thu, 30
- Mar 2023 00:55:26 -0700 (PDT)
+        bh=anbj3k8bVreIFvoy5ezWKZvlLhuV6pERZy1Bnx+kNns=;
+        b=sNYz/11HTBTMNP/Us/CVjGAZEhZx+/sSlHJc/bk1Pq+wLzeruMhsYncNUEgpxEBMwo
+         QvY6wqV49BFyx+zetTEmhM21MqZo8db+TajhB4/RXTpgyR/dCo8iNFwc4Bf4FgVT2D0s
+         yJa+cSRi1CbikjDAcbxdoEFYQaivTl62+Is4r3AY8et7QpXIJiLD6Y5H/sK6/qJji6ek
+         EmRlIPy/yCUYV3wrLd+nfzc+CGA4sInxyA1idMGcfiJv7BjUgqxtDkNnePxUgKvtWuIg
+         e548lY4Gx/igRaE4hKACM9XGoed2FujhoTXmbyHlIFB3/LG1fXSb9Rg7E7WILn90PtEY
+         EaaQ==
+X-Gm-Message-State: AAQBX9f5NImFLVKkq46jM00wt0J1BY2tB90Y0m/9qNuGD/XB7+uZq3xs
+        dvPSEucvZhO8mkHfc/tajIHwLvMQqP1aWNwC4u8DOg==
+X-Google-Smtp-Source: AKy350ZKBVchKo8yL5qnCRGOKj6HMXymGhCHv0sbs5xG5akH53sSrKAZcQmbeW6Sz+oAWJWB2Er2VE8WUpb+CRjLT3s=
+X-Received: by 2002:a17:906:eec7:b0:93e:186f:ea0d with SMTP id
+ wu7-20020a170906eec700b0093e186fea0dmr10952473ejb.15.1680162953989; Thu, 30
+ Mar 2023 00:55:53 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230328221644.803272-1-yosryahmed@google.com>
- <20230328221644.803272-9-yosryahmed@google.com> <ZCU9ByZybEi5G5sl@dhcp22.suse.cz>
- <CAJD7tkZODvLZOfGaO3gjC2udKNg_G0mA2CT57djjJXrrHNEbbg@mail.gmail.com> <ZCU/zzgWSZb/ux6J@dhcp22.suse.cz>
-In-Reply-To: <ZCU/zzgWSZb/ux6J@dhcp22.suse.cz>
+ <20230328221644.803272-8-yosryahmed@google.com> <ZCU8tjqzg8cDbobQ@dhcp22.suse.cz>
+ <CAJD7tkZLBs=A8m5u=9jGtMeD0ptOgtCTYUoh2r4Ex+fCkvwAXg@mail.gmail.com> <ZCU/SMr5gC9C0U+R@dhcp22.suse.cz>
+In-Reply-To: <ZCU/SMr5gC9C0U+R@dhcp22.suse.cz>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 30 Mar 2023 00:54:49 -0700
-Message-ID: <CAJD7tkaCK6e3a-T_5z3Ea3OFwiJjHoUfrEPGDW-wqduOr-5pVg@mail.gmail.com>
-Subject: Re: [PATCH v2 8/9] vmscan: memcg: sleep when flushing stats during reclaim
+Date:   Thu, 30 Mar 2023 00:55:17 -0700
+Message-ID: <CAJD7tkZfexGoyZx0ormVzp_KkYmOczxBPfFaffKqd_TD4gvGCg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] workingset: memcg: sleep when flushing stats in workingset_refault()
 To:     Michal Hocko <mhocko@suse.com>
 Cc:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -82,71 +82,34 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 12:52=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
+On Thu, Mar 30, 2023 at 12:50=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
 te:
 >
-> On Thu 30-03-23 00:44:10, Yosry Ahmed wrote:
-> > On Thu, Mar 30, 2023 at 12:40=E2=80=AFAM Michal Hocko <mhocko@suse.com>=
+> On Thu 30-03-23 00:42:36, Yosry Ahmed wrote:
+> > On Thu, Mar 30, 2023 at 12:39=E2=80=AFAM Michal Hocko <mhocko@suse.com>=
  wrote:
 > > >
-> > > On Tue 28-03-23 22:16:43, Yosry Ahmed wrote:
-> > > > Memory reclaim is a sleepable context. Allow sleeping when flushing
-> > > > memcg stats to avoid unnecessarily performing a lot of work without
-> > > > sleeping. This can slow down reclaim code if flushing stats is taki=
-ng
-> > > > too long, but there is already multiple cond_resched()'s in reclaim
-> > > > code.
+> > > On Tue 28-03-23 22:16:42, Yosry Ahmed wrote:
+> > > > In workingset_refault(), we call
+> > > > mem_cgroup_flush_stats_atomic_ratelimited() to flush stats within a=
+n
+> > > > RCU read section and with sleeping disallowed. Move the call above
+> > > > the RCU read section and allow sleeping to avoid unnecessarily
+> > > > performing a lot of work without sleeping.
 > > >
-> > > Why is this preferred? Memory reclaim is surely a slow path but what =
-is
-> > > the advantage of calling mem_cgroup_flush_stats here?
+> > > Could you say few words why the flushing is done before counters are
+> > > updated rather than after (the RCU section)?
 > >
-> > The purpose of this series is to limit calls to atomic flushing as
-> > much as possible, as flushing can become really expensive on systems
-> > with high cpu counts and a lot of cgroups, and performing such an
-> > expensive operation atomically causes problems -- so we'd rather avoid
-> > doing it atomically where possible.
+> > It's not about the counters that are updated, it's about the counters
+> > that we read. Stats readers do a flush first to read accurate stats.
+> > We flush before a read, not after an update.
 >
-> Please add that to the changelog. While the intention might be obvious
-> now (although cover is not explicit about it either) it can cause some
-> head scratching in the future when somebody looks at this commit without
-> a broader context (e.g. previous ML discussions).
+> Right you are, my bad I have misread the intention here.
 >
-> with that
 > Acked-by: Michal Hocko <mhocko@suse.com>
 
-Thanks, will do for the respin.
+Thanks!
 
-> Thanks
->
-> > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > > Acked-by: Shakeel Butt <shakeelb@google.com>
-> > > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > ---
-> > > >  mm/vmscan.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > > index a9511ccb936f..9c1c5e8b24b8 100644
-> > > > --- a/mm/vmscan.c
-> > > > +++ b/mm/vmscan.c
-> > > > @@ -2845,7 +2845,7 @@ static void prepare_scan_count(pg_data_t *pgd=
-at, struct scan_control *sc)
-> > > >        * Flush the memory cgroup stats, so that we read accurate pe=
-r-memcg
-> > > >        * lruvec stats for heuristics.
-> > > >        */
-> > > > -     mem_cgroup_flush_stats_atomic();
-> > > > +     mem_cgroup_flush_stats();
-> > > >
-> > > >       /*
-> > > >        * Determine the scan balance between anon and file LRUs.
-> > > > --
-> > > > 2.40.0.348.gf938b09366-goog
-> > >
-> > > --
-> > > Michal Hocko
-> > > SUSE Labs
 >
 > --
 > Michal Hocko
