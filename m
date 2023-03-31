@@ -2,115 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06236D0FEE
-	for <lists+cgroups@lfdr.de>; Thu, 30 Mar 2023 22:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DD86D1537
+	for <lists+cgroups@lfdr.de>; Fri, 31 Mar 2023 03:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjC3UWx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 16:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S229789AbjCaBpS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Mar 2023 21:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjC3UWv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 16:22:51 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC20F40D3;
-        Thu, 30 Mar 2023 13:22:50 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id d10so12111876pgt.12;
-        Thu, 30 Mar 2023 13:22:50 -0700 (PDT)
+        with ESMTP id S229754AbjCaBpQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 21:45:16 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA8318835;
+        Thu, 30 Mar 2023 18:44:59 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id x15so19004402pjk.2;
+        Thu, 30 Mar 2023 18:44:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680207770;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBkq6KxCtXfKvlem/Zb/2GDPHcnhhSsCCkCs5rwvqhw=;
-        b=Ze1fJTTrAjpXdOhtpMZb/pWrc+OxYU0E2dF3+BqmPVjzlrkpBGMbVVwlILNlZ/qbnv
-         mjaMFzag7RBRmgw0vQCsufH1JIGiRw7v2iYCClFpCDlDLUrU4Gswed1vjjTf2551B2t1
-         y1KP+9T+SgP7GxAskck2N2B38gAgeP1h8RqHlYUanT4Tw9NI9VV37kqbYbk8tYCZyIDs
-         wsJyTGiTuvI7HhK6m3Frln7sAMRGFQy5OYDvRxyd+y6Pt5PZs+MaAH06PlqCym4ehpQF
-         eb2c6pzclizqej8lG5CHoN5ppB5BHUhjjXI3SqPMD1NHXZxMgzz3d4SwNuVISbEIS9K6
-         2xMw==
+        d=gmail.com; s=20210112; t=1680227093; x=1682819093;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CS9Le6nsC17jU584Wp0Pdq9lmWcMPhHg9k+f1qFG9Ls=;
+        b=jliIbNZkvX0tLViuNo+i79Ttgxeb9fED2/7a/M//MeXVK85etYsThHW7fGC1feC4vZ
+         Go+yEPuxYOcaF5VBV6Ke0tTmio5hHs8DCIabQRCHVjtKLke5fe30pR1/67w3ny6t7cSe
+         u5NPsdvN0XRvl04Wkq4Lma/qrhChh42F/OMxsGqMzgLezbHZJCHUBiU2Ku2KyqSTMMS4
+         pnrGO76PL/yll+KWOG03l2uV3VYf8UD2PiWykpevBE6UMc/CV3anaSXdGkeAc4P7GG5M
+         8D6jVFrnzJzuOXa/B3czUIVd0rUcMg/cUlELD955vSSCykHv6Nix3W7/9YD4sqGoodz3
+         bZLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680207770;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OBkq6KxCtXfKvlem/Zb/2GDPHcnhhSsCCkCs5rwvqhw=;
-        b=Pn7B98FvjaUacfgv9qdPm/ma1M/g0bOr32sd4CbsX39OSPdsFBv62v9Sibpmt/KQZW
-         p/qdaXuruyeNpPgG5oenNh01ONzuaEXUnM7ibRSv7K7QK93QL2o2mYbqYuXi8I0GOkVe
-         Y9jTwT4JPwKtziaLQ+wkCmTcaFeTDcQKmCmCPmRjKKVPP2Py58qf5rvjwlJIsHRh1rTx
-         aMrION5ahabTyya72hMypvnvpAlQt6zCpaet+U9mrHgUnGuP08JVPeIHFSv9UQtNfsQB
-         KjQ9seDdHH0YO8WQ49p0+BkW9buXzJgDv724FQojZdB0l/xNLNNWgvYj2TBf4fnfqt3C
-         gMXw==
-X-Gm-Message-State: AAQBX9eDv0yUES9iJIMu2nHUGenRzQhJsOeF9R5hk/92k0VXFNUP89p6
-        Ob1Kgb5fcI6yFkUnvj0szmz/M38wjyBEB0R0
-X-Google-Smtp-Source: AKy350a/3LDVNunLU+X2jx+/r8XTGQn4nCYK32oghDWPolROcLXTb+Xmjs+x/CZAAmduRrhpeGJD8w==
-X-Received: by 2002:a62:5246:0:b0:628:87f:6b5d with SMTP id g67-20020a625246000000b00628087f6b5dmr21039787pfb.11.1680207770173;
-        Thu, 30 Mar 2023 13:22:50 -0700 (PDT)
-Received: from lunar.aeonazure.com ([158.140.180.109])
-        by smtp.gmail.com with ESMTPSA id x22-20020aa784d6000000b0062505afff9fsm266987pfn.126.2023.03.30.13.22.47
+        d=1e100.net; s=20210112; t=1680227093; x=1682819093;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CS9Le6nsC17jU584Wp0Pdq9lmWcMPhHg9k+f1qFG9Ls=;
+        b=DMuDl9Cjy/7fm+++Vw0HK1KMa5rD3nawaqSj2Nur8ER+5IG6dUuLIyL9YLytaPcrU5
+         gscmjFpTeMfeuEVF/rOlPKIBmTqmkrUDFN2DfAiExShto4Auv0wRuW3c92CCKC9JTdr1
+         STXeyf4TVzaAPy9WF4981H5mq7xQgCBodZ4J+pDcaf2ErcOAk0zoADE9ev0IejQN0kPF
+         GzAgxR5B7KCGO2MrE8NqTpWijZ5zk/4Cem3DOmmSkBDf+YaPOeWniRFVltjtLWixM64l
+         FdCwgDLG7e2m2aqfcWPtgcLAGRyBHIeyxCg0tVvdLUNWr+2uoE/CsOyOVOgjc/2a16R0
+         tOhg==
+X-Gm-Message-State: AAQBX9dW+Aa9hjFrqYVBrrdkuYGrUc3Bh7cXzOuzVcP9YgRw+bT8dQw9
+        fFOplNp2C2uvWViCdmq5OeU=
+X-Google-Smtp-Source: AKy350YSYOai8p1r07lV00Ep+Qm6Uvd1T8iRDgNw4I6PrADkxBBQ1h577al+Y2G+i2z8U+uuf9eZFQ==
+X-Received: by 2002:a17:90a:19d8:b0:23f:ae99:3c94 with SMTP id 24-20020a17090a19d800b0023fae993c94mr7912795pjj.23.1680227092715;
+        Thu, 30 Mar 2023 18:44:52 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id p4-20020a1709026b8400b001a053b7e892sm327541plk.195.2023.03.30.18.44.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 13:22:49 -0700 (PDT)
-From:   Shaun Tancheff <shaun.tancheff@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     Shaun Tancheff <shaun@tancheff.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "stable @ vger . kernel . org . Shaun Tancheff" 
-        <shaun.tancheff@hpe.com>
-Subject: [PATCH] memcg: Set memory min, low, high values along with max
-Date:   Fri, 31 Mar 2023 03:22:32 +0700
-Message-Id: <20230330202232.355471-1-shaun.tancheff@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 30 Mar 2023 18:44:52 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 30 Mar 2023 15:44:50 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     hanjinke <hanjinke.666@bytedance.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] blk-throttle: Fix io statistics for
+ cgroup v1
+Message-ID: <ZCY7EoAUqfB0ac8S@slm.duckdns.org>
+References: <20230328142309.73413-1-hanjinke.666@bytedance.com>
+ <ZCSJaBO8i5jQFC10@slm.duckdns.org>
+ <1a858cce-4d87-5e0a-9274-52cffde7dea6@bytedance.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1a858cce-4d87-5e0a-9274-52cffde7dea6@bytedance.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Shaun Tancheff <shaun@tancheff.com>
+Hello,
 
-memcg-v1 does not expose memory min, low, and high.
+On Thu, Mar 30, 2023 at 11:44:04AM +0800, hanjinke wrote:
+> 在 2023/3/30 上午2:54, Tejun Heo 写道:
+> > On Tue, Mar 28, 2023 at 10:23:09PM +0800, Jinke Han wrote:
+> > > From: Jinke Han <hanjinke.666@bytedance.com>
+> > > 
+> > > Now the io statistics of cgroup v1 are no longer accurate. Although
+> > > in the long run it's best that rstat is a good implementation of
+> > > cgroup v1 io statistics. But before that, we'd better fix this issue.
+> > 
+> > Can you please expand on how the stats are wrong on v1 and how the patch
+> > fixes it?
+> > 
+> > Thanks.
+> > 
+> Now blkio.throttle.io_serviced and blkio.throttle.io_serviced become the
 
-These values should to be set to reasonable non-zero values
-when max is set.
+"now" might be a bit too vague. Can you point to the commit which made the
+change?
 
-This patch sets them to 10%, 20% and 80% respective to max.
+> only stable io stats interface of cgroup v1, and these statistics are done
+> in the blk-throttle code. But the current code only counts the bios that are
 
-This fixes an issue with memory pressure with file systems
-do an unbounded high rate of I/O hitting oom.
+Ah, okay, so the stats are now updated by blk-throtl itself but
 
-Signed-off-by: Shaun Tancheff <shaun.tancheff@hpe.com>
----
- mm/memcontrol.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> actually throttled. When the user does not add the throttle limit, the io
+> stats for cgroup v1 has nothing. I fix it according to the statistical
+> method of v2, and made it count all ios accurately.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2eee092f8f11..0f5918d9dd2a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3491,6 +3491,15 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		if (max > counter->max)
- 			enlarge = true;
- 		ret = page_counter_set_max(counter, max);
-+		if (!ret && !memsw) {
-+			unsigned long min = (max / 10) + 1;
-+			unsigned long low = min * 2;
-+			unsigned long high = max - low;
+updated only when limits are configured which can be confusing. Makes sense
+to me. Can you please update the patch description accordingly?
+
+Also, the following change:
+
+@@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
+        struct blkg_iostat_set *bis;
+        unsigned long flags;
+
++       if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
++               return;
 +
-+			page_counter_set_min(counter, min);
-+			page_counter_set_low(counter, low);
-+			page_counter_set_high(counter, high);
-+		}
- 		mutex_unlock(&memcg_max_mutex);
- 
- 		if (!ret)
--- 
-2.34.1
+        /* Root-level stats are sourced from system-wide IO stats */
+        if (!cgroup_parent(blkcg->css.cgroup))
+                return;
 
+seems incomplete as there's an additional
+cgroup_subsys_on_dfl(io_cgrp_subsys) test in the function. We probably wanna
+remove that?
+
+Thanks.
+
+-- 
+tejun
