@@ -2,70 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DD86D1537
-	for <lists+cgroups@lfdr.de>; Fri, 31 Mar 2023 03:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CE16D1557
+	for <lists+cgroups@lfdr.de>; Fri, 31 Mar 2023 03:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjCaBpS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 21:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S229718AbjCaBvk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Mar 2023 21:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjCaBpQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 21:45:16 -0400
+        with ESMTP id S229475AbjCaBvj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 21:51:39 -0400
 Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA8318835;
-        Thu, 30 Mar 2023 18:44:59 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id x15so19004402pjk.2;
-        Thu, 30 Mar 2023 18:44:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D663C4;
+        Thu, 30 Mar 2023 18:51:38 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso7327637pjc.1;
+        Thu, 30 Mar 2023 18:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680227093; x=1682819093;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CS9Le6nsC17jU584Wp0Pdq9lmWcMPhHg9k+f1qFG9Ls=;
-        b=jliIbNZkvX0tLViuNo+i79Ttgxeb9fED2/7a/M//MeXVK85etYsThHW7fGC1feC4vZ
-         Go+yEPuxYOcaF5VBV6Ke0tTmio5hHs8DCIabQRCHVjtKLke5fe30pR1/67w3ny6t7cSe
-         u5NPsdvN0XRvl04Wkq4Lma/qrhChh42F/OMxsGqMzgLezbHZJCHUBiU2Ku2KyqSTMMS4
-         pnrGO76PL/yll+KWOG03l2uV3VYf8UD2PiWykpevBE6UMc/CV3anaSXdGkeAc4P7GG5M
-         8D6jVFrnzJzuOXa/B3czUIVd0rUcMg/cUlELD955vSSCykHv6Nix3W7/9YD4sqGoodz3
-         bZLA==
+        d=gmail.com; s=20210112; t=1680227498; x=1682819498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6XM31ZrRumkictGFOXR0ExRhhRTlkDKTwiG7dCR1Fgc=;
+        b=JBYKiS094xTcv4zZS7qtqmMLeJJI3CBby4kLAUuMziXHD4GQX8kl0rVXktvDBOeoyg
+         kE039cqtRpT4ykTduffb4U40BvtNgW7zV0FAZz2WV0BqlSt5QYJpN8xupFHalEgYBWe2
+         Mcsh414OYAuBY4FJEwUvve3aBfy2EszbwJEObj//xKUmnHYc/UwK6WW03t6iLjufAyn2
+         ssTRNhrXIek059u92KiSZc+dkINIxwv0V3n+b0U3qPZgOYecnTJr8KDPd568UBe+Om+Y
+         JRzenMRK0Ov48J93rRexsFGKtXgwJ4lg877M0D9vxz9Zn9cUrB6aoYizchAGUP6OU+k8
+         mySQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680227093; x=1682819093;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CS9Le6nsC17jU584Wp0Pdq9lmWcMPhHg9k+f1qFG9Ls=;
-        b=DMuDl9Cjy/7fm+++Vw0HK1KMa5rD3nawaqSj2Nur8ER+5IG6dUuLIyL9YLytaPcrU5
-         gscmjFpTeMfeuEVF/rOlPKIBmTqmkrUDFN2DfAiExShto4Auv0wRuW3c92CCKC9JTdr1
-         STXeyf4TVzaAPy9WF4981H5mq7xQgCBodZ4J+pDcaf2ErcOAk0zoADE9ev0IejQN0kPF
-         GzAgxR5B7KCGO2MrE8NqTpWijZ5zk/4Cem3DOmmSkBDf+YaPOeWniRFVltjtLWixM64l
-         FdCwgDLG7e2m2aqfcWPtgcLAGRyBHIeyxCg0tVvdLUNWr+2uoE/CsOyOVOgjc/2a16R0
-         tOhg==
-X-Gm-Message-State: AAQBX9dW+Aa9hjFrqYVBrrdkuYGrUc3Bh7cXzOuzVcP9YgRw+bT8dQw9
-        fFOplNp2C2uvWViCdmq5OeU=
-X-Google-Smtp-Source: AKy350YSYOai8p1r07lV00Ep+Qm6Uvd1T8iRDgNw4I6PrADkxBBQ1h577al+Y2G+i2z8U+uuf9eZFQ==
-X-Received: by 2002:a17:90a:19d8:b0:23f:ae99:3c94 with SMTP id 24-20020a17090a19d800b0023fae993c94mr7912795pjj.23.1680227092715;
-        Thu, 30 Mar 2023 18:44:52 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680227498; x=1682819498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6XM31ZrRumkictGFOXR0ExRhhRTlkDKTwiG7dCR1Fgc=;
+        b=Uu4kLQFVfW8/YOQHC61hjDkn8UFrpE091wKQ8D/5jl8vfA4afcDiJQwh1o007IN0Oj
+         13Q0/7/kLaaVqpuUlRT1yka8IblIyILK7ooQiHGSSYCIO1MjkdWFq933Phi5ABpzzpSj
+         bbwOXUYKPkIlg/8SHIWnhOsli5l/8gavcdvm1W+BrnT+fU5lABOxHVVRsZ/JkSugUJJj
+         iWXNYxDazy0zl9VSkW2vnLbJEr4v7Dud2BlJzqN0l4bzepWBU4cyzmPt12yhesdygC0b
+         rJ/gt9osChXO19nNEsGrfzVXXyr0YLdgTloFFdmUEGw79PalB+20xTRttiIHKp1UX8I6
+         dGcw==
+X-Gm-Message-State: AO0yUKWB8Ii21XFQ7+0jCC+/PAJCJ0uDtPzEUm3eZLkDDo+ag5E9uSxk
+        za1SquZxFXX1L6kEPBJe8K8=
+X-Google-Smtp-Source: AK7set+UsxaaL85PLpysrGl07KRn5Za7qkDJ8HMzgvL3jq6cxWJYGFqxj4m0ugsbcUIAh+0HWFj1QQ==
+X-Received: by 2002:a05:6a20:b291:b0:ce:ca9:ab56 with SMTP id ei17-20020a056a20b29100b000ce0ca9ab56mr23322786pzb.34.1680227497775;
+        Thu, 30 Mar 2023 18:51:37 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id p4-20020a1709026b8400b001a053b7e892sm327541plk.195.2023.03.30.18.44.51
+        by smtp.gmail.com with ESMTPSA id i17-20020aa787d1000000b00627ed4e23e0sm497016pfo.101.2023.03.30.18.51.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 18:44:52 -0700 (PDT)
+        Thu, 30 Mar 2023 18:51:37 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 30 Mar 2023 15:44:50 -1000
+Date:   Thu, 30 Mar 2023 15:51:35 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     hanjinke <hanjinke.666@bytedance.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [PATCH] blk-throttle: Fix io statistics for
- cgroup v1
-Message-ID: <ZCY7EoAUqfB0ac8S@slm.duckdns.org>
-References: <20230328142309.73413-1-hanjinke.666@bytedance.com>
- <ZCSJaBO8i5jQFC10@slm.duckdns.org>
- <1a858cce-4d87-5e0a-9274-52cffde7dea6@bytedance.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/7] cgroup: rstat: only disable interrupts for the
+ percpu lock
+Message-ID: <ZCY8p/i6DR2tXPLP@slm.duckdns.org>
+References: <ZB5UalkjGngcBDEJ@slm.duckdns.org>
+ <CAJD7tkYhyMkD8SFf8b8L1W9QUrLOdw-HJ2NUbENjw5dgFnH3Aw@mail.gmail.com>
+ <CALvZod6rF0D21hcV7xnqD+oRkn=x5NLi5GOkPpyaPa859uDH+Q@mail.gmail.com>
+ <CAJD7tkY_ESpMYMw72bsATpp6tPphv8qS6VbfEUjpKZW6vUqQSQ@mail.gmail.com>
+ <CALvZod41ecuCKmuFBNtAjoKJjQgWYzoe4_B8zRK37HYk-rYDkA@mail.gmail.com>
+ <CAJD7tkZrp=4zWvjE9_010TAG1T_crCbf9P64UzJABspgcrGPKg@mail.gmail.com>
+ <ZCSJDpPPOVvBYfOy@slm.duckdns.org>
+ <f9b6410-ee17-635f-a35d-559fa0191dc3@google.com>
+ <ZCSY8l/jVwszF6iA@slm.duckdns.org>
+ <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a858cce-4d87-5e0a-9274-52cffde7dea6@bytedance.com>
+In-Reply-To: <98cb3ce-7ed9-3d17-9015-ef7193d6627@google.com>
 X-Spam-Status: No, score=0.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -76,55 +94,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hello, Hugh.
 
-On Thu, Mar 30, 2023 at 11:44:04AM +0800, hanjinke wrote:
-> 在 2023/3/30 上午2:54, Tejun Heo 写道:
-> > On Tue, Mar 28, 2023 at 10:23:09PM +0800, Jinke Han wrote:
-> > > From: Jinke Han <hanjinke.666@bytedance.com>
-> > > 
-> > > Now the io statistics of cgroup v1 are no longer accurate. Although
-> > > in the long run it's best that rstat is a good implementation of
-> > > cgroup v1 io statistics. But before that, we'd better fix this issue.
-> > 
-> > Can you please expand on how the stats are wrong on v1 and how the patch
-> > fixes it?
-> > 
-> > Thanks.
-> > 
-> Now blkio.throttle.io_serviced and blkio.throttle.io_serviced become the
+On Wed, Mar 29, 2023 at 01:38:48PM -0700, Hugh Dickins wrote:
+> > So, in general, there's a trade off between local irq service latency and
+> > inducing global lock contention when using unprotected locks. With more and
+> > more CPUs, the balance keeps shifting. The balance still very much depends
+> > on the specifics of a given lock but yeah I think it's something we need to
+> > be a lot more careful about now.
+> 
+> And this looks a very plausible argument to me: I'll let it sink in.
 
-"now" might be a bit too vague. Can you point to the commit which made the
-change?
+Another somewhat relevant change is that flipping irq on/off used to be
+relatively expensive on older x86 cpus. I forget all details about when and
+how much but they should be a lot cheaper now. No idea about !x86 cpus tho.
 
-> only stable io stats interface of cgroup v1, and these statistics are done
-> in the blk-throttle code. But the current code only counts the bios that are
+> But I hadn't heard that the RT folks were clamouring for more irq disabling:
+> perhaps they partition their machines with more care, and are not devotees
+> of high CPU counts.
 
-Ah, okay, so the stats are now updated by blk-throtl itself but
-
-> actually throttled. When the user does not add the throttle limit, the io
-> stats for cgroup v1 has nothing. I fix it according to the statistical
-> method of v2, and made it count all ios accurately.
-
-updated only when limits are configured which can be confusing. Makes sense
-to me. Can you please update the patch description accordingly?
-
-Also, the following change:
-
-@@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
-        struct blkg_iostat_set *bis;
-        unsigned long flags;
-
-+       if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
-+               return;
-+
-        /* Root-level stats are sourced from system-wide IO stats */
-        if (!cgroup_parent(blkcg->css.cgroup))
-                return;
-
-seems incomplete as there's an additional
-cgroup_subsys_on_dfl(io_cgrp_subsys) test in the function. We probably wanna
-remove that?
+I think RT folks care a lot more about raw IRQ disables. These shouldn't
+actually disable IRQs on RT kernels.
 
 Thanks.
 
