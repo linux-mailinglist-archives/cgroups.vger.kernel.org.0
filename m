@@ -2,137 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4266D15C6
-	for <lists+cgroups@lfdr.de>; Fri, 31 Mar 2023 05:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3A06D1A97
+	for <lists+cgroups@lfdr.de>; Fri, 31 Mar 2023 10:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjCaDBJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Mar 2023 23:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
+        id S229458AbjCaIm1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 31 Mar 2023 04:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjCaDBG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Mar 2023 23:01:06 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F4E1204C
-        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 20:00:40 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id om3-20020a17090b3a8300b0023efab0e3bfso24001408pjb.3
-        for <cgroups@vger.kernel.org>; Thu, 30 Mar 2023 20:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1680231639;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AMrP2Zp/EKlqbziL+FgCOqPjH/auJOar/Bw7xvN0IJw=;
-        b=gFLNd4ejWBxSDzU4aEgXUTu5XK7W5N8DYIf8y981jAiIl1PPhf0gQNwn/L7fY8o8Md
-         GzCyVbfJEEy/JWxGYXiht+V4N/+fmTClBVFIuAb6szfd5tNfLkYBw1YNTx2czLm2sI/4
-         LcWKYMZvb5xYSRjGmgeCQ85FAdWUc+Df9EGS63HjvDKh3crs1/lOjOR7uTf5jUjUrq5k
-         cPnJx6PMlORh0s/D/pBuw61Y2/NN+GOsJ2tQ5p/TrXz7Y/mQIXZHi8xi5J/D+mhr1SvN
-         iFKRECz2VC/NXpimQsG6Sf6YMmLfu9tL7zZkXzQAYPPhdz5i+P15KxHZ50QexXZjWeLk
-         DgYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680231639;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AMrP2Zp/EKlqbziL+FgCOqPjH/auJOar/Bw7xvN0IJw=;
-        b=wF8iJf6TayCo+JlOySibh5g7rYJmghR7ksnOFPMqfsZh6uXHjb+zUIXbFsV9wKRKqg
-         VrkH1jlhTiR3IA7HMzEDTdYKQTcVIgqmQJXgsaxohu4YLTq8TW3T4li7acpm3yZjw1ru
-         GlJYP7X32OwmtY8AitJ5m/pZ4KIxryvWo2MAiWIfN9zM8MfFh8JLfUrQyM8l2PzC71nx
-         lDvZszUDd4pwGiRlH4iWRikbd3dBN4M0ZHsbKyaJMmRhFRhWRB4NzlKgMExuoIslVn9O
-         ezmMEhD4VcFiTqUcPnS0QGXv9THVH/aSzmiXPV0V5xUMX803aALZvxF7bgYNMEFH01SQ
-         pCVQ==
-X-Gm-Message-State: AAQBX9c1CmCACWGs5MZRfm3Eyeyzf13GWjuA3moHgSF4DoWeypdoLu66
-        zxYp+IGx3t7T0xNsNYnNO7tgFQ==
-X-Google-Smtp-Source: AKy350ag43OiG3r7Vy717gSy+pX9ZevstneHo3UQq2lOby5UUvTIdpZTPDh8OAsdarK8D5U7e+8sBA==
-X-Received: by 2002:a17:902:d512:b0:1a0:67fb:445c with SMTP id b18-20020a170902d51200b001a067fb445cmr8985431plg.28.1680231639373;
-        Thu, 30 Mar 2023 20:00:39 -0700 (PDT)
-Received: from [10.3.157.34] ([61.213.176.10])
-        by smtp.gmail.com with ESMTPSA id z3-20020a170902ee0300b001a1ea1d6d6esm372585plb.290.2023.03.30.20.00.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Mar 2023 20:00:38 -0700 (PDT)
-Message-ID: <6128380c-b148-cb7e-44d5-0bd7d05a2942@bytedance.com>
-Date:   Fri, 31 Mar 2023 11:00:33 +0800
+        with ESMTP id S231921AbjCaIl7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 31 Mar 2023 04:41:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2548D1D90E;
+        Fri, 31 Mar 2023 01:41:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 71EBC1FE77;
+        Fri, 31 Mar 2023 08:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680252040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=foIa7jbtP7Rg9nUkM8izU/GS17m8DG7SvLf2kEzCXj4=;
+        b=Ofh1tn/+4BxdgIFwxB+zPWOZ1FDU2BYSj6+gQsUMQtDMZRfXKJmcZzd1vUQKh9wFhQi62I
+        ihIfOQR90PRlYQM+h2JI9jtMu3KzF5yKXe3VJgsEmoy/XJykJlD/8dQQOO5fQFT7ggJ9cf
+        ngQPw1yQGuTFD3kCdBfMpNwRjIzIIvM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54F04133B6;
+        Fri, 31 Mar 2023 08:40:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dcTaEYicJmQfIwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 31 Mar 2023 08:40:40 +0000
+Date:   Fri, 31 Mar 2023 10:40:39 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shaun Tancheff <shaun.tancheff@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shaun Tancheff <shaun@tancheff.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "stable @ vger . kernel . org . Shaun Tancheff" 
+        <shaun.tancheff@hpe.com>
+Subject: Re: [PATCH] memcg: Set memory min, low, high values along with max
+Message-ID: <ZCach73AHtwcdbbq@dhcp22.suse.cz>
+References: <20230330202232.355471-1-shaun.tancheff@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [External] Re: [PATCH] blk-throttle: Fix io statistics for cgroup
- v1
-To:     Tejun Heo <tj@kernel.org>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230328142309.73413-1-hanjinke.666@bytedance.com>
- <ZCSJaBO8i5jQFC10@slm.duckdns.org>
- <1a858cce-4d87-5e0a-9274-52cffde7dea6@bytedance.com>
- <ZCY7EoAUqfB0ac8S@slm.duckdns.org>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <ZCY7EoAUqfB0ac8S@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230330202232.355471-1-shaun.tancheff@gmail.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri 31-03-23 03:22:32, Shaun Tancheff wrote:
+> From: Shaun Tancheff <shaun@tancheff.com>
+> 
+> memcg-v1 does not expose memory min, low, and high.
+> 
+> These values should to be set to reasonable non-zero values
+> when max is set.
+> 
+> This patch sets them to 10%, 20% and 80% respective to max.
+> 
+> This fixes an issue with memory pressure with file systems
+> do an unbounded high rate of I/O hitting oom.
 
+Cgroup v1 has some inherent issues with the dirty data throttling and
+that is a well known problem. Especially when those FS allocations are
+GFP_NOFS where we cannot throttle direct in the memory reclaim path (see
+shrink_folio_list). There are some hacks^Wworkarounds to help out, e.g.
+81a70c21d917 ("mm/cgroup/reclaim: fix dirty pages throttling on cgroup
+v1") but the issue is inherent to how v1 operates so nothing will work
+100%. A more appropriate way forward is to use v2 instead.
 
-在 2023/3/31 上午9:44, Tejun Heo 写道:
-> Hello,
+But maybe you are hitting a different problem so please tell us more.
+
+> Signed-off-by: Shaun Tancheff <shaun.tancheff@hpe.com>
+
+min, low and high are v2 concepts and v1 cannot/won't really use them.
+Besides that hard coded policies do not belong to the kernel. So no to
+this patch. We definitely want to hear more about the underlying problem
+and see what we can do about that.
+
+Nacked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memcontrol.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> On Thu, Mar 30, 2023 at 11:44:04AM +0800, hanjinke wrote:
->> 在 2023/3/30 上午2:54, Tejun Heo 写道:
->>> On Tue, Mar 28, 2023 at 10:23:09PM +0800, Jinke Han wrote:
->>>> From: Jinke Han <hanjinke.666@bytedance.com>
->>>>
->>>> Now the io statistics of cgroup v1 are no longer accurate. Although
->>>> in the long run it's best that rstat is a good implementation of
->>>> cgroup v1 io statistics. But before that, we'd better fix this issue.
->>>
->>> Can you please expand on how the stats are wrong on v1 and how the patch
->>> fixes it?
->>>
->>> Thanks.
->>>
->> Now blkio.throttle.io_serviced and blkio.throttle.io_serviced become the
-> 
-> "now" might be a bit too vague. Can you point to the commit which made the
-> change?
-> 
->> only stable io stats interface of cgroup v1, and these statistics are done
->> in the blk-throttle code. But the current code only counts the bios that are
-> 
-> Ah, okay, so the stats are now updated by blk-throtl itself but
-> 
->> actually throttled. When the user does not add the throttle limit, the io
->> stats for cgroup v1 has nothing. I fix it according to the statistical
->> method of v2, and made it count all ios accurately.
-> 
-> updated only when limits are configured which can be confusing. Makes sense
-> to me. Can you please update the patch description accordingly?
-> 
-> Also, the following change:
-> 
-> @@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
->          struct blkg_iostat_set *bis;
->          unsigned long flags;
-> 
-> +       if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
-> +               return;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2eee092f8f11..0f5918d9dd2a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3491,6 +3491,15 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+>  		if (max > counter->max)
+>  			enlarge = true;
+>  		ret = page_counter_set_max(counter, max);
+> +		if (!ret && !memsw) {
+> +			unsigned long min = (max / 10) + 1;
+> +			unsigned long low = min * 2;
+> +			unsigned long high = max - low;
 > +
->          /* Root-level stats are sourced from system-wide IO stats */
->          if (!cgroup_parent(blkcg->css.cgroup))
->                  return;
-> 
-> seems incomplete as there's an additional
-> cgroup_subsys_on_dfl(io_cgrp_subsys) test in the function. We probably wanna
-> remove that?
-> 
-> Thanks.
-> 
+> +			page_counter_set_min(counter, min);
+> +			page_counter_set_low(counter, low);
+> +			page_counter_set_high(counter, high);
+> +		}
+>  		mutex_unlock(&memcg_max_mutex);
+>  
+>  		if (!ret)
+> -- 
+> 2.34.1
 
-okay, according to your suggestion, I will send a v2.
-
-Thanks
+-- 
+Michal Hocko
+SUSE Labs
