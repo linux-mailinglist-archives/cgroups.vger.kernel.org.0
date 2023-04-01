@@ -2,120 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1746D28A2
-	for <lists+cgroups@lfdr.de>; Fri, 31 Mar 2023 21:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E341D6D2F7A
+	for <lists+cgroups@lfdr.de>; Sat,  1 Apr 2023 11:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbjCaT0a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 31 Mar 2023 15:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
+        id S229882AbjDAJri (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 1 Apr 2023 05:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbjCaT02 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 31 Mar 2023 15:26:28 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1F520D92
-        for <cgroups@vger.kernel.org>; Fri, 31 Mar 2023 12:26:27 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id h8so93804076ede.8
-        for <cgroups@vger.kernel.org>; Fri, 31 Mar 2023 12:26:27 -0700 (PDT)
+        with ESMTP id S229852AbjDAJrg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 1 Apr 2023 05:47:36 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2542C18805
+        for <cgroups@vger.kernel.org>; Sat,  1 Apr 2023 02:47:23 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id c18so23693941ple.11
+        for <cgroups@vger.kernel.org>; Sat, 01 Apr 2023 02:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680290786;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iu7s9DYyfZiIezMIZDBeMPsNtoiOPCl5mln2vnX6FPU=;
-        b=Jh1exDm2YeiM89cAzqqWvMxVLriZxCQArLnH4Mf6OVhEcGsrWa67g4r4iY9GxBqbL4
-         OwiVm/ocExjWSMEDP9eTxqD46U6I3d7SVjjjUi82zkGcqJI5cy9NeZDc2aVMrm+tu9D4
-         2ihR1w8LzwPVi8V2GpLFeCJCC1+5Wib5Jjnd3W7a3/qpPLT61HDDmpxc1WBzkXj7GdjS
-         c1V7ynE2tVtUYK2imikTkrZvZSfAfE1k58a/h1So+lVWALmAznug58niAX2/RU1yHRnX
-         6j8J+n3+dwdR/5N3u5VPOS2w5wXbjINi/VhPfdgtNb3Syg0XszV+79drAnURLA3puqU3
-         ithQ==
+        d=bytedance.com; s=google; t=1680342442;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hiK4KO4kZbl8xYSoAWQs5Xyf4Snj7jNQFcEtAQejez8=;
+        b=V+zhxA472E3zjzApz3J/B0H+TF2UZuO9A3fqlLhaAsX+s8ZPpc6Y5xCXMt+ODvpYia
+         prVRA6DUvQ0U8QdnsdMSDgxnevfp/Htz8mOqyOLtb/ctA/aKl7nZX5U1yZOEb8m1jhIS
+         h2XiY2mp3+D5wLLfJJ9IWb9ftDxnGzA9PjwjTDB58mMn4WjQlAP9ATXwjr0EZF6KVmMo
+         CseN0wvqz9Cb3qySGD9rkACfMDQ7Lmknsc0B9/T5z24lpA8DEXa9OyJu1KaNRtkaErtR
+         WU2DKk+Q55OX8+3ozYk2myGGhObt9Vsrf3CqSyvenh4P2tCxjdTR8vfI+su5veg4D4Ys
+         1rwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680290786;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iu7s9DYyfZiIezMIZDBeMPsNtoiOPCl5mln2vnX6FPU=;
-        b=uBRetyIw6gAVr2GkZSlTjo7IIzBUbWCKNSuIIplZasNUZuos9KMnUKhNJ+PGo7MUFX
-         /bBdbx/imWdkC+4GSJPUnN2KlGPJjOQDu+9i9gfCkCqFnwU0EGWXJHuqVsqUekSprhsg
-         +F53zHhLkko39BEFjd/XkqYZfs/k9k/WRvkJCqNUbEeYfSnzPXH/FZbvYWdGiXHs+IwT
-         TQr7MtTBFg5pko2dCWQdSGxijmSafDksgHMUAapVHd/F5ZDHG9uJKYnieL8hSYak5CHe
-         LVMUGNgd4JsRYcIFfvZ8ffKEyDxquYHwfmirA0hA7rEPlNS7zfZxpaj5yqk8OQJfRzOB
-         CYvg==
-X-Gm-Message-State: AAQBX9eaYHj2ziG0OYHVDa6iU3fFUJDJSGdbMrn6Bc70+cDSQh+jPBAN
-        fsWxYTO9J6n66nfjlp7UMxYxR0UBlnWpFW0ggqXXDeipuUgYJCDx6/RN9w==
-X-Google-Smtp-Source: AKy350ZZEcKgHsHr/ECELw8BJ/h68MCP5nK4LN8Aq5fROKV7DPp8rn3vM61laMTH1JyPBhMidoe2xvyT7fEFemHrGiY=
-X-Received: by 2002:a50:8e0d:0:b0:4fc:473d:3308 with SMTP id
- 13-20020a508e0d000000b004fc473d3308mr14071517edw.8.1680290785726; Fri, 31 Mar
- 2023 12:26:25 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680342442;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hiK4KO4kZbl8xYSoAWQs5Xyf4Snj7jNQFcEtAQejez8=;
+        b=g4w7zKqazY8gvVKhZBYpSXhhLSx1kbBJtcGRUYtgjl+EVI5IwyOlunRJkNcG4B2f+X
+         DGrCf698u2IZlWPfCTAGBB38yQGXGY1VdQ9e1aoy1Gtjrc89kyXAV4wUQ8ktiux/Vzfw
+         iebbLoC8X/A0LLmnZ09Ss9L4z85x5P9g9mMpButvHu4fd0XcMBYYxFg07GopkJQp0TXM
+         Pd1LgOt8FwtL99P/yc6UitmpNeoouSpLhpcMwm82dCu9WKHWPy2xM6LQEPNtuhDMk187
+         iCJEHmToVcdTXacwBVpl9Do2hYlAal8nCziOgLsFXVgTJvM/NG5ike8X7BjzoWsKNaKP
+         CkkQ==
+X-Gm-Message-State: AAQBX9e870gCJaHcZ3pbNLy4OPsaTfPlbH/uohJXT8mLXMeGL6MUjZD0
+        2M2eC1/xJyWaokPUn0pgzF+z8Q==
+X-Google-Smtp-Source: AKy350a5Qyn30MXPsqFDtaona2Q3ahaJBygNo5/JecPGW8Mz2FslX1mFe6llG8NPGyJowvc0Ntl7+A==
+X-Received: by 2002:a05:6a20:cd5a:b0:e4:d395:5ce6 with SMTP id hn26-20020a056a20cd5a00b000e4d3955ce6mr3118164pzb.25.1680342442606;
+        Sat, 01 Apr 2023 02:47:22 -0700 (PDT)
+Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.240])
+        by smtp.gmail.com with ESMTPSA id w26-20020aa7859a000000b0062d90f36d16sm3233919pfn.88.2023.04.01.02.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Apr 2023 02:47:22 -0700 (PDT)
+From:   Jinke Han <hanjinke.666@bytedance.com>
+X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
+To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jinke Han <hanjinke.666@bytedance.com>
+Subject: [PATCH v2] blk-throttle: Fix io statistics for cgroup v1
+Date:   Sat,  1 Apr 2023 17:47:08 +0800
+Message-Id: <20230401094708.77631-1-hanjinke.666@bytedance.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 MIME-Version: 1.0
-References: <CAEeXeQLTQjt6O4C-_3dE63gPEgXU9qtdM2+XDxYemV9bsfq_pg@mail.gmail.com>
-In-Reply-To: <CAEeXeQLTQjt6O4C-_3dE63gPEgXU9qtdM2+XDxYemV9bsfq_pg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 31 Mar 2023 12:25:49 -0700
-Message-ID: <CAJD7tkZ+ZkQX01MHDGd0mT7=qt82VfJ_AAXA2xy1w35Drws-0g@mail.gmail.com>
-Subject: Re: freezer cgroups: Forcing frozen memory to swap
-To:     Tyler Rider <tylerjrider@gmail.com>
-Cc:     cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 11:49=E2=80=AFAM Tyler Rider <tylerjrider@gmail.com=
-> wrote:
->
-> Hi all,
->
-> I've been trying to search for some mechanism(s) to reclaim resident
-> memory of some frozen applications on a small embedded device. The
-> typical use case is to bring up an app and once backgrounded/dismissed
-> the idea is to freeze/thaw for faster resume/restart times.
->
-> The issue is that after starting/pausing several of these applications
-> (and subsequently freezing) memory begins dropping, and memory
-> thrashing begins. (I can stop the apps of course, but then that leads
-> to longer load times).
->
-> I've already got memory constraint issues, which led to adding a swap
-> partition. I've tried bumping the memory.swapiness to 100 within a
-> memory cgroup, and waiting a few seconds for kswapd to kick in before
-> freezing but since the app is running it only puts a handful of pages
-> into swap.
->
-> Some projects exist (crypopid(2) / CRIU) for dumping the process state
-> in userspace, but unless I'm missing something, I'd imagine there must
-> be some existing kernel mechanism (seems like a useful feature for
-> small memory constrained devices) within the freezer/memory cgroups
-> that can force all pages of the frozen process to a swap partition,
-> and restore on thaw.
->
-> Does this sort of  cgroup-level S4 (hibernate-to-disk) exist or even
-> just a mechanism to force a frozen process's pages to swap?
+From: Jinke Han <hanjinke.666@bytedance.com>
 
-In memory cgroups there is a memory.reclaim interface, where you can
-request the kernel to reclaim X amount of memory from the cgroup. A
-few things to keep in mind:
+After commit f382fb0bcef4 ("block: remove legacy IO schedulers"),
+blkio.throttle.io_serviced and blkio.throttle.io_service_bytes become
+the only stable io stats interface of cgroup v1, and these statistics
+are done in the blk-throttle code. But the current code only counts the
+bios that are actually throttled. When the user does not add the throttle
+limit, the io stats for cgroup v1 has nothing. I fix it according to the
+statistical method of v2, and made it count all ios accurately.
 
-* This is per-cgroup, not per-process.
+Fixes: a7b36ee6ba29 ("block: move blk-throtl fast path inline")
+Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
+---
+ block/blk-cgroup.c   | 6 ++++--
+ block/blk-throttle.c | 6 ------
+ block/blk-throttle.h | 9 +++++++++
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
-* This is irrelevant to freezing.
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index bd50b55bdb61..33263d0d0e0f 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 	struct blkg_iostat_set *bis;
+ 	unsigned long flags;
+ 
++	if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
++		return;
++
+ 	/* Root-level stats are sourced from system-wide IO stats */
+ 	if (!cgroup_parent(blkcg->css.cgroup))
+ 		return;
+@@ -2064,8 +2067,7 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 	}
+ 
+ 	u64_stats_update_end_irqrestore(&bis->sync, flags);
+-	if (cgroup_subsys_on_dfl(io_cgrp_subsys))
+-		cgroup_rstat_updated(blkcg->css.cgroup, cpu);
++	cgroup_rstat_updated(blkcg->css.cgroup, cpu);
+ 	put_cpu();
+ }
+ 
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 47e9d8be68f3..2be66e9430f7 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -2174,12 +2174,6 @@ bool __blk_throtl_bio(struct bio *bio)
+ 
+ 	rcu_read_lock();
+ 
+-	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
+-		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
+-				bio->bi_iter.bi_size);
+-		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
+-	}
+-
+ 	spin_lock_irq(&q->queue_lock);
+ 
+ 	throtl_update_latency_buckets(td);
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index ef4b7a4de987..d1ccbfe9f797 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -185,6 +185,15 @@ static inline bool blk_should_throtl(struct bio *bio)
+ 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+ 	int rw = bio_data_dir(bio);
+ 
++	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
++		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
++			bio_set_flag(bio, BIO_CGROUP_ACCT);
++			blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
++					bio->bi_iter.bi_size);
++		}
++		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
++	}
++
+ 	/* iops limit is always counted */
+ 	if (tg->has_rules_iops[rw])
+ 		return true;
+-- 
+2.20.1
 
-* This will try to reclaim all types of memory, not just swapbacked
-(anon & tmpfs memory). So it may writeback file pages charged to the
-cgroup, or shrink slabs.
-
-* I am not aware of a mechanism to fault back in all the memory mapped
-by processes in a cgroup to restore the pages. Perhaps you can use
-MADV to do this per-process, or just let processes fault their memory
-back in on-demand.
-
->
-> Thanks,
-> Tyler
