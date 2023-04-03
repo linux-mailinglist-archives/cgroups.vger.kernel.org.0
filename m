@@ -2,152 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E341D6D2F7A
-	for <lists+cgroups@lfdr.de>; Sat,  1 Apr 2023 11:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CD56D3F24
+	for <lists+cgroups@lfdr.de>; Mon,  3 Apr 2023 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjDAJri (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 1 Apr 2023 05:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
+        id S231671AbjDCIib (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Apr 2023 04:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjDAJrg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 1 Apr 2023 05:47:36 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2542C18805
-        for <cgroups@vger.kernel.org>; Sat,  1 Apr 2023 02:47:23 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id c18so23693941ple.11
-        for <cgroups@vger.kernel.org>; Sat, 01 Apr 2023 02:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1680342442;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hiK4KO4kZbl8xYSoAWQs5Xyf4Snj7jNQFcEtAQejez8=;
-        b=V+zhxA472E3zjzApz3J/B0H+TF2UZuO9A3fqlLhaAsX+s8ZPpc6Y5xCXMt+ODvpYia
-         prVRA6DUvQ0U8QdnsdMSDgxnevfp/Htz8mOqyOLtb/ctA/aKl7nZX5U1yZOEb8m1jhIS
-         h2XiY2mp3+D5wLLfJJ9IWb9ftDxnGzA9PjwjTDB58mMn4WjQlAP9ATXwjr0EZF6KVmMo
-         CseN0wvqz9Cb3qySGD9rkACfMDQ7Lmknsc0B9/T5z24lpA8DEXa9OyJu1KaNRtkaErtR
-         WU2DKk+Q55OX8+3ozYk2myGGhObt9Vsrf3CqSyvenh4P2tCxjdTR8vfI+su5veg4D4Ys
-         1rwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680342442;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hiK4KO4kZbl8xYSoAWQs5Xyf4Snj7jNQFcEtAQejez8=;
-        b=g4w7zKqazY8gvVKhZBYpSXhhLSx1kbBJtcGRUYtgjl+EVI5IwyOlunRJkNcG4B2f+X
-         DGrCf698u2IZlWPfCTAGBB38yQGXGY1VdQ9e1aoy1Gtjrc89kyXAV4wUQ8ktiux/Vzfw
-         iebbLoC8X/A0LLmnZ09Ss9L4z85x5P9g9mMpButvHu4fd0XcMBYYxFg07GopkJQp0TXM
-         Pd1LgOt8FwtL99P/yc6UitmpNeoouSpLhpcMwm82dCu9WKHWPy2xM6LQEPNtuhDMk187
-         iCJEHmToVcdTXacwBVpl9Do2hYlAal8nCziOgLsFXVgTJvM/NG5ike8X7BjzoWsKNaKP
-         CkkQ==
-X-Gm-Message-State: AAQBX9e870gCJaHcZ3pbNLy4OPsaTfPlbH/uohJXT8mLXMeGL6MUjZD0
-        2M2eC1/xJyWaokPUn0pgzF+z8Q==
-X-Google-Smtp-Source: AKy350a5Qyn30MXPsqFDtaona2Q3ahaJBygNo5/JecPGW8Mz2FslX1mFe6llG8NPGyJowvc0Ntl7+A==
-X-Received: by 2002:a05:6a20:cd5a:b0:e4:d395:5ce6 with SMTP id hn26-20020a056a20cd5a00b000e4d3955ce6mr3118164pzb.25.1680342442606;
-        Sat, 01 Apr 2023 02:47:22 -0700 (PDT)
-Received: from C02GD5ZHMD6R.bytedance.net ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id w26-20020aa7859a000000b0062d90f36d16sm3233919pfn.88.2023.04.01.02.47.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Apr 2023 02:47:22 -0700 (PDT)
-From:   Jinke Han <hanjinke.666@bytedance.com>
-X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
-To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jinke Han <hanjinke.666@bytedance.com>
-Subject: [PATCH v2] blk-throttle: Fix io statistics for cgroup v1
-Date:   Sat,  1 Apr 2023 17:47:08 +0800
-Message-Id: <20230401094708.77631-1-hanjinke.666@bytedance.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+        with ESMTP id S230052AbjDCIia (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Apr 2023 04:38:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF80C2D61;
+        Mon,  3 Apr 2023 01:38:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 943051F8D9;
+        Mon,  3 Apr 2023 08:38:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680511103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnIw06JprC7dy+OnhMRvOYKEzAkA2puzGDnOPlmZGCQ=;
+        b=LDAThqfAUeP8YfeXSMx0SCHxnohK7Gj/nCpVhVUNjqwdqETlqzrvBDKy6zQjJyHIXkNUrb
+        W6q2FQW0lYcUVVPC3UdRINlfnj6L5qLDp56/Q/IMjloPT68YokJAyiWkMM1I2SWlg8W3Ab
+        mdMS9LC6dZdFbLNpceTPxyFhjNTS7Bo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6879B1331A;
+        Mon,  3 Apr 2023 08:38:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id k4RGF3+QKmQQSAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 03 Apr 2023 08:38:23 +0000
+Date:   Mon, 3 Apr 2023 10:38:22 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] cgroup: rstat: add WARN_ON_ONCE() if flushing
+ outside task context
+Message-ID: <ZCqQfuprGreGYwFA@dhcp22.suse.cz>
+References: <ZCU1Bp+5bKNJzWIu@dhcp22.suse.cz>
+ <CAJD7tka0CmRvcvB0k8DZuid1vC9OK_mFriHHbXNTUkVE7OjaTA@mail.gmail.com>
+ <ZCU+8lSi+e4WgT3F@dhcp22.suse.cz>
+ <CAJD7tkaKd9Bcb2-e83Q-kzF7G+crr1U+7uqUPBARXWq-LpyKvw@mail.gmail.com>
+ <ZCVFA78lDj2/Uy0C@dhcp22.suse.cz>
+ <CAJD7tkbjmBaXghQ+14Hy28r2LoWSim+LEjOPxaamYeA_kr2uVw@mail.gmail.com>
+ <ZCVKqN2nDkkQFvO0@dhcp22.suse.cz>
+ <CAJD7tkYEOVRcXs-Ag3mWn69EwE4rjFt9j5MAcTGCNE8BuhTd+A@mail.gmail.com>
+ <ZCa9sixp3GJcjf8Y@dhcp22.suse.cz>
+ <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tka-2vNn25=NdrKQoMf4ntdbWtojY0k4eAa-c9D+v7J=HQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Jinke Han <hanjinke.666@bytedance.com>
+On Fri 31-03-23 12:03:47, Yosry Ahmed wrote:
+> On Fri, Mar 31, 2023 at 4:02 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 30-03-23 01:53:38, Yosry Ahmed wrote:
+> > [...]
+> > > Maybe we can add a primitive like might_sleep() for this, just food for thought.
+> >
+> > I do not think it is the correct to abuse might_sleep if the function
+> > itself doesn't sleep. If it does might_sleep is already involved.
+> 
+> Oh, sorry if I wasn't clear, I did not mean to reuse might_sleep() --
+> I meant introducing a new similar debug primitive that shouts if irqs
+> are disabled.
 
-After commit f382fb0bcef4 ("block: remove legacy IO schedulers"),
-blkio.throttle.io_serviced and blkio.throttle.io_service_bytes become
-the only stable io stats interface of cgroup v1, and these statistics
-are done in the blk-throttle code. But the current code only counts the
-bios that are actually throttled. When the user does not add the throttle
-limit, the io stats for cgroup v1 has nothing. I fix it according to the
-statistical method of v2, and made it count all ios accurately.
-
-Fixes: a7b36ee6ba29 ("block: move blk-throtl fast path inline")
-Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
----
- block/blk-cgroup.c   | 6 ++++--
- block/blk-throttle.c | 6 ------
- block/blk-throttle.h | 9 +++++++++
- 3 files changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index bd50b55bdb61..33263d0d0e0f 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
- 	struct blkg_iostat_set *bis;
- 	unsigned long flags;
- 
-+	if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
-+		return;
-+
- 	/* Root-level stats are sourced from system-wide IO stats */
- 	if (!cgroup_parent(blkcg->css.cgroup))
- 		return;
-@@ -2064,8 +2067,7 @@ void blk_cgroup_bio_start(struct bio *bio)
- 	}
- 
- 	u64_stats_update_end_irqrestore(&bis->sync, flags);
--	if (cgroup_subsys_on_dfl(io_cgrp_subsys))
--		cgroup_rstat_updated(blkcg->css.cgroup, cpu);
-+	cgroup_rstat_updated(blkcg->css.cgroup, cpu);
- 	put_cpu();
- }
- 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 47e9d8be68f3..2be66e9430f7 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2174,12 +2174,6 @@ bool __blk_throtl_bio(struct bio *bio)
- 
- 	rcu_read_lock();
- 
--	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
--		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
--				bio->bi_iter.bi_size);
--		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
--	}
--
- 	spin_lock_irq(&q->queue_lock);
- 
- 	throtl_update_latency_buckets(td);
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index ef4b7a4de987..d1ccbfe9f797 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -185,6 +185,15 @@ static inline bool blk_should_throtl(struct bio *bio)
- 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
- 	int rw = bio_data_dir(bio);
- 
-+	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
-+		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
-+			bio_set_flag(bio, BIO_CGROUP_ACCT);
-+			blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
-+					bio->bi_iter.bi_size);
-+		}
-+		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
-+	}
-+
- 	/* iops limit is always counted */
- 	if (tg->has_rules_iops[rw])
- 		return true;
+This is circling back to original concerns about arbitrary decision to
+care about IRQs. Is this really any different from spin locks or preempt
+disabled critical sections preventing any scheduling and potentially
+triggereing soft lockups?
 -- 
-2.20.1
-
+Michal Hocko
+SUSE Labs
