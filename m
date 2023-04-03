@@ -2,57 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC866D5474
-	for <lists+cgroups@lfdr.de>; Tue,  4 Apr 2023 00:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C026D547E
+	for <lists+cgroups@lfdr.de>; Tue,  4 Apr 2023 00:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbjDCWEJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Apr 2023 18:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
+        id S233284AbjDCWFm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Apr 2023 18:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233591AbjDCWEG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Apr 2023 18:04:06 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254CC4C37
-        for <cgroups@vger.kernel.org>; Mon,  3 Apr 2023 15:03:49 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id cp21-20020a17090afb9500b0023c061f2bd0so14798021pjb.5
-        for <cgroups@vger.kernel.org>; Mon, 03 Apr 2023 15:03:49 -0700 (PDT)
+        with ESMTP id S230186AbjDCWFg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Apr 2023 18:05:36 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7555446BD
+        for <cgroups@vger.kernel.org>; Mon,  3 Apr 2023 15:05:33 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id eg48so122965007edb.13
+        for <cgroups@vger.kernel.org>; Mon, 03 Apr 2023 15:05:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680559428;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QacupsFZGNVPJSGTJC6YypXeluEyL82tnZkM1VlhIdc=;
-        b=kWaOfIm3ix3CjQ6P0LRgdpWoqBgJu3ykmdsz32NiUF8x9A1dmCU0K7B4JSzYOReEDZ
-         FYgPQlT3SuWLrHKrP3wDopLbn9eVfq4lg7l4naylQ8tTZgKaGOhXPPjrkCrnIEo3mSYz
-         lk/IOCkztnHJOg8hCDeaYralpjItb0pP1L9kf7xz8p5kouBsn/T4mHo837Hsw6EVM4fX
-         wXifin0wFGMZCFLJ9fRpD2UTXhFCMfIx9NWguUNma600XyrmJZUcuoS1IkX3lwn5WJbF
-         /q9yx8rYhgQBtZhs0hPFucZM0Rd23Z/nGcnjDiwXILvEaD94FJtXEZgMXINCRE/Es3tO
-         KyGQ==
+        d=google.com; s=20210112; t=1680559532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S+Pu9YVys7d4kSNF1Q1j+VStoW6Udcnhp1204T10rf0=;
+        b=MQc0fA7+oJ5pXhxxZImDXr5z6gNisXy6E+KS8J35TPw72G5kFBVbjh7kwQJ1pYpeKX
+         ALIeHYtsuFVit4ojWHQg4PjXvHbvMvILW8/w0oxNN8pueWh6LStay5FVuUqUuGorC5Z6
+         RS8g+Zsr99eX3NBfJHoshcrdMnlMJYyd2SsO+3bQTJdgfu4m5arn5ecYYnb97xK+LXBC
+         ZBJkG0iOD7lxiLAB3PLydCsDk4EOZuHuZMpkwrwcF37r2t4CxP/ou8MAuJaMyMotyi7g
+         GsK+x/49ejSIp1u7NJ8dsNOj8sud5LRpXF2CDd8KqUSH5kNjZsROpa5HzOhGwnXl/bTF
+         B/Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680559428;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QacupsFZGNVPJSGTJC6YypXeluEyL82tnZkM1VlhIdc=;
-        b=np39UQ0iO0sdILKwP1QVY9fmvcCZhPBe3neuCmLcExo+2fBR61WE5PEUBttx4eJ8Dd
-         BzOU5AIssDU32Iyx3YejH+VgTjG9ZzdAVmJ4OdTeWEEdnLr0N0w7o3uU1axhn4ih04TU
-         0PZioH57gQseNUvAlXNDa1qEM2tIldUg/TThaiVgzn5CbpU3SlRQHSfgEK2ONLDOXLUl
-         3TCuVqF/M/4Lmxfat2tQ7FrTEnbqKVt1qbQ2XpMpR9Gf/zPsUyThaTrCuk/lrF7ZIyu0
-         WXA5LZab4V7Ykjn9DnBJPx5kjkNlsM3TXfQmqPc6e8HF+/DYYXC9IVnnkiTx9QbgbKrK
-         LDJA==
-X-Gm-Message-State: AAQBX9fAMMmAarQIwszcpS14OLxcLggVe5GodJtNOHjHfQHeK2CLgkVX
-        SVlPcj0cKKAi0k2KFweNT3RtJ9sg1QJ1ROSU
-X-Google-Smtp-Source: AKy350bOmcX4bhvMcYbhTSAl8lBQ2O0deW3xZkttmpHKSB+VEjNEWJFCZZnxKvEdtC6SV8VkwoJDDIrEQNByEpas
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a63:485d:0:b0:4f2:8281:8afb with SMTP
- id x29-20020a63485d000000b004f282818afbmr35913pgk.4.1680559428241; Mon, 03
- Apr 2023 15:03:48 -0700 (PDT)
-Date:   Mon,  3 Apr 2023 22:03:37 +0000
-In-Reply-To: <20230403220337.443510-1-yosryahmed@google.com>
-Mime-Version: 1.0
+        d=1e100.net; s=20210112; t=1680559532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S+Pu9YVys7d4kSNF1Q1j+VStoW6Udcnhp1204T10rf0=;
+        b=Tjo4S50at6OwwoqwHrECZjh3x/05NKGXCYLUjct+paWAU9bgZQnrAB0o0m+TZWIObe
+         Wr4QF0i0RkJGIPEK20B50t//IMcfhwtCOeE+Q66sxV0IdmBDHdmK5binxojFpEZvilHz
+         4B8cOIwrgqh1f9KsQj9FSNb01/McVmPq6r/hHi+qGFuGPcc0LiV+cZ/YIZGQoYBYkiWY
+         k+zQPuuJiyWcQkUxuOn8gXeNlWgFb/L8gpUy45zqVZOetebGJeYwIhAIbkXNA9pE/qrH
+         Coyid75GCW2RdeTHh3ggX5OSzve/P6UVbylkt1XrGPx0nRc/8bZ3q7n37+DaxxvYLmZw
+         82Qw==
+X-Gm-Message-State: AAQBX9fzZ5ItuOFDrVR3S+zAD41C6CJ9a8gpAZVWr1s14OXrAZbkyEt9
+        7ewamPcA7OC5SZYxg2QMBjoDC/BPtK7jS+NmmnKjWg==
+X-Google-Smtp-Source: AKy350a2bd0/HTdijZ5WvqoL/zNRl0YKvmiDnDigwaVD5dalacSBW35g211bTWin+PlIlTCfJIAwts6dy0xwSO/2qJE=
+X-Received: by 2002:a17:907:7894:b0:8e5:411d:4d09 with SMTP id
+ ku20-20020a170907789400b008e5411d4d09mr85418ejc.15.1680559531710; Mon, 03 Apr
+ 2023 15:05:31 -0700 (PDT)
+MIME-Version: 1.0
 References: <20230403220337.443510-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230403220337.443510-6-yosryahmed@google.com>
-Subject: [PATCH mm-unstable RFC 5/5] cgroup: remove cgroup_rstat_flush_atomic()
+In-Reply-To: <20230403220337.443510-1-yosryahmed@google.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 3 Apr 2023 15:04:55 -0700
+Message-ID: <CAJD7tkZ5vh5ssDux1LStX9ZivmGmXsFyxfADGJD5AXDaMnGWRQ@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable RFC 0/5] cgroup: eliminate atomic rstat
 To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -62,101 +62,71 @@ To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Yosry Ahmed <yosryahmed@google.com>
+        cgroups@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Previous patches removed the only caller of cgroup_rstat_flush_atomic().
-Remove the function and simplify the code.
+On Mon, Apr 3, 2023 at 3:03=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
+>
+> A previous patch series ([1] currently in mm-unstable) changed most
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- include/linux/cgroup.h |  1 -
- kernel/cgroup/rstat.c  | 26 +++++---------------------
- 2 files changed, 5 insertions(+), 22 deletions(-)
+.. and I naturally forgot to link this:
+[1] https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@go=
+ogle.com/
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 885f5395fcd04..567c547cf371f 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -692,7 +692,6 @@ static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
-  */
- void cgroup_rstat_updated(struct cgroup *cgrp, int cpu);
- void cgroup_rstat_flush(struct cgroup *cgrp);
--void cgroup_rstat_flush_atomic(struct cgroup *cgrp);
- void cgroup_rstat_flush_hold(struct cgroup *cgrp);
- void cgroup_rstat_flush_release(void);
- 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index d3252b0416b69..f9ad33f117c82 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -171,7 +171,7 @@ __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
- __diag_pop();
- 
- /* see cgroup_rstat_flush() */
--static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
-+static void cgroup_rstat_flush_locked(struct cgroup *cgrp)
- 	__releases(&cgroup_rstat_lock) __acquires(&cgroup_rstat_lock)
- {
- 	int cpu;
-@@ -207,9 +207,8 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
- 		}
- 		raw_spin_unlock_irqrestore(cpu_lock, flags);
- 
--		/* if @may_sleep, play nice and yield if necessary */
--		if (may_sleep && (need_resched() ||
--				  spin_needbreak(&cgroup_rstat_lock))) {
-+		/* play nice and yield if necessary */
-+		if (need_resched() || spin_needbreak(&cgroup_rstat_lock)) {
- 			spin_unlock_irq(&cgroup_rstat_lock);
- 			if (!cond_resched())
- 				cpu_relax();
-@@ -236,25 +235,10 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
- 	might_sleep();
- 
- 	spin_lock_irq(&cgroup_rstat_lock);
--	cgroup_rstat_flush_locked(cgrp, true);
-+	cgroup_rstat_flush_locked(cgrp);
- 	spin_unlock_irq(&cgroup_rstat_lock);
- }
- 
--/**
-- * cgroup_rstat_flush_atomic- atomic version of cgroup_rstat_flush()
-- * @cgrp: target cgroup
-- *
-- * This function can be called from any context.
-- */
--void cgroup_rstat_flush_atomic(struct cgroup *cgrp)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&cgroup_rstat_lock, flags);
--	cgroup_rstat_flush_locked(cgrp, false);
--	spin_unlock_irqrestore(&cgroup_rstat_lock, flags);
--}
--
- /**
-  * cgroup_rstat_flush_hold - flush stats in @cgrp's subtree and hold
-  * @cgrp: target cgroup
-@@ -269,7 +253,7 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
- {
- 	might_sleep();
- 	spin_lock_irq(&cgroup_rstat_lock);
--	cgroup_rstat_flush_locked(cgrp, true);
-+	cgroup_rstat_flush_locked(cgrp);
- }
- 
- /**
--- 
-2.40.0.348.gf938b09366-goog
-
+> atomic rstat flushing contexts to become non-atomic. This was done to
+> avoid an expensive operation that scales with # cgroups and # cpus to
+> happen with irqs disabled and scheduling not permitted. There were two
+> remaining atomic flushing contexts after that series. This series tries
+> to eliminate them as well, eliminating atomic rstat flushing completely.
+>
+> The two remaining atomic flushing contexts are:
+> (a) wb_over_bg_thresh()->mem_cgroup_wb_stats()
+> (b) mem_cgroup_threshold()->mem_cgroup_usage()
+>
+> For (a), flushing needs to be atomic as wb_writeback() calls
+> wb_over_bg_thresh() with a spinlock held. However, it seems like the
+> call to wb_over_bg_thresh() doesn't need to be protected by that
+> spinlock, so this series proposes a refactoring that moves the call
+> outside the lock criticial section and makes the stats flushing
+> in mem_cgroup_wb_stats() non-atomic.
+>
+> For (b), flushing needs to be atomic as mem_cgroup_threshold() is called
+> with irqs disabled. We only flush the stats when calculating the root
+> usage, as it is approximated as the sum of some memcg stats (file, anon,
+> and optionally swap) instead of the conventional page counter. This
+> series proposes changing this calculation to use the global stats
+> instead, eliminating the need for a memcg stat flush.
+>
+> After these 2 contexts are eliminated, we no longer need
+> mem_cgroup_flush_stats_atomic() or cgroup_rstat_flush_atomic(). We can
+> remove them and simplify the code.
+>
+> Yosry Ahmed (5):
+>   writeback: move wb_over_bg_thresh() call outside lock section
+>   memcg: flush stats non-atomically in mem_cgroup_wb_stats()
+>   memcg: calculate root usage from global state
+>   memcg: remove mem_cgroup_flush_stats_atomic()
+>   cgroup: remove cgroup_rstat_flush_atomic()
+>
+>  fs/fs-writeback.c          | 16 +++++++----
+>  include/linux/cgroup.h     |  1 -
+>  include/linux/memcontrol.h |  5 ----
+>  kernel/cgroup/rstat.c      | 26 ++++--------------
+>  mm/memcontrol.c            | 54 ++++++++------------------------------
+>  5 files changed, 27 insertions(+), 75 deletions(-)
+>
+> --
+> 2.40.0.348.gf938b09366-goog
+>
