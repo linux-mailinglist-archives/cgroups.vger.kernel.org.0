@@ -2,139 +2,263 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC7A6D6DA0
-	for <lists+cgroups@lfdr.de>; Tue,  4 Apr 2023 22:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B46D6E69
+	for <lists+cgroups@lfdr.de>; Tue,  4 Apr 2023 22:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbjDDUJU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Apr 2023 16:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
+        id S236354AbjDDUu2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Apr 2023 16:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234769AbjDDUJT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Apr 2023 16:09:19 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5350198E
-        for <cgroups@vger.kernel.org>; Tue,  4 Apr 2023 13:09:12 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id r19-20020a05600c459300b003eb3e2a5e7bso20785106wmo.0
-        for <cgroups@vger.kernel.org>; Tue, 04 Apr 2023 13:09:12 -0700 (PDT)
+        with ESMTP id S236350AbjDDUuZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Apr 2023 16:50:25 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2434C25;
+        Tue,  4 Apr 2023 13:50:24 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id ix20so32518178plb.3;
+        Tue, 04 Apr 2023 13:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20210112.gappssmtp.com; s=20210112; t=1680638951;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHa2YuwGHdarAAiMk1og5R7L6o7idQvUnJX2z9eCeX4=;
-        b=suhopf6Duc7KaYoyMZ4+D6ZLGbwrP5YpWGxvE6qzST17brhCVvVgvh0BhBnIeK89jy
-         Azqz+miC0BBFkvUmhVnUOA0Q8m6QtHVrqsAlgwZQII75k0bHcHAPFQN2evjlRLmIqofl
-         eUI96Bo8z5GlOkNLhKLLtA4W40vQ4tCDvno2MaGTbm7Rk6RXfTTjk6PWbzd0WUqgV8Nz
-         5DTa/xhKTSCkXbrh9CsXi7qc5nJI59qwfYPE+oj5O/uTU/BpVZLxdLa5KAjl4WBtqxGV
-         kf1eJF6FwXSywiLqrG68dKYSdbyBjyv2ZNMBhyhjJXIgvS6pifZ55Ae/AmVOxGbhQhfP
-         s/wA==
+        d=gmail.com; s=20210112; t=1680641423;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lglI8SHFdENU7LxVGQcu2UFVz8VugpbHJeSn7gO+RPc=;
+        b=Nrw6i/FJkS+fqTHL9se7KaV8CBQ8xPVRt4LMvU2Do9i/mTfZSgWVYiqA/pz4ECapQQ
+         tCpnUOnnfw0CQgEFR/FRbB9ejV68iU6P0vReR7IiHWMWh7XWRvd/zt3D7oPfgKzu8ZVL
+         PFBGzhqG/eQ1Wg6dC/pz5EitUrx3E0FtWzBZHDob4owJKiqepla9rrMevQICz2jTD6sB
+         IxCbiS3TOw5KrDKlwAMI7w2UXHiOSgdPeq6lxmP+5+46AFNq0b6/co31Vf/ozknj+8zJ
+         x1LZzrI54HRvbU9F97DUHeoGyEX15x6ETRsdEZyk/TEk+xCTpDfq4O7jGHmFkSr5In1k
+         FRow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680638951;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iHa2YuwGHdarAAiMk1og5R7L6o7idQvUnJX2z9eCeX4=;
-        b=0X46iUadMLbGuIes5X7ZRMQ3RVMS/QIFShAgK3yU1kc93Rqt6QGzuX38g/E+UOXJoy
-         6OixwB6E33v9ykjWbXXUqFni0Km9qp3gQT87MMrezTvOBCFUZ2olLfsfir6qMFbv5H6x
-         KmKMn2F8LVLZvi+xM9gIUwPrPFLiqQ1PYfMnZU+gDw5NRjdudOG7Vk1NnkDA7i771227
-         zVadZ9LswJqH6AsxxUlfCv2MQ209ETowB32YdzchLNoel40q+emfpoDjNy24yjopLeEF
-         8Xibylg5z+7G3au7K/pKXk+Pt6vlWK9Dcz2osP9CsyNkNKgQwVZr4SJWglFfbcva66Oi
-         tUHg==
-X-Gm-Message-State: AAQBX9dfL4ri1QU+T3/Ap375WAQOLxe7DCUUkpe/nWopHEAKZQPs9UQ3
-        Sn5Cg6OYszuYO3UULGPb2SAqcw==
-X-Google-Smtp-Source: AKy350ayY6UWE8QoWQs9523o/wjmvd24yVlTAR7wLRcGuj2htSaB5YsHfprNKlCcN+g85LraOqkxxA==
-X-Received: by 2002:a05:600c:2b8c:b0:3f0:3a9a:516e with SMTP id j12-20020a05600c2b8c00b003f03a9a516emr3242864wmc.15.1680638951138;
-        Tue, 04 Apr 2023 13:09:11 -0700 (PDT)
-Received: from airbuntu (host86-163-35-64.range86-163.btcentralplus.com. [86.163.35.64])
-        by smtp.gmail.com with ESMTPSA id q9-20020a1ce909000000b003f0373d077csm2856990wmc.47.2023.04.04.13.09.10
+        d=1e100.net; s=20210112; t=1680641423;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lglI8SHFdENU7LxVGQcu2UFVz8VugpbHJeSn7gO+RPc=;
+        b=ZzNcOg0l55KuBHStiSkxAWJ5pitgMY5BT93oTM+8qbvsE+5Jc19EYhxJKVf/tpE5K3
+         MCd0eENVb+7Oy0nEIvA/eCv64eFSX+mGWnxloyv5KyYkVmpKosJbMSe24Sy2rsN535BP
+         kDZLMNdpwYt8ZyMwzm3lfyKl0rMuk7X/f6lYWAFqlMfuFfXJfdX9Guj+bkcM0nwBFF1Q
+         2MyltgG6dP31ecckpRnsJhQ8rWcqMAFzpT+2P+UtL6l4RaC+fT8QrG+EE7XnQYuzIXtS
+         2gDGl1p8AnrrkhBy1lfGecHv3t1cYO13kViszZDUTor+RAojRgTogdUaiD70bYH/5yHP
+         wQ1Q==
+X-Gm-Message-State: AAQBX9fDT5VNtuY/jYyru6aDkygI1T862rmUgJ881QWMzhIOEwtkc9N9
+        GOd2u6SdGGwXXbYeofxXREqldmcFpqCO+QUL
+X-Google-Smtp-Source: AKy350YCVMZqXw6ZiGurBjzNmoYBsAbAsOz/1gvcWpAAID0BsOihl1waiyFK0dykig976XfgWdUntw==
+X-Received: by 2002:a17:903:244f:b0:1a1:ce5d:5a15 with SMTP id l15-20020a170903244f00b001a1ce5d5a15mr4998933pls.50.1680641423186;
+        Tue, 04 Apr 2023 13:50:23 -0700 (PDT)
+Received: from lunar.aeonazure.com ([182.2.143.216])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170902728900b0019f2328bef8sm8818551pll.34.2023.04.04.13.50.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Apr 2023 13:09:10 -0700 (PDT)
-Date:   Tue, 4 Apr 2023 21:09:09 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth
- restoration
-Message-ID: <20230404200909.krwq36nx36ktm2sh@airbuntu>
-References: <20230329125558.255239-1-juri.lelli@redhat.com>
+        Tue, 04 Apr 2023 13:50:22 -0700 (PDT)
+From:   Shaun Tancheff <shaun.tancheff@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Shaun Tancheff <shaun.tancheff@hpe.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] memcg-v1: Enable setting memory min, low, high
+Date:   Wed,  5 Apr 2023 03:50:13 +0700
+Message-Id: <20230404205013.31520-1-shaun.tancheff@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230329125558.255239-1-juri.lelli@redhat.com>
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 03/29/23 14:55, Juri Lelli wrote:
-> Qais reported [1] that iterating over all tasks when rebuilding root
-> domains for finding out which ones are DEADLINE and need their bandwidth
-> correctly restored on such root domains can be a costly operation (10+
-> ms delays on suspend-resume). He proposed we skip rebuilding root
-> domains for certain operations, but that approach seemed arch specific
-> and possibly prone to errors, as paths that ultimately trigger a rebuild
-> might be quite convoluted (thanks Qais for spending time on this!).
-> 
-> To fix the problem
-> 
->  01/06 - Rename functions deadline with DEADLINE accounting (cleanup
->          suggested by Qais) - no functional change
->  02/06 - Bring back cpuset_mutex (so that we have write access to cpusets
->          from scheduler operations - and we also fix some problems
->          associated to percpu_cpuset_rwsem)
->  03/06 - Keep track of the number of DEADLINE tasks belonging to each cpuset
->  04/06 - Create DL BW alloc, free & check overflow interface for bulk
->          bandwidth allocation/removal - no functional change 
->  05/06 - Fix bandwidth allocation handling for cgroup operation
->          involving multiple tasks
->  06/06 - Use this information to only perform the costly iteration if
->          DEADLINE tasks are actually present in the cpuset for which a
->          corresponding root domain is being rebuilt
-> 
-> With respect to the RFC posting [2]
-> 
->  1 - rename DEADLINE bandwidth accounting functions - Qais
->  2 - call inc/dec_dl_tasks_cs from switched_{to,from}_dl - Qais
->  3 - fix DEADLINE bandwidth allocation with multiple tasks - Waiman,
->      contributed by Dietmar
-> 
-> This set is also available from
-> 
-> https://github.com/jlelli/linux.git deadline/rework-cpusets
+From: Shaun Tancheff <shaun.tancheff@hpe.com>
 
-Thanks a lot Juri!
+For users that are unable to update to memcg-v2 this
+provides a method where memcg-v1 can more effectively
+apply enough memory pressure to effectively throttle
+filesystem I/O or otherwise minimize being memcg oom
+killed at the expense of reduced performance.
 
-I picked up the updated series and applied them to a 5.10 kernel and tested the
-issue is fixed. Replied with my reviewed-and-tested-bys to some of the patches
-already.
+This patch extends the memcg-v1 legacy sysfs entries
+with:
+    limit_in_bytes.min, limit_in_bytes.low and
+    limit_in_bytes.high
+Since old software will need to be updated to take
+advantage of the new files a secondary method
+of setting min, low and high based on a percentage
+of the limit is also provided. The percentages
+are determined by module parameters.
 
-I haven't looked much at Dietmar's patches and while they were part of the
-test, but there are no dl tasks on the system so I felt hesitant to say
-I tested that part.
+The available module parameters can be set at
+kernel boot time, for example:
+   memcontrol.memcg_min=10
+   memcontrol.memcg_low=30
+   memcontrol.memcg_high=80
 
+Would set min to 10%, low to 30% and high to 80% of
+the value written to:
+  /sys/fs/cgroup/memory/<grp>/memory.limit_in_bytes
 
-Cheers
+Signed-off-by: Shaun Tancheff <shaun.tancheff@hpe.com>
+---
+ mm/memcontrol.c | 84 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 83 insertions(+), 1 deletion(-)
 
---
-Qais Yousef
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5abffe6f8389..eec6e6ed92f8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -73,6 +73,18 @@
+ 
+ #include <trace/events/vmscan.h>
+ 
++static unsigned int memcg_v1_min_default_percent;
++module_param_named(memcg_min, memcg_v1_min_default_percent, uint, 0600);
++MODULE_PARM_DESC(memcg_min, "memcg v1 min default percent");
++
++static unsigned int memcg_v1_low_default_percent;
++module_param_named(memcg_low, memcg_v1_low_default_percent, uint, 0600);
++MODULE_PARM_DESC(memcg_low, "memcg v1 low default percent");
++
++static unsigned int memcg_v1_high_default_percent;
++module_param_named(memcg_high, memcg_v1_high_default_percent, uint, 0600);
++MODULE_PARM_DESC(memcg_high, "memcg v1 high default percent");
++
+ struct cgroup_subsys memory_cgrp_subsys __read_mostly;
+ EXPORT_SYMBOL(memory_cgrp_subsys);
+ 
+@@ -208,6 +220,7 @@ enum res_type {
+ 	_MEMSWAP,
+ 	_KMEM,
+ 	_TCP,
++	_MEM_V1,
+ };
+ 
+ #define MEMFILE_PRIVATE(x, val)	((x) << 16 | (val))
+@@ -3689,6 +3702,9 @@ enum {
+ 	RES_MAX_USAGE,
+ 	RES_FAILCNT,
+ 	RES_SOFT_LIMIT,
++	RES_LIMIT_MIN,
++	RES_LIMIT_LOW,
++	RES_LIMIT_HIGH,
+ };
+ 
+ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
+@@ -3699,6 +3715,7 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
+ 
+ 	switch (MEMFILE_TYPE(cft->private)) {
+ 	case _MEM:
++	case _MEM_V1:
+ 		counter = &memcg->memory;
+ 		break;
+ 	case _MEMSWAP:
+@@ -3729,6 +3746,12 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
+ 		return counter->failcnt;
+ 	case RES_SOFT_LIMIT:
+ 		return (u64)memcg->soft_limit * PAGE_SIZE;
++	case RES_LIMIT_MIN:
++		return (u64)READ_ONCE(memcg->memory.min);
++	case RES_LIMIT_LOW:
++		return (u64)READ_ONCE(memcg->memory.low);
++	case RES_LIMIT_HIGH:
++		return (u64)READ_ONCE(memcg->memory.high);
+ 	default:
+ 		BUG();
+ 	}
+@@ -3828,6 +3851,35 @@ static int memcg_update_tcp_max(struct mem_cgroup *memcg, unsigned long max)
+ 	return ret;
+ }
+ 
++static inline void mem_cgroup_v1_set_defaults(struct mem_cgroup *memcg,
++					       u64 nr_pages)
++{
++	u64 max = (u64)(PAGE_COUNTER_MAX * PAGE_SIZE) / PAGE_SIZE;
++	u64 min, low, high;
++
++	if (mem_cgroup_is_root(memcg) || max == nr_pages)
++		return;
++
++	min = READ_ONCE(memcg->memory.min);
++	low = READ_ONCE(memcg->memory.low);
++	if (min || low)
++		return;
++
++	if (!min && memcg_v1_min_default_percent) {
++		min = (nr_pages * memcg_v1_min_default_percent) / 100;
++		page_counter_set_min(&memcg->memory, min);
++	}
++	if (!low && memcg_v1_low_default_percent) {
++		low = (nr_pages * memcg_v1_low_default_percent) / 100;
++		page_counter_set_low(&memcg->memory, low);
++	}
++	high = READ_ONCE(memcg->memory.high);
++	if (high == PAGE_COUNTER_MAX && memcg_v1_high_default_percent) {
++		high = (nr_pages * memcg_v1_high_default_percent) / 100;
++		page_counter_set_high(&memcg->memory, high);
++	}
++}
++
+ /*
+  * The user of this function is...
+  * RES_LIMIT.
+@@ -3851,6 +3903,11 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
+ 			break;
+ 		}
+ 		switch (MEMFILE_TYPE(of_cft(of)->private)) {
++		case _MEM_V1:
++			ret = mem_cgroup_resize_max(memcg, nr_pages, false);
++			if (!ret)
++				mem_cgroup_v1_set_defaults(memcg, nr_pages);
++			break;
+ 		case _MEM:
+ 			ret = mem_cgroup_resize_max(memcg, nr_pages, false);
+ 			break;
+@@ -4999,6 +5056,13 @@ static int mem_cgroup_slab_show(struct seq_file *m, void *p)
+ }
+ #endif
+ 
++static ssize_t memory_min_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off);
++static ssize_t memory_low_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off);
++static ssize_t memory_high_write(struct kernfs_open_file *of,
++				 char *buf, size_t nbytes, loff_t off);
++
+ static struct cftype mem_cgroup_legacy_files[] = {
+ 	{
+ 		.name = "usage_in_bytes",
+@@ -5013,10 +5077,28 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 	},
+ 	{
+ 		.name = "limit_in_bytes",
+-		.private = MEMFILE_PRIVATE(_MEM, RES_LIMIT),
++		.private = MEMFILE_PRIVATE(_MEM_V1, RES_LIMIT),
+ 		.write = mem_cgroup_write,
+ 		.read_u64 = mem_cgroup_read_u64,
+ 	},
++	{
++		.name = "limit_in_bytes.min",
++		.private = MEMFILE_PRIVATE(_MEM_V1, RES_LIMIT_MIN),
++		.write = memory_min_write,
++		.read_u64 = mem_cgroup_read_u64,
++	},
++	{
++		.name = "limit_in_bytes.low",
++		.private = MEMFILE_PRIVATE(_MEM_V1, RES_LIMIT_LOW),
++		.write = memory_low_write,
++		.read_u64 = mem_cgroup_read_u64,
++	},
++	{
++		.name = "limit_in_bytes.high",
++		.private = MEMFILE_PRIVATE(_MEM_V1, RES_LIMIT_HIGH),
++		.write = memory_high_write,
++		.read_u64 = mem_cgroup_read_u64,
++	},
+ 	{
+ 		.name = "soft_limit_in_bytes",
+ 		.private = MEMFILE_PRIVATE(_MEM, RES_SOFT_LIMIT),
+-- 
+2.34.1
+
