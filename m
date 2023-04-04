@@ -2,123 +2,182 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57546D6A55
-	for <lists+cgroups@lfdr.de>; Tue,  4 Apr 2023 19:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7C56D6A9A
+	for <lists+cgroups@lfdr.de>; Tue,  4 Apr 2023 19:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbjDDRV5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Apr 2023 13:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        id S236361AbjDDRay (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Apr 2023 13:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235831AbjDDRVu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Apr 2023 13:21:50 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6771710EB
-        for <cgroups@vger.kernel.org>; Tue,  4 Apr 2023 10:21:45 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id f188so21133272ybb.3
-        for <cgroups@vger.kernel.org>; Tue, 04 Apr 2023 10:21:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1680628904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H/6nWpG035DFCd1KL6TSDLFyH9kaDtT1tj9RQy6j89U=;
-        b=PKraOirR2pRBA2DBW/b33pTm+8HXjKvpeNeRzehm9FD9V7XXtodyrrySXy1qTEBZQr
-         KFtO6wcuZl5I0TAgoLpYtumb2AXH1YDSl7tNZVF0teic9sNmnZ5Au1/xUa9gyEVdQLdV
-         AY7qyFZ1dPyPFa1UUhVHvv8/mO0zS1TBX7chxj/oUPivbEu361UcjMNugE1rCkF2gF0Q
-         67lgHtBl39eyST0OLIFXiGODcqI2+588kxayaRE7NbbqOro+EqNNKkmqAeeBCCR7SquS
-         F31eMziiL3Tu2fHhzHuplp2dE7AYSjVVNkuvNqRVoXYN2Tei1Q9gxYr8f2pGG+ajomnQ
-         hbug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680628904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H/6nWpG035DFCd1KL6TSDLFyH9kaDtT1tj9RQy6j89U=;
-        b=7dMnXHkoRgI1lUweCIFjVoashtVWvI44NqN4dZIupuhbIQamgbtqctsY7eWJgz4eT4
-         l2nzP02AvPt7M6K+U9jIuqBOUBFn+eRJ5RzuWyXtrZTGp5sWXzyincT8kTGaKVt9Yql4
-         awoNF9poczxfGZ87JPYdXYhhqL9xUvimGqP/jD74sdZMR6GcQY+HA0dwh8R+4OPETx6T
-         jPQvbrjy2b3gmEBqAwOjH7sYQ24hJFetmTrMRXEy1zuKEw6/LxahR94pYKD8o6bJMNDj
-         u1j/Ird0vXUcyBRTslxSS+eL8+6YVDuaDsgGoy/5Rm0EaGaGZX4tvUzIFUOGdksF9RWt
-         afOw==
-X-Gm-Message-State: AAQBX9cmuZVzHIA86zpoz39moAvBYAieo04fJbjxrCx44jPxBo8DKuj7
-        dyDKuUa8C9MEVtGsNltdfbBzIPcwt44CRI4Uvc0w7A==
-X-Google-Smtp-Source: AKy350YO1gXKrbjU1BYPifCphoRiUxy1FvIjM90AQwLqo17M47gxr8jXro28tsqB3CbSgypd8zH6KOlbq2rBGIO2s70=
-X-Received: by 2002:a25:ca4b:0:b0:b77:d2db:5f8f with SMTP id
- a72-20020a25ca4b000000b00b77d2db5f8fmr2305401ybg.12.1680628904510; Tue, 04
- Apr 2023 10:21:44 -0700 (PDT)
+        with ESMTP id S236753AbjDDRac (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Apr 2023 13:30:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD4619B6
+        for <cgroups@vger.kernel.org>; Tue,  4 Apr 2023 10:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680629235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+yJ2HBFPQ7R/vP49e1zoV0yoKAMKg83JKUSNAzQmCY=;
+        b=FB9m9UcPKN8UZP1jbyjg0t2VF79UGUH1n7Pa0+OkNDbsylYV6hf9HuzEVjRZBYGtdsrxJU
+        y9w/DJpbtUcOBuZEl8v74Yf/zDGM4effnRW1SZJbIZ1dwu+fNL15VqTKiEJ6UAREeVWrjs
+        9VAGZbbQ0S2v8yEwWLuBS21GVQjCwTI=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-101-wV2LJ1KSPv-3hBGwhkWILA-1; Tue, 04 Apr 2023 13:24:04 -0400
+X-MC-Unique: wV2LJ1KSPv-3hBGwhkWILA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C89642999B2E;
+        Tue,  4 Apr 2023 17:24:03 +0000 (UTC)
+Received: from [10.22.32.153] (unknown [10.22.32.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E587140EBF4;
+        Tue,  4 Apr 2023 17:24:03 +0000 (UTC)
+Message-ID: <342c1967-8a68-275c-042e-765d5993157c@redhat.com>
+Date:   Tue, 4 Apr 2023 13:24:03 -0400
 MIME-Version: 1.0
-References: <20230330191801.1967435-1-yosryahmed@google.com>
- <20230330191801.1967435-5-yosryahmed@google.com> <20230404165258.ie6ttxobbmgn62hs@blackpad>
- <CALvZod5Y+quOS1XQvVBTvv7FRs3455j_79f0GoR+FqCFzbwkuA@mail.gmail.com>
-In-Reply-To: <CALvZod5Y+quOS1XQvVBTvv7FRs3455j_79f0GoR+FqCFzbwkuA@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 4 Apr 2023 10:21:33 -0700
-Message-ID: <CALvZod7Ao-VmB4as+VHsR+awW1jmOA18uVM7qk21mVsXTOYC2A@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] memcg: replace stats_flush_lock with an atomic
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2] mm: oom: introduce cpuset oom
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>, Gang Li <ligang.bdlg@bytedance.com>
+Cc:     rientjes@google.com, linux-kernel@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+References: <20230404115509.14299-1-ligang.bdlg@bytedance.com>
+ <ZCw0sR6IqYa5Es7Q@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZCw0sR6IqYa5Es7Q@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 4, 2023 at 10:13=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
-wrote:
+On 4/4/23 10:31, Michal Hocko wrote:
+> [CC cpuset people]
 >
-> On Tue, Apr 4, 2023 at 9:53=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.c=
-om> wrote:
-> >
-> > Hello.
-> >
-> > On Thu, Mar 30, 2023 at 07:17:57PM +0000, Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> > >  static void __mem_cgroup_flush_stats(void)
-> > >  {
-> > > -     unsigned long flag;
-> > > -
-> > > -     if (!spin_trylock_irqsave(&stats_flush_lock, flag))
-> > > +     /*
-> > > +      * We always flush the entire tree, so concurrent flushers can =
-just
-> > > +      * skip. This avoids a thundering herd problem on the rstat glo=
-bal lock
-> > > +      * from memcg flushers (e.g. reclaim, refault, etc).
-> > > +      */
-> > > +     if (atomic_read(&stats_flush_ongoing) ||
-> > > +         atomic_xchg(&stats_flush_ongoing, 1))
-> > >               return;
-> >
-> > I'm curious about why this instead of
-> >
-> >         if (atomic_xchg(&stats_flush_ongoing, 1))
-> >                 return;
-> >
-> > Is that some microarchitectural cleverness?
-> >
+> On Tue 04-04-23 19:55:09, Gang Li wrote:
+>> When a process in cpuset triggers oom, it may kill a completely
+>> irrelevant process on another numa node, which will not release any
+>> memory for this cpuset.
+>>
+>> It seems that `CONSTRAINT_CPUSET` is not really doing much these
+>> days. Using CONSTRAINT_CPUSET, we can easily achieve node aware oom
+>> by selecting victim from all cpusets with the same mems_allowed as
+>> the current cpuset.
+> This should go into more details about the usecase, testing and ideally
+> also spend couple of words about how CONSTRAINT_CPUSET is actually
+> implemented because this is not really immediately obvious. An example
+> of before/after behavior would have been really nice as well.
 >
-> Yes indeed it is. Basically we want to avoid unconditional cache
-> dirtying. This pattern is also used at other places in the kernel like
-> qspinlock.
+> You should also go into much more details about how oom victims are
+> actually evaluated.
+>
+>> Suggested-by: Michal Hocko <mhocko@suse.com>
+>> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+>> ---
+>> Changes in v2:
+>> - Select victim from all cpusets with the same mems_allowed as the current cpuset.
+>>    (David Rientjes <rientjes@google.com>)
+>>
+>> v1:
+>> - https://lore.kernel.org/all/20220921064710.89663-1-ligang.bdlg@bytedance.com/
+>>
+>> ---
+>>   include/linux/cpuset.h |  6 ++++++
+>>   kernel/cgroup/cpuset.c | 28 ++++++++++++++++++++++++++++
+>>   mm/oom_kill.c          |  4 ++++
+>>   3 files changed, 38 insertions(+)
+> As this is a userspace visible change it should also be documented
+> somewhere  in Documentation.
+>
+> I am not really familiar with cpusets internals so I cannot really judge
+> cpuset_cgroup_scan_tasks implementation.
+>
+> The oom report should be explicit about this being CPUSET specific oom
+> handling so unexpected behavior could be nailed down to this change so I
+> do not see a major concern from the oom POV. Nevertheless it would be
+> still good to consider whether this should be an opt-in behavior. I
+> personally do not see a major problem because most cpuset deployments I
+> have seen tend to be well partitioned so the new behavior makes more
+> sense.
+>
+>> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+>> index 980b76a1237e..fc244141bd52 100644
+>> --- a/include/linux/cpuset.h
+>> +++ b/include/linux/cpuset.h
+>> @@ -171,6 +171,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
+>>   	task_unlock(current);
+>>   }
+>>   
+>> +int cpuset_cgroup_scan_tasks(int (*fn)(struct task_struct *, void *), void *arg);
+>> +
+>>   #else /* !CONFIG_CPUSETS */
+>>   
+>>   static inline bool cpusets_enabled(void) { return false; }
+>> @@ -287,6 +289,10 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
+>>   	return false;
+>>   }
+>>   
+>> +static inline int cpuset_cgroup_scan_tasks(int (*fn)(struct task_struct *, void *), void *arg)
+>> +{
+>> +	return 0;
+>> +}
+>>   #endif /* !CONFIG_CPUSETS */
+>>   
+>>   #endif /* _LINUX_CPUSET_H */
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index bc4dcfd7bee5..b009c98ca19e 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -4013,6 +4013,34 @@ void cpuset_print_current_mems_allowed(void)
+>>   	rcu_read_unlock();
+>>   }
+>>   
+>> +int cpuset_cgroup_scan_tasks(int (*fn)(struct task_struct *, void *), void *arg)
+>> +{
+>> +	int ret = 0;
+>> +	struct css_task_iter it;
+>> +	struct task_struct *task;
+>> +	struct cpuset *cs;
+>> +	struct cgroup_subsys_state *pos_css;
+>> +
+>> +	/*
+>> +	 * Situation gets complex with overlapping nodemasks in different cpusets.
+>> +	 * TODO: Maybe we should calculate the "distance" between different mems_allowed.
+>> +	 *
+>> +	 * But for now, let's make it simple. Just iterate through all cpusets
+>> +	 * with the same mems_allowed as the current cpuset.
+>> +	 */
+>> +	rcu_read_lock();
+>> +	cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+>> +		if (nodes_equal(cs->mems_allowed, task_cs(current)->mems_allowed)) {
+>> +			css_task_iter_start(&(cs->css), CSS_TASK_ITER_PROCS, &it);
+>> +			while (!ret && (task = css_task_iter_next(&it)))
+>> +				ret = fn(task, arg);
+>> +			css_task_iter_end(&it);
+>> +		}
+>> +	}
+>> +	rcu_read_unlock();
+>> +	return ret;
+>> +}
 
-Oh also take a look at
-https://lore.kernel.org/all/20230404052228.15788-1-feng.tang@intel.com/
+You will also need to take cpuset_rwsem to make sure that cpusets are 
+stable. BTW, the cpuset_cgroup_scan_tasks() name is kind of redundant. I 
+will suggest you just name it as cpuset_scan_tasks(). Please also add a 
+doctext comment about its purpose and how it should be used.
+
+Cheers,
+Longman
+
