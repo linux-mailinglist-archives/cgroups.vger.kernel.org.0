@@ -2,100 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EA16D978B
-	for <lists+cgroups@lfdr.de>; Thu,  6 Apr 2023 15:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CCA6D98E6
+	for <lists+cgroups@lfdr.de>; Thu,  6 Apr 2023 16:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbjDFNCq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 6 Apr 2023 09:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S238931AbjDFOFH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Apr 2023 10:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237098AbjDFNCo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Apr 2023 09:02:44 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549FC83DC
-        for <cgroups@vger.kernel.org>; Thu,  6 Apr 2023 06:02:22 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id q102so37159424pjq.3
-        for <cgroups@vger.kernel.org>; Thu, 06 Apr 2023 06:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1680786142;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IfVjKlL+j9HlDI7Ywy3orPIREWTrRC6HkOIMTjgyE5A=;
-        b=Qq/l6ip9dMiziIBWzW4ToFmAn29Ri9O4CLmtTYSR9Rz/boVf5FqBfGnqMOcOXdl871
-         OQ7dEnKcBtY3M2meImEZvKvOfNu5wgcXc0gK7l8UePg0fbk2zzDD2tLyswobRChXf9sz
-         A/8E0beNTT2d+D33WGr5dnvPoI3tTfvpEQKVKB7+wLndb6fqivDB9ogculITxgCfgcka
-         VQAp/K5HfnUnuB57LNJBCVU6rDivf48a099xNNbdkQD9gvaSg+HM5hld30/hI+eeqo/y
-         wGBxYExdN2uDvwnfyGVIYgKegzvoh1HRUajMaxoFVUSPb/bCVCJjcd8BHWltUMtqfOF6
-         H+XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680786142;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IfVjKlL+j9HlDI7Ywy3orPIREWTrRC6HkOIMTjgyE5A=;
-        b=Y00/zidwv9g2N8StDv5/bkFZL23p2ZQU7gYPeZ81HghhLbXf+sZMWlDPpuF/qL06Qs
-         QksIRu/zstQW48o0zsnwe3uRCnmecVeUq4heu/oL1mxPhX+miAuj2vfqbKrsmFT1c9oh
-         /oC2/upj17P9jIDG6Ila9BYzuOKd/uRrqq4EPIBhlsH14c8TQwtsxS5UdNsPpvDnVE1R
-         tCvlibxH40GA4j8plG89A0SbhsqrL4ruE46sSSOl8Y9KV4+Ju0O5Ye1+AJAl6RtJ8SXC
-         F9nPKDQwC4nbNVIoErlP0gF74tCTQPwXOdRk6uIw+x18YswXmYakZ0gmgelwKw0SN29O
-         GqKA==
-X-Gm-Message-State: AAQBX9eIVEHP5zLqKQZ/BkkwjXoFiDdmuFkBjoF9CLW0H05YUYIfq6EQ
-        en/Ywt8ROA/hYOPIi/sInZhbMQ==
-X-Google-Smtp-Source: AKy350ZwFTIV4Y+QNBBDhz/z2ExgzhB65rArbxoEyAk3ePPx4PYa3m3riib4Ts7ft3askmwpj08IDQ==
-X-Received: by 2002:a05:6a20:7b11:b0:d7:34a1:85b9 with SMTP id s17-20020a056a207b1100b000d734a185b9mr2944043pzh.7.1680786141802;
-        Thu, 06 Apr 2023 06:02:21 -0700 (PDT)
-Received: from [10.2.117.253] ([61.213.176.13])
-        by smtp.gmail.com with ESMTPSA id t23-20020aa79397000000b00627eac32b11sm1311597pfe.192.2023.04.06.06.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Apr 2023 06:02:21 -0700 (PDT)
-Message-ID: <cc77d706-7baf-951b-13a5-3470c2b1bba9@bytedance.com>
-Date:   Thu, 6 Apr 2023 21:02:17 +0800
+        with ESMTP id S238500AbjDFOFG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Apr 2023 10:05:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D407ABA
+        for <cgroups@vger.kernel.org>; Thu,  6 Apr 2023 07:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680789863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fJKC7eclbcJ2NK0QGFqPN+/Lc7oGs9ZGgHls+0SIsK4=;
+        b=FUeQ22a60sO7ETEpK0buZtxddEettj8y1/Fgc8UOPatFxJLOwovnQv9yHhgcefTxfKHRPO
+        TBXOMmVHJHFqTsI9eL0jBQ7uymhny6BNLYw/Hl8r+zU6G+0pIHNTOXfEMZe8tACeJrRF9n
+        ChEgP6zvII1BNNCnv57/7gO3xf7hsr8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-267-jOSNqcaKMZ-1csP7ClLnFg-1; Thu, 06 Apr 2023 10:04:19 -0400
+X-MC-Unique: jOSNqcaKMZ-1csP7ClLnFg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 342848996E2;
+        Thu,  6 Apr 2023 14:04:19 +0000 (UTC)
+Received: from llong.com (unknown [10.22.9.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8311740BC799;
+        Thu,  6 Apr 2023 14:04:17 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        gscrivan@redhat.com, Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/4] cgroup/cpuset: Fix CLONE_INTO_CGROUP problem & other issues
+Date:   Thu,  6 Apr 2023 10:04:00 -0400
+Message-Id: <20230406140404.2718574-1-longman@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.1
-Subject: Re: Re: [PATCH v2] mm: oom: introduce cpuset oom
-Content-Language: en-US
-To:     Waiman Long <longman@redhat.com>
-Cc:     rientjes@google.com, linux-kernel@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-References: <20230404115509.14299-1-ligang.bdlg@bytedance.com>
- <ZCw0sR6IqYa5Es7Q@dhcp22.suse.cz>
- <342c1967-8a68-275c-042e-765d5993157c@redhat.com>
-From:   Gang Li <ligang.bdlg@bytedance.com>
-In-Reply-To: <342c1967-8a68-275c-042e-765d5993157c@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2023/4/5 01:24, Waiman Long wrote:
-> 
-> You will also need to take cpuset_rwsem to make sure that cpusets are 
-> stable. BTW, the cpuset_cgroup_scan_tasks() name is kind of redundant. I 
-> will suggest you just name it as cpuset_scan_tasks(). Please also add a 
+ v3:
+  - Update patches 2 & 3 to put task_cs() call under rcu_read_lock().
 
-mem cgroup oom use `mem_cgroup_scan_tasks`.
-How about keep `cpuset_cgroup_scan_tasks` for naming consistency?
+ v2:
+  - Drop v1 patch 3
+  - Add a new patch to fix an issue in cpuset_cancel_attach() and
+    another patch to add cpuset_can_fork() and cpuset_cacnel_fork()
+    methods.
 
-```
-static void select_bad_process(struct oom_control *oc)
-{
-	oc->chosen_points = LONG_MIN;
+The first patch in this series fixes a problem in
+cpuset_cancel_attach(). Patches 2 and 3 fixes the CLONE_INTO_CGROUP
+problem in cpuset. The last one is a minor fix.
 
-	if (is_memcg_oom(oc))
-		mem_cgroup_scan_tasks(oc->memcg, oom_evaluate_task, oc);
-	else if (oc->constraint == CONSTRAINT_CPUSET)
-		cpuset_cgroup_scan_tasks(oom_evaluate_task, oc);
-	else {
-		...
-	}
-}
-```
+Waiman Long (4):
+  cgroup/cpuset: Wake up cpuset_attach_wq tasks in
+    cpuset_cancel_attach()
+  cgroup/cpuset: Make cpuset_fork() handle CLONE_INTO_CGROUP properly
+  cgroup/cpuset: Add cpuset_can_fork() and cpuset_cancel_fork() methods
+  cgroup/cpuset: Make cpuset_attach_task() skip subpartitions CPUs for
+    top_cpuset
+
+ kernel/cgroup/cpuset.c | 161 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 129 insertions(+), 32 deletions(-)
+
+-- 
+2.31.1
+
