@@ -2,238 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AE26DDFCC
-	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 17:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C788A6DE1C2
+	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbjDKPic (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Apr 2023 11:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        id S229800AbjDKRAq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Apr 2023 13:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjDKPib (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 11:38:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22881997
-        for <cgroups@vger.kernel.org>; Tue, 11 Apr 2023 08:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681227465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oTDsV2/tX8haDNnpkjSlLgt775sitOFHSkt/SKuZWFs=;
-        b=K6dwkkWfc5NWhd8ZjiR1Lwg9NO8XdOOGHvDHkgogr8Xjz5aQq44OO2eH5pOGkyjdrSeOSL
-        fWAE2ITP1qTPKa++2s9TeYuO8wzEelal8jEUAsXHN/czVTl0GaxmLghYghdsQf+O912Shj
-        FKqxhDY1chSvV7mrT5rRF1tI/U7FGXo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-139-mnOGPvgQMKOfRKxs-eFBAw-1; Tue, 11 Apr 2023 11:37:42 -0400
-X-MC-Unique: mnOGPvgQMKOfRKxs-eFBAw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B79578996E4;
-        Tue, 11 Apr 2023 15:37:40 +0000 (UTC)
-Received: from [10.22.33.155] (unknown [10.22.33.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 52BF61121320;
-        Tue, 11 Apr 2023 15:37:40 +0000 (UTC)
-Message-ID: <490db90c-6afd-d934-4cd2-2722579f377d@redhat.com>
-Date:   Tue, 11 Apr 2023 11:37:40 -0400
+        with ESMTP id S229821AbjDKRAm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 13:00:42 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBB119A6
+        for <cgroups@vger.kernel.org>; Tue, 11 Apr 2023 10:00:15 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id gb34so22280643ejc.12
+        for <cgroups@vger.kernel.org>; Tue, 11 Apr 2023 10:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1681232412; x=1683824412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l3nf45VfTna2qtmHbcyQx3azMJIZK67P9z9b6hMPmWY=;
+        b=ygamK3A3NM1JD2kKgXRiue98TQPKvYM28SIh/wf7BXymkX7onuXLJL3zdwCTUe/eVe
+         SIrwlFECWwZJJri9YnaDb7qj+p3Fx8mztu1CVpQMc/XKpJLJlWPcEMyzHAaCZxvxJUip
+         7FrcmhZzUhSkqU/9ce+HuOqM+20Y6naugqTmb3UDLmOMbosxkWeNqwmpF/mr+icSJFEA
+         DkfsjBlrrbGUYgnxglGGrWrB3iI0El6Hk8tD6oRP64tYwrP2NsbfZPf5khW44kuDdufB
+         HB1CpOLX1xMCVefNbt6lQkTWz8mUP82sqHSntwR7puMl5Pt+e551R9IduCfw125lUGRr
+         smYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681232412; x=1683824412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l3nf45VfTna2qtmHbcyQx3azMJIZK67P9z9b6hMPmWY=;
+        b=R/+ZzZYBVrkXxcO7N2pZaka2R5KoUD6fDb8aVGRMJUeZ/qtrbcKGRnjnDhS0BAWm4F
+         6J1R/zBp4wsANJsMbACvJ/qNTvwW0aguwEA7f9/cSudehc9hK/d2hxLYsjpuhadcz3+M
+         QGUjHYmFZqHDjCstrRKqSkWi5LBlfi7xao2gFB67GQdCYdKbVh+vq13yof4irH6Q+pbN
+         a6UIlVDl6cgR74+BcyEDw/T0thaPlIE3l86YYh130xdT4RKlzh/Kh4jH2+EJF0jR5/4f
+         ymKDPqTa+LEzoewpAWzVGoqLaRQmPJZX2ujCwbvc0QXNAX2PXDRGiVxpAzIKq/dnHYwA
+         pmuw==
+X-Gm-Message-State: AAQBX9egXmfPFFBCOjKNjeBMeCS3oJCvICLUQYwXL6HaX/3QRSNeKt/f
+        zfyNXnyvrMLEejKRd6cvuBtLUQ55423d8wHFwnJXog==
+X-Google-Smtp-Source: AKy350ZW8S84YwpJunppz3ww3yhitaeClTtiiyiJjfqra0sZdbCcVIjRXcLCOKK5B5VWEIh0bCIqB8Wu+sY8Gfrx4pU=
+X-Received: by 2002:a17:906:2556:b0:94b:d619:e773 with SMTP id
+ j22-20020a170906255600b0094bd619e773mr1626314ejb.15.1681232411678; Tue, 11
+ Apr 2023 10:00:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: When processes are forked using clone3 to a cgroup in cgroup v2
- with a specified cpuset.cpus, the cpuset.cpus doesn't take an effect to the
- new processes
-Content-Language: en-US
-To:     "Kernel.org Bugbot" <bugbot@kernel.org>, tj@kernel.org,
-        bugs@lists.linux.dev, cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        lizefan.x@bytedance.com
-References: <20230411-b217305c0-44d643ccee27@bugzilla.kernel.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230411-b217305c0-44d643ccee27@bugzilla.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230403220337.443510-1-yosryahmed@google.com>
+ <20230403220337.443510-4-yosryahmed@google.com> <rdjvbr5zuwic27s27xcmguce2wfbqiyeu4bjr5pfxhprlxecui@4wsoogvb4ivp>
+In-Reply-To: <rdjvbr5zuwic27s27xcmguce2wfbqiyeu4bjr5pfxhprlxecui@4wsoogvb4ivp>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 11 Apr 2023 09:59:35 -0700
+Message-ID: <CAJD7tkZvRek3hJ1AyC7rPjTJTkKCM0DNLaTu1XXLGKmc3gdztA@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable RFC 3/5] memcg: calculate root usage from
+ global state
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/11/23 11:04, Kernel.org Bugbot wrote:
-> tcao34 writes via Kernel.org Bugzilla:
+On Tue, Apr 11, 2023 at 5:53=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
 >
-> When using Linux Kernel 6.0 or 6.3-rc5, we found an issue related to clone3 and cpuset subsystem of cgroup v2. When I'm trying to use clone3 with flags "CLONE_INTO_CGROUP" to clone a process into a cgroup, the cpuset.cpus of the cgroup doesn't take an effect to the new processes.
+> On Mon, Apr 03, 2023 at 10:03:35PM +0000, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > Instead, approximate the root usage from global state. This is not 100%
+> > accurate, but the root usage has always been ill-defined anyway.
+>
+> Technically, this approximation should be closer to truth because global
+> counters aren't subject to flushing "delay".
 
-This is a known issue and have been reported before. An upstream patch 
-to fix this problem is being discussed [1].
-
-[1] 
-https://lore.kernel.org/lkml/20230411133601.2969636-1-longman@redhat.com/
-
-Cheers,
-Longman
+It is a tiny bit different when some pages are in swap, probably
+because of swap slot caching and other swap specifics. At least in
+cgroup v1, the swap uncharging and freeing of the underlying swap
+entry may happen at different times. I think it practically doesn't
+really matter though.
 
 >
-> Reproduce
-> ==============
-> 1) I'm using kernel 6.0 and kernel 6.3-rc5. When booting the kernel, I add the command "cgroup_no_v1=all" to disable cgroup v1.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >  mm/memcontrol.c | 24 +++++-------------------
+> >  1 file changed, 5 insertions(+), 19 deletions(-)
 >
-> 2) We create a cgroup named 't0' and set cpuset.cpus as the first cpu:
->
-> echo '+cpuset' > /sys/fs/cgroup/cgroup.subtree_control
-> mkdir /sys/fs/cgroup/t0
-> echo 0 > /sys/fs/cgroup/t0/cpuset.cpus
->
-> 2) we run the belowing c program, in which we use clone3 system call to clone 9 processes into cgroup 't0':
->
-> #define _GNU_SOURCE
->
-> #include <time.h>
-> #include <stdio.h>
-> #include <fcntl.h>
-> #include <unistd.h>
-> #include <stdlib.h>
-> #include <stdint.h>
-> #include <sys/syscall.h>
-> #include <sys/wait.h>
-> #define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
->
-> #define __aligned_u64 uint64_t __attribute__((aligned(8)))
->
-> int dirfd_open_opath(const char *dir)
-> {
->          return open(dir, O_RDONLY | O_PATH);
-> }
->
-> struct __clone_args {
->          __aligned_u64 flags;
->          __aligned_u64 pidfd;
->          __aligned_u64 child_tid;
->          __aligned_u64 parent_tid;
->          __aligned_u64 exit_signal;
->          __aligned_u64 stack;
->          __aligned_u64 stack_size;
->          __aligned_u64 tls;
->          __aligned_u64 set_tid;
->          __aligned_u64 set_tid_size;
->          __aligned_u64 cgroup;
-> };
->
-> pid_t clone_into_cgroup(int cgroup_fd)
-> {
->          pid_t pid;
->          struct __clone_args args = {
->                  .flags = CLONE_INTO_CGROUP,
->                  .exit_signal = SIGCHLD,
->                  .cgroup = cgroup_fd,
->          };
->      	pid = syscall(SYS_clone3, &args, sizeof(struct __clone_args));
->
->          if (pid < 0)
->                  return -1;
->
->          return pid;
-> }
->
->
-> int main(int argc, char *argv[]) {
->      int i, n = 9;
->      int status = 0;
->      pid_t pids[9];
->      pid_t wpid;
->      char cgname[100] = "/sys/fs/cgroup/t0";
->      int cgroup_fd;
->
->      for (i = 0; i < n; ++i) {
->          cgroup_fd = dirfd_open_opath(cgname);
->          pids[i] = clone_into_cgroup(cgroup_fd);
->          close(cgroup_fd);
->          if (pids[i] < 0) {
->              perror("fork");
->              abort();
->          } else if (pids[i] == 0) {
->              printf("fork successfully %d\n", getppid());
->              while(1);
->          }
->      }
->      while ((wpid = wait(&status)) > 0);
->
-> }
->
-> 3) Use 'ps' command, we get the pids of the new forked processes are: 1816, 1817, 1818, 1819, 1820, 1821, 1822, 1823, 1824
->
-> 4) When we call "cat /sys/fs/cgroup/t0/cgroup.procs", the results show that all new forked processes are attached to the cgroup 't0':
-> root@node0:/sys/fs/cgroup/t0# cat /sys/fs/cgroup/t0/cgroup.procs
-> 1816
-> 1817
-> 1818
-> 1819
-> 1820
-> 1821
-> 1822
-> 1823
-> 1824
->
-> 5) However, when we use taskset to check the cpu affinity, all new forked processes are allowed to use all available cpus.
-> root@node0:/sys/fs/cgroup/t0# taskset -p 1816
-> pid 1816's current affinity mask: ffffffffff
->
-> 6) Also, if we check by 'top', each task is using 100% cpu time, rather than 9 tasks share the first cpu.
->      PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
->     1816 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1817 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1818 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1819 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1820 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1821 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1822 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1823 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->     1824 root      20   0    2496    960    960 R 100.0   0.0   4:04.08 test
->
-> root cause
-> ==============
-> In $Linux_DIR/kernel/cgroup/cpuset.c, function cpuset_fork works as:
-> static void cpuset_fork(struct task_struct *task)
-> {
-> 	if (task_css_is_root(task, cpuset_cgrp_id))
-> 		return;
->
-> 	set_cpus_allowed_ptr(task, current->cpus_ptr);
-> 	task->mems_allowed = current->mems_allowed;
-> }
->
-> It directly set the allowed cpus of the new forked task as the cpus_ptr of current task (aka parent task). However, if we use clone3() to clone a task to a different cgroup, a task still inherits the parent's allowed_cpus rather than the allowed_cpus of the cgroup clone3() specified.
->
-> Fix
-> ==============
-> We add a patch to the commit 148341f0a2f53b5e8808d093333d85170586a15d and it can fix the issue in this senarior.
->
-> ---
->   kernel/cgroup/cpuset.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 636f1c682ac0..fe03c21ba1af 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3254,10 +3254,12 @@ static void cpuset_bind(struct cgroup_subsys_state *root_css)
->    */
->   static void cpuset_fork(struct task_struct *task)
->   {
-> +       struct cpuset * cs;
->          if (task_css_is_root(task, cpuset_cgrp_id))
->                  return;
->
-> -       set_cpus_allowed_ptr(task, current->cpus_ptr);
-> +       cs = task_cs(task);
-> +       set_cpus_allowed_ptr(task, cs->effective_cpus);
->          task->mems_allowed = current->mems_allowed;
->   }
->
+> But feel free to add
+> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 
+Thanks!
+>
