@@ -2,58 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F28C16DD64E
-	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 11:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97F26DDAB0
+	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 14:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjDKJLL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Apr 2023 05:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S229609AbjDKMXh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Apr 2023 08:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjDKJKy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 05:10:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B152FE0;
-        Tue, 11 Apr 2023 02:10:27 -0700 (PDT)
+        with ESMTP id S229477AbjDKMXg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 08:23:36 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4411707;
+        Tue, 11 Apr 2023 05:23:35 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2786F21A62;
-        Tue, 11 Apr 2023 09:10:26 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E87821FD6A;
+        Tue, 11 Apr 2023 12:23:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1681204226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1681215813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=J8OA3wgt+Z7nlPBRmZK8bnpZsdI2d7MNXaYAdmJPsgA=;
-        b=F/GtwlKhIk6gdskzQIDdvelDeOaGATFGEdUdGAJRZ0+M/AzoL/mXWsiWKdBP7p6hsmGO59
-        4HVw0kozzIL26HT6VfwUn7KEKjYxTMUGEEG0uWx0ZnCjvBrslPgt8pu3NYTmEkEhr3XplX
-        znbWPl/iaqrIVPxft/0avEwyyDPAoZs=
+        bh=Zrc6f9m1IkUZIG9FYgI96c26lt3qznrpmnR3S4+Pvz4=;
+        b=o5SNl5syy5B3mqUwrBXxNR3RlyJ3lv8VJ8lbtzjQNV89dP9dYeYcXXmgAu1mxnhXVTwLIt
+        rvIkhS+3q5Ug7+SqqD6O1Egypv7DaxkYs0k9n7e8qv8nfHzgvqXz9Q1Jh+XtkMXBYoLTwY
+        YFcJ92qLpealU/gNva2WG24Psf7WfDg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 032A313519;
-        Tue, 11 Apr 2023 09:10:25 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD9EA13638;
+        Tue, 11 Apr 2023 12:23:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id TX0WOgEkNWTPHwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 11 Apr 2023 09:10:25 +0000
-Date:   Tue, 11 Apr 2023 11:10:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shaun Tancheff <shaun.tancheff@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shaun Tancheff <shaun.tancheff@hpe.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        id l21LLUVRNWSoDwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 11 Apr 2023 12:23:33 +0000
+Date:   Tue, 11 Apr 2023 14:23:32 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Waiman Long <longman@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com,
+        Zefan Li <lizefan.x@bytedance.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: Default value setting in memcg-v1
-Message-ID: <ZDUkAWT59seiD8+8@dhcp22.suse.cz>
-References: <20230406091450.167779-1-shaun.tancheff@gmail.com>
+Subject: Re: [PATCH v4] mm: oom: introduce cpuset oom
+Message-ID: <3myr57cw3qepul7igpifypxx4xd2buo2y453xlqhdw4xgjokc4@vi3odjfo3ahc>
+References: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qy2a2rv2poa26h7t"
 Content-Disposition: inline
-In-Reply-To: <20230406091450.167779-1-shaun.tancheff@gmail.com>
+In-Reply-To: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -63,61 +62,63 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 06-04-23 16:14:50, Shaun Tancheff wrote:
-> From: Shaun Tancheff <shaun.tancheff@hpe.com>
-> 
-> Setting min, low and high values with memcg-v1
-> provides bennefits for  users that are unable to update
-> to memcg-v2.
 
-min, low and high limits are cgroup v2 concepts which are not a fit for
-v1 implementation. The primary reason why v2 interface has been created
-was that existing v1 interfaces and internal constrains (most
-notably soft limit and tasks in inter nodes for memcg) were not
-reformable. It is really hard to define a proper semantic for memory
-protection when inter node tasks can compete with hierarchy beneath.
+--qy2a2rv2poa26h7t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Setting min, low and high can be set in memcg-v1
-> to apply enough memory pressure to effective throttle
-> filesystem I/O without hitting memcg oom.
+Hello.
 
-This is not a proper way to achieve that. As I've already state in the
-previous submission of a similar patch
-(20230330202232.355471-1-shaun.tancheff@gmail.com), cgroup v1 dirty data
-throttling has some downsides because it cannot effectively throttle
-GFP_NOFS allocations. One way around that is to reduce the dirty data
-limit to prevent from over dirty memcg LRUs. I would recommend to move
-forward to cgroup v2 though.
+On Tue, Apr 11, 2023 at 02:58:15PM +0800, Gang Li <ligang.bdlg@bytedance.com> wrote:
+> +int cpuset_scan_tasks(int (*fn)(struct task_struct *, void *), void *arg)
+> +{
+> +	int ret = 0;
+> +	struct css_task_iter it;
+> +	struct task_struct *task;
+> +	struct cpuset *cs;
+> +	struct cgroup_subsys_state *pos_css;
+> +
+> +	/*
+> +	 * Situation gets complex with overlapping nodemasks in different cpusets.
+> +	 * TODO: Maybe we should calculate the "distance" between different mems_allowed.
+> +	 *
+> +	 * But for now, let's make it simple. Just iterate through all cpusets
+> +	 * with the same mems_allowed as the current cpuset.
+> +	 */
+> +	cpuset_read_lock();
+> +	rcu_read_lock();
+> +	cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+> +		if (nodes_equal(cs->mems_allowed, task_cs(current)->mems_allowed)) {
+> +			css_task_iter_start(&(cs->css), CSS_TASK_ITER_PROCS, &it);
+> +			while (!ret && (task = css_task_iter_next(&it)))
+> +				ret = fn(task, arg);
+> +			css_task_iter_end(&it);
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +	cpuset_read_unlock();
+> +	return ret;
+> +}
 
-> This can be enabled by setting the sysctl values:
->   vm.memcg_v1_min_default
->   vm.memcg_v1_low_default
->   vm.memcg_v1_high_default
->
-> When a memory control group is newly crated the
-> min, low and high values are set to percent of the
-> maximum based on the min, low and high default
-> values respectively.
+I see this traverses all cpusets without the hierarchy actually
+mattering that much. Wouldn't the CONSTRAINT_CPUSET better achieved by
+globally (or per-memcg) scanning all processes and filtering with:
+	nodes_intersect(current->mems_allowed, p->mems_allowed)
+(`current` triggers the OOM, `p` is the iterated task)
+?
 
-This also looks like an anti-pattern in the cgroup world. For two
-reasons. First of all min, low (reclaim protection) is hierarchical and
-global default value makes a very little sense for anything than flat
-hierarchies and even then it makes it really easy to misconfigure system
-too easily.
-Also percentage is a very suboptimal interface in general as the
-granularity is just too coarse for anything than small limits.
- 
-> This resolves an issue with memory pressure when users
-> initiate unbounded I/O on various file systems such as
-> ext4, XFS and NFS.
+Thanks,
+Michal
 
-Filesystems should still be controllable by dirty limits. This might
-lead to a suboptimal IO throughput but this might be a better workaround
-if you cannot afford to move to cgroup v2. V1 interface is considered
-legacy and support is limited. New features are only added if there
-absolutely is not other way around to keep legacy applications running.
+--qy2a2rv2poa26h7t
+Content-Type: application/pgp-signature; name="signature.asc"
 
-HTH
--- 
-Michal Hocko
-SUSE Labs
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZDVRPwAKCRAkDQmsBEOq
+uVVFAP965wOBxTUUG+YbMpda2aYpjr/QsqcnSO6eT4AgpmO90gD+OHV1fcIafZ+J
++SF+dtNZgMgKmvwZY6aKbUZOmnn7ewk=
+=h0ch
+-----END PGP SIGNATURE-----
+
+--qy2a2rv2poa26h7t--
