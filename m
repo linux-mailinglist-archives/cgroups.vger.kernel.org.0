@@ -2,68 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C39C6DDB3F
-	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 14:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A53C6DDB98
+	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 15:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjDKMxi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Apr 2023 08:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        id S230081AbjDKNEp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Apr 2023 09:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjDKMxY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 08:53:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE663A8F;
-        Tue, 11 Apr 2023 05:53:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DF48E1FD6A;
-        Tue, 11 Apr 2023 12:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1681217601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EkSlnfLVrBuvRIjHTj4YkNGB03MrlcmP9bduCieRg3g=;
-        b=ajgGNA5WZlfmxWLIlPe/Fpt1PDYRI4impchyX4YLBiQwzNnLCAlHV9BMmxRWvfKCM5FFn3
-        /u7FPMnBH9I30kLtg7c7jl5pJXsA9xlGV25vO6RWpBXBbAJdu/lpXaOrPHxT+3GRwna4T4
-        F81VTw+DSswzCM0ouu3Dmz/5JqJuNLI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A7BB713638;
-        Tue, 11 Apr 2023 12:53:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id QXQoKEFYNWR0IQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 11 Apr 2023 12:53:21 +0000
-Date:   Tue, 11 Apr 2023 14:53:20 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH mm-unstable RFC 3/5] memcg: calculate root usage from
- global state
-Message-ID: <rdjvbr5zuwic27s27xcmguce2wfbqiyeu4bjr5pfxhprlxecui@4wsoogvb4ivp>
-References: <20230403220337.443510-1-yosryahmed@google.com>
- <20230403220337.443510-4-yosryahmed@google.com>
+        with ESMTP id S230073AbjDKNEo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 09:04:44 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E27E30EB
+        for <cgroups@vger.kernel.org>; Tue, 11 Apr 2023 06:04:24 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mn5-20020a17090b188500b00246eddf34f6so114049pjb.0
+        for <cgroups@vger.kernel.org>; Tue, 11 Apr 2023 06:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1681218264;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TZUxjOTN3EEVrgEvX6fomzktb865tnCcQCLiDPcQhKI=;
+        b=i5JVHa5eM9KbQAKWODGWgoGm8LPXMSkBcQk0PHI3WSU6doos8dY3Jdj27hKGayaVka
+         Nyxor8+0DirCbLUdnpgXe6e/OvT6Y3DNmSlM3KvuyBvNlVvtatXcJt7DQ1oH7wx4x2EI
+         rvWneewVZL4FIVDgP7JYRH4AWs8kHIAAhzRlt0xLvFIn+iZHhb6xelC51sIQ9yDi0K1N
+         /K9eTKj3lYhrPuxELIq7vLoDzhc1C6WmpDonYb0BJCGPJrx8guObqyAqQDO/RPydGVgV
+         EFAvOY83IlO434GmAkUT8YJ6cxeQ8HWch3zrSVBKhuM3ddVPMwAngocF5fsQ9I+luQA1
+         njQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681218264;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TZUxjOTN3EEVrgEvX6fomzktb865tnCcQCLiDPcQhKI=;
+        b=YQm16ELvaHveENZXkfnWuiE1TFJLTjkzywIIHjElCUiGDgIL7hbS3+PrY93XmWvv8W
+         Na4ITWJvFRcUfFO7ZFjN2YicJNqDw2MPAcPBJftpu9N/9WuTRcZcgheHDiDVVFP+48kq
+         /Jzfv9eFgz/TuTy/RXEF7hwL7lG53M+B67wZ/KwSO0VN6ChjoZPaGggyk/VYefidWvL9
+         k8bddIq+lfgS8zbtZ0Jwmb3zXQybDEUtAiqkhGR1aR2AtXoUVFI7LQCrJRZNmDdJGX9C
+         USb3XA+Hsh4rwBbl12pqNM4G+2hnzcsJ6kQpTUrUXU1Xot2ASpL33NT5WQbBB/v2BAdj
+         O/Tg==
+X-Gm-Message-State: AAQBX9etwgvtfHMXIh3b+KfQ8EPd5mGYeWVev4+uK0DP8rqFX1ZecvXa
+        BaQ6CCvFGVOnD03LhU7Krlck5Q==
+X-Google-Smtp-Source: AKy350YwNMjah0OluGNu+/pypB0/gnmcJ/Jr9PqVh9UZDcWB78JzQ8zLBl/fBlxEkTDa9tQFrwPSag==
+X-Received: by 2002:a05:6a20:c530:b0:eb:b8:bdc8 with SMTP id gm48-20020a056a20c53000b000eb00b8bdc8mr2482627pzb.57.1681218263733;
+        Tue, 11 Apr 2023 06:04:23 -0700 (PDT)
+Received: from [10.2.117.253] ([61.213.176.11])
+        by smtp.gmail.com with ESMTPSA id v16-20020aa78090000000b00625d84a0194sm9826012pff.107.2023.04.11.06.04.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Apr 2023 06:04:23 -0700 (PDT)
+Message-ID: <aa3382b4-4046-988f-42ea-8812dba7882b@bytedance.com>
+Date:   Tue, 11 Apr 2023 21:04:18 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eqj63t727ravqnne"
-Content-Disposition: inline
-In-Reply-To: <20230403220337.443510-4-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.1
+Subject: Re: Re: [PATCH v4] mm: oom: introduce cpuset oom
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Waiman Long <longman@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com,
+        Zefan Li <lizefan.x@bytedance.com>,
+        linux-kernel@vger.kernel.org
+References: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
+ <3myr57cw3qepul7igpifypxx4xd2buo2y453xlqhdw4xgjokc4@vi3odjfo3ahc>
+From:   Gang Li <ligang.bdlg@bytedance.com>
+In-Reply-To: <3myr57cw3qepul7igpifypxx4xd2buo2y453xlqhdw4xgjokc4@vi3odjfo3ahc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,38 +78,61 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---eqj63t727ravqnne
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 03, 2023 at 10:03:35PM +0000, Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> Instead, approximate the root usage from global state. This is not 100%
-> accurate, but the root usage has always been ill-defined anyway.
+On 2023/4/11 20:23, Michal Koutný wrote:
+> Hello.
+> 
+> On Tue, Apr 11, 2023 at 02:58:15PM +0800, Gang Li <ligang.bdlg@bytedance.com> wrote:
+>> +	cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+>> +		if (nodes_equal(cs->mems_allowed, task_cs(current)->mems_allowed)) {
+>> +			css_task_iter_start(&(cs->css), CSS_TASK_ITER_PROCS, &it);
+>> +			while (!ret && (task = css_task_iter_next(&it)))
+>> +				ret = fn(task, arg);
+>> +			css_task_iter_end(&it);
+>> +		}
+>> +	}
+>> +	rcu_read_unlock();
+>> +	cpuset_read_unlock();
+>> +	return ret;
+>> +}
+> 
+> I see this traverses all cpusets without the hierarchy actually
+> mattering that much. Wouldn't the CONSTRAINT_CPUSET better achieved by
+> globally (or per-memcg) scanning all processes and filtering with:
 
-Technically, this approximation should be closer to truth because global
-counters aren't subject to flushing "delay".
+Oh I see, you mean scanning all processes in all cpusets and scanning
+all processes globally are equivalent.
 
->=20
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  mm/memcontrol.c | 24 +++++-------------------
->  1 file changed, 5 insertions(+), 19 deletions(-)
+> 	nodes_intersect(current->mems_allowed, p->mems_allowed
 
-But feel free to add
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+Perhaps it would be better to use nodes_equal first, and if no suitable
+victim is found, then downgrade to nodes_intersect?
 
+NUMA balancing mechanism tends to keep memory on the same NUMA node, and
+if the selected victim's memory happens to be on a node that does not
+intersect with the current process's node, we still won't be able to
+free up any memory.
 
---eqj63t727ravqnne
-Content-Type: application/pgp-signature; name="signature.asc"
+In this example:
 
------BEGIN PGP SIGNATURE-----
+A->mems_allowed: 0,1
+B->mems_allowed: 1,2
+nodes_intersect(A->mems_allowed, B->mems_allowed) == true
 
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZDVYOgAKCRAkDQmsBEOq
-ua0bAP9/m5FltliE3jipY2X5GBKY+6HwLMPDQ7kZw0YMt1coPwEAhI5ND5ReXLBV
-+llW9zWanuFkJ28pU6DrJah5+c1hBQ8=
-=0lKn
------END PGP SIGNATURE-----
+Memory Distribution:
++=======+=======+=======+
+| Node0 | Node1 | Node2 |
++=======+=======+=======+
+| A     |       |       |
++-------+-------+-------+
+|       |       |B      |
++-------+-------+-------+
 
---eqj63t727ravqnne--
+Process A invoke oom, then kill B.
+But A still can't get any free mem on Node0 and 1.
+
+> (`current` triggers the OOM, `p` is the iterated task)
+> ?
+> 
+> Thanks,
+> Michal
