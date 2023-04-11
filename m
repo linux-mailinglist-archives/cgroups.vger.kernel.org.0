@@ -2,57 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E97F26DDAB0
-	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 14:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C39C6DDB3F
+	for <lists+cgroups@lfdr.de>; Tue, 11 Apr 2023 14:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjDKMXh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Apr 2023 08:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
+        id S229567AbjDKMxi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Apr 2023 08:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjDKMXg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 08:23:36 -0400
+        with ESMTP id S229903AbjDKMxY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Apr 2023 08:53:24 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4411707;
-        Tue, 11 Apr 2023 05:23:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE663A8F;
+        Tue, 11 Apr 2023 05:53:23 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E87821FD6A;
-        Tue, 11 Apr 2023 12:23:33 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DF48E1FD6A;
+        Tue, 11 Apr 2023 12:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1681215813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1681217601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Zrc6f9m1IkUZIG9FYgI96c26lt3qznrpmnR3S4+Pvz4=;
-        b=o5SNl5syy5B3mqUwrBXxNR3RlyJ3lv8VJ8lbtzjQNV89dP9dYeYcXXmgAu1mxnhXVTwLIt
-        rvIkhS+3q5Ug7+SqqD6O1Egypv7DaxkYs0k9n7e8qv8nfHzgvqXz9Q1Jh+XtkMXBYoLTwY
-        YFcJ92qLpealU/gNva2WG24Psf7WfDg=
+        bh=EkSlnfLVrBuvRIjHTj4YkNGB03MrlcmP9bduCieRg3g=;
+        b=ajgGNA5WZlfmxWLIlPe/Fpt1PDYRI4impchyX4YLBiQwzNnLCAlHV9BMmxRWvfKCM5FFn3
+        /u7FPMnBH9I30kLtg7c7jl5pJXsA9xlGV25vO6RWpBXBbAJdu/lpXaOrPHxT+3GRwna4T4
+        F81VTw+DSswzCM0ouu3Dmz/5JqJuNLI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD9EA13638;
-        Tue, 11 Apr 2023 12:23:33 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A7BB713638;
+        Tue, 11 Apr 2023 12:53:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id l21LLUVRNWSoDwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 11 Apr 2023 12:23:33 +0000
-Date:   Tue, 11 Apr 2023 14:23:32 +0200
+        id QXQoKEFYNWR0IQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 11 Apr 2023 12:53:21 +0000
+Date:   Tue, 11 Apr 2023 14:53:20 +0200
 From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Waiman Long <longman@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com,
-        Zefan Li <lizefan.x@bytedance.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] mm: oom: introduce cpuset oom
-Message-ID: <3myr57cw3qepul7igpifypxx4xd2buo2y453xlqhdw4xgjokc4@vi3odjfo3ahc>
-References: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH mm-unstable RFC 3/5] memcg: calculate root usage from
+ global state
+Message-ID: <rdjvbr5zuwic27s27xcmguce2wfbqiyeu4bjr5pfxhprlxecui@4wsoogvb4ivp>
+References: <20230403220337.443510-1-yosryahmed@google.com>
+ <20230403220337.443510-4-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qy2a2rv2poa26h7t"
+        protocol="application/pgp-signature"; boundary="eqj63t727ravqnne"
 Content-Disposition: inline
-In-Reply-To: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
+In-Reply-To: <20230403220337.443510-4-yosryahmed@google.com>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -63,62 +71,38 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---qy2a2rv2poa26h7t
-Content-Type: text/plain; charset=us-ascii
+--eqj63t727ravqnne
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hello.
+On Mon, Apr 03, 2023 at 10:03:35PM +0000, Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> Instead, approximate the root usage from global state. This is not 100%
+> accurate, but the root usage has always been ill-defined anyway.
 
-On Tue, Apr 11, 2023 at 02:58:15PM +0800, Gang Li <ligang.bdlg@bytedance.com> wrote:
-> +int cpuset_scan_tasks(int (*fn)(struct task_struct *, void *), void *arg)
-> +{
-> +	int ret = 0;
-> +	struct css_task_iter it;
-> +	struct task_struct *task;
-> +	struct cpuset *cs;
-> +	struct cgroup_subsys_state *pos_css;
-> +
-> +	/*
-> +	 * Situation gets complex with overlapping nodemasks in different cpusets.
-> +	 * TODO: Maybe we should calculate the "distance" between different mems_allowed.
-> +	 *
-> +	 * But for now, let's make it simple. Just iterate through all cpusets
-> +	 * with the same mems_allowed as the current cpuset.
-> +	 */
-> +	cpuset_read_lock();
-> +	rcu_read_lock();
-> +	cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
-> +		if (nodes_equal(cs->mems_allowed, task_cs(current)->mems_allowed)) {
-> +			css_task_iter_start(&(cs->css), CSS_TASK_ITER_PROCS, &it);
-> +			while (!ret && (task = css_task_iter_next(&it)))
-> +				ret = fn(task, arg);
-> +			css_task_iter_end(&it);
-> +		}
-> +	}
-> +	rcu_read_unlock();
-> +	cpuset_read_unlock();
-> +	return ret;
-> +}
+Technically, this approximation should be closer to truth because global
+counters aren't subject to flushing "delay".
 
-I see this traverses all cpusets without the hierarchy actually
-mattering that much. Wouldn't the CONSTRAINT_CPUSET better achieved by
-globally (or per-memcg) scanning all processes and filtering with:
-	nodes_intersect(current->mems_allowed, p->mems_allowed)
-(`current` triggers the OOM, `p` is the iterated task)
-?
+>=20
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+>  mm/memcontrol.c | 24 +++++-------------------
+>  1 file changed, 5 insertions(+), 19 deletions(-)
 
-Thanks,
-Michal
+But feel free to add
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
---qy2a2rv2poa26h7t
+
+--eqj63t727ravqnne
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZDVRPwAKCRAkDQmsBEOq
-uVVFAP965wOBxTUUG+YbMpda2aYpjr/QsqcnSO6eT4AgpmO90gD+OHV1fcIafZ+J
-+SF+dtNZgMgKmvwZY6aKbUZOmnn7ewk=
-=h0ch
+iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZDVYOgAKCRAkDQmsBEOq
+ua0bAP9/m5FltliE3jipY2X5GBKY+6HwLMPDQ7kZw0YMt1coPwEAhI5ND5ReXLBV
++llW9zWanuFkJ28pU6DrJah5+c1hBQ8=
+=0lKn
 -----END PGP SIGNATURE-----
 
---qy2a2rv2poa26h7t--
+--eqj63t727ravqnne--
