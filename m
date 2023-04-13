@@ -2,49 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9006E036D
-	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 02:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B6A6E0394
+	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 03:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbjDMA4u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Apr 2023 20:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        id S229815AbjDMBRx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Apr 2023 21:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjDMA4u (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Apr 2023 20:56:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F855FF7
-        for <cgroups@vger.kernel.org>; Wed, 12 Apr 2023 17:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681347362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hRJHLQRX436psVY4dEg5oBAGIW2fFsn/wgOTxNFdgEo=;
-        b=MOWDUjJeSqJfXghkTyAlpKKP+2BAqzS/sNGdItNMqIk4C3owrKEjzfMygrJEGbPfzmGLTd
-        aunW7UjKCyxYiT+XD8ydah+/EMlEQ8+mMVoX3W5FFaKmLiwRL9Nt5aOvPk2wPLSHefcKBa
-        XIXVnWvXo9UXzAJGxdURbqGLtu04kG8=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-28-uctjjZuKPamdwzs5oK2dTg-1; Wed, 12 Apr 2023 20:55:57 -0400
-X-MC-Unique: uctjjZuKPamdwzs5oK2dTg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D90471C05AED;
-        Thu, 13 Apr 2023 00:55:56 +0000 (UTC)
-Received: from [10.22.32.168] (unknown [10.22.32.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D25340C6E20;
-        Thu, 13 Apr 2023 00:55:56 +0000 (UTC)
-Message-ID: <1b8d9128-d076-7d37-767d-11d6af314662@redhat.com>
-Date:   Wed, 12 Apr 2023 20:55:55 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S229628AbjDMBRu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Apr 2023 21:17:50 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5567F65AB;
+        Wed, 12 Apr 2023 18:17:47 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id c10-20020a17090abf0a00b0023d1bbd9f9eso16579775pjs.0;
+        Wed, 12 Apr 2023 18:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681348667; x=1683940667;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aicWCnIBboKYj1UbmrIfysKq+w2Fw/6QRrG0gA3j6sY=;
+        b=gYjjpD3JLH90EnGPJ9RcpcnDr0n4+5DTGSITYkHo/YynUUF6qZzpx0oGXdeF8F7Xjg
+         AfXieG0P88XI6Nzkz1BFcevqb5GLWXPeccE5IJJamDBYFjnkb7Axu61u/6VjRPGr4EPZ
+         SpaOxhK7cWQeH9785nGjVxI3aDbmLIPcUpoGn6/YUyrNDAxcPayfy632I/kFjQlNGZ9h
+         wQ884KystVfhyecLHxVtIzMtMN6TwQ/C3+wN5tyZTC9lEbWTt3mZCbzrt1ix7k9RQlaI
+         em+DSJHooOoW+JhPsh1zOeS/ubqfeFOiyJp3P+gqlAPWLyl8zClupd7ddpGci462z9Dy
+         Uz6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681348667; x=1683940667;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aicWCnIBboKYj1UbmrIfysKq+w2Fw/6QRrG0gA3j6sY=;
+        b=UHw29F6Bw1xD8j6Ilfg9EcT7p16sO074IIQUsAAIVxlPZNHXz1YMIUHL+zIPg2QsZ8
+         I2CtX6U5gaK44ArWmGvwRCutg7YGofIOschfDWl0np+pBq9UmokUyzOC2feHaNuookQj
+         0I3VKkmEXwHrK/M3Q2P1tWWJIvKilbcoybgn7CMgUDCtCGyMYtka8xi/xM9be4juPmsc
+         rRNeSj9vHr84x8HykA6XOR3LK9X9ayS+xu7Le6rw3StbaOK2SeMlog87/9ezFlwmyzET
+         yWUygkIVaOf7sDS76dTv2t9VedFQ+wYKDrVXtRlCxju46ggt3bvKUYSkMtx7zICyEKMT
+         bDcA==
+X-Gm-Message-State: AAQBX9dtaBuk8eKmczAwF39VA6Y7xfC2K2ixnMZJgNYCe5ngIHnsAqAs
+        Mf+joGQRNSI2JUsTOkBl/AM=
+X-Google-Smtp-Source: AKy350a/jiXR/DITr89ik4jDNgNrPJf/RV36bugcrUsjN8kViaL9JrLCgTKL85oOd7tFrlD7UM7llA==
+X-Received: by 2002:a17:90a:f83:b0:23d:1aae:29e5 with SMTP id 3-20020a17090a0f8300b0023d1aae29e5mr84436pjz.20.1681348666504;
+        Wed, 12 Apr 2023 18:17:46 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id cs19-20020a17090af51300b002367325203fsm2055992pjb.50.2023.04.12.18.17.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 18:17:46 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 12 Apr 2023 15:17:44 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
 Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -54,6 +62,8 @@ Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Valentin Schneider <vschneid@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
+Message-ID: <ZDdYOI9LB87ra2t_@slm.duckdns.org>
 References: <20230412153758.3088111-1-longman@redhat.com>
  <ZDcGVebCpyktxyWh@slm.duckdns.org>
  <1ce6a073-e573-0c32-c3d8-f67f3d389a28@redhat.com>
@@ -62,54 +72,54 @@ References: <20230412153758.3088111-1-longman@redhat.com>
  <ZDdG1K0kTETZMTCu@slm.duckdns.org>
  <cd4c3f92-4a01-e636-7390-8c6a3d0cfe6c@redhat.com>
  <ZDdNy2NAfj2_1CbW@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZDdNy2NAfj2_1CbW@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+ <1b8d9128-d076-7d37-767d-11d6af314662@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b8d9128-d076-7d37-767d-11d6af314662@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello, Waiman.
 
-On 4/12/23 20:33, Tejun Heo wrote:
-> Hello,
->
-> On Wed, Apr 12, 2023 at 08:26:03PM -0400, Waiman Long wrote:
->>    If the "cpuset.cpus.isolated" isn't set, the existing rules applies. If it
->> is set, the new rule will be used.
->>
->> Does that look reasonable to you?
-> Sounds a bit contrived. Does it need to be something defined in the root
-> cgroup?
+On Wed, Apr 12, 2023 at 08:55:55PM -0400, Waiman Long wrote:
+> > Sounds a bit contrived. Does it need to be something defined in the root
+> > cgroup?
+> 
+> Yes, because we need to take away the isolated CPUs from the effective cpus
+> of the root cgroup. So it needs to start from the root. That is also why we
+> have the partition rule that the parent of a partition has to be a partition
+> root itself. With the new scheme, we don't need a special cgroup to hold the
 
-Yes, because we need to take away the isolated CPUs from the effective 
-cpus of the root cgroup. So it needs to start from the root. That is 
-also why we have the partition rule that the parent of a partition has 
-to be a partition root itself. With the new scheme, we don't need a 
-special cgroup to hold the isolated CPUs. The new root cgroup file will 
-be enough to inform the system what CPUs will have to be isolated.
+I'm following. The root is already a partition root and the cgroupfs control
+knobs are owned by the parent, so the root cgroup would own the first level
+cgroups' cpuset.cpus.reserve knobs. If the root cgroup wants to assign some
+CPUs exclusively to a first level cgroup, it can then set that cgroup's
+reserve knob accordingly (or maybe the better name is
+cpuset.cpus.exclusive), which will take those CPUs out of the root cgroup's
+partition and give them to the first level cgroup. The first level cgroup
+then is free to do whatever with those CPUs that now belong exclusively to
+the cgroup subtree.
 
-My current thinking is that the root's "cpuset.cpus.isolated" will start 
-with whatever have been set in the "isolcpus" or "nohz_full" boot 
-command line and can be extended from there but not shrank below that as 
-there can be additional isolation attributes with those isolated CPUs.
+> isolated CPUs. The new root cgroup file will be enough to inform the system
+> what CPUs will have to be isolated.
+> 
+> My current thinking is that the root's "cpuset.cpus.isolated" will start
+> with whatever have been set in the "isolcpus" or "nohz_full" boot command
+> line and can be extended from there but not shrank below that as there can
+> be additional isolation attributes with those isolated CPUs.
 
-Cheers,
-Longman
+I'm not sure we wanna tie with those automatically. I think it'd be
+confusing than helpful.
 
-> The only thing that's needed is that a cgroup needs to claim CPUs
-> exclusively without using them, right? Let's say we add a new interface
-> file, say, cpuset.cpus.reserve which is always exclusive and can be consumed
-> by children whichever way they want, wouldn't that be sufficient? Then,
-> there would be nothing to describe in the root cgroup.
->
-> Thanks.
->
+Thanks.
 
+-- 
+tejun
