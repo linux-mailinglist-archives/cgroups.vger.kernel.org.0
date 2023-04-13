@@ -2,222 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E5D6E0791
-	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 09:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87A16E0DB4
+	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 14:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjDMHSz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Apr 2023 03:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
+        id S229917AbjDMMtw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Apr 2023 08:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjDMHSy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Apr 2023 03:18:54 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3602959E6
-        for <cgroups@vger.kernel.org>; Thu, 13 Apr 2023 00:18:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681370333; x=1712906333;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NDEujnZQpenuL81XfbXK8el7oFe4TTEP4/sD+/MeZqQ=;
-  b=mgMbWJBr6b2hvcyesCNPZLSvGm98FY8yRvFh84liONanWth3j6pnmNEe
-   9AoYcBFBUFpqQZTokuLQemrXyTUfyhTfo7dYTX5Scw5sA/wVyRKgRg8nP
-   Th+oz8oDIzLW98G5SD8t2Jw+l8iPnmeYTRwey4EYhtFja8eKq81icgY9R
-   FFeoifAhqaHQ+0VsYdkInjTOr6tDkQcEpxQySma7pxW0gnXiwj3xoKHDL
-   iPxVlR6/f6N6LT9PocXS/HI1bwM+L6VtuQkG9gmaPItdEARBxVo93QRNO
-   YpEcghNSHI2YW+5HnvIpgCxcwfhGM+0+fX2SteotZLyOjjOtIdUtUxAOO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="345900833"
-X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="345900833"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2023 00:18:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="682845180"
-X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="682845180"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 13 Apr 2023 00:18:40 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pmrE7-000YTN-1P;
-        Thu, 13 Apr 2023 07:18:39 +0000
-Date:   Thu, 13 Apr 2023 15:17:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.3-fixes] BUILD SUCCESS
- 7e27cb6ad4d85fc8bac2a2a896da62ef66b8598e
-Message-ID: <6437aca1.FkqVDIaFGTrtii66%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S230094AbjDMMtt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Apr 2023 08:49:49 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE463AD14
+        for <cgroups@vger.kernel.org>; Thu, 13 Apr 2023 05:49:43 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-63b1e92ce21so196448b3a.0
+        for <cgroups@vger.kernel.org>; Thu, 13 Apr 2023 05:49:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1681390183; x=1683982183;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=chPnl8Mv5KXZq4yhNcjhEego6Gn/IkEJkBYC5Nsft1o=;
+        b=n9n/9LPPtKwIJ41ocSYVaM7cPpKBO3Qcmc9Dot62ShK5jStwhmJ6In8nvzUsWRrBDO
+         BSXX4+OeuR2licrgEGhWJ82EXMvWg2ao9QoAnss8Lv3tL86cmYZe6hrTvrpXDzyPeoCm
+         DHI1C8UT8Y7ehTZP+Mw+bpgD+44Trf1ENcyQ0xRGi6miLfBQTB/SbiN43gj0IeqoGvjb
+         dSLTH44Eh4efnjmvwU50c+PHRlt5MW4+S/1g2+8Zw45DANXQRm8M2uvniAL9kdnw/+iM
+         d1g6Ek7N2QypGMFGVkRH2l0mcDCWIa4PhivcNL82TWTtRhGqNflTKkDKSRhCOZOmKC4b
+         eItg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681390183; x=1683982183;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=chPnl8Mv5KXZq4yhNcjhEego6Gn/IkEJkBYC5Nsft1o=;
+        b=BbERtmiL23WyhL7BSfU/uCd9D8oYqhuBVQMBeT3xOuEiyT0KGXyA25iICvV2XJRchQ
+         seHFxonJsoKd/6mh36up+S5bTL2AmqMrpgx+M16Mw8qwzPyby5Ooh9rnotcBRuStVIkD
+         TsFRy/BAqu6koSLLr+/8qdSvHLS01wmxk+EbQx1biWX+F+IPjN6Wybl90ya/+aCcvSKj
+         7SUD9ijp5LKFcPukHci087IpksIOvIE0kRBUDgEG0T0TRTp0fti5Lg9cn+me4N0u+nmd
+         86uOG+LgLhXn9tHm/HM+fYYiXCFvXe2EthoFigaz2BJa6vGP0K51ikvGSIgxxuWYPjDo
+         BguA==
+X-Gm-Message-State: AAQBX9eKCdh4uYLXPSfW3sNLOcpWUkXJVIWYutPoyUjS6jiPdbJjo0y2
+        rZuzzRbzvYWmrfhT8bijjeB+ag==
+X-Google-Smtp-Source: AKy350antEwnFS0M8iO0GabDUmSQ1squlED1hTPFxzkhV3oVQldHP4wuiQqO+e3zVnRbS/X3SRm8Yw==
+X-Received: by 2002:aa7:88c6:0:b0:624:bf7e:9d8c with SMTP id k6-20020aa788c6000000b00624bf7e9d8cmr2869192pff.1.1681390183084;
+        Thu, 13 Apr 2023 05:49:43 -0700 (PDT)
+Received: from [127.0.0.1] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id x14-20020aa784ce000000b0062bada5db75sm1365480pfn.172.2023.04.13.05.49.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Apr 2023 05:49:42 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     tj@kernel.org, chengming.zhou@linux.dev
+Cc:     josef@toxicpanda.com, osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        stable@vger.kernel.org
+In-Reply-To: <20230413062805.2081970-1-chengming.zhou@linux.dev>
+References: <20230413062805.2081970-1-chengming.zhou@linux.dev>
+Subject: Re: [PATCH v2 1/2] blk-stat: fix QUEUE_FLAG_STATS clear
+Message-Id: <168139018203.8989.17731261770336366712.b4-ty@kernel.dk>
+Date:   Thu, 13 Apr 2023 06:49:42 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-00303
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.3-fixes
-branch HEAD: 7e27cb6ad4d85fc8bac2a2a896da62ef66b8598e  cgroup/cpuset: Make cpuset_attach_task() skip subpartitions CPUs for top_cpuset
 
-elapsed time: 722m
+On Thu, 13 Apr 2023 14:28:04 +0800, chengming.zhou@linux.dev wrote:
+> We need to set QUEUE_FLAG_STATS for two cases:
+> 1. blk_stat_enable_accounting()
+> 2. blk_stat_add_callback()
+> 
+> So we should clear it only when ((q->stats->accounting == 0) &&
+> list_empty(&q->stats->callbacks)).
+> 
+> [...]
 
-configs tested: 141
-configs skipped: 13
+Applied, thanks!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[1/2] blk-stat: fix QUEUE_FLAG_STATS clear
+      commit: 20de765f6d9da0c47b756429c60b41063b990a10
+[2/2] blk-throttle: only enable blk-stat when BLK_DEV_THROTTLING_LOW
+      commit: 8e15dfbd9ae21e518979e3823e335073e725f445
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r006-20230410   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r011-20230409   gcc  
-alpha                randconfig-r032-20230412   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r005-20230409   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm          buildonly-randconfig-r002-20230409   clang
-arm          buildonly-randconfig-r005-20230409   clang
-arm                                 defconfig   gcc  
-arm                          moxart_defconfig   clang
-arm                       netwinder_defconfig   clang
-arm                  randconfig-r046-20230412   clang
-arm64                            allyesconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r016-20230410   gcc  
-arm64                randconfig-r023-20230410   gcc  
-arm64                randconfig-r026-20230409   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r014-20230410   gcc  
-csky                 randconfig-r021-20230409   gcc  
-csky                 randconfig-r024-20230410   gcc  
-csky                 randconfig-r033-20230409   gcc  
-hexagon              randconfig-r015-20230409   clang
-hexagon              randconfig-r035-20230412   clang
-hexagon              randconfig-r041-20230412   clang
-hexagon              randconfig-r045-20230412   clang
-i386                             allyesconfig   gcc  
-i386                         debian-10.3-func   gcc  
-i386                   debian-10.3-kselftests   gcc  
-i386                        debian-10.3-kunit   gcc  
-i386                          debian-10.3-kvm   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-a001-20230410   clang
-i386                 randconfig-a002-20230410   clang
-i386                 randconfig-a003-20230410   clang
-i386                 randconfig-a004-20230410   clang
-i386                 randconfig-a005-20230410   clang
-i386                 randconfig-a006-20230410   clang
-i386                 randconfig-a011-20230410   gcc  
-i386                 randconfig-a012-20230410   gcc  
-i386                 randconfig-a013-20230410   gcc  
-i386                 randconfig-a014-20230410   gcc  
-i386                 randconfig-a015-20230410   gcc  
-i386                 randconfig-a016-20230410   gcc  
-ia64                             allmodconfig   gcc  
-ia64         buildonly-randconfig-r006-20230409   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r001-20230410   gcc  
-ia64                 randconfig-r031-20230410   gcc  
-ia64                 randconfig-r033-20230410   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r005-20230410   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r004-20230409   gcc  
-loongarch            randconfig-r013-20230410   gcc  
-loongarch            randconfig-r014-20230409   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r002-20230409   gcc  
-m68k                 randconfig-r021-20230410   gcc  
-m68k                 randconfig-r024-20230409   gcc  
-m68k                 randconfig-r031-20230409   gcc  
-m68k                 randconfig-r032-20230410   gcc  
-m68k                 randconfig-r036-20230409   gcc  
-microblaze   buildonly-randconfig-r002-20230410   gcc  
-microblaze           randconfig-r005-20230410   gcc  
-microblaze           randconfig-r016-20230409   gcc  
-microblaze           randconfig-r023-20230410   gcc  
-microblaze           randconfig-r036-20230412   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      maltaaprp_defconfig   clang
-mips                           mtx1_defconfig   clang
-nios2        buildonly-randconfig-r004-20230409   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r033-20230412   gcc  
-nios2                randconfig-r035-20230410   gcc  
-openrisc             randconfig-r003-20230409   gcc  
-openrisc             randconfig-r006-20230410   gcc  
-openrisc             randconfig-r024-20230410   gcc  
-parisc       buildonly-randconfig-r001-20230410   gcc  
-parisc       buildonly-randconfig-r003-20230410   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r024-20230409   gcc  
-parisc               randconfig-r034-20230412   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     ppa8548_defconfig   clang
-powerpc              randconfig-r021-20230410   gcc  
-powerpc              randconfig-r025-20230409   gcc  
-powerpc              randconfig-r026-20230410   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv        buildonly-randconfig-r004-20230410   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r022-20230409   gcc  
-riscv                randconfig-r026-20230410   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r025-20230410   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r015-20230409   gcc  
-sh                   randconfig-r023-20230409   gcc  
-sh                   randconfig-r032-20230409   gcc  
-sh                   randconfig-r034-20230410   gcc  
-sparc        buildonly-randconfig-r001-20230409   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r012-20230409   gcc  
-sparc64              randconfig-r006-20230409   gcc  
-sparc64              randconfig-r022-20230410   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230410   clang
-x86_64               randconfig-a002-20230410   clang
-x86_64               randconfig-a003-20230410   clang
-x86_64               randconfig-a004-20230410   clang
-x86_64               randconfig-a005-20230410   clang
-x86_64               randconfig-a006-20230410   clang
-x86_64               randconfig-a011-20230410   gcc  
-x86_64               randconfig-a012-20230410   gcc  
-x86_64               randconfig-a013-20230410   gcc  
-x86_64               randconfig-a014-20230410   gcc  
-x86_64               randconfig-a015-20230410   gcc  
-x86_64               randconfig-a016-20230410   gcc  
-x86_64               randconfig-r022-20230410   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r003-20230409   gcc  
-xtensa               randconfig-r031-20230412   gcc  
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Jens Axboe
+
+
+
