@@ -2,128 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8A46E03E4
-	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 03:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6726E053D
+	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 05:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjDMB4h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Apr 2023 21:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
+        id S229598AbjDMDcK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Apr 2023 23:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjDMB4h (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Apr 2023 21:56:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5360359ED
-        for <cgroups@vger.kernel.org>; Wed, 12 Apr 2023 18:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681350949;
+        with ESMTP id S229683AbjDMDcI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Apr 2023 23:32:08 -0400
+X-Greylist: delayed 484 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Apr 2023 20:32:06 PDT
+Received: from out-48.mta1.migadu.com (out-48.mta1.migadu.com [IPv6:2001:41d0:203:375::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC00810C0
+        for <cgroups@vger.kernel.org>; Wed, 12 Apr 2023 20:32:05 -0700 (PDT)
+Message-ID: <2c5d4e9b-ec7d-dbfc-7e95-e75b66b68d3c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1681356237;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QUAJoa4WsPFgOaywimIxgJmb0m1Gj0LU/rbMc/oiFgM=;
-        b=fUGTEfv9YX5DG2HgmqEWSxq6tpmnjhd6lyzEcx5y6XmEk77yvZwihLuXLn4VcyRzCE27pb
-        4U7QBgC/eSF9fsB8VdVf+UdR2c5kC4+8o4x9swyL3yVBUdd+grna3hl3JFEIXyutnuWNF6
-        cvcuxOCKnkhH4ShAjx86SqXbCCrw/2s=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-189-SMq2uPKiO0excjeVA5Pqsw-1; Wed, 12 Apr 2023 21:55:47 -0400
-X-MC-Unique: SMq2uPKiO0excjeVA5Pqsw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3C9473810B1C;
-        Thu, 13 Apr 2023 01:55:47 +0000 (UTC)
-Received: from [10.22.32.168] (unknown [10.22.32.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 668CDC15BB8;
-        Thu, 13 Apr 2023 01:55:46 +0000 (UTC)
-Message-ID: <9862da55-5f41-24c3-f3bb-4045ccf24b2e@redhat.com>
-Date:   Wed, 12 Apr 2023 21:55:46 -0400
+        bh=SZZA5T91TnAzL69LK031bioqqsWD859qJR93vJBrvfE=;
+        b=Fu7DtGRKCCChMSJx7TqN/FEyNOi14o8+joZ1seqjSZVe2hGT5OtJ+o9uXSBXWpzlZTNcij
+        jI6GZAFr7dXw11Dq3ayXX9WnqPXFqb5zxhbbcXXbNMgApmabNiRidO2XjEbnqSRZ8HnAq7
+        2DqudkmbITa57FLXnmUaOOiPhfdYVps=
+Date:   Thu, 13 Apr 2023 11:23:21 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
+Subject: Re: [PATCH 1/2] blk-stat: fix QUEUE_FLAG_STATS clear
 Content-Language: en-US
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-References: <20230412153758.3088111-1-longman@redhat.com>
- <ZDcGVebCpyktxyWh@slm.duckdns.org>
- <1ce6a073-e573-0c32-c3d8-f67f3d389a28@redhat.com>
- <ZDcS_yVCgh6g1LoM@slm.duckdns.org>
- <e38f72aa-9705-cf0c-a565-fb790f16c53e@redhat.com>
- <ZDdG1K0kTETZMTCu@slm.duckdns.org>
- <cd4c3f92-4a01-e636-7390-8c6a3d0cfe6c@redhat.com>
- <ZDdNy2NAfj2_1CbW@slm.duckdns.org>
- <1b8d9128-d076-7d37-767d-11d6af314662@redhat.com>
- <ZDdYOI9LB87ra2t_@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZDdYOI9LB87ra2t_@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20230412160754.1981705-1-chengming.zhou@linux.dev>
+ <ZDbmlYIrRpkWRZla@slm.duckdns.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <ZDbmlYIrRpkWRZla@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/12/23 21:17, Tejun Heo wrote:
-> Hello, Waiman.
->
-> On Wed, Apr 12, 2023 at 08:55:55PM -0400, Waiman Long wrote:
->>> Sounds a bit contrived. Does it need to be something defined in the root
->>> cgroup?
->> Yes, because we need to take away the isolated CPUs from the effective cpus
->> of the root cgroup. So it needs to start from the root. That is also why we
->> have the partition rule that the parent of a partition has to be a partition
->> root itself. With the new scheme, we don't need a special cgroup to hold the
-> I'm following. The root is already a partition root and the cgroupfs control
-> knobs are owned by the parent, so the root cgroup would own the first level
-> cgroups' cpuset.cpus.reserve knobs. If the root cgroup wants to assign some
-> CPUs exclusively to a first level cgroup, it can then set that cgroup's
-> reserve knob accordingly (or maybe the better name is
-> cpuset.cpus.exclusive), which will take those CPUs out of the root cgroup's
-> partition and give them to the first level cgroup. The first level cgroup
-> then is free to do whatever with those CPUs that now belong exclusively to
-> the cgroup subtree.
-
-I am OK with the cpuset.cpus.reserve name, but not that much with the 
-cpuset.cpus.exclusive name as it can get confused with cgroup v1's 
-cpuset.cpu_exclusive. Of course, I prefer the cpuset.cpus.isolated name 
-a bit more. Once an isolated CPU gets used in an isolated partition, it 
-is exclusive and it can't be used in another isolated partition.
-
-Since we will allow users to set cpuset.cpus.reserve to whatever value 
-they want. The distribution of isolated CPUs is only valid if the cpus 
-are present in its parent's cpuset.cpus.reserve and all the way up to 
-the root. It is a bit expensive, but it should be a relatively rare 
-operation.
-
->
->> isolated CPUs. The new root cgroup file will be enough to inform the system
->> what CPUs will have to be isolated.
+On 2023/4/13 01:12, Tejun Heo wrote:
+> On Thu, Apr 13, 2023 at 12:07:53AM +0800, chengming.zhou@linux.dev wrote:
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
 >>
->> My current thinking is that the root's "cpuset.cpus.isolated" will start
->> with whatever have been set in the "isolcpus" or "nohz_full" boot command
->> line and can be extended from there but not shrank below that as there can
->> be additional isolation attributes with those isolated CPUs.
-> I'm not sure we wanna tie with those automatically. I think it'd be
-> confusing than helpful.
+>> We need to set QUEUE_FLAG_STATS for two cases:
+>> 1. blk_stat_enable_accounting()
+>> 2. blk_stat_add_callback()
+>>
+>> So we should clear it only when ((q->stats->accounting == 0) &&
+>> list_empty(&q->stats->callbacks)).
+>>
+>> blk_stat_disable_accounting() only check if q->stats->accounting
+>> is 0 before clear the flag, this patch fix it.
+>>
+>> Also add list_empty(&q->stats->callbacks)) check when enable, or
+>> the flag is already set.
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> Acked-by: Tejun Heo <tj@kernel.org>
+> 
+> It'd be useful to explicitly illustrate the buggy behavior in the
+> description (e.g. if you do X, Y and then Z, then X incorrectly loses
 
-Yes, I am fine with taking this off for now.
+Yes, I will add below buggy behavior in the next version:
 
-Cheers,
-Longman
+This bug can be reproduced as below on kernel without BLK_DEV_THROTTLING
+(since it will unconditionally enable accounting, see the second patch).
 
+# cat /sys/block/sr0/queue/scheduler
+none mq-deadline [bfq]
+
+# cat /sys/kernel/debug/block/sr0/state
+SAME_COMP|IO_STAT|INIT_DONE|STATS|REGISTERED|NOWAIT|30
+
+# echo none > /sys/block/sr0/queue/scheduler
+
+# cat /sys/kernel/debug/block/sr0/state
+SAME_COMP|IO_STAT|INIT_DONE|REGISTERED|NOWAIT
+
+# cat /sys/block/sr0/queue/wbt_lat_usec
+75000
+
+We can see that after changing elevator from "bfq" to "none", "STATS" flag
+is lost even though WBT callback still need it.
+
+
+> accounting). Can you also please add the appropriate stable cc?
+
+Ok, will do.
+
+Thanks.
+
+> 
+> Thanks.
+> 
