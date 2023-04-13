@@ -2,96 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EC06E039C
-	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 03:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8A46E03E4
+	for <lists+cgroups@lfdr.de>; Thu, 13 Apr 2023 03:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjDMBWW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Apr 2023 21:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S229819AbjDMB4h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Apr 2023 21:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjDMBWW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Apr 2023 21:22:22 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3D8CF;
-        Wed, 12 Apr 2023 18:22:21 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-504eb1155d3so5855438a12.1;
-        Wed, 12 Apr 2023 18:22:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681348939; x=1683940939;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yuLz9iUc1y0EzGD8AvN7Y9hf2MbqyBOWJrZZ7t76bGM=;
-        b=Qm1WsHGG7Yawgtzf4UmTBwdzPBribr4bXLa944+d8dBqQyTYUQfDHQZajmMCidQnYP
-         xxG5hyrsJ2DK2CdZYveJeig/i6zy/sZrjcBmabkbeSIMyEFp++itkqfydZVNXe1Xwalf
-         GwmnvJaELevvy9wCBHSGrGpeZy3su2Ctk+vz0EeQ1emZnnqtL8VPrGgjv+EOD4tVAZKw
-         K6KcRffpQddB4a3aHCnM2MLlY4SMpNcrxIF6I/VByUKw7OBIzoCx18lRrzYobBBdisIz
-         9efZAtqGXAEit6kb/SQ9r3xk8M9yDb40noKlzK+qv9CqBfC3IYeinDiA16mzgJPo4cEZ
-         MlAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681348939; x=1683940939;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yuLz9iUc1y0EzGD8AvN7Y9hf2MbqyBOWJrZZ7t76bGM=;
-        b=LHeTI464stjRjhrLgobNmtCK07ZfoRDcS+78P0/1tSvFKQQ6y8yA0CH1udLSuiVlS7
-         ppL+9MOMgEtMsS57Zgmxv6h650OW+Me8E05BYXpm2H+ciK0JUomb0N66Nebj/104lvnQ
-         V7QLPkau8nW1mSBx+kY+ewB2Fdd3J2GYXxqGlHOs92ysTtPvwji0Im603HoVvAdVSsRf
-         heKtXKKR3zkKebXp3s0k39Whz84PCXg411otIUiw4OZ/KfvAwkIj9FTff3HZJdDOC/ZF
-         2fWLc8wauGpZB/2hwMtYgBcC0F7CKKI1gvqknnP080NFYTQk85ZfjV2ZISme5DDLawOu
-         q8Lw==
-X-Gm-Message-State: AAQBX9fKAERSlqE44QWre7mOk74ChOXarYnWsMj0oFkpChKWsCrD/wTy
-        r1C1QXNM6f6eY4TatgQjn/uQl3LUkF5xxjS3DLTbrPthuBFenQ==
-X-Google-Smtp-Source: AKy350ZCR0yfocrqiPD3KEzhJCl6DyZlu182JEmGvxfQAyWt9sTVsY/SoXRTXbWHu6sO0LksY8uE4weJ/1iG5eFv5RI=
-X-Received: by 2002:a05:6402:22f2:b0:506:6a99:ef53 with SMTP id
- dn18-20020a05640222f200b005066a99ef53mr949787edb.2.1681348939015; Wed, 12 Apr
- 2023 18:22:19 -0700 (PDT)
+        with ESMTP id S229583AbjDMB4h (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Apr 2023 21:56:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5360359ED
+        for <cgroups@vger.kernel.org>; Wed, 12 Apr 2023 18:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681350949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QUAJoa4WsPFgOaywimIxgJmb0m1Gj0LU/rbMc/oiFgM=;
+        b=fUGTEfv9YX5DG2HgmqEWSxq6tpmnjhd6lyzEcx5y6XmEk77yvZwihLuXLn4VcyRzCE27pb
+        4U7QBgC/eSF9fsB8VdVf+UdR2c5kC4+8o4x9swyL3yVBUdd+grna3hl3JFEIXyutnuWNF6
+        cvcuxOCKnkhH4ShAjx86SqXbCCrw/2s=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-189-SMq2uPKiO0excjeVA5Pqsw-1; Wed, 12 Apr 2023 21:55:47 -0400
+X-MC-Unique: SMq2uPKiO0excjeVA5Pqsw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3C9473810B1C;
+        Thu, 13 Apr 2023 01:55:47 +0000 (UTC)
+Received: from [10.22.32.168] (unknown [10.22.32.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 668CDC15BB8;
+        Thu, 13 Apr 2023 01:55:46 +0000 (UTC)
+Message-ID: <9862da55-5f41-24c3-f3bb-4045ccf24b2e@redhat.com>
+Date:   Wed, 12 Apr 2023 21:55:46 -0400
 MIME-Version: 1.0
-From:   Michael Honaker <mchonaker@gmail.com>
-Date:   Wed, 12 Apr 2023 21:22:07 -0400
-Message-ID: <CAAKLMZ1fM1d4Drw0D2AkEwAG9iFOyT9qboy1REWtwS6Q00BA6Q@mail.gmail.com>
-Subject: cgroup: Clarification around usage_in_bytes and its relation to the
- page counter
-To:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+References: <20230412153758.3088111-1-longman@redhat.com>
+ <ZDcGVebCpyktxyWh@slm.duckdns.org>
+ <1ce6a073-e573-0c32-c3d8-f67f3d389a28@redhat.com>
+ <ZDcS_yVCgh6g1LoM@slm.duckdns.org>
+ <e38f72aa-9705-cf0c-a565-fb790f16c53e@redhat.com>
+ <ZDdG1K0kTETZMTCu@slm.duckdns.org>
+ <cd4c3f92-4a01-e636-7390-8c6a3d0cfe6c@redhat.com>
+ <ZDdNy2NAfj2_1CbW@slm.duckdns.org>
+ <1b8d9128-d076-7d37-767d-11d6af314662@redhat.com>
+ <ZDdYOI9LB87ra2t_@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZDdYOI9LB87ra2t_@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On 4/12/23 21:17, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Wed, Apr 12, 2023 at 08:55:55PM -0400, Waiman Long wrote:
+>>> Sounds a bit contrived. Does it need to be something defined in the root
+>>> cgroup?
+>> Yes, because we need to take away the isolated CPUs from the effective cpus
+>> of the root cgroup. So it needs to start from the root. That is also why we
+>> have the partition rule that the parent of a partition has to be a partition
+>> root itself. With the new scheme, we don't need a special cgroup to hold the
+> I'm following. The root is already a partition root and the cgroupfs control
+> knobs are owned by the parent, so the root cgroup would own the first level
+> cgroups' cpuset.cpus.reserve knobs. If the root cgroup wants to assign some
+> CPUs exclusively to a first level cgroup, it can then set that cgroup's
+> reserve knob accordingly (or maybe the better name is
+> cpuset.cpus.exclusive), which will take those CPUs out of the root cgroup's
+> partition and give them to the first level cgroup. The first level cgroup
+> then is free to do whatever with those CPUs that now belong exclusively to
+> the cgroup subtree.
 
-This is my first posting to the LKML, so please let me know if this
-should be asked
-elsewhere or if there is anything else wrong with my email. I'd like
-to confirm my understanding on an issue
-I've been encountering.
+I am OK with the cpuset.cpus.reserve name, but not that much with the 
+cpuset.cpus.exclusive name as it can get confused with cgroup v1's 
+cpuset.cpu_exclusive. Of course, I prefer the cpuset.cpus.isolated name 
+a bit more. Once an isolated CPU gets used in an isolated partition, it 
+is exclusive and it can't be used in another isolated partition.
 
-I have been trying to get an accurate measurement of memory usage of a
-non-root cgroup, specifically a Kubernetes container, and noticed some
-inconsistencies when comparing the
-value of `memory.usage_in_bytes` with the information in
-`memory.stat`. After further investigation of
-the cgroup docs (/admin-guide/cgroups/memory.rst#usage_in_bytes) and
-an old LMKL thread ("real meaning
-of memory.usage_in_bytes"), I came to the understanding that
-`usage_in_bytes` actually shows the value
-of the resource counter which is an overestimation due to the counter
-being split into per-cpu chunks
-for caching, and that the real usage can be calculated from RSS+Cache
-gathered from `memory.stat`.
-I've created cadvisor issue #3286
-(https://github.com/google/cadvisor/issues/3286) which goes into
-greater detail on my investigation with examples.
+Since we will allow users to set cpuset.cpus.reserve to whatever value 
+they want. The distribution of isolated CPUs is only valid if the cpus 
+are present in its parent's cpuset.cpus.reserve and all the way up to 
+the root. It is a bit expensive, but it should be a relatively rare 
+operation.
 
-Is the above understanding still correct with the new page counters?
-If so, could any memory
-allocations be reflected in `usage_in_bytes` but not in `stat` for
-child cgroups? I want to ensure I'm not
-missing anything by only monitoring the `stat` file.
+>
+>> isolated CPUs. The new root cgroup file will be enough to inform the system
+>> what CPUs will have to be isolated.
+>>
+>> My current thinking is that the root's "cpuset.cpus.isolated" will start
+>> with whatever have been set in the "isolcpus" or "nohz_full" boot command
+>> line and can be extended from there but not shrank below that as there can
+>> be additional isolation attributes with those isolated CPUs.
+> I'm not sure we wanna tie with those automatically. I think it'd be
+> confusing than helpful.
 
-Thank you for any clarification or corrections.
+Yes, I am fine with taking this off for now.
+
+Cheers,
+Longman
+
