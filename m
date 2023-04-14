@@ -2,82 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C7B6E28BF
-	for <lists+cgroups@lfdr.de>; Fri, 14 Apr 2023 18:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA9C6E28CC
+	for <lists+cgroups@lfdr.de>; Fri, 14 Apr 2023 18:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjDNQyL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Apr 2023 12:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
+        id S229820AbjDNQ4j (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Apr 2023 12:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjDNQyL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Apr 2023 12:54:11 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB4A3A8D;
-        Fri, 14 Apr 2023 09:54:08 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1a6670671e3so7021315ad.0;
-        Fri, 14 Apr 2023 09:54:08 -0700 (PDT)
+        with ESMTP id S230206AbjDNQ4i (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Apr 2023 12:56:38 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B46244AA;
+        Fri, 14 Apr 2023 09:56:36 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id y6so17807431plp.2;
+        Fri, 14 Apr 2023 09:56:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681491248; x=1684083248;
+        d=gmail.com; s=20221208; t=1681491396; x=1684083396;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=oZAvqYOYWKaKZx+hMdeSRvFQw5l3f6+NXzgHNVGxyZc=;
-        b=OfVaK49qpidMI4dngUHtYirJkn7oUxSdbRfakMpgbgn1EFE3V1SYLnsMiNawY5+rO8
-         RSz6N22SGnArcSiCFDiDDF8y0Mg0rksJp6GEeqz4JCmOGYqPgTBU4DjnYzHkVJtnjfbs
-         7M6o0fyvoZAa764vAUL+5wWCmydHepII7odqZRhxbPgswGcuJLGCb33m//yqFG51bGfd
-         EuZchA48GyJDKBZFZBQz8/ubKoIpi6QR7p2vFeaq8xIxPzym+vxjvt+3fBHgCGQoGciR
-         d+wDMNjSb7n0YwP2P3v8pIMdRq4upNL7fPmC5l6PUNGZPadQDMFZSkNyK/qtJpT0U7l1
-         8/5Q==
+        bh=28gmcAD8PpsVn0NwYwDOiW5yvJVzcaxRIYUggc0qigE=;
+        b=p89rqc7JEr8KC8lByaaP0wofLPfeCULMVuVP7rIrDf7Bx2RMx3fHLJUANRpxiDTpjE
+         SB7B2GuIkm85rEwraw3xvRmWMLsggNJFeJT6gue9xZ5iiWXB/I4pO+YKtLQNYb3QcI0K
+         CMaebrdPWnZv2Fdi45ddcvE/7RSg6HzKjgdQSe8TG5pYoB8/TRyHSPjjKUUselaneY7y
+         Fzsgbv79qyr+VQr8YgSO4ifpqmXNeiyY5VML9raEAkqZhKGPIKJdhOIASvrhSv8swE8T
+         dOTpF69gWN9lih0IcxfB4MCkhiSue3Y2kPDYQlLK+7Y1mYWuUQmGUKMhbKC6MCqu+2Hu
+         8x7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681491248; x=1684083248;
+        d=1e100.net; s=20221208; t=1681491396; x=1684083396;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oZAvqYOYWKaKZx+hMdeSRvFQw5l3f6+NXzgHNVGxyZc=;
-        b=cTtoNR50dwW+BzS8o1cGFoWR5DeCxOgydloh7nnRAEoX202vSHbVBjsXqisWY9QGwu
-         3oh0dGx02385hEUc+z0GlvYhzyX6goT5Pn0Qf77qlUj7FPqFHIMt8zMXeQDJo8ZBJriW
-         yZOlWJzQpXMx92TOYjhkJF1bSGOBxFh9Kgj55ruHZLHPZuWFq7E+O4mKse7joAiGCCMW
-         aOMIC9F79lW++OOh+nQnmG+0owkYggNRkYgDzA+jJXfCSZnfGlw+EsmYfT1JgzQFY+7E
-         BW9mzyZ9o9GfvHoIm4lhqrQVZdBCGp6+Ah9f15B4qz1aWJ/zmFnzWQ1VwHH2vAwc9ZP8
-         AyHg==
-X-Gm-Message-State: AAQBX9fA8kBIkG9KAoGEQLQ0XOOZums1Rwy85hhzqoY2iqbn8ocT0k7U
-        eQc8BydylW9IBAY9y6o3dPrG3Uii8mc=
-X-Google-Smtp-Source: AKy350YUW8tdWpk3MzDYQnAIYJwxPe47Jerfv2Tk35H6paSNTQHJ+AdGjSP+u4D2yUOoVrFHtpcLZA==
-X-Received: by 2002:a05:6a00:ccc:b0:634:c780:5bb8 with SMTP id b12-20020a056a000ccc00b00634c7805bb8mr11011340pfv.17.1681491247683;
-        Fri, 14 Apr 2023 09:54:07 -0700 (PDT)
+        bh=28gmcAD8PpsVn0NwYwDOiW5yvJVzcaxRIYUggc0qigE=;
+        b=DbjMrTq4wKmUE9i0vU5L3FPcdZZG9dMMUITV6gugKMPqHK52VlziePXwDL0N/4fLoo
+         jq4oNNAG5oQNuJxNXaDSgyIrxD0qX86XgWzi4bGFRV7Dr0XQNdCwEK+TGGB1QhCQM/bL
+         NOgBKPSvJM4mXJwdTrZrBGVhlE94NgayxCJoIJAK2LregLeJS71n1fjEmbagGXLJkftu
+         bUXJQizmEhU2+ipCmcf2wd9TiRe1UBP1dYy3MWCNmxvwbItkcIFEdRXtm5/5d9tDMOaX
+         rsZRvJ/iix7amrGPl/wSRuBtxH2EQLqOcTZMsZIlm++iSeG+Ktk9XKx329xsSofvTELN
+         5mog==
+X-Gm-Message-State: AAQBX9e7GsY67CptRcuhXeoJ+g+vf8G67mYeof1GEK3Yib03RHkk8Yem
+        L/lSOmwo2VS8vAWL2UpEJ4A=
+X-Google-Smtp-Source: AKy350bRSdjLR/XP2NsmSn+x4cWxqk+Sn/VZCjCK903lGYxtEE/+YnwGQ+ChpPkpXUU2cDwhI8zDig==
+X-Received: by 2002:a17:902:e74c:b0:1a6:6b9c:48ae with SMTP id p12-20020a170902e74c00b001a66b9c48aemr4330798plf.52.1681491395273;
+        Fri, 14 Apr 2023 09:56:35 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id g21-20020aa78195000000b00625d84a0194sm3252020pfi.107.2023.04.14.09.54.06
+        by smtp.gmail.com with ESMTPSA id 5-20020a170902c24500b001a2445d9a41sm40025plg.141.2023.04.14.09.56.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Apr 2023 09:54:07 -0700 (PDT)
+        Fri, 14 Apr 2023 09:56:34 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 14 Apr 2023 06:54:05 -1000
+Date:   Fri, 14 Apr 2023 06:56:33 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
+To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Tom Hromatka <tom.hromatka@oracle.com>,
         cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Message-ID: <ZDmFLfII8EUX_ocY@slm.duckdns.org>
-References: <1ce6a073-e573-0c32-c3d8-f67f3d389a28@redhat.com>
- <ZDcS_yVCgh6g1LoM@slm.duckdns.org>
- <e38f72aa-9705-cf0c-a565-fb790f16c53e@redhat.com>
- <ZDdG1K0kTETZMTCu@slm.duckdns.org>
- <cd4c3f92-4a01-e636-7390-8c6a3d0cfe6c@redhat.com>
- <ZDdNy2NAfj2_1CbW@slm.duckdns.org>
- <1b8d9128-d076-7d37-767d-11d6af314662@redhat.com>
- <ZDdYOI9LB87ra2t_@slm.duckdns.org>
- <9862da55-5f41-24c3-f3bb-4045ccf24b2e@redhat.com>
- <226cb2da-e800-6531-4e57-cbf991022477@redhat.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: cgroup-v1/cpusets: update libcgroup project link
+Message-ID: <ZDmFwYUmVUyKEjQE@slm.duckdns.org>
+References: <20230414054849.320414-1-kamalesh.babulal@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <226cb2da-e800-6531-4e57-cbf991022477@redhat.com>
+In-Reply-To: <20230414054849.320414-1-kamalesh.babulal@oracle.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -89,20 +78,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 13, 2023 at 09:22:19PM -0400, Waiman Long wrote:
-> I now have a slightly different idea of how to do that. We already have an
-> internal cpumask for partitioning - subparts_cpus. I am thinking about
-> exposing it as cpuset.cpus.reserve. The current way of creating
-> subpartitions will be called automatic reservation and require a direct
-> parent/child partition relationship. But as soon as a user write anything to
-> it, it will break automatic reservation and require manual reservation going
-> forward.
+On Fri, Apr 14, 2023 at 11:18:49AM +0530, Kamalesh Babulal wrote:
+> Update the libcgroup project link, in the cgroup v1/cpusets
+> documentation.
 > 
-> In that way, we can keep the old behavior, but also support new use cases. I
-> am going to work on that.
+> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
 
-I'm not sure I fully understand the proposed behavior but it does sound more
-quirky.
+Applied to cgroup/for-6.4.
 
 Thanks.
 
