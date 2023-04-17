@@ -2,128 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1DA6E46EC
-	for <lists+cgroups@lfdr.de>; Mon, 17 Apr 2023 13:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB536E4B61
+	for <lists+cgroups@lfdr.de>; Mon, 17 Apr 2023 16:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjDQL4u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Apr 2023 07:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S230323AbjDQOWY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Apr 2023 10:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjDQL4t (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Apr 2023 07:56:49 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741516580
-        for <cgroups@vger.kernel.org>; Mon, 17 Apr 2023 04:55:51 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id dx24so19357316ejb.11
-        for <cgroups@vger.kernel.org>; Mon, 17 Apr 2023 04:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681732535; x=1684324535;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hAfhUM23NLqVvA/6Hxfd6Xgc8oePCVqguK6TK2m4xx0=;
-        b=YOBGao3Gh4rsypVOuHoE1ytvu3v+zzuIisiDjA+pAPLUyn2lc4W2y580wM0QGqDuBK
-         t2E4fbgVIhzJkdNrXON9Fk4ppV/G0uJJY87Mggs8FmMDwvTtrBjmQayh9K/oWmrRXfDT
-         w3OPKIPguHHmcs76WPPVys//oHx3UrhionPHUQHviOENI+JaZF1M/wpgoGXe0OqwfSVJ
-         amMjGmlYHvk2HrrkdEj7F2j2V2hoSumB9UuA9pw4ITvpp7IPm19MV3XM8v0gk3ZoHHlA
-         4y71YZlBrpzkXhBU69R8xFtV1gn1I/z2Ufb4CZ7Dh1rW6T7kjFc6InE6Cpgq/99EkcVp
-         jAwg==
+        with ESMTP id S230419AbjDQOWT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Apr 2023 10:22:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E6910C0
+        for <cgroups@vger.kernel.org>; Mon, 17 Apr 2023 07:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681741287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hXXWTVEI1mMsVSpGycpPWe1J+aRrdeZCdqy7/mR/vH0=;
+        b=FpjXMWP9MsWOfPzeIaaxfDAAn6QYdg1faGH8aXyxi3nn3I5GmUqL70c7FWNr/buZl/CMwA
+        mwWB5c0kzSsiqFgR7bC/pAHsaMYZawFQRRGMZwWljOglT5BwlVgUXW2GZzuf5ZkhuKA8OW
+        i9+oOJ6ZRWR9BoBqp/h+MbDE1XjLNYM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-302-L8w2omjmPeCWIJwaKKSFJA-1; Mon, 17 Apr 2023 10:20:59 -0400
+X-MC-Unique: L8w2omjmPeCWIJwaKKSFJA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-2f8c2258b48so363587f8f.1
+        for <cgroups@vger.kernel.org>; Mon, 17 Apr 2023 07:20:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681732535; x=1684324535;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hAfhUM23NLqVvA/6Hxfd6Xgc8oePCVqguK6TK2m4xx0=;
-        b=bbCTmGYeilLs2JC+RxMRwkBwmtS8RZzRTD7+iEY3rshUeXOs4xnqOhn9AbdIH438Q8
-         ZmUIVUaIHxopkrKPcWniH99lsvHkG050/YrOSWGrC3XqdxLxDOsYbMhr08eeuXTWeaAY
-         kTpEo+geK9s5CWsmAehxkPwcb4xVXJuWUbi5cxtmHJguhgJQCarwkK9dHDyCJ2CCZDaU
-         ul93j3csM7wbAo9dNqLU+Wh81oI6hlMvEbRHKdZaXqkJ3Q87pb52BnrQQ6eHJA5loPnG
-         qmes0tGLE62UsyYnRV15/n/5I8enPf69Cr4ICQk9EkZZ25F/vAfxhO8DJgGE2yzgIPsM
-         MTbA==
-X-Gm-Message-State: AAQBX9cGJsMj5WTuGFn1XFJcthTntOw1HV8mL17CfqvL97SgPqgdFz30
-        zIU9Z2NTyaNdS73oXPK8Avw5T4EOBe6cYCaqnmVmlQ==
-X-Google-Smtp-Source: AKy350Y5hBUoVr9Q+rVltKOFfeaVq+COPSzaOmznVTOL8PIWcXm7nigxXo7jRIinYg1V6Jm9LgrUetXlRewKTi7ttcs=
-X-Received: by 2002:a17:906:2656:b0:94e:5f2a:23fe with SMTP id
- i22-20020a170906265600b0094e5f2a23femr3568963ejc.5.1681732534659; Mon, 17 Apr
- 2023 04:55:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681741255; x=1684333255;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hXXWTVEI1mMsVSpGycpPWe1J+aRrdeZCdqy7/mR/vH0=;
+        b=HTSoCGfVkC2CDMP7PihN84b5+ZO1+5kHiSZh2aXhkdzrluxRj5laVa1WLQbFKObjbL
+         tNYzgU/OOrY8rIowkcRuSQRtpJoxnpjFNKasXzHHE9R+j/Muq5GNOADNOjdP7IKT0QRq
+         uH3zyCMb+qD20wcKf8hGlv82O+zzemDdFS3g+1Xj7QcctMuATAZ7pocqxNIvOs2ZzYL3
+         kNLjSHbksGWpKh0I0QJCX4JApXSYvXyyBB+2EuX0DT+1Dk1WxIA2Tqx8y8W+Vw86ntdc
+         Z+ZPU48SSY0vYFLv67ziHwnPFs74cHJ3euTP/NIssei1fCy/XV1XifBcW6zmIH7ZCqpQ
+         WvYA==
+X-Gm-Message-State: AAQBX9dY+H0WEFM3YJtgHIYKjlEpmVLY/8+epnzp4y3AeiNJ6hKRgQGC
+        D2XJ3QOVfyFqa29gsfrnZKiAGi5j/zikHHy/8njIo8hf7WUonCKY9ZvoD0PqVIv4ikdfcfhRmao
+        /EXTIU7v8+XnSNjHl5A==
+X-Received: by 2002:a5d:5248:0:b0:2f9:a75:b854 with SMTP id k8-20020a5d5248000000b002f90a75b854mr3792098wrc.59.1681741254928;
+        Mon, 17 Apr 2023 07:20:54 -0700 (PDT)
+X-Google-Smtp-Source: AKy350boMM0zmEGTfFZFjlk6c0N1TW//CLM7LqCyngTtQr2+J07kOHHTQAknS4PxsNoOPWRVKQQvfg==
+X-Received: by 2002:a5d:5248:0:b0:2f9:a75:b854 with SMTP id k8-20020a5d5248000000b002f90a75b854mr3792081wrc.59.1681741254560;
+        Mon, 17 Apr 2023 07:20:54 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c700:fc00:db07:68a9:6af5:ecdf? (p200300cbc700fc00db0768a96af5ecdf.dip0.t-ipconnect.de. [2003:cb:c700:fc00:db07:68a9:6af5:ecdf])
+        by smtp.gmail.com with ESMTPSA id u13-20020a05600c00cd00b003edf2dc7ca3sm12016562wmm.34.2023.04.17.07.20.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Apr 2023 07:20:53 -0700 (PDT)
+Message-ID: <b37d1876-0a74-aa52-7911-e6f78280caaa@redhat.com>
+Date:   Mon, 17 Apr 2023 16:20:52 +0200
 MIME-Version: 1.0
-References: <20230403220337.443510-1-yosryahmed@google.com>
-In-Reply-To: <20230403220337.443510-1-yosryahmed@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 17 Apr 2023 04:54:52 -0700
-Message-ID: <CAJD7tkZjoWMXFSgBwAtXao35f3Gmmp9cEordvFAPX_EegC_o1A@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable RFC 0/5] cgroup: eliminate atomic rstat
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v3 0/7] Split a folio to any lower order folios
+Content-Language: en-US
+To:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Cc:     Zi Yan <ziy@nvidia.com>, Zi Yan <zi.yan@sent.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Zach O'Keefe <zokeefe@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230403201839.4097845-1-zi.yan@sent.com>
+ <20230404144727.e613116684dbd65a4b4745c1@linux-foundation.org>
+ <49ee481e-452f-61c7-2da5-28de2cf3de2@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <49ee481e-452f-61c7-2da5-28de2cf3de2@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 3, 2023 at 3:03=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
-wrote:
->
-> A previous patch series ([1] currently in mm-unstable) changed most
-> atomic rstat flushing contexts to become non-atomic. This was done to
-> avoid an expensive operation that scales with # cgroups and # cpus to
-> happen with irqs disabled and scheduling not permitted. There were two
-> remaining atomic flushing contexts after that series. This series tries
-> to eliminate them as well, eliminating atomic rstat flushing completely.
->
-> The two remaining atomic flushing contexts are:
-> (a) wb_over_bg_thresh()->mem_cgroup_wb_stats()
-> (b) mem_cgroup_threshold()->mem_cgroup_usage()
->
-> For (a), flushing needs to be atomic as wb_writeback() calls
-> wb_over_bg_thresh() with a spinlock held. However, it seems like the
-> call to wb_over_bg_thresh() doesn't need to be protected by that
-> spinlock, so this series proposes a refactoring that moves the call
-> outside the lock criticial section and makes the stats flushing
-> in mem_cgroup_wb_stats() non-atomic.
->
-> For (b), flushing needs to be atomic as mem_cgroup_threshold() is called
-> with irqs disabled. We only flush the stats when calculating the root
-> usage, as it is approximated as the sum of some memcg stats (file, anon,
-> and optionally swap) instead of the conventional page counter. This
-> series proposes changing this calculation to use the global stats
-> instead, eliminating the need for a memcg stat flush.
->
-> After these 2 contexts are eliminated, we no longer need
-> mem_cgroup_flush_stats_atomic() or cgroup_rstat_flush_atomic(). We can
-> remove them and simplify the code.
->
-> Yosry Ahmed (5):
->   writeback: move wb_over_bg_thresh() call outside lock section
->   memcg: flush stats non-atomically in mem_cgroup_wb_stats()
->   memcg: calculate root usage from global state
->   memcg: remove mem_cgroup_flush_stats_atomic()
->   cgroup: remove cgroup_rstat_flush_atomic()
->
->  fs/fs-writeback.c          | 16 +++++++----
->  include/linux/cgroup.h     |  1 -
->  include/linux/memcontrol.h |  5 ----
->  kernel/cgroup/rstat.c      | 26 ++++--------------
->  mm/memcontrol.c            | 54 ++++++++------------------------------
->  5 files changed, 27 insertions(+), 75 deletions(-)
->
-> --
-> 2.40.0.348.gf938b09366-goog
->
+On 16.04.23 20:11, Hugh Dickins wrote:
+> On Tue, 4 Apr 2023, Andrew Morton wrote:
+>> On Mon,  3 Apr 2023 16:18:32 -0400 Zi Yan <zi.yan@sent.com> wrote:
+>>
+>>> File folio supports any order and people would like to support flexible orders
+>>> for anonymous folio[1] too. Currently, split_huge_page() only splits a huge
+>>> page to order-0 pages, but splitting to orders higher than 0 is also useful.
+>>> This patchset adds support for splitting a huge page to any lower order pages
+>>> and uses it during file folio truncate operations.
+>>
+>> This series (and its v1 & v2) don't appear to have much in the way of
+>> detailed review.  As it's at v3 and has been fairly stable I'll queue
+>> it up for some testing now, but I do ask that some reviewers go through
+>> it please.
+> 
+> Andrew, please don't let this series drift into 6.4-rc1.
+> 
+> I've seen a bug or two (I'll point out in response to those patches),
+> but overall I don't see what the justification for the series is: done
+> because it could be done, it seems to me, but liable to add surprises.
+> 
+> The cover letter says "splitting to orders higher than 0 is also useful",
+> but it's not clear why; and the infrastructure provided seems unsuited
+> to the one use provided - I'll say more on that truncation patch.
 
-Any thoughts on this series, anyone? :)
+I agree. Maybe this patch set is something we want to have in the future 
+once actual consumers that can benefit are in place, such that we can 
+show actual performance numbers with/without.
+
+Until then, "365 insertions(+), 68 deletions(-)" certainly needs some 
+reasonable motivation.
+
+-- 
+Thanks,
+
+David / dhildenb
+
