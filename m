@@ -2,58 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99246E9C27
-	for <lists+cgroups@lfdr.de>; Thu, 20 Apr 2023 20:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91956E9C8B
+	for <lists+cgroups@lfdr.de>; Thu, 20 Apr 2023 21:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbjDTS5o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Apr 2023 14:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33350 "EHLO
+        id S232058AbjDTTia (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Apr 2023 15:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjDTS5U (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Apr 2023 14:57:20 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D019219B
-        for <cgroups@vger.kernel.org>; Thu, 20 Apr 2023 11:57:18 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-3ef31924c64so901751cf.1
-        for <cgroups@vger.kernel.org>; Thu, 20 Apr 2023 11:57:18 -0700 (PDT)
+        with ESMTP id S231653AbjDTTi3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Apr 2023 15:38:29 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5543C0D
+        for <cgroups@vger.kernel.org>; Thu, 20 Apr 2023 12:38:28 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-3ef34c49cb9so903431cf.1
+        for <cgroups@vger.kernel.org>; Thu, 20 Apr 2023 12:38:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682017038; x=1684609038;
+        d=google.com; s=20221208; t=1682019507; x=1684611507;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PPC/T+cZBiALDJb1UQ+biPUmWPyQkwBmvhpGsYNp8Ec=;
-        b=PkKT30pQsy0dCCBavAqHdYdEypziw027sTRPtrDqQEAdFY/TgNivu3OfPvntSwK5vh
-         mU5R6qzBEL+qOULk/9IpVdRCuSYMJd/CzosuFnkJHrtdKzbtz0qrvCTLqa6YVYOFENL6
-         eUbuwLtPygmsEnnix7qVPS4j+Mb06vn2kCVGU22IQ/QipOnHx3x30cc17Wf2V/b6eOQA
-         FBcLvayQhbewEQqXjzzBGqjCWuPzVpydlIFaj667t12Zh2ffgrUquDBsin3Tzj+OScUJ
-         BWjEbdTXXG4edmqIovf5NwazZ359XreOT3MIExV27wqDBPOW6JeKvDnWf6Vv752fS0yk
-         hnzw==
+        bh=mbkXWBpwVxhf9T5z1cj4mwmJl7+Xdft765BvQGmNJoc=;
+        b=Ciz/t1cEtCUCOm5soArFZ936T3/SUb8VLB6c5P8LGdbu6vVDAjL9VlEeJbi2ziuhxy
+         C3vmNugZAc+x8atgpej6AYWTbg/CH71jBJ0GUVSsktziCLpabOw7/zqEc+skmTFrOO+i
+         ZotbQR6QLIGThfZYmTQOsHIcM4IBzEj1DPNrJDhEruo8QA3xEDRWU0solT/rU2BAY/yV
+         85SiFvDILk1jQ3JOtF5iesWxvT/b7C3s8OyqovZ33BteZR/RTUJDUejNm5BY5J1b+QCh
+         LqVHQd2X9sSBfcuCGaWZZ5VX5RmRRr6etLFaH8HToHo6sDWVSQ8xu7PDiyXLRdFEokvw
+         TciA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682017038; x=1684609038;
+        d=1e100.net; s=20221208; t=1682019507; x=1684611507;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PPC/T+cZBiALDJb1UQ+biPUmWPyQkwBmvhpGsYNp8Ec=;
-        b=VSnFVLhWUb8sSz7OO0WLzdtmTzljJFypoY4TknDjC9goeUiHZW8pRp5nR3rJdL6nyp
-         gzQ6dlvc9EoAKC1D6fsRU6B734LAOJLEi6UbEI3wfpT9oW3mW+EJmgJ6yEU/JPErsc0O
-         8AVRuyV/29IQhuC3VoH2wp2MjuD2S/QUyyuR0DN3YzoAnAZ0aEyIBAb094T3W58PIuVF
-         drp3rFet+fVBUdQYeO9LoavRVZOlsGnKFTqSSe3HzhjZlvL5XK/438g69yb4hGbodUz9
-         TU618rIfIxM6RFfTEFZkf2QpM26mSJPoV+OcQnlB9VTzhKi3jbJong4YCr67wJMQ4VK6
-         ra6A==
-X-Gm-Message-State: AAQBX9e+Ns8MJebfVcS7K0PDhg6K2zgLpeR76Tl2UHU4LwvrcxijO6kU
-        PfvFWcErJCdd7q+XUVnq+73SYtLdtsoN8tCHAN0Ghg==
-X-Google-Smtp-Source: AKy350Ybjxqe9UNlAY93vEa6/CWa86430QrJTp0Wuib3dT/K1RCencGmEZTuWYiHeeJuqVMNI7KbpwHyDPsTlcYFsTw=
-X-Received: by 2002:a05:622a:290:b0:3ef:5008:336f with SMTP id
- z16-20020a05622a029000b003ef5008336fmr29892qtw.1.1682017037936; Thu, 20 Apr
- 2023 11:57:17 -0700 (PDT)
+        bh=mbkXWBpwVxhf9T5z1cj4mwmJl7+Xdft765BvQGmNJoc=;
+        b=VnByYH8pJICG/8jHolpwbRm3ErfzYoLhdJbBlAoWUKILHwMMLqmJoMuq7Ouz04lEQj
+         5CqwLNHfMMMj/6ceHKvNOJbH0eJrN8Ez2ROp31WGy6a+KNYsSvmm8PrrmS5pVEBSo3BD
+         OiZObopwSXnsqaqU7NUXL6FuqBya8lVJOpQ5+SAShyu1dD4pMA69td6fki1mR9T0ETSK
+         FdXlxWzPeKhn/fiF/qLrl9abaClq5wdXF7UU1pCTd1j8hiJOrr/fSb6cXAkkPtddCyBG
+         rAC+r6PNbY57shajM14prifxSAio7xMgDnVhEkJ+o/WWCAwOu90Yofx7WE/K8gonC6dF
+         //MA==
+X-Gm-Message-State: AAQBX9cjNLb14ALoAx1a6xEM0LFjp+yQqEffACDCm7mOREb9eCbsTZFI
+        OK3d2H5uzSOHc2oskZ4WFCrL4WKzpdhMMztN1M3Tzg==
+X-Google-Smtp-Source: AKy350abRG/tf4z4pattUwmk/F2Ixto8fxjoWPcUpuCUwzt1ET28kNEYXAvB43l6rGnhhp3YHPvNlcprP6JiHQXpUXM=
+X-Received: by 2002:a05:622a:1102:b0:3bf:e4e0:26a0 with SMTP id
+ e2-20020a05622a110200b003bfe4e026a0mr56484qty.14.1682019507455; Thu, 20 Apr
+ 2023 12:38:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230403220337.443510-1-yosryahmed@google.com> <20230403220337.443510-4-yosryahmed@google.com>
-In-Reply-To: <20230403220337.443510-4-yosryahmed@google.com>
+References: <20230403220337.443510-1-yosryahmed@google.com> <20230403220337.443510-5-yosryahmed@google.com>
+In-Reply-To: <20230403220337.443510-5-yosryahmed@google.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 20 Apr 2023 11:57:06 -0700
-Message-ID: <CALvZod5WNiiV2NmikaGMPd62hiGtKWZrO0f2amk2HE8quBxkDQ@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable RFC 3/5] memcg: calculate root usage from
- global state
+Date:   Thu, 20 Apr 2023 12:38:16 -0700
+Message-ID: <CALvZod6wiCzpbCOtR06vGXy+gb6adC8RCkXfsRjC-N8yJorGWg@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable RFC 4/5] memcg: remove mem_cgroup_flush_stats_atomic()
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
@@ -70,7 +69,7 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,17 +79,8 @@ X-Mailing-List: cgroups@vger.kernel.org
 On Mon, Apr 3, 2023 at 3:03=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
 wrote:
 >
-> Currently, we approximate the root usage by adding the memcg stats for
-> anon, file, and conditionally swap (for memsw). To read the memcg stats
-> we need to invoke an rstat flush. rstat flushes can be expensive, they
-> scale with the number of cpus and cgroups on the system.
->
-> mem_cgroup_usage() is called by memcg_events()->mem_cgroup_threshold()
-> with irqs disabled, so such an expensive operation with irqs disabled
-> can cause problems.
->
-> Instead, approximate the root usage from global state. This is not 100%
-> accurate, but the root usage has always been ill-defined anyway.
+> Previous patches removed all callers of mem_cgroup_flush_stats_atomic().
+> Remove the function and simplify the code.
 >
 > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
