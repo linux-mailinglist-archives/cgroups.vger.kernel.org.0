@@ -2,176 +2,183 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E736EAD4C
-	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 16:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6876EB07A
+	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 19:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbjDUOll (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Apr 2023 10:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S232735AbjDURWS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Apr 2023 13:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233039AbjDUOl1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 10:41:27 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBD7C654
-        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 07:40:29 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4edc63e066fso7011e87.1
-        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 07:40:29 -0700 (PDT)
+        with ESMTP id S229821AbjDURWR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 13:22:17 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EC744A1
+        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 10:22:16 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-506767f97f8so3240020a12.1
+        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 10:22:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682087938; x=1684679938;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uE8L66mYi61Gg000YX9CaB4PguSbhnlIM05Rg2iq/GU=;
-        b=g3rmUy97ewR5Qob/EIc0qirnHyGan7c3n7pweFBrjd4IKEX1NVaHijC/5eHO4MNEDW
-         Ff3BUAQNyy0m/fGS9YWwhDtiFnB5bLlPAjjH6fTEFwOvUJbkRqH9u3P763jj6of+sfJV
-         eh1paFZ6ywkGWJqWKXSSu3i6LkZ0rb1dLjXid+GjA3s3hyJwVUlPonXyw6Cz30d88pjH
-         TLOU/sY30TqTHGlXm0/qbIZsfLkAThaztVPBD3OR4nmNuVPX6xNzmzb7bGHzouRJKy77
-         iQTEbiCwwv2DBX8+uESfd1BeUMHZ/N3avr3F3IScinfFcGzEoNS/DlIRNt1JSYsaTWTy
-         mWzw==
+        d=google.com; s=20221208; t=1682097734; x=1684689734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BfR9lcqvLbO+sXRYYQ4Al5uQ4a/w4jqcaiHNX0XG2d8=;
+        b=M7kgruF3UfRfDWNCLtS06HOrbY/My1F5qsoj3AdCxeDtL9AnMCKstRKn/+mzyTSJXD
+         nUELrf0ki/bVD0Bf6VaQ/BPcAyOipMfOJft9lnwibEAhqePhPxl+6N2xFt8K2aLmxT4d
+         eI7byFtpOOMmoO8AzyO787vo6Mv+NG+LT4/rW6D9JlgChyif1F0ltmnqqBIp/0Lsuu0m
+         IO2ZCJHgpTWXkJgsbgBAHGD8t9exscbi9IJH23YwGaJndjTrVI5DhTELy21qO5sIXB3J
+         AiAoU6sruhfjdjNyk8Fg+wuorOokt2S7FMxMvRhCaYZ/12NWLYAdQflE/0HQdBDR8ffd
+         FQfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682087938; x=1684679938;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uE8L66mYi61Gg000YX9CaB4PguSbhnlIM05Rg2iq/GU=;
-        b=hZ+N2DN0OtBK4dPcrjdc+i3KB2FKlAIKmV3qYbPqyz6/6goB8fQAw6sA5IzLGpCSKl
-         V9lMqHI4A6LaFj4ibwQFUhRRZTtVZZW24mBhYh6OFw235Oi8UAh5M/cutzdy2jpf2FOc
-         /v4CZ25RHLZtTiri+AVR+zfPERqyz7J8iKNo0aaw+7t6EZ90CYZhGCaPIH+hifYzwQM4
-         dRRQQBqfJUbO9wQ4HNu5zeuAjwAXXtKRxv9KE0ZAa32yWFd6vQiF8tvROUUqlUSSOYNK
-         chPjvh6UrZQFMfNNnf1EgfYyA0eTOHkWSBVaMl2etg+1m3ZkqXFnpSa2BnkJ148Iuwps
-         XzcQ==
-X-Gm-Message-State: AAQBX9elEmG/IFLfOg0h7tbsyPxOdgsbfFTEYgKu0ClcpFS1HLz1e/Xi
-        Jn9ucuTSo9M6r652HeMPzdBtMbXQ+23hKgYHJtp4aA==
-X-Google-Smtp-Source: AKy350ZyOfS4dtZ34VvdRpYL23nzMtyNO31vto5RCBtSVg3taplS7QBs38rFKaUmF1n0vGPY0tnESQznqaXNiGiGREk=
-X-Received: by 2002:a05:6512:110a:b0:4ed:af48:f8bb with SMTP id
- l10-20020a056512110a00b004edaf48f8bbmr104792lfg.5.1682087938324; Fri, 21 Apr
- 2023 07:38:58 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682097734; x=1684689734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BfR9lcqvLbO+sXRYYQ4Al5uQ4a/w4jqcaiHNX0XG2d8=;
+        b=gRJriValA4CRomAn2NZCujbSldpjcMroRfvdkNyAc0o1BdzYMaKewZG9PYv5m3PdPS
+         brrk7B+Wcubze4rUD13/kLZyM3Vu+fwVtxrJFoHyFPS+1/cV/p+Kae/z9r2OaA9ARRD5
+         CC7tMvJnO0T4CoULdy+NkPHT27A/uYJ1vY9OM7rgw1aA2GjkbsLemfY4x5VrTfURZ8vl
+         dpDCD3s3VtZ5PhOA8ALwHWQtzh73w94bLXcu3HS6aGcRfh9TviQ7sjNCPbsfC6dY9ZZL
+         P8qT4/EqEEKbvqwJGEvfHLFtWu12pe2FcZlX5RUBeglXiWIzSzv92iQMSCqzQPSRlCnn
+         4FHg==
+X-Gm-Message-State: AAQBX9cNfRPzZMhFr4jKhr8luzkFES7YzM3MiO3znzlTXbj6fS9vDyQu
+        BfvOXLph1Q61pxHu9v4D1CF4TLG0yAIMsZMNAUqEsg==
+X-Google-Smtp-Source: AKy350axrab997pt4/P+KsZ/mjGlBLpHSvPcnzMc+GCcSQviGW1yDnMwiUwpJtmJyvjReOIzY0QnplK4idGv54zBasw=
+X-Received: by 2002:aa7:d385:0:b0:4fb:7ccf:3b33 with SMTP id
+ x5-20020aa7d385000000b004fb7ccf3b33mr5514114edq.31.1682097734305; Fri, 21 Apr
+ 2023 10:22:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000058b63f05f9d98811@google.com>
-In-Reply-To: <00000000000058b63f05f9d98811@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 21 Apr 2023 16:38:45 +0200
-Message-ID: <CACT4Y+ZfucZhM60YPphWiCLJr6+SGFhT+jjm8k1P-a_8Kkxsjg@mail.gmail.com>
-Subject: Re: [syzbot] [cgroups?] [mm?] KCSAN: data-race in drain_all_stock /
- drain_obj_stock (4)
-To:     syzbot <syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev,
-        shakeelb@google.com, syzkaller-bugs@googlegroups.com
+References: <20230403220337.443510-1-yosryahmed@google.com>
+ <20230403220337.443510-2-yosryahmed@google.com> <20230421085341.b2zvzeuc745bs6sa@quack3>
+In-Reply-To: <20230421085341.b2zvzeuc745bs6sa@quack3>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 21 Apr 2023 10:21:36 -0700
+Message-ID: <CAJD7tkYUJd+HERVKDhqKimWdXUKoBvutvKJHJDJVMOTJBV9aKA@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable RFC 1/5] writeback: move wb_over_bg_thresh()
+ call outside lock section
+To:     Jan Kara <jack@suse.cz>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, 21 Apr 2023 at 16:33, syzbot
-<syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com> wrote:
+On Fri, Apr 21, 2023 at 1:53=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
 >
-> Hello,
+> On Mon 03-04-23 22:03:33, Yosry Ahmed wrote:
+> > wb_over_bg_thresh() calls mem_cgroup_wb_stats() which invokes an rstat
+> > flush, which can be expensive on large systems. Currently,
+> > wb_writeback() calls wb_over_bg_thresh() within a lock section, so we
+> > have to make the rstat flush atomically. On systems with a lot of
+> > cpus/cgroups, this can cause us to disable irqs for a long time,
+> > potentially causing problems.
+> >
+> > Move the call to wb_over_bg_thresh() outside the lock section in
+> > preparation to make the rstat flush in mem_cgroup_wb_stats() non-atomic=
+.
+> > The list_empty(&wb->work_list) should be okay outside the lock section
+> > of wb->list_lock as it is protected by a separate lock (wb->work_lock),
+> > and wb_over_bg_thresh() doesn't seem like it is modifying any of the b_=
+*
+> > lists the wb->list_lock is protecting. Also, the loop seems to be
+> > already releasing and reacquring the lock, so this refactoring looks
+> > safe.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 >
-> syzbot found the following issue on:
+> The patch looks good to me. Nice find. Feel free to add:
 >
-> HEAD commit:    534293368afa Merge tag 'kbuild-fixes-v6.3' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11a0c26ec80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=85fa20c996a2e46d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=774c29891415ab0fd29d
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/ec0e584af797/disk-53429336.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/423a67f52f94/vmlinux-53429336.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/8409b9716faa/bzImage-53429336.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Here this:
+Thanks for taking a look!
 
-stock->cached_objcg = NULL;
-
-runs concurrently with:
-
-if (stock->cached_objcg) {
-    memcg = obj_cgroup_memcg(stock->cached_objcg);
-
-If I am reading this correctly, this can cause a NULL deref, if
-cached_objcg is reset between the check and the use.
-
-
-
-> ==================================================================
-> BUG: KCSAN: data-race in drain_all_stock / drain_obj_stock
 >
-> write to 0xffff888237c2a2f8 of 8 bytes by task 19625 on cpu 0:
->  drain_obj_stock+0x408/0x4e0 mm/memcontrol.c:3306
->  refill_obj_stock+0x9c/0x1e0 mm/memcontrol.c:3340
->  obj_cgroup_uncharge+0xe/0x10 mm/memcontrol.c:3408
->  memcg_slab_free_hook mm/slab.h:587 [inline]
->  __cache_free mm/slab.c:3373 [inline]
->  __do_kmem_cache_free mm/slab.c:3577 [inline]
->  kmem_cache_free+0x105/0x280 mm/slab.c:3602
->  __d_free fs/dcache.c:298 [inline]
->  dentry_free fs/dcache.c:375 [inline]
->  __dentry_kill+0x422/0x4a0 fs/dcache.c:621
->  dentry_kill+0x8d/0x1e0
->  dput+0x118/0x1f0 fs/dcache.c:913
->  __fput+0x3bf/0x570 fs/file_table.c:329
->  ____fput+0x15/0x20 fs/file_table.c:349
->  task_work_run+0x123/0x160 kernel/task_work.c:179
->  resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
->  exit_to_user_mode_loop+0xcf/0xe0 kernel/entry/common.c:171
->  exit_to_user_mode_prepare+0x6a/0xa0 kernel/entry/common.c:203
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
->  syscall_exit_to_user_mode+0x26/0x140 kernel/entry/common.c:296
->  do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>                                                                 Honza
 >
-> read to 0xffff888237c2a2f8 of 8 bytes by task 19632 on cpu 1:
->  obj_stock_flush_required mm/memcontrol.c:3319 [inline]
->  drain_all_stock+0x174/0x2a0 mm/memcontrol.c:2361
->  try_charge_memcg+0x6d0/0xd10 mm/memcontrol.c:2703
->  try_charge mm/memcontrol.c:2837 [inline]
->  mem_cgroup_charge_skmem+0x51/0x140 mm/memcontrol.c:7290
->  sock_reserve_memory+0xb1/0x390 net/core/sock.c:1025
->  sk_setsockopt+0x800/0x1e70 net/core/sock.c:1525
->  udp_lib_setsockopt+0x99/0x6c0 net/ipv4/udp.c:2692
->  udp_setsockopt+0x73/0xa0 net/ipv4/udp.c:2817
->  sock_common_setsockopt+0x61/0x70 net/core/sock.c:3668
->  __sys_setsockopt+0x1c3/0x230 net/socket.c:2271
->  __do_sys_setsockopt net/socket.c:2282 [inline]
->  __se_sys_setsockopt net/socket.c:2279 [inline]
->  __x64_sys_setsockopt+0x66/0x80 net/socket.c:2279
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> value changed: 0xffff8881382d52c0 -> 0xffff888138893740
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 1 PID: 19632 Comm: syz-executor.0 Not tainted 6.3.0-rc2-syzkaller-00387-g534293368afa #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
+> > ---
+> >  fs/fs-writeback.c | 16 +++++++++++-----
+> >  1 file changed, 11 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > index 195dc23e0d831..012357bc8daa3 100644
+> > --- a/fs/fs-writeback.c
+> > +++ b/fs/fs-writeback.c
+> > @@ -2021,7 +2021,6 @@ static long wb_writeback(struct bdi_writeback *wb=
+,
+> >       struct blk_plug plug;
+> >
+> >       blk_start_plug(&plug);
+> > -     spin_lock(&wb->list_lock);
+> >       for (;;) {
+> >               /*
+> >                * Stop writeback when nr_pages has been consumed
+> > @@ -2046,6 +2045,9 @@ static long wb_writeback(struct bdi_writeback *wb=
+,
+> >               if (work->for_background && !wb_over_bg_thresh(wb))
+> >                       break;
+> >
+> > +
+> > +             spin_lock(&wb->list_lock);
+> > +
+> >               /*
+> >                * Kupdate and background works are special and we want t=
+o
+> >                * include all inodes that need writing. Livelock avoidan=
+ce is
+> > @@ -2075,13 +2077,19 @@ static long wb_writeback(struct bdi_writeback *=
+wb,
+> >                * mean the overall work is done. So we keep looping as l=
+ong
+> >                * as made some progress on cleaning pages or inodes.
+> >                */
+> > -             if (progress)
+> > +             if (progress) {
+> > +                     spin_unlock(&wb->list_lock);
+> >                       continue;
+> > +             }
+> > +
+> >               /*
+> >                * No more inodes for IO, bail
+> >                */
+> > -             if (list_empty(&wb->b_more_io))
+> > +             if (list_empty(&wb->b_more_io)) {
+> > +                     spin_unlock(&wb->list_lock);
+> >                       break;
+> > +             }
+> > +
+> >               /*
+> >                * Nothing written. Wait for some inode to
+> >                * become available for writeback. Otherwise
+> > @@ -2093,9 +2101,7 @@ static long wb_writeback(struct bdi_writeback *wb=
+,
+> >               spin_unlock(&wb->list_lock);
+> >               /* This function drops i_lock... */
+> >               inode_sleep_on_writeback(inode);
+> > -             spin_lock(&wb->list_lock);
+> >       }
+> > -     spin_unlock(&wb->list_lock);
+> >       blk_finish_plug(&plug);
+> >
+> >       return nr_pages - work->nr_pages;
+> > --
+> > 2.40.0.348.gf938b09366-goog
+> >
 > --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000058b63f05f9d98811%40google.com.
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
