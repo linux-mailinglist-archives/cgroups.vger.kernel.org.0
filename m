@@ -2,61 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6876EB07A
-	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 19:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C1E6EB0BD
+	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 19:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbjDURWS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Apr 2023 13:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S233163AbjDURk0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Apr 2023 13:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjDURWR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 13:22:17 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EC744A1
-        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 10:22:16 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-506767f97f8so3240020a12.1
-        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 10:22:16 -0700 (PDT)
+        with ESMTP id S232911AbjDURkZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 13:40:25 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FFF6EB9
+        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 10:40:23 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1a63d87bd46so15911015ad.2
+        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 10:40:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682097734; x=1684689734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BfR9lcqvLbO+sXRYYQ4Al5uQ4a/w4jqcaiHNX0XG2d8=;
-        b=M7kgruF3UfRfDWNCLtS06HOrbY/My1F5qsoj3AdCxeDtL9AnMCKstRKn/+mzyTSJXD
-         nUELrf0ki/bVD0Bf6VaQ/BPcAyOipMfOJft9lnwibEAhqePhPxl+6N2xFt8K2aLmxT4d
-         eI7byFtpOOMmoO8AzyO787vo6Mv+NG+LT4/rW6D9JlgChyif1F0ltmnqqBIp/0Lsuu0m
-         IO2ZCJHgpTWXkJgsbgBAHGD8t9exscbi9IJH23YwGaJndjTrVI5DhTELy21qO5sIXB3J
-         AiAoU6sruhfjdjNyk8Fg+wuorOokt2S7FMxMvRhCaYZ/12NWLYAdQflE/0HQdBDR8ffd
-         FQfw==
+        d=google.com; s=20221208; t=1682098823; x=1684690823;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PreKFJTa4Nhy/d8G1S1pWlqvl89TyRSt3luKcVUPmzw=;
+        b=RbrkYV0CJdmfBIbmUIvZnVKhJQyLH4CYaft3mk2yfKLvyJZF8dDaaqVVnx3eiK4Ab7
+         lZDDw30q1ppsBNzI772XXB/FRji5/R8TeuWfOOnXpJHy3+Y7JyutQQ2Gj19sY9tbj8iD
+         l3vp+8XcixoSCatriNQ/fKYwuCkpY6rEOUk7vfFOeJNxNuSbxeoNvs3hSBNc92fiAIj4
+         a4voAS83/3J7lvlMPpBscMu6mKr9RPsusaetGLt5BbQVCI9eFbxjUyZ5WoZ+y39zt/1d
+         13legztw2c8S9smKxFGhZzKMk7rQhrAr+Y1NpiTukgQZJEDzm31H36UsudJPK7jznpxJ
+         jqQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682097734; x=1684689734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BfR9lcqvLbO+sXRYYQ4Al5uQ4a/w4jqcaiHNX0XG2d8=;
-        b=gRJriValA4CRomAn2NZCujbSldpjcMroRfvdkNyAc0o1BdzYMaKewZG9PYv5m3PdPS
-         brrk7B+Wcubze4rUD13/kLZyM3Vu+fwVtxrJFoHyFPS+1/cV/p+Kae/z9r2OaA9ARRD5
-         CC7tMvJnO0T4CoULdy+NkPHT27A/uYJ1vY9OM7rgw1aA2GjkbsLemfY4x5VrTfURZ8vl
-         dpDCD3s3VtZ5PhOA8ALwHWQtzh73w94bLXcu3HS6aGcRfh9TviQ7sjNCPbsfC6dY9ZZL
-         P8qT4/EqEEKbvqwJGEvfHLFtWu12pe2FcZlX5RUBeglXiWIzSzv92iQMSCqzQPSRlCnn
-         4FHg==
-X-Gm-Message-State: AAQBX9cNfRPzZMhFr4jKhr8luzkFES7YzM3MiO3znzlTXbj6fS9vDyQu
-        BfvOXLph1Q61pxHu9v4D1CF4TLG0yAIMsZMNAUqEsg==
-X-Google-Smtp-Source: AKy350axrab997pt4/P+KsZ/mjGlBLpHSvPcnzMc+GCcSQviGW1yDnMwiUwpJtmJyvjReOIzY0QnplK4idGv54zBasw=
-X-Received: by 2002:aa7:d385:0:b0:4fb:7ccf:3b33 with SMTP id
- x5-20020aa7d385000000b004fb7ccf3b33mr5514114edq.31.1682097734305; Fri, 21 Apr
- 2023 10:22:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230403220337.443510-1-yosryahmed@google.com>
- <20230403220337.443510-2-yosryahmed@google.com> <20230421085341.b2zvzeuc745bs6sa@quack3>
-In-Reply-To: <20230421085341.b2zvzeuc745bs6sa@quack3>
+        d=1e100.net; s=20221208; t=1682098823; x=1684690823;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PreKFJTa4Nhy/d8G1S1pWlqvl89TyRSt3luKcVUPmzw=;
+        b=GB/rAYNmhvIwId88kekc5gtSYj3Mr7JHSCHL8Ie7EIvJrMCe7nkGX6DuxvOdbIiH3A
+         m5MknoL5jP2Kp2KIOziIUK4f30ZCDIlu/TtekWPBlnV+t4fCN1BAPOAzdk2nWz5fx4of
+         fazVC+U6uwgDqXtYx07mYglhTkA0MlsT7HIlgzABrjjv9NjrdgAzHdspYE0i8NlIO5FQ
+         QzTGcLjLDzjda4pRHUbYIG0+vXwdOzkuJigTZnczrVHdfTCOgpjoggAHOoGusJhiiHlR
+         TSAnBa2FvDQJE9O6Bo1kP9rZ0SYP02sI5Bd8AeDQlFggl22Sv5gCgaqLF9OeOo0FwIv5
+         B4Tg==
+X-Gm-Message-State: AAQBX9eBI0AoGaVx7fP+uIQaEOpnPpZf7VvKqggT6tV6W//u9n2qwj9I
+        dDz7GzcM6EjShoVH0m97Q9Av5R4tbO1ogOvQ
+X-Google-Smtp-Source: AKy350ZlnZj0cxHrv/Wjk1pQ1CQV0zgSpBwIct8jNYsZLeVb1GgBjLCU23xFOdjM3zTGe34xq+HU5r4O5Po/289Y
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:902:f302:b0:1a2:6e4d:782c with SMTP
+ id c2-20020a170902f30200b001a26e4d782cmr1851742ple.13.1682098823035; Fri, 21
+ Apr 2023 10:40:23 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 17:40:15 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
+Message-ID: <20230421174020.2994750-1-yosryahmed@google.com>
+Subject: [PATCH v5 0/5] cgroup: eliminate atomic rstat flushing
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 21 Apr 2023 10:21:36 -0700
-Message-ID: <CAJD7tkYUJd+HERVKDhqKimWdXUKoBvutvKJHJDJVMOTJBV9aKA@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable RFC 1/5] writeback: move wb_over_bg_thresh()
- call outside lock section
-To:     Jan Kara <jack@suse.cz>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -64,14 +59,16 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,106 +76,58 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 1:53=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
->
-> On Mon 03-04-23 22:03:33, Yosry Ahmed wrote:
-> > wb_over_bg_thresh() calls mem_cgroup_wb_stats() which invokes an rstat
-> > flush, which can be expensive on large systems. Currently,
-> > wb_writeback() calls wb_over_bg_thresh() within a lock section, so we
-> > have to make the rstat flush atomically. On systems with a lot of
-> > cpus/cgroups, this can cause us to disable irqs for a long time,
-> > potentially causing problems.
-> >
-> > Move the call to wb_over_bg_thresh() outside the lock section in
-> > preparation to make the rstat flush in mem_cgroup_wb_stats() non-atomic=
-.
-> > The list_empty(&wb->work_list) should be okay outside the lock section
-> > of wb->list_lock as it is protected by a separate lock (wb->work_lock),
-> > and wb_over_bg_thresh() doesn't seem like it is modifying any of the b_=
-*
-> > lists the wb->list_lock is protecting. Also, the loop seems to be
-> > already releasing and reacquring the lock, so this refactoring looks
-> > safe.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->
-> The patch looks good to me. Nice find. Feel free to add:
->
-> Reviewed-by: Jan Kara <jack@suse.cz>
+A previous patch series ([1] currently in mm-stable) changed most
+atomic rstat flushing contexts to become non-atomic. This was done to
+avoid an expensive operation that scales with # cgroups and # cpus to
+happen with irqs disabled and scheduling not permitted. There were two
+remaining atomic flushing contexts after that series. This series tries
+to eliminate them as well, eliminating atomic rstat flushing completely.
 
-Thanks for taking a look!
+The two remaining atomic flushing contexts are:
+(a) wb_over_bg_thresh()->mem_cgroup_wb_stats()
+(b) mem_cgroup_threshold()->mem_cgroup_usage()
 
->
->                                                                 Honza
->
-> > ---
-> >  fs/fs-writeback.c | 16 +++++++++++-----
-> >  1 file changed, 11 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > index 195dc23e0d831..012357bc8daa3 100644
-> > --- a/fs/fs-writeback.c
-> > +++ b/fs/fs-writeback.c
-> > @@ -2021,7 +2021,6 @@ static long wb_writeback(struct bdi_writeback *wb=
-,
-> >       struct blk_plug plug;
-> >
-> >       blk_start_plug(&plug);
-> > -     spin_lock(&wb->list_lock);
-> >       for (;;) {
-> >               /*
-> >                * Stop writeback when nr_pages has been consumed
-> > @@ -2046,6 +2045,9 @@ static long wb_writeback(struct bdi_writeback *wb=
-,
-> >               if (work->for_background && !wb_over_bg_thresh(wb))
-> >                       break;
-> >
-> > +
-> > +             spin_lock(&wb->list_lock);
-> > +
-> >               /*
-> >                * Kupdate and background works are special and we want t=
-o
-> >                * include all inodes that need writing. Livelock avoidan=
-ce is
-> > @@ -2075,13 +2077,19 @@ static long wb_writeback(struct bdi_writeback *=
-wb,
-> >                * mean the overall work is done. So we keep looping as l=
-ong
-> >                * as made some progress on cleaning pages or inodes.
-> >                */
-> > -             if (progress)
-> > +             if (progress) {
-> > +                     spin_unlock(&wb->list_lock);
-> >                       continue;
-> > +             }
-> > +
-> >               /*
-> >                * No more inodes for IO, bail
-> >                */
-> > -             if (list_empty(&wb->b_more_io))
-> > +             if (list_empty(&wb->b_more_io)) {
-> > +                     spin_unlock(&wb->list_lock);
-> >                       break;
-> > +             }
-> > +
-> >               /*
-> >                * Nothing written. Wait for some inode to
-> >                * become available for writeback. Otherwise
-> > @@ -2093,9 +2101,7 @@ static long wb_writeback(struct bdi_writeback *wb=
-,
-> >               spin_unlock(&wb->list_lock);
-> >               /* This function drops i_lock... */
-> >               inode_sleep_on_writeback(inode);
-> > -             spin_lock(&wb->list_lock);
-> >       }
-> > -     spin_unlock(&wb->list_lock);
-> >       blk_finish_plug(&plug);
-> >
-> >       return nr_pages - work->nr_pages;
-> > --
-> > 2.40.0.348.gf938b09366-goog
-> >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+For (a), flushing needs to be atomic as wb_writeback() calls
+wb_over_bg_thresh() with a spinlock held. However, it seems like the
+call to wb_over_bg_thresh() doesn't need to be protected by that
+spinlock, so this series proposes a refactoring that moves the call
+outside the lock criticial section and makes the stats flushing
+in mem_cgroup_wb_stats() non-atomic.
+
+For (b), flushing needs to be atomic as mem_cgroup_threshold() is called
+with irqs disabled. We only flush the stats when calculating the root
+usage, as it is approximated as the sum of some memcg stats (file, anon,
+and optionally swap) instead of the conventional page counter. This
+series proposes changing this calculation to use the global stats
+instead, eliminating the need for a memcg stat flush.
+
+After these 2 contexts are eliminated, we no longer need
+mem_cgroup_flush_stats_atomic() or cgroup_rstat_flush_atomic(). We can
+remove them and simplify the code.
+
+[1] https://lore.kernel.org/linux-mm/20230330191801.1967435-1-yosryahmed@google.com/
+
+RFC -> v1:
+- Collected R-b's and A-b's (Thanks everyone!).
+- Rebased onto mm-stable.
+- Cosmetic changes to commit logs.
+
+RFC: https://lore.kernel.org/linux-mm/20230403220337.443510-1-yosryahmed@google.com/
+
+Yosry Ahmed (5):
+  writeback: move wb_over_bg_thresh() call outside lock section
+  memcg: flush stats non-atomically in mem_cgroup_wb_stats()
+  memcg: calculate root usage from global state
+  memcg: remove mem_cgroup_flush_stats_atomic()
+  cgroup: remove cgroup_rstat_flush_atomic()
+
+ fs/fs-writeback.c          | 16 +++++++----
+ include/linux/cgroup.h     |  1 -
+ include/linux/memcontrol.h |  5 ----
+ kernel/cgroup/rstat.c      | 26 ++++--------------
+ mm/memcontrol.c            | 54 ++++++++------------------------------
+ 5 files changed, 27 insertions(+), 75 deletions(-)
+
+-- 
+2.40.0.634.g4ca3ef3211-goog
+
