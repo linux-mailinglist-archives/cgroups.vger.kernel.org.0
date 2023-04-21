@@ -2,170 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8246EA654
-	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 10:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F56A6EAA0D
+	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 14:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbjDUIyi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Apr 2023 04:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        id S230346AbjDUMNV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Apr 2023 08:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbjDUIyD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 04:54:03 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F417A268;
-        Fri, 21 Apr 2023 01:53:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8E75821A45;
-        Fri, 21 Apr 2023 08:53:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1682067222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TCgmgxLZjgBpHMVFd5dl+S+78y8snFvoa5hj4IkLKoE=;
-        b=DD3XydQvq2QEpcTvPifPVBUDTl+Q1vC8UkEnUANJmx94wjnPGZMZIdPgbbIjDTb6puvIEX
-        N0IA1hP0Gyew7LmVfFz6UQqOWSYav9dSa+4gOBWY2nM+bid/rQgR+n896ET5c8MDUjLGhD
-        +1gtKZkb0byMBdkk5cHcQhLuievKAbA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1682067222;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TCgmgxLZjgBpHMVFd5dl+S+78y8snFvoa5hj4IkLKoE=;
-        b=X9A5npHx6rz1+iay8T2pmWurjIpbJdx/lP8Xi7ZG6oyuIl696EnQV4LsYls8Itl45mA1vJ
-        dpFF1YcwgA4pfhBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D84C13456;
-        Fri, 21 Apr 2023 08:53:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id IRKIHhZPQmTsPAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 21 Apr 2023 08:53:42 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 06E2FA0729; Fri, 21 Apr 2023 10:53:42 +0200 (CEST)
-Date:   Fri, 21 Apr 2023 10:53:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH mm-unstable RFC 1/5] writeback: move wb_over_bg_thresh()
- call outside lock section
-Message-ID: <20230421085341.b2zvzeuc745bs6sa@quack3>
-References: <20230403220337.443510-1-yosryahmed@google.com>
- <20230403220337.443510-2-yosryahmed@google.com>
+        with ESMTP id S229843AbjDUMNU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 08:13:20 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF715B93;
+        Fri, 21 Apr 2023 05:13:19 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-b97ec4bbc5aso690532276.3;
+        Fri, 21 Apr 2023 05:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682079198; x=1684671198;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pOvME7tAXZ9JphDrU67XmOOlY2Dekn7UQzOnjzIbu/w=;
+        b=dOj7qsSoqusi9JzHDMCTpPvIgyQPzCzKLm+sIKYvK1CvZPROIce1ddULWduEJd7jrh
+         h9EtoGJ6m1GHmYGpXJU6/6FNPLsCuLt6cW8q2qImYUU4Me5AQY5TlzdLNG24YUAq4d/b
+         zlGbTzgDvqJDlOwMKaEiRsVixMQR0LYg8I9uzwd9DuXOQdacYh2RKW3yFarSSqIZm0e5
+         jXgDJyaLluMrwFMsYHZLR3DOju3AwGzSKT33SyiKGKcL6YgeBrcoJbjsBjTKixLnXlG+
+         W46y8eXZCiHZVJ+VEK2Y83z5BnDuzZ4ANfbtnti4CzoG2KX/btAfDEYaiJwWihMcIxck
+         x68g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682079198; x=1684671198;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pOvME7tAXZ9JphDrU67XmOOlY2Dekn7UQzOnjzIbu/w=;
+        b=XUzkxuxPKbuEmyr61zqcdp1aeeyywW2oIenPEgBAjIyigyL3zNgPZcmF7nL4mITHRP
+         WsFpn79wlTZhgQMeNFbra5Sbd/B8ZSQBcy+DrTSs/OV37wxylAxCp+czHMl5IhNIAw6p
+         KL7kDcuUdyxHlJTFWBjlAHQt2WXrv69XDQf/e8EnRpPD2E7bIlQiqOA+gydxgLALsJM0
+         K2f7ebURBB4aiWQbJjnmtHGxQGdRP7qX485nK1tkM2sNWTG1L1OttmEXOeRkg3BT+WNV
+         4yplyn1sguMdnA6kcdmCyY+daEvXT0uimmxkkq16VGOTpE7Xfgwso5TtH+6hivmrfJHk
+         1Jmg==
+X-Gm-Message-State: AAQBX9fVLeTyPLitPSWr8Hc7HkB86Eq9irGEDW4QcFb4m42UE2yM3NvQ
+        RjGHZOCoU6uUPG/0ncEJFPT3QDbFR2hN5V/fdQo=
+X-Google-Smtp-Source: AKy350bjuOnxJWwW5k1ckin1yG5kiI/s5+t7bZByyWpKZYMuEEODDrY8+cV9Rp+5si3ja6aSq0oE9UHI8YlKQLjj0RM=
+X-Received: by 2002:a0d:f205:0:b0:541:8810:8d7b with SMTP id
+ b5-20020a0df205000000b0054188108d7bmr1918894ywf.15.1682079198356; Fri, 21 Apr
+ 2023 05:13:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230403220337.443510-2-yosryahmed@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230314141904.1210824-1-tvrtko.ursulin@linux.intel.com> <20230314141904.1210824-3-tvrtko.ursulin@linux.intel.com>
+In-Reply-To: <20230314141904.1210824-3-tvrtko.ursulin@linux.intel.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Fri, 21 Apr 2023 13:13:07 +0100
+Message-ID: <CACvgo52Bb3kBua8dh+eac6dhSwiJLMGAdGDAa+LQYoOwCLPLNA@mail.gmail.com>
+Subject: Re: [RFC 02/10] drm: Update file owner during use
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Brian Welty <brian.welty@intel.com>, Kenny.Ho@amd.com,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?St=C3=A9phane_Marchesin?= <marcheu@chromium.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>, Tejun Heo <tj@kernel.org>,
+        cgroups@vger.kernel.org, "T . J . Mercier" <tjmercier@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 03-04-23 22:03:33, Yosry Ahmed wrote:
-> wb_over_bg_thresh() calls mem_cgroup_wb_stats() which invokes an rstat
-> flush, which can be expensive on large systems. Currently,
-> wb_writeback() calls wb_over_bg_thresh() within a lock section, so we
-> have to make the rstat flush atomically. On systems with a lot of
-> cpus/cgroups, this can cause us to disable irqs for a long time,
-> potentially causing problems.
-> 
-> Move the call to wb_over_bg_thresh() outside the lock section in
-> preparation to make the rstat flush in mem_cgroup_wb_stats() non-atomic.
-> The list_empty(&wb->work_list) should be okay outside the lock section
-> of wb->list_lock as it is protected by a separate lock (wb->work_lock),
-> and wb_over_bg_thresh() doesn't seem like it is modifying any of the b_*
-> lists the wb->list_lock is protecting. Also, the loop seems to be
-> already releasing and reacquring the lock, so this refactoring looks
-> safe.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Greetings everyone,
 
-The patch looks good to me. Nice find. Feel free to add:
+Above all - hell yeah. Thank you Tvrtko, this has been annoying the
+hell out of me for ages.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+On Tue, 14 Mar 2023 at 14:19, Tvrtko Ursulin
+<tvrtko.ursulin@linux.intel.com> wrote:
+>
+> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+>
+> With the typical model where the display server opends the file descriptor
+> and then hands it over to the client we were showing stale data in
+> debugfs.
 
-								Honza
+s/opends/opens/
 
-> ---
->  fs/fs-writeback.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 195dc23e0d831..012357bc8daa3 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2021,7 +2021,6 @@ static long wb_writeback(struct bdi_writeback *wb,
->  	struct blk_plug plug;
->  
->  	blk_start_plug(&plug);
-> -	spin_lock(&wb->list_lock);
->  	for (;;) {
->  		/*
->  		 * Stop writeback when nr_pages has been consumed
-> @@ -2046,6 +2045,9 @@ static long wb_writeback(struct bdi_writeback *wb,
->  		if (work->for_background && !wb_over_bg_thresh(wb))
->  			break;
->  
-> +
-> +		spin_lock(&wb->list_lock);
-> +
->  		/*
->  		 * Kupdate and background works are special and we want to
->  		 * include all inodes that need writing. Livelock avoidance is
-> @@ -2075,13 +2077,19 @@ static long wb_writeback(struct bdi_writeback *wb,
->  		 * mean the overall work is done. So we keep looping as long
->  		 * as made some progress on cleaning pages or inodes.
->  		 */
-> -		if (progress)
-> +		if (progress) {
-> +			spin_unlock(&wb->list_lock);
->  			continue;
-> +		}
-> +
->  		/*
->  		 * No more inodes for IO, bail
->  		 */
-> -		if (list_empty(&wb->b_more_io))
-> +		if (list_empty(&wb->b_more_io)) {
-> +			spin_unlock(&wb->list_lock);
->  			break;
-> +		}
-> +
->  		/*
->  		 * Nothing written. Wait for some inode to
->  		 * become available for writeback. Otherwise
-> @@ -2093,9 +2101,7 @@ static long wb_writeback(struct bdi_writeback *wb,
->  		spin_unlock(&wb->list_lock);
->  		/* This function drops i_lock... */
->  		inode_sleep_on_writeback(inode);
-> -		spin_lock(&wb->list_lock);
->  	}
-> -	spin_unlock(&wb->list_lock);
->  	blk_finish_plug(&plug);
->  
->  	return nr_pages - work->nr_pages;
-> -- 
-> 2.40.0.348.gf938b09366-goog
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+But as a whole the sentence is fairly misleading. Story time:
+
+The traditional model, the server was the orchestrator managing the
+primary device node. From the fd, to the master status and
+authentication. But looking at the fd alone, this has varied across
+the years.
+
+IIRC in the DRI1 days, Xorg (libdrm really) would have a list of open
+fd(s) and reuse those whenever needed, DRI2 the client was responsible
+for open() themselves and with DRI3 the fd was passed to the client.
+
+Around the inception of DRI3 and systemd-logind, the latter became
+another possible orchestrator. Whereby Xorg and Wayland compositors
+could ask it for the fd. For various reasons (hysterical and genuine
+ones) Xorg has a fallback path going the open(), whereas Wayland
+compositors are moving to solely relying on logind... some never had
+fallback even.
+
+Over the past few years, more projects have emerged which provide
+functionality similar (be that on API level, Dbus, or otherwise) to
+systemd-logind.
+
+
+Apart from that, the commit is spot on. I like the use of rcu and the
+was_master handling is correct. With some message polish this commit
+is:
+Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+
+I also had a brief look at 01/10, although I cannot find many
+references for the pid <> tguid mappings. Be that on the kernel side
+or userspace - do you have any links that I can educate myself?
+
+Thanks
+Emil
