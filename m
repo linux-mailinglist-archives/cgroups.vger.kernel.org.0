@@ -2,127 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F56A6EAA0D
-	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 14:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672446EACFE
+	for <lists+cgroups@lfdr.de>; Fri, 21 Apr 2023 16:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjDUMNV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Apr 2023 08:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
+        id S230042AbjDUOdb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Apr 2023 10:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjDUMNU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 08:13:20 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF715B93;
-        Fri, 21 Apr 2023 05:13:19 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-b97ec4bbc5aso690532276.3;
-        Fri, 21 Apr 2023 05:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682079198; x=1684671198;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pOvME7tAXZ9JphDrU67XmOOlY2Dekn7UQzOnjzIbu/w=;
-        b=dOj7qsSoqusi9JzHDMCTpPvIgyQPzCzKLm+sIKYvK1CvZPROIce1ddULWduEJd7jrh
-         h9EtoGJ6m1GHmYGpXJU6/6FNPLsCuLt6cW8q2qImYUU4Me5AQY5TlzdLNG24YUAq4d/b
-         zlGbTzgDvqJDlOwMKaEiRsVixMQR0LYg8I9uzwd9DuXOQdacYh2RKW3yFarSSqIZm0e5
-         jXgDJyaLluMrwFMsYHZLR3DOju3AwGzSKT33SyiKGKcL6YgeBrcoJbjsBjTKixLnXlG+
-         W46y8eXZCiHZVJ+VEK2Y83z5BnDuzZ4ANfbtnti4CzoG2KX/btAfDEYaiJwWihMcIxck
-         x68g==
+        with ESMTP id S231991AbjDUOda (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Apr 2023 10:33:30 -0400
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2997C1444E
+        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 07:32:54 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-32ab644612aso14583355ab.1
+        for <cgroups@vger.kernel.org>; Fri, 21 Apr 2023 07:32:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682079198; x=1684671198;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pOvME7tAXZ9JphDrU67XmOOlY2Dekn7UQzOnjzIbu/w=;
-        b=XUzkxuxPKbuEmyr61zqcdp1aeeyywW2oIenPEgBAjIyigyL3zNgPZcmF7nL4mITHRP
-         WsFpn79wlTZhgQMeNFbra5Sbd/B8ZSQBcy+DrTSs/OV37wxylAxCp+czHMl5IhNIAw6p
-         KL7kDcuUdyxHlJTFWBjlAHQt2WXrv69XDQf/e8EnRpPD2E7bIlQiqOA+gydxgLALsJM0
-         K2f7ebURBB4aiWQbJjnmtHGxQGdRP7qX485nK1tkM2sNWTG1L1OttmEXOeRkg3BT+WNV
-         4yplyn1sguMdnA6kcdmCyY+daEvXT0uimmxkkq16VGOTpE7Xfgwso5TtH+6hivmrfJHk
-         1Jmg==
-X-Gm-Message-State: AAQBX9fVLeTyPLitPSWr8Hc7HkB86Eq9irGEDW4QcFb4m42UE2yM3NvQ
-        RjGHZOCoU6uUPG/0ncEJFPT3QDbFR2hN5V/fdQo=
-X-Google-Smtp-Source: AKy350bjuOnxJWwW5k1ckin1yG5kiI/s5+t7bZByyWpKZYMuEEODDrY8+cV9Rp+5si3ja6aSq0oE9UHI8YlKQLjj0RM=
-X-Received: by 2002:a0d:f205:0:b0:541:8810:8d7b with SMTP id
- b5-20020a0df205000000b0054188108d7bmr1918894ywf.15.1682079198356; Fri, 21 Apr
- 2023 05:13:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682087574; x=1684679574;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MrFEuF/VNq5g9FqzV/mufM217urn03OllWFFKpr3C0U=;
+        b=FDEY7DmpLr2dw3ZkrSXbkByyQOoubmMES0YPZQRdbWhVhMg9GrkMDpX4RpxfS8Zz0H
+         EDHVnnWreXsrfa428yHLkx9oL+ie62IuOQRCswJdZN9J/mQ1g2QcMpNa6GoeCYODoVdl
+         E9tEIkOWsKvidWVAqg7/Bzf/PkhL7EdM8gf8WNe+1NzWgGybRof3u9IX91Kcr9hXlV14
+         dEUxtyY7Fdo4DhAQ0sLgeBhUqQCQFONElxHA5MiYg694iaVZ4tteSXXcqHWjekKfEasm
+         h8081SC694Fte1FeaaEFn1BNLN17LyiEkj29U9HDChqqfExZLuaCa8rFcU6tkWHexRKw
+         /jYQ==
+X-Gm-Message-State: AAQBX9esb/8D8XSfx/9Y9WQM/GWtE3DZTKoixRr6UTozmj05DeTUSnjP
+        Lc8L0Cyglj66PDhF0mBWNsvjNPIy6UoI/j2v64vshsDKY9Pu
+X-Google-Smtp-Source: AKy350ZlAsHZRUrWgsrpnW6LYNe4Q395IQtSOVHE70CdCWoO7Ds2bk+VF/Hfu53hvQUp/gFyd/OBHcnpOl5lCXfBIb6rPdoJ2m/9
 MIME-Version: 1.0
-References: <20230314141904.1210824-1-tvrtko.ursulin@linux.intel.com> <20230314141904.1210824-3-tvrtko.ursulin@linux.intel.com>
-In-Reply-To: <20230314141904.1210824-3-tvrtko.ursulin@linux.intel.com>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Fri, 21 Apr 2023 13:13:07 +0100
-Message-ID: <CACvgo52Bb3kBua8dh+eac6dhSwiJLMGAdGDAa+LQYoOwCLPLNA@mail.gmail.com>
-Subject: Re: [RFC 02/10] drm: Update file owner during use
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Brian Welty <brian.welty@intel.com>, Kenny.Ho@amd.com,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?St=C3=A9phane_Marchesin?= <marcheu@chromium.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, "T . J . Mercier" <tjmercier@google.com>
+X-Received: by 2002:a05:6e02:6cb:b0:329:654a:1231 with SMTP id
+ p11-20020a056e0206cb00b00329654a1231mr2866845ils.5.1682087574284; Fri, 21 Apr
+ 2023 07:32:54 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 07:32:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000058b63f05f9d98811@google.com>
+Subject: [syzbot] [cgroups?] [mm?] KCSAN: data-race in drain_all_stock /
+ drain_obj_stock (4)
+From:   syzbot <syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev,
+        shakeelb@google.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Greetings everyone,
+Hello,
 
-Above all - hell yeah. Thank you Tvrtko, this has been annoying the
-hell out of me for ages.
+syzbot found the following issue on:
 
-On Tue, 14 Mar 2023 at 14:19, Tvrtko Ursulin
-<tvrtko.ursulin@linux.intel.com> wrote:
->
-> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
->
-> With the typical model where the display server opends the file descriptor
-> and then hands it over to the client we were showing stale data in
-> debugfs.
+HEAD commit:    534293368afa Merge tag 'kbuild-fixes-v6.3' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a0c26ec80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85fa20c996a2e46d
+dashboard link: https://syzkaller.appspot.com/bug?extid=774c29891415ab0fd29d
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-s/opends/opens/
+Unfortunately, I don't have any reproducer for this issue yet.
 
-But as a whole the sentence is fairly misleading. Story time:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ec0e584af797/disk-53429336.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/423a67f52f94/vmlinux-53429336.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8409b9716faa/bzImage-53429336.xz
 
-The traditional model, the server was the orchestrator managing the
-primary device node. From the fd, to the master status and
-authentication. But looking at the fd alone, this has varied across
-the years.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com
 
-IIRC in the DRI1 days, Xorg (libdrm really) would have a list of open
-fd(s) and reuse those whenever needed, DRI2 the client was responsible
-for open() themselves and with DRI3 the fd was passed to the client.
+==================================================================
+BUG: KCSAN: data-race in drain_all_stock / drain_obj_stock
 
-Around the inception of DRI3 and systemd-logind, the latter became
-another possible orchestrator. Whereby Xorg and Wayland compositors
-could ask it for the fd. For various reasons (hysterical and genuine
-ones) Xorg has a fallback path going the open(), whereas Wayland
-compositors are moving to solely relying on logind... some never had
-fallback even.
+write to 0xffff888237c2a2f8 of 8 bytes by task 19625 on cpu 0:
+ drain_obj_stock+0x408/0x4e0 mm/memcontrol.c:3306
+ refill_obj_stock+0x9c/0x1e0 mm/memcontrol.c:3340
+ obj_cgroup_uncharge+0xe/0x10 mm/memcontrol.c:3408
+ memcg_slab_free_hook mm/slab.h:587 [inline]
+ __cache_free mm/slab.c:3373 [inline]
+ __do_kmem_cache_free mm/slab.c:3577 [inline]
+ kmem_cache_free+0x105/0x280 mm/slab.c:3602
+ __d_free fs/dcache.c:298 [inline]
+ dentry_free fs/dcache.c:375 [inline]
+ __dentry_kill+0x422/0x4a0 fs/dcache.c:621
+ dentry_kill+0x8d/0x1e0
+ dput+0x118/0x1f0 fs/dcache.c:913
+ __fput+0x3bf/0x570 fs/file_table.c:329
+ ____fput+0x15/0x20 fs/file_table.c:349
+ task_work_run+0x123/0x160 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0xcf/0xe0 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0x6a/0xa0 kernel/entry/common.c:203
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x26/0x140 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Over the past few years, more projects have emerged which provide
-functionality similar (be that on API level, Dbus, or otherwise) to
-systemd-logind.
+read to 0xffff888237c2a2f8 of 8 bytes by task 19632 on cpu 1:
+ obj_stock_flush_required mm/memcontrol.c:3319 [inline]
+ drain_all_stock+0x174/0x2a0 mm/memcontrol.c:2361
+ try_charge_memcg+0x6d0/0xd10 mm/memcontrol.c:2703
+ try_charge mm/memcontrol.c:2837 [inline]
+ mem_cgroup_charge_skmem+0x51/0x140 mm/memcontrol.c:7290
+ sock_reserve_memory+0xb1/0x390 net/core/sock.c:1025
+ sk_setsockopt+0x800/0x1e70 net/core/sock.c:1525
+ udp_lib_setsockopt+0x99/0x6c0 net/ipv4/udp.c:2692
+ udp_setsockopt+0x73/0xa0 net/ipv4/udp.c:2817
+ sock_common_setsockopt+0x61/0x70 net/core/sock.c:3668
+ __sys_setsockopt+0x1c3/0x230 net/socket.c:2271
+ __do_sys_setsockopt net/socket.c:2282 [inline]
+ __se_sys_setsockopt net/socket.c:2279 [inline]
+ __x64_sys_setsockopt+0x66/0x80 net/socket.c:2279
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+value changed: 0xffff8881382d52c0 -> 0xffff888138893740
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 19632 Comm: syz-executor.0 Not tainted 6.3.0-rc2-syzkaller-00387-g534293368afa #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
+==================================================================
 
 
-Apart from that, the commit is spot on. I like the use of rcu and the
-was_master handling is correct. With some message polish this commit
-is:
-Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I also had a brief look at 01/10, although I cannot find many
-references for the pid <> tguid mappings. Be that on the kernel side
-or userspace - do you have any links that I can educate myself?
-
-Thanks
-Emil
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
