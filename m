@@ -2,273 +2,183 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96BF6EBDE7
-	for <lists+cgroups@lfdr.de>; Sun, 23 Apr 2023 10:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252786EBFCF
+	for <lists+cgroups@lfdr.de>; Sun, 23 Apr 2023 15:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjDWIQM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 23 Apr 2023 04:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
+        id S229695AbjDWNm2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 23 Apr 2023 09:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjDWIQL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 23 Apr 2023 04:16:11 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56651986;
-        Sun, 23 Apr 2023 01:16:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Q41L817nHz4f3khR;
-        Sun, 23 Apr 2023 16:16:00 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgD3X7NA6URkr9jnHw--.47528S3;
-        Sun, 23 Apr 2023 16:16:01 +0800 (CST)
-Subject: Re: [PATCH for-6.4/block] block/rq_qos: protect rq_qos apis with a
- new lock
-To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, hch@lst.de,
-        josef@toxicpanda.com, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230414084008.2085155-1-yukuai1@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <dde18143-b3bf-e493-c10a-5ffd2d8b772a@huaweicloud.com>
-Date:   Sun, 23 Apr 2023 16:15:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S229441AbjDWNm1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 23 Apr 2023 09:42:27 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2087.outbound.protection.outlook.com [40.92.99.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD96C1B3
+        for <cgroups@vger.kernel.org>; Sun, 23 Apr 2023 06:42:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EDe/IX9I5v/HegF77oAx/wtVjXMmQnYhgFFUXAHXIpQX3O5nouAJtFbO0atmLOgGoPKr8CKYlUyEvLszBO1GplMM/ou3YBt4IckqcYusAFFBdhEEOAG/y7DXLC13Ugq6Vz2iYso3vK56NiXPz69tY92IrMrr97DVMlJjVwaPeD8DFlOHMdgbxQeBmW3oFoKK8pxtsd61szket0E5Oc2w27FvjXmMWh5ZBNLAqLyCohQs/B8L9ehZAk9LGWBg6BWqtZ7+YR5X7Vjo6vlPGTliieQ8gseweldYUC7MzjKRaf1hgEZpDG4aLEyItAhafpxyZQFbSQKvd7KoLpN7w4WlCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dIBSi2pbn/GRsxaRiGPiV2kaV11LquoEHWqjt1iHLeQ=;
+ b=RQcakmz1Yt58kyXNI9xw7Og3swC/ghUITgzw/PHr+6Mhh9YNguG9jJ+g8vzuIyoW+plN66Ph3A56Ho2tugW1pz1ZrUczHrzLrPPG77BbbEKC0Q4wxwFimVBWTxH5Zh18Sb89a3e4KcB89srG6Rt/R7i3lDl/spqRHLZ25Pk4g4C073n4iAVDTlH7h5M7npqbRTA+lwWXGJosjiXWA/AxiMcZ5nT9HLgG7mm/Ya1+ClangOj/YPf5PabAGqNbj8zF4qlFp1Kk1Yw5iILINVNL5CKuwHagjBxw+3ZVd/QpiNAZ1Pa99gRyZdIKYKtjnAN172hU6FoLCCOCoGPOXZ8OoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dIBSi2pbn/GRsxaRiGPiV2kaV11LquoEHWqjt1iHLeQ=;
+ b=KJ+gjWmdBo+1rb8raBF74OKTBvVq54chIy+o3AAaSZm4cZQNp/8XKN6hw8HFlVzdZ9g+L3NSc1GQtk1CijIjTvHuGDJUjzXuL0hhUVlR1/OoxvWN/GKOjrJwKlrpqGYT6c1gEKHeY+aj17nmQ99cLrvrW3/CC22I0Ymy/uvshA56Y+l0le8thNR8srtoEiCxvQXvoRTZBQCyigJrmH3ydBnUkln0uskAqUitxFFmbxSnOrIG2p+b/oyPDXKx+o4bpHpPmbcpNlR20eldWfLOptTVJlveJDWB5sQc1fi0RRh+k+D2VqIL6ZjPa0v5/o2yki0STevkWEOCrCTBdBKbUg==
+Received: from TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:17d::11)
+ by TY3P286MB2500.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:22d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.33; Sun, 23 Apr
+ 2023 13:42:20 +0000
+Received: from TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::3f65:1cb4:43e7:81d3]) by TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::3f65:1cb4:43e7:81d3%6]) with mapi id 15.20.6319.032; Sun, 23 Apr 2023
+ 13:42:20 +0000
+Date:   Sun, 23 Apr 2023 21:42:15 +0800
+From:   Chingbin Li <liqb365@hotmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org
+Subject: [PATCH] cgroup: align each value to its column name in /proc/cgroups
+ file
+Message-ID: <TYCP286MB233532036CE9F1D67ECAB422E9669@TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TMN:  [eJXTNL+LsbAK3tlu/c5vb/dK/1UI5bW5]
+X-ClientProxiedBy: SG2PR06CA0216.apcprd06.prod.outlook.com
+ (2603:1096:4:68::24) To TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:17d::11)
+X-Microsoft-Original-Message-ID: <20230423134215.GA100742@liqb365-BATTLE-AX-B560M-HD-DELUXE>
 MIME-Version: 1.0
-In-Reply-To: <20230414084008.2085155-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3X7NA6URkr9jnHw--.47528S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wry7JF1DtFyfJFyDKFy8Xwb_yoWxCr17pa
-        y8KF43A392gr4Dua1DGw4xXwsIgws5KrW8CrWfW34ayrZF9r10vF1kAFyUWFWrArsxZF4k
-        XrW8WrsYkr1UCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2335:EE_|TY3P286MB2500:EE_
+X-MS-Office365-Filtering-Correlation-Id: 295cf153-2c27-420c-f2ae-08db44008fc3
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Rj7QgNY0QDS+1RXzbkyQaQ6MjxIizwIWoRJCEIXz8I5g1pWInm2tn2T9h7k2X3wGn7Ix12TsccdXitOPkirceVarkiFGp2NBNYg36pY6qvhY9JCE9rgGI6jEBsvxiPk7ZwlYtKJ5MKa1I4XZzYSPzu6brvM9Fm3JqqGCD4Bmh1prlIJMzrwmHkBQcAbBma/ZUTLKycyNFo9qyDggpGbpVr6+OHz6hndauoErUkBaGzdX7XB6Y+A5bCnWCsolNw2S+ukoXYH0bG941H7+5PFfGbWpPOmRHFV+B57YITCPI55Dnz58uZcJb5avK99QjogX9QyYwvHQMPl6OfVo0/ZZpb5MUDbqvJBM1LCkQ4IW/0SOo9PenU5TVqEIqMrIZBAvGQLkkFOLRsRaqz97ncltvbqtXCtvC+K+8uB+DycOlgY6cGHJue7ecH35H57VzgAyMBtIqcgYppOhYwL1x9Cua9vr14xrzm4DX/JD1bKcWoGDoqme84eNBERjA10olcCFNjWgDm4dadTqJmMh+SGN4rXNNwu22m7/moybr7bW1+vL3u8iWYjlWYjEI4B62FUS
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n5R5gbS7rAWXB2LqqhaUYRzEWPxJNG5xjiYrNxHbg/SfnrLq9Wm+Z1RVVwAZ?=
+ =?us-ascii?Q?vlsRoeqlXVhQRGg1HY20q8h1CkTZCNmDkgOcy+vr9/O1c0GoUvICP117kUra?=
+ =?us-ascii?Q?D/0CDISMvBSBSy7PlFNGc58QeqOK8ZK11xpNVpTmrxHLv/tQmyYK4VUNBoO9?=
+ =?us-ascii?Q?fzrbWUgi3b2cgXGGwnoDVRezwq+Z5UEKHp3Gspu3FSqb1OvkCMvs06PbywF1?=
+ =?us-ascii?Q?/oobmS7WlU4b5zebt+MxGBQXS71a7p+s1D1LKlvotUJVi5UsH1SHdpq8jcPB?=
+ =?us-ascii?Q?R8UbHtC8o/dn0hQZ0WCRcHpFpPQXKgr9GsgvUyDNLOvXMQcLTZKpc2vHy0Ha?=
+ =?us-ascii?Q?/25W+oujwDWFUgMgwQ3QdAPmkB9yKwsPgJex/ye82boj++/YDLdiEdJjrQoA?=
+ =?us-ascii?Q?MUyicuh/bJPsK1/zh7o2A7k41C1Ak3xz8fSF/ccxUl2kabgtwCRmlEsP2L0D?=
+ =?us-ascii?Q?upZhEhsOnZuiV3tWvLMJLvYDj2nQl3mMOoEsQd2UeuXxgFIEA4gIHL3OrhAx?=
+ =?us-ascii?Q?mHDBrCl3WT4AgI5xDa7c4Y7pDNEdsgrEmP4WFhIJkiEQJwUNz8w0d/WNwhLY?=
+ =?us-ascii?Q?tb4BpnhDYjh8SrWG9ijP0OhI2LBjLYo83w85uoDRfQbfrg8UZYz5BYSv3E5y?=
+ =?us-ascii?Q?94SO500e+YHVxsUzbc2LX479RuEFmiF3ZEZOx/J0v9PAa3qmVg1yuZmKsVeE?=
+ =?us-ascii?Q?hDtkg4f2/KH1MbDD7+vCJwocnlQ+lURmso/mLC6AO1eQVmATChtVVfM6YzZV?=
+ =?us-ascii?Q?P6UFdqannQfq9EEwpf4KN7FkYi0hhtFO3uoTFSGraanBZ9nTyegvaRrcx3Ok?=
+ =?us-ascii?Q?hu3H0sV50+HIBR3x/7nB9fiKDNg0cCDStd3LRMVVxz81XJPzkPQr0vMcFNqF?=
+ =?us-ascii?Q?t9suO8G2e1K86XdvhVvLNuBZp66+UQhWzltbR0lNN3rYEXEV1m15E4ivAOde?=
+ =?us-ascii?Q?Qjk24xZeiOIkDTNWp6C9nrb7Swkv5CPEhNsvC6LcsDrrRBCyTjMZ4Zrf8yYi?=
+ =?us-ascii?Q?Etweb/a4yPFTlbnbF03Au3h1qCc7sbT3ht574h45zLyPHg3f9ki5pjdvtW62?=
+ =?us-ascii?Q?VOEZYSKfgY6qObjf2UoE2JO8wouDaOzJQ+xpC7jl1tueR42v+AmRwzShKnUS?=
+ =?us-ascii?Q?3+4k+iDprYuBEBnZYwVI8+d+F6M1OQ3WOvpByCZrHuYwXy5CxN/j/jqFjyR4?=
+ =?us-ascii?Q?9ifKNSmH+dAjfE2NEokSzbHTxSgFalGRTFrL1A=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 295cf153-2c27-420c-f2ae-08db44008fc3
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2335.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2023 13:42:20.7300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB2500
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Currently, the /proc/cgroups infomation looks messy:
 
-ÔÚ 2023/04/14 16:40, Yu Kuai Ð´µÀ:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> commit 50e34d78815e ("block: disable the elevator int del_gendisk")
-> move rq_qos_exit() from disk_release() to del_gendisk(), this will
-> introduce some problems:
-> 
-> 1) If rq_qos_add() is triggered by enabling iocost/iolatency through
->     cgroupfs, then it can concurrent with del_gendisk(), it's not safe to
->     write 'q->rq_qos' concurrently.
-> 
-> 2) Activate cgroup policy that is relied on rq_qos will call
->     rq_qos_add() and blkcg_activate_policy(), and if rq_qos_exit() is
->     called in the middle, null-ptr-dereference will be triggered in
->     blkcg_activate_policy().
-> 
-> 3) blkg_conf_open_bdev() can call blkdev_get_no_open() first to find the
->     disk, then if rq_qos_exit() from del_gendisk() is done before
->     rq_qos_add(), then memory will be leaked.
-> 
-> This patch add a new disk level mutex 'rq_qos_mutex':
-> 
-> 1) The lock will protect rq_qos_exit() directly.
-> 
-> 2) For wbt that doesn't relied on blk-cgroup, rq_qos_add() can only be
->     called from disk initialization for now because wbt can't be
->     destructed until rq_qos_exit(), so it's safe not to protect wbt for
->     now. Hoever, in case that rq_qos dynamically destruction is supported
->     in the furture, this patch also protect rq_qos_add() from wbt_init()
->     directly, this is enough because blk-sysfs already synchronize
->     writers with disk removal.
-> 
-> 3) For iocost and iolatency, in order to synchronize disk removal and
->     cgroup configuration, the lock is held after blkdev_get_no_open()
->     from blkg_conf_open_bdev(), and is released in blkg_conf_exit().
->     In order to fix the above memory leak, disk_live() is checked after
->     holding the new lock.
-> 
+/ # cat /proc/cgroups
+#subsys_name	hierarchy	num_cgroups	enabled
+cpuset	0	1	1
+cpu	0	1	1
+cpuacct	0	1	1
+blkio	0	1	1
+memory	0	1	1
+devices	0	1	1
+freezer	0	1	1
+perf_event	0	1	1
+hugetlb	0	1	1
+pids	0	1	1
 
-Friendly ping ...
+This tiny modification makes the information looks better:
 
-Thanks,
-Kuai
-> Fixes: 50e34d78815e ("block: disable the elevator int del_gendisk")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   block/blk-cgroup.c     |  9 +++++++++
->   block/blk-core.c       |  1 +
->   block/blk-rq-qos.c     | 20 ++++++--------------
->   block/blk-wbt.c        |  2 ++
->   include/linux/blkdev.h |  1 +
->   5 files changed, 19 insertions(+), 14 deletions(-)
-> 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 1c1ebeb51003..0d79d864ecb1 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -705,6 +705,13 @@ int blkg_conf_open_bdev(struct blkg_conf_ctx *ctx)
->   		return -ENODEV;
->   	}
->   
-> +	mutex_lock(&bdev->bd_queue->rq_qos_mutex);
-> +	if (!disk_live(bdev->bd_disk)) {
-> +		blkdev_put_no_open(bdev);
-> +		mutex_unlock(&bdev->bd_queue->rq_qos_mutex);
-> +		return -ENODEV;
-> +	}
-> +
->   	ctx->body = input;
->   	ctx->bdev = bdev;
->   	return 0;
-> @@ -849,6 +856,7 @@ EXPORT_SYMBOL_GPL(blkg_conf_prep);
->    */
->   void blkg_conf_exit(struct blkg_conf_ctx *ctx)
->   	__releases(&ctx->bdev->bd_queue->queue_lock)
-> +	__releases(&ctx->bdev->bd_queue->rq_qos_mutex)
->   {
->   	if (ctx->blkg) {
->   		spin_unlock_irq(&bdev_get_queue(ctx->bdev)->queue_lock);
-> @@ -856,6 +864,7 @@ void blkg_conf_exit(struct blkg_conf_ctx *ctx)
->   	}
->   
->   	if (ctx->bdev) {
-> +		mutex_unlock(&ctx->bdev->bd_queue->rq_qos_mutex);
->   		blkdev_put_no_open(ctx->bdev);
->   		ctx->body = NULL;
->   		ctx->bdev = NULL;
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 269765d16cfd..fc7f902bdf5b 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -420,6 +420,7 @@ struct request_queue *blk_alloc_queue(int node_id)
->   	mutex_init(&q->debugfs_mutex);
->   	mutex_init(&q->sysfs_lock);
->   	mutex_init(&q->sysfs_dir_lock);
-> +	mutex_init(&q->rq_qos_mutex);
->   	spin_lock_init(&q->queue_lock);
->   
->   	init_waitqueue_head(&q->mq_freeze_wq);
-> diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
-> index d8cc820a365e..167be74df4ee 100644
-> --- a/block/blk-rq-qos.c
-> +++ b/block/blk-rq-qos.c
-> @@ -288,11 +288,13 @@ void rq_qos_wait(struct rq_wait *rqw, void *private_data,
->   
->   void rq_qos_exit(struct request_queue *q)
->   {
-> +	mutex_lock(&q->rq_qos_mutex);
->   	while (q->rq_qos) {
->   		struct rq_qos *rqos = q->rq_qos;
->   		q->rq_qos = rqos->next;
->   		rqos->ops->exit(rqos);
->   	}
-> +	mutex_unlock(&q->rq_qos_mutex);
->   }
->   
->   int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
-> @@ -300,6 +302,8 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
->   {
->   	struct request_queue *q = disk->queue;
->   
-> +	lockdep_assert_held(&q->rq_qos_mutex);
-> +
->   	rqos->disk = disk;
->   	rqos->id = id;
->   	rqos->ops = ops;
-> @@ -307,18 +311,13 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
->   	/*
->   	 * No IO can be in-flight when adding rqos, so freeze queue, which
->   	 * is fine since we only support rq_qos for blk-mq queue.
-> -	 *
-> -	 * Reuse ->queue_lock for protecting against other concurrent
-> -	 * rq_qos adding/deleting
->   	 */
->   	blk_mq_freeze_queue(q);
->   
-> -	spin_lock_irq(&q->queue_lock);
->   	if (rq_qos_id(q, rqos->id))
->   		goto ebusy;
->   	rqos->next = q->rq_qos;
->   	q->rq_qos = rqos;
-> -	spin_unlock_irq(&q->queue_lock);
->   
->   	blk_mq_unfreeze_queue(q);
->   
-> @@ -330,7 +329,6 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
->   
->   	return 0;
->   ebusy:
-> -	spin_unlock_irq(&q->queue_lock);
->   	blk_mq_unfreeze_queue(q);
->   	return -EBUSY;
->   }
-> @@ -340,21 +338,15 @@ void rq_qos_del(struct rq_qos *rqos)
->   	struct request_queue *q = rqos->disk->queue;
->   	struct rq_qos **cur;
->   
-> -	/*
-> -	 * See comment in rq_qos_add() about freezing queue & using
-> -	 * ->queue_lock.
-> -	 */
-> -	blk_mq_freeze_queue(q);
-> +	lockdep_assert_held(&q->rq_qos_mutex);
->   
-> -	spin_lock_irq(&q->queue_lock);
-> +	blk_mq_freeze_queue(q);
->   	for (cur = &q->rq_qos; *cur; cur = &(*cur)->next) {
->   		if (*cur == rqos) {
->   			*cur = rqos->next;
->   			break;
->   		}
->   	}
-> -	spin_unlock_irq(&q->queue_lock);
-> -
->   	blk_mq_unfreeze_queue(q);
->   
->   	mutex_lock(&q->debugfs_mutex);
-> diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-> index e49a48684532..53bf5aa6f9ad 100644
-> --- a/block/blk-wbt.c
-> +++ b/block/blk-wbt.c
-> @@ -942,7 +942,9 @@ int wbt_init(struct gendisk *disk)
->   	/*
->   	 * Assign rwb and add the stats callback.
->   	 */
-> +	mutex_lock(&q->rq_qos_mutex);
->   	ret = rq_qos_add(&rwb->rqos, disk, RQ_QOS_WBT, &wbt_rqos_ops);
-> +	mutex_unlock(&q->rq_qos_mutex);
->   	if (ret)
->   		goto err_free;
->   
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 6ede578dfbc6..17774f55743e 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -395,6 +395,7 @@ struct request_queue {
->   
->   	struct blk_queue_stats	*stats;
->   	struct rq_qos		*rq_qos;
-> +	struct mutex		rq_qos_mutex;
->   
->   	const struct blk_mq_ops	*mq_ops;
->   
-> 
+/ # cat /proc/cgroups
+#subsys_name	 hierarchy	num_cgroups	enabled
+      cpuset	         0	          1	      1
+         cpu	         0	          1	      1
+     cpuacct	         0	          1	      1
+       blkio	         0	          1	      1
+      memory	         0	          1	      1
+     devices	         0	          1	      1
+     freezer	         0	          1	      1
+  perf_event	         0	          1	      1
+     hugetlb	         0	          1	      1
+        pids	         0	          1	      1
+
+Changes:
+
+   Summary for each column:
+
+   Column name   | Column name length        Max value length      |	  Max
+   --------------------------------------------------------------------------------
+  #subsys_name	 |      12		      10 (perf_event)      |	   12
+     hierarchy	 |       9		      10 (INT_MAX) 	   |	   10
+   num_cgroups	 |      11		      10 (INT_MAX) 	   |	   11
+       enabled 	 |       7		       1 (bool value)      |	    7
+   --------------------------------------------------------------------------------
+   Unit: Character
+
+   We use the max length values as the length for each column.
+
+   Besides, insert a white space to 'seq_puts' statement:
+
+   seq_puts(m, "subsys_name\t hierarchy\tnum_cgroups\tenabled\n");
+			     ^
+
+   The purpose is to make the 'hierarchy' column name has the same length as it's possible
+   max value.
+
+Signed-off-by: Chingbin Li <liqb365@hotmail.com>
+---
+ kernel/cgroup/cgroup-v1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 52bb5a74a23b..dbce2e950aa0 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -670,14 +670,14 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
+ 	struct cgroup_subsys *ss;
+ 	int i;
+
+-	seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
++	seq_puts(m, "#subsys_name\t hierarchy\tnum_cgroups\tenabled\n");
+ 	/*
+ 	 * Grab the subsystems state racily. No need to add avenue to
+ 	 * cgroup_mutex contention.
+ 	 */
+
+ 	for_each_subsys(ss, i)
+-		seq_printf(m, "%s\t%d\t%d\t%d\n",
++		seq_printf(m, "%12s\t%10d\t%11d\t%7d\n",
+ 			   ss->legacy_name, ss->root->hierarchy_id,
+ 			   atomic_read(&ss->root->nr_cgrps),
+ 			   cgroup_ssid_enabled(i));
+--
+2.25.1
 
