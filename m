@@ -2,113 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B325D6EF619
-	for <lists+cgroups@lfdr.de>; Wed, 26 Apr 2023 16:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF976EF637
+	for <lists+cgroups@lfdr.de>; Wed, 26 Apr 2023 16:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbjDZOOs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Apr 2023 10:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
+        id S241314AbjDZOTk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Apr 2023 10:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241272AbjDZOOr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Apr 2023 10:14:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829D56EB1
-        for <cgroups@vger.kernel.org>; Wed, 26 Apr 2023 07:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682518438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rf30qPmkXFyg0eo0/oPK9xXJTsxFmQ7zB528P1kEZb8=;
-        b=DU4HKukx1KPsJxlKbSS2O8yq2grDjPL5TlqXxfZLFZgMgo77T94xF5DH+v7o1upEr0IMNW
-        Ja5LO7IlUXCdNZJZ4U6RdgX5abIiU41vAAFsxRs+Y+JlmUyKLnDleJTfiiYMM9PgR3isf4
-        Y152P+m3xPNgIkwrxO5UrP3fhQVJJkw=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-35-EsePhSkiP9mKEUg0iLPFVQ-1; Wed, 26 Apr 2023 10:09:45 -0400
-X-MC-Unique: EsePhSkiP9mKEUg0iLPFVQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S240720AbjDZOTj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Apr 2023 10:19:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F256E87;
+        Wed, 26 Apr 2023 07:19:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79E5A3815EED;
-        Wed, 26 Apr 2023 14:05:51 +0000 (UTC)
-Received: from [10.22.18.92] (unknown [10.22.18.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BF52A40C2020;
-        Wed, 26 Apr 2023 14:05:49 +0000 (UTC)
-Message-ID: <d53a8af3-46e7-fe6e-5cdd-0421796f80d2@redhat.com>
-Date:   Wed, 26 Apr 2023 10:05:49 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5058D62CE6;
+        Wed, 26 Apr 2023 14:19:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 537B7C433D2;
+        Wed, 26 Apr 2023 14:19:26 +0000 (UTC)
+Date:   Wed, 26 Apr 2023 10:19:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>, Chris Li <chrisl@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] memcg: OOM log improvements
+Message-ID: <20230426101922.49a66ee6@gandalf.local.home>
+In-Reply-To: <20230426133919.1342942-1-yosryahmed@google.com>
+References: <20230426133919.1342942-1-yosryahmed@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 2/6] sched/cpuset: Bring back cpuset_mutex
-Content-Language: en-US
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230329125558.255239-1-juri.lelli@redhat.com>
- <20230329125558.255239-3-juri.lelli@redhat.com>
- <fa585497-5c6d-f0ed-bdda-c71a81d315ad@redhat.com>
- <ZEkRq9iGkYP/8T5w@localhost.localdomain>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZEkRq9iGkYP/8T5w@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/26/23 07:57, Juri Lelli wrote:
-> On 04/04/23 13:31, Waiman Long wrote:
->> On 3/29/23 08:55, Juri Lelli wrote:
->>> Turns out percpu_cpuset_rwsem - commit 1243dc518c9d ("cgroup/cpuset:
->>> Convert cpuset_mutex to percpu_rwsem") - wasn't such a brilliant idea,
->>> as it has been reported to cause slowdowns in workloads that need to
->>> change cpuset configuration frequently and it is also not implementing
->>> priority inheritance (which causes troubles with realtime workloads).
->>>
->>> Convert percpu_cpuset_rwsem back to regular cpuset_mutex. Also grab it
->>> only for SCHED_DEADLINE tasks (other policies don't care about stable
->>> cpusets anyway).
->>>
->>> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
->> I am thinking that maybe we should switch the percpu rwsem to a regular
->> rwsem as there are cases where a read lock is sufficient. This will also
->> avoid the potential PREEMPT_RT problem with PI and reduce the time it needs
->> to take a write lock.
-> I'm not a big fan of rwsems for reasons like
-> https://lore.kernel.org/lkml/20230321161140.HMcQEhHb@linutronix.de/, so
-> I'd vote for a standard mutex unless we have a strong argument and/or
-> numbers.
+On Wed, 26 Apr 2023 13:39:17 +0000
+Yosry Ahmed <yosryahmed@google.com> wrote:
 
-That is fine for me too.
+> The series uses seq_buf_do_printk() which was only recently introduced
+> [1]. It did not land in Linus's tree yet, but ideally it will land this
+> merge window. I thought I would share the patches meanwhile for
+> feedback.
+> 
+> [1]https://lore.kernel.org/lkml/20230415100110.1419872-1-senozhatsky@chromium.org/
 
-Cheers,
-Longman
+FYI, it's running through my tests right now (with several other patches).
 
+If everything passes, I'll let it sit in linux-next for a day or two than
+push to Linus at the end of the week.
+
+-- Steve
