@@ -2,101 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0056EF642
-	for <lists+cgroups@lfdr.de>; Wed, 26 Apr 2023 16:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD0A6EF675
+	for <lists+cgroups@lfdr.de>; Wed, 26 Apr 2023 16:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241337AbjDZOU7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Apr 2023 10:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        id S241410AbjDZOcR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Apr 2023 10:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241351AbjDZOU5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Apr 2023 10:20:57 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8AB7287
-        for <cgroups@vger.kernel.org>; Wed, 26 Apr 2023 07:20:54 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-50506ac462bso10710079a12.3
-        for <cgroups@vger.kernel.org>; Wed, 26 Apr 2023 07:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682518852; x=1685110852;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HgpJhfslW9AJxpWh6L39g4b9zrGjSQZYS/g5Jt+Nqj8=;
-        b=Eyg15XOqfRojyNHkgX+U5vM5JVy3wnEtjmADA5EpeYfP8poMCa7IW3j8xjCyBiO8+K
-         BC/aygNk7B0kYFA5L0cq71ZO7wX6JZQnU9xAH/f1t9DDYXQb0JMvAs5rNGA9zu1GC2bF
-         xW1uCY0lVr81LtB15Tku27roz5XoVg0EuUz7xgpRQcCeg1+0DQqVi4gUg84LGJh2Bm29
-         9pBOcABPgS3XiF6+CH1cOIMmIAVe42GEQ9/zUcRqKVpwdnDOUX2Qo3FvAV/vniRy460u
-         JHKl8UYLf2Bjvfk7rz31Lr1PyQ0EyxajN8Se3AbY+wuiVI0GnevbWPlAwZCuqq2lE9R/
-         CWOA==
+        with ESMTP id S241171AbjDZOcM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Apr 2023 10:32:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81408768F
+        for <cgroups@vger.kernel.org>; Wed, 26 Apr 2023 07:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682519483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x0YRJ7TlPoY9IYDWRjmvki/mO0TL+b3mD3tzGtLzoUc=;
+        b=TS6ZybJAbCBYU+OgyzZbZzd/QocAmogIukMjf7KpuUbz/g1EtUVT1CBh2MCEUqLMqx+Zyw
+        W49lRq82RLNuxE4VlDrN8+2jRpBWPdUW+L10dTDIhomcYj4v1LevMCuqaj7OJKRKwa9sAp
+        nfzzkIixCdxgzshuGmpcjW/uDw5rxRc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-156-nkGmRtJvMFW7UfTk2qISGg-1; Wed, 26 Apr 2023 10:31:15 -0400
+X-MC-Unique: nkGmRtJvMFW7UfTk2qISGg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94f7a2b21fdso836181166b.2
+        for <cgroups@vger.kernel.org>; Wed, 26 Apr 2023 07:31:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682518852; x=1685110852;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HgpJhfslW9AJxpWh6L39g4b9zrGjSQZYS/g5Jt+Nqj8=;
-        b=IkDbwRgr5h5b1NvVAX8xlHVHrYRkbtStTagVG4xsg7x+zPRnpJhDtqR8nIptsXsm1u
-         2WlKPMLILpVmHgl6vk0Z5+jE2yB5/I2QDRqcyHXZxX/BSMUDdmqSjlbWLdRSxPWdEbux
-         RddTBdHnJC2kEFBYH14uamCroEPeb2anSBygkwXuIRcgBYoJsVP1HIkOR30X/pGASMMd
-         9hCmbugyUZMkcEU3GigkdkGJtmrhftEkd4b4ITY72a3CwtMxk7sc2RRiJCYIwUg4p/K6
-         OknJ0rbyTAS9wfz+6/yDcL8pKXNC6mNSelT7m27rJ8z/1wbJW6wIQ1oYWVfu39/n4Djl
-         l+9w==
-X-Gm-Message-State: AAQBX9dWs/av04ipRfkl0w7Zt0S0Su+LkrfElbwQyGWL8JC4UfCNyUnG
-        3rulAQvvi1rHNHOjs37bxIzHDMCSYls8OlRKkVvFDA==
-X-Google-Smtp-Source: AKy350aTzZF/WyYh4VJksotVM7xC513ZMVxQO2f/MyrDCUg04y5z6fTkqYQrEXHTx1cX/GAGE2Pw6fhl5KtXY8zKwvE=
-X-Received: by 2002:aa7:c757:0:b0:502:4862:d453 with SMTP id
- c23-20020aa7c757000000b005024862d453mr17094458eds.3.1682518852233; Wed, 26
- Apr 2023 07:20:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682519472; x=1685111472;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x0YRJ7TlPoY9IYDWRjmvki/mO0TL+b3mD3tzGtLzoUc=;
+        b=PO0GxTn+jXexTeClFeTbzTwSzPAq6ZkNxRiJdfJdF/ZPa+e6UJA/aezEbCxZkm/+BU
+         0h5OUR5qIaOM1zjtqmQRpAGSh+9AoFK7/E+dQftTrk85S+4TVg0D2tDKDIRUDoYbH42v
+         FdxOegcyiHwKfKEgNGUoRHJ1lt22zjskrg9fIZpCQtyaQU63AR1ycyU2TfOaKsXOkZLX
+         5fo092niYf9g7vrOcagoj3JVNsI2pddEmmMgK8JcQWtHXXyz+7P+rEY/8mgRsavkDDJV
+         Lv2peCesjINdaBFGksD7hGbHm3YxBvD0n/kZj1qTLFlX0sBZ5HfmcpM7ze+mN8hubUhV
+         DBfw==
+X-Gm-Message-State: AAQBX9d+5pBHcQaBHgnYjlt04kBfbmvT4MAG6y+YA1RemhAp9cn6H9b0
+        PvJP1XfDdah/0qmR+Bg4TSrPwtkFZUrc1ZvCAH5yTyGBgbK/DaqBRLfy3E1ET4QGsuWLDhufIZd
+        vt+a+R9S7rsJ3OLRRiQ==
+X-Received: by 2002:a17:906:5904:b0:94f:928a:af0f with SMTP id h4-20020a170906590400b0094f928aaf0fmr16872074ejq.47.1682519471930;
+        Wed, 26 Apr 2023 07:31:11 -0700 (PDT)
+X-Google-Smtp-Source: AKy350a2Qx33w3mXxDNQvaU4xmScsVwPkVRXikQ4mXYM/czaQyeimOaj9xmuUVq8rnQ075JBB24M3A==
+X-Received: by 2002:a17:906:5904:b0:94f:928a:af0f with SMTP id h4-20020a170906590400b0094f928aaf0fmr16872030ejq.47.1682519471458;
+        Wed, 26 Apr 2023 07:31:11 -0700 (PDT)
+Received: from [192.168.0.198] (host-82-53-138-176.retail.telecomitalia.it. [82.53.138.176])
+        by smtp.gmail.com with ESMTPSA id gj19-20020a170906e11300b0095ec8dfc439sm1548225ejb.166.2023.04.26.07.31.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Apr 2023 07:31:10 -0700 (PDT)
+Message-ID: <10fdfdd8-06bc-0f35-0fea-e604aa5c103a@redhat.com>
+Date:   Wed, 26 Apr 2023 16:31:09 +0200
 MIME-Version: 1.0
-References: <20230426133919.1342942-1-yosryahmed@google.com> <20230426101922.49a66ee6@gandalf.local.home>
-In-Reply-To: <20230426101922.49a66ee6@gandalf.local.home>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 26 Apr 2023 07:20:15 -0700
-Message-ID: <CAJD7tkZ1fM4h_PYD+6XiSEiJFKU0B91anV7xEEoLgLdtpMTHRQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] memcg: OOM log improvements
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Petr Mladek <pmladek@suse.com>, Chris Li <chrisl@kernel.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 2/6] sched/cpuset: Bring back cpuset_mutex
+To:     Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        mathieu.poirier@linaro.org, cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+References: <20230329125558.255239-1-juri.lelli@redhat.com>
+ <20230329125558.255239-3-juri.lelli@redhat.com>
+ <fa585497-5c6d-f0ed-bdda-c71a81d315ad@redhat.com>
+ <ZEkRq9iGkYP/8T5w@localhost.localdomain>
+Content-Language: en-US
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <ZEkRq9iGkYP/8T5w@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 7:19=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Wed, 26 Apr 2023 13:39:17 +0000
-> Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> > The series uses seq_buf_do_printk() which was only recently introduced
-> > [1]. It did not land in Linus's tree yet, but ideally it will land this
-> > merge window. I thought I would share the patches meanwhile for
-> > feedback.
-> >
-> > [1]https://lore.kernel.org/lkml/20230415100110.1419872-1-senozhatsky@ch=
-romium.org/
->
-> FYI, it's running through my tests right now (with several other patches)=
-.
->
-> If everything passes, I'll let it sit in linux-next for a day or two than
-> push to Linus at the end of the week.
->
-> -- Steve
+On 4/26/23 13:57, Juri Lelli wrote:
+> On 04/04/23 13:31, Waiman Long wrote:
+>> On 3/29/23 08:55, Juri Lelli wrote:
+>>> Turns out percpu_cpuset_rwsem - commit 1243dc518c9d ("cgroup/cpuset:
+>>> Convert cpuset_mutex to percpu_rwsem") - wasn't such a brilliant idea,
+>>> as it has been reported to cause slowdowns in workloads that need to
+>>> change cpuset configuration frequently and it is also not implementing
+>>> priority inheritance (which causes troubles with realtime workloads).
+>>>
+>>> Convert percpu_cpuset_rwsem back to regular cpuset_mutex. Also grab it
+>>> only for SCHED_DEADLINE tasks (other policies don't care about stable
+>>> cpusets anyway).
+>>>
+>>> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+>> I am thinking that maybe we should switch the percpu rwsem to a regular
+>> rwsem as there are cases where a read lock is sufficient. This will also
+>> avoid the potential PREEMPT_RT problem with PI and reduce the time it needs
+>> to take a write lock.
+> I'm not a big fan of rwsems for reasons like
+> https://lore.kernel.org/lkml/20230321161140.HMcQEhHb@linutronix.de/, so
+> I'd vote for a standard mutex unless we have a strong argument and/or
+> numbers.
 
-Great! Thanks for the update!
++1
+
+-- Daniel
+
