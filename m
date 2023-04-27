@@ -2,118 +2,192 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6658C6F0D7F
-	for <lists+cgroups@lfdr.de>; Thu, 27 Apr 2023 22:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653B46F0E35
+	for <lists+cgroups@lfdr.de>; Fri, 28 Apr 2023 00:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjD0Ux6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Apr 2023 16:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        id S1344065AbjD0WN1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Apr 2023 18:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344142AbjD0Uxz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Apr 2023 16:53:55 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F871BCB;
-        Thu, 27 Apr 2023 13:53:53 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1a6715ee82fso93041085ad.1;
-        Thu, 27 Apr 2023 13:53:53 -0700 (PDT)
+        with ESMTP id S1343660AbjD0WN0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Apr 2023 18:13:26 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346D735BD
+        for <cgroups@vger.kernel.org>; Thu, 27 Apr 2023 15:13:25 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-504ecbfddd5so13502001a12.0
+        for <cgroups@vger.kernel.org>; Thu, 27 Apr 2023 15:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682628833; x=1685220833;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=/5HWPeVY1MQbyixrvVym4tZ22GEw9R6F1zseVGpafmk=;
-        b=emB5v8zA8+Re9OPy+eYSmdTZbC5NAZo0kYdTWKXuC1+PTSPgR9LZnp07/I0f0ex2G2
-         o4Bedy0IxCUyuZAm/IjGAz95AVan+L+JB283acbS4a9hjICkG4afU3tRr2wSdBj9HiCh
-         G2hQSvfdPP4k9dEguUChEcjfn+P/hQTPisKO50Lz4jMJDiOCv+OmadAwWhAYUSxrr0do
-         98BUMbuNcRtlJQK4PAl9KfjI0ZVtcysgNM3JdRIof9jG0pdi7mJatyO4Ip8B1wovVtvZ
-         bhIofXEThLitec/y5p1rEDbbo7zc9tJ6ODxoaWYMhXlUoKFkWK6yT6FqeKsME4twVQ45
-         ahQA==
+        d=google.com; s=20221208; t=1682633603; x=1685225603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kgWZRPwaHBehs1AT1+EN1sm+gG/yK/cc9a/rK9nqc80=;
+        b=TImfCv3uzAlaFIlONsUxs6zUYHviKGih0Ap26skG6pLvncBEDe1jEd+HM2+EYAuzzx
+         ck6w3374QXKX1EOzf80afrzhU7Lg0y7s1+gPIGWI5YYLuVPHjnVTsDgKdTMXDtCoUwbn
+         j5rB1ExQCHG3JTfgRXwq4XU+3J5LGv985H4gdDzQ5Ykk29usV26mnKtjFpQ3hmpN+jFo
+         mdWnhRGw5r0FmXmRCPy484L017Uqf6QMqxBuuyYEEeUlrMeoePnV9CQBBaIh7j/cB3iP
+         SmieYUpfNc1oxcCg97YzwuZrXWaTpe1Pma3RHiMaOq7xo2Le6jRZbFpC1EQybkCONi+Z
+         kuLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682628833; x=1685220833;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/5HWPeVY1MQbyixrvVym4tZ22GEw9R6F1zseVGpafmk=;
-        b=OBrVMk2gJGjNX51VoFUfEcCKo6/bB/88Nf+5flZTKC2k34Q50TfPL9Fs0CikZGjr2I
-         xybG1w0dSNfbSXBRzgsi0GK21K5siOEBct7R6lejALP5wSN7NAVQHiwnBbg59/u/OkId
-         W29IztcznuLs+aiFHGrnS/615M10OZpEUO+MKN4vsmN+wyE3Uh16eJGJ6yao1LOewhi+
-         KgMoSJh84RDAEhvdivvNNyLYajlMztVpcgVMmALkRT+UedHV+eOIvCDhI+8hT0DlWIaW
-         b/mEWta+2mCej/nuZVTIlAJq38iQFvxDgv/B/SrKv0GwGEyxXC4ib0LvxU59CIEwWnx2
-         Rdew==
-X-Gm-Message-State: AC+VfDxz3VOnetb7EyInQ2OohIaIALPAOaFFnuP/Uv1oXHQpG1EgSMZS
-        d4+Yg3+qWolrubVoExcbej1+NzO0Tbs=
-X-Google-Smtp-Source: ACHHUZ6nowdw4FFYg8bfdI8w+PApjBFH6JLx3NdJRskT0XzHWQgFkxXpmk50Jg3MqcKX7Ka8Ai/jzw==
-X-Received: by 2002:a17:902:d4c6:b0:1a6:71b1:a0b9 with SMTP id o6-20020a170902d4c600b001a671b1a0b9mr3255637plg.47.1682628832942;
-        Thu, 27 Apr 2023 13:53:52 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id ji9-20020a170903324900b001a6ed2d0ef8sm12076718plb.273.2023.04.27.13.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Apr 2023 13:53:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 27 Apr 2023 10:53:51 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>
-Subject: [GIT PULL] cgroup changes for v6.4-rc1
-Message-ID: <ZErg3xZyhlVx_Mw0@slm.duckdns.org>
+        d=1e100.net; s=20221208; t=1682633603; x=1685225603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kgWZRPwaHBehs1AT1+EN1sm+gG/yK/cc9a/rK9nqc80=;
+        b=I5jmuOUbQkiFhsMnMRvN2iIOJghjuRnK2neRqTNSR5pakLs5vvkLa00W1oQzXC3UtK
+         9S4mmlVI7rKkl0r8VN9NshrYqRF8LvaYTqC3N+sVm92vFu5WRmbIdsUVHuonuF8nroeR
+         EB7xXuzcdlcrRleuagRyCtERXUTzT7PvGKaywv4G3ib3RfcarpekIDe4UybtuHCrpGeb
+         ZGkRmnE1NnHZHFnzy6nSLOnnakL80Fo3IzcABBlJPEFVp0b7Xyv27miUl2iX8RSl/os8
+         2kIvFM6ithqxhPoCAKK0AUuwW4d0JRBMyWgMYCFNx9+Yevl7CbhOHr4yg8N0bcRXw4fb
+         K/2g==
+X-Gm-Message-State: AC+VfDzrJaYUu6zq9AL745x9zIsZN95xFlxHOrS+m2ztRiI8/mqfTjAo
+        n84m5HUUVAye3M8sno9jaBhn+XHvEffouCUcb4vx/A==
+X-Google-Smtp-Source: ACHHUZ7irVRDWFdMcQ/JcCU0247Ju25WLRwjeb9kK7C67SvSDE8FmXgL1nKLu+fAA/sG21FJ6Pz48GaPXLfoZAeHuNQ=
+X-Received: by 2002:a05:6402:4c1:b0:501:d6c2:7439 with SMTP id
+ n1-20020a05640204c100b00501d6c27439mr2988689edw.37.1682633603348; Thu, 27 Apr
+ 2023 15:13:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230426133919.1342942-1-yosryahmed@google.com>
+ <20230426133919.1342942-3-yosryahmed@google.com> <ZElC127xlU2NtlqF@dhcp22.suse.cz>
+ <CAJD7tkZ1cODXRuVQ3fWL0s=VsyKZqDPPNqFZec_COAXm0XfXWA@mail.gmail.com> <ZEqBesAJFfLZI65/@dhcp22.suse.cz>
+In-Reply-To: <ZEqBesAJFfLZI65/@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 27 Apr 2023 15:12:46 -0700
+Message-ID: <CAJD7tkac7VKV6Ob8qQWzhm8Ayyk3xB0YCY6edL-TxpXV3aCzXA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] memcg: dump memory.stat during cgroup OOM for v1
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>, Chris Li <chrisl@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The following changes since commit 292fd843de26c551856e66faf134512c52dd78b4:
+On Thu, Apr 27, 2023 at 7:06=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Thu 27-04-23 02:21:30, Yosry Ahmed wrote:
+> > On Wed, Apr 26, 2023 at 8:27=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Wed 26-04-23 13:39:19, Yosry Ahmed wrote:
+> > > > Commit c8713d0b2312 ("mm: memcontrol: dump memory.stat during cgrou=
+p
+> > > > OOM") made sure we dump all the stats in memory.stat during a cgrou=
+p
+> > > > OOM, but it also introduced a slight behavioral change. The code us=
+ed to
+> > > > print the non-hierarchical v1 cgroup stats for the entire cgroup
+> > > > subtree, not it only prints the v2 cgroup stats for the cgroup unde=
+r
+> > > > OOM.
+> > > >
+> > > > Although v2 stats are a superset of v1 stats, some of them have
+> > > > different naming. We also lost the non-hierarchical stats for the c=
+group
+> > > > under OOM in v1.
+> > >
+> > > Why is that a problem worth solving? It would be also nice to add an
+> > > example of the oom report before and after the patch.
+> > > --
+> > > Michal Hocko
+> > > SUSE Labs
+> >
+> > Thanks for taking a look!
+> >
+> > The problem is that when upgrading to a kernel that contains
+> > c8713d0b2312 on cgroup v1, the OOM logs suddenly change. The stats
+> > names become different, a couple of stats are gone, and the
+> > non-hierarchical stats disappear.
+> >
+> > The non-hierarchical stats are important to identify if a memcg OOM'd
+> > because of the memory consumption of its own processes or its
+> > descendants. In the example below, I created a parent memcg "a", and a
+> > child memcg "b". A process in "a" itself ("tail" in this case) is
+> > hogging memory and causing an OOM, not the processes in the child "b"
+> > (the "sleep" processes). With non-hierarchical stats, it's clear that
+> > this is the case.
+>
+> Is this difference really important from the OOM POV. There is no group
+> oom semantic in v1 and so it always boils down to a specific process
+> that gets selected. Which memcg it is sitting in shouldn't matter all
+> that much. Or does it really matter?
 
-  cgroup/cpuset: Fix partition root's cpuset.cpus update bug (2023-03-29 08:37:07 -1000)
+It is useful information that we already have and used to dump. It's
+not really about which memcg the victim lived in, but which memcg is
+not behaving as expected causing an OOM. If you have processes running
+in the OOMing memcg itself as well as its descendants, then it's nice
+to get an idea of which memcg's usage is not as expected.
 
-are available in the Git repository at:
+>
+> > Also, it is generally nice to keep things consistent as much as
+> > possible. The sudden change of the OOM log with the kernel upgrade is
+> > confusing, especially that the memcg stats in the OOM logs in cgroup
+> > v1 now look different from the stats in memory.stat.
+>
+> Generally speaking oom report is not carved into stone. While we
+> shouldn't make changes just nilly willy it might change for
+> implementation specific reasons.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.4
+Agreed, but for this case there is really no reason to change the
+behavior, and imo making restoring the behavior makes the code cleaner
+/ more consistent.
 
-for you to fetch changes up to 9403d9cb564b6a3af86cb18fe722097ed7620f6f:
+>
+> In this particular case I would agree that the new output is more
+> confusing than helpful. Just look at
+> > [   88.339505] pgscan 0
+> > [   88.339505] pgsteal 0
+> > [   88.339506] pgscan_kswapd 0
+> > [   88.339506] pgscan_direct 0
+> > [   88.339507] pgscan_khugepaged 0
+> > [   88.339507] pgsteal_kswapd 0
+> > [   88.339508] pgsteal_direct 0
+> > [   88.339508] pgsteal_khugepaged 0
+>
+> These stats are actively misleading because it would suggest there was
+> no memory reclaim done before oom was hit and that would imply a
+> potentially premature OOM killer invocation (thus a bug). There are
+> likely other stats which are not tracked in v1 yet they are reported
+> that might add to the confusion. I believe this would be a sound
+> justification to get back to the original reporting.
 
-  docs: cgroup-v1/cpusets: update libcgroup project link (2023-04-14 06:55:48 -1000)
+I don't think the collection of these stats is v2-specific, I was just
+testing in a VM without swap, and the process had 100% anonymous
+memory. Testing with swap gives sane stats:
+[   68.851724] pgscan 248801
+[   68.851725] pgsteal 123081
+[   68.851725] pgscan_kswapd 0
+[   68.851726] pgscan_direct 248801
+[   68.851727] pgscan_khugepaged 0
+[   68.851727] pgsteal_kswapd 0
+[   68.851728] pgsteal_direct 123081
+[   68.851728] pgsteal_khugepaged 0
 
-----------------------------------------------------------------
-cgroup changes for v6.4-rc1
+However, I still think this change is valuable. Like you mentioned,
+the OOM log is not set in stone, but we shouldn't just change it for
+no reason. In this case, for cgroup v1 users, the OOM log changed for
+no reason beyond a side effect of another patch. Upon upgrading our
+kernel we noticed the behavior change. This patch restores the old
+behavior without any cost really, and it makes the code a tiny bit
+more consistent.
 
-* cpuset changes including the fix for an incorrect interaction with CPU
-  hotplug and an optimization.
-
-* Other doc and cosmetic changes.
-
-----------------------------------------------------------------
-Haifeng Xu (1):
-      cpuset: Clean up cpuset_node_allowed
-
-Kamalesh Babulal (2):
-      cgroup: bpf: use cgroup_lock()/cgroup_unlock() wrappers
-      docs: cgroup-v1/cpusets: update libcgroup project link
-
-Tejun Heo (1):
-      Merge branch 'for-6.3-fixes' into for-6.4
-
-Waiman Long (3):
-      cgroup/cpuset: Skip task update if hotplug doesn't affect current cpuset
-      cgroup/cpuset: Include offline CPUs when tasks' cpumasks in top_cpuset are updated
-      cgroup/cpuset: Minor updates to test_cpuset_prs.sh
-
- Documentation/admin-guide/cgroup-v1/cpusets.rst   |  2 +-
- include/linux/cpuset.h                            | 16 +-----
- kernel/bpf/cgroup.c                               | 38 +++++++-------
- kernel/bpf/cgroup_iter.c                          |  4 +-
- kernel/bpf/local_storage.c                        |  4 +-
- kernel/cgroup/cgroup-v1.c                         | 16 +++---
- kernel/cgroup/cgroup.c                            | 60 +++++++++++------------
- kernel/cgroup/cpuset.c                            | 30 +++++++-----
- mm/page_alloc.c                                   |  4 +-
- tools/testing/selftests/cgroup/test_cpuset_prs.sh | 25 +++++-----
- 10 files changed, 99 insertions(+), 100 deletions(-)
+> --
+> Michal Hocko
+> SUSE Labs
