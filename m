@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F2F6F1950
-	for <lists+cgroups@lfdr.de>; Fri, 28 Apr 2023 15:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2106F1952
+	for <lists+cgroups@lfdr.de>; Fri, 28 Apr 2023 15:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346243AbjD1NYQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Apr 2023 09:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
+        id S1346252AbjD1NYU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Apr 2023 09:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346238AbjD1NYO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Apr 2023 09:24:14 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6876E46
-        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 06:24:12 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-54f9af249edso165485817b3.1
-        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 06:24:12 -0700 (PDT)
+        with ESMTP id S1346241AbjD1NYP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Apr 2023 09:24:15 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDBD211E
+        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 06:24:14 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-51b4a13a49fso5910676a12.1
+        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 06:24:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682688252; x=1685280252;
+        d=google.com; s=20221208; t=1682688254; x=1685280254;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y+FzrFpmnoCmeFQ217D+x4Ju8+C0DQecKfFykJdZXOk=;
-        b=ahJ5tf1zjA7jhOV/9LiwCRyuWOWHRwEdLk7R0d3XMmILa09rKnfx5nny2uPly2tetM
-         yQe3PTogi+hkDTWAyAo3/jS9Bq4LZKPSzrbVPycPHL0j37hx58O3J7vo7Edyyivmccmm
-         18Pb9GBVLPvYnxrvGeLG3aEwVfIhh0fflwdlhi4SSOB7+PY4t+ZYcJNyWcYRam9KFuAA
-         PmhzEKiIFCk0EIXEsZHJ8Nv/iwsB92yyqpsd4da+lc/aDt5ZKzGH3eSQwh3kWSWXQgsr
-         XAdD201Y1DEr8SPDG9gavkbwwkpUB/LVYwXboCYPhs7zxuzM6GotdmSf09vq72UBrtAr
-         SZ2w==
+        bh=gCrHQjiS2fwiby7dz0V9ThMkUe63uEws1Bin2T2dpU8=;
+        b=jcuVTOAp1c8K+ch7YCMLi+8POwhTwb1WrUalORmat2684E/X82MLP/H/sTNZiGTSzw
+         ILJbHonyleAOPNozrhCp7XJpKzpTbzSV2WanXyhxQyxv5lSFZW8pMKziOeeK25UM/lM3
+         JtO2LiFUAPtV+zJkr/lmiV+hDnMAOdwrsD7W9rNnMigwvNIYtIDxnNjAK3lyudpZp5yI
+         5vpaP0vtG6m4sW2kgSy3vvkx/O8FeePG6gnTT8455Z1wkWEJFKZg0VnC7g7BQBECbTSk
+         07ULhu3kIczPuOMcJkwFO/y0wcnsFUVJfVg87WLuR8H+9rMQZ0u8212WdRLWh+a/t1bT
+         beJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682688252; x=1685280252;
+        d=1e100.net; s=20221208; t=1682688254; x=1685280254;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y+FzrFpmnoCmeFQ217D+x4Ju8+C0DQecKfFykJdZXOk=;
-        b=YdZEPMA+T5Lw3xCoVij/aPUqsoiAWMS+wvRLmU7aiOzf/W7cphzWylHIAnvMbm46Zw
-         Wum3fImlqE4yMfs1gmhLRGUYAb1L13fWamsEbUO8ewYS1XoX/Yg9Q0vZXbZE81OkdQNV
-         +a/g5EsuiUZPVYosG3/LXoRmpkn1+eicOqntQsGNClivz2QP3usCoPRhFvkoAd2mm3W6
-         +i41cVuAv7ajvyP9teBHdWpatrFyL2Yv7iJYV7NocgGtLPoxbU4p6sOhqjJKxe3UE23U
-         NEJSS+sNQYENNa7grG5zqOUgw/BMuanRSFgYSfn4WuipZHPrDTKdoODD0JbU+6J36D5J
-         KD1A==
-X-Gm-Message-State: AC+VfDwiIesMN6cdjvSnsn3vvldwFLy5w/J4tduEGIIKFKYFtRFx3TJo
-        +RDhusCcqHZx3+TbmaeWB7k4j1HEVTAjggH3
-X-Google-Smtp-Source: ACHHUZ6GoDmbt3beV9QlXSTxOyplLo7KKBwAqbwxaQGER72TavmJAupPAyv7ANVUtRJ7bxflY5Y1p3fIF8lhgUMf
+        bh=gCrHQjiS2fwiby7dz0V9ThMkUe63uEws1Bin2T2dpU8=;
+        b=JAHAOtKpGKwhs7vfeb4tgCChtLuM9zoBt3hAsysvavU4ZAgkiGQm938kmSDGDSS7L3
+         5AdE6mIdJPPJKC+dvWwQfkqyhveKA7lbo46hGec0iwl7mUIa7+tBPYMz1PB5iM6c0IMY
+         P4El+CSxD1qOE6a0RMMizoI8blY9MgcOfN5+wMpQ1Ad9pL5YP1gotdGmuJsvH+7/1pim
+         RFKcyx9qgKI5o66ylrXHH+wIpbedzCxAAGKrtT+QH5f+0eqi1ZjzXdDwvcrjVBS7jbak
+         ztduoXneb5R+Dx3e4kqRPS0ir4XxrH9zlozXXXS0ziRv0/1FPfTyVLSt3mByLM4R1ifs
+         g7gQ==
+X-Gm-Message-State: AC+VfDxiCSmTYvwyPjGZP7W8WanA4furQWOIo4g5pGlST3UTci276s6R
+        GT3z2YD9SN0aCkhyhEoX6lehTWHzo6Q1REk6
+X-Google-Smtp-Source: ACHHUZ6Q1iaeTMc7znbuRU46RBkgJ3r/GzmuoUGlNK1hEg/1kqgAXN7zKR88/FXgEDBYkLlt9aTGSyL2pZdAjcsz
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a81:431e:0:b0:54c:fd7:476e with SMTP id
- q30-20020a81431e000000b0054c0fd7476emr3309474ywa.3.1682688252124; Fri, 28 Apr
- 2023 06:24:12 -0700 (PDT)
-Date:   Fri, 28 Apr 2023 13:24:05 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:902:b289:b0:19f:1d62:4393 with SMTP
+ id u9-20020a170902b28900b0019f1d624393mr1511380plr.7.1682688253988; Fri, 28
+ Apr 2023 06:24:13 -0700 (PDT)
+Date:   Fri, 28 Apr 2023 13:24:06 +0000
 In-Reply-To: <20230428132406.2540811-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230428132406.2540811-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
-Message-ID: <20230428132406.2540811-2-yosryahmed@google.com>
-Subject: [PATCH v2 1/2] memcg: use seq_buf_do_printk() with mem_cgroup_print_oom_meminfo()
+Message-ID: <20230428132406.2540811-3-yosryahmed@google.com>
+Subject: [PATCH v2 2/2] memcg: dump memory.stat during cgroup OOM for v1
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -63,8 +63,7 @@ Cc:     Muchun Song <muchun.song@linux.dev>,
         Steven Rostedt <rostedt@goodmis.org>,
         Petr Mladek <pmladek@suse.com>, Chris Li <chrisl@kernel.org>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>,
-        Michal Hocko <mhocko@suse.com>
+        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -76,125 +75,186 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, we format all the memcg stats into a buffer in
-mem_cgroup_print_oom_meminfo() and use pr_info() to dump it to the logs.
-However, this buffer is large in size. Although it is currently working
-as intended, ther is a dependency between the memcg stats buffer and the
-printk record size limit.
+Commit c8713d0b2312 ("mm: memcontrol: dump memory.stat during cgroup
+OOM") made sure we dump all the stats in memory.stat during a cgroup
+OOM, but it also introduced a slight behavioral change. The code used to
+print the non-hierarchical v1 cgroup stats for the entire cgroup
+subtree, now it only prints the v2 cgroup stats for the cgroup under
+OOM.
 
-If we add more stats in the future and the buffer becomes larger than
-the printk record size limit, or if the prink record size limit is
-reduced, the logs may be truncated.
+For cgroup v1 users, this introduces a few problems:
+(a) The non-hierarchical stats of the memcg under OOM are no longer
+shown.
+(b) A couple of v1-only stats (e.g. pgpgin, pgpgout) are no longer
+shown.
+(c) We show the list of cgroup v2 stats, even in cgroup v1. This list of
+stats is not tracked with v1 in mind. While most of the stats seem to be
+working on v1, there may be some stats that are not fully or correctly
+tracked.
 
-It is safer to use seq_buf_do_printk(), which will automatically break
-up the buffer at line breaks and issue small printk() calls.
+Although OOM log is not set in stone, we should not change it for no
+reason. When upgrading the kernel version to a version including
+commit c8713d0b2312 ("mm: memcontrol: dump memory.stat during cgroup
+OOM"), these behavioral changes are noticed in cgroup v1.
 
-Refactor the code to move the seq_buf from memory_stat_format() to its
-callers, and use seq_buf_do_printk() to print the seq_buf in
-mem_cgroup_print_oom_meminfo().
+The fix is simple. Commit c8713d0b2312 ("mm: memcontrol: dump memory.stat
+during cgroup OOM") separated stats formatting from stats display for
+v2, to reuse the stats formatting in the OOM logs. Do the same for v1.
+
+Move the v2 specific formatting from memory_stat_format() to
+memcg_stat_format(), add memcg1_stat_format() for v1, and make
+memory_stat_format() select between them based on cgroup version.
+Since memory_stat_show() now works for both v1 & v2, drop
+memcg_stat_show().
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- mm/memcontrol.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ mm/memcontrol.c | 60 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 35 insertions(+), 25 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 5abffe6f8389..5922940f92c9 100644
+index 5922940f92c9..2b492f8d540c 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1551,13 +1551,10 @@ static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
+@@ -1551,7 +1551,7 @@ static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
  	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
  }
  
--static void memory_stat_format(struct mem_cgroup *memcg, char *buf, int bufsize)
-+static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+-static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
++static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
  {
--	struct seq_buf s;
  	int i;
  
--	seq_buf_init(&s, buf, bufsize);
--
- 	/*
- 	 * Provide statistics on the state of the memory subsystem as
- 	 * well as cumulative event counters that show past behavior.
-@@ -1574,21 +1571,21 @@ static void memory_stat_format(struct mem_cgroup *memcg, char *buf, int bufsize)
- 		u64 size;
+@@ -1604,6 +1604,17 @@ static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 	WARN_ON_ONCE(seq_buf_has_overflowed(s));
+ }
  
- 		size = memcg_page_state_output(memcg, memory_stats[i].idx);
--		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
-+		seq_buf_printf(s, "%s %llu\n", memory_stats[i].name, size);
- 
- 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
- 			size += memcg_page_state_output(memcg,
- 							NR_SLAB_RECLAIMABLE_B);
--			seq_buf_printf(&s, "slab %llu\n", size);
-+			seq_buf_printf(s, "slab %llu\n", size);
- 		}
- 	}
- 
- 	/* Accumulated memory events */
--	seq_buf_printf(&s, "pgscan %lu\n",
-+	seq_buf_printf(s, "pgscan %lu\n",
- 		       memcg_events(memcg, PGSCAN_KSWAPD) +
- 		       memcg_events(memcg, PGSCAN_DIRECT) +
- 		       memcg_events(memcg, PGSCAN_KHUGEPAGED));
--	seq_buf_printf(&s, "pgsteal %lu\n",
-+	seq_buf_printf(s, "pgsteal %lu\n",
- 		       memcg_events(memcg, PGSTEAL_KSWAPD) +
- 		       memcg_events(memcg, PGSTEAL_DIRECT) +
- 		       memcg_events(memcg, PGSTEAL_KHUGEPAGED));
-@@ -1598,13 +1595,13 @@ static void memory_stat_format(struct mem_cgroup *memcg, char *buf, int bufsize)
- 		    memcg_vm_event_stat[i] == PGPGOUT)
- 			continue;
- 
--		seq_buf_printf(&s, "%s %lu\n",
-+		seq_buf_printf(s, "%s %lu\n",
- 			       vm_event_name(memcg_vm_event_stat[i]),
- 			       memcg_events(memcg, memcg_vm_event_stat[i]));
- 	}
- 
- 	/* The above should easily fit into one page */
--	WARN_ON_ONCE(seq_buf_has_overflowed(&s));
++static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
++
++static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
++{
++	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		memcg_stat_format(memcg, s);
++	else
++		memcg1_stat_format(memcg, s);
 +	WARN_ON_ONCE(seq_buf_has_overflowed(s));
- }
- 
++}
++
  #define K(x) ((x) << (PAGE_SHIFT-10))
-@@ -1642,6 +1639,7 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ /**
+  * mem_cgroup_print_oom_context: Print OOM information relevant to
+@@ -4078,9 +4089,8 @@ static const unsigned int memcg1_events[] = {
+ 	PGMAJFAULT,
+ };
+ 
+-static int memcg_stat_show(struct seq_file *m, void *v)
++static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
  {
- 	/* Use static buffer, for the caller is holding oom_lock. */
- 	static char buf[PAGE_SIZE];
-+	struct seq_buf s;
+-	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 	unsigned long memory, memsw;
+ 	struct mem_cgroup *mi;
+ 	unsigned int i;
+@@ -4095,18 +4105,18 @@ static int memcg_stat_show(struct seq_file *m, void *v)
+ 		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
+ 			continue;
+ 		nr = memcg_page_state_local(memcg, memcg1_stats[i]);
+-		seq_printf(m, "%s %lu\n", memcg1_stat_names[i],
++		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i],
+ 			   nr * memcg_page_state_unit(memcg1_stats[i]));
+ 	}
  
- 	lockdep_assert_held(&oom_lock);
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
+-		seq_printf(m, "%s %lu\n", vm_event_name(memcg1_events[i]),
+-			   memcg_events_local(memcg, memcg1_events[i]));
++		seq_buf_printf(s, "%s %lu\n", vm_event_name(memcg1_events[i]),
++			       memcg_events_local(memcg, memcg1_events[i]));
  
-@@ -1664,8 +1662,9 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
- 	pr_info("Memory cgroup stats for ");
- 	pr_cont_cgroup_path(memcg->css.cgroup);
- 	pr_cont(":");
--	memory_stat_format(memcg, buf, sizeof(buf));
--	pr_info("%s", buf);
-+	seq_buf_init(&s, buf, sizeof(buf));
-+	memory_stat_format(memcg, &s);
-+	seq_buf_do_printk(&s, KERN_INFO);
+ 	for (i = 0; i < NR_LRU_LISTS; i++)
+-		seq_printf(m, "%s %lu\n", lru_list_name(i),
+-			   memcg_page_state_local(memcg, NR_LRU_BASE + i) *
+-			   PAGE_SIZE);
++		seq_buf_printf(s, "%s %lu\n", lru_list_name(i),
++			       memcg_page_state_local(memcg, NR_LRU_BASE + i) *
++			       PAGE_SIZE);
+ 
+ 	/* Hierarchical information */
+ 	memory = memsw = PAGE_COUNTER_MAX;
+@@ -4114,11 +4124,11 @@ static int memcg_stat_show(struct seq_file *m, void *v)
+ 		memory = min(memory, READ_ONCE(mi->memory.max));
+ 		memsw = min(memsw, READ_ONCE(mi->memsw.max));
+ 	}
+-	seq_printf(m, "hierarchical_memory_limit %llu\n",
+-		   (u64)memory * PAGE_SIZE);
++	seq_buf_printf(s, "hierarchical_memory_limit %llu\n",
++		       (u64)memory * PAGE_SIZE);
+ 	if (do_memsw_account())
+-		seq_printf(m, "hierarchical_memsw_limit %llu\n",
+-			   (u64)memsw * PAGE_SIZE);
++		seq_buf_printf(s, "hierarchical_memsw_limit %llu\n",
++			       (u64)memsw * PAGE_SIZE);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+@@ -4126,19 +4136,19 @@ static int memcg_stat_show(struct seq_file *m, void *v)
+ 		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
+ 			continue;
+ 		nr = memcg_page_state(memcg, memcg1_stats[i]);
+-		seq_printf(m, "total_%s %llu\n", memcg1_stat_names[i],
++		seq_buf_printf(s, "total_%s %llu\n", memcg1_stat_names[i],
+ 			   (u64)nr * memcg_page_state_unit(memcg1_stats[i]));
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
+-		seq_printf(m, "total_%s %llu\n",
+-			   vm_event_name(memcg1_events[i]),
+-			   (u64)memcg_events(memcg, memcg1_events[i]));
++		seq_buf_printf(s, "total_%s %llu\n",
++			       vm_event_name(memcg1_events[i]),
++			       (u64)memcg_events(memcg, memcg1_events[i]));
+ 
+ 	for (i = 0; i < NR_LRU_LISTS; i++)
+-		seq_printf(m, "total_%s %llu\n", lru_list_name(i),
+-			   (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
+-			   PAGE_SIZE);
++		seq_buf_printf(s, "total_%s %llu\n", lru_list_name(i),
++			       (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
++			       PAGE_SIZE);
+ 
+ #ifdef CONFIG_DEBUG_VM
+ 	{
+@@ -4153,12 +4163,10 @@ static int memcg_stat_show(struct seq_file *m, void *v)
+ 			anon_cost += mz->lruvec.anon_cost;
+ 			file_cost += mz->lruvec.file_cost;
+ 		}
+-		seq_printf(m, "anon_cost %lu\n", anon_cost);
+-		seq_printf(m, "file_cost %lu\n", file_cost);
++		seq_buf_printf(s, "anon_cost %lu\n", anon_cost);
++		seq_buf_printf(s, "file_cost %lu\n", file_cost);
+ 	}
+ #endif
+-
+-	return 0;
  }
  
- /*
-@@ -6573,10 +6572,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	struct seq_buf s;
+ static u64 mem_cgroup_swappiness_read(struct cgroup_subsys_state *css,
+@@ -4998,6 +5006,8 @@ static int mem_cgroup_slab_show(struct seq_file *m, void *p)
+ }
+ #endif
  
- 	if (!buf)
- 		return -ENOMEM;
--	memory_stat_format(memcg, buf, PAGE_SIZE);
-+	seq_buf_init(&s, buf, PAGE_SIZE);
-+	memory_stat_format(memcg, &s);
- 	seq_puts(m, buf);
- 	kfree(buf);
- 	return 0;
++static int memory_stat_show(struct seq_file *m, void *v);
++
+ static struct cftype mem_cgroup_legacy_files[] = {
+ 	{
+ 		.name = "usage_in_bytes",
+@@ -5030,7 +5040,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 	},
+ 	{
+ 		.name = "stat",
+-		.seq_show = memcg_stat_show,
++		.seq_show = memory_stat_show,
+ 	},
+ 	{
+ 		.name = "force_empty",
 -- 
 2.40.1.495.gc816e09b53d-goog
 
