@@ -2,72 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2106F1952
-	for <lists+cgroups@lfdr.de>; Fri, 28 Apr 2023 15:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A676F1E89
+	for <lists+cgroups@lfdr.de>; Fri, 28 Apr 2023 21:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346252AbjD1NYU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Apr 2023 09:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
+        id S229882AbjD1TFP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Apr 2023 15:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346241AbjD1NYP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Apr 2023 09:24:15 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDBD211E
-        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 06:24:14 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-51b4a13a49fso5910676a12.1
-        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 06:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682688254; x=1685280254;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gCrHQjiS2fwiby7dz0V9ThMkUe63uEws1Bin2T2dpU8=;
-        b=jcuVTOAp1c8K+ch7YCMLi+8POwhTwb1WrUalORmat2684E/X82MLP/H/sTNZiGTSzw
-         ILJbHonyleAOPNozrhCp7XJpKzpTbzSV2WanXyhxQyxv5lSFZW8pMKziOeeK25UM/lM3
-         JtO2LiFUAPtV+zJkr/lmiV+hDnMAOdwrsD7W9rNnMigwvNIYtIDxnNjAK3lyudpZp5yI
-         5vpaP0vtG6m4sW2kgSy3vvkx/O8FeePG6gnTT8455Z1wkWEJFKZg0VnC7g7BQBECbTSk
-         07ULhu3kIczPuOMcJkwFO/y0wcnsFUVJfVg87WLuR8H+9rMQZ0u8212WdRLWh+a/t1bT
-         beJw==
+        with ESMTP id S1346106AbjD1TFP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Apr 2023 15:05:15 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64192109
+        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 12:05:12 -0700 (PDT)
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 055F93F22C
+        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 19:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1682708711;
+        bh=5xdGcBrePTmDfHc6Jzw3JTLHbSAztKlpGArx8vpNt2k=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=YeivsCR9ABeWXCF7A/G3oxLR0USMKMmYOUuyhMJBNMswVSc8CkQ3d5S6UTtzRxDxL
+         aNZ9+4gTQpZbOOhgsG/Ynw8boH9S6Tru3y6nFub6d/botfSRKTPTvabyMipb8POibp
+         xPdHAFqP+sAvYtDQL1ViuPuU4bo8G6TICq1jaWoP0WYEAic+FnkuChvlYhIdSIZ886
+         Uin+h6gwi5ZkJOY2GLHLgu5EgNOZGytM3Kj5tj+ZTAlmzg2K2CBVEZLfs5RYnxy+eF
+         yAEVY1g7/U1kw/XGcG8OIMWMUtCWgRe05vaEO1fz7BSjZjEe9lgCpAX1oxyPUMtRPR
+         VlN/kjUVHRP5w==
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-95376348868so17722466b.2
+        for <cgroups@vger.kernel.org>; Fri, 28 Apr 2023 12:05:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682688254; x=1685280254;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gCrHQjiS2fwiby7dz0V9ThMkUe63uEws1Bin2T2dpU8=;
-        b=JAHAOtKpGKwhs7vfeb4tgCChtLuM9zoBt3hAsysvavU4ZAgkiGQm938kmSDGDSS7L3
-         5AdE6mIdJPPJKC+dvWwQfkqyhveKA7lbo46hGec0iwl7mUIa7+tBPYMz1PB5iM6c0IMY
-         P4El+CSxD1qOE6a0RMMizoI8blY9MgcOfN5+wMpQ1Ad9pL5YP1gotdGmuJsvH+7/1pim
-         RFKcyx9qgKI5o66ylrXHH+wIpbedzCxAAGKrtT+QH5f+0eqi1ZjzXdDwvcrjVBS7jbak
-         ztduoXneb5R+Dx3e4kqRPS0ir4XxrH9zlozXXXS0ziRv0/1FPfTyVLSt3mByLM4R1ifs
-         g7gQ==
-X-Gm-Message-State: AC+VfDxiCSmTYvwyPjGZP7W8WanA4furQWOIo4g5pGlST3UTci276s6R
-        GT3z2YD9SN0aCkhyhEoX6lehTWHzo6Q1REk6
-X-Google-Smtp-Source: ACHHUZ6Q1iaeTMc7znbuRU46RBkgJ3r/GzmuoUGlNK1hEg/1kqgAXN7zKR88/FXgEDBYkLlt9aTGSyL2pZdAjcsz
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:902:b289:b0:19f:1d62:4393 with SMTP
- id u9-20020a170902b28900b0019f1d624393mr1511380plr.7.1682688253988; Fri, 28
- Apr 2023 06:24:13 -0700 (PDT)
-Date:   Fri, 28 Apr 2023 13:24:06 +0000
-In-Reply-To: <20230428132406.2540811-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20230428132406.2540811-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
-Message-ID: <20230428132406.2540811-3-yosryahmed@google.com>
-Subject: [PATCH v2 2/2] memcg: dump memory.stat during cgroup OOM for v1
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Muchun Song <muchun.song@linux.dev>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, Chris Li <chrisl@kernel.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1682708710; x=1685300710;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5xdGcBrePTmDfHc6Jzw3JTLHbSAztKlpGArx8vpNt2k=;
+        b=YY9hVswungPBRU56N0FX8NRS/kdkZjniPsHlQtaSypbDo7eg86seileqV0LNyvvTG0
+         DgDBAkvNT8x6VL1rK5W3AqsqhKn7vzEQfz5T8tXsHuUUeSiA5qBVGibzt7TA+w44u1kb
+         NeUEl46FWVpPa1XDxH2yPYkuNoApBCaWiYzX/TjDPQefvWX0Gt96EYZT3Cq5LI5zFQCD
+         FOLxyiS5PqbcvDShdbc9EzSJCFSOQRC1w8aWmEKS9BgNtpKB5DgmllKQlDaHxIZM2FIs
+         XkC5lHFcIrR+wbkLyGbtf9LVfOMRAnyp+jUcuX1R1UJp8dLdYQzZZO2OVe4TsDqCsyS2
+         j/iw==
+X-Gm-Message-State: AC+VfDxxPP8dgHCzcC19NxQjfN+slEguI9RCoz70/hSOpGaBnpAE08C9
+        nZDAz6/Gl+oorR1QvkaDP3j6pX8WmZJeYLN4nVKNC2ds4BdKDE5dERjpqkMV6/tNbHfOAjYSxbN
+        GR3mxrLIAJM6yyguwtnZRSwfMqhQJe4dUxoo=
+X-Received: by 2002:a17:907:16aa:b0:94f:9f76:c74f with SMTP id hc42-20020a17090716aa00b0094f9f76c74fmr7738592ejc.52.1682708710276;
+        Fri, 28 Apr 2023 12:05:10 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7Pi57scEQWERlmKMoLu2PGjbl7zecivIyoR8ReiRJEuRABO1ah119lQPAYBiWFcA3rwjRQeg==
+X-Received: by 2002:a17:907:16aa:b0:94f:9f76:c74f with SMTP id hc42-20020a17090716aa00b0094f9f76c74fmr7738571ejc.52.1682708709893;
+        Fri, 28 Apr 2023 12:05:09 -0700 (PDT)
+Received: from localhost (host-87-1-129-21.retail.telecomitalia.it. [87.1.129.21])
+        by smtp.gmail.com with ESMTPSA id wy12-20020a170906fe0c00b0095f07223918sm4265757ejb.138.2023.04.28.12.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Apr 2023 12:05:09 -0700 (PDT)
+Date:   Fri, 28 Apr 2023 21:05:08 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Jinke Han <hanjinke.666@bytedance.com>
+Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] blk-throttle: Fix io statistics for cgroup v1
+Message-ID: <ZEwY5Oo+5inO9UFf@righiandr-XPS-13-7390>
+References: <20230401094708.77631-1-hanjinke.666@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230401094708.77631-1-hanjinke.666@bytedance.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,186 +80,143 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Commit c8713d0b2312 ("mm: memcontrol: dump memory.stat during cgroup
-OOM") made sure we dump all the stats in memory.stat during a cgroup
-OOM, but it also introduced a slight behavioral change. The code used to
-print the non-hierarchical v1 cgroup stats for the entire cgroup
-subtree, now it only prints the v2 cgroup stats for the cgroup under
-OOM.
+On Sat, Apr 01, 2023 at 05:47:08PM +0800, Jinke Han wrote:
+> From: Jinke Han <hanjinke.666@bytedance.com>
+> 
+> After commit f382fb0bcef4 ("block: remove legacy IO schedulers"),
+> blkio.throttle.io_serviced and blkio.throttle.io_service_bytes become
+> the only stable io stats interface of cgroup v1, and these statistics
+> are done in the blk-throttle code. But the current code only counts the
+> bios that are actually throttled. When the user does not add the throttle
+> limit, the io stats for cgroup v1 has nothing. I fix it according to the
+> statistical method of v2, and made it count all ios accurately.
+> 
+> Fixes: a7b36ee6ba29 ("block: move blk-throtl fast path inline")
+> Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
 
-For cgroup v1 users, this introduces a few problems:
-(a) The non-hierarchical stats of the memcg under OOM are no longer
-shown.
-(b) A couple of v1-only stats (e.g. pgpgin, pgpgout) are no longer
-shown.
-(c) We show the list of cgroup v2 stats, even in cgroup v1. This list of
-stats is not tracked with v1 in mind. While most of the stats seem to be
-working on v1, there may be some stats that are not fully or correctly
-tracked.
+Thanks for fixing this!
 
-Although OOM log is not set in stone, we should not change it for no
-reason. When upgrading the kernel version to a version including
-commit c8713d0b2312 ("mm: memcontrol: dump memory.stat during cgroup
-OOM"), these behavioral changes are noticed in cgroup v1.
+The code looks correct to me, but this seems to report io statistics
+only if at least one throttling limit is defined. IIRC with cgroup v1 it
+was possible to see the io statistics inside a cgroup also with no
+throttling limits configured.
 
-The fix is simple. Commit c8713d0b2312 ("mm: memcontrol: dump memory.stat
-during cgroup OOM") separated stats formatting from stats display for
-v2, to reuse the stats formatting in the OOM logs. Do the same for v1.
+Basically to restore the old behavior we would need to drop the
+cgroup_subsys_on_dfl() check, something like the following (on top of
+your patch).
 
-Move the v2 specific formatting from memory_stat_format() to
-memcg_stat_format(), add memcg1_stat_format() for v1, and make
-memory_stat_format() select between them based on cgroup version.
-Since memory_stat_show() now works for both v1 & v2, drop
-memcg_stat_show().
+But I'm not sure if we're breaking other behaviors in this way...
+opinions?
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/memcontrol.c | 60 ++++++++++++++++++++++++++++---------------------
- 1 file changed, 35 insertions(+), 25 deletions(-)
+ block/blk-cgroup.c   |  3 ---
+ block/blk-throttle.h | 12 +++++-------
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 5922940f92c9..2b492f8d540c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1551,7 +1551,7 @@ static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
- 	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
- }
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 79138bfc6001..43af86db7cf3 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -2045,9 +2045,6 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 	struct blkg_iostat_set *bis;
+ 	unsigned long flags;
  
--static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
-+static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- {
- 	int i;
- 
-@@ -1604,6 +1604,17 @@ static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	WARN_ON_ONCE(seq_buf_has_overflowed(s));
- }
- 
-+static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
-+
-+static void memory_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
-+{
-+	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+		memcg_stat_format(memcg, s);
-+	else
-+		memcg1_stat_format(memcg, s);
-+	WARN_ON_ONCE(seq_buf_has_overflowed(s));
-+}
-+
- #define K(x) ((x) << (PAGE_SHIFT-10))
- /**
-  * mem_cgroup_print_oom_context: Print OOM information relevant to
-@@ -4078,9 +4089,8 @@ static const unsigned int memcg1_events[] = {
- 	PGMAJFAULT,
- };
- 
--static int memcg_stat_show(struct seq_file *m, void *v)
-+static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- {
--	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 	unsigned long memory, memsw;
- 	struct mem_cgroup *mi;
- 	unsigned int i;
-@@ -4095,18 +4105,18 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
- 			continue;
- 		nr = memcg_page_state_local(memcg, memcg1_stats[i]);
--		seq_printf(m, "%s %lu\n", memcg1_stat_names[i],
-+		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i],
- 			   nr * memcg_page_state_unit(memcg1_stats[i]));
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
--		seq_printf(m, "%s %lu\n", vm_event_name(memcg1_events[i]),
--			   memcg_events_local(memcg, memcg1_events[i]));
-+		seq_buf_printf(s, "%s %lu\n", vm_event_name(memcg1_events[i]),
-+			       memcg_events_local(memcg, memcg1_events[i]));
- 
- 	for (i = 0; i < NR_LRU_LISTS; i++)
--		seq_printf(m, "%s %lu\n", lru_list_name(i),
--			   memcg_page_state_local(memcg, NR_LRU_BASE + i) *
--			   PAGE_SIZE);
-+		seq_buf_printf(s, "%s %lu\n", lru_list_name(i),
-+			       memcg_page_state_local(memcg, NR_LRU_BASE + i) *
-+			       PAGE_SIZE);
- 
- 	/* Hierarchical information */
- 	memory = memsw = PAGE_COUNTER_MAX;
-@@ -4114,11 +4124,11 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 		memory = min(memory, READ_ONCE(mi->memory.max));
- 		memsw = min(memsw, READ_ONCE(mi->memsw.max));
- 	}
--	seq_printf(m, "hierarchical_memory_limit %llu\n",
--		   (u64)memory * PAGE_SIZE);
-+	seq_buf_printf(s, "hierarchical_memory_limit %llu\n",
-+		       (u64)memory * PAGE_SIZE);
- 	if (do_memsw_account())
--		seq_printf(m, "hierarchical_memsw_limit %llu\n",
--			   (u64)memsw * PAGE_SIZE);
-+		seq_buf_printf(s, "hierarchical_memsw_limit %llu\n",
-+			       (u64)memsw * PAGE_SIZE);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -4126,19 +4136,19 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
- 			continue;
- 		nr = memcg_page_state(memcg, memcg1_stats[i]);
--		seq_printf(m, "total_%s %llu\n", memcg1_stat_names[i],
-+		seq_buf_printf(s, "total_%s %llu\n", memcg1_stat_names[i],
- 			   (u64)nr * memcg_page_state_unit(memcg1_stats[i]));
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
--		seq_printf(m, "total_%s %llu\n",
--			   vm_event_name(memcg1_events[i]),
--			   (u64)memcg_events(memcg, memcg1_events[i]));
-+		seq_buf_printf(s, "total_%s %llu\n",
-+			       vm_event_name(memcg1_events[i]),
-+			       (u64)memcg_events(memcg, memcg1_events[i]));
- 
- 	for (i = 0; i < NR_LRU_LISTS; i++)
--		seq_printf(m, "total_%s %llu\n", lru_list_name(i),
--			   (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
--			   PAGE_SIZE);
-+		seq_buf_printf(s, "total_%s %llu\n", lru_list_name(i),
-+			       (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
-+			       PAGE_SIZE);
- 
- #ifdef CONFIG_DEBUG_VM
- 	{
-@@ -4153,12 +4163,10 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 			anon_cost += mz->lruvec.anon_cost;
- 			file_cost += mz->lruvec.file_cost;
- 		}
--		seq_printf(m, "anon_cost %lu\n", anon_cost);
--		seq_printf(m, "file_cost %lu\n", file_cost);
-+		seq_buf_printf(s, "anon_cost %lu\n", anon_cost);
-+		seq_buf_printf(s, "file_cost %lu\n", file_cost);
- 	}
- #endif
+-	if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
+-		return;
 -
--	return 0;
- }
+ 	/* Root-level stats are sourced from system-wide IO stats */
+ 	if (!cgroup_parent(blkcg->css.cgroup))
+ 		return;
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index d1ccbfe9f797..bcb40ee2eeba 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -185,14 +185,12 @@ static inline bool blk_should_throtl(struct bio *bio)
+ 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+ 	int rw = bio_data_dir(bio);
  
- static u64 mem_cgroup_swappiness_read(struct cgroup_subsys_state *css,
-@@ -4998,6 +5006,8 @@ static int mem_cgroup_slab_show(struct seq_file *m, void *p)
- }
- #endif
+-	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
+-		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
+-			bio_set_flag(bio, BIO_CGROUP_ACCT);
+-			blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
+-					bio->bi_iter.bi_size);
+-		}
+-		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
++	if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
++		bio_set_flag(bio, BIO_CGROUP_ACCT);
++		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
++				bio->bi_iter.bi_size);
+ 	}
++	blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
  
-+static int memory_stat_show(struct seq_file *m, void *v);
-+
- static struct cftype mem_cgroup_legacy_files[] = {
- 	{
- 		.name = "usage_in_bytes",
-@@ -5030,7 +5040,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
- 	},
- 	{
- 		.name = "stat",
--		.seq_show = memcg_stat_show,
-+		.seq_show = memory_stat_show,
- 	},
- 	{
- 		.name = "force_empty",
--- 
-2.40.1.495.gc816e09b53d-goog
+ 	/* iops limit is always counted */
+ 	if (tg->has_rules_iops[rw])
 
+> ---
+>  block/blk-cgroup.c   | 6 ++++--
+>  block/blk-throttle.c | 6 ------
+>  block/blk-throttle.h | 9 +++++++++
+>  3 files changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index bd50b55bdb61..33263d0d0e0f 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -2033,6 +2033,9 @@ void blk_cgroup_bio_start(struct bio *bio)
+>  	struct blkg_iostat_set *bis;
+>  	unsigned long flags;
+>  
+> +	if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
+> +		return;
+> +
+>  	/* Root-level stats are sourced from system-wide IO stats */
+>  	if (!cgroup_parent(blkcg->css.cgroup))
+>  		return;
+> @@ -2064,8 +2067,7 @@ void blk_cgroup_bio_start(struct bio *bio)
+>  	}
+>  
+>  	u64_stats_update_end_irqrestore(&bis->sync, flags);
+> -	if (cgroup_subsys_on_dfl(io_cgrp_subsys))
+> -		cgroup_rstat_updated(blkcg->css.cgroup, cpu);
+> +	cgroup_rstat_updated(blkcg->css.cgroup, cpu);
+>  	put_cpu();
+>  }
+>  
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 47e9d8be68f3..2be66e9430f7 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -2174,12 +2174,6 @@ bool __blk_throtl_bio(struct bio *bio)
+>  
+>  	rcu_read_lock();
+>  
+> -	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
+> -		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
+> -				bio->bi_iter.bi_size);
+> -		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
+> -	}
+> -
+>  	spin_lock_irq(&q->queue_lock);
+>  
+>  	throtl_update_latency_buckets(td);
+> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+> index ef4b7a4de987..d1ccbfe9f797 100644
+> --- a/block/blk-throttle.h
+> +++ b/block/blk-throttle.h
+> @@ -185,6 +185,15 @@ static inline bool blk_should_throtl(struct bio *bio)
+>  	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+>  	int rw = bio_data_dir(bio);
+>  
+> +	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
+> +		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
+> +			bio_set_flag(bio, BIO_CGROUP_ACCT);
+> +			blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
+> +					bio->bi_iter.bi_size);
+> +		}
+> +		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
+> +	}
+> +
+>  	/* iops limit is always counted */
+>  	if (tg->has_rules_iops[rw])
+>  		return true;
+> -- 
+> 2.20.1
