@@ -2,58 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA226F224C
-	for <lists+cgroups@lfdr.de>; Sat, 29 Apr 2023 03:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2635E6F25C6
+	for <lists+cgroups@lfdr.de>; Sat, 29 Apr 2023 20:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347368AbjD2B70 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Apr 2023 21:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        id S230253AbjD2SUe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 29 Apr 2023 14:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347343AbjD2B7V (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Apr 2023 21:59:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D49149DA;
-        Fri, 28 Apr 2023 18:59:11 -0700 (PDT)
+        with ESMTP id S230299AbjD2SU3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 29 Apr 2023 14:20:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF872D69;
+        Sat, 29 Apr 2023 11:20:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8883B64630;
-        Sat, 29 Apr 2023 01:59:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6812AC43321;
-        Sat, 29 Apr 2023 01:59:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 06071615C1;
+        Sat, 29 Apr 2023 18:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6E673C4339B;
+        Sat, 29 Apr 2023 18:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682733549;
-        bh=qbSmFjkxX3HUcFYifbkogWWlpPQjlc1XuGkAs7z+xus=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pyjLfX5LU5Ra+/SHIgAtTuJodvrFxA99Phw/909EJxlxDm4ZsCcLjN5AC/tjxXGxK
-         42Nt81awIlq3B7nVDbWc0lFV8Kq4JVleAF8LebdtVzoI9JjukPd9w50whpqk/WeMcK
-         5C9F7MUPuT+TIErq0IJAvBg4tFSI3iQngL1FGKbNEGd2HgDg6OA/fkAsY4iZWHFvNF
-         9M1qBP/m6zqxPZTWBSjoBzPYoalTQ4Jy1s0jAarAOCzv1ZbSRbrUFr+zGdmlV8Ytbk
-         8r4FFHpV/3sOkfcG2V15kvNe/1OBQ7UDcjME8xO1cfLEf8bk6+EvJzYKNjfUNHAXnx
-         1yx/+ThfKVTbQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, hannes@cmpxchg.org,
-        mhocko@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 2/3] selftests: cgroup: Add 'malloc' failures checks in test_memcontrol
-Date:   Fri, 28 Apr 2023 21:59:03 -0400
-Message-Id: <20230429015904.3027337-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230429015904.3027337-1-sashal@kernel.org>
-References: <20230429015904.3027337-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        s=k20201202; t=1682792420;
+        bh=GGTuoLDlPj0SlyCoRIWGuSfFegPdZ+ImcoWAgVx1Pig=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZaqKnY8XD2CGEqGmlREhpk7A+tqA2D+27uvyHgkAhWucZ6oFwTX6KAPYt2ruQs85p
+         9e5Oxm915WQaOOSa3Dwjc5buLex9oz0Td/W4MM+UXAm//haBlIMpEy/uDtbaTteEHB
+         qbpLwyppCNRdmRrx3OyBPbg29v4TerO47py9VfqfdcqqGdZF6syIyzNVjK0bjrCqua
+         yKgQY8vPwazuMbPn56HMMr7f7KhM/m3EpINiLZWPRBBDfJyQhgfTsynceydVF81H3q
+         GKCU5dE9kif4YhOKx5lbZ7Ce0h4hCFouB7O53bUDaoVVjaMF7WQsgG316xSrejRqqH
+         lXZ/iq2lBFxVg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D308C43158;
+        Sat, 29 Apr 2023 18:20:20 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup changes for v6.4-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZErg3xZyhlVx_Mw0@slm.duckdns.org>
+References: <ZErg3xZyhlVx_Mw0@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZErg3xZyhlVx_Mw0@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.4
+X-PR-Tracked-Commit-Id: 9403d9cb564b6a3af86cb18fe722097ed7620f6f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 86e98ed15b3e34460d1b3095bd119b6fac11841c
+Message-Id: <168279242037.22076.2648918669590825807.pr-tracker-bot@kernel.org>
+Date:   Sat, 29 Apr 2023 18:20:20 +0000
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,66 +61,15 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
+The pull request you sent on Thu, 27 Apr 2023 10:53:51 -1000:
 
-[ Upstream commit c83f320e55a49abd90629f42a72897afd579e0de ]
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.4
 
-There are several 'malloc' calls in test_memcontrol, which can be
-unsuccessful. This patch will add 'malloc' failures checking to
-give more details about test's fail reasons and avoid possible
-undefined behavior during the future null dereference (like the
-one in alloc_anon_50M_check_swap function).
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/86e98ed15b3e34460d1b3095bd119b6fac11841c
 
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Thank you!
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 8833359556f38..fe4f9f4302822 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -98,6 +98,11 @@ static int alloc_anon_50M_check(const char *cgroup, void *arg)
- 	int ret = -1;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return -1;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
-@@ -211,6 +216,11 @@ static int alloc_anon_noexit(const char *cgroup, void *arg)
- 	char *buf, *ptr;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return -1;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
-@@ -759,6 +769,11 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- 	int ret = -1;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return -1;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
 -- 
-2.39.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
