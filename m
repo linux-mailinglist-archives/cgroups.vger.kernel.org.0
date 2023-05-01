@@ -2,57 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEFE6F34CB
-	for <lists+cgroups@lfdr.de>; Mon,  1 May 2023 19:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F146F34D0
+	for <lists+cgroups@lfdr.de>; Mon,  1 May 2023 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbjEARDo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 May 2023 13:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S233319AbjEARDx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 May 2023 13:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbjEARCd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 May 2023 13:02:33 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350564222
-        for <cgroups@vger.kernel.org>; Mon,  1 May 2023 09:57:11 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-559fb5bed89so20702977b3.0
-        for <cgroups@vger.kernel.org>; Mon, 01 May 2023 09:57:11 -0700 (PDT)
+        with ESMTP id S233011AbjEARCe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 May 2023 13:02:34 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08474210A
+        for <cgroups@vger.kernel.org>; Mon,  1 May 2023 09:57:15 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-559f48c530eso34098207b3.0
+        for <cgroups@vger.kernel.org>; Mon, 01 May 2023 09:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682960197; x=1685552197;
+        d=google.com; s=20221208; t=1682960200; x=1685552200;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6mzPQystPbLbDwPdw2fPo41K7qknlkieEKK3sweddW8=;
-        b=48U8jHG63mdA66+jSc2MsTTE/SQi8BR+RKY6JNGvzt9XyZfx935vfOLln6IV1D1nZA
-         TDOiQ/WUR049cZ5YJ1Q2SXSzODz7LrWrQUYaviS+GqGgkaK3yK5eLgyzf9e3cLjtYX0E
-         QEA8ptoQ0G50fmCmay29a1/AGKziq1anSqyI04k35PIYMGlvV6wz4iKeKGJ75o0JVkmO
-         ON7F5nilmKInR+kNfyJ2/HvMFyxBUo4zG20TTbLKq7fKcUY3NShJQ1fHpbVtH1cQdhj8
-         PGEM3ZzK108E7+nu3T246tg/tKyPHMfi0CFtYYsesaQA8cqlaVTRPDBW+c2GnGCMueBG
-         1wCA==
+        bh=voe2xx017YXPnsPA1F569u968pU4cdVPLrVyFh58V3A=;
+        b=XY3g0fA5IrJ+YzYe2wUQ0ftZyFUg7ny2GrTo3NPiBlk4iPlMC/kY+SH8g6iLrwV+KV
+         Xw+if+jca7PJgAtbAXeVriY1aFJ/EteLLOMZx1AdK6gJrXbG1uRZWDO/40Axb4AODOAW
+         bu8B0l1k4HzrQxgM9N1NQnABkM6L6EHe4PLk5Qr9MgkaJ72bwWRTz68SbwPhkOTfAlCN
+         aIInpOCqjYNQr/7r19P8lUnDyjtSJAnNSRwk6D0bpZ0QASPWz9H1GwXTn8bC79Kr3VsJ
+         to3IBoyJHWuDBBn4X4nEQDSitAsGc5WJp6sVno05l5o1QoTuKQpKB8qBzlmM5zczDq7s
+         CPoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682960197; x=1685552197;
+        d=1e100.net; s=20221208; t=1682960200; x=1685552200;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6mzPQystPbLbDwPdw2fPo41K7qknlkieEKK3sweddW8=;
-        b=LlAzqjO7IVh6Pj5iR06JBEh6Wd9q3sGekdcmyDiAk7KnR2QQxY/fUKC/x5CZbJhb7x
-         lBHLiOa1okB5ikL5xDLrdGbnYWjKBmoEzrPAEQS6pPBJOGK41kKAWX7JRXsSz0u4ML80
-         aK1emY48uQw2A2MeTiJMl2s+MrLJ1hlagykgl0ObSOx1T39rQjRxz7QTOc/1MydqK1oI
-         1KlGQ21XgnTkeFZ7UCgp+1bdozN83+bIrpDUg6p4fcAfzOrDL/GsTvFam6MTvV4lxfuK
-         5JxX87p6yeOu5dxp0B66cJ+L3TXTKIuBC2VI2tBGX9xpTsdYWJ7koK00hYYZHi3l9b9C
-         MwsQ==
-X-Gm-Message-State: AC+VfDzZzyewRhN2pjbK0Uv8wJI6RBGtkAwTeTFRhEjTRlJg9C6D9/Oh
-        jY9/2H16THYNfktqiS0K/E8WL0E6QI0=
-X-Google-Smtp-Source: ACHHUZ4jj2W0kDCYmm99zoZd05S+xWh4GtcVfBuyUeKMJ0WYF9RUn/+Qut27GKgsUVS6rbo/+wwQvYcbMjY=
+        bh=voe2xx017YXPnsPA1F569u968pU4cdVPLrVyFh58V3A=;
+        b=jxy5UcuIz26+aPvxxqB9Z26MUiXxtKiClgUCw8GIf9EHYayw8D7ZFPSUwGLyaSRgvM
+         Ax3uYBi2gT90jXi5JO/OQsEusTO1y4YmGaVXiqDh3zDVSWyLkBVH2qtoAkoteeVjWhpv
+         GsLWvzdQqvr5C/1eC3TrgsyBLo9rKiwWjnNY0TglIk0++uDA0jftL5ShmeDBBff5nu99
+         +utakQwgPvvU8KAIwGzyEEBRWAH2WWeYAdoNxq0FprVv7qnIAIWD4GE8Qf2i3P+XHdk3
+         Nuolu03lO4V1z0K2fDZrTS10n13j8Bh465WYbpt5ur8egDk+ZNbr0AnqeL1y85CM8+v6
+         cVXQ==
+X-Gm-Message-State: AC+VfDz7Q7QBQ2S/7MPBarri2jznfoDoFEyYOiAfjrpZb4so7Plf3Q2+
+        QVMe2rr574EEQRHwkyQ1+njhvkCREFg=
+X-Google-Smtp-Source: ACHHUZ7TphX74FdXdGj2KrrIAly5W9cbCjXqr70LC9E11i/xFawgHPr35IiqOdTvLYzAxeQM5sfRxSe2CSI=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:6d24:3efd:facc:7ac4])
- (user=surenb job=sendgmr) by 2002:a81:e902:0:b0:541:61aa:9e60 with SMTP id
- d2-20020a81e902000000b0054161aa9e60mr9069879ywm.6.1682960197340; Mon, 01 May
- 2023 09:56:37 -0700 (PDT)
-Date:   Mon,  1 May 2023 09:54:49 -0700
+ (user=surenb job=sendgmr) by 2002:a81:de0c:0:b0:559:e97a:cb21 with SMTP id
+ k12-20020a81de0c000000b00559e97acb21mr4262900ywj.9.1682960199781; Mon, 01 May
+ 2023 09:56:39 -0700 (PDT)
+Date:   Mon,  1 May 2023 09:54:50 -0700
 In-Reply-To: <20230501165450.15352-1-surenb@google.com>
 Mime-Version: 1.0
 References: <20230501165450.15352-1-surenb@google.com>
 X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
-Message-ID: <20230501165450.15352-40-surenb@google.com>
-Subject: [PATCH 39/40] codetag: debug: introduce OBJEXTS_ALLOC_FAIL to mark
- failed slab_ext allocations
+Message-ID: <20230501165450.15352-41-surenb@google.com>
+Subject: [PATCH 40/40] MAINTAINERS: Add entries for code tagging and memory
+ allocation profiling
 From:   Suren Baghdasaryan <surenb@google.com>
 To:     akpm@linux-foundation.org
 Cc:     kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
@@ -94,88 +94,63 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If slabobj_ext vector allocation for a slab object fails and later on it
-succeeds for another object in the same slab, the slabobj_ext for the
-original object will be NULL and will be flagged in case when
-CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled.
-Mark failed slabobj_ext vector allocations using a new objext_flags flag
-stored in the lower bits of slab->obj_exts. When new allocation succeeds
-it marks all tag references in the same slabobj_ext vector as empty to
-avoid warnings implemented by CONFIG_MEM_ALLOC_PROFILING_DEBUG checks.
+From: Kent Overstreet <kent.overstreet@linux.dev>
 
+The new code & libraries added are being maintained - mark them as such.
+
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- include/linux/memcontrol.h |  4 +++-
- mm/slab_common.c           | 27 +++++++++++++++++++++++++--
- 2 files changed, 28 insertions(+), 3 deletions(-)
+ MAINTAINERS | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index c7f21b15b540..3eb8975c1462 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -356,8 +356,10 @@ enum page_memcg_data_flags {
- #endif /* CONFIG_MEMCG */
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3889d1adf71f..6f3b79266204 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5116,6 +5116,13 @@ S:	Supported
+ F:	Documentation/process/code-of-conduct-interpretation.rst
+ F:	Documentation/process/code-of-conduct.rst
  
- enum objext_flags {
-+	/* slabobj_ext vector failed to allocate */
-+	OBJEXTS_ALLOC_FAIL = __FIRST_OBJEXT_FLAG,
- 	/* the next bit after the last actual flag */
--	__NR_OBJEXTS_FLAGS  = __FIRST_OBJEXT_FLAG,
-+	__NR_OBJEXTS_FLAGS  = (__FIRST_OBJEXT_FLAG << 1),
- };
- 
- #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 89265f825c43..5b7e096b70a5 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -217,21 +217,44 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
- {
- 	unsigned int objects = objs_per_slab(s, slab);
- 	unsigned long obj_exts;
--	void *vec;
-+	struct slabobj_ext *vec;
- 
- 	gfp &= ~OBJCGS_CLEAR_MASK;
- 	/* Prevent recursive extension vector allocation */
- 	gfp |= __GFP_NO_OBJ_EXT;
- 	vec = kcalloc_node(objects, sizeof(struct slabobj_ext), gfp,
- 			   slab_nid(slab));
--	if (!vec)
-+	if (!vec) {
-+#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-+		if (new_slab) {
-+			/* Mark vectors which failed to allocate */
-+			slab->obj_exts = OBJEXTS_ALLOC_FAIL;
-+#ifdef CONFIG_MEMCG
-+			slab->obj_exts |= MEMCG_DATA_OBJEXTS;
-+#endif
-+		}
-+#endif
- 		return -ENOMEM;
-+	}
- 
- 	obj_exts = (unsigned long)vec;
- #ifdef CONFIG_MEMCG
- 	obj_exts |= MEMCG_DATA_OBJEXTS;
- #endif
- 	if (new_slab) {
-+#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-+		/*
-+		 * If vector previously failed to allocate then we have live
-+		 * objects with no tag reference. Mark all references in this
-+		 * vector as empty to avoid warnings later on.
-+		 */
-+		if (slab->obj_exts & OBJEXTS_ALLOC_FAIL) {
-+			unsigned int i;
++CODE TAGGING
++M:	Suren Baghdasaryan <surenb@google.com>
++M:	Kent Overstreet <kent.overstreet@linux.dev>
++S:	Maintained
++F:	include/linux/codetag.h
++F:	lib/codetag.c
 +
-+			for (i = 0; i < objects; i++)
-+				set_codetag_empty(&vec[i].ref);
-+		}
-+#endif
- 		/*
- 		 * If the slab is brand new and nobody can yet access its
- 		 * obj_exts, no synchronization is required and obj_exts can
+ COMEDI DRIVERS
+ M:	Ian Abbott <abbotti@mev.co.uk>
+ M:	H Hartley Sweeten <hsweeten@visionengravers.com>
+@@ -11658,6 +11665,12 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/leds/backlight/kinetic,ktz8866.yaml
+ F:	drivers/video/backlight/ktz8866.c
+ 
++LAZY PERCPU COUNTERS
++M:	Kent Overstreet <kent.overstreet@linux.dev>
++S:	Maintained
++F:	include/linux/lazy-percpu-counter.h
++F:	lib/lazy-percpu-counter.c
++
+ L3MDEV
+ M:	David Ahern <dsahern@kernel.org>
+ L:	netdev@vger.kernel.org
+@@ -13468,6 +13481,15 @@ F:	mm/memblock.c
+ F:	mm/mm_init.c
+ F:	tools/testing/memblock/
+ 
++MEMORY ALLOCATION PROFILING
++M:	Suren Baghdasaryan <surenb@google.com>
++M:	Kent Overstreet <kent.overstreet@linux.dev>
++S:	Maintained
++F:	include/linux/alloc_tag.h
++F:	include/linux/codetag_ctx.h
++F:	lib/alloc_tag.c
++F:	lib/pgalloc_tag.c
++
+ MEMORY CONTROLLER DRIVERS
+ M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ L:	linux-kernel@vger.kernel.org
 -- 
 2.40.1.495.gc816e09b53d-goog
 
