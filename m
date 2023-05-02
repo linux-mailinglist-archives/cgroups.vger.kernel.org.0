@@ -2,229 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4056F49CB
-	for <lists+cgroups@lfdr.de>; Tue,  2 May 2023 20:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BD96F4A99
+	for <lists+cgroups@lfdr.de>; Tue,  2 May 2023 21:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjEBSjE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 May 2023 14:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        id S229707AbjEBTvx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 May 2023 15:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjEBSjD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 2 May 2023 14:39:03 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8C3172E
-        for <cgroups@vger.kernel.org>; Tue,  2 May 2023 11:39:01 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b99f0a0052fso5871370276.3
-        for <cgroups@vger.kernel.org>; Tue, 02 May 2023 11:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683052740; x=1685644740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7OMnp8U2QsJWbp6tha1jAHM6ardwied5yoCJwV56xmU=;
-        b=3ehzpeirHytbRrfF5r15fGVpzpJxZb0E9v2Om0wdN+yxZYUTa6qWTLOkd2mbDRoF7W
-         pnmov0ApI+qMvdAzFDA6SgZGTRYRpWWsYOopta6Rj30LnCXbPu9oQBdK0uh0n1fbuy01
-         vsylwS4eNoSnK4OdPa0qDxCeqjOu7PunOoJTEi+RY4izp9SK5YNPQKHVdbCsFRn4WM2A
-         p7jtWEQHZwcMmuy2lRysHMVwpnEcRz/iqKNa76N07gsayvlYQtmcsOsujw7J6qYIBTdy
-         xedsqCxK32iKWHMMSwGqO7eBE4zSMlkGqF+0tcmMmy368s/N5nkgeAf/BqbdsSOgzCG8
-         xgHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683052740; x=1685644740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7OMnp8U2QsJWbp6tha1jAHM6ardwied5yoCJwV56xmU=;
-        b=CP21Obz3aejNwBADQJ+fk/3hQwt0MJLKWb+SX+cFjyrBFTOxz0HlaYB4nGCw/sWJE+
-         enofYey+WfxfwrVge5ERJbL6mrx+aFaR4sm0+Vyp5B6sZb/HjhHz1kbUM/D8GGzRX5Mf
-         DfulIHDnv0+85MP8OYpbwsN9JTtN8+IK/FUsEhpMdPTG0jpUSmzos60DmwbI2NRt7V+c
-         Z/OGtJMg+VgIIFKUo8U+1q+JC5z8ybefoEtMHz6GzJQXgPy8gQjfYn7XtLX6RG8CbaH5
-         czNnzSAMM/kp7hh4DU8I/gSXlS7zZ5r5hq213YP1bOHzULzkJ6nybiIzJkVX8GUBqoaU
-         cTLg==
-X-Gm-Message-State: AC+VfDxFDAeYBlQlXfDMHdHJoCjRPOxXXRZ3xz+lOoIWl8XELQWcWURG
-        l1WnioW0CXjRyOUcCZtUOwBjVOL4fD9hhJmthdAHyQ==
-X-Google-Smtp-Source: ACHHUZ45HYLTxHMIOq01xnBNZQQ3FvjzAGWMuhj5eqXhI0sjJMLvrbYm8scdp84P5QMdOuWonlr1sN9pxx8UWuINaFw=
-X-Received: by 2002:a25:420f:0:b0:b9e:4fbc:8a7f with SMTP id
- p15-20020a25420f000000b00b9e4fbc8a7fmr5707930yba.1.1683052740029; Tue, 02 May
- 2023 11:39:00 -0700 (PDT)
+        with ESMTP id S229482AbjEBTvw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 2 May 2023 15:51:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0C211B
+        for <cgroups@vger.kernel.org>; Tue,  2 May 2023 12:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683057062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0u1c/zI7EG5oA8EEQf+n5SVUWPETfw09W7j85YlQyd0=;
+        b=W4V0ahN1vliEOX74d2MpV12fb4W9BM4yNs8DU6s4OUpDZ+7GJw0MLEf9M7AGHfojoMGbrM
+        cPYol+dUmB14xMn6jPZrYL6jeL0KBFbUenowMitSDrDYcqFSzlN6mMRl9iuEIpyYFJTZXM
+        vyzslXT0HbGdMTCyAQl/LeFpqoUce/I=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-116-lQVk6mbDNhe49U8jj1AyhQ-1; Tue, 02 May 2023 15:51:01 -0400
+X-MC-Unique: lQVk6mbDNhe49U8jj1AyhQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 401FE1C068C2;
+        Tue,  2 May 2023 19:51:00 +0000 (UTC)
+Received: from [10.22.10.239] (unknown [10.22.10.239])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 563C6492C13;
+        Tue,  2 May 2023 19:50:59 +0000 (UTC)
+Message-ID: <0beea9a5-a163-75e2-59c2-2b092fe96d16@redhat.com>
+Date:   Tue, 2 May 2023 15:50:59 -0400
 MIME-Version: 1.0
-References: <20230501165450.15352-1-surenb@google.com> <20230501165450.15352-20-surenb@google.com>
- <20230502175052.43814202@meshulam.tesarici.cz>
-In-Reply-To: <20230502175052.43814202@meshulam.tesarici.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 2 May 2023 11:38:49 -0700
-Message-ID: <CAJuCfpGSLK50eKQ2-CE41qz1oDPM6kC8RmqF=usZKwFXgTBe8g@mail.gmail.com>
-Subject: Re: [PATCH 19/40] change alloc_pages name in dma_map_ops to avoid
- name conflicts
-To:     =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
-Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
-        mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
-        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-        tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-        paulmck@kernel.org, pasha.tatashin@soleen.com,
-        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH 2/3] cgroup: Rely on namespace_sem in
+ current_cgns_cgroup_from_root explicitly
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Jiri Wiesner <jwiesner@suse.de>
+References: <20230502133847.14570-1-mkoutny@suse.com>
+ <20230502133847.14570-3-mkoutny@suse.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230502133847.14570-3-mkoutny@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 2, 2023 at 8:50=E2=80=AFAM Petr Tesa=C5=99=C3=ADk <petr@tesaric=
-i.cz> wrote:
+On 5/2/23 09:38, Michal Koutný wrote:
+> The function current_cgns_cgroup_from_root() expects a stable
+> cgroup_root, which is currently ensured with RCU read side paired with
+> cgroup_destroy_root() called after RCU period.
 >
-> On Mon,  1 May 2023 09:54:29 -0700
-> Suren Baghdasaryan <surenb@google.com> wrote:
+> The particular current_cgns_cgroup_from_root() is called from VFS code
+> and cgroup_root stability can be also ensured by namespace_sem. Mark it
+> explicitly as a preparation for further rework.
 >
-> > After redefining alloc_pages, all uses of that name are being replaced.
-> > Change the conflicting names to prevent preprocessor from replacing the=
-m
-> > when it's not intended.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  arch/x86/kernel/amd_gart_64.c | 2 +-
-> >  drivers/iommu/dma-iommu.c     | 2 +-
-> >  drivers/xen/grant-dma-ops.c   | 2 +-
-> >  drivers/xen/swiotlb-xen.c     | 2 +-
-> >  include/linux/dma-map-ops.h   | 2 +-
-> >  kernel/dma/mapping.c          | 4 ++--
-> >  6 files changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_6=
-4.c
-> > index 56a917df410d..842a0ec5eaa9 100644
-> > --- a/arch/x86/kernel/amd_gart_64.c
-> > +++ b/arch/x86/kernel/amd_gart_64.c
-> > @@ -676,7 +676,7 @@ static const struct dma_map_ops gart_dma_ops =3D {
-> >       .get_sgtable                    =3D dma_common_get_sgtable,
-> >       .dma_supported                  =3D dma_direct_supported,
-> >       .get_required_mask              =3D dma_direct_get_required_mask,
-> > -     .alloc_pages                    =3D dma_direct_alloc_pages,
-> > +     .alloc_pages_op                 =3D dma_direct_alloc_pages,
-> >       .free_pages                     =3D dma_direct_free_pages,
-> >  };
-> >
-> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> > index 7a9f0b0bddbd..76a9d5ca4eee 100644
-> > --- a/drivers/iommu/dma-iommu.c
-> > +++ b/drivers/iommu/dma-iommu.c
-> > @@ -1556,7 +1556,7 @@ static const struct dma_map_ops iommu_dma_ops =3D=
- {
-> >       .flags                  =3D DMA_F_PCI_P2PDMA_SUPPORTED,
-> >       .alloc                  =3D iommu_dma_alloc,
-> >       .free                   =3D iommu_dma_free,
-> > -     .alloc_pages            =3D dma_common_alloc_pages,
-> > +     .alloc_pages_op         =3D dma_common_alloc_pages,
-> >       .free_pages             =3D dma_common_free_pages,
-> >       .alloc_noncontiguous    =3D iommu_dma_alloc_noncontiguous,
-> >       .free_noncontiguous     =3D iommu_dma_free_noncontiguous,
-> > diff --git a/drivers/xen/grant-dma-ops.c b/drivers/xen/grant-dma-ops.c
-> > index 9784a77fa3c9..6c7d984f164d 100644
-> > --- a/drivers/xen/grant-dma-ops.c
-> > +++ b/drivers/xen/grant-dma-ops.c
-> > @@ -282,7 +282,7 @@ static int xen_grant_dma_supported(struct device *d=
-ev, u64 mask)
-> >  static const struct dma_map_ops xen_grant_dma_ops =3D {
-> >       .alloc =3D xen_grant_dma_alloc,
-> >       .free =3D xen_grant_dma_free,
-> > -     .alloc_pages =3D xen_grant_dma_alloc_pages,
-> > +     .alloc_pages_op =3D xen_grant_dma_alloc_pages,
-> >       .free_pages =3D xen_grant_dma_free_pages,
-> >       .mmap =3D dma_common_mmap,
-> >       .get_sgtable =3D dma_common_get_sgtable,
-> > diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-> > index 67aa74d20162..5ab2616153f0 100644
-> > --- a/drivers/xen/swiotlb-xen.c
-> > +++ b/drivers/xen/swiotlb-xen.c
-> > @@ -403,6 +403,6 @@ const struct dma_map_ops xen_swiotlb_dma_ops =3D {
-> >       .dma_supported =3D xen_swiotlb_dma_supported,
-> >       .mmap =3D dma_common_mmap,
-> >       .get_sgtable =3D dma_common_get_sgtable,
-> > -     .alloc_pages =3D dma_common_alloc_pages,
-> > +     .alloc_pages_op =3D dma_common_alloc_pages,
-> >       .free_pages =3D dma_common_free_pages,
-> >  };
-> > diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> > index 31f114f486c4..d741940dcb3b 100644
-> > --- a/include/linux/dma-map-ops.h
-> > +++ b/include/linux/dma-map-ops.h
-> > @@ -27,7 +27,7 @@ struct dma_map_ops {
-> >                       unsigned long attrs);
-> >       void (*free)(struct device *dev, size_t size, void *vaddr,
-> >                       dma_addr_t dma_handle, unsigned long attrs);
-> > -     struct page *(*alloc_pages)(struct device *dev, size_t size,
-> > +     struct page *(*alloc_pages_op)(struct device *dev, size_t size,
-> >                       dma_addr_t *dma_handle, enum dma_data_direction d=
-ir,
-> >                       gfp_t gfp);
-> >       void (*free_pages)(struct device *dev, size_t size, struct page *=
-vaddr,
-> > diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> > index 9a4db5cce600..fc42930af14b 100644
-> > --- a/kernel/dma/mapping.c
-> > +++ b/kernel/dma/mapping.c
-> > @@ -570,9 +570,9 @@ static struct page *__dma_alloc_pages(struct device=
- *dev, size_t size,
-> >       size =3D PAGE_ALIGN(size);
-> >       if (dma_alloc_direct(dev, ops))
-> >               return dma_direct_alloc_pages(dev, size, dma_handle, dir,=
- gfp);
-> > -     if (!ops->alloc_pages)
-> > +     if (!ops->alloc_pages_op)
-> >               return NULL;
-> > -     return ops->alloc_pages(dev, size, dma_handle, dir, gfp);
-> > +     return ops->alloc_pages_op(dev, size, dma_handle, dir, gfp);
-> >  }
-> >
-> >  struct page *dma_alloc_pages(struct device *dev, size_t size,
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+> ---
+>   fs/namespace.c         | 5 ++++-
+>   include/linux/mount.h  | 4 ++++
+>   kernel/cgroup/cgroup.c | 7 +++----
+>   3 files changed, 11 insertions(+), 5 deletions(-)
 >
-> I'm not impressed. This patch increases churn for code which does not
-> (directly) benefit from the change, and that for limitations in your
-> tooling?
->
-> Why not just rename the conflicting uses in your local tree, but then
-> remove the rename from the final patch series?
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 54847db5b819..0d2333832064 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -71,7 +71,10 @@ static DEFINE_IDA(mnt_group_ida);
+>   static struct hlist_head *mount_hashtable __read_mostly;
+>   static struct hlist_head *mountpoint_hashtable __read_mostly;
+>   static struct kmem_cache *mnt_cache __read_mostly;
+> -static DECLARE_RWSEM(namespace_sem);
+> +DECLARE_RWSEM(namespace_sem);
+> +#ifdef CONFIG_LOCKDEP
+> +EXPORT_SYMBOL_GPL(namespace_sem);
 
-With alloc_pages function becoming a macro, the preprocessor ends up
-replacing all instances of that name, even when it's not used as a
-function. That what necessitates this change. If there is a way to
-work around this issue without changing all alloc_pages() calls in the
-source base I would love to learn it but I'm not quite clear about
-your suggestion and if it solves the issue. Could you please provide
-more details?
+I don't think fs/namespace.o and kernel/cgroup/cgroup.o can't be built 
+into a kernel module. I doubt we need to export it.
 
->
-> Just my two cents,
-> Petr T
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+
+> +#endif
+>   static HLIST_HEAD(unmounted);	/* protected by namespace_sem */
+>   static LIST_HEAD(ex_mountpoints); /* protected by namespace_sem */
+>   
+> diff --git a/include/linux/mount.h b/include/linux/mount.h
+> index 1ea326c368f7..6277435f6748 100644
+> --- a/include/linux/mount.h
+> +++ b/include/linux/mount.h
+> @@ -80,6 +80,10 @@ static inline struct mnt_idmap *mnt_idmap(const struct vfsmount *mnt)
+>   	return smp_load_acquire(&mnt->mnt_idmap);
+>   }
+>   
+> +#ifdef CONFIG_LOCKDEP
+> +extern struct rw_semaphore namespace_sem;
+> +#endif
+> +
+>   extern int mnt_want_write(struct vfsmount *mnt);
+>   extern int mnt_want_write_file(struct file *file);
+>   extern void mnt_drop_write(struct vfsmount *mnt);
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 55e5f0110e3b..32d693a797b9 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1440,13 +1440,12 @@ current_cgns_cgroup_from_root(struct cgroup_root *root)
+>   
+>   	lockdep_assert_held(&css_set_lock);
+>   
+> -	rcu_read_lock();
+> +	/* namespace_sem ensures `root` stability on unmount */
+> +	lockdep_assert(lockdep_is_held_type(&namespace_sem, -1));
+It will be easier if you just use lockdep_is_held() without the 2nd argment.
+>   
+>   	cset = current->nsproxy->cgroup_ns->root_cset;
+>   	res = __cset_cgroup_from_root(cset, root);
+>   
+> -	rcu_read_unlock();
+> -
+>   	return res;
+>   }
+>   
+> @@ -1454,7 +1453,7 @@ current_cgns_cgroup_from_root(struct cgroup_root *root)
+>    * Look up cgroup associated with current task's cgroup namespace on the default
+>    * hierarchy.
+>    *
+> - * Unlike current_cgns_cgroup_from_root(), this doesn't need locks:
+> + * Relaxed locking requirements:
+>    * - Internal rcu_read_lock is unnecessary because we don't dereference any rcu
+>    *   pointers.
+>    * - css_set_lock is not needed because we just read cset->dfl_cgrp.
+Cheers,
+Longman
+
