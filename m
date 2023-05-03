@@ -2,72 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83576F52AB
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 10:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6F46F53A7
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 10:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbjECIGp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 04:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        id S229633AbjECIuS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 04:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbjECIGp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 04:06:45 -0400
-Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [IPv6:2001:41d0:203:375::c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613764C19
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 01:06:14 -0700 (PDT)
-Date:   Wed, 3 May 2023 04:05:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683101119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Af+2O/2Jo9IC9XECoO60Ibec+DnzA9yRBnuv4Bp8O9Y=;
-        b=rqHkCee1X71Oj3G6VysOrsK/rdJHy9B0yyXfZMJ4T4TWGYp3bKIJl27dUenlhtN0eAw3EY
-        9wtRJDXX0Vxp+Xc6ZM2YYwJwQELwnDdfgbU2buAGO1Vb841r/qxmb4h0I2pylWL1m2aZFQ
-        DMBUFXd/kgyZZl04aMULTG8rjWs+sv0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-        mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-        liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
-        peterz@infradead.org, juri.lelli@redhat.com, ldufour@linux.ibm.com,
-        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 00/40] Memory allocation profiling
-Message-ID: <ZFIVtB8JyKk0ddA5@moria.home.lan>
-References: <20230501165450.15352-1-surenb@google.com>
- <ZFIMaflxeHS3uR/A@dhcp22.suse.cz>
- <ZFIOfb6/jHwLqg6M@moria.home.lan>
- <ZFISlX+mSx4QJDK6@dhcp22.suse.cz>
+        with ESMTP id S229502AbjECIuR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 04:50:17 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 03 May 2023 01:50:15 PDT
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E0110D9;
+        Wed,  3 May 2023 01:50:14 -0700 (PDT)
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To:     dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org,
+        intel-xe@lists.freedesktop.org
+Cc:     intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: [RFC PATCH 0/4]  Add support for DRM cgroup memory accounting.
+Date:   Wed,  3 May 2023 10:34:56 +0200
+Message-Id: <20230503083500.645848-1-maarten.lankhorst@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZFISlX+mSx4QJDK6@dhcp22.suse.cz>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,68 +43,55 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 03, 2023 at 09:51:49AM +0200, Michal Hocko wrote:
-> Your answers have shown your insight into tracing is very limited. I
-> have a clear recollection there were many suggestions on how to get what
-> you need and willingness to help out. Repeating your previous position
-> will not help much to be honest with you.
+RFC as I'm looking for comments.
 
-Please enlighten us, oh wise one.
+For long running compute, it can be beneficial to partition the GPU memory
+between cgroups, so each cgroup can use its maximum amount of memory without
+interfering with other scheduled jobs. Done properly, this can alleviate the
+need for eviction, which might result in a job being terminated if the GPU
+doesn't support mid-thread preemption or recoverable page faults.
 
-> > > - It has been brought up that this is duplicating functionality already
-> > >   available via existing tracing infrastructure. You should make it very
-> > >   clear why that is not suitable for the job
-> > 
-> > Tracing people _claimed_ this, but never demonstrated it.
-> 
-> The burden is on you and Suren. You are proposing the implement an
-> alternative tracing infrastructure.
+This is done by adding a bunch of knobs to cgroup:
+drm.capacity: Shows maximum capacity of each resource region.
+drm.max: Display or limit max amount of memory.
+drm.current: Current amount of memory in use.
 
-No, we're still waiting on the tracing people to _demonstrate_, not
-claim, that this is at all possible in a comparable way with tracing. 
+TTM has not been made cgroup aware yet, so instead of evicting from
+the current cgroup to stay within the cgroup limits, it simply returns
+the error -ENOSPC to userspace.
 
-It's not on us to make your argument for you, and before making
-accusations about honesty you should try to be more honest yourself.
+I've used Tvrtko's cgroup controller series as a base, but it implemented
+scheduling weight, not memory accounting, so I only ended up keeping the
+base patch.
 
-The expectations you're trying to level have never been the norm in the
-kernel community, sorry. When there's a technical argument about the
-best way to do something, _code wins_ and we've got working code to do
-something that hasn't been possible previously.
+Xe is not upstream yet, so the driver specific patch will only apply on
+https://gitlab.freedesktop.org/drm/xe/kernel
 
-There's absolutely no rule that "tracing has to be the one and only tool
-for kernel visibility".
+Maarten Lankhorst (3):
+  drm/cgroup: Add memory accounting to DRM cgroup
+  drm/ttm: Handle -EAGAIN in ttm_resource_alloc as -ENOSPC.
+  drm/xe: Add support for the drm cgroup
 
-I'm considering the tracing discussion closed until someone in the
-pro-tracing camp shows something new.
+Tvrtko Ursulin (1):
+  cgroup: Add the DRM cgroup controller
 
-> > > - We already have page_owner infrastructure that provides allocation
-> > >   tracking data. Why it cannot be used/extended?
-> > 
-> > Page owner is also very high overhead,
-> 
-> Is there any data to prove that claim? I would be really surprised that
-> page_owner would give higher overhead than page tagging with profiling
-> enabled (there is an allocation for each allocation request!!!). We can
-> discuss the bare bone page tagging comparision to page_owner because of
-> the full stack unwinding but is that overhead really prohibitively costly?
-> Can we reduce that by trimming the unwinder information?
+ Documentation/admin-guide/cgroup-v2.rst    |  46 ++
+ Documentation/gpu/drm-compute.rst          |  54 ++
+ drivers/gpu/drm/ttm/ttm_bo.c               |   4 +-
+ drivers/gpu/drm/xe/xe_device.c             |   4 +
+ drivers/gpu/drm/xe/xe_device_types.h       |   4 +
+ drivers/gpu/drm/xe/xe_ttm_vram_mgr.c       |  21 +-
+ drivers/gpu/drm/xe/xe_ttm_vram_mgr_types.h |   5 +
+ include/linux/cgroup_drm.h                 |  90 ++++
+ include/linux/cgroup_subsys.h              |   4 +
+ init/Kconfig                               |   7 +
+ kernel/cgroup/Makefile                     |   1 +
+ kernel/cgroup/drm.c                        | 557 +++++++++++++++++++++
+ 12 files changed, 794 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/gpu/drm-compute.rst
+ create mode 100644 include/linux/cgroup_drm.h
+ create mode 100644 kernel/cgroup/drm.c
 
-Honestly, this isn't terribly relevant, because as noted before page
-owner is limited to just page allocations.
+-- 
+2.34.1
 
-> 
-> > and the output is not very user
-> > friendly (tracking full call stack means many related overhead gets
-> > split, not generally what you want), and it doesn't cover slab.
-> 
-> Is this something we cannot do anything about? Have you explored any
-> potential ways?
-> 
-> > This tracks _all_ memory allocations - slab, page, vmalloc, percpu.
-
-Michel, the discussions with you seem to perpetually go in circles; it's
-clear you're negative on the patchset, you keep raising the same
-objections while refusing to concede a single point.
-
-I believe I've answered enough, so I'll leave off further discussions
-with you.
