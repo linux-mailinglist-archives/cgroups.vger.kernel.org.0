@@ -2,278 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35E16F5D6C
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 20:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFA36F5D70
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 20:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjECSDS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 14:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S230087AbjECSDp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 14:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjECSDR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 14:03:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F5226A0
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 11:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683136949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tCYSyO5l+BDD42iHkGOCdzOGv+hBfShQp7EjGzaqPjk=;
-        b=IAmnunuKjkaaSY31wxq2i6GZ5Nw4Uw3D0q9t/bciqeza6GH2OEkYk8rQTaxMNJBB5e+6e2
-        gvVRjlA1l7+Ax8MsLlgVPCI7LnfCwNRF8fceiL091a9WGA/6HpV0V1BH0ndiKlPMwMC0g+
-        w9YcE7YhnRekoLwhMmG/MuMScehRWCc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-561-txHJLkxzPOa6QVC5lBFU_A-1; Wed, 03 May 2023 14:02:09 -0400
-X-MC-Unique: txHJLkxzPOa6QVC5lBFU_A-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B4B46886463;
-        Wed,  3 May 2023 18:02:07 +0000 (UTC)
-Received: from [10.22.17.228] (unknown [10.22.17.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A0F71492C13;
-        Wed,  3 May 2023 18:02:06 +0000 (UTC)
-Message-ID: <fe1a48fe-b937-3313-cae7-fcc197dd8d65@redhat.com>
-Date:   Wed, 3 May 2023 14:02:06 -0400
+        with ESMTP id S229688AbjECSDo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 14:03:44 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D323594
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 11:03:42 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b9a6d9dcbebso4597887276.2
+        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 11:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683137021; x=1685729021;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v9bphnAMm9U7G1bEITi+0ZLO/l3WQ/XqMzpkJeT7kyk=;
+        b=L5MD7LDE53jR/3ptlXQOOTiI++wR1fxND5ifICgXfZ2hIWF0RB5i7Cbf3y8nlEohAG
+         Clh+QMTpMVHznpV/HAd4dl/nTAteOJlo9pbsv1YpgR/WSnTsEaig6E+CihdksMC7+1jq
+         6Z1XsGfjbwRGEha4Xholgwx49ZNbR3yyNtq3l6EeDu4stoYLEOoSm+lZCgitaF8qHB+G
+         aMVYQbQoJuHDRRMDleBxwSfQuKLPGBerL3yL63wdl8g8U8bu8+X2Cp3t0DvaZ1xR1kyJ
+         azu3inhuljuw1kRnH+qDgCm878e8KG06FyLYG9vQjwOhW5SbMlJY+LCsM4c30rFxv+Mb
+         ZPgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683137021; x=1685729021;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v9bphnAMm9U7G1bEITi+0ZLO/l3WQ/XqMzpkJeT7kyk=;
+        b=VIBFg6M5crWLWYDwbzOcK90oDAvDt3mtOi4bvsbMCTm4qThA5hZ0ZXqShGn4urBElR
+         Wqa1iJ7GsxMc2kZS4QyhzIMtTsej17Bi70XqC5tfemsKx2nQ5g5KFBsXVJLoJ61u+p1y
+         j3fkOCkRukO+wpgR+FDWj6hYn49sn4JUj/RazRE9G5bBVOjVkuIe5ZGeb2nwdwMPV50h
+         FL8+WAh9rZ5ZeCxYYCBUQOkV5Ba+9bZaVH474dgmy0Vx1qfl7R8bo+AT0IwC9Qx8rCtT
+         aBKXZ6rANQCe2yu+mr4NNpc+DJDlY+LImEcQuBumY5XHnwsOns5dgUdNRqBzbqD2xW7Y
+         1RsA==
+X-Gm-Message-State: AC+VfDyTfZrZUdJ9cyNCcKX/iGpDDW5BqiRrdKBc6lg5Gu2uCBArDDHa
+        KNWZovICZHBn3a0UcdFg7o4K9jI07yzjlWzcFD5JXA==
+X-Google-Smtp-Source: ACHHUZ4lvIgzIVoqBzi+ZqkC84PohxQDTMhCUsBRrb1hVuiEkZ49Yye5mAE/xSMdKBlLzt8OPesXOTpbgWw93u9GuoU=
+X-Received: by 2002:a25:b18e:0:b0:b9d:b774:3aa2 with SMTP id
+ h14-20020a25b18e000000b00b9db7743aa2mr16215719ybj.9.1683137021290; Wed, 03
+ May 2023 11:03:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v2 6/6] cgroup/cpuset: Free DL BW in case can_attach()
- fails
-Content-Language: en-US
-To:     Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230503072228.115707-1-juri.lelli@redhat.com>
- <20230503072228.115707-7-juri.lelli@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230503072228.115707-7-juri.lelli@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230501165450.15352-1-surenb@google.com> <20230501165450.15352-20-surenb@google.com>
+ <20230503122529.44ef2d56@gandalf.local.home>
+In-Reply-To: <20230503122529.44ef2d56@gandalf.local.home>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 3 May 2023 11:03:30 -0700
+Message-ID: <CAJuCfpGPVWQ1RYVSZOiXe2xDVbgMFAxVf2x=2xbgor=YqpntzQ@mail.gmail.com>
+Subject: Re: [PATCH 19/40] change alloc_pages name in dma_map_ops to avoid
+ name conflicts
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
+        mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
+        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+        tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+        paulmck@kernel.org, pasha.tatashin@soleen.com,
+        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, gregkh@linuxfoundation.org,
+        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
+        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+        elver@google.com, dvyukov@google.com, shakeelb@google.com,
+        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+        minchan@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, May 3, 2023 at 9:25=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> On Mon,  1 May 2023 09:54:29 -0700
+> Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > After redefining alloc_pages, all uses of that name are being replaced.
+> > Change the conflicting names to prevent preprocessor from replacing the=
+m
+> > when it's not intended.
+>
+> Note, every change log should have enough information in it to know why i=
+t
+> is being done. This says what the patch does, but does not fully explain
+> "why". It should never be assumed that one must read other patches to get
+> the context. A year from now, investigating git history, this may be the
+> only thing someone sees for why this change occurred.
+>
+> The "why" above is simply "prevent preprocessor from replacing them
+> when it's not intended". What does that mean?
 
-On 5/3/23 03:22, Juri Lelli wrote:
-> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
->
-> cpuset_can_attach() can fail. Postpone DL BW allocation until all tasks
-> have been checked. DL BW is not allocated per-task but as a sum over
-> all DL tasks migrating.
->
-> If multiple controllers are attached to the cgroup next to the cpuset
-> controller a non-cpuset can_attach() can fail. In this case free DL BW
-> in cpuset_cancel_attach().
->
-> Finally, update cpuset DL task count (nr_deadline_tasks) only in
-> cpuset_attach().
->
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> ---
->   include/linux/sched.h  |  2 +-
->   kernel/cgroup/cpuset.c | 53 ++++++++++++++++++++++++++++++++++++++----
->   kernel/sched/core.c    | 17 ++------------
->   3 files changed, 51 insertions(+), 21 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 0bee06542450..2553918f0b61 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1852,7 +1852,7 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
->   }
->   
->   extern int cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
-> -extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
-> +extern int task_can_attach(struct task_struct *p);
->   extern int dl_bw_alloc(int cpu, u64 dl_bw);
->   extern void dl_bw_free(int cpu, u64 dl_bw);
->   #ifdef CONFIG_SMP
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 6587df42cb61..d1073603c96c 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -198,6 +198,8 @@ struct cpuset {
->   	 * know when to rebuild associated root domain bandwidth information.
->   	 */
->   	int nr_deadline_tasks;
-> +	int nr_migrate_dl_tasks;
-> +	u64 sum_migrate_dl_bw;
->   
->   	/* Invalid partition error code, not lock protected */
->   	enum prs_errcode prs_err;
-> @@ -2494,16 +2496,23 @@ static int cpuset_can_attach_check(struct cpuset *cs)
->   	return 0;
->   }
->   
-> +static void reset_migrate_dl_data(struct cpuset *cs)
-> +{
-> +	cs->nr_migrate_dl_tasks = 0;
-> +	cs->sum_migrate_dl_bw = 0;
-> +}
-> +
->   /* Called by cgroups to determine if a cpuset is usable; cpuset_mutex held */
->   static int cpuset_can_attach(struct cgroup_taskset *tset)
->   {
->   	struct cgroup_subsys_state *css;
-> -	struct cpuset *cs;
-> +	struct cpuset *cs, *oldcs;
->   	struct task_struct *task;
->   	int ret;
->   
->   	/* used later by cpuset_attach() */
->   	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> +	oldcs = cpuset_attach_old_cs;
->   	cs = css_cs(css);
->   
->   	mutex_lock(&cpuset_mutex);
-> @@ -2514,7 +2523,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   		goto out_unlock;
->   
->   	cgroup_taskset_for_each(task, css, tset) {
-> -		ret = task_can_attach(task, cs->effective_cpus);
-> +		ret = task_can_attach(task);
->   		if (ret)
->   			goto out_unlock;
->   		ret = security_task_setscheduler(task);
-> @@ -2522,11 +2531,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   			goto out_unlock;
->   
->   		if (dl_task(task)) {
-> -			cs->nr_deadline_tasks++;
-> -			cpuset_attach_old_cs->nr_deadline_tasks--;
-> +			cs->nr_migrate_dl_tasks++;
-> +			cs->sum_migrate_dl_bw += task->dl.dl_bw;
->   		}
->   	}
->   
-> +	if (!cs->nr_migrate_dl_tasks)
-> +		goto out_success;
-> +
-> +	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
-> +		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-> +
-> +		if (unlikely(cpu >= nr_cpu_ids)) {
-> +			reset_migrate_dl_data(cs);
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-> +		if (ret) {
-> +			reset_migrate_dl_data(cs);
-> +			goto out_unlock;
-> +		}
-> +	}
-> +
-> +out_success:
->   	/*
->   	 * Mark attach is in progress.  This makes validate_change() fail
->   	 * changes which zero cpus/mems_allowed.
-> @@ -2549,6 +2578,14 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
->   	cs->attach_in_progress--;
->   	if (!cs->attach_in_progress)
->   		wake_up(&cpuset_attach_wq);
-> +
-> +	if (cs->nr_migrate_dl_tasks) {
-> +		int cpu = cpumask_any(cs->effective_cpus);
-> +
-> +		dl_bw_free(cpu, cs->sum_migrate_dl_bw);
-> +		reset_migrate_dl_data(cs);
-> +	}
-> +
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-> @@ -2649,6 +2686,12 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   out:
->   	cs->old_mems_allowed = cpuset_attach_nodemask_to;
->   
-> +	if (cs->nr_migrate_dl_tasks) {
-> +		cs->nr_deadline_tasks += cs->nr_migrate_dl_tasks;
-> +		oldcs->nr_deadline_tasks -= cs->nr_migrate_dl_tasks;
-> +		reset_migrate_dl_data(cs);
-> +	}
-> +
->   	cs->attach_in_progress--;
->   	if (!cs->attach_in_progress)
->   		wake_up(&cpuset_attach_wq);
-> @@ -3328,7 +3371,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
->   	if (ret)
->   		goto out_unlock;
->   
-> -	ret = task_can_attach(task, cs->effective_cpus);
-> +	ret = task_can_attach(task);
->   	if (ret)
->   		goto out_unlock;
->   
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index df659892d7d5..ed0d7381b2ec 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -9294,8 +9294,7 @@ int cpuset_cpumask_can_shrink(const struct cpumask *cur,
->   	return ret;
->   }
->   
-> -int task_can_attach(struct task_struct *p,
-> -		    const struct cpumask *cs_effective_cpus)
-> +int task_can_attach(struct task_struct *p)
->   {
->   	int ret = 0;
->   
-> @@ -9308,21 +9307,9 @@ int task_can_attach(struct task_struct *p,
->   	 * success of set_cpus_allowed_ptr() on all attached tasks
->   	 * before cpus_mask may be changed.
->   	 */
-> -	if (p->flags & PF_NO_SETAFFINITY) {
-> +	if (p->flags & PF_NO_SETAFFINITY)
->   		ret = -EINVAL;
-> -		goto out;
-> -	}
-> -
-> -	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
-> -					      cs_effective_cpus)) {
-> -		int cpu = cpumask_any_and(cpu_active_mask, cs_effective_cpus);
->   
-> -		if (unlikely(cpu >= nr_cpu_ids))
-> -			return -EINVAL;
-> -		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
-> -	}
-> -
-> -out:
->   	return ret;
->   }
->   
-Reviewed-by: Waiman Long <longman@redhat.com>
+Thanks for the feedback, Steve. I'll make appropriate modifications to
+the description.
 
+>
+> -- Steve
+>
+>
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
