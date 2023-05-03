@@ -2,34 +2,33 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF656F5B1B
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 17:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1F96F5B28
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 17:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjECP2Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 11:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S230471AbjECPa5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 11:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjECP2Y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 11:28:24 -0400
-Received: from out-22.mta1.migadu.com (out-22.mta1.migadu.com [95.215.58.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2470F59D1
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 08:28:21 -0700 (PDT)
-Date:   Wed, 3 May 2023 11:28:06 -0400
+        with ESMTP id S230228AbjECPa4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 11:30:56 -0400
+Received: from out-24.mta0.migadu.com (out-24.mta0.migadu.com [IPv6:2001:41d0:1004:224b::18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B061F5592
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 08:30:54 -0700 (PDT)
+Date:   Wed, 3 May 2023 11:30:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683127699;
+        t=1683127852;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rFYIJmhJAvKFo5pe5s/5UJk4QkyDXcesgOEFEoMRDNY=;
-        b=boB83q/e6dPpScD3oLrI6VUwakIoR3LUhGCnyQMCxASyO8r2l7zqVdmDFRo6uwurhNcS1T
-        cRfqdo7eOirckrWyHsy41sri7bXWHG3o1Yaz8fCtLlrA1TZnZIeBqJQBjgDeSjUqnZVKbs
-        djBS6eWHow6oQykPfZoNtjmwnPDbnB8=
+        bh=MnOvQ3HLpCXeXA7UeX7M5XmW5B1KmwVPXucVRQ7GRgo=;
+        b=Es8fVBNgrQW6sWDHnnMS2DV9FP81dkFs0kCqy4/hnYaFCPtLgojNolKQWB0W2LBZ+qahdA
+        tcYehX3zg/vqC7NHUtLuGegcQIVUg7RnAg02PkIubMG0xFKvAJj+DfZMQzi4blTdYEuKUN
+        fLVWeotuy1ZDS2PBrOcayo65tc9cJHY=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
-        Michal Hocko <mhocko@suse.com>,
+To:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Suren Baghdasaryan <surenb@google.com>,
         akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org,
         roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
@@ -58,19 +57,19 @@ Cc:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
         linux-mm@kvack.org, linux-modules@vger.kernel.org,
         kasan-dev@googlegroups.com, cgroups@vger.kernel.org
 Subject: Re: [PATCH 00/40] Memory allocation profiling
-Message-ID: <ZFJ9hlQ3ZIU1XYCY@moria.home.lan>
+Message-ID: <ZFJ+IIugLhEtMXXW@moria.home.lan>
 References: <20230501165450.15352-1-surenb@google.com>
  <ZFIMaflxeHS3uR/A@dhcp22.suse.cz>
  <ZFIOfb6/jHwLqg6M@moria.home.lan>
  <ZFISlX+mSx4QJDK6@dhcp22.suse.cz>
  <20230503115051.30b8a97f@meshulam.tesarici.cz>
  <ZFIv+30UH7+ySCZr@moria.home.lan>
- <25a1ea786712df5111d7d1db42490624ac63651e.camel@HansenPartnership.com>
+ <20230503122627.594ac4d9@meshulam.tesarici.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <25a1ea786712df5111d7d1db42490624ac63651e.camel@HansenPartnership.com>
+In-Reply-To: <20230503122627.594ac4d9@meshulam.tesarici.cz>
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
@@ -82,32 +81,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 03, 2023 at 08:33:48AM -0400, James Bottomley wrote:
-> On Wed, 2023-05-03 at 05:57 -0400, Kent Overstreet wrote:
+On Wed, May 03, 2023 at 12:26:27PM +0200, Petr Tesařík wrote:
+> On Wed, 3 May 2023 05:57:15 -0400
+> Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> 
 > > On Wed, May 03, 2023 at 11:50:51AM +0200, Petr Tesařík wrote:
-> > > If anyone ever wants to use this code tagging framework for
-> > > something
+> > > If anyone ever wants to use this code tagging framework for something
 > > > else, they will also have to convert relevant functions to macros,
 > > > slowly changing the kernel to a minefield where local identifiers,
 > > > struct, union and enum tags, field names and labels must avoid name
 > > > conflict with a tagged function. For now, I have to remember that
-> > > alloc_pages is forbidden, but the list may grow.
+> > > alloc_pages is forbidden, but the list may grow.  
 > > 
 > > Also, since you're not actually a kernel contributor yet...
 > 
-> You have an amazing talent for being wrong.  But even if you were
-> actually right about this, it would be an ad hominem personal attack on
-> a new contributor which crosses the line into unacceptable behaviour on
-> the list and runs counter to our code of conduct.
+> I see, I've been around only since 2007...
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2a97468024fb5b6eccee2a67a7796485c829343a
 
-...Err, what? That was intended _in no way_ as a personal attack.
-
-If I was mistaken I do apologize, but lately I've run across quite a lot
-of people offering review feedback to patches I post that turn out to
-have 0 or 10 patches in the kernel, and - to be blunt - a pattern of
-offering feedback in strong language with a presumption of experience
-that takes a lot to respond to adequately on a technical basis.
-
-I don't think a suggestion to spend a bit more time reading code instead
-of speculating is out of order! We could all, put more effort into how
-we offer review feedback.
+My sincere apologies :) I'd searched for your name and email and found
+nothing, whoops.
