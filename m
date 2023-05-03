@@ -2,155 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4286F5FEE
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 22:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC156F611A
+	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 00:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjECUPx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 16:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
+        id S229651AbjECWPv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 18:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjECUPw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 16:15:52 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB053DB
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 13:15:22 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-55a79671a4dso50378967b3.2
-        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 13:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683144920; x=1685736920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fJv5xHBTJjNv/pix2rgh9sMW7sCnrk66nOy29HPAlus=;
-        b=UCO8xAxPQELEnJ5Z/+6POOiyN0vC8Y3LS4oWyDMuhEhZvFzcfiun+ebWGPwrO+pD6P
-         oaWSGqmefHbl5lAEiPf5lmUVnYEfPjsrvltc8OpHClJDRLqR0c6JCt2K4/o8XHiKCVdf
-         J53ZnSfM4WQ/BqrKp+eVl6M1p/n6Qe+G3n50PB19Uzdxt6cKRczUS8ApWupvLyGowGSr
-         nGY8DkG6nB+Z74vkrN7ka4kE+r+AVY9ut3CcNzBfOZ5eIHL+qS/vkhlLgZTTLFk7Q8GU
-         5cYkPlXWlkK/9gZow1krRfzsVVYIijdz+900Nl7CuaPdx5c8WOD0aSivErWELXWkx49V
-         I4sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683144920; x=1685736920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fJv5xHBTJjNv/pix2rgh9sMW7sCnrk66nOy29HPAlus=;
-        b=Lp51PN6UFwkorqL/53cye/wunfPzQvODA2pADH189wO8kHtWUGRsS+Q+RLOIPJtRhA
-         M6FckEkK1b5g2ap49KPgrA16JumQx4G2MaAIu9CUUkCQJJujnI51/kx87FkR9zORaxEQ
-         MKNWCuf29roJOJtJ5CqCDkJVoN4Yow/w/RIM2Vqlm2DGEHGQi6orxq6gu4lxeGoQOGEq
-         mRNzG5asIyIDu6jilkUlFr8GdBLytO4pXYpsuPs83bd+JrgaLHQ22iTTUT8AAiyGMT+1
-         X0tF5zcmhEIUzNO4eH1N+p70zqCZYo6onkrqVrZ93v7TrFbwoQFUWmkRyMsrx7VMcKGU
-         q+KQ==
-X-Gm-Message-State: AC+VfDzIUCiyOUW+OoFogOaSZfpljj+H4YgzBAjTIbtM29tEphHX5ViX
-        /Wcc5oD/EWLW4lVki6AmbThPXh+lnAOswGat1pBFTw==
-X-Google-Smtp-Source: ACHHUZ7mImQ/1wXTYz0SIgMaa2LSNhSdXyURzMfJt6GpNMGuq33NeGKiMX4mFybM8LMTHwiJs7q6jFVMM1TC3F7btJ0=
-X-Received: by 2002:a25:2b45:0:b0:b8e:db20:eccf with SMTP id
- r66-20020a252b45000000b00b8edb20eccfmr22508398ybr.55.1683144919429; Wed, 03
- May 2023 13:15:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZFIVtB8JyKk0ddA5@moria.home.lan> <ZFKNZZwC8EUbOLMv@slm.duckdns.org>
- <20230503180726.GA196054@cmpxchg.org> <ZFKlrP7nLn93iIRf@slm.duckdns.org>
- <ZFKqh5Dh93UULdse@slm.duckdns.org> <ZFKubD/lq7oB4svV@moria.home.lan>
- <ZFKu6zWA00AzArMF@slm.duckdns.org> <ZFKxcfqkUQ60zBB_@slm.duckdns.org>
- <CAJuCfpEPkCJZO2svT-GfmpJ+V-jSLyFDKM_atnqPVRBKtzgtnQ@mail.gmail.com>
- <ZFK6pwOelIlhV8Bm@slm.duckdns.org> <ZFK9XMSzOBxIFOHm@slm.duckdns.org>
-In-Reply-To: <ZFK9XMSzOBxIFOHm@slm.duckdns.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 3 May 2023 13:14:57 -0700
-Message-ID: <CAJuCfpE4YD_BumqFf2-NC8KS9D+kq0s_o4gRyWAH-WK4SgqUbA@mail.gmail.com>
-Subject: Re: [PATCH 00/40] Memory allocation profiling
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        with ESMTP id S229562AbjECWPu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 18:15:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329228A42
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 15:15:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F8D863043
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 22:15:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72809C433EF;
+        Wed,  3 May 2023 22:15:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683152145;
+        bh=+ocrPAkOdQyItdTxvvDTbqSS5GMs2VRphMsyKFbsZMo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M3duYVZPAF/mrKdE8OyWA9MtJurowlEptwZBbkzO1iXsIfpGROqYKbwRviOgeNhui
+         ZQ1inuPL+Ub6XYeT596m6Y+o4ok0jIFutl791I/9eg71Zeq+gW/UCiN8NyoJFuib8F
+         gyAPFXtRd6dJ3Gayl3HET/k8/x9kfHDAwH694ypfoT+MoGVVZ3BibDVMtbyORtRl5J
+         gOPRl8F2pB4npD5dBtb5/frwPTnt8aZeKhMYfq2/2CtxTj2xBYBpcZmZ3689XXztUD
+         ZRsQNikB13XNml3M40l2GSFvelBi9ODM+WY6e5896VnGsEC+GtwvuqNrCQOfYGZJiB
+         v6Wr0M5kTiK+A==
+Date:   Wed, 3 May 2023 15:15:43 -0700
+From:   Chris Li <chrisl@kernel.org>
+To:     "T.J. Mercier" <tjmercier@google.com>
+Cc:     lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>,
+        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
-        vbabka@suse.cz, roman.gushchin@linux.dev, mgorman@suse.de,
-        dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-        corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-        juri.lelli@redhat.com, ldufour@linux.ibm.com,
-        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, muchun.song@linux.dev,
-        rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
-        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Yu Zhao <yuzhao@google.com>
+Subject: Re: [LSF/MM/BPF TOPIC] Reducing zombie memcgs
+Message-ID: <ZFLdDyHoIdJSXJt+@google.com>
+References: <CABdmKX2M6koq4Q0Cmp_-=wbP0Qa190HdEGGaHfxNS05gAkUtPA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABdmKX2M6koq4Q0Cmp_-=wbP0Qa190HdEGGaHfxNS05gAkUtPA@mail.gmail.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 3, 2023 at 1:00=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Wed, May 03, 2023 at 09:48:55AM -1000, Tejun Heo wrote:
-> > > If so, that's the idea behind the context capture feature so that we
-> > > can enable it on specific allocations only after we determine there i=
-s
-> > > something interesting there. So, with low-cost persistent tracking we
-> > > can determine the suspects and then pay some more to investigate thos=
-e
-> > > suspects in more detail.
-> >
-> > Yeah, I was wondering whether it'd be useful to have that configurable =
-so
-> > that it'd be possible for a user to say "I'm okay with the cost, please
-> > track more context per allocation". Given that tracking the immediate c=
-aller
-> > is already a huge improvement and narrowing it down from there using
-> > existing tools shouldn't be that difficult, I don't think this is a blo=
-cker
-> > in any way. It just bothers me a bit that the code is structured so tha=
-t
-> > source line is the main abstraction.
->
-> Another related question. So, the reason for macro'ing stuff is needed is
-> because you want to print the line directly from kernel, right?
+Hi T.J.,
 
-The main reason is because we want to inject a code tag at the
-location of the call. If we have a code tag injected at every
-allocation call, then finding the allocation counter (code tag) to
-operate takes no time.
+On Tue, Apr 11, 2023 at 04:36:37PM -0700, T.J. Mercier wrote:
+> When a memcg is removed by userspace it gets offlined by the kernel.
+> Offline memcgs are hidden from user space, but they still live in the
+> kernel until their reference count drops to 0. New allocations cannot
+> be charged to offline memcgs, but existing allocations charged to
+> offline memcgs remain charged, and hold a reference to the memcg.
+> 
+> As such, an offline memcg can remain in the kernel indefinitely,
+> becoming a zombie memcg. The accumulation of a large number of zombie
+> memcgs lead to increased system overhead (mainly percpu data in struct
+> mem_cgroup). It also causes some kernel operations that scale with the
+> number of memcgs to become less efficient (e.g. reclaim).
+> 
+> There are currently out-of-tree solutions which attempt to
+> periodically clean up zombie memcgs by reclaiming from them. However
+> that is not effective for non-reclaimable memory, which it would be
+> better to reparent or recharge to an online cgroup. There are also
+> proposed changes that would benefit from recharging for shared
+> resources like pinned pages, or DMA buffer pages.
 
-> Is that
-> really necessary? Values from __builtin_return_address() can easily be
-> printed out as function+offset from kernel which already gives most of th=
-e
-> necessary information for triaging and mapping that back to source line f=
-rom
-> userspace isn't difficult. Wouldn't using __builtin_return_address() make
-> the whole thing a lot simpler?
+I am also interested in this topic. T.J. and I have some offline
+discussion about this. We have some proposals to solve this
+problem.
 
-If we do that we have to associate that address with the allocation
-counter at runtime on the first allocation and look it up on all
-following allocations. That introduces the overhead which we are
-trying to avoid by using macros.
+I will share the write up here for the up coming LSF/MM discussion.
 
->
-> Thanks.
->
-> --
-> tejun
+
+Shared Memory Cgroup Controllers
+
+= Introduction
+
+The current memory cgroup controller does not support shared memory objects. For the memory that is shared between different processes, it is not obvious which process should get charged. Google has some internal tmpfs “memcg=” mount option to charge tmpfs data to  a specific memcg that’s often different from where charging processes run. However it faces some difficulties when the charged memcg exits and the charged memcg becomes a zombie memcg.
+Other approaches include “re-parenting” the memcg charge to the parent memcg. Which has its own problem. If the charge is huge, iteration of the reparenting can be costly.
+
+= Proposed Solution
+
+The proposed solution is to add a new type of memory controller for shared memory usage. E.g. tmpfs, hugetlb, file system mmap and dma_buf. This shared memory cgroup controller object will have the same life cycle of the underlying  shared memory.
+
+Processes can not be added to the shared memory cgroup. Instead the shared memory cgroup can be added to the memcg using a “smemcg” API file, similar to adding a process into the “tasks” API file.
+When a smemcg is added to the memcg, the amount of memory that has been shared in the memcg process will be accounted for as the part of the memcg “memory.current”.The memory.current of the memcg is make up of two parts, 1) the processes anonymous memory and 2) the memory shared from smemcg.
+
+When the memcg “memory.current” is raised to the limit. The kernel will active try to reclaim for the memcg to make “smemcg memory + process anonymous memory” within the limit. Further memory allocation within those memcg processes will fail if the limit can not be followed. If many reclaim attempts fail to bring the memcg “memory.current” within the limit, the process in this memcg will get OOM killed.
+
+= Benefits
+
+The benefits of this solution include:
+* No zombie memcg. The life cycle of the smemcg match the share memory file system or dma_buf.
+* No reparenting. The shared memory only charge once to the smemcg object. A memcg can include a smemcg to as part of the memcg memory usage. When process exit and memcg get deleted, the charge remain to the smemcg object.
+* Much cleaner mental model of the smemcg, each share memory page is charge to one smemcg only once.
+* Notice the same smemcg can add to more than one memcg. It can better describe the shared memory relation.
+
+Chris
+
+
+
+> Suggested attendees:
+> Yosry Ahmed <yosryahmed@google.com>
+> Yu Zhao <yuzhao@google.com>
+> T.J. Mercier <tjmercier@google.com>
+> Tejun Heo <tj@kernel.org>
+> Shakeel Butt <shakeelb@google.com>
+> Muchun Song <muchun.song@linux.dev>
+> Johannes Weiner <hannes@cmpxchg.org>
+> Roman Gushchin <roman.gushchin@linux.dev>
+> Alistair Popple <apopple@nvidia.com>
+> Jason Gunthorpe <jgg@nvidia.com>
+> Kalesh Singh <kaleshsingh@google.com>
+> 
