@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 191846F513B
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 09:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E086F5142
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 09:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjECHYE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 03:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S229638AbjECHY2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 03:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjECHX4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 03:23:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB44A420B
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 00:23:12 -0700 (PDT)
+        with ESMTP id S229766AbjECHYE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 03:24:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A429422D
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 00:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683098591;
+        s=mimecast20190719; t=1683098595;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lqYMRmafBeRnD0m4iF8Fupf42DdArIxTTZivyAku9O8=;
-        b=CJ7KQtEzF6hRKiZKQggPGeQyCMAuZbmOzYe2XcBodfsWuSpVodSjM+Va2AcwHptaDrLUiR
-        AMEPFCDjn6+/NlFdEqdxK2eFYAms+qMdfZiThAjnNwhs8SWslnX5O9Mw/iUk+IJiy9BpX2
-        0T3fh+u3Po3BVxmHSDvBHIxfwigFtMk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=T6oalUZq+znxEQ+aiMIlVP5IUOx8Oj8y5hFDoaPcV5Y=;
+        b=Gtr53rK65fVSIVc3Cl8nQtY6CBS8TnPuoY1LXgNUiYfRLpC6ozULusTMDv+84fbIQVDG+n
+        WUJlUeRtJFvIe6h3dHHDmQf9ZtDXek9iQhv56ddHJ85JEEV6mKjUTxyHobGavc7HQz5IVy
+        n6bzDuGncWqojT+ODZY5RPTBEVVWD8s=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-326-SxkMeZuQNqqpwF8cJUs-iw-1; Wed, 03 May 2023 03:23:10 -0400
-X-MC-Unique: SxkMeZuQNqqpwF8cJUs-iw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f173bd0d1bso29684825e9.3
-        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 00:23:10 -0700 (PDT)
+ us-mta-605-z9wIZ1oTNrKni3couatMkA-1; Wed, 03 May 2023 03:23:14 -0400
+X-MC-Unique: z9wIZ1oTNrKni3couatMkA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f170a1fbe7so28924155e9.2
+        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 00:23:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683098589; x=1685690589;
+        d=1e100.net; s=20221208; t=1683098593; x=1685690593;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lqYMRmafBeRnD0m4iF8Fupf42DdArIxTTZivyAku9O8=;
-        b=BJcT2mRGERr9h7aLLBJO1TjGzaP9cFMVdF8GcTBLFf6lPFY8SPALuNPMLCnFnBJSCL
-         iKjtCANOW8y05TcOL0yE+bsUHTJVWUKQs3CLLyQc2JR2Ao7p1GTaZ5HfMO0oztYww+S+
-         LPp1xVJTNG9gkKhPjXSgFBkzBCFtyClXffaV65WsD3WvHl34tzFzuM2PHuoJfLPwKdMz
-         vweV2KCb7pwW27eE8tm3Xlt5mJSzyGrHyb16QiNMPdnUuVhtIvSwHfYqlZfs7YHjnT/z
-         cyKkIfI+cwpNcdrp+HTvApV6mZVSpR9MNH9lFSPzUTD3at/crgHuWVeTuPAB51+5LD6L
-         smIw==
-X-Gm-Message-State: AC+VfDwPp1O37q+pk82slq+tY5bm3rxV6VYY7gijT5iOkz+HZ9jMM11K
-        9vWlXYKrCi8pMApVcTXuE9K3mEx1JlgMLwbvpSP3cQzUNOy/fAWEIlzGiFfxtyJyKhh4Lu07aic
-        vcfix5113mf0YjtS2wQ==
-X-Received: by 2002:a05:600c:2212:b0:3f1:73c1:d1ad with SMTP id z18-20020a05600c221200b003f173c1d1admr13737470wml.35.1683098589220;
-        Wed, 03 May 2023 00:23:09 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5RlhA8wxdPVUgoKIGKIcjL4ZrUuXw+jJs9X7ZuopcCEs+AoifkgGTYiqb7y5Q+s+hK+h9Z9w==
-X-Received: by 2002:a05:600c:2212:b0:3f1:73c1:d1ad with SMTP id z18-20020a05600c221200b003f173c1d1admr13737445wml.35.1683098588945;
-        Wed, 03 May 2023 00:23:08 -0700 (PDT)
+        bh=T6oalUZq+znxEQ+aiMIlVP5IUOx8Oj8y5hFDoaPcV5Y=;
+        b=h5/bQ5SNdb/6HUB9XoFYzr6F/CAFZXRQMTo7L9dAyufWN7ZSwmBHNbFyRdnF+NJ6Df
+         O2D4F1czzL0vgUAAO/ZOnDvGV2mnYzslj4fg5sSwsIg6HdhrEJYTiqc+fKMZZVsr7rLm
+         x+oHI47v8eUPkfjzCMkVAE95KlZ84ikkYVyGJyYFd9UXq/QU3S3to+jzHZ7YnKQxtOzi
+         RA+mlY3SqgpCRH7bFu6GIOgtc5dXXzYBNt1J86mjpobMk7FWbjq9Kfccjkz7QNxJ3KOr
+         I4wZtfjLsQDLDBLpL1T8IgTzdzWtBFcZb7Xru0WvS33YY5qVt6mn4LQQ+AEHj5VBafpR
+         4Byg==
+X-Gm-Message-State: AC+VfDybmH9766CKc1lPloqgIs5vGNOvZihpaXwty7SrcHeWjMfB1EaA
+        Cz9lEPVuoI52QkBJiWSf8slHRjdA0zez8tYm9ZhnyLMhdi5zICloOc462mKJie9VsLsfkVRq67K
+        3xVhSLeW6yrYA4wwQCA==
+X-Received: by 2002:a1c:4c0e:0:b0:3f0:7f4b:f3c0 with SMTP id z14-20020a1c4c0e000000b003f07f4bf3c0mr14741128wmf.19.1683098593152;
+        Wed, 03 May 2023 00:23:13 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5kqpFsl+tKp051+7pLOE9pwgzd98NZOXSmlQIbyuhuchtNpbZ6xgarh8Q/iDLoWN40RcIEXw==
+X-Received: by 2002:a1c:4c0e:0:b0:3f0:7f4b:f3c0 with SMTP id z14-20020a1c4c0e000000b003f07f4bf3c0mr14741087wmf.19.1683098592742;
+        Wed, 03 May 2023 00:23:12 -0700 (PDT)
 Received: from localhost.localdomain.com ([2a02:b127:8011:7489:32ac:78e2:be8c:a5fb])
-        by smtp.gmail.com with ESMTPSA id k1-20020a7bc301000000b003eddc6aa5fasm947259wmj.39.2023.05.03.00.23.05
+        by smtp.gmail.com with ESMTPSA id k1-20020a7bc301000000b003eddc6aa5fasm947259wmj.39.2023.05.03.00.23.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 00:23:08 -0700 (PDT)
+        Wed, 03 May 2023 00:23:11 -0700 (PDT)
 From:   Juri Lelli <juri.lelli@redhat.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -77,9 +77,9 @@ Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Sudeep Holla <sudeep.holla@arm.com>,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH v2 4/6] cgroup/cpuset: Iterate only if DEADLINE tasks are present
-Date:   Wed,  3 May 2023 09:22:26 +0200
-Message-Id: <20230503072228.115707-5-juri.lelli@redhat.com>
+Subject: [PATCH v2 5/6] sched/deadline: Create DL BW alloc, free & check overflow interface
+Date:   Wed,  3 May 2023 09:22:27 +0200
+Message-Id: <20230503072228.115707-6-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230503072228.115707-1-juri.lelli@redhat.com>
 References: <20230503072228.115707-1-juri.lelli@redhat.com>
@@ -95,34 +95,157 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-update_tasks_root_domain currently iterates over all tasks even if no
-DEADLINE task is present on the cpuset/root domain for which bandwidth
-accounting is being rebuilt. This has been reported to introduce 10+ ms
-delays on suspend-resume operations.
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-Skip the costly iteration for cpusets that don't contain DEADLINE tasks.
+Rework the existing dl_cpu_busy() interface which offers DL BW overflow
+checking and per-task DL BW allocation.
 
-Reported-by: Qais Yousef <qyousef@layalina.io>
-Link: https://lore.kernel.org/lkml/20230206221428.2125324-1-qyousef@layalina.io/
+Add dl_bw_free() as an interface to be able to free DL BW.
+It will be used to allow freeing of the DL BW request done during
+cpuset_can_attach() in case multiple controllers are attached to the
+cgroup next to the cpuset controller and one of the non-cpuset
+can_attach() fails.
+
+dl_bw_alloc() (and dl_bw_free()) now take a `u64 dl_bw` parameter
+instead of `struct task_struct *p` used in dl_cpu_busy().  This allows
+to allocate DL BW for a set of tasks too rater than only for a single
+task.
+
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/cgroup/cpuset.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/sched.h   |  2 ++
+ kernel/sched/core.c     |  4 ++--
+ kernel/sched/deadline.c | 53 +++++++++++++++++++++++++++++++----------
+ kernel/sched/sched.h    |  2 +-
+ 4 files changed, 45 insertions(+), 16 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index b9f4d5602517..6587df42cb61 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1090,6 +1090,9 @@ static void dl_update_tasks_root_domain(struct cpuset *cs)
- 	struct css_task_iter it;
- 	struct task_struct *task;
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index eed5d65b8d1f..0bee06542450 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1853,6 +1853,8 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
  
-+	if (cs->nr_deadline_tasks == 0)
-+		return;
+ extern int cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
+ extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
++extern int dl_bw_alloc(int cpu, u64 dl_bw);
++extern void dl_bw_free(int cpu, u64 dl_bw);
+ #ifdef CONFIG_SMP
+ extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
+ extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index d826bec1c522..df659892d7d5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9319,7 +9319,7 @@ int task_can_attach(struct task_struct *p,
+ 
+ 		if (unlikely(cpu >= nr_cpu_ids))
+ 			return -EINVAL;
+-		ret = dl_cpu_busy(cpu, p);
++		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
+ 	}
+ 
+ out:
+@@ -9604,7 +9604,7 @@ static void cpuset_cpu_active(void)
+ static int cpuset_cpu_inactive(unsigned int cpu)
+ {
+ 	if (!cpuhp_tasks_frozen) {
+-		int ret = dl_cpu_busy(cpu, NULL);
++		int ret = dl_bw_check_overflow(cpu);
+ 
+ 		if (ret)
+ 			return ret;
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index e11de074a6fd..166c3e6eae61 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -3058,26 +3058,38 @@ int dl_cpuset_cpumask_can_shrink(const struct cpumask *cur,
+ 	return ret;
+ }
+ 
+-int dl_cpu_busy(int cpu, struct task_struct *p)
++enum dl_bw_request {
++	dl_bw_req_check_overflow = 0,
++	dl_bw_req_alloc,
++	dl_bw_req_free
++};
 +
- 	css_task_iter_start(&cs->css, 0, &it);
++static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
+ {
+-	unsigned long flags, cap;
++	unsigned long flags;
+ 	struct dl_bw *dl_b;
+-	bool overflow;
++	bool overflow = 0;
  
- 	while ((task = css_task_iter_next(&it)))
+ 	rcu_read_lock_sched();
+ 	dl_b = dl_bw_of(cpu);
+ 	raw_spin_lock_irqsave(&dl_b->lock, flags);
+-	cap = dl_bw_capacity(cpu);
+-	overflow = __dl_overflow(dl_b, cap, 0, p ? p->dl.dl_bw : 0);
+ 
+-	if (!overflow && p) {
+-		/*
+-		 * We reserve space for this task in the destination
+-		 * root_domain, as we can't fail after this point.
+-		 * We will free resources in the source root_domain
+-		 * later on (see set_cpus_allowed_dl()).
+-		 */
+-		__dl_add(dl_b, p->dl.dl_bw, dl_bw_cpus(cpu));
++	if (req == dl_bw_req_free) {
++		__dl_sub(dl_b, dl_bw, dl_bw_cpus(cpu));
++	} else {
++		unsigned long cap = dl_bw_capacity(cpu);
++
++		overflow = __dl_overflow(dl_b, cap, 0, dl_bw);
++
++		if (req == dl_bw_req_alloc && !overflow) {
++			/*
++			 * We reserve space in the destination
++			 * root_domain, as we can't fail after this point.
++			 * We will free resources in the source root_domain
++			 * later on (see set_cpus_allowed_dl()).
++			 */
++			__dl_add(dl_b, dl_bw, dl_bw_cpus(cpu));
++		}
+ 	}
+ 
+ 	raw_spin_unlock_irqrestore(&dl_b->lock, flags);
+@@ -3085,6 +3097,21 @@ int dl_cpu_busy(int cpu, struct task_struct *p)
+ 
+ 	return overflow ? -EBUSY : 0;
+ }
++
++int dl_bw_check_overflow(int cpu)
++{
++	return dl_bw_manage(dl_bw_req_check_overflow, cpu, 0);
++}
++
++int dl_bw_alloc(int cpu, u64 dl_bw)
++{
++	return dl_bw_manage(dl_bw_req_alloc, cpu, dl_bw);
++}
++
++void dl_bw_free(int cpu, u64 dl_bw)
++{
++	dl_bw_manage(dl_bw_req_free, cpu, dl_bw);
++}
+ #endif
+ 
+ #ifdef CONFIG_SCHED_DEBUG
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index ec7b3e0a2b20..0ad712811e35 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -330,7 +330,7 @@ extern void __getparam_dl(struct task_struct *p, struct sched_attr *attr);
+ extern bool __checkparam_dl(const struct sched_attr *attr);
+ extern bool dl_param_changed(struct task_struct *p, const struct sched_attr *attr);
+ extern int  dl_cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
+-extern int  dl_cpu_busy(int cpu, struct task_struct *p);
++extern int  dl_bw_check_overflow(int cpu);
+ 
+ #ifdef CONFIG_CGROUP_SCHED
+ 
 -- 
 2.40.1
 
