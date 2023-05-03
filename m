@@ -2,144 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05F36F50F0
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 09:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500C46F5133
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 09:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjECHOR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 03:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S229746AbjECHXt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 03:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjECHOO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 03:14:14 -0400
-Received: from out-42.mta1.migadu.com (out-42.mta1.migadu.com [IPv6:2001:41d0:203:375::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B285744AF
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 00:13:44 -0700 (PDT)
-Date:   Wed, 3 May 2023 03:12:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683097991;
+        with ESMTP id S229455AbjECHXp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 03:23:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEFC3C11
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 00:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683098576;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sa4OTZB5b+skGudhSwhmk32TbWUPA01HpPa43R3XypE=;
-        b=houGGarhoR27PbchhA+QNGA0saxVkWBHqqLXWwcgql8ghPJpiqqLxuMJIsQYxFnIsotmiT
-        R5cEBBWaIeU7VnAYAflrCrppJkt964UNglx6jVLEs7TCm33He/1Trw4Kd39bUM2JjWBSVm
-        eV4n8fttF9Y1FM+uRWMMQaDs/kiMrwM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
-        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
-        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-        tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-        paulmck@kernel.org, pasha.tatashin@soleen.com,
-        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Noralf =?utf-8?B?VHLDr8K/wr1ubmVz?= <noralf@tronnes.org>
-Subject: Re: [PATCH 01/40] lib/string_helpers: Drop space in
- string_get_size's output
-Message-ID: <ZFIJeSv9xn9qnMzg@moria.home.lan>
-References: <20230501165450.15352-2-surenb@google.com>
- <ouuidemyregstrijempvhv357ggp4tgnv6cijhasnungsovokm@jkgvyuyw2fti>
- <ZFAUj+Q+hP7cWs4w@moria.home.lan>
- <b6b472b65b76e95bb4c7fc7eac1ee296fdbb64fd.camel@HansenPartnership.com>
- <ZFCA2FF+9MI8LI5i@moria.home.lan>
- <CAHp75VdK2bgU8P+-np7ScVWTEpLrz+muG-R15SXm=ETXnjaiZg@mail.gmail.com>
- <ZFCsAZFMhPWIQIpk@moria.home.lan>
- <CAHp75VdvRshCthpFOjtmajVgCS_8YoJBGbLVukPwU+t79Jgmww@mail.gmail.com>
- <ZFHB2ATrPIsjObm/@moria.home.lan>
- <CAHp75VdH07gTYCPvp2FRjnWn17BxpJCcFBbFPpjpGxBt1B158A@mail.gmail.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IIZ/GCCJmx19uZ3mIOzJAELhL8g2Ju+C9RZzvBPp+14=;
+        b=UlD8BqzR8DFk0puuZ5Ptlirl9D9/L/DVHBLKqcTnNFKDtMFfm0OEWH4T5GtMUCkvRBzQHh
+        /S6TYuDVcPFEeU8nVxq5NL5ndbqUaZLq1x17aP/CyoAxuBgc6BGT0/wxl/pyPwTIxs/BK0
+        TZ5JqXCGle5be3/PRNlx5cJe0CQXp9Y=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-586-bVEqMbNkOj6nXfqwYVdOFw-1; Wed, 03 May 2023 03:22:55 -0400
+X-MC-Unique: bVEqMbNkOj6nXfqwYVdOFw-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-306281812d6so1358565f8f.2
+        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 00:22:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683098574; x=1685690574;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IIZ/GCCJmx19uZ3mIOzJAELhL8g2Ju+C9RZzvBPp+14=;
+        b=fXaTV8LmXTsboDJUGHdRhnR2UBXImsTPT0vzp5OdRFgQN8gq56tSZQqD6IuV7GR3hN
+         eUBP7u2ItPHalYwbghNXDjALx39IwXwDep2WNIkdqNAVXpDPLFsQ0YGrxo92B98npYDv
+         iorAWs7vk6q9WtZC3+8XXX7GrVWkT53s0XEBb0nMKb3RzxkW4/Di5VDa3x7QLKvFEYgH
+         b46A7pCCTuhGwZltQthkftSS2TTAor3p2i8jjPYyKAuS4cz2TuyTEo7z2+FGglqH2rOB
+         Xa4X7nleOIE44l5cM3J2YDhmfFbifjYbqioTsad4kYnZ/DNT/ioYcL7R+UmkBOycRbbz
+         lpMw==
+X-Gm-Message-State: AC+VfDxINbQDSnPa7sWIcjx56t0NnhKrSq3SQRTI9I+pNdswOY9V9N7V
+        43Kotfll+RXQ+M0VXGN/qOnFs6CLOwVkdLJzlXYRc8oHY0HVsBmU22XcjaeKf2jdwzFEm/eHD+U
+        JvVKDDnbQwqKT1aOPiQ==
+X-Received: by 2002:a05:6000:1191:b0:306:34f6:de8a with SMTP id g17-20020a056000119100b0030634f6de8amr3740022wrx.71.1683098573816;
+        Wed, 03 May 2023 00:22:53 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ54zy8/SIcgpOp/BoRmdQDJsXfaF76CBFfxdPQZTW8HUw1yUuPWnpw6k9sR/S7c2WjN63x9jQ==
+X-Received: by 2002:a05:6000:1191:b0:306:34f6:de8a with SMTP id g17-20020a056000119100b0030634f6de8amr3739998wrx.71.1683098573403;
+        Wed, 03 May 2023 00:22:53 -0700 (PDT)
+Received: from localhost.localdomain.com ([2a02:b127:8011:7489:32ac:78e2:be8c:a5fb])
+        by smtp.gmail.com with ESMTPSA id k1-20020a7bc301000000b003eddc6aa5fasm947259wmj.39.2023.05.03.00.22.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 May 2023 00:22:52 -0700 (PDT)
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hao Luo <haoluo@google.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [PATCH v2 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth restoration
+Date:   Wed,  3 May 2023 09:22:22 +0200
+Message-Id: <20230503072228.115707-1-juri.lelli@redhat.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdH07gTYCPvp2FRjnWn17BxpJCcFBbFPpjpGxBt1B158A@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 03, 2023 at 09:30:11AM +0300, Andy Shevchenko wrote:
-> On Wed, May 3, 2023 at 5:07 AM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> > On Tue, May 02, 2023 at 06:19:27PM +0300, Andy Shevchenko wrote:
-> > > On Tue, May 2, 2023 at 9:22 AM Kent Overstreet
-> > > <kent.overstreet@linux.dev> wrote:
-> > > > On Tue, May 02, 2023 at 08:33:57AM +0300, Andy Shevchenko wrote:
-> > > > > Actually instead of producing zillions of variants, do a %p extension
-> > > > > to the printf() and that's it. We have, for example, %pt with T and
-> > > > > with space to follow users that want one or the other variant. Same
-> > > > > can be done with string_get_size().
-> > > >
-> > > > God no.
-> > >
-> > > Any elaboration what's wrong with that?
-> >
-> > I'm really not a fan of %p extensions in general (they are what people
-> > reach for because we can't standardize on a common string output API),
-> 
-> The whole story behind, for example, %pt is to _standardize_ the
-> output of the same stanza in the kernel.
+Qais reported [1] that iterating over all tasks when rebuilding root
+domains for finding out which ones are DEADLINE and need their bandwidth
+correctly restored on such root domains can be a costly operation (10+
+ms delays on suspend-resume). He proposed we skip rebuilding root
+domains for certain operations, but that approach seemed arch specific
+and possibly prone to errors, as paths that ultimately trigger a rebuild
+might be quite convoluted (thanks Qais for spending time on this!).
 
-Wtf does this have to do with the rest of the discussion? The %p thing
-seems like a total non sequitar and a distraction.
+This is v2 of an alternative approach (v1 at [3]) to fix the problem.
 
-I'm not getting involved with that. All I'm interested in is fixing the
-memory allocation profiling output to make it more usable.
+ 01/06 - Rename functions deadline with DEADLINE accounting (cleanup
+         suggested by Qais) - no functional change
+ 02/06 - Bring back cpuset_mutex (so that we have write access to cpusets
+         from scheduler operations - and we also fix some problems
+         associated to percpu_cpuset_rwsem)
+ 03/06 - Keep track of the number of DEADLINE tasks belonging to each cpuset
+ 04/06 - Use this information to only perform the costly iteration if
+         DEADLINE tasks are actually present in the cpuset for which a
+         corresponding root domain is being rebuilt
+ 05/06 - Create DL BW alloc, free & check overflow interface for bulk
+         bandwidth allocation/removal - no functional change 
+ 06/06 - Fix bandwidth allocation handling for cgroup operation
+         involving multiple tasks
 
-> > but when we'd be passing it bare integers the lack of type safety would
-> > be a particularly big footgun.
-> 
-> There is no difference to any other place in the kernel where we can
-> shoot into our foot.
+With respect to the v1 posting [3]
 
-Yeah, no, absolutely not. Passing different size integers to
-string_get_size() is fine; passing pointers to different size integers
-to a %p extension will explode and the compiler won't be able to warn.
+ 1 - rebase on top of Linus' tree as of today (865fdb08197e)
+ 2 - move patch 6 to position 4 - Qais
 
-> 
-> > > God no for zillion APIs for almost the same. Today you want space,
-> > > tomorrow some other (special) delimiter.
-> >
-> > No, I just want to delete the space and output numbers the same way
-> > everyone else does. And if we are stuck with two string_get_size()
-> > functions, %p extensions in no way improve the situation.
-> 
-> I think it's exactly for the opposite, i.e. standardize that output
-> once and for all.
+As the rebase needed some work, I decided to remove the tested and
+reviewed bys. Please take another look, just in case I messed something
+up.
 
-So, are you dropping your NACK then, so we can standardize the kernel on
-the way everything else does it?
+This set is also available from
+
+https://github.com/jlelli/linux.git deadline/rework-cpusets
+
+Best,
+Juri
+
+1 - https://lore.kernel.org/lkml/20230206221428.2125324-1-qyousef@layalina.io/
+2 - RFC https://lore.kernel.org/lkml/20230315121812.206079-1-juri.lelli@redhat.com/
+3 - v1  https://lore.kernel.org/lkml/20230329125558.255239-1-juri.lelli@redhat.com/
+
+Dietmar Eggemann (2):
+  sched/deadline: Create DL BW alloc, free & check overflow interface
+  cgroup/cpuset: Free DL BW in case can_attach() fails
+
+Juri Lelli (4):
+  cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+  sched/cpuset: Bring back cpuset_mutex
+  sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+  cgroup/cpuset: Iterate only if DEADLINE tasks are present
+
+ include/linux/cpuset.h  |  12 +-
+ include/linux/sched.h   |   4 +-
+ kernel/cgroup/cgroup.c  |   4 +
+ kernel/cgroup/cpuset.c  | 242 ++++++++++++++++++++++++++--------------
+ kernel/sched/core.c     |  41 +++----
+ kernel/sched/deadline.c |  67 ++++++++---
+ kernel/sched/sched.h    |   2 +-
+ 7 files changed, 244 insertions(+), 128 deletions(-)
+
+-- 
+2.40.1
+
