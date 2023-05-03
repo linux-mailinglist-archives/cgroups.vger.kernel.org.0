@@ -2,136 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CB66F5D4B
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 19:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D8B6F5D53
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 19:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjECRvk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 13:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S229997AbjECRwf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 13:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjECRvj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 13:51:39 -0400
-Received: from out-50.mta0.migadu.com (out-50.mta0.migadu.com [91.218.175.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0AB6A71
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 10:51:37 -0700 (PDT)
-Date:   Wed, 3 May 2023 13:51:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683136295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/8YhiaEwKxHE5nN6YeY/72JOBihWRYRCXK0QvEQ+Qv4=;
-        b=Jly2gSOTge1iO+BeCp9KJ0ZW8ODyKqKj/7GANaWuFp3dPaClfWwyMC5BLYot5DJO7a2FFf
-        YyYI10zIBhCz11qKXQtTYVH3uRaoKIrlrIHjDrmNc87rMsL2sQdREfYAXhrBfufag5HVF+
-        u8SjeEjj/nsMRlWo9oQA/L4PFnEpZqQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
-        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 00/40] Memory allocation profiling
-Message-ID: <ZFKfG7bVuOAk27yP@moria.home.lan>
-References: <20230501165450.15352-1-surenb@google.com>
- <ZFIMaflxeHS3uR/A@dhcp22.suse.cz>
- <ZFIOfb6/jHwLqg6M@moria.home.lan>
- <ZFISlX+mSx4QJDK6@dhcp22.suse.cz>
- <ZFIVtB8JyKk0ddA5@moria.home.lan>
- <ZFKNZZwC8EUbOLMv@slm.duckdns.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZFKNZZwC8EUbOLMv@slm.duckdns.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229984AbjECRwa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 13:52:30 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5FE7A94
+        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 10:52:28 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-556011695d1so90954597b3.1
+        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 10:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683136348; x=1685728348;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RZYSjSUR1TVNLCONU/ktPYm4b5B8g2ry+YtlqDqVDwA=;
+        b=06jHQvfsD3SDUJMSu6ULA+Lqi2Rheb3urP5pez8MV1dafSxYy0/iecp7i3W9YM8kw0
+         Z8sDp7LJx6LxY6887Lp9tpfA2PRnZ+5qsmf/2ne9kOhMV6oNSgGhzuXqwMC3i6HQpw8p
+         D8X9p8yhzKfJ/bgSYEC5uIPGefibu0HxTKSIOIWINb3PnNySA5vrkGDdfiFHPxJVa3eg
+         fzeTNSZPX/rk1YdIOuq6L93DdQc6YUPO6bt/7O5Wu9R3mWPc7MGSncLmqdQi7vfNKPNv
+         eNUJWumFkZPqhtINkPq+WqdkN0g7gmfclLzeSV9JpuQEB/g+6NsZV9V3lB08IqjbYy4P
+         Yf/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683136348; x=1685728348;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RZYSjSUR1TVNLCONU/ktPYm4b5B8g2ry+YtlqDqVDwA=;
+        b=UF0N3shWs6HuHuuPfMp4Cr0u+mU0cwdC/dcEfN6+Nq5ycsjf5qmfNjuNSN7tHAXIPw
+         Kg5H3NwUr/gV0LL+qFA0xPSLJZD6RJGpjn0voIV3+QaTwdj667hvaFKuoy+ep1t9Brls
+         pi7H+hrEWjUXWR9CKF3qL3kii+w68JTencZhP+YvxccmUs3Z9JOJEOK+AOt7b36gaNhf
+         atCowjRgzYIXhMNHhbcuXrey7smKEs7X/NhnBJ5RoLtRKsRtWSdMh2D3FoDBPymuL5Ne
+         YuJQJJlVVgeSkoRhg55dT0XCjGDntsALXb7rPTaL0oEFcGePAUpGX7dZg+LPPOEMCze+
+         9FRg==
+X-Gm-Message-State: AC+VfDz4CpcfUh1OpeIUHMcaVZxv/AVglBTEzA8szbRUBZfM/biTK4Gk
+        Jzbq9ucuVcgZxysveRT9p/wmD3NG5eGgDA==
+X-Google-Smtp-Source: ACHHUZ59iAxehhHtXCF+bq4Cz843yfeiUKwoHIntE4kQjpxt94wcmUOFlOiSBWPXCkx4jhERPUtGCVXYZdfeOw==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a81:4054:0:b0:534:d71f:14e6 with SMTP id
+ m20-20020a814054000000b00534d71f14e6mr12118393ywn.9.1683136347929; Wed, 03
+ May 2023 10:52:27 -0700 (PDT)
+Date:   Wed, 3 May 2023 17:52:26 +0000
+In-Reply-To: <20230428132406.2540811-2-yosryahmed@google.com>
+Mime-Version: 1.0
+References: <20230428132406.2540811-1-yosryahmed@google.com> <20230428132406.2540811-2-yosryahmed@google.com>
+Message-ID: <20230503175226.nyjmmbnohm6xxckd@google.com>
+Subject: Re: [PATCH v2 1/2] memcg: use seq_buf_do_printk() with mem_cgroup_print_oom_meminfo()
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>, Chris Li <chrisl@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 03, 2023 at 06:35:49AM -1000, Tejun Heo wrote:
-> Hello, Kent.
+On Fri, Apr 28, 2023 at 01:24:05PM +0000, Yosry Ahmed wrote:
+> Currently, we format all the memcg stats into a buffer in
+> mem_cgroup_print_oom_meminfo() and use pr_info() to dump it to the logs.
+> However, this buffer is large in size. Although it is currently working
+> as intended, ther is a dependency between the memcg stats buffer and the
+> printk record size limit.
 > 
-> On Wed, May 03, 2023 at 04:05:08AM -0400, Kent Overstreet wrote:
-> > No, we're still waiting on the tracing people to _demonstrate_, not
-> > claim, that this is at all possible in a comparable way with tracing. 
+> If we add more stats in the future and the buffer becomes larger than
+> the printk record size limit, or if the prink record size limit is
+> reduced, the logs may be truncated.
 > 
-> So, we (meta) happen to do stuff like this all the time in the fleet to hunt
-> down tricky persistent problems like memory leaks, ref leaks, what-have-you.
-> In recent kernels, with kprobe and BPF, our ability to debug these sorts of
-> problems has improved a great deal. Below, I'm attaching a bcc script I used
-> to hunt down, IIRC, a double vfree. It's not exactly for a leak but leaks
-> can follow the same pattern.
+> It is safer to use seq_buf_do_printk(), which will automatically break
+> up the buffer at line breaks and issue small printk() calls.
 > 
-> There are of course some pros and cons to this approach:
+> Refactor the code to move the seq_buf from memory_stat_format() to its
+> callers, and use seq_buf_do_printk() to print the seq_buf in
+> mem_cgroup_print_oom_meminfo().
 > 
-> Pros:
-> 
-> * The framework doesn't really have any runtime overhead, so we can have it
->   deployed in the entire fleet and debug wherever problem is.
-> 
-> * It's fully flexible and programmable which enables non-trivial filtering
->   and summarizing to be done inside kernel w/ BPF as necessary, which is
->   pretty handy for tracking high frequency events.
-> 
-> * BPF is pretty performant. Dedicated built-in kernel code can do better of
->   course but BPF's jit compiled code & its data structures are fast enough.
->   I don't remember any time this was a problem.
-> 
-> Cons:
-> 
-> * BPF has some learning curve. Also the fact that what it provides is a wide
->   open field rather than something scoped out for a specific problem can
->   make it seem a bit daunting at the beginning.
-> 
-> * Because tracking starts when the script starts running, it doesn't know
->   anything which has happened upto that point, so you gotta pay attention to
->   handling e.g. handling frees which don't match allocs. It's kinda annoying
->   but not a huge problem usually. There are ways to build in BPF progs into
->   the kernel and load it early but I haven't experiemnted with it yet
->   personally.
-> 
-> I'm not necessarily against adding dedicated memory debugging mechanism but
-> do wonder whether the extra benefits would be enough to justify the code and
-> maintenance overhead.
-> 
-> Oh, a bit of delta but for anyone who's more interested in debugging
-> problems like this, while I tend to go for bcc
-> (https://github.com/iovisor/bcc) for this sort of problems. Others prefer to
-> write against libbpf directly or use bpftrace
-> (https://github.com/iovisor/bpftrace).
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Do you have example output?
-
-TBH I'm skeptical that it's even possible to do full memory allocation
-profiling with tracing/bpf, due to recursive memory allocations and
-needing an index of outstanding allcations.
+Acked-by: Shakeel Butt <shakeelb@google.com>
