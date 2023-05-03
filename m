@@ -2,123 +2,177 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0226F540F
-	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 11:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40B66F5422
+	for <lists+cgroups@lfdr.de>; Wed,  3 May 2023 11:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjECJMQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 05:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
+        id S229788AbjECJNZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 05:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjECJMO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 05:12:14 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3171459E2;
-        Wed,  3 May 2023 02:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683105114; x=1714641114;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yZdDxF7eM2/0DaJdrpLaz+vSoS07hfHOMx2AFF1OeTM=;
-  b=fjkkNotiRbH6MTQkXKJgLKWgAy6gMqzwVWVZjj9eCS5zfa7yexe3IWgO
-   Yk2jV2ejpozSwUbMO5QVe34PhOiGpsjAS5/3lZ31qcRUf4gw2q6r++Gra
-   gZXDm/QX9vwv/xxl/adRM2j16y4CXtB0mVtgKyLOvXuMr0Uxy8IhH/zDc
-   mItAcS72CxS95UkpeDF1rFxfbKHF0u4sH5feD8MdHPrkLYv9owkdmj3xy
-   ZHbNDZtAvY73AChq/tL8O8fFrcw5O0hzYRxjGQX4Ez6mqSAesCWgRgGB/
-   CfXjo85f0+DB6peqpkd5InQJrkv77RW2bxHG1DHIL/ZvP6BrOK9SxlRh3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10698"; a="337745862"
-X-IronPort-AV: E=Sophos;i="5.99,246,1677571200"; 
-   d="scan'208";a="337745862"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2023 02:11:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10698"; a="674010950"
-X-IronPort-AV: E=Sophos;i="5.99,246,1677571200"; 
-   d="scan'208";a="674010950"
-Received: from skallurr-mobl1.ger.corp.intel.com (HELO [10.249.254.212]) ([10.249.254.212])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2023 02:11:35 -0700
-Message-ID: <888841c4-7bd4-8174-7786-033715c995c6@linux.intel.com>
-Date:   Wed, 3 May 2023 11:11:32 +0200
+        with ESMTP id S229729AbjECJNS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 05:13:18 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CB155BB;
+        Wed,  3 May 2023 02:12:51 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-74e12e93384so213824985a.3;
+        Wed, 03 May 2023 02:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683105170; x=1685697170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TEZd+b8sulXt8fKAN8kz+Gm51fXRGcBOvDO84eUPrqA=;
+        b=lkpnSWbImRhXpMdXf/j2tYcHtARa7pZxpe80UwOhD4R61KpJDN5E6c3vkOZJZtEsdd
+         NIOFyi6+CcEllvCmz+ezBqynxF+o1JnKK9z/EV67UWGPh2kFZbUVxyRHZCZkw1kqq8rz
+         D1ODfYDy+ZvYfj3AH/q3S+H4OrTddDujLMLoFoZBIeqfcAukFwbiQa/sO0taRXV/GD4U
+         O5s1H1vUGlkYsqkokTGq0Ace+9Jt9tMQ9MhYfRBameD9A6V7QtQlcyepsIhLTlDMhvcT
+         QESiwW/ebN8bNURL5Wk9400Ojw9jq2OZaVXEW9BBl9Ohxc4ib4YptZaU3URY4a45BJzR
+         laiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683105170; x=1685697170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TEZd+b8sulXt8fKAN8kz+Gm51fXRGcBOvDO84eUPrqA=;
+        b=U+Nyzb3BdTcOJy/b6wqEVDe3rczisUUnHhEjmb90w9oMU2qFPs2cGx3mkOIeXZd7DR
+         PjwOSeVNiQPOB3ubjVP5unEZ/NH3n70YMPcZkB+SdXDVhylx/qPmbdnxoTbcS+QhlrX/
+         v/+xZDZ6mQ5M7w8dg/B1BevFNwnGXCVK/o82UsooLOZ0r+Bt+cGY2TdUOJJD8BHHRTtP
+         iegfJlFdxSLeXI8//CFtr+KczfEuLawJpVaESC6ooeWDxSjOXPAFBNj42/YrxNhHfyNA
+         G+zcuxkgOd3nYXmDRlrzJjashsamD1DIzNERAcJElXQJT+ySoL4YPU9co5PtOm1ou0UY
+         uLJA==
+X-Gm-Message-State: AC+VfDwrD8/mWpZq+gL1WzHthEszccxtT/uwzgUbGqmzwMfAE7MAS9xC
+        QWbS7z6whmPTVqQ02ViNe7kMpXkaCbck+iOflYE=
+X-Google-Smtp-Source: ACHHUZ4GQD0z7eUsogNetrMaZKEq5pKRE8mu+npoeyVDIT95CPFfsPGLoM4SFfpJ8DKd67/MmBCqruVhmQylmFOpJxg=
+X-Received: by 2002:ad4:5947:0:b0:5ca:83ed:12be with SMTP id
+ eo7-20020ad45947000000b005ca83ed12bemr11144076qvb.21.1683105169929; Wed, 03
+ May 2023 02:12:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [Intel-xe] [RFC PATCH 3/4] drm/ttm: Handle -EAGAIN in
- ttm_resource_alloc as -ENOSPC.
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org,
-        intel-xe@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, David Airlie <airlied@gmail.com>
-References: <20230503083500.645848-1-maarten.lankhorst@linux.intel.com>
- <20230503083500.645848-4-maarten.lankhorst@linux.intel.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <20230503083500.645848-4-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230501165450.15352-2-surenb@google.com> <ouuidemyregstrijempvhv357ggp4tgnv6cijhasnungsovokm@jkgvyuyw2fti>
+ <ZFAUj+Q+hP7cWs4w@moria.home.lan> <b6b472b65b76e95bb4c7fc7eac1ee296fdbb64fd.camel@HansenPartnership.com>
+ <ZFCA2FF+9MI8LI5i@moria.home.lan> <CAHp75VdK2bgU8P+-np7ScVWTEpLrz+muG-R15SXm=ETXnjaiZg@mail.gmail.com>
+ <ZFCsAZFMhPWIQIpk@moria.home.lan> <CAHp75VdvRshCthpFOjtmajVgCS_8YoJBGbLVukPwU+t79Jgmww@mail.gmail.com>
+ <ZFHB2ATrPIsjObm/@moria.home.lan> <CAHp75VdH07gTYCPvp2FRjnWn17BxpJCcFBbFPpjpGxBt1B158A@mail.gmail.com>
+ <ZFIJeSv9xn9qnMzg@moria.home.lan>
+In-Reply-To: <ZFIJeSv9xn9qnMzg@moria.home.lan>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 3 May 2023 12:12:12 +0300
+Message-ID: <CAHp75Vd_VMOh1zxJvr0KqhxYBXAU1X+Ax7YA1sJ0G_abEpn-Dg@mail.gmail.com>
+Subject: Re: [PATCH 01/40] lib/string_helpers: Drop space in string_get_size's output
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
+        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+        tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+        paulmck@kernel.org, pasha.tatashin@soleen.com,
+        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, gregkh@linuxfoundation.org,
+        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+        glider@google.com, elver@google.com, dvyukov@google.com,
+        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
+        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        =?UTF-8?B?Tm9yYWxmIFRyw6/Cv8K9bm5lcw==?= <noralf@tronnes.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Maarten
-
-On 5/3/23 10:34, Maarten Lankhorst wrote:
-> This allows the drm cgroup controller to return no space is available..
+On Wed, May 3, 2023 at 10:13=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Wed, May 03, 2023 at 09:30:11AM +0300, Andy Shevchenko wrote:
+> > On Wed, May 3, 2023 at 5:07=E2=80=AFAM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > > On Tue, May 02, 2023 at 06:19:27PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, May 2, 2023 at 9:22=E2=80=AFAM Kent Overstreet
+> > > > <kent.overstreet@linux.dev> wrote:
+> > > > > On Tue, May 02, 2023 at 08:33:57AM +0300, Andy Shevchenko wrote:
+> > > > > > Actually instead of producing zillions of variants, do a %p ext=
+ension
+> > > > > > to the printf() and that's it. We have, for example, %pt with T=
+ and
+> > > > > > with space to follow users that want one or the other variant. =
+Same
+> > > > > > can be done with string_get_size().
+> > > > >
+> > > > > God no.
+> > > >
+> > > > Any elaboration what's wrong with that?
+> > >
+> > > I'm really not a fan of %p extensions in general (they are what peopl=
+e
+> > > reach for because we can't standardize on a common string output API)=
+,
+> >
+> > The whole story behind, for example, %pt is to _standardize_ the
+> > output of the same stanza in the kernel.
 >
-> XXX: This is a hopeless simplification that changes behavior, and
-> returns -ENOSPC even if we could evict ourselves from the current
-> cgroup.
+> Wtf does this have to do with the rest of the discussion? The %p thing
+> seems like a total non sequitar and a distraction.
 >
-> Ideally, the eviction code becomes cgroup aware, and will force eviction
-> from the current cgroup or its parents.
+> I'm not getting involved with that. All I'm interested in is fixing the
+> memory allocation profiling output to make it more usable.
 >
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-
-Thinking of the shrinker analogy, do non-cgroup aware shrinkers just 
-shrink blindly or do they reject shrinking like this patch when a cgroup 
-limit is reached?
-
-/Thomas
-
-
-> ---
->   drivers/gpu/drm/ttm/ttm_bo.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > but when we'd be passing it bare integers the lack of type safety wou=
+ld
+> > > be a particularly big footgun.
+> >
+> > There is no difference to any other place in the kernel where we can
+> > shoot into our foot.
 >
-> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-> index bd5dae4d1624..e057d5d8f09a 100644
-> --- a/drivers/gpu/drm/ttm/ttm_bo.c
-> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-> @@ -731,6 +731,8 @@ static int ttm_bo_mem_force_space(struct ttm_buffer_object *bo,
->   		ret = ttm_resource_alloc(bo, place, mem);
->   		if (likely(!ret))
->   			break;
-> +		if (ret == -EAGAIN)
-> +			return -ENOSPC;
->   		if (unlikely(ret != -ENOSPC))
->   			return ret;
->   		ret = ttm_mem_evict_first(bdev, man, place, ctx,
-> @@ -783,7 +785,7 @@ int ttm_bo_mem_space(struct ttm_buffer_object *bo,
->   
->   		type_found = true;
->   		ret = ttm_resource_alloc(bo, place, mem);
-> -		if (ret == -ENOSPC)
-> +		if (ret == -ENOSPC || ret == -EAGAIN)
->   			continue;
->   		if (unlikely(ret))
->   			goto error;
+> Yeah, no, absolutely not. Passing different size integers to
+> string_get_size() is fine; passing pointers to different size integers
+> to a %p extension will explode and the compiler won't be able to warn.
+
+This is another topic. Yes, there is a discussion to have a compiler
+plugin to check this.
+
+> > > > God no for zillion APIs for almost the same. Today you want space,
+> > > > tomorrow some other (special) delimiter.
+> > >
+> > > No, I just want to delete the space and output numbers the same way
+> > > everyone else does. And if we are stuck with two string_get_size()
+> > > functions, %p extensions in no way improve the situation.
+> >
+> > I think it's exactly for the opposite, i.e. standardize that output
+> > once and for all.
+>
+> So, are you dropping your NACK then, so we can standardize the kernel on
+> the way everything else does it?
+
+No, you are breaking existing users. The NAK stays.
+The whole discussion after that is to make the way on how users can
+utilize your format and existing format without multiplying APIs.
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
