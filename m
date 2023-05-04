@@ -2,41 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3776F64E6
-	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 08:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F266F64ED
+	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 08:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjEDGYj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 May 2023 02:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S229659AbjEDG0C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 May 2023 02:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjEDGYi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 May 2023 02:24:38 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036BE26BE;
-        Wed,  3 May 2023 23:24:33 -0700 (PDT)
+        with ESMTP id S229913AbjEDG0B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 May 2023 02:26:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D362711;
+        Wed,  3 May 2023 23:25:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j16Bh52nzyJO9VnirYe2+W5J9gGnfrNEg+DqgmtGTK4=; b=o39RDzof6y4haLdWTv/dU4Ezo1
-        00lekUFPh1bpwrIBOFfrFQtxvnmNYxA+cPAl3zBtS5pnDMARzaEnn+hmjQGcfjyrMrafdnp56iHaB
-        jCU4qImPx1pTrvi3mVZQIVDHBvy/8bmRNgI3TQa0qOK3AH3GMSynPqiy7ueCFYCjgW3u/AOhW/SHl
-        1KCW0DPlxbZcmJSFtRGXN2sPMGjdh3wyyP68Ly28Da3f6DAp1AKKXuyDvLWV6vq75DXF4J5eOyH+r
-        GCcSGtu4wI3BzOk2U/Yz1J2rnxpbodfdOOwaOT/rg8p0YjccZWbaRM/gyWRIqIutipwdiXuRhyIi2
-        hMejCuGA==;
+        bh=0/lxZ8I0MqaXMk8+g9Fw5CznOe/fTSlnGEVclllXyGY=; b=Nmoo9DOynuVqyJyVqry90thHKV
+        Z+yPBe6q31aq5C6MMqg5enWpGfzLFtFtUEbOADD6Ata6S6MaGcfkurnjQTri1b5KFMXNrmhKeclYX
+        fT1aGJ7SYPluxWOS4VB/G3zsloLe08DAymZDKigbYLtFBwza7o4+bMgqey1hTpAOsa9KO4YD5eRjE
+        z8DtaptWM+YgWtMhEPnhaK7LkLnj20eXT409FJpreMrB9vQYMepvQ6zcCGv+vUTARCmNHdebFaNXt
+        qImtBxyuAwZvvhKPrpNErVKMISyH+FKBlICudJY885hjLPY98Z6tBNC11gq3FXfFO8hKFya1ymZVF
+        MVZk602g==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1puSNk-001ebz-1p;
-        Thu, 04 May 2023 06:24:03 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1puSP8-00AJgG-Kd; Thu, 04 May 2023 06:25:26 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7CF9301326;
-        Thu,  4 May 2023 08:23:59 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 261DB301326;
+        Thu,  4 May 2023 08:25:26 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8ACBF24080DDC; Thu,  4 May 2023 08:23:59 +0200 (CEST)
-Date:   Thu, 4 May 2023 08:23:59 +0200
+        id 13927240EB55F; Thu,  4 May 2023 08:25:26 +0200 (CEST)
+Date:   Thu, 4 May 2023 08:25:25 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Juri Lelli <juri.lelli@redhat.com>
 Cc:     Ingo Molnar <mingo@kernel.org>, Qais Yousef <qyousef@layalina.io>,
@@ -57,15 +56,14 @@ Cc:     Ingo Molnar <mingo@kernel.org>, Qais Yousef <qyousef@layalina.io>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v2 5/6] sched/deadline: Create DL BW alloc, free & check
- overflow interface
-Message-ID: <20230504062359.GE1734100@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH v2 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth
+ restoration
+Message-ID: <20230504062525.GF1734100@hirez.programming.kicks-ass.net>
 References: <20230503072228.115707-1-juri.lelli@redhat.com>
- <20230503072228.115707-6-juri.lelli@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230503072228.115707-6-juri.lelli@redhat.com>
+In-Reply-To: <20230503072228.115707-1-juri.lelli@redhat.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -76,22 +74,28 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 03, 2023 at 09:22:27AM +0200, Juri Lelli wrote:
-> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> 
-> Rework the existing dl_cpu_busy() interface which offers DL BW overflow
-> checking and per-task DL BW allocation.
-> 
-> Add dl_bw_free() as an interface to be able to free DL BW.
-> It will be used to allow freeing of the DL BW request done during
-> cpuset_can_attach() in case multiple controllers are attached to the
-> cgroup next to the cpuset controller and one of the non-cpuset
-> can_attach() fails.
-> 
-> dl_bw_alloc() (and dl_bw_free()) now take a `u64 dl_bw` parameter
-> instead of `struct task_struct *p` used in dl_cpu_busy().  This allows
-> to allocate DL BW for a set of tasks too rater than only for a single
-> task.
-> 
+On Wed, May 03, 2023 at 09:22:22AM +0200, Juri Lelli wrote:
 
-Changlog fails the 'why' test.
+> Dietmar Eggemann (2):
+>   sched/deadline: Create DL BW alloc, free & check overflow interface
+>   cgroup/cpuset: Free DL BW in case can_attach() fails
+> 
+> Juri Lelli (4):
+>   cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+>   sched/cpuset: Bring back cpuset_mutex
+>   sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+>   cgroup/cpuset: Iterate only if DEADLINE tasks are present
+> 
+>  include/linux/cpuset.h  |  12 +-
+>  include/linux/sched.h   |   4 +-
+>  kernel/cgroup/cgroup.c  |   4 +
+>  kernel/cgroup/cpuset.c  | 242 ++++++++++++++++++++++++++--------------
+>  kernel/sched/core.c     |  41 +++----
+>  kernel/sched/deadline.c |  67 ++++++++---
+>  kernel/sched/sched.h    |   2 +-
+>  7 files changed, 244 insertions(+), 128 deletions(-)
+
+Aside from a few niggles, these look fine to me. Who were you expecting
+to merge these, tj or me?
+
+
