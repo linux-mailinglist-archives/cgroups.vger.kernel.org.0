@@ -2,158 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09686F6363
-	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 05:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7B36F64D1
+	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 08:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjEDDdp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 23:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47534 "EHLO
+        id S229536AbjEDGTf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 May 2023 02:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjEDDdn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 23:33:43 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CACA19B0
-        for <cgroups@vger.kernel.org>; Wed,  3 May 2023 20:33:41 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-b9a6869dd3cso33586276.2
-        for <cgroups@vger.kernel.org>; Wed, 03 May 2023 20:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683171221; x=1685763221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ezowVIfZ+j5q5fnHBXFJgjQgqAlO13MfPXw7qEM899U=;
-        b=lL+P1HWGx+y87/s7tJ3yJEOlJ9xZakfyxCZ/vj2vLDVlNBtKFp5TryG8cJdaJpBcY3
-         guIC/GIEBTyQZrHE6ZNHiQ86VI1OapFezm0uE0T+1OK+K4KYYfBBjtbLybxs4JzubUJ/
-         YHIYmrIrkP5sV/C/lw2aAB2KyoF9ze882p2X7gtWbJ7Ck0EEAHwV0AOp5iYiKP9dpnkl
-         JG4AkClQv8a9C8JNwybz3M08XO+E4JFF6RNOKRacmV8gTFgw1n0DajrnRmLfrbF5RGNA
-         oAFHvA1e8eD3Al3/gqVbjERe8sD7tl0wTSvmn2cJLhru0NU5xErhL5P5WdguSe6A94ip
-         wwkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683171221; x=1685763221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ezowVIfZ+j5q5fnHBXFJgjQgqAlO13MfPXw7qEM899U=;
-        b=ktDblazijl9Calxrhm+9usLY4A8VhNJmrbhpV9cZmeRA+gFAX4fMR6h3bMY8PmYuEV
-         IFMpvhtnG3KllOboYmqL5LpsueZGRCj2FF4QbREn4RvgpaLfrZ/1dKdSTqpXqqihq76F
-         NL3Lf8MPGWtmEx7ERET8KKjZRHrXQ7bXdsQQD5p5Ka5gdweGbe6uBlNYjx7DtkTh0WeT
-         FV4t2T4NXoCj4DyYVd+CT0bkJb4x63a4syqY2A7t45O8gogt1keY68Qumwoc68F2Rlf/
-         Xo/BdQtR/AAZoV+eztNp7YUHSsSR5nzpDV+luA7R5VjCpL6UPHEUa6UkVjz80qapmMMz
-         d1yQ==
-X-Gm-Message-State: AC+VfDzD1jGVlO2APwfr6gJ8D8db2EorHe64Wr+9lSEhDnVh/8y3C7+T
-        deqBcFCQ5R0HNgtiQgt/+u8od0CGZNo9IXVV0GFJoA==
-X-Google-Smtp-Source: ACHHUZ45mGN+GR4nSu7Wa2mDPuzxUEEU0oecLdcE3XKkTt3qYSjVz+G7V7TA1b9va9C/DDvQwmfyGTeJUntbFTp86oM=
-X-Received: by 2002:a25:b55:0:b0:ba1:8b5a:581e with SMTP id
- 82-20020a250b55000000b00ba18b5a581emr1541686ybl.17.1683171220475; Wed, 03 May
- 2023 20:33:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230503180726.GA196054@cmpxchg.org> <ZFKlrP7nLn93iIRf@slm.duckdns.org>
- <ZFKqh5Dh93UULdse@slm.duckdns.org> <ZFKubD/lq7oB4svV@moria.home.lan>
- <ZFKu6zWA00AzArMF@slm.duckdns.org> <ZFKxcfqkUQ60zBB_@slm.duckdns.org>
- <CAJuCfpEPkCJZO2svT-GfmpJ+V-jSLyFDKM_atnqPVRBKtzgtnQ@mail.gmail.com>
- <ZFK6pwOelIlhV8Bm@slm.duckdns.org> <ZFK9XMSzOBxIFOHm@slm.duckdns.org>
- <CAJuCfpE4YD_BumqFf2-NC8KS9D+kq0s_o4gRyWAH-WK4SgqUbA@mail.gmail.com> <ZFMXmj9ZhSe5wyaS@slm.duckdns.org>
-In-Reply-To: <ZFMXmj9ZhSe5wyaS@slm.duckdns.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 3 May 2023 20:33:28 -0700
-Message-ID: <CAJuCfpGmc==xztXgiM+UUA5GGhxstB2r=yTjNUwSshaj5FpBFw@mail.gmail.com>
-Subject: Re: [PATCH 00/40] Memory allocation profiling
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        with ESMTP id S229494AbjEDGTe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 May 2023 02:19:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED7A198A;
+        Wed,  3 May 2023 23:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DfqWiyDRGB40eGYe2jGNPAj11jBf4uHEb5kd/1AH73Y=; b=jh1G+T4BkA9Hqha86rr270atlB
+        5VwBCL/FYuqlZsXl0tN57xUIihlHNN0hXZdhYF5obHg6NpfSugsRblLNfQpxC9YVbxj6uIRzHsddp
+        KTBcXsnS9sPUo1O2QKsEvkTK3lGpdlNDQ0mSvgXDxXeFdghOK40WtYgfhXV79NTqsA3nUnp0I969U
+        CMC3kIZOlR0BJRQO/CAEg9xEanUSQQ8Wk+Q0NR0s4hMKnb6KBoE+w9bEonYDEwg7IrhgW7OV4pfsL
+        p5QLXOChTN+p5HhuP/ExTFbYwLe4NO5TcFy+X+sWCWDmc2UetTwys0ulbOrEaa4exgcA1Ce8chbzI
+        h/w1z1vg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1puSIh-001eUc-10;
+        Thu, 04 May 2023 06:18:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 81A733006DA;
+        Thu,  4 May 2023 08:18:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 346F823BD3ADF; Thu,  4 May 2023 08:18:42 +0200 (CEST)
+Date:   Thu, 4 May 2023 08:18:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Qais Yousef <qyousef@layalina.io>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
-        vbabka@suse.cz, roman.gushchin@linux.dev, mgorman@suse.de,
-        dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-        corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-        juri.lelli@redhat.com, ldufour@linux.ibm.com,
-        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, muchun.song@linux.dev,
-        rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
-        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v2 2/6] sched/cpuset: Bring back cpuset_mutex
+Message-ID: <20230504061842.GC1734100@hirez.programming.kicks-ass.net>
+References: <20230503072228.115707-1-juri.lelli@redhat.com>
+ <20230503072228.115707-3-juri.lelli@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230503072228.115707-3-juri.lelli@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 3, 2023 at 7:25=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Wed, May 03, 2023 at 01:14:57PM -0700, Suren Baghdasaryan wrote:
-> > On Wed, May 3, 2023 at 1:00=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
-> > > Another related question. So, the reason for macro'ing stuff is neede=
-d is
-> > > because you want to print the line directly from kernel, right?
-> >
-> > The main reason is because we want to inject a code tag at the
-> > location of the call. If we have a code tag injected at every
-> > allocation call, then finding the allocation counter (code tag) to
-> > operate takes no time.
-> >
-> > > Is that
-> > > really necessary? Values from __builtin_return_address() can easily b=
-e
-> > > printed out as function+offset from kernel which already gives most o=
-f the
-> > > necessary information for triaging and mapping that back to source li=
-ne from
-> > > userspace isn't difficult. Wouldn't using __builtin_return_address() =
-make
-> > > the whole thing a lot simpler?
-> >
-> > If we do that we have to associate that address with the allocation
-> > counter at runtime on the first allocation and look it up on all
-> > following allocations. That introduces the overhead which we are
-> > trying to avoid by using macros.
->
-> I see. I'm a bit skeptical about the performance angle given that the hot
-> path can be probably made really cheap even with lookups. In most cases,
-> it's just gonna be an extra pointer deref and a few more arithmetics. Tha=
-t
-> can show up in microbenchmarks but it's not gonna be much. The benefit of
-> going that route would be the tracking thing being mostly self contained.
+On Wed, May 03, 2023 at 09:22:24AM +0200, Juri Lelli wrote:
 
-I'm in the process of rerunning the tests to compare the overhead on
-the latest kernel but I don't expect that to be cheap compared to
-kmalloc().
+>  /*
+> - * There are two global locks guarding cpuset structures - cpuset_rwsem and
+> + * There are two global locks guarding cpuset structures - cpuset_mutex and
+>   * callback_lock. We also require taking task_lock() when dereferencing a
+>   * task's cpuset pointer. See "The task_lock() exception", at the end of this
+> - * comment.  The cpuset code uses only cpuset_rwsem write lock.  Other
+> - * kernel subsystems can use cpuset_read_lock()/cpuset_read_unlock() to
+> - * prevent change to cpuset structures.
+> + * comment.  The cpuset code uses only cpuset_mutex. Other kernel subsystems
+> + * can use cpuset_lock()/cpuset_unlock() to prevent change to cpuset
+> + * structures.
+>   *
+>   * A task must hold both locks to modify cpusets.  If a task holds
+> - * cpuset_rwsem, it blocks others wanting that rwsem, ensuring that it
+> - * is the only task able to also acquire callback_lock and be able to
+> - * modify cpusets.  It can perform various checks on the cpuset structure
+> - * first, knowing nothing will change.  It can also allocate memory while
+> - * just holding cpuset_rwsem.  While it is performing these checks, various
+> - * callback routines can briefly acquire callback_lock to query cpusets.
+> - * Once it is ready to make the changes, it takes callback_lock, blocking
+> - * everyone else.
+> + * cpuset_mutex, it blocks others, ensuring that it is the only task able to
+> + * also acquire callback_lock and be able to modify cpusets.  It can perform
+> + * various checks on the cpuset structure first, knowing nothing will change.
+> + * It can also allocate memory while just holding cpuset_mutex.  While it is
+> + * performing these checks, various callback routines can briefly acquire
+> + * callback_lock to query cpusets.  Once it is ready to make the changes, it
+> + * takes callback_lock, blocking everyone else.
+>   *
+>   * Calls to the kernel memory allocator can not be made while holding
+>   * callback_lock, as that would risk double tripping on callback_lock
+> @@ -403,16 +402,16 @@ static struct cpuset top_cpuset = {
+>   * guidelines for accessing subsystem state in kernel/cgroup.c
+>   */
+>  
+> -DEFINE_STATIC_PERCPU_RWSEM(cpuset_rwsem);
+> +static DEFINE_MUTEX(cpuset_mutex);
 
->
-> That said, it's nice to not have to worry about allocating tracking slots
-> and managing hash table, so no strong opinion.
->
-> Thanks.
->
-> --
-> tejun
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+Perhaps extend the comment to state you explicitly want a mutex for PI
+etc.. ?
