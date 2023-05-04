@@ -2,135 +2,270 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114A86F62D8
-	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 04:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB336F62DB
+	for <lists+cgroups@lfdr.de>; Thu,  4 May 2023 04:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjEDCQu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 May 2023 22:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        id S229689AbjEDCQz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 May 2023 22:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjEDCQs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 22:16:48 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6851A5;
-        Wed,  3 May 2023 19:16:47 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-24df4ecdb87so13048a91.0;
-        Wed, 03 May 2023 19:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683166607; x=1685758607;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xki9EImbF8EHplkOG7u13eoQc3pPoVT6i0i48IKNO48=;
-        b=AVbZGT9K0r89MqzrSpIR7uMQXdw8u/F4834X6xnRREOGxmDQ4D/A6MjHGUxFG3npis
-         aSiP7azLezP1XiGgrGudWR33IUl22a/61L8gQoe/STrWaRoCtDxodSejGGl7LbFwoSoW
-         y8er0cowxZ+SiTuo8NZyP0h49wpyK2kMLhUVxrO1AuEfSIV5AQV6s/WtZ233X+EY2wzS
-         HnH2l/EQfk2fmkfN3WEcKcwTa+M18CB0b6bZWDe3dFh5+ms0vEqPkw0zF+C7i7OAyOn6
-         4mDKRPiK7AP3pPjuxFNw9ey2zSAa4AXCrWoax2bREtiC64a4zO5i43E6Ply2PNr5/uI6
-         ybJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683166607; x=1685758607;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xki9EImbF8EHplkOG7u13eoQc3pPoVT6i0i48IKNO48=;
-        b=MM3dMURXSfcey280qVppIyEXYmxA2k1cqSaGUgC6OyY1mKYPyY1Rqwbl/5AMXA3F5+
-         L2KutqNafXDwxulqpMdhu5r2QRmGvFA0qYJV/EmAxCJcleGWVq1QaDOXzWJviEOpgU0f
-         mPZabcKYZlSRDLrlaciFQN7RhvfwJ87yp1+nFHaP4TpDpur6QmNP9/qpAj1vjzefFbOo
-         wxrjpgkBb0enqT98KbxuAXuaKH9ByBR/RScxprsNnwVduJzvCEufOtJa7MtHNI0eb5/A
-         VrJhdjUF9q6LnwZiI14k8K0ki1XOKT5Q+8M3sI2PKZwj/JdbQ0xhMzAbfz8nsaIJ5iMR
-         WoCA==
-X-Gm-Message-State: AC+VfDzlO5LO6efHztyzEliefkgZFQ96LwxpC8c/19Pdgb6SKlRnnXLX
-        YIlukQVBpcjWV6KUYDRRKt8=
-X-Google-Smtp-Source: ACHHUZ586dtnZJkOKWi8qtW2XOPFy14umbO1JQg1ZdQXQttGCitXUXieeRChBtu6pNojzrEGrsn1pA==
-X-Received: by 2002:a17:902:a60e:b0:1a9:2b7f:a594 with SMTP id u14-20020a170902a60e00b001a92b7fa594mr1984126plq.29.1683166606837;
-        Wed, 03 May 2023 19:16:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6454])
-        by smtp.gmail.com with ESMTPSA id jd20-20020a170903261400b001a682a195basm3871260plb.28.2023.05.03.19.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 19:16:46 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 3 May 2023 16:16:44 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
-        vbabka@suse.cz, roman.gushchin@linux.dev, mgorman@suse.de,
-        dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-        corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-        juri.lelli@redhat.com, ldufour@linux.ibm.com,
-        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, muchun.song@linux.dev,
-        rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
-        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 00/40] Memory allocation profiling
-Message-ID: <ZFMVjAze4tu0DUXs@slm.duckdns.org>
-References: <ZFKNZZwC8EUbOLMv@slm.duckdns.org>
- <20230503180726.GA196054@cmpxchg.org>
- <ZFKlrP7nLn93iIRf@slm.duckdns.org>
- <ZFKqh5Dh93UULdse@slm.duckdns.org>
- <ZFKubD/lq7oB4svV@moria.home.lan>
- <ZFKu6zWA00AzArMF@slm.duckdns.org>
- <ZFKxcfqkUQ60zBB_@slm.duckdns.org>
- <CAJuCfpEPkCJZO2svT-GfmpJ+V-jSLyFDKM_atnqPVRBKtzgtnQ@mail.gmail.com>
- <ZFK6pwOelIlhV8Bm@slm.duckdns.org>
- <CAJuCfpG4TmRpT5iU7bJmKcjW2Tghstdo1b=qEG=tDsmtJQYuWA@mail.gmail.com>
+        with ESMTP id S229598AbjEDCQy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 May 2023 22:16:54 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8285E46;
+        Wed,  3 May 2023 19:16:51 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QBcrZ6qljz4f3kkT;
+        Thu,  4 May 2023 10:16:46 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgDn4R+PFVNkbfYOIA--.38432S3;
+        Thu, 04 May 2023 10:16:48 +0800 (CST)
+Subject: Re: [PATCH for-6.4/block] block/rq_qos: protect rq_qos apis with a
+ new lock
+To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, hch@lst.de,
+        josef@toxicpanda.com, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230414084008.2085155-1-yukuai1@huaweicloud.com>
+ <dde18143-b3bf-e493-c10a-5ffd2d8b772a@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <20340af6-a59f-6efd-eaa2-472276487203@huaweicloud.com>
+Date:   Thu, 4 May 2023 10:16:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpG4TmRpT5iU7bJmKcjW2Tghstdo1b=qEG=tDsmtJQYuWA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <dde18143-b3bf-e493-c10a-5ffd2d8b772a@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgDn4R+PFVNkbfYOIA--.38432S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3GFW3JFy8Kr1UWFW8GF1rZwb_yoW3Kr4xpa
+        1kKrW3ArWF9r1kW3WUGw4UXry7Jr4UK3WDJr48XFyayr47Ar1jqF18Zr1qgr48Ar4kJr48
+        Jr4UXrnrZr1UGrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
 
-On Wed, May 03, 2023 at 01:08:40PM -0700, Suren Baghdasaryan wrote:
-> > Yeah, I was wondering whether it'd be useful to have that configurable so
-> > that it'd be possible for a user to say "I'm okay with the cost, please
-> > track more context per allocation".
+
+在 2023/04/23 16:15, Yu Kuai 写道:
+> Hi,
 > 
-> I assume by "more context per allocation" you mean for a specific
-> allocation, not for all allocations.
-> So, in a sense you are asking if the context capture feature can be
-> dropped from this series and implemented using some other means. Is
-> that right?
+> 在 2023/04/14 16:40, Yu Kuai 写道:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> commit 50e34d78815e ("block: disable the elevator int del_gendisk")
+>> move rq_qos_exit() from disk_release() to del_gendisk(), this will
+>> introduce some problems:
+>>
+>> 1) If rq_qos_add() is triggered by enabling iocost/iolatency through
+>>     cgroupfs, then it can concurrent with del_gendisk(), it's not safe to
+>>     write 'q->rq_qos' concurrently.
+>>
+>> 2) Activate cgroup policy that is relied on rq_qos will call
+>>     rq_qos_add() and blkcg_activate_policy(), and if rq_qos_exit() is
+>>     called in the middle, null-ptr-dereference will be triggered in
+>>     blkcg_activate_policy().
+>>
+>> 3) blkg_conf_open_bdev() can call blkdev_get_no_open() first to find the
+>>     disk, then if rq_qos_exit() from del_gendisk() is done before
+>>     rq_qos_add(), then memory will be leaked.
+>>
+>> This patch add a new disk level mutex 'rq_qos_mutex':
+>>
+>> 1) The lock will protect rq_qos_exit() directly.
+>>
+>> 2) For wbt that doesn't relied on blk-cgroup, rq_qos_add() can only be
+>>     called from disk initialization for now because wbt can't be
+>>     destructed until rq_qos_exit(), so it's safe not to protect wbt for
+>>     now. Hoever, in case that rq_qos dynamically destruction is supported
+>>     in the furture, this patch also protect rq_qos_add() from wbt_init()
+>>     directly, this is enough because blk-sysfs already synchronize
+>>     writers with disk removal.
+>>
+>> 3) For iocost and iolatency, in order to synchronize disk removal and
+>>     cgroup configuration, the lock is held after blkdev_get_no_open()
+>>     from blkg_conf_open_bdev(), and is released in blkg_conf_exit().
+>>     In order to fix the above memory leak, disk_live() is checked after
+>>     holding the new lock.
+>>
+> 
+> Friendly ping ...
 
-Oh, no, what I meant was whether it'd make sense to allow enable richer
-tracking (e.g. record deeper into callstack) for all allocations. For
-targeted tracking, it seems that the kernel already has everything needed.
-But this is more of an idle thought and the immediate caller tracking is
-already a big improvement in terms of visibility, so no need to be hung up
-on this part of discussion at all.
+Friendly ping ...
+> 
+> Thanks,
+> Kuai
+>> Fixes: 50e34d78815e ("block: disable the elevator int del_gendisk")
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/blk-cgroup.c     |  9 +++++++++
+>>   block/blk-core.c       |  1 +
+>>   block/blk-rq-qos.c     | 20 ++++++--------------
+>>   block/blk-wbt.c        |  2 ++
+>>   include/linux/blkdev.h |  1 +
+>>   5 files changed, 19 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+>> index 1c1ebeb51003..0d79d864ecb1 100644
+>> --- a/block/blk-cgroup.c
+>> +++ b/block/blk-cgroup.c
+>> @@ -705,6 +705,13 @@ int blkg_conf_open_bdev(struct blkg_conf_ctx *ctx)
+>>           return -ENODEV;
+>>       }
+>> +    mutex_lock(&bdev->bd_queue->rq_qos_mutex);
+>> +    if (!disk_live(bdev->bd_disk)) {
+>> +        blkdev_put_no_open(bdev);
+>> +        mutex_unlock(&bdev->bd_queue->rq_qos_mutex);
+>> +        return -ENODEV;
+>> +    }
+>> +
+>>       ctx->body = input;
+>>       ctx->bdev = bdev;
+>>       return 0;
+>> @@ -849,6 +856,7 @@ EXPORT_SYMBOL_GPL(blkg_conf_prep);
+>>    */
+>>   void blkg_conf_exit(struct blkg_conf_ctx *ctx)
+>>       __releases(&ctx->bdev->bd_queue->queue_lock)
+>> +    __releases(&ctx->bdev->bd_queue->rq_qos_mutex)
+>>   {
+>>       if (ctx->blkg) {
+>>           spin_unlock_irq(&bdev_get_queue(ctx->bdev)->queue_lock);
+>> @@ -856,6 +864,7 @@ void blkg_conf_exit(struct blkg_conf_ctx *ctx)
+>>       }
+>>       if (ctx->bdev) {
+>> +        mutex_unlock(&ctx->bdev->bd_queue->rq_qos_mutex);
+>>           blkdev_put_no_open(ctx->bdev);
+>>           ctx->body = NULL;
+>>           ctx->bdev = NULL;
+>> diff --git a/block/blk-core.c b/block/blk-core.c
+>> index 269765d16cfd..fc7f902bdf5b 100644
+>> --- a/block/blk-core.c
+>> +++ b/block/blk-core.c
+>> @@ -420,6 +420,7 @@ struct request_queue *blk_alloc_queue(int node_id)
+>>       mutex_init(&q->debugfs_mutex);
+>>       mutex_init(&q->sysfs_lock);
+>>       mutex_init(&q->sysfs_dir_lock);
+>> +    mutex_init(&q->rq_qos_mutex);
+>>       spin_lock_init(&q->queue_lock);
+>>       init_waitqueue_head(&q->mq_freeze_wq);
+>> diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
+>> index d8cc820a365e..167be74df4ee 100644
+>> --- a/block/blk-rq-qos.c
+>> +++ b/block/blk-rq-qos.c
+>> @@ -288,11 +288,13 @@ void rq_qos_wait(struct rq_wait *rqw, void 
+>> *private_data,
+>>   void rq_qos_exit(struct request_queue *q)
+>>   {
+>> +    mutex_lock(&q->rq_qos_mutex);
+>>       while (q->rq_qos) {
+>>           struct rq_qos *rqos = q->rq_qos;
+>>           q->rq_qos = rqos->next;
+>>           rqos->ops->exit(rqos);
+>>       }
+>> +    mutex_unlock(&q->rq_qos_mutex);
+>>   }
+>>   int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum 
+>> rq_qos_id id,
+>> @@ -300,6 +302,8 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk 
+>> *disk, enum rq_qos_id id,
+>>   {
+>>       struct request_queue *q = disk->queue;
+>> +    lockdep_assert_held(&q->rq_qos_mutex);
+>> +
+>>       rqos->disk = disk;
+>>       rqos->id = id;
+>>       rqos->ops = ops;
+>> @@ -307,18 +311,13 @@ int rq_qos_add(struct rq_qos *rqos, struct 
+>> gendisk *disk, enum rq_qos_id id,
+>>       /*
+>>        * No IO can be in-flight when adding rqos, so freeze queue, which
+>>        * is fine since we only support rq_qos for blk-mq queue.
+>> -     *
+>> -     * Reuse ->queue_lock for protecting against other concurrent
+>> -     * rq_qos adding/deleting
+>>        */
+>>       blk_mq_freeze_queue(q);
+>> -    spin_lock_irq(&q->queue_lock);
+>>       if (rq_qos_id(q, rqos->id))
+>>           goto ebusy;
+>>       rqos->next = q->rq_qos;
+>>       q->rq_qos = rqos;
+>> -    spin_unlock_irq(&q->queue_lock);
+>>       blk_mq_unfreeze_queue(q);
+>> @@ -330,7 +329,6 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk 
+>> *disk, enum rq_qos_id id,
+>>       return 0;
+>>   ebusy:
+>> -    spin_unlock_irq(&q->queue_lock);
+>>       blk_mq_unfreeze_queue(q);
+>>       return -EBUSY;
+>>   }
+>> @@ -340,21 +338,15 @@ void rq_qos_del(struct rq_qos *rqos)
+>>       struct request_queue *q = rqos->disk->queue;
+>>       struct rq_qos **cur;
+>> -    /*
+>> -     * See comment in rq_qos_add() about freezing queue & using
+>> -     * ->queue_lock.
+>> -     */
+>> -    blk_mq_freeze_queue(q);
+>> +    lockdep_assert_held(&q->rq_qos_mutex);
+>> -    spin_lock_irq(&q->queue_lock);
+>> +    blk_mq_freeze_queue(q);
+>>       for (cur = &q->rq_qos; *cur; cur = &(*cur)->next) {
+>>           if (*cur == rqos) {
+>>               *cur = rqos->next;
+>>               break;
+>>           }
+>>       }
+>> -    spin_unlock_irq(&q->queue_lock);
+>> -
+>>       blk_mq_unfreeze_queue(q);
+>>       mutex_lock(&q->debugfs_mutex);
+>> diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+>> index e49a48684532..53bf5aa6f9ad 100644
+>> --- a/block/blk-wbt.c
+>> +++ b/block/blk-wbt.c
+>> @@ -942,7 +942,9 @@ int wbt_init(struct gendisk *disk)
+>>       /*
+>>        * Assign rwb and add the stats callback.
+>>        */
+>> +    mutex_lock(&q->rq_qos_mutex);
+>>       ret = rq_qos_add(&rwb->rqos, disk, RQ_QOS_WBT, &wbt_rqos_ops);
+>> +    mutex_unlock(&q->rq_qos_mutex);
+>>       if (ret)
+>>           goto err_free;
+>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+>> index 6ede578dfbc6..17774f55743e 100644
+>> --- a/include/linux/blkdev.h
+>> +++ b/include/linux/blkdev.h
+>> @@ -395,6 +395,7 @@ struct request_queue {
+>>       struct blk_queue_stats    *stats;
+>>       struct rq_qos        *rq_qos;
+>> +    struct mutex        rq_qos_mutex;
+>>       const struct blk_mq_ops    *mq_ops;
+>>
+> 
+> .
+> 
 
-Thanks.
-
--- 
-tejun
