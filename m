@@ -2,77 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B8A6F8570
-	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 17:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790506F861A
+	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 17:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjEEPUf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 May 2023 11:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
+        id S232563AbjEEPqD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 May 2023 11:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231941AbjEEPUe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 11:20:34 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7B34C26;
-        Fri,  5 May 2023 08:20:32 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-64115e652eeso20485073b3a.0;
-        Fri, 05 May 2023 08:20:32 -0700 (PDT)
+        with ESMTP id S232060AbjEEPqC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 11:46:02 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D541490D;
+        Fri,  5 May 2023 08:46:01 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-24e2bbec3d5so1431854a91.3;
+        Fri, 05 May 2023 08:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683300032; x=1685892032;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5OJUkhoBJrhHGknGMZO9ShmJQsdgZCKjJXfQhDAMN9c=;
-        b=nEnlw9VAAUV8WgNAPYNTJj+JJukKpNz9rlfLjajzDo6oLzt6bHdqqDW5kzTegJra9t
-         YqgXUrOaWZYSbauy+qZCYXAKyO+affH/D9ml3yqEBsVOLLOEBPQ3nYAn4dkw3vK+/DeC
-         Q63TYrhELFF6DNiKVS6VKEE9s2CHECurVK5fOrZVdgFLiP45O3UHeJOZ//0aAuMBFWvy
-         DpMm5h6yWQ0upjA4XKHgPhhoBnog4D3w86QQWL10kQT0pjKBhd//u61QvieuJIqOzMHM
-         MIlzjYtFjK5kUih5O8FC8AbfvKALBY/0N0VZapRB3VULwuR2jEK5REd4Dva5t3YEK2pA
-         pyVA==
+        d=gmail.com; s=20221208; t=1683301560; x=1685893560;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PeJDF4qNyObb/6dnFVDbh66VJOaqj9OlNV5gVoC6Lw0=;
+        b=ebChKD9JPNufACPPpce7Y36WdoKdtJnEgc472nYmg+3STxvplm1sSK2Xx8kf83TcqL
+         BX1o46mJB9gs4k9aj9vd8GvU6FG8zcgR+80Q7iHHHzt5sSoCQxrha8ZWrAVqiGYh9kwj
+         jRksz39E3pzbBJ5N2IDtOTzNvK2K/RKWSxhWND9eNT+dFhw7pRclnkyE8WeBjGW1h20k
+         Soz/FUBG8C0R4v+N9JsPibT1rsEK6yyTIxOOIagO9CXo40nRo4WXSHDczqSAIKqr/lIc
+         k5vhf5ImNmDMCRXfs8M/V9qzMJxpq4KH8r9EwqBZ/+zM9ZTjGXdj32TRVawJM7uQUCD8
+         l/tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683300032; x=1685892032;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5OJUkhoBJrhHGknGMZO9ShmJQsdgZCKjJXfQhDAMN9c=;
-        b=g/YnJDeOWNVdYYNfJpXwQ8GKUROenRKTsUVByqEauGcVY9opoC4iU08sj/GhT2AEDC
-         jGlwiJAs1lXi99vngzDk8KY2BZ0naong9GmqatwDCqaqFjq5oKL02xE+EOCcnst886jG
-         WwsAD5afoXLLf5E+KpUBVp/aiD7gsWwD2OxQyNnb+eH1aj5zDyZyPUJu6FRbZjAIpgke
-         XtrmyuCmCvxEgWq4XXsmmTtAlfmZg/AHQZPTglNKUAPI5mzVZ5Ypab07Du1qKnJzw0pu
-         IVqhOMQ7J4PlFG2nkUE03AYXs3aUiCgwiy3TmBuQHs+xt45KPP+KwphJ7NiKi5GsWQT/
-         hdDg==
-X-Gm-Message-State: AC+VfDxNusc4EALzXrLf368x4RLV/WwrsZSDO4od2MLN16JGokjZ+Ygr
-        YWRYgmTlculnt9ImYrNr3bc=
-X-Google-Smtp-Source: ACHHUZ7oiYndB9cpc+CjGNkoH0LARizJXbdY0M9WRBdPrmnSqXgZpNdLlOsdX8VfFturuI8l4ydt/g==
-X-Received: by 2002:a05:6a20:1595:b0:f2:4c39:8028 with SMTP id h21-20020a056a20159500b000f24c398028mr2598756pzj.21.1683300031571;
-        Fri, 05 May 2023 08:20:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683301560; x=1685893560;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PeJDF4qNyObb/6dnFVDbh66VJOaqj9OlNV5gVoC6Lw0=;
+        b=DNdtjZxrQdKLF73G/LnK4bpbAS0Qnmz1loUUk1sFa3ybkHk8JljVI2UFqv7fvSh3Us
+         1owpc5Gm3ESBarAdDmHYHvQ60lGXGpCIioMh9DSvKA5v0xBkGAtLbEcPYfsVDDUalmzs
+         Y36fnBYZztIz7GAHZtbAzgqAXeb+qs3gCY8Ol5UAxd2sunIXezpw+X55UbOwe4mmwtDz
+         m0ZLP3nAFhLQEkGg+yOPn05z+Ny+uJB6EJe0z14t3t35csqUuogH7OLGhNXF3lfiK8DK
+         suByD4uVIiFYJk+2n5IMJWCwO3EZT5JLFNH63R5R8Kty0t46JS1S57xg7OWutJuZ8I15
+         HtmQ==
+X-Gm-Message-State: AC+VfDx8F42hYM8H7Wb7gvUhfOGYlJgXEAzq2kcm844zI3APLKFeeMsw
+        PNsXX6ur/YEZx8O3lUpSCck=
+X-Google-Smtp-Source: ACHHUZ7M2wd6LkEFeDGvz3O5vsG8s4it92wRRoKH04Hgq6XGzWSlObPg43+1PTuNxpYTkjmKJyq69g==
+X-Received: by 2002:a17:90a:d498:b0:24e:10b3:c9cc with SMTP id s24-20020a17090ad49800b0024e10b3c9ccmr1992324pju.14.1683301560335;
+        Fri, 05 May 2023 08:46:00 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id 18-20020aa79152000000b0064394c2a1d0sm1758065pfi.209.2023.05.05.08.20.30
+        by smtp.gmail.com with ESMTPSA id ja18-20020a170902efd200b001a64c4023aesm1966839plb.36.2023.05.05.08.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 May 2023 08:20:31 -0700 (PDT)
+        Fri, 05 May 2023 08:45:59 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 5 May 2023 05:20:29 -1000
+Date:   Fri, 5 May 2023 05:45:58 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 5/5] cgroup: remove cgroup_rstat_flush_atomic()
-Message-ID: <ZFUevQbT8hHzH_vv@slm.duckdns.org>
-References: <20230421174020.2994750-1-yosryahmed@google.com>
- <20230421174020.2994750-6-yosryahmed@google.com>
+        Dave Chinner <dchinner@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Jiri Wiesner <jwiesner@suse.de>
+Subject: Re: [RFC PATCH 3/3] cgroup: Do not take css_set_lock in
+ cgroup_show_path
+Message-ID: <ZFUktg4Yxa30jRBX@slm.duckdns.org>
+References: <20230502133847.14570-1-mkoutny@suse.com>
+ <20230502133847.14570-4-mkoutny@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230421174020.2994750-6-yosryahmed@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230502133847.14570-4-mkoutny@suse.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -84,13 +82,31 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 05:40:20PM +0000, Yosry Ahmed wrote:
-> Previous patches removed the only caller of cgroup_rstat_flush_atomic().
-> Remove the function and simplify the code.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Hello,
 
-Acked-by: Tejun Heo <tj@kernel.org>
+On Tue, May 02, 2023 at 03:38:47PM +0200, Michal Koutný wrote:
+> /proc/$pid/mountinfo may accumulate lots of entries (causing frequent
+> re-reads of whole file) or lots cgroupfs entries alone.
+> The cgroupfs entries rendered with cgroup_show_path() may increase/be
+> subject of css_set_lock contention causing further slowdown -- not only
+> mountinfo rendering but any other css_set_lock user.
+> 
+> We leverage the fact that mountinfo reading happens with namespace_sem
+> taken and hierarchy roots thus cannot be freed concurrently.
+> 
+> There are three relevant nodes for each cgroupfs entry:
+> 
+>         R ... cgroup hierarchy root
+>         M ... mount root
+>         C ... reader's cgroup NS root
+> 
+> mountinfo is supposed to show path from C to M.
+
+At least for cgroup2, the path from C to M isn't gonna change once NS is
+established, right? Nothing can be moved or renamed while the NS root is
+there. If so, can't we just cache the formatted path and return the same
+thing without any locking? The proposed changes seem a bit too brittle to
+me.
 
 Thanks.
 
