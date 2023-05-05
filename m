@@ -2,70 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD056F8948
-	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 21:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76206F8988
+	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 21:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbjEETEu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 May 2023 15:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S233484AbjEETbj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 May 2023 15:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbjEETEo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 15:04:44 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9E721550;
-        Fri,  5 May 2023 12:04:39 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-51452556acdso1394166a12.2;
-        Fri, 05 May 2023 12:04:39 -0700 (PDT)
+        with ESMTP id S233527AbjEETbL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 15:31:11 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512D55FE2;
+        Fri,  5 May 2023 12:31:04 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-64389a44895so1888967b3a.1;
+        Fri, 05 May 2023 12:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683313479; x=1685905479;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GEPgHiIOCiYrMnaimD0D7235Mb8MCc1N6gYw0WH5GLs=;
-        b=Au926MGGOcupcwgRZNPEgfjNbK0PODV7VIpOzZqOU78a0/d5A/nhZgSe44BHtoRbCl
-         N8yC+LTAbpe691HIteKMgub3UY1Fmc6asWv+2XB0OmiqcaK9giMLMF9dDQRBydnj9IfC
-         Srpke8eUMka6WLDIFI0BIS9r95VGQUhzjxnQmOuZvBEGC8iIJgeTL3EVnIubxDDs2fdT
-         nOF57loKxP+rhjB1irK/WnYXFYicmCzNdZYPq6E5M+GHVZL+15qKCaTwtqP0UTZM2anX
-         RXwbF34otYxQNVgQhK1gSYDBZAqYRLgsCIdgLw/4E+NLqG2ZummrrMYm1cJ5K01Fyh5a
-         LbQg==
+        d=gmail.com; s=20221208; t=1683315064; x=1685907064;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sVSEn0zAZchU0XRfzSqIlgEVmcktBBmYwcVkhQoE8m0=;
+        b=NYCDjIhbaqBiOSrZ/jgxJYM++MvXfz+PziXmSOtlKBWR+5G4THFS2J6lKMYUL1ZtQp
+         /+n4GUaL/F1C/Hv7nTbtNqmpV5z7VXvQWx9UHrXUzwrHiw35fgnlVMsX4I0PBAgfwjUG
+         2ooHt7ZJh9wgSGvg/SHA6DtoJe/kiJ3Goxylyyfi6fMcMRmKbUeOvYZthBVzGkBWoj9k
+         uJVgHOEUm/rNXBynMU5Y//6lgXN9sg3cgtVtBR10M3kAWppabMcp+hGVLYpdWeVHjVxM
+         ZN1GgSLgrsNe6E6j4l34bTX+odwC3ez7lEInB6MbvS/FpUYjCDfl5Hx8sxVirIb5x3N4
+         kDbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683313479; x=1685905479;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GEPgHiIOCiYrMnaimD0D7235Mb8MCc1N6gYw0WH5GLs=;
-        b=YXYPan4VuZENP2E/VvI2CwEW0N6sTscmZCSqgYQ4mFXOwWM4AeQDrbN8izGV6ftpWx
-         +Qxno+KerKmLGXgx0nuJB88UtbGzc/BMuhCzsRSX9ikfyydQBUCI6wl+nkvb0u05rOlh
-         l527PfYB2aEv90lkkkc8OTadTB1pwWpsIC+N3/p/Y6tGKBLYkxv2mOPc2pQq0ZEkHbZa
-         9Msewat84JtqSJa33ycz2/rHYLaM/0DoDvR0WroCZ8dYK7bl85W2XExTy/CsDejLla15
-         XLdxbnzipAX8NA6n8LiU8c1jr4No19y3RqQLPnmVdO22yVH5idEKRRMQdyZ6SJNYoN7v
-         d1eA==
-X-Gm-Message-State: AC+VfDyZpNpp9dUtb2CKRPlDNP24cKaZzb0vO92Szx1biY46c3unaZ+S
-        BxhOpCl5jz3Kf05A6jQ4MxIw9n9Lydw=
-X-Google-Smtp-Source: ACHHUZ5JxzTBNOjgWwu6m6pWpeQ4R96ebV0sYRvFK3cBhGa4G6llfRY6+diIVFImaVuQkuAYiti2yg==
-X-Received: by 2002:a17:902:c40b:b0:1aa:fd48:f5e2 with SMTP id k11-20020a170902c40b00b001aafd48f5e2mr2743061plk.32.1683313478706;
-        Fri, 05 May 2023 12:04:38 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683315064; x=1685907064;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sVSEn0zAZchU0XRfzSqIlgEVmcktBBmYwcVkhQoE8m0=;
+        b=BSV+aYjbMY+aZSPnYP/WXfNr7KMqVR6eIvx7PdnfpUVxG5MSBB8+yud2qzcIR3x0m1
+         uyqUZRurayZHB7MPQMflUTte6dpqihtui5kETLiuzbLQw/8QuMqXxWxTzJyc9SJCI4yq
+         sQwGq9xgOTFimc/3w/0JvYbvs5huQTHvJQEk9aRVqItT/VsWeul4Y4yhxIzMqqStbF+/
+         CWY43WFb2aISHhoQhKyDUGudtNAlcYb1XMUCdpFJ6AAIDAHY4bUdpD+5igDUIHTKIotI
+         XWlqb8U1gIqtPlLkcaACJd5QiTyKZhMjDWkZghU1tzsA/4gqn3WOGX/UTJK/cNw+77Tz
+         egqQ==
+X-Gm-Message-State: AC+VfDzxlxPTzIcNg4Kw4nQh/uRrnRdVwcP36gXOAd24L/T0s0cj4Lck
+        fYHIZIE8HQ2s8mIV2igfgEw=
+X-Google-Smtp-Source: ACHHUZ5Ox2/rwuw44nA8yVDCYWqWPSKjPRPFOf73NgI1WWFm1SFU3RHfe3Zukjpsitt3RMd6eal9YA==
+X-Received: by 2002:a05:6a20:6a22:b0:f2:bb3f:3b3e with SMTP id p34-20020a056a206a2200b000f2bb3f3b3emr3501654pzk.38.1683315063529;
+        Fri, 05 May 2023 12:31:03 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id t1-20020a170902e84100b001ac45598b59sm1420599plg.163.2023.05.05.12.04.37
+        by smtp.gmail.com with ESMTPSA id n1-20020a63ee41000000b0050f7208b4bcsm1976619pgk.89.2023.05.05.12.31.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 May 2023 12:04:38 -0700 (PDT)
+        Fri, 05 May 2023 12:31:03 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 5 May 2023 09:04:37 -1000
+Date:   Fri, 5 May 2023 09:31:01 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>,
+        Waiman Long <longman@redhat.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Benjamin Berg <benjamin@sipsolutions.net>
-Subject: Re: [RFC PATCH] cgroup: Return error when attempting to migrate a
- zombie process
-Message-ID: <ZFVTRdP6eK1soMVR@slm.duckdns.org>
-References: <20230503125359.14789-1-mkoutny@suse.com>
+        Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v2 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth
+ restoration
+Message-ID: <ZFVZdbdZTLGhqYp4@slm.duckdns.org>
+References: <20230503072228.115707-1-juri.lelli@redhat.com>
+ <20230504062525.GF1734100@hirez.programming.kicks-ass.net>
+ <ZFNqJf+BQ0GMdr+y@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230503125359.14789-1-mkoutny@suse.com>
+In-Reply-To: <ZFNqJf+BQ0GMdr+y@localhost.localdomain>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -77,45 +94,41 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Thu, May 04, 2023 at 10:17:41AM +0200, Juri Lelli wrote:
+> On 04/05/23 08:25, Peter Zijlstra wrote:
+> > On Wed, May 03, 2023 at 09:22:22AM +0200, Juri Lelli wrote:
+> > 
+> > > Dietmar Eggemann (2):
+> > >   sched/deadline: Create DL BW alloc, free & check overflow interface
+> > >   cgroup/cpuset: Free DL BW in case can_attach() fails
+> > > 
+> > > Juri Lelli (4):
+> > >   cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+> > >   sched/cpuset: Bring back cpuset_mutex
+> > >   sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+> > >   cgroup/cpuset: Iterate only if DEADLINE tasks are present
+> > > 
+> > >  include/linux/cpuset.h  |  12 +-
+> > >  include/linux/sched.h   |   4 +-
+> > >  kernel/cgroup/cgroup.c  |   4 +
+> > >  kernel/cgroup/cpuset.c  | 242 ++++++++++++++++++++++++++--------------
+> > >  kernel/sched/core.c     |  41 +++----
+> > >  kernel/sched/deadline.c |  67 ++++++++---
+> > >  kernel/sched/sched.h    |   2 +-
+> > >  7 files changed, 244 insertions(+), 128 deletions(-)
+> > 
+> > Aside from a few niggles, these look fine to me. Who were you expecting
+> > to merge these, tj or me?
+> 
+> Thanks for reviewing!
+> 
+> Not entirely sure, it's kind of split, but maybe the cgroup changes are
+> predominant (cpuset_mutex is probably contributing the most). So, maybe
+> tj? Assuming this looks good to him as well of course. :)
 
-On Wed, May 03, 2023 at 02:53:59PM +0200, Michal Koutný wrote:
-> Zombies aren't migrated. However, return value of a migration write may
-> suggest a zombie process was migrated and causing confusion about lack
-> of cgroup.events:populated between origin and target cgroups (e.g.
-> target cgroup rmdir).
-> 
-> Notify the users about no effect of their action by a return value.
-> (update_dfl_csses migration of zombies still silently passes since it is
-> not meant to be user-visible migration anyway.)
-> 
-> Suggested-by: Benjamin Berg <benjamin@sipsolutions.net>
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
-> ---
->  kernel/cgroup/cgroup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> Reasons for RFC:
-> 1) Some users may notice the change,
-> 2) EINVAL vs ESCHR,
-> 3) add a selftest?
-> 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 625d7483951c..306547dd7b76 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -2968,7 +2968,8 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
->  	 * become trapped in a cpuset, or RT kthread may be born in a
->  	 * cgroup with no rt_runtime allocated.  Just say no.
->  	 */
-> -	if (tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) {
-> +	if (tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY) ||
-> +	    !atomic_read(&tsk->signal->live)) {
-
-This seems racy to me. The liveness state can change between here and the
-PF_EXITING check in cgroup_migrate_add_task(), right? Wouldn't it be better
-to just track how many tasks are tracked and return -ESRCH if none was
-migrated?
+Yeah, they all look sane to me and both Waiman and Peter seem okay with
+them. If you post an updated version with the minor suggestions applied,
+I'll route the series through the cgroup tree.
 
 Thanks.
 
