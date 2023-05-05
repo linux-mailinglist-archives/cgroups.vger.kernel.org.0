@@ -2,126 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3879E6F87A2
-	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 19:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5ECC6F8874
+	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 20:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjEERdG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 May 2023 13:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        id S232695AbjEESKf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 May 2023 14:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjEERdF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 13:33:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603171A4B5;
-        Fri,  5 May 2023 10:32:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F271F1FE20;
-        Fri,  5 May 2023 17:32:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1683307962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=08FuX13wN9U4YYw2axhJqWpBUnoUcHOE2BMKcuHHIII=;
-        b=dSvKo4grqGLt7OmzVg7CvER57EhkmRq43a6GttLWDA5VsTzGOjkr03cZx88FUETDQfnQKQ
-        +6cC/JbCvornmP+fW+kmIflQXd0nBQ67ryVRD/tVNdVe9L3/bISJGQv+7ggjZLE7hzD8fN
-        UuFbRmICbHw5Y0K1bER7vze628L+ysM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BCB1413513;
-        Fri,  5 May 2023 17:32:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tiArLbk9VWSnRAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 05 May 2023 17:32:41 +0000
-Date:   Fri, 5 May 2023 19:32:40 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [RFC PATCH 3/3] cgroup: Do not take css_set_lock in
- cgroup_show_path
-Message-ID: <ta7bilcvc7lzt5tvs44y5wxqt6i3gdmvzwcr5h2vxhjhshmivk@3mecui76fxvy>
-References: <20230502133847.14570-1-mkoutny@suse.com>
- <20230502133847.14570-4-mkoutny@suse.com>
- <ZFUktg4Yxa30jRBX@slm.duckdns.org>
+        with ESMTP id S232271AbjEESKe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 14:10:34 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44DF1A4B2
+        for <cgroups@vger.kernel.org>; Fri,  5 May 2023 11:10:32 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-b9ef06cb784so2755444276.0
+        for <cgroups@vger.kernel.org>; Fri, 05 May 2023 11:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683310232; x=1685902232;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QVZYG1JecNO86jzNV6C/AMNw6VQt+fJvqwCxq5mp/Nc=;
+        b=JuehaV/RJK9Y4fUOdxkcZEuqDGAuEF/acJdDqJ45XbKARUoqq4czDg4ZH8mqWvQs0W
+         C3cMUZ3VtCr6q/eI+6qJp58nulUMjZvQdZpvpUFXRdmOfRfhasZuNayk1xVHyGVy9Mwz
+         ItoP45q/KUOjBJ5HUc+Vlm240zAnqes7cusDh4wsBFNSxkmDsbQVgr1QY7ENaCb2Pf+o
+         stmyjKNibly7r3/lcAzIGX4ZSS4stgbgtYjMfq5c0cI/ZADNQtKt98fqV/f8MiQv11Tt
+         rfeoXeDHmM1lnkcbyLTsW9UrOEazY/VwbfsLiL1Vyfp7oqXyyedjHeSP3hv1vKGbwqQn
+         8juQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683310232; x=1685902232;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QVZYG1JecNO86jzNV6C/AMNw6VQt+fJvqwCxq5mp/Nc=;
+        b=LEKQltTzz3AaMHkdlql4YsXPah+6S5D0k03l+Un9j5A3NiAoG9VOXoZf60jl8aXi2o
+         2lBOsjmmhwOFaBombHut+dKXBQiyxDKsDKuEV6ZVKcND/z7nlnhwL3R8WD+8AmDroOH4
+         ZmCCu83rFRd43HxaEix8TFnMZqgbpYkch8rBuFSs79CX2jKEoxIrhP2YoyezpYOLdVlp
+         o98iYFd57IHPUQvjIcZtNYyD9S1xkGADuDG2HV+uCRagMsKs9KBMSvWugjo+fISCpty8
+         jfkwfRo+6YdS80C/QFE6VJDgwuPo4mZ/mb2JF0Jo6/UBgJY9vF2B5b2+yJ5TcFwjPtAe
+         BGjA==
+X-Gm-Message-State: AC+VfDxOblZELtVRnNgmlYVorpbALUVnAiJ4CDTQVO0Zml1E1P5CXfT4
+        /r52ZGxHcPW+f8ukRxc3Cnri7GbRiL6tRabOU+KgnQ==
+X-Google-Smtp-Source: ACHHUZ7QHqfeTFCV6iTpJ174mK2XnlUcdiV6R/LWDFZ2cFLepn3d5BnEaLb2X1/400R6vZerp7fSwFYV9RLQ6kw5Ucs=
+X-Received: by 2002:a25:19d7:0:b0:b97:1e2e:a4e5 with SMTP id
+ 206-20020a2519d7000000b00b971e2ea4e5mr2351347ybz.40.1683310231779; Fri, 05
+ May 2023 11:10:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rylaem3izw3vqdtr"
-Content-Disposition: inline
-In-Reply-To: <ZFUktg4Yxa30jRBX@slm.duckdns.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230501165450.15352-1-surenb@google.com> <20230501165450.15352-36-surenb@google.com>
+ <ZFIPmnrSIdJ5yusM@dhcp22.suse.cz> <CAJuCfpGsvWupMbasqvwcMYsOOPxTQqi1ed5+=vyu-yoPQwwybg@mail.gmail.com>
+ <ZFNoVfb+1W4NAh74@dhcp22.suse.cz> <CAJuCfpGUtw6cbjLsksGJKATZfTV0FEYRXwXT0pZV83XqQydBgg@mail.gmail.com>
+ <ZFTA8xVzxWc345Ug@dhcp22.suse.cz>
+In-Reply-To: <ZFTA8xVzxWc345Ug@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 5 May 2023 11:10:20 -0700
+Message-ID: <CAJuCfpFOLyZKvtqHuukOZvegxGHVUcAtbh3Egt+01yZ9kcEAew@mail.gmail.com>
+Subject: Re: [PATCH 35/40] lib: implement context capture support for tagged allocations
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
+        vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+        mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+        liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+        peterz@infradead.org, juri.lelli@redhat.com, ldufour@linux.ibm.com,
+        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, peterx@redhat.com, david@redhat.com,
+        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, gregkh@linuxfoundation.org,
+        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+        glider@google.com, elver@google.com, dvyukov@google.com,
+        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
+        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri, May 5, 2023 at 1:40=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Thu 04-05-23 09:22:07, Suren Baghdasaryan wrote:
+> [...]
+> > > But even then I really detest an additional allocation from this cont=
+ext
+> > > for every single allocation request. There GFP_NOWAIT allocation for
+> > > steckdepot but that is at least cached and generally not allocating.
+> > > This will allocate for every single allocation.
+> >
+> > A small correction here. alloc_tag_create_ctx() is used only for
+> > allocations which we requested to capture the context. So, this last
+> > sentence is true for allocations we specifically marked to capture the
+> > context, not in general.
+>
+> Ohh, right. I have misunderstood that part. Slightly better, still
+> potentially a scalability issue because hard to debug memory leaks
+> usually use a generic caches (for kmalloc). So this might be still a lot
+> of objects to track.
 
---rylaem3izw3vqdtr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, generally speaking, if a single code location is allocating very
+frequently then enabling context capture for it will generate many
+callstack buffers.
 
-On Fri, May 05, 2023 at 05:45:58AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> > There are three relevant nodes for each cgroupfs entry:
-> >=20
-> >         R ... cgroup hierarchy root
-> >         M ... mount root
-> >         C ... reader's cgroup NS root
-> >=20
-> > mountinfo is supposed to show path from C to M.
->=20
-> At least for cgroup2, the path from C to M isn't gonna change once NS is
-> established, right?
+Your note about use of generic caches makes me think we still have a
+small misunderstanding. We tag at the allocation call site, not based
+on which cache is used. Two kmalloc calls from different code
+locations will have unique codetags for each, so enabling context
+capture for one would not result in context capturing for the other
+one.
 
-Right. Although, the argument about M (when C above M or when C and M in
-different subtrees) implicitly relies on the namespace_sem.
+>
+> > > There must be a better way.
+> >
+> > Yeah, agree, it would be good to avoid allocations in this path. Any
+> > specific ideas on how to improve this? Pooling/caching perhaps? I
+> > think kmem_cache does some of that already but maybe something else?
+>
+> The best I can come up with is a preallocated hash table to store
+> references to stack depots with some additional data associated. The
+> memory overhead could be still quite big but the hash tables could be
+> resized lazily.
 
-> Nothing can be moved or renamed while the NS root is there. If so,
-> can't we just cache the formatted path and return the same thing
-> without any locking?
+Ok, that seems like the continuation of you suggestion in another
+thread to combine identical callstack traces. That's an excellent
+idea! I think it would not be hard to implement. Thanks!
 
-Here I find the caching complexity not worth it for v2 only (also C is
-in the eye of the beholder) -- because then css_set_lock can be dropped
-=66rom cgroup_show_path with simpler reasoning.
-
-(Sadly, the bigger benefit would be on hybrid setups multiplied by the
-number of v1 hierarchies listed.)
-
-(OTOH, the caching argument and weights for it may be different for
-/proc/$pid/cgroup.)
-
-> The proposed changes seem a bit too brittle to me.
-
-OK, I'll look into separate cgroup_show_path and cgroup1_show_path
-approach.
-
-Thanks,
-Michal
-
---rylaem3izw3vqdtr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZFU9swAKCRAkDQmsBEOq
-uSoLAQD754ptzc5v4SJdwNDmNSnDSByFIjlKbnAxKHci/pO4ywD+MIDAb1A+syAS
-I2WGGvHWDmD2tCQtQb85PVVcokfqkQ0=
-=uY1H
------END PGP SIGNATURE-----
-
---rylaem3izw3vqdtr--
+> --
+> Michal Hocko
+> SUSE Labs
