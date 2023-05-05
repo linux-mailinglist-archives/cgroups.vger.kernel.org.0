@@ -2,87 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76206F8988
-	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 21:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45636F89D8
+	for <lists+cgroups@lfdr.de>; Fri,  5 May 2023 21:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjEETbj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 May 2023 15:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56776 "EHLO
+        id S232549AbjEETvH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 May 2023 15:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233527AbjEETbL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 15:31:11 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512D55FE2;
-        Fri,  5 May 2023 12:31:04 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-64389a44895so1888967b3a.1;
-        Fri, 05 May 2023 12:31:04 -0700 (PDT)
+        with ESMTP id S233366AbjEETvG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 May 2023 15:51:06 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8EA10C;
+        Fri,  5 May 2023 12:51:01 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-64115e652eeso22202796b3a.0;
+        Fri, 05 May 2023 12:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683315064; x=1685907064;
+        d=gmail.com; s=20221208; t=1683316261; x=1685908261;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sVSEn0zAZchU0XRfzSqIlgEVmcktBBmYwcVkhQoE8m0=;
-        b=NYCDjIhbaqBiOSrZ/jgxJYM++MvXfz+PziXmSOtlKBWR+5G4THFS2J6lKMYUL1ZtQp
-         /+n4GUaL/F1C/Hv7nTbtNqmpV5z7VXvQWx9UHrXUzwrHiw35fgnlVMsX4I0PBAgfwjUG
-         2ooHt7ZJh9wgSGvg/SHA6DtoJe/kiJ3Goxylyyfi6fMcMRmKbUeOvYZthBVzGkBWoj9k
-         uJVgHOEUm/rNXBynMU5Y//6lgXN9sg3cgtVtBR10M3kAWppabMcp+hGVLYpdWeVHjVxM
-         ZN1GgSLgrsNe6E6j4l34bTX+odwC3ez7lEInB6MbvS/FpUYjCDfl5Hx8sxVirIb5x3N4
-         kDbQ==
+        bh=9VTfSz0yyeWdPF85h+AGQ/vGWi6fRSpfJvLR0EPjDWQ=;
+        b=YzCXidzcvcJPIoxaBZ+1nS64ayb4z2Nf/LW7iWyUN9Mns5/BbiJOUSxxUH/670nETy
+         MIs5soNpscb526ENU8VjKh6AdiDPRH98QzW13/BUp9S+rDbjVHfd3KCVMKP9SEX3qgfA
+         K1ywoVkU2tKVOeJIyZdnfV9SFvQ+jCeepatv589ecD3xCxWZvUiuoMFaAVK0Vw+XLPIa
+         VpXQlYmhF33TSjEjtEeLUKbnUMQd2SJy9bedok132XO7Har+gUApfjkynV5S5dUx+MDg
+         ftBonzsxuMC4noRNfzT1bUaXe150dGe63LYuU5IwhhM4dL63Q7uC6ix1Fn5ZgosyQkuN
+         bSEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683315064; x=1685907064;
+        d=1e100.net; s=20221208; t=1683316261; x=1685908261;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sVSEn0zAZchU0XRfzSqIlgEVmcktBBmYwcVkhQoE8m0=;
-        b=BSV+aYjbMY+aZSPnYP/WXfNr7KMqVR6eIvx7PdnfpUVxG5MSBB8+yud2qzcIR3x0m1
-         uyqUZRurayZHB7MPQMflUTte6dpqihtui5kETLiuzbLQw/8QuMqXxWxTzJyc9SJCI4yq
-         sQwGq9xgOTFimc/3w/0JvYbvs5huQTHvJQEk9aRVqItT/VsWeul4Y4yhxIzMqqStbF+/
-         CWY43WFb2aISHhoQhKyDUGudtNAlcYb1XMUCdpFJ6AAIDAHY4bUdpD+5igDUIHTKIotI
-         XWlqb8U1gIqtPlLkcaACJd5QiTyKZhMjDWkZghU1tzsA/4gqn3WOGX/UTJK/cNw+77Tz
-         egqQ==
-X-Gm-Message-State: AC+VfDzxlxPTzIcNg4Kw4nQh/uRrnRdVwcP36gXOAd24L/T0s0cj4Lck
-        fYHIZIE8HQ2s8mIV2igfgEw=
-X-Google-Smtp-Source: ACHHUZ5Ox2/rwuw44nA8yVDCYWqWPSKjPRPFOf73NgI1WWFm1SFU3RHfe3Zukjpsitt3RMd6eal9YA==
-X-Received: by 2002:a05:6a20:6a22:b0:f2:bb3f:3b3e with SMTP id p34-20020a056a206a2200b000f2bb3f3b3emr3501654pzk.38.1683315063529;
-        Fri, 05 May 2023 12:31:03 -0700 (PDT)
+        bh=9VTfSz0yyeWdPF85h+AGQ/vGWi6fRSpfJvLR0EPjDWQ=;
+        b=al2oxpju6rN0W7iUbGECtMWwSddMpdePHXlB7MDRq0V/eDebH2ghOMh0jeWJqHS805
+         X8rx+UjZGjBJquuGakxpa0kKcuVeEKQiLEt44Wp2NmvBOFrVvKG3D01SJGzRCV7bwH2q
+         EzKIx5YLfbzgndsigsAfHInFkmdUPshUZ/NMHtLxByxSSOGXBkxJyZhv/wSI/CxMdIvy
+         fdjksT719UUsFgpWkkQUDC9lUJYohhMg0vB9Wl7HcNLUHfwZ7F+xXT9uXp5J6qRyOvaX
+         4fXaD2oww7pd0uKiGYD4vEKMNgCjqquKr/HqIxg1QiSY9evLxSOnuiWlTVn1b2QjpdZR
+         uxNg==
+X-Gm-Message-State: AC+VfDz2VJwk59n1q6djbZ8bXr0HZu3TnpoIxyRGO7VqIiV9BihNGTUY
+        8MH+H0JHdAxw/sEPbtENH3kY/B2qbX4=
+X-Google-Smtp-Source: ACHHUZ4bkyJhNlajHLHjulTevnzyI8SPsU3iBUFjjRbWKMZ5Oh2cdTySHlBCCO1k0lGiFMNc3urMIg==
+X-Received: by 2002:a05:6a00:298e:b0:63c:b3be:9784 with SMTP id cj14-20020a056a00298e00b0063cb3be9784mr7723066pfb.3.1683316260908;
+        Fri, 05 May 2023 12:51:00 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id n1-20020a63ee41000000b0050f7208b4bcsm1976619pgk.89.2023.05.05.12.31.02
+        by smtp.gmail.com with ESMTPSA id c13-20020aa7880d000000b0063d2bb0d10asm1965319pfo.113.2023.05.05.12.51.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 May 2023 12:31:03 -0700 (PDT)
+        Fri, 05 May 2023 12:51:00 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 5 May 2023 09:31:01 -1000
+Date:   Fri, 5 May 2023 09:50:59 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>,
-        Waiman Long <longman@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org,
+        intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org,
-        cgroups@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v2 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth
- restoration
-Message-ID: <ZFVZdbdZTLGhqYp4@slm.duckdns.org>
-References: <20230503072228.115707-1-juri.lelli@redhat.com>
- <20230504062525.GF1734100@hirez.programming.kicks-ass.net>
- <ZFNqJf+BQ0GMdr+y@localhost.localdomain>
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [RFC PATCH 0/4]  Add support for DRM cgroup memory accounting.
+Message-ID: <ZFVeI2DKQXddKDNl@slm.duckdns.org>
+References: <20230503083500.645848-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZFNqJf+BQ0GMdr+y@localhost.localdomain>
+In-Reply-To: <20230503083500.645848-1-maarten.lankhorst@linux.intel.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -94,41 +80,50 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 04, 2023 at 10:17:41AM +0200, Juri Lelli wrote:
-> On 04/05/23 08:25, Peter Zijlstra wrote:
-> > On Wed, May 03, 2023 at 09:22:22AM +0200, Juri Lelli wrote:
-> > 
-> > > Dietmar Eggemann (2):
-> > >   sched/deadline: Create DL BW alloc, free & check overflow interface
-> > >   cgroup/cpuset: Free DL BW in case can_attach() fails
-> > > 
-> > > Juri Lelli (4):
-> > >   cgroup/cpuset: Rename functions dealing with DEADLINE accounting
-> > >   sched/cpuset: Bring back cpuset_mutex
-> > >   sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
-> > >   cgroup/cpuset: Iterate only if DEADLINE tasks are present
-> > > 
-> > >  include/linux/cpuset.h  |  12 +-
-> > >  include/linux/sched.h   |   4 +-
-> > >  kernel/cgroup/cgroup.c  |   4 +
-> > >  kernel/cgroup/cpuset.c  | 242 ++++++++++++++++++++++++++--------------
-> > >  kernel/sched/core.c     |  41 +++----
-> > >  kernel/sched/deadline.c |  67 ++++++++---
-> > >  kernel/sched/sched.h    |   2 +-
-> > >  7 files changed, 244 insertions(+), 128 deletions(-)
-> > 
-> > Aside from a few niggles, these look fine to me. Who were you expecting
-> > to merge these, tj or me?
-> 
-> Thanks for reviewing!
-> 
-> Not entirely sure, it's kind of split, but maybe the cgroup changes are
-> predominant (cpuset_mutex is probably contributing the most). So, maybe
-> tj? Assuming this looks good to him as well of course. :)
+Hello,
 
-Yeah, they all look sane to me and both Waiman and Peter seem okay with
-them. If you post an updated version with the minor suggestions applied,
-I'll route the series through the cgroup tree.
+On Wed, May 03, 2023 at 10:34:56AM +0200, Maarten Lankhorst wrote:
+> RFC as I'm looking for comments.
+> 
+> For long running compute, it can be beneficial to partition the GPU memory
+> between cgroups, so each cgroup can use its maximum amount of memory without
+> interfering with other scheduled jobs. Done properly, this can alleviate the
+> need for eviction, which might result in a job being terminated if the GPU
+> doesn't support mid-thread preemption or recoverable page faults.
+> 
+> This is done by adding a bunch of knobs to cgroup:
+> drm.capacity: Shows maximum capacity of each resource region.
+> drm.max: Display or limit max amount of memory.
+> drm.current: Current amount of memory in use.
+> 
+> TTM has not been made cgroup aware yet, so instead of evicting from
+> the current cgroup to stay within the cgroup limits, it simply returns
+> the error -ENOSPC to userspace.
+> 
+> I've used Tvrtko's cgroup controller series as a base, but it implemented
+> scheduling weight, not memory accounting, so I only ended up keeping the
+> base patch.
+> 
+> Xe is not upstream yet, so the driver specific patch will only apply on
+> https://gitlab.freedesktop.org/drm/xe/kernel
+
+Some high-level feedbacks.
+
+* There have been multiple attempts at this but the track record is kinda
+  poor. People don't seem to agree what should constitute DRM memory and how
+  they should be accounted / controlled.
+
+* I like Tvrtko's scheduling patchset because it exposes a generic interface
+  which makes sense regardless of hardware details and then each driver can
+  implement the configured control in whatever way they can. However, even
+  for that, there doesn't seem much buy-in from other drivers.
+
+* This proposal seems narrowly scoped trying to solve a specific problem
+  which may not translate to different hardware configurations. Please let
+  me know if I got that wrong, but if that's the case, I think a better and
+  easier approach might be just being a part of the misc controller. That
+  doesn't require much extra code and should be able to provide everything
+  necessary for statically limiting specific resources.
 
 Thanks.
 
