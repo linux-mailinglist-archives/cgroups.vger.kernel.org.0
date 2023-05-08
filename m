@@ -2,250 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF156F9D2D
-	for <lists+cgroups@lfdr.de>; Mon,  8 May 2023 03:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30A46FA1C0
+	for <lists+cgroups@lfdr.de>; Mon,  8 May 2023 10:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjEHBEh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 7 May 2023 21:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        id S232820AbjEHIAP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 May 2023 04:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbjEHBEg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 7 May 2023 21:04:36 -0400
+        with ESMTP id S232052AbjEHIAO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 May 2023 04:00:14 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D6493E8
-        for <cgroups@vger.kernel.org>; Sun,  7 May 2023 18:03:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018181FAA4
+        for <cgroups@vger.kernel.org>; Mon,  8 May 2023 00:59:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683507828;
+        s=mimecast20190719; t=1683532750;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yNJL2kG/0UIHUcIFT9+ra+rm25yTkCXYyXj8ZQWBWis=;
-        b=Vczz4TKdtsvL/gOnD+UZCgtHqd2EpifWjbcug9MI/NrPJNcR0uHU3QJzCR8BlqNInClCxC
-        d/6xRzgdpXmGb3dq+5xmrAXWlAT4NM0rYbctfEm6YgWBFd0aJPvdijqisnEwtN3btFUb6w
-        8hdT35TpxWaZyHhO9RJ6gJkCMRO4zYI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-503-YY8RQShXNZi9T1VyKmEdXg-1; Sun, 07 May 2023 21:03:46 -0400
-X-MC-Unique: YY8RQShXNZi9T1VyKmEdXg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F3062885622;
-        Mon,  8 May 2023 01:03:45 +0000 (UTC)
-Received: from [10.22.16.113] (unknown [10.22.16.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 050ECC15BA0;
-        Mon,  8 May 2023 01:03:44 +0000 (UTC)
-Message-ID: <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
-Date:   Sun, 7 May 2023 21:03:44 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0yjjpMvZRxZ04Sc5RGeV40FbrumDYGW5whlq7sLnsds=;
+        b=RXRh5E/Qxb3g8UVNwqyIJBuywIcoBQVaL+Ov4FddxxezAYvMUpBpEJNF/gQZsd8Xbg/uOM
+        qW3c2qZVPeBRCEF4SDBZsg1Jz/RygsFhFqAb+JFhRXOHO/5DpejUxD/3YO7Nnmf5JtrCBE
+        Juq6U4ii+zJE1bojxXSnx+Apc7mFCqw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-4wT4pb51NQuI8MxC450okQ-1; Mon, 08 May 2023 03:59:09 -0400
+X-MC-Unique: 4wT4pb51NQuI8MxC450okQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f16fa91923so22931605e9.2
+        for <cgroups@vger.kernel.org>; Mon, 08 May 2023 00:59:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683532748; x=1686124748;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0yjjpMvZRxZ04Sc5RGeV40FbrumDYGW5whlq7sLnsds=;
+        b=IFbNpaMcZxq/KQDGFozvZbJHZE/IlMr2Uy7uaRSmloXAZ+FlrJ0lLcapwW6Z+XU6+U
+         PmFd9MA5WQux9qHdvlod6fc0w0LzURf22fvTEFxGiHdR/PENHXEPik4KJcVLvWbGVboF
+         DFGFTA9elrg2KwENoPR+63I0gcFzWKda2Pv7OvKfzIGv69mjxcvBOJrDpXDJQ2L363f9
+         0+ns4nr+aJpodreerERXbvlhWUslIYoceXCU9e8+VYj4jtZmdXPNC6JcbbisrmOyBbkF
+         rajX/xRRTai8TNoYupaKuOIqxD4lO50bWCwcneRxETIqDuJPq4tmepsnVoY5oLyMgCmV
+         oHRA==
+X-Gm-Message-State: AC+VfDzp7EWsZTAtvXrNjzdmlyyUoexRwcHauNXH9dDgBgYao9Mj17Jx
+        qKMUo+HmwfxovEJ/d4wdpcRLQENXORJV6zRz1DWdm9gj2ueXJ5LqcJXcSB5YGXy52sMVk468iGu
+        Bh005ecGhZDfRCWKIoQ==
+X-Received: by 2002:a7b:c5c3:0:b0:3f3:2ba9:94e1 with SMTP id n3-20020a7bc5c3000000b003f32ba994e1mr6171425wmk.25.1683532747873;
+        Mon, 08 May 2023 00:59:07 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5DSFBAUNLjj3rTwoASsPZbj9hYXrXBFrluMZpr49toKIIVxr6ZbwXHQTd+xcH5FBfSweYTPA==
+X-Received: by 2002:a7b:c5c3:0:b0:3f3:2ba9:94e1 with SMTP id n3-20020a7bc5c3000000b003f32ba994e1mr6171393wmk.25.1683532747506;
+        Mon, 08 May 2023 00:59:07 -0700 (PDT)
+Received: from localhost.localdomain.com ([176.206.13.250])
+        by smtp.gmail.com with ESMTPSA id f8-20020a7bcd08000000b003f42894ebe2sm250423wmj.23.2023.05.08.00.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 May 2023 00:59:06 -0700 (PDT)
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
-References: <226cb2da-e800-6531-4e57-cbf991022477@redhat.com>
- <ZDmFLfII8EUX_ocY@slm.duckdns.org>
- <c61ca9d0-c514-fb07-c2f2-3629e8898984@redhat.com>
- <ZDmOjeBVsIcgSLIV@slm.duckdns.org>
- <60ec12dc-943c-b8f0-8b6f-97c5d332144c@redhat.com>
- <46d26abf-a725-b924-47fa-4419b20bbc02@redhat.com>
- <jqkf7jkuyxqiupmxmdbmpnbpojub2pjsz3oogwncmwqdghlsgk@phsqzirmmlyl>
- <f2bd7b1e-190e-1d08-f085-b4cae36fb5be@redhat.com>
- <ZFGOTHQj3k5rzmyR@blackbook>
- <deb7b684-3d7c-b3ae-7b36-5b7ba2dd8001@redhat.com>
- <ZFUo5IYAIwTEKR4_@slm.duckdns.org>
- <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
-In-Reply-To: <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Hao Luo <haoluo@google.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: [PATCH v3 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth restoration
+Date:   Mon,  8 May 2023 09:58:48 +0200
+Message-Id: <20230508075854.17215-1-juri.lelli@redhat.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Qais reported [1] that iterating over all tasks when rebuilding root
+domains for finding out which ones are DEADLINE and need their bandwidth
+correctly restored on such root domains can be a costly operation (10+
+ms delays on suspend-resume). He proposed we skip rebuilding root
+domains for certain operations, but that approach seemed arch specific
+and possibly prone to errors, as paths that ultimately trigger a rebuild
+might be quite convoluted (thanks Qais for spending time on this!).
 
-The following is the proposed text for "cpuset.cpus.reserve" and 
-"cpuset.cpus.partition" of the new cpuset partition in 
-Documentation/admin-guide/cgroup-v2.rst.
+This is v3 of an alternative approach (v2 at [4]) to fix the problem.
 
-   cpuset.cpus.reserve
-     A read-write multiple values file which exists only on root
-     cgroup.
+ 01/06 - Rename functions deadline with DEADLINE accounting (cleanup
+         suggested by Qais) - no functional change
+ 02/06 - Bring back cpuset_mutex (so that we have write access to cpusets
+         from scheduler operations - and we also fix some problems
+         associated to percpu_cpuset_rwsem)
+ 03/06 - Keep track of the number of DEADLINE tasks belonging to each cpuset
+ 04/06 - Use this information to only perform the costly iteration if
+         DEADLINE tasks are actually present in the cpuset for which a
+         corresponding root domain is being rebuilt
+ 05/06 - Create DL BW alloc, free & check overflow interface for bulk
+         bandwidth allocation/removal - no functional change 
+ 06/06 - Fix bandwidth allocation handling for cgroup operation
+         involving multiple tasks
 
-     It lists all the CPUs that are reserved for adjacent and remote
-     partitions created in the system.  See the next section for
-     more information on what an adjacent or remote partitions is.
+With respect to the v2 posting [4]
 
-     Creation of adjacent partition does not require touching this
-     control file as CPU reservation will be done automatically.
-     In order to create a remote partition, the CPUs needed by the
-     remote partition has to be written to this file first.
+ 1 - rebase on top of Linus' tree as of today (ac9a78681b92)
+ 2 - add the 'why' to 5/6 changelog - Peter
+ 3 - explicitly say that we need to keep cpuset_mutex a mutex for PI on
+     2/6 - Peter
 
-     A "+" prefix can be used to indicate a list of additional
-     CPUs that are to be added without disturbing the CPUs that are
-     originally there.  For example, if its current value is "3-4",
-     echoing ""+5" to it will change it to "3-5".
+This set is also available from
 
-     Once a remote partition is destroyed, its CPUs have to be
-     removed from this file or no other process can use them.  A "-"
-     prefix can be used to remove a list of CPUs from it.  However,
-     removing CPUs that are currently used in existing partitions
-     may cause those partitions to become invalid.  A single "-"
-     character without any number can be used to indicate removal
-     of all the free CPUs not allocated to any partitions to avoid
-     accidental partition invalidation.
+https://github.com/jlelli/linux.git deadline/rework-cpusets
 
-   cpuset.cpus.partition
-     A read-write single value file which exists on non-root
-     cpuset-enabled cgroups.  This flag is owned by the parent cgroup
-     and is not delegatable.
+Best,
+Juri
 
-     It accepts only the following input values when written to.
+1 - https://lore.kernel.org/lkml/20230206221428.2125324-1-qyousef@layalina.io/
+2 - RFC https://lore.kernel.org/lkml/20230315121812.206079-1-juri.lelli@redhat.com/
+3 - v1  https://lore.kernel.org/lkml/20230329125558.255239-1-juri.lelli@redhat.com/
+4 - v2  https://lore.kernel.org/lkml/20230503072228.115707-1-juri.lelli@redhat.com/
 
-       ==========    =====================================
-       "member"    Non-root member of a partition
-       "root"    Partition root
-       "isolated"    Partition root without load balancing
-       ==========    =====================================
+Dietmar Eggemann (2):
+  sched/deadline: Create DL BW alloc, free & check overflow interface
+  cgroup/cpuset: Free DL BW in case can_attach() fails
 
-     A cpuset partition is a collection of cgroups with a partition
-     root at the top of the hierarchy and its descendants except
-     those that are separate partition roots themselves and their
-     descendants.  A partition has exclusive access to the set of
-     CPUs allocated to it.  Other cgroups outside of that partition
-     cannot use any CPUs in that set.
+Juri Lelli (4):
+  cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+  sched/cpuset: Bring back cpuset_mutex
+  sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+  cgroup/cpuset: Iterate only if DEADLINE tasks are present
 
-     There are two types of partitions - adjacent and remote.  The
-     parent of an adjacent partition must be a valid partition root.
-     Partition roots of adjacent partitions are all clustered around
-     the root cgroup.  Creation of adjacent partition is done by
-     writing the desired partition type into "cpuset.cpus.partition".
+ include/linux/cpuset.h  |  12 +-
+ include/linux/sched.h   |   4 +-
+ kernel/cgroup/cgroup.c  |   4 +
+ kernel/cgroup/cpuset.c  | 244 ++++++++++++++++++++++++++--------------
+ kernel/sched/core.c     |  41 +++----
+ kernel/sched/deadline.c |  67 ++++++++---
+ kernel/sched/sched.h    |   2 +-
+ 7 files changed, 246 insertions(+), 128 deletions(-)
 
-     A remote partition does not require a partition root parent.
-     So a remote partition can be formed far from the root cgroup.
-     However, its creation is a 2-step process.  The CPUs needed
-     by a remote partition ("cpuset.cpus" of the partition root)
-     has to be written into "cpuset.cpus.reserve" of the root
-     cgroup first.  After that, "isolated" can be written into
-     "cpuset.cpus.partition" of the partition root to form a remote
-     isolated partition which is the only supported remote partition
-     type for now.
-
-     All remote partitions are terminal as adjacent partition cannot
-     be created underneath it.
-
-     The root cgroup is always a partition root and its state cannot
-     be changed.  All other non-root cgroups start out as "member".
-
-     When set to "root", the current cgroup is the root of a new
-     partition or scheduling domain.
-
-     When set to "isolated", the CPUs in that partition will
-     be in an isolated state without any load balancing from the
-     scheduler.  Tasks placed in such a partition with multiple
-     CPUs should be carefully distributed and bound to each of the
-     individual CPUs for optimal performance.
-
-     The value shown in "cpuset.cpus.effective" of a partition root is
-     the CPUs that are dedicated to that partition and not available
-     to cgroups outside of that partittion.
-
-     A partition root ("root" or "isolated") can be in one of the
-     two possible states - valid or invalid.  An invalid partition
-     root is in a degraded state where some state information may
-     be retained, but behaves more like a "member".
-
-     All possible state transitions among "member", "root" and
-     "isolated" are allowed.
-
-     On read, the "cpuset.cpus.partition" file can show the following
-     values.
-
-       ============================= =====================================
-       "member"            Non-root member of a partition
-       "root"            Partition root
-       "isolated"            Partition root without load balancing
-       "root invalid (<reason>)"    Invalid partition root
-       "isolated invalid (<reason>)"    Invalid isolated partition root
-       ============================= =====================================
-
-     In the case of an invalid partition root, a descriptive string on
-     why the partition is invalid is included within parentheses.
-
-     For an adjacent partition root to be valid, the following
-     conditions must be met.
-
-     1) The "cpuset.cpus" is exclusive with its siblings , i.e. they
-        are not shared by any of its siblings (exclusivity rule).
-     2) The parent cgroup is a valid partition root.
-     3) The "cpuset.cpus" is not empty and must contain at least
-        one of the CPUs from parent's "cpuset.cpus", i.e. they overlap.
-     4) The "cpuset.cpus.effective" cannot be empty unless there is
-        no task associated with this partition.
-
-     For a remote partition root to be valid, the following conditions
-     must be met.
-
-     1) The same exclusivity rule as adjacent partition root.
-     2) The "cpuset.cpus" is not empty and all the CPUs must be
-        present in "cpuset.cpus.reserve" of the root cgroup and none
-        of them are allocated to another partition.
-     3) The "cpuset.cpus" value must be present in all its ancestors
-        to ensure proper hierarchical cpu distribution.
-
-     External events like hotplug or changes to "cpuset.cpus" can
-     cause a valid partition root to become invalid and vice versa.
-     Note that a task cannot be moved to a cgroup with empty
-     "cpuset.cpus.effective".
-
-     For a valid partition root with the sibling cpu exclusivity
-     rule enabled, changes made to "cpuset.cpus" that violate the
-     exclusivity rule will invalidate the partition as well as its
-     sibling partitions with conflicting cpuset.cpus values. So
-     care must be taking in changing "cpuset.cpus".
-
-     A valid non-root parent partition may distribute out all its CPUs
-     to its child partitions when there is no task associated with it.
-
-     Care must be taken to change a valid partition root to
-     "member" as all its child partitions, if present, will become
-     invalid causing disruption to tasks running in those child
-     partitions. These inactivated partitions could be recovered if
-     their parent is switched back to a partition root with a proper
-     set of "cpuset.cpus".
-
-     Poll and inotify events are triggered whenever the state of
-     "cpuset.cpus.partition" changes.  That includes changes caused
-     by write to "cpuset.cpus.partition", cpu hotplug or other
-     changes that modify the validity status of the partition.
-     This will allow user space agents to monitor unexpected changes
-     to "cpuset.cpus.partition" without the need to do continuous
-     polling.
-
-Cheers,
-Longman
+-- 
+2.40.1
 
