@@ -2,149 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2F86FB87A
-	for <lists+cgroups@lfdr.de>; Mon,  8 May 2023 22:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F916FBB64
+	for <lists+cgroups@lfdr.de>; Tue,  9 May 2023 01:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbjEHUsq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 May 2023 16:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        id S229969AbjEHXYV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 May 2023 19:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjEHUsp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 May 2023 16:48:45 -0400
-Received: from out-53.mta1.migadu.com (out-53.mta1.migadu.com [IPv6:2001:41d0:203:375::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEE159F5
-        for <cgroups@vger.kernel.org>; Mon,  8 May 2023 13:48:42 -0700 (PDT)
-Date:   Mon, 8 May 2023 16:48:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683578919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T9yUrg/v5raybQi2xKwTXiJDyugUh7KFNSbnsbVf1ko=;
-        b=JlOqRkPdzk5AJhxPMwu8AlexUvrKA9kXRniMs6KXFAxkkCykU6KjHBDIF+g4xO4yC/3Xao
-        +RuScEMByhVbOYP7Nl+Ojs+6ZTV4KDzSfRqi3slN82Zdtt1OUgviKekasieY9DgexpymM2
-        tFWfTgTgTslrvfQsG/FcZTuRpfPmr6I=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
-        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-        tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-        paulmck@kernel.org, pasha.tatashin@soleen.com,
-        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-        glider@google.com, elver@google.com, dvyukov@google.com,
-        shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
-        rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 00/40] Memory allocation profiling
-Message-ID: <ZFlgG02A87qPNIn1@moria.home.lan>
-References: <20230501165450.15352-1-surenb@google.com>
- <ZFIMaflxeHS3uR/A@dhcp22.suse.cz>
- <CAJuCfpHxbYFxDENYFfnggh1D8ot4s493PQX0C7kD-JLvixC-Vg@mail.gmail.com>
- <ZFN1yswCd9wRgYPR@dhcp22.suse.cz>
- <ZFfd99w9vFTftB8D@moria.home.lan>
- <20230508175206.7dc3f87c@meshulam.tesarici.cz>
- <ZFkb1p80vq19rieI@moria.home.lan>
- <20230508180913.6a018b21@meshulam.tesarici.cz>
- <ZFkjRBCExpXfI+O5@moria.home.lan>
- <20230508205939.0b5b485c@meshulam.tesarici.cz>
+        with ESMTP id S229690AbjEHXYU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 May 2023 19:24:20 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7B44C0F;
+        Mon,  8 May 2023 16:24:19 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1ab13da70a3so50719635ad.1;
+        Mon, 08 May 2023 16:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683588259; x=1686180259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xWUewLtyjjleyCE27N0mgy++XbZ3xZJBSp9FQArDlQU=;
+        b=cMgyvKzfMRZ5F6dobb+hxpXJmFiFNPdymS/AneW1qDN9sWCmT/PL8mluUI+VSw0I7L
+         yLOTKnHDqulRpFgPTlbgJ068wRQv3ph93VqvAylgj0TBV9hjoWcIyVwstwcQo6JoKuBf
+         GfmMQ9iDoviqnYAGxX0P1lj/KwdXQcJk+6KOxAIbdfgXgu9sNn0HBGqbnRIvJ30Wm0fG
+         gDB/Txt23JlWHtP7he4FGgXwIz+m1WwbgFCcKj6sXoBdsA9RU8kz5nsushGnw8lEzrBQ
+         JDOGRmm5Sj7o913tB4WBuCs3EcWn7K50tzAM96peisZmCKkOYcTUdyN0crppKzcxCPco
+         89bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683588259; x=1686180259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xWUewLtyjjleyCE27N0mgy++XbZ3xZJBSp9FQArDlQU=;
+        b=Ypf0qFB/mmaBOeSBGzNjh+MyoXDnLKWFMSbCqTnOMAsC/vS2o9cVzLm5gEipvoawHm
+         gpwYfDbumGuR2jfDz5gBoVtpn563vnUbGU/UhFylBn4wr+4ZHxOqKZH2mYdIpgz2/0XA
+         wSRVIuCyVSq8OPPEyWGYsJT46xL+lL4bnn5kIpB5FsQhqrCHbOzGfZRLQ3apZRuFKspw
+         SzoRoemxkCUjVUlL/cn3c6P/tRBkrZyII/a+j7cyYaN2831E69gRMZrwbi3yEqDXQ+GH
+         mZgAUzpvD6K+glFkdwQfgdVBOhBAbyvuR5nBLro7ebdTg1ayy0/3LP805X2Ex7OlzmSF
+         TLRA==
+X-Gm-Message-State: AC+VfDzslq4mEHimEgzUFVsG3VWK5pywXB2HcIsIcIchG03irSydyHBg
+        6zcmqv7hzkZxYkJ0dF/An/NJF2TYuyI=
+X-Google-Smtp-Source: ACHHUZ7Ywzg5sOXXcxQByghXAZO4WL2DDYhOxV9eqxNVmgAEUcQow7sUQy+/dUNbzjCenv4IHOqiPg==
+X-Received: by 2002:a17:902:ec83:b0:1ac:4d01:dff8 with SMTP id x3-20020a170902ec8300b001ac4d01dff8mr14216942plg.45.1683588258763;
+        Mon, 08 May 2023 16:24:18 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id s13-20020a170902988d00b001aaff9be643sm32647plp.89.2023.05.08.16.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 May 2023 16:24:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 8 May 2023 13:24:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>,
+        Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org,
+        cgroups@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v3 0/6] sched/deadline: cpuset: Rework DEADLINE bandwidth
+ restoration
+Message-ID: <ZFmEoBoX15FIpyW1@slm.duckdns.org>
+References: <20230508075854.17215-1-juri.lelli@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230508205939.0b5b485c@meshulam.tesarici.cz>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230508075854.17215-1-juri.lelli@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 08, 2023 at 08:59:39PM +0200, Petr Tesařík wrote:
-> On Mon, 8 May 2023 12:28:52 -0400
-> Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Mon, May 08, 2023 at 09:58:48AM +0200, Juri Lelli wrote:
+> Qais reported [1] that iterating over all tasks when rebuilding root
+> domains for finding out which ones are DEADLINE and need their bandwidth
+> correctly restored on such root domains can be a costly operation (10+
+> ms delays on suspend-resume). He proposed we skip rebuilding root
+> domains for certain operations, but that approach seemed arch specific
+> and possibly prone to errors, as paths that ultimately trigger a rebuild
+> might be quite convoluted (thanks Qais for spending time on this!).
 > 
-> > On Mon, May 08, 2023 at 06:09:13PM +0200, Petr Tesařík wrote:
-> > > Sure, although AFAIK the index does not cover all possible config
-> > > options (so non-x86 arch code is often forgotten). However, that's the
-> > > less important part.
-> > > 
-> > > What do you do if you need to hook something that does conflict with an
-> > > existing identifier?  
-> > 
-> > As already happens in this patchset, rename the other identifier.
-> > 
-> > But this is C, we avoid these kinds of conflicts already because the
-> > language has no namespacing
+> This is v3 of an alternative approach (v2 at [4]) to fix the problem.
 > 
-> This statement is not accurate, but I agree there's not much. Refer to
-> section 6.2.3 of ISO/IEC9899:2018 (Name spaces of identifiers).
+>  01/06 - Rename functions deadline with DEADLINE accounting (cleanup
+>          suggested by Qais) - no functional change
+>  02/06 - Bring back cpuset_mutex (so that we have write access to cpusets
+>          from scheduler operations - and we also fix some problems
+>          associated to percpu_cpuset_rwsem)
+>  03/06 - Keep track of the number of DEADLINE tasks belonging to each cpuset
+>  04/06 - Use this information to only perform the costly iteration if
+>          DEADLINE tasks are actually present in the cpuset for which a
+>          corresponding root domain is being rebuilt
+>  05/06 - Create DL BW alloc, free & check overflow interface for bulk
+>          bandwidth allocation/removal - no functional change 
+>  06/06 - Fix bandwidth allocation handling for cgroup operation
+>          involving multiple tasks
 > 
-> More importantly, macros also interfere with identifier scoping, e.g.
-> you cannot even have a local variable with the same name as a macro.
-> That's why I dislike macros so much.
+> With respect to the v2 posting [4]
+> 
+>  1 - rebase on top of Linus' tree as of today (ac9a78681b92)
+>  2 - add the 'why' to 5/6 changelog - Peter
+>  3 - explicitly say that we need to keep cpuset_mutex a mutex for PI on
+>      2/6 - Peter
+> 
+> This set is also available from
+> 
+> https://github.com/jlelli/linux.git deadline/rework-cpusets
 
-Shadowing a global identifier like that would at best be considered poor
-style, so I don't see this as a major downside.
+Applied to cgroup/for-6.5.
 
-> But since there's no clear policy regarding macros in the kernel, I'm
-> merely showing a downside; it's perfectly fine to write kernel code
-> like this as long as the maintainers agree that the limitation is
-> acceptable and outweighed by the benefits.
+Thanks.
 
-Macros do have lots of tricky downsides, but in general we're not shy
-about using them for things that can't be done otherwise; see
-wait_event(), all of tracing...
-
-I think we could in general do a job of making the macros _themselves_
-more managable, when writing things that need to be macros I'll often
-have just the wrapper as a macro and write the bulk as inline functions.
-See the generic radix tree code for example.
-
-Reflection is a major use case for macros, and the underlying mechanism
-here - code tagging - is something worth talking about more, since it's
-codifying something that's been done ad-hoc in the kernel for a long
-time and something we hope to refactor other existing code to use,
-including tracing - I've got a patch already written to convert the
-dynamic debug code to code tagging; it's a nice -200 loc cleanup.
-
-Regarding the alloc_hooks() macro itself specifically, I've got more
-plans for it. I have another patch series after this one that implements
-code tagging based fault injection, which is _far_ more ergonomic to use
-than our existing fault injection capabilities (and this matters! Fault
-injection is a really important tool for getting good test coverage, but
-tools that are a pain in the ass to use don't get used) - and with the
-alloc_hooks() macro already in place, we'll be able to turn _every
-individual memory allocation callsite_ into a distinct, individually
-selectable fault injection point - which is something our existing fault
-injection framework attempts at but doesn't really manage.
-
-If we can get this in, it'll make it really easy to write unit tests
-that iterate over every memory allocation site in a given module,
-individually telling them to fail, run a workload until they hit, and
-verify that the code path being tested was executed. It'll nicely
-complement the fuzz testing capabilities that we've been working on,
-particularly in filesystem land.
+-- 
+tejun
