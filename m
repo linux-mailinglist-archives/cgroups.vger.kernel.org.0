@@ -2,37 +2,32 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE616FB690
-	for <lists+cgroups@lfdr.de>; Mon,  8 May 2023 20:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2F86FB87A
+	for <lists+cgroups@lfdr.de>; Mon,  8 May 2023 22:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbjEHS7u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 May 2023 14:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S233379AbjEHUsq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 May 2023 16:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjEHS7r (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 May 2023 14:59:47 -0400
-Received: from bee.tesarici.cz (bee.tesarici.cz [IPv6:2a03:3b40:fe:2d4::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9F76187;
-        Mon,  8 May 2023 11:59:45 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id 46D7A15660F;
-        Mon,  8 May 2023 20:59:41 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1683572382; bh=uZkqx7aKUtaW85glkXkWc2KSVWl1+jLzvm0vqmvOK4k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oMA1JDBfpJw4sW7xwHIesfwzVvuWGRfEibImYMO8MGVZr8iRllWIfuu/0e/mR8S35
-         iSTkGom3l2vCdobWQ2bfVa6nZe4sueYcQ8TRCacsjjA5CE1u6g+C6TnyFwqEgekR80
-         QJhrpkc85RcLvfsJty39syGBqRtbVmBD8gRTuYp0lKs/3I0TMuZAwoFEzyxCISt87Q
-         jFclnxrFT242I64DoHaTh7hEShSdJRQAi3f8B9Gi+6bMke4t3VWU3TXk/2b2p3mKb+
-         ZKQmv+XMh4jxUtnY4XLyIY3pSmPZPhKIaboj506ssLQOCqeMss+Ypkje+lMahARxZd
-         uaDOOK7Oe/wvA==
-Date:   Mon, 8 May 2023 20:59:39 +0200
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
+        with ESMTP id S229969AbjEHUsp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 May 2023 16:48:45 -0400
+Received: from out-53.mta1.migadu.com (out-53.mta1.migadu.com [IPv6:2001:41d0:203:375::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEE159F5
+        for <cgroups@vger.kernel.org>; Mon,  8 May 2023 13:48:42 -0700 (PDT)
+Date:   Mon, 8 May 2023 16:48:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1683578919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T9yUrg/v5raybQi2xKwTXiJDyugUh7KFNSbnsbVf1ko=;
+        b=JlOqRkPdzk5AJhxPMwu8AlexUvrKA9kXRniMs6KXFAxkkCykU6KjHBDIF+g4xO4yC/3Xao
+        +RuScEMByhVbOYP7Nl+Ojs+6ZTV4KDzSfRqi3slN82Zdtt1OUgviKekasieY9DgexpymM2
+        tFWfTgTgTslrvfQsG/FcZTuRpfPmr6I=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
 Cc:     Michal Hocko <mhocko@suse.com>,
         Suren Baghdasaryan <surenb@google.com>,
         akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org,
@@ -62,23 +57,25 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         linux-mm@kvack.org, linux-modules@vger.kernel.org,
         kasan-dev@googlegroups.com, cgroups@vger.kernel.org
 Subject: Re: [PATCH 00/40] Memory allocation profiling
-Message-ID: <20230508205939.0b5b485c@meshulam.tesarici.cz>
-In-Reply-To: <ZFkjRBCExpXfI+O5@moria.home.lan>
+Message-ID: <ZFlgG02A87qPNIn1@moria.home.lan>
 References: <20230501165450.15352-1-surenb@google.com>
-        <ZFIMaflxeHS3uR/A@dhcp22.suse.cz>
-        <CAJuCfpHxbYFxDENYFfnggh1D8ot4s493PQX0C7kD-JLvixC-Vg@mail.gmail.com>
-        <ZFN1yswCd9wRgYPR@dhcp22.suse.cz>
-        <ZFfd99w9vFTftB8D@moria.home.lan>
-        <20230508175206.7dc3f87c@meshulam.tesarici.cz>
-        <ZFkb1p80vq19rieI@moria.home.lan>
-        <20230508180913.6a018b21@meshulam.tesarici.cz>
-        <ZFkjRBCExpXfI+O5@moria.home.lan>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-suse-linux-gnu)
+ <ZFIMaflxeHS3uR/A@dhcp22.suse.cz>
+ <CAJuCfpHxbYFxDENYFfnggh1D8ot4s493PQX0C7kD-JLvixC-Vg@mail.gmail.com>
+ <ZFN1yswCd9wRgYPR@dhcp22.suse.cz>
+ <ZFfd99w9vFTftB8D@moria.home.lan>
+ <20230508175206.7dc3f87c@meshulam.tesarici.cz>
+ <ZFkb1p80vq19rieI@moria.home.lan>
+ <20230508180913.6a018b21@meshulam.tesarici.cz>
+ <ZFkjRBCExpXfI+O5@moria.home.lan>
+ <20230508205939.0b5b485c@meshulam.tesarici.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230508205939.0b5b485c@meshulam.tesarici.cz>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,38 +83,68 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 8 May 2023 12:28:52 -0400
-Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Mon, May 08, 2023 at 08:59:39PM +0200, Petr Tesařík wrote:
+> On Mon, 8 May 2023 12:28:52 -0400
+> Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> 
+> > On Mon, May 08, 2023 at 06:09:13PM +0200, Petr Tesařík wrote:
+> > > Sure, although AFAIK the index does not cover all possible config
+> > > options (so non-x86 arch code is often forgotten). However, that's the
+> > > less important part.
+> > > 
+> > > What do you do if you need to hook something that does conflict with an
+> > > existing identifier?  
+> > 
+> > As already happens in this patchset, rename the other identifier.
+> > 
+> > But this is C, we avoid these kinds of conflicts already because the
+> > language has no namespacing
+> 
+> This statement is not accurate, but I agree there's not much. Refer to
+> section 6.2.3 of ISO/IEC9899:2018 (Name spaces of identifiers).
+> 
+> More importantly, macros also interfere with identifier scoping, e.g.
+> you cannot even have a local variable with the same name as a macro.
+> That's why I dislike macros so much.
 
-> On Mon, May 08, 2023 at 06:09:13PM +0200, Petr Tesa=C5=99=C3=ADk wrote:
-> > Sure, although AFAIK the index does not cover all possible config
-> > options (so non-x86 arch code is often forgotten). However, that's the
-> > less important part.
-> >=20
-> > What do you do if you need to hook something that does conflict with an
-> > existing identifier? =20
->=20
-> As already happens in this patchset, rename the other identifier.
->=20
-> But this is C, we avoid these kinds of conflicts already because the
-> language has no namespacing
+Shadowing a global identifier like that would at best be considered poor
+style, so I don't see this as a major downside.
 
-This statement is not accurate, but I agree there's not much. Refer to
-section 6.2.3 of ISO/IEC9899:2018 (Name spaces of identifiers).
+> But since there's no clear policy regarding macros in the kernel, I'm
+> merely showing a downside; it's perfectly fine to write kernel code
+> like this as long as the maintainers agree that the limitation is
+> acceptable and outweighed by the benefits.
 
-More importantly, macros also interfere with identifier scoping, e.g.
-you cannot even have a local variable with the same name as a macro.
-That's why I dislike macros so much.
+Macros do have lots of tricky downsides, but in general we're not shy
+about using them for things that can't be done otherwise; see
+wait_event(), all of tracing...
 
-But since there's no clear policy regarding macros in the kernel, I'm
-merely showing a downside; it's perfectly fine to write kernel code
-like this as long as the maintainers agree that the limitation is
-acceptable and outweighed by the benefits.
+I think we could in general do a job of making the macros _themselves_
+more managable, when writing things that need to be macros I'll often
+have just the wrapper as a macro and write the bulk as inline functions.
+See the generic radix tree code for example.
 
-Petr T
+Reflection is a major use case for macros, and the underlying mechanism
+here - code tagging - is something worth talking about more, since it's
+codifying something that's been done ad-hoc in the kernel for a long
+time and something we hope to refactor other existing code to use,
+including tracing - I've got a patch already written to convert the
+dynamic debug code to code tagging; it's a nice -200 loc cleanup.
 
-> it's going to be a pretty rare situtaion
-> going forward. Most of the hooking that will be done is done with this
-> patchset, and there was only one identifier that needed to be renamed.
->=20
+Regarding the alloc_hooks() macro itself specifically, I've got more
+plans for it. I have another patch series after this one that implements
+code tagging based fault injection, which is _far_ more ergonomic to use
+than our existing fault injection capabilities (and this matters! Fault
+injection is a really important tool for getting good test coverage, but
+tools that are a pain in the ass to use don't get used) - and with the
+alloc_hooks() macro already in place, we'll be able to turn _every
+individual memory allocation callsite_ into a distinct, individually
+selectable fault injection point - which is something our existing fault
+injection framework attempts at but doesn't really manage.
 
+If we can get this in, it'll make it really easy to write unit tests
+that iterate over every memory allocation site in a given module,
+individually telling them to fail, run a workload until they hit, and
+verify that the code path being tested was executed. It'll nicely
+complement the fuzz testing capabilities that we've been working on,
+particularly in filesystem land.
