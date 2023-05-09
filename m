@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B78996FCE0F
-	for <lists+cgroups@lfdr.de>; Tue,  9 May 2023 20:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940A56FCE11
+	for <lists+cgroups@lfdr.de>; Tue,  9 May 2023 20:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbjEISyr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 May 2023 14:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        id S235007AbjEISzE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 9 May 2023 14:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234912AbjEISyq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 9 May 2023 14:54:46 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B103C26
-        for <cgroups@vger.kernel.org>; Tue,  9 May 2023 11:54:35 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-559f142fce7so113570347b3.3
-        for <cgroups@vger.kernel.org>; Tue, 09 May 2023 11:54:35 -0700 (PDT)
+        with ESMTP id S234964AbjEISyu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 9 May 2023 14:54:50 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2183140C6
+        for <cgroups@vger.kernel.org>; Tue,  9 May 2023 11:54:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-b8f324b3ef8so7860389276.0
+        for <cgroups@vger.kernel.org>; Tue, 09 May 2023 11:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683658474; x=1686250474;
+        d=google.com; s=20221208; t=1683658480; x=1686250480;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3CVFyFNV090cR7eiRXOtg8EIDs/ck5oOA57qLIIP4F4=;
-        b=KCxuFPwhPo/zizI/tEtPEL+YSWDuLAQObzGue4e9IyiJJTfHF9OGHB8I3N+yOF6J/x
-         mIUdiagy7n+M5pIvbnF6C2iH/aqEEr4yHsDLZ1nBatzqkOlT0v4WYcYs8t/WorpRWhop
-         TG6vnm6gUhqm5zRF5qjDn57vNcKF7ikTHl9VjNpFC4hMwEjW56GQ58pReybZdmJ9sGzZ
-         bNkXGq/2Phuulf4mVmtKl43PYGm5blOX4kyxOxeJtdX6NA5XV45cGg+jtD20XTArXMgo
-         YjAW6le6vsK7sZ9ggGVn1CrIBMTbY4xJXNzCkIlkLu2gi9LouuZzCdn5Kvnv0TFeeMIK
-         TUwA==
+        bh=NHNoBY3JivORLUbcuDFr4/9tVoWO5VHbaNGCQaI5Uvo=;
+        b=1X+XdmG+IkTZjYisXQOtINFnLgKxKKD4yQQ8LZUpgcqBwpnOBVwkfCN/OCN1tT6s08
+         01wxZe3i/6hmOdK2AvG76yucisBae+HZSfJT2v6uuqjpFCK+r17X7cYwZbnm25TSELUJ
+         tlLmTSt9OTT3NyhwSfsdGskP6z043cZuB5dmUv3B5WzyH5ZFIJnnyVhd9zMCeqelaOaq
+         UCPqHoh3EwqVgMfpu7tH4IckqI8F/b13F+YYm8eAkxcYDmQhXF6SKdLx1PFNSTy916Ck
+         9cnvr1EktdDZy1qqUuh56DaUScHEZDl7WRKxgOCJqbMy29kunT1BQcRDt+rmvzI0vP1K
+         N3Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683658474; x=1686250474;
+        d=1e100.net; s=20221208; t=1683658480; x=1686250480;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3CVFyFNV090cR7eiRXOtg8EIDs/ck5oOA57qLIIP4F4=;
-        b=aAwLuMf1AMyb/HzYesMgZoCVAmhmF2iRf2Xh5aYbZZjvVuWx8CBAuaGfZss9T6yUVf
-         nUBwtUu7LnIkKiDjk+0k1eViZY9xb1Hsjj/Ap0hIKeWP5BPFEo4EPHmZw4PeauLwINpW
-         nyahe+aIXya6mdrA0krNxQzmTm/LVIb3x9fwjDOOV6v63gxSg9A/5FRHUMZUoIMAX+I+
-         rx7bksE14Tnl/dvYhDj8v6WMKHr59TM5ty8Mutvu+vIJBuP8o1TsOd8A1+uxwvg41/Id
-         0aIIk7gVURx/R7pz2Rz+TEPyOB2zRgywO7SQsepR5gj2SlTdGAQsrZ1DqwtSgZSXRAMv
-         4lCA==
-X-Gm-Message-State: AC+VfDx3+1QPwltvgO35vRRNNy7CQoQPCIdhxF0ohW/BRI8a4druivRd
-        EshPQBbtcAWAAUTfLyG7tmNqlLFxi6n8
-X-Google-Smtp-Source: ACHHUZ57g25YJzdGrTobMJE74jtwnDmYOUaHI4absFdxMw7rroYxFH3AyDLkFMAz1Bc37sSPj0Grgxj96Z6F
+        bh=NHNoBY3JivORLUbcuDFr4/9tVoWO5VHbaNGCQaI5Uvo=;
+        b=ZCbqMl2ajLRzCDPnfTvkjbcb4xDuMjSVu0Kdry22eW1N9FwzAfbCmucZTMPY6ibhQI
+         VIMuLSUS2HKVS+xCNM+oLBIN76V5rb1o7YE3v31u+OnD0ynRB4ZkC2QD6DTPNkP0XGQ5
+         RKI7WfsnbldPVRn4+/7PBpLlnMfFdAI1WxuUnJk+LN5k0hWRkUlSnpOsdtzrOhnJVc48
+         RTlM62n1B6/2plarfsYSmRzs538bP9pek/Lr+ZzvDP4BI0jZGGylyoPgPMBpNucs9K0v
+         NhJ7tKGb1PyksUwpwPO0a9haVWgjrqrLOWh17F68NGuIjQFFyzG70OizwgvDvq/L65zY
+         gsmg==
+X-Gm-Message-State: AC+VfDzRZ/aJpGAA2CyOgLy9R020Q8fReR0MCjWoIEwJyMSvYaBsqF3/
+        iTwVtzOVOQwDcZIfcpa6icMrppDaNB0w
+X-Google-Smtp-Source: ACHHUZ6vWI0X2IvACouQ+0IHlezp2Qp+H2rW0BUVF8tMyTzzTJ6S0TOnq6Tqjl1rmJLJ1rAE+VhfRd/K4Yyb
 X-Received: from yuanchu.bej.corp.google.com ([2401:fa00:44:10:d495:1070:e926:f84a])
- (user=yuanchu job=sendgmr) by 2002:a81:ae55:0:b0:55d:fd06:5a7f with SMTP id
- g21-20020a81ae55000000b0055dfd065a7fmr4707277ywk.6.1683658474526; Tue, 09 May
- 2023 11:54:34 -0700 (PDT)
-Date:   Wed, 10 May 2023 02:54:18 +0800
+ (user=yuanchu job=sendgmr) by 2002:a25:5282:0:b0:ba6:3564:661a with SMTP id
+ g124-20020a255282000000b00ba63564661amr310206ybb.13.1683658480303; Tue, 09
+ May 2023 11:54:40 -0700 (PDT)
+Date:   Wed, 10 May 2023 02:54:19 +0800
 In-Reply-To: <20230509185419.1088297-1-yuanchu@google.com>
 Mime-Version: 1.0
 References: <20230509185419.1088297-1-yuanchu@google.com>
 X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
-Message-ID: <20230509185419.1088297-2-yuanchu@google.com>
-Subject: [RFC PATCH 1/2] mm: multigen-LRU: working set reporting
+Message-ID: <20230509185419.1088297-3-yuanchu@google.com>
+Subject: [RFC PATCH 2/2] virtio-balloon: Add Working Set reporting
 From:   Yuanchu Xie <yuanchu@google.com>
 To:     David Hildenbrand <david@redhat.com>,
         "Sudarshan Rajagopalan (QUIC)" <quic_sudaraja@quicinc.com>,
@@ -79,7 +79,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,1026 +88,552 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: talumbau <talumbau@google.com>
 
-A single patch to be broken up into multiple patches.
-- Add working set reporting structure.
-- Add per-node and per-memcg interfaces for working set reporting.
-- Implement working set backend for MGLRU.
+ - Add WS and notification vqueues
+ - Add simple interface to kernel WS functions
+ - Driver receives config info and sends reports on notification
+ - use mutex to guard virtio_balloon state
 
 Signed-off-by: T.J. Alumbaugh <talumbau@google.com>
 Signed-off-by: Yuanchu Xie <yuanchu@google.com>
 ---
- drivers/base/node.c        |   2 +
- include/linux/memcontrol.h |   6 +
- include/linux/mmzone.h     |  14 +-
- include/linux/wss.h        |  57 +++++
- mm/Kconfig                 |   7 +
- mm/Makefile                |   1 +
- mm/memcontrol.c            | 349 ++++++++++++++++++++++++++-
- mm/mmzone.c                |   2 +
- mm/vmscan.c                | 479 ++++++++++++++++++++++++++++++++++++-
- mm/wss.c                   |  56 +++++
- 10 files changed, 970 insertions(+), 3 deletions(-)
- create mode 100644 include/linux/wss.h
- create mode 100644 mm/wss.c
+ drivers/virtio/virtio_balloon.c     | 243 +++++++++++++++++++++++++++-
+ include/linux/balloon_compaction.h  |   6 +
+ include/uapi/linux/virtio_balloon.h |  21 +++
+ mm/vmscan.c                         | 102 ++++++++++++
+ 4 files changed, 371 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index faf3597a96da..047908978088 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -616,6 +616,7 @@ static int register_node(struct node *node, int num)
- 	} else {
- 		hugetlb_register_node(node);
- 		compaction_register_node(node);
-+		wss_register_node(node);
- 	}
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 3f78a3a1eb75..edfa2a4960a3 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -11,6 +11,7 @@
+ #include <linux/swap.h>
+ #include <linux/workqueue.h>
+ #include <linux/delay.h>
++#include <linux/device.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/balloon_compaction.h>
+@@ -39,12 +40,22 @@
+ 	(1 << (VIRTIO_BALLOON_HINT_BLOCK_ORDER + PAGE_SHIFT))
+ #define VIRTIO_BALLOON_HINT_BLOCK_PAGES (1 << VIRTIO_BALLOON_HINT_BLOCK_ORDER)
  
- 	return error;
-@@ -632,6 +633,7 @@ void unregister_node(struct node *node)
++/* TODO: replace with a registration interface, similar to shrinker registration. */
++extern int register_wss_receiver(void *receiver, struct pglist_data *pgdat,
++				unsigned long *intervals, unsigned long nr_bins,
++				unsigned long report_threshold,
++				unsigned long refresh_threshold);
++extern void unregister_wss_receiver(void *receiver);
++extern bool working_set_request(struct pglist_data *pgdat);
++
+ enum virtio_balloon_vq {
+ 	VIRTIO_BALLOON_VQ_INFLATE,
+ 	VIRTIO_BALLOON_VQ_DEFLATE,
+ 	VIRTIO_BALLOON_VQ_STATS,
+ 	VIRTIO_BALLOON_VQ_FREE_PAGE,
+ 	VIRTIO_BALLOON_VQ_REPORTING,
++	VIRTIO_BALLOON_VQ_WS,
++	VIRTIO_BALLOON_VQ_NOTIFY,
+ 	VIRTIO_BALLOON_VQ_MAX
+ };
+ 
+@@ -54,7 +65,8 @@ enum virtio_balloon_config_read {
+ 
+ struct virtio_balloon {
+ 	struct virtio_device *vdev;
+-	struct virtqueue *inflate_vq, *deflate_vq, *stats_vq, *free_page_vq;
++	struct virtqueue *inflate_vq, *deflate_vq, *stats_vq, *free_page_vq,
++		*ws_vq, *notification_vq;
+ 
+ 	/* Balloon's own wq for cpu-intensive work items */
+ 	struct workqueue_struct *balloon_wq;
+@@ -64,6 +76,8 @@ struct virtio_balloon {
+ 	/* The balloon servicing is delegated to a freezable workqueue. */
+ 	struct work_struct update_balloon_stats_work;
+ 	struct work_struct update_balloon_size_work;
++	struct work_struct update_balloon_ws_work;
++	struct work_struct update_balloon_notification_work;
+ 
+ 	/* Prevent updating balloon when it is being canceled. */
+ 	spinlock_t stop_update_lock;
+@@ -110,6 +124,10 @@ struct virtio_balloon {
+ 	/* Memory statistics */
+ 	struct virtio_balloon_stat stats[VIRTIO_BALLOON_S_NR];
+ 
++	/* A buffer to hold incoming notification from the host. */
++	unsigned int notification_size;
++	void *notification_buf;
++
+ 	/* Shrinker to return free pages - VIRTIO_BALLOON_F_FREE_PAGE_HINT */
+ 	struct shrinker shrinker;
+ 
+@@ -119,6 +137,10 @@ struct virtio_balloon {
+ 	/* Free page reporting device */
+ 	struct virtqueue *reporting_vq;
+ 	struct page_reporting_dev_info pr_dev_info;
++
++	/* Working Set reporting */
++	u32 ws_num_bins;
++	struct virtio_balloon_ws *ws;
+ };
+ 
+ static const struct virtio_device_id id_table[] = {
+@@ -301,6 +323,41 @@ static unsigned int leak_balloon(struct virtio_balloon *vb, size_t num)
+ 	return num_freed_pages;
+ }
+ 
++/* Must hold the balloon_lock while calling this function. */
++static inline void reset_working_set(struct virtio_balloon *vb)
++{
++	int i;
++
++	for (i = 0; i < vb->ws_num_bins; ++i) {
++		vb->ws[i].tag = cpu_to_virtio16(vb->vdev, 0);
++		vb->ws[i].node_id = cpu_to_virtio16(vb->vdev, -1);
++		vb->ws[i].idle_age_ms = cpu_to_virtio64(vb->vdev, 0);
++		vb->ws[i].memory_size_bytes[0] = cpu_to_virtio64(vb->vdev, -1);
++		vb->ws[i].memory_size_bytes[1] = cpu_to_virtio64(vb->vdev, -1);
++	}
++}
++
++/* Must hold the balloon_lock while calling this function. */
++static inline void update_working_set(struct virtio_balloon *vb, int idx,
++			       u64 idle_age, u64 bytes_anon,
++			       u64 bytes_file)
++{
++	vb->ws[idx].tag = cpu_to_virtio16(vb->vdev, 0);
++	vb->ws[idx].node_id = cpu_to_virtio16(vb->vdev, -1);
++	vb->ws[idx].idle_age_ms = cpu_to_virtio64(vb->vdev, idle_age);
++	vb->ws[idx].memory_size_bytes[0] = cpu_to_virtio64(vb->vdev,
++	     bytes_anon);
++	vb->ws[idx].memory_size_bytes[1] = cpu_to_virtio64(vb->vdev,
++	     bytes_file);
++}
++
++static bool working_set_is_init(struct virtio_balloon *vb)
++{
++	if (vb->ws[0].idle_age_ms > 0)
++		return true;
++	return false;
++}
++
+ static inline void update_stat(struct virtio_balloon *vb, int idx,
+ 			       u16 tag, u64 val)
  {
- 	hugetlb_unregister_node(node);
- 	compaction_unregister_node(node);
-+	wss_unregister_node(node);
- 	node_remove_accesses(node);
- 	node_remove_caches(node);
- 	device_unregister(&node->dev);
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 85dc9b88ea37..95d4a0bc89e7 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -10,6 +10,7 @@
- 
- #ifndef _LINUX_MEMCONTROL_H
- #define _LINUX_MEMCONTROL_H
-+#include <linux/wait.h>
- #include <linux/cgroup.h>
- #include <linux/vm_event_item.h>
- #include <linux/hardirq.h>
-@@ -325,6 +326,11 @@ struct mem_cgroup {
- 	struct lru_gen_mm_list mm_list;
- #endif
- 
-+#ifdef CONFIG_WSS
-+	int wss_event;
-+	wait_queue_head_t wss_wait_queue;
-+#endif
-+
- 	struct mem_cgroup_per_node *nodeinfo[];
- };
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index cd28a100d9e4..506c29aaf124 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -21,6 +21,7 @@
- #include <linux/mm_types.h>
- #include <linux/page-flags.h>
- #include <linux/local_lock.h>
-+#include <linux/wss.h>
- #include <asm/page.h>
- 
- /* Free memory management - zoned buddy allocator.  */
-@@ -361,6 +362,7 @@ enum lruvec_flags {
- 
- #ifndef __GENERATING_BOUNDS_H
- 
-+struct node;
- struct lruvec;
- struct page_vma_mapped_walk;
- 
-@@ -481,7 +483,7 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw);
- #ifdef CONFIG_MEMCG
- void lru_gen_init_memcg(struct mem_cgroup *memcg);
- void lru_gen_exit_memcg(struct mem_cgroup *memcg);
--#endif
-+#endif /* CONFIG_MEMCG */
- 
- #else /* !CONFIG_LRU_GEN */
- 
-@@ -503,6 +505,14 @@ static inline void lru_gen_exit_memcg(struct mem_cgroup *memcg)
+@@ -386,6 +443,16 @@ static void stats_handle_request(struct virtio_balloon *vb)
+ 	virtqueue_kick(vq);
  }
- #endif
  
-+static inline void wss_register_node(struct node *node)
++static void notification_receive(struct virtqueue *vq)
 +{
++	struct virtio_balloon *vb = vq->vdev->priv;
++
++	spin_lock(&vb->stop_update_lock);
++	if (!vb->stop_update)
++		queue_work(system_freezable_wq, &vb->update_balloon_notification_work);
++	spin_unlock(&vb->stop_update_lock);
 +}
 +
-+static inline void wss_unregister_node(struct node *node)
+ static inline s64 towards_target(struct virtio_balloon *vb)
+ {
+ 	s64 target;
+@@ -465,6 +532,130 @@ static void update_balloon_stats_func(struct work_struct *work)
+ 	stats_handle_request(vb);
+ }
+ 
++static int virtio_balloon_register_wss_receiver(struct virtio_balloon *vb,
++	__virtio64 *intervals, unsigned long nr_bins, __virtio64 refresh_ms,
++	__virtio64 report_ms)
 +{
++	struct pglist_data *pgdat;
++	unsigned long *bin_intervals = NULL;
++	int i, err;
++
++	if (intervals && nr_bins) {
++		/* TODO: keep values as 32-bits throughout. */
++		bin_intervals = kzalloc(sizeof(unsigned long) * (nr_bins-1),
++			GFP_KERNEL);
++		for (i = 0; i < nr_bins - 1; i++)
++			bin_intervals[i] = (unsigned long)intervals[i];
++		pgdat = NODE_DATA(NUMA_NO_NODE);
++		err = register_wss_receiver(vb, pgdat, &(bin_intervals[0]),
++			nr_bins, (unsigned long) refresh_ms,
++			(unsigned long) report_ms);
++		kfree(bin_intervals);
++		return err;
++	}
++	return -EINVAL;
 +}
 +
- #endif /* CONFIG_LRU_GEN */
++void working_set_notify(void *wss_receiver, struct wss_bin *bins)
++{
++	u64 bytes_nr_file, bytes_nr_anon;
++	struct virtio_balloon *vb = wss_receiver;
++	int idx = 0;
++
++	if (!mutex_trylock(&vb->balloon_lock))
++		return;
++	for (; idx < vb->ws_num_bins; idx++) {
++		bytes_nr_anon = (u64)(bins[idx].nr_pages[0]) * PAGE_SIZE;
++		bytes_nr_file = (u64)(bins[idx].nr_pages[1]) * PAGE_SIZE;
++		update_working_set(vb, idx, jiffies_to_msecs(bins[idx].idle_age),
++			bytes_nr_anon, bytes_nr_file);
++	}
++	mutex_unlock(&vb->balloon_lock);
++	/* Send the working set report to the device. */
++	spin_lock(&vb->stop_update_lock);
++	if (!vb->stop_update)
++		queue_work(system_freezable_wq, &vb->update_balloon_ws_work);
++	spin_unlock(&vb->stop_update_lock);
++}
++
++EXPORT_SYMBOL(working_set_notify);
++
++static void update_balloon_notification_func(struct work_struct *work)
++{
++	struct virtio_balloon *vb;
++	struct scatterlist sg_in;
++	struct pglist_data *pgdat;
++	__virtio64 *bin_intervals;
++	__virtio64 refresh_ms, report_ms;
++	int16_t tag;
++	char *buf;
++	int len;
++
++	vb = container_of(work, struct virtio_balloon,
++			  update_balloon_notification_work);
++
++	/* Read a Working Set notification from the device. */
++	buf = (char *)vb->notification_buf;
++	tag = *((int16_t *)buf);
++	buf += sizeof(int16_t);
++	if (tag == VIRTIO_BALLOON_WS_REQUEST) {
++		pgdat = NODE_DATA(NUMA_NO_NODE);
++		working_set_request(pgdat);
++	} else if (tag == VIRTIO_BALLOON_WS_CONFIG) {
++		mutex_lock(&vb->balloon_lock);
++		reset_working_set(vb);
++		mutex_unlock(&vb->balloon_lock);
++		bin_intervals = (__virtio64 *) buf;
++		buf += sizeof(__virtio64) * (vb->ws_num_bins - 1);
++		refresh_ms = *((__virtio64 *) buf);
++		buf += sizeof(__virtio64);
++		report_ms = *((__virtio64 *) buf);
++		virtio_balloon_register_wss_receiver(vb, bin_intervals, vb->ws_num_bins,
++			refresh_ms, report_ms);
++	} else {
++		dev_warn(&vb->vdev->dev, "Received invalid notification, %u\n", tag);
++		return;
++	}
++
++	/* Detach all the used buffers from the vq */
++	while (virtqueue_get_buf(vb->notification_vq, &len))
++		;
++	/* Add a new notification buffer for device to fill. */
++	sg_init_one(&sg_in, vb->notification_buf, vb->notification_size);
++	virtqueue_add_inbuf(vb->notification_vq, &sg_in, 1, vb, GFP_KERNEL);
++	virtqueue_kick(vb->notification_vq);
++}
++
++static void update_balloon_ws_func(struct work_struct *work)
++{
++	struct virtio_balloon *vb;
++	struct scatterlist sg_out;
++	int err = 0;
++	int unused;
++
++	vb = container_of(work, struct virtio_balloon,
++			  update_balloon_ws_work);
++
++	mutex_lock(&vb->balloon_lock);
++	if (working_set_is_init(vb)) {
++		/* Detach all the used buffers from the vq */
++		while (virtqueue_get_buf(vb->ws_vq, &unused))
++			;
++		sg_init_one(&sg_out, vb->ws, sizeof(struct virtio_balloon_ws) * vb->ws_num_bins);
++		err = virtqueue_add_outbuf(vb->ws_vq, &sg_out, 1, vb, GFP_KERNEL);
++	} else {
++		dev_warn(&vb->vdev->dev, "Working Set not initialized.");
++		err = -EINVAL;
++	}
++	mutex_unlock(&vb->balloon_lock);
++	if (unlikely(err)) {
++		dev_err(&vb->vdev->dev,
++			"Failed to send working set report err = %d\n", err);
++	} else {
++		virtqueue_kick(vb->ws_vq);
++	}
++}
++
+ static void update_balloon_size_func(struct work_struct *work)
+ {
+ 	struct virtio_balloon *vb;
+@@ -508,6 +699,10 @@ static int init_vqs(struct virtio_balloon *vb)
+ 	callbacks[VIRTIO_BALLOON_VQ_FREE_PAGE] = NULL;
+ 	names[VIRTIO_BALLOON_VQ_FREE_PAGE] = NULL;
+ 	names[VIRTIO_BALLOON_VQ_REPORTING] = NULL;
++	callbacks[VIRTIO_BALLOON_VQ_WS] = NULL;
++	names[VIRTIO_BALLOON_VQ_WS] = NULL;
++	callbacks[VIRTIO_BALLOON_VQ_NOTIFY] = NULL;
++	names[VIRTIO_BALLOON_VQ_NOTIFY] = NULL;
  
- struct lruvec {
-@@ -527,6 +537,8 @@ struct lruvec {
- 	struct lru_gen_struct		lrugen;
- 	/* to concurrently iterate lru_gen_mm_list */
- 	struct lru_gen_mm_state		mm_state;
-+	/* only accessed through lruvec_wss */
-+	struct wss __wss;
- #endif
- #ifdef CONFIG_MEMCG
- 	struct pglist_data *pgdat;
-diff --git a/include/linux/wss.h b/include/linux/wss.h
-new file mode 100644
-index 000000000000..942efce0f9c2
---- /dev/null
-+++ b/include/linux/wss.h
-@@ -0,0 +1,57 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_WSS_H
-+#define _LINUX_WSS_H
-+
-+#include <linux/types.h>
-+#include <linux/mutex.h>
-+
-+struct node;
-+struct lruvec;
-+struct mem_cgroup;
-+struct pglist_data;
-+struct scan_control;
-+struct lru_gen_mm_walk;
-+
-+#define ANON_AND_FILE 2
-+
-+#define MIN_NR_BINS 4
-+#define MAX_NR_BINS 16
-+
-+struct wss_bin {
-+	unsigned long idle_age;
-+	unsigned long nr_pages[ANON_AND_FILE];
-+};
-+
-+struct wss {
-+	/* protects bins */
-+	struct mutex bins_lock;
-+	/* protects reaccess_bins */
-+	struct mutex reaccess_bins_lock;
-+	struct kernfs_node *notifier;
-+	unsigned long timestamp;
-+	unsigned long report_threshold;
-+	unsigned long refresh_threshold;
-+	struct wss_bin bins[MAX_NR_BINS];
-+	struct wss_bin reaccess_bins[MAX_NR_BINS];
-+};
-+
-+void wss_register_node(struct node *node);
-+void wss_unregister_node(struct node *node);
-+
-+void wss_init(struct wss *wss);
-+void wss_destroy(struct wss *wss);
-+struct wss *lruvec_wss(struct lruvec *lruvec);
-+
-+ssize_t wss_intervals_ms_parse(char *src, struct wss_bin *bins);
-+
-+/*
-+ * wss->bins needs to be locked
-+ * refreshes wss based on the refresh threshold
-+ */
-+void wss_refresh(struct wss *wss, struct mem_cgroup *root,
-+		 struct pglist_data *pgdat);
-+void report_reaccess(struct lruvec *lruvec, struct lru_gen_mm_walk *walk);
-+void report_wss(struct pglist_data *pgdat, struct scan_control *sc);
-+
-+#endif /* _LINUX_WSS_H */
-+
-diff --git a/mm/Kconfig b/mm/Kconfig
-index ff7b209dec05..b3a32c2b360f 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -1183,6 +1183,13 @@ config LRU_GEN_STATS
- 	  This option has a per-memcg and per-node memory overhead.
- # }
- 
-+config WSS
-+	bool "Working set reporting"
-+	depends on LRU_GEN
-+	help
-+	  This option enables working set reporting, separate backends
-+	  WIP. Currently only supports MGLRU.
-+
- source "mm/damon/Kconfig"
- 
- endmenu
-diff --git a/mm/Makefile b/mm/Makefile
-index 8e105e5b3e29..409b4fc97485 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -98,6 +98,7 @@ obj-$(CONFIG_DEVICE_MIGRATION) += migrate_device.o
- obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
- obj-$(CONFIG_PAGE_COUNTER) += page_counter.o
- obj-$(CONFIG_MEMCG) += memcontrol.o vmpressure.o
-+obj-$(CONFIG_WSS) += wss.o
- ifdef CONFIG_SWAP
- obj-$(CONFIG_MEMCG) += swap_cgroup.o
- endif
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2eee092f8f11..08e574c86b18 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -25,6 +25,7 @@
-  * Copyright (C) 2020 Alibaba, Inc, Alex Shi
-  */
- 
-+#include <linux/wait.h>
- #include <linux/page_counter.h>
- #include <linux/memcontrol.h>
- #include <linux/cgroup.h>
-@@ -65,6 +66,7 @@
- #include <linux/seq_buf.h>
- #include "internal.h"
- #include <net/sock.h>
-+#include <linux/wss.h>
- #include <net/ip.h>
- #include "slab.h"
- #include "swap.h"
-@@ -5233,6 +5235,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 	if (!pn)
- 		return;
- 
-+	wss_destroy(lruvec_wss(&pn->lruvec));
- 	free_percpu(pn->lruvec_stats_percpu);
- 	kfree(pn);
- }
-@@ -5311,6 +5314,10 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- 	spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
- 	INIT_LIST_HEAD(&memcg->deferred_split_queue.split_queue);
- 	memcg->deferred_split_queue.split_queue_len = 0;
-+#endif
-+#ifdef CONFIG_WSS
-+	memcg->wss_event = 0;
-+	init_waitqueue_head(&memcg->wss_wait_queue);
- #endif
- 	idr_replace(&mem_cgroup_idr, memcg, memcg->id.id);
- 	lru_gen_init_memcg(memcg);
-@@ -5411,6 +5418,9 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_STATS_VQ)) {
+ 		names[VIRTIO_BALLOON_VQ_STATS] = "stats";
+@@ -524,6 +719,13 @@ static int init_vqs(struct virtio_balloon *vb)
+ 		callbacks[VIRTIO_BALLOON_VQ_REPORTING] = balloon_ack;
  	}
- 	spin_unlock_irq(&memcg->event_list_lock);
  
-+	wake_up_pollfree(&memcg->wss_wait_queue);
-+	synchronize_rcu();
++	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_WS_REPORTING)) {
++		names[VIRTIO_BALLOON_VQ_WS] = "ws";
++		callbacks[VIRTIO_BALLOON_VQ_WS] = NULL;
++		names[VIRTIO_BALLOON_VQ_NOTIFY] = "notify";
++		callbacks[VIRTIO_BALLOON_VQ_NOTIFY] = notification_receive;
++	}
 +
- 	page_counter_set_min(&memcg->memory, 0);
- 	page_counter_set_low(&memcg->memory, 0);
+ 	err = virtio_find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX, vqs,
+ 			      callbacks, names, NULL);
+ 	if (err)
+@@ -534,6 +736,7 @@ static int init_vqs(struct virtio_balloon *vb)
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_STATS_VQ)) {
+ 		struct scatterlist sg;
+ 		unsigned int num_stats;
++
+ 		vb->stats_vq = vqs[VIRTIO_BALLOON_VQ_STATS];
  
-@@ -6642,6 +6652,306 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 	return nbytes;
- }
+ 		/*
+@@ -553,6 +756,23 @@ static int init_vqs(struct virtio_balloon *vb)
+ 		virtqueue_kick(vb->stats_vq);
+ 	}
  
-+#ifdef CONFIG_WSS
-+static int memory_wss_intervals_ms_show(struct seq_file *m, void *v)
-+{
-+	int nid;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
++	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_WS_REPORTING)) {
++		struct scatterlist sg;
 +
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct wss *wss;
-+		struct wss_bin *bin;
++		vb->ws_vq = vqs[VIRTIO_BALLOON_VQ_WS];
++		vb->notification_vq = vqs[VIRTIO_BALLOON_VQ_NOTIFY];
 +
-+		wss = lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+		mutex_lock(&wss->bins_lock);
-+		seq_printf(m, "N%d=", nid);
-+		for (bin = wss->bins; bin->idle_age != -1; bin++)
-+			seq_printf(m, "%u,", jiffies_to_msecs(bin->idle_age));
-+		mutex_unlock(&wss->bins_lock);
-+
-+		seq_printf(m, "%lld ", LLONG_MAX);
-+	}
-+	seq_putc(m, '\n');
-+
-+	return 0;
-+}
-+
-+static ssize_t memory_wss_intervals_ms_parse(struct kernfs_open_file *of,
-+					     char *buf, size_t nbytes,
-+					     unsigned int *nid_out,
-+					     struct wss_bin *bins)
-+{
-+	char *node, *intervals;
-+	unsigned int nid;
-+	int err;
-+
-+	buf = strstrip(buf);
-+	intervals = buf;
-+	node = strsep(&intervals, "=");
-+
-+	if (*node != 'N')
-+		return -EINVAL;
-+
-+	err = kstrtouint(node + 1, 0, &nid);
-+	if (err)
-+		return err;
-+
-+	if (nid >= nr_node_ids || !node_state(nid, N_MEMORY))
-+		return -EINVAL;
-+
-+	err = wss_intervals_ms_parse(intervals, bins);
-+	if (err)
-+		return err;
-+
-+	*nid_out = nid;
-+	return 0;
-+}
-+
-+static ssize_t memory_wss_intervals_ms_write(struct kernfs_open_file *of,
-+					     char *buf, size_t nbytes,
-+					     loff_t off)
-+{
-+	unsigned int nid;
-+	int err;
-+	struct wss *wss;
-+	struct wss_bin *bins;
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+
-+	bins = kzalloc(sizeof(wss->bins), GFP_KERNEL);
-+	if (!bins)
-+		return -ENOMEM;
-+
-+	err = memory_wss_intervals_ms_parse(of, buf, nbytes, &nid, bins);
-+	if (err)
-+		goto failed;
-+
-+	wss = lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+	mutex_lock(&wss->bins_lock);
-+	memcpy(wss->bins, bins, sizeof(wss->bins));
-+	mutex_unlock(&wss->bins_lock);
-+failed:
-+	kfree(bins);
-+	return err ?: nbytes;
-+}
-+
-+static int memory_reaccess_intervals_ms_show(struct seq_file *m, void *v)
-+{
-+	int nid;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct wss *wss;
-+		struct wss_bin *bin;
-+
-+		wss = lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+		mutex_lock(&wss->reaccess_bins_lock);
-+		seq_printf(m, "N%d=", nid);
-+		for (bin = wss->reaccess_bins; bin->idle_age != -1; bin++)
-+			seq_printf(m, "%u,", jiffies_to_msecs(bin->idle_age));
-+		mutex_unlock(&wss->reaccess_bins_lock);
-+
-+		seq_printf(m, "%lld ", LLONG_MAX);
-+	}
-+	seq_putc(m, '\n');
-+
-+	return 0;
-+}
-+
-+static ssize_t memory_reaccess_intervals_ms_write(struct kernfs_open_file *of,
-+						  char *buf, size_t nbytes,
-+						  loff_t off)
-+{
-+	unsigned int nid;
-+	int err;
-+	struct wss *wss;
-+	struct wss_bin *bins;
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+
-+	bins = kzalloc(sizeof(wss->reaccess_bins), GFP_KERNEL);
-+	if (!bins)
-+		return -ENOMEM;
-+
-+	err = memory_wss_intervals_ms_parse(of, buf, nbytes, &nid, bins);
-+	if (err)
-+		goto failed;
-+
-+	wss = lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+	mutex_lock(&wss->reaccess_bins_lock);
-+	memcpy(wss->reaccess_bins, bins, sizeof(wss->reaccess_bins));
-+	mutex_unlock(&wss->reaccess_bins_lock);
-+failed:
-+	kfree(bins);
-+	return err ?: nbytes;
-+}
-+
-+static int memory_wss_refresh_ms_show(struct seq_file *m, void *v)
-+{
-+	int nid;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct wss *wss =
-+			lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+
-+		seq_printf(m, "N%d=%u ", nid,
-+			   jiffies_to_msecs(READ_ONCE(wss->refresh_threshold)));
-+	}
-+	seq_putc(m, '\n');
-+
-+	return 0;
-+}
-+
-+static ssize_t memory_wss_threshold_parse(char *buf, size_t nbytes,
-+					  unsigned int *nid_out,
-+					  unsigned int *msecs)
-+{
-+	char *node, *threshold;
-+	unsigned int nid;
-+	int err;
-+
-+	buf = strstrip(buf);
-+	threshold = buf;
-+	node = strsep(&threshold, "=");
-+
-+	if (*node != 'N')
-+		return -EINVAL;
-+
-+	err = kstrtouint(node + 1, 0, &nid);
-+	if (err)
-+		return err;
-+
-+	if (nid >= nr_node_ids || !node_state(nid, N_MEMORY))
-+		return -EINVAL;
-+
-+	err = kstrtouint(threshold, 0, msecs);
-+	if (err)
-+		return err;
-+
-+	*nid_out = nid;
-+
-+	return nbytes;
-+}
-+
-+static ssize_t memory_wss_refresh_ms_write(struct kernfs_open_file *of,
-+					   char *buf, size_t nbytes, loff_t off)
-+{
-+	unsigned int nid, msecs;
-+	struct wss *wss;
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	ssize_t ret = memory_wss_threshold_parse(buf, nbytes, &nid, &msecs);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	wss = lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+	WRITE_ONCE(wss->refresh_threshold, msecs_to_jiffies(msecs));
-+	return ret;
-+}
-+
-+static int memory_wss_report_ms_show(struct seq_file *m, void *v)
-+{
-+	int nid;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct wss *wss =
-+			lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+
-+		seq_printf(m, "N%d=%u ", nid,
-+			   jiffies_to_msecs(READ_ONCE(wss->report_threshold)));
-+	}
-+	seq_putc(m, '\n');
-+
-+	return 0;
-+}
-+
-+static ssize_t memory_wss_report_ms_write(struct kernfs_open_file *of,
-+					  char *buf, size_t nbytes, loff_t off)
-+{
-+	unsigned int nid, msecs;
-+	struct wss *wss;
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	ssize_t ret = memory_wss_threshold_parse(buf, nbytes, &nid, &msecs);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	wss = lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+	WRITE_ONCE(wss->report_threshold, msecs_to_jiffies(msecs));
-+	return ret;
-+}
-+
-+static int memory_wss_histogram_show(struct seq_file *m, void *v)
-+{
-+	int nid;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct wss *wss =
-+			lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+		struct wss_bin *bin;
-+
-+		seq_printf(m, "N%d\n", nid);
-+
-+		mutex_lock(&wss->bins_lock);
-+		wss_refresh(wss, memcg, NODE_DATA(nid));
-+		for (bin = wss->bins; bin->idle_age != -1; bin++)
-+			seq_printf(m, "%u anon=%lu file=%lu\n",
-+				   jiffies_to_msecs(bin->idle_age),
-+				   bin->nr_pages[0], bin->nr_pages[1]);
-+
-+		seq_printf(m, "%lld anon=%lu file=%lu\n", LLONG_MAX,
-+			   bin->nr_pages[0], bin->nr_pages[1]);
-+
-+		mutex_unlock(&wss->bins_lock);
++		/* Prime the notification virtqueue for the device to fill.*/
++		sg_init_one(&sg, vb->notification_buf, vb->notification_size);
++		err = virtqueue_add_inbuf(vb->notification_vq, &sg, 1, vb, GFP_KERNEL);
++		if (unlikely(err)) {
++			dev_err(&vb->vdev->dev,
++				"Failed to prepare notifications, err = %d\n", err);
++		} else {
++			virtqueue_kick(vb->notification_vq);
++		}
 +	}
 +
-+	return 0;
-+}
-+
-+__poll_t memory_wss_histogram_poll(struct kernfs_open_file *of,
-+				   struct poll_table_struct *pt)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+
-+	if (memcg->css.flags & CSS_DYING)
-+		return DEFAULT_POLLMASK;
-+
-+	poll_wait(of->file, &memcg->wss_wait_queue, pt);
-+	if (cmpxchg(&memcg->wss_event, 1, 0) == 1)
-+		return DEFAULT_POLLMASK | EPOLLPRI;
-+	return DEFAULT_POLLMASK;
-+}
-+
-+static int memory_reaccess_histogram_show(struct seq_file *m, void *v)
-+{
-+	int nid;
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct wss *wss =
-+			lruvec_wss(mem_cgroup_lruvec(memcg, NODE_DATA(nid)));
-+		struct wss_bin *bin;
-+
-+		seq_printf(m, "N%d\n", nid);
-+
-+		mutex_lock(&wss->reaccess_bins_lock);
-+		wss_refresh(wss, memcg, NODE_DATA(nid));
-+		for (bin = wss->reaccess_bins; bin->idle_age != -1; bin++)
-+			seq_printf(m, "%u anon=%lu file=%lu\n",
-+				   jiffies_to_msecs(bin->idle_age),
-+				   bin->nr_pages[0], bin->nr_pages[1]);
-+
-+		seq_printf(m, "%lld anon=%lu file=%lu\n", LLONG_MAX,
-+			   bin->nr_pages[0], bin->nr_pages[1]);
-+
-+		mutex_unlock(&wss->reaccess_bins_lock);
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT))
+ 		vb->free_page_vq = vqs[VIRTIO_BALLOON_VQ_FREE_PAGE];
+ 
+@@ -878,6 +1098,8 @@ static int virtballoon_probe(struct virtio_device *vdev)
+ 
+ 	INIT_WORK(&vb->update_balloon_stats_work, update_balloon_stats_func);
+ 	INIT_WORK(&vb->update_balloon_size_work, update_balloon_size_func);
++	INIT_WORK(&vb->update_balloon_ws_work, update_balloon_ws_func);
++	INIT_WORK(&vb->update_balloon_notification_work, update_balloon_notification_func);
+ 	spin_lock_init(&vb->stop_update_lock);
+ 	mutex_init(&vb->balloon_lock);
+ 	init_waitqueue_head(&vb->acked);
+@@ -885,6 +1107,20 @@ static int virtballoon_probe(struct virtio_device *vdev)
+ 
+ 	balloon_devinfo_init(&vb->vb_dev_info);
+ 
++	if (virtio_has_feature(vdev, VIRTIO_BALLOON_F_WS_REPORTING)) {
++		virtio_cread_le(vdev, struct virtio_balloon_config, ws_num_bins,
++				&vb->ws_num_bins);
++		/* Allocate space for a Working Set report. */
++		vb->ws = kcalloc(vb->ws_num_bins,
++				 sizeof(struct virtio_balloon_ws), GFP_KERNEL);
++		/* Allocate space for host notifications. */
++		vb->notification_size =
++			sizeof(uint16_t) +
++			sizeof(uint64_t) * (vb->ws_num_bins + 1);
++		vb->notification_buf = kzalloc(vb->notification_size, GFP_KERNEL);
++		reset_working_set(vb);
 +	}
 +
-+	return 0;
-+}
-+#endif
-+
- static struct cftype memory_files[] = {
- 	{
- 		.name = "current",
-@@ -6710,7 +7020,44 @@ static struct cftype memory_files[] = {
- 		.flags = CFTYPE_NS_DELEGATABLE,
- 		.write = memory_reclaim,
- 	},
--	{ }	/* terminate */
-+#ifdef CONFIG_WSS
-+	{
-+		.name = "wss.intervals_ms",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-+		.seq_show = memory_wss_intervals_ms_show,
-+		.write = memory_wss_intervals_ms_write,
-+	},
-+	{
-+		.name = "wss.refresh_ms",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-+		.seq_show = memory_wss_refresh_ms_show,
-+		.write = memory_wss_refresh_ms_write,
-+	},
-+	{
-+		.name = "wss.report_ms",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-+		.seq_show = memory_wss_report_ms_show,
-+		.write = memory_wss_report_ms_write,
-+	},
-+	{
-+		.name = "wss.histogram",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-+		.seq_show = memory_wss_histogram_show,
-+		.poll = memory_wss_histogram_poll,
-+	},
-+	{
-+		.name = "reaccess.intervals_ms",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-+		.seq_show = memory_reaccess_intervals_ms_show,
-+		.write = memory_reaccess_intervals_ms_write,
-+	},
-+	{
-+		.name = "reaccess.histogram",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-+		.seq_show = memory_reaccess_histogram_show,
-+	},
-+#endif
-+	{} /* terminate */
+ 	err = init_vqs(vb);
+ 	if (err)
+ 		goto out_free_vb;
+@@ -1034,11 +1270,15 @@ static void virtballoon_remove(struct virtio_device *vdev)
+ 		unregister_oom_notifier(&vb->oom_nb);
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT))
+ 		virtio_balloon_unregister_shrinker(vb);
++	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_WS_REPORTING))
++		unregister_wss_receiver(vb);
+ 	spin_lock_irq(&vb->stop_update_lock);
+ 	vb->stop_update = true;
+ 	spin_unlock_irq(&vb->stop_update_lock);
+ 	cancel_work_sync(&vb->update_balloon_size_work);
+ 	cancel_work_sync(&vb->update_balloon_stats_work);
++	cancel_work_sync(&vb->update_balloon_ws_work);
++	cancel_work_sync(&vb->update_balloon_notification_work);
+ 
+ 	if (virtio_has_feature(vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT)) {
+ 		cancel_work_sync(&vb->report_free_page_work);
+@@ -1104,6 +1344,7 @@ static unsigned int features[] = {
+ 	VIRTIO_BALLOON_F_FREE_PAGE_HINT,
+ 	VIRTIO_BALLOON_F_PAGE_POISON,
+ 	VIRTIO_BALLOON_F_REPORTING,
++	VIRTIO_BALLOON_F_WS_REPORTING,
  };
  
- struct cgroup_subsys memory_cgrp_subsys = {
-diff --git a/mm/mmzone.c b/mm/mmzone.c
-index 68e1511be12d..6e70c44897cc 100644
---- a/mm/mmzone.c
-+++ b/mm/mmzone.c
-@@ -89,6 +89,8 @@ void lruvec_init(struct lruvec *lruvec)
- 	 */
- 	list_del(&lruvec->lists[LRU_UNEVICTABLE]);
+ static struct virtio_driver virtio_balloon_driver = {
+diff --git a/include/linux/balloon_compaction.h b/include/linux/balloon_compaction.h
+index 5ca2d5699620..2cf4fca6e7f1 100644
+--- a/include/linux/balloon_compaction.h
++++ b/include/linux/balloon_compaction.h
+@@ -43,6 +43,7 @@
+ #include <linux/err.h>
+ #include <linux/fs.h>
+ #include <linux/list.h>
++#include <linux/mmzone.h>
  
-+	wss_init(&lruvec->__wss);
+ /*
+  * Balloon device information descriptor.
+@@ -67,6 +68,11 @@ extern size_t balloon_page_list_enqueue(struct balloon_dev_info *b_dev_info,
+ 				      struct list_head *pages);
+ extern size_t balloon_page_list_dequeue(struct balloon_dev_info *b_dev_info,
+ 				     struct list_head *pages, size_t n_req_pages);
++/*
++ * Function to send the working set to a receiver (e.g. the balloon driver)
++ * TODO: Replace with a proper registration interface, similar to shrinkers.
++ */
++extern void working_set_notify(void *wss_receiver, struct wss_bin *bins);
+ 
+ static inline void balloon_devinfo_init(struct balloon_dev_info *balloon)
+ {
+diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
+index ddaa45e723c4..06d0683d8d8c 100644
+--- a/include/uapi/linux/virtio_balloon.h
++++ b/include/uapi/linux/virtio_balloon.h
+@@ -37,6 +37,7 @@
+ #define VIRTIO_BALLOON_F_FREE_PAGE_HINT	3 /* VQ to report free pages */
+ #define VIRTIO_BALLOON_F_PAGE_POISON	4 /* Guest is using page poisoning */
+ #define VIRTIO_BALLOON_F_REPORTING	5 /* Page reporting virtqueue */
++#define VIRTIO_BALLOON_F_WS_REPORTING 6 /* Working Set Size reporting */
+ 
+ /* Size of a PFN in the balloon interface. */
+ #define VIRTIO_BALLOON_PFN_SHIFT 12
+@@ -59,6 +60,8 @@ struct virtio_balloon_config {
+ 	};
+ 	/* Stores PAGE_POISON if page poisoning is in use */
+ 	__le32 poison_val;
++	/* Number of bins for Working Set report if in use. */
++	__le32 ws_num_bins;
+ };
+ 
+ #define VIRTIO_BALLOON_S_SWAP_IN  0   /* Amount of memory swapped in */
+@@ -116,4 +119,22 @@ struct virtio_balloon_stat {
+ 	__virtio64 val;
+ } __attribute__((packed));
+ 
++enum virtio_balloon_ws_op {
++	VIRTIO_BALLOON_WS_REQUEST = 1,
++	VIRTIO_BALLOON_WS_CONFIG = 2,
++};
 +
- 	lru_gen_init_lruvec(lruvec);
- }
- 
++struct virtio_balloon_ws {
++#define VIRTIO_BALLOON_WS_RECLAIMABLE 0
++#define VIRTIO_BALLOON_WS_DISCARDABLE 1
++	/* TODO: Provide additional detail on memory, e.g. reclaimable. */
++	__virtio16 tag;
++	/* TODO: Support per-NUMA node reports. */
++	__virtio16 node_id;
++	uint8_t reserved[4];
++	__virtio64 idle_age_ms;
++	/* Track separately for ANON_AND_FILE. */
++	__virtio64 memory_size_bytes[2];
++};
++
+ #endif /* _LINUX_VIRTIO_BALLOON_H */
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 5b7b8d4f5297..b3adf924691c 100644
+index b3adf924691c..ab343974de91 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -10,6 +10,7 @@
-  *  Multiqueue VM started 5.8.00, Rik van Riel.
-  */
+@@ -209,6 +209,8 @@ static void set_task_reclaim_state(struct task_struct *task,
+ LIST_HEAD(shrinker_list);
+ DECLARE_RWSEM(shrinker_rwsem);
  
-+#include "linux/jiffies.h"
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++static void *wss_receiver;
++
+ #ifdef CONFIG_MEMCG
+ static int shrinker_nr_max;
  
- #include <linux/mm.h>
-@@ -55,6 +56,7 @@
- #include <linux/ctype.h>
- #include <linux/debugfs.h>
- #include <linux/khugepaged.h>
-+#include <linux/wss.h>
- 
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
-@@ -4225,6 +4227,7 @@ static void walk_mm(struct lruvec *lruvec, struct mm_struct *mm, struct lru_gen_
- 		mem_cgroup_unlock_pages();
- 
- 		if (walk->batched) {
-+			report_reaccess(lruvec, walk);
- 			spin_lock_irq(&lruvec->lru_lock);
- 			reset_batch_size(lruvec, walk);
- 			spin_unlock_irq(&lruvec->lru_lock);
-@@ -4465,6 +4468,470 @@ static bool try_to_inc_max_seq(struct lruvec *lruvec, unsigned long max_seq,
- 	return true;
+@@ -621,6 +623,54 @@ static unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru,
+ 	return size;
  }
  
-+/******************************************************************************
-+ *                          working set monitoring
-+ ******************************************************************************/
-+
-+static void collect_wss(struct wss *wss, const struct lruvec *lruvec,
-+			bool can_swap)
++/*
++ * Register/unregister a receiver of wss notifications
++ * TODO: Replace with a proper registration interface, similar to shrinkers.
++ */
++int register_wss_receiver(void *receiver, struct pglist_data *pgdat,
++			unsigned long *intervals, unsigned long nr_bins,
++			unsigned long refresh_threshold,
++			unsigned long report_threshold)
 +{
-+	int gen, type, zone;
-+	const struct lru_gen_struct *lrugen = &lruvec->lrugen;
-+	unsigned long curr_timestamp = jiffies;
-+	DEFINE_MAX_SEQ(lruvec);
-+	DEFINE_MIN_SEQ(lruvec);
-+
-+	for (type = !can_swap; type < ANON_AND_FILE; type++) {
-+		unsigned long seq;
-+		// TODO update bins hierarchically
-+		struct wss_bin *bin = wss->bins;
-+
-+		lockdep_assert_held(&wss->bins_lock);
-+		for (seq = max_seq; seq + 1 > min_seq[type]; seq--) {
-+			unsigned long birth, gen_start = curr_timestamp, error, size = 0;
-+
-+			gen = lru_gen_from_seq(seq);
-+
-+			for (zone = 0; zone < MAX_NR_ZONES; zone++)
-+				size += max(
-+					READ_ONCE(lrugen->nr_pages[gen][type]
-+								  [zone]),
-+					0L);
-+
-+			birth = READ_ONCE(lruvec->lrugen.timestamps[gen]);
-+			if (seq != max_seq) {
-+				int next_gen = lru_gen_from_seq(seq + 1);
-+
-+				gen_start = READ_ONCE(
-+					lruvec->lrugen.timestamps[next_gen]);
-+			}
-+
-+			error = size;
-+			/* gen exceeds the idle_age of bin */
-+			while (bin->idle_age != -1 &&
-+			       time_before(birth + bin->idle_age,
-+					   curr_timestamp)) {
-+				unsigned long proportion =
-+					gen_start -
-+					(curr_timestamp - bin->idle_age);
-+				unsigned long gen_len = gen_start - birth;
-+
-+				if (!gen_len)
-+					break;
-+				if (proportion) {
-+					unsigned long split_bin =
-+						size / gen_len *
-+						proportion;
-+					bin->nr_pages[type] += split_bin;
-+					error -= split_bin;
-+				}
-+				gen_start = curr_timestamp - bin->idle_age;
-+				bin++;
-+
-+			}
-+			bin->nr_pages[type] += error;
-+		}
-+	}
-+}
-+
-+static void refresh_wss(struct wss *wss, struct mem_cgroup *root,
-+			struct pglist_data *pgdat, struct scan_control *sc,
-+			unsigned long refresh_threshold)
-+{
-+	struct wss_bin *bin;
-+	struct mem_cgroup *memcg;
-+
-+	lockdep_assert_held(&wss->bins_lock);
-+	VM_WARN_ON_ONCE(wss->bins->idle_age == -1);
-+
-+	for (bin = wss->bins; bin->idle_age != -1; bin++) {
-+		bin->nr_pages[0] = 0;
-+		bin->nr_pages[1] = 0;
-+	}
-+	// the last used bin has idle_age == -1.
-+	bin->nr_pages[0] = 0;
-+	bin->nr_pages[1] = 0;
-+
-+	memcg = mem_cgroup_iter(root, NULL, NULL);
-+	do {
-+		struct lruvec *lruvec =
-+			mem_cgroup_lruvec(memcg, pgdat);
-+		bool can_swap = get_swappiness(lruvec, sc);
-+		DEFINE_MAX_SEQ(lruvec);
-+		DEFINE_MIN_SEQ(lruvec);
-+
-+		mem_cgroup_calculate_protection(root, memcg);
-+		if (!mem_cgroup_below_min(root, memcg) && refresh_threshold &&
-+		    min_seq[!can_swap] + MAX_NR_GENS - 1 > max_seq) {
-+			int gen = lru_gen_from_seq(max_seq);
-+			unsigned long birth =
-+				READ_ONCE(lruvec->lrugen.timestamps[gen]);
-+
-+			if (time_is_before_jiffies(birth + refresh_threshold))
-+				try_to_inc_max_seq(lruvec, max_seq, sc,
-+						   can_swap, false);
-+		}
-+
-+		collect_wss(wss, lruvec, can_swap);
-+
-+		cond_resched();
-+	} while ((memcg = mem_cgroup_iter(root, memcg, NULL)));
-+}
-+
-+void report_wss(struct pglist_data *pgdat, struct scan_control *sc)
-+{
-+	static DEFINE_RATELIMIT_STATE(rate, HZ, 3);
-+
-+	struct mem_cgroup *memcg = sc->target_mem_cgroup;
-+	struct wss *wss = lruvec_wss(mem_cgroup_lruvec(memcg, pgdat));
-+	unsigned long threshold;
-+
-+	threshold = READ_ONCE(wss->report_threshold);
-+
-+	if (sc->priority == DEF_PRIORITY)
-+		return;
-+
-+	if (READ_ONCE(wss->bins->idle_age) == -1)
-+		return;
-+
-+	if (!threshold || time_is_after_jiffies(wss->timestamp + threshold))
-+		return;
-+
-+	if (!__ratelimit(&rate))
-+		return;
-+
-+	if (!mutex_trylock(&wss->bins_lock))
-+		return;
-+
-+	refresh_wss(wss, memcg, pgdat, sc, 0);
-+	WRITE_ONCE(wss->timestamp, jiffies);
-+
-+	mutex_unlock(&wss->bins_lock);
-+
-+	if (wss->notifier)
-+		kernfs_notify(wss->notifier);
-+	if (memcg && cmpxchg(&memcg->wss_event, 0, 1) == 0)
-+		wake_up_interruptible(&memcg->wss_wait_queue);
-+}
-+
-+static void collect_reaccess_locked(struct wss *wss,
-+				    struct lru_gen_struct *lrugen,
-+				    struct lru_gen_mm_walk *walk)
-+{
-+	int gen, type, zone;
-+	unsigned long curr_timestamp = jiffies;
-+	unsigned long max_seq = READ_ONCE(walk->max_seq);
-+	unsigned long min_seq[ANON_AND_FILE] = {
-+		READ_ONCE(lrugen->min_seq[LRU_GEN_ANON]),
-+		READ_ONCE(lrugen->min_seq[LRU_GEN_FILE]),
-+	};
-+
-+	for (type = 0; type < ANON_AND_FILE; type++) {
-+		unsigned long seq;
-+		struct wss_bin *bin = wss->reaccess_bins;
-+
-+		lockdep_assert_held(&wss->reaccess_bins_lock);
-+		/* Skip max_seq because a reaccess moves a page from another seq
-+		 * to max_seq. We use the negative change in page count from
-+		 * other seqs to track the number of reaccesses.
-+		 */
-+		for (seq = max_seq - 1; seq + 1 > min_seq[type]; seq--) {
-+			long error;
-+			int next_gen;
-+			unsigned long birth, gen_start;
-+			long delta = 0;
-+
-+			gen = lru_gen_from_seq(seq);
-+
-+			for (zone = 0; zone < MAX_NR_ZONES; zone++) {
-+				long nr_pages = walk->nr_pages[gen][type][zone];
-+
-+				if (nr_pages < 0)
-+					delta += -nr_pages;
-+			}
-+
-+			birth = READ_ONCE(lrugen->timestamps[gen]);
-+			next_gen = lru_gen_from_seq(seq + 1);
-+			gen_start = READ_ONCE(lrugen->timestamps[next_gen]);
-+
-+			/* ensure gen_start is within idle_age of bin */
-+			while (bin->idle_age != -1 &&
-+			       time_before(gen_start + bin->idle_age,
-+					  curr_timestamp))
-+				bin++;
-+
-+			error = delta;
-+			/* gen exceeds the idle_age of bin */
-+			while (bin->idle_age != -1 &&
-+			       time_before(birth + bin->idle_age,
-+					   curr_timestamp)) {
-+				unsigned long proportion =
-+					gen_start -
-+					(curr_timestamp - bin->idle_age);
-+				unsigned long gen_len = gen_start - birth;
-+
-+				if (!gen_len)
-+					break;
-+				if (proportion) {
-+					unsigned long split_bin =
-+						delta / gen_len * proportion;
-+					bin->nr_pages[type] += split_bin;
-+					error -= split_bin;
-+				}
-+				gen_start = curr_timestamp - bin->idle_age;
-+				bin++;
-+			}
-+			bin->nr_pages[type] += error;
-+		}
-+	}
-+}
-+
-+static void collect_reaccess(struct wss *wss,
-+				   struct lru_gen_struct *lrugen,
-+				   struct lru_gen_mm_walk *walk)
-+{
-+	if (READ_ONCE(wss->reaccess_bins->idle_age) == -1)
-+		return;
-+
-+	mutex_lock(&wss->reaccess_bins_lock);
-+	collect_reaccess_locked(wss, lrugen, walk);
-+	mutex_unlock(&wss->reaccess_bins_lock);
-+}
-+
-+void report_reaccess(struct lruvec *lruvec, struct lru_gen_mm_walk *walk)
-+{
-+	struct lru_gen_struct *lrugen = &lruvec->lrugen;
-+	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
-+
-+	while (memcg) {
-+		collect_reaccess(lruvec_wss(mem_cgroup_lruvec(
-+					 memcg, lruvec_pgdat(lruvec))),
-+				 lrugen, walk);
-+		memcg = parent_mem_cgroup(memcg);
-+	}
-+}
-+
-+static struct pglist_data *kobj_to_pgdat(struct kobject *kobj)
-+{
-+	int nid = IS_ENABLED(CONFIG_NUMA) ? kobj_to_dev(kobj)->id :
-+					    first_memory_node;
-+
-+	return NODE_DATA(nid);
-+}
-+
-+static struct wss *kobj_to_wss(struct kobject *kobj)
-+{
-+	return lruvec_wss(mem_cgroup_lruvec(NULL, kobj_to_pgdat(kobj)));
-+}
-+
-+static ssize_t report_ms_show(struct kobject *kobj, struct kobj_attribute *attr,
-+			      char *buf)
-+{
-+	struct wss *wss = kobj_to_wss(kobj);
-+	unsigned long threshold = READ_ONCE(wss->report_threshold);
-+
-+	return sysfs_emit(buf, "%u\n", jiffies_to_msecs(threshold));
-+}
-+
-+static ssize_t report_ms_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			       const char *buf, size_t len)
-+{
-+	unsigned int msecs;
-+	struct wss *wss = kobj_to_wss(kobj);
-+
-+	if (kstrtouint(buf, 0, &msecs))
-+		return -EINVAL;
-+
-+	WRITE_ONCE(wss->report_threshold, msecs_to_jiffies(msecs));
-+
-+	return len;
-+}
-+
-+static struct kobj_attribute report_ms_attr = __ATTR_RW(report_ms);
-+
-+static ssize_t refresh_ms_show(struct kobject *kobj, struct kobj_attribute *attr,
-+			       char *buf)
-+{
-+	struct wss *wss = kobj_to_wss(kobj);
-+	unsigned long threshold = READ_ONCE(wss->refresh_threshold);
-+
-+	return sysfs_emit(buf, "%u\n", jiffies_to_msecs(threshold));
-+}
-+
-+static ssize_t refresh_ms_store(struct kobject *kobj, struct kobj_attribute *attr,
-+				const char *buf, size_t len)
-+{
-+	unsigned int msecs;
-+	struct wss *wss = kobj_to_wss(kobj);
-+
-+	if (kstrtouint(buf, 0, &msecs))
-+		return -EINVAL;
-+
-+	WRITE_ONCE(wss->refresh_threshold, msecs_to_jiffies(msecs));
-+
-+	return len;
-+}
-+
-+static struct kobj_attribute refresh_ms_attr = __ATTR_RW(refresh_ms);
-+
-+static ssize_t intervals_ms_show(struct kobject *kobj, struct kobj_attribute *attr,
-+				 char *buf)
-+{
-+	struct wss_bin *bin;
-+	int len = 0;
-+	struct wss *wss = kobj_to_wss(kobj);
-+
-+	mutex_lock(&wss->bins_lock);
-+
-+	for (bin = wss->bins; bin->idle_age != -1; bin++)
-+		len += sysfs_emit_at(buf, len, "%u,", jiffies_to_msecs(bin->idle_age));
-+
-+	len += sysfs_emit_at(buf, len, "%lld\n", LLONG_MAX);
-+
-+	mutex_unlock(&wss->bins_lock);
-+
-+	return len;
-+}
-+
-+static ssize_t intervals_ms_store(struct kobject *kobj, struct kobj_attribute *attr,
-+				  const char *src, size_t len)
-+{
-+	char *buf;
++	struct wss *wss;
 +	struct wss_bin *bins;
-+	int err = 0;
-+	struct wss *wss = kobj_to_wss(kobj);
++	int i;
++
++	wss_receiver = receiver;
++
++	if (!pgdat)
++		return 0;
++
++	if (!intervals || !nr_bins)
++		return 0;
 +
 +	bins = kzalloc(sizeof(wss->bins), GFP_KERNEL);
 +	if (!bins)
 +		return -ENOMEM;
 +
-+	buf = kstrdup(src, GFP_KERNEL);
-+	if (!buf) {
-+		err = -ENOMEM;
-+		goto failed;
++	for (i = 0; i < nr_bins - 1; i++) {
++		bins[i].idle_age = msecs_to_jiffies(*intervals);
++		intervals++;
 +	}
++	bins[i].idle_age = -1;
 +
-+	err = wss_intervals_ms_parse(buf, bins);
-+	if (err)
-+		goto failed;
++	wss = lruvec_wss(mem_cgroup_lruvec(NULL, pgdat));
 +
 +	mutex_lock(&wss->bins_lock);
 +	memcpy(wss->bins, bins, sizeof(wss->bins));
++	WRITE_ONCE(wss->refresh_threshold, msecs_to_jiffies(refresh_threshold));
++	WRITE_ONCE(wss->report_threshold, msecs_to_jiffies(report_threshold));
 +	mutex_unlock(&wss->bins_lock);
-+failed:
-+	kfree(buf);
-+	kfree(bins);
-+
-+	return err ?: len;
++	return 0;
 +}
++EXPORT_SYMBOL(register_wss_receiver);
 +
-+static struct kobj_attribute intervals_ms_attr = __ATTR_RW(intervals_ms);
++void unregister_wss_receiver(void *receiver)
++{
++	wss_receiver = NULL;
++}
++EXPORT_SYMBOL(unregister_wss_receiver);
 +
-+void wss_refresh(struct wss *wss, struct mem_cgroup *root,
-+		 struct pglist_data *pgdat)
+ /*
+  * Add a shrinker callback to be called from the vm.
+  */
+@@ -4606,6 +4656,12 @@ void report_wss(struct pglist_data *pgdat, struct scan_control *sc)
+ 	refresh_wss(wss, memcg, pgdat, sc, 0);
+ 	WRITE_ONCE(wss->timestamp, jiffies);
+ 
++	/* balloon driver subscribes to global memory reclaim */
++	if (!cgroup_reclaim(sc) && wss_receiver) {
++		pr_warn("Working Set Notify!");
++		working_set_notify(wss_receiver, wss->bins);
++	}
++
+ 	mutex_unlock(&wss->bins_lock);
+ 
+ 	if (wss->notifier)
+@@ -4711,6 +4767,52 @@ void report_reaccess(struct lruvec *lruvec, struct lru_gen_mm_walk *walk)
+ 	}
+ }
+ 
++/* TODO: Replace with a proper registration interface, similar to shrinkers. */
++bool working_set_request(struct pglist_data *pgdat)
 +{
 +	unsigned int flags;
 +	struct scan_control sc = {
@@ -1117,209 +643,44 @@ index 5b7b8d4f5297..b3adf924691c 100644
 +		.reclaim_idx = MAX_NR_ZONES - 1,
 +		.gfp_mask = GFP_KERNEL,
 +	};
++	struct wss *wss;
 +
-+	lockdep_assert_held(&wss->bins_lock);
++	if (!wss_receiver)
++		return false;
++
++	wss = lruvec_wss(mem_cgroup_lruvec(NULL, pgdat));
++
++	if (!mutex_trylock(&wss->bins_lock))
++		return false;
 +
 +	if (wss->bins->idle_age != -1) {
 +		unsigned long timestamp = READ_ONCE(wss->timestamp);
 +		unsigned long threshold = READ_ONCE(wss->refresh_threshold);
 +
 +		if (time_is_before_jiffies(timestamp + threshold)) {
++			// We might need to refresh the report.
 +			set_task_reclaim_state(current, &sc.reclaim_state);
 +			flags = memalloc_noreclaim_save();
-+			refresh_wss(wss, root, pgdat, &sc, threshold);
++			refresh_wss(wss, NULL, pgdat, &sc, threshold);
 +			memalloc_noreclaim_restore(flags);
 +			set_task_reclaim_state(current, NULL);
 +		}
 +	}
-+}
 +
-+static ssize_t histogram_show(struct kobject *kobj, struct kobj_attribute *attr,
-+			      char *buf)
-+{
-+	struct wss_bin *bin;
-+	int len = 0;
-+	struct wss *wss = kobj_to_wss(kobj);
-+
-+	mutex_lock(&wss->bins_lock);
-+
-+	wss_refresh(wss, NULL, kobj_to_pgdat(kobj));
-+
-+	for (bin = wss->bins; bin->idle_age != -1; bin++)
-+		len += sysfs_emit_at(buf, len, "%u anon=%lu file=%lu\n",
-+				     jiffies_to_msecs(bin->idle_age), bin->nr_pages[0],
-+				     bin->nr_pages[1]);
-+
-+	len += sysfs_emit_at(buf, len, "%lld anon=%lu file=%lu\n", LLONG_MAX,
-+			     bin->nr_pages[0], bin->nr_pages[1]);
++	if (wss_receiver) {
++		pr_warn("WS notify inside ws request\n");
++		working_set_notify(wss_receiver, wss->bins);
++	}
 +
 +	mutex_unlock(&wss->bins_lock);
++	return true;
 +
-+	return len;
 +}
++EXPORT_SYMBOL(working_set_request);
 +
-+static struct kobj_attribute histogram_attr = __ATTR_RO(histogram);
-+
-+static struct attribute *wss_attrs[] = {
-+	&report_ms_attr.attr,
-+	&refresh_ms_attr.attr,
-+	&intervals_ms_attr.attr,
-+	&histogram_attr.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group wss_attr_group = {
-+	.name = "wss",
-+	.attrs = wss_attrs,
-+};
-+
-+void wss_register_node(struct node *node)
-+{
-+	struct kobject *kobj = node ? &node->dev.kobj : mm_kobj;
-+	struct wss *wss;
-+
-+	if (IS_ENABLED(CONFIG_NUMA) && !node)
-+		return;
-+
-+	wss = kobj_to_wss(kobj);
-+
-+	/* wss should be initialized when pgdat was initialized
-+	 * or when the root memcg was initialized
-+	 */
-+	if (sysfs_create_group(kobj, &wss_attr_group)) {
-+		pr_warn("WSS failed to created group");
-+		return;
-+	}
-+
-+	wss->notifier = kernfs_walk_and_get(kobj->sd, "wss/histogram");
-+}
-+
-+void wss_unregister_node(struct node *node)
-+{
-+	struct kobject *kobj = &node->dev.kobj;
-+	struct wss *wss;
-+
-+	if (IS_ENABLED(CONFIG_NUMA) && !node)
-+		return;
-+
-+	wss = kobj_to_wss(kobj);
-+	kernfs_put(wss->notifier);
-+	sysfs_remove_group(kobj, &wss_attr_group);
-+	wss_destroy(wss);
-+}
-+
-+/*******************************************************************************/
-+
-+
- static bool should_run_aging(struct lruvec *lruvec, unsigned long max_seq, unsigned long *min_seq,
- 			     struct scan_control *sc, bool can_swap, unsigned long *nr_to_scan)
+ static struct pglist_data *kobj_to_pgdat(struct kobject *kobj)
  {
-@@ -4569,6 +5036,8 @@ static void lru_gen_age_node(struct pglist_data *pgdat, struct scan_control *sc)
- 
- 	VM_WARN_ON_ONCE(!current_is_kswapd());
- 
-+	report_wss(pgdat, sc);
-+
- 	sc->last_reclaimed = sc->nr_reclaimed;
- 
- 	/*
-@@ -5076,11 +5545,14 @@ static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swap
- 		sc->nr_scanned -= folio_nr_pages(folio);
- 	}
- 
-+	walk = current->reclaim_state->mm_walk;
-+	if (walk && walk->batched)
-+		report_reaccess(lruvec, walk);
-+
- 	spin_lock_irq(&lruvec->lru_lock);
- 
- 	move_folios_to_lru(lruvec, &list);
- 
--	walk = current->reclaim_state->mm_walk;
- 	if (walk && walk->batched)
- 		reset_batch_size(lruvec, walk);
- 
-@@ -5890,6 +6362,8 @@ static int __init init_lru_gen(void)
- 	if (sysfs_create_group(mm_kobj, &lru_gen_attr_group))
- 		pr_err("lru_gen: failed to create sysfs group\n");
- 
-+	wss_register_node(NULL);
-+
- 	debugfs_create_file("lru_gen", 0644, NULL, NULL, &lru_gen_rw_fops);
- 	debugfs_create_file("lru_gen_full", 0444, NULL, NULL, &lru_gen_ro_fops);
- 
-@@ -6411,6 +6885,9 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
- 		if (zone->zone_pgdat == last_pgdat)
- 			continue;
- 		last_pgdat = zone->zone_pgdat;
-+
-+		if (!sc->proactive)
-+			report_wss(zone->zone_pgdat, sc);
- 		shrink_node(zone->zone_pgdat, sc);
- 	}
- 
-diff --git a/mm/wss.c b/mm/wss.c
-new file mode 100644
-index 000000000000..f7cbe59db079
---- /dev/null
-+++ b/mm/wss.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/wss.h>
-+#include <linux/mmzone.h>
-+
-+/* For now just embed wss in the lruvec.
-+ * Consider only allocating struct wss when it's used
-+ * since sizeof(struct wss) is ~864 bytes.
-+ */
-+struct wss *lruvec_wss(struct lruvec *lruvec)
-+{
-+	return &lruvec->__wss;
-+}
-+
-+void wss_init(struct wss *wss)
-+{
-+	mutex_init(&wss->bins_lock);
-+	mutex_init(&wss->reaccess_bins_lock);
-+	wss->bins[0].idle_age = -1;
-+	wss->notifier = NULL;
-+	wss->reaccess_bins[0].idle_age = -1;
-+}
-+
-+void wss_destroy(struct wss *wss)
-+{
-+	mutex_destroy(&wss->bins_lock);
-+	mutex_destroy(&wss->reaccess_bins_lock);
-+	memset(wss, 0, sizeof(*wss));
-+}
-+
-+ssize_t wss_intervals_ms_parse(char *src, struct wss_bin *bins)
-+{
-+	int err, i = 0;
-+	char *cur, *next = strim(src);
-+
-+	while ((cur = strsep(&next, ","))) {
-+		unsigned int msecs;
-+
-+		err = kstrtouint(cur, 0, &msecs);
-+		if (err)
-+			return err;
-+
-+		bins[i].idle_age = msecs_to_jiffies(msecs);
-+		if (i > 0 && bins[i].idle_age <= bins[i - 1].idle_age)
-+			return -EINVAL;
-+
-+		if (++i == MAX_NR_BINS)
-+			return -ERANGE;
-+	}
-+
-+	if (i && i < MIN_NR_BINS - 1)
-+		return -ERANGE;
-+
-+	bins[i].idle_age = -1;
-+	return 0;
-+}
+ 	int nid = IS_ENABLED(CONFIG_NUMA) ? kobj_to_dev(kobj)->id :
 -- 
 2.40.1.521.gf1e218fcd8-goog
 
