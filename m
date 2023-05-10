@@ -2,126 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EFF6FE42E
-	for <lists+cgroups@lfdr.de>; Wed, 10 May 2023 20:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867786FE450
+	for <lists+cgroups@lfdr.de>; Wed, 10 May 2023 21:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjEJSqH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 May 2023 14:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        id S229536AbjEJTAU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 May 2023 15:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjEJSqG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 14:46:06 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ED5E4A;
-        Wed, 10 May 2023 11:46:03 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-643990c5319so5423419b3a.2;
-        Wed, 10 May 2023 11:46:03 -0700 (PDT)
+        with ESMTP id S229490AbjEJTAT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 15:00:19 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A411D19B
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 12:00:14 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-3f38824a025so574361cf.0
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 12:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683744362; x=1686336362;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5fuvzbzfAPaWz0F0qnb+ng0M3t+DRDPEy+SEvx5Zlpw=;
-        b=WaX/lA3Y5RC6vqi8Gstz4xLqZDGmFXeG7a3rgiWsDu5hUwAToAZzkqoYMo1FT7KjnA
-         ARUu3pTtOMc7WAoU2YOH9cnEDLX7dlPp5Fk+vl639nloA3cqkDUb96asyf9ZQw15ihXz
-         nIf9q2YeVZUyrcSMtyeAkgoRbV+oLyls91sRKUg2xusZZZ3Ihxuq/x0/E/g2898K6qQY
-         NY2fYU0eav3eoftoQ/+ak267O1ldNVnrMhtexIpFA1GoP5llXOIGlF9JxtpQi2ToH3Sb
-         zXx6m0I8PgYy7bI06tjMymfporVo62Z/NoPWgDzh1wszI52lSrupgJLtKhGceUulCGBv
-         Mj0g==
+        d=google.com; s=20221208; t=1683745214; x=1686337214;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xKsdgPcqj7KmYQZqWilT9rwcetEcIXv94yhUAf7G1sA=;
+        b=BvJIvdH3Wybsgy9FE4pyTQfaOjRyNKOOtwD8AxKBkOLwQnEb8UA1Ez5R0nRn2CFFBL
+         BXgoH7pw0kursav4wE2lwTrsKDnbBpwm7XG4ro5lrOuMCnNM9OqssguSNAUo7HbNaWwC
+         j40w6tVnkluvyUchlgU8rYyRRcEQwmE3Zpnbh6RscDtfNz10rYG0KfpUKVd8wmoNZj9I
+         vTdcpjPoxtgDsptCivj+6K0OgYH6Bcgllqe2Y3mDvoTxA67v54GNd+C7Q5M4TB3/70n0
+         h5NlSITmtP1wgtX8LZtx21dkK0mPYkk0oTPqWfrXi9seT6ecC66ADSSg2marBGDzT/7q
+         kIZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683744362; x=1686336362;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1683745214; x=1686337214;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5fuvzbzfAPaWz0F0qnb+ng0M3t+DRDPEy+SEvx5Zlpw=;
-        b=UoLxfsrl7keY7Y8M8rv+RYcFU/QWgIEu5qr1gpAmnry9n/50dC3JYz3fDbuOzEpJzX
-         kvE6UfiHHXphUXOrzIVR8pRHMyJmQi2CD+kX6ljgch8dlid51FpZDqtbxzISlbEBziFU
-         Ce3aBmjeEgpsa3UgiQePQ5y4rdZp3NBHBpcRuOMYLaVY/B6XBZFpIwdm+nH5p+h7vqnK
-         sXsMmxF4dKKQE3UnSiJ5jlJACFmCR8S1U6qbDQbn+rR16+fbxuEs0DmwB2q08usxrNGA
-         ht0Eawm4M6PIsd+MUH//u0SPFhYgSlekhGsQ9paq24q27vkHkYZHUdkHoH2arRyzwfTH
-         Ozgg==
-X-Gm-Message-State: AC+VfDyKfgwFW7pZj/9B+z4thFGtsaKbCSWezHnyQlGNGEiblfHuIGiR
-        W0RzrOiTDgXKEd46Dss1VWY=
-X-Google-Smtp-Source: ACHHUZ5d5WqcqsbpOW8d9gvlIIZZNzXUY94wx3QLBecJ3Q5deydid7nrQYlsF19asRDnaQT3WKzIjA==
-X-Received: by 2002:a17:902:ce86:b0:1ad:c1c2:7d14 with SMTP id f6-20020a170902ce8600b001adc1c27d14mr224531plg.46.1683744362257;
-        Wed, 10 May 2023 11:46:02 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id i3-20020a17090332c300b001ac4d3d3f72sm4130469plr.296.2023.05.10.11.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 May 2023 11:46:01 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 10 May 2023 08:46:00 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org,
-        intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: Re: [RFC PATCH 0/4] Add support for DRM cgroup memory accounting.
-Message-ID: <ZFvmaGNo0buQEUi1@slm.duckdns.org>
-References: <20230503083500.645848-1-maarten.lankhorst@linux.intel.com>
- <ZFVeI2DKQXddKDNl@slm.duckdns.org>
- <4d6fbce3-a676-f648-7a09-6f6dcc4bdb46@linux.intel.com>
+        bh=xKsdgPcqj7KmYQZqWilT9rwcetEcIXv94yhUAf7G1sA=;
+        b=iWZmPWCJJZeJmAcMH0CqIGow28h7tmJyCR1NpaxSZwlhvfy8VOGV61vFGGRk4wU8aO
+         n1z+qXToAJNJA3gO5lgzj1Gm80LU5umLUP2z+qNHz/Qs6NIOMDOxlehF1tGRbf+vdocQ
+         z45u3HCULoUDXsY4tauSZlV3liK2JdEzsJsfj16HKowyMGZuhUzFtumcW7iY11142uYZ
+         JNn1l7rSY+IWo/2lyANJjcOGMIGRRgMt/g6nlMD/SJzGA1CAJfYnp5A8eVw7L/80n0RS
+         8NnDIMHvBDYoKABgn8AX2WdufLeEKrposOaHQoPgl5SkixsHrlgIWnG2FTU6WeztiG6E
+         rUZA==
+X-Gm-Message-State: AC+VfDynPUsKTErvcJ+rYQhLitWkNoYbzYX/3SOJfO6ZTuKBcDpRkzia
+        F0wuLXiJoBGCD7UP3Cm0ESR/cWHqyCx8SMZdc70rKw==
+X-Google-Smtp-Source: ACHHUZ6rnfauvJlvb1mwzzlT8g0GY54+NROCZwvEmL9WYPQejz5W4eVK9gMe7CWqWbMSgLrgOf+zP9SLEfzjAsntQys=
+X-Received: by 2002:ac8:7d11:0:b0:3e6:81be:93b3 with SMTP id
+ g17-20020ac87d11000000b003e681be93b3mr25392qtb.5.1683745213654; Wed, 10 May
+ 2023 12:00:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4d6fbce3-a676-f648-7a09-6f6dcc4bdb46@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230508020801.10702-1-cathy.zhang@intel.com> <20230508020801.10702-2-cathy.zhang@intel.com>
+ <3887b08ac0e55e27a24d2f66afcfff1961ed9b13.camel@redhat.com>
+ <CH3PR11MB73459006FCE3887E1EA3B82FFC769@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CH3PR11MB73456D792EC6E7614E2EF14DFC769@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CANn89iL6Ckuu9vOEvc7A9CBLGuh-EpbwFRxRAchV-6VFyhTUpg@mail.gmail.com>
+ <CH3PR11MB73458BB403D537CFA96FD8DDFC769@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CANn89iJvpgXTwGEiXAkFwY3j3RqVhNzJ_6_zmuRb4w7rUA_8Ug@mail.gmail.com>
+ <CALvZod6JRuWHftDcH0uw00v=yi_6BKspGCkDA4AbmzLHaLi2Fg@mail.gmail.com>
+ <CH3PR11MB7345ABB947E183AFB7C18322FC779@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CANn89i+9rQcGey+AJyhR02pTTBNhWN+P78e4a8knfC9F5sx0hQ@mail.gmail.com>
+ <CH3PR11MB73455A98A232920B322C3976FC779@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CANn89i+J+ciJGPkWAFKDwhzJERFJr9_2Or=ehpwSTYO14qzHmA@mail.gmail.com> <CH3PR11MB734502756F495CB9C520494FFC779@CH3PR11MB7345.namprd11.prod.outlook.com>
+In-Reply-To: <CH3PR11MB734502756F495CB9C520494FFC779@CH3PR11MB7345.namprd11.prod.outlook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 10 May 2023 12:00:02 -0700
+Message-ID: <CALvZod4n+Kwa1sOV9jxiEMTUoO7MaCGWz=wT3MHOuj4t-+9S6Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper size
+To:     "Zhang, Cathy" <cathy.zhang@intel.com>
+Cc:     Eric Dumazet <edumazet@google.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Srinivas, Suresh" <suresh.srinivas@intel.com>,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        "You, Lizhen" <lizhen.you@intel.com>,
+        "eric.dumazet@gmail.com" <eric.dumazet@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, May 10, 2023 at 9:09=E2=80=AFAM Zhang, Cathy <cathy.zhang@intel.com=
+> wrote:
+>
+>
+[...]
+> > > >
+> > > > Have you tried to increase batch sizes ?
+> > >
+> > > I jus picked up 256 and 1024 for a try, but no help, the overhead sti=
+ll exists.
+> >
+> > This makes no sense at all.
+>
+> Eric,
+>
+> I added a pr_info in try_charge_memcg() to print nr_pages if
+> nr_pages >=3D MEMCG_CHARGE_BATCH, except it prints 64 during the initiali=
+zation
+> of instances, there is no other output during the running. That means nr_=
+pages is not
+> over 64, I guess that might be the reason why to increase MEMCG_CHARGE_BA=
+TCH
+> doesn't affect this case.
+>
 
-On Wed, May 10, 2023 at 04:59:01PM +0200, Maarten Lankhorst wrote:
-> The misc controller is not granular enough. A single computer may have any number of
-> graphics cards, some of them with multiple regions of vram inside a single card.
-
-Extending the misc controller to support dynamic keys shouldn't be that
-difficult.
-
-...
-> In the next version, I will move all the code for handling the resource limit to
-> TTM's eviction layer, because otherwise it cannot handle the resource limit correctly.
-> 
-> The effect of moving the code to TTM, is that it will make the code even more generic
-> for drivers that have vram and use TTM. When using TTM, you only have to describe your
-> VRAM, update some fields in the TTM manager and (un)register your device with the
-> cgroup handler on (un)load. It's quite trivial to add vram accounting to amdgpu and
-> nouveau. [2]
-> 
-> If you want to add a knob for scheduling weight for a process, it makes sense to
-> also add resource usage as a knob, otherwise the effect of that knob is very
-> limited. So even for Tvrtko's original proposed usecase, it would make sense.
-
-It does make sense but unlike Tvrtko's scheduling weights what's being
-proposed doesn't seem to encapsulate GPU memory resource in a generic enough
-manner at least to my untrained eyes. ie. w/ drm.weight, I don't need any
-specific knoweldge of how a specific GPU operates to say "this guy should
-get 2x processing power over that guy". This more or less holds for other
-major resources including CPU, memory and IO. What you're proposing seems a
-lot more tied to hardware details and users would have to know a lot more
-about how memory is configured on that particular GPU.
-
-Now, if this is inherent to how all, or at least most, GPUs operate, sure,
-but otherwise let's start small in terms of interface and not take up space
-which should be for something universal. If this turns out to be the way,
-expanding to take up the generic interface space isn't difficult.
-
-I don't know GPU space so please educate me where I'm wrong.
-
-Thanks.
-
--- 
-tejun
+I am assuming you increased MEMCG_CHARGE_BATCH to 256 and 1024 but
+that did not help. To me that just means there is a different
+bottleneck in the memcg charging codepath. Can you please share the
+perf profile? Please note that memcg charging does a lot of other
+things as well like updating memcg stats and checking (and enforcing)
+memory.high even if you have not set memory.high.
