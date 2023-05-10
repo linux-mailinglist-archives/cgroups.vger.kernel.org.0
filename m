@@ -2,90 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1A96FD937
-	for <lists+cgroups@lfdr.de>; Wed, 10 May 2023 10:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5216FDB3F
+	for <lists+cgroups@lfdr.de>; Wed, 10 May 2023 12:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbjEJI0H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 May 2023 04:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
+        id S235904AbjEJKDV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 May 2023 06:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236489AbjEJIZ7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 04:25:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289E75595;
-        Wed, 10 May 2023 01:25:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 846D363BE4;
-        Wed, 10 May 2023 08:25:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3858CC4339B;
-        Wed, 10 May 2023 08:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1683707156;
-        bh=yyuOZPHJUbcP9aRarpv4MRiXOkJWXGAGGyeBIlMq4nc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0LiSIdWiydHsjiJsZ54H/qYkl8uWEKUlPA1USETAuz4e/hFVQ+Ekx7+/+fUO6lZ8u
-         +hp8e+zrKfDfaeUa/gyx6wqCtOsUIwF5TKHQLHhrUvCHv23cDbUCpr3sFqNXY606RL
-         WwUdqKEAeBMjRJRVVFULAWqg/156NVs9dBQo2dLY=
-Date:   Wed, 10 May 2023 10:25:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Yuanchu Xie <yuanchu@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Sudarshan Rajagopalan (QUIC)" <quic_sudaraja@quicinc.com>,
-        kai.huang@intel.com, hch@lst.de, jon@nutanix.com,
-        SeongJae Park <sj@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Yu Zhao <yuzhao@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        talumbau <talumbau@google.com>, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] mm: multigen-LRU: working set reporting
-Message-ID: <2023051016-snarl-fame-9d6b@gregkh>
-References: <20230509185419.1088297-1-yuanchu@google.com>
- <20230509185419.1088297-2-yuanchu@google.com>
+        with ESMTP id S229595AbjEJKDU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 06:03:20 -0400
+X-Greylist: delayed 509 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 May 2023 03:03:17 PDT
+Received: from mail.mojafirma24biz.pl (mail.mojafirma24biz.pl [94.177.230.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0374A6EB2
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 03:03:16 -0700 (PDT)
+Received: by mail.mojafirma24biz.pl (Postfix, from userid 1002)
+        id D9F3382B19; Wed, 10 May 2023 11:53:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mojafirma24biz.pl;
+        s=mail; t=1683712433;
+        bh=QbP1U00PseMsQKCCzubvpt4P1svntDdd/QYVIBIcXDg=;
+        h=Date:From:To:Subject:From;
+        b=Vjxo8AHVa62QNimFwte+yYW4MyOEvABeJpYtmMefpOUgRppZ27V5ql9qXq6ZsX44m
+         FOZarsvWyf+2SwfExREKDiyY4ayk/ZO8lEUOsBmBhJXCc1ZZDoTb+oEF/6u5RHEUBh
+         mjMrNG64IbWeAQpBfJl6c1BNOORuhF4nIntc+TSpRVsGMoit9u0o+sLHWdmdcLPTLD
+         ks5JIrFq8rP138NMrAZ0xDJlt0jNvnL2/LgbzDnVUh/0w80rFSFtEcisn+WojvE9gv
+         cCyz7uAJuEicimAzEdkkL1kwIsMpqoob6qFU3roffWg2PlBrZaRIp8RlQz1CMludYH
+         OsuXAAggbJ/ZQ==
+Received: by mail.mojafirma24biz.pl for <cgroups@vger.kernel.org>; Wed, 10 May 2023 09:53:04 GMT
+Message-ID: <20230510112738-0.1.6.524.0.s1h2g7f8pb@mojafirma24biz.pl>
+Date:   Wed, 10 May 2023 09:53:04 GMT
+From:   "Adam Wyrwisz" <adam.wyrwisz@mojafirma24biz.pl>
+To:     <cgroups@vger.kernel.org>
+Subject: Fotowoltaika dla biznesu
+X-Mailer: mail.mojafirma24biz.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230509185419.1088297-2-yuanchu@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 10, 2023 at 02:54:18AM +0800, Yuanchu Xie wrote:
-> From: talumbau <talumbau@google.com>
+Dzie=C5=84 dobry,
 
-Please fix the name here.
+w zwi=C4=85zku z nieustannie rosn=C4=85cymi cenami produkt=C3=B3w i us=C5=
+=82ug - wiele firmy stawia na rozwi=C4=85zania, kt=C3=B3re pomog=C4=85 zm=
+niejszy=C4=87 wydatki zwi=C4=85zane z prowadzeniem dzia=C5=82alno=C5=9Bci=
+, a jednym z nich jest wyb=C3=B3r instalacji fotowoltaicznych.=20
 
-> 
-> A single patch to be broken up into multiple patches.
+Wszystkim odbiorcom szukaj=C4=85cym mo=C5=BCliwo=C5=9Bci obni=C5=BCenia k=
+oszt=C3=B3w energii elektrycznej, wychodzimy naprzeciw =C5=9Bwiadcz=C4=85=
+c kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99.=20
 
-What does this mean?
+Jako jedyna na rynku firma zapewniamy 12 lat gwarancji, audyt po monta=C5=
+=BCowy, a tak=C5=BCe kalkulacj=C4=99 oszcz=C4=99dno=C5=9Bci po monta=C5=BC=
+u fotowoltaiki.
 
-> - Add working set reporting structure.
-> - Add per-node and per-memcg interfaces for working set reporting.
-> - Implement working set backend for MGLRU.
+Umo=C5=BCliwiamy leasing z odroczon=C4=85 sp=C5=82at=C4=85 i bez wk=C5=82=
+adu w=C5=82asnego, gwarantujemy wsparcie w pozyskaniu odpowiedniego =C5=BA=
+r=C3=B3d=C5=82a finansowania i pomoc w przypadku wnioskowania o dotacj=C4=
+=99.
 
-Please break it up to be reviewable, otherwise no one will review it.
+Czy chcieliby Pa=C5=84stwo zapozna=C4=87 si=C4=99 z mo=C5=BCliwo=C5=9Bcia=
+mi inwestycji w PV dopasowanymi do Pa=C5=84stwa obiektu?
 
-thanks,
 
-greg k-h
+Pozdrawiam
+Adam Wyrwisz
