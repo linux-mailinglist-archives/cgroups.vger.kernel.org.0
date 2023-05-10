@@ -2,269 +2,385 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17DA6FDF4A
-	for <lists+cgroups@lfdr.de>; Wed, 10 May 2023 15:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08E36FE0D2
+	for <lists+cgroups@lfdr.de>; Wed, 10 May 2023 16:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbjEJNzi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 May 2023 09:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S237497AbjEJOvz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 May 2023 10:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236706AbjEJNzg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 09:55:36 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB650D85B;
-        Wed, 10 May 2023 06:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683726899; x=1715262899;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ike/YhTQ6FqDHgwb1fH8bcZ4R5gcgL1tekZJPzTAz4c=;
-  b=L38/C97B24LKQvGTXOXBAw0pJ/Mazck8rj7AfI9+pbwgaJBoL9HDpUDe
-   vFv1DhLmghT16dWroayKhEnYnIgFDzUOjK6EKaAVKrxkKrIIG4HJ6PuiL
-   rmokubQ5YZIagcl7rNmmVJMkgRtuwOoo6EenZSOUoR/w47mcgl/vW8PLl
-   bJCN4LkXx3TDl99AIgn66WiFubwyOHKrXAFu0hcB0G6T4YmeKX7CLgiCU
-   ObFOQpEj42P8D2mxk6LKBVVo7s6XUbG2XmuMGaJ63mg8XmTWJN0atGcIc
-   1Nx6fgO1/W2dtFiekH3vj2428JoC4YitnRjKmvpJ4+59ro0HPel2kqgI3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="413517811"
-X-IronPort-AV: E=Sophos;i="5.99,264,1677571200"; 
-   d="scan'208";a="413517811"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2023 06:52:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="823556309"
-X-IronPort-AV: E=Sophos;i="5.99,264,1677571200"; 
-   d="scan'208";a="823556309"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP; 10 May 2023 06:52:21 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 10 May 2023 06:52:20 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 10 May 2023 06:52:20 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Wed, 10 May 2023 06:52:20 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Wed, 10 May 2023 06:52:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lof2EIFhKFsclHypehxgKMFrwrMFhO3OQxTa6/1fXJTDQ13utJ1Teh6j+HwqDudPOEDolZi9RlJffuNwHlJc1OrbxqiTJVyTj8laidWJU9eXMNV3zl5WTn+ytvONZ+Lj2brFwRpdmhO/YDx4H//bjymhqeSZFCA0ObHKRNOWSDZj6vkXuw6JGK7dQg5VcK6nD7tDtsuWLw92Omra9WanrXL6+sNAVU+dez4O/jsJcDWN33YIZ3vvlNTIxe15VbQ0N/GTczRhOAcOcicA0kckt+0+W6gdMkkkXw5q2E0E7YDpxMSvTFU7x/1RUDRaDX7+eMvnsMafZp02rn15livhHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ike/YhTQ6FqDHgwb1fH8bcZ4R5gcgL1tekZJPzTAz4c=;
- b=FeziVNxo9sPfuJRAs8E2aZyF15Fi8E3amvtKM9Z6slmTzo/8DcTYbFqbE1nypZ79LKEjrzGofYeuls++TWkrENRrncmfCzQ4Kxen3sNBJsg3MOPwNgd4A7kBcyny6xoy3A4ua9Kx+acwvuZKTg6Dh5Kw2X+CGah2wdFvBSOxZBlTw7k/XZfJwmJctQSJdFGqacgUjISNWjiM0MVD48ZY94lSpqtJFiWEwizgdMkSiaNjPoCLjDWvY87Fmz8cItKDX6Vqyd0Dv+tD6ekaaL7bVObd6AYDx/6dwth9cBlQLdWrZDFzYs6fpmLilgx2u//6vcIfBEcI3M9PfCoJZ8LkJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CH3PR11MB7345.namprd11.prod.outlook.com (2603:10b6:610:14a::9)
- by PH7PR11MB6521.namprd11.prod.outlook.com (2603:10b6:510:213::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.32; Wed, 10 May
- 2023 13:52:17 +0000
-Received: from CH3PR11MB7345.namprd11.prod.outlook.com
- ([fe80::242e:f580:7242:f039]) by CH3PR11MB7345.namprd11.prod.outlook.com
- ([fe80::242e:f580:7242:f039%5]) with mapi id 15.20.6363.033; Wed, 10 May 2023
- 13:52:17 +0000
-From:   "Zhang, Cathy" <cathy.zhang@intel.com>
-To:     Eric Dumazet <edumazet@google.com>
-CC:     Shakeel Butt <shakeelb@google.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Srinivas, Suresh" <suresh.srinivas@intel.com>,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        "You, Lizhen" <lizhen.you@intel.com>,
-        "eric.dumazet@gmail.com" <eric.dumazet@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper
- size
-Thread-Topic: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper
- size
-Thread-Index: AQHZgVHu7/SNtT9IvkyNelU1xcwWA69RtOMAgAAGxOCAAAwNMIAAEO+AgAAwgdCAAA4vgIAAB2YAgAEwMBCAABKHgIAAKNbw
-Date:   Wed, 10 May 2023 13:52:16 +0000
-Message-ID: <CH3PR11MB73455A98A232920B322C3976FC779@CH3PR11MB7345.namprd11.prod.outlook.com>
-References: <20230508020801.10702-1-cathy.zhang@intel.com>
- <20230508020801.10702-2-cathy.zhang@intel.com>
- <3887b08ac0e55e27a24d2f66afcfff1961ed9b13.camel@redhat.com>
- <CH3PR11MB73459006FCE3887E1EA3B82FFC769@CH3PR11MB7345.namprd11.prod.outlook.com>
- <CH3PR11MB73456D792EC6E7614E2EF14DFC769@CH3PR11MB7345.namprd11.prod.outlook.com>
- <CANn89iL6Ckuu9vOEvc7A9CBLGuh-EpbwFRxRAchV-6VFyhTUpg@mail.gmail.com>
- <CH3PR11MB73458BB403D537CFA96FD8DDFC769@CH3PR11MB7345.namprd11.prod.outlook.com>
- <CANn89iJvpgXTwGEiXAkFwY3j3RqVhNzJ_6_zmuRb4w7rUA_8Ug@mail.gmail.com>
- <CALvZod6JRuWHftDcH0uw00v=yi_6BKspGCkDA4AbmzLHaLi2Fg@mail.gmail.com>
- <CH3PR11MB7345ABB947E183AFB7C18322FC779@CH3PR11MB7345.namprd11.prod.outlook.com>
- <CANn89i+9rQcGey+AJyhR02pTTBNhWN+P78e4a8knfC9F5sx0hQ@mail.gmail.com>
-In-Reply-To: <CANn89i+9rQcGey+AJyhR02pTTBNhWN+P78e4a8knfC9F5sx0hQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH3PR11MB7345:EE_|PH7PR11MB6521:EE_
-x-ms-office365-filtering-correlation-id: 716dba91-4422-4f35-e9d7-08db515dc42e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gVg2PDCKeDS+H8qxlN/5MhJPRgMyNP7qAwq6G+oyon7h2lcpSaQHi99b1HNxc+33jRwO/VS/uSsvVxM6mnvDayighuYXzI8S6gqSDEd1CADHxqeVhIxp6URj07iUMHmgWsXtTLX6dhAvFjB7v+LXzIlG9Zl6+VQeXqPrzx1wHiFmAbNgXWcUN06s5WBefqha9qQv66iLuDtb75M8ObBOoGz3CuaD0IWXv1t9YlKm4c8ScUtem3jXFSMYGzuySQrbSDVQt6U2BVlziBLYSucInSf94ZJdo+fQPibhAgiijDS+rYEni7NuqSwaax/xy7ZW221rJHneSI4m6SJ4vz2sNzq0AAoVJkKFMLxCmxdg86ZFD2xNGRVm64CGHmFDg3cFyCUepWxN1XmPEdGxvGwbIBRn4aZHZPwde/vazfbv2j7tT3YJFm8aO6Y29oi081cE4gnRwqxXjg9G4+PFaCPZJKReR0ToRnpwvFm6atWFD8LpikoOD6xhlRKJY9aFJZa5/aPoRBmCRy3C+fiyXoMgQBj2fgkoTBAerFor8ZhERKm5PSxIR/iPbkJP3s2tach2RefGbo5m4wtM8eXXsN9Ian7QNF5PKLtryLkO0UW8WWM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB7345.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(366004)(376002)(39860400002)(346002)(396003)(451199021)(64756008)(33656002)(83380400001)(966005)(478600001)(54906003)(71200400001)(6506007)(186003)(53546011)(26005)(9686003)(7696005)(122000001)(2906002)(76116006)(38100700002)(52536014)(55016003)(41300700001)(6916009)(66446008)(4326008)(316002)(66476007)(66946007)(66556008)(86362001)(82960400001)(5660300002)(8676002)(8936002)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WE5FMU9LZzJ1UUJ2Rm5zVW85S0gydUxOU2JycUhtdWlKQUxzRTZrc1ZmYWt1?=
- =?utf-8?B?Z3pEM0VnUXROb29TSllSMkZ4dWgwODY5TjRUNHczM2s3L243TkpVU256eW5h?=
- =?utf-8?B?TDh2OHRCT2h1a1Vzdnh4S2lZbVd6NVlmMlA3N2pOa2Z3Z3lBRHBSbDNobVcz?=
- =?utf-8?B?c2VlUVFzL2hENFRnZmdlZWNoOTRUVTJBS1dyNnJ0VEhCTitlYUs2OUVwQWZQ?=
- =?utf-8?B?MWFsNzI4bXh0SE11akFFbVp4YVdRNzl4TnExdTNKTU85SlZGQ0QxVHhIeGQ4?=
- =?utf-8?B?TE5zQlYwUnZ1SkxvSzB4WGhaVnQrclNtUXcvc0FBOHZ4MWlIdVZYbnJqdmNh?=
- =?utf-8?B?VCtna1drek55VWZBdzQzcHUrRHhPSktraXZnREJ1YkhFQS9XWmhSR0tjQml2?=
- =?utf-8?B?SzBsSG9MWWxNcy9HVVZES2pia0NPZjAwT3J1L0NtOEtTMHpzbVB4ZW00S2Uw?=
- =?utf-8?B?R2hFRDMzdVIzY2xrUVRhdFAzVm5yR2R6VHhaSmNVeEtJSXFkZDRDVkF6UHFl?=
- =?utf-8?B?b2VUbXNIWnRoU3FFMStLK0VITk55VVVLV2tLb3VRTFpsZWkwQld3elRiaTBW?=
- =?utf-8?B?aC9SZkJrWGdJYWRzOWpwdDZmZkFvTWM5Q2t5VGV5V1U5Ukh6d1E0eWtJcmdT?=
- =?utf-8?B?enZ0YitjNW91L1NweGJZQW9CTi9FSmdkMHQwRkF2ZnhMU21vbXFmUDVhTWJC?=
- =?utf-8?B?emZ4MnZLY3ZkQURQMjZRWUttdWdzSE90Tk1zU1I4aFpBeDY5STFCczBCalkw?=
- =?utf-8?B?d2JiUEpiM1BISnpZUVBhUnNxU3BwcXQrODVYL1pzNzB1OHhhT2tHNW1sZGRG?=
- =?utf-8?B?clNyZUdCTUR1YWVKbytIZXlJWGpXRnR0T3d6ekdqYnFVU3A1WllTWlJSeWIz?=
- =?utf-8?B?aWowZ1llNy9qWFZBUlZrbjBsNzg3YzhnRFNOSUk3WlNreUg2U052aUU0UmZq?=
- =?utf-8?B?VmFmeHVENkEyWjJ2c3FiZUxBT29ra0RkQ3BFemx4MlpaOEZUQ0xiSGszOWJ5?=
- =?utf-8?B?clJObVAzbTg0VEdIMVNxTXFJSnF6L05tRkNXUzZyT1BVVDBidDZ2NjhIaEF2?=
- =?utf-8?B?Ti9JUVQvSFRROEZKVnVYMURKa3M4ZHUycDhaNkxkSitqTzkvcU16MmIvekky?=
- =?utf-8?B?TlZMenl5ZnVMREFuK3NzaXRWMklUUjhweWg5emgxa2pyZkVtZmorczNZRHVx?=
- =?utf-8?B?eG9acTNmbnprMngycVRDM3R5OVJ5eTF4UzhZbzJ2Zk1sMitNck9ycDNsZ3pK?=
- =?utf-8?B?b2NtUHY2ck0vanNKempKa2pQNDlKMkNTeGFSYUZIclREWngzOWp0VUN0OVl1?=
- =?utf-8?B?dUQwYzNjWEpxMm0xSklxUldFcGp2bVY4cjVqQjRPS1dOb2YrcFFiWHE3UjUz?=
- =?utf-8?B?bEVJbmdLSDRWVEpVUTJwZnlvOUlwT0ZYd2pxTnJjSjlyVWdsaXp2cnFuazZt?=
- =?utf-8?B?M3g1b3JxM2VlY2tzZ3BmMHMxKzRCd0l4R0wzTC83cFFnbFdOaHRuMGVuWXRw?=
- =?utf-8?B?ZUY3YkJhVFVVeHBKYm53VU1NaDR3Vlg0a0t0MEIzQ1lINXhyZ1g4TFA1alRz?=
- =?utf-8?B?Q0c1WVNhYWNCaFlKY09mK1hjQ0QrWU5GdzVDYXVWM0hleVJxY21BcG5tTm9W?=
- =?utf-8?B?b09tWUJIYUVYVENBQjB5ZDJSS3BXQ0l1M0ZNdkRyK3A3RFh1YUFpd1BOYVMy?=
- =?utf-8?B?R3ZMdWdYbFhGR2VTT2FKSGZ6ZFd6dUU5ZjNpOEx4ZDBCclhYVWt1Lzh4bFY4?=
- =?utf-8?B?QUkyS3dnZ3grOUNzUDJmYlJkeDFMeUw3VnNjMWx5a2srYkR3ZXdYd2FQOFhv?=
- =?utf-8?B?dDExSWRzd0N6eituMGR0clVBYXJsMG9EdEI5bWtMSTYrUXNkQWY4VGZ5OHZ3?=
- =?utf-8?B?ODVNdUdzblJwSThIRFBQRmtZYU5FbFA0b2NCY00xWHFUc0l4MmcvSGNzNEt4?=
- =?utf-8?B?QlpJUE4ybjBpR1d4ZUFrTGF0YTZnNTR3bWdxVU1GdE8yYlorcVdMaS96OGZZ?=
- =?utf-8?B?b05xMVlnUTNuUENjaFRUVHFqZmQ1WEVrbDlqdUFEd0J5cGtrTGxvcjM2bytD?=
- =?utf-8?B?VHJMbFcvZzVwSExSdlRXOTBDZStGQ0NsVGFXQXQxdGNrZlZEV3BCcFNtZWhF?=
- =?utf-8?Q?ZwUJr7uV8EKdxWg9uG4sIp3s/?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S237430AbjEJOvy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 10:51:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A214E62
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 07:51:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BD5E563C71
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 14:51:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE418C433D2;
+        Wed, 10 May 2023 14:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683730310;
+        bh=7evBYi0i7GbTztiP0Mr29XwL0agrgkBAJJMMkwtKGRM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cyhtXMYhgJyKmzhMNocfhYL1c1rv5GpL+M8naZmrG5TP6GM0t9vC5Ka6yUuu45WPL
+         DY45XWrBza3BDjXcPciDwnrl0ervqHsfQpSpMZQzEgee9fj30fu31AHsnF7oj4gMe0
+         Tx1NNAO0fRbvo7Cb2A1xBSFoi2DAlPva7eHrx7o191esszeEdQk3bKdGTNqjWkM/Co
+         htQpS6O6S5hKi+ec3LeMsykesSYnVAbZhVvZtxs+QRxiPvEHSTv8orMN28m+3M/C9U
+         hW/Wak1Qe5NlBIzqglc+vhh6QL5dd9JVIkAFcqGpg3yA+GEX4TK2CjPikrmr0jCoSN
+         olZyoGd1cxj7A==
+Date:   Wed, 10 May 2023 07:51:48 -0700
+From:   Chris Li <chrisl@kernel.org>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     "T.J. Mercier" <tjmercier@google.com>,
+        lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>,
+        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Yu Zhao <yuzhao@google.com>
+Subject: Re: [LSF/MM/BPF TOPIC] Reducing zombie memcgs
+Message-ID: <ZFuvhP5qGPivokc0@google.com>
+References: <CABdmKX2M6koq4Q0Cmp_-=wbP0Qa190HdEGGaHfxNS05gAkUtPA@mail.gmail.com>
+ <ZFLdDyHoIdJSXJt+@google.com>
+ <874josz4rd.fsf@nvidia.com>
+ <ZFPP71czDDxMPLQK@google.com>
+ <877ctm518f.fsf@nvidia.com>
+ <ZFbZZPkSpsKMe8iR@google.com>
+ <87ttwnkzap.fsf@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB7345.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 716dba91-4422-4f35-e9d7-08db515dc42e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2023 13:52:16.7831
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3tEYhmZxFVof0ItVA7rmOqTFsXLhDEy+osMRga5dCNc7Q4itGak3nDGcxVE21rbINcLH/SM+idDd9dQjua1wtw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6521
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87ttwnkzap.fsf@nvidia.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRXJpYyBEdW1hemV0IDxl
-ZHVtYXpldEBnb29nbGUuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIE1heSAxMCwgMjAyMyA3OjI1
-IFBNDQo+IFRvOiBaaGFuZywgQ2F0aHkgPGNhdGh5LnpoYW5nQGludGVsLmNvbT4NCj4gQ2M6IFNo
-YWtlZWwgQnV0dCA8c2hha2VlbGJAZ29vZ2xlLmNvbT47IExpbnV4IE1NIDxsaW51eC1tbUBrdmFj
-ay5vcmc+Ow0KPiBDZ3JvdXBzIDxjZ3JvdXBzQHZnZXIua2VybmVsLm9yZz47IFBhb2xvIEFiZW5p
-IDxwYWJlbmlAcmVkaGF0LmNvbT47DQo+IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVs
-Lm9yZzsgQnJhbmRlYnVyZywgSmVzc2UNCj4gPGplc3NlLmJyYW5kZWJ1cmdAaW50ZWwuY29tPjsg
-U3Jpbml2YXMsIFN1cmVzaA0KPiA8c3VyZXNoLnNyaW5pdmFzQGludGVsLmNvbT47IENoZW4sIFRp
-bSBDIDx0aW0uYy5jaGVuQGludGVsLmNvbT47IFlvdSwNCj4gTGl6aGVuIDxsaXpoZW4ueW91QGlu
-dGVsLmNvbT47IGVyaWMuZHVtYXpldEBnbWFpbC5jb207DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5v
-cmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dCAxLzJdIG5ldDogS2VlcCBzay0+c2tf
-Zm9yd2FyZF9hbGxvYyBhcyBhIHByb3Blcg0KPiBzaXplDQo+IA0KPiBPbiBXZWQsIE1heSAxMCwg
-MjAyMyBhdCAxOjEx4oCvUE0gWmhhbmcsIENhdGh5IDxjYXRoeS56aGFuZ0BpbnRlbC5jb20+DQo+
-IHdyb3RlOg0KPiA+DQo+ID4gSGkgU2hha2VlbCwgRXJpYyBhbmQgYWxsLA0KPiA+DQo+ID4gSG93
-IGFib3V0IGFkZGluZyBtZW1vcnkgcHJlc3N1cmUgY2hlY2tpbmcgaW4gc2tfbWVtX3VuY2hhcmdl
-KCkgdG8NCj4gPiBkZWNpZGUgaWYga2VlcCBwYXJ0IG9mIG1lbW9yeSBvciBub3QsIHdoaWNoIGNh
-biBoZWxwIGF2b2lkIHRoZSBpc3N1ZQ0KPiA+IHlvdSBmaXhlZCBhbmQgdGhlIHByb2JsZW0gd2Ug
-ZmluZCBvbiB0aGUgc3lzdGVtIHdpdGggbW9yZSBDUFVzLg0KPiA+DQo+ID4gVGhlIGNvZGUgZHJh
-ZnQgaXMgbGlrZSB0aGlzOg0KPiA+DQo+ID4gc3RhdGljIGlubGluZSB2b2lkIHNrX21lbV91bmNo
-YXJnZShzdHJ1Y3Qgc29jayAqc2ssIGludCBzaXplKSB7DQo+ID4gICAgICAgICBpbnQgcmVjbGFp
-bWFibGU7DQo+ID4gICAgICAgICBpbnQgcmVjbGFpbV90aHJlc2hvbGQgPSBTS19SRUNMQUlNX1RI
-UkVTSE9MRDsNCj4gPg0KPiA+ICAgICAgICAgaWYgKCFza19oYXNfYWNjb3VudChzaykpDQo+ID4g
-ICAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiAgICAgICAgIHNrLT5za19mb3J3YXJkX2FsbG9j
-ICs9IHNpemU7DQo+ID4NCj4gPiAgICAgICAgIGlmIChtZW1fY2dyb3VwX3NvY2tldHNfZW5hYmxl
-ZCAmJiBzay0+c2tfbWVtY2cgJiYNCj4gPiAgICAgICAgICAgICBtZW1fY2dyb3VwX3VuZGVyX3Nv
-Y2tldF9wcmVzc3VyZShzay0+c2tfbWVtY2cpKSB7DQo+ID4gICAgICAgICAgICAgICAgIHNrX21l
-bV9yZWNsYWltKHNrKTsNCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJuOw0KPiA+ICAgICAgICAg
-fQ0KPiA+DQo+ID4gICAgICAgICByZWNsYWltYWJsZSA9IHNrLT5za19mb3J3YXJkX2FsbG9jIC0N
-Cj4gPiBza191bnVzZWRfcmVzZXJ2ZWRfbWVtKHNrKTsNCj4gPg0KPiA+ICAgICAgICAgaWYgKHJl
-Y2xhaW1hYmxlID4gcmVjbGFpbV90aHJlc2hvbGQpIHsNCj4gPiAgICAgICAgICAgICAgICAgcmVj
-bGFpbWFibGUgLT0gcmVjbGFpbV90aHJlc2hvbGQ7DQo+ID4gICAgICAgICAgICAgICAgIF9fc2tf
-bWVtX3JlY2xhaW0oc2ssIHJlY2xhaW1hYmxlKTsNCj4gPiAgICAgICAgIH0NCj4gPiB9DQo+ID4N
-Cj4gPiBJJ3ZlIHJ1biBhIHRlc3Qgd2l0aCB0aGUgbmV3IGNvZGUsIHRoZSByZXN1bHQgbG9va3Mg
-Z29vZCwgaXQgZG9lcyBub3QNCj4gPiBpbnRyb2R1Y2UgbGF0ZW5jeSwgUlBTIGlzIHRoZSBzYW1l
-Lg0KPiA+DQo+IA0KPiBJdCB3aWxsIG5vdCB3b3JrIGZvciBzb2NrZXRzIHRoYXQgYXJlIGlkbGUs
-IGFmdGVyIGEgYnVyc3QuDQo+IElmIHdlIHJlc3RvcmUgcGVyIHNvY2tldCBjYWNoZXMsIHdlIHdp
-bGwgbmVlZCBhIHNocmlua2VyLg0KPiBUcnVzdCBtZSwgd2UgZG8gbm90IHdhbnQgdGhhdCBraW5k
-IG9mIGJpZyBoYW1tZXIsIGNydXNoaW5nIGxhdGVuY2llcy4NCj4gDQo+IEhhdmUgeW91IHRyaWVk
-IHRvIGluY3JlYXNlIGJhdGNoIHNpemVzID8NCg0KSSBqdXMgcGlja2VkIHVwIDI1NiBhbmQgMTAy
-NCBmb3IgYSB0cnksIGJ1dCBubyBoZWxwLCB0aGUgb3ZlcmhlYWQgc3RpbGwgZXhpc3RzLg0KDQo+
-IA0KPiBBbnkga2luZCBvZiBjYWNoZSAoZXZlbiBwZXItY3B1KSBtaWdodCBuZWVkIHNvbWUgYWRq
-dXN0bWVudCB3aGVuIGNvcmUNCj4gY291bnQgb3IgZXhwZWN0ZWQgdHJhZmZpYyBpcyBpbmNyZWFz
-aW5nLg0KPiBUaGlzIHdhcyBzb21laG93IGhpbnRlZCBpbg0KPiBjb21taXQgMTgxM2U1MWVlY2Uw
-YWQ2ZjRhYWNhZWI3MzhlN2NjZWQ0NmZlYjQ3MA0KPiBBdXRob3I6IFNoYWtlZWwgQnV0dCA8c2hh
-a2VlbGJAZ29vZ2xlLmNvbT4NCj4gRGF0ZTogICBUaHUgQXVnIDI1IDAwOjA1OjA2IDIwMjIgKzAw
-MDANCj4gDQo+ICAgICBtZW1jZzogaW5jcmVhc2UgTUVNQ0dfQ0hBUkdFX0JBVENIIHRvIDY0DQo+
-IA0KPiANCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L21lbWNvbnRyb2wuaCBiL2lu
-Y2x1ZGUvbGludXgvbWVtY29udHJvbC5oIGluZGV4DQo+IDIyMmQ3MzcwMTM0YzczZTU5ZmRiZGY1
-OThlZDhkNjY4OTdkYmJmMWQuLjA0MTgyMjlkMzBjMjVkMTE0MTMyYTFlDQo+IGQ0NmFjMDEzNThj
-ZjIxNDI0DQo+IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21lbWNvbnRyb2wuaA0KPiAr
-KysgYi9pbmNsdWRlL2xpbnV4L21lbWNvbnRyb2wuaA0KPiBAQCAtMzM0LDcgKzMzNCw3IEBAIHN0
-cnVjdCBtZW1fY2dyb3VwIHsNCj4gICAqIFRPRE86IG1heWJlIG5lY2Vzc2FyeSB0byB1c2UgYmln
-IG51bWJlcnMgaW4gYmlnIGlyb25zIG9yIGR5bmFtaWMgYmFzZWQNCj4gb2YgdGhlDQo+ICAgKiB3
-b3JrbG9hZC4NCj4gICAqLw0KPiAtI2RlZmluZSBNRU1DR19DSEFSR0VfQkFUQ0ggNjRVDQo+ICsj
-ZGVmaW5lIE1FTUNHX0NIQVJHRV9CQVRDSCAxMjhVDQo+IA0KPiAgZXh0ZXJuIHN0cnVjdCBtZW1f
-Y2dyb3VwICpyb290X21lbV9jZ3JvdXA7DQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9uZXQv
-c29jay5oIGIvaW5jbHVkZS9uZXQvc29jay5oIGluZGV4DQo+IDY1NmVhODlmNjBmZjkwZDYwMGQx
-NmY0MDMwMjAwMGRiNjQwNTdjNjQuLjgyZjZhMjg4YmU2NTBmODg2YjIwN2U2YQ0KPiA1ZTYyYTFk
-NWRkYTgwOGIwDQo+IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL25ldC9zb2NrLmgNCj4gKysrIGIv
-aW5jbHVkZS9uZXQvc29jay5oDQo+IEBAIC0xNDMzLDggKzE0MzMsOCBAQCBza19tZW1vcnlfYWxs
-b2NhdGVkKGNvbnN0IHN0cnVjdCBzb2NrICpzaykNCj4gICAgICAgICByZXR1cm4gcHJvdG9fbWVt
-b3J5X2FsbG9jYXRlZChzay0+c2tfcHJvdCk7DQo+ICB9DQo+IA0KPiAtLyogMSBNQiBwZXIgY3B1
-LCBpbiBwYWdlIHVuaXRzICovDQo+IC0jZGVmaW5lIFNLX01FTU9SWV9QQ1BVX1JFU0VSVkUgKDEg
-PDwgKDIwIC0gUEFHRV9TSElGVCkpDQo+ICsvKiAyIE1CIHBlciBjcHUsIGluIHBhZ2UgdW5pdHMg
-Ki8NCj4gKyNkZWZpbmUgU0tfTUVNT1JZX1BDUFVfUkVTRVJWRSAoMSA8PCAoMjEgLSBQQUdFX1NI
-SUZUKSkNCj4gDQo+ICBzdGF0aWMgaW5saW5lIHZvaWQNCj4gIHNrX21lbW9yeV9hbGxvY2F0ZWRf
-YWRkKHN0cnVjdCBzb2NrICpzaywgaW50IGFtdCkNCj4gDQo+IA0KPiANCj4gDQo+IA0KPiANCj4g
-PiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBTaGFrZWVsIEJ1dHQg
-PHNoYWtlZWxiQGdvb2dsZS5jb20+DQo+ID4gPiBTZW50OiBXZWRuZXNkYXksIE1heSAxMCwgMjAy
-MyAxMjoxMCBBTQ0KPiA+ID4gVG86IEVyaWMgRHVtYXpldCA8ZWR1bWF6ZXRAZ29vZ2xlLmNvbT47
-IExpbnV4IE1NIDxsaW51eC0NCj4gPiA+IG1tQGt2YWNrLm9yZz47IENncm91cHMgPGNncm91cHNA
-dmdlci5rZXJuZWwub3JnPg0KPiA+ID4gQ2M6IFpoYW5nLCBDYXRoeSA8Y2F0aHkuemhhbmdAaW50
-ZWwuY29tPjsgUGFvbG8gQWJlbmkNCj4gPiA+IDxwYWJlbmlAcmVkaGF0LmNvbT47IGRhdmVtQGRh
-dmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsNCj4gPiA+IEJyYW5kZWJ1cmcsIEplc3NlIDxq
-ZXNzZS5icmFuZGVidXJnQGludGVsLmNvbT47IFNyaW5pdmFzLCBTdXJlc2gNCj4gPiA+IDxzdXJl
-c2guc3Jpbml2YXNAaW50ZWwuY29tPjsgQ2hlbiwgVGltIEMgPHRpbS5jLmNoZW5AaW50ZWwuY29t
-PjsNCj4gPiA+IFlvdSwgTGl6aGVuIDxsaXpoZW4ueW91QGludGVsLmNvbT47IGVyaWMuZHVtYXpl
-dEBnbWFpbC5jb207DQo+ID4gPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+ID4gPiBTdWJqZWN0
-OiBSZTogW1BBVENIIG5ldC1uZXh0IDEvMl0gbmV0OiBLZWVwIHNrLT5za19mb3J3YXJkX2FsbG9j
-IGFzDQo+ID4gPiBhIHByb3BlciBzaXplDQo+ID4gPg0KPiA+ID4gK2xpbnV4LW1tICYgY2dyb3Vw
-DQo+ID4gPg0KPiA+ID4gVGhyZWFkOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA1
-MDgwMjA4MDEuMTA3MDItMS0NCj4gPiA+IGNhdGh5LnpoYW5nQGludGVsLmNvbS8NCj4gPiA+DQo+
-ID4gPiBPbiBUdWUsIE1heSA5LCAyMDIzIGF0IDg6NDPigK9BTSBFcmljIER1bWF6ZXQgPGVkdW1h
-emV0QGdvb2dsZS5jb20+DQo+ID4gPiB3cm90ZToNCj4gPiA+ID4NCj4gPiA+IFsuLi5dDQo+ID4g
-PiA+IFNvbWUgbW0gZXhwZXJ0cyBzaG91bGQgY2hpbWUgaW4sIHRoaXMgaXMgbm90IGEgbmV0d29y
-a2luZyBpc3N1ZS4NCj4gPiA+DQo+ID4gPiBNb3N0IG9mIHRoZSBNTSBmb2xrcyBhcmUgYnVzeSBp
-biBMU0ZNTSB0aGlzIHdlZWsuIEkgd2lsbCB0YWtlIGEgbG9vaw0KPiA+ID4gYXQgdGhpcyBzb29u
-Lg0K
+Hi Alistair,
+
+On Mon, May 08, 2023 at 06:17:04PM +1000, Alistair Popple wrote:
+> Actually I don't have an invite so might not make it. However I believe
+> Jason Gunthorpe is there and he has been helping with this as well so he
+> might be able to attend the session. Or we could discuss it in one of
+
+Yes, I talked to Jason Gunthorpe and asked him about the usage workflow
+of the pin memory controller. He tell me that his original intend is
+just to have something like RLIMIT but without the quirky limitation
+of the RLIMIT. It has nothing to do with sharing memory.
+Share memories are only brought up during the online discussion.  I guess
+the share memory has similar reference count and facing similar challenges
+on double counting.
+
+> the Linux MM biweeklies. (TBH I've been busy on other work and am only
+> just getting back up to speed on this myself).
+> 
+> > If you have some more detailed write up of the usage case, with a sequence
+> > of interaction and desired outcome that would help me understand. Links to
+> > the previous threads work too.
+> 
+> Unfortunately I don't (yet) have a detailed write up. But the primary
+> use case we had in mind was sandboxing of containers and qemu instances
+> to be able to limit the total amount of memory they can pin.
+
+Ack.
+ 
+> This is just like the existing RLIMIT, just with the limit assigned via
+> a cgroup instead of a per-process or per-user limit as they can easily
+> be subverted, particularly the per-process limit.
+
+Ack.
+
+> The sandboxing requirement is what drove us to not use the existing
+> per-page memcg.
+
+Not sure I understand what you mean here "use the existing per-page memcg".
+Do you mean you need byte counter rather than page counter?
+
+On the other hand it is not important to understand the rest of your points.
+I can move on.
+
+> For private mappings it would be fine because the page
+> would only ever be mapped by a process in a single cgroup (ie. a single
+> memcg).
+
+Ack.
+ 
+> However for shared mappings it isn't - processes in different cgroups
+> could be mapping the same page but the accounting should happen to the
+> cgroup the process is in, not the cgroup that happens to "own" the page.
+
+Ack. That is actually the root of the share memory problem. The model
+of charging to the first process does not work well for share usage.
+
+> It is also possible that the page might not be mapped at all. For
+> example a driver may be pinning a page with pin_user_pages(), but the
+> userspace process may have munmap()ped it.
+
+Ack.
+In that case the driver will need to hold a reference count for it, right?
+
+> 
+> For drivers pinned memory is generally associated with some operation on
+> a file-descriptor. So the desired interaction/outcome is:
+> 
+> 1. Process in cgroup A opens file-descriptor
+> 2. Calls an ioctl() on the FD to pin memory.
+> 3. Driver charges the memory to a counter and checks it's under the
+>    limit.
+> 4. If over limit the ioctl() will fail.
+
+Ack.
+
+> 
+> This is effectively how the vm_pinned/locked RLIMIT works today. Even if
+> a shared page is already pinned the process should still be "punished"
+> for pinning the page.
+
+OK. This is the critical usage information that I want to know. Thanks for
+the explaination.
+
+So there are two different definition of the pin page count:
+1) sum(total set of pages that this memcg process issue pin ioctl on)
+2) sum(total set of pined page this memcg process own a reference count on)
+
+It seems you want 2).
+
+If a page has three reference counts inside one memcg, e.g. map three times. 
+Does the pin count three times or only once?
+
+> Hence the interest in the total <smemcg, memcg>  limit.
+> 
+> Pinned memory may also outlive the process that created it - drivers
+> associate it via a file-descriptor not a process and even if the FD is
+> closed there's nothing say a driver has to unpin the memory then
+> (although most do).
+
+Ack.
+
+> 
+> > We can set up some meetings to discuss it as well.
+> >
+> >> So for pinning at least I don't see a per smemcg limit being useful.
+> >
+> > That is fine.  I see you are interested in the <smemcg, memcg> limit.
+> 
+> Right, because it sounds like it will allow pinning the same struct page
+> multiple times to result in multiple charges. With the current memcg
+
+Multiple times to different memcgs I assume, please see the above question
+regard multiple times to the same memcg.
+
+> implementation this isn't possible because a page can only be associated
+> with a single memcg.
+
+Ack.
+
+> 
+> A limit on just smemcg doesn't seem useful from a sandboxing perspective
+> because processes from other cgroups can use up the limit.
+
+Ack.
+
+> >> Implementation wise we'd need a way to lookup both the smemcg of the
+> >> struct page and the memcg that the pinning task belongs to.
+> >
+> > The page->memcg_data points to the pin smemcg. I am hoping pinning API or
+> > the current memcg can get to the pinning memcg.
+> 
+> So the memcg to charge would come from the process doing the
+> pin_user_pages() rather than say page->memcg_data? Seems reasonable.
+
+That is more of a question for you. What is the desired behavior.
+If charge the current process that perform the pin_user_pages()
+works for you. Great.
+
+I agree charge the pin count to current process memcg seems to make
+sense.
+
+> >> > 4) unshare/unmmap already charged memory. That will reduce the per <smemcg, memcg>
+> >> > borrow counter.
+> >> 
+> >> Actually this is where things might get a bit tricky for pinning. We'd
+> >> have to reduce the pin charge when a driver calls put_page(). But that
+> >> implies looking up the borrow counter / <smemcg, memcg> pair a driver
+> >> charged the page to.
+> >
+> > Does the pin page share between different memcg or just one memcg?
+> 
+> In general it can share between different memcg. Consider a shared
+> mapping shared with processes in two different cgroups (A and B). There
+> is nothing stopping each process opening a file-descriptor and calling
+> an ioctl() to pin the shared page.
+
+Ack.
+
+> Each should be punished for pinning the page in the sense that the pin
+> count for their respective cgroups must go up.
+
+Ack. That clarfy my previous question. You want definition 2)
+
+> Drivers pinning shared pages is I think relatively rare, but it's
+> theorectically possible and if we're going down the path of adding
+> limits for pinning to memcg it's something we need to deal with to make
+> sandboxing effective.
+
+The driver will still have a current processor. Do you mean in this case,
+the current processor is not the right one to charge?
+Another option can be charge to a default system/kernel smemcg or a driver
+smemcg as well.
+
+> 
+> > If it is shared, can the put_page() API indicate it is performing in behalf
+> > of which memcg?
+> 
+> I think so - although it varies by driver.
+> 
+> Drivers have to store the array of pages pinned so should be able to
+> track the memcg with that as well. My series added a struct vm_account
+> which would be the obvious place to keep that reference.
+
+Where does the struct vm_account lives?
+
+> Each set of pin 
+> operations on a FD would need a new memcg reference though so it would
+> add overhead for drivers that only pin a small number of pages at a
+> time.
+
+Set is more complicate then allow double counting the same page in the
+same smemcg. Again mostly just collecting requirement from you.
+
+> 
+> Non-driver users such as the mlock() syscall don't keep a pinned pages
+> array around but they should be able to use the current memcg during
+> munlock().
+
+Ack.
+
+Chris
+
+> 
+> >> I will have to give this idea some more tought though. Most drivers
+> >> don't store anything other than the struct page pointers, but my series
+> >> added an accounting struct which I think could reference the borrow
+> >> counter.
+> >
+> > Ack.
+> >
+> >> 
+> >> > Will that work for your pin memory usage?
+> >> 
+> >> I think it could help. I will give it some thought.
+> >
+> > Ack.
+> >> 
+> >> >> 
+> >> >> > Shared Memory Cgroup Controllers
+> >> >> >
+> >> >> > = Introduction
+> >> >> >
+> >> >> > The current memory cgroup controller does not support shared memory
+> >> >> > objects. For the memory that is shared between different processes, it
+> >> >> > is not obvious which process should get charged. Google has some
+> >> >> > internal tmpfs “memcg=” mount option to charge tmpfs data to a
+> >> >> > specific memcg that’s often different from where charging processes
+> >> >> > run. However it faces some difficulties when the charged memcg exits
+> >> >> > and the charged memcg becomes a zombie memcg.
+> >> >> > Other approaches include “re-parenting” the memcg charge to the parent
+> >> >> > memcg. Which has its own problem. If the charge is huge, iteration of
+> >> >> > the reparenting can be costly.
+> >> >> >
+> >> >> > = Proposed Solution
+> >> >> >
+> >> >> > The proposed solution is to add a new type of memory controller for
+> >> >> > shared memory usage. E.g. tmpfs, hugetlb, file system mmap and
+> >> >> > dma_buf. This shared memory cgroup controller object will have the
+> >> >> > same life cycle of the underlying shared memory.
+> >> >> >
+> >> >> > Processes can not be added to the shared memory cgroup. Instead the
+> >> >> > shared memory cgroup can be added to the memcg using a “smemcg” API
+> >> >> > file, similar to adding a process into the “tasks” API file.
+> >> >> > When a smemcg is added to the memcg, the amount of memory that has
+> >> >> > been shared in the memcg process will be accounted for as the part of
+> >> >> > the memcg “memory.current”.The memory.current of the memcg is make up
+> >> >> > of two parts, 1) the processes anonymous memory and 2) the memory
+> >> >> > shared from smemcg.
+> >> >> >
+> >> >> > When the memcg “memory.current” is raised to the limit. The kernel
+> >> >> > will active try to reclaim for the memcg to make “smemcg memory +
+> >> >> > process anonymous memory” within the limit.
+> >> >> 
+> >> >> That means a process in one cgroup could force reclaim of smemcg memory
+> >> >> in use by a process in another cgroup right? I guess that's no different
+> >> >> to the current situation though.
+> >> >> 
+> >> >> > Further memory allocation
+> >> >> > within those memcg processes will fail if the limit can not be
+> >> >> > followed. If many reclaim attempts fail to bring the memcg
+> >> >> > “memory.current” within the limit, the process in this memcg will get
+> >> >> > OOM killed.
+> >> >> 
+> >> >> How would this work if say a charge for cgroup A to a smemcg in both
+> >> >> cgroup A and B would cause cgroup B to go over its memory limit and not
+> >> >> enough memory could be reclaimed from cgroup B? OOM killing a process in
+> >> >> cgroup B due to a charge from cgroup A doesn't sound like a good idea.
+> >> >
+> >> > If we separate out the charge counter with the borrow counter, that problem
+> >> > will be solved. When smemcg is add to memcg A, we can have a policy specific
+> >> > that adding the <smemcg, memcg A> borrow counter into memcg A's "memory.current".
+> >> >
+> >> > If B did not map that page, that page will not be part of <smemcg, memcg B>
+> >> > borrow count. B will not be punished.
+> >> >
+> >> > However if B did map that page, The <smemcg, memcg B> need to increase as well.
+> >> > B will be punished for it.
+> >> >
+> >> > Will that work for your example situation?
+> >> 
+> >> I think so, although I have been looking at this more from the point of
+> >> view of pinning. It sounds like we could treat pinning in much the same
+> >> way as mapping though.
+> >
+> > Ack.
+> >> 
+> >> >> > = Benefits
+> >> >> >
+> >> >> > The benefits of this solution include:
+> >> >> > * No zombie memcg. The life cycle of the smemcg match the share memory file system or dma_buf.
+> >> >> 
+> >> >> If we added pinning it could get a bit messier, as it would have to hang
+> >> >> around until the driver unpinned the pages. But I don't think that's a
+> >> >> problem.
+> >> >
+> >> >
+> >> > That is exactly the reason pin memory can belong to a pin smemcg. You just need
+> >> > to model the driver holding the pin ref count as one of the share/mmap operation.
+> >> >
+> >> > Then the pin smemcg will not go away if there is a pending pin ref count on it.
+> >> >
+> >> > We have have different policy option on smemcg.
+> >> > For the simple usage don't care the per memcg borrow counter, it can add the
+> >> > smemcg's charge count to "memory.current".
+> >> >
+> >> > Only the user who cares about per memcg usage of a smemcg will need to maintain
+> >> > per <smemcg, memcg> borrow counter, at additional cost.
+> >> 
+> >> Right, I think pinning drivers will always have to care about the borrow
+> >> counter so will have to track that.
+> >
+> > Ack.
+> >
+> > Chris
+> 
+> 
