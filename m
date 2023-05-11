@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0386FE99A
-	for <lists+cgroups@lfdr.de>; Thu, 11 May 2023 03:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D22E6FE996
+	for <lists+cgroups@lfdr.de>; Thu, 11 May 2023 03:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236313AbjEKBr6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 May 2023 21:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S237025AbjEKBry (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 May 2023 21:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237016AbjEKBrx (ORCPT
+        with ESMTP id S230395AbjEKBrx (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 21:47:53 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE375BA9;
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302A15FDF;
         Wed, 10 May 2023 18:47:51 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QGvst2lPxz4f3l2X;
-        Thu, 11 May 2023 09:47:46 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QGvsv3BJ5z4f3jJ3;
+        Thu, 11 May 2023 09:47:47 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP2 (Coremail) with SMTP id Syh0CgA33eo_SVxkrgJdJA--.7260S7;
+        by APP2 (Coremail) with SMTP id Syh0CgA33eo_SVxkrgJdJA--.7260S8;
         Thu, 11 May 2023 09:47:48 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     hch@lst.de, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
@@ -26,32 +26,32 @@ To:     hch@lst.de, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
         yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next 3/6] blk-wbt: don't enable wbt for bio based device
-Date:   Thu, 11 May 2023 09:45:06 +0800
-Message-Id: <20230511014509.679482-4-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 4/6] blk-wbt: remove deadcode to handle wbt enable/disable with io inflight
+Date:   Thu, 11 May 2023 09:45:07 +0800
+Message-Id: <20230511014509.679482-5-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230511014509.679482-1-yukuai1@huaweicloud.com>
 References: <20230511014509.679482-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgA33eo_SVxkrgJdJA--.7260S7
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFyfXw43GrWUZF1rKF4UJwb_yoW3Jrg_uF
-        1kur1Iqrn3AFn29r4ayr4FqFZ5G3s5XFWUWFWkJ347ZFn8J3Z3Gws7Xrs8Wr47uFWxKFWr
-        ur17W34xJrWIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb6AFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
-        0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-        v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbJ73DUUUUU=
-        =
+X-CM-TRANSID: Syh0CgA33eo_SVxkrgJdJA--.7260S8
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr17uFyrCrWUWF4DZF1DWrg_yoW8XF15pr
+        W3C3sYkFnFqFn293ZFqr1xXr4ayw4kGryxJFW5CrZxZr1UCr1a9F97ur409a4FvrWrCF4a
+        gryIgFyrCa18JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
+        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
+        kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTY
+        UUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -65,28 +65,52 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Because rq_qos only make sense for rq based device. Instead of fail
-from sysfs configuration, make wbt sysfs dentry invisible directly.
+enable or disable wbt is always called with queue freezed, so that wbt
+can never be enabled or disabled while io is still inflight, and this
+behaviour should always hold to avoid io hang(There have been reported
+several times).
+
+Therefor, the code to handle wbt enable/diskble with io inflight is not
+and never will be used, hence remove such deadcode.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-sysfs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ block/blk-wbt.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 6c1c4ba66bc0..c8e1f1462422 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -686,6 +686,10 @@ static umode_t queue_attr_visible(struct kobject *kobj, struct attribute *attr,
- 	    !blk_queue_is_zoned(q))
- 		return 0;
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index b1ab4688eb5c..7a9a30da8650 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -200,15 +200,6 @@ static void wbt_rqw_done(struct rq_wb *rwb, struct rq_wait *rqw,
  
-+#ifdef CONFIG_BLK_WBT
-+	if (attr == &queue_wb_lat_entry.attr && !queue_is_mq(q))
-+		return 0;
-+#endif
- 	return attr->mode;
- }
+ 	inflight = atomic_dec_return(&rqw->inflight);
+ 
+-	/*
+-	 * wbt got disabled with IO in flight. Wake up any potential
+-	 * waiters, we don't have to do more than that.
+-	 */
+-	if (unlikely(!rwb_enabled(rwb))) {
+-		rwb_wake_all(rwb);
+-		return;
+-	}
+-
+ 	/*
+ 	 * For discards, our limit is always the background. For writes, if
+ 	 * the device does write back caching, drop further down before we
+@@ -545,13 +536,6 @@ static inline unsigned int get_limit(struct rq_wb *rwb, blk_opf_t opf)
+ {
+ 	unsigned int limit;
+ 
+-	/*
+-	 * If we got disabled, just return UINT_MAX. This ensures that
+-	 * we'll properly inc a new IO, and dec+wakeup at the end.
+-	 */
+-	if (!rwb_enabled(rwb))
+-		return UINT_MAX;
+-
+ 	if ((opf & REQ_OP_MASK) == REQ_OP_DISCARD)
+ 		return rwb->wb_background;
  
 -- 
 2.39.2
