@@ -2,120 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926BB6FE99F
-	for <lists+cgroups@lfdr.de>; Thu, 11 May 2023 03:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFBD6FEBD0
+	for <lists+cgroups@lfdr.de>; Thu, 11 May 2023 08:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237091AbjEKBsB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 May 2023 21:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        id S232200AbjEKGjG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 May 2023 02:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237024AbjEKBry (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 May 2023 21:47:54 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096EC6A49;
-        Wed, 10 May 2023 18:47:52 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QGvsw1Srtz4f3jqK;
-        Thu, 11 May 2023 09:47:48 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP2 (Coremail) with SMTP id Syh0CgA33eo_SVxkrgJdJA--.7260S10;
-        Thu, 11 May 2023 09:47:49 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     hch@lst.de, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        yukuai3@huawei.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next 6/6] blk-iocost: move wbt_enable/disable_default() out of spinlock
-Date:   Thu, 11 May 2023 09:45:09 +0800
-Message-Id: <20230511014509.679482-7-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230511014509.679482-1-yukuai1@huaweicloud.com>
-References: <20230511014509.679482-1-yukuai1@huaweicloud.com>
+        with ESMTP id S229609AbjEKGjE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 May 2023 02:39:04 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED70A103
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 23:38:38 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f315735514so271109885e9.1
+        for <cgroups@vger.kernel.org>; Wed, 10 May 2023 23:38:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1683787117; x=1686379117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wYtaRcshlY3QmxEEqVJsJU+0bmCyXLBCJqkTVjmG1hA=;
+        b=d0SnZ+pjyye00WmokuVRn85o0hU1sSEe2pqirea4ZcrpkfnFfRYD5NIGNnwLArYw3e
+         iv64Az5W7Mu6DGr5zAJF0G8CcBCqF+sF384FS8jxP5axqWOpR9v+E5hN6C+C43h/hTNT
+         0Yx7lFxm3QbgqJZg7f+9vk4JZk/9f4SujuFsWm4dfd9cVPLYUwMwbnjJFjr+VvzXVno/
+         jRtlFY3mjWUXLzS3+M7/j9KC/kW7xmujUlxKN60lZpZQNRCgUXJwiyhSzBdtnmEbV+u8
+         spumpdd5/+/4H/V5/yepOz9LH8iOQZNj3AK2Py3JcECSr0I5tTJe9mQ7GWgdn6jT/Psc
+         i6uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683787117; x=1686379117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wYtaRcshlY3QmxEEqVJsJU+0bmCyXLBCJqkTVjmG1hA=;
+        b=eMV0lEASNWADe5lxGlxse3D9OOhRHkQVTOYdYLeYRPUyhRS8p0IfCCj9GiLyMUQy+E
+         gGjgkbaeg/JD1ewJ2cyjmiCYt4p4AjcEAEYPW3MENTfgvS/t9AqKxwGkT8NTqao/H0zr
+         eBbtbSBBdHEIcryg298ZKuTVD3hOGpVqeDDG46/ZobuIG+5PpGFd5OOsbeFk2eIpBjC/
+         VByDANmn+VbOCAJaIc9bNpSkgh21vEOyyxwsq/K60hHQvqpodp3VqmfJkgYfCo8bPlh4
+         u0TlTI9qlaAI0s3oc6b0YrHcvEGluiLdO3+9C1hByMBs7/uW3XDyHd/xMfkSyQJtAjPD
+         OL5Q==
+X-Gm-Message-State: AC+VfDz0dc654kSIWSnH6W8Glfo6z7wEqCBpXnZSsMXE2+JwxSI8X1Gy
+        +jHy4Y2QVrDbL5NPAtaPpDkzB6wmugaHbI0QPKxKcg==
+X-Google-Smtp-Source: ACHHUZ4kMqG2j46JtpC5lVFA0riYENxtdmocRCjtPNiT5Crk6IarsSkll1FlC54MFGtjV1Y8xDM1espHli3Dl27emSY=
+X-Received: by 2002:a05:600c:468e:b0:3ee:93d2:c915 with SMTP id
+ p14-20020a05600c468e00b003ee93d2c915mr13695155wmo.6.1683787117430; Wed, 10
+ May 2023 23:38:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgA33eo_SVxkrgJdJA--.7260S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1fXr1xtry7urW7WrWrAFb_yoW8Cry3pF
-        W3CrsFya4IvFs2vr47GanFqw15Ga1kGryxAwn3Gw1aqw17C3s2qa1vkrW09F1kZFZ3Ar45
-        Xr48KF4UZa1vy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTY
-        UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230507170631.89607-1-hanjinke.666@bytedance.com>
+In-Reply-To: <20230507170631.89607-1-hanjinke.666@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 11 May 2023 14:38:00 +0800
+Message-ID: <CAMZfGtV8FUoBzhPjFu8V5=e=dQ3wRm+qK7S0HHCB22cjKDLAdQ@mail.gmail.com>
+Subject: Re: [PATCH v3] blk-throttle: Fix io statistics for cgroup v1
+To:     Jinke Han <hanjinke.666@bytedance.com>
+Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrea.righi@canonical.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Mon, May 8, 2023 at 1:07=E2=80=AFAM Jinke Han <hanjinke.666@bytedance.co=
+m> wrote:
+>
+> From: Jinke Han <hanjinke.666@bytedance.com>
+>
+> After commit f382fb0bcef4 ("block: remove legacy IO schedulers"),
+> blkio.throttle.io_serviced and blkio.throttle.io_service_bytes become
+> the only stable io stats interface of cgroup v1, and these statistics
+> are done in the blk-throttle code. But the current code only counts the
+> bios that are actually throttled. When the user does not add the throttle
+> limit, the io stats for cgroup v1 has nothing. I fix it according to the
+> statistical method of v2, and made it count all ios accurately.
+>
+> Fixes: a7b36ee6ba29 ("block: move blk-throtl fast path inline")
+> Tested-by: Andrea Righi <andrea.righi@canonical.com>
+> Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
 
-There are following smatch warning:
+Good catch.
 
-block/blk-wbt.c:843 wbt_init() warn: sleeping in atomic context
-ioc_qos_write() <- disables preempt
--> wbt_enable_default()
-   -> wbt_init()
+Acked-by: Muchun Song <songmuchun@bytedance.com>
 
-wbt_init() will be called from wbt_enable_default() if wbt is not
-initialized, currently this is only possible in blk_register_queue(), hence
-wbt_init() will never be called from iocost and this warning is false
-positive.
-
-However, we might support rq_qos destruction dynamically in the future,
-and it's better to prevent that, hence move wbt_enable_default() outside
-'ioc->lock'. This is safe because queue is still freezed.
-
-Reported-by: Dan Carpenter <error27@gmail.com>
-Link: https://lore.kernel.org/lkml/Y+Ja5SRs886CEz7a@kadam/
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-iocost.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 285ced3467ab..eb57e7e4f2db 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3300,11 +3300,9 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 		blk_stat_enable_accounting(disk->queue);
- 		blk_queue_flag_set(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = true;
--		wbt_disable_default(disk);
- 	} else {
- 		blk_queue_flag_clear(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
- 		ioc->enabled = false;
--		wbt_enable_default(disk);
- 	}
- 
- 	if (user) {
-@@ -3317,6 +3315,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 	ioc_refresh_params(ioc, true);
- 	spin_unlock_irq(&ioc->lock);
- 
-+	if (enable)
-+		wbt_disable_default(disk);
-+	else
-+		wbt_enable_default(disk);
-+
- 	blk_mq_unquiesce_queue(disk->queue);
- 	blk_mq_unfreeze_queue(disk->queue);
- 
--- 
-2.39.2
-
+Thanks.
