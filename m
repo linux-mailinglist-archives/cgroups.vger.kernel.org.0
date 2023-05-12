@@ -2,60 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC497000FB
-	for <lists+cgroups@lfdr.de>; Fri, 12 May 2023 09:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642DC70016B
+	for <lists+cgroups@lfdr.de>; Fri, 12 May 2023 09:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240060AbjELHED (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 May 2023 03:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        id S240092AbjELH0k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 May 2023 03:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240056AbjELHEA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 May 2023 03:04:00 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8F87A84;
-        Fri, 12 May 2023 00:03:50 -0700 (PDT)
+        with ESMTP id S239935AbjELH0j (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 May 2023 03:26:39 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129D61AC;
+        Fri, 12 May 2023 00:26:38 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QHfr14XYGz4f3nwY;
-        Fri, 12 May 2023 15:03:45 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QHftl0rTBz4f3vfM;
+        Fri, 12 May 2023 15:06:07 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP3 (Coremail) with SMTP id _Ch0CgDHpALR5F1k1LMlIg--.57523S3;
-        Fri, 12 May 2023 15:03:47 +0800 (CST)
-Subject: Re: [PATCH -next 1/6] blk-wbt: fix that wbt can't be disabled by
- default
+        by APP3 (Coremail) with SMTP id _Ch0CgA35CFf5V1kW88lIg--.19910S3;
+        Fri, 12 May 2023 15:06:08 +0800 (CST)
+Subject: Re: [PATCH -next 3/6] blk-wbt: don't enable wbt for bio based device
 To:     Christoph Hellwig <hch@lst.de>, Yu Kuai <yukuai1@huaweicloud.com>
 Cc:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
         yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
 References: <20230511014509.679482-1-yukuai1@huaweicloud.com>
- <20230511014509.679482-2-yukuai1@huaweicloud.com>
- <20230511151919.GA7880@lst.de>
+ <20230511014509.679482-4-yukuai1@huaweicloud.com>
+ <20230511152123.GC7880@lst.de>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <43cbe02a-a4bd-7e6b-6b3c-c35b2e045136@huaweicloud.com>
-Date:   Fri, 12 May 2023 15:03:45 +0800
+Message-ID: <4d736700-6baa-4aab-2ff0-85752b543d81@huaweicloud.com>
+Date:   Fri, 12 May 2023 15:06:07 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20230511151919.GA7880@lst.de>
+In-Reply-To: <20230511152123.GC7880@lst.de>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgDHpALR5F1k1LMlIg--.57523S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw1xZw1kKF13Jr1DJFy8AFb_yoWDWrXEgF
-        WvvrZ7X3y3CrWftw4kJFyjkFZ7JFs8AryxKFZ2vF4UJF4kJFZ8Zrs7ZrZxA343Gw1FkF9I
-        9ry5ZFy7ZrW3AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-TRANSID: _Ch0CgA35CFf5V1kW88lIg--.19910S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
+        rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -69,35 +66,25 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hi,
 
-在 2023/05/11 23:19, Christoph Hellwig 写道:
-> On Thu, May 11, 2023 at 09:45:04AM +0800, Yu Kuai wrote:
->> @@ -730,8 +730,9 @@ void wbt_enable_default(struct gendisk *disk)
->>   {
->>   	struct request_queue *q = disk->queue;
->>   	struct rq_qos *rqos;
->> -	bool disable_flag = q->elevator &&
->> -		    test_bit(ELEVATOR_FLAG_DISABLE_WBT, &q->elevator->flags);
->> +	bool disable_flag = (q->elevator &&
->> +		    test_bit(ELEVATOR_FLAG_DISABLE_WBT, &q->elevator->flags)) ||
->> +		    !IS_ENABLED(CONFIG_BLK_WBT_MQ);
+在 2023/05/11 23:21, Christoph Hellwig 写道:
+> On Thu, May 11, 2023 at 09:45:06AM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Because rq_qos only make sense for rq based device. Instead of fail
+>> from sysfs configuration, make wbt sysfs dentry invisible directly.
 > 
-> Not really new in your patch, but I find the logic here very confusing.
-> First the disable_flag really should be enable instead, as that's how
-> it's actually checked, and then spelling out the conditions a bit more
-> would really help readability.  E.g.
+> This looks ok, bt I would be better to just have a separate attr
+> group just for blk-mq based devices?
 > 
-> 	bool enabled = IS_ENABLED(CONFIG_BLK_WBT_MQ);
-> 
-> 	if (q->elevator &&
-> 	    test_bit(ELEVATOR_FLAG_DISABLE_WBT, &q->elevator->flags))
-> 		enable = false;
 
-Of course, this looks better, I'll do this in v2.
+Sounds good, I'll add a new attr_group that is only visible for rq based
+device, I think following attr can be moved to this new group:
+
+nr_requests,
+rq_affinity,
+scheduler,
+wbt_lat_usec
 
 Thanks,
 Kuai
-> 
-> 
-> .
-> 
 
