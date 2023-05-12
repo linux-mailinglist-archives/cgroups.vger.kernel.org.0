@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3EE7003F6
-	for <lists+cgroups@lfdr.de>; Fri, 12 May 2023 11:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E467003FA
+	for <lists+cgroups@lfdr.de>; Fri, 12 May 2023 11:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240340AbjELJiq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 May 2023 05:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S240489AbjELJiu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 May 2023 05:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239740AbjELJio (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 May 2023 05:38:44 -0400
+        with ESMTP id S240462AbjELJip (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 May 2023 05:38:45 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D409610E53;
-        Fri, 12 May 2023 02:38:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E26310E64;
+        Fri, 12 May 2023 02:38:42 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QHkGk1hZPz4f41GK;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QHkGk4BCxz4f4NVd;
         Fri, 12 May 2023 17:38:38 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP2 (Coremail) with SMTP id Syh0CgA33eoZCV5k66u5JA--.8346S8;
+        by APP2 (Coremail) with SMTP id Syh0CgA33eoZCV5k66u5JA--.8346S9;
         Fri, 12 May 2023 17:38:39 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     hch@lst.de, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
@@ -26,18 +26,18 @@ To:     hch@lst.de, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
 Cc:     lukas.bulwahn@gmail.com, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next v2 4/6] blk-wbt: cleanup rwb_enabled() and wbt_disabled()
-Date:   Fri, 12 May 2023 17:35:52 +0800
-Message-Id: <20230512093554.911753-5-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v2 5/6] blk-iocost: move wbt_enable/disable_default() out of spinlock
+Date:   Fri, 12 May 2023 17:35:53 +0800
+Message-Id: <20230512093554.911753-6-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230512093554.911753-1-yukuai1@huaweicloud.com>
 References: <20230512093554.911753-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgA33eoZCV5k66u5JA--.8346S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7urW7uFykGw4DGw18Kr1xKrg_yoW8Gw18pa
-        yDGry2kr4qgry0gan2yFZrXrWfCw4rtr17GFWDu3ySk3WrurWa9an5CryUXF4kZrZ5Ca13
-        Gw1ayF9xJF1q9rDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: Syh0CgA33eoZCV5k66u5JA--.8346S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1fXr1xtry7urW7WrWrAFb_yoW8Cry3pF
+        W3CrsFya4IvFs2vr47GanFqw15Ga1kGryxAwn3Gw1aqw17C3s2qa1vkrW09F1kZFZ3Ar45
+        Xr48KF4UZa1vy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUP214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -48,7 +48,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7urW7uFykGw4DGw18Kr1xKrg_yoW8Gw18pa
         M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
         kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
         14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
         wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
         WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
         X7UUUUU==
@@ -65,44 +65,57 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-'wb_normal' will set to 0 if 'min_lat_nsec' is 0, and 'min_lat_nsec' can
-only be set to 0 through sysfs configuration where 'WBT_STATE_OFF_MANUAL'
-is set together, in the meantime, they can only be cleared together
-through sysfs afterwards. Hence 'wb_normal != 0' is the same as
-'rwb->enable_state != WBT_STATE_OFF_MANUAL'.
+There are following smatch warning:
 
-The code is redundan, hence replace the checking of 'wb_normal' to
-'enable_state' in rwb_enabled() and reuse rwb_enabled() for
-wbt_disabled().
+block/blk-wbt.c:843 wbt_init() warn: sleeping in atomic context
+ioc_qos_write() <- disables preempt
+-> wbt_enable_default()
+   -> wbt_init()
 
+wbt_init() will be called from wbt_enable_default() if wbt is not
+initialized, currently this is only possible in blk_register_queue(), hence
+wbt_init() will never be called from iocost and this warning is false
+positive.
+
+However, we might support rq_qos destruction dynamically in the future,
+and it's better to prevent that, hence move wbt_enable_default() outside
+'ioc->lock'. This is safe because queue is still freezed.
+
+Reported-by: Dan Carpenter <error27@gmail.com>
+Link: https://lore.kernel.org/lkml/Y+Ja5SRs886CEz7a@kadam/
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-wbt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ block/blk-iocost.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index cb464c572840..06d400fa050d 100644
---- a/block/blk-wbt.c
-+++ b/block/blk-wbt.c
-@@ -146,7 +146,7 @@ enum {
- static inline bool rwb_enabled(struct rq_wb *rwb)
- {
- 	return rwb && rwb->enable_state != WBT_STATE_OFF_DEFAULT &&
--		      rwb->wb_normal != 0;
-+		      rwb->enable_state != WBT_STATE_OFF_MANUAL;
- }
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 285ced3467ab..eb57e7e4f2db 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -3300,11 +3300,9 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
+ 		blk_stat_enable_accounting(disk->queue);
+ 		blk_queue_flag_set(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
+ 		ioc->enabled = true;
+-		wbt_disable_default(disk);
+ 	} else {
+ 		blk_queue_flag_clear(QUEUE_FLAG_RQ_ALLOC_TIME, disk->queue);
+ 		ioc->enabled = false;
+-		wbt_enable_default(disk);
+ 	}
  
- static void wb_timestamp(struct rq_wb *rwb, unsigned long *var)
-@@ -494,8 +494,7 @@ bool wbt_disabled(struct request_queue *q)
- {
- 	struct rq_qos *rqos = wbt_rq_qos(q);
+ 	if (user) {
+@@ -3317,6 +3315,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
+ 	ioc_refresh_params(ioc, true);
+ 	spin_unlock_irq(&ioc->lock);
  
--	return !rqos || RQWB(rqos)->enable_state == WBT_STATE_OFF_DEFAULT ||
--	       RQWB(rqos)->enable_state == WBT_STATE_OFF_MANUAL;
-+	return !rqos || !rwb_enabled(RQWB(rqos));
- }
++	if (enable)
++		wbt_disable_default(disk);
++	else
++		wbt_enable_default(disk);
++
+ 	blk_mq_unquiesce_queue(disk->queue);
+ 	blk_mq_unfreeze_queue(disk->queue);
  
- u64 wbt_get_min_lat(struct request_queue *q)
 -- 
 2.39.2
 
