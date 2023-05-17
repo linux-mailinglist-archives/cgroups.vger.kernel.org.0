@@ -2,89 +2,167 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E281706249
-	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 10:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B64706255
+	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 10:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjEQIKM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 May 2023 04:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        id S230429AbjEQIKj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 May 2023 04:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjEQIKL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 May 2023 04:10:11 -0400
-X-Greylist: delayed 554 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 17 May 2023 01:10:08 PDT
-Received: from mail.startuplaunchpadpro.pl (mail.startuplaunchpadpro.pl [217.61.112.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D8410EF
-        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 01:10:08 -0700 (PDT)
-Received: by mail.startuplaunchpadpro.pl (Postfix, from userid 1002)
-        id ECE4282A7A; Wed, 17 May 2023 10:00:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=startuplaunchpadpro.pl; s=mail; t=1684310451;
-        bh=oZTeICgx2X9EeHQQOCJSHYKJVJOCiOs1n/VaxwVhO9Y=;
-        h=Date:From:To:Subject:From;
-        b=EGoXKUYluFNuIW4Xvkie+wM9wz8mYXVOqpTlg3W3KBimPDs7kpN0JXzJthf1dh7uM
-         F1UMiiFRAMDrUNiFHHa09B8/iArTJe+AWnHHOpGo3XEWrWXH7GLF7fiLhO5npcLrS6
-         dmgPVNhxrOUbcapK1EtwSJ91E3E4wfrCGaXTFAqC4oEUgtnPfICxQWGY23IEiS3Ebj
-         hGSfsapUn0Vq9znZpp33CrdStx9bjEzrDqHR6tZ8muSMq/xboImJwX14kalfCyuz0r
-         3bQhIvfLi1omtT0PmIimJYD0U1m7n0LhvbZZFdZ2HIDaMxxNccQvYWcxBhAWSq2f3s
-         DS0CBnYt4+TiQ==
-Received: by mail.startuplaunchpadpro.pl for <cgroups@vger.kernel.org>; Wed, 17 May 2023 08:00:45 GMT
-Message-ID: <20230517084500-0.1.7.8cp.0.ioy7q1igeq@startuplaunchpadpro.pl>
-Date:   Wed, 17 May 2023 08:00:45 GMT
-From:   "Marcin Wojciechowski" <marcin.wojciechowski@startuplaunchpadpro.pl>
-To:     <cgroups@vger.kernel.org>
-Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
-X-Mailer: mail.startuplaunchpadpro.pl
+        with ESMTP id S230323AbjEQIKh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 May 2023 04:10:37 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BCD3AA2
+        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 01:10:29 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-965a68abfd4so70933166b.2
+        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 01:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1684311027; x=1686903027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M/JbPTvNpjTaAOSiw7cq2XUFwTTZo3maiLd9kZ3gbPY=;
+        b=E/nQr0TtAbvKOJgpRKAM1JVFuP/MwUX23KxLMaK9E935LDpjE6s9HpTk6zcktHzA3V
+         lVxuSKWxkpaEF/0X7X4fb0A2wQtR+BP46udE3XC2KotT4N3Y20wucgNCN5myvUQPrgYm
+         hf8qXaIk4/mtVqOzBMdebf1uOebU+yZFQwgKC0uSR7A2S8DJaBgTCt2tXTRjmHgu9gTl
+         He1rqLvC6itIyQX551xHdP0ntcFbz4HClZ9Wg7mkLnBAKGlfTSh3/2KEYLgKR0024kd1
+         FZk9gcyZUQemmV3CyHP8mGDAj9j4MwZkxgKrt5y90zAG/N8tFGr657bHQAGYojKPXnWN
+         MoDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684311027; x=1686903027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M/JbPTvNpjTaAOSiw7cq2XUFwTTZo3maiLd9kZ3gbPY=;
+        b=Ri9SkPBYzqKZ1kHWHH+yR73xamiLWFJzx/sFLEsg2YL6z/NDzpVPwZyZRrVnJu/PHC
+         xWqmpK3rejJ5lGh5QbRyv29Al+q7AJhql7zMvqEzbSIW7nIFdiCQwv8r3fss6mM/cFjn
+         IPvJ1+uHc6lJIDhRmWxIZ5XyjgygNLe9Y9Dua/gjYV58EDvThk8Hg/mG+HCr1ynstGG4
+         SrdnmrVe7ajVYJnZYXkNv5RbMz8icDnIbBpioYX0Il8hMoRX45nFX1suM6gDqpqv5FAH
+         4+9PFVbxHWcVb2g6MJCPtzYDCXgtNSbaNy8ZzSdm6VLWcu51yZl+U5WVmGxAgLDOfBjF
+         XvLw==
+X-Gm-Message-State: AC+VfDz3rD4r8xQrwRAsWo206hw6d1JZP3jSetvmXgBa5J+PrRXlzvbr
+        taDTaFHQ5qPeu+bX5hnvEaKA2aKzYcGwkAIyMOQwyw==
+X-Google-Smtp-Source: ACHHUZ45upb/WQWXJ0QlUEgpUZn+CmUofbM6pNnjDG0KW/H53o2SeMyeHn7WakUEa0zZJ6DGueoe8o/J1+MWpbNBXNs=
+X-Received: by 2002:a17:906:fe04:b0:966:1984:9d21 with SMTP id
+ wy4-20020a170906fe0400b0096619849d21mr30993043ejb.9.1684311027372; Wed, 17
+ May 2023 01:10:27 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAJD7tkYPGwAFo0mrhq5twsVquwFwkhOyPwsZJtECw-5HAXtQrg@mail.gmail.com>
+ <09A746CC-E38D-4ECA-B0F4-862EC6229A0F@didiglobal.com>
+In-Reply-To: <09A746CC-E38D-4ECA-B0F4-862EC6229A0F@didiglobal.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 17 May 2023 01:09:50 -0700
+Message-ID: <CAJD7tkbHKQBoz7kn6ZjMTMoxLKYs7x9w4uRGWLvuyOogmBkZ_g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] memcontrol: support cgroup level OOM protection
+To:     =?UTF-8?B?56iL5Z6y5rabIENoZW5na2FpdGFvIENoZW5n?= 
+        <chengkaitao@didiglobal.com>
+Cc:     "tj@kernel.org" <tj@kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+        "pilgrimtao@gmail.com" <pilgrimtao@gmail.com>,
+        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
+        "yuzhao@google.com" <yuzhao@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "surenb@google.com" <surenb@google.com>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        David Rientjes <rientjes@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
-        *      [score: 0.0264]
-        *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: startuplaunchpadpro.pl]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [217.61.112.231 listed in zen.spamhaus.org]
-        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: startuplaunchpadpro.pl]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: startuplaunchpadpro.pl]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-Level: *****
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Wed, May 17, 2023 at 1:01=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=9B Chengka=
+itao Cheng
+<chengkaitao@didiglobal.com> wrote:
+>
+> At 2023-05-17 14:59:06, "Yosry Ahmed" <yosryahmed@google.com> wrote:
+> >+David Rientjes
+> >
+> >On Tue, May 16, 2023 at 8:20=E2=80=AFPM chengkaitao <chengkaitao@didiglo=
+bal.com> wrote:
+> >>
+> >> Establish a new OOM score algorithm, supports the cgroup level OOM
+> >> protection mechanism. When an global/memcg oom event occurs, we treat
+> >> all processes in the cgroup as a whole, and OOM killers need to select
+> >> the process to kill based on the protection quota of the cgroup.
+> >>
+> >
+> >Perhaps this is only slightly relevant, but at Google we do have a
+> >different per-memcg approach to protect from OOM kills, or more
+> >specifically tell the kernel how we would like the OOM killer to
+> >behave.
+> >
+> >We define an interface called memory.oom_score_badness, and we also
+> >allow it to be specified per-process through a procfs interface,
+> >similar to oom_score_adj.
+> >
+> >These scores essentially tell the OOM killer the order in which we
+> >prefer memcgs to be OOM'd, and the order in which we want processes in
+> >the memcg to be OOM'd. By default, all processes and memcgs start with
+> >the same score. Ties are broken based on the rss of the process or the
+> >usage of the memcg (prefer to kill the process/memcg that will free
+> >more memory) -- similar to the current OOM killer.
+>
+> Thank you for providing a new application scenario. You have described a
+> new per-memcg approach, but a simple introduction cannot explain the
+> details of your approach clearly. If you could compare and analyze my
+> patches for possible defects, or if your new approach has advantages
+> that my patches do not have, I would greatly appreciate it.
 
-Czy jest mo=C5=BCliwo=C5=9B=C4=87 nawi=C4=85zania wsp=C3=B3=C5=82pracy z =
-Pa=C5=84stwem?
+Sorry if I was not clear, I am not implying in any way that the
+approach I am describing is better than your patches. I am guilty of
+not conducting the proper analysis you are requesting.
 
-Z ch=C4=99ci=C4=85 porozmawiam z osob=C4=85 zajmuj=C4=85c=C4=85 si=C4=99 =
-dzia=C5=82aniami zwi=C4=85zanymi ze sprzeda=C5=BC=C4=85.
+I just saw the thread and thought it might be interesting to you or
+others to know the approach that we have been using for years in our
+production. I guess the target is the same, be able to tell the OOM
+killer which memcgs/processes are more important to protect. The
+fundamental difference is that instead of tuning this based on the
+memory usage of the memcg (your approach), we essentially give the OOM
+killer the ordering in which we want memcgs/processes to be OOM
+killed. This maps to jobs priorities essentially.
 
-Pomagamy skutecznie pozyskiwa=C4=87 nowych klient=C3=B3w.
+If this approach works for you (or any other audience), that's great,
+I can share more details and perhaps we can reach something that we
+can both use :)
 
-Zapraszam do kontaktu.
-
-
-Pozdrawiam
-Marcin Wojciechowski
+>
+> >This has been brought up before in other discussions without much
+> >interest [1], but just thought it may be relevant here.
+> >
+> >[1]https://lore.kernel.org/lkml/CAHS8izN3ej1mqUpnNQ8c-1Bx5EeO7q5NOkh0qrY=
+_4PLqc8rkHA@mail.gmail.com/#t
+>
+> --
+> Thanks for your comment!
+> chengkaitao
+>
