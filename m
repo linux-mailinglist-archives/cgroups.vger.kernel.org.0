@@ -2,50 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69B1706E3A
-	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 18:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D06706EFC
+	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 19:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjEQQdk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 May 2023 12:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
+        id S229489AbjEQRE7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 May 2023 13:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjEQQdi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 May 2023 12:33:38 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A1C8A47
-        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 09:33:37 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-33828a86ee2so1365ab.0
-        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 09:33:36 -0700 (PDT)
+        with ESMTP id S229456AbjEQRE6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 May 2023 13:04:58 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F927A95
+        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 10:04:56 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ae3f74c98bso4475ad.1
+        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 10:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684341216; x=1686933216;
+        d=google.com; s=20221208; t=1684343096; x=1686935096;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YGCTJkjb+BkBWhgl9nkCivR/yxXltKo5X5s56+BQds8=;
-        b=ICxeJ4TRj0Aa912CHQqgpNLoLbhTEMQAjIlNLTt0p2NM9VeYmoid36yRYdHRJmkrSV
-         id3QBB4TohYYolGYjdav6TEgp9WRM8G9HcoFmBzh8mDTpkseEIlx3Ue0SCUNZR0hJcKu
-         RDmAHgGZny6lAq6/4J0GIsPcNf7Z6BCrWt2O2T16aUTbsFtPgN54lRb9oIktSbJwdbAZ
-         q0YY5qoO4vRfV5C/f4cPfx2e9TwuktWeDHyXbPjPR6OgY3BEqOXkIpO1WU5fDrcAm8PD
-         tbQuukIo8WN0jofAcuhdtDJScPXXh4puE1NnuUwbBqSWsKOcLFr+TatAOah9SidYGTja
-         cRsQ==
+        bh=gKr+V+2IZIYa6CpuFFeV8UF5upmdCKVs0jpk2D6+3kA=;
+        b=MuHHRRywhO1aSHU/MEanLSNwrqTsXNgGhXpEHv+Gd8S0hwOcQL217X2Ki8tX/r2Mdp
+         2NEszZRFQrKKEzSloCfMXL+YkCte1+2uEysd7xGefM+J+TWlNJh4TsRgeW77bhP6+kwO
+         23Xi1rxMk2QV7bWUV4P//0NIZbIyeuqzNOBaUoMJ84HfZTnE1l5O2PUW2b+iG0T9/T13
+         Z9V8t9i5e5YBLwx3c+4zXl3IlWl+5jSODWaiVlemT0TnZoahQxM7WN4iSLNmr5tFG0pH
+         BwYPJYGxU7Ajkdyn4I8jL1bvPDyO1qrrHxoTcvahP6GpyH9bqqCWJIwkJRVeShq5tJLn
+         LieA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684341216; x=1686933216;
+        d=1e100.net; s=20221208; t=1684343096; x=1686935096;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YGCTJkjb+BkBWhgl9nkCivR/yxXltKo5X5s56+BQds8=;
-        b=kTKqPb3ojM+GhkqY6ODxWCMlL4aBLIP5nN/CX1qO/cIZ4j/Rb+jHC2pCpFHZ0BaV88
-         GXqJJkNgDx0DrdKWma5RukyQ+vhfmW9ZDE4guVKneaRBofjrhnnDHiXvMsuwOCxVqx24
-         CLYvHVGSbIgFSDn04aWDPl8r//VWoqNxN3vrQqc75wiyZqJpdNSsTXrzR2nI5O08empi
-         LYZJiFmHrXc3skFJDUnh3YSrAy04GfMCeD6lPoXOngrNspdu5MhBMyz8dV5H3MSeV8B3
-         FIA7DMtmAqX2PCjLCgxTLq9Xrn1HNryJnOgRJK/vEvoEJI0vWNcJsM1EJEh+EWfTjQKB
-         q1Qg==
-X-Gm-Message-State: AC+VfDwofPsTQTbvpOOmpoTmivceKweVefAYKRdDljpuoH/JV6RouMBr
-        7wyt3xoVFKKH4HHMjVMfqRNVnDuZx5mCqxNO7I/Veg==
-X-Google-Smtp-Source: ACHHUZ55tKP7LoNajakx4E0yARHVP7p25x16TwzLqiz9gUfuRnaj4ppiBBfCnsVdhpZik4FydQALsG+RoaaSSAYkz3g=
-X-Received: by 2002:a05:6e02:20ce:b0:338:13f1:8c0c with SMTP id
- 14-20020a056e0220ce00b0033813f18c0cmr355316ilq.16.1684341216148; Wed, 17 May
- 2023 09:33:36 -0700 (PDT)
+        bh=gKr+V+2IZIYa6CpuFFeV8UF5upmdCKVs0jpk2D6+3kA=;
+        b=bP4OxB/APb0lRujjv6hKhIVqC5GR5bV9JjKKLh8Jxi9/xRY35YCAEC1HJSIBB91HGA
+         EsDSxG5TYemvWQgXkDgag/f7dvM5HfrEjlAPQPYkGsg9VkbBpPmpDC7qRt648vcPlfWC
+         B23P7IxUTS3ghObtMJFmwE8HgyoVISshrFu7E3ct8/1Kua1K7HvYOUubRVP7PZb8vG95
+         F8V/VIE6agXBIJdGkh+1uCMohNxtf1IeUXb8b9okIQYEzE3kaIUcGviZDdpzRxQyvLz8
+         1qofdjgeaynZfdUU13d7EEWGOITBC6wh7PUTJtxKQLhrfeU7bxZurrQb/4iL9HN6fPfn
+         7uYQ==
+X-Gm-Message-State: AC+VfDyfNwNigS0oqm3vgIQzDm7N9DZDceo8JEwQRij5Z8oyLOcTajYI
+        far1UhfTIfjLDQTuDlQRs6h3+7NiHryEfWto9NTIBA==
+X-Google-Smtp-Source: ACHHUZ7KKUoCffZgSyGuzx7i3/4H3NPwhF7EzftKGDKe1OgKxOmnMBm6vVmgCSTa78JQT6bJzOPyyzJSIV0YwtBHRVU=
+X-Received: by 2002:a17:902:d483:b0:1a9:bb1d:64e with SMTP id
+ c3-20020a170902d48300b001a9bb1d064emr353009plg.15.1684343093602; Wed, 17 May
+ 2023 10:04:53 -0700 (PDT)
 MIME-Version: 1.0
 References: <CH3PR11MB7345DBA6F79282169AAFE9E0FC759@CH3PR11MB7345.namprd11.prod.outlook.com>
  <20230512171702.923725-1-shakeelb@google.com> <CH3PR11MB7345035086C1661BF5352E6EFC789@CH3PR11MB7345.namprd11.prod.outlook.com>
@@ -53,12 +53,14 @@ References: <CH3PR11MB7345DBA6F79282169AAFE9E0FC759@CH3PR11MB7345.namprd11.prod.
  <CH3PR11MB7345E9EAC5917338F1C357C0FC789@CH3PR11MB7345.namprd11.prod.outlook.com>
  <CALvZod6txDQ9kOHrNFL64XiKxmbVHqMtWNiptUdGt9UuhQVLOQ@mail.gmail.com>
  <ZGMYz+08I62u+Yeu@xsang-OptiPlex-9020> <20230517162447.dztfzmx3hhetfs2q@google.com>
-In-Reply-To: <20230517162447.dztfzmx3hhetfs2q@google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 17 May 2023 18:33:24 +0200
-Message-ID: <CANn89iL0SD=F69b=naEmzoKysscnHGX7tP6jF9MOvthSeZ53Pw@mail.gmail.com>
+ <CANn89iL0SD=F69b=naEmzoKysscnHGX7tP6jF9MOvthSeZ53Pw@mail.gmail.com>
+In-Reply-To: <CANn89iL0SD=F69b=naEmzoKysscnHGX7tP6jF9MOvthSeZ53Pw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 17 May 2023 10:04:42 -0700
+Message-ID: <CALvZod6LFdydR5Zdhx1SMgknxTUJgabewi5-Ux6U=nO105GPSg@mail.gmail.com>
 Subject: Re: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper size
-To:     Shakeel Butt <shakeelb@google.com>
+To:     Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
 Cc:     Oliver Sang <oliver.sang@intel.com>,
         Zhang Cathy <cathy.zhang@intel.com>,
         Yin Fengwei <fengwei.yin@intel.com>,
@@ -87,161 +89,160 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 17, 2023 at 6:24=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
++Andrew
+
+On Wed, May 17, 2023 at 9:33=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
 wrote:
 >
-> On Tue, May 16, 2023 at 01:46:55PM +0800, Oliver Sang wrote:
-> > hi Shakeel,
+> On Wed, May 17, 2023 at 6:24=E2=80=AFPM Shakeel Butt <shakeelb@google.com=
+> wrote:
 > >
-> > On Mon, May 15, 2023 at 12:50:31PM -0700, Shakeel Butt wrote:
-> > > +Feng, Yin and Oliver
+> > On Tue, May 16, 2023 at 01:46:55PM +0800, Oliver Sang wrote:
+> > > hi Shakeel,
 > > >
+> > > On Mon, May 15, 2023 at 12:50:31PM -0700, Shakeel Butt wrote:
+> > > > +Feng, Yin and Oliver
 > > > >
-> > > > > Thanks a lot Cathy for testing. Do you see any performance improv=
-ement for
-> > > > > the memcached benchmark with the patch?
+> > > > >
+> > > > > > Thanks a lot Cathy for testing. Do you see any performance impr=
+ovement for
+> > > > > > the memcached benchmark with the patch?
+> > > > >
+> > > > > Yep, absolutely :- ) RPS (with/without patch) =3D +1.74
 > > > >
-> > > > Yep, absolutely :- ) RPS (with/without patch) =3D +1.74
+> > > > Thanks a lot Cathy.
+> > > >
+> > > > Feng/Yin/Oliver, can you please test the patch at [1] with other
+> > > > workloads used by the test robot? Basically I wanted to know if it =
+has
+> > > > any positive or negative impact on other perf benchmarks.
 > > >
-> > > Thanks a lot Cathy.
-> > >
-> > > Feng/Yin/Oliver, can you please test the patch at [1] with other
-> > > workloads used by the test robot? Basically I wanted to know if it ha=
-s
-> > > any positive or negative impact on other perf benchmarks.
-> >
-> > is it possible for you to resend patch with Signed-off-by?
-> > without it, test robot will regard the patch as informal, then it canno=
-t feed
-> > into auto test process.
-> > and could you tell us the base of this patch? it will help us apply it
-> > correctly.
-> >
-> > on the other hand, due to resource restraint, we normally cannot suppor=
+> > > is it possible for you to resend patch with Signed-off-by?
+> > > without it, test robot will regard the patch as informal, then it can=
+not feed
+> > > into auto test process.
+> > > and could you tell us the base of this patch? it will help us apply i=
 t
-> > this type of on-demand test upon a single patch, patch set, or a branch=
-.
-> > instead, we try to merge them into so-called hourly-kernels, then distr=
-ibute
-> > tests and auto-bisects to various platforms.
-> > after we applying your patch and merging it to hourly-kernels sccussful=
-ly,
-> > if it really causes some performance changes, the test robot could spot=
- out
-> > this patch as 'fbc' and we will send report to you. this could happen w=
-ithin
-> > several weeks after applying.
-> > but due to the complexity of whole process (also limited resourse, such=
- like
-> > we cannot run all tests on all platforms), we cannot guanrantee capture=
- all
-> > possible performance impacts of this patch. and it's hard for us to pro=
-vide
-> > a big picture like what's the general performance impact of this patch.
-> > this maybe is not exactly what you want. is it ok for you?
+> > > correctly.
+> > >
+> > > on the other hand, due to resource restraint, we normally cannot supp=
+ort
+> > > this type of on-demand test upon a single patch, patch set, or a bran=
+ch.
+> > > instead, we try to merge them into so-called hourly-kernels, then dis=
+tribute
+> > > tests and auto-bisects to various platforms.
+> > > after we applying your patch and merging it to hourly-kernels sccussf=
+ully,
+> > > if it really causes some performance changes, the test robot could sp=
+ot out
+> > > this patch as 'fbc' and we will send report to you. this could happen=
+ within
+> > > several weeks after applying.
+> > > but due to the complexity of whole process (also limited resourse, su=
+ch like
+> > > we cannot run all tests on all platforms), we cannot guanrantee captu=
+re all
+> > > possible performance impacts of this patch. and it's hard for us to p=
+rovide
+> > > a big picture like what's the general performance impact of this patc=
+h.
+> > > this maybe is not exactly what you want. is it ok for you?
+> > >
+> > >
+> >
+> > Yes, that is fine and thanks for the help. The patch is below:
 > >
 > >
+> > From 93b3b4c5f356a5090551519522cfd5740ae7e774 Mon Sep 17 00:00:00 2001
+> > From: Shakeel Butt <shakeelb@google.com>
+> > Date: Tue, 16 May 2023 20:30:26 +0000
+> > Subject: [PATCH] memcg: skip stock refill in irq context
+> >
+> > The linux kernel processes incoming packets in softirq on a given CPU
+> > and those packets may belong to different jobs. This is very normal on
+> > large systems running multiple workloads. With memcg enabled, network
+> > memory for such packets is charged to the corresponding memcgs of the
+> > jobs.
+> >
+> > Memcg charging can be a costly operation and the memcg code implements
+> > a per-cpu memcg charge caching optimization to reduce the cost of
+> > charging. More specifically, the kernel charges the given memcg for mor=
+e
+> > memory than requested and keep the remaining charge in a local per-cpu
+> > cache. The insight behind this heuristic is that there will be more
+> > charge requests for that memcg in near future. This optimization works
+> > well when a specific job runs on a CPU for long time and majority of th=
+e
+> > charging requests happen in process context. However the kernel's
+> > incoming packet processing does not work well with this optimization.
+> >
+> > Recently Cathy Zhang has shown [1] that memcg charge flushing within th=
+e
+> > memcg charge path can become a performance bottleneck for the memcg
+> > charging of network traffic.
+> >
+> > Perf profile:
+> >
+> > 8.98%  mc-worker        [kernel.vmlinux]          [k] page_counter_canc=
+el
+> >     |
+> >      --8.97%--page_counter_cancel
+> >                |
+> >                 --8.97%--page_counter_uncharge
+> >                           drain_stock
+> >                           __refill_stock
+> >                           refill_stock
+> >                           |
+> >                            --8.91%--try_charge_memcg
+> >                                      mem_cgroup_charge_skmem
+> >                                      |
+> >                                       --8.91%--__sk_mem_raise_allocated
+> >                                                 __sk_mem_schedule
+> >                                                 |
+> >                                                 |--5.41%--tcp_try_rmem_=
+schedule
+> >                                                 |          tcp_data_que=
+ue
+> >                                                 |          tcp_rcv_esta=
+blished
+> >                                                 |          tcp_v4_do_rc=
+v
+> >                                                 |          tcp_v4_rcv
+> >
+> > The simplest way to solve this issue is to not refill the memcg charge
+> > stock in the irq context. Since networking is the main source of memcg
+> > charging in the irq context, other users will not be impacted. In
+> > addition, this will preseve the memcg charge cache of the application
+> > running on that CPU.
+> >
+> > There are also potential side effects. What if all the packets belong t=
+o
+> > the same application and memcg? More specifically, users can use Receiv=
+e
+> > Flow Steering (RFS) to make sure the kernel process the packets of the
+> > application on the CPU where the application is running. This change ma=
+y
+> > cause the kernel to do slowpath memcg charging more often in irq
+> > context.
 >
-> Yes, that is fine and thanks for the help. The patch is below:
+> Could we have per-memcg per-cpu caches, instead of one set of per-cpu cac=
+hes
+> needing to be drained evertime a cpu deals with 'another memcg' ?
 >
->
-> From 93b3b4c5f356a5090551519522cfd5740ae7e774 Mon Sep 17 00:00:00 2001
-> From: Shakeel Butt <shakeelb@google.com>
-> Date: Tue, 16 May 2023 20:30:26 +0000
-> Subject: [PATCH] memcg: skip stock refill in irq context
->
-> The linux kernel processes incoming packets in softirq on a given CPU
-> and those packets may belong to different jobs. This is very normal on
-> large systems running multiple workloads. With memcg enabled, network
-> memory for such packets is charged to the corresponding memcgs of the
-> jobs.
->
-> Memcg charging can be a costly operation and the memcg code implements
-> a per-cpu memcg charge caching optimization to reduce the cost of
-> charging. More specifically, the kernel charges the given memcg for more
-> memory than requested and keep the remaining charge in a local per-cpu
-> cache. The insight behind this heuristic is that there will be more
-> charge requests for that memcg in near future. This optimization works
-> well when a specific job runs on a CPU for long time and majority of the
-> charging requests happen in process context. However the kernel's
-> incoming packet processing does not work well with this optimization.
->
-> Recently Cathy Zhang has shown [1] that memcg charge flushing within the
-> memcg charge path can become a performance bottleneck for the memcg
-> charging of network traffic.
->
-> Perf profile:
->
-> 8.98%  mc-worker        [kernel.vmlinux]          [k] page_counter_cancel
->     |
->      --8.97%--page_counter_cancel
->                |
->                 --8.97%--page_counter_uncharge
->                           drain_stock
->                           __refill_stock
->                           refill_stock
->                           |
->                            --8.91%--try_charge_memcg
->                                      mem_cgroup_charge_skmem
->                                      |
->                                       --8.91%--__sk_mem_raise_allocated
->                                                 __sk_mem_schedule
->                                                 |
->                                                 |--5.41%--tcp_try_rmem_sc=
-hedule
->                                                 |          tcp_data_queue
->                                                 |          tcp_rcv_establ=
-ished
->                                                 |          tcp_v4_do_rcv
->                                                 |          tcp_v4_rcv
->
-> The simplest way to solve this issue is to not refill the memcg charge
-> stock in the irq context. Since networking is the main source of memcg
-> charging in the irq context, other users will not be impacted. In
-> addition, this will preseve the memcg charge cache of the application
-> running on that CPU.
->
-> There are also potential side effects. What if all the packets belong to
-> the same application and memcg? More specifically, users can use Receive
-> Flow Steering (RFS) to make sure the kernel process the packets of the
-> application on the CPU where the application is running. This change may
-> cause the kernel to do slowpath memcg charging more often in irq
-> context.
 
-Could we have per-memcg per-cpu caches, instead of one set of per-cpu cache=
-s
-needing to be drained evertime a cpu deals with 'another memcg' ?
+The hierarchical nature of memcg makes that a bit complicated. We have
+something similar for memcg stats which is rstat infra where the stats
+are saved per-memcg per-cpu and get accumulated hierarchically every 2
+seconds. This works fine for stats but for limits there would be a
+need for some additional restrictions.
 
->
-> Link: https://lore.kernel.org/all/IA0PR11MB73557DEAB912737FD61D2873FC749@=
-IA0PR11MB7355.namprd11.prod.outlook.com [1]
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  mm/memcontrol.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5abffe6f8389..2635aae82b3e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2652,6 +2652,14 @@ static int try_charge_memcg(struct mem_cgroup *mem=
-cg, gfp_t gfp_mask,
->         bool raised_max_event =3D false;
->         unsigned long pflags;
->
-> +       /*
-> +        * Skip the refill in irq context as it may flush the charge cach=
-e of
-> +        * the process running on the CPUs or the kernel may have to proc=
-ess
-> +        * incoming packets for different memcgs.
-> +        */
-> +       if (!in_task())
-> +               batch =3D nr_pages;
-> +
->  retry:
->         if (consume_stock(memcg, nr_pages))
->                 return 0;
-> --
-> 2.40.1.606.ga4b1b128d6-goog
->
+Also sometime ago Andrew asked me to explore replacing the atomic
+counter in page_counter with percpu_counter. Intuition is that most of
+the time the usage is not hitting the limit, so we can use
+__percpu_counter_compare for enforcement.
+
+Let me spend some time to explore per-memcg per-cpu cache or if
+percpu_counter would be better.
+
+For now, this patch is more like an RFC.
