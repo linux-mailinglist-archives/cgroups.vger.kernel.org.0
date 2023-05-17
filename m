@@ -2,123 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F201704DAC
-	for <lists+cgroups@lfdr.de>; Tue, 16 May 2023 14:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E83705DE9
+	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 05:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbjEPMYc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 May 2023 08:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
+        id S230494AbjEQDUu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 May 2023 23:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbjEPMYb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 May 2023 08:24:31 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2072.outbound.protection.outlook.com [40.107.102.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228B21FE7
-        for <cgroups@vger.kernel.org>; Tue, 16 May 2023 05:24:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NUU83Su0GvfmLi2q+v4iJNI16HKSR3e7yrFHAeKWWDDVFgSRYH78bQTHguFFikbvwz7OzA6DGXIpPTLXdsqeCZKldII1+S5w0mixRWJL4kLgNd+2IAw3BNmE1uvRCETHU2skxBOzatGgWt2V+nmRn6F1csq9cBDdnkV6oA5MwoZG3z7MyGec2fpMshM3yq4zqjtFQMClTXURhr709T58oQG/gCBVSItg5u0Ni/ZOLpYursdG0OwiH6GbNXuFBuvFYOlPMI/zN6ExNZCfjUd1QKpXJhPKD9Ly9ruHqOw2kfks9IyAX2qUnKR6eF59H3uxK6lEbxQ8X9Th6Q/ZcjT6qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fzcjHcXWoVQ9GLNTnd73sPk1oCZehBHl2lJh8tWwizI=;
- b=LO8drDNJODe7nxni7f1dvUFvtBIEdutyUbvKgBS+7qz8KAAeFPYgGPyBlHo0B4CcjJ5uQaKrsc0hDNuwxzKTpBhTz80UgPO+4uw2pXnFaPxFwolHlDE7X6FzJOQ5Nb0rXXHGFNvqWhwCwUtZ/ecreGButAz1nvTyMEyTNYFYNowJtiDPhY1VdQiBkKDjgzLtknMl8iu57X9exL/tiHcjQ+/2fMyi6a2xjqk5WQoZGONchrU9NMm/Ux8K+ek2VSl1nnTq3dT9y+gb68LykzxkSZJQEZlNkqtS984ga1Q6NF2D8YcHzorN9oCveIlKKcYn4ZPHzIST4UDT28yAEmDgKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fzcjHcXWoVQ9GLNTnd73sPk1oCZehBHl2lJh8tWwizI=;
- b=lA1ZEmsHCWucaqf46VPtbG1zVcANVfgFiM/r3FVhqk4KUSwab2J6jN4WlVcn7n5XMEl5ozBa05jokKvsMhpYCuz+XwfbSu5FtNM3/zA4rweKJek+iu9Mo3WUY+H9XJyBprGOitFRKOx1UQaSqRGiJ1yVOgU09f7hQ3Slt9PtoePR4kmnE5WbQKZNwTtvWqInjYqxjMNIEbWtZvwvEOHef0ewAzdLt8hFrGXJtAlKr8tD4qfjWV+S4BGhACiGuSr4bHAv9Ppdf1qOgbzLu7TLAUWHUAdy/CeOMu7mU89XYn5MOz+pVLAwDU4qRqMYJDzQou2RJWLTtHrz/gPqgZzmkA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.33; Tue, 16 May
- 2023 12:24:26 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::f6e4:71a5:4998:e6b2]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::f6e4:71a5:4998:e6b2%4]) with mapi id 15.20.6387.029; Tue, 16 May 2023
- 12:24:26 +0000
-References: <CABdmKX2M6koq4Q0Cmp_-=wbP0Qa190HdEGGaHfxNS05gAkUtPA@mail.gmail.com>
- <ZFLdDyHoIdJSXJt+@google.com> <874josz4rd.fsf@nvidia.com>
- <ZFPP71czDDxMPLQK@google.com> <877ctm518f.fsf@nvidia.com>
- <ZFbZZPkSpsKMe8iR@google.com> <87ttwnkzap.fsf@nvidia.com>
- <ZFuvhP5qGPivokc0@google.com> <87jzxe9baj.fsf@nvidia.com>
- <ZF6rACJzilA06oe+@nvidia.com>
-User-agent: mu4e 1.8.10; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Chris Li <chrisl@kernel.org>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>,
-        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Yu Zhao <yuzhao@google.com>
-Subject: Re: [LSF/MM/BPF TOPIC] Reducing zombie memcgs
-Date:   Tue, 16 May 2023 22:21:10 +1000
-In-reply-to: <ZF6rACJzilA06oe+@nvidia.com>
-Message-ID: <87y1lo8nwp.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR02CA0025.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::38) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        with ESMTP id S230403AbjEQDUt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 May 2023 23:20:49 -0400
+Received: from mx5.didiglobal.com (mx5.didiglobal.com [111.202.70.122])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 052181BC3;
+        Tue, 16 May 2023 20:20:45 -0700 (PDT)
+Received: from mail.didiglobal.com (unknown [10.79.71.35])
+        by mx5.didiglobal.com (Maildata Gateway V2.8) with ESMTPS id C0D75B0035073;
+        Wed, 17 May 2023 11:20:42 +0800 (CST)
+Received: from localhost.localdomain (10.79.71.101) by
+ ZJY03-ACTMBX-05.didichuxing.com (10.79.71.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 17 May 2023 11:20:42 +0800
+X-MD-Sfrom: chengkaitao@didiglobal.com
+X-MD-SrcIP: 10.79.71.35
+From:   chengkaitao <chengkaitao@didiglobal.com>
+To:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <corbet@lwn.net>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <shakeelb@google.com>, <akpm@linux-foundation.org>,
+        <brauner@kernel.org>, <muchun.song@linux.dev>
+CC:     <viro@zeniv.linux.org.uk>, <zhengqi.arch@bytedance.com>,
+        <ebiederm@xmission.com>, <Liam.Howlett@Oracle.com>,
+        <chengzhihao1@huawei.com>, <pilgrimtao@gmail.com>,
+        <haolee.swjtu@gmail.com>, <yuzhao@google.com>,
+        <willy@infradead.org>, <vasily.averin@linux.dev>, <vbabka@suse.cz>,
+        <surenb@google.com>, <sfr@canb.auug.org.au>, <mcgrof@kernel.org>,
+        <sujiaxun@uniontech.com>, <feng.tang@intel.com>,
+        <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-mm@kvack.org>, chengkaitao <chengkaitao@didiglobal.com>
+Subject: [PATCH v4 0/2] memcontrol: support cgroup level OOM protection
+Date:   Wed, 17 May 2023 11:20:30 +0800
+Message-ID: <20230517032032.76334-1-chengkaitao@didiglobal.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|BN9PR12MB5115:EE_
-X-MS-Office365-Filtering-Correlation-Id: df60946f-5fde-42cb-ff4e-08db56087d32
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2YYWiVtE8Q8SM+5WbIdAPDejoAJBCWMohgA95Jlk7p0AVGl5JdgXRhcBfTG+I0xmpsD65ji/p5GgUVtUNYdD/7I4Ofo1oXzbElAo6pR6aWZOrDVPLfwVm2gsdbRZVr/LPKiXdk1TlUk10o3j1Kgylr46XygHXfWMV8EN0vcVS5EHgBVoQNdsXjY1z0XqHnyC5aHI0rKE2ip5/V27lrCd7eUDyfPCzLdE+A9W0R2RFiZTRqHhJZ1t7Mx9r2q9wXsHNWuvCvzXMBA1deu7Gt+1k+r4iOP4Vfvimlu+otSvpElkvJhEfVsHEETc4WZBpZsZSW21rIb4+XmOPXEisVplVXLGBbCgBl1Vg74NSJ+TK7dFyQF4kr47OYZbUjisHBEai3x2zut0nHhwDPvrFWlZask3EZH/MMotcAjYiZBqG8PDmIcCQ7GowMZZs8OQEBgWD0wvh2PoXKrr+wHy+AfahbREEqAH2gQtI8S0Zd8GtmRLyjniBcKBNv03KmWSphSirRVlR3KGg369I/cXhAQa0jQmCpcSSwY7G4fYcH3IY/IoGcgyeoXK2t/ijbWc0eID
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(451199021)(6636002)(4326008)(36756003)(2906002)(66899021)(8936002)(5660300002)(6862004)(8676002)(7416002)(41300700001)(66476007)(86362001)(316002)(66556008)(66946007)(478600001)(54906003)(37006003)(6666004)(6486002)(186003)(26005)(6512007)(6506007)(83380400001)(2616005)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eU9Lz8qylC7BvINFkU3jos896C+f8DqUlhzNNYCFZWdseIZJNs2lNTLrVkWH?=
- =?us-ascii?Q?e9I+zfP0KBrTHuB/AhK8sFDKVw9zJLH/4Yg1cXfu1UMEhUC6wJbtpwXJVaEe?=
- =?us-ascii?Q?gh2+9nbj6MEjJW8IpatCWiYdhwk9LKTACWnR8wtMOYwaFI9jS48zKafLJK+N?=
- =?us-ascii?Q?OutlW0ueIjvaUx0C8dvcUuKe7sf4+nm9M3oE3bi9X7HCkqu+fo2B22Ai5oYe?=
- =?us-ascii?Q?UCTrBdjsG57CGxOlwTSHA/tYbtHFp0QwWg0b7t7491AcILWAKynTiBa1sL5d?=
- =?us-ascii?Q?Xef3TH7/0ZuSz+WsLpUFVWijnPvbyXevO+5L0I8QcSWsrH2KBgmqLMbiE9uV?=
- =?us-ascii?Q?T21q05RHCrR0EIFCdxhtWh9WgK6ELzv9A/Xa8ZcNEqBTH8VaZ/JbXlu/dGE3?=
- =?us-ascii?Q?s7EUrtZwcx2A4e7K5wLQ6s8uFhkpQRoWq5pQvWOpBRDtivhW3DmDCaF2oags?=
- =?us-ascii?Q?Ewu6qsaIPHemz9DWIh/6Kq4EHSDrpi2C63W+jXI2AXeAxF9vzxApEctoyapY?=
- =?us-ascii?Q?Umbs4sJzTTrzJWzmkS7hSy0uSvgRUjyzuwbw8fo/trtbWaeK+hCKaxHJ0IpB?=
- =?us-ascii?Q?PvuvWRLgdcaW4lXdEEq1SDYxZfzZgpwpRW1OlR0RkYLOj178fxzmBlKq5IFH?=
- =?us-ascii?Q?c8xWFZr50rJLv0abSFPpL4/T0q0arCK7/rnO/ME9fS+RU1OXjO3EMoTA9+4H?=
- =?us-ascii?Q?9j84YkNU+Jhbpm8AGAOTRrkdT77P/6NHzsX2brvd9Wjwan46pymm6S1qbO9x?=
- =?us-ascii?Q?05ie+Z6//pjLjscchKWfjPdW0MNpVakxyI/p5i2R1336/r2C6+qzDYUf0KAD?=
- =?us-ascii?Q?9p+LNtcHa18T9jdbpvpMuJqI8n3dvqTrMz1jYAxc21Rcc5VOx/dpgobBhrT/?=
- =?us-ascii?Q?qCGX9XoZWsHUwllkRzhORmNjaGXGqPh3aAZZOBC9KiNLl1hPTTrzGODhEqJx?=
- =?us-ascii?Q?mQoZShIqf5ZjNot8K/zC1CcuHXyGO93dRRYDVG6RvSR48UAXriFMnWtgmU8y?=
- =?us-ascii?Q?VD0dJ72skrgNu1tn59MZL9oHiEj63SX+5C4DfVc/avJGMTOy1dtdFMaEdp+i?=
- =?us-ascii?Q?9PiPvzDi3lzYF5bdfpgBUWqgu+Nq1ErgbQICeAUu4jsLzk69Vfz+lZ2Lo/T/?=
- =?us-ascii?Q?ypQ4wbv/LrRcjduPOjjIw/0xbECNwLHC6axJ29p/7ywFefMxFD8UPWzQNn/r?=
- =?us-ascii?Q?TiUquXNepNNRi09JgNKUCYY2BqUqBi624QlCEzm673ISOylPjZupZw6xOSrU?=
- =?us-ascii?Q?lPN0Fx4FkmCbsrEkSOEm/RIwJVhKSdVf8KUWjfWfpYo/4kqi9rv2BtnD7lLe?=
- =?us-ascii?Q?wQp9U29nNGc89HZbD/JrrJ7e/020SDivRMGHmATpuns8K5Ww8zvqom+wq7yV?=
- =?us-ascii?Q?QAnSHfqagtOSOvs3yQFobpHlkxHImLUwzp2z1KjLzepc7JPmVQm4YwG4W0eJ?=
- =?us-ascii?Q?qQlggoNqQLL/tAwmPpdvdWVaOxCf3apYhk36s6Bps0e1gEa2/RXv6iKCnNaX?=
- =?us-ascii?Q?xxZwDZq1e0UilGpy7VSpB374FL1K4mlxDLmdA5sjLfayTRdHtiPqixQkdn9s?=
- =?us-ascii?Q?7qPVUZ7NcISY5eVEyMRslEWfc/rr/j0KMx0lpslH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df60946f-5fde-42cb-ff4e-08db56087d32
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2023 12:24:26.5856
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YC6Bzj5wZjanjKFof8aSnlPc+oG+E8kfp/4Gaibr/UOQ8PkfAcZngvNquOojyxCXdKKgox+zqKv1eTEGNS/YQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5115
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.79.71.101]
+X-ClientProxiedBy: ZJY02-PUBMBX-01.didichuxing.com (10.79.65.31) To
+ ZJY03-ACTMBX-05.didichuxing.com (10.79.71.35)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,39 +57,112 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Establish a new OOM score algorithm, supports the cgroup level OOM
+protection mechanism. When an global/memcg oom event occurs, we treat
+all processes in the cgroup as a whole, and OOM killers need to select
+the process to kill based on the protection quota of the cgroup.
 
-Jason Gunthorpe <jgg@nvidia.com> writes:
+Here is a more detailed comparison and introduction of the old 
+oom_score_adj mechanism and the new oom_protect mechanism,
 
-> On Fri, May 12, 2023 at 06:45:13PM +1000, Alistair Popple wrote:
->
->> However review comments suggested it needed to be added as part of
->> memcg. As soon as we do that we have to address how we deal with shared
->> memory. If we stick with the original RLIMIT proposal this discussion
->> goes away, but based on feedback I think I need to at least investigate
->> integrating it into memcg to get anything merged.
->
-> Personally I don't see how we can effectively solve the per-page
-> problem without also tracking all the owning memcgs for every
-> page. This means giving each struct page an array of memcgs
->
-> I suspect this will be too expensive to be realistically
-> implementable.
+1. The regulating granularity of oom_protect is smaller than that of
+   oom_score_adj. On a 512G physical machine, the minimum granularity
+   adjusted by oom_score_adj is 512M, and the minimum granularity
+   adjusted by oom_protect is one page (4K)
+2. It may be simple to create a lightweight parent process and uniformly
+   set the oom_score_adj of some important processes, but it is not a
+   simple matter to make multi-level settings for tens of thousands of
+   processes on the physical machine through the lightweight parent
+   processes. We may need a huge table to record the value of oom_score_adj
+   maintained by all lightweight parent processes, and the user process
+   limited by the parent process has no ability to change its own
+   oom_score_adj, because it does not know the details of the huge
+   table. on the other hand, we have to set the common parent process'
+   oom_score_adj, before it forks all children processes. We must strictly
+   follow this setting sequence, and once oom_score_adj is set, it cannot
+   be changed. To sum up, it is very difficult to apply oom_score_adj in
+   other situations. The new patch adopts the cgroup mechanism. It does not
+   need any parent process to manage oom_score_adj. the settings between
+   each memcg are independent of each other, making it easier to plan the
+   OOM order of all processes. Due to the unique nature of memory
+   resources, current Service cloud vendors are not oversold in memory
+   planning. I would like to use the new patch to try to achieve the
+   possibility of oversold memory resources.
+3. I conducted a test and deployed an excessive number of containers on
+   a physical machine, By setting the oom_score_adj value of all processes
+   in the container to a positive number through dockerinit, even processes
+   that occupy very little memory in the container are easily killed,
+   resulting in a large number of invalid kill behaviors. If dockerinit is
+   also killed unfortunately, it will trigger container self-healing, and
+   the container will rebuild, resulting in more severe memory
+   oscillations. The new patch abandons the behavior of adding an equal
+   amount of oom_score_adj to each process in the container and adopts a
+   shared oom_protect quota for all processes in the container. If a
+   process in the container is killed, the remaining other processes will
+   receive more oom_protect quota, making it more difficult for the
+   remaining processes to be killed. In my test case, the new patch reduced
+   the number of invalid kill behaviors by 70%. 
+4. oom_score_adj is a global configuration that cannot achieve a kill
+   order that only affects a certain memcg-oom-killer. However, the
+   oom_protect mechanism inherits downwards (If the oom_protect quota of
+   the parent cgroup is less than the sum of sub-cgroups oom_protect quota,
+   the oom_protect quota of each sub-cgroup will be proportionally reduced.
+   If the oom_protect quota of the parent cgroup is greater than the sum of
+   sub-cgroups oom_protect quota, the oom_protect quota of each sub-cgroup
+   will be proportionally increased). The purpose of doing so is that users
+   can set oom_protect quota according to their own needs, and the system
+   management process can set appropriate oom_protect quota on the parent
+   memcg as the final cover. If the oom_protect of the parent cgroup is 0,
+   the kill order of memcg-oom or global-ooms will not be affected by user
+   specific settings.
+5. Per-process accounting does not count shared memory, similar to
+   active page cache, which also increases the probability of OOM-kill.
+   However, the memcg accounting may be more reasonable, as its memory
+   statistics are more comprehensive. In the new patch, all the shared
+   memory will also consume the oom_protect quota of the memcg, and the
+   process's oom_protect quota of the memcg will decrease, the probability
+   of they being killed will increase.
+6. In the final discussion of patch v2, we discussed that although the
+   adjustment range of oom_score_adj is [-1000,1000], but essentially it
+   only allows two usecases(OOM_SCORE_ADJ_MIN, OOM_SCORE_ADJ_MAX) reliably.
+   Everything in between is clumsy at best. In order to solve this problem
+   in the new patch, I introduced a new indicator oom_kill_inherit, which
+   counts the number of times the local and child cgroups have been
+   selected by the OOM killer of the ancestor cgroup. oom_kill_inherit
+   maintains a negative correlation with memory.oom.protect, so we have a
+   ruler to measure the optimal value of memory.oom.protect. By observing
+   the proportion of oom_kill_inherit in the parent cgroup, I can
+   effectively adjust the value of oom_protect to achieve the best.
 
-Yep, agree with that. Tracking the list of memcgs was the main problem
-that prevented this.
+Changelog:
+v4:
+  * Fix warning: overflow in expression. (patch 1)
+  * Supplementary commit information. (patch 0)
+v3:
+  * Add "auto" option for memory.oom.protect. (patch 1)
+  * Fix division errors. (patch 1)
+  * Add observation indicator oom_kill_inherit. (patch 2)
+  https://lore.kernel.org/linux-mm/20230506114948.6862-1-chengkaitao@didiglobal.com/
+v2:
+  * Modify the formula of the process request memcg protection quota.
+  https://lore.kernel.org/linux-mm/20221208034644.3077-1-chengkaitao@didiglobal.com/
+v1:
+  https://lore.kernel.org/linux-mm/20221130070158.44221-1-chengkaitao@didiglobal.com/
 
-> If it is done then we may not even need a pin controller on its own as
-> the main memcg should capture most of it. (althought it doesn't
-> distinguish between movable/swappable and non-swappable memory)
->
-> But this is all being done for the libvirt people, so it would be good
-> to involve them
+chengkaitao (2):
+  mm: memcontrol: protect the memory in cgroup from being oom killed
+  memcg: add oom_kill_inherit event indicator
 
-Do you know of anyone specifically there that is interested in this?
-I've rebased my series on latest upstream and am about to resend it so
-would be good to get some feedback from them.
+ Documentation/admin-guide/cgroup-v2.rst |  29 ++++-
+ fs/proc/base.c                          |  17 ++-
+ include/linux/memcontrol.h              |  46 +++++++-
+ include/linux/oom.h                     |   3 +-
+ include/linux/page_counter.h            |   6 +
+ mm/memcontrol.c                         | 199 ++++++++++++++++++++++++++++++++
+ mm/oom_kill.c                           |  25 ++--
+ mm/page_counter.c                       |  30 +++++
+ 8 files changed, 334 insertions(+), 21 deletions(-)
 
-Thanks.
-
-> Jason
+-- 
+2.14.1
 
