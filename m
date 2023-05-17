@@ -2,239 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66532706089
-	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 08:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF297061BC
+	for <lists+cgroups@lfdr.de>; Wed, 17 May 2023 09:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjEQG7r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 May 2023 02:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S230242AbjEQHwi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 May 2023 03:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjEQG7q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 May 2023 02:59:46 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B111988
-        for <cgroups@vger.kernel.org>; Tue, 16 May 2023 23:59:45 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-510a59ead3fso592135a12.2
-        for <cgroups@vger.kernel.org>; Tue, 16 May 2023 23:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684306783; x=1686898783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JGx4zd5rQMRATd0xK+XVo93efYW/fcp7pqkP6+0hcGw=;
-        b=2SsYOgEzYAdEdsVcJc0zc5v4rnNcYCybZoYkrZDREZDQeufKegzADVVbvov9FQxl8V
-         iDD4DvGc/ZITjzcxaTE9ewa/3cg1IEIjeNT1326lWrXtC2hh4n9CzpsKuchekRFd+JNv
-         2piZvnhgCVyBz69rIj4CrJCQfzaMasFoa83TcXdiR1ZQGZUGoA72A9LYL6Flc0dvdkjJ
-         xwAFBTZkIFCS2dScadPqUF5OxDGq7THeIR6AakdtnhQgUDH/ZqKMSljmUO2ZBCdGUI82
-         FjIzhHy8ygkxubJBz7+MJAvxywznneQ865aBvD0P685cHKmQGof5llmvwhD4YzHdhji8
-         4mrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684306783; x=1686898783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JGx4zd5rQMRATd0xK+XVo93efYW/fcp7pqkP6+0hcGw=;
-        b=hEABaCqqPIsDbuI+QLeny8vKOUKrHdP1swSfl5a3xJQPeRmevtwF4JOYb5UJ44uoIM
-         sm5DAQ9Ju/BU0RvKOy0zZdp8kEOGGykCIc2gR75zrv2ifHTPRTM9eOhhGghlqhHtz0uO
-         5BxQqcYfNPt/kWZd3fCZC7tihyHIB9/zS82OPOxWE8VmK3GBzCmVn4tP2EhlhEs7n/p0
-         GaNkDli7Ng72M6LJ9S0aai3TUuQL6UEwk9mT0EZVD4EVbUqfmdeUlCXhSflshOfz98lN
-         1xKxwTbOIBAE6tpH1uPpxd5Ub1vfPNqNIgD0RTmceGTf+Go8r7m3lqHBBfGJU903N7is
-         MzsA==
-X-Gm-Message-State: AC+VfDxiRBJP8hFKKcAWrQUGhbKa167PmxrT9fkRBDHXwe6f6xC5rx/3
-        xksRdZGyGWEWercVWcC8/+prQZsRBfEVbc5lMvsttg==
-X-Google-Smtp-Source: ACHHUZ5w3ZCwAGTk8d9kz/D0S1+V+qD99DQvz3oDFkqZStQ3/CD/pIKqlreUsv8Mn9/3IyobCC3akVuN86b2DFFk7AE=
-X-Received: by 2002:a17:907:96a1:b0:966:a691:678d with SMTP id
- hd33-20020a17090796a100b00966a691678dmr34096524ejc.51.1684306783178; Tue, 16
- May 2023 23:59:43 -0700 (PDT)
+        with ESMTP id S230117AbjEQHwg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 May 2023 03:52:36 -0400
+X-Greylist: delayed 353 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 17 May 2023 00:52:35 PDT
+Received: from out-25.mta1.migadu.com (out-25.mta1.migadu.com [IPv6:2001:41d0:203:375::19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC961701
+        for <cgroups@vger.kernel.org>; Wed, 17 May 2023 00:52:34 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1684309598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lYjBqehqUWvSOXsymQqye+/pd2/QBGQCCztad22+z+8=;
+        b=xoTnZwWNmd3UbNaJGG6QcrcKvZ9D6Y2wAV+JUnjezWa4UelfUEdPIBQafZcvTy7KHUldTM
+        bM1INjvJvYZLf9gXTym6Jo/bj1JaB+q65jnCK1R1PhB9E8zrAfGG6WuLr2RhHVV7hEpA3Z
+        O9KPdv9m2VcMDAydOH+hSzKxDVaPLTM=
+From:   Qi Zheng <qi.zheng@linux.dev>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        muchun.song@linux.dev, Qi Zheng <zhengqi.arch@bytedance.com>,
+        Zhao Gongyi <zhaogongyi@bytedance.com>
+Subject: [PATCH] cgroup: fix missing cpus_read_{lock,unlock}() in cgroup_transfer_tasks()
+Date:   Wed, 17 May 2023 07:45:45 +0000
+Message-Id: <20230517074545.2045035-1-qi.zheng@linux.dev>
 MIME-Version: 1.0
-References: <20230517032032.76334-1-chengkaitao@didiglobal.com>
-In-Reply-To: <20230517032032.76334-1-chengkaitao@didiglobal.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 16 May 2023 23:59:06 -0700
-Message-ID: <CAJD7tkYPGwAFo0mrhq5twsVquwFwkhOyPwsZJtECw-5HAXtQrg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] memcontrol: support cgroup level OOM protection
-To:     chengkaitao <chengkaitao@didiglobal.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, akpm@linux-foundation.org, brauner@kernel.org,
-        muchun.song@linux.dev, viro@zeniv.linux.org.uk,
-        zhengqi.arch@bytedance.com, ebiederm@xmission.com,
-        Liam.Howlett@oracle.com, chengzhihao1@huawei.com,
-        pilgrimtao@gmail.com, haolee.swjtu@gmail.com, yuzhao@google.com,
-        willy@infradead.org, vasily.averin@linux.dev, vbabka@suse.cz,
-        surenb@google.com, sfr@canb.auug.org.au, mcgrof@kernel.org,
-        sujiaxun@uniontech.com, feng.tang@intel.com,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-+David Rientjes
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-On Tue, May 16, 2023 at 8:20=E2=80=AFPM chengkaitao <chengkaitao@didiglobal=
-.com> wrote:
->
-> Establish a new OOM score algorithm, supports the cgroup level OOM
-> protection mechanism. When an global/memcg oom event occurs, we treat
-> all processes in the cgroup as a whole, and OOM killers need to select
-> the process to kill based on the protection quota of the cgroup.
->
-> Here is a more detailed comparison and introduction of the old
-> oom_score_adj mechanism and the new oom_protect mechanism,
->
-> 1. The regulating granularity of oom_protect is smaller than that of
->    oom_score_adj. On a 512G physical machine, the minimum granularity
->    adjusted by oom_score_adj is 512M, and the minimum granularity
->    adjusted by oom_protect is one page (4K)
-> 2. It may be simple to create a lightweight parent process and uniformly
->    set the oom_score_adj of some important processes, but it is not a
->    simple matter to make multi-level settings for tens of thousands of
->    processes on the physical machine through the lightweight parent
->    processes. We may need a huge table to record the value of oom_score_a=
-dj
->    maintained by all lightweight parent processes, and the user process
->    limited by the parent process has no ability to change its own
->    oom_score_adj, because it does not know the details of the huge
->    table. on the other hand, we have to set the common parent process'
->    oom_score_adj, before it forks all children processes. We must strictl=
-y
->    follow this setting sequence, and once oom_score_adj is set, it cannot
->    be changed. To sum up, it is very difficult to apply oom_score_adj in
->    other situations. The new patch adopts the cgroup mechanism. It does n=
-ot
->    need any parent process to manage oom_score_adj. the settings between
->    each memcg are independent of each other, making it easier to plan the
->    OOM order of all processes. Due to the unique nature of memory
->    resources, current Service cloud vendors are not oversold in memory
->    planning. I would like to use the new patch to try to achieve the
->    possibility of oversold memory resources.
-> 3. I conducted a test and deployed an excessive number of containers on
->    a physical machine, By setting the oom_score_adj value of all processe=
-s
->    in the container to a positive number through dockerinit, even process=
-es
->    that occupy very little memory in the container are easily killed,
->    resulting in a large number of invalid kill behaviors. If dockerinit i=
-s
->    also killed unfortunately, it will trigger container self-healing, and
->    the container will rebuild, resulting in more severe memory
->    oscillations. The new patch abandons the behavior of adding an equal
->    amount of oom_score_adj to each process in the container and adopts a
->    shared oom_protect quota for all processes in the container. If a
->    process in the container is killed, the remaining other processes will
->    receive more oom_protect quota, making it more difficult for the
->    remaining processes to be killed. In my test case, the new patch reduc=
-ed
->    the number of invalid kill behaviors by 70%.
-> 4. oom_score_adj is a global configuration that cannot achieve a kill
->    order that only affects a certain memcg-oom-killer. However, the
->    oom_protect mechanism inherits downwards (If the oom_protect quota of
->    the parent cgroup is less than the sum of sub-cgroups oom_protect quot=
-a,
->    the oom_protect quota of each sub-cgroup will be proportionally reduce=
-d.
->    If the oom_protect quota of the parent cgroup is greater than the sum =
-of
->    sub-cgroups oom_protect quota, the oom_protect quota of each sub-cgrou=
-p
->    will be proportionally increased). The purpose of doing so is that use=
-rs
->    can set oom_protect quota according to their own needs, and the system
->    management process can set appropriate oom_protect quota on the parent
->    memcg as the final cover. If the oom_protect of the parent cgroup is 0=
-,
->    the kill order of memcg-oom or global-ooms will not be affected by use=
-r
->    specific settings.
-> 5. Per-process accounting does not count shared memory, similar to
->    active page cache, which also increases the probability of OOM-kill.
->    However, the memcg accounting may be more reasonable, as its memory
->    statistics are more comprehensive. In the new patch, all the shared
->    memory will also consume the oom_protect quota of the memcg, and the
->    process's oom_protect quota of the memcg will decrease, the probabilit=
-y
->    of they being killed will increase.
-> 6. In the final discussion of patch v2, we discussed that although the
->    adjustment range of oom_score_adj is [-1000,1000], but essentially it
->    only allows two usecases(OOM_SCORE_ADJ_MIN, OOM_SCORE_ADJ_MAX) reliabl=
-y.
->    Everything in between is clumsy at best. In order to solve this proble=
-m
->    in the new patch, I introduced a new indicator oom_kill_inherit, which
->    counts the number of times the local and child cgroups have been
->    selected by the OOM killer of the ancestor cgroup. oom_kill_inherit
->    maintains a negative correlation with memory.oom.protect, so we have a
->    ruler to measure the optimal value of memory.oom.protect. By observing
->    the proportion of oom_kill_inherit in the parent cgroup, I can
->    effectively adjust the value of oom_protect to achieve the best.
->
-> Changelog:
-> v4:
->   * Fix warning: overflow in expression. (patch 1)
->   * Supplementary commit information. (patch 0)
-> v3:
->   * Add "auto" option for memory.oom.protect. (patch 1)
->   * Fix division errors. (patch 1)
->   * Add observation indicator oom_kill_inherit. (patch 2)
->   https://lore.kernel.org/linux-mm/20230506114948.6862-1-chengkaitao@didi=
-global.com/
-> v2:
->   * Modify the formula of the process request memcg protection quota.
->   https://lore.kernel.org/linux-mm/20221208034644.3077-1-chengkaitao@didi=
-global.com/
-> v1:
->   https://lore.kernel.org/linux-mm/20221130070158.44221-1-chengkaitao@did=
-iglobal.com/
->
-> chengkaitao (2):
->   mm: memcontrol: protect the memory in cgroup from being oom killed
->   memcg: add oom_kill_inherit event indicator
->
->  Documentation/admin-guide/cgroup-v2.rst |  29 ++++-
->  fs/proc/base.c                          |  17 ++-
->  include/linux/memcontrol.h              |  46 +++++++-
->  include/linux/oom.h                     |   3 +-
->  include/linux/page_counter.h            |   6 +
->  mm/memcontrol.c                         | 199 ++++++++++++++++++++++++++=
-++++++
->  mm/oom_kill.c                           |  25 ++--
->  mm/page_counter.c                       |  30 +++++
->  8 files changed, 334 insertions(+), 21 deletions(-)
->
-> --
-> 2.14.1
->
->
+The commit 4f7e7236435c ("cgroup: Fix threadgroup_rwsem <-> cpus_read_lock()
+deadlock") fixed the deadlock between cgroup_threadgroup_rwsem and
+cpus_read_lock() by introducing cgroup_attach_{lock,unlock}() and removing
+cpus_read_{lock,unlock}() from cpuset_attach(). But cgroup_transfer_tasks()
+was missed and not handled, which will cause th following warning:
 
-Perhaps this is only slightly relevant, but at Google we do have a
-different per-memcg approach to protect from OOM kills, or more
-specifically tell the kernel how we would like the OOM killer to
-behave.
+ WARNING: CPU: 0 PID: 589 at kernel/cpu.c:526 lockdep_assert_cpus_held+0x32/0x40
+ CPU: 0 PID: 589 Comm: kworker/1:4 Not tainted 6.4.0-rc2-next-20230517 #50
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+ Workqueue: events cpuset_hotplug_workfn
+ RIP: 0010:lockdep_assert_cpus_held+0x32/0x40
+ <...>
+ Call Trace:
+  <TASK>
+  cpuset_attach+0x40/0x240
+  cgroup_migrate_execute+0x452/0x5e0
+  ? _raw_spin_unlock_irq+0x28/0x40
+  cgroup_transfer_tasks+0x1f3/0x360
+  ? find_held_lock+0x32/0x90
+  ? cpuset_hotplug_workfn+0xc81/0xed0
+  cpuset_hotplug_workfn+0xcb1/0xed0
+  ? process_one_work+0x248/0x5b0
+  process_one_work+0x2b9/0x5b0
+  worker_thread+0x56/0x3b0
+  ? process_one_work+0x5b0/0x5b0
+  kthread+0xf1/0x120
+  ? kthread_complete_and_exit+0x20/0x20
+  ret_from_fork+0x1f/0x30
+  </TASK>
 
-We define an interface called memory.oom_score_badness, and we also
-allow it to be specified per-process through a procfs interface,
-similar to oom_score_adj.
+So just use the cgroup_attach_{lock,unlock}() helper to fix it.
 
-These scores essentially tell the OOM killer the order in which we
-prefer memcgs to be OOM'd, and the order in which we want processes in
-the memcg to be OOM'd. By default, all processes and memcgs start with
-the same score. Ties are broken based on the rss of the process or the
-usage of the memcg (prefer to kill the process/memcg that will free
-more memory) -- similar to the current OOM killer.
+Fixes: 4f7e7236435c ("cgroup: Fix threadgroup_rwsem <-> cpus_read_lock() deadlock")
+Reported-by: Zhao Gongyi <zhaogongyi@bytedance.com>
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+---
+ kernel/cgroup/cgroup-v1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This has been brought up before in other discussions without much
-interest [1], but just thought it may be relevant here.
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index aeef06c465ef..5407241dbb45 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -108,7 +108,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+ 
+ 	cgroup_lock();
+ 
+-	percpu_down_write(&cgroup_threadgroup_rwsem);
++	cgroup_attach_lock(true);
+ 
+ 	/* all tasks in @from are being moved, all csets are source */
+ 	spin_lock_irq(&css_set_lock);
+@@ -144,7 +144,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+ 	} while (task && !ret);
+ out_err:
+ 	cgroup_migrate_finish(&mgctx);
+-	percpu_up_write(&cgroup_threadgroup_rwsem);
++	cgroup_attach_unlock(true);
+ 	cgroup_unlock();
+ 	return ret;
+ }
+-- 
+2.30.2
 
-[1]https://lore.kernel.org/lkml/CAHS8izN3ej1mqUpnNQ8c-1Bx5EeO7q5NOkh0qrY_4P=
-Lqc8rkHA@mail.gmail.com/#t
