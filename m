@@ -2,75 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0EA707AE6
-	for <lists+cgroups@lfdr.de>; Thu, 18 May 2023 09:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E8670819D
+	for <lists+cgroups@lfdr.de>; Thu, 18 May 2023 14:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjERHbJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 May 2023 03:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S230527AbjERMnb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 May 2023 08:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjERHbI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 May 2023 03:31:08 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9029E2D5F
-        for <cgroups@vger.kernel.org>; Thu, 18 May 2023 00:29:54 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-51f6461af24so1111542a12.2
-        for <cgroups@vger.kernel.org>; Thu, 18 May 2023 00:29:54 -0700 (PDT)
+        with ESMTP id S230283AbjERMn2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 May 2023 08:43:28 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA61BF8
+        for <cgroups@vger.kernel.org>; Thu, 18 May 2023 05:42:16 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-53063897412so1757291a12.0
+        for <cgroups@vger.kernel.org>; Thu, 18 May 2023 05:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684394945; x=1686986945;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oDVdWICwavrWQ8UAVYhe8ynFXsBBW1vVQ7W08zgiq24=;
-        b=TwiXvTszjrnBv2gQx4yO1sr1z9Oa7ZhwlWV3V0xzzFI3HZIUjd4YRzYWDDlM4YUMBA
-         2e7YnGHPHgBcVl5eWO5RmPJefSOZqIoUK0QlLjlBhv1a2z1EiFh1anCExjlewt0ULgPI
-         /uo37Ii+Sbj5s0H6pN+nb921QuAwa/wQy3nIpjp7wv1KEUzq++JIGLXkUt5tdsHwzVv+
-         4BVaDL+bNda06c4hOQNgq7gegfKDvxveSZHYwBHXz0AJAFHnEzIFMfUlveU7yIrD85aJ
-         5T/LcEw5qGss1KPGvZPKcXpKqlV4Ql3cAzO7rQB8W8HourXiqJCLReuK4uxfKZh1bQ+D
-         +4lw==
+        d=bytedance.com; s=google; t=1684413710; x=1687005710;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=G7R4w9fF0O96j6E7s3O266tf7WZDrfjpg6MXApwCsXo=;
+        b=G337Jniv8+DJ0J/DvJ6ENbRKNs4k874YWBFd2ohEIzp0ds70nTGJ60CnbM/XKAyfe1
+         BMzS7qgPK5UE40CrXFR+Dvjh5EKuLqcO6Epl6XiK879eDQMZ1wEnxro4lSDJoXzjRv0E
+         XS39RR1GE2RxAlk8KtWS5z4p8Z8icCnHkFEr3X9FPv83Ik8dr5WBwusUrHN3Gke4l/ql
+         OIkEwvQr5+VQGQtMZtJGeKJKjZJNXorI0J84gW+ZaEtvP1B/05L5RxoY7l824zKUzYXc
+         WYnSl5UTbNw0lHsPJxovLA4cOdKi8pbkoOVedeC7LOd0eHTV4DvDVLvhSGWAhjkaeNYt
+         hM6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684394945; x=1686986945;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oDVdWICwavrWQ8UAVYhe8ynFXsBBW1vVQ7W08zgiq24=;
-        b=b2G/LZofVE7aN4k1VcKteGSAJCeI1YUFCHrSpctmJC2MtLGceWbhOoeITsR30ZItY4
-         UGaOOgIb5hXQWhkd2ndVDE57WK43jD4cz/vvI6QdqP3+4WhyJN5sr4Sy4eFg5b6ht0bG
-         yZX7h+wAg+mUMk7oGd0Hdo35Im5jSxSqkGswuTcTv1b6vOGMuybXy6iGhZ0f+Xj8uqwa
-         uNaIKhQF3u2+FaH7a4iNmviDgO4D1aEywrGBSyH3FQ692EjNIrKOHa2FPeuVFVnt3tQI
-         jWnedVHHqWpcJ5JI5Cc8Dx1ucL6k3myWFhAqXWkfMOYXvKS6kqCO4sUMCkzrgiWfVi0B
-         uPOw==
-X-Gm-Message-State: AC+VfDxQk9HYkClPOOniTj9tlBR7ZujQsPplgqZfUrSdLshQyBRxEIrb
-        aRcGChF5zRNnqMcsohz+Q8H88bxmx7MR/oIfuH8=
-X-Google-Smtp-Source: ACHHUZ5FX3bQwiMMM9ta2RAmPaEmhTu5KKvZu0O2Rw2KOCGeMbAKagyp0eupcZrzkZyJT4zYGmpJTvQWV5a5rCSmh0s=
-X-Received: by 2002:a17:903:24c:b0:1ad:fcdc:bcb9 with SMTP id
- j12-20020a170903024c00b001adfcdcbcb9mr1860299plh.23.1684394944764; Thu, 18
- May 2023 00:29:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684413710; x=1687005710;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G7R4w9fF0O96j6E7s3O266tf7WZDrfjpg6MXApwCsXo=;
+        b=UyPph9CbMAGrBu+578AJQc1GC/MBijcPrPyjSIp7cC5RMYxjmqw9KKVBSSnIXaxtSZ
+         O5oFu1l7ka8iKrkDuWeC8sM0D0NHf5qXu/HX42k8MHjcGx9NaEqr7FcMYOFYDnYHMrTv
+         zP60F4tNGw8rqyulGI2/0YLWJvq0ReKkzpSCht1xb8+Poi472/TNwKiayoFwV6q4smpI
+         ecDCoTNlS9gIADOxHW4iWDbUm2H2Z3lCeXj/c21Tzh1PH0mTrsgQdMp2Cdi930bfmMC8
+         FapN6gbrbA58La4si5Zyq9uhF5J5PYWVYSl5WDB/FHsnwC2MdjyAOnuxAe4UD7P+Kapo
+         iz9Q==
+X-Gm-Message-State: AC+VfDwSY1K9oclLuSGhgAdw2pFy/dfKZ8ixPkpJ6f9VcDDjtotnekAb
+        NmafPdTZzqUV2YsdyoCprW2ZNA==
+X-Google-Smtp-Source: ACHHUZ7ZS2Rl3/J2eqUKMw6daeqXMrBxveDLBVlPvyxw4DMDgOKP2Ghds2ROXHhsqAAo+o0E1vRJdw==
+X-Received: by 2002:a17:90a:e284:b0:253:4409:3c4a with SMTP id d4-20020a17090ae28400b0025344093c4amr2751990pjz.28.1684413710262;
+        Thu, 18 May 2023 05:41:50 -0700 (PDT)
+Received: from C02G87K0MD6R.bytedance.net ([139.177.225.244])
+        by smtp.gmail.com with ESMTPSA id cx14-20020a17090afd8e00b0025352448ba9sm2116434pjb.0.2023.05.18.05.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 May 2023 05:41:49 -0700 (PDT)
+From:   Hao Jia <jiahao.os@bytedance.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hao Jia <jiahao.os@bytedance.com>
+Subject: [PATCH] cgroup: rstat: Simplified cgroup_base_stat_flush() update last_bstat logic
+Date:   Thu, 18 May 2023 20:41:42 +0800
+Message-Id: <20230518124142.57644-1-jiahao.os@bytedance.com>
+X-Mailer: git-send-email 2.37.0 (Apple Git-136)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e108:b0:470:f443:15ec with HTTP; Thu, 18 May 2023
- 00:29:03 -0700 (PDT)
-Reply-To: contact.ninacoulibaly@inbox.eu
-From:   nina coulibaly <ninacoulibaly30.info@gmail.com>
-Date:   Thu, 18 May 2023 00:29:03 -0700
-Message-ID: <CAFb7D3dE12nke=z9KpcfN3ZXsLtV3KsrbrFku519oBPpM4YL6A@mail.gmail.com>
-Subject: from nina coulibaly
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear,
+In cgroup_base_stat_flush() function, {rstatc, cgrp}->last_bstat
+needs to be updated to the current {rstatc, cgrp}->bstat, directly
+assigning values instead of adding the last value to delta.
 
-I am interested to invest with you in your country with total trust
-and i hope you will give me total support, sincerity and commitment.
-Please get back to me as soon as possible so that i can give you my
-proposed details of funding and others.
+Signed-off-by: Hao Jia <jiahao.os@bytedance.com>
+---
+ kernel/cgroup/rstat.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best Regards.
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 9c4c55228567..3e5c4c1c92c6 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -376,14 +376,14 @@ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+ 	/* propagate percpu delta to global */
+ 	cgroup_base_stat_sub(&delta, &rstatc->last_bstat);
+ 	cgroup_base_stat_add(&cgrp->bstat, &delta);
+-	cgroup_base_stat_add(&rstatc->last_bstat, &delta);
++	rstatc->last_bstat = rstatc->bstat;
+ 
+ 	/* propagate global delta to parent (unless that's root) */
+ 	if (cgroup_parent(parent)) {
+ 		delta = cgrp->bstat;
+ 		cgroup_base_stat_sub(&delta, &cgrp->last_bstat);
+ 		cgroup_base_stat_add(&parent->bstat, &delta);
+-		cgroup_base_stat_add(&cgrp->last_bstat, &delta);
++		cgrp->last_bstat = cgrp->bstat;
+ 	}
+ }
+ 
+-- 
+2.37.0
 
-Mrs Nina Coulibaly
