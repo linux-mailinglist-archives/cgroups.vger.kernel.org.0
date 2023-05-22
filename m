@@ -2,88 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9C570C998
-	for <lists+cgroups@lfdr.de>; Mon, 22 May 2023 21:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140E570CBAC
+	for <lists+cgroups@lfdr.de>; Mon, 22 May 2023 22:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235364AbjEVTto (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 May 2023 15:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
+        id S234795AbjEVUze (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 May 2023 16:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235357AbjEVTtn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 May 2023 15:49:43 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992AFA3;
-        Mon, 22 May 2023 12:49:41 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2532d6c7ef2so2837679a91.0;
-        Mon, 22 May 2023 12:49:41 -0700 (PDT)
+        with ESMTP id S235041AbjEVUz2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 May 2023 16:55:28 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D63100;
+        Mon, 22 May 2023 13:55:16 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-64d4e45971bso1701117b3a.2;
+        Mon, 22 May 2023 13:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684784981; x=1687376981;
+        d=gmail.com; s=20221208; t=1684788915; x=1687380915;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:sender
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ko/ib0DbbBIkYeF2ySdhWs5YudE4zxsP9MRqrw+BLoI=;
-        b=BHPHExlQjMdC1v2AlWCLoTJz495eSqFbI+OF9by02n2sfozwxdUWrjSK+k5DNG+tFM
-         0jXmVCZy15YjYtpqRupyHQWDzCgOMrfYB8x7fusFUnIIOy7OWv+0Ur+/tulnIG8ionbK
-         5ACCwNe65d9/G8bQONpgwu7gPsz6di3IeHfd9NgbznMRGplWO/LSP66bzPAlIxFbTuhp
-         l0EohHPfuCQsy8XwLElVEnFKB8GUXEZXoPVpbwGRG8kjSvspXtSzoW+59K8LbNccSI+U
-         Zy8GgtoF7Ak+whIz33YDy2AXryq4EL7GgumSVCjXzPWRAWU/tu4xO1EHkrANlY42nsDJ
-         T/6w==
+        bh=jcZ4xLHlFOBJMSeqJOPUC+cCxzFb/2bpMue0o2+LyWg=;
+        b=NhDfKwKmQqTx0k0rb4etztvU4oZUGCrD6GnpDCUv5gYrdAInkuG+Pbfj2sWkRK75GE
+         eEv4hZBxOKHblTbEOwTE8x6zJjRsFkyPrKtDO5aSvmAzTGc9h2JeKkeliGLT4oxzAM+z
+         cqrGjTVlai+tBgdsWwPy2OB5kzJWfbCe2HwZib6Rd12NaySc4rZGX3wwAwljRyPxCuM7
+         mkkG66UWcfS8BoUgs04jDarriwnupHX7oygNuJwUINElggfMahoJvfCuSFteFLt58k2i
+         bWUIDDlJPDXAH7NrXm4602kvJUflIHBfpMI2XRO2fB4UVTvnvlAt2dcpTbtjAqgsi1HT
+         0LXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684784981; x=1687376981;
+        d=1e100.net; s=20221208; t=1684788915; x=1687380915;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:sender
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ko/ib0DbbBIkYeF2ySdhWs5YudE4zxsP9MRqrw+BLoI=;
-        b=gUQwOXGp3T4TtQzPgdNYBbIrN+O/J9td8y7Hkk8bI3ybJjX65wtwMW/bOruYgZml41
-         inPZ4Vr6nzQT/wwKJG9sVA1k6pDDjIx74kfkHZiPA2lW9O3DMBEQM+tZjgnw0VanWNVb
-         t6a1Dm2Ll6Rd63sFHJqMfP16JTKgU93jXG2xFzX0+cNsA0Mi425cNtmcLAQplBVXO4lg
-         ktCybJKHPNmc6HbepjhkLddwfyUsRNmSYRrxUexvNLDTQzfdeEyUwEqknHDoX2oMpMMM
-         U3F0HiW0pyTRMiS9NS3tOM36oFpUszwsjOQvkTTeA8ePq2YQPZ7skGzX+Q5AS6DzLFAB
-         Ox8A==
-X-Gm-Message-State: AC+VfDxvIlOhfERAB8sTrKIJCUcBUPlw+dlxmBOh0bAFR/iYXPbFQx/M
-        UjX6n9aEAnZi69E5OeAEOvo=
-X-Google-Smtp-Source: ACHHUZ5QZsEXUqRwS+75+b0XYbOYkR60j+9cNSvxOsTssb9PY6x40z/YDZ9Ic1uwFVbvFMQpA6XbIg==
-X-Received: by 2002:a17:90a:3189:b0:250:648b:781d with SMTP id j9-20020a17090a318900b00250648b781dmr16653356pjb.23.1684784980565;
-        Mon, 22 May 2023 12:49:40 -0700 (PDT)
+        bh=jcZ4xLHlFOBJMSeqJOPUC+cCxzFb/2bpMue0o2+LyWg=;
+        b=JQm6QzYjh8l7576W78ZqwmAXxe4riHwyjxjONFFHbdgrsxTEtZ7v5bhgMz+u3xZ+wg
+         2MIsLYIVsUnXLl8jmeitd3oFm7xxjF+enD8QsbfNa92yPfifDXisrpssPqUy1Wo/sEyl
+         qPe9v5JRypmQR22R6mKW5noG3gX3g0CeNmd+TcV+LA3wgt4NU9kqZUQOzTeeY0VhACOF
+         zTMSB7ObbgoKluPXI+wtqxSGT5YVPMKkvuZrTSy75xbiVEjPobx1kPJmR66NXHtSlqSB
+         m0bejgOlxLzCLytPyCQKYcrva8jweq+PxtO25KXZrCDtg49sMMMAzzubX9MIounoVbrR
+         Nxvw==
+X-Gm-Message-State: AC+VfDyrknY54Gocg2nCJIkSECbE/n8sHrlkIPv/Zi66Um7SGKiAZuPT
+        fHhxlMqevOBi73qFD7BcbaI=
+X-Google-Smtp-Source: ACHHUZ68aGA3rwWC2fPM5JhK2e0SIaBG0ZlgFltV8K9ruuYYzLQvyYCvqTWRNBEdmZ7V0pnttUmYJg==
+X-Received: by 2002:a05:6a00:c88:b0:641:d9b:a444 with SMTP id a8-20020a056a000c8800b006410d9ba444mr15735727pfv.31.1684788915189;
+        Mon, 22 May 2023 13:55:15 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:39c])
-        by smtp.gmail.com with ESMTPSA id gj19-20020a17090b109300b0024e4f169931sm6335848pjb.2.2023.05.22.12.49.39
+        by smtp.gmail.com with ESMTPSA id w17-20020aa78591000000b006414c3ba8a3sm4673018pfn.177.2023.05.22.13.55.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 May 2023 12:49:40 -0700 (PDT)
+        Mon, 22 May 2023 13:55:14 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 22 May 2023 09:49:38 -1000
+Date:   Mon, 22 May 2023 10:55:12 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Message-ID: <ZGvHUjOCjwat91Gq@slm.duckdns.org>
-References: <ZDmOjeBVsIcgSLIV@slm.duckdns.org>
- <60ec12dc-943c-b8f0-8b6f-97c5d332144c@redhat.com>
- <46d26abf-a725-b924-47fa-4419b20bbc02@redhat.com>
- <jqkf7jkuyxqiupmxmdbmpnbpojub2pjsz3oogwncmwqdghlsgk@phsqzirmmlyl>
- <f2bd7b1e-190e-1d08-f085-b4cae36fb5be@redhat.com>
- <ZFGOTHQj3k5rzmyR@blackbook>
- <deb7b684-3d7c-b3ae-7b36-5b7ba2dd8001@redhat.com>
- <ZFUo5IYAIwTEKR4_@slm.duckdns.org>
- <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
- <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
+        Dave Chinner <dchinner@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Jiri Wiesner <jwiesner@suse.de>
+Subject: Re: [RFC PATCH 3/3] cgroup: Do not take css_set_lock in
+ cgroup_show_path
+Message-ID: <ZGvWsOOw2C68SYUx@slm.duckdns.org>
+References: <20230502133847.14570-1-mkoutny@suse.com>
+ <20230502133847.14570-4-mkoutny@suse.com>
+ <ZFUktg4Yxa30jRBX@slm.duckdns.org>
+ <ta7bilcvc7lzt5tvs44y5wxqt6i3gdmvzwcr5h2vxhjhshmivk@3mecui76fxvy>
+ <ZFVIJlAMyzTh3QTP@slm.duckdns.org>
+ <6rjdfjltz5kkwzobpeefbqxzj4wbd4jzstdryb6rb67td3x45q@5ujarspzjk3x>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
+In-Reply-To: <6rjdfjltz5kkwzobpeefbqxzj4wbd4jzstdryb6rb67td3x45q@5ujarspzjk3x>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -95,87 +86,58 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Waiman.
+Hello, Michal.
 
-On Sun, May 07, 2023 at 09:03:44PM -0400, Waiman Long wrote:
-...
->   cpuset.cpus.reserve
->     A read-write multiple values file which exists only on root
->     cgroup.
-> 
->     It lists all the CPUs that are reserved for adjacent and remote
->     partitions created in the system.  See the next section for
->     more information on what an adjacent or remote partitions is.
-> 
->     Creation of adjacent partition does not require touching this
->     control file as CPU reservation will be done automatically.
->     In order to create a remote partition, the CPUs needed by the
->     remote partition has to be written to this file first.
-> 
->     A "+" prefix can be used to indicate a list of additional
->     CPUs that are to be added without disturbing the CPUs that are
->     originally there.  For example, if its current value is "3-4",
->     echoing ""+5" to it will change it to "3-5".
->
->     Once a remote partition is destroyed, its CPUs have to be
->     removed from this file or no other process can use them.  A "-"
->     prefix can be used to remove a list of CPUs from it.  However,
->     removing CPUs that are currently used in existing partitions
->     may cause those partitions to become invalid.  A single "-"
->     character without any number can be used to indicate removal
->     of all the free CPUs not allocated to any partitions to avoid
->     accidental partition invalidation.
+Sorry about the delay.
 
-Why is the syntax different from .cpus? Wouldn't it be better to keep them
-the same?
+On Tue, May 09, 2023 at 12:34:53PM +0200, Michal Koutný wrote:
+> On Fri, May 05, 2023 at 08:17:10AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> > On Fri, May 05, 2023 at 07:32:40PM +0200, Michal Koutný wrote:
+> > > On Fri, May 05, 2023 at 05:45:58AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> > > > > There are three relevant nodes for each cgroupfs entry:
+> > > > > 
+> > > > >         R ... cgroup hierarchy root
+> > > > >         M ... mount root
+> > > > >         C ... reader's cgroup NS root
+> > > > > 
+> > > > > mountinfo is supposed to show path from C to M.
+> > > > 
+> > > > At least for cgroup2, the path from C to M isn't gonna change once NS is
+> > > > established, right?
+> > > 
+> > > Right. Although, the argument about M (when C above M or when C and M in
+> > > different subtrees) implicitly relies on the namespace_sem.
+> > 
+> > I don't follow. Can you please elaborate a bit more?
+> 
+> I wanted to say that even with restriction to cgroup2, the css_set_lock
+> removal would also rely on namespace_sem.
+> 
+> For a given mountinfo entry the path C--M won't change (no renames).
+> The question is whether cgroup M will stay around (with the relaxed
+> locking):
+> 
+>   - C >= M (C is below M) 
+>     -> C (transitively) pins M
 
->   cpuset.cpus.partition
->     A read-write single value file which exists on non-root
->     cpuset-enabled cgroups.  This flag is owned by the parent cgroup
->     and is not delegatable.
-> 
->     It accepts only the following input values when written to.
-> 
->       ==========    =====================================
->       "member"    Non-root member of a partition
->       "root"    Partition root
->       "isolated"    Partition root without load balancing
->       ==========    =====================================
-> 
->     A cpuset partition is a collection of cgroups with a partition
->     root at the top of the hierarchy and its descendants except
->     those that are separate partition roots themselves and their
->     descendants.  A partition has exclusive access to the set of
->     CPUs allocated to it.  Other cgroups outside of that partition
->     cannot use any CPUs in that set.
-> 
->     There are two types of partitions - adjacent and remote.  The
->     parent of an adjacent partition must be a valid partition root.
->     Partition roots of adjacent partitions are all clustered around
->     the root cgroup.  Creation of adjacent partition is done by
->     writing the desired partition type into "cpuset.cpus.partition".
-> 
->     A remote partition does not require a partition root parent.
->     So a remote partition can be formed far from the root cgroup.
->     However, its creation is a 2-step process.  The CPUs needed
->     by a remote partition ("cpuset.cpus" of the partition root)
->     has to be written into "cpuset.cpus.reserve" of the root
->     cgroup first.  After that, "isolated" can be written into
->     "cpuset.cpus.partition" of the partition root to form a remote
->     isolated partition which is the only supported remote partition
->     type for now.
-> 
->     All remote partitions are terminal as adjacent partition cannot
->     be created underneath it.
+Yeah, this was what I was thinking.
 
-Can you elaborate this extra restriction a bit further?
+>   - C < M (C is above M) or C and M are in two disjoint subtrees (path
+>     goes through a common ancestor)
+>     -> M could be released without relation to C (even on cgroup2, with
+>        the css_set_lock removed) but such a destructive operation on M
+>        is excluded as long as namespace_sem is held during entry
+>        rendering.
+> 
+> Does that clarify the trade-off of removing css_set_lock at this spot?
 
-In general, I think it'd be really helpful if the document explains the
-reasoning behind the design decisions. ie. Why is reserving for? What
-purpose does it serve that the regular isolated ones cannot? That'd help
-clarifying the design decisions.
+Right, you can have cgroup outside NS root still mounted and that mount root
+can be viewed from multiple cgroup NS's, so the the path isn't fixed either.
 
-Thanks.
+Having enough lockdep annotations should do but if reasonable the preference
+is being a bit more self-contained.
+
+Thanks for the explanation.
 
 -- 
 tejun
