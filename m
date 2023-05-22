@@ -2,108 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF7570B96F
-	for <lists+cgroups@lfdr.de>; Mon, 22 May 2023 11:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9917370BCD0
+	for <lists+cgroups@lfdr.de>; Mon, 22 May 2023 14:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjEVJx0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 May 2023 05:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44472 "EHLO
+        id S233580AbjEVMBQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 May 2023 08:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231873AbjEVJxY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 May 2023 05:53:24 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C35FBB
-        for <cgroups@vger.kernel.org>; Mon, 22 May 2023 02:53:23 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-64d2f99c8c3so2227951b3a.0
-        for <cgroups@vger.kernel.org>; Mon, 22 May 2023 02:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1684749203; x=1687341203;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hnIfipm8ADmVcPlfJeR2m6dzYHlF2xT+Sv9iRF6t3cY=;
-        b=AOzpCt/R5/HiWo6POXCM45SpS08bNlo11NcaKUQY8fbE74t46SQzwFReeowIfN1QBH
-         k42Pa4PS1GDGK68evYz8AKEVOtCHJrI1Ycb8tBHltfRKXUCfVX1cpN31oU4AKAUV/v3b
-         atvu/X/oySVxlD9Eqt4fOQR6IS55Z8JZhWRWfm2AikBq/n8wh3FmecrWs6Y5Ev6ljHfQ
-         u2sjZwIfVdOOAmurBV6Mx3WGS2fliHR2vLyTGHn7M5FHSLYPQ+zCv1C2h3ehMN+xzzZF
-         3022G70xrM3eiXml5jDArQFZrTLKq5hqXeoebTIw7Z+yxmB0sA3rMeGeSB+1U4Ak/wmv
-         Xm/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684749203; x=1687341203;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hnIfipm8ADmVcPlfJeR2m6dzYHlF2xT+Sv9iRF6t3cY=;
-        b=UuOUx+2XYilKaACEbclXi3mFCd+CCPK+RVuX5MBWKa7l1HnfTzDjIqHjjsld1Ou+7P
-         h+Kt4RLc56zCvX/9FdZtQ9KDfj7mjon6xT+xvIeaJzMbh0HLXQ4npbcsUQryYtyQt0sx
-         PLPaHx0iDGhMyGikr6lB9EtC37cTf4GKdGi2rppW+Fu6Qo9ILdJzhafyyKeJCKMeFq6G
-         kAXWvX21FKQfLiI0mXJ9EZcPzLbwO5/PUjItMRrySYBuL2sde4faqMP5tgKpUC1zSOhm
-         4QL/jdvDKK5G6HWykaqSwP1glw9DOi/2nLapq/NMsXyyrejXVWn5q1+ADS667MOBYFQy
-         2+RA==
-X-Gm-Message-State: AC+VfDxzbKlv4910kOHWPFFw8+rXC5IgUjQAb8pvaJLNaxdDPbR2bhX2
-        apvLVmknI407qKhr7p66PhJKyWWt/vGYnPV7eZkFSGCl
-X-Google-Smtp-Source: ACHHUZ7Gqy8j0qxhN10JBGVVj+H/ve8NIo22gbIeyse0zofEfmRuw+x0w1VQUfHAQi9FO3kZQC6U3Q==
-X-Received: by 2002:a05:6a20:8e07:b0:104:62a9:9006 with SMTP id y7-20020a056a208e0700b0010462a99006mr12512823pzj.36.1684749202957;
-        Mon, 22 May 2023 02:53:22 -0700 (PDT)
-Received: from ubuntu-hf2.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id g37-20020a632025000000b0051b9e82d6d6sm4089267pgg.40.2023.05.22.02.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 May 2023 02:53:22 -0700 (PDT)
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-To:     mhocko@kernel.org
-Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH 2/2] selftests: cgroup: fix unexpected failure on test_memcg_low
-Date:   Mon, 22 May 2023 09:52:33 +0000
-Message-Id: <20230522095233.4246-2-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233678AbjEVMBL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 May 2023 08:01:11 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A22EFE;
+        Mon, 22 May 2023 05:00:59 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1q14Dc-0005RG-Cr; Mon, 22 May 2023 14:00:52 +0200
+Message-ID: <5d53e634-33c2-e040-3c34-6c36e32eed81@leemhuis.info>
+Date:   Mon, 22 May 2023 14:00:51 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH -next v2 0/6] blk-wbt: minor fix and cleanup
+Content-Language: en-US, de-DE
+To:     Jens Axboe <axboe@kernel.dk>, Yu Kuai <yukuai1@huaweicloud.com>,
+        hch@lst.de, tj@kernel.org, josef@toxicpanda.com, yukuai3@huawei.com
+Cc:     lukas.bulwahn@gmail.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+References: <20230512093554.911753-1-yukuai1@huaweicloud.com>
+ <2b18e6ed-bce0-44f5-5ec4-8903f3c85cfe@kernel.dk>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <2b18e6ed-bce0-44f5-5ec4-8903f3c85cfe@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1684756859;d76d1fee;
+X-HE-SMSGID: 1q14Dc-0005RG-Cr
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since commit f079a020ba95 ("selftests: memcg: factor out common parts
-of memory.{low,min} tests"), the value used in second alloc_anon has
-changed from 148M to 170M. Because memory.low allows reclaiming page
-cache in child cgroups, so the memory.current is close to 30M instead
-of 50M. Therefore, adjust the expected value of parent cgroup.
+On 12.05.23 16:58, Jens Axboe wrote:
+> On 5/12/23 3:35 AM, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Changes in v2:
+>>  - make the code more readable for patch 1
+>>  - add a new attr_group that is only visible for rq based device
+>>  - explain in detail for patch 4
+>>  - add review tag for patch 2,3,5
+>>
+>> Yu Kuai (6):
+>>   blk-wbt: fix that wbt can't be disabled by default
+>>   blk-wbt: don't create wbt sysfs entry if CONFIG_BLK_WBT is disabled
+>>   blk-wbt: remove dead code to handle wbt enable/disable with io
+>>     inflight
+>>   blk-wbt: cleanup rwb_enabled() and wbt_disabled()
+>>   blk-iocost: move wbt_enable/disable_default() out of spinlock
+>>   blk-sysfs: add a new attr_group for blk_mq
+>>
+>>  block/blk-iocost.c |   7 +-
+>>  block/blk-sysfs.c  | 181 ++++++++++++++++++++++++++-------------------
+>>  block/blk-wbt.c    |  33 +++------
+>>  block/blk-wbt.h    |  19 -----
+>>  4 files changed, 117 insertions(+), 123 deletions(-)
+> 
+> We need a 6.4 version of the fix to get rid of the regression. If you
+> want to do cleanups on top of that, then that's fine and that can go into
+> 6.5. But don't mix them up.
 
-Fixes: f079a020ba95 ("selftests: memcg: factor out common parts of memory.{low,min} tests")
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hmm, it seems nothing has happened here since ten days to fix this
+regression that likely is still present in 6.3. Yu Kuai, did it fall
+through the cracks, or is what Jens asked for more complicated than it
+sounds?
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index f4f7c0aef702..a2a90f4bfe9f 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -292,6 +292,7 @@ static int test_memcg_protection(const char *root, bool min)
- 	char *children[4] = {NULL};
- 	const char *attribute = min ? "memory.min" : "memory.low";
- 	long c[4];
-+	long current;
- 	int i, attempts;
- 	int fd;
- 
-@@ -400,7 +401,8 @@ static int test_memcg_protection(const char *root, bool min)
- 		goto cleanup;
- 	}
- 
--	if (!values_close(cg_read_long(parent[1], "memory.current"), MB(50), 3))
-+	current = min ? MB(50) : MB(30);
-+	if (!values_close(cg_read_long(parent[1], "memory.current"), current, 3))
- 		goto cleanup;
- 
- 	if (!reclaim_until(children[0], MB(10)))
--- 
-2.25.1
+Or was progress made and I just missed it?
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
