@@ -2,99 +2,249 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E664D70E522
-	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 21:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB2470E89A
+	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 00:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238196AbjEWTMg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 May 2023 15:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        id S238495AbjEWWEG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 May 2023 18:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238241AbjEWTMf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 15:12:35 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3AA91;
-        Tue, 23 May 2023 12:12:34 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-64d41d8bc63so134212b3a.0;
-        Tue, 23 May 2023 12:12:34 -0700 (PDT)
+        with ESMTP id S238442AbjEWWEF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 18:04:05 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F07E5C
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 15:03:34 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-96fe2a1db26so27496166b.0
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 15:03:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684869154; x=1687461154;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WDHOuli6LQC21PVL1jIVJHkKd4nR+BXbovWUBQJSo5E=;
-        b=nnt2ZPVfDdLgMsE9DXatFeQI53mTIFlO7r2+Zrd8elz107npuksySY3Ik1QMx5QeNX
-         HuOBQsQNrA/4wYyDJaFh9NPUg8lo6sK8UdVOIgh+yku9tcUmeqEKa1bmSLkHCTZpNAtZ
-         phaeSMPxMN6d+QDQDOK5pKidVFhjxa9v8JZl8GD2g18uY+eHydQG8lOel3kyJgBZ2CuN
-         xouiWeZ9l9EroDXJDxzAli1p9aGcoARKs2ChHGPIQKpLGakbEcGpuWxumVEiUfOrzOai
-         PFDoRS2Y0B6VOAwv/BIKMqp47OYcP++4oJc4kvO3xaJx4T5OdMssVkhoz1Hwoer8UTyA
-         uzzA==
+        d=google.com; s=20221208; t=1684879412; x=1687471412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S3/mPMNJ7/h7rqHqGun24hHWu5NE/mF12cbPJ8Cl0jU=;
+        b=aYxN790+J554PL0/3OW2aefHRP/LSi7dZW7T3QLjGyI+bv2qU5rZXasC8nFYcaWe/L
+         f4tj7bCOgnpk7pykJqTG7i0bvAT3Cwvxwj9ptsiN8D9EF85TPt34UlwDIZq9c5B5WBID
+         zHHRH7mkSLFlokOVMW/o+eQMmw0wJ1qPFzziAw5IPd3ps19BxBzmdreH87NRIWktCC5j
+         ch/f5Z07n0h36ceShdVSLYfr9dRshXuNWnV+ObT4M5ha3OqQBOFPTpr8JwAlDS6KVafo
+         Tzq8nlvl0ck3HYb1AF64mhDlW8dj8rAGBVTikzzLKDzmWRN1IsfUqgZoQFeyVURJTMsW
+         3UHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684869154; x=1687461154;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1684879412; x=1687471412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WDHOuli6LQC21PVL1jIVJHkKd4nR+BXbovWUBQJSo5E=;
-        b=hRAd/cXMa+GHJlQCQiWGE6lpe+5zKktB5KEA3KMml7a2lnBANqvGYOnDy463WLjqff
-         athMrzjAgYqlE251/XomK5F0or8hwKmmERxfHqTHtGy8mTDT/qV2ZohAa4/RCwPGAwN0
-         xGC6XkxvDun9+eUTkstqQ6W/TLHUWjRpGK7QCuVZxkN4Ui5/iDEJK5ZyGz/3M8trVLSJ
-         BMbHe9TRFH+fB/0uLJTKPVb8CH6CR/JDz/WmHgnHMN7hMGCH7d648gl72BHxZlMx32ZP
-         SVM4C7BJ/icOjxw1zuyRQ4DS9Cd5vkzVDkzkivG7DG+fBa2WBwWxe4qw2kely62KcCLm
-         LnDg==
-X-Gm-Message-State: AC+VfDzq+XkK5HhB4FaxMiFj/sSBHGEQJJTvTDF+yMZA/NYSAPZRGoub
-        NsjvzFc6mbvA3A8+TQyK8yY=
-X-Google-Smtp-Source: ACHHUZ5MioFk87y9tahP+5F0UfZ0Z5nT1k2lXSVKi3g9FB/0Hr97Jo8X1g94AfYyFrspRxMk9j3cIA==
-X-Received: by 2002:a05:6a00:2d87:b0:64d:fd0:dd1a with SMTP id fb7-20020a056a002d8700b0064d0fd0dd1amr79254pfb.16.1684869153506;
-        Tue, 23 May 2023 12:12:33 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id g17-20020aa78751000000b0063b89300347sm6279088pfo.142.2023.05.23.12.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 12:12:33 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 23 May 2023 09:12:31 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [RFC PATCH 2/3] cgroup: Rely on namespace_sem in
- current_cgns_cgroup_from_root explicitly
-Message-ID: <ZG0QH7gvKNFj0n34@slm.duckdns.org>
-References: <20230502133847.14570-1-mkoutny@suse.com>
- <20230502133847.14570-3-mkoutny@suse.com>
- <20230523-radar-gleich-781fd4006057@brauner>
+        bh=S3/mPMNJ7/h7rqHqGun24hHWu5NE/mF12cbPJ8Cl0jU=;
+        b=BeA23FJ5LvFM7l1wcPlR1BVC7U6To/H9DlFgOnoXHnFqFgVPuMEQA3CWsGjEuSwKF5
+         jFHdWuUFb0HK9L+NVC4ztjvu3Zipy1YhPDX4+EHiQn67T9MvKws50GXZHVj6ZyZo6akl
+         qx9xGNsShAiJgyDefqCJNSu0GorpqscRnYo76iafHUCUvfQTNc1Qa5WT2Tj4g8vZDiHS
+         pSHGItHIq6eRw6iDwDH3K/4+J1pxysvmGEGxrjN9RKsEpXi03KPbec4dTejqfhqYJ812
+         5TGZUAEtXC+LweZz5reSmvWepjMzfEQ16vhWT9NtLx+PrgjqgWP/8E69cqGSUib+UpEW
+         lQoQ==
+X-Gm-Message-State: AC+VfDw5YGZeSNkND1ukkYsyY1xwBN1YIszRhwLrB6or/QcnKDvyIo90
+        MhDMRLQA+z3WVcyNZ0GGCQtPdWWCNArboXFXIBVIPQ==
+X-Google-Smtp-Source: ACHHUZ6bWQQJTpzhU6WaLsUhzz2pNvgVXRIJ+sev91yWzcFsyqudHvKqDOT3DIyvGufJlx5Q87lN+jnd33841n6FhuY=
+X-Received: by 2002:a17:907:8a26:b0:96f:a0ee:113c with SMTP id
+ sc38-20020a1709078a2600b0096fa0ee113cmr13953384ejc.19.1684879412141; Tue, 23
+ May 2023 15:03:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230523-radar-gleich-781fd4006057@brauner>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <CAJD7tkb7zSFT5VnZ-00CA0mBE8dFmVqwPwvMpCYG9c-J3ovjyA@mail.gmail.com>
+ <B55000F8-BD65-432F-8430-F58054611474@didiglobal.com>
+In-Reply-To: <B55000F8-BD65-432F-8430-F58054611474@didiglobal.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 23 May 2023 15:02:55 -0700
+Message-ID: <CAJD7tkZwCreOS_XxDM_9mOTBo=Gatr12r1xtc64B_e5+HJhRqg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] memcontrol: support cgroup level OOM protection
+To:     =?UTF-8?B?56iL5Z6y5rabIENoZW5na2FpdGFvIENoZW5n?= 
+        <chengkaitao@didiglobal.com>
+Cc:     "tj@kernel.org" <tj@kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+        "pilgrimtao@gmail.com" <pilgrimtao@gmail.com>,
+        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
+        "yuzhao@google.com" <yuzhao@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "surenb@google.com" <surenb@google.com>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        David Rientjes <rientjes@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Sat, May 20, 2023 at 2:52=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=9B Chengka=
+itao Cheng
+<chengkaitao@didiglobal.com> wrote:
+>
+> At 2023-05-20 06:04:26, "Yosry Ahmed" <yosryahmed@google.com> wrote:
+> >On Wed, May 17, 2023 at 10:12=E2=80=AFPM =E7=A8=8B=E5=9E=B2=E6=B6=9B Che=
+ngkaitao Cheng
+> ><chengkaitao@didiglobal.com> wrote:
+> >>
+> >> At 2023-05-18 04:42:12, "Yosry Ahmed" <yosryahmed@google.com> wrote:
+> >> >On Wed, May 17, 2023 at 3:01=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=9B C=
+hengkaitao Cheng
+> >> ><chengkaitao@didiglobal.com> wrote:
+> >> >>
+> >> >> At 2023-05-17 16:09:50, "Yosry Ahmed" <yosryahmed@google.com> wrote=
+:
+> >> >> >On Wed, May 17, 2023 at 1:01=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=
+=9B Chengkaitao Cheng
+> >> >> ><chengkaitao@didiglobal.com> wrote:
+> >> >> >>
+> >> >>
+> >> >> Killing processes in order of memory usage cannot effectively prote=
+ct
+> >> >> important processes. Killing processes in a user-defined priority o=
+rder
+> >> >> will result in a large number of OOM events and still not being abl=
+e to
+> >> >> release enough memory. I have been searching for a balance between
+> >> >> the two methods, so that their shortcomings are not too obvious.
+> >> >> The biggest advantage of memcg is its tree topology, and I also hop=
+e
+> >> >> to make good use of it.
+> >> >
+> >> >For us, killing processes in a user-defined priority order works well=
+.
+> >> >
+> >> >It seems like to tune memory.oom.protect you use oom_kill_inherit to
+> >> >observe how many times this memcg has been killed due to a limit in a=
+n
+> >> >ancestor. Wouldn't it be more straightforward to specify the priority
+> >> >of protections among memcgs?
+> >> >
+> >> >For example, if you observe multiple memcgs being OOM killed due to
+> >> >hitting an ancestor limit, you will need to decide which of them to
+> >> >increase memory.oom.protect for more, based on their importance.
+> >> >Otherwise, if you increase all of them, then there is no point if all
+> >> >the memory is protected, right?
+> >>
+> >> If all memory in memcg is protected, its meaning is similar to that of=
+ the
+> >> highest priority memcg in your approach, which is ultimately killed or
+> >> never killed.
+> >
+> >Makes sense. I believe it gets a bit trickier when you want to
+> >describe relative ordering between memcgs using memory.oom.protect.
+>
+> Actually, my original intention was not to use memory.oom.protect to
+> achieve relative ordering between memcgs, it was just a feature that
+> happened to be achievable. My initial idea was to protect a certain
+> proportion of memory in memcg from being killed, and through the
+> method, physical memory can be reasonably planned. Both the physical
+> machine manager and container manager can add some unimportant
+> loads beyond the oom.protect limit, greatly improving the oversold
+> rate of memory. In the worst case scenario, the physical machine can
+> always provide all the memory limited by memory.oom.protect for memcg.
+>
+> On the other hand, I also want to achieve relative ordering of internal
+> processes in memcg, not just a unified ordering of all memcgs on
+> physical machines.
 
-On Tue, May 23, 2023 at 12:42:46PM +0200, Christian Brauner wrote:
-...
-> Nope, we're not putting namespace_sem in a header. The code it protects
-> is massively sensitive and it interacts with mount_lock and other locks.
-> This stays private to fs/namespace.c as far as I'm concerned.
+For us, having a strict priority ordering-based selection is
+essential. We have different tiers of jobs of different importance,
+and a job of higher priority should not be killed before a lower
+priority task if possible, no matter how much memory either of them is
+using. Protecting memcgs solely based on their usage can be useful in
+some scenarios, but not in a system where you have different tiers of
+jobs running with strict priority ordering.
 
-Michal, would it make sense to add a separate locking in cgroup.c? It'll add
-a bit more overhead but not massively so and we should be able to get
-similar gain without entangling with namespace locking.
-
-Thanks.
-
--- 
-tejun
+>
+> >> >In this case, wouldn't it be easier to just tell the OOM killer the
+> >> >relative priority among the memcgs?
+> >> >
+> >> >>
+> >> >> >If this approach works for you (or any other audience), that's gre=
+at,
+> >> >> >I can share more details and perhaps we can reach something that w=
+e
+> >> >> >can both use :)
+> >> >>
+> >> >> If you have a good idea, please share more details or show some cod=
+e.
+> >> >> I would greatly appreciate it
+> >> >
+> >> >The code we have needs to be rebased onto a different version and
+> >> >cleaned up before it can be shared, but essentially it is as
+> >> >described.
+> >> >
+> >> >(a) All processes and memcgs start with a default score.
+> >> >(b) Userspace can specify scores for memcgs and processes. A higher
+> >> >score means higher priority (aka less score gets killed first).
+> >> >(c) The OOM killer essentially looks for the memcg with the lowest
+> >> >scores to kill, then among this memcg, it looks for the process with
+> >> >the lowest score. Ties are broken based on usage, so essentially if
+> >> >all processes/memcgs have the default score, we fallback to the
+> >> >current OOM behavior.
+> >>
+> >> If memory oversold is severe, all processes of the lowest priority
+> >> memcg may be killed before selecting other memcg processes.
+> >> If there are 1000 processes with almost zero memory usage in
+> >> the lowest priority memcg, 1000 invalid kill events may occur.
+> >> To avoid this situation, even for the lowest priority memcg,
+> >> I will leave him a very small oom.protect quota.
+> >
+> >I checked internally, and this is indeed something that we see from
+> >time to time. We try to avoid that with userspace OOM killing, but
+> >it's not 100% effective.
+> >
+> >>
+> >> If faced with two memcgs with the same total memory usage and
+> >> priority, memcg A has more processes but less memory usage per
+> >> single process, and memcg B has fewer processes but more
+> >> memory usage per single process, then when OOM occurs, the
+> >> processes in memcg B may continue to be killed until all processes
+> >> in memcg B are killed, which is unfair to memcg B because memcg A
+> >> also occupies a large amount of memory.
+> >
+> >I believe in this case we will kill one process in memcg B, then the
+> >usage of memcg A will become higher, so we will pick a process from
+> >memcg A next.
+>
+> If there is only one process in memcg A and its memory usage is higher
+> than any other process in memcg B, but the total memory usage of
+> memcg A is lower than that of memcg B. In this case, if the OOM-killer
+> still chooses the process in memcg A. it may be unfair to memcg A.
+>
+> >> Dose your approach have these issues? Killing processes in a
+> >> user-defined priority is indeed easier and can work well in most cases=
+,
+> >> but I have been trying to solve the cases that it cannot cover.
+> >
+> >The first issue is relatable with our approach. Let me dig more info
+> >from our internal teams and get back to you with more details.
+>
+> --
+> Thanks for your comment!
+> chengkaitao
+>
+>
