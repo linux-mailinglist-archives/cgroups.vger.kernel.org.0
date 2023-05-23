@@ -2,48 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF81970D9B6
-	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 11:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0623C70DAC0
+	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 12:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236414AbjEWJ6v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 May 2023 05:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        id S236315AbjEWKm4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 May 2023 06:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236432AbjEWJ6o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 05:58:44 -0400
+        with ESMTP id S236243AbjEWKmz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 06:42:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BC5188;
-        Tue, 23 May 2023 02:58:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46513133;
+        Tue, 23 May 2023 03:42:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 18EA162FCB;
-        Tue, 23 May 2023 09:58:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D60ECC433EF;
-        Tue, 23 May 2023 09:58:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCC14630F6;
+        Tue, 23 May 2023 10:42:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91EB8C433D2;
+        Tue, 23 May 2023 10:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684835920;
-        bh=tC/uWnb4vQv4X17V3g3ZMLWyWgfw32VJp0SADGWiBNs=;
+        s=k20201202; t=1684838572;
+        bh=dAZtfPEcdx8w0xksIc+4VYD58Jm8oMxQ7+S7bRplZvM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=do66W86rFkN3BQI1XPoprnXAQHmdGnIbxZvhY+YezuN0GoRrzGsoGbtynVrtSBxm7
-         eWZaGniVXJdqt3Q37uFc89xhtbdRmsME+y4CvVIBaCSqbQnI+Hqk/ZTHq8vBuY+eiY
-         G1eulwBQbYKOp7ZxV/7qzY2dTd7l17xod7WjEMZYqXKi7mFAUNFpnN/EKtgwoykWOM
-         2saLgTyannYGaVal4xoDmSclmiZLZyc8RW6Qvp+xgMMUH7aWmoSmtdVfR4q09LRqzd
-         aVP8Enusnvu/YLWUitwcrCA+c4Zug52dSCEWKenTOTUCArUFT65L574ZbFHxOaIpLq
-         4iiKAUyLma5AQ==
-Date:   Tue, 23 May 2023 11:58:35 +0200
+        b=Dc34T6TA2Jylxa+Ta17oKWHKcRWTtyg7v2ias+mVnUeGa6ugVmCGvGQBzxYBOBsnB
+         gVR8bMa+mAb/WmZBAJg4ZHPAQ2lJgy5r/HWYoS1qTIWV7SORr49MZxUzhIN2LkQ7k4
+         h2gCx3ek59wOr/O+LFTOpCQhvbXw+OrWCwXSIAQ4DjUvaJI+cZAOeKsnOOmK+h4inJ
+         bve2yOEnB29XSuZUjPe686uTQO6OQajO+gMeiz429QS1MKh9QXJEuwOs6aTTiroEGa
+         WMKJd1eOsA7UJBH8COgqfZsl7uTMdscQ8GmfjbyYAYj+UqAG2S0CQuIatxOWFZDFTK
+         E692WpXj+M8Mw==
+Date:   Tue, 23 May 2023 12:42:46 +0200
 From:   Christian Brauner <brauner@kernel.org>
-To:     John Sperbeck <jsperbeck@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: always put cset in cgroup_css_set_put_fork
-Message-ID: <20230523-aphorismen-erzwingen-ae57f4fd33f2@brauner>
-References: <20230521192953.229715-1-jsperbeck@google.com>
+To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Jiri Wiesner <jwiesner@suse.de>
+Subject: Re: [RFC PATCH 2/3] cgroup: Rely on namespace_sem in
+ current_cgns_cgroup_from_root explicitly
+Message-ID: <20230523-radar-gleich-781fd4006057@brauner>
+References: <20230502133847.14570-1-mkoutny@suse.com>
+ <20230502133847.14570-3-mkoutny@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230521192953.229715-1-jsperbeck@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230502133847.14570-3-mkoutny@suse.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -54,42 +61,50 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, May 21, 2023 at 07:29:53PM +0000, John Sperbeck wrote:
-> A successful call to cgroup_css_set_fork() will always have taken
-> a ref on kargs->cset (regardless of CLONE_INTO_CGROUP), so always
-> do a corresponding put in cgroup_css_set_put_fork().
+On Tue, May 02, 2023 at 03:38:46PM +0200, Michal Koutný wrote:
+> The function current_cgns_cgroup_from_root() expects a stable
+> cgroup_root, which is currently ensured with RCU read side paired with
+> cgroup_destroy_root() called after RCU period.
 > 
-> Without this, a cset and its contained css structures will be
-> leaked for some fork failures.  The following script reproduces
-> the leak for a fork failure due to exceeding pids.max in the
-> pids controller.  A similar thing can happen if we jump to the
-> bad_fork_cancel_cgroup label in copy_process().
+> The particular current_cgns_cgroup_from_root() is called from VFS code
+> and cgroup_root stability can be also ensured by namespace_sem. Mark it
+> explicitly as a preparation for further rework.
 > 
-> [ -z "$1" ] && echo "Usage $0 pids-root" && exit 1
-> PID_ROOT=$1
-> CGROUP=$PID_ROOT/foo
-> 
-> [ -e $CGROUP ] && rmdir -f $CGROUP
-> mkdir $CGROUP
-> echo 5 > $CGROUP/pids.max
-> echo $$ > $CGROUP/cgroup.procs
-> 
-> fork_bomb()
-> {
-> 	set -e
-> 	for i in $(seq 10); do
-> 		/bin/sleep 3600 &
-> 	done
-> }
-> 
-> (fork_bomb) &
-> wait
-> echo $$ > $PID_ROOT/cgroup.procs
-> kill $(cat $CGROUP/cgroup.procs)
-> rmdir $CGROUP
-> 
-> Fixes: ef2c41cf38a7 ("clone3: allow spawning processes into cgroups")
-> Signed-off-by: John Sperbeck <jsperbeck@google.com>
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 > ---
+>  fs/namespace.c         | 5 ++++-
+>  include/linux/mount.h  | 4 ++++
+>  kernel/cgroup/cgroup.c | 7 +++----
+>  3 files changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 54847db5b819..0d2333832064 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -71,7 +71,10 @@ static DEFINE_IDA(mnt_group_ida);
+>  static struct hlist_head *mount_hashtable __read_mostly;
+>  static struct hlist_head *mountpoint_hashtable __read_mostly;
+>  static struct kmem_cache *mnt_cache __read_mostly;
+> -static DECLARE_RWSEM(namespace_sem);
+> +DECLARE_RWSEM(namespace_sem);
+> +#ifdef CONFIG_LOCKDEP
+> +EXPORT_SYMBOL_GPL(namespace_sem);
+> +#endif
+>  static HLIST_HEAD(unmounted);	/* protected by namespace_sem */
+>  static LIST_HEAD(ex_mountpoints); /* protected by namespace_sem */
+>  
+> diff --git a/include/linux/mount.h b/include/linux/mount.h
+> index 1ea326c368f7..6277435f6748 100644
+> --- a/include/linux/mount.h
+> +++ b/include/linux/mount.h
+> @@ -80,6 +80,10 @@ static inline struct mnt_idmap *mnt_idmap(const struct vfsmount *mnt)
+>  	return smp_load_acquire(&mnt->mnt_idmap);
+>  }
+>  
+> +#ifdef CONFIG_LOCKDEP
+> +extern struct rw_semaphore namespace_sem;
+> +#endif
 
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+Nope, we're not putting namespace_sem in a header. The code it protects
+is massively sensitive and it interacts with mount_lock and other locks.
+This stays private to fs/namespace.c as far as I'm concerned.
