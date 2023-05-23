@@ -2,61 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A6A70E028
-	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 17:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E3470E36B
+	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 19:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236864AbjEWPQW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 May 2023 11:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S238065AbjEWROL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 May 2023 13:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237029AbjEWPPx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 11:15:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41ABEE7A;
-        Tue, 23 May 2023 08:15:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 375842209D;
-        Tue, 23 May 2023 15:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1684854870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TkLyPkT+GsXSuBlfsNmALpub2P5cbuZv3uR/8NK1ky0=;
-        b=fcrH5ERbBAosvtM3sKUk3hFQzKgQeSkCA4K9SRdafLYsKszWYKAZid+OERHyO74Tz7T82s
-        JSUdRkqoJzEk0MGj7qlVteas8OpU4uxXh/zsuaM/Kkkw8G8E2URO+5W8hru2wqxtrggH3Z
-        2EF4m4urlnB9MG4mUGJYmbxLqQzgC6Y=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 180A213A10;
-        Tue, 23 May 2023 15:14:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id IfL6BFbYbGSSewAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 23 May 2023 15:14:30 +0000
-Date:   Tue, 23 May 2023 17:14:28 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: rstat: Simplified cgroup_base_stat_flush()
- update last_bstat logic
-Message-ID: <5g73i4yvi4ub4dqrf4dnq5qghkyckoygmgd2st6be3gg7twww2@w6zim6nxpt3b>
-References: <20230518124142.57644-1-jiahao.os@bytedance.com>
- <f39b9229-e59c-2b1c-7f3f-1aeedfad44dc@bytedance.com>
+        with ESMTP id S238044AbjEWROD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 13:14:03 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9A4185
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 10:14:01 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-339fca7da2aso760745ab.0
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 10:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1684862041; x=1687454041;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qmWtJOzNztkpnf4UzHCczQhsDx+hgxiMe2XgRqYyHhI=;
+        b=rQvy6TSK+wfTlo0HdARvbSVdkvmZoky53LQfz6I/sHZSh/vam08zvcWX8BKFq35rPJ
+         FiOXal8syvG9pEP0WTv6iW7eSanhHy7ABqS8itvydZ8rH14nwiDgZz79SGNg3RH3bQj8
+         WTmLv9HJ2uOAsK7i88YATrsiJwt/hKCRYYVxQMA7/a3MuM4g4yafCnt36kQlOjL/VWPH
+         6o5dMj0POMwamomezMYNOxNy841T05ufNRwMDpAkAYeEwREsLkqobJ+hg8+fwPBm4nOe
+         u6quTE5qyRblQsMAa260HpGZ0iO2Y0Wue1iugiodj3bo6gNKl8rdK5sY8KOYxSKugSqK
+         REMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684862041; x=1687454041;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qmWtJOzNztkpnf4UzHCczQhsDx+hgxiMe2XgRqYyHhI=;
+        b=CbhQ+rVEbLFVIUsNBdSMkCdEczQQ6rRC58F1xQEXbP1tMfJTlRcMlYY0DMxdi7ZoIM
+         P5vhwrGHwqsi7E1rTe7d4QxTb3PUTrU0V4Fpy8iR2rBbRaNACCED6LFX+yCaR1Qtei7O
+         5zZULCr4jnV5zxTbV658/AccRBsAqu9J2tbiPXzoTz4B+Lmo99ofmRvHhG1ti+7y2XwB
+         TRKWuYFvv/iX7QYL4RpwduVpBkRJVAEOdcTADdp76nwjFak3DOgpqUElVpmFl3GHJX1/
+         4hfY8nWYQikaQDEj6UWhxXLEOxpacMW3LjNfGMdrfbJYJxTt3V84ugrWcjXQj8vTdCje
+         FKOw==
+X-Gm-Message-State: AC+VfDxGbUDSfRy5+szq71dwrIniF6bqUYGn9JYd5BNUTrFBWGHwuqMz
+        8PddlG1SfIJj74MarrUuDe59Dw==
+X-Google-Smtp-Source: ACHHUZ484Klt0h0DdDR9++SF2ilwYFPu1B4JHU4ETiLnEdiOPsAptOMMT7O5wPaxS3A/GWCCiNI72w==
+X-Received: by 2002:a6b:b70c:0:b0:774:80fc:11a9 with SMTP id h12-20020a6bb70c000000b0077480fc11a9mr1794870iof.1.1684862041070;
+        Tue, 23 May 2023 10:14:01 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id u7-20020a02aa87000000b00411a1373aa5sm2524580jai.155.2023.05.23.10.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 May 2023 10:14:00 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     tj@kernel.org, hch@lst.de, josef@toxicpanda.com,
+        Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+In-Reply-To: <20230414084008.2085155-1-yukuai1@huaweicloud.com>
+References: <20230414084008.2085155-1-yukuai1@huaweicloud.com>
+Subject: Re: [PATCH for-6.4/block] block/rq_qos: protect rq_qos apis with a
+ new lock
+Message-Id: <168486203985.398377.17593981162726402548.b4-ty@kernel.dk>
+Date:   Tue, 23 May 2023 11:13:59 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wg2kypm56q6zgssf"
-Content-Disposition: inline
-In-Reply-To: <f39b9229-e59c-2b1c-7f3f-1aeedfad44dc@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-00303
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,56 +75,25 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---wg2kypm56q6zgssf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 14 Apr 2023 16:40:08 +0800, Yu Kuai wrote:
+> commit 50e34d78815e ("block: disable the elevator int del_gendisk")
+> move rq_qos_exit() from disk_release() to del_gendisk(), this will
+> introduce some problems:
+> 
+> 1) If rq_qos_add() is triggered by enabling iocost/iolatency through
+>    cgroupfs, then it can concurrent with del_gendisk(), it's not safe to
+>    write 'q->rq_qos' concurrently.
+> 
+> [...]
 
-Hello Jia.
+Applied, thanks!
 
-On Fri, May 19, 2023 at 12:15:57PM +0800, Hao Jia <jiahao.os@bytedance.com>=
- wrote:
-> Maybe something like this?
+[1/1] block/rq_qos: protect rq_qos apis with a new lock
+      commit: a13bd91be22318768d55470cbc0b0f4488ef9edf
 
-(Next time please send with a version bump in subject.)
+Best regards,
+-- 
+Jens Axboe
 
 
-> In cgroup_base_stat_flush() function, {rstatc, cgrp}->last_bstat
-> needs to be updated to the current {rstatc, cgrp}->bstat after the
-> calculation.
->=20
-> For the rstatc->last_bstat case, rstatc->bstat may be updated on other
-> cpus during our calculation, resulting in inconsistent rstatc->bstat
-> statistics for the two reads. So we use the temporary variable @cur to
-> record the read statc->bstat statistics, and use @cur to update
-> rstatc->last_bstat.
 
-If a concurrent update happens after sample of bstat was taken for
-calculation, it won't be reflected in the flushed result.
-But subsequent flush will use the updated bstat and the difference from
-last_bstat would account for that concurrent change (and any other
-changes between the flushes).
-
-IOW flushing cannot prevent concurrent updates but it will give
-eventually consistent (repeated without more updates) results.
-
-> It is better for us to assign directly instead of using
-> cgroup_base_stat_add() to update {rstatc, cgrp}->last_bstat.
-
-Or do you mean the copying is faster then arithmetics?
-
-Thanks,
-Michal
-
---wg2kypm56q6zgssf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZGzYUgAKCRAkDQmsBEOq
-uW/EAPwMre77h1BOYEzmFLgU5ag4wBzdTwS70cy56P6QTg7dgAEAwdZrK+0lAsgP
-xGFhjmxnFKU0VP6MC3rCl/yhKOddwQ8=
-=25fp
------END PGP SIGNATURE-----
-
---wg2kypm56q6zgssf--
