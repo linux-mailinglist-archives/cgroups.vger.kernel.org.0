@@ -2,109 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0623C70DAC0
-	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 12:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D3170DB55
+	for <lists+cgroups@lfdr.de>; Tue, 23 May 2023 13:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbjEWKm4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 May 2023 06:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S230024AbjEWLQc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 May 2023 07:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236243AbjEWKmz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 06:42:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46513133;
-        Tue, 23 May 2023 03:42:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCC14630F6;
-        Tue, 23 May 2023 10:42:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91EB8C433D2;
-        Tue, 23 May 2023 10:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684838572;
-        bh=dAZtfPEcdx8w0xksIc+4VYD58Jm8oMxQ7+S7bRplZvM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dc34T6TA2Jylxa+Ta17oKWHKcRWTtyg7v2ias+mVnUeGa6ugVmCGvGQBzxYBOBsnB
-         gVR8bMa+mAb/WmZBAJg4ZHPAQ2lJgy5r/HWYoS1qTIWV7SORr49MZxUzhIN2LkQ7k4
-         h2gCx3ek59wOr/O+LFTOpCQhvbXw+OrWCwXSIAQ4DjUvaJI+cZAOeKsnOOmK+h4inJ
-         bve2yOEnB29XSuZUjPe686uTQO6OQajO+gMeiz429QS1MKh9QXJEuwOs6aTTiroEGa
-         WMKJd1eOsA7UJBH8COgqfZsl7uTMdscQ8GmfjbyYAYj+UqAG2S0CQuIatxOWFZDFTK
-         E692WpXj+M8Mw==
-Date:   Tue, 23 May 2023 12:42:46 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [RFC PATCH 2/3] cgroup: Rely on namespace_sem in
- current_cgns_cgroup_from_root explicitly
-Message-ID: <20230523-radar-gleich-781fd4006057@brauner>
-References: <20230502133847.14570-1-mkoutny@suse.com>
- <20230502133847.14570-3-mkoutny@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230502133847.14570-3-mkoutny@suse.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S235288AbjEWLQV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 07:16:21 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2CAFE;
+        Tue, 23 May 2023 04:16:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QQWwH0M82z4f41Sw;
+        Tue, 23 May 2023 19:16:15 +0800 (CST)
+Received: from ubuntu1804.huawei.com (unknown [10.67.174.58])
+        by APP1 (Coremail) with SMTP id cCh0CgBXrRd_oGxkxWnRJQ--.15544S4;
+        Tue, 23 May 2023 19:16:16 +0800 (CST)
+From:   Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiujianfeng@huaweicloud.com
+Subject: [PATCH -next] cgroup: Remove out-of-date comment in cgroup_migrate()
+Date:   Tue, 23 May 2023 19:14:56 +0800
+Message-Id: <20230523111456.146053-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cCh0CgBXrRd_oGxkxWnRJQ--.15544S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw1kZF48Aw1fCw17uw1rWFg_yoWfZrb_tw
+        4jq340qryfAw13tr1Sqws3XFZ2grs5Cryvgw15tay7JFyUtFn5Xrs7tF13JrZ8AFs2kr1D
+        ur9xWa97trnFgjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbx8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+        AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUSLv
+        NUUUUU=
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 02, 2023 at 03:38:46PM +0200, Michal Koutný wrote:
-> The function current_cgns_cgroup_from_root() expects a stable
-> cgroup_root, which is currently ensured with RCU read side paired with
-> cgroup_destroy_root() called after RCU period.
-> 
-> The particular current_cgns_cgroup_from_root() is called from VFS code
-> and cgroup_root stability can be also ensured by namespace_sem. Mark it
-> explicitly as a preparation for further rework.
-> 
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
-> ---
->  fs/namespace.c         | 5 ++++-
->  include/linux/mount.h  | 4 ++++
->  kernel/cgroup/cgroup.c | 7 +++----
->  3 files changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 54847db5b819..0d2333832064 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -71,7 +71,10 @@ static DEFINE_IDA(mnt_group_ida);
->  static struct hlist_head *mount_hashtable __read_mostly;
->  static struct hlist_head *mountpoint_hashtable __read_mostly;
->  static struct kmem_cache *mnt_cache __read_mostly;
-> -static DECLARE_RWSEM(namespace_sem);
-> +DECLARE_RWSEM(namespace_sem);
-> +#ifdef CONFIG_LOCKDEP
-> +EXPORT_SYMBOL_GPL(namespace_sem);
-> +#endif
->  static HLIST_HEAD(unmounted);	/* protected by namespace_sem */
->  static LIST_HEAD(ex_mountpoints); /* protected by namespace_sem */
->  
-> diff --git a/include/linux/mount.h b/include/linux/mount.h
-> index 1ea326c368f7..6277435f6748 100644
-> --- a/include/linux/mount.h
-> +++ b/include/linux/mount.h
-> @@ -80,6 +80,10 @@ static inline struct mnt_idmap *mnt_idmap(const struct vfsmount *mnt)
->  	return smp_load_acquire(&mnt->mnt_idmap);
->  }
->  
-> +#ifdef CONFIG_LOCKDEP
-> +extern struct rw_semaphore namespace_sem;
-> +#endif
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-Nope, we're not putting namespace_sem in a header. The code it protects
-is massively sensitive and it interacts with mount_lock and other locks.
-This stays private to fs/namespace.c as far as I'm concerned.
+Commit 674b745e22b3 ("cgroup: remove rcu_read_lock()/rcu_read_unlock()
+in critical section of spin_lock_irq()") has removed the rcu_read_lock,
+which makes the comment out-of-date, so remove it.
+
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+---
+ kernel/cgroup/cgroup.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d8ba2c67910d..415d51c713ad 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2871,11 +2871,6 @@ int cgroup_migrate(struct task_struct *leader, bool threadgroup,
+ {
+ 	struct task_struct *task;
+ 
+-	/*
+-	 * Prevent freeing of tasks while we take a snapshot. Tasks that are
+-	 * already PF_EXITING could be freed from underneath us unless we
+-	 * take an rcu_read_lock.
+-	 */
+ 	spin_lock_irq(&css_set_lock);
+ 	task = leader;
+ 	do {
+-- 
+2.17.1
+
