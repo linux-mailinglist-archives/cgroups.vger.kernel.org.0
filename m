@@ -2,249 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB2470E89A
-	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 00:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D602770EAB6
+	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 03:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238495AbjEWWEG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 May 2023 18:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
+        id S229751AbjEXBV3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 May 2023 21:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238442AbjEWWEF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 18:04:05 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F07E5C
-        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 15:03:34 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-96fe2a1db26so27496166b.0
-        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 15:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684879412; x=1687471412;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S3/mPMNJ7/h7rqHqGun24hHWu5NE/mF12cbPJ8Cl0jU=;
-        b=aYxN790+J554PL0/3OW2aefHRP/LSi7dZW7T3QLjGyI+bv2qU5rZXasC8nFYcaWe/L
-         f4tj7bCOgnpk7pykJqTG7i0bvAT3Cwvxwj9ptsiN8D9EF85TPt34UlwDIZq9c5B5WBID
-         zHHRH7mkSLFlokOVMW/o+eQMmw0wJ1qPFzziAw5IPd3ps19BxBzmdreH87NRIWktCC5j
-         ch/f5Z07n0h36ceShdVSLYfr9dRshXuNWnV+ObT4M5ha3OqQBOFPTpr8JwAlDS6KVafo
-         Tzq8nlvl0ck3HYb1AF64mhDlW8dj8rAGBVTikzzLKDzmWRN1IsfUqgZoQFeyVURJTMsW
-         3UHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684879412; x=1687471412;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S3/mPMNJ7/h7rqHqGun24hHWu5NE/mF12cbPJ8Cl0jU=;
-        b=BeA23FJ5LvFM7l1wcPlR1BVC7U6To/H9DlFgOnoXHnFqFgVPuMEQA3CWsGjEuSwKF5
-         jFHdWuUFb0HK9L+NVC4ztjvu3Zipy1YhPDX4+EHiQn67T9MvKws50GXZHVj6ZyZo6akl
-         qx9xGNsShAiJgyDefqCJNSu0GorpqscRnYo76iafHUCUvfQTNc1Qa5WT2Tj4g8vZDiHS
-         pSHGItHIq6eRw6iDwDH3K/4+J1pxysvmGEGxrjN9RKsEpXi03KPbec4dTejqfhqYJ812
-         5TGZUAEtXC+LweZz5reSmvWepjMzfEQ16vhWT9NtLx+PrgjqgWP/8E69cqGSUib+UpEW
-         lQoQ==
-X-Gm-Message-State: AC+VfDw5YGZeSNkND1ukkYsyY1xwBN1YIszRhwLrB6or/QcnKDvyIo90
-        MhDMRLQA+z3WVcyNZ0GGCQtPdWWCNArboXFXIBVIPQ==
-X-Google-Smtp-Source: ACHHUZ6bWQQJTpzhU6WaLsUhzz2pNvgVXRIJ+sev91yWzcFsyqudHvKqDOT3DIyvGufJlx5Q87lN+jnd33841n6FhuY=
-X-Received: by 2002:a17:907:8a26:b0:96f:a0ee:113c with SMTP id
- sc38-20020a1709078a2600b0096fa0ee113cmr13953384ejc.19.1684879412141; Tue, 23
- May 2023 15:03:32 -0700 (PDT)
+        with ESMTP id S238898AbjEXBV2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 May 2023 21:21:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEB119B
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 18:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1684891231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XWfrXzi1lE088cYfxUvQvd0txTe3HPtik/NVcknqft0=;
+        b=XBsPdpuVgkqPQlOwmorYapxrI2QeSbS8H0d4u7lS0D6y0VQHkjawZNDtmAP/1CFtg52XLD
+        RJHZpa5L/GfL1LOlkyY/jmVDV51M6yE2EvWeSaQrzK4YsFAC1ocWbFe7J5s8ZOqM4UvTIn
+        HSby1mcQ0Va1jpDB4YapobA3dqJE0eo=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-64-89bFVIyvPKygxSK9TsjGJA-1; Tue, 23 May 2023 21:20:27 -0400
+X-MC-Unique: 89bFVIyvPKygxSK9TsjGJA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2C81729AA38A;
+        Wed, 24 May 2023 01:20:27 +0000 (UTC)
+Received: from localhost (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D0EA140E95D;
+        Wed, 24 May 2023 01:20:25 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, mkoutny@suse.com
+Subject: [PATCH] blk-cgroup: Flush stats before releasing blkcg_gq
+Date:   Wed, 24 May 2023 09:19:35 +0800
+Message-Id: <20230524011935.719659-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-References: <CAJD7tkb7zSFT5VnZ-00CA0mBE8dFmVqwPwvMpCYG9c-J3ovjyA@mail.gmail.com>
- <B55000F8-BD65-432F-8430-F58054611474@didiglobal.com>
-In-Reply-To: <B55000F8-BD65-432F-8430-F58054611474@didiglobal.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 23 May 2023 15:02:55 -0700
-Message-ID: <CAJD7tkZwCreOS_XxDM_9mOTBo=Gatr12r1xtc64B_e5+HJhRqg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] memcontrol: support cgroup level OOM protection
-To:     =?UTF-8?B?56iL5Z6y5rabIENoZW5na2FpdGFvIENoZW5n?= 
-        <chengkaitao@didiglobal.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "pilgrimtao@gmail.com" <pilgrimtao@gmail.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 20, 2023 at 2:52=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=9B Chengka=
-itao Cheng
-<chengkaitao@didiglobal.com> wrote:
->
-> At 2023-05-20 06:04:26, "Yosry Ahmed" <yosryahmed@google.com> wrote:
-> >On Wed, May 17, 2023 at 10:12=E2=80=AFPM =E7=A8=8B=E5=9E=B2=E6=B6=9B Che=
-ngkaitao Cheng
-> ><chengkaitao@didiglobal.com> wrote:
-> >>
-> >> At 2023-05-18 04:42:12, "Yosry Ahmed" <yosryahmed@google.com> wrote:
-> >> >On Wed, May 17, 2023 at 3:01=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=9B C=
-hengkaitao Cheng
-> >> ><chengkaitao@didiglobal.com> wrote:
-> >> >>
-> >> >> At 2023-05-17 16:09:50, "Yosry Ahmed" <yosryahmed@google.com> wrote=
-:
-> >> >> >On Wed, May 17, 2023 at 1:01=E2=80=AFAM =E7=A8=8B=E5=9E=B2=E6=B6=
-=9B Chengkaitao Cheng
-> >> >> ><chengkaitao@didiglobal.com> wrote:
-> >> >> >>
-> >> >>
-> >> >> Killing processes in order of memory usage cannot effectively prote=
-ct
-> >> >> important processes. Killing processes in a user-defined priority o=
-rder
-> >> >> will result in a large number of OOM events and still not being abl=
-e to
-> >> >> release enough memory. I have been searching for a balance between
-> >> >> the two methods, so that their shortcomings are not too obvious.
-> >> >> The biggest advantage of memcg is its tree topology, and I also hop=
-e
-> >> >> to make good use of it.
-> >> >
-> >> >For us, killing processes in a user-defined priority order works well=
-.
-> >> >
-> >> >It seems like to tune memory.oom.protect you use oom_kill_inherit to
-> >> >observe how many times this memcg has been killed due to a limit in a=
-n
-> >> >ancestor. Wouldn't it be more straightforward to specify the priority
-> >> >of protections among memcgs?
-> >> >
-> >> >For example, if you observe multiple memcgs being OOM killed due to
-> >> >hitting an ancestor limit, you will need to decide which of them to
-> >> >increase memory.oom.protect for more, based on their importance.
-> >> >Otherwise, if you increase all of them, then there is no point if all
-> >> >the memory is protected, right?
-> >>
-> >> If all memory in memcg is protected, its meaning is similar to that of=
- the
-> >> highest priority memcg in your approach, which is ultimately killed or
-> >> never killed.
-> >
-> >Makes sense. I believe it gets a bit trickier when you want to
-> >describe relative ordering between memcgs using memory.oom.protect.
->
-> Actually, my original intention was not to use memory.oom.protect to
-> achieve relative ordering between memcgs, it was just a feature that
-> happened to be achievable. My initial idea was to protect a certain
-> proportion of memory in memcg from being killed, and through the
-> method, physical memory can be reasonably planned. Both the physical
-> machine manager and container manager can add some unimportant
-> loads beyond the oom.protect limit, greatly improving the oversold
-> rate of memory. In the worst case scenario, the physical machine can
-> always provide all the memory limited by memory.oom.protect for memcg.
->
-> On the other hand, I also want to achieve relative ordering of internal
-> processes in memcg, not just a unified ordering of all memcgs on
-> physical machines.
+As noted by Michal, the blkg_iostat_set's in the lockless list
+hold reference to blkg's to protect against their removal. Those
+blkg's hold reference to blkcg. When a cgroup is being destroyed,
+cgroup_rstat_flush() is only called at css_release_work_fn() which
+is called when the blkcg reference count reaches 0. This circular
+dependency will prevent blkcg and some blkgs from being freed after
+they are made offline.
 
-For us, having a strict priority ordering-based selection is
-essential. We have different tiers of jobs of different importance,
-and a job of higher priority should not be killed before a lower
-priority task if possible, no matter how much memory either of them is
-using. Protecting memcgs solely based on their usage can be useful in
-some scenarios, but not in a system where you have different tiers of
-jobs running with strict priority ordering.
+It is less a problem if the cgroup to be destroyed also has other
+controllers like memory that will call cgroup_rstat_flush() which will
+clean up the reference count. If block is the only controller that uses
+rstat, these offline blkcg and blkgs may never be freed leaking more
+and more memory over time.
 
->
-> >> >In this case, wouldn't it be easier to just tell the OOM killer the
-> >> >relative priority among the memcgs?
-> >> >
-> >> >>
-> >> >> >If this approach works for you (or any other audience), that's gre=
-at,
-> >> >> >I can share more details and perhaps we can reach something that w=
-e
-> >> >> >can both use :)
-> >> >>
-> >> >> If you have a good idea, please share more details or show some cod=
-e.
-> >> >> I would greatly appreciate it
-> >> >
-> >> >The code we have needs to be rebased onto a different version and
-> >> >cleaned up before it can be shared, but essentially it is as
-> >> >described.
-> >> >
-> >> >(a) All processes and memcgs start with a default score.
-> >> >(b) Userspace can specify scores for memcgs and processes. A higher
-> >> >score means higher priority (aka less score gets killed first).
-> >> >(c) The OOM killer essentially looks for the memcg with the lowest
-> >> >scores to kill, then among this memcg, it looks for the process with
-> >> >the lowest score. Ties are broken based on usage, so essentially if
-> >> >all processes/memcgs have the default score, we fallback to the
-> >> >current OOM behavior.
-> >>
-> >> If memory oversold is severe, all processes of the lowest priority
-> >> memcg may be killed before selecting other memcg processes.
-> >> If there are 1000 processes with almost zero memory usage in
-> >> the lowest priority memcg, 1000 invalid kill events may occur.
-> >> To avoid this situation, even for the lowest priority memcg,
-> >> I will leave him a very small oom.protect quota.
-> >
-> >I checked internally, and this is indeed something that we see from
-> >time to time. We try to avoid that with userspace OOM killing, but
-> >it's not 100% effective.
-> >
-> >>
-> >> If faced with two memcgs with the same total memory usage and
-> >> priority, memcg A has more processes but less memory usage per
-> >> single process, and memcg B has fewer processes but more
-> >> memory usage per single process, then when OOM occurs, the
-> >> processes in memcg B may continue to be killed until all processes
-> >> in memcg B are killed, which is unfair to memcg B because memcg A
-> >> also occupies a large amount of memory.
-> >
-> >I believe in this case we will kill one process in memcg B, then the
-> >usage of memcg A will become higher, so we will pick a process from
-> >memcg A next.
->
-> If there is only one process in memcg A and its memory usage is higher
-> than any other process in memcg B, but the total memory usage of
-> memcg A is lower than that of memcg B. In this case, if the OOM-killer
-> still chooses the process in memcg A. it may be unfair to memcg A.
->
-> >> Dose your approach have these issues? Killing processes in a
-> >> user-defined priority is indeed easier and can work well in most cases=
-,
-> >> but I have been trying to solve the cases that it cannot cover.
-> >
-> >The first issue is relatable with our approach. Let me dig more info
-> >from our internal teams and get back to you with more details.
->
-> --
-> Thanks for your comment!
-> chengkaitao
->
->
+To prevent this potential memory leak:
+
+- a new cgroup_rstat_css_cpu_flush() function is added to flush stats for
+a given css and cpu. This new function will be called in __blkg_release().
+
+- don't grab bio->bi_blkg when adding the stats into blkcg's per-cpu
+stat list, and this kind of handling is the most fragile part of
+original patch
+
+Based on Waiman's patch:
+
+https://lore.kernel.org/linux-block/20221215033132.230023-3-longman@redhat.com/
+
+Fixes: 3b8cc6298724 ("blk-cgroup: Optimize blkcg_rstat_flush()")
+Cc: Waiman Long <longman@redhat.com>
+Cc: cgroups@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: mkoutny@suse.com
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+---
+ block/blk-cgroup.c     | 15 +++++++++++++--
+ include/linux/cgroup.h |  1 +
+ kernel/cgroup/rstat.c  | 18 ++++++++++++++++++
+ 3 files changed, 32 insertions(+), 2 deletions(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 0ce64dd73cfe..5437b6af3955 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -163,10 +163,23 @@ static void blkg_free(struct blkcg_gq *blkg)
+ static void __blkg_release(struct rcu_head *rcu)
+ {
+ 	struct blkcg_gq *blkg = container_of(rcu, struct blkcg_gq, rcu_head);
++	struct blkcg *blkcg = blkg->blkcg;
++	int cpu;
+ 
+ #ifdef CONFIG_BLK_CGROUP_PUNT_BIO
+ 	WARN_ON(!bio_list_empty(&blkg->async_bios));
+ #endif
++	/*
++	 * Flush all the non-empty percpu lockless lists before releasing
++	 * us. Meantime no new bio can refer to this blkg any more given
++	 * the refcnt is killed.
++	 */
++	for_each_possible_cpu(cpu) {
++		struct llist_head *lhead = per_cpu_ptr(blkcg->lhead, cpu);
++
++		if (!llist_empty(lhead))
++			cgroup_rstat_css_cpu_flush(&blkcg->css, cpu);
++	}
+ 
+ 	/* release the blkcg and parent blkg refs this blkg has been holding */
+ 	css_put(&blkg->blkcg->css);
+@@ -991,7 +1004,6 @@ static void blkcg_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (parent && parent->parent)
+ 			blkcg_iostat_update(parent, &blkg->iostat.cur,
+ 					    &blkg->iostat.last);
+-		percpu_ref_put(&blkg->refcnt);
+ 	}
+ 
+ out:
+@@ -2075,7 +2087,6 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 
+ 		llist_add(&bis->lnode, lhead);
+ 		WRITE_ONCE(bis->lqueued, true);
+-		percpu_ref_get(&bis->blkg->refcnt);
+ 	}
+ 
+ 	u64_stats_update_end_irqrestore(&bis->sync, flags);
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 885f5395fcd0..97d4764d8e6a 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -695,6 +695,7 @@ void cgroup_rstat_flush(struct cgroup *cgrp);
+ void cgroup_rstat_flush_atomic(struct cgroup *cgrp);
+ void cgroup_rstat_flush_hold(struct cgroup *cgrp);
+ void cgroup_rstat_flush_release(void);
++void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu);
+ 
+ /*
+  * Basic resource stats.
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 9c4c55228567..96e7a4e6da72 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -281,6 +281,24 @@ void cgroup_rstat_flush_release(void)
+ 	spin_unlock_irq(&cgroup_rstat_lock);
+ }
+ 
++/**
++ * cgroup_rstat_css_cpu_flush - flush stats for the given css and cpu
++ * @css: target css to be flush
++ * @cpu: the cpu that holds the stats to be flush
++ *
++ * A lightweight rstat flush operation for a given css and cpu.
++ * Only the cpu_lock is being held for mutual exclusion, the cgroup_rstat_lock
++ * isn't used.
++ */
++void cgroup_rstat_css_cpu_flush(struct cgroup_subsys_state *css, int cpu)
++{
++	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
++
++	raw_spin_lock_irq(cpu_lock);
++	css->ss->css_rstat_flush(css, cpu);
++	raw_spin_unlock_irq(cpu_lock);
++}
++
+ int cgroup_rstat_init(struct cgroup *cgrp)
+ {
+ 	int cpu;
+-- 
+2.40.1
+
