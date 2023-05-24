@@ -2,125 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E161370EC80
-	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 06:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF4370EEAB
+	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 08:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjEXEWy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 May 2023 00:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
+        id S239691AbjEXG4K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 May 2023 02:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjEXEWx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 May 2023 00:22:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4374E6
-        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 21:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684902131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8RThbuZCrca9ja7PWjTCEifSQrfusG35C3xzRTql4Rg=;
-        b=cYNb0sAiu/W6R/ezsJOfoKzDhh0X6MACnGi3jNBPawLquYmEKzuQglKuJLI1ipnDP//yu2
-        vQ6jZoIftNOKDum5JTEkAvlHuYxy+YHW3jg+L1SSEQUGTx4+yQ5vum5yp1Z6m4ByYdqlaa
-        e3AosYOaBk21sqAe9VIJITh787uhq7g=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-659-F5la8j4wM1GiyPo0V-Mo0A-1; Wed, 24 May 2023 00:22:07 -0400
-X-MC-Unique: F5la8j4wM1GiyPo0V-Mo0A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E5A52811E85;
-        Wed, 24 May 2023 04:22:06 +0000 (UTC)
-Received: from ovpn-8-17.pek2.redhat.com (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B0532166B25;
-        Wed, 24 May 2023 04:21:59 +0000 (UTC)
-Date:   Wed, 24 May 2023 12:21:53 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Linux-MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        mkoutny@suse.com, ming.lei@redhat.com
-Subject: Re: [PATCH] blk-cgroup: Flush stats before releasing blkcg_gq
-Message-ID: <ZG2Q4f2eL1vCTWEd@ovpn-8-17.pek2.redhat.com>
-References: <20230524011935.719659-1-ming.lei@redhat.com>
- <CAJD7tkZkbro4H-QC=RJx_dfCdGQ5c=4NJhbFrcEmQSidaaMOmg@mail.gmail.com>
- <ZG14VnHl20lt9jLc@ovpn-8-17.pek2.redhat.com>
- <cfef97ec-bb77-4ccb-a0b2-8f1eb66afeb6@redhat.com>
+        with ESMTP id S239816AbjEXGzd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 May 2023 02:55:33 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1749E199D
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 23:54:20 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-64d5b4c3ffeso394186b3a.2
+        for <cgroups@vger.kernel.org>; Tue, 23 May 2023 23:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1684911260; x=1687503260;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UAefNZG4LZt3cqRcnMIDIEa1kLQTnHp5yWi9GEafibo=;
+        b=VwbzWvjELIc1qjtZStMTGBOTUduER8iG58DJEbYd/ddVTi2TfixOAtyoDTqt2ldy1G
+         rZUgroqQKWoUlSpGOFCuPB0gGBVHAdU7VZaRr5R9xZ4B5pFdsk7GquXQywDcJi4Gb+YC
+         Wj+/HMOO86aH7ngxWmsyFbdnO8XVec2hMx8RKzrCbPk1JOCKsxar3EbCpYGFWGRp6Pa5
+         sz3ISMMJqpsw/PUsJgttzpXzHeVNDWp0i4fA9HJtJyI14tucKyu57jvOioltpBmizHGY
+         ZgAnjHtserzDng6cH5dxyXVgY8I6/vviqHVllEoaC4o9ALiNhroPlnnga0MxW8ZaZqvt
+         QqQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684911260; x=1687503260;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UAefNZG4LZt3cqRcnMIDIEa1kLQTnHp5yWi9GEafibo=;
+        b=BTHNh3nXOCxHSgsxWfRHvgL2e30mGgyR7CzRphGFPVxJX7vpEwZUWkGxmIGfhi3VzC
+         FFwjDKZu5RPW8HCCHFcuH37EEMioOHxAjzsoQ8UXUrgrUzQ2cs2e93yVDiS0UxtsKT4T
+         MrgOhraSoBQDjbhe44mCCD0mchc6RvvAR4NsSx1XokhmG48MqIY5BERKVDE7tzCTgvcs
+         Mp9c0ZM4IXKzW7K9a6IgERxM7c16JFfapp4LKnwHmXoGaK3Umf/rQdoIGC9gqgedI+H/
+         jgEfNZxlgSGOFBQWUmPiMyxBxW0gN76DJkL1hpEa9fz5mCP41FT7oBkMSswYsqJzIopx
+         OzTA==
+X-Gm-Message-State: AC+VfDx2ghsVq+79RWMF0v0X2MiAsYLfk78TiKvwkETEjzPEy3Oaw9gs
+        +UusK/r1jKobk0VIZhfYMbw6DA==
+X-Google-Smtp-Source: ACHHUZ46b/+/pmjB2wPYWnYKyYg7Mp1usod75cx5YIoqK1LZ6TviuKm/20MwM/FVmyRsqozYxXzSIA==
+X-Received: by 2002:a05:6a00:b50:b0:640:defd:a6d5 with SMTP id p16-20020a056a000b5000b00640defda6d5mr2173814pfo.12.1684911260295;
+        Tue, 23 May 2023 23:54:20 -0700 (PDT)
+Received: from [10.85.115.102] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id c21-20020aa78c15000000b0064cb6206463sm5599002pfd.85.2023.05.23.23.54.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 May 2023 23:54:19 -0700 (PDT)
+Message-ID: <4d49f7e7-2488-9690-258e-34e617cfef6f@bytedance.com>
+Date:   Wed, 24 May 2023 14:54:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [External] Re: [PATCH] cgroup: rstat: Simplified
+ cgroup_base_stat_flush() update last_bstat logic
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230518124142.57644-1-jiahao.os@bytedance.com>
+ <f39b9229-e59c-2b1c-7f3f-1aeedfad44dc@bytedance.com>
+ <5g73i4yvi4ub4dqrf4dnq5qghkyckoygmgd2st6be3gg7twww2@w6zim6nxpt3b>
+From:   Hao Jia <jiahao.os@bytedance.com>
+In-Reply-To: <5g73i4yvi4ub4dqrf4dnq5qghkyckoygmgd2st6be3gg7twww2@w6zim6nxpt3b>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cfef97ec-bb77-4ccb-a0b2-8f1eb66afeb6@redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 24, 2023 at 12:10:55AM -0400, Waiman Long wrote:
+
+
+On 2023/5/23 Michal Koutný wrote:
+> Hello Jia.
 > 
-> On 5/23/23 22:37, Ming Lei wrote:
-> > Hi Yosry,
-> > 
-> > On Tue, May 23, 2023 at 07:06:38PM -0700, Yosry Ahmed wrote:
-> > > Hi Ming,
-> > > 
-> > > On Tue, May 23, 2023 at 6:21 PM Ming Lei <ming.lei@redhat.com> wrote:
-> > > > As noted by Michal, the blkg_iostat_set's in the lockless list
-> > > > hold reference to blkg's to protect against their removal. Those
-> > > > blkg's hold reference to blkcg. When a cgroup is being destroyed,
-> > > > cgroup_rstat_flush() is only called at css_release_work_fn() which
-> > > > is called when the blkcg reference count reaches 0. This circular
-> > > > dependency will prevent blkcg and some blkgs from being freed after
-> > > > they are made offline.
-> > > I am not at all familiar with blkcg, but does calling
-> > > cgroup_rstat_flush() in offline_css() fix the problem?
-> > Except for offline, this list needs to be flushed after the associated disk
-> > is deleted.
-> > 
-> > > or can items be
-> > > added to the lockless list(s) after the blkcg is offlined?
-> > Yeah.
-> > 
-> > percpu_ref_*get(&blkg->refcnt) still can succeed after the percpu refcnt
-> > is killed in blkg_destroy() which is called from both offline css and
-> > removing disk.
+> On Fri, May 19, 2023 at 12:15:57PM +0800, Hao Jia <jiahao.os@bytedance.com> wrote:
+>> Maybe something like this?
 > 
-> As suggested by Tejun, we can use percpu_ref_tryget(&blkg->refcnt) to make
-> sure that we can only take a reference when the blkg is online. I think it
-> is a bit safer to take a percpu refcnt to avoid use after free. My other
+> (Next time please send with a version bump in subject.)
 
-blkg_release() does guarantee that no new stat associated with this
-blkg can be added any more, so what is the use-after-free?
+Thanks for your review, I will do it in the next version.
 
-> concern about your patch is that the per cpu list iterations will be done
-> multiple times when a blkcg is destroyed if many blkgs are attached to the
+> 
+> 
+>> In cgroup_base_stat_flush() function, {rstatc, cgrp}->last_bstat
+>> needs to be updated to the current {rstatc, cgrp}->bstat after the
+>> calculation.
+>>
+>> For the rstatc->last_bstat case, rstatc->bstat may be updated on other
+>> cpus during our calculation, resulting in inconsistent rstatc->bstat
+>> statistics for the two reads. So we use the temporary variable @cur to
+>> record the read statc->bstat statistics, and use @cur to update
+>> rstatc->last_bstat.
+> 
+> If a concurrent update happens after sample of bstat was taken for
+> calculation, it won't be reflected in the flushed result.
+> But subsequent flush will use the updated bstat and the difference from
+> last_bstat would account for that concurrent change (and any other
+> changes between the flushes).
+> 
+> IOW flushing cannot prevent concurrent updates but it will give
+> eventually consistent (repeated without more updates) results.
+> 
 
-Yeah, but is it one big deal? The percpu list should be flushed just in one
-of blkg's release handler.
+Yes, so we need @curr to record the bstat value after the sequence fetch 
+is completed.
 
-> blkcg. I still prefer to do it once in blkcg_destroy_blkgs(). I am going to
 
-Problem is that new stat still may be added to this list after
-percpu_ref_kill() returns.
+>> It is better for us to assign directly instead of using
+>> cgroup_base_stat_add() to update {rstatc, cgrp}->last_bstat.
+> 
+> Or do you mean the copying is faster then arithmetics?
+> 
 
-To be honest, I really hate to grab/put blkg refcnt for adding/consuming
-state, and this way is too fragile.
+Yes, but it may not be obvious.
+Another reason is that when we complete an update, we snapshot 
+last_bstat as the current bstat, which is better for readers to 
+understand. Arithmetics is somewhat obscure.
 
 Thanks,
-Ming
-
+Hao
