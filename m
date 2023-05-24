@@ -2,62 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1510570EEB9
-	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 08:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DE170F015
+	for <lists+cgroups@lfdr.de>; Wed, 24 May 2023 10:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239772AbjEXG6C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 May 2023 02:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
+        id S239899AbjEXICX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 May 2023 04:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239779AbjEXG5a (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 May 2023 02:57:30 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C39F1A7;
-        Tue, 23 May 2023 23:57:09 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QR26n3Hwrz4f41V7;
-        Wed, 24 May 2023 14:57:05 +0800 (CST)
-Received: from [10.67.110.112] (unknown [10.67.110.112])
-        by APP1 (Coremail) with SMTP id cCh0CgBHsixBtW1kQx8JJg--.55618S2;
-        Wed, 24 May 2023 14:57:06 +0800 (CST)
-Message-ID: <c56473be-facb-e0ea-246c-bdd5bf74c7cd@huaweicloud.com>
-Date:   Wed, 24 May 2023 14:57:05 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH -next] cgroup: Remove out-of-date comment in
- cgroup_migrate()
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        with ESMTP id S239155AbjEXICV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 May 2023 04:02:21 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB78A9E;
+        Wed, 24 May 2023 01:02:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6BE741F896;
+        Wed, 24 May 2023 08:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1684915339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WqlOFgy8/FolADupE6AkHXzpXFhsTG20aogxrqmC9bo=;
+        b=BMAQHwQ+haz+kQLroOOIGsgizMYwNwYD8kzZI6hAsngZzYKuB+I+0kHgf/PLLRbvr3XrM5
+        eQ7foxYuTF3KprWqB30AgvgoKKtARBsTjTqpZ5tf5BKAwlKk739ir9Q/w6w0Mx/NkS3Ssb
+        +z+6cG23iMD4wwFR4B2mYzb0aW3bP6Y=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C70313425;
+        Wed, 24 May 2023 08:02:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id PpXgEYvEbWQZUAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 24 May 2023 08:02:19 +0000
+Date:   Wed, 24 May 2023 10:02:18 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230523111456.146053-1-xiujianfeng@huaweicloud.com>
- <ZG0PYH7a9Mw50bEl@slm.duckdns.org>
-From:   Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-In-Reply-To: <ZG0PYH7a9Mw50bEl@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: cCh0CgBHsixBtW1kQx8JJg--.55618S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr48tFy7JrWUCrWrKFyfWFg_yoWxuFc_Wr
-        4jv3y8Zr95W3W7Kr1SvF4fZFn5Gr15Wr15Gw4Fka43u3WUta4rXFn7CF9aqrWrXFsF9wn8
-        CFnYv3yUXr12yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-        k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-        7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [External] Re: [PATCH] cgroup: rstat: Simplified
+ cgroup_base_stat_flush() update last_bstat logic
+Message-ID: <remnwctqmxleig7ywt6puhxnpmzjo7xm6hlfhpnul46ulfnw7j@36sbuxhuatto>
+References: <20230518124142.57644-1-jiahao.os@bytedance.com>
+ <f39b9229-e59c-2b1c-7f3f-1aeedfad44dc@bytedance.com>
+ <5g73i4yvi4ub4dqrf4dnq5qghkyckoygmgd2st6be3gg7twww2@w6zim6nxpt3b>
+ <4d49f7e7-2488-9690-258e-34e617cfef6f@bytedance.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ixixg2dethhn6gyp"
+Content-Disposition: inline
+In-Reply-To: <4d49f7e7-2488-9690-258e-34e617cfef6f@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,24 +66,37 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
+--ixixg2dethhn6gyp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2023/5/24 3:09, Tejun Heo wrote:
-> On Tue, May 23, 2023 at 07:14:56PM +0800, Xiu Jianfeng wrote:
->> From: Xiu Jianfeng <xiujianfeng@huawei.com>
->>
->> Commit 674b745e22b3 ("cgroup: remove rcu_read_lock()/rcu_read_unlock()
->> in critical section of spin_lock_irq()") has removed the rcu_read_lock,
->> which makes the comment out-of-date, so remove it.
->>
->> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> 
-> So, that removed rcu_read_lock() because it's implied by the irq disable but
-> the comment content is still useful in describing what's preventing
-> use-after-free. Can you please update the comment accordingly instead?
+On Wed, May 24, 2023 at 02:54:10PM +0800, Hao Jia <jiahao.os@bytedance.com> wrote:
+> Yes, so we need @curr to record the bstat value after the sequence fetch is
+> completed.
 
-sure, I would send a v2.
+No, I still don't see a problem that it solves. If you find incorrect
+data being reported, please explain it more/with an example.
 
-> 
-> Thanks.
-> 
+> Yes, but it may not be obvious.
+> Another reason is that when we complete an update, we snapshot last_bstat as
+> the current bstat, which is better for readers to understand. Arithmetics is
+> somewhat obscure.
 
+The readability here is subjective. It'd be interesting to have some
+data comparing arithmetics vs copying though.
+
+HTH,
+Michal
+
+--ixixg2dethhn6gyp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZG3EdwAKCRAkDQmsBEOq
+uSG7AQCCqh0Ztm3AvJ/AD3CDMG7kdKSMWs1vPOT5JeHoYIeO+QD+Nf1Fd5xQzIvV
+XFrpdN/nyCT6u8+MgTJtO0zv1YTPHgE=
+=l5cB
+-----END PGP SIGNATURE-----
+
+--ixixg2dethhn6gyp--
