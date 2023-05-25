@@ -2,61 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D4D710C4E
-	for <lists+cgroups@lfdr.de>; Thu, 25 May 2023 14:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21C0710E08
+	for <lists+cgroups@lfdr.de>; Thu, 25 May 2023 16:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241046AbjEYMro (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 May 2023 08:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S241195AbjEYOLz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 May 2023 10:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241035AbjEYMrn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 May 2023 08:47:43 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B663195;
-        Thu, 25 May 2023 05:47:23 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QRnrQ44Gqz4f3jqx;
-        Thu, 25 May 2023 20:47:18 +0800 (CST)
-Received: from [10.67.110.112] (unknown [10.67.110.112])
-        by APP1 (Coremail) with SMTP id cCh0CgAXfynWWG9kf7NgJg--.3993S2;
-        Thu, 25 May 2023 20:47:19 +0800 (CST)
-Message-ID: <399b999a-0cca-c12e-fb2f-186cb23d07dd@huaweicloud.com>
-Date:   Thu, 25 May 2023 20:47:18 +0800
+        with ESMTP id S234918AbjEYOLy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 May 2023 10:11:54 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09F6183;
+        Thu, 25 May 2023 07:11:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5A32F1FE6A;
+        Thu, 25 May 2023 14:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1685023912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s2JH6pTYcJePjQtM79Iqz39SbWKAXK4Qz2x1GSVTfLY=;
+        b=RGyV9NO3PzYGEcee4AtXtXB1xO4jeCtqPc89Ldtc0+jxV2LTOn8SQ2TVpUKhPg82a72hSf
+        YbPYy5G/nF0nG2sLTc/iU8w/kbOdF8XcQEeWGzx+nvYujx9CrkrQOgXNaZVwM/7RqJZIQQ
+        djbtpQ6hb7F/xxxVsfTH6VBOufQttEQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23246134B2;
+        Thu, 25 May 2023 14:11:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yJTQB6hsb2RpZQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 25 May 2023 14:11:52 +0000
+Date:   Thu, 25 May 2023 16:11:50 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Linux-MM <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH] blk-cgroup: Flush stats before releasing blkcg_gq
+Message-ID: <3ej42djuuzwx36yf2yeo5ggyrvogeaguos5jtve2bvuaejnwff@fak3yjwe2fbi>
+References: <20230524011935.719659-1-ming.lei@redhat.com>
+ <CAJD7tkZkbro4H-QC=RJx_dfCdGQ5c=4NJhbFrcEmQSidaaMOmg@mail.gmail.com>
+ <ZG14VnHl20lt9jLc@ovpn-8-17.pek2.redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Content-Language: en-US
-To:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org
-From:   Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-Subject: this is a test for subscription, ignore me
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: cCh0CgAXfynWWG9kf7NgJg--.3993S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYU7kC6x804xWl14x267AKxVWUJVW8JwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxv
-        r21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUU
-        UUU
-X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,BODY_SINGLE_WORD,
-        KHOP_HELO_FCRDNS,SCC_BODY_SINGLE_WORD,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yw4zsdelcidbb6wx"
+Content-Disposition: inline
+In-Reply-To: <ZG14VnHl20lt9jLc@ovpn-8-17.pek2.redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-...
 
+--yw4zsdelcidbb6wx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, May 24, 2023 at 10:37:10AM +0800, Ming Lei <ming.lei@redhat.com> wr=
+ote:
+> > I am not at all familiar with blkcg, but does calling
+> > cgroup_rstat_flush() in offline_css() fix the problem?
+>=20
+> Except for offline, this list needs to be flushed after the associated di=
+sk
+> is deleted.
+
+Why the second flush trigger?
+a) To break another ref-dependency cycle (like on the blkcg side)?
+b) To avoid stale data upon device removal?
+
+(Because b) should be unnecessary, a future reader would flush when
+needed.)
+
+Thanks,
+Michal
+
+--yw4zsdelcidbb6wx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCZG9spAAKCRAkDQmsBEOq
+ufTLAP9NX8DIiij6/hpnoy9/M+nnSBemEZ9lY1LODUguhjSJrAEA5g8mQPrBr8KR
+A7VHGk9AX3B3eIPAFYavVz4cMoIrYwE=
+=56eg
+-----END PGP SIGNATURE-----
+
+--yw4zsdelcidbb6wx--
