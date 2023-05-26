@@ -2,65 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90ADA711B50
-	for <lists+cgroups@lfdr.de>; Fri, 26 May 2023 02:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7357123DC
+	for <lists+cgroups@lfdr.de>; Fri, 26 May 2023 11:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235290AbjEZAfK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 May 2023 20:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        id S243250AbjEZJjU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 May 2023 05:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235214AbjEZAfJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 May 2023 20:35:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A7E199
-        for <cgroups@vger.kernel.org>; Thu, 25 May 2023 17:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685061260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3HkhSmcztqk7WRQegC24K1K8Fj702Fn4WVYpg4vLlng=;
-        b=CF3AVpPmm2IFmrlocxx08P3YoXCCVK1WwiW4YJfbZJZPECz0g21oV1sWLNWQvGzmKf2W6i
-        SdBAAzK4tnhdKQrbbQ4JC+VHK39RBCvZMl/2EHs+NB5L56e7PCcINKtN0Taw6OdHCNhX7q
-        9cARyB8q9XYW08benkI+2BpWpvwifgs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-190-Wm6kMQb3MvW3FH1f-sushQ-1; Thu, 25 May 2023 20:34:17 -0400
-X-MC-Unique: Wm6kMQb3MvW3FH1f-sushQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DF9E680120A;
-        Fri, 26 May 2023 00:34:16 +0000 (UTC)
-Received: from ovpn-8-21.pek2.redhat.com (ovpn-8-18.pek2.redhat.com [10.72.8.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A576400F1F;
-        Fri, 26 May 2023 00:34:09 +0000 (UTC)
-Date:   Fri, 26 May 2023 08:34:04 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        with ESMTP id S242719AbjEZJiy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 May 2023 05:38:54 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6B510D1;
+        Fri, 26 May 2023 02:38:15 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QSKbl2h7sz4f403M;
+        Fri, 26 May 2023 17:38:11 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rECfnBk1Jn9KA--.30169S3;
+        Fri, 26 May 2023 17:38:12 +0800 (CST)
+Subject: Re: [PATCH -next v2 6/6] blk-sysfs: add a new attr_group for blk_mq
+To:     Yu Kuai <yukuai1@huaweicloud.com>, hch@lst.de, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk
+Cc:     lukas.bulwahn@gmail.com, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Jay Shin <jaeshin@redhat.com>, stable@vger.kernel.org,
-        ming.lei@redhat.com
-Subject: Re: [PATCH] blk-cgroup: Flush stats before releasing blkcg_gq
-Message-ID: <ZG/+fB+f8Lf2PKc7@ovpn-8-21.pek2.redhat.com>
-References: <20230525043518.831721-1-ming.lei@redhat.com>
- <20230525160105.1968749-1-longman@redhat.com>
- <64f20e27-0927-334d-5414-9bb81d639cec@redhat.com>
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230512093554.911753-1-yukuai1@huaweicloud.com>
+ <20230512093554.911753-7-yukuai1@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <8cafbd02-182a-4071-7e04-cc6f96045852@huaweicloud.com>
+Date:   Fri, 26 May 2023 17:38:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64f20e27-0927-334d-5414-9bb81d639cec@redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+In-Reply-To: <20230512093554.911753-7-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH_rECfnBk1Jn9KA--.30169S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF47tw4rGF1fKrW8ZFyxKrg_yoWrAF4kpF
+        4DAFy8Zw10q3y7GayxJw4UXwsa9ryF9r43Xr97Kwn2kF12qw4fWryjy34UXrWxArWkWw43
+        ZF4DtrZ8ArZ3ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,75 +66,136 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 25, 2023 at 12:06:07PM -0400, Waiman Long wrote:
-> On 5/25/23 12:01, Waiman Long wrote:
-> > As noted by Michal, the blkg_iostat_set's in the lockless list hold
-> > reference to blkg's to protect against their removal. Those blkg's
-> > hold reference to blkcg. When a cgroup is being destroyed,
-> > cgroup_rstat_flush() is only called at css_release_work_fn() which
-> > is called when the blkcg reference count reaches 0. This circular
-> > dependency will prevent blkcg and some blkgs from being freed after
-> > they are made offline.
-> > 
-> > It is less a problem if the cgroup to be destroyed also has other
-> > controllers like memory that will call cgroup_rstat_flush() which will
-> > clean up the reference count. If block is the only controller that uses
-> > rstat, these offline blkcg and blkgs may never be freed leaking more
-> > and more memory over time.
-> > 
-> > To prevent this potential memory leak:
-> > 
-> > - flush blkcg per-cpu stats list in __blkg_release(), when no new stat
-> >    can be added to avoid use-after-free of the percpu blkg_iostat_set in
-> >    futue cgroup_rstat_flush*() calls.
-> > 
-> > - add a cgroup_rstat_flush_acquire() helper and call it to acquire
-> >    cgroup_rstat_lock to block concurrent execution of other
-> >    cgroup_rstat_flush*() calls
-> > 
-> > - don't grab bio->bi_blkg reference when adding the stats into blkcg's
-> >    per-cpu stat list since all stats are guaranteed to be consumed before
-> >    releasing blkg instance, and grabbing blkg reference for stats was
-> >    the most fragile part of original patch
-> > 
-> > Based on Waiman's patch:
-> > 
-> > https://lore.kernel.org/linux-block/20221215033132.230023-3-longman@redhat.com/
-> > 
-> > Fixes: 3b8cc6298724 ("blk-cgroup: Optimize blkcg_rstat_flush()")
-> > Cc: stable@vger.kernel.org
-> > Reported-by: Jay Shin <jaeshin@redhat.com>
-> > Cc: Waiman Long <longman@redhat.com>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: mkoutny@suse.com
-> > Cc: Yosry Ahmed <yosryahmed@google.com>
-> > Co-developed-by: Ming Lei <ming.lei@redhat.com>
-> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > Signed-off-by: Waiman Long <longman@redhat.com>
-> > ---
-> >   block/blk-cgroup.c     | 57 +++++++++++++++++++++++++++++++-----------
-> >   include/linux/cgroup.h |  1 +
-> >   kernel/cgroup/rstat.c  | 15 ++++++++++-
-> >   3 files changed, 57 insertions(+), 16 deletions(-)
+Hi, Christoph
+
+ÔÚ 2023/05/12 17:35, Yu Kuai Ð´µÀ:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> This is my counter-proposal to Ming's v3 patch. The major difference is that
-> I used the existing cgroup_rstat_lock instead of adding a new internal lock.
-> This minimizes performance impact to existing cgroup_rstat_flush*() call
+> Currently wbt sysfs entry is created for bio based device, and wbt can
+> be enabled for such device through sysfs while it doesn't make sense
+> because wbt can only work for rq based device. In the meantime, there
+> are other similar sysfs entries.
+> 
+> Fix this by adding a new attr_group for blk_mq, and sysfs entries will
+> only be created when the device is rq based.
+> 
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-The added internal lock has ~zero perf impact on rstat flush cause
-the lock won't be contended basically.
+Any comments about this patch?
 
-> while achieving the same objective. I am fine with Ming current v3 patch if
-> we decide to go that way.
-
-As I mentioned, the main motivation with internal lock is to make the fix as
-simple as possible since cross-subsystem change isn't involved, and I am fine
-with any following cleanup or improvement on current blkg rstat flush.
-
-Another benefit with this internal lock is that race in blkcg_reset_stats()
-can be avoided.
-
-
-Thanks, 
-Ming
+Thanks,
+Kuai
+> ---
+>   block/blk-sysfs.c | 42 +++++++++++++++++++++++++++++++-----------
+>   1 file changed, 31 insertions(+), 11 deletions(-)
+> 
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index 6c1c4ba66bc0..afc797fb0dfc 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -621,7 +621,6 @@ QUEUE_RW_ENTRY(queue_wb_lat, "wbt_lat_usec");
+>   #endif
+>   
+>   static struct attribute *queue_attrs[] = {
+> -	&queue_requests_entry.attr,
+>   	&queue_ra_entry.attr,
+>   	&queue_max_hw_sectors_entry.attr,
+>   	&queue_max_sectors_entry.attr,
+> @@ -629,7 +628,6 @@ static struct attribute *queue_attrs[] = {
+>   	&queue_max_discard_segments_entry.attr,
+>   	&queue_max_integrity_segments_entry.attr,
+>   	&queue_max_segment_size_entry.attr,
+> -	&elv_iosched_entry.attr,
+>   	&queue_hw_sector_size_entry.attr,
+>   	&queue_logical_block_size_entry.attr,
+>   	&queue_physical_block_size_entry.attr,
+> @@ -650,7 +648,6 @@ static struct attribute *queue_attrs[] = {
+>   	&queue_max_open_zones_entry.attr,
+>   	&queue_max_active_zones_entry.attr,
+>   	&queue_nomerges_entry.attr,
+> -	&queue_rq_affinity_entry.attr,
+>   	&queue_iostats_entry.attr,
+>   	&queue_stable_writes_entry.attr,
+>   	&queue_random_entry.attr,
+> @@ -658,11 +655,7 @@ static struct attribute *queue_attrs[] = {
+>   	&queue_wc_entry.attr,
+>   	&queue_fua_entry.attr,
+>   	&queue_dax_entry.attr,
+> -#ifdef CONFIG_BLK_WBT
+> -	&queue_wb_lat_entry.attr,
+> -#endif
+>   	&queue_poll_delay_entry.attr,
+> -	&queue_io_timeout_entry.attr,
+>   #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+>   	&blk_throtl_sample_time_entry.attr,
+>   #endif
+> @@ -671,16 +664,23 @@ static struct attribute *queue_attrs[] = {
+>   	NULL,
+>   };
+>   
+> +static struct attribute *blk_mq_queue_attrs[] = {
+> +	&queue_requests_entry.attr,
+> +	&elv_iosched_entry.attr,
+> +	&queue_rq_affinity_entry.attr,
+> +	&queue_io_timeout_entry.attr,
+> +#ifdef CONFIG_BLK_WBT
+> +	&queue_wb_lat_entry.attr,
+> +#endif
+> +	NULL,
+> +};
+> +
+>   static umode_t queue_attr_visible(struct kobject *kobj, struct attribute *attr,
+>   				int n)
+>   {
+>   	struct gendisk *disk = container_of(kobj, struct gendisk, queue_kobj);
+>   	struct request_queue *q = disk->queue;
+>   
+> -	if (attr == &queue_io_timeout_entry.attr &&
+> -		(!q->mq_ops || !q->mq_ops->timeout))
+> -			return 0;
+> -
+>   	if ((attr == &queue_max_open_zones_entry.attr ||
+>   	     attr == &queue_max_active_zones_entry.attr) &&
+>   	    !blk_queue_is_zoned(q))
+> @@ -689,11 +689,30 @@ static umode_t queue_attr_visible(struct kobject *kobj, struct attribute *attr,
+>   	return attr->mode;
+>   }
+>   
+> +static umode_t blk_mq_queue_attr_visible(struct kobject *kobj,
+> +					 struct attribute *attr, int n)
+> +{
+> +	struct gendisk *disk = container_of(kobj, struct gendisk, queue_kobj);
+> +	struct request_queue *q = disk->queue;
+> +
+> +	if (!queue_is_mq(q))
+> +		return 0;
+> +
+> +	if (attr == &queue_io_timeout_entry.attr && !q->mq_ops->timeout)
+> +		return 0;
+> +
+> +	return attr->mode;
+> +}
+> +
+>   static struct attribute_group queue_attr_group = {
+>   	.attrs = queue_attrs,
+>   	.is_visible = queue_attr_visible,
+>   };
+>   
+> +static struct attribute_group blk_mq_queue_attr_group = {
+> +	.attrs = blk_mq_queue_attrs,
+> +	.is_visible = blk_mq_queue_attr_visible,
+> +};
+>   
+>   #define to_queue(atr) container_of((atr), struct queue_sysfs_entry, attr)
+>   
+> @@ -738,6 +757,7 @@ static const struct sysfs_ops queue_sysfs_ops = {
+>   
+>   static const struct attribute_group *blk_queue_attr_groups[] = {
+>   	&queue_attr_group,
+> +	&blk_mq_queue_attr_group,
+>   	NULL
+>   };
+>   
+> 
 
