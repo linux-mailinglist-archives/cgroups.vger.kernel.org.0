@@ -2,62 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7604D713241
-	for <lists+cgroups@lfdr.de>; Sat, 27 May 2023 05:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2020D713243
+	for <lists+cgroups@lfdr.de>; Sat, 27 May 2023 05:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjE0D4E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 May 2023 23:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
+        id S231197AbjE0D4d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 May 2023 23:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjE0D4C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 May 2023 23:56:02 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914FA116
-        for <cgroups@vger.kernel.org>; Fri, 26 May 2023 20:56:00 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-96f5d651170so485427766b.1
-        for <cgroups@vger.kernel.org>; Fri, 26 May 2023 20:56:00 -0700 (PDT)
+        with ESMTP id S231246AbjE0D42 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 May 2023 23:56:28 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19C5194
+        for <cgroups@vger.kernel.org>; Fri, 26 May 2023 20:56:26 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-96fdc081cb3so208058666b.2
+        for <cgroups@vger.kernel.org>; Fri, 26 May 2023 20:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1685159759; x=1687751759;
+        d=google.com; s=20221208; t=1685159785; x=1687751785;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EIU3ApG2t6G3Om8A3cojlnR0RAZfWHqg0wkrw6J9EhQ=;
-        b=7anKzrx54MpIV/vXgrNEGJ+XZ3nR4S6+xWVOb3/Tt5YzVkbt7WPWY4f/AUP5W2UVr9
-         K530DnGhnTIFcYiYmBbo+tPqqc0Ukj9QD1CkrX7XYrabbntH5JpVHcroD+SlRHKtx3Rc
-         kY9L1c3K7NoOo4hOq0VERwTXnGOaLU2O0SqU/NyahwGPOOUbS5EUDCZArHOouWnL9tEg
-         LeojmsUC/tR7MDeCs6MFcte8HBoOGbF4eHruYHv8bCvGelALDHxcGpq7H+s6hSYEOfkY
-         E9QwDQeUZPLWNJY8DCUHU9Ztj6DnJmr57JCEklUa3J76GNHAbm8Up0Y+fc+yiJ39usxW
-         MKHg==
+        bh=Zcxx+uBeHJ8GiGdDOZOOVVIqwP9cLUm7L1SVeB9sLvM=;
+        b=xE6160P9Zr4wEkT61Vr5IkbHXpmY1HjWeK774oQn5uOLjZ2QEShy9mhrvVb4HqrxNS
+         Z6YAg0LrJSUZi4tWr0CbVwQP+J5RhaPpDHoV4HUQHCB33J/wh1mvABD2dO+suyipiw9p
+         QCz+GmmD3/0o1Pyp7lX+CznaXnTzdYR0Id4oWQEPZ5F2ga6slqiCNJPehrr+OrqLM2d1
+         Whe/YslfEdc084vxdVSFYv/Jl+2Z69RrvRZpAXfhZZiPq2ClZnt9quqrkENE6BIROcRp
+         P+9RUjet0hlHRR4Qtj6bY4XtxobK8M7zWElCDxcqPoakr+NiUD5EL3rinGOj0K2M14QT
+         nKRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685159759; x=1687751759;
+        d=1e100.net; s=20221208; t=1685159785; x=1687751785;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EIU3ApG2t6G3Om8A3cojlnR0RAZfWHqg0wkrw6J9EhQ=;
-        b=HKpecms6zmRXVCPd+59mct1gDmAVjGoUwbsAMgQmZqJ1oD2clFgB7+uPAFU/lCufS8
-         OLnc3d/JHxbX/8x/L/ykkePzhcGUA4Bc+V5CwQhoXH/5myKq9AlHZbxHhiHzK4FvFWwd
-         NWi5d0eNvJSRfU3DZudzNnFEhV9vGi8MF4BwkzEl5SqIft5SyGXtjaoDhbdeCHZv+WnS
-         8pthHY8SsFcbPunvuLEs5Rn73yGmEmJxis2hLVPB2qP0f3Q0xOwidAy6jk91Z2Hkycjq
-         5QYZXf/l8qpA8wgVT5kNDThlp2X/D5bKxEH+QrjjGPw/AcjOMq1OB9FkFNR7VHLR0cTr
-         D98Q==
-X-Gm-Message-State: AC+VfDxYkt/nJI0VjK5zp6w7H5OS1GEdQ8YEQL1++gVAWHsSV0+PqMRo
-        BJUjyLbjyNMOBuq1XV9B6+Tr/pPxCJweHofsttWpxQ==
-X-Google-Smtp-Source: ACHHUZ7SopEnz/q4gRtKqNlLV+UWGEEECBRV2t4umB2KkFa2iCrFA+Z7MsdbSgcdVxUu8YqiHjj2qSfN4oUKBpBNgPI=
-X-Received: by 2002:a17:906:9751:b0:971:5a79:29f2 with SMTP id
- o17-20020a170906975100b009715a7929f2mr981232ejy.15.1685159758897; Fri, 26 May
- 2023 20:55:58 -0700 (PDT)
+        bh=Zcxx+uBeHJ8GiGdDOZOOVVIqwP9cLUm7L1SVeB9sLvM=;
+        b=fVPAlE74StlRTZkp0UXl3+XYHpu4qF+18COWITDuYEcaq8EXY0jiIf9w6p3N8y2y07
+         1jIyUtaMjGJ4/xDDeNmVp9yFwTGGW5iSMeIpF/IIna28QQzgSr4mGhvFUyRNqJd6QkxF
+         6/5rKvD8NUAkW3po5mNIpJTpqyoLvcgLXQYzq3z1ee/oSWYksFWfCbKuhlgVhBqjEA81
+         +ek5HPy/6aTOAdp9tsa7uUTo0Gs3mFILLT405eUj+DYElnJUi3bqFh//D/Ffm3thc2wt
+         bF5iNZR1l1uD+0xQ2kdAL/yk5bXX/+A2uorsphdsXC1pV6ZQLOBbY6RxRwc2pkk6KRBT
+         DurA==
+X-Gm-Message-State: AC+VfDy1oDnog+bwJo42byvpOQuixcfZv68paEnVjfUWudr6sOtxeqbV
+        r9MyAhNr9T78InQRFJrKKmWVmmRbjGCF9TUEZHW9tw==
+X-Google-Smtp-Source: ACHHUZ6Frq44/ZM1/LAefqKVo+JOcYtTAHNn83kaMix4r51rZzunIi70oDj7h1R4lHYEPc3BxQhVVEKHW1NueeZXB+8=
+X-Received: by 2002:a17:907:9455:b0:94f:1c90:cb71 with SMTP id
+ dl21-20020a170907945500b0094f1c90cb71mr5112500ejc.65.1685159785332; Fri, 26
+ May 2023 20:56:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230527103126.398267-1-linmiaohe@huawei.com>
-In-Reply-To: <20230527103126.398267-1-linmiaohe@huawei.com>
+References: <20230527093353.153078-1-linmiaohe@huawei.com>
+In-Reply-To: <20230527093353.153078-1-linmiaohe@huawei.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 26 May 2023 20:55:22 -0700
-Message-ID: <CAJD7tkZhUB9N6R-1mWAPGV=awEO0Y0cmi9OmGiVhjSfdFBCirQ@mail.gmail.com>
-Subject: Re: [PATCH] memcg: remove unused mem_cgroup_from_obj()
+Date:   Fri, 26 May 2023 20:55:49 -0700
+Message-ID: <CAJD7tkbY0kXbb3r3ObgOjmSa5kmw7n1uhN=Opvumty3=i9Ev0g@mail.gmail.com>
+Subject: Re: [PATCH] cgroup: remove unused macro for_each_e_css()
 To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, akpm@linux-foundation.org,
-        muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+Cc:     lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -71,107 +69,53 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 26, 2023 at 7:40=E2=80=AFPM Miaohe Lin <linmiaohe@huawei.com> w=
+On Fri, May 26, 2023 at 6:43=E2=80=AFPM Miaohe Lin <linmiaohe@huawei.com> w=
 rote:
 >
-> The function mem_cgroup_from_obj() is not used anymore. Remove it and
-> clean up relevant comments.
+> for_each_e_css() is unused now. Remove it.
 >
 > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/memcontrol.h |  6 ------
->  mm/memcontrol.c            | 31 -------------------------------
->  2 files changed, 37 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 00a88cf947e1..ce8c2355ed9f 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1813,7 +1813,6 @@ static inline int memcg_kmem_id(struct mem_cgroup *=
-memcg)
->         return memcg ? memcg->kmemcg_id : -1;
->  }
->
-> -struct mem_cgroup *mem_cgroup_from_obj(void *p);
->  struct mem_cgroup *mem_cgroup_from_slab_obj(void *p);
->
->  static inline void count_objcg_event(struct obj_cgroup *objcg,
-> @@ -1876,11 +1875,6 @@ static inline int memcg_kmem_id(struct mem_cgroup =
-*memcg)
->         return -1;
->  }
->
-> -static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
-> -{
-> -       return NULL;
-> -}
-> -
->  static inline struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
->  {
->         return NULL;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6a3d4ce87b8a..532b29c9a0fe 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2972,37 +2972,6 @@ struct mem_cgroup *mem_cgroup_from_obj_folio(struc=
-t folio *folio, void *p)
->  /*
->   * Returns a pointer to the memory cgroup to which the kernel object is =
-charged.
->   *
-> - * A passed kernel object can be a slab object, vmalloc object or a gene=
-ric
-> - * kernel page, so different mechanisms for getting the memory cgroup po=
-inter
-> - * should be used.
-> - *
-> - * In certain cases (e.g. kernel stacks or large kmallocs with SLUB) the=
- caller
-> - * can not know for sure how the kernel object is implemented.
-> - * mem_cgroup_from_obj() can be safely used in such cases.
-> - *
-> - * The caller must ensure the memcg lifetime, e.g. by taking rcu_read_lo=
-ck(),
-> - * cgroup_mutex, etc.
-> - */
-> -struct mem_cgroup *mem_cgroup_from_obj(void *p)
-> -{
-> -       struct folio *folio;
-> -
-> -       if (mem_cgroup_disabled())
-> -               return NULL;
-> -
-> -       if (unlikely(is_vmalloc_addr(p)))
-> -               folio =3D page_folio(vmalloc_to_page(p));
-> -       else
-> -               folio =3D virt_to_folio(p);
-> -
-> -       return mem_cgroup_from_obj_folio(folio, p);
-> -}
-> -
-> -/*
-> - * Returns a pointer to the memory cgroup to which the kernel object is =
-charged.
-> - * Similar to mem_cgroup_from_obj(), but faster and not suitable for obj=
-ects,
-> - * allocated using vmalloc().
 
-Perhaps keep the line about not being suitable for objects allocated
-using vmalloc()? To be fair it's obvious from the function name, but I
-am guessing whoever added it did for a reason.
-
-I don't feel strongly either way, LGTM. I can't see any references in
-Linus's tree or mm-unstable.
+LGTM. I can't see any references in Linus's tree or mm-unstable.
 
 Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
-
+> ---
+>  kernel/cgroup/cgroup.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
+>
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 625d7483951c..413b4f1f1b70 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -689,21 +689,6 @@ EXPORT_SYMBOL_GPL(of_css);
+>                                 lockdep_is_held(&cgroup_mutex)))) { }   \
+>                 else
+>
+> -/**
+> - * for_each_e_css - iterate all effective css's of a cgroup
+> - * @css: the iteration cursor
+> - * @ssid: the index of the subsystem, CGROUP_SUBSYS_COUNT after reaching=
+ the end
+> - * @cgrp: the target cgroup to iterate css's of
 > - *
->   * A passed kernel object must be a slab object or a generic kernel page=
-.
->   *
->   * The caller must ensure the memcg lifetime, e.g. by taking rcu_read_lo=
-ck(),
+> - * Should be called under cgroup_[tree_]mutex.
+> - */
+> -#define for_each_e_css(css, ssid, cgrp)                                 =
+           \
+> -       for ((ssid) =3D 0; (ssid) < CGROUP_SUBSYS_COUNT; (ssid)++)       =
+     \
+> -               if (!((css) =3D cgroup_e_css_by_mask(cgrp,               =
+     \
+> -                                                  cgroup_subsys[(ssid)])=
+)) \
+> -                       ;                                                =
+   \
+> -               else
+> -
+>  /**
+>   * do_each_subsys_mask - filter for_each_subsys with a bitmask
+>   * @ss: the iteration cursor
 > --
 > 2.27.0
 >
