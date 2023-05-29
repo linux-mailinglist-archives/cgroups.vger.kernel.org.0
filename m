@@ -2,211 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B77714B6C
-	for <lists+cgroups@lfdr.de>; Mon, 29 May 2023 16:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E67714F77
+	for <lists+cgroups@lfdr.de>; Mon, 29 May 2023 20:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjE2ODX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 May 2023 10:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S229585AbjE2Sxm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 May 2023 14:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjE2ODX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 May 2023 10:03:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799C6E6C;
-        Mon, 29 May 2023 07:02:53 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4F3BE21AA2;
-        Mon, 29 May 2023 14:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1685368968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7GJRpbbOWjmOtMjAXUNy6RFw5qpoxHIxlBqF4FAib7E=;
-        b=PzWJFOZl5hglKjHwGxSFNG6csgGjPjfcCOSu6qaea4hDEpHamSzdd5mblQCvMY6xFMO5YP
-        Wy8pgjSViC6VqTZwueSmOMNPcclCa/lwqdmXyknyZBQD/vK1JfVjZet7E04ToMWekJxtm/
-        FkCKDmMYPAi9od8uFZKh0JI+m1s4/Wo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 259B113466;
-        Mon, 29 May 2023 14:02:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cNulCIiwdGTAMAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 29 May 2023 14:02:48 +0000
-Date:   Mon, 29 May 2023 16:02:47 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
-        <chengkaitao@didiglobal.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "pilgrimtao@gmail.com" <pilgrimtao@gmail.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 0/2] memcontrol: support cgroup level OOM protection
-Message-ID: <ZHSwhyGnPteiLKs/@dhcp22.suse.cz>
-References: <ZGtoNu7zIRRy7qK0@dhcp22.suse.cz>
- <96BFCF52-A5F6-4B73-ACAE-ACF11798E374@didiglobal.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <96BFCF52-A5F6-4B73-ACAE-ACF11798E374@didiglobal.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229457AbjE2Sxl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 May 2023 14:53:41 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F05C4
+        for <cgroups@vger.kernel.org>; Mon, 29 May 2023 11:53:40 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-ba8c9e9e164so6904866276.2
+        for <cgroups@vger.kernel.org>; Mon, 29 May 2023 11:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1685386419; x=1687978419;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fb+xGJEzAuTS5TrIgTU4fcvFK43ao8HwfzBYRc52TTY=;
+        b=S5vwol9vE0JkslbkyRPxKAkNViXqytiqtwh4nsd9eEgwmZ719gWuFJVhrVRcYMhMhH
+         I47+gsK59+oMFCcm/r1itjNdraOXhmYJZhEWSuRWoUYXc7Dp070Pa2Yyvj4dEuYLGKoh
+         AVGVBgumYkPyDju0i+9bhA5sVMRSAbgmt/bo08Ofp93ulaxvSQqkzkIXUIKt60Qxt7aS
+         ckbLK5h8mRGy+3ePq+B0w88MS07aczR+7j5ah1Mo10ytZ913dDcxeiCeTs6HWF478yhB
+         CJ70hGrv1bkk+tSU6BqdFxjeOmCN1out6pHgQpdSrk/bLD1zCrblrtDWLbN3YGdezv4T
+         flqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685386419; x=1687978419;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fb+xGJEzAuTS5TrIgTU4fcvFK43ao8HwfzBYRc52TTY=;
+        b=dCxauNaliqaGyrwlDsl0TqnApmQQ3UFqaqgBRO+uaqyccvGVrRxU9nXm0hIUjVbaYP
+         aYKah5BYWAyxWKCbpgOhc7axdu6ZzkPtjpktmjcJIVm65JYrMDChrPlan/uCqEWbkmPF
+         v5TRxNV553ogWXPZLiWH9AYMup7LTNiJpjuZudQgqVDCbaJD2r9AS/x64LuWkD+651Z3
+         SspXmPjWprURxhR6f8zPvslGH9RIHd5wHPDXjg1cxZN/6Q705/9S4VjXzrqw0fYKWQcB
+         fV6TsocD+Y3n8thi1bUABxZXuqQTAZxs/gEuyXnwPT+MBrdZGoYvZ+sxn6BBcdC/GV+f
+         xBWg==
+X-Gm-Message-State: AC+VfDx3um2AoFyvJusrDkxLlxWXREjWeigmVXeohRhsR1pEK1b6z8/C
+        Y2ycVYqhbGB9b79DMxd1R2WwudQ8ep17Uw==
+X-Google-Smtp-Source: ACHHUZ7Vn/Q5HrLEkQuw5sBuUMFb7N55w2kESh9lJCpvJqW43vVCYmwyZoVIhiVBp34GVFj710bX4NkVKlJqoQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a25:ad1c:0:b0:bac:a7d5:f895 with SMTP id
+ y28-20020a25ad1c000000b00baca7d5f895mr31364ybi.10.1685386419461; Mon, 29 May
+ 2023 11:53:39 -0700 (PDT)
+Date:   Mon, 29 May 2023 18:53:37 +0000
+In-Reply-To: <ZHOtS67ZtMPsyNVk@casper.infradead.org>
+Mime-Version: 1.0
+References: <20230527103126.398267-1-linmiaohe@huawei.com> <ZHGAcaqOx/e8lqwV@casper.infradead.org>
+ <CAJD7tkYSrVkAONXko0eE6LWS__kK_Xeto9MVGwTxuqT5j6N8RQ@mail.gmail.com>
+ <ZHIcnOV/mrkcerlG@casper.infradead.org> <CAJD7tkZ2Q1ZCqNchpiiC6FCE08dYH6tzANA=VqujeDgT8YhRUA@mail.gmail.com>
+ <D2B59104-B602-45A3-B938-AE5DC67BAC98@linux.dev> <ZHOtS67ZtMPsyNVk@casper.infradead.org>
+Message-ID: <20230529185337.3gk3ww76sdxdgv6o@google.com>
+Subject: Re: [PATCH] memcg: remove unused mem_cgroup_from_obj()
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Muchun Song <muchun.song@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vasily Averin <vasily.averin@linux.dev>, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 25-05-23 07:35:41, 程垲涛 Chengkaitao Cheng wrote:
-> At 2023-05-22 21:03:50, "Michal Hocko" <mhocko@suse.com> wrote:
-[...]
-> >> I have created a new indicator oom_kill_inherit that maintains a negative correlation 
-> >> with memory.oom.protect, so we have a ruler to measure the optimal value of 
-> >> memory.oom.protect.
-> >
-> >An example might help here.
+On Sun, May 28, 2023 at 08:36:43PM +0100, Matthew Wilcox wrote:
+> On Sun, May 28, 2023 at 09:01:37PM +0800, Muchun Song wrote:
+> > with *init_net*. If Vasily does not want to bring commit 1d0403d20f6c back,
+> > this patch LGTM. Otherwise, let's wait for Vasily.
 > 
-> In my testing case, by adjusting memory.oom.protect, I was able to significantly 
-> reduce the oom_kill_inherit of the corresponding cgroup. In a physical machine 
-> with severely oversold memory, I divided all cgroups into three categories and 
-> controlled their probability of being selected by the oom-killer to 0%,% 20, 
-> and 80%, respectively.
+> If we're not going to bring back 1d0403d20f6c then we should
+> simply revert fc4db90fe71e instead of applying this patch.
 
-I might be just dense but I am lost. Can we focus on the barebone
-semantic of the group oom selection and killing first. No magic
-auto-tuning at this stage please.
-
-> >> >> about the semantics of non-leaf memcgs protection,
-> >> >> If a non-leaf memcg's oom_protect quota is set, its leaf memcg will proportionally 
-> >> >> calculate the new effective oom_protect quota based on non-leaf memcg's quota.
-> >> >
-> >> >So the non-leaf memcg is never used as a target? What if the workload is
-> >> >distributed over several sub-groups? Our current oom.group
-> >> >implementation traverses the tree to find a common ancestor in the oom
-> >> >domain with the oom.group.
-> >> 
-> >> If the oom_protect quota of the parent non-leaf memcg is less than the sum of 
-> >> sub-groups oom_protect quota, the oom_protect quota of each sub-group will 
-> >> be proportionally reduced
-> >> If the oom_protect quota of the parent non-leaf memcg is greater than the sum 
-> >> of sub-groups oom_protect quota, the oom_protect quota of each sub-group 
-> >> will be proportionally increased
-> >> The purpose of doing so is that users can set oom_protect quota according to 
-> >> their own needs, and the system management process can set appropriate 
-> >> oom_protect quota on the parent non-leaf memcg as the final cover, so that 
-> >> the system management process can indirectly manage all user processes.
-> >
-> >I guess that you are trying to say that the oom protection has a
-> >standard hierarchical behavior. And that is fine, well, in fact it is
-> >mandatory for any control knob to have a sane hierarchical properties.
-> >But that doesn't address my above question. Let me try again. When is a
-> >non-leaf memcg potentially selected as the oom victim? It doesn't have
-> >any tasks directly but it might be a suitable target to kill a multi
-> >memcg based workload (e.g. a full container).
-> 
-> If nonleaf memcg have the higher memory usage and the smaller 
-> memory.oom.protect, it will have the higher the probability being 
-> selected by the killer. If the non-leaf memcg is selected as the oom 
-> victim, OOM-killer will continue to select the appropriate child 
-> memcg downwards until the leaf memcg is selected.
-
-Parent memcg has more or equal memory charged than its child(ren) by
-definition. Let me try to ask differently. Say you have the following
-hierarchy
-
-		  root
-		/     \
-       container_A     container_B
-     (oom.prot=100M)   (oom.prot=200M)
-     (usage=120M)      (usage=180M)
-     /     |     \
-    A      B      C
-                 / \
-		C1  C2
-
-
-container_B is protected so it should be excluded. Correct? So we are at
-container_A to chose from. There are multiple ways the system and
-continer admin might want to achieve.
-1) system admin might want to shut down the whole container.
-2) continer admin might want to shut the whole container down
-3) cont. admin might want to shut down a whole sub group (e.g. C as it
-   is a self contained workload and killing portion of it will put it into
-   inconsistent state).
-4) cont. admin might want to kill the most excess cgroup with tasks (i.e. a
-   leaf memcg).
-5) admin might want to kill a process in the most excess memcg.
-
-Now we already have oom.group thingy that can drive the group killing
-policy but it is not really clear how you want to incorporate that to
-the protection.
-
-Again, I think that an oom.protection makes sense but the semantic has
-to be very carefully thought through because it is quite easy to create
-corner cases and weird behavior. I also think that oom.group has to be
-consistent with the protection.
-
-> >> >All that being said and with the usecase described more specifically. I
-> >> >can see that memcg based oom victim selection makes some sense. That
-> >> >menas that it is always a memcg selected and all tasks withing killed.
-> >> >Memcg based protection can be used to evaluate which memcg to choose and
-> >> >the overall scheme should be still manageable. It would indeed resemble
-> >> >memory protection for the regular reclaim.
-> >> >
-> >> >One thing that is still not really clear to me is to how group vs.
-> >> >non-group ooms could be handled gracefully. Right now we can handle that
-> >> >because the oom selection is still process based but with the protection
-> >> >this will become more problematic as explained previously. Essentially
-> >> >we would need to enforce the oom selection to be memcg based for all
-> >> >memcgs. Maybe a mount knob? What do you think?
-> >> 
-> >> There is a function in the patch to determine whether the oom_protect 
-> >> mechanism is enabled. All memory.oom.protect nodes default to 0, so the function 
-> >> <is_root_oom_protect> returns 0 by default.
-> >
-> >How can an admin determine what is the current oom detection logic?
-> 
-> The memory.oom.protect are set by the administrator themselves, and they 
-> must know what the current OOM policy is. Reading the memory.oom.protect 
-> of the first level cgroup directory and observing whether it is 0 can also 
-> determine whether the oom.protect policy is enabled.
-
-How do you achieve that from withing a container which doesn't have a
-full visibility to the cgroup tree?
--- 
-Michal Hocko
-SUSE Labs
+Initially I was thinking of adding virt_addr_valid() check in the
+mem_cgroup_from_obj() but it seems like that check is not cheap on
+arm64. I don't have any quick solutions other than adding a check
+against init_net in __register_pernet_operations(). I will wait for
+couple of days for Vasily otherwise I will retry 1d0403d20f6c with the
+init_net check in __register_pernet_operations().
