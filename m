@@ -2,201 +2,213 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA7871408D
-	for <lists+cgroups@lfdr.de>; Sun, 28 May 2023 23:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DA87149D3
+	for <lists+cgroups@lfdr.de>; Mon, 29 May 2023 15:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbjE1VTn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 28 May 2023 17:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
+        id S229478AbjE2NEj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 May 2023 09:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjE1VTm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 28 May 2023 17:19:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3612C7
-        for <cgroups@vger.kernel.org>; Sun, 28 May 2023 14:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685308736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Um1A7pr7TdEip1EPUsNyisBw5ieK06CvDe/AUKbysUg=;
-        b=gMGd50ofVJzEEuqVwJzCObnJUOJ4v9788a/oVy2Cp09L29lHUAN5E8j6DpwdI70yAdnlc2
-        pnpG5TgwqJxpV5Z2OvOmfi+TLmT6w5LRIUGI349G5AXkmoAxraJObyqdbYUAgknav1Vsl/
-        1IGrn76Qbgyv7Vs/QMleGldfvEvQ2Fk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-670-QgvzmYV3MZCBaFvfULKyeQ-1; Sun, 28 May 2023 17:18:53 -0400
-X-MC-Unique: QgvzmYV3MZCBaFvfULKyeQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D7EDA800BFF;
-        Sun, 28 May 2023 21:18:51 +0000 (UTC)
-Received: from [10.22.16.37] (unknown [10.22.16.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A48E4492B0A;
-        Sun, 28 May 2023 21:18:50 +0000 (UTC)
-Message-ID: <18793f4a-fd39-2e71-0b77-856afb01547b@redhat.com>
-Date:   Sun, 28 May 2023 17:18:50 -0400
+        with ESMTP id S229576AbjE2NEO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 May 2023 09:04:14 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8CA91;
+        Mon, 29 May 2023 06:04:12 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QVG1z3HSKz4f3sjQ;
+        Mon, 29 May 2023 21:04:07 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rHFonRka0nnKQ--.55562S3;
+        Mon, 29 May 2023 21:04:06 +0800 (CST)
+Subject: Re: [PATCH] blk-iocost: use spin_lock_irqsave in
+ adjust_inuse_and_calc_cost
+To:     linan666@huaweicloud.com, tj@kernel.org, josef@toxicpanda.com,
+        axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230527091904.3001833-1-linan666@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <33d41ddd-73bd-8e12-9aba-e074c4d67deb@huaweicloud.com>
+Date:   Mon, 29 May 2023 21:04:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
-References: <ZDmOjeBVsIcgSLIV@slm.duckdns.org>
- <60ec12dc-943c-b8f0-8b6f-97c5d332144c@redhat.com>
- <46d26abf-a725-b924-47fa-4419b20bbc02@redhat.com>
- <jqkf7jkuyxqiupmxmdbmpnbpojub2pjsz3oogwncmwqdghlsgk@phsqzirmmlyl>
- <f2bd7b1e-190e-1d08-f085-b4cae36fb5be@redhat.com>
- <ZFGOTHQj3k5rzmyR@blackbook>
- <deb7b684-3d7c-b3ae-7b36-5b7ba2dd8001@redhat.com>
- <ZFUo5IYAIwTEKR4_@slm.duckdns.org>
- <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
- <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
- <ZGvHUjOCjwat91Gq@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZGvHUjOCjwat91Gq@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20230527091904.3001833-1-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgBH_rHFonRka0nnKQ--.55562S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3XrykCFW7CFy7CF43GFWfKrg_yoW7ZFW7pF
+        sagrZxAr4UZryjqa1IkF1aq395C39xC3y7Gr93K3WfAF4xur13G3WxAF40gFWqgry3AFZr
+        tF1Dt3yfuwsxAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
+        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/22/23 15:49, Tejun Heo wrote:
-> Hello, Waiman.
+Hi,
 
-Sorry for the late reply as I had been off for almost 2 weeks due to PTO.
+�� 2023/05/27 17:19, linan666@huaweicloud.com д��:
+> From: Li Nan <linan122@huawei.com>
+> 
+> adjust_inuse_and_calc_cost() use spin_lock_irq() and IRQ will be enabled
+> when unlock. DEADLOCK might happen if we have held other locks and disabled
+> IRQ before invoking it.
+> 
+> Fix it by using spin_lock_irqsave() instead, which can keep IRQ state
+> consistent with before when unlock.
+> 
+>    ================================
+>    WARNING: inconsistent lock state
+>    5.10.0-02758-g8e5f91fd772f #26 Not tainted
+>    --------------------------------
+>    inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+>    kworker/2:3/388 [HC0[0]:SC0[0]:HE0:SE1] takes:
+>    ffff888118c00c28 (&bfqd->lock){?.-.}-{2:2}, at: spin_lock_irq
+>    ffff888118c00c28 (&bfqd->lock){?.-.}-{2:2}, at: bfq_bio_merge+0x141/0x390
+>    {IN-HARDIRQ-W} state was registered at:
+>      __lock_acquire+0x3d7/0x1070
+>      lock_acquire+0x197/0x4a0
+>      __raw_spin_lock_irqsave
+>      _raw_spin_lock_irqsave+0x3b/0x60
+>      bfq_idle_slice_timer_body
+>      bfq_idle_slice_timer+0x53/0x1d0
+>      __run_hrtimer+0x477/0xa70
+>      __hrtimer_run_queues+0x1c6/0x2d0
+>      hrtimer_interrupt+0x302/0x9e0
+>      local_apic_timer_interrupt
+>      __sysvec_apic_timer_interrupt+0xfd/0x420
+>      run_sysvec_on_irqstack_cond
+>      sysvec_apic_timer_interrupt+0x46/0xa0
+>      asm_sysvec_apic_timer_interrupt+0x12/0x20
+>    irq event stamp: 837522
+>    hardirqs last  enabled at (837521): [<ffffffff84b9419d>] __raw_spin_unlock_irqrestore
+>    hardirqs last  enabled at (837521): [<ffffffff84b9419d>] _raw_spin_unlock_irqrestore+0x3d/0x40
+>    hardirqs last disabled at (837522): [<ffffffff84b93fa3>] __raw_spin_lock_irq
+>    hardirqs last disabled at (837522): [<ffffffff84b93fa3>] _raw_spin_lock_irq+0x43/0x50
+>    softirqs last  enabled at (835852): [<ffffffff84e00558>] __do_softirq+0x558/0x8ec
+>    softirqs last disabled at (835845): [<ffffffff84c010ff>] asm_call_irq_on_stack+0xf/0x20
+> 
+>    other info that might help us debug this:
+>     Possible unsafe locking scenario:
+> 
+>           CPU0
+>           ----
+>      lock(&bfqd->lock);
+>      <Interrupt>
+>        lock(&bfqd->lock);
+> 
+>     *** DEADLOCK ***
+> 
+>    3 locks held by kworker/2:3/388:
+>     #0: ffff888107af0f38 ((wq_completion)kthrotld){+.+.}-{0:0}, at: process_one_work+0x742/0x13f0
+>     #1: ffff8881176bfdd8 ((work_completion)(&td->dispatch_work)){+.+.}-{0:0}, at: process_one_work+0x777/0x13f0
+>     #2: ffff888118c00c28 (&bfqd->lock){?.-.}-{2:2}, at: spin_lock_irq
+>     #2: ffff888118c00c28 (&bfqd->lock){?.-.}-{2:2}, at: bfq_bio_merge+0x141/0x390
+> 
+>    stack backtrace:
+>    CPU: 2 PID: 388 Comm: kworker/2:3 Not tainted 5.10.0-02758-g8e5f91fd772f #26
+>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>    Workqueue: kthrotld blk_throtl_dispatch_work_fn
+>    Call Trace:
+>     __dump_stack lib/dump_stack.c:77 [inline]
+>     dump_stack+0x107/0x167
+>     print_usage_bug
+>     valid_state
+>     mark_lock_irq.cold+0x32/0x3a
+>     mark_lock+0x693/0xbc0
+>     mark_held_locks+0x9e/0xe0
+>     __trace_hardirqs_on_caller
+>     lockdep_hardirqs_on_prepare.part.0+0x151/0x360
+>     trace_hardirqs_on+0x5b/0x180
+>     __raw_spin_unlock_irq
+>     _raw_spin_unlock_irq+0x24/0x40
+>     spin_unlock_irq
+>     adjust_inuse_and_calc_cost+0x4fb/0x970
+>     ioc_rqos_merge+0x277/0x740
+>     __rq_qos_merge+0x62/0xb0
+>     rq_qos_merge
+>     bio_attempt_back_merge+0x12c/0x4a0
+>     blk_mq_sched_try_merge+0x1b6/0x4d0
+>     bfq_bio_merge+0x24a/0x390
+>     __blk_mq_sched_bio_merge+0xa6/0x460
+>     blk_mq_sched_bio_merge
+>     blk_mq_submit_bio+0x2e7/0x1ee0
+>     __submit_bio_noacct_mq+0x175/0x3b0
+>     submit_bio_noacct+0x1fb/0x270
+>     blk_throtl_dispatch_work_fn+0x1ef/0x2b0
+>     process_one_work+0x83e/0x13f0
+>     process_scheduled_works
+>     worker_thread+0x7e3/0xd80
+>     kthread+0x353/0x470
+>     ret_from_fork+0x1f/0x30
 
+So this happens when iocost is used together with bfq, performance will
+be quite bad in this case, I don't think there will be any real use
+case. However, the changes looks reasonable, feel free to add:
 
->
-> On Sun, May 07, 2023 at 09:03:44PM -0400, Waiman Long wrote:
-> ...
->>    cpuset.cpus.reserve
->>      A read-write multiple values file which exists only on root
->>      cgroup.
->>
->>      It lists all the CPUs that are reserved for adjacent and remote
->>      partitions created in the system.  See the next section for
->>      more information on what an adjacent or remote partitions is.
->>
->>      Creation of adjacent partition does not require touching this
->>      control file as CPU reservation will be done automatically.
->>      In order to create a remote partition, the CPUs needed by the
->>      remote partition has to be written to this file first.
->>
->>      A "+" prefix can be used to indicate a list of additional
->>      CPUs that are to be added without disturbing the CPUs that are
->>      originally there.  For example, if its current value is "3-4",
->>      echoing ""+5" to it will change it to "3-5".
->>
->>      Once a remote partition is destroyed, its CPUs have to be
->>      removed from this file or no other process can use them.  A "-"
->>      prefix can be used to remove a list of CPUs from it.  However,
->>      removing CPUs that are currently used in existing partitions
->>      may cause those partitions to become invalid.  A single "-"
->>      character without any number can be used to indicate removal
->>      of all the free CPUs not allocated to any partitions to avoid
->>      accidental partition invalidation.
-> Why is the syntax different from .cpus? Wouldn't it be better to keep them
-> the same?
-
-Unlike cpuset.cpus, cpuset.cpus.reserve is supposed to contains CPUs 
-that are used in multiple partitions. Also automatic reservation of 
-adjacent partitions can happen in parallel. That is why I think it will 
-be safer if we allow incremental increase or decrease of reserve CPUs to 
-be used for remote partitions. I will include this reasoning into the 
-doc file.
-
-
->>    cpuset.cpus.partition
->>      A read-write single value file which exists on non-root
->>      cpuset-enabled cgroups.  This flag is owned by the parent cgroup
->>      and is not delegatable.
->>
->>      It accepts only the following input values when written to.
->>
->>        ==========    =====================================
->>        "member"    Non-root member of a partition
->>        "root"    Partition root
->>        "isolated"    Partition root without load balancing
->>        ==========    =====================================
->>
->>      A cpuset partition is a collection of cgroups with a partition
->>      root at the top of the hierarchy and its descendants except
->>      those that are separate partition roots themselves and their
->>      descendants.  A partition has exclusive access to the set of
->>      CPUs allocated to it.  Other cgroups outside of that partition
->>      cannot use any CPUs in that set.
->>
->>      There are two types of partitions - adjacent and remote.  The
->>      parent of an adjacent partition must be a valid partition root.
->>      Partition roots of adjacent partitions are all clustered around
->>      the root cgroup.  Creation of adjacent partition is done by
->>      writing the desired partition type into "cpuset.cpus.partition".
->>
->>      A remote partition does not require a partition root parent.
->>      So a remote partition can be formed far from the root cgroup.
->>      However, its creation is a 2-step process.  The CPUs needed
->>      by a remote partition ("cpuset.cpus" of the partition root)
->>      has to be written into "cpuset.cpus.reserve" of the root
->>      cgroup first.  After that, "isolated" can be written into
->>      "cpuset.cpus.partition" of the partition root to form a remote
->>      isolated partition which is the only supported remote partition
->>      type for now.
->>
->>      All remote partitions are terminal as adjacent partition cannot
->>      be created underneath it.
-> Can you elaborate this extra restriction a bit further?
-
-Are you referring to the fact that only remote isolated partitions are 
-supported? I do not preclude the support of load balancing remote 
-partitions. I keep it to isolated partitions for now for ease of 
-implementation and I am not currently aware of a use case where such a 
-remote partition type is needed.
-
-If you are talking about remote partition being terminal. It is mainly 
-because it can be more tricky to support hierarchical adjacent 
-partitions underneath it especially if it is not isolated. We can 
-certainly support it if a use case arises. I just don't want to 
-implement code that nobody is really going to use.
-
-BTW, with the current way the remote partition is created, it is not 
-possible to have another remote partition underneath it.
-
->
-> In general, I think it'd be really helpful if the document explains the
-> reasoning behind the design decisions. ie. Why is reserving for? What
-> purpose does it serve that the regular isolated ones cannot? That'd help
-> clarifying the design decisions.
-
-I understand your concern. If you think it is better to support both 
-types of remote partitions or hierarchical adjacent partitions 
-underneath it for symmetry purpose, I can certain do that. It just needs 
-to take a bit more time.
-
-Cheers,
-Longman
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Fixes: b0853ab4a238 ("blk-iocost: revamp in-period donation snapbacks")
+> Signed-off-by: Li Nan <linan122@huawei.com>
+> ---
+>   block/blk-iocost.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+> index 82e634d552d9..7581893e0d82 100644
+> --- a/block/blk-iocost.c
+> +++ b/block/blk-iocost.c
+> @@ -2438,6 +2438,7 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
+>   	u32 hwi, adj_step;
+>   	s64 margin;
+>   	u64 cost, new_inuse;
+> +	unsigned long flags;
+>   
+>   	current_hweight(iocg, NULL, &hwi);
+>   	old_hwi = hwi;
+> @@ -2456,11 +2457,11 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
+>   	    iocg->inuse == iocg->active)
+>   		return cost;
+>   
+> -	spin_lock_irq(&ioc->lock);
+> +	spin_lock_irqsave(&ioc->lock, flags);
+>   
+>   	/* we own inuse only when @iocg is in the normal active state */
+>   	if (iocg->abs_vdebt || list_empty(&iocg->active_list)) {
+> -		spin_unlock_irq(&ioc->lock);
+> +		spin_unlock_irqrestore(&ioc->lock, flags);
+>   		return cost;
+>   	}
+>   
+> @@ -2481,7 +2482,7 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
+>   	} while (time_after64(vtime + cost, now->vnow) &&
+>   		 iocg->inuse != iocg->active);
+>   
+> -	spin_unlock_irq(&ioc->lock);
+> +	spin_unlock_irqrestore(&ioc->lock, flags);
+>   
+>   	TRACE_IOCG_PATH(inuse_adjust, iocg, now,
+>   			old_inuse, iocg->inuse, old_hwi, hwi);
+> 
 
