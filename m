@@ -2,63 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF3D71967C
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jun 2023 11:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9677196C2
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jun 2023 11:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbjFAJLh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Jun 2023 05:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        id S232782AbjFAJVv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Jun 2023 05:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjFAJLg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jun 2023 05:11:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19D61AE
-        for <cgroups@vger.kernel.org>; Thu,  1 Jun 2023 02:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685610636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g14oLQSgEmt6zzVDTbcm+P3Q+U0P9qW/qGUNJAVuUPE=;
-        b=JKnzLUBaxAeBZLwW06Ax344Kw6TSF2LUgTUazliJYwC8q9RxtVTgoLjbAgjiztwLun/oX/
-        kuZu3/V74ZePn+cJUfaCnhh6W+JNRsBd9SRjwh8rOBd0VTS+GeEhoBeZ4FV69BVooQ+nU3
-        GKPPogaxfwtCNpVRoXwH8/FWIwi8u9Y=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-78-upQ4Vy2MNdWU8MHNmnQwZg-1; Thu, 01 Jun 2023 05:10:35 -0400
-X-MC-Unique: upQ4Vy2MNdWU8MHNmnQwZg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f605aec1dcso992725e9.0
-        for <cgroups@vger.kernel.org>; Thu, 01 Jun 2023 02:10:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685610634; x=1688202634;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        with ESMTP id S232754AbjFAJVj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jun 2023 05:21:39 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AF6124
+        for <cgroups@vger.kernel.org>; Thu,  1 Jun 2023 02:21:37 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-256931ec244so450432a91.3
+        for <cgroups@vger.kernel.org>; Thu, 01 Jun 2023 02:21:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1685611297; x=1688203297;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=g14oLQSgEmt6zzVDTbcm+P3Q+U0P9qW/qGUNJAVuUPE=;
-        b=gIoz894gts0DTdtTgnjuKrJOVcH307wHCe9x8FI2badUuj+fEAR82vjaPr1VeWZ+uI
-         mrw+JXqjZ3+pgNHYr+qBQhz4Y9WZxMxLpPQGQTI6cl4eEdq627fORxcViGW92HIveB9C
-         ycr4C2dbucHfWnZiMkdx6R2LgrONZ6a/DvIP1cZbJdiFIkuTKt0bJwvSG6zdVj/bTc8x
-         +XDSiglWVVpWNzzvccxShm3RLt5YEDfGlt9Pv0pcIxdzZyZDNUlRi21oZhsJGBDqg1Nr
-         VJ432RGucQ1OJhm+1Tcng/08OlZXAzjm0C3D1Tys2M9/cw62ZaGzNvhg+thYTA6xZbIz
-         TzZg==
-X-Gm-Message-State: AC+VfDxPu7xgBd8go2/RdT1e6xPMxY12XGEQL4l97fwYPTdyucxXL1xi
-        aLGoc/W5PpROQQDoMTT7XvI/t0f8dA765TilRg2W/i4EwxTRJ08F2O5HAasoVvPQ/a/sjvMzald
-        xP59G/L7asMaNINa+Vw==
-X-Received: by 2002:a5d:65cd:0:b0:30a:de3e:9662 with SMTP id e13-20020a5d65cd000000b0030ade3e9662mr4035109wrw.5.1685610634682;
-        Thu, 01 Jun 2023 02:10:34 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6mms0A1WlCkP0K3yaI/0fZc23SLgg5alz4C88Skxnyews44HVbaLI8fulqGUNquQeEpquSQA==
-X-Received: by 2002:a5d:65cd:0:b0:30a:de3e:9662 with SMTP id e13-20020a5d65cd000000b0030ade3e9662mr4035097wrw.5.1685610634405;
-        Thu, 01 Jun 2023 02:10:34 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-242-89.dyn.eolo.it. [146.241.242.89])
-        by smtp.gmail.com with ESMTPSA id r13-20020adfce8d000000b0030630de6fbdsm9441149wrn.13.2023.06.01.02.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jun 2023 02:10:33 -0700 (PDT)
-Message-ID: <db32243e6cb70798edcf33a9d5c82a8c7ba556e2.camel@redhat.com>
-Subject: Re: [PATCH v4 4/4] sock: Remove redundant cond of memcg pressure
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>,
+        bh=+SifIOg3EEC6zrsKMH+AeZTstzDtSY/mgHTMqEQiv+Y=;
+        b=dPwWBIklySlVaBz8aeBqewiIOE0jlHpvIS+F8E+hS9vGXogaqy82OoWltppnH3cRu/
+         cyVh89Z0tPzL4LiipOoWMj4kULvV1bjyF1ODgZcwRTHTwQP4wrdSZClAe+2yEZO5k0KG
+         +xy52vL/CfNLcNbysVWiRQd2lBmFYYGdgUkRcFn06ca4weGv8vtbQLFOD98a5NvIU1h8
+         3MMB9BB/QjJxePr73CbAcbJzyv86gEBsA3+TZogVj5nah9tD21ixe85Q43JaHlS5rvph
+         JVLX9nxUx/CXzwXX6QAm7DNMOtv7MqwDiP8ypsAIRfUR7z3NRA2elUGaSxSyHZbcqIrK
+         +lMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685611297; x=1688203297;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+SifIOg3EEC6zrsKMH+AeZTstzDtSY/mgHTMqEQiv+Y=;
+        b=dgo/0eXKKnB1btY2IHhQrhaIDMvjKw+EcaDDDI2xd8SjtI7B1qgsnU6QapB7klIJle
+         t0DI+e/k9nIuhscUOvVJNXPHL/eWoZHnUcdS/VWGDSFXDcBxP95NrrozdZerNr4E/jH4
+         F6fcvQbdk2M/Yeg5RUGVAgLJN+iurNz5XlGj3xFRI/z2NAcfPB+31CUXYE4+hBHYC/oZ
+         A8N33FEOTFoIb5uInjIjgYNRJC6gOh1dH07cF3C7kKvAR5l5m8P6pVmczSIJNLjXjxD2
+         u+zmzFXjSj1VKyk0+Rq2mrC66QkKN+3AUbCHzYF/Gn/pqFDWCUgKAG1V/Y22ofuUTmBX
+         Vx3Q==
+X-Gm-Message-State: AC+VfDwWz327uPaATsPALEC4fqJSUKomsiTBvSaFsZpg+TyofXDf0cd1
+        TJGnTzjatDFf7qookOfFD3AtiA==
+X-Google-Smtp-Source: ACHHUZ7FhBkJfqewCHGUAQxAW+IJu86mq8peHjHQfuAR1O2g96/sdIGSovJaGL9FEuFwpivR11EPMA==
+X-Received: by 2002:a17:90a:8a0b:b0:255:63ae:f940 with SMTP id w11-20020a17090a8a0b00b0025563aef940mr8215670pjn.36.1685611297358;
+        Thu, 01 Jun 2023 02:21:37 -0700 (PDT)
+Received: from [10.94.58.170] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id h8-20020a17090a3d0800b00256bbfbabcfsm985328pjc.48.2023.06.01.02.21.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jun 2023 02:21:36 -0700 (PDT)
+Message-ID: <1fb805bc-baef-ee09-fa3a-d464af94751f@bytedance.com>
+Date:   Thu, 1 Jun 2023 17:21:29 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: Re: [PATCH v4 4/4] sock: Remove redundant cond of memcg pressure
+Content-Language: en-US
+To:     Paolo Abeni <pabeni@redhat.com>,
         "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -70,17 +68,16 @@ To:     Abel Wu <wuyun.abel@bytedance.com>,
 Cc:     Simon Horman <simon.horman@corigine.com>, netdev@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Thu, 01 Jun 2023 11:10:32 +0200
-In-Reply-To: <20230530114011.13368-5-wuyun.abel@bytedance.com>
 References: <20230530114011.13368-1-wuyun.abel@bytedance.com>
-         <20230530114011.13368-5-wuyun.abel@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+ <20230530114011.13368-5-wuyun.abel@bytedance.com>
+ <db32243e6cb70798edcf33a9d5c82a8c7ba556e2.camel@redhat.com>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <db32243e6cb70798edcf33a9d5c82a8c7ba556e2.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,20 +85,25 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 2023-05-30 at 19:40 +0800, Abel Wu wrote:
-> Now with the previous patch, __sk_mem_raise_allocated() considers
-> the memory pressure of both global and the socket's memcg on a func-
-> wide level,=C2=A0
+On 6/1/23 5:10 PM, Paolo Abeni wrote:
+> On Tue, 2023-05-30 at 19:40 +0800, Abel Wu wrote:
+>> Now with the previous patch, __sk_mem_raise_allocated() considers
+>> the memory pressure of both global and the socket's memcg on a func-
+>> wide level,
+> 
+> Since the "previous patch" (aka "sock: Consider memcg pressure when
+> raising sockmem") has been dropped in this series revision, I guess
+> this patch should be dropped, too?
 
-Since the "previous patch" (aka "sock: Consider memcg pressure when
-raising sockmem") has been dropped in this series revision, I guess
-this patch should be dropped, too?
+Yes indeed, these two patches should go together. Sorry for my
+carelessness.
 
-Is this targeting the 'net-next' tree or the 'net' one? please specify
-the target tree into the subj line. I think we could consider net-next
-for this series, given the IMHO not trivial implications.
+> 
+> Is this targeting the 'net-next' tree or the 'net' one? please specify
+> the target tree into the subj line. I think we could consider net-next
+> for this series, given the IMHO not trivial implications.
 
-Cheers,
+Got it, I will resend this series based on net-next.
 
-Paolo
-
+Thanks!
+	Abel
