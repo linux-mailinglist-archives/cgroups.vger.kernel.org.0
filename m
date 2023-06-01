@@ -2,80 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C36B7190AD
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jun 2023 04:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BF8719145
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jun 2023 05:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbjFACsK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 31 May 2023 22:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S230123AbjFADWH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 31 May 2023 23:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjFACsJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 31 May 2023 22:48:09 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B59101;
-        Wed, 31 May 2023 19:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685587688; x=1717123688;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=tTJ1vvZADbL8vUVkExWcnitnFYjIscYcfqdFABJhLdM=;
-  b=epapZFmjYn6sNqcIZEE09w5a/MsZZRWS3T7nEitxGPt/qOj3fa49Lm3+
-   /WCWuKGf2flF/KwXKEgXE7eEBnECgRf4lEBMtI01W+7P9hHpiZL9fXm5i
-   esd+hcLyjl5IvuHrzYqjnk7b8dlmdDnS/ePIEWMPUeCNcPH0jsq/I9P8C
-   NI3MumFHrCU2qo6Lv8uaceIQQWWb3oyjX/hHJ6KH4cKhsUmLUREAfzeV+
-   EAqjusUrcInXnHSc60kjxLndfpMUc8mBL4TaEot7AJ0Ckg8JIqVfUIQIw
-   GJR88ey/VYkL+kogJllGaskVxIdBvXfMvn9gm8ENUJnQDEVMVynwkvNT5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10727"; a="441790594"
-X-IronPort-AV: E=Sophos;i="6.00,207,1681196400"; 
-   d="scan'208";a="441790594"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2023 19:48:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10727"; a="881442782"
-X-IronPort-AV: E=Sophos;i="6.00,207,1681196400"; 
-   d="scan'208";a="881442782"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga005.jf.intel.com with ESMTP; 31 May 2023 19:48:07 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 31 May 2023 19:48:06 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Wed, 31 May 2023 19:48:06 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.170)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Wed, 31 May 2023 19:48:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LxAHBX7GIVAunhZg4RkCCT3XD7RrlMfunFICuVFduMYJOMPnbA8a6UzdPOnDJ8VeYJV1P91XWc/0rKM6sKT8EK9kkVYvQaN8Ytl742jNQm1ZVrLsNToh16uUsHAnuyQWp8gAQoy4O/gNZHl6lK2C1oulgmuLdrJuFgLJ5fFlv7hIKVG/bs/gnGQJZZjtIDQspiwhv47Dwp7bNmPj+zFKIBhWJGemuZ2gMSQ9XgfBkLjMXIM3nF+6gViMAardRtE+S7al0nVuzcnI4UVPbHZ+eoRYNA7bWgJZN+QNuEihkYOWlqtE6+1h+EYUmL25FLCzXeTkKsxfjD0m4oAu8udaQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5J8Q2KiQ547USiBfKGXTxWDzgoZ6pnGsod8ikWnEWeg=;
- b=CqofTOlQITI30d+wLhtrbHBN3rj51z36U4qRUwV18AqAG8+2E1meH/3mG3zuTkiQTc8SzeBBsIuEHyRaRWw41Fa8E3TA/Bpqvy6gz/wnku5MRA3QcTXdEMA8Ce1hJhDOijofjSSwT05vEMVslkp9nbHvZxln+FZDC8M4AwTvo0aI+dNx6NsbQpDVy/BdQJqJZ6JpoXMZb+NfTDjixRRK1GpMkxRI+LmzhFwbSf7Rg5xV9YbhdJ33COZLYxpBmRBrCN/CFcAdDRRk/dbfQRCMuVlCvzr/agr6u/MEUBgveqxs3f8n22HjRNgY6H+Cm+d5mmANeguGrIzAI092h9Jw/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CH3PR11MB7345.namprd11.prod.outlook.com (2603:10b6:610:14a::9)
- by MW4PR11MB7056.namprd11.prod.outlook.com (2603:10b6:303:21a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.22; Thu, 1 Jun
- 2023 02:48:04 +0000
-Received: from CH3PR11MB7345.namprd11.prod.outlook.com
- ([fe80::242e:f580:7242:f039]) by CH3PR11MB7345.namprd11.prod.outlook.com
- ([fe80::242e:f580:7242:f039%6]) with mapi id 15.20.6433.022; Thu, 1 Jun 2023
- 02:48:04 +0000
-From:   "Zhang, Cathy" <cathy.zhang@intel.com>
-To:     Shakeel Butt <shakeelb@google.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>
-CC:     "Yin, Fengwei" <fengwei.yin@intel.com>,
-        "Tang, Feng" <feng.tang@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Linux MM <linux-mm@kvack.org>,
+        with ESMTP id S229636AbjFADWG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 31 May 2023 23:22:06 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B70124
+        for <cgroups@vger.kernel.org>; Wed, 31 May 2023 20:22:05 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f6a6b9bebdso43665e9.0
+        for <cgroups@vger.kernel.org>; Wed, 31 May 2023 20:22:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1685589723; x=1688181723;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qStCg7KeACsi2KVI6FrJ4HwOilw06iHPCAkOe/uQA0Q=;
+        b=F+a3gWbqc5yvzXtyB3N2bGHooXmHV7Le8S7sW/yVCLU1xCJkFBNuoEDREeMI6S9a/u
+         lEROE+8+MoRFn4wAK/rstppBHdPTTqAgNqGrFvTfpI9msilONOo3t8TLTVwLryJfLfPR
+         ZIP4335XuiBknLIzEDoiQkYlG1esppjFJCpnROVgTEvdgS1jX0CBispLOZR21JAYON0+
+         yZL9aEcdajnFvUdH8HjETBefVAUJ3Osp5WDLyoJOYd9jkttb/DB7HSDDnxoxexiFXXOd
+         4DL2z1hWQ6cii5dD8B6ar/6dErmSUvHLdtgMEUIsXjyEaXPpt0mzvHis8tbBNdpUNcqy
+         E0fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685589723; x=1688181723;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qStCg7KeACsi2KVI6FrJ4HwOilw06iHPCAkOe/uQA0Q=;
+        b=g7VovwIJvMfs6szLStWFlKvY81m3PT27UGTHu0nOCOwVXi/LON+dfyefwYgKlHrdg+
+         y1xB4ZicMl5PxQZtVPZmmdOH/PaIfVgBLeNCL2kLVY18MCfhbGvHSq0p/c7JXWnY0oiZ
+         9SqgZwYRg77FBb4xET10zT+mLjM+kP7XvUqueB+JINpWjq4PSQGE/cale2cDLfU8F9tC
+         e2OcnrYeDpBeq4B/8N7U4hKPS1NG+h/xWq21TIKziPSfGC7TWL7p8udZD50tiX3RjHbm
+         666+hFUGrX66QXZUoASU4uERccvOW6Bqr9czPoiY5OtYkLYqfqpPHTfNMhHoPiEOWaaN
+         olqw==
+X-Gm-Message-State: AC+VfDx1RMNqFEVxEGCQS4k0gCgir97wzEGgSr4qQPKckOjhPZhauu1F
+        q2l8sz8oO7COVDH0Qo5xGJkQhXYaot2dLPfXxYARBw==
+X-Google-Smtp-Source: ACHHUZ736YceZpdtvfKwWNDiZOp/Z6AYQZvPcY7aL4/Vy7gmo6ngT95goGJUW1bqEWgF9nWI2MOKi5lNmdon2p3yUaU=
+X-Received: by 2002:a05:600c:82c9:b0:3f4:df95:17e0 with SMTP id
+ eo9-20020a05600c82c900b003f4df9517e0mr62557wmb.5.1685589723336; Wed, 31 May
+ 2023 20:22:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <CH3PR11MB7345DBA6F79282169AAFE9E0FC759@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <20230512171702.923725-1-shakeelb@google.com> <CH3PR11MB7345035086C1661BF5352E6EFC789@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CALvZod7n2yHU8PMn5b39w6E+NhLtBynDKfo1GEfXaa64_tqMWQ@mail.gmail.com>
+ <CH3PR11MB7345E9EAC5917338F1C357C0FC789@CH3PR11MB7345.namprd11.prod.outlook.com>
+ <CALvZod6txDQ9kOHrNFL64XiKxmbVHqMtWNiptUdGt9UuhQVLOQ@mail.gmail.com>
+ <ZGMYz+08I62u+Yeu@xsang-OptiPlex-9020> <20230517162447.dztfzmx3hhetfs2q@google.com>
+ <ZHcJUF4f9VcnyGVt@xsang-OptiPlex-9020> <20230531194520.qhvibyyaqg7vwi6s@google.com>
+ <CH3PR11MB73454186CA28AE6ACCEA9674FC499@CH3PR11MB7345.namprd11.prod.outlook.com>
+In-Reply-To: <CH3PR11MB73454186CA28AE6ACCEA9674FC499@CH3PR11MB7345.namprd11.prod.outlook.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 1 Jun 2023 05:21:51 +0200
+Message-ID: <CANn89iLPbd3JDvFCgvZO_1sppCyFDFQ_fqJy3kKBAucJrbm_vw@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper size
+To:     "Zhang, Cathy" <cathy.zhang@intel.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        "Sang, Oliver" <oliver.sang@intel.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Linux MM <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
@@ -88,139 +77,84 @@ CC:     "Yin, Fengwei" <fengwei.yin@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "Li, Philip" <philip.li@intel.com>,
         "Liu, Yujie" <yujie.liu@intel.com>
-Subject: RE: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper
- size
-Thread-Topic: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a proper
- size
-Thread-Index: AQHZgVHu7/SNtT9IvkyNelU1xcwWA69RtOMAgAAGxOCAAAwNMIAAEO+AgAAwgdCAAA4vgIAAB2YAgAEwMBCAABKHgIAAKNbwgAAVVACAABAwAIAAMNEAgABhfVCAAGbfEIAADugAgAATvZCAAM4SAIAAWFPwgAANFgCAAB1pgIAAB41ggADEcICAA9Lr8IAACR4AgAAk3qCAAOD6gIAApqKAgAJEjYCAFYB+AIAAuC4AgAB1rLA=
-Date:   Thu, 1 Jun 2023 02:48:04 +0000
-Message-ID: <CH3PR11MB73454186CA28AE6ACCEA9674FC499@CH3PR11MB7345.namprd11.prod.outlook.com>
-References: <CH3PR11MB7345DBA6F79282169AAFE9E0FC759@CH3PR11MB7345.namprd11.prod.outlook.com>
- <20230512171702.923725-1-shakeelb@google.com>
- <CH3PR11MB7345035086C1661BF5352E6EFC789@CH3PR11MB7345.namprd11.prod.outlook.com>
- <CALvZod7n2yHU8PMn5b39w6E+NhLtBynDKfo1GEfXaa64_tqMWQ@mail.gmail.com>
- <CH3PR11MB7345E9EAC5917338F1C357C0FC789@CH3PR11MB7345.namprd11.prod.outlook.com>
- <CALvZod6txDQ9kOHrNFL64XiKxmbVHqMtWNiptUdGt9UuhQVLOQ@mail.gmail.com>
- <ZGMYz+08I62u+Yeu@xsang-OptiPlex-9020>
- <20230517162447.dztfzmx3hhetfs2q@google.com>
- <ZHcJUF4f9VcnyGVt@xsang-OptiPlex-9020>
- <20230531194520.qhvibyyaqg7vwi6s@google.com>
-In-Reply-To: <20230531194520.qhvibyyaqg7vwi6s@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH3PR11MB7345:EE_|MW4PR11MB7056:EE_
-x-ms-office365-filtering-correlation-id: 9fd368a7-2d00-46f0-5f3f-08db624a9f83
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qgT8E4Z182ACZNP5/YGDERr4OJ4Vpu96zc0+vSaNbkQSy3p7q+yGHQshIOCcLv/gS/lyWBcEQN1sb3ZeVlx6vZeYczOlXnSShc2U/kODql/05i23pMnHnvYdhDNnjezuomAPIpEpZhajdO/XT9759bGbQc1GlVM2zAwHI8AVHyWDl3PPgyaCwtEdnWpf3oDtaBKjC0QqRLFhnGF0WrF5sO8nrIQKXOAbITlgIBKQkqbndRHblQnG6nbUJb7duUvbHjeoXVVbrkJ4xOPli2m5EZEsgW+0lTIJFcIXINY1DGxITs68dEO+p9mZaRwvf8ZR1sYid4GBALqyR2ldve8vN8NkEmVArVJizKald6KlcF4IUiAgOhbYVjhyMhsaOzcud/yZZBMjSOordXgk3AzjzYMiqFt8i1JAlMat6pzqu2EGz4EQD5bQHZBeCtcNTcqsQum08/GzZH8yzOomN0nmGyZShFANPm/AZzYja1cyZ9hZjI4pblDn0N/uc4xuRyv18a1oH/EcWowI8+/K/bBsGCVl7ULYXkDOE5KusoLZHi2bJWbkYnxBmq25GObuiV/FwRXs5+wcnlFkVBxAYX7kipzHBqrdQkJ4aoZfBlr93lsydEknmllqToJvQDf0GSXm
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB7345.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(39860400002)(346002)(396003)(136003)(376002)(451199021)(38100700002)(83380400001)(122000001)(86362001)(4326008)(6636002)(478600001)(76116006)(64756008)(66946007)(66446008)(66476007)(66556008)(2906002)(54906003)(110136005)(186003)(7696005)(53546011)(9686003)(6506007)(71200400001)(316002)(107886003)(82960400001)(52536014)(26005)(5660300002)(55016003)(8676002)(38070700005)(8936002)(33656002)(41300700001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3ErN1QNBX2fSRoypM/8sfmpk4UJH3GBAH0eFjdRqcF9lEZjQiVNyhwNvW94U?=
- =?us-ascii?Q?8IPvWKXNFlHhZL5c7xbZhDvqErnN0MZCvIjR+VZavzDDC+FRlaIFdtjmmV40?=
- =?us-ascii?Q?h1Zf9WYP9uqY8ZhnbpqQjejfq/HursInLKuRlmXPyLMsX31KU+M5f1YbTEm0?=
- =?us-ascii?Q?tg4jDdvOEGdKA9uRltO763S/oUPQc/6U4rXZzTdRZ8V7eaHe1PxwaFn4ek9G?=
- =?us-ascii?Q?sxmHMPf0kWHpLjVz/6kGHdw75mrwJmN38LmLBj0Y7MwscI57rH0+7miIXpro?=
- =?us-ascii?Q?iqXIlutd6IvW72Sn/H/+1N4U/ykUFTkR3cPo5rupn8uUjI2ISICMrdOzUndw?=
- =?us-ascii?Q?qlCQznP36Aid3Y+qw1NxIZPx4JhPT2n4L4zID4eG7TAiPLK04OkNspZ1zKF1?=
- =?us-ascii?Q?3cRzPDzVY6MGh3qW4f9gbwy42KueSaGk24/fsaom/s/YR474SKOOcZS+GhC5?=
- =?us-ascii?Q?5e4w6eDd1cnQHW/q22nTXmm1x8stoUU7eO6Wd25s/fyxB2CjXoSaWOlbdusB?=
- =?us-ascii?Q?Nke7uoy4xln+NNGQq71nF6ATxcyRzihFNidRrwc93k1+LtSXB5W73K2Kk9Te?=
- =?us-ascii?Q?p7We1gmGb6Dr8U/7h3Aj05mkjJg6fLnrXxAsVcbDQ6hRLVw7e92kPBl7Y5RZ?=
- =?us-ascii?Q?GmPt6lFMgwGJzWYU5YCpCERT8hZL8HX8nx1S82qHLUioBLL7CNmxDcGD821C?=
- =?us-ascii?Q?5VbjK53yigOtXOxmlF0/o2e1K03kOf5KhPSZBMJI+DIAGOxm6vQxyNGjY0Z/?=
- =?us-ascii?Q?yRJfifS9jns7jrYTkLrzr7trU+qqd5Fhj8JtD/68jz/ojc8O6vo3NebnEhnd?=
- =?us-ascii?Q?eUI+LUpZtHMUmyiHBzxzZ73/VoaWx9P99h+0SobT1XMJVTYNLsjcnS8SD7T4?=
- =?us-ascii?Q?8uhKK827f6EX3AqEl6KQJVXEGSuM+c5MDzpabf2C/PfRPbR14e8stMsy2UrA?=
- =?us-ascii?Q?/jUkwGsS7GlVqUYN30rasLYEqD4mHkW3YMk8hXDFeoeyc+3QNPgw5fCGPXGF?=
- =?us-ascii?Q?Q3ZwPJGPV7A8KpWIRnp+4FZ3djc7GFMqRhoVrt+EtKB69zmBMQNGW40VDG/T?=
- =?us-ascii?Q?rc3W2UfLgTTd6y3lcg9K/TyGWuNpnr2qBrMqWw4StIQLFnyzbyjnjSAFqBKv?=
- =?us-ascii?Q?KLnMPUYbz3O6syUGasRntmYBYYPkBDXEiqXd3Gn7I2LJjk3YJkHFY5MQxBu3?=
- =?us-ascii?Q?kG+fMh6YOgbW5GjFivfBrMmmWgAfLvM51LWJo4OiaL2jTvVFUY8dU8IW2Yan?=
- =?us-ascii?Q?AM9YIWTAKRVQELl9UeHzZH9rOa5tLyUspvsj87GFtromnPQAtma2veCIF/ZD?=
- =?us-ascii?Q?WhrSZEt2RTQGx3otU1qx+hgSoIOfQCdpM1O65jqsmV2CL+HzFgraiBSBW9TV?=
- =?us-ascii?Q?TjuH9ATN0nUQuDJH4iPCWFsf7ddh8GKYJc3ZVSpNq4VRBr13EfsPpDK3UMZo?=
- =?us-ascii?Q?P8lVRImLVkfPhnpZcfdSnrPGR3A2Rp3nzGOb7dPnbzIHwwvK2Fs5jLoTPwR+?=
- =?us-ascii?Q?v7U9GsOxpY6vXTha6uWcgcxxbYoW2nCrWL5AwJNjD5TzGWAM4hezwTHDtV3n?=
- =?us-ascii?Q?4V3IGytbTmptTuHYumtwIYoOLqMDocpp1WM4vGlG?=
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB7345.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fd368a7-2d00-46f0-5f3f-08db624a9f83
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2023 02:48:04.5798
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +5VmIaswvHnY7lpH0Lfu0sdPmCrMp/QomP0K41MiQGW5dMp1/XjY4ahTgaj59J/uEx+ZlTHMcmwaYe11Gc8hTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7056
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Shakeel Butt <shakeelb@google.com>
-> Sent: Thursday, June 1, 2023 3:45 AM
-> To: Sang, Oliver <oliver.sang@intel.com>
-> Cc: Zhang, Cathy <cathy.zhang@intel.com>; Yin, Fengwei
-> <fengwei.yin@intel.com>; Tang, Feng <feng.tang@intel.com>; Eric Dumazet
-> <edumazet@google.com>; Linux MM <linux-mm@kvack.org>; Cgroups
-> <cgroups@vger.kernel.org>; Paolo Abeni <pabeni@redhat.com>;
-> davem@davemloft.net; kuba@kernel.org; Brandeburg, Jesse
-> <jesse.brandeburg@intel.com>; Srinivas, Suresh
-> <suresh.srinivas@intel.com>; Chen, Tim C <tim.c.chen@intel.com>; You,
-> Lizhen <lizhen.you@intel.com>; eric.dumazet@gmail.com;
-> netdev@vger.kernel.org; Li, Philip <philip.li@intel.com>; Liu, Yujie
-> <yujie.liu@intel.com>
-> Subject: Re: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a pro=
-per
-> size
->=20
-> Hi Oliver,
->=20
-> On Wed, May 31, 2023 at 04:46:08PM +0800, Oliver Sang wrote:
-> [...]
+On Thu, Jun 1, 2023 at 4:48=E2=80=AFAM Zhang, Cathy <cathy.zhang@intel.com>=
+ wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Shakeel Butt <shakeelb@google.com>
+> > Sent: Thursday, June 1, 2023 3:45 AM
+> > To: Sang, Oliver <oliver.sang@intel.com>
+> > Cc: Zhang, Cathy <cathy.zhang@intel.com>; Yin, Fengwei
+> > <fengwei.yin@intel.com>; Tang, Feng <feng.tang@intel.com>; Eric Dumazet
+> > <edumazet@google.com>; Linux MM <linux-mm@kvack.org>; Cgroups
+> > <cgroups@vger.kernel.org>; Paolo Abeni <pabeni@redhat.com>;
+> > davem@davemloft.net; kuba@kernel.org; Brandeburg, Jesse
+> > <jesse.brandeburg@intel.com>; Srinivas, Suresh
+> > <suresh.srinivas@intel.com>; Chen, Tim C <tim.c.chen@intel.com>; You,
+> > Lizhen <lizhen.you@intel.com>; eric.dumazet@gmail.com;
+> > netdev@vger.kernel.org; Li, Philip <philip.li@intel.com>; Liu, Yujie
+> > <yujie.liu@intel.com>
+> > Subject: Re: [PATCH net-next 1/2] net: Keep sk->sk_forward_alloc as a p=
+roper
+> > size
 > >
-> > we applied below patch upon v6.4-rc2, so far, we didn't spot out
-> > performance impacts of it to other tests.
+> > Hi Oliver,
 > >
-> > but we found -7.6% regression of netperf.Throughput_Mbps
+> > On Wed, May 31, 2023 at 04:46:08PM +0800, Oliver Sang wrote:
+> > [...]
+> > >
+> > > we applied below patch upon v6.4-rc2, so far, we didn't spot out
+> > > performance impacts of it to other tests.
+> > >
+> > > but we found -7.6% regression of netperf.Throughput_Mbps
+> > >
 > >
->=20
-> Thanks, this is what I was looking for. I will dig deeper and decide how =
+> > Thanks, this is what I was looking for. I will dig deeper and decide ho=
+w to
+> > proceed (i.e. improve this patch or work on long term approach).
+>
+> Hi Shakeel,
+> If I understand correctly, I think the long-term goal you mentioned is to
+> implement a per-memcg per-cpu cache or a percpu_counter solution, right?
+> A per-memcg per-cpu cache solution can avoid the uncharge overhead and
+> reduce charge overhead, while the percpu_counter solution can help avoid
+> the charge overhead ultimately. It seems both are necessary and complex.
+>
+> The above is from memory side, regarding to our original proposal that is=
+ to
+> tune the reclaim threshold from network side, Eric and you worry about th=
+at
+> it might re-introduce the OOM issue. I see the following two interfaces i=
+n
+> network stack, which indicate the memory usage status, so is it possible =
 to
-> proceed (i.e. improve this patch or work on long term approach).
+> tune the reclaim threshold to smaller when enter memory pressure and set
+> it to 64K when leave memory pressure? How do you think?
+>         void                    (*enter_memory_pressure)(struct sock *sk)=
+;
+>         void                    (*leave_memory_pressure)(struct sock *sk)=
+;
+>
 
-Hi Shakeel,
-If I understand correctly, I think the long-term goal you mentioned is to
-implement a per-memcg per-cpu cache or a percpu_counter solution, right?
-A per-memcg per-cpu cache solution can avoid the uncharge overhead and
-reduce charge overhead, while the percpu_counter solution can help avoid
-the charge overhead ultimately. It seems both are necessary and complex.
-
-The above is from memory side, regarding to our original proposal that is t=
-o
-tune the reclaim threshold from network side, Eric and you worry about that
-it might re-introduce the OOM issue. I see the following two interfaces in
-network stack, which indicate the memory usage status, so is it possible to
-tune the reclaim threshold to smaller when enter memory pressure and set
-it to 64K when leave memory pressure? How do you think?
-        void                    (*enter_memory_pressure)(struct sock *sk);
-        void                    (*leave_memory_pressure)(struct sock *sk);
-
+No it is not possible to reclaim 'the threshold' when 10,000,000
+sockets are alive and kept
+a budget around 64KB.
+We do not have a shrinker and we do not want one.
+The only sensible solution is per-cpu cache.
+This was done in core TCP stack, a similar solution is needed in
+memcg, if memcg has to be used.
