@@ -2,38 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB07E720E73
-	for <lists+cgroups@lfdr.de>; Sat,  3 Jun 2023 09:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08774720E77
+	for <lists+cgroups@lfdr.de>; Sat,  3 Jun 2023 09:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbjFCHNT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 3 Jun 2023 03:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S229539AbjFCHVa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 3 Jun 2023 03:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjFCHNS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Jun 2023 03:13:18 -0400
+        with ESMTP id S229513AbjFCHV3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Jun 2023 03:21:29 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9C4D3;
-        Sat,  3 Jun 2023 00:13:16 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QY9y50hcDztQWp;
-        Sat,  3 Jun 2023 15:10:53 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3041180;
+        Sat,  3 Jun 2023 00:21:28 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QYB7Y07PXztQbQ;
+        Sat,  3 Jun 2023 15:19:05 +0800 (CST)
 Received: from huawei.com (10.175.104.170) by canpemm500002.china.huawei.com
  (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sat, 3 Jun
- 2023 15:13:10 +0800
+ 2023 15:21:22 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <lizefan.x@bytedance.com>, <tj@kernel.org>, <hannes@cmpxchg.org>
-CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <akpm@linux-foundation.org>
+CC:     <muchun.song@linux.dev>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH] cgroup: make cgroup_is_threaded() and cgroup_is_thread_root() static
-Date:   Sat, 3 Jun 2023 15:13:04 +0800
-Message-ID: <20230603071304.1077085-1-linmiaohe@huawei.com>
+Subject: [PATCH] memcg: use helper macro FLUSH_TIME
+Date:   Sat, 3 Jun 2023 15:21:16 +0800
+Message-ID: <20230603072116.1101690-1-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.104.170]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  canpemm500002.china.huawei.com (7.192.104.244)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -45,49 +48,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-They're only called inside cgroup.c. Make them static.
+Use helper macro FLUSH_TIME to indicate the flush time to improve the
+readability a bit. No functional change intended.
 
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- kernel/cgroup/cgroup-internal.h | 2 --
- kernel/cgroup/cgroup.c          | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ mm/memcontrol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index 367b0a42ada9..c56071f150f2 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -220,8 +220,6 @@ static inline void get_css_set(struct css_set *cset)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d8569594239c..f204c9f2e69c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5397,7 +5397,7 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
  
- bool cgroup_ssid_enabled(int ssid);
- bool cgroup_on_dfl(const struct cgroup *cgrp);
--bool cgroup_is_thread_root(struct cgroup *cgrp);
--bool cgroup_is_threaded(struct cgroup *cgrp);
- 
- struct cgroup_root *cgroup_root_from_kf(struct kernfs_root *kf_root);
- struct cgroup *task_cgroup_from_root(struct task_struct *task,
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 8b8ca2e01019..824e3b465f6f 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -357,7 +357,7 @@ static bool cgroup_has_tasks(struct cgroup *cgrp)
- 	return cgrp->nr_populated_csets;
- }
- 
--bool cgroup_is_threaded(struct cgroup *cgrp)
-+static bool cgroup_is_threaded(struct cgroup *cgrp)
- {
- 	return cgrp->dom_cgrp != cgrp;
- }
-@@ -396,7 +396,7 @@ static bool cgroup_can_be_thread_root(struct cgroup *cgrp)
- }
- 
- /* is @cgrp root of a threaded subtree? */
--bool cgroup_is_thread_root(struct cgroup *cgrp)
-+static bool cgroup_is_thread_root(struct cgroup *cgrp)
- {
- 	/* thread root should be a domain */
- 	if (cgroup_is_threaded(cgrp))
+ 	if (unlikely(mem_cgroup_is_root(memcg)))
+ 		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
+-				   2UL*HZ);
++				   FLUSH_TIME);
+ 	lru_gen_online_memcg(memcg);
+ 	return 0;
+ offline_kmem:
 -- 
 2.27.0
 
