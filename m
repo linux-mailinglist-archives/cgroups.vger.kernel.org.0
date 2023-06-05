@@ -2,70 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1E77230AD
-	for <lists+cgroups@lfdr.de>; Mon,  5 Jun 2023 22:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EDC723158
+	for <lists+cgroups@lfdr.de>; Mon,  5 Jun 2023 22:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbjFEUGQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Jun 2023 16:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        id S229742AbjFEU1l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Jun 2023 16:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjFEUGN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Jun 2023 16:06:13 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA720D9;
-        Mon,  5 Jun 2023 13:06:10 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-53202149ae2so3058380a12.3;
-        Mon, 05 Jun 2023 13:06:10 -0700 (PDT)
+        with ESMTP id S232454AbjFEU1k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Jun 2023 16:27:40 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8F298;
+        Mon,  5 Jun 2023 13:27:35 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b01dac1a82so27949405ad.2;
+        Mon, 05 Jun 2023 13:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685995570; x=1688587570;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R5hQoOCxhs453xi/1xca1lXP1aH3gtCI6WwDeyRP63c=;
-        b=Y43DZ0GCTRMugXfq0CMHam8i9MEZRHXQ+jXMEWANEr4KIS+AWp+WYS0MX0I3dTM908
-         fH1WoRhVJF6aKvlmt651KZ1izZ7NUx9Z96SbrhUfUSrOAg9CNfd7fB/qQ9x3N0+rTY35
-         X41VjESyV3yoUVztrZBPGLs0fDcKaXZcSpzwsMfsMJ3enlcEAsZzzPcT32eZ2Os/An73
-         DgdKux9OkDblzWOjgMGfrdyEXQJm1j0ATsHMFx5sGs6mOQZb+S5Xf92Tx+1d+jju1Fg8
-         4i10VmbTe22RQxYDVbD8Q3/SRq1mhbgzxwjtB3AlclckOZFRE4emZR0Rjhfv0JY0kwbb
-         +e+g==
+        d=gmail.com; s=20221208; t=1685996855; x=1688588855;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IcWiwa0YHCZMhNxhxBqh5ZQM/CWxwyBQyza33kkTAC0=;
+        b=i8JXhA9zZMx49v6PRp16clRpN55RyyktDBCfAeBEFfFnEgBqXEDKSYt5ZAyi47e2uf
+         Y/KK46uCWEJLuizeei3enQGeTIl69jOUY8zzIOeGmy3aM/zO7xwfOV+YSbg9EV0cg3G5
+         hqztIAp2GcduSsce4mxSdP04CxAfOcqixllrUe0J8cFFjAlTpii8qkv+EVJQ/+JgZrMh
+         jwbkaENVdINA4RprEbsTX78c//E3/Kj+Oj57bnekhvsKtWG1usE1kmO636cgxZsrWRL+
+         k/INory2HDFdwDxgptcLlPMiQ/obxvaq2ZlTJU/Oba5Vr1E31iY6gKks/921N+Jkqh+K
+         G7wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685995570; x=1688587570;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R5hQoOCxhs453xi/1xca1lXP1aH3gtCI6WwDeyRP63c=;
-        b=ht3XFnrHTCOLY9FDNecIkqBb6hXZNbowviFpDtePwYqX2C5d2OhVwE18IwL82okvU6
-         3g0kk9XZ/B8wFFawQpx9LockoxLMILQlo4T+1jy4wvFLz32e5Fu9DEkywsgXmI639RXx
-         gfwpMx8mpCx2OztZsWmBdCREwBEdzY16TV2JKGQEpNj3UCCADagJhiwU8hkmrUlaFDR+
-         hkRiTQ3GkipEytNmQzSWJfkb+oHzjXf9v8OpBJg7zjan86cXJp9/8ZgJlUfpan90xbzU
-         tzTfzLmzzgHgHVDAZApcd2ua66mA/4s0j16YxA9DLY0S5SdjrH31sYaE6FVUYRMHHk0s
-         xjjA==
-X-Gm-Message-State: AC+VfDwgF3y7OkDuwmovy9lrq3X4/ZJ6IQYXeIuAEEzdQoHx0nHMAl/s
-        LQYOMbQQa+ysarFdoB9ez4E=
-X-Google-Smtp-Source: ACHHUZ6ibwdv9H2KS7FiVw95/3kuHDSiZkBg6B220hXGG7z3TPphXvSSCOiYX4euHqzveu2o8Wzkjw==
-X-Received: by 2002:a17:903:2445:b0:19d:1834:92b9 with SMTP id l5-20020a170903244500b0019d183492b9mr5825844pls.56.1685995570071;
-        Mon, 05 Jun 2023 13:06:10 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:b318])
-        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b001b0395c4002sm6971157plg.210.2023.06.05.13.06.09
+        d=1e100.net; s=20221208; t=1685996855; x=1688588855;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IcWiwa0YHCZMhNxhxBqh5ZQM/CWxwyBQyza33kkTAC0=;
+        b=LXFww5SFr1rKtWcR21+NwHPRcl2aXbZ0nP0Va3Dxa0ddJfthKb611dICo+q7hnaFzr
+         2XCaVdLyPZV6gmoxrVf1KFfaWEnmThdvxYDPFpAGW/boOPNFAa/Dv9bnluIkEHA95ikn
+         V9kkcXcSaw9qIkneCz9w+qlH1d96zy02LUDBLZsw8SdiVTRpKEWBwK1wsDm9MJ9Eo9Wc
+         tWHUDTuoWPU8KbA+SHam9U03uvHlAPli7FfcErd3ZAnTKMmJ1t4u65Kg/V2e4mlMgQ5a
+         BMSECW/Kx3VyFEM5Lg8yvqKaVEBhcWGupvBzI5v+O2w7HcSEHrtTN82UTnpvj8ThxpaV
+         GOuA==
+X-Gm-Message-State: AC+VfDwS9mVoawOJTm0ky2UCzHjrExuG+cc5PrbXnWfor9YmeFbno/U+
+        GAnDtgodlOjwKi/Lreg019M=
+X-Google-Smtp-Source: ACHHUZ63hqcvm7/z6JK1ec5e9pDq0SLHV1VII+2frZ31Kg3Uq6CnAKYMDB6rXQg2Zx47zYHJmrv+Cw==
+X-Received: by 2002:a17:902:bcc5:b0:1b0:3d54:357d with SMTP id o5-20020a170902bcc500b001b03d54357dmr51205pls.24.1685996854689;
+        Mon, 05 Jun 2023 13:27:34 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id jj21-20020a170903049500b001ac4d3d3f72sm6920798plb.296.2023.06.05.13.27.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jun 2023 13:06:09 -0700 (PDT)
+        Mon, 05 Jun 2023 13:27:34 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 5 Jun 2023 10:06:07 -1000
+Date:   Mon, 5 Jun 2023 10:27:33 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Xiu Jianfeng <xiujianfeng@huaweicloud.com>,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cuigaosheng1@huawei.com
-Subject: Re: [PATCH] cgroup: Stop task iteration when rebinding subsystem
-Message-ID: <ZH5AL4fWfObSstnG@slm.duckdns.org>
-References: <20230526114139.70274-1-xiujianfeng@huaweicloud.com>
- <ojymhf4m3p52py6sezwbc2zamxm46wmhxs577uucima6evj2sc@djoi3dhzbdf6>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mrunal Patel <mpatel@redhat.com>,
+        Ryan Phillips <rphillips@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
+Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
+Message-ID: <ZH5FNc6wjlGPsaaO@slm.duckdns.org>
+References: <f2bd7b1e-190e-1d08-f085-b4cae36fb5be@redhat.com>
+ <ZFGOTHQj3k5rzmyR@blackbook>
+ <deb7b684-3d7c-b3ae-7b36-5b7ba2dd8001@redhat.com>
+ <ZFUo5IYAIwTEKR4_@slm.duckdns.org>
+ <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
+ <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
+ <ZGvHUjOCjwat91Gq@slm.duckdns.org>
+ <18793f4a-fd39-2e71-0b77-856afb01547b@redhat.com>
+ <ZH4jfmypOXGJPu0D@slm.duckdns.org>
+ <be64a569-4388-9dd9-3e06-36d716a54f6c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ojymhf4m3p52py6sezwbc2zamxm46wmhxs577uucima6evj2sc@djoi3dhzbdf6>
+In-Reply-To: <be64a569-4388-9dd9-3e06-36d716a54f6c@redhat.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -79,83 +96,76 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Thu, Jun 01, 2023 at 07:33:53PM +0200, Michal Koutný wrote:
-> > Inside css_task_iter_start/next/end, css_set_lock is hold and then
-> > released, so when iterating task(left side), the css_set may be moved to
-> > another list(right side), then it->cset_head points to the old list head
-> > and it->cset_pos->next points to the head node of new list, which can't
-> > be used as struct css_set.
+On Mon, Jun 05, 2023 at 04:00:39PM -0400, Waiman Long wrote:
+...
+> > file seems hacky to me. e.g. How would it interact with namespacing? Are
+> > there reasons why this can't be properly hierarchical other than the amount
+> > of work needed? For example:
+> > 
+> >    cpuset.cpus.exclusive is a per-cgroup file and represents the mask of CPUs
+> >    that the cgroup holds exclusively. The mask is always a subset of
+> >    cpuset.cpus. The parent loses access to a CPU when the CPU is given to a
+> >    child by setting the CPU in the child's cpus.exclusive and the CPU can't
+> >    be given to more than one child. IOW, exclusive CPUs are available only to
+> >    the leaf cgroups that have them set in their .exclusive file.
+> > 
+> >    When a cgroup is turned into a partition, its cpuset.cpus and
+> >    cpuset.cpus.exclusive should be the same. For backward compatibility, if
+> >    the cgroup's parent is already a partition, cpuset will automatically
+> >    attempt to add all cpus in cpuset.cpus into cpuset.cpus.exclusive.
+> > 
+> > I could well be missing something important but I'd really like to see
+> > something like the above where the reservation feature blends in with the
+> > rest of cpuset.
 > 
-> I find your analysis sane -- the stale it->cset_head is problematic.
+> It can certainly be made hierarchical as you suggest. It does increase
+> complexity from both user and kernel point of view.
 > 
-> > To fix this issue, introduce CSS_TASK_ITER_STOPPED flag for css_task_iter.
-> > when moving css_set to dcgrp->e_csets[ss->id] in rebind_subsystems(), stop
-> > the task iteration.
-> 
-> Does it mean that iteration would not yield all tasks that are
-> associated with give cs->css? That sounds like broken correctness of the
-> iterator.
-> 
-> I may suggest a slightly different approach that should not affect
-> running iterators.
-> - I had to switch from all css_sets to only scgrp's css_sets since
->   css_set_table order of css_sets may be different than scgrp->e_csets
-> - Not sure how portable is using array element as a `member` argument of
->   offsetof (in expansion of list_for_each_entry_safe).
+> From the user point of view, there is one more knob to manage hierarchically
+> which is not used that often.
 
-Both look fine to me.
+From user pov, this only affects them when they want to create partitions
+down the tree, right?
 
-> This is only to illustrate the idea, i.e. merely compile tested.
-> 
-> WDYT?
-> 
-> Regards,
-> Michal
-> 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 625d7483951c..e67d2a0776c1 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1798,7 +1798,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
->  {
->  	struct cgroup *dcgrp = &dst_root->cgrp;
->  	struct cgroup_subsys *ss;
-> -	int ssid, i, ret;
-> +	int ssid, ret;
->  	u16 dfl_disable_ss_mask = 0;
->  
->  	lockdep_assert_held(&cgroup_mutex);
-> @@ -1842,7 +1842,8 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
->  		struct cgroup_root *src_root = ss->root;
->  		struct cgroup *scgrp = &src_root->cgrp;
->  		struct cgroup_subsys_state *css = cgroup_css(scgrp, ss);
-> -		struct css_set *cset;
-> +		struct css_set *cset, *cset_pos;
-> +		struct css_task_iter *it;
->  
->  		WARN_ON(!css || cgroup_css(dcgrp, ss));
->  
-> @@ -1860,9 +1861,18 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
->  		css->cgroup = dcgrp;
->  
->  		spin_lock_irq(&css_set_lock);
-> -		hash_for_each(css_set_table, i, cset, hlist)
-> +		WARN_ON(!list_empty(&dcgrp->e_csets[ss->id]));
-> +		list_for_each_entry_safe(cset, cset_pos, &scgrp->e_csets[ss->id], e_cset_node[ss->id]) {
->  			list_move_tail(&cset->e_cset_node[ss->id],
->  				       &dcgrp->e_csets[ss->id]);
-> +			/* all css_sets of scgrp together in same order to dcgrp,
-> +			 * patch in-flight iterators to preserve correct iteration,
-> +			 * cset_head is under css_set_lock */
-> +			list_for_each_entry(it, &cset->task_iters, iters_node) {
-> +				if (it->cset_head == &scgrp->e_csets[ss->id])
-> +					it->cset_head = &dcgrp->e_csets[ss->id];
+> From the kernel point of view, we may need to have one more cpumask per
+> cpuset as the current subparts_cpus is used to track automatic reservation.
+> We need another cpumask to contain extra exclusive CPUs not allocated
+> through automatic reservation. The fact that you mention this new control
+> file as a list of exclusively owned CPUs for this cgroup. Creating a
+> partition is in fact allocating exclusive CPUs to a cgroup. So it kind of
+> overlaps with the cpuset.cpus.partititon file. Can we fail a write to
 
-This looks fine to me too but this is rather subtle and it'd worth
-explaining further. e.g. on the first glance, it may also seem like we'd
-also need to update it->cset_pos and friends because they get initialized to
-e_csets[]. This isn't the case because the iterator is always advanced right
-away and doesn't remain pointing to the head, but it is kinda tricky.
+Yes, it substitutes and expands on cpuset.cpus.partition behavior.
+
+> cpuset.cpus.exclusive if those exclusive CPUs cannot be granted or will this
+> exclusive list is only valid if a valid partition can be formed. So we need
+> to properly manage the dependency between these 2 control files.
+
+So, I think cpus.exclusive can become the sole mechanism to arbitrate
+exclusive owenership of CPUs and .partition can depend on .exclusive.
+
+> Alternatively, I have no problem exposing cpuset.cpus.exclusive as a
+> read-only file. It is a bit problematic if we need to make it writable.
+
+I don't follow. How would remote partitions work then?
+
+> As for namespacing, you do raise a good point. I was thinking mostly from a
+> whole system point of view as the use case that I am aware of does not needs
+> that. To allow delegation of exclusive CPUs to a child cgroup, that cgroup
+> has to be a partition root itself. One compromise that I can think of is to
+> only allow automatic reservation only in such a scenario. In that case, I
+> need to support a remote load balanced partition as well and hierarchical
+> sub-partitions underneath it. That can be done with some extra code to the
+> existing v2 patchset without introducing too much complexity.
+> 
+> IOW, the use of remote partition is only allowed on the whole system level
+> where one has access to the cgroup root. Exclusive CPUs distribution within
+> a container can only be done via the use of adjacent partitions with
+> automatic reservation. Will that be a good enough compromise from your point
+> of view?
+
+It seems too twisted to me. I'd much prefer it to be better integrated with
+the rest of cpuset.
 
 Thanks.
 
