@@ -2,158 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4787222C1
-	for <lists+cgroups@lfdr.de>; Mon,  5 Jun 2023 11:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F7E7224A7
+	for <lists+cgroups@lfdr.de>; Mon,  5 Jun 2023 13:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjFEJ5p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Jun 2023 05:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
+        id S231869AbjFELde (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Jun 2023 07:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbjFEJ5o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Jun 2023 05:57:44 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A67B1
-        for <cgroups@vger.kernel.org>; Mon,  5 Jun 2023 02:57:18 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b0236ee816so33181365ad.1
-        for <cgroups@vger.kernel.org>; Mon, 05 Jun 2023 02:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1685959038; x=1688551038;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TyuCPt1vQNlaWH7tCffqZV2k/RtNlXHoU62GbJy8Xjk=;
-        b=KKGiHDA+xwC+Nm4KS7WEjinOuCG1iVjs4z+FmI8SpBouzvSfV4RqeQidTBGyVkA19I
-         Oh0TRdzdP3GJkcP6FekYo8ImlboVTxzu/vCtrxiT+dkG2TBAvOliU6hwgC3b5yQCwkZV
-         ue8mOe5XCOP2vcouiSDq+wVpvmWTG/JDCIfoUa4Pyh87YXdvAXY7EDkQVKzI/nyoPaWV
-         gWrnFcvLgMQqHdqUnwpFVXl7QK+x1EbdnB8dsjpgLIjIozZlTX8BW9drTjYqqlP7v9oY
-         Igs9eoVOUVnNsUfVZM7CU8zm4TwVsb3znjj/lBNSD/l+EYn15Btp40XCSuplRIWpCx/E
-         4jxg==
+        with ESMTP id S231546AbjFELdb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Jun 2023 07:33:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5286311C
+        for <cgroups@vger.kernel.org>; Mon,  5 Jun 2023 04:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1685964743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WAZyxjHSKhdNxeHRuvnFvS4kEsJUoO6wNay6Vh0Axqo=;
+        b=ZrzObrYtQX3hNDNhM6KLzVrwAtg6Mj2D9XxmSA7kCzUSjD7Bc93KseZg8cnYzM9yq6ki+s
+        ysud7k57WE46TNAmpY1aBP3Y2EoKyW5IdWk5aDtFoMQyZvErDGsez/j5AWFV4WJJXosvxb
+        +4yCcbE/UTc3W9texzyLpc1GjJdJQKc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-124-chEKqHAlNwSGXPvST0z-AQ-1; Mon, 05 Jun 2023 07:32:22 -0400
+X-MC-Unique: chEKqHAlNwSGXPvST0z-AQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f6089a9689so28042425e9.1
+        for <cgroups@vger.kernel.org>; Mon, 05 Jun 2023 04:32:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685959038; x=1688551038;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TyuCPt1vQNlaWH7tCffqZV2k/RtNlXHoU62GbJy8Xjk=;
-        b=G+db8H+91j64nwCU0y5V6kI8nOPgF4IvnYizhu+oI0MQgekEJ2CeadF43i06DNprLV
-         iamu5SlGIcU20t4CP44yoxOm66U9+k+ec06qxSZXWo1j92/168tCEzgjaNr/d4bOHWS8
-         HnjiPX7SltDJ3Ccts1II8jhujA283kPKm2kxqGy5HyoXkB30/Wo1zkHBTngw30dfzgdW
-         /0iDNF7TJQl66ZNPqUGbIiNiPV9qwnJDuUjIGqKVd7hk/tXgwKZc0dDRihtYKIFd45G/
-         UYbq7ac467F9uixpl+6jjQ8tr86zgBMYa+f6aGqceopuCMGNsoPKDjAFEahrhDrbgzl9
-         v7yg==
-X-Gm-Message-State: AC+VfDxISq5kH1sqKndrnyJovpFph4039Ku9ADGGFimIdzdZ1VgoxjMS
-        EaoLHIXNx8Wkh0kB3WmQyFSc9Q==
-X-Google-Smtp-Source: ACHHUZ7UU+7VhOoZ+LaCsaa8oefNZLkAgK8CdKo9gcU9SGPUfv5AJPuReZuksUmH0QYq0D1i0CWW5Q==
-X-Received: by 2002:a17:903:2305:b0:1b0:4c6c:716 with SMTP id d5-20020a170903230500b001b04c6c0716mr9054747plh.4.1685959038094;
-        Mon, 05 Jun 2023 02:57:18 -0700 (PDT)
-Received: from [10.254.80.225] ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id x21-20020a17090300d500b001ae469ca0c0sm6152081plc.245.2023.06.05.02.57.12
+        d=1e100.net; s=20221208; t=1685964741; x=1688556741;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WAZyxjHSKhdNxeHRuvnFvS4kEsJUoO6wNay6Vh0Axqo=;
+        b=E6i7HBe8a70JlM46CsPu6zi7NnXBu6dgu6ijkMPA3qPd98vBiV8eh4zVfyrd2qzaSw
+         UMnk0Ou9PKH2BpwPovV5IinYb/Oa1QrS2VAmv3316Bbyu33Iae+S4DoembNVnNR7dOpJ
+         ank4V5u03eVCbeHliEcBqy8/LuGUyR6owBJJhw7IOJpUQHF51BQvICTtZZtPYI6jtZ//
+         U88+aE3pk3Jtceby89NBYX3CUKmZxhgoG20px/s/HqMK90PCAnVJ/33ICkY5pNlKNBgD
+         EE79GAEwKGWF2L5DT5W7Pm4YqPi6F2gFL34eKcAK1cp6GMASS2NEZkAbVN1NUhkZZRVx
+         hapQ==
+X-Gm-Message-State: AC+VfDzyCFlvS9686qCaphEWm6uOI4qi3JUfL4z+6HDyk4aB/q7pIvRx
+        FH1nO1pT8DrE54nWpjsPF0c1k6ARnR1bzuNZxZD1RVef6sGz1mMtCcsD9a1iYBx5y/pdNNd3WXq
+        1sktpgsSB+Jgg+c1bbg==
+X-Received: by 2002:a05:600c:2905:b0:3f5:6e5:1688 with SMTP id i5-20020a05600c290500b003f506e51688mr7427331wmd.2.1685964741217;
+        Mon, 05 Jun 2023 04:32:21 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7mW82eHh7p214lzYwmPeZPeyww9PqtRhoOvnp/Rsfiwhziy/+p6f2DqyHQKoMf4q/8eUiq4Q==
+X-Received: by 2002:a05:600c:2905:b0:3f5:6e5:1688 with SMTP id i5-20020a05600c290500b003f506e51688mr7427319wmd.2.1685964740822;
+        Mon, 05 Jun 2023 04:32:20 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c737:8f00:ed9:16b8:4e22:5820? (p200300cbc7378f000ed916b84e225820.dip0.t-ipconnect.de. [2003:cb:c737:8f00:ed9:16b8:4e22:5820])
+        by smtp.gmail.com with ESMTPSA id w11-20020a1cf60b000000b003f423f5b659sm10491925wmc.10.2023.06.05.04.32.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jun 2023 02:57:17 -0700 (PDT)
-Message-ID: <806149cf-cc07-ad5a-267e-94a6bc3b4106@bytedance.com>
-Date:   Mon, 5 Jun 2023 17:57:09 +0800
+        Mon, 05 Jun 2023 04:32:20 -0700 (PDT)
+Message-ID: <9c475907-0c58-98a2-adaa-6c94b671db9e@redhat.com>
+Date:   Mon, 5 Jun 2023 13:32:19 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.2
-Subject: Re: Re: Re: [PATCH net-next v5 2/3] sock: Always take memcg pressure
- into consideration
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] memcg: use helper macro FLUSH_TIME
 Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230602081135.75424-1-wuyun.abel@bytedance.com>
- <20230602081135.75424-3-wuyun.abel@bytedance.com>
- <20230602204159.vo7fmuvh3y2pdfi5@google.com>
- <CAF=yD-LFQRreWq1RMkvLw9Nj3NQpJwbDSCfECUhh-aVchR-jsg@mail.gmail.com>
- <6f67c3ca-5e73-d7ac-f32a-42a21d3ea576@bytedance.com>
- <727b1fb64d04deb8b2a9ae1fec4b51dafa1ff2b5.camel@redhat.com>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <727b1fb64d04deb8b2a9ae1fec4b51dafa1ff2b5.camel@redhat.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org
+Cc:     muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230603072116.1101690-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230603072116.1101690-1-linmiaohe@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/5/23 4:27 PM, Paolo Abeni wrote:
-> On Mon, 2023-06-05 at 11:44 +0800, Abel Wu wrote:
->> On 6/4/23 6:36 PM, Willem de Bruijn wrote:
->>> On Fri, Jun 2, 2023 at 10:42 PM Shakeel Butt <shakeelb@google.com> wrote:
->>>>
->>>> On Fri, Jun 02, 2023 at 04:11:34PM +0800, Abel Wu wrote:
->>>>> The sk_under_memory_pressure() is called to check whether there is
->>>>> memory pressure related to this socket. But now it ignores the net-
->>>>> memcg's pressure if the proto of the socket doesn't care about the
->>>>> global pressure, which may put burden on its memcg compaction or
->>>>> reclaim path (also remember that socket memory is un-reclaimable).
->>>>>
->>>>> So always check the memcg's vm status to alleviate memstalls when
->>>>> it's in pressure.
->>>>>
->>>>
->>>> This is interesting. UDP is the only protocol which supports memory
->>>> accounting (i.e. udp_memory_allocated) but it does not define
->>>> memory_pressure. In addition, it does have sysctl_udp_mem. So
->>>> effectively UDP supports a hard limit and ignores memcg pressure at the
->>>> moment. This patch will change its behavior to consider memcg pressure
->>>> as well. I don't have any objection but let's get opinion of UDP
->>>> maintainer.
+On 03.06.23 09:21, Miaohe Lin wrote:
+> Use helper macro FLUSH_TIME to indicate the flush time to improve the
+> readability a bit. No functional change intended.
 > 
-> Thanks for the head-up, I did not notice the side effect on UDP.
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/memcontrol.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->>
->>> So this commit only affects the only other protocol-independent
->>> caller, __sk_mem_reduce_allocated, to possibly call
->>> sk_leave_memory_pressure if now under the global limit.
->>>
->>> What is the expected behavioral change in practice of this commit?
->>
->> Be more conservative on sockmem alloc if under memcg pressure, to
->> avoid worse memstall/latency.
-> 
-> I guess the above is for TCP sockets only, right? Or at least not for
-> UDP sockets?
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d8569594239c..f204c9f2e69c 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5397,7 +5397,7 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
+>   
+>   	if (unlikely(mem_cgroup_is_root(memcg)))
+>   		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
+> -				   2UL*HZ);
+> +				   FLUSH_TIME);
+>   	lru_gen_online_memcg(memcg);
+>   	return 0;
+>   offline_kmem:
 
-Yes, I started off with TCP but wondering if it is applicable to the
-others too as the 'problem' sounds really generic to me.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-> 
-> If so, I think we should avoid change of behaviour for UDP - e.g.
-> keeping the initial 'if (!sk->sk_prot->memory_pressure)' in
-> sk_under_memory_pressure(), with some comments about the rationale for
-> future memory. That should preserve the whole patchset effect for other
-> protocols, right?
+-- 
+Cheers,
 
-Keeping the if statement as it is would imply the prot pressure as a
-master 'switch' to all kinds of pressure. IMHO this might hurt other
-protocols with pressure enabled if they are all used in one memcg which
-happens to be under vmpressure, IOW UDP allocations are given higher
-priority than others.
+David / dhildenb
 
-> 
-> If instead you are also interested into UDP sockets under pressure, how
-> that is going to work? UDP sockets can reclaim memory only at send and
-> close time. A memcg under pressure could starve some sockets forever if
-> the the ones keeping the memory busy are left untouched.
-
-Yes.. And it starts to get me confused that why&when should the memcg
-pressure be used given that we don't want to put harsh constrains on
-sockmem even under memcg pressure.
-
-Thanks!
-	Abel
