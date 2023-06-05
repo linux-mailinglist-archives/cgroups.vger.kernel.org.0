@@ -2,198 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29957723098
-	for <lists+cgroups@lfdr.de>; Mon,  5 Jun 2023 22:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1E77230AD
+	for <lists+cgroups@lfdr.de>; Mon,  5 Jun 2023 22:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236198AbjFEUB1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Jun 2023 16:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S230433AbjFEUGQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Jun 2023 16:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236092AbjFEUB0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Jun 2023 16:01:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5316DF1
-        for <cgroups@vger.kernel.org>; Mon,  5 Jun 2023 13:00:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685995245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0I6F66ZIa/tgx7QAKJtZG0czi9R4RbNmqFbBvhdUYFM=;
-        b=GrG4zP4HD1BikLUtvI9bFwlcwjDE5BVhdCZdpd+bKT07mGc1ewzlpl7j2r+r6irN5yIrSF
-        2j0N5SeEfuNevUqVuK+eI3dl8U+PNfK9bZYqpCboTcXprNJHhIhf0lSr1iS50O1gPzD3KG
-        E76DtMXNUG0ewg2V49SEJqTNT+KZW24=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-122-_QZEDCkuNTaN2rwTYIO-fA-1; Mon, 05 Jun 2023 16:00:41 -0400
-X-MC-Unique: _QZEDCkuNTaN2rwTYIO-fA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B713B8015D8;
-        Mon,  5 Jun 2023 20:00:40 +0000 (UTC)
-Received: from [10.22.10.186] (unknown [10.22.10.186])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C8847C1603B;
-        Mon,  5 Jun 2023 20:00:39 +0000 (UTC)
-Message-ID: <be64a569-4388-9dd9-3e06-36d716a54f6c@redhat.com>
-Date:   Mon, 5 Jun 2023 16:00:39 -0400
+        with ESMTP id S230324AbjFEUGN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Jun 2023 16:06:13 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA720D9;
+        Mon,  5 Jun 2023 13:06:10 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-53202149ae2so3058380a12.3;
+        Mon, 05 Jun 2023 13:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685995570; x=1688587570;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R5hQoOCxhs453xi/1xca1lXP1aH3gtCI6WwDeyRP63c=;
+        b=Y43DZ0GCTRMugXfq0CMHam8i9MEZRHXQ+jXMEWANEr4KIS+AWp+WYS0MX0I3dTM908
+         fH1WoRhVJF6aKvlmt651KZ1izZ7NUx9Z96SbrhUfUSrOAg9CNfd7fB/qQ9x3N0+rTY35
+         X41VjESyV3yoUVztrZBPGLs0fDcKaXZcSpzwsMfsMJ3enlcEAsZzzPcT32eZ2Os/An73
+         DgdKux9OkDblzWOjgMGfrdyEXQJm1j0ATsHMFx5sGs6mOQZb+S5Xf92Tx+1d+jju1Fg8
+         4i10VmbTe22RQxYDVbD8Q3/SRq1mhbgzxwjtB3AlclckOZFRE4emZR0Rjhfv0JY0kwbb
+         +e+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685995570; x=1688587570;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R5hQoOCxhs453xi/1xca1lXP1aH3gtCI6WwDeyRP63c=;
+        b=ht3XFnrHTCOLY9FDNecIkqBb6hXZNbowviFpDtePwYqX2C5d2OhVwE18IwL82okvU6
+         3g0kk9XZ/B8wFFawQpx9LockoxLMILQlo4T+1jy4wvFLz32e5Fu9DEkywsgXmI639RXx
+         gfwpMx8mpCx2OztZsWmBdCREwBEdzY16TV2JKGQEpNj3UCCADagJhiwU8hkmrUlaFDR+
+         hkRiTQ3GkipEytNmQzSWJfkb+oHzjXf9v8OpBJg7zjan86cXJp9/8ZgJlUfpan90xbzU
+         tzTfzLmzzgHgHVDAZApcd2ua66mA/4s0j16YxA9DLY0S5SdjrH31sYaE6FVUYRMHHk0s
+         xjjA==
+X-Gm-Message-State: AC+VfDwgF3y7OkDuwmovy9lrq3X4/ZJ6IQYXeIuAEEzdQoHx0nHMAl/s
+        LQYOMbQQa+ysarFdoB9ez4E=
+X-Google-Smtp-Source: ACHHUZ6ibwdv9H2KS7FiVw95/3kuHDSiZkBg6B220hXGG7z3TPphXvSSCOiYX4euHqzveu2o8Wzkjw==
+X-Received: by 2002:a17:903:2445:b0:19d:1834:92b9 with SMTP id l5-20020a170903244500b0019d183492b9mr5825844pls.56.1685995570071;
+        Mon, 05 Jun 2023 13:06:10 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:b318])
+        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b001b0395c4002sm6971157plg.210.2023.06.05.13.06.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jun 2023 13:06:09 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 5 Jun 2023 10:06:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Xiu Jianfeng <xiujianfeng@huaweicloud.com>,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cuigaosheng1@huawei.com
+Subject: Re: [PATCH] cgroup: Stop task iteration when rebinding subsystem
+Message-ID: <ZH5AL4fWfObSstnG@slm.duckdns.org>
+References: <20230526114139.70274-1-xiujianfeng@huaweicloud.com>
+ <ojymhf4m3p52py6sezwbc2zamxm46wmhxs577uucima6evj2sc@djoi3dhzbdf6>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
-References: <46d26abf-a725-b924-47fa-4419b20bbc02@redhat.com>
- <jqkf7jkuyxqiupmxmdbmpnbpojub2pjsz3oogwncmwqdghlsgk@phsqzirmmlyl>
- <f2bd7b1e-190e-1d08-f085-b4cae36fb5be@redhat.com>
- <ZFGOTHQj3k5rzmyR@blackbook>
- <deb7b684-3d7c-b3ae-7b36-5b7ba2dd8001@redhat.com>
- <ZFUo5IYAIwTEKR4_@slm.duckdns.org>
- <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
- <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
- <ZGvHUjOCjwat91Gq@slm.duckdns.org>
- <18793f4a-fd39-2e71-0b77-856afb01547b@redhat.com>
- <ZH4jfmypOXGJPu0D@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZH4jfmypOXGJPu0D@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <ojymhf4m3p52py6sezwbc2zamxm46wmhxs577uucima6evj2sc@djoi3dhzbdf6>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/5/23 14:03, Tejun Heo wrote:
-> Hello, Waiman.
->
-> On Sun, May 28, 2023 at 05:18:50PM -0400, Waiman Long wrote:
->> On 5/22/23 15:49, Tejun Heo wrote:
->> Sorry for the late reply as I had been off for almost 2 weeks due to PTO.
-> And me too. Just moved.
->
->>> Why is the syntax different from .cpus? Wouldn't it be better to keep them
->>> the same?
->> Unlike cpuset.cpus, cpuset.cpus.reserve is supposed to contains CPUs that
->> are used in multiple partitions. Also automatic reservation of adjacent
->> partitions can happen in parallel. That is why I think it will be safer if
-> Ah, I see, this is because cpu.reserve is only in the root cgroup, so you
-> can't say that the knob is owned by the parent cgroup and thus access is
-> controlled that way.
->
-> ...
->>>>       There are two types of partitions - adjacent and remote.  The
->>>>       parent of an adjacent partition must be a valid partition root.
->>>>       Partition roots of adjacent partitions are all clustered around
->>>>       the root cgroup.  Creation of adjacent partition is done by
->>>>       writing the desired partition type into "cpuset.cpus.partition".
->>>>
->>>>       A remote partition does not require a partition root parent.
->>>>       So a remote partition can be formed far from the root cgroup.
->>>>       However, its creation is a 2-step process.  The CPUs needed
->>>>       by a remote partition ("cpuset.cpus" of the partition root)
->>>>       has to be written into "cpuset.cpus.reserve" of the root
->>>>       cgroup first.  After that, "isolated" can be written into
->>>>       "cpuset.cpus.partition" of the partition root to form a remote
->>>>       isolated partition which is the only supported remote partition
->>>>       type for now.
->>>>
->>>>       All remote partitions are terminal as adjacent partition cannot
->>>>       be created underneath it.
->>> Can you elaborate this extra restriction a bit further?
->> Are you referring to the fact that only remote isolated partitions are
->> supported? I do not preclude the support of load balancing remote
->> partitions. I keep it to isolated partitions for now for ease of
->> implementation and I am not currently aware of a use case where such a
->> remote partition type is needed.
->>
->> If you are talking about remote partition being terminal. It is mainly
->> because it can be more tricky to support hierarchical adjacent partitions
->> underneath it especially if it is not isolated. We can certainly support it
->> if a use case arises. I just don't want to implement code that nobody is
->> really going to use.
->>
->> BTW, with the current way the remote partition is created, it is not
->> possible to have another remote partition underneath it.
-> The fact that the control is spread across a root-only file and per-cgroup
-> file seems hacky to me. e.g. How would it interact with namespacing? Are
-> there reasons why this can't be properly hierarchical other than the amount
-> of work needed? For example:
->
->    cpuset.cpus.exclusive is a per-cgroup file and represents the mask of CPUs
->    that the cgroup holds exclusively. The mask is always a subset of
->    cpuset.cpus. The parent loses access to a CPU when the CPU is given to a
->    child by setting the CPU in the child's cpus.exclusive and the CPU can't
->    be given to more than one child. IOW, exclusive CPUs are available only to
->    the leaf cgroups that have them set in their .exclusive file.
->
->    When a cgroup is turned into a partition, its cpuset.cpus and
->    cpuset.cpus.exclusive should be the same. For backward compatibility, if
->    the cgroup's parent is already a partition, cpuset will automatically
->    attempt to add all cpus in cpuset.cpus into cpuset.cpus.exclusive.
->
-> I could well be missing something important but I'd really like to see
-> something like the above where the reservation feature blends in with the
-> rest of cpuset.
+Hello,
 
-It can certainly be made hierarchical as you suggest. It does increase 
-complexity from both user and kernel point of view.
+On Thu, Jun 01, 2023 at 07:33:53PM +0200, Michal Koutn� wrote:
+> > Inside css_task_iter_start/next/end, css_set_lock is hold and then
+> > released, so when iterating task(left side), the css_set may be moved to
+> > another list(right side), then it->cset_head points to the old list head
+> > and it->cset_pos->next points to the head node of new list, which can't
+> > be used as struct css_set.
+> 
+> I find your analysis sane -- the stale it->cset_head is problematic.
+> 
+> > To fix this issue, introduce CSS_TASK_ITER_STOPPED flag for css_task_iter.
+> > when moving css_set to dcgrp->e_csets[ss->id] in rebind_subsystems(), stop
+> > the task iteration.
+> 
+> Does it mean that iteration would not yield all tasks that are
+> associated with give cs->css? That sounds like broken correctness of the
+> iterator.
+> 
+> I may suggest a slightly different approach that should not affect
+> running iterators.
+> - I had to switch from all css_sets to only scgrp's css_sets since
+>   css_set_table order of css_sets may be different than scgrp->e_csets
+> - Not sure how portable is using array element as a `member` argument of
+>   offsetof (in expansion of list_for_each_entry_safe).
 
- From the user point of view, there is one more knob to manage 
-hierarchically which is not used that often.
+Both look fine to me.
 
- From the kernel point of view, we may need to have one more cpumask per 
-cpuset as the current subparts_cpus is used to track automatic 
-reservation. We need another cpumask to contain extra exclusive CPUs not 
-allocated through automatic reservation. The fact that you mention this 
-new control file as a list of exclusively owned CPUs for this cgroup. 
-Creating a partition is in fact allocating exclusive CPUs to a cgroup. 
-So it kind of overlaps with the cpuset.cpus.partititon file. Can we fail 
-a write to cpuset.cpus.exclusive if those exclusive CPUs cannot be 
-granted or will this exclusive list is only valid if a valid partition 
-can be formed. So we need to properly manage the dependency between 
-these 2 control files.
+> This is only to illustrate the idea, i.e. merely compile tested.
+> 
+> WDYT?
+> 
+> Regards,
+> Michal
+> 
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 625d7483951c..e67d2a0776c1 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1798,7 +1798,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+>  {
+>  	struct cgroup *dcgrp = &dst_root->cgrp;
+>  	struct cgroup_subsys *ss;
+> -	int ssid, i, ret;
+> +	int ssid, ret;
+>  	u16 dfl_disable_ss_mask = 0;
+>  
+>  	lockdep_assert_held(&cgroup_mutex);
+> @@ -1842,7 +1842,8 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+>  		struct cgroup_root *src_root = ss->root;
+>  		struct cgroup *scgrp = &src_root->cgrp;
+>  		struct cgroup_subsys_state *css = cgroup_css(scgrp, ss);
+> -		struct css_set *cset;
+> +		struct css_set *cset, *cset_pos;
+> +		struct css_task_iter *it;
+>  
+>  		WARN_ON(!css || cgroup_css(dcgrp, ss));
+>  
+> @@ -1860,9 +1861,18 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+>  		css->cgroup = dcgrp;
+>  
+>  		spin_lock_irq(&css_set_lock);
+> -		hash_for_each(css_set_table, i, cset, hlist)
+> +		WARN_ON(!list_empty(&dcgrp->e_csets[ss->id]));
+> +		list_for_each_entry_safe(cset, cset_pos, &scgrp->e_csets[ss->id], e_cset_node[ss->id]) {
+>  			list_move_tail(&cset->e_cset_node[ss->id],
+>  				       &dcgrp->e_csets[ss->id]);
+> +			/* all css_sets of scgrp together in same order to dcgrp,
+> +			 * patch in-flight iterators to preserve correct iteration,
+> +			 * cset_head is under css_set_lock */
+> +			list_for_each_entry(it, &cset->task_iters, iters_node) {
+> +				if (it->cset_head == &scgrp->e_csets[ss->id])
+> +					it->cset_head = &dcgrp->e_csets[ss->id];
 
-Alternatively, I have no problem exposing cpuset.cpus.exclusive as a 
-read-only file. It is a bit problematic if we need to make it writable.
+This looks fine to me too but this is rather subtle and it'd worth
+explaining further. e.g. on the first glance, it may also seem like we'd
+also need to update it->cset_pos and friends because they get initialized to
+e_csets[]. This isn't the case because the iterator is always advanced right
+away and doesn't remain pointing to the head, but it is kinda tricky.
 
-As for namespacing, you do raise a good point. I was thinking mostly 
-from a whole system point of view as the use case that I am aware of 
-does not needs that. To allow delegation of exclusive CPUs to a child 
-cgroup, that cgroup has to be a partition root itself. One compromise 
-that I can think of is to only allow automatic reservation only in such 
-a scenario. In that case, I need to support a remote load balanced 
-partition as well and hierarchical sub-partitions underneath it. That 
-can be done with some extra code to the existing v2 patchset without 
-introducing too much complexity.
+Thanks.
 
-IOW, the use of remote partition is only allowed on the whole system 
-level where one has access to the cgroup root. Exclusive CPUs 
-distribution within a container can only be done via the use of adjacent 
-partitions with automatic reservation. Will that be a good enough 
-compromise from your point of view?
-
-Cheers,
-Longman
-
+-- 
+tejun
