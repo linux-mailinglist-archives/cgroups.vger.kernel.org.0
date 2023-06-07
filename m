@@ -2,98 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E41A7261B0
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jun 2023 15:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570AE726FD9
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jun 2023 23:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239324AbjFGNwj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jun 2023 09:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
+        id S235918AbjFGVC6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Jun 2023 17:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239096AbjFGNwi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 09:52:38 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DE11BE3
-        for <cgroups@vger.kernel.org>; Wed,  7 Jun 2023 06:52:36 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-3f8b0649010so6358281cf.0
-        for <cgroups@vger.kernel.org>; Wed, 07 Jun 2023 06:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1686145955; x=1688737955;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8pWjfG7YX2PU6lTg87BQzQgK5gQrtCZuLosIt3qtFrw=;
-        b=QMGMlVX9pT4+APXXvlD2HGaGEg55QMH0btBqGqRw+dtdVOGo1kh5q+IRJfikBCjoAZ
-         vafj+YrmGCGYaOtKcFzs/g7GriOKBIzWtZZeh8BfNxsIDJ7VseMMJPYoiNuQt7caTcMI
-         fbzdenPFcryIzgWI+zcXPps0vDUIFsZMliLzzzo2NMTbOU8IV+6GRTdzS4etu2E7bG1G
-         zZy5GDzKAFGL863kgCYdqdlrRhzG8ovq7gNP99KiwoUnVzy58N3hDEkaisdrZi9QqDvh
-         12nHG5VND02dBavngpMxFq36XYe5fvooIddYSP6a8+XPAVtLp/lIB0YMBjMBb3y/nBpV
-         Px9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686145955; x=1688737955;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8pWjfG7YX2PU6lTg87BQzQgK5gQrtCZuLosIt3qtFrw=;
-        b=HGOr0zfymq5vO7BUOTeJIK/BcYJAg2JkQiFcw/Qn6MUP+YPRhL+GXHSk5/sKDwFiAQ
-         Hgbod77G2IoTiE3w4paG8xn7jAhv/djd1nJqwGn3P9muXjrcXioYNFjhKcfSnVikXXZm
-         j+HWl9dOFqWDCBHBA8TLOAArJ6kt7pDEidecIWuFlUC0q792TI9KkU9lyiXzM4iTJDWd
-         +hWQaYTdbEUN+SeJa8fIcVXnEg3aDbKgaoSuaWI3YleysglfC8O7ZsmLRBYmZrH7Fsct
-         JFFGn5ajI7x+U5rqfw0o5TbQPflbG7S4erccCxWqRMV9g1VGytXanPcrJiy2frTFxvtT
-         MlhA==
-X-Gm-Message-State: AC+VfDzmaa7oDc01C4hGk0ONtnrLn/63NbmQkPJrAZF/X7It1hRvgtpR
-        /LrLhpbFxgjGmate87Nrh/0SAU4dIFurvnfQSeA=
-X-Google-Smtp-Source: ACHHUZ5DwvtauaBvGPF/zgxanW0qGVda9dWL3S5jI/ddgyNov7yI8rfOmzvLFLxsl0kOx8qDfPrgNA==
-X-Received: by 2002:a05:622a:1899:b0:3f9:ab2c:8895 with SMTP id v25-20020a05622a189900b003f9ab2c8895mr2173118qtc.3.1686145955449;
-        Wed, 07 Jun 2023 06:52:35 -0700 (PDT)
-Received: from [127.0.0.1] ([50.234.116.5])
-        by smtp.gmail.com with ESMTPSA id s5-20020a05621412c500b0062119a7a7a3sm6141611qvv.4.2023.06.07.06.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 06:52:34 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Waiman Long <longman@redhat.com>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>
-In-Reply-To: <20230606180724.2455066-1-longman@redhat.com>
-References: <20230606180724.2455066-1-longman@redhat.com>
-Subject: Re: [PATCH] blk-cgroup: Reinit blkg_iostat_set after clearing in
- blkcg_reset_stats()
-Message-Id: <168614595386.134969.17908041000836291196.b4-ty@kernel.dk>
-Date:   Wed, 07 Jun 2023 07:52:33 -0600
+        with ESMTP id S235913AbjFGVCp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 17:02:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E444E273C;
+        Wed,  7 Jun 2023 14:02:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 768CA64951;
+        Wed,  7 Jun 2023 21:01:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63B65C433EF;
+        Wed,  7 Jun 2023 21:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1686171712;
+        bh=3g1ezkSeNovKyNA/mYRnkKvsFp4NaVHgDIm4yL0ohA8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RCBKLAI5qdA2mToaPW/eWLYpXW2HGo7G5X7Z81GYFO5xaQXDHrgOue4NJM0We1vQM
+         7WiOvqRQENEsOkhxhv7zRIc0RTS0I0o91U3kJ9Q0G4iK2Prv9sgz6lxPcFECzwrvQc
+         Ay1XgrvajT4Vg4SzFJngyOU9320qbr+7nW1RjFrQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Martin Liska <mliska@suse.cz>,
+        Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Subject: [PATCH 5.15 121/159] block/blk-iocost (gcc13): keep large values in a new enum
+Date:   Wed,  7 Jun 2023 22:17:04 +0200
+Message-ID: <20230607200907.635181797@linuxfoundation.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230607200903.652580797@linuxfoundation.org>
+References: <20230607200903.652580797@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-c6835
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+From: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 
-On Tue, 06 Jun 2023 14:07:24 -0400, Waiman Long wrote:
-> When blkg_alloc() is called to allocate a blkcg_gq structure
-> with the associated blkg_iostat_set's, there are 2 fields within
-> blkg_iostat_set that requires proper initialization - blkg & sync.
-> The former field was introduced by commit 3b8cc6298724 ("blk-cgroup:
-> Optimize blkcg_rstat_flush()") while the later one was introduced by
-> commit f73316482977 ("blk-cgroup: reimplement basic IO stats using
-> cgroup rstat").
-> 
-> [...]
+commit ff1cc97b1f4c10db224f276d9615b22835b8c424 upstream.
 
-Applied, thanks!
+Since gcc13, each member of an enum has the same type as the enum [1]. And
+that is inherited from its members. Provided:
+  VTIME_PER_SEC_SHIFT     = 37,
+  VTIME_PER_SEC           = 1LLU << VTIME_PER_SEC_SHIFT,
+  ...
+  AUTOP_CYCLE_NSEC        = 10LLU * NSEC_PER_SEC,
+the named type is unsigned long.
 
-[1/1] blk-cgroup: Reinit blkg_iostat_set after clearing in blkcg_reset_stats()
-      commit: 3d2af77e31ade05ff7ccc3658c3635ec1bea0979
+This generates warnings with gcc-13:
+  block/blk-iocost.c: In function 'ioc_weight_prfill':
+  block/blk-iocost.c:3037:37: error: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'long unsigned int'
 
-Best regards,
--- 
-Jens Axboe
+  block/blk-iocost.c: In function 'ioc_weight_show':
+  block/blk-iocost.c:3047:34: error: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'long unsigned int'
 
+So split the anonymous enum with large values to a separate enum, so
+that they don't affect other members.
+
+[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36113
+
+Cc: Martin Liska <mliska@suse.cz>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: cgroups@vger.kernel.org
+Cc: linux-block@vger.kernel.org
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20221213120826.17446-1-jirislaby@kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ block/blk-iocost.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -232,7 +232,9 @@ enum {
+ 
+ 	/* 1/64k is granular enough and can easily be handled w/ u32 */
+ 	WEIGHT_ONE		= 1 << 16,
++};
+ 
++enum {
+ 	/*
+ 	 * As vtime is used to calculate the cost of each IO, it needs to
+ 	 * be fairly high precision.  For example, it should be able to
 
 
