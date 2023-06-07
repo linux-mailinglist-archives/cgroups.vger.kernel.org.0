@@ -2,67 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D89E7252D7
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jun 2023 06:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E41A7261B0
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jun 2023 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbjFGE3t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jun 2023 00:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
+        id S239324AbjFGNwj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Jun 2023 09:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbjFGE3S (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 00:29:18 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D040B26B6
-        for <cgroups@vger.kernel.org>; Tue,  6 Jun 2023 21:27:05 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-3f828ee8ecdso14805201cf.0
-        for <cgroups@vger.kernel.org>; Tue, 06 Jun 2023 21:27:05 -0700 (PDT)
+        with ESMTP id S239096AbjFGNwi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 09:52:38 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DE11BE3
+        for <cgroups@vger.kernel.org>; Wed,  7 Jun 2023 06:52:36 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-3f8b0649010so6358281cf.0
+        for <cgroups@vger.kernel.org>; Wed, 07 Jun 2023 06:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1686112025; x=1688704025;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1686145955; x=1688737955;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WPSKz7WcmWYDoiWla/HjpfomHebC25lLZctCV/vLH4k=;
-        b=YoflSz/WWxi5+uAGhkj3VOsHqFcBqNc2/nJq9qn0WwAt7+Jb+cNtwE/5wehV4e5iNw
-         LjjKvgxxNAG2mjKSNdnhAogPK/DpK2l79V51b3G70hzwnsyGpAl4RrhLwcv3tJ9EDtTX
-         vVyjcp9QiLM9j3NjPKw4mX51UiG2kxTthhPf1vSOoiLxBP7Z5S70RCo4rIddBPIKcOCD
-         WrHV3kpK94KzFZ9ysDcqNaRe55bIxZC83YS8eiTw4bTv3rXdUcoG4vQY5M+7yfIm3Ysc
-         rGcl9SfpUW26IMk3MddsmlZHEzf2u3GAR9oUy1X3y7c21uche6LUoeCWj6EjRoJllgRk
-         zQSg==
+        bh=8pWjfG7YX2PU6lTg87BQzQgK5gQrtCZuLosIt3qtFrw=;
+        b=QMGMlVX9pT4+APXXvlD2HGaGEg55QMH0btBqGqRw+dtdVOGo1kh5q+IRJfikBCjoAZ
+         vafj+YrmGCGYaOtKcFzs/g7GriOKBIzWtZZeh8BfNxsIDJ7VseMMJPYoiNuQt7caTcMI
+         fbzdenPFcryIzgWI+zcXPps0vDUIFsZMliLzzzo2NMTbOU8IV+6GRTdzS4etu2E7bG1G
+         zZy5GDzKAFGL863kgCYdqdlrRhzG8ovq7gNP99KiwoUnVzy58N3hDEkaisdrZi9QqDvh
+         12nHG5VND02dBavngpMxFq36XYe5fvooIddYSP6a8+XPAVtLp/lIB0YMBjMBb3y/nBpV
+         Px9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686112025; x=1688704025;
+        d=1e100.net; s=20221208; t=1686145955; x=1688737955;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WPSKz7WcmWYDoiWla/HjpfomHebC25lLZctCV/vLH4k=;
-        b=DaTxSkkBkrL+eI6G+anmaukPnQP9PvFJQu/qQvMABAk8bluqOhQiOO2DkXapT3rwIX
-         R1KYWhdW+T0JRYcDV/vrOoNQUR99TLbih9EAjku3Xaipl87zf7+1AKaNwOfK0cJ6p62p
-         Nn4XKxkUBJGKJAkhbYoXfhuLwguO9g7sAKOLUbQTFmUNYgmuCL16shh2KNiUlb+9BIi+
-         sXHN331dQNYZzGXFx+MUjJA6iswgrAt2/tu0tFRAy+Gaa6GSyvgP7UrfNiutByAoYzDn
-         YofjcrBfxJKlHwyFktf5sP7F/eRsTU3eCOi0K0AMmZw6nDCnWiVhdVjbSeYT03a0sQq6
-         Lf/Q==
-X-Gm-Message-State: AC+VfDzFT3yENsvreOLQcZuWlZKJlbKJtxEcs5fFOxPc0qszKETKXuGK
-        bsSjhhbi15skZt7oFQm+ulqD6A==
-X-Google-Smtp-Source: ACHHUZ7NSTxdF/ubgwDQxb7ez4TU1x57Ynb13u73yomi8AoMLRBZYFeKffKYiqjTywUrm5xkQXX/YQ==
-X-Received: by 2002:ac8:5c8c:0:b0:3f4:fdaa:8e14 with SMTP id r12-20020ac85c8c000000b003f4fdaa8e14mr5856641qta.2.1686112024916;
-        Tue, 06 Jun 2023 21:27:04 -0700 (PDT)
+        bh=8pWjfG7YX2PU6lTg87BQzQgK5gQrtCZuLosIt3qtFrw=;
+        b=HGOr0zfymq5vO7BUOTeJIK/BcYJAg2JkQiFcw/Qn6MUP+YPRhL+GXHSk5/sKDwFiAQ
+         Hgbod77G2IoTiE3w4paG8xn7jAhv/djd1nJqwGn3P9muXjrcXioYNFjhKcfSnVikXXZm
+         j+HWl9dOFqWDCBHBA8TLOAArJ6kt7pDEidecIWuFlUC0q792TI9KkU9lyiXzM4iTJDWd
+         +hWQaYTdbEUN+SeJa8fIcVXnEg3aDbKgaoSuaWI3YleysglfC8O7ZsmLRBYmZrH7Fsct
+         JFFGn5ajI7x+U5rqfw0o5TbQPflbG7S4erccCxWqRMV9g1VGytXanPcrJiy2frTFxvtT
+         MlhA==
+X-Gm-Message-State: AC+VfDzmaa7oDc01C4hGk0ONtnrLn/63NbmQkPJrAZF/X7It1hRvgtpR
+        /LrLhpbFxgjGmate87Nrh/0SAU4dIFurvnfQSeA=
+X-Google-Smtp-Source: ACHHUZ5DwvtauaBvGPF/zgxanW0qGVda9dWL3S5jI/ddgyNov7yI8rfOmzvLFLxsl0kOx8qDfPrgNA==
+X-Received: by 2002:a05:622a:1899:b0:3f9:ab2c:8895 with SMTP id v25-20020a05622a189900b003f9ab2c8895mr2173118qtc.3.1686145955449;
+        Wed, 07 Jun 2023 06:52:35 -0700 (PDT)
 Received: from [127.0.0.1] ([50.234.116.5])
-        by smtp.gmail.com with ESMTPSA id l16-20020ac81490000000b003f8685c403fsm4369867qtj.22.2023.06.06.21.27.02
+        by smtp.gmail.com with ESMTPSA id s5-20020a05621412c500b0062119a7a7a3sm6141611qvv.4.2023.06.07.06.52.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 21:27:04 -0700 (PDT)
+        Wed, 07 Jun 2023 06:52:34 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-block@vger.kernel.org, Hou Tao <houtao@huaweicloud.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, houtao1@huawei.com
-In-Reply-To: <20230428074404.280532-1-houtao@huaweicloud.com>
-References: <20230428074404.280532-1-houtao@huaweicloud.com>
-Subject: Re: [PATCH v4] blk-ioprio: Introduce promote-to-rt policy
-Message-Id: <168611202214.121141.17298993524876974749.b4-ty@kernel.dk>
-Date:   Tue, 06 Jun 2023 22:27:02 -0600
+To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Waiman Long <longman@redhat.com>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>
+In-Reply-To: <20230606180724.2455066-1-longman@redhat.com>
+References: <20230606180724.2455066-1-longman@redhat.com>
+Subject: Re: [PATCH] blk-cgroup: Reinit blkg_iostat_set after clearing in
+ blkcg_reset_stats()
+Message-Id: <168614595386.134969.17908041000836291196.b4-ty@kernel.dk>
+Date:   Wed, 07 Jun 2023 07:52:33 -0600
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -78,25 +75,21 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
-On Fri, 28 Apr 2023 15:44:04 +0800, Hou Tao wrote:
-> Since commit a78418e6a04c ("block: Always initialize bio IO priority on
-> submit"), bio->bi_ioprio will never be IOPRIO_CLASS_NONE when calling
-> blkcg_set_ioprio(), so there will be no way to promote the io-priority
-> of one cgroup to IOPRIO_CLASS_RT, because bi_ioprio will always be
-> greater than or equals to IOPRIO_CLASS_RT.
-> 
-> It seems possible to call blkcg_set_ioprio() first then try to
-> initialize bi_ioprio later in bio_set_ioprio(), but this doesn't work
-> for bio in which bi_ioprio is already initialized (e.g., direct-io), so
-> introduce a new promote-to-rt policy to promote the iopriority of bio to
-> IOPRIO_CLASS_RT if the ioprio is not already RT.
+On Tue, 06 Jun 2023 14:07:24 -0400, Waiman Long wrote:
+> When blkg_alloc() is called to allocate a blkcg_gq structure
+> with the associated blkg_iostat_set's, there are 2 fields within
+> blkg_iostat_set that requires proper initialization - blkg & sync.
+> The former field was introduced by commit 3b8cc6298724 ("blk-cgroup:
+> Optimize blkcg_rstat_flush()") while the later one was introduced by
+> commit f73316482977 ("blk-cgroup: reimplement basic IO stats using
+> cgroup rstat").
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] blk-ioprio: Introduce promote-to-rt policy
-      commit: ddf63516d8d37528dc6834c7f19b55084e956068
+[1/1] blk-cgroup: Reinit blkg_iostat_set after clearing in blkcg_reset_stats()
+      commit: 3d2af77e31ade05ff7ccc3658c3635ec1bea0979
 
 Best regards,
 -- 
