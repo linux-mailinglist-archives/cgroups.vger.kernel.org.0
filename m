@@ -2,126 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0004724DC9
-	for <lists+cgroups@lfdr.de>; Tue,  6 Jun 2023 22:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6A5725187
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jun 2023 03:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239478AbjFFUNf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Jun 2023 16:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S240468AbjFGB3N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Jun 2023 21:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234673AbjFFUNe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Jun 2023 16:13:34 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB1EB0;
-        Tue,  6 Jun 2023 13:13:33 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6b28fc460bcso1592212a34.1;
-        Tue, 06 Jun 2023 13:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686082412; x=1688674412;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4fV7Pb5i2MwRKtXI+L72eacF/AO/0yqXx0MJ01SSud0=;
-        b=pDP+yL9WN+pff/JjCduS7JvbmoHcUSbG+eB9kCz+wqvdammYyaHY7+8vJHuvMS2fq/
-         wiDeLf7KOGZcqtQNbGAEc8cfZqZ03MuVCAWl7EFXiUe4r2M3mpMpPBs3vzm9/Bo/75Lx
-         9BQjCpEmrUs9QbozWlAryEHce3fGTg8unUtkNcIsLsEbC87BqGdI/b2EUZjbVWjLf58a
-         zelXaH1SDbvnKF5pNVwCS69lLvPBQLsjYLmUOVlxC0+SblWdlOdmN5POjSpacS5wXzdW
-         kKAwGzBoG4g4vye8rCXAQcekBLgJRqhfL3YzPy42XeTh0addYmx2XSyBsIhIO743iW5y
-         8a9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686082412; x=1688674412;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4fV7Pb5i2MwRKtXI+L72eacF/AO/0yqXx0MJ01SSud0=;
-        b=LiXBXWZAkDuB65ntKty2uYqsaNFN7VsRIyHigLqWCwqhUUzXQkgmnFHIxPr9zMsvOw
-         cN5gNRD0hN+HPs0hR7IIWhCFNGdXFtQDTXor33VvPFwPESgL/UOplRG239EVE6mSwElh
-         3pAfMpFu4MnIxP+fcoCttZF/mzQptGjM2FObXj5xuswV21nBodiyGUyGPOmcGbFiKsEo
-         QN9dKL+urjAHA7GLCME3DclckjcPpJVlsP7Kx26LZteorVMp20mIQwfwNp1uvDdirqcD
-         V4QtYF4UTVEwvb6arQ3IgkiwRZW3yQ7xwvWeGxtG6N9F8HjwDXB5+rCsnacDvX4ouydr
-         gYgA==
-X-Gm-Message-State: AC+VfDy3Q9lJjyY+4Kl8yw2pALOrlbRwqwlOQmYvMgaYFWBIM60suz0N
-        Pos4oDjDMh86NYCEtMHptUy1F8i8+t4=
-X-Google-Smtp-Source: ACHHUZ4iLr+olIDpe6s8ZRWHjb0zuQyQc8mlYCwoYHuAuIvcatBpGiqxjkl/qs78RZxnA9Jw8tY6zg==
-X-Received: by 2002:a9d:6253:0:b0:6af:9eb0:5de1 with SMTP id i19-20020a9d6253000000b006af9eb05de1mr3007443otk.36.1686082412201;
-        Tue, 06 Jun 2023 13:13:32 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id b16-20020aa78710000000b00646e7d2b5a7sm7157908pfo.112.2023.06.06.13.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 13:13:31 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 6 Jun 2023 10:13:31 -1000
-From:   Tejun Heo <tj@kernel.org>
+        with ESMTP id S240449AbjFGB3J (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Jun 2023 21:29:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87F71982
+        for <cgroups@vger.kernel.org>; Tue,  6 Jun 2023 18:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1686101300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1h0nXm4obQWr/nMN17xlxThI6u2crQzlPISlM1jWir0=;
+        b=XaAwKWI8M34st32pDbwA7SxRgVZ813Ujx0f0R6yXS5VQ3Nb/7TkkY2TtQ9OB1A5Bs7rTZg
+        H1JeEA47bkMUCZuN0+OPdGJM1FFV8I46CgFBDrApLt8ESwg4YkskKGzssqp5yISTiVLyA3
+        KTx/yUieOnRU3OVXpzVqDqye3iMwh5Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-583-ITxAbywmO4unISCQRha-2w-1; Tue, 06 Jun 2023 21:28:17 -0400
+X-MC-Unique: ITxAbywmO4unISCQRha-2w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1DEC5801182;
+        Wed,  7 Jun 2023 01:28:17 +0000 (UTC)
+Received: from ovpn-8-23.pek2.redhat.com (ovpn-8-23.pek2.redhat.com [10.72.8.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E961440D1B66;
+        Wed,  7 Jun 2023 01:28:12 +0000 (UTC)
+Date:   Wed, 7 Jun 2023 09:28:08 +0800
+From:   Ming Lei <ming.lei@redhat.com>
 To:     Waiman Long <longman@redhat.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
-Subject: Re: [RFC PATCH 0/5] cgroup/cpuset: A new "isolcpus" paritition
-Message-ID: <ZH-Ta7jDozegNo3o@slm.duckdns.org>
-References: <759603dd-7538-54ad-e63d-bb827b618ae3@redhat.com>
- <405b2805-538c-790b-5bf8-e90d3660f116@redhat.com>
- <ZGvHUjOCjwat91Gq@slm.duckdns.org>
- <18793f4a-fd39-2e71-0b77-856afb01547b@redhat.com>
- <ZH4jfmypOXGJPu0D@slm.duckdns.org>
- <be64a569-4388-9dd9-3e06-36d716a54f6c@redhat.com>
- <ZH5FNc6wjlGPsaaO@slm.duckdns.org>
- <a2220c9f-7a8d-da82-ecc0-b39f3807408c@redhat.com>
- <ZH-P7X_yjnVfhy7b@slm.duckdns.org>
- <563fd5e1-650a-e329-8aab-2fa1953a9f49@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Josef Bacik <josef@toxicpanda.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-cgroup: Reinit blkg_iostat_set after clearing in
+ blkcg_reset_stats()
+Message-ID: <ZH/dKFnTIHZqsjQa@ovpn-8-23.pek2.redhat.com>
+References: <20230606180724.2455066-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <563fd5e1-650a-e329-8aab-2fa1953a9f49@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230606180724.2455066-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Tue, Jun 06, 2023 at 04:11:02PM -0400, Waiman Long wrote:
-...
-> The current CPU exclusive behavior is limited to sibling cgroups only.
-> Because of the hierarchical nature of cpu distribution, the set of exclusive
-> CPUs have to appear in all its ancestors. When partition is enabled, we do a
-> sibling exclusivity test at that point to verify that it is exclusive. It
-> looks like you want to do an exclusivity test even when the partition isn't
-> active. I can certainly do that when the file is being updated. However, it
-> will fail the write if the exclusivity test fails just like the v1
-> cpuset.cpus.exclusive flag if you are OK with that.
-
-Yeah, doesn't look like there's a way around it if we want to make
-.exclusive a feature which is useful on its own.
-
-> > Instead, it can be sth like "if the parent is a
-> > partition root, cpuset implicitly tries to set all CPUs in its cpus file in
-> > its cpus.exclusive file" so that user-visible behavior stays unchanged
-> > depending on past history.
+On Tue, Jun 06, 2023 at 02:07:24PM -0400, Waiman Long wrote:
+> When blkg_alloc() is called to allocate a blkcg_gq structure
+> with the associated blkg_iostat_set's, there are 2 fields within
+> blkg_iostat_set that requires proper initialization - blkg & sync.
+> The former field was introduced by commit 3b8cc6298724 ("blk-cgroup:
+> Optimize blkcg_rstat_flush()") while the later one was introduced by
+> commit f73316482977 ("blk-cgroup: reimplement basic IO stats using
+> cgroup rstat").
 > 
-> If parent is a partition root, auto reservation will be done and
-> cpus.exclusive will be set automatically just like before. So existing
-> applications using partition will not be affected.
+> Unfortunately those fields in the blkg_iostat_set's are not properly
+> re-initialized when they are cleared in v1's blkcg_reset_stats(). This
+> can lead to a kernel panic due to NULL pointer access of the blkg
+> pointer. The missing initialization of sync is less problematic and
+> can be a problem in a debug kernel due to missing lockdep initialization.
+> 
+> Fix these problems by re-initializing them after memory clearing.
+> 
+> Fixes: 3b8cc6298724 ("blk-cgroup: Optimize blkcg_rstat_flush()")
+> Fixes: f73316482977 ("blk-cgroup: reimplement basic IO stats using cgroup rstat")
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  block/blk-cgroup.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index 90c2efc3767f..48084321e3e0 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -636,8 +636,13 @@ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+>  			struct blkg_iostat_set *bis =
+>  				per_cpu_ptr(blkg->iostat_cpu, cpu);
+>  			memset(bis, 0, sizeof(*bis));
+> +
+> +			/* Re-initialize the cleared blkg_iostat_set */
+> +			u64_stats_init(&bis->sync);
+> +			bis->blkg = blkg;
+>  		}
+>  		memset(&blkg->iostat, 0, sizeof(blkg->iostat));
+> +		u64_stats_init(&blkg->iostat.sync);
+>  
+>  		for (i = 0; i < BLKCG_MAX_POLS; i++) {
+>  			struct blkcg_policy *pol = blkcg_policy[i];
 
-Sounds great.
+Looks fine,
 
-Thanks.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
--- 
-tejun
+
+Thanks,
+Ming
+
