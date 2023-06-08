@@ -2,173 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287CB727272
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jun 2023 00:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C69E72750A
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jun 2023 04:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbjFGW4a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jun 2023 18:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
+        id S233068AbjFHCg7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Jun 2023 22:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbjFGW4O (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 18:56:14 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CE42716
-        for <cgroups@vger.kernel.org>; Wed,  7 Jun 2023 15:55:54 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5149c76f4dbso2563278a12.1
-        for <cgroups@vger.kernel.org>; Wed, 07 Jun 2023 15:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686178553; x=1688770553;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
-        b=d8ALJgWgHzWLVbYqm5Xun40Trrtx9u26PJxgDpuM+opU1kagifpoMF3E49HbI3GY2V
-         wVrEz/8VMNXOa34mGDXKD+N7lGOv2QGCP2gi2Pc2YR15Cm6aBUEYMKdxMAaBdTZps5JD
-         wHIIcg7iFPDm6hq2Anc8eetPMFV7Dmp3k3ChvztUfrQawEncim7LlPLb1dcX0GFSQa2Z
-         MpCDoaZndeCwrh4lYpSlY+MIxLpkoT0dvzpzNzmwq8ANq48/S89YAmvR6lG4ID6DJkmg
-         UQBMvZ4NUlogSfe/ccOin4LQnm3S/JQ2MwxZLa7FvZbQYk7vl4nSPeVW9A3WoEossLXw
-         Xp4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686178553; x=1688770553;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
-        b=JQDZFbIB09wFQk1eXntKUR40lMYyO9QCvIJVlwxe/hjHK2phf1jdZMu8guoVYkZEmD
-         Jb7r5ReaP5aHrTHmvlzLy5x8aEiAWKmxZSL77T/Ar8RldvQRuq6zEJ7J5zfW0bwbWhfF
-         AvgVcX1KZfQ8Iy+fQpVUMb3DkWjba5pboAxFcWCxHLadgPXtj0uLEpaaTkuRP6ze6QR9
-         kIegKpVPwdqUse21joW/WnWPkJ/vlhvM83qXoiVKf9miDZ7BmgmRniUQNK9/6RThyoLO
-         wGDZcLeFeKAHiu+KLrUd7bX+r+ewx8nUN7WZYRi5KPdEECYBmg287p15zIjS/p/ImsbV
-         JiGg==
-X-Gm-Message-State: AC+VfDz5+kP5vi4T145GT6rgQ2dbdrCMxoAMQD8XFp2dHgLVLamlh3WK
-        v6PQ1T564kT4h4KF7idB6KXPuLwhD54q68yeT6s=
-X-Google-Smtp-Source: ACHHUZ5lc5uNG0II8N/7owu97MNYayebO2FU5BOHITGRdvZTCXANx0Yi1fv5Th/dfzvi0zTuZAaSCLE67mXxoPl8ud4=
-X-Received: by 2002:a17:907:8a08:b0:973:ad8f:ef9b with SMTP id
- sc8-20020a1709078a0800b00973ad8fef9bmr8009971ejc.5.1686178552696; Wed, 07 Jun
- 2023 15:55:52 -0700 (PDT)
+        with ESMTP id S231176AbjFHCg6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 22:36:58 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A2713D;
+        Wed,  7 Jun 2023 19:36:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qc7db0bdSz4f3nwW;
+        Thu,  8 Jun 2023 10:36:51 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgCX_7LDPoFkAt_GLA--.34208S3;
+        Thu, 08 Jun 2023 10:36:52 +0800 (CST)
+Subject: Re: [PATCH -next v3 0/5] blk-wbt: minor fix and cleanup
+To:     Yu Kuai <yukuai1@huaweicloud.com>, hch@lst.de, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230527010644.647900-1-yukuai1@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <e33b856f-1874-030f-1b45-3b036e9b17b6@huaweicloud.com>
+Date:   Thu, 8 Jun 2023 10:36:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Received: by 2002:a54:2409:0:b0:217:72a9:f646 with HTTP; Wed, 7 Jun 2023
- 15:55:52 -0700 (PDT)
-Reply-To: unitednationcompensationcoordinatortreasury@hotmail.com
-From:   "UNITED NATION DEPUTY SECRETARY-GENERAL (U.N)" 
-        <successikolo@gmail.com>
-Date:   Wed, 7 Jun 2023 15:55:52 -0700
-Message-ID: <CADFNGJ8EwbrtVXBod+yuxOPvcNStu1uNZVywED0Ra-jpG92ATw@mail.gmail.com>
-Subject: CONTACT DHL OFFICE IMMEDIATELY FOR YOUR ATM MASTER CARD 1.5 MILLION,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FILL_THIS_FORM,FORM_FRAUD_5,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FORM,MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_FILL_THIS_FORM_LOAN,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:52c listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [successikolo[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  0.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.0 FILL_THIS_FORM Fill in a form with personal information
-        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
-        *  0.0 MONEY_FORM Lots of money if you fill out a form
-        *  1.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
-        *      money
-        *  0.2 MONEY_FRAUD_5 Lots of money and many fraud phrases
-        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
-X-Spam-Level: ******
+In-Reply-To: <20230527010644.647900-1-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCX_7LDPoFkAt_GLA--.34208S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryfJrWfuFyfXr4rtF17Awb_yoWDXFb_Wa
+        4qyayDK3Z8A3Z5CFW2yFyDXFWjkr4rXr4UWFn5J3yftr13Jr1DKw4ktrW3Z3y3ua1ku3Wr
+        Aw1DXrWxJw4SyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxv
+        r21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUU
+        U==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-UNITED NATION DEPUTY SECRETARY-GENERAL.
+Hi, Jens
 
-This is to official inform you that we have been having meetings for
-the past three (3) weeks which ended two days ago with MR. JIM YONG
-KIM the world bank president and other seven continent presidents on
-the congress we treated on solution to scam victim problems.
+Can you apply this patchset?
 
- Note: we have decided to contact you following the reports we
-received from anti-fraud international monitoring group your
-name/email has been submitted to us therefore the united nations have
-agreed to compensate you with the sum of (USD$ 1.5 Million) this
-compensation is also including international business that failed you
-in the past due to government problems etc.
+Thanks,
+Kuai
 
- We have arranged your payment through our ATM Master Card and
-deposited it in DHL Office to deliver it to you which is the latest
-instruction from the World Bank president MR. JIM YONG KIM, For your
-information=E2=80=99s, the delivery charges already paid by U.N treasury, t=
-he
-only money you will send to DHL office south Korea is
-($500). for security keeping fee, U.N coordinator already paid for
-others charges fees for delivery except the security keeping fee, the
-director of DHL refused to collect the security keeping fee from U.N
-coordinator, the Director of DHL office said that they don=E2=80=99t know
-exactly time you will contact them to reconfirm your details to avoid
-counting demur-rage that is why they refused collecting the ($500) .
-for security keeping fee.
+ÔÚ 2023/05/27 9:06, Yu Kuai Ð´µÀ:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Changes in v3:
+>   - patch 1 from v2 is sent separately, and it's removd from this series.
+>   - add review tag for all the patches.
+> 
+> Changes in v2:
+>   - make the code more readable for patch 1
+>   - add a new attr_group that is only visible for rq based device
+>   - explain in detail for patch 4
+>   - add review tag for patch 2,3,5
+> 
+> Yu Kuai (5):
+>    blk-wbt: don't create wbt sysfs entry if CONFIG_BLK_WBT is disabled
+>    blk-wbt: remove dead code to handle wbt enable/disable with io
+>      inflight
+>    blk-wbt: cleanup rwb_enabled() and wbt_disabled()
+>    blk-iocost: move wbt_enable/disable_default() out of spinlock
+>    blk-sysfs: add a new attr_group for blk_mq
+> 
+>   block/blk-iocost.c |   7 +-
+>   block/blk-sysfs.c  | 181 ++++++++++++++++++++++++++-------------------
+>   block/blk-wbt.c    |  21 +-----
+>   block/blk-wbt.h    |  19 -----
+>   4 files changed, 110 insertions(+), 118 deletions(-)
+> 
 
- Therefore be advice to contact DHL Office agent south Korea. Rev:John
-Lee Tae-seok
-who is in position to deliver your ATM
-Master Card to your location address, contact DHL Office immediately
-with the bellow email & phone number as listed below.
-
- Contact name: John Lee Tae-seok
-
- Email:( dhlgeneralheadquartersrepublic@gmail.com )
-
- Do not hesitate to Contact Rev: John Lee Tae-seok, as soon as you
-
- read this message. Email:( dhlgeneralheadquartersrepublic@gmail.com )
-
- Make sure you reconfirmed DHL Office your details ASAP as stated
-below to avoid wrong delivery.
-
- Your full name..........
-
- Home address:.........
-
- Your country...........
-
- Your city..............
-
- Telephone......
-
- Occupation:.......
-
- Age:=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6..
-
- Let us know as soon as possible you receive your ATM MasterCard
-for proper verification.
-
- Regards,
-
- Mrs Vivian kakadu.
-
- DEPUTY SECRETARY-GENERAL (U.N)
