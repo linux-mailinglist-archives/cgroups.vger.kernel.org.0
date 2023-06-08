@@ -2,94 +2,143 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72751727FBF
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jun 2023 14:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2517B7282B4
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jun 2023 16:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235712AbjFHMXD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Jun 2023 08:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        id S235067AbjFHO1p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Jun 2023 10:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbjFHMXC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Jun 2023 08:23:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7A7E62
-        for <cgroups@vger.kernel.org>; Thu,  8 Jun 2023 05:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1686226932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6zJ80tFIxXTVHRh/16qEQREsJv1j4C9vyoJ2KH4/8c=;
-        b=AW9y+DCNh3q94I6r9c5PCL5+kN95gM/aV5bzFbXxVOo/z2qQEA3mvXLUhXGmh8db0ftOD0
-        rUR+9xrkvrts/cnHbtmgZuJvrCvHGFMulV6ss+mGf7RHuUU4NK2itzP10AwMK8V6g80Rg2
-        hq0expNu4UwczQykeKbH/v8c1fxRXi8=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-552-GWZMmb5uNSyfOTz4Eqrylw-1; Thu, 08 Jun 2023 08:22:07 -0400
-X-MC-Unique: GWZMmb5uNSyfOTz4Eqrylw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 03CDA3803512;
-        Thu,  8 Jun 2023 12:22:07 +0000 (UTC)
-Received: from [10.22.8.251] (unknown [10.22.8.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 547E0C1603B;
-        Thu,  8 Jun 2023 12:22:06 +0000 (UTC)
-Message-ID: <7ff8c948-c5e2-ac5b-6633-8583b8cb75fe@redhat.com>
-Date:   Thu, 8 Jun 2023 08:22:06 -0400
+        with ESMTP id S234566AbjFHO1o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Jun 2023 10:27:44 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2F52D53;
+        Thu,  8 Jun 2023 07:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686234439; x=1717770439;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=AOHF8Rb86ntesAI/yE6eOPe27CYMX9ghGd4LAdbYQLs=;
+  b=FkS2ZiNKdRzafecRs5vfoQum0utUn6s8Qgs4pzsCv5c7XJNAcBQVdKjH
+   KXWjjUihSYegMQrUzV4kdoLWqVZFOyXOeEI6afZEAT/rsrLNW40IRoIgQ
+   G4gC2FBMA9dkx+nY7qSLJIgBD77Vt0kadshfZDsCeL8wES+1uwAyj13ap
+   Zrom0wwnbG2SEhqO7j1cyyyx/P8yKBBHNOd/j5rUP3tewm8cW8e2uj9Dx
+   oYPRUwckeGD9fZoMzP0ovqWkPOWBmvYvLBQ+VHqJl1+MzAjwmV8+jNkMI
+   TSviLiIWm3PTNmL1EALH0wmmSqpIE37m9VcyTlDIfAD81M60/f45Sxi73
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="356177428"
+X-IronPort-AV: E=Sophos;i="6.00,227,1681196400"; 
+   d="scan'208";a="356177428"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2023 07:26:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="956736343"
+X-IronPort-AV: E=Sophos;i="6.00,227,1681196400"; 
+   d="scan'208";a="956736343"
+Received: from rirwin-mobl3.ger.corp.intel.com (HELO [10.213.239.227]) ([10.213.239.227])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2023 07:26:28 -0700
+Message-ID: <77587046-aede-f625-6a35-55bf9c5f1179@linux.intel.com>
+Date:   Thu, 8 Jun 2023 15:26:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] cgroup/cpuset: Fix comment in cpuset_hotplug_workfn
+ Thunderbird/102.11.0
+Subject: Re: [RFC 02/10] drm: Update file owner during use
 Content-Language: en-US
-To:     suhua <suhua.tanke@gmail.com>, lizefan.x@bytedance.com,
-        tj@kernel.org, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230608085439.27501-1-suhua.tanke@gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230608085439.27501-1-suhua.tanke@gmail.com>
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Brian Welty <brian.welty@intel.com>, Kenny.Ho@amd.com,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>, Tejun Heo <tj@kernel.org>,
+        cgroups@vger.kernel.org, "T . J . Mercier" <tjmercier@google.com>
+References: <20230314141904.1210824-1-tvrtko.ursulin@linux.intel.com>
+ <20230314141904.1210824-3-tvrtko.ursulin@linux.intel.com>
+ <CACvgo52Bb3kBua8dh+eac6dhSwiJLMGAdGDAa+LQYoOwCLPLNA@mail.gmail.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <CACvgo52Bb3kBua8dh+eac6dhSwiJLMGAdGDAa+LQYoOwCLPLNA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/8/23 04:54, suhua wrote:
-> "synchronize cpus_allowed to cpu_active_mask"
-> -> "synchronize cpu_active_mask to cpus_allowed"
->
-> Signed-off-by: suhua <suhua.tanke@gmail.com>
-> ---
->   kernel/cgroup/cpuset.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index b0aee733b92b..4810d29e2d63 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3739,7 +3739,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
->   	if (!cpus_updated && top_cpuset.nr_subparts_cpus)
->   		cpus_updated = true;
->   
-> -	/* synchronize cpus_allowed to cpu_active_mask */
-> +	/* synchronize cpu_active_mask to cpus_allowed */
->   	if (cpus_updated) {
->   		spin_lock_irq(&callback_lock);
->   		if (!on_dfl)
 
-The comment is a bit outdated. The synchronization is only meant for 
-cgroup v1, but it is correct in this regard. We are matching 
-cpus_allowed of top_cpuset to cpu_active_mask, not the other way around.
+On 21/04/2023 13:13, Emil Velikov wrote:
+> Greetings everyone,
+> 
+> Above all - hell yeah. Thank you Tvrtko, this has been annoying the
+> hell out of me for ages.
 
-Cheers,
-Longman
+Yay!
+
+> On Tue, 14 Mar 2023 at 14:19, Tvrtko Ursulin
+> <tvrtko.ursulin@linux.intel.com> wrote:
+>>
+>> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+>>
+>> With the typical model where the display server opends the file descriptor
+>> and then hands it over to the client we were showing stale data in
+>> debugfs.
+> 
+> s/opends/opens/
+
+Thanks!
+
+> But as a whole the sentence is fairly misleading. Story time:
+> 
+> The traditional model, the server was the orchestrator managing the
+> primary device node. From the fd, to the master status and
+> authentication. But looking at the fd alone, this has varied across
+> the years.
+> 
+> IIRC in the DRI1 days, Xorg (libdrm really) would have a list of open
+> fd(s) and reuse those whenever needed, DRI2 the client was responsible
+> for open() themselves and with DRI3 the fd was passed to the client.
+> 
+> Around the inception of DRI3 and systemd-logind, the latter became
+> another possible orchestrator. Whereby Xorg and Wayland compositors
+> could ask it for the fd. For various reasons (hysterical and genuine
+> ones) Xorg has a fallback path going the open(), whereas Wayland
+> compositors are moving to solely relying on logind... some never had
+> fallback even.
+> 
+> Over the past few years, more projects have emerged which provide
+> functionality similar (be that on API level, Dbus, or otherwise) to
+> systemd-logind.
+> 
+> 
+> Apart from that, the commit is spot on. I like the use of rcu and the
+> was_master handling is correct. With some message polish this commit
+> is:
+> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+
+Are you okay if I just paste your very fine explanation verbatim, with 
+credits?
+
+> I also had a brief look at 01/10, although I cannot find many
+> references for the pid <> tguid mappings. Be that on the kernel side
+> or userspace - do you have any links that I can educate myself?
+
+TGID or thread group leader. For single threaded userspace TGID equals 
+to PID, while for multi-threaded first thread TGID equals PID/TID, while 
+additional threads PID/TID does not equal TGID. Clear, as mud? :) My 
+POSIX book is misplaced somewhere having not consulted it years... :)
+
+Regards,
+
+Tvrtko
 
