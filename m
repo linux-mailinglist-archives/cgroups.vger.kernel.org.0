@@ -2,60 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C69E72750A
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jun 2023 04:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C32727A88
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jun 2023 10:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjFHCg7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jun 2023 22:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
+        id S233887AbjFHIzG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Jun 2023 04:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbjFHCg6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jun 2023 22:36:58 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A2713D;
-        Wed,  7 Jun 2023 19:36:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qc7db0bdSz4f3nwW;
-        Thu,  8 Jun 2023 10:36:51 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgCX_7LDPoFkAt_GLA--.34208S3;
-        Thu, 08 Jun 2023 10:36:52 +0800 (CST)
-Subject: Re: [PATCH -next v3 0/5] blk-wbt: minor fix and cleanup
-To:     Yu Kuai <yukuai1@huaweicloud.com>, hch@lst.de, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230527010644.647900-1-yukuai1@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <e33b856f-1874-030f-1b45-3b036e9b17b6@huaweicloud.com>
-Date:   Thu, 8 Jun 2023 10:36:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S235762AbjFHIzA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Jun 2023 04:55:00 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D60EE50;
+        Thu,  8 Jun 2023 01:54:59 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-33c1fb9f2ecso903805ab.1;
+        Thu, 08 Jun 2023 01:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686214498; x=1688806498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jz1qf2zlWvjIpJVPr8zbP9jXOvJw9H1KwfzL0mmuSd4=;
+        b=EuMNUFCfE0m86T6owuPiuM3nPqKSsrppr0wIRvWzkBFqPSyYAwjgWJ61t4zN5rSJu0
+         Ayeta9huLcJBWt0FElPaKqc5fDe+DbWXiyF99GiNyAdXME7CQe2Kmkl+BVekSF0Vxu7G
+         oBHNbJoqx+5q+tpwJOfaYMWZyXMm3dQRCX2xX4D9OIzKM/Rs/T0klFg7Gk8IR0+QKyJT
+         8qh8yNo4uL4Ej350MaH8gIp7cbyU12rhdfkT2rwiE5veSRw00Ta7pPwlINcE1PMp+Rjp
+         m4SOAfrSesBUy5Y240gqXo9HO2Z5HP76qwj/RFXri19iewh5vTbHAfqLfzYXAQ7M5waU
+         5jqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686214498; x=1688806498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jz1qf2zlWvjIpJVPr8zbP9jXOvJw9H1KwfzL0mmuSd4=;
+        b=WslNNk+EYS0FdLZ4OAic1QqyAMNEcx+BFPLsRtRtMBsMMmgbnBVsFsW9jWRltRrwPO
+         +lRfzYuZZSDGPX2uKqF9Ld/fRDS4BDU7qTU6d8LdNxWoNbHhkLcm2YT4savsVti9OnaC
+         Zh63P4d7ksdvZo51psLRDl3fupZtNzSt4MvvBY4nA+iAZJkad9pyivqXAQ/Flym4by8r
+         0AzaKor1x74uYit2IkDgIjjQVIPoGP3TzqynV/uJ9F0ZshWSPONxd9rtzdW5ZAUDPCBZ
+         8XLZLi3j9GNi21NuPlpygpKKjMMarqg5NtjXGSmKR7XqgVwpTDVvh2IPQmxy1mf1g8nA
+         qdyg==
+X-Gm-Message-State: AC+VfDxqIVnk9RdexCeJuxuRR2l+Xe2kGjX4WhdUui4o9KWw3tshnwLj
+        4KVN9jsUF5EhPjE63ebASQg=
+X-Google-Smtp-Source: ACHHUZ706Zpr9+29hq8R5/qIx9mGu8tGfi9Ud1gQ3CptlORnk1gUA7yNS6HZvSGEgfztkNaTyK3F2Q==
+X-Received: by 2002:a05:6e02:602:b0:33d:6626:7e35 with SMTP id t2-20020a056e02060200b0033d66267e35mr7301987ils.13.1686214498109;
+        Thu, 08 Jun 2023 01:54:58 -0700 (PDT)
+Received: from suhua-virtual-machine.localdomain ([36.112.24.11])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa793b1000000b00640dbf177b8sm664965pff.37.2023.06.08.01.54.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jun 2023 01:54:57 -0700 (PDT)
+From:   suhua <suhua.tanke@gmail.com>
+To:     longman@redhat.com, lizefan.x@bytedance.com, tj@kernel.org,
+        hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        suhua.tanke@gmail.com
+Subject: [PATCH] cgroup/cpuset: Fix comment in cpuset_hotplug_workfn
+Date:   Thu,  8 Jun 2023 16:54:39 +0800
+Message-Id: <20230608085439.27501-1-suhua.tanke@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20230527010644.647900-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCX_7LDPoFkAt_GLA--.34208S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XryfJrWfuFyfXr4rtF17Awb_yoWDXFb_Wa
-        4qyayDK3Z8A3Z5CFW2yFyDXFWjkr4rXr4UWFn5J3yftr13Jr1DKw4ktrW3Z3y3ua1ku3Wr
-        Aw1DXrWxJw4SyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb48FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxv
-        r21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUU
-        U==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,38 +69,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Jens
+"synchronize cpus_allowed to cpu_active_mask"
+-> "synchronize cpu_active_mask to cpus_allowed"
 
-Can you apply this patchset?
+Signed-off-by: suhua <suhua.tanke@gmail.com>
+---
+ kernel/cgroup/cpuset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Kuai
-
-ÔÚ 2023/05/27 9:06, Yu Kuai Ð´µÀ:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Changes in v3:
->   - patch 1 from v2 is sent separately, and it's removd from this series.
->   - add review tag for all the patches.
-> 
-> Changes in v2:
->   - make the code more readable for patch 1
->   - add a new attr_group that is only visible for rq based device
->   - explain in detail for patch 4
->   - add review tag for patch 2,3,5
-> 
-> Yu Kuai (5):
->    blk-wbt: don't create wbt sysfs entry if CONFIG_BLK_WBT is disabled
->    blk-wbt: remove dead code to handle wbt enable/disable with io
->      inflight
->    blk-wbt: cleanup rwb_enabled() and wbt_disabled()
->    blk-iocost: move wbt_enable/disable_default() out of spinlock
->    blk-sysfs: add a new attr_group for blk_mq
-> 
->   block/blk-iocost.c |   7 +-
->   block/blk-sysfs.c  | 181 ++++++++++++++++++++++++++-------------------
->   block/blk-wbt.c    |  21 +-----
->   block/blk-wbt.h    |  19 -----
->   4 files changed, 110 insertions(+), 118 deletions(-)
-> 
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index b0aee733b92b..4810d29e2d63 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3739,7 +3739,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+ 	if (!cpus_updated && top_cpuset.nr_subparts_cpus)
+ 		cpus_updated = true;
+ 
+-	/* synchronize cpus_allowed to cpu_active_mask */
++	/* synchronize cpu_active_mask to cpus_allowed */
+ 	if (cpus_updated) {
+ 		spin_lock_irq(&callback_lock);
+ 		if (!on_dfl)
+-- 
+2.34.1
 
