@@ -2,113 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D1C72B21F
-	for <lists+cgroups@lfdr.de>; Sun, 11 Jun 2023 15:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297F772B5C9
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jun 2023 05:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbjFKNtM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 11 Jun 2023 09:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S229477AbjFLDNw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 11 Jun 2023 23:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjFKNtL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 11 Jun 2023 09:49:11 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039CE187
-        for <cgroups@vger.kernel.org>; Sun, 11 Jun 2023 06:49:09 -0700 (PDT)
-Received: from fsav111.sakura.ne.jp (fsav111.sakura.ne.jp [27.133.134.238])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 35BDmUaO019460;
-        Sun, 11 Jun 2023 22:48:30 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav111.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp);
- Sun, 11 Jun 2023 22:48:30 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav111.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 35BDmEfx019412
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 11 Jun 2023 22:48:30 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <69ab449f-1981-2d53-79fb-b2ac91ea9cef@I-love.SAKURA.ne.jp>
-Date:   Sun, 11 Jun 2023 22:48:12 +0900
+        with ESMTP id S231428AbjFLDNr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 11 Jun 2023 23:13:47 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415DDC4
+        for <cgroups@vger.kernel.org>; Sun, 11 Jun 2023 20:13:46 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2566ed9328eso2419362a91.2
+        for <cgroups@vger.kernel.org>; Sun, 11 Jun 2023 20:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1686539625; x=1689131625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=isvk/E9G1J5c+bipF9hN5zG+Nag5iOn+AJ5rYPC8Si8=;
+        b=azPuT2b/FtHoAE095FDR2kcjtJf9/JJ1kwqBOO/u2aEEI3Upa/kUJnA5vvloGhQG7r
+         Iq+fbnSJBqkhGGYeCBgoOWvSIujRe8NiJ3FYP1EHlVv7vrfk6oxNh8ZHXDfYsBuKotAy
+         +5+Cpmfhr7aM9znnX2mKAAj3dqHQUyVUhQZN1OLISWBXX9O8eJHZ7BIZAYE5CXkzSFC6
+         sZvc2fzdRRDexf2en3ztWWHCPpXkv4oj5GFlhfIkzBO3Xp/0g8psQ5l1YC4ye66gAwfH
+         ghNd3rtQE07xppYBOMZIBJDrr4kp5uJ8mKIhAXPrM2LZE4peyAM6++6FZZ1os15mN2Ie
+         Yedw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686539625; x=1689131625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=isvk/E9G1J5c+bipF9hN5zG+Nag5iOn+AJ5rYPC8Si8=;
+        b=fWdyL3GhoaeWzmVAALE2YqgciEctjIgduX4lkE8rjIjNBimmFl5RyXri45r6qzYcsz
+         b/cDE2s4GxTHxQ82qVXnJulWquVPbJK2mWFEdMOZPmBOXdG8oVzwQjcuotbjarvVDzho
+         qCnxs36/28iHRUvFfqdpAjcinDx9uAjgWHXooQKxtK6KuiTdBFPYR+HyATt3HTbBg66i
+         7ZRSHzmFMIpLJqQlZr0b3iLzMOJ4Pa90gvpXIn7nbHKZh7oZ0GSBVUzN86OrZ7bnCSZk
+         mkWWdSzZilk8T0gVF4H1OA3hIEtmgB4LBC2stEKCQFeH8HvkuvuiaPwlqX5Hq96QeIjZ
+         K/SA==
+X-Gm-Message-State: AC+VfDyyZmwT1dWF0cB5TAM4OngK8NeaKt2AB6tYoTUCK6W0xiVDffCP
+        Z2dbc8xKUfOMtCi1dJvy3myp4A==
+X-Google-Smtp-Source: ACHHUZ4+3GyKjWyJiTMgFWqIeax2k+2coVDDCLctZJq+F7ehqqhkVNUKOb3HU/wA9VbOPBh1S6xj+A==
+X-Received: by 2002:a17:90b:3b52:b0:259:17ba:e89a with SMTP id ot18-20020a17090b3b5200b0025917bae89amr7216391pjb.34.1686539625689;
+        Sun, 11 Jun 2023 20:13:45 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:11b7:189f:bf83:942e:7892? ([240e:694:e21:b::2])
+        by smtp.gmail.com with ESMTPSA id 14-20020a17090a190e00b00259b729eea9sm6800414pjg.8.2023.06.11.20.13.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jun 2023 20:13:45 -0700 (PDT)
+Message-ID: <d6d19a61-a584-1839-e6cc-ea63479ca800@bytedance.com>
+Date:   Mon, 12 Jun 2023 11:13:41 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: [PATCH] cgroup,freezer: hold cpu_hotplug_lock before freezer_mutex in
- freezer_css_{online,offline}()
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Cgroups <cgroups@vger.kernel.org>
-References: <000000000000bd448705fda123f5@google.com>
- <000000000000d1565005fda9cef1@google.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <000000000000d1565005fda9cef1@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [External] Re: [PATCH] cgroup: rstat: Simplified
+ cgroup_base_stat_flush() update last_bstat logic
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230518124142.57644-1-jiahao.os@bytedance.com>
+ <f39b9229-e59c-2b1c-7f3f-1aeedfad44dc@bytedance.com>
+ <5g73i4yvi4ub4dqrf4dnq5qghkyckoygmgd2st6be3gg7twww2@w6zim6nxpt3b>
+ <4d49f7e7-2488-9690-258e-34e617cfef6f@bytedance.com>
+ <remnwctqmxleig7ywt6puhxnpmzjo7xm6hlfhpnul46ulfnw7j@36sbuxhuatto>
+From:   Hao Jia <jiahao.os@bytedance.com>
+In-Reply-To: <remnwctqmxleig7ywt6puhxnpmzjo7xm6hlfhpnul46ulfnw7j@36sbuxhuatto>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-syzbot is again reporting circular locking dependency between
-cpu_hotplug_lock and freezer_mutex. Do like what we did with
-commit 57dcd64c7e036299 ("cgroup,freezer: hold cpu_hotplug_lock
-before freezer_mutex").
 
-Reported-by: syzbot <syzbot+2ab700fe1829880a2ec6@syzkaller.appspotmail.com>
-Closes: https://syzkaller.appspot.com/bug?extid=2ab700fe1829880a2ec6
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: syzbot <syzbot+2ab700fe1829880a2ec6@syzkaller.appspotmail.com>
----
- kernel/cgroup/legacy_freezer.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
-index 936473203a6b..122dacb3a443 100644
---- a/kernel/cgroup/legacy_freezer.c
-+++ b/kernel/cgroup/legacy_freezer.c
-@@ -108,16 +108,18 @@ static int freezer_css_online(struct cgroup_subsys_state *css)
- 	struct freezer *freezer = css_freezer(css);
- 	struct freezer *parent = parent_freezer(freezer);
- 
-+	cpus_read_lock();
- 	mutex_lock(&freezer_mutex);
- 
- 	freezer->state |= CGROUP_FREEZER_ONLINE;
- 
- 	if (parent && (parent->state & CGROUP_FREEZING)) {
- 		freezer->state |= CGROUP_FREEZING_PARENT | CGROUP_FROZEN;
--		static_branch_inc(&freezer_active);
-+		static_branch_inc_cpuslocked(&freezer_active);
- 	}
- 
- 	mutex_unlock(&freezer_mutex);
-+	cpus_read_unlock();
- 	return 0;
- }
- 
-@@ -132,14 +134,16 @@ static void freezer_css_offline(struct cgroup_subsys_state *css)
- {
- 	struct freezer *freezer = css_freezer(css);
- 
-+	cpus_read_lock();
- 	mutex_lock(&freezer_mutex);
- 
- 	if (freezer->state & CGROUP_FREEZING)
--		static_branch_dec(&freezer_active);
-+		static_branch_dec_cpuslocked(&freezer_active);
- 
- 	freezer->state = 0;
- 
- 	mutex_unlock(&freezer_mutex);
-+	cpus_read_unlock();
- }
- 
- static void freezer_css_free(struct cgroup_subsys_state *css)
--- 
-2.18.4
+On 2023/5/24 Michal Koutný wrote:
+> On Wed, May 24, 2023 at 02:54:10PM +0800, Hao Jia <jiahao.os@bytedance.com> wrote:
+>> Yes, so we need @curr to record the bstat value after the sequence fetch is
+>> completed.
+> 
+> No, I still don't see a problem that it solves. If you find incorrect
+> data being reported, please explain it more/with an example.
+> 
+>> Yes, but it may not be obvious.
+>> Another reason is that when we complete an update, we snapshot last_bstat as
+>> the current bstat, which is better for readers to understand. Arithmetics is
+>> somewhat obscure.
+> 
+> The readability here is subjective. It'd be interesting to have some
+> data comparing arithmetics vs copying though.
+> 
 
+Sorry for replying you so late. I am using RDTSC on my machine (an Intel 
+Xeon(R) Platinum 8260 CPU@2.40GHz machine with 2 NUMA nodes each of 
+which has 24 cores with SMT2 enabled, so 96 CPUs in total.) to compare 
+the time consumption of arithmetics vs copying. There is almost no 
+difference in the time consumption between arithmetics and copying.
+
+
+
+> HTH,
+> Michal
