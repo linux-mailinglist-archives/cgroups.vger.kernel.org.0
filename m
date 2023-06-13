@@ -2,56 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F78272DE49
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jun 2023 11:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF35D72E041
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jun 2023 13:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239701AbjFMJvA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Jun 2023 05:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        id S239377AbjFMLAQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Jun 2023 07:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241689AbjFMJuu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Jun 2023 05:50:50 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645A810DF
-        for <cgroups@vger.kernel.org>; Tue, 13 Jun 2023 02:50:48 -0700 (PDT)
+        with ESMTP id S239863AbjFMLAO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Jun 2023 07:00:14 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5960410E3;
+        Tue, 13 Jun 2023 04:00:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686649848; x=1718185848;
-  h=date:from:to:cc:subject:message-id;
-  bh=2ZTDkqdeRksBUBx4I3kpLm6KUK0FugutXrOanmdKaic=;
-  b=XnoULyOHvHOIj++Fg/ycqsIm1sbAkPscAPKc/otXxbHJ00RgkncZzt2F
-   9bQG0Dv55Y123t1ilLqVBiWo2aWPmIIzRf6E28kGMhMjVhWXMbfjbk8XV
-   EJGY8Tsgus+U+N/CKQOXecJVqyQyjgysp8vrBepiVFTy6AUdWRLQWg68B
-   ls5LaJGuO71uIRTyymmz2C9g5w4lDjyDouxegS+zIzGakS0+Y4R2R44Jg
-   aWoJWL5UXhQY8JNctixb1G40hUNryRwGLDK39dqru0BGrr9xf/TbrfGaR
-   jh4FE1Ugde1jTaQtdfwTKlPpP7kJpx6boIl4l2VjL6lsLAq/KuLyFFJCh
+  t=1686654012; x=1718190012;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+ZwgnbFFD4kVifWi7M+EUMUQ3jIqdujOFhEyYhD1S1c=;
+  b=JTBAaG0sOv1Rby/6HF+IuXtyI7O/r3jO6PWtFjAzUfgCPnOb/ig9O4HQ
+   2otyuLjRVO/WnotEshFmJnJIpwOdmh/uPOUjrrFuM3QKDsAqAUkrx0jZV
+   /Iiv+116SrixI792ecN5psBfkg5gY3GIBwOZMf4DnamGqmAqBgBJ1YBFF
+   4LVMxXrCEYAiiJTEkf2QyejGmWB1ca9+Nbgzj5nggmFyoxnmu8xtGG+wU
+   5hRn2gBmyPgPPZSZNgz/x+nHMWCKTlpeY77L9qLHwIzFc3lI2nTQzLMNh
+   hrYU78CXIw8Ptdks6PGh4f2C85vVcfSRwGUgvB+wHlFLo2hLNDYMafu1P
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="337919917"
+X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="338657979"
 X-IronPort-AV: E=Sophos;i="6.00,239,1681196400"; 
-   d="scan'208";a="337919917"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 02:50:48 -0700
+   d="scan'208";a="338657979"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 04:00:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="824332134"
+X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="1041726585"
 X-IronPort-AV: E=Sophos;i="6.00,239,1681196400"; 
-   d="scan'208";a="824332134"
-Received: from lkp-server01.sh.intel.com (HELO 211f47bdb1cb) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Jun 2023 02:50:47 -0700
-Received: from kbuild by 211f47bdb1cb with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q90fm-0001CV-1y;
-        Tue, 13 Jun 2023 09:50:46 +0000
-Date:   Tue, 13 Jun 2023 17:49:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.5] BUILD SUCCESS
- d16b3af46679a1eb21652c37711a60d3d4e6b8c0
-Message-ID: <202306131747.zBh18f7P-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+   d="scan'208";a="1041726585"
+Received: from css-dev-lei.sh.intel.com ([10.239.153.153])
+  by fmsmga005.fm.intel.com with ESMTP; 13 Jun 2023 04:00:03 -0700
+From:   LeiZhou-97 <lei.zhou@intel.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lei.zhou@intel.com
+Subject: [PATCH] cgroup/misc: Expose misc.current on cgroup v2 root
+Date:   Tue, 13 Jun 2023 18:59:29 +0800
+Message-Id: <20230613105929.269318-1-lei.zhou@intel.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,147 +58,64 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.5
-branch HEAD: d16b3af46679a1eb21652c37711a60d3d4e6b8c0  cgroup: remove unused task_cgroup_path()
+Hello,
 
-elapsed time: 726m
+This patch is to expose misc.current on cgroup v2 root for tracking
+how much of the resource has been consumed in total on the system.
 
-configs tested: 127
-configs skipped: 7
+Most of the cloud infrastucture use cgroup to fetch the host
+information for scheduling purpose.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Currently, the misc controller can be used by Intel TDX HKIDs and
+AMD SEV ASIDs, which are both used for creating encrypted VMs.
+Intel TDX and AMD SEV are mostly be used by the cloud providers
+for providing confidential VMs.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r005-20230612   gcc  
-alpha                randconfig-r022-20230612   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r014-20230612   gcc  
-arc                  randconfig-r043-20230612   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                            hisi_defconfig   gcc  
-arm                         nhk8815_defconfig   gcc  
-arm                  randconfig-r036-20230612   gcc  
-arm                  randconfig-r046-20230612   clang
-arm                           u8500_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64        buildonly-randconfig-r006-20230612   clang
-arm64                               defconfig   gcc  
-arm64                randconfig-r031-20230612   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r011-20230612   gcc  
-csky                 randconfig-r031-20230612   gcc  
-hexagon              randconfig-r035-20230612   clang
-hexagon              randconfig-r036-20230612   clang
-hexagon              randconfig-r041-20230612   clang
-hexagon              randconfig-r045-20230612   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230612   clang
-i386                 randconfig-i002-20230612   clang
-i386                 randconfig-i003-20230612   clang
-i386                 randconfig-i004-20230612   clang
-i386                 randconfig-i005-20230612   clang
-i386                 randconfig-i006-20230612   clang
-i386                 randconfig-i011-20230612   gcc  
-i386                 randconfig-i012-20230612   gcc  
-i386                 randconfig-i013-20230612   gcc  
-i386                 randconfig-i014-20230612   gcc  
-i386                 randconfig-i015-20230612   gcc  
-i386                 randconfig-i016-20230612   gcc  
-i386                 randconfig-r016-20230612   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r002-20230612   gcc  
-loongarch    buildonly-randconfig-r003-20230612   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k         buildonly-randconfig-r004-20230612   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r033-20230612   gcc  
-microblaze           randconfig-r004-20230612   gcc  
-microblaze           randconfig-r013-20230612   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                     loongson2k_defconfig   clang
-mips                 randconfig-r001-20230612   gcc  
-mips                 randconfig-r003-20230612   gcc  
-mips                 randconfig-r021-20230612   clang
-mips                         rt305x_defconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r015-20230612   gcc  
-openrisc             randconfig-r024-20230612   gcc  
-openrisc             randconfig-r034-20230612   gcc  
-parisc                           allyesconfig   gcc  
-parisc       buildonly-randconfig-r003-20230612   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230612   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc      buildonly-randconfig-r001-20230612   gcc  
-powerpc      buildonly-randconfig-r002-20230612   gcc  
-powerpc      buildonly-randconfig-r004-20230612   gcc  
-powerpc      buildonly-randconfig-r005-20230612   gcc  
-powerpc                      obs600_defconfig   clang
-powerpc                      pasemi_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv        buildonly-randconfig-r005-20230612   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r002-20230612   clang
-riscv                randconfig-r006-20230612   clang
-riscv                randconfig-r042-20230612   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r015-20230612   gcc  
-s390                 randconfig-r025-20230612   gcc  
-s390                 randconfig-r044-20230612   gcc  
-sh                               allmodconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                   randconfig-r001-20230612   gcc  
-sh                   randconfig-r002-20230612   gcc  
-sh                   randconfig-r012-20230612   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r011-20230612   gcc  
-sparc64              randconfig-r013-20230612   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230612   clang
-x86_64               randconfig-a002-20230612   clang
-x86_64               randconfig-a003-20230612   clang
-x86_64               randconfig-a004-20230612   clang
-x86_64               randconfig-a005-20230612   clang
-x86_64               randconfig-a006-20230612   clang
-x86_64               randconfig-a011-20230612   gcc  
-x86_64               randconfig-a012-20230612   gcc  
-x86_64               randconfig-a013-20230612   gcc  
-x86_64               randconfig-a014-20230612   gcc  
-x86_64               randconfig-a015-20230612   gcc  
-x86_64               randconfig-a016-20230612   gcc  
-x86_64               randconfig-r014-20230612   gcc  
-x86_64               randconfig-r033-20230612   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+In actual use of a server, these confidential VMs may be launched
+in different ways. For the cloud solution, there are kubvirt and
+coco (tracked by kubepods.slice); on host, they can be booted
+directly through qemu by end user (tracked by user.slice), etc.
 
+In this complex environment, when wanting to know how many resource
+is used in total it has to iterate through all existing slices to
+get the value of each misc.current and add them up to calculate
+the total number of consumed keys.
+
+So exposing misc.current to root cgroup tends to give much easier
+when calculates how much resource has been used in total, which
+helps to schedule and count resources for the cloud infrastucture.
+
+Signed-off-by: LeiZhou-97 <lei.zhou@intel.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 2 +-
+ kernel/cgroup/misc.c                    | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index f67c0829350b..d9f3768a10db 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2439,7 +2439,7 @@ Miscellaneous controller provides 3 interface files. If two misc resources (res_
+ 	  res_b 10
+ 
+   misc.current
+-        A read-only flat-keyed file shown in the non-root cgroups.  It shows
++        A read-only flat-keyed file shown in the all cgroups.  It shows
+         the current usage of the resources in the cgroup and its children.::
+ 
+ 	  $ cat misc.current
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index fe3e8a0eb7ed..ae2f4dd47508 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -357,7 +357,6 @@ static struct cftype misc_cg_files[] = {
+ 	{
+ 		.name = "current",
+ 		.seq_show = misc_cg_current_show,
+-		.flags = CFTYPE_NOT_ON_ROOT,
+ 	},
+ 	{
+ 		.name = "capacity",
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
