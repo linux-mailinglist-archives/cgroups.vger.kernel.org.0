@@ -2,103 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D1273121D
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 10:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AD673160F
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 13:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240017AbjFOI0Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Jun 2023 04:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
+        id S245444AbjFOLFa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jun 2023 07:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbjFOI0Y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 04:26:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CDE1A3;
-        Thu, 15 Jun 2023 01:26:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8080D223EB;
-        Thu, 15 Jun 2023 08:26:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1686817582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kF+hByK4Y76JqlJkiSCw3idVqJKv+Bhlb9OYXECSA6o=;
-        b=Oi4Rr4D7LwzZKXtZXhTOqPefALupc8O9w/CwxHH5AgGPnY3ErZvy9xW+Ziw24qxE8SdmYh
-        FXRzzAYYdOOuSL3vasWHumh5F/H9BINWWmQKBiaMYzbqAxtmLNhgW2CVeBAFivdKknMnRb
-        UnCzHpZFD3YrqLYxeUYH3gDniCrGbJg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74A8413467;
-        Thu, 15 Jun 2023 08:26:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +Fb0Gy7LimT7LwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 15 Jun 2023 08:26:22 +0000
-Date:   Thu, 15 Jun 2023 10:26:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm/memcontrol: add check for allocation failure in
- mem_cgroup_init()
-Message-ID: <ZIrLLmb+o77Wy2sY@dhcp22.suse.cz>
-References: <20230615073226.1343-2-haifeng.xu@shopee.com>
+        with ESMTP id S244884AbjFOLF2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 07:05:28 -0400
+X-Greylist: delayed 32208 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Jun 2023 04:05:26 PDT
+Received: from mail.sitirkam.com (mail.aurorateknoglobal.com [103.126.10.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EB62711
+        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 04:05:26 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.sitirkam.com (Postfix) with ESMTP id 8284B4E26E9B;
+        Thu, 15 Jun 2023 06:54:18 +0700 (WIB)
+Received: from mail.sitirkam.com ([127.0.0.1])
+        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id x433Mv4TH2p6; Thu, 15 Jun 2023 06:54:18 +0700 (WIB)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.sitirkam.com (Postfix) with ESMTP id 6C1774E27B19;
+        Thu, 15 Jun 2023 06:54:14 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.sitirkam.com 6C1774E27B19
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sitirkam.com;
+        s=B8AB377C-ED3B-11EA-8736-9248CAEF674E; t=1686786854;
+        bh=q7vDHy+gLAr4GKZUDI+hjt8I93kvW09nNmGJORUTyfg=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=XIYIFC6TzFqucJlbM7oRJt8p8Ejxt2c8v5k6gbLzcP7oyx3TDnt5kv/0/zDXHYtVY
+         vsZmC0Vm5lnYGWJPnOPoe4e63JuGolQ7T5bMX0GsHUJp50wKNGQ/dSfKL+v0XZDHsX
+         yvzPb9PVAIebhFQ4mji7CKhacHMvWZjrQbLd9ln82NzVsTsepPGaQ7AD+C/M+DzF60
+         LDBezyysXNU+EKsOxcBc3vxmaP9G6iXUeZLbjNx+ATGBVPU+rM34f/81tpulaGKwGT
+         x4nzQxGnRJcwE/FmkoVbXWt/Dza5570uYvUtwXBUgaa0Y7nxTfAfS3FC/nTusqEjcJ
+         c3wlOxa82YaKQ==
+X-Virus-Scanned: amavisd-new at mail.sitirkam.com
+Received: from mail.sitirkam.com ([127.0.0.1])
+        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6QFn2AVvtBw4; Thu, 15 Jun 2023 06:54:14 +0700 (WIB)
+Received: from [185.169.4.111] (unknown [185.169.4.111])
+        by mail.sitirkam.com (Postfix) with ESMTPSA id 3086E4E27B06;
+        Thu, 15 Jun 2023 06:54:07 +0700 (WIB)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230615073226.1343-2-haifeng.xu@shopee.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Spende
+To:     Recipients <admin@sitirkam.com>
+From:   "Maria-Elisabeth Schaeffler" <admin@sitirkam.com>
+Date:   Wed, 14 Jun 2023 16:56:15 -0700
+Reply-To: schaefflermariaelisabeth1941@gmail.com
+Message-Id: <20230614235408.3086E4E27B06@mail.sitirkam.com>
+X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 15-06-23 07:32:26, Haifeng Xu wrote:
-> If mem_cgroup_init() fails to allocate mem_cgroup_tree_per_node, we
-> should not try to initilaize it. Add check for this case to avoid
-> potential NULL pointer dereference.
+Your email account has been selected for a donation of =E2=82=AC1,700,000. =
+Please contact me for more information.
 
-Technically yes and it seems that all users of soft_limit_tree.rb_tree_per_node
-correctly check for NULL so this would be graceful failure handling. At
-least superficially because the feature itself would be semi-broken when
-used. But more practically this is a 24B allocation and if we fail to
-allocate that early during the boot we are screwed anyway. Would such
-a system have any chance to boot all the way to userspace? Woul any
-userspace actually work?
-
-Is this patch motivated by a code reading or is there any actual
-practical upside of handling the error here?
- 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> ---
->  mm/memcontrol.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c73c5fb33f65..7ebf64e48b25 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7422,6 +7422,8 @@ static int __init mem_cgroup_init(void)
->  		struct mem_cgroup_tree_per_node *rtpn;
->  
->  		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
-> +		if (!rtpn)
-> +			continue;
->  
->  		rtpn->rb_root = RB_ROOT;
->  		rtpn->rb_rightmost = NULL;
-> -- 
-> 2.25.1
-
--- 
-Michal Hocko
-SUSE Labs
+Mrs Maria Elisabeth Schaeffler
+CEO SCHAEFFLER.
