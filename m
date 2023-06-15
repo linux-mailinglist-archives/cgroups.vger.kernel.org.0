@@ -2,51 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60517730C87
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 03:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795FB7310C5
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 09:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjFOBR3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Jun 2023 21:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
+        id S245013AbjFOHdS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jun 2023 03:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjFOBR1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Jun 2023 21:17:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3671FD2;
-        Wed, 14 Jun 2023 18:17:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DC8161200;
-        Thu, 15 Jun 2023 01:17:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D52C433C0;
-        Thu, 15 Jun 2023 01:17:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686791845;
-        bh=jC/V/5wTuDMjSNiSOnA5excD/Pg4jzWuQwRXLi7lZ5Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LNn3r6SsDlIceMsugdzXzyHk9WrMjwzuxupyyplrVHyioNpMJdpql/gLeE+cky74M
-         7/gIN433a9Az+BryjDhdebV9l6Mnw4rB9+iqI6K5ce3PdjuOyjyiwgS3o4L1jcdmQY
-         t9PY3TpynCOtMjyn4mXp6Wga7IIu/2AZoBsp29aMD6JYTeKrrQppEc0MFMTKtgNwMF
-         krwRXUZxh2Vchb79SSKMEvvLrj7xm3Q1Tb5PktEXXLDaadwmoVq5AWvQv4qwKOV4hQ
-         Rs0JFIB02Mjw2n30gUblEh4OxBCw19+eCBmlKcuJ9iIvOLsYjFdW3V8a5voebM/9Ed
-         mRzHWmC4lfCxA==
-Date:   Wed, 14 Jun 2023 19:18:22 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] cgroup: Avoid -Wstringop-overflow warnings
-Message-ID: <ZIpm3pcs3iCP9UaR@work>
+        with ESMTP id S238099AbjFOHcx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 03:32:53 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACA42D4E
+        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 00:32:38 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6537d2a8c20so6064728b3a.2
+        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 00:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1686814358; x=1689406358;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CdSuqedJEIbRKqsNMW9S5G/OsjR68rCgzUTpBoDLnEM=;
+        b=iU852+gDGJfi782GaPH9x2wg+XeTiQfHnMpKe82njSX7LmSgor6PAYAv0eEFGaz83T
+         V469KupOqNbHHXNJ4Jefz2GB3bC4LZjS2faO6A6T5HWzH2FFEcITh2Zsgk5/t3sKWY44
+         NkzEhL0j/+VTAue8L4PvlYkIgx+veA8rgIpczK6FpJUpuYTWFAXj5VvB6se0797A+t3J
+         mgGiwwWbHp4YJ3r4k0RWOusTLSUkzwa+q0OoRPly9mGKor87OeO/SXxdU8wAQ+Wd053g
+         AJyBa0S3RjgNzLNNkJdtpb63/NRDm0Z0H1NOH05Zft4GUThQFhik4A5One3CXwpQ3lUh
+         nI7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686814358; x=1689406358;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CdSuqedJEIbRKqsNMW9S5G/OsjR68rCgzUTpBoDLnEM=;
+        b=cmkXjMQUbuZAiOVnMhrmRYKBvtng15Izml2n5b5fJzBrTCbUk/m2Z8/uzs0PhgErvD
+         R6J6Aem7W2QCFlMtsNYfxS7MAVvlE/HxF63tbghBoyLoYm7k+5lA6mhrNjPo1JqSQyNp
+         qy3zV/zXNt+KNl2L3BD2oV7p5AgFa86ovOpnAMrlSodvBTuqWQ8og769Qm4t904hGL8p
+         wPZTiLOd3C/Km0qm7mR9CU+J+xypuJSxxQwAWYALm9SOmgnQ8hxzb4E1e2TKuqNbqSTw
+         zMmCeen1daIXlIGcEJtyzhnghzLn5KaovzJpbbgvoRPOlxoG5NYyXiPVS/TbLG5j0dDO
+         3Msg==
+X-Gm-Message-State: AC+VfDzDUngPt+IXPT0nRQEfhUDsjgN1FjIpERmDD/ezMPh95+G4gd3/
+        UXT+qepxcsnLXxI4GUy923m+uw==
+X-Google-Smtp-Source: ACHHUZ4ZYicTCAv+YpqReGd9GPg56Oefou00qAt0MRGEPlWBC1x7p3+Wj+Oqo6p7TyYjCIjfGMiy2A==
+X-Received: by 2002:a05:6a20:42a6:b0:10f:f8e2:183c with SMTP id o38-20020a056a2042a600b0010ff8e2183cmr4686446pzj.51.1686814358308;
+        Thu, 15 Jun 2023 00:32:38 -0700 (PDT)
+Received: from ubuntu-hf2.default.svc.cluster.local ([101.127.248.173])
+        by smtp.gmail.com with ESMTPSA id z18-20020a170903019200b001acad86ebc5sm13352570plg.33.2023.06.15.00.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 00:32:37 -0700 (PDT)
+From:   Haifeng Xu <haifeng.xu@shopee.com>
+To:     mhocko@suse.com
+Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, shakeelb@google.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Haifeng Xu <haifeng.xu@shopee.com>
+Subject: [PATCH 1/2] mm/memcontrol: do not tweak node in mem_cgroup_init()
+Date:   Thu, 15 Jun 2023 07:32:25 +0000
+Message-Id: <20230615073226.1343-1-haifeng.xu@shopee.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,46 +70,31 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Address the following -Wstringop-overflow warnings seen when
-built with ARM architecture and aspeed_g4_defconfig configuration
-(notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
-kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+mem_cgroup_init() request for allocations from each possible node, and
+it's used to be a problem because NODE_DATA is not allocated for offline
+node. Things have already changed since commit 09f49dca570a9 ("mm: handle
+uninitialized numa nodes gracefully"), so it's unnecessary to check for
+!node_online nodes here.
 
-These changes are based on commit d20d30ebb199 ("cgroup: Avoid compiler
-warnings with no subsystems").
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
 ---
- kernel/cgroup/cgroup.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ mm/memcontrol.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index cd497b90e11a..1ee76e62eb98 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1200,6 +1200,9 @@ static struct css_set *find_css_set(struct css_set *old_cset,
- 	unsigned long key;
- 	int ssid;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 4b27e245a055..c73c5fb33f65 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7421,8 +7421,7 @@ static int __init mem_cgroup_init(void)
+ 	for_each_node(node) {
+ 		struct mem_cgroup_tree_per_node *rtpn;
  
-+	if (!CGROUP_HAS_SUBSYS_CONFIG)
-+		return NULL;
-+
- 	lockdep_assert_held(&cgroup_mutex);
+-		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
+-				    node_online(node) ? node : NUMA_NO_NODE);
++		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
  
- 	/* First see if we already have a cgroup group that matches
-@@ -6045,6 +6048,9 @@ int __init cgroup_init(void)
- 	struct cgroup_subsys *ss;
- 	int ssid;
- 
-+	if (!CGROUP_HAS_SUBSYS_CONFIG)
-+		return -EINVAL;
-+
- 	BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16);
- 	BUG_ON(cgroup_init_cftypes(NULL, cgroup_base_files));
- 	BUG_ON(cgroup_init_cftypes(NULL, cgroup_psi_files));
+ 		rtpn->rb_root = RB_ROOT;
+ 		rtpn->rb_rightmost = NULL;
 -- 
-2.34.1
+2.25.1
 
