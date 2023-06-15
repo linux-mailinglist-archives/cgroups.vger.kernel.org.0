@@ -2,96 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C247310CB
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 09:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445ED7311DC
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 10:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244932AbjFOHdb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Jun 2023 03:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
+        id S230011AbjFOIPB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jun 2023 04:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244940AbjFOHc7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 03:32:59 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7792D77
-        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 00:32:43 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b51f729f22so636925ad.0
-        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 00:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1686814362; x=1689406362;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fNxDzGJxt2Rtrqq4SUvAlNEkp/z3fWK6RSnN1kjt4g4=;
-        b=KEuKbPWosv9iUFbOmk/dVUFWj71DFPDvQ7CbfsaMugZZDa8k//E8CAEE0n7vr+1f9j
-         LuaB0+g520Fb2VC8JF2Ke6qTtXHB+JzbKxSjCpCxOC9+m6pzYQjTgltBzMdNNNeet8Ea
-         TA9tu43p8KzKc8oCUgqgD54eZUaQvLI/G36bAbrWX2vpG6RWPW0E2Yk20bIdnngUwFnx
-         D1g4aYowz3lb2PduXbvRW/O2vQlVUUk6t5e9VKATy19FtWYWUTaAZlJk+ItZuMhRmNEr
-         ZqgledtelE5KdFama0C4457YvSAPiqJd6KA8hxamKJH0N860sPoNcs9G9Wa6jhBqj3x8
-         THYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686814362; x=1689406362;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fNxDzGJxt2Rtrqq4SUvAlNEkp/z3fWK6RSnN1kjt4g4=;
-        b=W5Sy+fYXsSNAG5UD3ZWERHUwezou4uO86DPCfuW5sZxrXilyndKulmsH6S7aHOkHqT
-         3ZVKEwwrRRIvJvV7yloVznWfPXaMUDoa8Tnu7x1kuAbrrYFukkJwNVb5oOSBCdHGCGN8
-         UmHZoBXVuYlVkSfFdWrwZlcX7iBf8xZS/l4TJO1QKcZ1NT6F9Omb0JljdYoXaFbc0fAh
-         7b9fq/HXoW9OG+7eS3sKLYbhj2zGzLPgc04CQ3Dn74Z6qefrDrxTq0OZMdsT2gaqQ3ry
-         PcvGeARHBXaBQeqXJFtc6GcdXjxbyT46rC2QQjUyY2PDJiAWKMYFMrwR8S4v8PbYzusG
-         uvcQ==
-X-Gm-Message-State: AC+VfDyDlDpT/YhJxNVzRIvhSzP8RJGm2yXZXWZQvL9H6BFGRxFRkBY0
-        R1jkGWB/uwqiwUOv+ZZHgqVuoQ==
-X-Google-Smtp-Source: ACHHUZ4RNNqwi8HU+cLMcAd/WjHpoTHaaDty+uv58jkXb+0O1XjbgRfWVrmXZ5x8K/OLSw71zvr47w==
-X-Received: by 2002:a17:903:2350:b0:1a1:b3bb:cd5b with SMTP id c16-20020a170903235000b001a1b3bbcd5bmr17543833plh.62.1686814362490;
-        Thu, 15 Jun 2023 00:32:42 -0700 (PDT)
-Received: from ubuntu-hf2.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id z18-20020a170903019200b001acad86ebc5sm13352570plg.33.2023.06.15.00.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jun 2023 00:32:42 -0700 (PDT)
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-To:     mhocko@suse.com
+        with ESMTP id S234027AbjFOIOm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 04:14:42 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7801BD4;
+        Thu, 15 Jun 2023 01:14:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5697A1FDDA;
+        Thu, 15 Jun 2023 08:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1686816880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u7K1dHo3suajr80VD6qXH9vvOWaAMLy7kkTVGXspF0U=;
+        b=NqJM711WfcvRab2CCaoqcmrc5nGT/TblaFgad0EStN8zcLon2DOpDqyckZfG0d1tMo9TYO
+        njZ+Dt7dQ6Vq0Buvu34Dj+dF0oXQ+hHimcR/YKbjQMAexlPM/zyPJ2g0Pwlw9fMTyzXqLD
+        YLlR1w9ba2JUdWw9auY99dxXXZMSTDk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 46BBF13A47;
+        Thu, 15 Jun 2023 08:14:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zuOQEHDIimQnKAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 15 Jun 2023 08:14:40 +0000
+Date:   Thu, 15 Jun 2023 10:14:39 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Haifeng Xu <haifeng.xu@shopee.com>
 Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, shakeelb@google.com,
         akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH 2/2] mm/memcontrol: add check for allocation failure in mem_cgroup_init()
-Date:   Thu, 15 Jun 2023 07:32:26 +0000
-Message-Id: <20230615073226.1343-2-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm/memcontrol: do not tweak node in mem_cgroup_init()
+Message-ID: <ZIrIb7pgRXln27nv@dhcp22.suse.cz>
+References: <20230615073226.1343-1-haifeng.xu@shopee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230615073226.1343-1-haifeng.xu@shopee.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If mem_cgroup_init() fails to allocate mem_cgroup_tree_per_node, we
-should not try to initilaize it. Add check for this case to avoid
-potential NULL pointer dereference.
+On Thu 15-06-23 07:32:25, Haifeng Xu wrote:
+> mem_cgroup_init() request for allocations from each possible node, and
+> it's used to be a problem because NODE_DATA is not allocated for offline
+> node. Things have already changed since commit 09f49dca570a9 ("mm: handle
+> uninitialized numa nodes gracefully"), so it's unnecessary to check for
+> !node_online nodes here.
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- mm/memcontrol.c | 2 ++
- 1 file changed, 2 insertions(+)
+How have you tested this patch?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c73c5fb33f65..7ebf64e48b25 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7422,6 +7422,8 @@ static int __init mem_cgroup_init(void)
- 		struct mem_cgroup_tree_per_node *rtpn;
- 
- 		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
-+		if (!rtpn)
-+			continue;
- 
- 		rtpn->rb_root = RB_ROOT;
- 		rtpn->rb_rightmost = NULL;
+I am not saying it is wrong and it looks like the right thing to do. But
+the early init code has proven to be more subtle than expected so it is
+definitely good to know that this has been tested on memory less setup
+and passed.
+
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> ---
+>  mm/memcontrol.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 4b27e245a055..c73c5fb33f65 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7421,8 +7421,7 @@ static int __init mem_cgroup_init(void)
+>  	for_each_node(node) {
+>  		struct mem_cgroup_tree_per_node *rtpn;
+>  
+> -		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
+> -				    node_online(node) ? node : NUMA_NO_NODE);
+> +		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
+>  
+>  		rtpn->rb_root = RB_ROOT;
+>  		rtpn->rb_rightmost = NULL;
+> -- 
+> 2.25.1
+
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
