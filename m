@@ -2,69 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AD673160F
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 13:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F32731593
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 12:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245444AbjFOLFa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Jun 2023 07:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
+        id S245274AbjFOKjf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jun 2023 06:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244884AbjFOLF2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 07:05:28 -0400
-X-Greylist: delayed 32208 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Jun 2023 04:05:26 PDT
-Received: from mail.sitirkam.com (mail.aurorateknoglobal.com [103.126.10.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EB62711
-        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 04:05:26 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.sitirkam.com (Postfix) with ESMTP id 8284B4E26E9B;
-        Thu, 15 Jun 2023 06:54:18 +0700 (WIB)
-Received: from mail.sitirkam.com ([127.0.0.1])
-        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id x433Mv4TH2p6; Thu, 15 Jun 2023 06:54:18 +0700 (WIB)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.sitirkam.com (Postfix) with ESMTP id 6C1774E27B19;
-        Thu, 15 Jun 2023 06:54:14 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.sitirkam.com 6C1774E27B19
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sitirkam.com;
-        s=B8AB377C-ED3B-11EA-8736-9248CAEF674E; t=1686786854;
-        bh=q7vDHy+gLAr4GKZUDI+hjt8I93kvW09nNmGJORUTyfg=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=XIYIFC6TzFqucJlbM7oRJt8p8Ejxt2c8v5k6gbLzcP7oyx3TDnt5kv/0/zDXHYtVY
-         vsZmC0Vm5lnYGWJPnOPoe4e63JuGolQ7T5bMX0GsHUJp50wKNGQ/dSfKL+v0XZDHsX
-         yvzPb9PVAIebhFQ4mji7CKhacHMvWZjrQbLd9ln82NzVsTsepPGaQ7AD+C/M+DzF60
-         LDBezyysXNU+EKsOxcBc3vxmaP9G6iXUeZLbjNx+ATGBVPU+rM34f/81tpulaGKwGT
-         x4nzQxGnRJcwE/FmkoVbXWt/Dza5570uYvUtwXBUgaa0Y7nxTfAfS3FC/nTusqEjcJ
-         c3wlOxa82YaKQ==
-X-Virus-Scanned: amavisd-new at mail.sitirkam.com
-Received: from mail.sitirkam.com ([127.0.0.1])
-        by localhost (mail.sitirkam.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6QFn2AVvtBw4; Thu, 15 Jun 2023 06:54:14 +0700 (WIB)
-Received: from [185.169.4.111] (unknown [185.169.4.111])
-        by mail.sitirkam.com (Postfix) with ESMTPSA id 3086E4E27B06;
-        Thu, 15 Jun 2023 06:54:07 +0700 (WIB)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230314AbjFOKje (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 06:39:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC64C1BC;
+        Thu, 15 Jun 2023 03:39:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4DADA1FE03;
+        Thu, 15 Jun 2023 10:39:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1686825571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lf/o+Tumekel5U1473bLJQUdNs1l659RBaGUIIod3vI=;
+        b=s9spF5V6mDdepKkscrT8momqQJjeDvFzoQlUIbfOW3JPRGpKNxecgIEDZpyy8z94dy/Msy
+        WOoLDuP7q0SiXwNa21Z6tOVX31yqInnkuHfgcaEqQkdiFYXC1dOj4GTBuotHQMiJt7Xv3w
+        ot68oZkMivxfYyN77eCS/0oJxc3St+Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 397DA13A47;
+        Thu, 15 Jun 2023 10:39:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AfHtDWPqimQQdwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 15 Jun 2023 10:39:31 +0000
+Date:   Thu, 15 Jun 2023 12:39:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
+        <chengkaitao@didiglobal.com>, "tj@kernel.org" <tj@kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
+        "pilgrimtao@gmail.com" <pilgrimtao@gmail.com>,
+        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
+        "yuzhao@google.com" <yuzhao@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "surenb@google.com" <surenb@google.com>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH v3 0/2] memcontrol: support cgroup level OOM protection
+Message-ID: <ZIrqYX9olxbZJML2@dhcp22.suse.cz>
+References: <ZFd5bpfYc3nPEVie@dhcp22.suse.cz>
+ <66F9BB37-3BE1-4B0F-8DE1-97085AF4BED2@didiglobal.com>
+ <ZFkEqhAs7FELUO3a@dhcp22.suse.cz>
+ <CAJD7tkaw_7vYACsyzAtY9L0ZVC0B=XJEWgG=Ad_dOtL_pBDDvQ@mail.gmail.com>
+ <ZIgodGWoC/R07eak@dhcp22.suse.cz>
+ <CAJD7tkawYZAWKYgttgtPjscnZTARj+QaGZLGiMiSadwC3oCELQ@mail.gmail.com>
+ <ZIhb1EwvrdKXpEMb@dhcp22.suse.cz>
+ <CAJD7tka-w8-0G5hjr8MRAue0wct0UPh4-BrPEGkOa1eUycz5mQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <admin@sitirkam.com>
-From:   "Maria-Elisabeth Schaeffler" <admin@sitirkam.com>
-Date:   Wed, 14 Jun 2023 16:56:15 -0700
-Reply-To: schaefflermariaelisabeth1941@gmail.com
-Message-Id: <20230614235408.3086E4E27B06@mail.sitirkam.com>
-X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tka-w8-0G5hjr8MRAue0wct0UPh4-BrPEGkOa1eUycz5mQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Your email account has been selected for a donation of =E2=82=AC1,700,000. =
-Please contact me for more information.
+On Tue 13-06-23 13:24:24, Yosry Ahmed wrote:
+> On Tue, Jun 13, 2023 at 5:06 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 13-06-23 01:36:51, Yosry Ahmed wrote:
+> > > +David Rientjes
+> > >
+> > > On Tue, Jun 13, 2023 at 1:27 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Sun 04-06-23 01:25:42, Yosry Ahmed wrote:
+> > > > [...]
+> > > > > There has been a parallel discussion in the cover letter thread of v4
+> > > > > [1]. To summarize, at Google, we have been using OOM scores to
+> > > > > describe different job priorities in a more explicit way -- regardless
+> > > > > of memory usage. It is strictly priority-based OOM killing. Ties are
+> > > > > broken based on memory usage.
+> > > > >
+> > > > > We understand that something like memory.oom.protect has an advantage
+> > > > > in the sense that you can skip killing a process if you know that it
+> > > > > won't free enough memory anyway, but for an environment where multiple
+> > > > > jobs of different priorities are running, we find it crucial to be
+> > > > > able to define strict ordering. Some jobs are simply more important
+> > > > > than others, regardless of their memory usage.
+> > > >
+> > > > I do remember that discussion. I am not a great fan of simple priority
+> > > > based interfaces TBH. It sounds as an easy interface but it hits
+> > > > complications as soon as you try to define a proper/sensible
+> > > > hierarchical semantic. I can see how they might work on leaf memcgs with
+> > > > statically assigned priorities but that sounds like a very narrow
+> > > > usecase IMHO.
+> > >
+> > > Do you mind elaborating the problem with the hierarchical semantics?
+> >
+> > Well, let me be more specific. If you have a simple hierarchical numeric
+> > enforcement (assume higher priority more likely to be chosen and the
+> > effective priority to be max(self, max(parents)) then the semantic
+> > itslef is straightforward.
+> >
+> > I am not really sure about the practical manageability though. I have
+> > hard time to imagine priority assignment on something like a shared
+> > workload with a more complex hierarchy. For example:
+> >             root
+> >         /    |    \
+> > cont_A    cont_B  cont_C
+> >
+> > each container running its workload with own hierarchy structures that
+> > might be rather dynamic during the lifetime. In order to have a
+> > predictable OOM behavior you need to watch and reassign priorities all
+> > the time, no?
+> 
+> In our case we don't really manage the entire hierarchy in a
+> centralized fashion. Each container gets a score based on their
+> relative priority, and each container is free to set scores within its
+> subcontainers if needed. Isn't this what the hierarchy is all about?
+> Each parent only cares about its direct children. On the system level,
+> we care about the priority ordering of containers. Ordering within
+> containers can be deferred to containers.
 
-Mrs Maria Elisabeth Schaeffler
-CEO SCHAEFFLER.
+This really depends on the workload. This might be working for your
+setup but as I've said above, many workloads would be struggling with
+re-prioritizing as soon as a new workload is started and oom priorities
+would need to be reorganized as a result. The setup is just too static
+to be generally useful IMHO. 
+You can avoid that by essentially making mid-layers no priority and only
+rely on leaf memcgs when this would become more flexible. This is
+something even more complicated with the top-down approach.
+
+That being said, I can see workloads which could benefit from a
+priority (essentially user spaced controlled oom pre-selection) based
+policy. But there are many other policies like that that would be
+usecase specific and not generic enough so I do not think this is worth
+a generic interface and would fall into BPF or alike based policies.
+
+-- 
+Michal Hocko
+SUSE Labs
