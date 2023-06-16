@@ -2,47 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F32731593
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jun 2023 12:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743237324C9
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jun 2023 03:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245274AbjFOKjf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Jun 2023 06:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
+        id S232317AbjFPBpc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jun 2023 21:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjFOKje (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 06:39:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC64C1BC;
-        Thu, 15 Jun 2023 03:39:32 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4DADA1FE03;
-        Thu, 15 Jun 2023 10:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1686825571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lf/o+Tumekel5U1473bLJQUdNs1l659RBaGUIIod3vI=;
-        b=s9spF5V6mDdepKkscrT8momqQJjeDvFzoQlUIbfOW3JPRGpKNxecgIEDZpyy8z94dy/Msy
-        WOoLDuP7q0SiXwNa21Z6tOVX31yqInnkuHfgcaEqQkdiFYXC1dOj4GTBuotHQMiJt7Xv3w
-        ot68oZkMivxfYyN77eCS/0oJxc3St+Q=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 397DA13A47;
-        Thu, 15 Jun 2023 10:39:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AfHtDWPqimQQdwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 15 Jun 2023 10:39:31 +0000
-Date:   Thu, 15 Jun 2023 12:39:29 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng 
+        with ESMTP id S230010AbjFPBp3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 21:45:29 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB002D57
+        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 18:45:25 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-982a99fda0dso15586466b.1
+        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 18:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1686879923; x=1689471923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TTYhjgjxFSXf3VV7TigycNG8AweXhCpfWjk/TzQLXHc=;
+        b=S3sEkwkMSll1Qn9sm5LHOkOGyqa9IWwEh1o6Y2R2ElKB5bZkFZpm65z7B/tJRybHER
+         yTY2PIEZH0eR3Po6ZzHc16OeGyVIkYmwtCdXTjriszEjXtNBantUF2Ozi0mpVcPOGbQR
+         VgvxxP+s36cJ6ooAMxS1X3+6p3goyhZP/H5vJrbNfsyKpR2M7tBc+v8IN6GtYfyfbbta
+         ICo8LaY+2xcwDkL7DVIETr6Y4ilhpY6Yewxp7bD4HTMOHcQrYq25VgUL9Z1BeZ7c2lQW
+         a+FSy7QJEBUbtpKMDq5KKPiz2RtmaJRgAFtsxBoSZ+nKhq+XI8wXK4yAB4bxQZC1j+qn
+         v45Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686879923; x=1689471923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TTYhjgjxFSXf3VV7TigycNG8AweXhCpfWjk/TzQLXHc=;
+        b=f6o9bh6igXMnTEU38VeZ/A3Oo8avwo470lVOA4mdh4eU2jDH1co09QLU2CeS61LjdK
+         ubVT0wxaa9HTV6CThZo2EQ+Rbn4RjFaffgEiYk9D8F7TxBGMTGP0Zb0Odrbiv1aQcGtj
+         DqbbH0TLHs5zPcRiNsSijqZ98I/RmzM3BRDKTZ8P99GAt1iyXiZDnCfxKG3/rlzqi3RW
+         SxoXVk5ZdJ9sWsq4+F96U009VdFn+K6PmUgNekHBE1S9x9K2rmFipgIT+yJqkf63525v
+         Lcc+aWTvkQtJVrWk39lmu7QphSosF+scLWhrCntCR4V2Is/OL440iVWSasRDcrkSywuz
+         6l5w==
+X-Gm-Message-State: AC+VfDyux+I+R+3QbjKypXxQxXxJmYxTu2fMmZe75tT7bSIsVd33VFWv
+        y+ox2sXEtbRU/iiT6RtX2xgb+bgUafFOojali9Aeog==
+X-Google-Smtp-Source: ACHHUZ76cAdEZK0llouR54CbD1icf6/E/UdAzOAQRemvApKZ4TRkyjsCJnLxVEcQpOzKFdNMdqwzNpJQNZ132gn3wXY=
+X-Received: by 2002:a17:906:730d:b0:974:b15:fcd9 with SMTP id
+ di13-20020a170906730d00b009740b15fcd9mr615087ejc.53.1686879923492; Thu, 15
+ Jun 2023 18:45:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZFd5bpfYc3nPEVie@dhcp22.suse.cz> <66F9BB37-3BE1-4B0F-8DE1-97085AF4BED2@didiglobal.com>
+ <ZFkEqhAs7FELUO3a@dhcp22.suse.cz> <CAJD7tkaw_7vYACsyzAtY9L0ZVC0B=XJEWgG=Ad_dOtL_pBDDvQ@mail.gmail.com>
+ <ZIgodGWoC/R07eak@dhcp22.suse.cz> <CAJD7tkawYZAWKYgttgtPjscnZTARj+QaGZLGiMiSadwC3oCELQ@mail.gmail.com>
+ <ZIhb1EwvrdKXpEMb@dhcp22.suse.cz> <CAJD7tka-w8-0G5hjr8MRAue0wct0UPh4-BrPEGkOa1eUycz5mQ@mail.gmail.com>
+ <ZIrqYX9olxbZJML2@dhcp22.suse.cz>
+In-Reply-To: <ZIrqYX9olxbZJML2@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 15 Jun 2023 18:44:46 -0700
+Message-ID: <CAJD7tkYtJcC6zYqy5vWeaB=1Rv16gY=q+OG7vF_Oc=DmVk24GA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] memcontrol: support cgroup level OOM protection
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     =?UTF-8?B?56iL5Z6y5rabIENoZW5na2FpdGFvIENoZW5n?= 
         <chengkaitao@didiglobal.com>, "tj@kernel.org" <tj@kernel.org>,
         "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
         "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
@@ -74,103 +90,125 @@ Cc:     =?utf-8?B?56iL5Z6y5rab?= Chengkaitao Cheng
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH v3 0/2] memcontrol: support cgroup level OOM protection
-Message-ID: <ZIrqYX9olxbZJML2@dhcp22.suse.cz>
-References: <ZFd5bpfYc3nPEVie@dhcp22.suse.cz>
- <66F9BB37-3BE1-4B0F-8DE1-97085AF4BED2@didiglobal.com>
- <ZFkEqhAs7FELUO3a@dhcp22.suse.cz>
- <CAJD7tkaw_7vYACsyzAtY9L0ZVC0B=XJEWgG=Ad_dOtL_pBDDvQ@mail.gmail.com>
- <ZIgodGWoC/R07eak@dhcp22.suse.cz>
- <CAJD7tkawYZAWKYgttgtPjscnZTARj+QaGZLGiMiSadwC3oCELQ@mail.gmail.com>
- <ZIhb1EwvrdKXpEMb@dhcp22.suse.cz>
- <CAJD7tka-w8-0G5hjr8MRAue0wct0UPh4-BrPEGkOa1eUycz5mQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tka-w8-0G5hjr8MRAue0wct0UPh4-BrPEGkOa1eUycz5mQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 13-06-23 13:24:24, Yosry Ahmed wrote:
-> On Tue, Jun 13, 2023 at 5:06 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 13-06-23 01:36:51, Yosry Ahmed wrote:
-> > > +David Rientjes
+On Thu, Jun 15, 2023 at 3:39=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 13-06-23 13:24:24, Yosry Ahmed wrote:
+> > On Tue, Jun 13, 2023 at 5:06=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
 > > >
-> > > On Tue, Jun 13, 2023 at 1:27 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > On Tue 13-06-23 01:36:51, Yosry Ahmed wrote:
+> > > > +David Rientjes
 > > > >
-> > > > On Sun 04-06-23 01:25:42, Yosry Ahmed wrote:
-> > > > [...]
-> > > > > There has been a parallel discussion in the cover letter thread of v4
-> > > > > [1]. To summarize, at Google, we have been using OOM scores to
-> > > > > describe different job priorities in a more explicit way -- regardless
-> > > > > of memory usage. It is strictly priority-based OOM killing. Ties are
-> > > > > broken based on memory usage.
+> > > > On Tue, Jun 13, 2023 at 1:27=E2=80=AFAM Michal Hocko <mhocko@suse.c=
+om> wrote:
 > > > > >
-> > > > > We understand that something like memory.oom.protect has an advantage
-> > > > > in the sense that you can skip killing a process if you know that it
-> > > > > won't free enough memory anyway, but for an environment where multiple
-> > > > > jobs of different priorities are running, we find it crucial to be
-> > > > > able to define strict ordering. Some jobs are simply more important
-> > > > > than others, regardless of their memory usage.
+> > > > > On Sun 04-06-23 01:25:42, Yosry Ahmed wrote:
+> > > > > [...]
+> > > > > > There has been a parallel discussion in the cover letter thread=
+ of v4
+> > > > > > [1]. To summarize, at Google, we have been using OOM scores to
+> > > > > > describe different job priorities in a more explicit way -- reg=
+ardless
+> > > > > > of memory usage. It is strictly priority-based OOM killing. Tie=
+s are
+> > > > > > broken based on memory usage.
+> > > > > >
+> > > > > > We understand that something like memory.oom.protect has an adv=
+antage
+> > > > > > in the sense that you can skip killing a process if you know th=
+at it
+> > > > > > won't free enough memory anyway, but for an environment where m=
+ultiple
+> > > > > > jobs of different priorities are running, we find it crucial to=
+ be
+> > > > > > able to define strict ordering. Some jobs are simply more impor=
+tant
+> > > > > > than others, regardless of their memory usage.
+> > > > >
+> > > > > I do remember that discussion. I am not a great fan of simple pri=
+ority
+> > > > > based interfaces TBH. It sounds as an easy interface but it hits
+> > > > > complications as soon as you try to define a proper/sensible
+> > > > > hierarchical semantic. I can see how they might work on leaf memc=
+gs with
+> > > > > statically assigned priorities but that sounds like a very narrow
+> > > > > usecase IMHO.
 > > > >
-> > > > I do remember that discussion. I am not a great fan of simple priority
-> > > > based interfaces TBH. It sounds as an easy interface but it hits
-> > > > complications as soon as you try to define a proper/sensible
-> > > > hierarchical semantic. I can see how they might work on leaf memcgs with
-> > > > statically assigned priorities but that sounds like a very narrow
-> > > > usecase IMHO.
+> > > > Do you mind elaborating the problem with the hierarchical semantics=
+?
 > > >
-> > > Do you mind elaborating the problem with the hierarchical semantics?
+> > > Well, let me be more specific. If you have a simple hierarchical nume=
+ric
+> > > enforcement (assume higher priority more likely to be chosen and the
+> > > effective priority to be max(self, max(parents)) then the semantic
+> > > itslef is straightforward.
+> > >
+> > > I am not really sure about the practical manageability though. I have
+> > > hard time to imagine priority assignment on something like a shared
+> > > workload with a more complex hierarchy. For example:
+> > >             root
+> > >         /    |    \
+> > > cont_A    cont_B  cont_C
+> > >
+> > > each container running its workload with own hierarchy structures tha=
+t
+> > > might be rather dynamic during the lifetime. In order to have a
+> > > predictable OOM behavior you need to watch and reassign priorities al=
+l
+> > > the time, no?
 > >
-> > Well, let me be more specific. If you have a simple hierarchical numeric
-> > enforcement (assume higher priority more likely to be chosen and the
-> > effective priority to be max(self, max(parents)) then the semantic
-> > itslef is straightforward.
-> >
-> > I am not really sure about the practical manageability though. I have
-> > hard time to imagine priority assignment on something like a shared
-> > workload with a more complex hierarchy. For example:
-> >             root
-> >         /    |    \
-> > cont_A    cont_B  cont_C
-> >
-> > each container running its workload with own hierarchy structures that
-> > might be rather dynamic during the lifetime. In order to have a
-> > predictable OOM behavior you need to watch and reassign priorities all
-> > the time, no?
-> 
-> In our case we don't really manage the entire hierarchy in a
-> centralized fashion. Each container gets a score based on their
-> relative priority, and each container is free to set scores within its
-> subcontainers if needed. Isn't this what the hierarchy is all about?
-> Each parent only cares about its direct children. On the system level,
-> we care about the priority ordering of containers. Ordering within
-> containers can be deferred to containers.
+> > In our case we don't really manage the entire hierarchy in a
+> > centralized fashion. Each container gets a score based on their
+> > relative priority, and each container is free to set scores within its
+> > subcontainers if needed. Isn't this what the hierarchy is all about?
+> > Each parent only cares about its direct children. On the system level,
+> > we care about the priority ordering of containers. Ordering within
+> > containers can be deferred to containers.
+>
+> This really depends on the workload. This might be working for your
+> setup but as I've said above, many workloads would be struggling with
+> re-prioritizing as soon as a new workload is started and oom priorities
+> would need to be reorganized as a result. The setup is just too static
+> to be generally useful IMHO.
+> You can avoid that by essentially making mid-layers no priority and only
+> rely on leaf memcgs when this would become more flexible. This is
+> something even more complicated with the top-down approach.
 
-This really depends on the workload. This might be working for your
-setup but as I've said above, many workloads would be struggling with
-re-prioritizing as soon as a new workload is started and oom priorities
-would need to be reorganized as a result. The setup is just too static
-to be generally useful IMHO. 
-You can avoid that by essentially making mid-layers no priority and only
-rely on leaf memcgs when this would become more flexible. This is
-something even more complicated with the top-down approach.
+I agree that other setups may find it more difficult if one entity
+needs to manage the entire tree, although if the scores range is large
+enough, I don't really think it's that static. When a new workload is
+started you decide what its priority is compared to the existing
+workloads and set its score as such. We use a range of scores from 0
+to 10,000 (and it can easily be larger), so it's easy to assign new
+scores without reorganizing the existing scores.
 
-That being said, I can see workloads which could benefit from a
-priority (essentially user spaced controlled oom pre-selection) based
-policy. But there are many other policies like that that would be
-usecase specific and not generic enough so I do not think this is worth
-a generic interface and would fall into BPF or alike based policies.
+>
+> That being said, I can see workloads which could benefit from a
+> priority (essentially user spaced controlled oom pre-selection) based
+> policy. But there are many other policies like that that would be
+> usecase specific and not generic enough so I do not think this is worth
+> a generic interface and would fall into BPF or alike based policies.
 
--- 
-Michal Hocko
-SUSE Labs
+That's reasonable. I can't speak for other folks. Perhaps no single
+policy will be generic enough, and we should focus on enabling
+customized policy. Perhaps other userspace OOM agents can benefit from
+this as well.
+
+>
+> --
+> Michal Hocko
+> SUSE Labs
