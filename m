@@ -2,138 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5340732A14
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jun 2023 10:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7FF732A26
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jun 2023 10:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbjFPImv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Jun 2023 04:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        id S1343618AbjFPIrY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Jun 2023 04:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjFPImu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jun 2023 04:42:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E13313E;
-        Fri, 16 Jun 2023 01:42:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B38831FD6B;
-        Fri, 16 Jun 2023 08:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1686904967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ftqQxEyXprQeOR6akOe/4MsCo2o6FrnRrf5983ERKLo=;
-        b=VV5M0MksasB5tNcC7sIZMcywp0knL6LvM7lfzJlFDnZU6EFlbhIDIm7qy01BIoB6wCYhIa
-        NW6l1Mzasvo1uZCPKRuk0B92JuRHDzM+nfGMIaWUv0Q/mqQEn9AY6eUCvq+Ifxg6MLhWcK
-        PBLS3Gm/QYO29GuX2iDK4z13XDDG5f4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 937AC138E8;
-        Fri, 16 Jun 2023 08:42:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sH/mIIcgjGRQNQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Fri, 16 Jun 2023 08:42:47 +0000
-Date:   Fri, 16 Jun 2023 10:42:46 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
+        with ESMTP id S1343500AbjFPIrY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jun 2023 04:47:24 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A111FF5
+        for <cgroups@vger.kernel.org>; Fri, 16 Jun 2023 01:47:22 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-25e8b2931f2so415463a91.2
+        for <cgroups@vger.kernel.org>; Fri, 16 Jun 2023 01:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1686905242; x=1689497242;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=14jtraihfDQYuZKnWqtYB4vhXjv2bj/la1fKtOJoayo=;
+        b=d+2AVHZsTy1E9KJtZsJvVVIyla7VzuCveJTq0FID83gOrCC7aVgr8vXcIuC65p7y+t
+         HYPlVbzUYU+h2icnfnip4UwI5FywmONNI/kPFPFF9vEj5fRZqpJto8QVv7mdi7rS3MHK
+         W7KuNCQkLcdtegaVBZfWp4lrUveeUdg658RxbJ34/yLhNlXG/c4U8fEcYhZo838ulhVy
+         WDHZ1HXAlUmVqKGCI+DDDEw1E35RTcqsghoZOYqGHbPZgXWCsXKHUGVBCn9e1liIIzGd
+         TBbUtCAJxZ1XmbK4m0E4CTseD8E3dPQoVkuN312wIj9IxC05IkX7dpdKJL2xuH6fjvRo
+         VUNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686905242; x=1689497242;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=14jtraihfDQYuZKnWqtYB4vhXjv2bj/la1fKtOJoayo=;
+        b=Ib8wGqI6KRwTP0VbAlrgKG8XQuyxWhgURpuq+MpcQCC+9N6lBNv2fpQc3GCMlPlAoT
+         o/VGfQ4dADjb4D4QulmiQq0FRN4YlMJAMF8OGqILb2s+n7ADOujX9tNXLZ0fwvezJDL8
+         6cR1PWGxPz+F4dqhST9SJUjgBU6DmyVGeUpqhax7bxWLs8tnyMy7QnEp+o8nVdXbKvl4
+         OhWsieAzQGRei3zBK9R6jNFNB2rQBi+1mO+Jj3ynzUQvMxEH0uIXIfJRe3J5Fgmaz7yo
+         0JzNvqJ9wqDcqSVse7HuRe6OygutQ5og/4x7G2LdeSXuS3k0+XnlzpK2+TcoEdVIkZ0X
+         n3Ag==
+X-Gm-Message-State: AC+VfDyHiHlrwGOIhKLcmXHS9o4W68CND4mpNUN1NAKPSzYGPPH8T3r7
+        8KmgSnGaU98dTCQ1eHwsG6tcoA==
+X-Google-Smtp-Source: ACHHUZ4mlwtlcw7qmHw9X64xtozPVzjrxFtFRk+MgSU1GT/TXSW1rB9S5VYSXnTACzY4ffxsNkgzLg==
+X-Received: by 2002:a17:90b:368b:b0:258:d910:6196 with SMTP id mj11-20020a17090b368b00b00258d9106196mr1188311pjb.14.1686905242108;
+        Fri, 16 Jun 2023 01:47:22 -0700 (PDT)
+Received: from [10.54.24.10] ([143.92.118.3])
+        by smtp.gmail.com with ESMTPSA id t191-20020a6381c8000000b0054fe07d2f3dsm3373691pgd.11.2023.06.16.01.47.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jun 2023 01:47:21 -0700 (PDT)
+Message-ID: <69cea432-f784-a734-f93e-50b0f897767c@shopee.com>
+Date:   Fri, 16 Jun 2023 16:47:17 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH 2/2] mm/memcontrol: add check for allocation failure in
+ mem_cgroup_init()
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     roman.gushchin@linux.dev, hannes@cmpxchg.org, shakeelb@google.com,
         akpm@linux-foundation.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm/memcontrol: do not tweak node in mem_cgroup_init()
-Message-ID: <ZIwghl18d45vPNpd@dhcp22.suse.cz>
-References: <20230615073226.1343-1-haifeng.xu@shopee.com>
- <ZIrIb7pgRXln27nv@dhcp22.suse.cz>
- <47119364-30ac-cb57-7fd8-d9aa4b230478@shopee.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47119364-30ac-cb57-7fd8-d9aa4b230478@shopee.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230615073226.1343-2-haifeng.xu@shopee.com>
+ <ZIrLLmb+o77Wy2sY@dhcp22.suse.cz>
+From:   Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <ZIrLLmb+o77Wy2sY@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 16-06-23 16:28:38, Haifeng Xu wrote:
-> 
-> 
-> On 2023/6/15 16:14, Michal Hocko wrote:
-> > On Thu 15-06-23 07:32:25, Haifeng Xu wrote:
-> >> mem_cgroup_init() request for allocations from each possible node, and
-> >> it's used to be a problem because NODE_DATA is not allocated for offline
-> >> node. Things have already changed since commit 09f49dca570a9 ("mm: handle
-> >> uninitialized numa nodes gracefully"), so it's unnecessary to check for
-> >> !node_online nodes here.
-> > 
-> > How have you tested this patch?
-> 
-> Start with one empty node:
-> 
-> qemu-system-x86_64 \
->   -kernel vmlinux \
->   -initrd full.rootfs.cpio.gz \
->   -append "console=ttyS0,115200 root=/dev/ram0 nokaslr earlyprintk=serial oops=panic panic_on_warn" \
->   -drive format=qcow2,file=vm_disk.qcow2,media=disk,if=ide \
->   -enable-kvm \
->   -cpu host \
->   -m 8G,slots=2,maxmem=16G \
->   -smp cores=4,threads=1,sockets=2  \
->   -object memory-backend-ram,id=mem0,size=4G \
->   -object memory-backend-ram,id=mem1,size=4G \
->   -numa node,memdev=mem0,cpus=0-3,nodeid=0 \
->   -numa node,memdev=mem1,cpus=4-7,nodeid=1 \
->   -numa node,nodeid=2 \
->   -net nic,model=virtio,macaddr=52:54:00:12:34:58 \
->   -net user \
->   -nographic \
->   -rtc base=localtime \
->   -gdb tcp::6000
-> 
-> Guest state when booting:
-> [    0.048881] NUMA: Node 0 [mem 0x00000000-0x0009ffff] + [mem 0x00100000-0xbfffffff] -> [mem 0x00000000-0xbfffffff]
-> [    0.050489] NUMA: Node 0 [mem 0x00000000-0xbfffffff] + [mem 0x100000000-0x13fffffff] -> [mem 0x00000000-0x13fffffff]
-> [    0.052173] NODE_DATA(0) allocated [mem 0x13fffc000-0x13fffffff]
-> [    0.053164] NODE_DATA(1) allocated [mem 0x23fffa000-0x23fffdfff]
-> [    0.054187] Zone ranges:
-> [    0.054587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
-> [    0.055551]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-> [    0.056515]   Normal   [mem 0x0000000100000000-0x000000023fffffff]
-> [    0.057484] Movable zone start for each node
-> [    0.058149] Early memory node ranges
-> [    0.058705]   node   0: [mem 0x0000000000001000-0x000000000009efff]
-> [    0.059679]   node   0: [mem 0x0000000000100000-0x00000000bffdffff]
-> [    0.060659]   node   0: [mem 0x0000000100000000-0x000000013fffffff]
-> [    0.061649]   node   1: [mem 0x0000000140000000-0x000000023fffffff]
-> [    0.062638] Initmem setup node 0 [mem 0x0000000000001000-0x000000013fffffff]
-> [    0.063745] Initmem setup node 1 [mem 0x0000000140000000-0x000000023fffffff]
-> [    0.064855]   DMA zone: 158 reserved pages exceeds freesize 0
-> [    0.065746] Initializing node 2 as memoryless
-> [    0.066437] Initmem setup node 2 as memoryless
-> [    0.067132]   DMA zone: 158 reserved pages exceeds freesize 0
-> [    0.068037] On node 0, zone DMA: 1 pages in unavailable ranges
-> [    0.068265] On node 0, zone DMA: 97 pages in unavailable ranges
-> [    0.124755] On node 0, zone Normal: 32 pages in unavailable ranges
-> 
-> 
-> cat /sys/devices/system/node/online
-> 0-1
-> cat /sys/devices/system/node/possible
-> 0-2
 
-Excellent! Please extend the changelog by this information. Feel free to
-add
-Acked-by: Michal Hocko <mhocko@suse.com>
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+On 2023/6/15 16:26, Michal Hocko wrote:
+> On Thu 15-06-23 07:32:26, Haifeng Xu wrote:
+>> If mem_cgroup_init() fails to allocate mem_cgroup_tree_per_node, we
+>> should not try to initilaize it. Add check for this case to avoid
+>> potential NULL pointer dereference.
+> 
+> Technically yes and it seems that all users of soft_limit_tree.rb_tree_per_node
+> correctly check for NULL so this would be graceful failure handling. At
+> least superficially because the feature itself would be semi-broken when
+> used. But more practically this is a 24B allocation and if we fail to
+> allocate that early during the boot we are screwed anyway. Would such
+> a system have any chance to boot all the way to userspace? Woul any
+> userspace actually work?
+> 
+
+The memory request is too small and It's unlikely to fail during early init.
+If it fails, I think the system won't work.
+
+> Is this patch motivated by a code reading or is there any actual
+> practical upside of handling the error here?
+>  
+
+There is no real world problem, just from code review.
+
+>> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+>> ---
+>>  mm/memcontrol.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index c73c5fb33f65..7ebf64e48b25 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -7422,6 +7422,8 @@ static int __init mem_cgroup_init(void)
+>>  		struct mem_cgroup_tree_per_node *rtpn;
+>>  
+>>  		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
+>> +		if (!rtpn)
+>> +			continue;
+>>  
+>>  		rtpn->rb_root = RB_ROOT;
+>>  		rtpn->rb_rightmost = NULL;
+>> -- 
+>> 2.25.1
+> 
