@@ -2,213 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743237324C9
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jun 2023 03:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890687328D2
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jun 2023 09:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbjFPBpc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Jun 2023 21:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S244286AbjFPH2E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Jun 2023 03:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjFPBp3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jun 2023 21:45:29 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB002D57
-        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 18:45:25 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-982a99fda0dso15586466b.1
-        for <cgroups@vger.kernel.org>; Thu, 15 Jun 2023 18:45:25 -0700 (PDT)
+        with ESMTP id S231221AbjFPH2C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jun 2023 03:28:02 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661D41FF9
+        for <cgroups@vger.kernel.org>; Fri, 16 Jun 2023 00:27:36 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b3ce6607cbso3518525ad.2
+        for <cgroups@vger.kernel.org>; Fri, 16 Jun 2023 00:27:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686879923; x=1689471923;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TTYhjgjxFSXf3VV7TigycNG8AweXhCpfWjk/TzQLXHc=;
-        b=S3sEkwkMSll1Qn9sm5LHOkOGyqa9IWwEh1o6Y2R2ElKB5bZkFZpm65z7B/tJRybHER
-         yTY2PIEZH0eR3Po6ZzHc16OeGyVIkYmwtCdXTjriszEjXtNBantUF2Ozi0mpVcPOGbQR
-         VgvxxP+s36cJ6ooAMxS1X3+6p3goyhZP/H5vJrbNfsyKpR2M7tBc+v8IN6GtYfyfbbta
-         ICo8LaY+2xcwDkL7DVIETr6Y4ilhpY6Yewxp7bD4HTMOHcQrYq25VgUL9Z1BeZ7c2lQW
-         a+FSy7QJEBUbtpKMDq5KKPiz2RtmaJRgAFtsxBoSZ+nKhq+XI8wXK4yAB4bxQZC1j+qn
-         v45Q==
+        d=bytedance.com; s=google; t=1686900456; x=1689492456;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9nn1acQnmBrxxKtKr0fIyJP3cG1pp8tJvpkDo6e+3KI=;
+        b=VRySI+g5OyhFq3+xJSt3XxtxCawIas+z+Lic4uM27Z/udSbrXCTBXMbmW3AmwIUo/g
+         +j64SzyuI3pM64/QBgs69XNPGhOiAnEjKd6QtJiH1liw/ezSt6iX9shVnsA95OXnchOh
+         9JvQ6UQRi5s4QwwA7Ua701jbMXoPDsn53P3dOg+psguoZBsLTojgzvwwyEy8UdhAuk71
+         ojp4elmyT5+Dm/h2WqZsUNvIm63ZHNQ2j7KP4DKglGusmxmVk8EFDp2wFt7xMuAuKHbj
+         IRMA0WEPlxSgbgehJyNbJGm9KVDEcvEkN2yP5QuROXtcc5BpmvVpV0ZDyvA8ehpR3gUI
+         s+ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686879923; x=1689471923;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TTYhjgjxFSXf3VV7TigycNG8AweXhCpfWjk/TzQLXHc=;
-        b=f6o9bh6igXMnTEU38VeZ/A3Oo8avwo470lVOA4mdh4eU2jDH1co09QLU2CeS61LjdK
-         ubVT0wxaa9HTV6CThZo2EQ+Rbn4RjFaffgEiYk9D8F7TxBGMTGP0Zb0Odrbiv1aQcGtj
-         DqbbH0TLHs5zPcRiNsSijqZ98I/RmzM3BRDKTZ8P99GAt1iyXiZDnCfxKG3/rlzqi3RW
-         SxoXVk5ZdJ9sWsq4+F96U009VdFn+K6PmUgNekHBE1S9x9K2rmFipgIT+yJqkf63525v
-         Lcc+aWTvkQtJVrWk39lmu7QphSosF+scLWhrCntCR4V2Is/OL440iVWSasRDcrkSywuz
-         6l5w==
-X-Gm-Message-State: AC+VfDyux+I+R+3QbjKypXxQxXxJmYxTu2fMmZe75tT7bSIsVd33VFWv
-        y+ox2sXEtbRU/iiT6RtX2xgb+bgUafFOojali9Aeog==
-X-Google-Smtp-Source: ACHHUZ76cAdEZK0llouR54CbD1icf6/E/UdAzOAQRemvApKZ4TRkyjsCJnLxVEcQpOzKFdNMdqwzNpJQNZ132gn3wXY=
-X-Received: by 2002:a17:906:730d:b0:974:b15:fcd9 with SMTP id
- di13-20020a170906730d00b009740b15fcd9mr615087ejc.53.1686879923492; Thu, 15
- Jun 2023 18:45:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686900456; x=1689492456;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9nn1acQnmBrxxKtKr0fIyJP3cG1pp8tJvpkDo6e+3KI=;
+        b=FY3NA37aoAre2gO6uamcDOrOsq84aSLOetwtHHmkDbTfDVLRYBRNhE7b+jI2lbNyAm
+         UFgYkzQX7TP+llQEz+TomWhkAHTGUqD837xctsyMvWhewmdtU7nUwAoi+PVlrTl0ga6h
+         UciJ8K1WFngI0pATHeT37gUMzQfWBscWV8XT7PEEql5Blf/hgpBpzV5zT8jCNZBfpL2n
+         7lVCNTz7X+0jROEWrwwfCpfN2BdRIVWEyXXt+RJ+iOpEVFaXfCfcN68FVR9SHf/wy7q9
+         zvsWH8/fVbf010n5a6pSIXW/zOH48OynBzp48ubYye01B3e+R5t70B48gaEpy+qKiYYP
+         uXnA==
+X-Gm-Message-State: AC+VfDwMmgour5Zb7FEqANjS+k2xmRqMtCPWkK2RLQ+Zp7pDp7PnjQAE
+        eQA29wGaSPTLKGlAvLENtOWXpQ==
+X-Google-Smtp-Source: ACHHUZ4Te5AMaBMV4npizDm9kAcBpyZOp8TbKLvyw8d9l0goDJOvXNEARkOTk+KEZVqTMAkytPeHmA==
+X-Received: by 2002:a17:902:d386:b0:1b3:f8db:6f0c with SMTP id e6-20020a170902d38600b001b3f8db6f0cmr1151225pld.58.1686900455916;
+        Fri, 16 Jun 2023 00:27:35 -0700 (PDT)
+Received: from [10.254.80.225] ([139.177.225.255])
+        by smtp.gmail.com with ESMTPSA id d18-20020a170902ced200b001b02713a301sm10913613plg.181.2023.06.16.00.27.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jun 2023 00:27:35 -0700 (PDT)
+Message-ID: <42285da4-ea80-78ca-4c71-6562170614c8@bytedance.com>
+Date:   Fri, 16 Jun 2023 15:27:24 +0800
 MIME-Version: 1.0
-References: <ZFd5bpfYc3nPEVie@dhcp22.suse.cz> <66F9BB37-3BE1-4B0F-8DE1-97085AF4BED2@didiglobal.com>
- <ZFkEqhAs7FELUO3a@dhcp22.suse.cz> <CAJD7tkaw_7vYACsyzAtY9L0ZVC0B=XJEWgG=Ad_dOtL_pBDDvQ@mail.gmail.com>
- <ZIgodGWoC/R07eak@dhcp22.suse.cz> <CAJD7tkawYZAWKYgttgtPjscnZTARj+QaGZLGiMiSadwC3oCELQ@mail.gmail.com>
- <ZIhb1EwvrdKXpEMb@dhcp22.suse.cz> <CAJD7tka-w8-0G5hjr8MRAue0wct0UPh4-BrPEGkOa1eUycz5mQ@mail.gmail.com>
- <ZIrqYX9olxbZJML2@dhcp22.suse.cz>
-In-Reply-To: <ZIrqYX9olxbZJML2@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 15 Jun 2023 18:44:46 -0700
-Message-ID: <CAJD7tkYtJcC6zYqy5vWeaB=1Rv16gY=q+OG7vF_Oc=DmVk24GA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] memcontrol: support cgroup level OOM protection
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     =?UTF-8?B?56iL5Z6y5rabIENoZW5na2FpdGFvIENoZW5n?= 
-        <chengkaitao@didiglobal.com>, "tj@kernel.org" <tj@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-        "chengzhihao1@huawei.com" <chengzhihao1@huawei.com>,
-        "pilgrimtao@gmail.com" <pilgrimtao@gmail.com>,
-        "haolee.swjtu@gmail.com" <haolee.swjtu@gmail.com>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vasily.averin@linux.dev" <vasily.averin@linux.dev>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "surenb@google.com" <surenb@google.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "sujiaxun@uniontech.com" <sujiaxun@uniontech.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [RFC PATCH net-next] sock: Propose socket.urgent for sockmem
+ isolation
+From:   Abel Wu <wuyun.abel@bytedance.com>
+To:     Eric Dumazet <edumazet@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christian Warloe <cwarloe@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Xin Long <lucien.xin@gmail.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+References: <20230609082712.34889-1-wuyun.abel@bytedance.com>
+ <CANn89i+Qqq5nV0oRLh_KEHRV6VmSbS5PsSvayVHBi52FbB=sKA@mail.gmail.com>
+ <b879d810-132b-38ab-c13d-30fabdc8954a@bytedance.com>
+Content-Language: en-US
+In-Reply-To: <b879d810-132b-38ab-c13d-30fabdc8954a@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 3:39=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Tue 13-06-23 13:24:24, Yosry Ahmed wrote:
-> > On Tue, Jun 13, 2023 at 5:06=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Tue 13-06-23 01:36:51, Yosry Ahmed wrote:
-> > > > +David Rientjes
-> > > >
-> > > > On Tue, Jun 13, 2023 at 1:27=E2=80=AFAM Michal Hocko <mhocko@suse.c=
-om> wrote:
-> > > > >
-> > > > > On Sun 04-06-23 01:25:42, Yosry Ahmed wrote:
-> > > > > [...]
-> > > > > > There has been a parallel discussion in the cover letter thread=
- of v4
-> > > > > > [1]. To summarize, at Google, we have been using OOM scores to
-> > > > > > describe different job priorities in a more explicit way -- reg=
-ardless
-> > > > > > of memory usage. It is strictly priority-based OOM killing. Tie=
-s are
-> > > > > > broken based on memory usage.
-> > > > > >
-> > > > > > We understand that something like memory.oom.protect has an adv=
-antage
-> > > > > > in the sense that you can skip killing a process if you know th=
-at it
-> > > > > > won't free enough memory anyway, but for an environment where m=
-ultiple
-> > > > > > jobs of different priorities are running, we find it crucial to=
- be
-> > > > > > able to define strict ordering. Some jobs are simply more impor=
-tant
-> > > > > > than others, regardless of their memory usage.
-> > > > >
-> > > > > I do remember that discussion. I am not a great fan of simple pri=
-ority
-> > > > > based interfaces TBH. It sounds as an easy interface but it hits
-> > > > > complications as soon as you try to define a proper/sensible
-> > > > > hierarchical semantic. I can see how they might work on leaf memc=
-gs with
-> > > > > statically assigned priorities but that sounds like a very narrow
-> > > > > usecase IMHO.
-> > > >
-> > > > Do you mind elaborating the problem with the hierarchical semantics=
-?
-> > >
-> > > Well, let me be more specific. If you have a simple hierarchical nume=
-ric
-> > > enforcement (assume higher priority more likely to be chosen and the
-> > > effective priority to be max(self, max(parents)) then the semantic
-> > > itslef is straightforward.
-> > >
-> > > I am not really sure about the practical manageability though. I have
-> > > hard time to imagine priority assignment on something like a shared
-> > > workload with a more complex hierarchy. For example:
-> > >             root
-> > >         /    |    \
-> > > cont_A    cont_B  cont_C
-> > >
-> > > each container running its workload with own hierarchy structures tha=
-t
-> > > might be rather dynamic during the lifetime. In order to have a
-> > > predictable OOM behavior you need to watch and reassign priorities al=
-l
-> > > the time, no?
-> >
-> > In our case we don't really manage the entire hierarchy in a
-> > centralized fashion. Each container gets a score based on their
-> > relative priority, and each container is free to set scores within its
-> > subcontainers if needed. Isn't this what the hierarchy is all about?
-> > Each parent only cares about its direct children. On the system level,
-> > we care about the priority ordering of containers. Ordering within
-> > containers can be deferred to containers.
->
-> This really depends on the workload. This might be working for your
-> setup but as I've said above, many workloads would be struggling with
-> re-prioritizing as soon as a new workload is started and oom priorities
-> would need to be reorganized as a result. The setup is just too static
-> to be generally useful IMHO.
-> You can avoid that by essentially making mid-layers no priority and only
-> rely on leaf memcgs when this would become more flexible. This is
-> something even more complicated with the top-down approach.
+Gentle ping :)
 
-I agree that other setups may find it more difficult if one entity
-needs to manage the entire tree, although if the scores range is large
-enough, I don't really think it's that static. When a new workload is
-started you decide what its priority is compared to the existing
-workloads and set its score as such. We use a range of scores from 0
-to 10,000 (and it can easily be larger), so it's easy to assign new
-scores without reorganizing the existing scores.
+Any suggestions for memory over-committed scenario?
 
->
-> That being said, I can see workloads which could benefit from a
-> priority (essentially user spaced controlled oom pre-selection) based
-> policy. But there are many other policies like that that would be
-> usecase specific and not generic enough so I do not think this is worth
-> a generic interface and would fall into BPF or alike based policies.
+Thanks,
+	Abel
 
-That's reasonable. I can't speak for other folks. Perhaps no single
-policy will be generic enough, and we should focus on enabling
-customized policy. Perhaps other userspace OOM agents can benefit from
-this as well.
-
->
-> --
-> Michal Hocko
-> SUSE Labs
+On 6/13/23 2:46 PM, Abel Wu wrote:
+> On 6/9/23 5:07 PM, Eric Dumazet wrote:
+>> On Fri, Jun 9, 2023 at 10:28 AM Abel Wu <wuyun.abel@bytedance.com> wrote:
+>>>
+>>> This is just a PoC patch intended to resume the discussion about
+>>> tcpmem isolation opened by Google in LPC'22 [1].
+>>>
+>>> We are facing the same problem that the global shared threshold can
+>>> cause isolation issues. Low priority jobs can hog TCP memory and
+>>> adversely impact higher priority jobs. What's worse is that these
+>>> low priority jobs usually have smaller cpu weights leading to poor
+>>> ability to consume rx data.
+>>>
+>>> To tackle this problem, an interface for non-root cgroup memory
+>>> controller named 'socket.urgent' is proposed. It determines whether
+>>> the sockets of this cgroup and its descendants can escape from the
+>>> constrains or not under global socket memory pressure.
+>>>
+>>> The 'urgent' semantics will not take effect under memcg pressure in
+>>> order to protect against worse memstalls, thus will be the same as
+>>> before without this patch.
+>>>
+>>> This proposal doesn't remove protocal's threshold as we found it
+>>> useful in restraining memory defragment. As aforementioned the low
+>>> priority jobs can hog lots of memory, which is unreclaimable and
+>>> unmovable, for some time due to small cpu weight.
+>>>
+>>> So in practice we allow high priority jobs with net-memcg accounting
+>>> enabled to escape the global constrains if the net-memcg itselt is
+>>> not under pressure. While for lower priority jobs, the budget will
+>>> be tightened as the memory usage of 'urgent' jobs increases. In this
+>>> way we can finally achieve:
+>>>
+>>>    - Important jobs won't be priority inversed by the background
+>>>      jobs in terms of socket memory pressure/limit.
+>>>
+>>>    - Global constrains are still effective, but only on non-urgent
+>>>      jobs, useful for admins on policy decision on defrag.
+>>>
+>>> Comments/Ideas are welcomed, thanks!
+>>>
+>>
+>> This seems to go in a complete opposite direction than memcg promises.
+>>
+>> Can we fix memcg, so that :
+>>
+>> Each group can use the memory it was provisioned (this includes TCP 
+>> buffers)
+> 
+> Yes, but might not be easy once memory gets over-committed (which is
+> common in modern data-centers). So as a tradeoff, we intend to put
+> harder constraint on memory allocation for low priority jobs. Or else
+> if every job can use its provisioned memory, than there will be more
+> memstalls blocking random jobs which could be the important ones.
+> Either way hurts performance, but the difference is whose performance
+> gets hurt.
+> 
+> Memory protection (memory.{min,low}) helps the important jobs less
+> affected by memstalls. But once low priority jobs use lots of kernel
+> memory like sockmem, the protection might become much less efficient.
+> 
+>>
+>> Global tcp_memory can disappear (set tcp_mem to infinity)
