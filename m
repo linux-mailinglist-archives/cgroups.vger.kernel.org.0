@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C79733FD6
-	for <lists+cgroups@lfdr.de>; Sat, 17 Jun 2023 11:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652AD733FDC
+	for <lists+cgroups@lfdr.de>; Sat, 17 Jun 2023 11:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234695AbjFQJNd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 17 Jun 2023 05:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        id S232743AbjFQJYd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 17 Jun 2023 05:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbjFQJNb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 17 Jun 2023 05:13:31 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7FC2688;
-        Sat, 17 Jun 2023 02:13:29 -0700 (PDT)
+        with ESMTP id S231894AbjFQJYb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 17 Jun 2023 05:24:31 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A44269D;
+        Sat, 17 Jun 2023 02:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686993209; x=1718529209;
+  t=1686993870; x=1718529870;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=08QS7Gwvov/7c+f5JerWj3mbiwURUQm6js4XGT9n+oU=;
-  b=YfwItNUBuyL7qZzmGdkxau4myAAsuMw2NQvGMzksBQx3oB8PpJdd8KMD
-   gl5SFhVXPeq2gnZKWZDQbFqh/Xpbtgi56QzD5j5AFoIcdcx93xlSu46yG
-   5pt4/uaPTlumZ+Jc+osQaAibE3UV0EMSI06/ZuugxdTrzwiux+nf7/2EM
-   btbgMXYUnFF2WOsU6gP86oVwHeMjO3PJXEf+L2pDvJjQ56KQDl3aO3bsF
-   pzbiclo3zI+d0yIz02mu5JhQ6PfBekSjQW5ANmSUS3vjiDjTG3XlDAtKt
-   +gFDzGMKW/JqKOLTo55jUjYfB6qZYBEHLobcBlLAucFu2SorzQmgRzU1j
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="425317279"
+  bh=Q12Mn3SskxHyYSjjc9NvWyCrgucyGSmuPx1bDTGGBEY=;
+  b=Gp44bZTQnHNkOsPOzMVYDQ54ICZLFr8TR6127rnX3arYKDFUSysGYD8W
+   C9OdI6ORqkYcdFQ3zqy0f12w+4LAWuqUuTvE9dNgwgIpenORaLT9WHUqh
+   XK99egMV7C8KxsVYlssi/pHjoit3cy8jNGlm3Jh977iMyXusrBRVfUIZt
+   +5BUwy/+9bYkLbYDCg0UVcqkrMtgr34HSUbpMPEo9ZODbTs5pJNgQWS73
+   qJtEzSUJJY8Sv9HQUWebM7AU4dJQ2V/iSfD+sdyP37fzcXWGzKIuc5Rrq
+   TjptsuWe+0S/UFXl/1SDew59Gytc0GevTtxNQtQznUKbolJFNAk1HjciY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="423032679"
 X-IronPort-AV: E=Sophos;i="6.00,250,1681196400"; 
-   d="scan'208";a="425317279"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2023 02:13:29 -0700
+   d="scan'208";a="423032679"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2023 02:24:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="887374515"
+X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="742909880"
 X-IronPort-AV: E=Sophos;i="6.00,250,1681196400"; 
-   d="scan'208";a="887374515"
+   d="scan'208";a="742909880"
 Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 17 Jun 2023 02:13:26 -0700
+  by orsmga008.jf.intel.com with ESMTP; 17 Jun 2023 02:24:26 -0700
 Received: from kbuild by 783282924a45 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qARzp-0002Zf-2S;
-        Sat, 17 Jun 2023 09:13:25 +0000
-Date:   Sat, 17 Jun 2023 17:12:40 +0800
+        id 1qASAT-0002a0-37;
+        Sat, 17 Jun 2023 09:24:25 +0000
+Date:   Sat, 17 Jun 2023 17:24:14 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Miaohe Lin <linmiaohe@huawei.com>, hannes@cmpxchg.org,
         mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
         akpm@linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, muchun.song@linux.dev,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linmiaohe@huawei.com
 Subject: Re: [PATCH] memcg: remove unneeded header files
-Message-ID: <202306171649.O90yt13M-lkp@intel.com>
+Message-ID: <202306171711.3ZCE2wVo-lkp@intel.com>
 References: <20230617072658.1826560-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -81,27 +81,28 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Miaohe-Lin/memcg-remove-u
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
 patch link:    https://lore.kernel.org/r/20230617072658.1826560-1-linmiaohe%40huawei.com
 patch subject: [PATCH] memcg: remove unneeded header files
-config: nios2-randconfig-r004-20230617 (https://download.01.org/0day-ci/archive/20230617/202306171649.O90yt13M-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230617/202306171649.O90yt13M-lkp@intel.com/reproduce)
+config: i386-randconfig-i012-20230617 (https://download.01.org/0day-ci/archive/20230617/202306171711.3ZCE2wVo-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230617/202306171711.3ZCE2wVo-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306171649.O90yt13M-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306171711.3ZCE2wVo-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   mm/memcontrol.c: In function 'mem_cgroup_css_offline':
->> mm/memcontrol.c:5447:9: error: implicit declaration of function 'wb_memcg_offline' [-Werror=implicit-function-declaration]
-    5447 |         wb_memcg_offline(memcg);
-         |         ^~~~~~~~~~~~~~~~
-   mm/memcontrol.c: In function 'mem_cgroup_move_account':
->> mm/memcontrol.c:5788:29: error: implicit declaration of function 'mapping_can_writeback'; did you mean 'mapping_map_writable'? [-Werror=implicit-function-declaration]
-    5788 |                         if (mapping_can_writeback(mapping)) {
-         |                             ^~~~~~~~~~~~~~~~~~~~~
-         |                             mapping_map_writable
-   cc1: some warnings being treated as errors
+>> mm/memcontrol.c:5447:2: error: call to undeclared function 'wb_memcg_offline'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+           wb_memcg_offline(memcg);
+           ^
+>> mm/memcontrol.c:5788:8: error: call to undeclared function 'mapping_can_writeback'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+                           if (mapping_can_writeback(mapping)) {
+                               ^
+   mm/memcontrol.c:5788:8: note: did you mean 'mapping_map_writable'?
+   include/linux/fs.h:545:19: note: 'mapping_map_writable' declared here
+   static inline int mapping_map_writable(struct address_space *mapping)
+                     ^
+   2 errors generated.
 
 
 vim +/wb_memcg_offline +5447 mm/memcontrol.c
