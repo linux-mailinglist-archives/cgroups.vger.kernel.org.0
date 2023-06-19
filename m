@@ -2,62 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6CC7359CD
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jun 2023 16:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239F2735D09
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jun 2023 19:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjFSOio (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jun 2023 10:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
+        id S231224AbjFSRaw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Jun 2023 13:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjFSOin (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jun 2023 10:38:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C68AA
-        for <cgroups@vger.kernel.org>; Mon, 19 Jun 2023 07:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1687185483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n81+s1XEobkyuHvPUCbHGRBITPBL/Ux61aHB9fOgZks=;
-        b=eRrDuNebKAAyEMwcEgJtiRi/FuDoYMiNErV20tBL6m/EpVvl6lj2M1s8w2jNzX46L+nphx
-        Xsq+81aY7BcupxnrInvSgpZFG+JqQMQpTv5KfxO3xQu3VXaSCnLluGsjQvn7JOicv0Qfwh
-        yBPhfDr89twlps/9hYiCW/mvhzP2rP0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-526-cxEHApTfMDOSqW_QX_PlZg-1; Mon, 19 Jun 2023 10:37:58 -0400
-X-MC-Unique: cxEHApTfMDOSqW_QX_PlZg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S230228AbjFSRav (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jun 2023 13:30:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D3A198;
+        Mon, 19 Jun 2023 10:30:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 74C391C04B64;
-        Mon, 19 Jun 2023 14:37:58 +0000 (UTC)
-Received: from [10.22.32.69] (unknown [10.22.32.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0C96112132C;
-        Mon, 19 Jun 2023 14:37:57 +0000 (UTC)
-Message-ID: <c32a0bad-b20f-e53b-a38a-5da687b8a205@redhat.com>
-Date:   Mon, 19 Jun 2023 10:37:57 -0400
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 231BA1F88D;
+        Mon, 19 Jun 2023 17:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1687195846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xQFY7fZePp2Fj2uiaSid1me/iXz0lajB7QFNjTT4+ls=;
+        b=pQDFDQhHXe7phJt2fLX6ATZgBbeZhDTeziVy/2jZ2ixsWgmpbNLBNi7nbpYLDA8l/FFmcP
+        TF2KLLk5U5yCq8QR0WdQC1HSOfTQDoivDzVuA9P7h1z4nK7a78h/gLR2/pNN2LoyLBKUhc
+        /iogDsjyLttIrG2Z6PpDRYlw0dAv8hs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B21F139C2;
+        Mon, 19 Jun 2023 17:30:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kPYLIcWQkGQbdwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 19 Jun 2023 17:30:45 +0000
+Date:   Mon, 19 Jun 2023 19:30:44 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     Eric Dumazet <edumazet@google.com>, Tejun Heo <tj@kernel.org>,
+        Christian Warloe <cwarloe@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Vasily Averin <vasily.averin@linux.dev>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Xin Long <lucien.xin@gmail.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH net-next] sock: Propose socket.urgent for sockmem
+ isolation
+Message-ID: <4p22vtjrpu4obmbjivgpe635gbpjmhsfisnxghgsson2g6yy5r@ovawhchw7maq>
+References: <20230609082712.34889-1-wuyun.abel@bytedance.com>
+ <CANn89i+Qqq5nV0oRLh_KEHRV6VmSbS5PsSvayVHBi52FbB=sKA@mail.gmail.com>
+ <b879d810-132b-38ab-c13d-30fabdc8954a@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] cgroup/cpuset: remove unneeded nodes_or() in
- cpuset_change_task_nodemask()
-Content-Language: en-US
-To:     Miaohe Lin <linmiaohe@huawei.com>, tj@kernel.org,
-        hannes@cmpxchg.org, lizefan.x@bytedance.com
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230617083043.2065556-1-linmiaohe@huawei.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230617083043.2065556-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gmi7m3lyy75eha77"
+Content-Disposition: inline
+In-Reply-To: <b879d810-132b-38ab-c13d-30fabdc8954a@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,37 +91,31 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/17/23 04:30, Miaohe Lin wrote:
-> The tsk->mems_allowed is changed before calling mpol_rebind_task() and
-> being reassigned right after it. But tsk->mems_allowed is not needed
-> inside mpol_rebind_task(). So remove unneeded tsk->mems_allowed modify
-> via nodes_or() here.
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 58e6f18f01c1..33a429c1179f 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1941,7 +1941,6 @@ static void cpuset_change_task_nodemask(struct task_struct *tsk,
->   	local_irq_disable();
->   	write_seqcount_begin(&tsk->mems_allowed_seq);
->   
-> -	nodes_or(tsk->mems_allowed, tsk->mems_allowed, *newmems);
->   	mpol_rebind_task(tsk, newmems);
->   	tsk->mems_allowed = *newmems;
->   
 
-That line was inserted by commit cc9a6c8776615 ("cpuset: mm: reduce 
-large amounts of memory barrier related damage v3"). At first glance, it 
-does looks like it is not necessary. However, I am not sure if a race is 
-possible that will produce a false failure because of missing this line.
+--gmi7m3lyy75eha77
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-My 2 cents.
+On Tue, Jun 13, 2023 at 02:46:32PM +0800, Abel Wu <wuyun.abel@bytedance.com> wrote:
+> Memory protection (memory.{min,low}) helps the important jobs less
+> affected by memstalls. But once low priority jobs use lots of kernel
+> memory like sockmem, the protection might become much less efficient.
 
-Cheers,
-Longman
+What would happen if you applied memory.{min,low} to the important jobs
+and memory.{max,high} to the low prio ones?
 
+Thanks,
+Michal
+
+--gmi7m3lyy75eha77
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZJCQwgAKCRAGvrMr/1gc
+jlfqAP4n8Ka+X+iVeFLtQT/sbo8Dudkos2fyhrkWo0/AJG9aogD9GEihJOOgAxk9
+aCoZ0Kwdy6zyeUy+7PVrsCAOIKJHJQc=
+=1Q4d
+-----END PGP SIGNATURE-----
+
+--gmi7m3lyy75eha77--
