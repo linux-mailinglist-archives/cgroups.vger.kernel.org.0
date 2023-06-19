@@ -2,146 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9AA734B4C
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jun 2023 07:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87360734C47
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jun 2023 09:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbjFSFTf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jun 2023 01:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        id S229537AbjFSHTv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Jun 2023 03:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjFSFTe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jun 2023 01:19:34 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB245DF
-        for <cgroups@vger.kernel.org>; Sun, 18 Jun 2023 22:19:32 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-988a2715b8cso118389666b.0
-        for <cgroups@vger.kernel.org>; Sun, 18 Jun 2023 22:19:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687151971; x=1689743971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xkIBRh1CRI7l1b26sTYaQ/9/gUUFxPZU0t2NyWKWH7Q=;
-        b=eUeNwGRZOej+JmaNNUaJ6OPJIgJYdwORyCeMfKZTOjdOO76BnXQtHBcPlqW8xlMFQY
-         s1nvqNLfu7R+DtrblqmhCcyNv9raxlOUrGUkijSYF2DLN/Fx1lHmAyyGItjJsLQKZ9SB
-         GPfMkm2H1dEBHmBvUMD1gOtZO1fVM3k/h0NmiHlxO9RkzW6RQBtin+wJYQW/lxXbrH2y
-         2jT67uQLUKUbBewiI+qS3az+zA4/Ja0YIqT9Cp1VvKdGyGO7ldm1/RKTqK5ZdG6UMaPi
-         c/6Ert/O4bIexYOn5ii9geuHAbjF/UjC8Wjr754r+o8/7VgLwsDMrXGWCp8mWr05623N
-         VqbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687151971; x=1689743971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xkIBRh1CRI7l1b26sTYaQ/9/gUUFxPZU0t2NyWKWH7Q=;
-        b=f3Op7tuEc36uuwbmRKJ6GLpJfPTFFzj6RhS2ln68llEfZ0RSb6vmv22HBm2cXxMI6d
-         jON03iz2lSa5j1lrqT1hNa9DIjZfreDbCRPdeKhfpqFXi8CCg57NidLXYJ3o/zFLpIRP
-         jJCErDX8RAN5B2gTps3jrZueHp/kZmhpX1o13cmtIuQBxZGvgN3gxuCSRGtRu5NOJrMS
-         e/CtMPR8GjsrbAueVMOsrQQDeXeWsv+Vx3utJSPvcBdvFUMozry1YWmoU2J0XmLbRx4r
-         T02ysix9mpOUE4UWLkjnAIym3vJ+9nQdoZistbWrwWWKi0BoiwHYEGT94hTgx1aWppbB
-         VH7g==
-X-Gm-Message-State: AC+VfDz4KyqUgBdCt5/Zxk81on6/TlM6xbi5OUmLRGKdqXuTTuVom670
-        HVaDrbco3b4cHQ9eW9ZvAMhMroxCn9lbJwgsNAQb5w==
-X-Google-Smtp-Source: ACHHUZ71H1JCg8qVnIn2avxbwYZAfCJAhaV/i8QHAcldJFca6caRKDrrFVg7SKgaFiydxOgLaPuVe+XBQIA36QYs2Qk=
-X-Received: by 2002:a17:907:2d10:b0:988:7209:f42 with SMTP id
- gs16-20020a1709072d1000b0098872090f42mr2344570ejc.7.1687151971080; Sun, 18
- Jun 2023 22:19:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230619051715.2306134-1-yosryahmed@google.com>
-In-Reply-To: <20230619051715.2306134-1-yosryahmed@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Sun, 18 Jun 2023 22:18:54 -0700
-Message-ID: <CAJD7tkYspn8LwCDh2fjfGePWbRB405M3d1tgtax_4dGFSk3jBg@mail.gmail.com>
-Subject: Re: [PATCH] selftests/cgroup: allow running a specific test with test_memcontrol
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        with ESMTP id S229553AbjFSHTt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jun 2023 03:19:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7345B1A4;
+        Mon, 19 Jun 2023 00:19:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 244021F38D;
+        Mon, 19 Jun 2023 07:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1687159186; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GDE22N6RhZJ008soRf2pb0Es9I9DW+ry9z9nMBOE6Qs=;
+        b=GIP9IjQevaWuqsO9XKJc0QPPQQxbsj457qjoQ/Jq9JjZyaVqo02HuYv28wkIPbskWuRoj6
+        rPPkhzIkTk1xQYcqXuYrg/bazd3S40oCZ04mFdwzlKWloaOe1i3PHk0Doy1lv207fqbPbU
+        HXlv+iPFOCBtv1Ul82ato2iLLjC99OI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6C0A138E8;
+        Mon, 19 Jun 2023 07:19:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id W78ANpEBkGRhdQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 19 Jun 2023 07:19:45 +0000
+Date:   Mon, 19 Jun 2023 09:19:45 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org, muchun.song@linux.dev,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] memcg: remove unneeded header files
+Message-ID: <ZJABkaSdZP+K6dOh@dhcp22.suse.cz>
+References: <20230617072658.1826560-1-linmiaohe@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230617072658.1826560-1-linmiaohe@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Jun 18, 2023 at 10:17=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> It is handy during testing and/or debugging to be able to run a single
-> test from test_memcontrol. Allow passing in a test name through a
-> command line argument (e.g. ./test_memcontrol -t test_memcg_recharge).
->
-> Change-Id: I0e0d74d81fdd9d997987389085a816715160467f
+On Sat 17-06-23 15:26:58, Miaohe Lin wrote:
+> Remove some unneeded header files. No functional change intended.
 
-I missed removing this gerrit tag, sorry. Will fix it if/when I respin.
-
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Header inclusion cleanups are certainly welcome but it would be much
+more preferred to explain why those are not needed. As build test follow
+ups show this is much more subtle than it seems.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  .../selftests/cgroup/test_memcontrol.c        | 30 +++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
-> diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/tes=
-ting/selftests/cgroup/test_memcontrol.c
-> index a2a90f4bfe9f..d8f8a13bc6c4 100644
-> --- a/tools/testing/selftests/cgroup/test_memcontrol.c
-> +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-> @@ -1308,9 +1308,36 @@ struct memcg_test {
->
->  int main(int argc, char **argv)
->  {
-> +       int opt;
->         char root[PATH_MAX];
-> +       int selected_test =3D -1;
->         int i, proc_status, ret =3D EXIT_SUCCESS;
->
-> +       while ((opt =3D getopt(argc, argv, "ht:")) !=3D -1) {
-> +               switch (opt) {
-> +               case 't':
-> +                       for (i =3D 0; i < ARRAY_SIZE(tests); i++) {
-> +                               if (!strcmp(tests[i].name, optarg)) {
-> +                                       selected_test =3D i;
-> +                                       break;
-> +                               }
-> +                       }
-> +                       if (selected_test >=3D 0)
-> +                               break;
-> +                       fprintf(stderr, "test %s not found\n", optarg);
-> +                       return EXIT_FAILURE;
-> +               case 'h':
-> +                       fprintf(stderr,
-> +                               "Usage: %s [-h] [-t name]\n"
-> +                               "\t-h       print help\n"
-> +                               "\t-t name  run specific test\n"
-> +                               , argv[0]);
-> +                       return ret;
-> +               default:
-> +                       break;
-> +               }
-> +       }
-> +
->         if (cg_find_unified_root(root, sizeof(root)))
->                 ksft_exit_skip("cgroup v2 isn't mounted\n");
->
-> @@ -1336,6 +1363,9 @@ int main(int argc, char **argv)
->         has_localevents =3D proc_status;
->
->         for (i =3D 0; i < ARRAY_SIZE(tests); i++) {
-> +               if (selected_test >=3D 0 && selected_test !=3D i)
-> +                       continue;
-> +
->                 switch (tests[i].fn(root)) {
->                 case KSFT_PASS:
->                         ksft_test_result_pass("%s\n", tests[i].name);
-> --
-> 2.41.0.162.gfafddb0af9-goog
->
+>  mm/memcontrol.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d42742edfeac..a2c82a18745d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -30,14 +30,10 @@
+>  #include <linux/cgroup.h>
+>  #include <linux/pagewalk.h>
+>  #include <linux/sched/mm.h>
+> -#include <linux/shmem_fs.h>
+> -#include <linux/hugetlb.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/vm_event_item.h>
+>  #include <linux/smp.h>
+>  #include <linux/page-flags.h>
+> -#include <linux/backing-dev.h>
+> -#include <linux/bit_spinlock.h>
+>  #include <linux/rcupdate.h>
+>  #include <linux/limits.h>
+>  #include <linux/export.h>
+> @@ -66,7 +62,6 @@
+>  #include <linux/sched/isolation.h>
+>  #include "internal.h"
+>  #include <net/sock.h>
+> -#include <net/ip.h>
+>  #include "slab.h"
+>  #include "swap.h"
+>  
+> -- 
+> 2.27.0
+
+-- 
+Michal Hocko
+SUSE Labs
