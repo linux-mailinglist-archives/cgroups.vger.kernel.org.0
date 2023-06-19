@@ -2,59 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EFC735827
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jun 2023 15:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6CC7359CD
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jun 2023 16:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbjFSNNG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jun 2023 09:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
+        id S229662AbjFSOio (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Jun 2023 10:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjFSNNF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jun 2023 09:13:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C7810F0;
-        Mon, 19 Jun 2023 06:12:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 53C40218EA;
-        Mon, 19 Jun 2023 13:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687180370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229636AbjFSOin (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jun 2023 10:38:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C68AA
+        for <cgroups@vger.kernel.org>; Mon, 19 Jun 2023 07:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687185483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aQmFVaQuAwWgIZ+l8dIjyNcxs23FYGNdPQCulAHqOAo=;
-        b=PVLE2oqZFPuxokg5tgu/VBGR7MN9qR5XuBvP30AAyZqCTaRhBtwGAdA4DEsfO9MEcJF0uz
-        LH9cF3R7RbTcDI/fRH9uKl/+bqt0crZU9UaQXA3AUBRGh+19Lk8Coc1S0opdVIMcN6g0wU
-        LgYfJ8I+SyyIVB1Jcce96DitLU+1fU4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=n81+s1XEobkyuHvPUCbHGRBITPBL/Ux61aHB9fOgZks=;
+        b=eRrDuNebKAAyEMwcEgJtiRi/FuDoYMiNErV20tBL6m/EpVvl6lj2M1s8w2jNzX46L+nphx
+        Xsq+81aY7BcupxnrInvSgpZFG+JqQMQpTv5KfxO3xQu3VXaSCnLluGsjQvn7JOicv0Qfwh
+        yBPhfDr89twlps/9hYiCW/mvhzP2rP0=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-526-cxEHApTfMDOSqW_QX_PlZg-1; Mon, 19 Jun 2023 10:37:58 -0400
+X-MC-Unique: cxEHApTfMDOSqW_QX_PlZg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F334139C2;
-        Mon, 19 Jun 2023 13:12:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qQHiB1JUkGRdBQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 19 Jun 2023 13:12:50 +0000
-Date:   Mon, 19 Jun 2023 15:12:49 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, roman.gushchin@linux.dev, shakeelb@google.com
-Subject: Re: [PATCH v2] mm/memcontrol: do not tweak node in mem_cgroup_init()
-Message-ID: <ZJBUUZf9lJ44/eky@dhcp22.suse.cz>
-References: <ZIwghl18d45vPNpd@dhcp22.suse.cz>
- <20230619130442.2487-1-haifeng.xu@shopee.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 74C391C04B64;
+        Mon, 19 Jun 2023 14:37:58 +0000 (UTC)
+Received: from [10.22.32.69] (unknown [10.22.32.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0C96112132C;
+        Mon, 19 Jun 2023 14:37:57 +0000 (UTC)
+Message-ID: <c32a0bad-b20f-e53b-a38a-5da687b8a205@redhat.com>
+Date:   Mon, 19 Jun 2023 10:37:57 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230619130442.2487-1-haifeng.xu@shopee.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] cgroup/cpuset: remove unneeded nodes_or() in
+ cpuset_change_task_nodemask()
+Content-Language: en-US
+To:     Miaohe Lin <linmiaohe@huawei.com>, tj@kernel.org,
+        hannes@cmpxchg.org, lizefan.x@bytedance.com
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230617083043.2065556-1-linmiaohe@huawei.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230617083043.2065556-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,96 +65,37 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 19-06-23 13:04:42, Haifeng Xu wrote:
-> mem_cgroup_init() request for allocations from each possible node, and
-> it's used to be a problem because NODE_DATA is not allocated for offline
-> node. Things have already changed since commit 09f49dca570a9 ("mm: handle
-> uninitialized numa nodes gracefully"), so it's unnecessary to check for
-> !node_online nodes here.
-> 
-> How to test?
-> 
-> qemu-system-x86_64 \
->   -kernel vmlinux \
->   -initrd full.rootfs.cpio.gz \
->   -append "console=ttyS0,115200 root=/dev/ram0 nokaslr earlyprintk=serial oops=panic panic_on_warn" \
->   -drive format=qcow2,file=vm_disk.qcow2,media=disk,if=ide \
->   -enable-kvm \
->   -cpu host \
->   -m 8G,slots=2,maxmem=16G \
->   -smp cores=4,threads=1,sockets=2  \
->   -object memory-backend-ram,id=mem0,size=4G \
->   -object memory-backend-ram,id=mem1,size=4G \
->   -numa node,memdev=mem0,cpus=0-3,nodeid=0 \
->   -numa node,memdev=mem1,cpus=4-7,nodeid=1 \
->   -numa node,nodeid=2 \
->   -net nic,model=virtio,macaddr=52:54:00:12:34:58 \
->   -net user \
->   -nographic \
->   -rtc base=localtime \
->   -gdb tcp::6000
-> 
-> Guest state when booting:
-> 
-> [    0.048881] NUMA: Node 0 [mem 0x00000000-0x0009ffff] + [mem 0x00100000-0xbfffffff] -> [mem 0x00000000-0xbfffffff]
-> [    0.050489] NUMA: Node 0 [mem 0x00000000-0xbfffffff] + [mem 0x100000000-0x13fffffff] -> [mem 0x00000000-0x13fffffff]
-> [    0.052173] NODE_DATA(0) allocated [mem 0x13fffc000-0x13fffffff]
-> [    0.053164] NODE_DATA(1) allocated [mem 0x23fffa000-0x23fffdfff]
-> [    0.054187] Zone ranges:
-> [    0.054587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
-> [    0.055551]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-> [    0.056515]   Normal   [mem 0x0000000100000000-0x000000023fffffff]
-> [    0.057484] Movable zone start for each node
-> [    0.058149] Early memory node ranges
-> [    0.058705]   node   0: [mem 0x0000000000001000-0x000000000009efff]
-> [    0.059679]   node   0: [mem 0x0000000000100000-0x00000000bffdffff]
-> [    0.060659]   node   0: [mem 0x0000000100000000-0x000000013fffffff]
-> [    0.061649]   node   1: [mem 0x0000000140000000-0x000000023fffffff]
-> [    0.062638] Initmem setup node 0 [mem 0x0000000000001000-0x000000013fffffff]
-> [    0.063745] Initmem setup node 1 [mem 0x0000000140000000-0x000000023fffffff]
-> [    0.064855]   DMA zone: 158 reserved pages exceeds freesize 0
-> [    0.065746] Initializing node 2 as memoryless
-> [    0.066437] Initmem setup node 2 as memoryless
-> [    0.067132]   DMA zone: 158 reserved pages exceeds freesize 0
-> [    0.068037] On node 0, zone DMA: 1 pages in unavailable ranges
-> [    0.068265] On node 0, zone DMA: 97 pages in unavailable ranges
-> [    0.124755] On node 0, zone Normal: 32 pages in unavailable ranges
-> 
-> cat /sys/devices/system/node/online
-> 0-1
-> cat /sys/devices/system/node/possible
-> 0-2
-> 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks a lo!
-
+On 6/17/23 04:30, Miaohe Lin wrote:
+> The tsk->mems_allowed is changed before calling mpol_rebind_task() and
+> being reassigned right after it. But tsk->mems_allowed is not needed
+> inside mpol_rebind_task(). So remove unneeded tsk->mems_allowed modify
+> via nodes_or() here.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
-> v2:
-> - extend changelog by test steps
-> ---
->  mm/memcontrol.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 4b27e245a055..c73c5fb33f65 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7421,8 +7421,7 @@ static int __init mem_cgroup_init(void)
->  	for_each_node(node) {
->  		struct mem_cgroup_tree_per_node *rtpn;
->  
-> -		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL,
-> -				    node_online(node) ? node : NUMA_NO_NODE);
-> +		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
->  
->  		rtpn->rb_root = RB_ROOT;
->  		rtpn->rb_rightmost = NULL;
-> -- 
-> 2.25.1
+>   kernel/cgroup/cpuset.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 58e6f18f01c1..33a429c1179f 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1941,7 +1941,6 @@ static void cpuset_change_task_nodemask(struct task_struct *tsk,
+>   	local_irq_disable();
+>   	write_seqcount_begin(&tsk->mems_allowed_seq);
+>   
+> -	nodes_or(tsk->mems_allowed, tsk->mems_allowed, *newmems);
+>   	mpol_rebind_task(tsk, newmems);
+>   	tsk->mems_allowed = *newmems;
+>   
 
--- 
-Michal Hocko
-SUSE Labs
+That line was inserted by commit cc9a6c8776615 ("cpuset: mm: reduce 
+large amounts of memory barrier related damage v3"). At first glance, it 
+does looks like it is not necessary. However, I am not sure if a race is 
+possible that will produce a false failure because of missing this line.
+
+My 2 cents.
+
+Cheers,
+Longman
+
