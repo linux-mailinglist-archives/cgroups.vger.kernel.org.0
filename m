@@ -2,89 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99B7738F1E
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jun 2023 20:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361D1738F60
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jun 2023 21:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbjFUStD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Jun 2023 14:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
+        id S231190AbjFUTAY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Jun 2023 15:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjFUStB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Jun 2023 14:49:01 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D71E42
-        for <cgroups@vger.kernel.org>; Wed, 21 Jun 2023 11:48:59 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-3ff25ca795eso28011cf.1
-        for <cgroups@vger.kernel.org>; Wed, 21 Jun 2023 11:48:59 -0700 (PDT)
+        with ESMTP id S229549AbjFUTAX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Jun 2023 15:00:23 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F85F10F6;
+        Wed, 21 Jun 2023 12:00:20 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-77e250985b5so201622339f.3;
+        Wed, 21 Jun 2023 12:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687373339; x=1689965339;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ktaN2gfy2UoFzSis8IakrvfByDQPNIqA2OzFHTKqH6g=;
-        b=6g8bjgJ05d+rXqPxYemA4IWXC+J1Ela6mFMkncMRIuq1/qtJbHccQZq5eNnK8I5qe0
-         hHNtT089lxLYIpUCWKimJ7OvTnk3AqftjEne3x/QKdPrTQj7whhf9V7QXpmEIjhdikxt
-         3RUxgdzBP7JyIEHwuW1EfLOcXwuB5TITZDI0M9cW8LfCeT6p8VPkPbdIAj+Bz1xOsg4h
-         wX9LbCEVcoDUhWSHLG5Y939Eqa61h2yFQYFGh0vJ5vX9YJMSwF0ASQbl++WFw3qZiFK/
-         UWDxKAbJQKcXA5CFkGIQw1AxgIxNjJ0wsXMZhvPgK37ovf8LI3YrUUA00uM18dZNvF5J
-         3yWQ==
+        d=gmail.com; s=20221208; t=1687374019; x=1689966019;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zkWc31QshB/LMbmy/U7IMxynfJvynM10dLnhD7VuGr0=;
+        b=hn4FLYsX9n/TfMXBqz5KHMRnQQPS9PO99wDb/S2cBdELnBET33B1yuvsV2X+R132Rl
+         kS5U4v/nsxmTZBpS1ZlzPJ/V4eRwgZJ6gtt6FgjrgmdEcu5e9Qvlqt6p4E+sD6SXx0Hb
+         Ds+wqYyxr7boTwr92KQQhIIlbp5oL4p4DAhTWGbrxkxfCUA0k/MVgftuJwyg0Xym2EBA
+         XuLptxf8aH2v70DL98tpcQPRtfWoiHvEAkR0cAxTVvYlAVtkmhotPvZgAx2yPksVa9Nf
+         zcC07SWEstZU5sQwiXngm8kNsVhHn0yBSMA4riraUtHDnbFn4Vfofe70985kCFS4Nw9g
+         jr6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687373339; x=1689965339;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1687374019; x=1689966019;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ktaN2gfy2UoFzSis8IakrvfByDQPNIqA2OzFHTKqH6g=;
-        b=aW3/hrXKj+4qFBlnx5Oj97PxanicJjuF8EPQz+rrpjVmI3hpTw6FaYxKgvgy+Ryb2t
-         AAtI6rsbTfrMwJ7I/4hWU2KL+2OCGQlttfS5QEpRiBE15OIzWM6WP4J8M+weID0WP9wN
-         iM+1hvSv/WunLVnHiiGGsV3+2EjIA1yHzIyEb5FsbmOM1E9o1OqQbhHYuYNW4hSmdutY
-         oSKgEghxRMu8GWaBuX1LvKc5elf7JbkxVCt5p8LHFXZmUs7pEk1YRLSjLuzagPVHceOA
-         5a4qU0I/unlnAqNrtlsL+aM49cdQdjWZKEbctYOMv1jx0tzGKgHte41UY6Xb/bcBOSq4
-         OUGQ==
-X-Gm-Message-State: AC+VfDzrLaoRRJWD+ppeRuH40V6DT/qfntHLT9Dbe/LV3rSNOBhYgyjm
-        hgOaVN2iTpGUIf0QEjpsezMJ/TVuy9KBLJM92HAQNQ==
-X-Google-Smtp-Source: ACHHUZ6wyaGZhoIo4tRyOV5BV1WFj8xWmG+hpZ4QuVswZetsBCPxzzNXwssbZELyoFmUobNTTkI7G9Dgv5b6Tpp1DrY=
-X-Received: by 2002:ac8:5954:0:b0:3ef:3083:a437 with SMTP id
- 20-20020ac85954000000b003ef3083a437mr284103qtz.18.1687373338729; Wed, 21 Jun
- 2023 11:48:58 -0700 (PDT)
+        bh=zkWc31QshB/LMbmy/U7IMxynfJvynM10dLnhD7VuGr0=;
+        b=A+z5NUgLXdS3J/rzrpDDsCfTpCPKoUD0zLOmaRfQ7PTagpVHfd7HZoism9PFYQFZt/
+         feLX5azheH7WimGfDWkowStKpKTmj8n6xnqSHyjmbTB0q0IlBCWLkc3gdTwuD/gtQIwL
+         vwfRgsFlHZSl4VUod3iGzbi9oKQjgEhkmEg2ZF40FdznGxVmEVNPWlBaUxB5S/czZwNv
+         TcjppyME5jJFPAfqj1kxyW9bvN1n4Iq2zxjPoncyypISOlF9P4RfYcARdqYATi7cjRG1
+         gPsc8FqsbXexYFH3mIc/3JwrkW3i47xL5zXquGFXtT65D19PX3DxO8VUyMYl8FqoK2lk
+         aSmA==
+X-Gm-Message-State: AC+VfDwJCRDdLzZYSnHYbuPawW6b8YfaNfqPk/Z6qfAH4RQntsSXGiEI
+        0ek6bPYGDC4pfP8vZWE+kMM=
+X-Google-Smtp-Source: ACHHUZ4C+WZLOdIkd4iXADxJa2TEfGroDORO8/2DKhupg1HNaJ8ZeYueLixsYugeAi8pjGSpYUpwVg==
+X-Received: by 2002:a6b:f61a:0:b0:77e:288d:f3c1 with SMTP id n26-20020a6bf61a000000b0077e288df3c1mr12153678ioh.6.1687374018812;
+        Wed, 21 Jun 2023 12:00:18 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id g12-20020a05663811cc00b0040fbb3bd38csm1484826jas.145.2023.06.21.12.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jun 2023 12:00:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 21 Jun 2023 09:00:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: remove obsolete comment on cgroup_on_dfl()
+Message-ID: <ZJNIwAJDibFthvwp@slm.duckdns.org>
+References: <20230617074809.1929778-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-References: <20230621180454.973862-1-yuanchu@google.com>
-In-Reply-To: <20230621180454.973862-1-yuanchu@google.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 21 Jun 2023 12:48:22 -0600
-Message-ID: <CAOUHufbb9_Cah6tT61+WKfM0T9CDmkZ5zym=MuHj2YVsgh-hiw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/6] mm: working set reporting
-To:     Yuanchu Xie <yuanchu@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Kairui Song <kasong@tencent.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "T . J . Alumbaugh" <talumbau@google.com>,
-        Wei Xu <weixugc@google.com>, SeongJae Park <sj@kernel.org>,
-        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
-        kai.huang@intel.com, hch@lst.de, jon@nutanix.com,
-        Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vasily Averin <vasily.averin@linux.dev>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230617074809.1929778-1-linmiaohe@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,27 +73,15 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 21, 2023 at 12:16=E2=80=AFPM Yuanchu Xie <yuanchu@google.com> w=
-rote:
->
-> RFC v1: https://lore.kernel.org/linux-mm/20230509185419.1088297-1-yuanchu=
-@google.com/
-> For background and interfaces, see the RFC v1 posting.
+On Sat, Jun 17, 2023 at 03:48:09PM +0800, Miaohe Lin wrote:
+> The debug feature is supported since commit 8cc38fa7fa31 ("cgroup: make
+> debug an implicit controller on cgroup2"), update corresponding comment.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-v1 only mentioned one use case (ballooning), but we both know there
-are at least two solid use cases (the other being job
-scheduling/binpacking, e.g., for kubernetes [1]).
+Applied to cgroup/for-6.5.
 
-Please do a survey, as thoroughly as possible, of use cases.
-* What's the significance of WSR to the landscape, in terms of server
-and client use cases?
-* How would userspace tools, e.g., a PMU-based memory profiler,
-leverage the infra provided by WSR?
-* Would those who register slab shrinkers, e.g., DMA buffs [2], want
-to report their working sets?
-* Does this effort intersect with memory placement with NUMA and CXL.mem?
+thanks.
 
-[1] https://kubernetes.io/docs/concepts/configuration/manage-resources-cont=
-ainers/
-[2] https://lore.kernel.org/linux-mm/20230123191728.2928839-1-tjmercier@goo=
-gle.com/
+-- 
+tejun
