@@ -2,110 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC3B739235
-	for <lists+cgroups@lfdr.de>; Thu, 22 Jun 2023 00:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211A1739E13
+	for <lists+cgroups@lfdr.de>; Thu, 22 Jun 2023 12:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjFUWF6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Jun 2023 18:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S229590AbjFVKLu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Jun 2023 06:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjFUWF5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Jun 2023 18:05:57 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B4110CE;
-        Wed, 21 Jun 2023 15:05:56 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-77e35128efdso172507439f.1;
-        Wed, 21 Jun 2023 15:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687385156; x=1689977156;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=1hF4dAVFDAMGVp+Y09Z0Lab7Zc0WkcRinzpiiIGzUs8=;
-        b=RZdjBlnOJEvcG/Y3K8ZI01UT3N8hTQc0Aji+3t3Grs+Dsmzfht3GhgkQlFcD8jfsam
-         AisAu6MjUUbU3jpCdeVAauA08WKcAcUV7p6EFewLB2//fOPqs+/Z/YUtljoYjjIIiQAw
-         +1rGGe623UT6BFJ+1a7YHmiq/aKiGjOA39T99EViEOCZFstoq4P2px4wRV+c3tz3FxUH
-         0pHH8v2tqL5gCM2c2wcQginKgPGEZrSqS+dGyOrMsg8c12ZHEZOI6UBsNWtDsZshr11u
-         zo17IG7VjsfNtmdng/OrwsFaXGG89YiZ8d4VwHgekk2faJbd2xRi/L7K7qQRGeN/WEEy
-         o3qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687385156; x=1689977156;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1hF4dAVFDAMGVp+Y09Z0Lab7Zc0WkcRinzpiiIGzUs8=;
-        b=HemjCS0tOxlYjiVYL89DD0waJqFFzlLI2DTnV/wsESd++rYxCtLwbYkggxad6+qaNT
-         4a53t/NanOmPJZXn6WwfvmPWLEzLAHSoi50idoMV8e/1PQRqByYdbtGebYTjEP2MBlDn
-         VCWhRW6EdZEzx3+srRW/VZjaXOUQ3iyIOAUxh7vQb38s6qLVoAUHLEUSvfaRCHAgnbqv
-         JUtpobmKjT4JvK+amx/A8G59oBes/ALCclfLOOTnxPGR7tUSuvOBJnVMniDTDkQRGxUu
-         SLrXCpzE/+yTFwi0W9fULFkTNpN/3soS0zWqntv6p4g1rs/OsyDisC1qfwV/G9pZyY6n
-         yQDw==
-X-Gm-Message-State: AC+VfDxJUcLHZxy8NIFg2GBYSJLHI0OltGYA1fxZK3lZOfMByy3umNK5
-        JVPaI7WymNwtLnGcDEBknP4=
-X-Google-Smtp-Source: ACHHUZ69YNtNMlokXWSO/cXDMLi+cdvtjD6xUPfPaaFUQhKdkT1i7Gbu53870ovv6kUWF9kcRY49yQ==
-X-Received: by 2002:a5e:880b:0:b0:774:7a6d:8760 with SMTP id l11-20020a5e880b000000b007747a6d8760mr8205170ioj.17.1687385155964;
-        Wed, 21 Jun 2023 15:05:55 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id f7-20020a056638022700b0042880470872sm253859jaq.126.2023.06.21.15.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jun 2023 15:05:55 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 21 Jun 2023 12:05:53 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup: Fixes for v6.4-rc7
-Message-ID: <ZJN0Qa--_aBSJ_K3@slm.duckdns.org>
+        with ESMTP id S229549AbjFVKLt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Jun 2023 06:11:49 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A4F9DE;
+        Thu, 22 Jun 2023 03:11:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A956C1042;
+        Thu, 22 Jun 2023 03:12:31 -0700 (PDT)
+Received: from [10.1.37.34] (e122027.cambridge.arm.com [10.1.37.34])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7F1E3F64C;
+        Thu, 22 Jun 2023 03:11:44 -0700 (PDT)
+Message-ID: <726aae97-755d-9806-11d4-2fb21aa93428@arm.com>
+Date:   Thu, 22 Jun 2023 11:11:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH][next] cgroup: Avoid -Wstringop-overflow warnings
+Content-Language: en-GB
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <ZIpm3pcs3iCP9UaR@work>
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <ZIpm3pcs3iCP9UaR@work>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The following changes since commit 5647e53f7856bb39dae781fe26aa65a699e2fc9f:
+On 15/06/2023 02:18, Gustavo A. R. Silva wrote:
+> Address the following -Wstringop-overflow warnings seen when
+> built with ARM architecture and aspeed_g4_defconfig configuration
+> (notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
+> kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> 
+> These changes are based on commit d20d30ebb199 ("cgroup: Avoid compiler
+> warnings with no subsystems").
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  kernel/cgroup/cgroup.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index cd497b90e11a..1ee76e62eb98 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1200,6 +1200,9 @@ static struct css_set *find_css_set(struct css_set *old_cset,
+>  	unsigned long key;
+>  	int ssid;
+>  
+> +	if (!CGROUP_HAS_SUBSYS_CONFIG)
+> +		return NULL;
+> +
+>  	lockdep_assert_held(&cgroup_mutex);
+>  
+>  	/* First see if we already have a cgroup group that matches
+> @@ -6045,6 +6048,9 @@ int __init cgroup_init(void)
+>  	struct cgroup_subsys *ss;
+>  	int ssid;
+>  
+> +	if (!CGROUP_HAS_SUBSYS_CONFIG)
+> +		return -EINVAL;
+> +
+>  	BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16);
+>  	BUG_ON(cgroup_init_cftypes(NULL, cgroup_base_files));
+>  	BUG_ON(cgroup_init_cftypes(NULL, cgroup_psi_files));
 
-  cgroup: Documentation: Clarify usage of memory limits (2023-06-05 14:08:12 -1000)
+This change (which landed in linux-next) causes a boot failure on my
+(arm32) board because the cgroup filesystem isn't created which upsets
+systemd:
 
-are available in the Git repository at:
+[   11.474767] systemd[1]: Failed to mount tmpfs at /sys/fs/cgroup: No such file or directory
+[   11.489933] systemd[1]: Failed to mount cgroup at /sys/fs/cgroup/systemd: No such file or directory
+[!!!!!!] Failed to mount API filesystems.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ cgroup-for-6.4-rc7-fixes
+Reverting this commit on the head of linux-next gets the board working
+again.
 
-for you to fetch changes up to 6f363f5aa845561f7ea496d8b1175e3204470486:
+Thanks,
 
-  cgroup: Do not corrupt task iteration when rebinding subsystem (2023-06-12 07:21:57 -1000)
+Steve
 
-----------------------------------------------------------------
-cgroup: Fixes for v6.4-rc7
-
-It's late but here are two bug fixes. Both fix problems which can be severe
-but are very confined in scope. The risk to most use cases should be
-minimal.
-
-* Fix for an old bug which triggers if a cgroup subsystem is remounted to a
-  different hierarchy while someone is reading its cgroup.procs/tasks file.
-  The risk is pretty low given how seldom cgroup subsystems are moved across
-  hierarchies.
-
-* We moved cpus_read_lock() outside of cgroup internal locks a while ago but
-  forgot to update the legacy_freezer leading to lockdep triggers. Fixed.
-
-----------------------------------------------------------------
-Tetsuo Handa (1):
-      cgroup,freezer: hold cpu_hotplug_lock before freezer_mutex in freezer_css_{online,offline}()
-
-Xiu Jianfeng (1):
-      cgroup: Do not corrupt task iteration when rebinding subsystem
-
- kernel/cgroup/cgroup.c         | 20 +++++++++++++++++---
- kernel/cgroup/legacy_freezer.c |  8 ++++++--
- 2 files changed, 23 insertions(+), 5 deletions(-)
-
--- 
-tejun
