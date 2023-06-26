@@ -2,115 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D631373EBED
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jun 2023 22:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719AA73EEA6
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jun 2023 00:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjFZUjh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Jun 2023 16:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S229501AbjFZWaV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Jun 2023 18:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjFZUjg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Jun 2023 16:39:36 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F00E58
-        for <cgroups@vger.kernel.org>; Mon, 26 Jun 2023 13:39:30 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-55e0706af99so2905003eaf.1
-        for <cgroups@vger.kernel.org>; Mon, 26 Jun 2023 13:39:30 -0700 (PDT)
+        with ESMTP id S229456AbjFZWaV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Jun 2023 18:30:21 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A88A12D;
+        Mon, 26 Jun 2023 15:30:20 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b7f68f1c9eso18226465ad.2;
+        Mon, 26 Jun 2023 15:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687811970; x=1690403970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MEFUJeeBn6YjH4lK418olg3ruMKuxKIepWsfszUOpy4=;
-        b=L6+t78u34A4EOsgO/5wyxp0/LGY+KJO2+xEm2/un0aE1W+UJ2WdK6S/UKVpguxRp5L
-         R5MBxyaqs+VsDVFucNqfi5acwzpetEuEiNoaZ8TINLUMNyLQrLw5ImKiNAUPyZP6AkhM
-         z9B43yz4ZPCStialiseimZwqXg90RajcVEsWa9D609XnTsfkElxPVXq9vzh/7VCTNHVv
-         ziS22l4ZeeTvBn6hGJgR0FsPhw4xt3yYJhqLCQR4EOQ9FePLgVx2Z54nPJ8gKrH0uwRL
-         cxZ5QZHAFRxraqfIGAatLgaElWfrPTD/K+Aa76+FxYyYGofVf9k/HTmhNNqiY77DmCW5
-         0/5w==
+        d=gmail.com; s=20221208; t=1687818620; x=1690410620;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=srYH61jPdlaM0MowCsJN0isuziRw2t+pfv2C6FBW2u4=;
+        b=oc1Y9ulu/tTCNJdypcysex6m70Pojpf1VuD3SGuFtEhBKrItjq5TNwCpmusDlTXp/r
+         1DsH1GcEp1Q4gNQ7VN8sl6aSwaZk0sPZtwMXgcMg0m49KCn1Gl7x1T64mczVXKBChTrR
+         hhrVPwOgH6uNBaIfuk4+lDNAe6bc/SjBU6+TcMryHwEYCuE1YLjaugyWZ7Kan/92bvML
+         26L/22Hz4aGiCAizqmv/Ha7m5SqFLhPPbj5m7KX10Q6hZB7XUkjKrE2n2Dl98aq4YYiG
+         5hDu7/PUnx1Ym0YFPnx37gSBpUpHSPyxF6CgC0c6ucG6Zj9VHEtSb5nZPkrfHLp8Bc66
+         So5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687811970; x=1690403970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MEFUJeeBn6YjH4lK418olg3ruMKuxKIepWsfszUOpy4=;
-        b=aWAl0vHmL1pAiaCD+qiyv8KMqbYoa+XOVSFN8vG3UP97DcVet/VgPURNnH9Ip/3hTw
-         IN6eDyEJqWby9OtDZ3Pl83n6CwzqD94X2g90ocU/wR4hf/6IZ6dqHukuY3pjMkOR16v6
-         wd46VYBMM/OmzchRJ+e0l/m0ydukv4SmC7IVNRjoWcK2YdKjomZNEh5ZQPlmI0nI84hh
-         cDPz4buWPMGjREDGtVMmW6QQ+nSLVPcruChpTP4vaWohcBORviUxsbZzU7bmPDDZzfj9
-         iUsiecYfmihSuCw2OXitehT7wemzVtoGvOQP9zSCdTKjpxpcyXl8PJZDPbXybakXhxUX
-         oPQA==
-X-Gm-Message-State: AC+VfDy01MZ0rQ7O1g+Zterdv3Cpm+LlDS67FS/LesqEokDI8GlVCmij
-        R6MBr8VpCqUd9tda4Idw3Y1o6K8ZUe0Wj4Zp55eY3g==
-X-Google-Smtp-Source: ACHHUZ4olQu8xtmPGwoaeFjq8yuKCjhhdxoXmfM/VHedl6d4Bu5m3oQg0VOJUL1hz/bBmYwBRV/mspwFs9D3oYgx/to=
-X-Received: by 2002:a05:6358:cd1c:b0:132:71e7:15b6 with SMTP id
- gv28-20020a056358cd1c00b0013271e715b6mr13920779rwb.29.1687811969526; Mon, 26
- Jun 2023 13:39:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687818620; x=1690410620;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=srYH61jPdlaM0MowCsJN0isuziRw2t+pfv2C6FBW2u4=;
+        b=OMr9Jhsd8g35BG7PQXXUGC+qiLzJyILi6TT9OozHx3rWsJaPQIRS1i0WiJpSmYaaPl
+         tcOaLAQy3MwYm2qUGs7la1qmSe9AsE4Fh+46OQLQVWCXUJKMR7Z8Jr1WusMcSMh76dA6
+         898mF0z+waYwc/I4OGNdf5tU4HmMoEOoP/qcQCT57Rksv8V8jNMHHxLPXTyPKgeKyWNS
+         dxLZQ8BLdInx4EVj+PUESP1zUb2RTDH/OWnETR7YVtr2ZNifSFsKyOj/fW9emotjWvW8
+         YsEVuPnUiF9SoypbjUQ3/NKsFCfNwdrbZ8Ztf0r+BJbziscWvYnXAWQ5hTK823ujTu9H
+         E0fg==
+X-Gm-Message-State: AC+VfDyzb2NDCDqhkFMZZB5WKj4+VfSqMtY4+Wla2oSW00Fz1SzpOrPy
+        RbB2siGVtQw1LblLlB8exIZar4cv+HbfHA==
+X-Google-Smtp-Source: ACHHUZ6ugmoAeDZP27nsDDGh6h8y7s0qM10k8L//MvlNEKQi/nog8spCfMsO1Ww/Jmwwgb86citMvQ==
+X-Received: by 2002:a17:902:e84a:b0:1b8:15e3:d9b1 with SMTP id t10-20020a170902e84a00b001b815e3d9b1mr1450797plg.22.1687818619543;
+        Mon, 26 Jun 2023 15:30:19 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id j6-20020a170902c3c600b001aaed524541sm4645443plj.227.2023.06.26.15.30.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jun 2023 15:30:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 26 Jun 2023 12:30:19 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup: Changes for v6.5
+Message-ID: <ZJoRezbOXRTLIL3T@slm.duckdns.org>
 MIME-Version: 1.0
-References: <20230626201713.1204982-1-surenb@google.com> <ZJn1tQDgfmcE7mNG@slm.duckdns.org>
-In-Reply-To: <ZJn1tQDgfmcE7mNG@slm.duckdns.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 26 Jun 2023 13:39:18 -0700
-Message-ID: <CAJuCfpGt8Bg1VLkx-aMw7_JTvh=co4QSM9B=fvikp0mQ-6rvjg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
- resources tied to the file
-To:     Tejun Heo <tj@kernel.org>
-Cc:     gregkh@linuxfoundation.org, peterz@infradead.org,
-        lujialin4@huawei.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mingo@redhat.com, ebiggers@kernel.org, oleg@redhat.com,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 1:31=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> On Mon, Jun 26, 2023 at 01:17:12PM -0700, Suren Baghdasaryan wrote:
-> > diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-> > index 73f5c120def8..a7e404ff31bb 100644
-> > --- a/include/linux/kernfs.h
-> > +++ b/include/linux/kernfs.h
-> > @@ -273,6 +273,11 @@ struct kernfs_ops {
-> >        */
-> >       int (*open)(struct kernfs_open_file *of);
-> >       void (*release)(struct kernfs_open_file *of);
-> > +     /*
-> > +      * Free resources tied to the lifecycle of the file, like a
-> > +      * waitqueue used for polling.
-> > +      */
-> > +     void (*free)(struct kernfs_open_file *of);
->
-> I think this can use a bit more commenting - ie. explain that release may=
- be
-> called earlier than the actual freeing of the file and how that can lead =
-to
-> problems. Othre than that, looks fine to me.
+The following changes since commit ba0ad6ed89fd5dada3b7b65ef2b08e95d449d4ab:
 
-Sure, once I get more feedback I'll post the next version with
-expanded description.
-Thanks!
+  media: nxp: imx8-isi: fix buiding on 32-bit (2023-05-08 09:10:07 -0700)
 
->
-> Greg, as Suren suggested, I can route both patches through the cgroup tre=
-e
-> if you're okay with it.
->
-> Thanks.
->
-> --
-> tejun
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.5
+
+for you to fetch changes up to 81621430c81bb7965c3d5807039bc2b5b3ec87ca:
+
+  Revert "cgroup: Avoid -Wstringop-overflow warnings" (2023-06-22 08:51:14 -1000)
+
+----------------------------------------------------------------
+cgroup: Changes for v6.5
+
+* Whenever cpuset needs to rebuild sched_domain, it walked all tasks looking
+  for DEADLINE tasks as they need to be accounted on the new domain. Walking
+  all tasks can be expensive and there may not be any DEADLINE tasks at all.
+  Task iteration is now omitted if there are no DEADLINE tasks.
+
+* Fixes DEADLINE bandwidth misaccounting after task migration failures.
+
+* When no controller is enabled, -Wstringop-overflow warning is triggered.
+  The fix patch added an early exit which is too eager and got reverted for
+  now. Will fix later.
+
+* Everything else are minor cleanups.
+
+----------------------------------------------------------------
+Azeem Shaikh (1):
+      cgroup: Replace all non-returning strlcpy with strscpy
+
+Dietmar Eggemann (2):
+      sched/deadline: Create DL BW alloc, free & check overflow interface
+      cgroup/cpuset: Free DL BW in case can_attach() fails
+
+Gaosheng Cui (2):
+      cgroup: Replace the css_set call with cgroup_get
+      rdmacg: fix kernel-doc warnings in rdmacg
+
+Gustavo A. R. Silva (1):
+      cgroup: Avoid -Wstringop-overflow warnings
+
+Juri Lelli (4):
+      cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+      sched/cpuset: Bring back cpuset_mutex
+      sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+      cgroup/cpuset: Iterate only if DEADLINE tasks are present
+
+LeiZhou-97 (1):
+      cgroup/misc: Expose misc.current on cgroup v2 root
+
+Miaohe Lin (6):
+      cgroup/cpuset: remove unneeded header files
+      cgroup: remove unused macro for_each_e_css()
+      cgroup: make cgroup_is_threaded() and cgroup_is_thread_root() static
+      cgroup/cpuset: remove unneeded header files
+      cgroup: remove unused task_cgroup_path()
+      cgroup: remove obsolete comment on cgroup_on_dfl()
+
+Tejun Heo (1):
+      Revert "cgroup: Avoid -Wstringop-overflow warnings"
+
+Xiu Jianfeng (1):
+      cgroup: Update out-of-date comment in cgroup_migrate()
+
+ Documentation/admin-guide/cgroup-v2.rst |   2 +-
+ include/linux/cgroup.h                  |   1 -
+ include/linux/cpuset.h                  |  12 +-
+ include/linux/sched.h                   |   4 +-
+ kernel/cgroup/cgroup-internal.h         |   2 -
+ kernel/cgroup/cgroup-v1.c               |   4 +-
+ kernel/cgroup/cgroup.c                  |  72 ++-------
+ kernel/cgroup/cpuset.c                  | 267 +++++++++++++++++++-------------
+ kernel/cgroup/misc.c                    |   1 -
+ kernel/cgroup/rdma.c                    |   2 +
+ kernel/sched/core.c                     |  41 +++--
+ kernel/sched/deadline.c                 |  67 ++++++--
+ kernel/sched/sched.h                    |   2 +-
+ 13 files changed, 257 insertions(+), 220 deletions(-)
