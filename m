@@ -2,60 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B914873F702
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jun 2023 10:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086B973FB43
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jun 2023 13:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbjF0IZZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jun 2023 04:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        id S230175AbjF0Llt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jun 2023 07:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbjF0IYz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jun 2023 04:24:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A35212B;
-        Tue, 27 Jun 2023 01:24:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DE2060FD8;
-        Tue, 27 Jun 2023 08:24:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA386C433CA;
-        Tue, 27 Jun 2023 08:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687854263;
-        bh=PN+dhNU90c6TSMh3/nk0lQ0xTCk2Ol9fv6nVZ+3C3Zs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jzpntFt4cDFZqdnwrhYYQu9Rl/AdiT/dgFwqBf9uhifEdWwBRB/S7RkW/lNEObdOD
-         veTLCh6DRqPTzJ6vgmoz+qoJmY6o62HH07i2GPye7qgYSTjk/7HbebRORp60zwhyKq
-         klfDw2Se8as5Kw0aL3AoWUhdQtPNPqzCykvpI6NNE/wnjUpFICvXM/jzQwClGPNnoJ
-         aN2t25b2FEPFSitFyPrzZdY2Y507lIck+lAdzzqbrgRFrVBh6tK5laCYTAPUdiXXL2
-         iLwRq19wb4oxMX/6BgEZyFIOcrsUg+4YGFRpNKVtFQhzDAaOWSSZ3udpE9ORPNxRK/
-         WDbv8eOaCDkPw==
-Date:   Tue, 27 Jun 2023 10:24:15 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, gregkh@linuxfoundation.org,
-        peterz@infradead.org, lujialin4@huawei.com,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@redhat.com,
-        ebiggers@kernel.org, oleg@redhat.com, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
- resources tied to the file
-Message-ID: <20230627-kanon-hievt-bfdb583ddaa6@brauner>
-References: <20230626201713.1204982-1-surenb@google.com>
- <ZJn1tQDgfmcE7mNG@slm.duckdns.org>
+        with ESMTP id S229838AbjF0Lls (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jun 2023 07:41:48 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1143102;
+        Tue, 27 Jun 2023 04:41:46 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Qr2qF4bT3z1HC6v;
+        Tue, 27 Jun 2023 19:41:29 +0800 (CST)
+Received: from huawei.com (10.175.104.170) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 27 Jun
+ 2023 19:41:44 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <tj@kernel.org>, <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] cgroup: fix obsolete comment above for_each_css()
+Date:   Tue, 27 Jun 2023 19:40:59 +0800
+Message-ID: <20230627114059.1310936-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZJn1tQDgfmcE7mNG@slm.duckdns.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,25 +45,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 10:31:49AM -1000, Tejun Heo wrote:
-> On Mon, Jun 26, 2023 at 01:17:12PM -0700, Suren Baghdasaryan wrote:
-> > diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-> > index 73f5c120def8..a7e404ff31bb 100644
-> > --- a/include/linux/kernfs.h
-> > +++ b/include/linux/kernfs.h
-> > @@ -273,6 +273,11 @@ struct kernfs_ops {
-> >  	 */
-> >  	int (*open)(struct kernfs_open_file *of);
-> >  	void (*release)(struct kernfs_open_file *of);
-> > +	/*
-> > +	 * Free resources tied to the lifecycle of the file, like a
-> > +	 * waitqueue used for polling.
-> > +	 */
-> > +	void (*free)(struct kernfs_open_file *of);
-> 
-> I think this can use a bit more commenting - ie. explain that release may be
-> called earlier than the actual freeing of the file and how that can lead to
-> problems. Othre than that, looks fine to me.
+cgroup_tree_mutex is removed since commit 8353da1f91f1 ("cgroup: remove
+cgroup_tree_mutex"), update corresponding comment.
 
-It seems the more natural thing to do would be to introduce a ->drain()
-operation and order it before ->release(), no?
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ kernel/cgroup/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 4d42f0cbc11e..a6238958fe0b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -680,7 +680,7 @@ EXPORT_SYMBOL_GPL(of_css);
+  * @ssid: the index of the subsystem, CGROUP_SUBSYS_COUNT after reaching the end
+  * @cgrp: the target cgroup to iterate css's of
+  *
+- * Should be called under cgroup_[tree_]mutex.
++ * Should be called under cgroup_mutex.
+  */
+ #define for_each_css(css, ssid, cgrp)					\
+ 	for ((ssid) = 0; (ssid) < CGROUP_SUBSYS_COUNT; (ssid)++)	\
+-- 
+2.27.0
+
