@@ -2,198 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E49740607
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jun 2023 23:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF43740706
+	for <lists+cgroups@lfdr.de>; Wed, 28 Jun 2023 02:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbjF0V6o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jun 2023 17:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
+        id S229789AbjF1AFh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jun 2023 20:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjF0V6W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jun 2023 17:58:22 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B997198
-        for <cgroups@vger.kernel.org>; Tue, 27 Jun 2023 14:58:20 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-c13280dfb09so4056225276.2
-        for <cgroups@vger.kernel.org>; Tue, 27 Jun 2023 14:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687903099; x=1690495099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJ+N2CuvmAc+wSVX5vK53Z8eetMsRLGAFF7lJpIJfks=;
-        b=yZmGrcWcj5pZWgnmUzy8P0MNqCMof88icxobA86fP/l45vue+mRRI6eWcXK63Ef3Go
-         FTI//QnmS1jCsU1O7a31qy/2/oGu88vMSOXH8iw0oXdmRDwQZWkmqSaSJPov/40JcKyV
-         R8UEG143N5iPzajAx0cfIecyu4OYnohi1A8XXcKOiUgXMYNd0LCmG3b+4UHogC3kUBjZ
-         5nAwVTsD2r92uhw3P9j/uCFa5F4nh8POi4STatDMKBzfObiIAE0j3BT79Kz+R4dhmsYE
-         ZhpOfEfuAHped4zA05Qz+Jbp+x7TpwvW1OjM67VFetV3y+OphL91lSriK/CmLXfG7f9i
-         FkIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687903099; x=1690495099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KJ+N2CuvmAc+wSVX5vK53Z8eetMsRLGAFF7lJpIJfks=;
-        b=WRwjsECFReWtmaoGv4nh4WHH/eFfxfKc1hXcwzYUMRquZutXbsqZHbi0mYq12iD3sO
-         +vsmJ6uNP/2er7vYu5iMsrLGMq0dNILnlNc9m1Qx3TkI+sQCkal0dHf9KEs0eiuvGiKx
-         kQWjHeBcHedLteFVYMlamfsgc+Ifa5Ex1sWjD6MZ4z7IByWmC3pcahRZdCEa22xZnrQJ
-         7xpVRVSmduo/l4iSuEFloLYVQ564BcHAAFYLvM3aX9OL8gUt1oosznwnX8WuyLHCp+2w
-         lOfxurLMwiBWcyLkwsviS1K76JFClr8HV9I085G8rRIYdUjO+AxjNqhR27byQWaVUD0u
-         vofw==
-X-Gm-Message-State: AC+VfDzK3xrcnL6S00cANiU7ho/1bpChl+Z5BKxPc0WiA89tqm/F6W3G
-        U5enLe7G2jxBBL7kUGrXVF+eg7J7XQOQpKWFJjz0rQ==
-X-Google-Smtp-Source: ACHHUZ6BRXujNARUx/P9s0LrdGtHz9hVIdad5izfvH+vy5Maxs5onv/E0YqXK8OSS13iB6TZa/Wk4ogMUGfzBYwCLsg=
-X-Received: by 2002:a25:a4aa:0:b0:c00:e6c4:1812 with SMTP id
- g39-20020a25a4aa000000b00c00e6c41812mr16841209ybi.63.1687903099324; Tue, 27
- Jun 2023 14:58:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230626201713.1204982-1-surenb@google.com> <ZJn1tQDgfmcE7mNG@slm.duckdns.org>
- <20230627-kanon-hievt-bfdb583ddaa6@brauner> <CAJuCfpECKqYiekDK6Zw58w10n1T4Q3R+2nymfHX2ZGfQVDC3VQ@mail.gmail.com>
- <20230627-ausgaben-brauhaus-a33e292558d8@brauner> <ZJstlHU4Y3ZtiWJe@slm.duckdns.org>
- <CAJuCfpFUrPGVSnZ9+CmMz31GjRNN+tNf6nUmiCgx0Cs5ygD64A@mail.gmail.com> <CAJuCfpFe2OdBjZkwHW5UCFUbnQh7hbNeqs7B99PXMXdFNjKb5Q@mail.gmail.com>
-In-Reply-To: <CAJuCfpFe2OdBjZkwHW5UCFUbnQh7hbNeqs7B99PXMXdFNjKb5Q@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 27 Jun 2023 14:58:08 -0700
-Message-ID: <CAJuCfpG2_trH2DuudX_E0CWfMxyTKfPWqJU14zjVxpTk6kPiWQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
- resources tied to the file
+        with ESMTP id S230224AbjF1AFg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jun 2023 20:05:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D480B2963;
+        Tue, 27 Jun 2023 17:05:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B26D6125A;
+        Wed, 28 Jun 2023 00:05:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C0471C433CC;
+        Wed, 28 Jun 2023 00:05:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687910729;
+        bh=K1q5eY/7V72aUCquOMcMTrY/5u0DEnDqAr6KzjugOlo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=QA3AOfV5f/hKILHL6f9zwozgWXG8Mzl2R11UZQ/atnbohGthR1toO+X/mQJxw90hZ
+         /jkrzWa0s+e2OEQWpvL7h9pcnhGxbmnm8+Cbr9CUyZy5N8gYjockCtjSTqz6THdNbL
+         vyEj16S0ugftJR4m/AG0kmcZt5H1RrE5WZgnORTXyeOnGTZk1pNYoVYnxTOkZtdsAs
+         4ToB/bIj5jSpfrP9yYMpqbTc5LytLcHBU1OnTOQkJRlE8/MSA7MTG1wFi7+U267A+y
+         eK0ACueMJlIcPoczCzrzeYFn33Zfg2mJNaN03RFNBukyjO1XrgbLNDZTzZcIipQIVu
+         3dKt0zh30c9wQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AB1EBC0C40E;
+        Wed, 28 Jun 2023 00:05:29 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup: Changes for v6.5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZJoRezbOXRTLIL3T@slm.duckdns.org>
+References: <ZJoRezbOXRTLIL3T@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZJoRezbOXRTLIL3T@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.5
+X-PR-Tracked-Commit-Id: 81621430c81bb7965c3d5807039bc2b5b3ec87ca
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6e2332e0ab532eb01f1fde39080dbfa9bf65c4cf
+Message-Id: <168791072969.16670.1997125289929728161.pr-tracker-bot@kernel.org>
+Date:   Wed, 28 Jun 2023 00:05:29 +0000
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>, gregkh@linuxfoundation.org,
-        peterz@infradead.org, lujialin4@huawei.com,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@redhat.com,
-        ebiggers@kernel.org, oleg@redhat.com, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 2:43=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Tue, Jun 27, 2023 at 1:09=E2=80=AFPM Suren Baghdasaryan <surenb@google=
-.com> wrote:
-> >
-> > On Tue, Jun 27, 2023 at 11:42=E2=80=AFAM Tejun Heo <tj@kernel.org> wrot=
-e:
-> > >
-> > > Hello, Christian.
-> > >
-> > > On Tue, Jun 27, 2023 at 07:30:26PM +0200, Christian Brauner wrote:
-> > > ...
-> > > > ->release() was added in
-> > > >
-> > > >     commit 0e67db2f9fe91937e798e3d7d22c50a8438187e1
-> > > >     kernfs: add kernfs_ops->open/release() callbacks
-> > > >
-> > > >     Add ->open/release() methods to kernfs_ops.  ->open() is called=
- when
-> > > >     the file is opened and ->release() when the file is either rele=
-ased or
-> > > >     severed.  These callbacks can be used, for example, to manage
-> > > >     persistent caching objects over multiple seq_file iterations.
-> > > >
-> > > >     Signed-off-by: Tejun Heo <tj@kernel.org>
-> > > >     Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > >     Acked-by: Acked-by: Zefan Li <lizefan@huawei.com>
-> > > >
-> > > > which mentions "either releases or severed" which imho already poin=
-ts to
-> > > > separate methods.
-> > >
-> > > This is because kernfs has revoking operation which doesn't exist for=
- other
-> > > filesystems. Other filesystem implemenations can't just say "I'm done=
-. Bye!"
-> > > and go away. Even if the underlying filesystem has completely failed,=
- the
-> > > code still has to remain attached and keep aborting operations.
-> > >
-> > > However, kernfs serves as the midlayer to a lot of device drivers and=
- other
-> > > internal subsystems and it'd be really inconvenient for each of them =
-to have
-> > > to implement "I want to go away but I gotta wait out this user who's =
-holding
-> > > onto my tuning knob file". So, kernfs exposes a revoke or severing se=
-mantics
-> > > something that's exposing interface through kernfs wants to stop doin=
-g so.
-> > >
-> > > If you look at it from file operation implementation POV, this seems =
-exactly
-> > > like ->release. All open files are shutdown and there won't be any fu=
-ture
-> > > operations. After all, revoke is forced closing of all fd's. So, for =
-most
-> > > users, treating severing just like ->release is the right thing to do=
-.
-> > >
-> > > The PSI file which caused this is a special case because it attaches
-> > > something to its kernfs file which outlives the severing operation by=
-passing
-> > > kernfs infra. A more complete way to fix this would be supporting the
-> > > required behavior from kernfs side, so that the PSI file operates on =
-kernfs
-> > > interface which knows the severing event and detaches properly. That =
-said,
-> > > currently, this is very much an one-off.
-> > >
-> > > Suren, if you're interested, it might make sense to pipe poll through=
- kernfs
-> > > properly so that it has its kernfs operation and kernfs can sever it.=
- That
-> > > said, as this is a fix for something which is currently causing crash=
-es,
-> > > it'd be better to merge this simpler fix first no matter what.
-> >
-> > I'm happy to implement the right fix if you go into more details.
-> > AFAIKT kernfs_ops already has poll() operation, we are hooking
-> > cgroup_file_poll() to it and using kernfs_generic_poll(). I thought
-> > this is the right way to pipe poll through kernfs but if that's
-> > incorrect, please let me know. I'm happy to fix that.
->
-> Ah, sorry, for PSI we are not using kernfs_generic_poll(), so my claim
-> misrepresents the situation. Let me look into how
-> kernfs_generic_poll() is implemented and maybe I can find a better
-> solution for PSI.
+The pull request you sent on Mon, 26 Jun 2023 12:30:19 -1000:
 
-Ok in kernfs_generic_poll() we are using kernfs_open_node.poll
-waitqueue head for polling and kernfs_open_node is freed from inside
-kernfs_unlink_open_file() which is called from kernfs_fop_release().
-So, it is destroyed only when the last fput() is done, unlike the
-ops->release() operation which we are using for destroying PSI
-trigger's waitqueue. So, it seems we still need an operation which
-would indicate that the file is truly going away.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.5
 
-Christian's suggestion to rename current ops->release() operation into
-ops->drain() (or ops->flush() per Matthew's request) and introduce a
-"new" ops->release() which is called only when the last fput() is done
-seems sane to me. Would everyone be happy with that approach?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6e2332e0ab532eb01f1fde39080dbfa9bf65c4cf
 
+Thank you!
 
-> Thanks,
-> Suren.
->
-> > Thanks,
-> > Suren.
-> >
-> > >
-> > > Thanks.
-> >
-> > >
-> > > --
-> > > tejun
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
