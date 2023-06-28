@@ -2,158 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D8E741959
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jun 2023 22:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6534741977
+	for <lists+cgroups@lfdr.de>; Wed, 28 Jun 2023 22:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjF1UNN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Jun 2023 16:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        id S231146AbjF1Uej (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Jun 2023 16:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbjF1UNB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jun 2023 16:13:01 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F8B2103
-        for <cgroups@vger.kernel.org>; Wed, 28 Jun 2023 13:12:38 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6b7474b0501so67833a34.1
-        for <cgroups@vger.kernel.org>; Wed, 28 Jun 2023 13:12:38 -0700 (PDT)
+        with ESMTP id S229626AbjF1Uei (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jun 2023 16:34:38 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C13519B6;
+        Wed, 28 Jun 2023 13:34:37 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666ecf9a0ceso142892b3a.2;
+        Wed, 28 Jun 2023 13:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687983158; x=1690575158;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k4rTWpAfDqcdZDTILe7jmFb9qWXSX04H9q/bdDWrzoY=;
-        b=U4zCCdk957gzYM+H+xsRYEONc6RfAPY01RFg1AsAiC76Nlrzfibh3F8apitW44iD4n
-         RUHp1ewjwkT8/07gIW2yd2o6KWfoEsdQ1RsO1okZZ6nH2Mr5kwlGrby0vWUhM9ViRN7t
-         13g9BOJ5WDeL79lOybkTWaiBVxSQg1laObVGeO5NhmQS1SQYJYNB5wjLMo1HO0fK6Gz5
-         WdLKojwTtKjBN5QFGmMtZvkJreuEo/Brvnxn3Upo5JUokm0wI4OKMDq++dzzSY9+JFo0
-         YW0LvwHCBuHdnHsKhCeaX5n+BThhzuEZo0yXHZ3GfqDOIG/IIy3NqjntHu24BBKEIPsN
-         To+A==
+        d=gmail.com; s=20221208; t=1687984477; x=1690576477;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ipbLnYvlGYQvDEihyiPuXfdid6qmlxbdUrEvPFMafw4=;
+        b=opSL76LDc984zvWM3786OidbBT25+1HD1mQMziNNFfP4Zsljw5U+R1LwpfgRjqakdu
+         lyO3voeeVszuMA+bdl57FtM0OiOwdjEhMGusRh8PrEwfT+W94UMOraQg8L2LqPIZzDp5
+         nLnAxenahvm+RDN1eQWrhVw+chYXpSUC5++RVkiMEDXV2tKxMQkMlIdbYtS882Wp3wAq
+         3UqdPomtMd0EEcrYiQQZw8VYnUHvixfbxCSUKSZgILtO98HCfujdnQMHBg2enLrGn11M
+         FqODDg+KVXkLLJxNQLt1RyfgE/1C3D9Kg+00mZoAc9V4Y02ZyUFj27JJsXB3fDudmRsQ
+         vwXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687983158; x=1690575158;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1687984477; x=1690576477;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k4rTWpAfDqcdZDTILe7jmFb9qWXSX04H9q/bdDWrzoY=;
-        b=WKkkeFznqAV8hBBAcW33pYFN1Rd6NclCWqeuLoNNwHEqXHGM9SthDgYTLxp2n+uq++
-         V2kBo/Y/5FlIugzsVSZP3dFd1NSHCI/L1ZtrNDybJbt7qS4J7axd6p9XmCibAY2FfnNr
-         fE3Z/ZEHnhyzSVZTuuu7g6RPKP4ch0oh9QOqqP2BQqdHxUapwJqnwghVTeHKegNMeQVW
-         w7WX1AGVVvxQyidwsMa9LcYsofKb4qIDwsmUPK6812chiBTg+GApFtQhWLtSY35AxjUD
-         RX4CBnk6R8HqVi52bwgXcD9prliztiu9YprjwVRnE0AODNO4UrFH8GaJt3oa/9JHft5y
-         L2LA==
-X-Gm-Message-State: AC+VfDxvUXg153Bz+6QikPz93bAFUkGlQEKg36mW4byWlB7pO3urmftv
-        +np5IAMAB8L+elzy7sjwAPtwS9nBhh62lx5TLxUGGQ==
-X-Google-Smtp-Source: ACHHUZ6FR3Q+UdlHx+0nHQ1ukoAT7ZW0Bve/Vrx68Gwzk0fbdxOs2iZiizkEs1ms+M358FLBTh7hk80EiL5EDb3sgSQ=
-X-Received: by 2002:a9d:6289:0:b0:6b8:8a3b:86be with SMTP id
- x9-20020a9d6289000000b006b88a3b86bemr154556otk.26.1687983157754; Wed, 28 Jun
- 2023 13:12:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJuCfpG2_trH2DuudX_E0CWfMxyTKfPWqJU14zjVxpTk6kPiWQ@mail.gmail.com>
- <ZJuSzlHfbLj3OjvM@slm.duckdns.org> <CAJuCfpGoNbLOLm08LWKPOgn05+FB1GEqeMTUSJUZpRmDYQSjpA@mail.gmail.com>
- <20230628-meisennest-redlich-c09e79fde7f7@brauner> <CAJuCfpHqZ=5a_2k==FsdBbwDCF7+s7Ji3aZ37LBqUgyXLMz7gA@mail.gmail.com>
- <20230628-faden-qualvoll-6c33b570f54c@brauner> <CAJuCfpF=DjwpWuhugJkVzet2diLkf8eagqxjR8iad39odKdeYQ@mail.gmail.com>
- <20230628-spotten-anzweifeln-e494d16de48a@brauner> <ZJx1nkqbQRVCaKgF@slm.duckdns.org>
- <CAJuCfpEFo6WowJ_4XPXH+=D4acFvFqEa4Fuc=+qF8=Jkhn=3pA@mail.gmail.com> <2023062845-stabilize-boogieman-1925@gregkh>
-In-Reply-To: <2023062845-stabilize-boogieman-1925@gregkh>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 28 Jun 2023 13:12:23 -0700
-Message-ID: <CAJuCfpFqYytC+5GY9X+jhxiRvhAyyNd27o0=Nbmt_Wc5LFL1Sw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
- resources tied to the file
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christian Brauner <brauner@kernel.org>,
-        peterz@infradead.org, lujialin4@huawei.com,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@redhat.com,
-        ebiggers@kernel.org, oleg@redhat.com, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
+        bh=ipbLnYvlGYQvDEihyiPuXfdid6qmlxbdUrEvPFMafw4=;
+        b=FxxGFXPvgGmDUhbtw7YmCewW8BkpLPeHUirq+tNPTz4vbzWI03GA98ty/XHBmPzDFx
+         GhnY6miNONDh9qP3jLX/gbAbnDoZc2Ks1Vwp9+YHjy47VGmV+fVrthDHceTKTswKFqva
+         VWWYy9FCpeovd9ZOSsRH9WhA/Sv5bkM99bsApv4s1YgdI0QTcmCrTx479Wu8AvcK5Ga4
+         5bX3W/G3Id1qiGaOePDpXcV34h+En4Z1+pLAzh6pk4kVVZiF+EmAaAcVncqdIdvrjjYy
+         aDmQUMO/Vwws/M0xA2vUrL3tiXMG2cgdxCkXV8Wuu6cBHduu1UOGpdZgUWk/tBXA+gjL
+         tBSg==
+X-Gm-Message-State: AC+VfDwh3jLk2vYtK6LDK83INmfEdTOrw0DZkzJm5Xm/n0HqsJAR2MzD
+        yX44mA7w2R2dY8yCuZtrPpY=
+X-Google-Smtp-Source: ACHHUZ6XkIRJQTHMzWEX1lQu8qkb9AYZLxxYyonQGrQyP+vNh08KhF9U2TY5f8OQbw13ohu8/8LZ8Q==
+X-Received: by 2002:a05:6a20:3249:b0:12c:30b0:6225 with SMTP id hm9-20020a056a20324900b0012c30b06225mr2243475pzc.36.1687984476662;
+        Wed, 28 Jun 2023 13:34:36 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:7961])
+        by smtp.gmail.com with ESMTPSA id s1-20020aa78281000000b0065a1b05193asm7367724pfm.185.2023.06.28.13.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jun 2023 13:34:36 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 28 Jun 2023 10:34:34 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Christian Brauner <brauner@kernel.org>, peterz@infradead.org,
+        lujialin4@huawei.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mingo@redhat.com, ebiggers@kernel.org, oleg@redhat.com,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
+ resources tied to the file
+Message-ID: <ZJyZWtK4nihRkTME@slm.duckdns.org>
+References: <CAJuCfpGoNbLOLm08LWKPOgn05+FB1GEqeMTUSJUZpRmDYQSjpA@mail.gmail.com>
+ <20230628-meisennest-redlich-c09e79fde7f7@brauner>
+ <CAJuCfpHqZ=5a_2k==FsdBbwDCF7+s7Ji3aZ37LBqUgyXLMz7gA@mail.gmail.com>
+ <20230628-faden-qualvoll-6c33b570f54c@brauner>
+ <CAJuCfpF=DjwpWuhugJkVzet2diLkf8eagqxjR8iad39odKdeYQ@mail.gmail.com>
+ <20230628-spotten-anzweifeln-e494d16de48a@brauner>
+ <ZJx1nkqbQRVCaKgF@slm.duckdns.org>
+ <CAJuCfpEFo6WowJ_4XPXH+=D4acFvFqEa4Fuc=+qF8=Jkhn=3pA@mail.gmail.com>
+ <2023062845-stabilize-boogieman-1925@gregkh>
+ <CAJuCfpFqYytC+5GY9X+jhxiRvhAyyNd27o0=Nbmt_Wc5LFL1Sw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpFqYytC+5GY9X+jhxiRvhAyyNd27o0=Nbmt_Wc5LFL1Sw@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 11:42=E2=80=AFAM Greg KH <gregkh@linuxfoundation.or=
-g> wrote:
->
-> On Wed, Jun 28, 2023 at 11:18:20AM -0700, Suren Baghdasaryan wrote:
-> > On Wed, Jun 28, 2023 at 11:02=E2=80=AFAM Tejun Heo <tj@kernel.org> wrot=
-e:
-> > >
-> > > On Wed, Jun 28, 2023 at 07:35:20PM +0200, Christian Brauner wrote:
-> > > > > To summarize my understanding of your proposal, you suggest addin=
-g new
-> > > > > kernfs_ops for the case you marked (1) and change ->release() to =
-do
-> > > > > only (2). Please correct me if I misunderstood. Greg, Tejun, WDYT=
-?
-> > > >
-> > > > Yes. I can't claim to know all the intricate implementation details=
- of
-> > > > kernfs ofc but this seems sane to me.
-> > >
-> > > This is going to be massively confusing for vast majority of kernfs u=
-sers.
-> > > The contract kernfs provides is that you can tell kernfs that you wan=
-t out
-> > > and then you can do so synchronously in a finite amount of time (you =
-still
-> > > have to wait for in-flight operations to finish but that's under your
-> > > control). Adding an operation which outlives that contract as somethi=
-ng
-> > > usual to use is guaranteed to lead to obscure future crnashes. For a
-> > > temporary fix, it's fine as long as it's marked clearly but please do=
-n't
-> > > make it something seemingly widely useable.
-> > >
-> > > We have a long history of modules causing crashes because of this. Th=
-e
-> > > severing semantics is not there just for fun.
-> >
-> > I'm sure there are reasons things are working as they do today. Sounds
-> > like we can't change the ->release() logic from what it is today...
-> > Then the question is how do we fix this case needing to release a
-> > resource which can be released only when there are no users of the
-> > file? My original suggestion was to add a kernfs_ops operation which
-> > would indicate there are no more users but that seems to be confusing.
-> > Are there better ways to fix this issue?
->
-> Just make sure that you really only remove the file when all users are
-> done with it?  Do you have control of that from the driver side?
+Hello, Suren.
 
-I'm a bit confused. In my case it's not a driver, it's the cgroup
-subsystem and the issue is not that we are removing the file while
-there are other users. The issue is that kernfs today has no operation
-which is called when the last user is gone. I need such an operation
-to be able to free the resources knowing that no users are left.
+On Wed, Jun 28, 2023 at 01:12:23PM -0700, Suren Baghdasaryan wrote:
+> AFAIU all other files that handle polling rely on f_op->release()
+> being called after all the users are gone, therefore they can safely
+> free their resources. However kernfs can call ->release() while there
+> are still active users of the file. I can't use that operation for
+> resource cleanup therefore I was suggesting to add a new operation
+> which would be called only after the last fput() and would guarantee
+> no users. Again, I'm not an expert in this, so there might be a better
+> way to handle it. Please advise.
 
->
-> But, why is this kernfs file so "special" that it must have this special
-> construct?  Why not do what all other files that handle polling do and
-> just remove and get out of there when done?
+So, w/ kernfs, the right thing to do is making sure that whatever is exposed
+to the kernfs user is terminated on removal - ie. after kernfs_ops->release
+is called, the ops table should be considered dead and there shouldn't be
+anything left to clean up from the kernfs user side. You can add abstraction
+kernfs so that kernfs can terminate the calls coming down from the higher
+layers on its own. That's how every other operation is handled and what
+should happen with the psi polling too.
 
-AFAIU all other files that handle polling rely on f_op->release()
-being called after all the users are gone, therefore they can safely
-free their resources. However kernfs can call ->release() while there
-are still active users of the file. I can't use that operation for
-resource cleanup therefore I was suggesting to add a new operation
-which would be called only after the last fput() and would guarantee
-no users. Again, I'm not an expert in this, so there might be a better
-way to handle it. Please advise.
-Thanks,
-Suren.
+Thanks.
 
->
-> thanks,
->
-> greg k-h
+-- 
+tejun
