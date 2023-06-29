@@ -2,142 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EE8741B22
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jun 2023 23:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617607422F3
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jun 2023 11:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbjF1VvP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Jun 2023 17:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
+        id S232096AbjF2JL4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Jun 2023 05:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjF1VvO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jun 2023 17:51:14 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8E01FFA
-        for <cgroups@vger.kernel.org>; Wed, 28 Jun 2023 14:51:13 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-c2cf4e61bc6so8193276.3
-        for <cgroups@vger.kernel.org>; Wed, 28 Jun 2023 14:51:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687989073; x=1690581073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oiU1ba44MUUFQMwv4R2LW1J18iVFXpq0u3lKLnpz3Xc=;
-        b=yGSq9469ZtBk1ZalIinO4oHCn6+fl9Mioak3I3ItprNlBB2i5CG8SW2uaDJYBJ82CF
-         peruRSwPdWE3ulMVZphVZF6Td9mBMDF2emMRSAaDIr4OkPG0hzUxwu759Prh9CPgykAx
-         XRFojr8qVtzUt0+3h9YqMTuRkgvFqqhNGoo7jyIUzTMo9Fv/tcwxK7Pf509o/7+YAM/1
-         tKV74JfZJ9/F1aCnWQNLG0fLkTUQjrmSCb3EA6ygUrlLtha+2T5pHZRJYeNdWPu6mZye
-         XjSaajeSL6VnNlsmoOo7Wm/driYwl+iqhGitf5wrv0LKJ3PsUo+PeXq0IYSVgg2GDAX8
-         73Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687989073; x=1690581073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oiU1ba44MUUFQMwv4R2LW1J18iVFXpq0u3lKLnpz3Xc=;
-        b=KwzSxPj/m3M/Y3eMYfJaVBEYpD5+qEsQz9JqIK+Iv7LIHfSZj+k3327N1sRV5giFQn
-         /A2RLr5t/VLM+c0nKKt708SV24WRj8JGad691ql8W80HvgdUFOdy3JDC9QjPnil6LwaY
-         7/7JuMGKY1Sq/Yj1xzZ1HYnI2PDNWTQVphss59trwjlAG0FyfcdHqhTRl6L3hyeyxUJI
-         smrHv9v8x5CVV5yi9pIzSAE0fWZHeqJPsrK7jQxvuPTQS+gaePE3Q7HKAITi3MbAp2/J
-         bbkTBRR5rOFtVJZQ/WUORygP5V5ctlFlQk482pEpcsQKKKMXGgnt1wkYJbazUpaTUYdG
-         u59g==
-X-Gm-Message-State: AC+VfDzoHxBYcwXmaBmjnJ4WTaJVBFifs/JEuNfN5an+0XnvXwNShn4w
-        g2b8sO9zDacAquBOxnn3TjS+eSqyokwD2N6TlUw27A==
-X-Google-Smtp-Source: ACHHUZ4cfXqbxLsUUem2cXUx8pH1XWjLr/u24Cm/eF5T/Yf+mADUuiGnm9aQFd2GhQSDjAHdcUKVPpC+nw4V4ifPuqc=
-X-Received: by 2002:a25:6b50:0:b0:b9e:6fd1:4350 with SMTP id
- o16-20020a256b50000000b00b9e6fd14350mr35804952ybm.17.1687989072841; Wed, 28
- Jun 2023 14:51:12 -0700 (PDT)
+        with ESMTP id S232023AbjF2JLz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Jun 2023 05:11:55 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DEB1FD8;
+        Thu, 29 Jun 2023 02:11:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 000B31F8C3;
+        Thu, 29 Jun 2023 09:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1688029913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eakZ9Lwqp66DOPYDD7y7VLeLOLV3zqoUBYGx3Z4WOnY=;
+        b=eLEATQF/QD87CNPxQL0qRd1yPM+gwm4aUtlPjCwxI47+fW7Z9tuLJHE7ks451dK4laL3pI
+        8zEvCnCS3XrXPZVxZw5oQgqEbXxyuLUXAi4fXxLJX5nTejhVbG5jLbIqoquhY5LWEHNgTk
+        id7Hkm0ccym9GKAtLhyiRko4959cZdY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BAC26139FF;
+        Thu, 29 Jun 2023 09:11:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id RVCrK9hKnWSMdQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 29 Jun 2023 09:11:52 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>
+Subject: [PATCH 0/3] cpuset: Allow setscheduler regardless of manipulated task
+Date:   Thu, 29 Jun 2023 11:11:43 +0200
+Message-ID: <20230629091146.28801-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <CAJuCfpGoNbLOLm08LWKPOgn05+FB1GEqeMTUSJUZpRmDYQSjpA@mail.gmail.com>
- <20230628-meisennest-redlich-c09e79fde7f7@brauner> <CAJuCfpHqZ=5a_2k==FsdBbwDCF7+s7Ji3aZ37LBqUgyXLMz7gA@mail.gmail.com>
- <20230628-faden-qualvoll-6c33b570f54c@brauner> <CAJuCfpF=DjwpWuhugJkVzet2diLkf8eagqxjR8iad39odKdeYQ@mail.gmail.com>
- <20230628-spotten-anzweifeln-e494d16de48a@brauner> <ZJx1nkqbQRVCaKgF@slm.duckdns.org>
- <CAJuCfpEFo6WowJ_4XPXH+=D4acFvFqEa4Fuc=+qF8=Jkhn=3pA@mail.gmail.com>
- <2023062845-stabilize-boogieman-1925@gregkh> <CAJuCfpFqYytC+5GY9X+jhxiRvhAyyNd27o0=Nbmt_Wc5LFL1Sw@mail.gmail.com>
- <ZJyZWtK4nihRkTME@slm.duckdns.org>
-In-Reply-To: <ZJyZWtK4nihRkTME@slm.duckdns.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 28 Jun 2023 14:50:59 -0700
-Message-ID: <CAJuCfpFKjhmti8k6OHoDHAu6dPvqP0jn8FFdSDPqmRfH97bkiQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
- resources tied to the file
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Christian Brauner <brauner@kernel.org>, peterz@infradead.org,
-        lujialin4@huawei.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mingo@redhat.com, ebiggers@kernel.org, oleg@redhat.com,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 1:34=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello, Suren.
->
-> On Wed, Jun 28, 2023 at 01:12:23PM -0700, Suren Baghdasaryan wrote:
-> > AFAIU all other files that handle polling rely on f_op->release()
-> > being called after all the users are gone, therefore they can safely
-> > free their resources. However kernfs can call ->release() while there
-> > are still active users of the file. I can't use that operation for
-> > resource cleanup therefore I was suggesting to add a new operation
-> > which would be called only after the last fput() and would guarantee
-> > no users. Again, I'm not an expert in this, so there might be a better
-> > way to handle it. Please advise.
->
-> So, w/ kernfs, the right thing to do is making sure that whatever is expo=
-sed
-> to the kernfs user is terminated on removal - ie. after kernfs_ops->relea=
-se
-> is called, the ops table should be considered dead and there shouldn't be
-> anything left to clean up from the kernfs user side. You can add abstract=
-ion
-> kernfs so that kernfs can terminate the calls coming down from the higher
-> layers on its own. That's how every other operation is handled and what
-> should happen with the psi polling too.
+Changes in v1:
+- added selftests
+- comments rewording
 
-I'm not sure I understand. The waitqueue head we are freeing in
-->release() can be accessed asynchronously and does not require any
-kernfs_op call. Here is a recap of that race:
+RFC in https://lore.kernel.org/r/20220623124944.2753-1-mkoutny@suse.com
 
-                                                do_select
-                                                      vfs_poll
-cgroup_pressure_release
-    psi_trigger_destroy
-        wake_up_pollfree(&t->event_wait) -> unblocks vfs_poll
-        synchronize_rcu()
-        kfree(t) -> frees waitqueue head
-                                                     poll_freewait() -> UAF
+Michal Koutný (3):
+  cpuset: Allow setscheduler regardless of manipulated task
+  selftests: cgroup: Minor code reorganizations
+  selftests: cgroup: Add cpuset migrations testcase
 
-Note that poll_freewait() is not part of any kernel_op, so I'm not
-sure how adding an abstraction kernfs would help, but again, this is
-new territory for me and I might be missing something.
-
-On a different note, I think there might be an easy way to fix this.
-What if psi triggers reuse kernfs_open_node->poll waitqueue head?
-Since we are overriding the ->poll() method, that waitqueue head is
-unused AFAIKT. And best of all, its lifecycle is tied to the file's
-lifecycle, so it does not have the issue that trigger waitqueue head
-has. In the trigger I could simply store a pointer to that waitqueue
-and use it. Then in ->release() freeing trigger would not affect the
-waitqueue at all. Does that sound sane?
+ MAINTAINERS                                   |   2 +
+ kernel/cgroup/cpuset.c                        |   7 +
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.c  |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.h  |   2 +
+ tools/testing/selftests/cgroup/test_core.c    |   2 +-
+ tools/testing/selftests/cgroup/test_cpuset.c  | 272 ++++++++++++++++++
+ .../selftests/cgroup/test_cpuset_prs.sh       |   2 +-
+ 9 files changed, 290 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_cpuset.c
 
 
->
-> Thanks.
->
-> --
-> tejun
+base-commit: 6995e2de6891c724bfeb2db33d7b87775f913ad1
+-- 
+2.41.0
+
