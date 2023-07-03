@@ -2,128 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71F574509D
-	for <lists+cgroups@lfdr.de>; Sun,  2 Jul 2023 21:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61B8745401
+	for <lists+cgroups@lfdr.de>; Mon,  3 Jul 2023 04:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbjGBTkJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 2 Jul 2023 15:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
+        id S229564AbjGCC6Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 2 Jul 2023 22:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbjGBTj4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 2 Jul 2023 15:39:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830E51713;
-        Sun,  2 Jul 2023 12:39:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E5EE60CB9;
-        Sun,  2 Jul 2023 19:39:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BED4C433CB;
-        Sun,  2 Jul 2023 19:39:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688326749;
-        bh=qbSmFjkxX3HUcFYifbkogWWlpPQjlc1XuGkAs7z+xus=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A8GVO2PWCoelwP6GOJDM6eAGJPmAOtwe5fP7TwGURIHyjMAU5N2CuEFuHdMJwZJbZ
-         R4iKCnURDXQznGvpNGI7ZLv9s/ZilZYTE4nNodI4I4Mt2ZA/ov04OVEXsnYJ1syB7h
-         IJmKwB5lGxCE/xdtXbAcDaOAM1AZor0ASqG68GT7AaFDn8M+jBfY0pNDwYJKblIzmO
-         7kai64nnYittYJCFRHmVNDxzOpepE9uXt7VS2eaYWudRLSlTZGWyd5QYYx5cANWSax
-         mfRNWXSIXrAKXZowyOhQ6O+LZR1jD/fNlLDkmQwLosqhqx6YytoHiRBfr11iZwYw98
-         NVhLevtUWchew==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, hannes@cmpxchg.org,
-        mhocko@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 2/3] selftests: cgroup: Add 'malloc' failures checks in test_memcontrol
-Date:   Sun,  2 Jul 2023 15:39:03 -0400
-Message-Id: <20230702193904.1775957-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230702193904.1775957-1-sashal@kernel.org>
-References: <20230702193904.1775957-1-sashal@kernel.org>
+        with ESMTP id S229500AbjGCC6X (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 2 Jul 2023 22:58:23 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCC81BC;
+        Sun,  2 Jul 2023 19:58:22 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QvVs70rv2zMpvF;
+        Mon,  3 Jul 2023 10:55:07 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 3 Jul 2023 10:58:19 +0800
+Subject: Re: [PATCH] cgroup/cpuset: update parent subparts cpumask while
+ holding css refcnt
+To:     Waiman Long <longman@redhat.com>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <tj@kernel.org>, <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>
+References: <20230701065049.1758266-1-linmiaohe@huawei.com>
+ <9244d968-b25a-066f-2ff3-1281bf03983e@redhat.com>
+ <a6c55b82-71eb-ad18-e4b2-d62f1102a0e4@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <53486caa-8ca7-78f5-71ac-d5692b482c94@huawei.com>
+Date:   Mon, 3 Jul 2023 10:58:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.37
+In-Reply-To: <a6c55b82-71eb-ad18-e4b2-d62f1102a0e4@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
+On 2023/7/2 7:46, Waiman Long wrote:
+> On 7/1/23 19:38, Waiman Long wrote:
+>> On 7/1/23 02:50, Miaohe Lin wrote:
+>>> update_parent_subparts_cpumask() is called outside RCU read-side critical
+>>> section without holding extra css refcnt of cp. In theroy, cp could be
+>>> freed at any time. Holding extra css refcnt to ensure cp is valid while
+>>> updating parent subparts cpumask.
+>>>
+>>> Fixes: d7c8142d5a55 ("cgroup/cpuset: Make partition invalid if cpumask change violates exclusivity rule")
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>> ---
+>>>   kernel/cgroup/cpuset.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index 58e6f18f01c1..632a9986d5de 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -1806,9 +1806,12 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>>>           cpuset_for_each_child(cp, css, parent)
+>>>               if (is_partition_valid(cp) &&
+>>>                   cpumask_intersects(trialcs->cpus_allowed, cp->cpus_allowed)) {
+>>> +                if (!css_tryget_online(&cp->css))
+>>> +                    continue;
+>>>                   rcu_read_unlock();
+>>>                   update_parent_subparts_cpumask(cp, partcmd_invalidate, NULL, &tmp);
+>>>                   rcu_read_lock();
+>>> +                css_put(&cp->css);
+>>>               }
+>>>           rcu_read_unlock();
+>>>           retval = 0;
+>>
+>> Thanks for finding that. It looks good to me.
+>>
+>> Reviewed-by: Waiman Long <longman@redhat.com>
+> 
+> Though, I will say that an offline cpuset cannot be a valid partition root. So it is not really a problem. For correctness sake and consistency with other similar code, I am in favor of getting it merged.
 
-[ Upstream commit c83f320e55a49abd90629f42a72897afd579e0de ]
+Yes, cpuset_mutex will prevent cpuset from being offline while update cpumask. And as you mentioned, this patch makes code more consistency at least.
+Thanks for your review and comment.
 
-There are several 'malloc' calls in test_memcontrol, which can be
-unsuccessful. This patch will add 'malloc' failures checking to
-give more details about test's fail reasons and avoid possible
-undefined behavior during the future null dereference (like the
-one in alloc_anon_50M_check_swap function).
 
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 8833359556f38..fe4f9f4302822 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -98,6 +98,11 @@ static int alloc_anon_50M_check(const char *cgroup, void *arg)
- 	int ret = -1;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return -1;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
-@@ -211,6 +216,11 @@ static int alloc_anon_noexit(const char *cgroup, void *arg)
- 	char *buf, *ptr;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return -1;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
-@@ -759,6 +769,11 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- 	int ret = -1;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return -1;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
--- 
-2.39.2
 
