@@ -2,139 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A85374957D
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jul 2023 08:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B438749747
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jul 2023 10:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbjGFGVL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 6 Jul 2023 02:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
+        id S233026AbjGFISR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Jul 2023 04:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbjGFGUt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jul 2023 02:20:49 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A632B198B
-        for <cgroups@vger.kernel.org>; Wed,  5 Jul 2023 23:20:48 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55b2ab496ecso380321a12.2
-        for <cgroups@vger.kernel.org>; Wed, 05 Jul 2023 23:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688624448; x=1691216448;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=054dwjt9BZCou3BvPjMRnfFzZ2wjHCy2lrA2F8To2Yk=;
-        b=a/gZc1hvT7JRiiUYzG1SPVOHiHFMZ5cv81dBONAX0K6rQb/SqodZ/lLZoD6G628ExP
-         YAd7fHKCO8Uce6GfN3NdeaykplGQ29jTP1s1duFpDpYznOqIoHbToAyL5+/e4rjop4px
-         RnYjO1Dq2V76xE62yjTCc5gppCq4Ilyvg6B+wC/at9D5beVGj/dSGIKww8CivxZHgMPs
-         xUAr63iI0RUxB/1CrizQ0kDz4z+hUrxNojnH+C506j0HK6jQWpTT4OiCsEUo2etb1Qaj
-         qq9nOEvhORD0DyWKW/sSLHCUa79qo5POjO0faDZksJV99qlPER3hM1mrmWsqRtzP1voK
-         kuCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688624448; x=1691216448;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=054dwjt9BZCou3BvPjMRnfFzZ2wjHCy2lrA2F8To2Yk=;
-        b=BTIFFieiibU0zfi7hCzubKNuvzzLRO/wcs/w+YP7k/35glEpNeEBp8Uq3EF28nkfXK
-         aHzp3+qt5CzeZHeiWaRzaIOj9UzpXEG5QZ72655zFg2tdc0c3ZBKQwtQR9Qt062D0leJ
-         5kLSHPFEWf7ADC4R0/kz2PD/5wmUFbCe65ZdJrT8jBByXD4+NBVyCBsvxuTC1Xadc8Nz
-         XpWQOsHztsvysDZ4OyhrBOxvo8aTOQJu5WqhMM6Yc8IYjvzt+KUDMBWut/VwsDjuypm6
-         gge62BrrhHMnu+IzNVkx6GSwO7IpM4Q2hjQ+AtQNiV2mpIKpdcnp/exMHmHKlzE1wv4E
-         VaGg==
-X-Gm-Message-State: ABy/qLamtcIAwpBF1wzBmQLMfe23TCY5RsZdLZTRNTiJMVyKswiyMU3D
-        BWKAdfqv9O1q4rT+9LU8t8sKbdh0uqNf9A==
-X-Google-Smtp-Source: APBJJlFzXEYN6IPpBFkmO+8r0LKe3KxYt8mAuNjzTYJLriYpEm63md407jdKnq12s3zBrfw6dE9T/SconNIdSw==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a63:751d:0:b0:553:8668:dc40 with SMTP id
- q29-20020a63751d000000b005538668dc40mr509175pgc.6.1688624448157; Wed, 05 Jul
- 2023 23:20:48 -0700 (PDT)
-Date:   Thu, 6 Jul 2023 06:20:45 +0000
-In-Reply-To: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
-Mime-Version: 1.0
-References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
-Message-ID: <20230706062045.xwmwns7cm4fxd7iu@google.com>
-Subject: Re: Expensive memory.stat + cpu.stat reads
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     cgroups@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S233174AbjGFISP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jul 2023 04:18:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD1D1FCD;
+        Thu,  6 Jul 2023 01:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ic9S92rG11eB3Mil6OSX84uIjeGI6KbMJWkDNWokDEY=; b=na4q44nbMfZC7izyi5ajSs6ppq
+        bGmiaPfc5VPM0or3kB8A+OGoTRZ98DRuhWkPwu9v+PIv4Nl5Y7fwiSkmzoIYr19nFqpFZpqgweKaM
+        TzyDub1JFUHz/W1M4AluZuqG+Ahlzdsy9itfLqsHqSnfFKmz6jzkQdD+ocNiKOr84TKlIRGquRitq
+        a/nfcmQFW2VM86l23s2BxHC0p1Ix49+Y7CSgMcqpgH91ENR0Kwrs0NDHq1NKKZFbAwcVlLfvY8/xb
+        Bj5iXoVeTwgb4jtHYlz0bpJPun29kzy8VGtAJ6+jOzFeTR7A64MG6OhfhHVT68MUU75SD/5Oqk0C9
+        OOa76p+g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qHKAZ-00DWMA-13;
+        Thu, 06 Jul 2023 08:16:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DCBBF30005E;
+        Thu,  6 Jul 2023 10:16:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C3108212C1709; Thu,  6 Jul 2023 10:16:51 +0200 (CEST)
+Date:   Thu, 6 Jul 2023 10:16:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     gregkh@linuxfoundation.org, tj@kernel.org, lujialin4@huawei.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@redhat.com,
+        ebiggers@kernel.org, oleg@redhat.com, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 1/1] sched/psi: use kernfs polling functions for PSI
+ trigger polling
+Message-ID: <20230706081651.GF2833176@hirez.programming.kicks-ass.net>
+References: <20230630005612.1014540-1-surenb@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230630005612.1014540-1-surenb@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou wrote:
-> Hello,
+On Thu, Jun 29, 2023 at 05:56:12PM -0700, Suren Baghdasaryan wrote:
+> Destroying psi trigger in cgroup_file_release causes UAF issues when
+> a cgroup is removed from under a polling process. This is happening
+> because cgroup removal causes a call to cgroup_file_release while the
+> actual file is still alive. Destroying the trigger at this point would
+> also destroy its waitqueue head and if there is still a polling process
+> on that file accessing the waitqueue, it will step on the freed pointer:
 > 
-> We're seeing CPU load issues with cgroup stats retrieval. I made a
-> public gist with all the details, including the repro code (which
-> unfortunately requires heavily loaded hardware) and some flamegraphs:
+> do_select
+>   vfs_poll
+>                            do_rmdir
+>                              cgroup_rmdir
+>                                kernfs_drain_open_files
+>                                  cgroup_file_release
+>                                    cgroup_pressure_release
+>                                      psi_trigger_destroy
+>                                        wake_up_pollfree(&t->event_wait)
+> // vfs_poll is unblocked
+>                                        synchronize_rcu
+>                                        kfree(t)
+>   poll_freewait -> UAF access to the trigger's waitqueue head
 > 
-> * https://gist.github.com/bobrik/5ba58fb75a48620a1965026ad30a0a13
+> Patch [1] fixed this issue for epoll() case using wake_up_pollfree(),
+> however the same issue exists for synchronous poll() case.
+> The root cause of this issue is that the lifecycles of the psi trigger's
+> waitqueue and of the file associated with the trigger are different. Fix
+> this by using kernfs_generic_poll function when polling on cgroup-specific
+> psi triggers. It internally uses kernfs_open_node->poll waitqueue head
+> with its lifecycle tied to the file's lifecycle. This also renders the
+> fix in [1] obsolete, so revert it.
 > 
-> I'll repeat the gist of that gist here. Our repro has the following
-> output after a warm-up run:
+> [1] commit c2dbe32d5db5 ("sched/psi: Fix use-after-free in ep_remove_wait_queue()")
 > 
-> completed:  5.17s [manual / mem-stat + cpu-stat]
-> completed:  5.59s [manual / cpu-stat + mem-stat]
-> completed:  0.52s [manual / mem-stat]
-> completed:  0.04s [manual / cpu-stat]
-> 
-> The first two lines do effectively the following:
-> 
-> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.stat
-> /sys/fs/cgroup/system.slice/cpu.stat > /dev/null
-> 
-> The latter two are the same thing, but via two loops:
-> 
-> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/cpu.stat >
-> /dev/null; done
-> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.stat
-> > /dev/null; done
-> 
-> As you might've noticed from the output, splitting the loop into two
-> makes the code run 10x faster. This isn't great, because most
-> monitoring software likes to get all stats for one service before
-> reading the stats for the next one, which maps to the slow and
-> expensive way of doing this.
-> 
-> We're running Linux v6.1 (the output is from v6.1.25) with no patches
-> that touch the cgroup or mm subsystems, so you can assume vanilla
-> kernel.
-> 
-> From the flamegraph it just looks like rstat flushing takes longer. I
-> used the following flags on an AMD EPYC 7642 system (our usual pick
-> cpu-clock was blaming spinlock irqrestore, which was questionable):
-> 
-> perf -e cycles -g --call-graph fp -F 999 -- /tmp/repro
-> 
-> Naturally, there are two questions that arise:
-> 
-> * Is this expected (I guess not, but good to be sure)?
-> * What can we do to make this better?
-> 
-> I am happy to try out patches or to do some tracing to help understand
-> this better.
+> Fixes: 0e94682b73bf ("psi: introduce psi monitor")
+> Reported-by: Lu Jialin <lujialin4@huawei.com>
+> Closes: https://lore.kernel.org/all/20230613062306.101831-1-lujialin4@huawei.com/
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Hi Ivan,
-
-Thanks a lot, as always, for reporting this. This is not expected and
-should be fixed. Is the issue easy to repro or some specific workload or
-high load/traffic is required? Can you repro this with the latest linus
-tree? Also do you see any difference of root's cgroup.stat where this
-issue happens vs good state?
-
-BTW I am away for next month with very limited connectivity, so expect
-slow response.
-
-thanks,
-Shakeel
+Thanks, I'll stuff it in sched/urgent after -rc1.
