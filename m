@@ -2,123 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4247486D1
-	for <lists+cgroups@lfdr.de>; Wed,  5 Jul 2023 16:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A85374957D
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jul 2023 08:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbjGEOtv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Jul 2023 10:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S232367AbjGFGVL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Jul 2023 02:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232334AbjGEOtu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Jul 2023 10:49:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FDC1719
-        for <cgroups@vger.kernel.org>; Wed,  5 Jul 2023 07:49:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688568547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UyM5IDrf51eZ/kcZjAxbwOacXO+LNKpyPjbVqqLXG8s=;
-        b=MMaGuDVo1P7aAu01hJhP5+UX3J7ElnyWbx1gmE0hF/mztoGrcQJLHs8+TGo0wHuznPKF1j
-        V1LH4ADtZhyVwqOJex0efP2Hlk9OBAA9aCxOVRtAHOdfzGWrjuGysOAsAiZVsUuYzf1XPF
-        1dCW7W5gbnbOcyH+97DJ/1Ve4JT1jSA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-434-pI7A_wqlP9eWF9sY32YdEA-1; Wed, 05 Jul 2023 10:49:03 -0400
-X-MC-Unique: pI7A_wqlP9eWF9sY32YdEA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D0CD8185A7A2;
-        Wed,  5 Jul 2023 14:49:02 +0000 (UTC)
-Received: from [10.22.8.133] (unknown [10.22.8.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 67DBF2166B25;
-        Wed,  5 Jul 2023 14:49:02 +0000 (UTC)
-Message-ID: <fd99f1a3-c38c-f344-b581-7df4a3937eef@redhat.com>
-Date:   Wed, 5 Jul 2023 10:49:02 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] cgroup/cpuset: simplify the percpu kthreads check in
- update_tasks_cpumask()
-Content-Language: en-US
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com
-References: <20230704113049.1019118-1-linmiaohe@huawei.com>
- <bc8202fd-a31c-2b08-bd01-8b5868aab230@redhat.com>
- <33c2bf85-6def-fce9-9ea7-3b3e80db67b7@huawei.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <33c2bf85-6def-fce9-9ea7-3b3e80db67b7@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S233555AbjGFGUt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jul 2023 02:20:49 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A632B198B
+        for <cgroups@vger.kernel.org>; Wed,  5 Jul 2023 23:20:48 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55b2ab496ecso380321a12.2
+        for <cgroups@vger.kernel.org>; Wed, 05 Jul 2023 23:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1688624448; x=1691216448;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=054dwjt9BZCou3BvPjMRnfFzZ2wjHCy2lrA2F8To2Yk=;
+        b=a/gZc1hvT7JRiiUYzG1SPVOHiHFMZ5cv81dBONAX0K6rQb/SqodZ/lLZoD6G628ExP
+         YAd7fHKCO8Uce6GfN3NdeaykplGQ29jTP1s1duFpDpYznOqIoHbToAyL5+/e4rjop4px
+         RnYjO1Dq2V76xE62yjTCc5gppCq4Ilyvg6B+wC/at9D5beVGj/dSGIKww8CivxZHgMPs
+         xUAr63iI0RUxB/1CrizQ0kDz4z+hUrxNojnH+C506j0HK6jQWpTT4OiCsEUo2etb1Qaj
+         qq9nOEvhORD0DyWKW/sSLHCUa79qo5POjO0faDZksJV99qlPER3hM1mrmWsqRtzP1voK
+         kuCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688624448; x=1691216448;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=054dwjt9BZCou3BvPjMRnfFzZ2wjHCy2lrA2F8To2Yk=;
+        b=BTIFFieiibU0zfi7hCzubKNuvzzLRO/wcs/w+YP7k/35glEpNeEBp8Uq3EF28nkfXK
+         aHzp3+qt5CzeZHeiWaRzaIOj9UzpXEG5QZ72655zFg2tdc0c3ZBKQwtQR9Qt062D0leJ
+         5kLSHPFEWf7ADC4R0/kz2PD/5wmUFbCe65ZdJrT8jBByXD4+NBVyCBsvxuTC1Xadc8Nz
+         XpWQOsHztsvysDZ4OyhrBOxvo8aTOQJu5WqhMM6Yc8IYjvzt+KUDMBWut/VwsDjuypm6
+         gge62BrrhHMnu+IzNVkx6GSwO7IpM4Q2hjQ+AtQNiV2mpIKpdcnp/exMHmHKlzE1wv4E
+         VaGg==
+X-Gm-Message-State: ABy/qLamtcIAwpBF1wzBmQLMfe23TCY5RsZdLZTRNTiJMVyKswiyMU3D
+        BWKAdfqv9O1q4rT+9LU8t8sKbdh0uqNf9A==
+X-Google-Smtp-Source: APBJJlFzXEYN6IPpBFkmO+8r0LKe3KxYt8mAuNjzTYJLriYpEm63md407jdKnq12s3zBrfw6dE9T/SconNIdSw==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a63:751d:0:b0:553:8668:dc40 with SMTP id
+ q29-20020a63751d000000b005538668dc40mr509175pgc.6.1688624448157; Wed, 05 Jul
+ 2023 23:20:48 -0700 (PDT)
+Date:   Thu, 6 Jul 2023 06:20:45 +0000
+In-Reply-To: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+Message-ID: <20230706062045.xwmwns7cm4fxd7iu@google.com>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     cgroups@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/5/23 01:56, Miaohe Lin wrote:
-> On 2023/7/5 11:14, Waiman Long wrote:
->> On 7/4/23 07:30, Miaohe Lin wrote:
->>> kthread_is_per_cpu() can be called directly without checking whether
->>> PF_KTHREAD is set in task->flags. So remove PF_KTHREAD check to make
->>> code more concise.
->>>
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>    kernel/cgroup/cpuset.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 58e6f18f01c1..601c40da8e03 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -1230,7 +1230,7 @@ static void update_tasks_cpumask(struct cpuset *cs, struct cpumask *new_cpus)
->>>                /*
->>>                 * Percpu kthreads in top_cpuset are ignored
->>>                 */
->>> -            if ((task->flags & PF_KTHREAD) && kthread_is_per_cpu(task))
->>> +            if (kthread_is_per_cpu(task))
->>>                    continue;
->>>                cpumask_andnot(new_cpus, possible_mask, cs->subparts_cpus);
->>>            } else {
->> The initial intention was to ignore only percpu kthreads. The current code likely ignore all the kthreads. Removing the PF_KTHREAD flag, however, may introduce unexpected regression at this point. I would like to hold off for now until more investigation are done.
-> IMHO, the current code will ignore only percpu kthreads:
->    1.If PF_KTHREAD is set in task->flags, this patch doesn't make any difference.
->    2.If PF_KTHREAD is not set in task->flags, kthread_is_per_cpu will *always return false*. So this patch doesn't make any functional change.
->
->      bool kthread_is_per_cpu(struct task_struct *p)
->      {
->          struct kthread *kthread = __to_kthread(p);
-> 	if (!kthread)
-> 		return false;
->          ....
->      }
->
->      static inline struct kthread *__to_kthread(struct task_struct *p)
->      {
-> 	void *kthread = p->worker_private;
-> 	if (kthread && !(p->flags & PF_KTHREAD))
-> 			 ^^^^^^^^^^^^^^^^^^^^^^
-> 			 PF_KTHREAD is not set, so kthread = NULL.
-> 		kthread = NULL;
-> 	return kthread;
->      }
->
-> Or am I miss something? Thanks for comment and review.
+On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou wrote:
+> Hello,
+> 
+> We're seeing CPU load issues with cgroup stats retrieval. I made a
+> public gist with all the details, including the repro code (which
+> unfortunately requires heavily loaded hardware) and some flamegraphs:
+> 
+> * https://gist.github.com/bobrik/5ba58fb75a48620a1965026ad30a0a13
+> 
+> I'll repeat the gist of that gist here. Our repro has the following
+> output after a warm-up run:
+> 
+> completed:  5.17s [manual / mem-stat + cpu-stat]
+> completed:  5.59s [manual / cpu-stat + mem-stat]
+> completed:  0.52s [manual / mem-stat]
+> completed:  0.04s [manual / cpu-stat]
+> 
+> The first two lines do effectively the following:
+> 
+> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.stat
+> /sys/fs/cgroup/system.slice/cpu.stat > /dev/null
+> 
+> The latter two are the same thing, but via two loops:
+> 
+> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/cpu.stat >
+> /dev/null; done
+> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.stat
+> > /dev/null; done
+> 
+> As you might've noticed from the output, splitting the loop into two
+> makes the code run 10x faster. This isn't great, because most
+> monitoring software likes to get all stats for one service before
+> reading the stats for the next one, which maps to the slow and
+> expensive way of doing this.
+> 
+> We're running Linux v6.1 (the output is from v6.1.25) with no patches
+> that touch the cgroup or mm subsystems, so you can assume vanilla
+> kernel.
+> 
+> From the flamegraph it just looks like rstat flushing takes longer. I
+> used the following flags on an AMD EPYC 7642 system (our usual pick
+> cpu-clock was blaming spinlock irqrestore, which was questionable):
+> 
+> perf -e cycles -g --call-graph fp -F 999 -- /tmp/repro
+> 
+> Naturally, there are two questions that arise:
+> 
+> * Is this expected (I guess not, but good to be sure)?
+> * What can we do to make this better?
+> 
+> I am happy to try out patches or to do some tracing to help understand
+> this better.
 
-Yes, you are right. I was that conscious when I reviewed the patch last 
-night :-)
+Hi Ivan,
 
-Reviewed-by: Waiman Long <longman@redhat.com>
+Thanks a lot, as always, for reporting this. This is not expected and
+should be fixed. Is the issue easy to repro or some specific workload or
+high load/traffic is required? Can you repro this with the latest linus
+tree? Also do you see any difference of root's cgroup.stat where this
+issue happens vs good state?
 
+BTW I am away for next month with very limited connectivity, so expect
+slow response.
+
+thanks,
+Shakeel
