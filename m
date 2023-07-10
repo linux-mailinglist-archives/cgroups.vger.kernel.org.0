@@ -2,84 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B9E74DF6A
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 22:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB97874DFD3
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 22:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjGJUiv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Jul 2023 16:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        id S233276AbjGJUvU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Jul 2023 16:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjGJUit (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 16:38:49 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB81195;
-        Mon, 10 Jul 2023 13:38:49 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b9e9765f2cso6389985ad.3;
-        Mon, 10 Jul 2023 13:38:49 -0700 (PDT)
+        with ESMTP id S233421AbjGJUvB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 16:51:01 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0B02720;
+        Mon, 10 Jul 2023 13:48:49 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6686ef86110so2620658b3a.2;
+        Mon, 10 Jul 2023 13:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689021528; x=1691613528;
+        d=gmail.com; s=20221208; t=1689022074; x=1691614074;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AANwmYnIjrNG1ny8ADZlcMF6VhBoiSpdnMPHT/u0j+U=;
-        b=a9vlDHib/vMGEM7aj5ZziEIfVB9053U+yrZ7to7Yd8hR15TTgPRZXqM+aIlJDlWKPY
-         CrJBsGBouks3CfFEd3QRv1Yh7dQm6xNAOqgHHU3VN9DNSaL1+tpwRU5rlXJO9ismFxe4
-         Hq/4DleBOQdSXFD+XjWaDWY5xLt3mvgWf3U05EAxLNXXbn71AVZT33qR+hN/ZA7W5iti
-         j2FlnXR+XTocZTLDWBsxKRyv8pcEf/x0EXhFXyFuz/MUiowyCCXOmCwW+UUzggU47gSN
-         4bXR7XPV2Dca04qA0GJHy7NqllrEwRZPjVMgpFgoNDCPdqsRtEzr3a5JOoqHOKvIgcfJ
-         pOfA==
+        bh=vYfYEgruayK9dexrYha0GdoxGIRikS6sxUciqhG4Qug=;
+        b=fyOST0vDrhBJq00W+LmsNke8ozMtF0Se8rBJWw4JfK0vMMI7TNm7wYtbHLx+Kg6npg
+         /LZewepSK2hN9JNyTN3Z5s/afuJZIt6EQ9W8rMr0pFJ2X5hZHnCpV6v5o2RrOI6aQ/++
+         ju4v9VPbHVmRvYeFYbg+OPt4k19azTSyN2Bv8+jdjN8cv9FY8eeLUmcZuFoMEL4/goXj
+         rbst0fqlGHUtPIJ6MGFhJc2QtCWC3tzVSO5dk6IYVG1y3C1xg+0fwwxv42+LUMScv7XN
+         2Rz9RDWAYiXWsV0eeqQkmzi19vHUGaZC4Uz6iyxx5+g3t1faCh2WHe3Rsh19aPRhRyBM
+         3cLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689021528; x=1691613528;
+        d=1e100.net; s=20221208; t=1689022074; x=1691614074;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AANwmYnIjrNG1ny8ADZlcMF6VhBoiSpdnMPHT/u0j+U=;
-        b=jfc5ZugQLFri2Phl+plsTHes12Ah8ake1U3fyrvQZ6Bq1naVi6PE/3bPjpSijP2PID
-         0JzlE1eJa4WoGHWtZFjw6xqPnepn46RY+6mF5vb8gvP8e9OHZOwL6c0XAqSyqNtvR6zQ
-         4/UgFxGs7QgulX2+Kyo76cBU8jkkUXyl+g3pPV++yAGbleF2sGpvKb1H8xE/L1P/EwBg
-         VTUx1Y6b7jBADEOpo6LaJbnh6U0W5gOsYiceyGa9QYVKxKfsshGGDLAuup8hztn+IJxL
-         RONwK31w54a7YNd/M6mC4zxuz/3f8YPgpZjmDs1Z7jUF0nDn4G0myK2dt42edYruNAwm
-         BwUg==
-X-Gm-Message-State: ABy/qLa5hEe1qNwldFMg7/1YoXEwDykei4Yd9HVQweubANhpaFLYd7af
-        Qc+iO5VRpOQsgCfjOnBBafc=
-X-Google-Smtp-Source: APBJJlEZWuY/msbyREsMLqJ7pXCL+z6hIoLk4MAu/D5lqGRN52QX2Ydh0HXQ3I0i0YHXmtzXIStPwQ==
-X-Received: by 2002:a17:902:da92:b0:1b8:50ae:557 with SMTP id j18-20020a170902da9200b001b850ae0557mr12453868plx.36.1689021528394;
-        Mon, 10 Jul 2023 13:38:48 -0700 (PDT)
+        bh=vYfYEgruayK9dexrYha0GdoxGIRikS6sxUciqhG4Qug=;
+        b=YkaOV/OpbiwmA0aaoTBlJmfx12o5rioImChSbQtdKUlmAvPdaBooGScbAQQDyDDqhv
+         Smim9D3k6Rp+R/Pf4SpYQ/cjioOU9DK77k1L0eUjpYDASsUIhTPaT19axSZ2D5Cxf7r1
+         nj8CH0+w2RSZ8inXN5yBoIYxMZhdu0jwj6RNQsqR2z7lYJ5cEdaEE6McAtR+uKD5JrQY
+         OmqIimXVRXENwpw7NNFFj13lL8ALXM7zj+jBw38P3OTRKFxJ2ruzJIJJWbeISQmq0nOj
+         G/0PMVQcgcdaEiZice3dcH8LrQNhjYU7qni8M7lbk4rxwu5k7k2KqdG74Neyr2ivIjnM
+         eOyg==
+X-Gm-Message-State: ABy/qLaFO0m+axK4ao5fBdrgcEAwb9TSIfYu4qq0lvIaDixArrJHS1sZ
+        RCCAwjG/m50RA+yKj12LJPA=
+X-Google-Smtp-Source: APBJJlHkgRCC+nrutiGrmo0yaYyeLLF1IRn/OVHUr8sd6KM6fC2n2eXgaBym6M+G5U+jvLYRLWP1tA==
+X-Received: by 2002:a05:6a20:431a:b0:111:ee3b:59b1 with SMTP id h26-20020a056a20431a00b00111ee3b59b1mr13845699pzk.2.1689022073961;
+        Mon, 10 Jul 2023 13:47:53 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:e2fe])
-        by smtp.gmail.com with ESMTPSA id y2-20020a1709029b8200b001b891259eddsm300297plp.197.2023.07.10.13.38.47
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902d34c00b001b5640a8878sm307019plk.180.2023.07.10.13.47.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 13:38:48 -0700 (PDT)
+        Mon, 10 Jul 2023 13:47:53 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 10 Jul 2023 10:38:46 -1000
+Date:   Mon, 10 Jul 2023 10:47:52 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>, peterz@infradead.org,
-        lujialin4@huawei.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mingo@redhat.com, ebiggers@kernel.org, oleg@redhat.com,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/2] kernfs: add kernfs_ops.free operation to free
- resources tied to the file
-Message-ID: <ZKxsVuDqdr6IJeyv@slm.duckdns.org>
-References: <CAJuCfpF=DjwpWuhugJkVzet2diLkf8eagqxjR8iad39odKdeYQ@mail.gmail.com>
- <20230628-spotten-anzweifeln-e494d16de48a@brauner>
- <ZJx1nkqbQRVCaKgF@slm.duckdns.org>
- <CAJuCfpEFo6WowJ_4XPXH+=D4acFvFqEa4Fuc=+qF8=Jkhn=3pA@mail.gmail.com>
- <2023062845-stabilize-boogieman-1925@gregkh>
- <CAJuCfpFqYytC+5GY9X+jhxiRvhAyyNd27o0=Nbmt_Wc5LFL1Sw@mail.gmail.com>
- <ZJyZWtK4nihRkTME@slm.duckdns.org>
- <CAJuCfpFKjhmti8k6OHoDHAu6dPvqP0jn8FFdSDPqmRfH97bkiQ@mail.gmail.com>
- <CAJuCfpH3JcwADEYPBhzUcunj0dcgYNRo+0sODocdhbuXQsbsUQ@mail.gmail.com>
- <20230630-fegefeuer-urheber-0a25a219520d@brauner>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix obsolete comment above for_each_css()
+Message-ID: <ZKxueJGs6ZSgOWWV@slm.duckdns.org>
+References: <20230627114059.1310936-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230630-fegefeuer-urheber-0a25a219520d@brauner>
+In-Reply-To: <20230627114059.1310936-1-linmiaohe@huawei.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -91,30 +73,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Fri, Jun 30, 2023 at 10:21:17AM +0200, Christian Brauner wrote:
-> What I'm mostly reacting to is that there's a kernfs_ops->release()
-> method which mirrors f_op->release() but can be called when there are
-> still users which is counterintuitive for release semantics. And that
-> ultimately caused this UAF issue which was rather subtle given how long
-> it took to track down the root cause.
+On Tue, Jun 27, 2023 at 07:40:59PM +0800, Miaohe Lin wrote:
+> cgroup_tree_mutex is removed since commit 8353da1f91f1 ("cgroup: remove
+> cgroup_tree_mutex"), update corresponding comment.
 > 
-> A rmdir() isn't triggering a f_op->release() if there are still file
-> references but it's apparently triggering a kernfs_ops->release(). It
-> feels like this should at least be documented in struct kernfs_ops...
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Oh yeah, better documentation would be great. The core part here is that
-kernfs is the layer which is implementing the revoke-like semantics
-specifically to allow kernfs users (the ones that implement kernfs_ops) can
-synchronously abort their involvement at will. So, from those users' POV,
-->release is being called when it should be. The problem here was that PSI
-was mixing objects from two layers with different lifetime rules, which
-obviously causes issues.
-
-As Suren's new fix shows, the fix is just using the matching object whose
-lifetime is governed by kernfs. While this shows up in a subtle way for
-poll, for all other operations, this is almost completely transprent.
+Applied to cgroup/for-6.6.
 
 Thanks.
 
