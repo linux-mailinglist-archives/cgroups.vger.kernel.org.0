@@ -2,88 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 468DF74DE51
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 21:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D6874DE56
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 21:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbjGJTkG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Jul 2023 15:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        id S229997AbjGJTka (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Jul 2023 15:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjGJTkE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 15:40:04 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDF69E;
-        Mon, 10 Jul 2023 12:40:03 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b8ad907ba4so24106095ad.0;
-        Mon, 10 Jul 2023 12:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689018003; x=1691610003;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ivhLVKhACKnZhgX7GHkfgbJfc6Z11Wv6X0HCdw2KFv4=;
-        b=ig89NSSNCjVNIUtp+LTVjG7HGB9E2wmkZykr4cZYhYKHnJFmCdAGyPdHPq24XHeZ5t
-         hnJlw4JRuHka8VDdhWnaF6l4pvXy5vYPzk1YOJk0BMhyTBtJl/WAso1qUD9w8T5i4sfD
-         sP+V8Z0/l0dO+K6u8JrMmWsvjD3pq2ldsDSfS21zyooQOmjDkGzgZgoFFKiAVTodTlLf
-         HRa0L0HYZNmrg8tPBz/z9BB5+lD7zUb1TCDiTowsYQreCy4xRFPUtFrQGDjHM8UiLiFf
-         hK+bIaVW6ZCjCO7gDPGpGf0WMVGRe9PcCiGNrl7BvNDMKJNF3PA7fflK5i2ggufGx7if
-         /4pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689018003; x=1691610003;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ivhLVKhACKnZhgX7GHkfgbJfc6Z11Wv6X0HCdw2KFv4=;
-        b=i5K4unldR3lyuca9fB7M+fKUv2qsexgjs69w8CY+tsZEHqf7ZJpkrSeAY0tUaWv7aR
-         UGtpnaikLxycWrfdy1M/Z+1UxU5EFkqlv4FGrCb2btKg5gig4motsbznpxuWkPHFZtX4
-         PYCBVMHP3AMJP4XTibLsu5B995i8gvmjrVh6T3ujLoE6W5yJHTsYx3l8HpPsVmdCg9PA
-         6fUfRGDJtVvL6Ib1Xucz3INdFSv9q0X+MTJyJOpVCns1pzHMvQjkyuXZtmv10XndYPP6
-         WqxTRicNdrkI3V5NV4tc5ZjMY9nzY29caFNOac0xxSTerMeWe4OzcYiPmZNS2vJxHyG2
-         s5bA==
-X-Gm-Message-State: ABy/qLYD+iuwS2YZKIlxLRR/pbcRVryaopU7v6sDCGo6Ytok6wNDaIIv
-        VwDelNd1EoTljVG/mrK9wGk=
-X-Google-Smtp-Source: APBJJlGhJ5LBKMDr4CCM3ZThpk48jeo5LFLqFMRq3t3f7w/reTZDgvC443zAHkPiDzeWQii5dncJUQ==
-X-Received: by 2002:a17:903:1110:b0:1b8:4199:edfb with SMTP id n16-20020a170903111000b001b84199edfbmr12883806plh.25.1689018003070;
-        Mon, 10 Jul 2023 12:40:03 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:e2fe])
-        by smtp.gmail.com with ESMTPSA id z4-20020a1709027e8400b001b3acbde983sm290359pla.3.2023.07.10.12.40.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 12:40:02 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 10 Jul 2023 09:40:01 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: remove unneeded return value of
- cgroup_rm_cftypes_locked()
-Message-ID: <ZKxeke6SfBe37Jso@slm.duckdns.org>
-References: <20230701073856.2095425-1-linmiaohe@huawei.com>
+        with ESMTP id S229575AbjGJTk2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 15:40:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DC7115;
+        Mon, 10 Jul 2023 12:40:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DE3D611BD;
+        Mon, 10 Jul 2023 19:40:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F694C433C9;
+        Mon, 10 Jul 2023 19:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689018026;
+        bh=yuEwCfsCHkzRGHioN9r3RJD8uvoHEkZZ+tM35dQuu0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H9ezdzpUTWP9gByiwB8dcAzwVtqLCIujEEl7pU3BLP9lsZMBRda+6wdyCdvFVU1+a
+         tb6xg1l7zOEtS0dUTiV6qT70egINkR4wmWENP3QeVGCrWtplajD48EtnXIckshPVMd
+         M58PpjbMwJ+E0BNXJtPj85WyAjGLKBtzTxByFuCU=
+Date:   Mon, 10 Jul 2023 21:40:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in
+ fsid
+Message-ID: <2023071039-negate-stalemate-6987@gregkh>
+References: <20230710183338.58531-1-ivan@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230701073856.2095425-1-linmiaohe@huawei.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230710183338.58531-1-ivan@cloudflare.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jul 01, 2023 at 03:38:56PM +0800, Miaohe Lin wrote:
-> The return value of cgroup_rm_cftypes_locked() is always 0. So remove
-> it to simplify the code. No functional change intended.
+On Mon, Jul 10, 2023 at 11:33:38AM -0700, Ivan Babrou wrote:
+> The following two commits added the same thing for tmpfs:
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> * commit 2b4db79618ad ("tmpfs: generate random sb->s_uuid")
+> * commit 59cda49ecf6c ("shmem: allow reporting fanotify events with file handles on tmpfs")
+> 
+> Having fsid allows using fanotify, which is especially handy for cgroups,
+> where one might be interested in knowing when they are created or removed.
+> 
+> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+> ---
+>  fs/kernfs/mount.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+> index d49606accb07..930026842359 100644
+> --- a/fs/kernfs/mount.c
+> +++ b/fs/kernfs/mount.c
+> @@ -16,6 +16,8 @@
+>  #include <linux/namei.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/exportfs.h>
+> +#include <linux/uuid.h>
+> +#include <linux/statfs.h>
+>  
+>  #include "kernfs-internal.h"
+>  
+> @@ -45,8 +47,15 @@ static int kernfs_sop_show_path(struct seq_file *sf, struct dentry *dentry)
+>  	return 0;
+>  }
+>  
+> +int kernfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+> +{
+> +	simple_statfs(dentry, buf);
+> +	buf->f_fsid = uuid_to_fsid(dentry->d_sb->s_uuid.b);
+> +	return 0;
+> +}
+> +
+>  const struct super_operations kernfs_sops = {
+> -	.statfs		= simple_statfs,
+> +	.statfs		= kernfs_statfs,
+>  	.drop_inode	= generic_delete_inode,
+>  	.evict_inode	= kernfs_evict_inode,
+>  
+> @@ -351,6 +360,8 @@ int kernfs_get_tree(struct fs_context *fc)
+>  		}
+>  		sb->s_flags |= SB_ACTIVE;
+>  
+> +		uuid_gen(&sb->s_uuid);
 
-Applied to cgroup/for-6.6. Please feel free to follow up with the comment
-addition Michal suggested.
+Since kernfs has as lot of nodes (like hundreds of thousands if not more
+at times, being created at boot time), did you just slow down creating
+them all, and increase the memory usage in a measurable way?
 
-Thanks.
+We were trying to slim things down, what userspace tools need this
+change?  Who is going to use it, and what for?
 
--- 
-tejun
+There were some benchmarks people were doing with booting large memory
+systems that you might want to reproduce here to verify that nothing is
+going to be harmed.
+
+thanks,
+
+greg k-h
