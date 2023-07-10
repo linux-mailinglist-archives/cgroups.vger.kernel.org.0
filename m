@@ -2,111 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3130074D506
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 14:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC6474D940
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 16:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjGJMNy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Jul 2023 08:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S229702AbjGJOo6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Jul 2023 10:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjGJMNx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 08:13:53 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB01E103
-        for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 05:13:50 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-579dfae6855so55563907b3.1
-        for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 05:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688991229; x=1691583229;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/2RlxWlOhJbOFxHHiWp08TsyEu+zJrfP5HNHS/WQHJU=;
-        b=ZrtuuJCsjTfmUcUsHuz0dbtW+Zln8RaxXmvyy4YP4nL0yXeDl8sIW3TDHvoQ5gOCOW
-         OFaUKa/Sw1QdsX2RFD4AqJPwJdQrLH36mU6kZkasRaXfmkzgpK30dx/eN4qHAPyKjV7G
-         PFYqzVdupr81Biq5vlH8jdzv1c6bgX8w0xQqe8inWtiOygOlGUJ3zk+PEoqe3MakIioR
-         bcCr3D+fdRgokSxgRLnZN9/sA57lVRMTowDG6YyIcoydqmB1W694766r2e/UDvntf7vb
-         8277MLycSmQ0fJSyf8JTlKlXAKfWgtKsv5vkNVvgx0MY/7/jSvHXqzLsPP2NWfXKcpp5
-         FmKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688991229; x=1691583229;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/2RlxWlOhJbOFxHHiWp08TsyEu+zJrfP5HNHS/WQHJU=;
-        b=hwW3docOtf0iPEuXrESe/wB1eX8OSNaOWaT3IFxgxrg8Zs6v7/Np+ip9zn1dNO3O9k
-         D84z3hzZVcMjYX+rHhpKpTpRqtHZvs/AZlZPJCGcfCYao04Gq/OubaPQ7hGjqQo4z54J
-         8AAJmtPENkhg0BaqpniroONDj8hyLSitUktjA275X3/WQXwfZIg26sLiCeOxNcoHxuUI
-         y0QmDsXwg1er1/iz8Dt0z3YX1LdibTaOQ16UCIynE/ZiFMaysbLIiN+E5bRnfhAc7lyl
-         vC1fXHJ7bCiqRhIK3jle73edrBY9/3oP637senH+tqH9w7PU0y+9HeT/H2lplZ1j81Ar
-         tLOA==
-X-Gm-Message-State: ABy/qLZZDC60be4aIaPOXNOpb1wedaPiVIZ8+WoKrFgegiwRnp08jUcv
-        lLqabLtQU6ocj0xgEch6wXNBnUf/sy/ReuPs6A==
-X-Google-Smtp-Source: APBJJlHLhnhf0QhnNJYLu5xY3iuyH8X80gNbJyEcay2M4TUpLhQYZO6okguN6M7sy9uPhQ5hHZrKH5EbtXGWr1VIEKQ=
-X-Received: by 2002:a81:4f58:0:b0:576:93f1:d118 with SMTP id
- d85-20020a814f58000000b0057693f1d118mr12033707ywb.2.1688991229673; Mon, 10
- Jul 2023 05:13:49 -0700 (PDT)
+        with ESMTP id S229469AbjGJOo5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 10:44:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8543DC3;
+        Mon, 10 Jul 2023 07:44:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 38B7721AE8;
+        Mon, 10 Jul 2023 14:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689000295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2dSDCIryhoqYz8ZS1bBqRNqc86fubisnGZKJq77QBlA=;
+        b=ZOh9PSn4qAb49Y/vRW4RvILvHVqDNm8r7BSRKjNFgqVMKsAHnK+MLjUCMjalAB1ujYKCXP
+        VH9Y13+ev6/vDr7W357nCLvnoVwnsFHEaGMUZGMQZXiDaIpzdjn2cZa1YiBoRWsDx1qnAW
+        cfgvONSAD46IH0pcuEFK25CaUCcA8C8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0743A13A05;
+        Mon, 10 Jul 2023 14:44:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mijkAGcZrGSrSgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 10 Jul 2023 14:44:55 +0000
+Date:   Mon, 10 Jul 2023 16:44:53 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     cgroups@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+Message-ID: <gbqumqkxixvvrbbqh55rw6thgfa67tw2kkcuauc4xj5t6pnivd@3yfkokngo43w>
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
 MIME-Version: 1.0
-Reply-To: salkavar78@gmail.com
-Sender: penelopeliam84@gmail.com
-Received: by 2002:a05:7108:520d:b0:2f8:6076:7715 with HTTP; Mon, 10 Jul 2023
- 05:13:49 -0700 (PDT)
-From:   "Mr. Sal Kavar" <salkavar78@gmail.com>
-Date:   Mon, 10 Jul 2023 05:13:49 -0700
-X-Google-Sender-Auth: iLm7vyq_3M__xJ1K5hJt6NJPdR0
-Message-ID: <CAFeAMsRhh7t-jr-dq7aCDgu1uJ7vkfBO9jdbQymSDWnYLrfzOQ@mail.gmail.com>
-Subject: Yours Faithful,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MILLION_HUNDRED,
-        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="b77s5ccberk4hrjr"
+Content-Disposition: inline
+In-Reply-To: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2607:f8b0:4864:20:0:0:0:1133 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5045]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [penelopeliam84[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [salkavar78[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [penelopeliam84[at]gmail.com]
-        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  1.6 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  3.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-I assume you and your family are in good health.
 
-Overdue and unclaimed sum of $15.5m, (Fifteen Million Five Hundred
-Thousand Dollars Only) when the account holder suddenly passed on, he
-left no beneficiary who would be entitled to the receipt of this fund.
+--b77s5ccberk4hrjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yours Faithful,
-Mr.Sal Kavar.
+Hello.
+
+On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou <ivan@cloudflare.com>=
+ wrote:
+> As you might've noticed from the output, splitting the loop into two
+> makes the code run 10x faster.
+
+That is curious.
+
+> We're running Linux v6.1 (the output is from v6.1.25) with no patches
+> that touch the cgroup or mm subsystems, so you can assume vanilla
+> kernel.
+
+Have you watched for this on older kernels too?
+
+> I am happy to try out patches or to do some tracing to help understand
+> this better.
+
+I see in your reproducer you tried swapping order of controllers
+flushed.=20
+Have you also tried flushing same controller twice (in the inner loop)?
+(Despite the expectation is that it shouldn't be different from half the
+scenario where ran two loops.)
+
+Thanks,
+Michal
+
+--b77s5ccberk4hrjr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZKwZYwAKCRAGvrMr/1gc
+jkiaAP0cMXwbvKMrd3UFe9bkgPZXxl1WeME+caCgKNQqMZaS1AD/eGWbOeKD5V7A
+KBibSziS+oGtgU+Wg7XvKGBFaasJZA4=
+=jPdL
+-----END PGP SIGNATURE-----
+
+--b77s5ccberk4hrjr--
