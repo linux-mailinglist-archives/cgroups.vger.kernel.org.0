@@ -2,71 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 233AB74CEDE
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 09:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3130074D506
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jul 2023 14:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjGJHrh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Jul 2023 03:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
+        id S231207AbjGJMNy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Jul 2023 08:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjGJHrc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 03:47:32 -0400
-X-Greylist: delayed 420 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 10 Jul 2023 00:47:28 PDT
-Received: from mail.venturelinkbiz.com (mail.venturelinkbiz.com [51.195.119.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A101AEB
-        for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 00:47:28 -0700 (PDT)
-Received: by mail.venturelinkbiz.com (Postfix, from userid 1002)
-        id 080F544FDA; Mon, 10 Jul 2023 07:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkbiz.com;
-        s=mail; t=1688974824;
-        bh=Mjfq+hZZ0+rPTC06HjjASvlnsTMgj1yAndWxi/OAu2M=;
-        h=Date:From:To:Subject:From;
-        b=rV8fQlR8BjgHENYK8KzE6bOKI5UKL0Dxh+O6mLZxUPqTLkcmHFMKYCJ354Sipve0T
-         LD305yjTK6FiUyszZHGfJmYlhecqBdZYBrc9mn3AatxZmWxp3Ax/0R9MVhDEWk9BAA
-         lGxiYngRyNAxaaQSx6KpkUWxT6lPBcng41oXaDXToqa/ue3hoR5yha5jBPWnQCyX2r
-         Y6Av6HEbq29+TW2+lyDibj0KRwDZAggmRiOF7KSGHZl8S2d2KJhynj/zsXLa06l5sO
-         JaknI0LS4WHyzPGF+72I+Q0X3N2UlMoIbVJJWGsPD+euWmQpTrvUX1J1BB4TSUka5V
-         ikc/2+TCcx68A==
-Received: by venturelinkbiz.com for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 07:40:22 GMT
-Message-ID: <20230710064520-0.1.13.2n3n.0.bjp3uf124f@venturelinkbiz.com>
-Date:   Mon, 10 Jul 2023 07:40:22 GMT
-From:   "Michal Rmoutil" <michal.rmoutil@venturelinkbiz.com>
-To:     <cgroups@vger.kernel.org>
-Subject: =?UTF-8?Q?Syst=C3=A9m_sledov=C3=A1n=C3=AD_a_optimalizace_v=C3=BDroby?=
-X-Mailer: mail.venturelinkbiz.com
+        with ESMTP id S230300AbjGJMNx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 08:13:53 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB01E103
+        for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 05:13:50 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-579dfae6855so55563907b3.1
+        for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 05:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688991229; x=1691583229;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=/2RlxWlOhJbOFxHHiWp08TsyEu+zJrfP5HNHS/WQHJU=;
+        b=ZrtuuJCsjTfmUcUsHuz0dbtW+Zln8RaxXmvyy4YP4nL0yXeDl8sIW3TDHvoQ5gOCOW
+         OFaUKa/Sw1QdsX2RFD4AqJPwJdQrLH36mU6kZkasRaXfmkzgpK30dx/eN4qHAPyKjV7G
+         PFYqzVdupr81Biq5vlH8jdzv1c6bgX8w0xQqe8inWtiOygOlGUJ3zk+PEoqe3MakIioR
+         bcCr3D+fdRgokSxgRLnZN9/sA57lVRMTowDG6YyIcoydqmB1W694766r2e/UDvntf7vb
+         8277MLycSmQ0fJSyf8JTlKlXAKfWgtKsv5vkNVvgx0MY/7/jSvHXqzLsPP2NWfXKcpp5
+         FmKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688991229; x=1691583229;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/2RlxWlOhJbOFxHHiWp08TsyEu+zJrfP5HNHS/WQHJU=;
+        b=hwW3docOtf0iPEuXrESe/wB1eX8OSNaOWaT3IFxgxrg8Zs6v7/Np+ip9zn1dNO3O9k
+         D84z3hzZVcMjYX+rHhpKpTpRqtHZvs/AZlZPJCGcfCYao04Gq/OubaPQ7hGjqQo4z54J
+         8AAJmtPENkhg0BaqpniroONDj8hyLSitUktjA275X3/WQXwfZIg26sLiCeOxNcoHxuUI
+         y0QmDsXwg1er1/iz8Dt0z3YX1LdibTaOQ16UCIynE/ZiFMaysbLIiN+E5bRnfhAc7lyl
+         vC1fXHJ7bCiqRhIK3jle73edrBY9/3oP637senH+tqH9w7PU0y+9HeT/H2lplZ1j81Ar
+         tLOA==
+X-Gm-Message-State: ABy/qLZZDC60be4aIaPOXNOpb1wedaPiVIZ8+WoKrFgegiwRnp08jUcv
+        lLqabLtQU6ocj0xgEch6wXNBnUf/sy/ReuPs6A==
+X-Google-Smtp-Source: APBJJlHLhnhf0QhnNJYLu5xY3iuyH8X80gNbJyEcay2M4TUpLhQYZO6okguN6M7sy9uPhQ5hHZrKH5EbtXGWr1VIEKQ=
+X-Received: by 2002:a81:4f58:0:b0:576:93f1:d118 with SMTP id
+ d85-20020a814f58000000b0057693f1d118mr12033707ywb.2.1688991229673; Mon, 10
+ Jul 2023 05:13:49 -0700 (PDT)
 MIME-Version: 1.0
+Reply-To: salkavar78@gmail.com
+Sender: penelopeliam84@gmail.com
+Received: by 2002:a05:7108:520d:b0:2f8:6076:7715 with HTTP; Mon, 10 Jul 2023
+ 05:13:49 -0700 (PDT)
+From:   "Mr. Sal Kavar" <salkavar78@gmail.com>
+Date:   Mon, 10 Jul 2023 05:13:49 -0700
+X-Google-Sender-Auth: iLm7vyq_3M__xJ1K5hJt6NJPdR0
+Message-ID: <CAFeAMsRhh7t-jr-dq7aCDgu1uJ7vkfBO9jdbQymSDWnYLrfzOQ@mail.gmail.com>
+Subject: Yours Faithful,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: venturelinkbiz.com]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [51.195.119.142 listed in zen.spamhaus.org]
-        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+X-Spam-Status: Yes, score=5.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MILLION_HUNDRED,
+        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
         *      DNSWL was blocked.  See
         *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
         *      for more information.
-        *      [51.195.119.142 listed in list.dnswl.org]
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3899]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: venturelinkbiz.com]
+        *      [2607:f8b0:4864:20:0:0:0:1133 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5045]
         * -0.0 SPF_PASS SPF: sender matches SPF record
         *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [penelopeliam84[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [salkavar78[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [penelopeliam84[at]gmail.com]
+        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
         * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
         * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
         *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
         * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
         *      author's domain
         * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  1.6 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  3.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
 X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,22 +102,11 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no
+I assume you and your family are in good health.
 
-Zn=C3=A1te syst=C3=A9m, kter=C3=BD nejen hl=C3=ADd=C3=A1, ale i optimaliz=
-uje v=C3=BDrobu a p=C5=99in=C3=A1=C5=A1=C3=AD st=C3=A1l=C3=BD p=C5=99=C3=AD=
-jem?
+Overdue and unclaimed sum of $15.5m, (Fifteen Million Five Hundred
+Thousand Dollars Only) when the account holder suddenly passed on, he
+left no beneficiary who would be entitled to the receipt of this fund.
 
-D=C3=ADky nejnov=C4=9Bj=C5=A1=C3=ADm technologi=C3=ADm a anal=C3=BDze dat=
- na=C5=A1e =C5=99e=C5=A1en=C3=AD identifikuje oblasti optimalizace, zv=C3=
-=BD=C5=A1en=C3=AD efektivity a sn=C3=AD=C5=BEen=C3=AD n=C3=A1klad=C5=AF. =
-Na=C5=A1i klienti zaznamenali n=C3=A1r=C5=AFst p=C5=99=C3=ADjm=C5=AF v pr=
-=C5=AFm=C4=9Bru o 20 % a dnes si to m=C5=AF=C5=BEete vyzkou=C5=A1et na 60=
- dn=C3=AD zdarma.
-
-Pokud chcete dal=C5=A1=C3=AD podrobnosti, odpov=C4=9Bzte pros=C3=ADm na k=
-ontaktn=C3=AD =C4=8D=C3=ADslo.
-
-
-Pozdravy
-Michal Rmoutil
+Yours Faithful,
+Mr.Sal Kavar.
