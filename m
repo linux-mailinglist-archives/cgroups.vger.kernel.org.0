@@ -2,49 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FD874E2D4
-	for <lists+cgroups@lfdr.de>; Tue, 11 Jul 2023 02:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED7074E2E3
+	for <lists+cgroups@lfdr.de>; Tue, 11 Jul 2023 03:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjGKAyN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Jul 2023 20:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
+        id S230407AbjGKBAM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Jul 2023 21:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbjGKAyL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 20:54:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2B5E47
-        for <cgroups@vger.kernel.org>; Mon, 10 Jul 2023 17:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689036803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yXHDaaTzSJPadcWtu/mPoLh+iNZCEntncKhGlBrnF84=;
-        b=bKm9z/w03rNDRAQyuLBohISaGro1skCqxi+JrxbyUnY+CpiyHd+0MhqYF5VqfNgzm9jDCS
-        VVAnaKARSnf5cuykTpMEzGIXJgHLzrXJZuaM9uPdy8D01vc4Xm52NZflCIEdIOdpUgxY2q
-        vffEChkmJ4Zpbe0ErgJ6yJTuMtOBDpI=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-68-DGbuhrNnNe6H7hBfy_gx5A-1; Mon, 10 Jul 2023 20:53:20 -0400
-X-MC-Unique: DGbuhrNnNe6H7hBfy_gx5A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E094B384CC49;
-        Tue, 11 Jul 2023 00:53:19 +0000 (UTC)
-Received: from [10.22.18.171] (unknown [10.22.18.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E8F09200A7CA;
-        Tue, 11 Jul 2023 00:53:18 +0000 (UTC)
-Message-ID: <a429e60a-fc4f-60b0-3978-71596fed9542@redhat.com>
-Date:   Mon, 10 Jul 2023 20:53:18 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v4 8/9] cgroup/cpuset: Documentation update for partition
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S230387AbjGKBAL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jul 2023 21:00:11 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F23C0;
+        Mon, 10 Jul 2023 18:00:10 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b8bbce9980so33173465ad.2;
+        Mon, 10 Jul 2023 18:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689037210; x=1691629210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iOeAkeIhbm63YH/6Gh4MSzxEDTnuHBi8ou4wGcdJFeM=;
+        b=QCUFSSTuYfpZ4zZwxQRpvBHWwVt6JX2r4IaQWToH7ZnW53vdjoDh7gN1os71joy4CM
+         WCD33PWj9Qn9jM4ckCcNXsxJ1CPVRzuOTB7VAabbKy3CGCk6p42MNquaIwRFww9tP8ax
+         dn2jG4J5piZFk/emDQSQXbHAptZU0jKpXztCYa3P0qBfDSxsP3w+lP/kWJKSqY9THOUt
+         W8pdf4e7FFt9H3itZ3WqcjwYEevNXyoCqCwspcLeDZqAH6AabUSFw1LNx6R+SpiwMhga
+         o6nfXDNIU/o3RuD4GS2JH4AYYH9Hv+uUMJeCCMvJrPVRrPtI/Rj7HSH51WjI4OxP1czG
+         ve7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689037210; x=1691629210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iOeAkeIhbm63YH/6Gh4MSzxEDTnuHBi8ou4wGcdJFeM=;
+        b=PmGZb5/bFJfwBhr1mxLGOPQbLy1xGygcxCGYXDX/g3Z/Sfvu8OqxRfaBQxNdqxlXIG
+         LphPWAA4yNIY1NgsT2We1FqTe7ruYbK+bBZI7yAN99M/DLAMI8rMTdyweOU/fOTHlihs
+         jxkX79QKQDjSTjdOxqeYp5FeTNrfYC8nJgMU8yt33LCHyRZbhIgMD3UrMiGkPK1iMqd3
+         93vCxdBpM+C6GnoFjirwNJxXqISAMfWoZv/Q3/xQ2C7MgFrfwV7SC3k7rIrp05LHRkWZ
+         SKwiDsnygGn+5VXQ8I+jm4Fj8/G29M/sF58YJwm5pMFuL/HSW946lEshIHeCz3UP3/Xk
+         JY7g==
+X-Gm-Message-State: ABy/qLbguVrPQa4+r2YpIZ5SQW6F3nIYXUGV0BebX3UuMeOFrSV8RG5K
+        Uu37sRn/mq83h5w99g/YWmk=
+X-Google-Smtp-Source: APBJJlF4tqyKaxe6FUTxBOKdQXS/veWIutnyD6e4IB24oquduS6Evm4yVFhziXaM6ohvz/uEaHf4YA==
+X-Received: by 2002:a17:902:b110:b0:1b8:9cf2:35b0 with SMTP id q16-20020a170902b11000b001b89cf235b0mr9467584plr.41.1689037209850;
+        Mon, 10 Jul 2023 18:00:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:e2fe])
+        by smtp.gmail.com with ESMTPSA id bg4-20020a1709028e8400b001b53be3d942sm482388plb.232.2023.07.10.18.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Jul 2023 18:00:09 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 10 Jul 2023 15:00:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
 Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -58,20 +66,19 @@ Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Ryan Phillips <rphillips@redhat.com>,
         Brent Rowsell <browsell@redhat.com>,
         Peter Hunt <pehunt@redhat.com>, Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v4 0/9] cgroup/cpuset: Support remote partitions
+Message-ID: <ZKypl8cr3jxiZ6bo@slm.duckdns.org>
 References: <20230627143508.1576882-1-longman@redhat.com>
- <20230627143508.1576882-9-longman@redhat.com>
- <ZKx4ZJowRhRtjZxB@slm.duckdns.org>
- <6d5aee58-f558-868c-76e0-0b58f8332110@redhat.com>
- <ZKyljsbJgLNpsBLI@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZKyljsbJgLNpsBLI@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+ <ZKxzTrN2yiKfXndI@slm.duckdns.org>
+ <305038a0-1db8-3d0d-3447-48be1f03d41c@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <305038a0-1db8-3d0d-3447-48be1f03d41c@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,27 +86,35 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/10/23 20:42, Tejun Heo wrote:
-> Hello,
->
-> On Mon, Jul 10, 2023 at 08:21:43PM -0400, Waiman Long wrote:
->>> Wouldn't a partition root's cpus.exclusive always contain all of the CPUs in
->>> its cpus? Would it make sense for cpus.exclusive to be different from .cpus?
->> In auto-filled case, it should be the same as cpuset.cpus. I will clarify
->> that in the documentation. Thanks for catching that.
-> When the user writes something to the file, what would it mena if the
-> content differs from the cgroup's cpuset.cpus?
+Hello,
 
-For local partition, it doesn't make sense to have a 
-cpust.cpus.exclusive that is not the same as cpuset.cpus as it 
-artificially reduce the set of CPUs that can be used in a partition. In 
-the case of a remote partition, the ancestor cgroups of a remote 
-partition should have cpuset.cpus.exclusive smaller than cpuset.cpus so 
-that when the remote partition is enabled, there are still CPUs left to 
-be used by those cgroups. In essence, the cpuset.cpus.exclusive 
-represents the CPUs that may not be usable anymore if they are taken by 
-a remote partition downstream.
+On Mon, Jul 10, 2023 at 08:33:11PM -0400, Waiman Long wrote:
+> I would like to clarify that withdrawal of CPUs from cpuset.cpus.exclusive
+> is always allowed. It is the addition of CPUs not presents in cpuset.cpus
+> that will be rejected. The invariant is that cpuset.cpus.exclusive must
+> always be a subset of cpuset.cpus. Any change that violates this rule is not
+> allowed. Alternately I can silently dropped the offending CPUs without
+> returning an error, but that may surprise users.
 
-Cheers,
-Longman
+Right, that'd be confusing.
 
+> BTW, withdrawal of CPUs from cpuset.cpus will also withdraw them from
+> cpuset.cpus.exclusive, if present. This allows the partition code to use
+> cpuset.cpus.exclusive directly to determine the allowable exclusive CPUs
+> without doing an intersection with cpuset.cpus each time it is used.
+
+This is kinda confusing too, I think. Changing cpuset.cpus in an ancestor
+doesn't affect the contents of the descendants' cpuset.cpus files but would
+directly modify the contents of their cpuset.cpus.exclusive files.
+
+There's some inherent friction because cpuset.cpus separates configuration
+(cpuset.cpus) and the current state (cpuset.cpus.effective) while
+cpuset.cpus.exclusive is trying to do both in the same interface file. When
+the two behavior modes collide, it becomes rather confusing. Do you think
+it'd make sense to make cpus.exclusive follow the same pattern as
+cpuset.cpus?
+
+Thanks.
+
+-- 
+tejun
