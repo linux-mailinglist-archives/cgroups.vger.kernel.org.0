@@ -2,151 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCB374EF32
-	for <lists+cgroups@lfdr.de>; Tue, 11 Jul 2023 14:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D3074F108
+	for <lists+cgroups@lfdr.de>; Tue, 11 Jul 2023 16:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbjGKMms (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jul 2023 08:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
+        id S233210AbjGKOEJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jul 2023 10:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjGKMmr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jul 2023 08:42:47 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DA91705
-        for <cgroups@vger.kernel.org>; Tue, 11 Jul 2023 05:42:39 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6682909acadso3038353b3a.3
-        for <cgroups@vger.kernel.org>; Tue, 11 Jul 2023 05:42:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689079359; x=1691671359;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WF8p9HwwgSPuKR34SMZuqSQ7aAssq/odh5sAxqcKAUo=;
-        b=PfObz486Wz+B8XCRMJmNpdOHd0bdAenCGoIFIrS0nn6pqgOGHIHHLLi/E7y4xelPQs
-         oV1L5cDtGQ4gFHo4+itEHIwzUsNI9UXysv8UU/Pza3CLcUbZHUcxkt1As11YdvxnX8RF
-         H17ZVvTu4nrEDSvdfN39NUxyIGNfeoTwnjdkSADFNYnqT8BI11t6wbWjHwH7o/9kadrH
-         e5S5yw3IMsz3lksjyY+6iOF1Q4m7p0LVb07p4UTqbAdR2d9VI1K3CWAVsuHGT4SgzzBo
-         xLZVs2ZfUmoYmSJPyCtnkjpSavzGDmGYFi8eCIFGc6qahboTah/quQSujY0SX5PCPa3e
-         hfRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689079359; x=1691671359;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WF8p9HwwgSPuKR34SMZuqSQ7aAssq/odh5sAxqcKAUo=;
-        b=ccCwDC/F0l2XNIAi43UdFcqPWXTlT4daBKzNbHhm5UmIgCTdCBN7NE+FaJO1cEMPiv
-         q41IT3XMHO0xbpZOXbUpxFlsL73Ud5E1BNGixVdjuFqVWZiXRDvM+oPO1Y7WPVpoQhJs
-         RztCrhXcLdhZFo/0nbKLYEDYtulg3aMB79ofL1/qdMnCMJNAQO/YakoaQwT6MGke/XnT
-         H9/HkWG8wHNDP+cyaY+HZmj8t1i69dwK/XljDZ/8Nr89Q38xJlGMzOCGv/C5AXA32fVt
-         3qKnikQkKBZyxjNt9Kn2s0ZSF1g+IlJlXtViETyvyVt219JkA1PjPpMEZuqDARYGtYkV
-         uWgg==
-X-Gm-Message-State: ABy/qLZ1hu9i9P8NB1R01uJfPYoQMApi0wePHLONGR7SJiujc8qQeXFr
-        sa2wKOCxNf8ASwCzfo7i19Lnlg==
-X-Google-Smtp-Source: APBJJlF8Ng7++YijKQqg29ZCVWXJRwBhX6TmRTz/uJVTeJyWO9yu17EmSQrDts1Z+LLhsS5GxNFl2g==
-X-Received: by 2002:a05:6a20:1456:b0:12d:d17d:c811 with SMTP id a22-20020a056a20145600b0012dd17dc811mr13827670pzi.21.1689079358984;
-        Tue, 11 Jul 2023 05:42:38 -0700 (PDT)
-Received: from C02DV8HUMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d27-20020a63735b000000b0055c0508780asm1512222pgn.73.2023.07.11.05.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 05:42:38 -0700 (PDT)
-From:   Abel Wu <wuyun.abel@bytedance.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
+        with ESMTP id S233239AbjGKOEI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jul 2023 10:04:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4428D12A;
+        Tue, 11 Jul 2023 07:04:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD98C61505;
+        Tue, 11 Jul 2023 14:04:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC663C433C8;
+        Tue, 11 Jul 2023 14:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689084246;
+        bh=hkjM3kAIgQB2MsZK32Y0LnSzvU+OKdW0pajbNogIOCY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n9y6shDSvExiH8umQsf+SFCjEhlxKpJcK1FITT1X9fxWaBcy/PBj6GNyONmVduAK7
+         VrN+5V1Cp/gDD5e/zaI0L7WDA3s767ezmniJorTsn3GXlqUFZeSrma97UopLdgpudB
+         7GEQmf3i8/WAon5QrBgT3kivHV+TBb+xGvmBcNmI=
+Date:   Tue, 11 Jul 2023 16:04:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Abel Wu <wuyun.abel@bytedance.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Breno Leitao <leitao@debian.org>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        linux-kernel@vger.kernel.org (open list),
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG)),
-        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG))
-Subject: [PATCH RESEND net-next 2/2] net-memcg: Remove redundant tcpmem_pressure
-Date:   Tue, 11 Jul 2023 20:41:44 +0800
-Message-Id: <20230711124157.97169-2-wuyun.abel@bytedance.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20230711124157.97169-1-wuyun.abel@bytedance.com>
-References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
+        Amir Goldstein <amir73il@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in
+ fsid
+Message-ID: <2023071159-unsigned-salvation-405d@gregkh>
+References: <20230710183338.58531-1-ivan@cloudflare.com>
+ <2023071039-negate-stalemate-6987@gregkh>
+ <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As {socket,tcpmem}_pressure are only used in default/legacy mode
-respectively, use socket_pressure instead of tcpmem_pressure in all
-kinds of cgroup hierarchies.
+On Mon, Jul 10, 2023 at 02:21:10PM -0700, Ivan Babrou wrote:
+> On Mon, Jul 10, 2023 at 12:40 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Jul 10, 2023 at 11:33:38AM -0700, Ivan Babrou wrote:
+> > > The following two commits added the same thing for tmpfs:
+> > >
+> > > * commit 2b4db79618ad ("tmpfs: generate random sb->s_uuid")
+> > > * commit 59cda49ecf6c ("shmem: allow reporting fanotify events with file handles on tmpfs")
+> > >
+> > > Having fsid allows using fanotify, which is especially handy for cgroups,
+> > > where one might be interested in knowing when they are created or removed.
+> > >
+> > > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+> > > ---
+> > >  fs/kernfs/mount.c | 13 ++++++++++++-
+> > >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+> > > index d49606accb07..930026842359 100644
+> > > --- a/fs/kernfs/mount.c
+> > > +++ b/fs/kernfs/mount.c
+> > > @@ -16,6 +16,8 @@
+> > >  #include <linux/namei.h>
+> > >  #include <linux/seq_file.h>
+> > >  #include <linux/exportfs.h>
+> > > +#include <linux/uuid.h>
+> > > +#include <linux/statfs.h>
+> > >
+> > >  #include "kernfs-internal.h"
+> > >
+> > > @@ -45,8 +47,15 @@ static int kernfs_sop_show_path(struct seq_file *sf, struct dentry *dentry)
+> > >       return 0;
+> > >  }
+> > >
+> > > +int kernfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+> > > +{
+> > > +     simple_statfs(dentry, buf);
+> > > +     buf->f_fsid = uuid_to_fsid(dentry->d_sb->s_uuid.b);
+> > > +     return 0;
+> > > +}
+> > > +
+> > >  const struct super_operations kernfs_sops = {
+> > > -     .statfs         = simple_statfs,
+> > > +     .statfs         = kernfs_statfs,
+> > >       .drop_inode     = generic_delete_inode,
+> > >       .evict_inode    = kernfs_evict_inode,
+> > >
+> > > @@ -351,6 +360,8 @@ int kernfs_get_tree(struct fs_context *fc)
+> > >               }
+> > >               sb->s_flags |= SB_ACTIVE;
+> > >
+> > > +             uuid_gen(&sb->s_uuid);
+> >
+> > Since kernfs has as lot of nodes (like hundreds of thousands if not more
+> > at times, being created at boot time), did you just slow down creating
+> > them all, and increase the memory usage in a measurable way?
+> 
+> This is just for the superblock, not every inode. The memory increase
+> is one UUID per kernfs instance (there are maybe 10 of them on a basic
+> system), which is trivial. Same goes for CPU usage.
 
-Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
----
- include/linux/memcontrol.h | 3 +--
- mm/memcontrol.c            | 4 ++--
- 2 files changed, 3 insertions(+), 4 deletions(-)
+Ah, ok, my fault, thanks for clearing that up.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 5860c7f316b9..341d397186ff 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -288,7 +288,6 @@ struct mem_cgroup {
- 
- 	/* Legacy tcp memory accounting */
- 	bool			tcpmem_active;
--	int			tcpmem_pressure;
- 
- #ifdef CONFIG_MEMCG_KMEM
- 	int kmemcg_id;
-@@ -1728,7 +1727,7 @@ void mem_cgroup_sk_free(struct sock *sk);
- static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
- {
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
--		return !!memcg->tcpmem_pressure;
-+		return !!memcg->socket_pressure;
- 	do {
- 		if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
- 			return true;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..e9e26dbd65b5 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7292,10 +7292,10 @@ bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages,
- 		struct page_counter *fail;
- 
- 		if (page_counter_try_charge(&memcg->tcpmem, nr_pages, &fail)) {
--			memcg->tcpmem_pressure = 0;
-+			memcg->socket_pressure = 0;
- 			return true;
- 		}
--		memcg->tcpmem_pressure = 1;
-+		memcg->socket_pressure = 1;
- 		if (gfp_mask & __GFP_NOFAIL) {
- 			page_counter_charge(&memcg->tcpmem, nr_pages);
- 			return true;
--- 
-2.37.3
+thanks,
 
+greg k-h
