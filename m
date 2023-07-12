@@ -2,362 +2,213 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E80750721
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jul 2023 13:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8641675097A
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jul 2023 15:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbjGLLvp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jul 2023 07:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
+        id S231260AbjGLNUA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jul 2023 09:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbjGLLvX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jul 2023 07:51:23 -0400
+        with ESMTP id S229596AbjGLNT7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jul 2023 09:19:59 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3B430E6;
-        Wed, 12 Jul 2023 04:49:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A224FE65
+        for <cgroups@vger.kernel.org>; Wed, 12 Jul 2023 06:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689162590; x=1720698590;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pTDsHp5N+DNZ4FPD2rGEEDX1s4pQgY6qlebjQjJtQfU=;
-  b=WMbWPw1hUyitUaAzkRV0k1RUs9bhAfD3A5b7ShEVTkzNAnkiUBr+PHx3
-   eoGYUmVUbR7AtSiNDZ3VzgIQu18ExOQmbiwhst1NIU/wbNm0hUKYjDze5
-   xMUGpol3Qimm/jE3tnlYLxwjrDou3bu929iJih07IpNlTrt3zQ0v32aY6
-   Hz1rPo5EW0WJM/UuA7w0B0S4ez2oqpHwjG9SaZnL4HZ1cJ9uNMCjN+0mr
-   It6u41IUf0pMkRdT0CYW+ZmIl/gUlnr4Ik325zd56OMt5bRxbLi8N+neO
-   p3RBAwhxrw60WYnudP7LuU8RJ+z4jHwchyfsKZcr8tdcvN/Cm62y+eepD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="344469441"
+  t=1689167998; x=1720703998;
+  h=date:from:to:cc:subject:message-id;
+  bh=vNt8OHLtOfBKfmsAo3z/otbcCbBXr87NpxvWdxkI0Tg=;
+  b=iFcFda/LoW+8ZqJS471x4zJR4gYoTB16jqaqm5l+tD3B9p47GUCt8eGv
+   Spz+hx4u+BCbRULmrH7sT4jJ9byibfT04+e12iZAUC2zyN92JwrktP2ya
+   K09zYtHHvtE3HHmODeLpSO2ngw/B1XvAfY9QRYFue0FxCTc1bqBZHfbvJ
+   SMQ4CjhqrwRGHaL45UlZz9R6R1hsF2CPFkfMZNbsgUbN7Ao7QgIX+IaJv
+   eVjx06tDlSBgutVIucjraXFGxj+d0wH5xUxpJYdc+fG2VVN+EVFIPc2xz
+   c7dV4TKWBNvb+4M1QQaBEUykNTym5XWzpjYmiRHQh8YonxK9R4S2653pI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="344486142"
 X-IronPort-AV: E=Sophos;i="6.01,199,1684825200"; 
-   d="scan'208";a="344469441"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 04:47:21 -0700
+   d="scan'208";a="344486142"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 06:19:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="866094186"
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="845656969"
 X-IronPort-AV: E=Sophos;i="6.01,199,1684825200"; 
-   d="scan'208";a="866094186"
-Received: from eamonnob-mobl1.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.237.202])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 04:47:17 -0700
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-To:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?q?St=C3=A9phane=20Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: [PATCH 17/17] drm/i915: Wire up to the drm cgroup memory stats
-Date:   Wed, 12 Jul 2023 12:46:05 +0100
-Message-Id: <20230712114605.519432-18-tvrtko.ursulin@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+   d="scan'208";a="845656969"
+Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 12 Jul 2023 06:19:56 -0700
+Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qJZl5-0005iN-0t;
+        Wed, 12 Jul 2023 13:19:55 +0000
+Date:   Wed, 12 Jul 2023 21:19:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ d1d4ff5d11a5887a9c4cfc00294bc68ba03e7c16
+Message-ID: <202307122149.6CRM7iE7-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: d1d4ff5d11a5887a9c4cfc00294bc68ba03e7c16  cgroup: put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED
 
-Simply refactor the existing helpers which collate the data for fdinfo
-and share them with thin drm cgroup controller callbacks.
+elapsed time: 724m
 
-Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
----
- drivers/gpu/drm/i915/i915_driver.c     |   4 +
- drivers/gpu/drm/i915/i915_drm_client.c | 183 ++++++++++++++++---------
- drivers/gpu/drm/i915/i915_drm_client.h |  11 +-
- 3 files changed, 129 insertions(+), 69 deletions(-)
+configs tested: 137
+configs skipped: 9
 
-diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
-index 3b9d47c2097b..a299edc9eb79 100644
---- a/drivers/gpu/drm/i915/i915_driver.c
-+++ b/drivers/gpu/drm/i915/i915_driver.c
-@@ -1795,6 +1795,10 @@ static const struct drm_ioctl_desc i915_ioctls[] = {
- static const struct drm_cgroup_ops i915_drm_cgroup_ops = {
- 	.active_time_us = i915_drm_cgroup_get_active_time_us,
- 	.signal_budget = i915_drm_cgroup_signal_budget,
-+
-+	.num_memory_regions	= i915_drm_cgroup_num_memory_regions,
-+	.memory_region_name	= i915_drm_cgroup_memory_region_name,
-+	.memory_stats		= i915_drm_cgroup_memory_stats,
- };
- #endif
- 
-diff --git a/drivers/gpu/drm/i915/i915_drm_client.c b/drivers/gpu/drm/i915/i915_drm_client.c
-index 9be007b10523..c54b1ac753c6 100644
---- a/drivers/gpu/drm/i915/i915_drm_client.c
-+++ b/drivers/gpu/drm/i915/i915_drm_client.c
-@@ -29,7 +29,7 @@ struct i915_drm_client *i915_drm_client_alloc(void)
- 	kref_init(&client->kref);
- 	spin_lock_init(&client->ctx_lock);
- 	INIT_LIST_HEAD(&client->ctx_list);
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) || defined(CONFIG_CGROUP_DRM)
- 	spin_lock_init(&client->objects_lock);
- 	INIT_LIST_HEAD(&client->objects_list);
- #endif
-@@ -46,6 +46,89 @@ void __i915_drm_client_free(struct kref *kref)
- }
- 
- #if defined(CONFIG_PROC_FS) || defined(CONFIG_CGROUP_DRM)
-+static void
-+obj_meminfo(struct drm_i915_gem_object *obj,
-+	    struct drm_memory_stats *stats,
-+	    unsigned int num)
-+{
-+	struct intel_memory_region *mr;
-+	u64 sz = obj->base.size;
-+	enum intel_region_id id;
-+	unsigned int i;
-+
-+	/* Attribute size and shared to all possible memory regions. */
-+	for (i = 0; i < obj->mm.n_placements; i++) {
-+		mr = obj->mm.placements[i];
-+		id = mr->id;
-+
-+		if (WARN_ON_ONCE(id >= num))
-+			return;
-+
-+		if (obj->base.handle_count > 1)
-+			stats[id].shared += sz;
-+		else
-+			stats[id].private += sz;
-+	}
-+
-+	/* Attribute other categories to only the current region. */
-+	mr = obj->mm.region;
-+	if (mr)
-+		id = mr->id;
-+	else
-+		id = INTEL_REGION_SMEM;
-+
-+	if (WARN_ON_ONCE(id >= num))
-+		return;
-+
-+	if (!obj->mm.n_placements) {
-+		if (obj->base.handle_count > 1)
-+			stats[id].shared += sz;
-+		else
-+			stats[id].private += sz;
-+	}
-+
-+	if (i915_gem_object_has_pages(obj)) {
-+		stats[id].resident += sz;
-+
-+		if (!dma_resv_test_signaled(obj->base.resv,
-+					    dma_resv_usage_rw(true)))
-+			stats[id].active += sz;
-+		else if (i915_gem_object_is_shrinkable(obj) &&
-+			 obj->mm.madv == I915_MADV_DONTNEED)
-+			stats[id].purgeable += sz;
-+	}
-+}
-+
-+static void
-+memory_stats(struct drm_file *file,
-+	     struct drm_memory_stats *stats,
-+	     unsigned int num)
-+{
-+	struct drm_i915_file_private *fpriv = file->driver_priv;
-+	struct i915_drm_client *client = fpriv->client;
-+	struct drm_i915_gem_object *obj;
-+	struct list_head *pos;
-+	unsigned int id;
-+
-+	/* Public objects. */
-+	spin_lock(&file->table_lock);
-+	idr_for_each_entry(&file->object_idr, obj, id)
-+		obj_meminfo(obj, stats, num);
-+	spin_unlock(&file->table_lock);
-+
-+	/* Internal objects. */
-+	rcu_read_lock();
-+	list_for_each_rcu(pos, &client->objects_list) {
-+		obj = i915_gem_object_get_rcu(list_entry(pos, typeof(*obj),
-+							 client_link));
-+		if (!obj)
-+			continue;
-+		obj_meminfo(obj, stats, num);
-+		i915_gem_object_put(obj);
-+	}
-+	rcu_read_unlock();
-+}
-+
- static const char * const uabi_class_names[] = {
- 	[I915_ENGINE_CLASS_RENDER] = "render",
- 	[I915_ENGINE_CLASS_COPY] = "copy",
-@@ -255,83 +338,47 @@ int i915_drm_cgroup_signal_budget(struct drm_file *file, u64 usage, u64 budget)
- 
- 	return ret;
- }
-+
-+unsigned int i915_drm_cgroup_num_memory_regions(const struct drm_device *dev)
-+{
-+	return INTEL_REGION_UNKNOWN;
-+}
-+
-+const char *i915_drm_cgroup_memory_region_name(const struct drm_device *dev,
-+					       unsigned int index)
-+{
-+	const struct drm_i915_private *i915 = to_i915(dev);
-+
-+	if (index < ARRAY_SIZE(i915->mm.regions)) {
-+		struct intel_memory_region *mr = i915->mm.regions[index];
-+
-+		if (mr)
-+			return mr->name;
-+	}
-+
-+	return NULL;
-+}
-+
-+unsigned int i915_drm_cgroup_memory_stats(struct drm_file *file,
-+					  struct drm_memory_stats *stats,
-+					  unsigned int num)
-+{
-+	memory_stats(file, stats, num);
-+
-+	return DRM_GEM_OBJECT_RESIDENT | DRM_GEM_OBJECT_PURGEABLE;
-+}
- #endif
- 
- #ifdef CONFIG_PROC_FS
--static void
--obj_meminfo(struct drm_i915_gem_object *obj,
--	    struct drm_memory_stats stats[INTEL_REGION_UNKNOWN])
--{
--	struct intel_memory_region *mr;
--	u64 sz = obj->base.size;
--	enum intel_region_id id;
--	unsigned int i;
--
--	/* Attribute size and shared to all possible memory regions. */
--	for (i = 0; i < obj->mm.n_placements; i++) {
--		mr = obj->mm.placements[i];
--		id = mr->id;
--
--		if (obj->base.handle_count > 1)
--			stats[id].shared += sz;
--		else
--			stats[id].private += sz;
--	}
--
--	/* Attribute other categories to only the current region. */
--	mr = obj->mm.region;
--	if (mr)
--		id = mr->id;
--	else
--		id = INTEL_REGION_SMEM;
--
--	if (!obj->mm.n_placements) {
--		if (obj->base.handle_count > 1)
--			stats[id].shared += sz;
--		else
--			stats[id].private += sz;
--	}
--
--	if (i915_gem_object_has_pages(obj)) {
--		stats[id].resident += sz;
--
--		if (!dma_resv_test_signaled(obj->base.resv,
--					    dma_resv_usage_rw(true)))
--			stats[id].active += sz;
--		else if (i915_gem_object_is_shrinkable(obj) &&
--			 obj->mm.madv == I915_MADV_DONTNEED)
--			stats[id].purgeable += sz;
--	}
--}
--
- static void show_meminfo(struct drm_printer *p, struct drm_file *file)
- {
- 	struct drm_memory_stats stats[INTEL_REGION_UNKNOWN] = {};
- 	struct drm_i915_file_private *fpriv = file->driver_priv;
--	struct i915_drm_client *client = fpriv->client;
- 	struct drm_i915_private *i915 = fpriv->i915;
--	struct drm_i915_gem_object *obj;
- 	struct intel_memory_region *mr;
--	struct list_head *pos;
- 	unsigned int id;
- 
--	/* Public objects. */
--	spin_lock(&file->table_lock);
--	idr_for_each_entry(&file->object_idr, obj, id)
--		obj_meminfo(obj, stats);
--	spin_unlock(&file->table_lock);
--
--	/* Internal objects. */
--	rcu_read_lock();
--	list_for_each_rcu(pos, &client->objects_list) {
--		obj = i915_gem_object_get_rcu(list_entry(pos, typeof(*obj),
--							 client_link));
--		if (!obj)
--			continue;
--		obj_meminfo(obj, stats);
--		i915_gem_object_put(obj);
--	}
--	rcu_read_unlock();
-+	memory_stats(file, stats, ARRAY_SIZE(stats));
- 
- 	for_each_memory_region(mr, i915, id)
- 		drm_print_memory_stats(p,
-@@ -382,7 +429,9 @@ void i915_drm_client_fdinfo(struct drm_printer *p, struct drm_file *file)
- 	for (i = 0; i < ARRAY_SIZE(uabi_class_names); i++)
- 		show_client_class(p, i915, file_priv->client, i);
- }
-+#endif
- 
-+#if defined(CONFIG_PROC_FS) || defined(CONFIG_CGROUP_DRM)
- void i915_drm_client_add_object(struct i915_drm_client *client,
- 				struct drm_i915_gem_object *obj)
- {
-diff --git a/drivers/gpu/drm/i915/i915_drm_client.h b/drivers/gpu/drm/i915/i915_drm_client.h
-index 6eadc9596b8f..8b34be25e887 100644
---- a/drivers/gpu/drm/i915/i915_drm_client.h
-+++ b/drivers/gpu/drm/i915/i915_drm_client.h
-@@ -29,7 +29,7 @@ struct i915_drm_client {
- 	spinlock_t ctx_lock; /* For add/remove from ctx_list. */
- 	struct list_head ctx_list; /* List of contexts belonging to client. */
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) || defined(CONFIG_CGROUP_DRM)
- 	/**
- 	 * @objects_lock: lock protecting @objects_list
- 	 */
-@@ -74,7 +74,7 @@ struct i915_drm_client *i915_drm_client_alloc(void);
- 
- void i915_drm_client_fdinfo(struct drm_printer *p, struct drm_file *file);
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) || defined(CONFIG_CGROUP_DRM)
- void i915_drm_client_add_object(struct i915_drm_client *client,
- 				struct drm_i915_gem_object *obj);
- bool i915_drm_client_remove_object(struct drm_i915_gem_object *obj);
-@@ -101,4 +101,11 @@ u64 i915_drm_cgroup_get_active_time_us(struct drm_file *file);
- int i915_drm_cgroup_signal_budget(struct drm_file *file,
- 				  u64 usage, u64 budget);
- 
-+unsigned int i915_drm_cgroup_num_memory_regions(const struct drm_device *);
-+const char *i915_drm_cgroup_memory_region_name(const struct drm_device *,
-+					       unsigned int index);
-+unsigned int i915_drm_cgroup_memory_stats(struct drm_file *,
-+					  struct drm_memory_stats *,
-+					  unsigned int num);
-+
- #endif /* !__I915_DRM_CLIENT_H__ */
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r024-20230712   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r013-20230712   gcc  
+arc                  randconfig-r014-20230712   gcc  
+arc                  randconfig-r034-20230712   gcc  
+arc                  randconfig-r043-20230712   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r003-20230712   clang
+arm                  randconfig-r005-20230712   clang
+arm                  randconfig-r046-20230712   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r002-20230712   gcc  
+arm64                randconfig-r005-20230712   gcc  
+arm64                randconfig-r015-20230712   clang
+arm64                randconfig-r034-20230712   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r036-20230712   gcc  
+hexagon              randconfig-r013-20230712   clang
+hexagon              randconfig-r015-20230712   clang
+hexagon              randconfig-r041-20230712   clang
+hexagon              randconfig-r045-20230712   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230712   gcc  
+i386         buildonly-randconfig-r005-20230712   gcc  
+i386         buildonly-randconfig-r006-20230712   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230712   gcc  
+i386                 randconfig-i002-20230712   gcc  
+i386                 randconfig-i003-20230712   gcc  
+i386                 randconfig-i004-20230712   gcc  
+i386                 randconfig-i005-20230712   gcc  
+i386                 randconfig-i006-20230712   gcc  
+i386                 randconfig-i011-20230712   clang
+i386                 randconfig-i012-20230712   clang
+i386                 randconfig-i013-20230712   clang
+i386                 randconfig-i014-20230712   clang
+i386                 randconfig-i015-20230712   clang
+i386                 randconfig-i016-20230712   clang
+i386                 randconfig-r024-20230712   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r001-20230712   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                          multi_defconfig   gcc  
+m68k                 randconfig-r031-20230712   gcc  
+m68k                 randconfig-r035-20230712   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                 randconfig-r032-20230712   clang
+mips                 randconfig-r033-20230712   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r012-20230712   gcc  
+openrisc                            defconfig   gcc  
+openrisc             randconfig-r002-20230712   gcc  
+openrisc             randconfig-r006-20230712   gcc  
+openrisc             randconfig-r022-20230712   gcc  
+openrisc             randconfig-r023-20230712   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r033-20230712   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc              randconfig-r004-20230712   gcc  
+powerpc              randconfig-r012-20230712   clang
+powerpc                     tqm8541_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r011-20230712   clang
+riscv                randconfig-r026-20230712   clang
+riscv                randconfig-r042-20230712   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230712   clang
+sh                               allmodconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                   randconfig-r011-20230712   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r021-20230712   gcc  
+sparc64              randconfig-r023-20230712   gcc  
+sparc64              randconfig-r026-20230712   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r021-20230712   gcc  
+um                   randconfig-r025-20230712   gcc  
+um                   randconfig-r032-20230712   clang
+um                   randconfig-r035-20230712   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230712   gcc  
+x86_64       buildonly-randconfig-r002-20230712   gcc  
+x86_64       buildonly-randconfig-r003-20230712   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r003-20230712   gcc  
+x86_64               randconfig-r006-20230712   gcc  
+x86_64               randconfig-x001-20230712   clang
+x86_64               randconfig-x002-20230712   clang
+x86_64               randconfig-x003-20230712   clang
+x86_64               randconfig-x004-20230712   clang
+x86_64               randconfig-x005-20230712   clang
+x86_64               randconfig-x006-20230712   clang
+x86_64               randconfig-x011-20230712   gcc  
+x86_64               randconfig-x012-20230712   gcc  
+x86_64               randconfig-x013-20230712   gcc  
+x86_64               randconfig-x014-20230712   gcc  
+x86_64               randconfig-x015-20230712   gcc  
+x86_64               randconfig-x016-20230712   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r001-20230712   gcc  
+xtensa               randconfig-r016-20230712   gcc  
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
