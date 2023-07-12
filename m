@@ -2,42 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C00F875071B
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jul 2023 13:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9C975071D
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jul 2023 13:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbjGLLvf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jul 2023 07:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S233443AbjGLLvl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jul 2023 07:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbjGLLvK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jul 2023 07:51:10 -0400
+        with ESMTP id S233557AbjGLLvS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jul 2023 07:51:18 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBEE1FF9;
-        Wed, 12 Jul 2023 04:49:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262722112;
+        Wed, 12 Jul 2023 04:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689162579; x=1720698579;
+  t=1689162586; x=1720698586;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=r3UFb8OqF06fv2F6gJ/iTXwHgvZZy1ZJFg6pTLkEphg=;
-  b=mc1eAQfQ7zKxjhkpQeIS/jtQkQiPVMO9gi+Khr8ON+FzxI2NfdVXa9L4
-   UuRy8vCQ6qEeT6PM7X03Zrp9vCtxPj3Acdk69D0bIxY4EnYRQZValnuCc
-   vdbqNk+LERQoMZkKfHhswb5V7sAvsAFXX1ijUvf7tamoRu8nhLBFSJc52
-   L4dSBxQdwialKdvgApfyD3SnrbNV2G7RKqYqqqNhnuULMQXvu4K7+nFDK
-   zjyfjlqIe3VclX+IqjUHB5wfuU+sxzJibZvGnEX9UxWODjsDVrf8UaU88
-   KNvrjqWG1wvQQ9B1mBjdrwOiWar0zvKM3hjuFKROHnXC/NuijQe6f2R3B
+  bh=+WXN4FLVczjMv+OSBCgeCCf8yaCiNzhpa/fJPOfZ06Q=;
+  b=HWbKg+yy/fk+AsuX839Cylwnia05wmMVppcqWav8+GKjHM6XRaVl04Et
+   8Uy8FllHkE+dzpTlq5X9M36IRX4ENxYjxJJbl8VRykS5jvsZCJAoF2TNc
+   7WvMTNqPBBKgKQ/Q/shBiQOGLJQ/DRdOSfKOQhsyo3QGH9DzMQwnUaB/m
+   nYVdFRNUw9JYFZdl4HDFYauOY7LPGaIXKP1aCkAMK9cD9+k1HuAJb9XXn
+   AdXwLYgjuqPFrUvocJkSMQ0NTLXJswLaROiivfx5AdAnZd0XRap2jtmyt
+   sZoebDKRXESeTfLL5I/axo9RIR4YT/91O0XmSLm7KJUUJz+pwowD3MM6Y
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="344469398"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="344469417"
 X-IronPort-AV: E=Sophos;i="6.01,199,1684825200"; 
-   d="scan'208";a="344469398"
+   d="scan'208";a="344469417"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 04:47:13 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 04:47:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="866094175"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="866094179"
 X-IronPort-AV: E=Sophos;i="6.01,199,1684825200"; 
-   d="scan'208";a="866094175"
+   d="scan'208";a="866094179"
 Received: from eamonnob-mobl1.ger.corp.intel.com (HELO localhost.localdomain) ([10.213.237.202])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 04:47:09 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 04:47:13 -0700
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -52,10 +52,11 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
         Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Eero Tamminen <eero.t.tamminen@intel.com>
-Subject: [PATCH 15/17] cgroup/drm: Expose GPU utilisation
-Date:   Wed, 12 Jul 2023 12:46:03 +0100
-Message-Id: <20230712114605.519432-16-tvrtko.ursulin@linux.intel.com>
+Subject: [PATCH 16/17] cgroup/drm: Expose memory stats
+Date:   Wed, 12 Jul 2023 12:46:04 +0100
+Message-Id: <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
 References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
@@ -73,93 +74,330 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-To support container use cases where external orchestrators want to make
-deployment and migration decisions based on GPU load and capacity, we can
-expose the GPU load as seen by the controller in a new drm.active_us
-field. This field contains a monotonic cumulative time cgroup has spent
-executing GPU loads, as reported by the DRM drivers being used by group
-members.
+With a few DRM drivers exposing per client memory stats via the fdinfo
+interface already, we can add support for exposing the same data (albeit
+aggregated for cgroup hierarchies) via the drm cgroup controller.
+
+Add some driver callbacks and controller code to use them, walking the
+sub-tree, collating the numbers, and presenting them in a new field
+name drm.memory.stat.
+
+Example file content:
+
+  $ cat drm.memory.stat
+  card0 region=system total=12898304 shared=0 active=0 resident=12111872 purgeable=167936
+  card0 region=stolen-system total=0 shared=0 active=0 resident=0 purgeable=0
+
+Data is generated on demand for simplicty of implementation ie. no running
+totals are kept or accounted during migrations and such. Various
+optimisations such as cheaper collection of data are possible but
+deliberately left out for now.
+
+Overall, the feature is deemed to be useful to container orchestration
+software (and manual management).
+
+Limits, either soft or hard, are not envisaged to be implemented on top of
+this approach due on demand nature of collecting the stats.
 
 Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 Cc: Tejun Heo <tj@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Cc: Eero Tamminen <eero.t.tamminen@intel.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst |  3 +++
- kernel/cgroup/drm.c                     | 26 ++++++++++++++++++++++++-
- 2 files changed, 28 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/cgroup-v2.rst |  22 ++++
+ include/drm/drm_drv.h                   |  61 ++++++++++
+ kernel/cgroup/drm.c                     | 149 ++++++++++++++++++++++++
+ 3 files changed, 232 insertions(+)
 
 diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index da350858c59f..bbe986366f4a 100644
+index bbe986366f4a..1891c7d98206 100644
 --- a/Documentation/admin-guide/cgroup-v2.rst
 +++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2445,6 +2445,9 @@ will be respected.
- DRM scheduling soft limits interface files
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-+  drm.active_us
-+	GPU time used by the group recursively including all child groups.
-+
-   drm.weight
+@@ -2452,6 +2452,28 @@ DRM scheduling soft limits interface files
  	Standard cgroup weight based control [1, 10000] used to configure the
  	relative distributing of GPU time between the sibling groups.
+ 
++  drm.memory.stat
++	A nested file containing cumulative memory statistics for the whole
++	sub-hierarchy, broken down into separate GPUs and separate memory
++	regions supported by the latter.
++
++	For example::
++
++	  $ cat drm.memory.stat
++	  card0 region=system total=12898304 shared=0 active=0 resident=12111872 purgeable=167936
++	  card0 region=stolen-system total=0 shared=0 active=0 resident=0 purgeable=0
++
++	Card designation corresponds to the DRM device names and multiple line
++	entries can be present per card.
++
++	Memory region names should be expected to be driver specific with the
++	exception of 'system' which is standardised and applicable for GPUs
++	which can operate on system memory buffers.
++
++	Sub-keys 'resident' and 'purgeable' are optional.
++
++	Per category region usage is reported in bytes.
++
+ Misc
+ ----
+ 
+diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+index 29e11a87bf75..2ea9a46b5031 100644
+--- a/include/drm/drm_drv.h
++++ b/include/drm/drm_drv.h
+@@ -41,6 +41,7 @@ struct drm_minor;
+ struct dma_buf;
+ struct dma_buf_attachment;
+ struct drm_display_mode;
++struct drm_memory_stats;
+ struct drm_mode_create_dumb;
+ struct drm_printer;
+ struct sg_table;
+@@ -175,6 +176,66 @@ struct drm_cgroup_ops {
+ 	 * messages sent by the DRM cgroup controller.
+ 	 */
+ 	int (*signal_budget) (struct drm_file *, u64 used, u64 budget);
++
++
++	/**
++	 * @num_memory_regions:
++	 *
++	 * Optional callback reporting the number of memory regions driver
++	 * supports.
++	 *
++	 * Callback is allowed to report a larger number than present memory
++	 * regions, but @memory_region_name is then supposed to return NULL for
++	 * those indices.
++	 *
++	 * Used by the DRM core when queried by the DRM cgroup controller.
++	 *
++	 * All three callbacks of @num_memory_regions, @memory_region_name and
++	 * @memory_stats need to be implemented for DRM cgroup memory stats
++	 * support.
++	 */
++	unsigned int (*num_memory_regions) (const struct drm_device *);
++
++	/**
++	 * @memory_region_name:
++	 *
++	 * Optional callback reporting the name of the queried memory region.
++	 *
++	 * Can be NULL if the memory region index is not supported by the
++	 * passed in device.
++	 *
++	 * Used by the DRM core when queried by the DRM cgroup controller.
++	 *
++	 * All three callbacks of @num_memory_regions, @memory_region_name and
++	 * @memory_stats need to be implemented for DRM cgroup memory stats
++	 * support.
++	 */
++	const char * (*memory_region_name) (const struct drm_device *,
++					    unsigned int index);
++
++	/**
++	 * memory_stats:
++	 *
++	 * Optional callback adding to the passed in array of struct
++	 * drm_memory_stats objects.
++	 *
++	 * Number of objects in the array is passed in the @num argument.
++	 *
++	 * Returns a bitmask of supported enum drm_gem_object_status by the
++	 * driver instance.
++	 *
++	 * Callback is only allow to add to the existing fields and should
++	 * never clear them.
++	 *
++	 * Used by the DRM core when queried by the DRM cgroup controller.
++	 *
++	 * All three callbacks of @num_memory_regions, @memory_region_name and
++	 * @memory_stats need to be implemented for DRM cgroup memory stats
++	 * support.
++	 */
++	unsigned int (*memory_stats) (struct drm_file *,
++				      struct drm_memory_stats *,
++				      unsigned int num);
+ };
+ 
+ /**
 diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-index b244e3d828cc..7c20d4ebc634 100644
+index 7c20d4ebc634..22fc180dd659 100644
 --- a/kernel/cgroup/drm.c
 +++ b/kernel/cgroup/drm.c
-@@ -25,6 +25,8 @@ struct drm_cgroup_state {
- 	bool over;
- 	bool over_budget;
+@@ -5,6 +5,7 @@
  
-+	u64 total_us;
-+
- 	u64 per_s_budget_us;
- 	u64 prev_active_us;
- 	u64 active_us;
-@@ -117,6 +119,20 @@ drmcs_write_weight(struct cgroup_subsys_state *css, struct cftype *cftype,
- 	return 0;
+ #include <linux/cgroup.h>
+ #include <linux/cgroup_drm.h>
++#include <linux/device.h>
+ #include <linux/list.h>
+ #include <linux/moduleparam.h>
+ #include <linux/mutex.h>
+@@ -12,6 +13,8 @@
+ #include <linux/slab.h>
+ 
+ #include <drm/drm_drv.h>
++#include <drm/drm_file.h>
++#include <drm/drm_gem.h>
+ 
+ struct drm_cgroup_state {
+ 	struct cgroup_subsys_state css;
+@@ -133,6 +136,147 @@ drmcs_read_total_us(struct cgroup_subsys_state *css, struct cftype *cft)
+ 	return val;
  }
  
-+static u64
-+drmcs_read_total_us(struct cgroup_subsys_state *css, struct cftype *cft)
++struct drmcs_stat {
++	const struct drm_device *dev;
++	const struct drm_cgroup_ops *cg_ops;
++	const char *device_name;
++	unsigned int regions;
++	enum drm_gem_object_status flags;
++	struct drm_memory_stats *stats;
++};
++
++static int drmcs_seq_show_memory(struct seq_file *sf, void *v)
 +{
-+	struct drm_cgroup_state *drmcs = css_to_drmcs(css);
-+	u64 val;
++	struct cgroup_subsys_state *node;
++	struct drmcs_stat *stats = NULL;
++	unsigned int num_devices, i;
++	int ret;
 +
-+	/* Mutex being overkill unless arch cannot atomically read u64.. */
-+	mutex_lock(&drmcg_mutex);
-+	val = drmcs->total_us;
++	/*
++	 * We could avoid taking the cgroup_lock and just walk the tree under
++	 * RCU but then allocating temporary storage becomes a problem. So for
++	 * now keep it simple and take the lock.
++	 */
++	cgroup_lock();
++
++	/* Protect against client migrations and clients disappearing. */
++	ret = mutex_lock_interruptible(&drmcg_mutex);
++	if (ret) {
++		cgroup_unlock();
++		return ret;
++	}
++
++	num_devices = 0;
++	css_for_each_descendant_pre(node, seq_css(sf)) {
++		struct drm_cgroup_state *drmcs = css_to_drmcs(node);
++		struct drm_file *fpriv;
++
++		list_for_each_entry(fpriv, &drmcs->clients, clink) {
++			const struct drm_cgroup_ops *cg_ops =
++				fpriv->minor->dev->driver->cg_ops;
++			const char *device_name = dev_name(fpriv->minor->kdev);
++			struct drmcs_stat *stat;
++			unsigned int regions;
++
++			/* Does this driver supports memory stats? */
++			if (cg_ops &&
++			    cg_ops->num_memory_regions &&
++			    cg_ops->memory_region_name &&
++			    cg_ops->memory_stats)
++				regions =
++				  cg_ops->num_memory_regions(fpriv->minor->dev);
++			else
++				regions = 0;
++
++			if (!regions)
++				continue;
++
++			/* Have we seen this device before? */
++			stat = NULL;
++			for (i = 0; i < num_devices; i++) {
++				if (!strcmp(stats[i].device_name,
++					    device_name)) {
++					stat = &stats[i];
++					break;
++				}
++			}
++
++			/* If not allocate space for it. */
++			if (!stat) {
++				stats = krealloc_array(stats, num_devices + 1,
++						       sizeof(*stats),
++						       GFP_USER);
++				if (!stats) {
++					ret = -ENOMEM;
++					goto out;
++				}
++
++				stat = &stats[num_devices++];
++				stat->dev = fpriv->minor->dev;
++				stat->cg_ops = cg_ops;
++				stat->device_name = device_name;
++				stat->flags = 0;
++				stat->regions = regions;
++				stat->stats =
++					kcalloc(regions,
++						sizeof(struct drm_memory_stats),
++						GFP_USER);
++				if (!stat->stats) {
++					ret = -ENOMEM;
++					goto out;
++				}
++			}
++
++			/* Accumulate the stats for this device+client. */
++			stat->flags |= cg_ops->memory_stats(fpriv,
++							    stat->stats,
++							    stat->regions);
++		}
++	}
++
++	for (i = 0; i < num_devices; i++) {
++		struct drmcs_stat *stat = &stats[i];
++		unsigned int j;
++
++		for (j = 0; j < stat->regions; j++) {
++			const char *name =
++				stat->cg_ops->memory_region_name(stat->dev, j);
++
++			if (!name)
++				continue;
++
++			seq_printf(sf,
++				   "%s region=%s total=%llu shared=%llu active=%llu",
++				   stat->device_name,
++				   name,
++				   stat->stats[j].private +
++				   stat->stats[j].shared,
++				   stat->stats[j].shared,
++				   stat->stats[j].active);
++
++			if (stat->flags & DRM_GEM_OBJECT_RESIDENT)
++				seq_printf(sf, " resident=%llu",
++					   stat->stats[j].resident);
++
++			if (stat->flags & DRM_GEM_OBJECT_PURGEABLE)
++				seq_printf(sf, " purgeable=%llu",
++					   stat->stats[j].purgeable);
++
++			seq_puts(sf, "\n");
++		}
++	}
++
++out:
 +	mutex_unlock(&drmcg_mutex);
++	cgroup_unlock();
 +
-+	return val;
++	for (i = 0; i < num_devices; i++)
++		kfree(stats[i].stats);
++	kfree(stats);
++
++	return ret;
 +}
 +
  static bool __start_scanning(unsigned int period_us)
  {
  	struct drm_cgroup_state *root = &root_drmcs.drmcs;
-@@ -169,11 +185,14 @@ static bool __start_scanning(unsigned int period_us)
- 		parent = css_to_drmcs(node->parent);
- 
- 		active = drmcs_get_active_time_us(drmcs);
--		if (period_us && active > drmcs->prev_active_us)
-+		if (period_us && active > drmcs->prev_active_us) {
- 			drmcs->active_us += active - drmcs->prev_active_us;
-+			drmcs->total_us += drmcs->active_us;
-+		}
- 		drmcs->prev_active_us = active;
- 
- 		parent->active_us += drmcs->active_us;
-+		parent->total_us += drmcs->active_us;
- 		parent->sum_children_weights += drmcs->weight;
- 
- 		css_put(node);
-@@ -551,6 +570,11 @@ struct cftype files[] = {
- 		.read_u64 = drmcs_read_weight,
- 		.write_u64 = drmcs_write_weight,
+@@ -575,6 +719,11 @@ struct cftype files[] = {
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.read_u64 = drmcs_read_total_us,
  	},
 +	{
-+		.name = "active_us",
++		.name = "memory.stat",
 +		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_u64 = drmcs_read_total_us,
++		.seq_show = drmcs_seq_show_memory,
 +	},
  	{ } /* Zero entry terminates. */
  };
