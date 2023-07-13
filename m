@@ -2,131 +2,176 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F2F752C3A
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jul 2023 23:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECF4752DED
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jul 2023 01:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjGMVe6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jul 2023 17:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
+        id S231396AbjGMXZ2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jul 2023 19:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbjGMVe5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jul 2023 17:34:57 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB4530F0
-        for <cgroups@vger.kernel.org>; Thu, 13 Jul 2023 14:34:31 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3141c3a7547so1339122f8f.2
-        for <cgroups@vger.kernel.org>; Thu, 13 Jul 2023 14:34:31 -0700 (PDT)
+        with ESMTP id S229643AbjGMXZ1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jul 2023 19:25:27 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE5B1BD4
+        for <cgroups@vger.kernel.org>; Thu, 13 Jul 2023 16:25:25 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbfcc6daa9so12068955e9.3
+        for <cgroups@vger.kernel.org>; Thu, 13 Jul 2023 16:25:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689284069; x=1691876069;
+        d=cloudflare.com; s=google; t=1689290724; x=1691882724;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3Z9ExxShnMFQ+6I5uZ5HSYqKDhYmMF4V08BZ/iO202I=;
-        b=h96b3lCadCzWegH3hy0ZB2qQb2VZ9g0nshLIbNVzMENhuzrBxLTtfdh7mmX90L1hwe
-         RZfzF4Aa5SynwDTuf1h66O484szaN5D9Kl6XuazI2Ihx4qpiFs3t5c/PsFAPpgQJOIGL
-         X0GmfjEclYmAKt73DrMFCY70GggFKLYn2hzgI=
+        bh=Ldt/m7vMp8HF0ifqHxjiRFq7e6BEhHM91NOp3YGXdYE=;
+        b=rT7wOYM73TGH7nce+q9Q0mqkHE46+XclhlnVMn5LD2+Fj1FK9IXWuLoYHFLF/W2bTu
+         JrX5TUBkI0hyq1MyT/SMKCb6CsovdHxHmPzif6xsD8rA5Jshy0lZ8PJ0RnZ/Sk/NPVxQ
+         5Vu0Xh9msZ1zXdd3l4aLJj1IeSencA6b/m8lA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689284069; x=1691876069;
+        d=1e100.net; s=20221208; t=1689290724; x=1691882724;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3Z9ExxShnMFQ+6I5uZ5HSYqKDhYmMF4V08BZ/iO202I=;
-        b=idPDMTGyAzqq43cqwIytrvfZhHGUg/OKCZ73r7XLl1kL35LdAQMO2KE1qmFTibztis
-         5fBsqRx24jpER7nAr+GqAVjfkQGBVlsyyKrr2fKPxy0YGdfQVABCRjj1HIrThq0DS2M0
-         yiweup3btWG3Su6d1PsKlJ686Hu798toIBqcntuWQIN3ts4k/GBhs6ZxuUyVxnXZJHQP
-         d+WivJXpy3zQb/h3QBIh9b28/QD681S946mFByncd1iWHCOQp+IYfceGjelAggGY+7u8
-         70acSkbwtuDvC1yyhkkO3HpjngFKSD90FZRt/KTkHmmIqVArA4WlHLA6VoIE6jSr6E0+
-         WOOA==
-X-Gm-Message-State: ABy/qLZP7nHWfaoAiu9IawPD73skMpUjYt75VrinncbaHF9D8tk1jKQA
-        AOToiqkhTRJN2qnx69l1bjgYv6ZfBU9wrmgVp8O+rA==
-X-Google-Smtp-Source: APBJJlEoBICt+M1o2fpsiTHu4cykBm4jfvf7AttkoM7qNKhXs+8mqzzxbWSkihKb2n+cgh1OVWaS8/sgVq5hlVOTAdA=
-X-Received: by 2002:a05:6000:c2:b0:314:2fe5:b4cf with SMTP id
- q2-20020a05600000c200b003142fe5b4cfmr2116161wrx.53.1689284069583; Thu, 13 Jul
- 2023 14:34:29 -0700 (PDT)
+        bh=Ldt/m7vMp8HF0ifqHxjiRFq7e6BEhHM91NOp3YGXdYE=;
+        b=hGYr78yb0MBH1qkdLWnQvksIwftZ1NAaOZplEhOGVZ+LIWtTdiAvAq9/ZCeotdeK6+
+         +MpfTuSUXyAIm2DZ7O0GsZlCIjJuBz6ETdDNb0kTiNqWW/a4FiSMPftj/sd++jXeXinS
+         E/AcRfeNGSmkJhAgyiuNTE9g8VPUGmsb81Bv4jCG1JlgeZBMqaedkwpVRFmmz/M6gYJC
+         sUX0kdGI8wyRXB/Xxkvhfg7VxtnEYZBk7ah9vOvLm/wIn1yFJ2VSPlZiQRqQrucreQkq
+         8WihzMCoyuX2K0M6zvvU0E+akbJIuETK22StbLEb4mVV+DU+bV9lmgyCZOKfvcqp6t73
+         ID9w==
+X-Gm-Message-State: ABy/qLY25ac+SgrNMICku4WiEtHwRdBlaz6XyQWIheYtQCh2JdsBce5p
+        DKshnM1rUIJ6eOXVNG1mOiHEbfSdAgHwG+Em+Rzi4U3e4ttS6nhUJRSyfg==
+X-Google-Smtp-Source: APBJJlGe3Qbx9y7uUIFH51v4cW0mTJdTxI78fcBw7ath04XBIi0I7nTDJNYHJnY8kezZinvoPmvK0lHOhyKapndW66c=
+X-Received: by 2002:adf:e952:0:b0:30e:5bd0:21a2 with SMTP id
+ m18-20020adfe952000000b0030e5bd021a2mr2638278wrn.52.1689290724372; Thu, 13
+ Jul 2023 16:25:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230710183338.58531-1-ivan@cloudflare.com> <2023071039-negate-stalemate-6987@gregkh>
- <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
- <CAOQ4uxiFhkSM2pSNLCE6cLz6mhYOvk5D7vDsghVTqy9cDqeqew@mail.gmail.com>
- <CABWYdi26iboFTFz+Vex3VO0fzmFzyfOxgr-qc964mLiC3En7=A@mail.gmail.com> <CAOQ4uxgLp+gwJPTWj9uwhncx8RD5-mZY7qOaD2C6pbu7c4+srw@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgLp+gwJPTWj9uwhncx8RD5-mZY7qOaD2C6pbu7c4+srw@mail.gmail.com>
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+ <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
+ <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com>
+In-Reply-To: <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com>
 From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Thu, 13 Jul 2023 14:34:18 -0700
-Message-ID: <CABWYdi2fTLnQeZnLG2uTCHyQkBnr1Z9OtfYhnzp_TtqiXyYd9A@mail.gmail.com>
-Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in fsid
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Zefan Li <lizefan.x@bytedance.com>,
+Date:   Thu, 13 Jul 2023 16:25:13 -0700
+Message-ID: <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+To:     Waiman Long <longman@redhat.com>
+Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 10:44=E2=80=AFPM Amir Goldstein <amir73il@gmail.com=
-> wrote:
-> > > I agree. I think it was a good decision.
-> > > I have some followup questions though.
-> > >
-> > > I guess your use case cares about the creation of cgroups?
-> > > as long as the only way to create a cgroup is via vfs
-> > > vfs_mkdir() -> ... cgroup_mkdir()
-> > > fsnotify_mkdir() will be called.
-> > > Is that a correct statement?
-> >
-> > As far as I'm aware, this is the only way. We have the cgroups mailing
-> > list CC'd to confirm.
-> >
-> > I checked systemd and docker as real world consumers and both use
-> > mkdir and are visible in fanotify with this patch applied.
-> >
-> > > Because if not, then explicit fsnotify_mkdir() calls may be needed
-> > > similar to tracefs/debugfs.
-> > >
-> > > I don't think that the statement holds for dieing cgroups,
-> > > so explicit fsnotify_rmdir() are almost certainly needed to make
-> > > inotify/fanotify monitoring on cgroups complete.
-> > >
-> > > I am on the fence w.r.t making the above a prerequisite to merging
-> > > your patch.
-> > >
-> > > One the one hand, inotify monitoring of cgroups directory was already
-> > > possible (I think?) with the mentioned shortcomings for a long time.
-> > >
-> > > On the other hand, we have an opportunity to add support to fanotify
-> > > monitoring of cgroups directory only after the missing fsnotify hooks
-> > > are added, making fanotify API a much more reliable option for
-> > > monitoring cgroups.
-> > >
-> > > So I am leaning towards requiring the missing fsnotify hooks before
-> > > attaching a unique fsid to cgroups/kernfs.
-> >
-> > Unless somebody responsible for cgroups says there's a different way
-> > to create cgroups, I think this requirement doesn't apply.
-> >
+On Mon, Jul 10, 2023 at 5:44=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
+ote:
 >
-> I was more concerned about the reliability of FAN_DELETE for
-> dieing cgroups without an explicit rmdir() from userspace.
-
-I checked the code and cgroups are destroyed in cgroup_destroy_locked,
-which is only called from two places:
-
-* In cgroup_mkdir (only on failure)
-* In cgroup_rmdir
-
-See: https://elixir.bootlin.com/linux/v6.5-rc1/A/ident/cgroup_destroy_locke=
+> On 7/10/23 19:21, Ivan Babrou wrote:
+> > On Wed, Jul 5, 2023 at 11:20=E2=80=AFPM Shakeel Butt <shakeelb@google.c=
+om> wrote:
+> >> On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou wrote:
+> >>> Hello,
+> >>>
+> >>> We're seeing CPU load issues with cgroup stats retrieval. I made a
+> >>> public gist with all the details, including the repro code (which
+> >>> unfortunately requires heavily loaded hardware) and some flamegraphs:
+> >>>
+> >>> * https://gist.github.com/bobrik/5ba58fb75a48620a1965026ad30a0a13
+> >>>
+> >>> I'll repeat the gist of that gist here. Our repro has the following
+> >>> output after a warm-up run:
+> >>>
+> >>> completed:  5.17s [manual / mem-stat + cpu-stat]
+> >>> completed:  5.59s [manual / cpu-stat + mem-stat]
+> >>> completed:  0.52s [manual / mem-stat]
+> >>> completed:  0.04s [manual / cpu-stat]
+> >>>
+> >>> The first two lines do effectively the following:
+> >>>
+> >>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.sta=
+t
+> >>> /sys/fs/cgroup/system.slice/cpu.stat > /dev/null
+> >>>
+> >>> The latter two are the same thing, but via two loops:
+> >>>
+> >>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/cpu.stat >
+> >>> /dev/null; done
+> >>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.sta=
+t
+> >>>> /dev/null; done
+> >>> As you might've noticed from the output, splitting the loop into two
+> >>> makes the code run 10x faster. This isn't great, because most
+> >>> monitoring software likes to get all stats for one service before
+> >>> reading the stats for the next one, which maps to the slow and
+> >>> expensive way of doing this.
+> >>>
+> >>> We're running Linux v6.1 (the output is from v6.1.25) with no patches
+> >>> that touch the cgroup or mm subsystems, so you can assume vanilla
+> >>> kernel.
+> >>>
+> >>>  From the flamegraph it just looks like rstat flushing takes longer. =
+I
+> >>> used the following flags on an AMD EPYC 7642 system (our usual pick
+> >>> cpu-clock was blaming spinlock irqrestore, which was questionable):
+> >>>
+> >>> perf -e cycles -g --call-graph fp -F 999 -- /tmp/repro
+> >>>
+> >>> Naturally, there are two questions that arise:
+> >>>
+> >>> * Is this expected (I guess not, but good to be sure)?
+> >>> * What can we do to make this better?
+> >>>
+> >>> I am happy to try out patches or to do some tracing to help understan=
 d
+> >>> this better.
+> >> Hi Ivan,
+> >>
+> >> Thanks a lot, as always, for reporting this. This is not expected and
+> >> should be fixed. Is the issue easy to repro or some specific workload =
+or
+> >> high load/traffic is required? Can you repro this with the latest linu=
+s
+> >> tree? Also do you see any difference of root's cgroup.stat where this
+> >> issue happens vs good state?
+> > I'm afraid there's no easy way to reproduce. We see it from time to
+> > time in different locations. The one that I was looking at for the
+> > initial email does not reproduce it anymore:
+>
+> My understanding of mem-stat and cpu-stat is that they are independent
+> of each other. In theory, reading one shouldn't affect the performance
+> of reading the others. Since you are doing mem-stat and cpu-stat reading
+> repetitively in a loop, it is likely that all the data are in the cache
+> most of the time resulting in very fast processing time. If it happens
+> that the specific memory location of mem-stat and cpu-stat data are such
+> that reading one will cause the other data to be flushed out of the
+> cache and have to be re-read from memory again, you could see
+> significant performance regression.
+>
+> It is one of the possible causes, but I may be wrong.
 
-We should be covered here.
+Do you think it's somewhat similar to how iterating a matrix in rows
+is faster than in columns due to sequential vs random memory reads?
+
+* https://stackoverflow.com/q/9936132
+* https://en.wikipedia.org/wiki/Row-_and_column-major_order
+* https://en.wikipedia.org/wiki/Loop_interchange
+
+I've had a similar suspicion and it would be good to confirm whether
+it's that or something else. I can probably collect perf counters for
+different runs, but I'm not sure which ones I'll need.
+
+In a similar vein, if we could come up with a tracepoint that would
+tell us the amount of work done (or any other relevant metric that
+would help) during rstat flushing, I can certainly collect that
+information as well for every reading combination.
