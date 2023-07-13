@@ -2,173 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA07751502
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jul 2023 02:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8342C751E48
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jul 2023 12:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbjGMALG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jul 2023 20:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S234593AbjGMKGk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jul 2023 06:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbjGMALE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jul 2023 20:11:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B431FC8;
-        Wed, 12 Jul 2023 17:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=9qXn+we4vl/6E7qv05qrX8iXxtrz7OQ9ZzhJSvff8Kc=; b=qhJaU/WRyim+49/LxqT2+QEPc+
-        pCd0GD9P1nk1zlaAiGQIJdpmTWnqLS6JONTSdB6dS0VfDtPp9k5BaINzFVn8l193BbZJJatf3CctK
-        KtZdXK1UTgSdb3wvBtOzsUxCTP3ahqdZgcD4e0fsxMCwgfT91fQwh/NoQyXqDhwS7orJ9iVSBOywH
-        i3oBsOjj87EMmIJKNrgplqkzn6zD6n1dgRID1iZUBuxH80nDjTIsEhZO2LUqCO4bnK/CSABkoRB7C
-        tWq6Fxs3SMzzS/6X1CiroYvdabqNUux+ko99Pmu41c16vF0w9row/RLtadTFNHAcA4LUriAKL3tas
-        COEHZi+g==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJjvB-001YA3-0E;
-        Thu, 13 Jul 2023 00:11:01 +0000
-Message-ID: <f0dddc1a-6070-7e11-0458-b0db1f5ea671@infradead.org>
-Date:   Wed, 12 Jul 2023 17:10:59 -0700
+        with ESMTP id S234583AbjGMKGT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jul 2023 06:06:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16961270F;
+        Thu, 13 Jul 2023 03:06:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BF4A608D5;
+        Thu, 13 Jul 2023 10:06:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6875C433C8;
+        Thu, 13 Jul 2023 10:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689242764;
+        bh=uxBF/65cfGgFc9NUZsYBWMo4c7yjkoqCGF6QeEUJdAY=;
+        h=From:Subject:Date:To:Cc:From;
+        b=fMIucUY7GArhLgcLDCFIQxCyAzXRgRPE8TkbNnY5GyU1HBPhbd5464W8Yg6jjQ1lL
+         m6CWFlXeaqd10iV8ptWkOllE56aJPowyXSs5WiPty1Qsblb5rDh7+XYZZkXkukuQUD
+         2oiaMlw7C0sww3ot9gyUkCaU1j297MtNOoU25HevXc+ptbrPhHq2Zk21bLHu2o2olV
+         KM6Bl/kUQtYvAIUPH+MSd/KGQP+HX58eb57Amnb444A4mU/RQ41PTUTV2bTgUUDM37
+         0Ncnb1LvDeYFhV3bcDM22YynZx1G+N6CQHl4PYcq4tdmwsqnstpRPCpNQMucQad6SH
+         v0+dq9gbDJkNg==
+From:   Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 0/2] eventfd: simplify signal helpers
+Date:   Thu, 13 Jul 2023 12:05:36 +0200
+Message-Id: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 22/28] Docs/x86/sgx: Add description for cgroup support
-Content-Language: en-US
-To:     Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        zhiquan1.li@intel.com, seanjc@google.com, bagasdotme@gmail.com,
-        linux-doc@vger.kernel.org, zhanb@microsoft.com,
-        anakrish@microsoft.com, mikko.ylinen@linux.intel.com
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-23-haitao.huang@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230712230202.47929-23-haitao.huang@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAHDMr2QC/x3MwQrCMAyA4VcZORtpN9jAVxEPaZtuAY3SSBHG3
+ t3o8Tv8/w7GTdjgMuzQuIvJUx3xNEDeSFdGKW4YwziFJU7YqyF31nctaLIq3TGkUOK8UJk5g4e
+ vxlU+/+n15k5kjKmR5u238sP5IZbhOL4kMfO0fwAAAA==
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=276; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=uxBF/65cfGgFc9NUZsYBWMo4c7yjkoqCGF6QeEUJdAY=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSsP1PLoVi0NYRvYnj1752/FbjTRLb2F5/eK1jjLMP8OeoE
+ g8DNjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIlwrGT4n2l3WEWjd0VXqt6ih11Ns1
+ YfjrROvjc3V73IYWbr0apscUaGq6+my1lGuQtz2O564OagKGE5qVEnsLx/a9H1rIRnpwXZAA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Hey everyone,
 
-On 7/12/23 16:01, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
-> 
-> Add initial documentation of how to regulate the distribution of
-> SGX Enclave Page Cache (EPC) memory via the Miscellaneous cgroup
-> controller.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> ---
->  Documentation/arch/x86/sgx.rst | 77 ++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
-> 
-> diff --git a/Documentation/arch/x86/sgx.rst b/Documentation/arch/x86/sgx.rst
-> index 2bcbffacbed5..f6ca5594dcf2 100644
-> --- a/Documentation/arch/x86/sgx.rst
-> +++ b/Documentation/arch/x86/sgx.rst
-> @@ -300,3 +300,80 @@ to expected failures and handle them as follows:
->     first call.  It indicates a bug in the kernel or the userspace client
->     if any of the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls has
->     a return code other than 0.
-> +
-> +
-> +Cgroup Support
-> +==============
-> +
-> +The "sgx_epc" resource within the Miscellaneous cgroup controller regulates
-> +distribution of SGX EPC memory, which is a subset of system RAM that
-> +is used to provide SGX-enabled applications with protected memory,
-> +and is otherwise inaccessible, i.e. shows up as reserved in
-> +/proc/iomem and cannot be read/written outside of an SGX enclave.
-> +
-> +Although current systems implement EPC by stealing memory from RAM,
-> +for all intents and purposes the EPC is independent from normal system
-> +memory, e.g. must be reserved at boot from RAM and cannot be converted
-> +between EPC and normal memory while the system is running.  The EPC is
-> +managed by the SGX subsystem and is not accounted by the memory
-> +controller.  Note that this is true only for EPC memory itself, i.e.
-> +normal memory allocations related to SGX and EPC memory, e.g. the
-> +backing memory for evicted EPC pages, are accounted, limited and
-> +protected by the memory controller.
-> +
-> +Much like normal system memory, EPC memory can be overcommitted via
-> +virtual memory techniques and pages can be swapped out of the EPC
-> +to their backing store (normal system memory allocated via shmem).
-> +The SGX EPC subsystem is analogous to the memory subsytem, and
-> +it implements limit and protection models for EPC memory.
-> +
-> +SGX EPC Interface Files
-> +-----------------------
-> +
-> +For a generic description of the Miscellaneous controller interface
-> +files, please see Documentation/admin-guide/cgroup-v2.rst
-> +
-> +All SGX EPC memory amounts are in bytes unless explicitly stated
-> +otherwise.  If a value which is not PAGE_SIZE aligned is written,
-> +the actual value used by the controller will be rounded down to
-> +the closest PAGE_SIZE multiple.
-> +
-> +  misc.capacity
-> +        A read-only flat-keyed file shown only in the root cgroup.
-> +        The sgx_epc resource will show the total amount of EPC
-> +        memory available on the platform.
-> +
-> +  misc.current
-> +        A read-only flat-keyed file shown in the non-root cgroups.
-> +        The sgx_epc resource will show the current active EPC memory
-> +        usage of the cgroup and its descendants. EPC pages that are
-> +        swapped out to backing RAM are not included in the current count.
-> +
-> +  misc.max
-> +        A read-write single value file which exists on non-root
-> +        cgroups. The sgx_epc resource will show the EPC usage
-> +        hard limit. The default is "max".
-> +
-> +        If a cgroup's EPC usage reaches this limit, EPC allocations,
-> +        e.g. for page fault handling, will be blocked until EPC can
-> +        be reclaimed from the cgroup.  If EPC cannot be reclaimed in
-> +        a timely manner, reclaim will be forced, e.g. by ignoring LRU.
-> +
-> +  misc.events
-> +	A read-write flat-keyed file which exists on non-root cgroups.
-> +	Writes to the file reset the event counters to zero.  A value
-> +	change in this file generates a file modified event.
-> +
-> +	  max
-> +		The number of times the cgroup has triggered a reclaim
-> +		due to its EPC usage approaching (or exceeding) its max
-> +		EPC boundary.
+This simplifies the eventfd_signal() and eventfd_signal_mask() helpers
+by removing the count argument which is effectively unused.
 
-The indentation here (above) is a little confusing.
-Is this formatted the way that is intended?
+---
 
-> +
-> +Migration
-> +---------
-> +
-> +Once an EPC page is charged to a cgroup (during allocation), it
-> +remains charged to the original cgroup until the page is released
-> +or reclaimed.  Migrating a process to a different cgroup doesn't
-> +move the EPC charges that it incurred while in the previous cgroup
-> +to its new cgroup.
 
--- 
-~Randy
+
+---
+base-commit: 6be357f00aad4189130147fdc6f568cf776a4909
+change-id: 20230713-vfs-eventfd-signal-0b0d167ad6ec
+
