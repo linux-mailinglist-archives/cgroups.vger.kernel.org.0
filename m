@@ -2,71 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF5F754671
-	for <lists+cgroups@lfdr.de>; Sat, 15 Jul 2023 05:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727B1754688
+	for <lists+cgroups@lfdr.de>; Sat, 15 Jul 2023 05:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjGODI1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jul 2023 23:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
+        id S229502AbjGOD15 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jul 2023 23:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjGODIZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jul 2023 23:08:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917EA3A81;
-        Fri, 14 Jul 2023 20:08:23 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R2tZ51qmgzhYj0;
-        Sat, 15 Jul 2023 11:07:41 +0800 (CST)
+        with ESMTP id S229482AbjGOD14 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jul 2023 23:27:56 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273153A96;
+        Fri, 14 Jul 2023 20:27:55 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R2tyd5zMGzLnlZ;
+        Sat, 15 Jul 2023 11:25:29 +0800 (CST)
 Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
  (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 15 Jul
- 2023 11:08:19 +0800
+ 2023 11:27:52 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <tj@kernel.org>, <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>
-CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <shakeelb@google.com>
+CC:     <muchun.song@linux.dev>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH] cgroup: use cached local variable parent in for loop
-Date:   Sat, 15 Jul 2023 11:08:29 +0800
-Message-ID: <20230715030829.2343109-1-linmiaohe@huawei.com>
+Subject: [PATCH] mm/memcg: use get_page() for device private pages in mc_handle_swap_pte()
+Date:   Sat, 15 Jul 2023 11:28:02 +0800
+Message-ID: <20230715032802.2508163-1-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  canpemm500002.china.huawei.com (7.192.104.244)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Use local variable parent to initialize iter tcgrp in for loop so the size
-of cgroup.o can be reduced by 64 bytes. No functional change intended.
+When page table locked is held, the page can't be freed from under us.
+So use get_page() to get the extra page reference to simplify the code.
+No functional change intended.
 
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- kernel/cgroup/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/memcontrol.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 6225d5829459..033f38fb5cef 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5894,7 +5894,7 @@ static int cgroup_destroy_locked(struct cgroup *cgrp)
- 		parent->nr_threaded_children--;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 93e3cc581b51..4ca382efb1ca 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5670,8 +5670,9 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
+ 	 */
+ 	if (is_device_private_entry(ent)) {
+ 		page = pfn_swap_entry_to_page(ent);
+-		if (!get_page_unless_zero(page))
+-			return NULL;
++		/* Get a page reference while we know the page can't be freed. */
++		get_page(page);
++
+ 		return page;
+ 	}
  
- 	spin_lock_irq(&css_set_lock);
--	for (tcgrp = cgroup_parent(cgrp); tcgrp; tcgrp = cgroup_parent(tcgrp)) {
-+	for (tcgrp = parent; tcgrp; tcgrp = cgroup_parent(tcgrp)) {
- 		tcgrp->nr_descendants--;
- 		tcgrp->nr_dying_descendants++;
- 		/*
 -- 
 2.33.0
 
