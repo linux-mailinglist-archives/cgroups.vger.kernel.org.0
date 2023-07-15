@@ -2,81 +2,197 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13FC7543B6
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jul 2023 22:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E8775458D
+	for <lists+cgroups@lfdr.de>; Sat, 15 Jul 2023 02:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbjGNU0o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jul 2023 16:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        id S229829AbjGOABF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jul 2023 20:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236158AbjGNU0n (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jul 2023 16:26:43 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6AF35A0;
-        Fri, 14 Jul 2023 13:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689366402; x=1720902402;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=hN1j+GFrFTi2sMdb0x6EvEauXOQiHe+xtthEmkTSYxI=;
-  b=bisEsH+RDsJv3bzPwySZf3SxqsJzyymVWfNewe80yQEgKrvhaMOUQSZw
-   +pQNIHO2r1xq4iJaB7fZ2m3tvYXCCWJqLP36rNudlfGwKXth4LfECZsxG
-   O2hutCfIaMR4nQob3CAE0PgR67Q4AHshG6KCdIsT88iZ7otFwCLOfVnQW
-   UREH6/xjlc9/eQdrB+szPx8c5YJcRXQotuawhYude4YWIqNFcZe0qPnfS
-   DK1Bo9zVmiMSfTkYn/bSgjKUIdajkP9VzGj9JKO8DVj3gmu7DFiUnPlFa
-   4RspIqvr3hGYB9/xgxWYjABYq+cEiYuT5r1237rMQDSe+91NgSGyE+N3Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="363032479"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="363032479"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 13:26:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="969152359"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="969152359"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.18.126])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 14 Jul 2023 13:26:39 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        "Kristen Carlson Accardi" <kristen@linux.intel.com>,
-        zhiquan1.li@intel.com, seanjc@google.com, bagasdotme@gmail.com,
-        linux-doc@vger.kernel.org, zhanb@microsoft.com,
-        anakrish@microsoft.com, mikko.ylinen@linux.intel.com
-Subject: Re: [PATCH v3 22/28] Docs/x86/sgx: Add description for cgroup support
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-23-haitao.huang@linux.intel.com>
-Date:   Fri, 14 Jul 2023 15:26:38 -0500
+        with ESMTP id S229636AbjGOABE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jul 2023 20:01:04 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046263A95
+        for <cgroups@vger.kernel.org>; Fri, 14 Jul 2023 17:01:03 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3144098df56so2677922f8f.2
+        for <cgroups@vger.kernel.org>; Fri, 14 Jul 2023 17:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1689379261; x=1691971261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9qCsYq5AfQu15dBgFcUhM5i+Y9hdaw4Di+rchoqRa1A=;
+        b=w1so6/uRCSkF2JfOE4Lp7UEUm7H2/SnJOrUe5GP0/6Hoc5lu/q59ef2oEAIUdNGlPu
+         1oBomtwOZE28hBXuVf9l6r3h/U7PyWOeBibY6Emk7xzVuyXK6RJfTioxx73MA4Ej67Ft
+         gK1kNyPKvTTQneIkrmuHgWBjmDfq96bq6Y21Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689379261; x=1691971261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9qCsYq5AfQu15dBgFcUhM5i+Y9hdaw4Di+rchoqRa1A=;
+        b=BDC9q7vBn3aOi/NQJIZzkAlf6Ktcy/DmSkjDL/Iaj2XP5hHlevwUu/0TcUsAZSWmxH
+         +732HQyjAzsROzWgzkHQ9urE0R7c9kn/R5F1Dxgj14/eoIsCyPHSo22i30OexS143Jbr
+         XaV/9Vn11f1NkGQjdMQZXNyhBHSU86qx5tJgvpevrGNEGOnAqPF0IbzD+OUIAxWMUtog
+         yPv7vjJXiD+TPCnpY+o2OI2XTgjxHToKZkh8ndnyRtnagVTHpIVRp8/rk83AWRW7xS45
+         1568sUqNzqQLoquJxrl1AHcVH7KeyYNBWquY7/cPQuBwDfVhrwJsPqYVE/FT1J8mOfjO
+         4qiw==
+X-Gm-Message-State: ABy/qLa3rDADwtXHBBFTj7ptB/uHxX+1jzfhFXVFDkjmN9tReLvT+bdC
+        J6zSJdflHvsyBZu4zM4jQBdUuvePcdxgL9wwcLRNsz4E6ZG+quzXWXc=
+X-Google-Smtp-Source: APBJJlEvCf0BSl7GtqyQou6Cs0GD8ZpzFZvUUaUmW+z6ihNa4/16dJUC5WbYXRU1+zLyptJm0Uqq3GnsW0ohBqtQtKI=
+X-Received: by 2002:a5d:66c5:0:b0:316:e073:e547 with SMTP id
+ k5-20020a5d66c5000000b00316e073e547mr5135314wrw.28.1689379261115; Fri, 14 Jul
+ 2023 17:01:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.1729qobwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <20230712230202.47929-23-haitao.huang@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+ <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
+ <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
+ <fea3587a-ca6a-6930-bd3d-c4f7f330be67@redhat.com>
+In-Reply-To: <fea3587a-ca6a-6930-bd3d-c4f7f330be67@redhat.com>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Fri, 14 Jul 2023 17:00:50 -0700
+Message-ID: <CABWYdi2mBWsaEJXDEKeYaSCuikNbjBBU1yo+Yai+vM=rf2=LVQ@mail.gmail.com>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+To:     Waiman Long <longman@redhat.com>
+Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri, Jul 14, 2023 at 10:23=E2=80=AFAM Waiman Long <longman@redhat.com> w=
+rote:
+>
+> On 7/13/23 19:25, Ivan Babrou wrote:
+> > On Mon, Jul 10, 2023 at 5:44=E2=80=AFPM Waiman Long <longman@redhat.com=
+> wrote:
+> >> On 7/10/23 19:21, Ivan Babrou wrote:
+> >>> On Wed, Jul 5, 2023 at 11:20=E2=80=AFPM Shakeel Butt <shakeelb@google=
+.com> wrote:
+> >>>> On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou wrote:
+> >>>>> Hello,
+> >>>>>
+> >>>>> We're seeing CPU load issues with cgroup stats retrieval. I made a
+> >>>>> public gist with all the details, including the repro code (which
+> >>>>> unfortunately requires heavily loaded hardware) and some flamegraph=
+s:
+> >>>>>
+> >>>>> * https://gist.github.com/bobrik/5ba58fb75a48620a1965026ad30a0a13
+> >>>>>
+> >>>>> I'll repeat the gist of that gist here. Our repro has the following
+> >>>>> output after a warm-up run:
+> >>>>>
+> >>>>> completed:  5.17s [manual / mem-stat + cpu-stat]
+> >>>>> completed:  5.59s [manual / cpu-stat + mem-stat]
+> >>>>> completed:  0.52s [manual / mem-stat]
+> >>>>> completed:  0.04s [manual / cpu-stat]
+> >>>>>
+> >>>>> The first two lines do effectively the following:
+> >>>>>
+> >>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.s=
+tat
+> >>>>> /sys/fs/cgroup/system.slice/cpu.stat > /dev/null
+> >>>>>
+> >>>>> The latter two are the same thing, but via two loops:
+> >>>>>
+> >>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/cpu.stat=
+ >
+> >>>>> /dev/null; done
+> >>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.s=
+tat
+> >>>>>> /dev/null; done
+> >>>>> As you might've noticed from the output, splitting the loop into tw=
+o
+> >>>>> makes the code run 10x faster. This isn't great, because most
+> >>>>> monitoring software likes to get all stats for one service before
+> >>>>> reading the stats for the next one, which maps to the slow and
+> >>>>> expensive way of doing this.
+> >>>>>
+> >>>>> We're running Linux v6.1 (the output is from v6.1.25) with no patch=
+es
+> >>>>> that touch the cgroup or mm subsystems, so you can assume vanilla
+> >>>>> kernel.
+> >>>>>
+> >>>>>   From the flamegraph it just looks like rstat flushing takes longe=
+r. I
+> >>>>> used the following flags on an AMD EPYC 7642 system (our usual pick
+> >>>>> cpu-clock was blaming spinlock irqrestore, which was questionable):
+> >>>>>
+> >>>>> perf -e cycles -g --call-graph fp -F 999 -- /tmp/repro
+> >>>>>
+> >>>>> Naturally, there are two questions that arise:
+> >>>>>
+> >>>>> * Is this expected (I guess not, but good to be sure)?
+> >>>>> * What can we do to make this better?
+> >>>>>
+> >>>>> I am happy to try out patches or to do some tracing to help underst=
+and
+> >>>>> this better.
+> >>>> Hi Ivan,
+> >>>>
+> >>>> Thanks a lot, as always, for reporting this. This is not expected an=
+d
+> >>>> should be fixed. Is the issue easy to repro or some specific workloa=
+d or
+> >>>> high load/traffic is required? Can you repro this with the latest li=
+nus
+> >>>> tree? Also do you see any difference of root's cgroup.stat where thi=
+s
+> >>>> issue happens vs good state?
+> >>> I'm afraid there's no easy way to reproduce. We see it from time to
+> >>> time in different locations. The one that I was looking at for the
+> >>> initial email does not reproduce it anymore:
+> >> My understanding of mem-stat and cpu-stat is that they are independent
+> >> of each other. In theory, reading one shouldn't affect the performance
+> >> of reading the others. Since you are doing mem-stat and cpu-stat readi=
+ng
+> >> repetitively in a loop, it is likely that all the data are in the cach=
+e
+> >> most of the time resulting in very fast processing time. If it happens
+> >> that the specific memory location of mem-stat and cpu-stat data are su=
+ch
+> >> that reading one will cause the other data to be flushed out of the
+> >> cache and have to be re-read from memory again, you could see
+> >> significant performance regression.
+> >>
+> >> It is one of the possible causes, but I may be wrong.
+> > Do you think it's somewhat similar to how iterating a matrix in rows
+> > is faster than in columns due to sequential vs random memory reads?
+> >
+> > * https://stackoverflow.com/q/9936132
+> > * https://en.wikipedia.org/wiki/Row-_and_column-major_order
+> > * https://en.wikipedia.org/wiki/Loop_interchange
+>
+> Yes, it is similar to what is being described in those articles.
+>
+>
+> >
+> > I've had a similar suspicion and it would be good to confirm whether
+> > it's that or something else. I can probably collect perf counters for
+> > different runs, but I'm not sure which ones I'll need.
+> >
+> > In a similar vein, if we could come up with a tracepoint that would
+> > tell us the amount of work done (or any other relevant metric that
+> > would help) during rstat flushing, I can certainly collect that
+> > information as well for every reading combination.
+>
+> The perf-c2c tool may be able to help. The data to look for is how often
+> the data is from caches vs direct memory load/store.
 
-> +
-> +  misc.events
-> +	A read-write flat-keyed file which exists on non-root cgroups.
-
-It's actually read-only for this file. Will fix.
-
-Haitao
+It looks like c2c only works for the whole system, not individual
+treads. There's a lot of noise from the rest of the system.
