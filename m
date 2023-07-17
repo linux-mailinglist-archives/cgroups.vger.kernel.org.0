@@ -2,102 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEBC75640A
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 15:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3129F756413
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 15:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbjGQNOk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Jul 2023 09:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
+        id S231336AbjGQNP3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Jul 2023 09:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGQNOk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 09:14:40 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44711C7;
-        Mon, 17 Jul 2023 06:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689599679; x=1721135679;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=WXAAajyq7RVwSRDzE/5hqXM57XC+7i9ZvN34rS3CqAg=;
-  b=YXzQdiEr2vtr6RoAmwmzKNNKFAebqPY8Lvj0Xvk3ad6W7GDIu7ASKxu/
-   m9wFW3Zdhk9Y5fw9KPmOKvuK9L+q+p/3KjP3EyoQ4vGBBqmGlAuX1LXMt
-   jHabnfE1QOfOMp9kDrNcofL1K5HCpVbQJXDdiR29nfSEOBa1vjlvPv8kz
-   10Sxxr42K4nrzjm0FsLLFdrmMgiDwZPaKbd5QA67Mm6eOwS/6fgIX6jK7
-   J6oi6GKEAUQykH0q1T6+5qJw3zpkx1nVEPBBTXILTVOJPNerEFXQb8IAM
-   LppHtpXrm7DWSbo/K3XcIdpJaZ83AMnH7kqBbnB4WemmKJO0MXhdsye8M
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="432095354"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="432095354"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 06:14:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="717230049"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="717230049"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Jul 2023 06:14:34 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
-        tj@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, cgroups@vger.kernel.org,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com
-Subject: Re: [PATCH v3 17/28] x86/sgx: fix a NULL pointer
+        with ESMTP id S230354AbjGQNPZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 09:15:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BF9C7;
+        Mon, 17 Jul 2023 06:15:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2936D61057;
+        Mon, 17 Jul 2023 13:15:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45A23C433C8;
+        Mon, 17 Jul 2023 13:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689599723;
+        bh=TPoLuNdok8xu469zt+gJUA+72duNsVIwHpKBEXyRj8U=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=eNDT/Gt2Zpla10k8gy1Fza+XuWfpc4fT2vL05ThKyjAfvKHwVhd2drBHf1OFuwNtS
+         5kKARQIlTXZan+yWS97J8FbrysJ9uQC2SbPYeuE75MdNvX1SNSIxI2EkCvZx4uuK1u
+         fU971SaXjOc9j5/tJFQ2ILNJu5GLfdWeOJMEFdzlV1ciUoTrPWH9k8ppua1iWbrR3b
+         G1eifQQo1TKw4xPoeEkBDfluI37QQ3tmta+cjCBzS15mchxYAqUDklyIgr5TPXzRq6
+         AcsberFs9b0a+0HS/80l0sZ8YSRfjOHsHJD8Br1KbXQ20hvl7AA/bFUAU0qUOoxrL9
+         VuDThiaCVZgMQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 17 Jul 2023 13:15:19 +0000
+Message-Id: <CU4H43P3H35X.1BCA3CE4D1250@seitikki>
+Subject: Re: [PATCH v3 18/28] cgroup/misc: Fix an overflow
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, "Zefan Li" <lizefan.x@bytedance.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>
+Cc:     <kai.huang@intel.com>, <reinette.chatre@intel.com>,
+        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>
+X-Mailer: aerc 0.14.0
 References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-18-haitao.huang@linux.intel.com>
- <CU4GJG1NRTUD.275UVHM8W2VED@seitikki> <CU4GKARPLGU5.1CVBNY9N4K28F@seitikki>
-Date:   Mon, 17 Jul 2023 08:14:30 -0500
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.1779qgkdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CU4GKARPLGU5.1CVBNY9N4K28F@seitikki>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+ <20230712230202.47929-19-haitao.huang@linux.intel.com>
+In-Reply-To: <20230712230202.47929-19-haitao.huang@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 17 Jul 2023 07:49:27 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
-
-> On Mon Jul 17, 2023 at 12:48 PM UTC, Jarkko Sakkinen wrote:
->> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
->> > Under heavy load, the SGX EPC reclaimers (ksgxd or future EPC cgroup
->> > worker) may reclaim SECS EPC page for an enclave and set
->> > encl->secs.epc_page to NULL. But the SECS EPC page is required for  
->> EAUG
->> > in #PF handler and is used without checking for NULL and reloading.
->> >
->> > Fix this by checking if SECS is loaded before EAUG and load it if it  
->> was
->> > reclaimed.
->> >
->> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->>
->> A bug fix should be 1/*.
+On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+> Overflow may happen in misc_cg_try_charge if new_usage becomes above
+> INT_MAX, for example, on platforms with large SGX EPC sizes.
 >
-> And a fixes tag.
+> Change type of new_usage to long from int and check overflow.
 >
-> Or is there a bug that is momentized by the earlier patches? This patch
-> feels confusing to say the least.
->
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 
-It happens in heavy reclaiming cases, just extremely rare when EPC  
-accounting is not partitioned into cgroups. Will add fix tag with the  
-related EDMM patch. And move this as the first patch.
+As are bug fixes, this is also precursory work that SGX cgroups patches
+should build on top of. Therefore, it should be in the very beginning,
+right after any possible bug fixes to the existing code.
 
-Thanks
-Haitao
+BR, Jarkko
+
 
