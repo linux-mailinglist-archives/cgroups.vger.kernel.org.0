@@ -2,66 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A624A755F83
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 11:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A080756105
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 13:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjGQJkS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Jul 2023 05:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S229722AbjGQLCZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Jul 2023 07:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjGQJkA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 05:40:00 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268264223
-        for <cgroups@vger.kernel.org>; Mon, 17 Jul 2023 02:37:37 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666e97fcc60so2647423b3a.3
-        for <cgroups@vger.kernel.org>; Mon, 17 Jul 2023 02:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689586656; x=1692178656;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qt43AGwP78WC80RAn41rmisnWae//0xO36ekfLuw42c=;
-        b=jC7fae8lFjyqrJWA2LzQPl6FbH1OzsT5Gc9737HZWMKXRD8pS+FDesVLzG0MQUqivh
-         kl0w0WfhfNnUmT2cbdRlls0wJchGwg894mxP/5U0yarwfQgprEiVOnnwfmnHohS1jZSW
-         j87ESoEDgVl+b4VDIsU5ca1jtHsLvptabPi+ZnzFRa3j6DfGYqKs/18Zme/MQdY6nH/O
-         LbhS023WhlvCRp50+HcW6ViDqX6PaIOYyw0PGCdNGbKwtmrs29t8xq7FwNPsgOT6Z0tG
-         XR6uUb3PxyTKPdpOIoiLAzWTe7TZZhXf8qC5Jq99z9ah1ypSPMuES/nvhj5TOAPtn5wl
-         IZ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689586656; x=1692178656;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qt43AGwP78WC80RAn41rmisnWae//0xO36ekfLuw42c=;
-        b=H4AKFuBM467fBdD4Far3uya7Nt9SzHEAE3sc2i7fcm9Jy66argas/2uiWV6ISNqh99
-         P++7nOV08GXwMl4dRCWz4BUFDACxhSibllmjamT1uGzMPwydYX/wL/UI1HVjrZEaXRLw
-         gwURLmPHDDt5L737o39tyZ9RvM6nDFkd/texZrd93DfnXJDLsAh83Jno9FIlG1s7PMoi
-         /UCaV7GcB6tYYUKYfgCd8MeI1CaKjlFu41m6ycdgAV4xm9LdzKennIFswIaee9RY4PA+
-         EBQ80O2cdq7eVgcu3E7ZaGRF4+e+cV4ibkZnMbF+FkVDvmtYolkFNuQ1+g7npWZ7C0nv
-         k8kA==
-X-Gm-Message-State: ABy/qLbDx67WFNgI7N2dXmECUqI8W2tkfKG7olQw2m4bOxfzOifA5N+I
-        4eBJ9n+iP1Tv95l9jNsL7MPBR+WzTEQRt48UQDc=
-X-Google-Smtp-Source: APBJJlEi5FKYNab5ZfbXQFHiYyO4nWkp890dCF+4uVRDSCNzu22deBhJ2q2Q6auiU9KLTtcsnHqTdw==
-X-Received: by 2002:a05:6a21:8cc4:b0:134:2fd0:7362 with SMTP id ta4-20020a056a218cc400b001342fd07362mr5248697pzb.22.1689586655878;
-        Mon, 17 Jul 2023 02:37:35 -0700 (PDT)
-Received: from C02G87K0MD6R.bytedance.net ([2408:8000:b001:1:1f:58ff:f102:103])
-        by smtp.gmail.com with ESMTPSA id t5-20020aa79385000000b0063d2dae6247sm11541435pfe.77.2023.07.17.02.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 02:37:35 -0700 (PDT)
-From:   Hao Jia <jiahao.os@bytedance.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mkoutny@suse.com
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hao Jia <jiahao.os@bytedance.com>
-Subject: [PATCH] cgroup/rstat: record the cumulative per-cpu time of cgroup and its descendants
-Date:   Mon, 17 Jul 2023 17:36:12 +0800
-Message-Id: <20230717093612.40846-1-jiahao.os@bytedance.com>
-X-Mailer: git-send-email 2.37.0 (Apple Git-136)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S229566AbjGQLCX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 07:02:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B496D8;
+        Mon, 17 Jul 2023 04:02:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FF6E60F0A;
+        Mon, 17 Jul 2023 11:02:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DCDC433C8;
+        Mon, 17 Jul 2023 11:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689591741;
+        bh=+53C990ezxW+CH/h5YwzOeu1TggP247Z5D2ia9sXu+Q=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=crl0RtcG6CueSPzN+sOFtkclR5nXvQhbHqUaymi2TIBNaa3LDmtZhYdjjZRNXDzRC
+         3VrH7AakvgvbraQpIiHPTsAHzEOUtVv2duv/BAL8u8Yoxgy/wJoqJDj5jvM0Ay0PJ/
+         YkBxrBfwK8fdlmkdRg501Z+vhKnCsdzgFyMrZjJXmcCgUUZw5ziVIoLiDwVQKGFsBV
+         j61wh5UDA16gqnikDp3jL3icW4ZoA8/savmEqpMlO/fPwLlVWC5YuU7R6jvpGjrArT
+         G30u4FNdxOtrR6nN/2dS7ohFAzSs+3QqswTubCgkH8RsNwmVOUonGDYeweNkaxm5e3
+         nDfdpvPBJwcow==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 17 Jul 2023 11:02:16 +0000
+Message-Id: <CU4EA8H87W7J.11BOV563ZK2JX@seitikki>
+Cc:     <kai.huang@intel.com>, <reinette.chatre@intel.com>,
+        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>
+Subject: Re: [PATCH v3 00/28] Add Cgroup support for SGX EPC memory
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <cgroups@vger.kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+In-Reply-To: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,66 +60,143 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now the member variable bstat of the structure cgroup_rstat_cpu
-records the per-cpu time of the cgroup itself, but does not
-include the per-cpu time of its descendants. The per-cpu time
-including descendants is very useful for calculating the
-per-cpu usage of cgroups.
+On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+> SGX EPC memory allocations are separate from normal RAM allocations, and =
+is
+> managed solely by the SGX subsystem. The existing cgroup memory controlle=
+r
+> cannot be used to limit or account for SGX EPC memory, which is a desirab=
+le
+> feature in some environments, e.g., support for pod level control in a
+> Kubernates cluster on a VM or baremetal host [1,2] in those environments.
+>
+> This patchset implements the support for sgx_epc memory within the misc
+> cgroup controller. The user can use the misc cgroup controller to set and
+> enforce a max limit on total EPC usage per cgroup. The implementation
+> reports current usage and events of reaching the limit per cgroup as well
+> as the total system capacity.
+>
+> This work was originally authored by Sean Christopherson a few years ago,
+> and previously modified by Kristen C. Accardi to work with more recent
+> kernels, and to utilize the misc cgroup controller rather than a custom
+> controller. Now I updated the patches based on review comments on the V2
+> series[3], simplified a few aspects of the implementation/design and fixe=
+d
+> some stability issues found from testing, while keeping the same user spa=
+ce
+> facing interfaces.
+>
+> The patchset adds support for multiple LRUs to track both reclaimable EPC
+> pages (i.e. pages the reclaimer knows about), as well as unreclaimable EP=
+C
+> pages (i.e.  pages which the reclaimer isn't aware of, such as VA pages).
+> These pages are assigned to an LRU, as well as an enclave, so that an
+> enclave's full EPC usage can be tracked, and limited to a max value. Duri=
+ng
+> OOM events, an enclave can be have its memory zapped, and all the EPC pag=
+es
+> not tracked by the reclaimer can be freed.
+>
+> I appreciate your comments and feedback.
+>
+> Summary of changes from v2: (more details in commit logs)
+>
+> * Added EPC states to replace flags in sgx_epc_page struct. (Jarkko)
+> * Unrolled wrappers for cond_resched, list (Dave)
+> * Separate patches for adding reclaimable and unreclaimable lists. (Dave)
+> * Other improvments on patch flow, commit messages, styles. (Dave, Jarkko=
+)
+> * Simplified the cgroup tree walking with plain
+>   css_for_each_descendant_pre.
+> * Fixed race conditions and crashes.
+> * OOM killer to wait for the victim enclave pages being reclaimed.
+> * Unblock the user by handling misc_max_write callback asynchronously.
+> * Rebased onto 6.4 and no longer base this series on the MCA patchset.
+> * Fix an overflow in misc_try_charge.
+> * Fix a NULL pointer in SGX PF handler.
+> * Updated and included the SGX selftest patches previously reviewed. Thos=
+e
+>   patches fix issues triggered in high EPC pressure required for cgroup
+>   testing.
+> * Added test scripts to help setup and test SGX EPC cgroups.
+>
+> [1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6=
+PR21MB1177.namprd21.prod.outlook.com/
+> [2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
+> [3]https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.int=
+el.com/
+> [4]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
+>
+> Haitao Huang (6):
+>   x86/sgx: Store struct sgx_encl when allocating new VA pages
+>   x86/sgx: Introduce EPC page states
+>   x86/sgx: fix a NULL pointer
+>   cgroup/misc: Fix an overflow
+>   selftests/sgx: Retry the ioctl()'s returned with EAGAIN
+>   selftests/sgx: Add scripts for epc cgroup testing
+>
+> Jarkko Sakkinen (3):
+>   selftests/sgx: Move ENCL_HEAP_SIZE_DEFAULT to main.c
+>   selftests/sgx: Use encl->encl_size in sigstruct.c
+>   selftests/sgx: Include the dynamic heap size to the ELRANGE
+>     calculation
+>
+> Kristen Carlson Accardi (9):
+>   x86/sgx: Add 'struct sgx_epc_lru_lists' to encapsulate lru list(s)
+>   x86/sgx: Use sgx_epc_lru_lists for existing active page list
+>   x86/sgx: Store reclaimable epc pages in sgx_epc_lru_lists
+>   x86/sgx: store unreclaimable EPC pages in sgx_epc_lru_lists
+>   x86/sgx: Use a list to track to-be-reclaimed pages
+>   cgroup/misc: Add per resource callbacks for CSS events
+>   cgroup/misc: Add SGX EPC resource type and export APIs for SGX driver
+>   x86/sgx: Limit process EPC usage with misc cgroup controller
+>   Docs/x86/sgx: Add description for cgroup support
+>
+> Sean Christopherson (9):
+>   x86/sgx: Add EPC page flags to identify owner type
+>   x86/sgx: Introduce RECLAIM_IN_PROGRESS state
+>   x86/sgx: Allow reclaiming up to 32 pages, but scan 16 by default
+>   x85/sgx: Return the number of EPC pages that were successfully
+>     reclaimed
+>   x86/sgx: Add option to ignore age of page during EPC reclaim
+>   x86/sgx: Prepare for multiple LRUs
+>   x86/sgx: Expose sgx_reclaim_pages() for use by EPC cgroup
+>   x86/sgx: Add helper to grab pages from an arbitrary EPC LRU
+>   x86/sgx: Add EPC OOM path to forcefully reclaim EPC
+>
+> Vijay Dhanraj (1):
+>   selftests/sgx: Add SGX selftest augment_via_eaccept_long
+>
+>  Documentation/arch/x86/sgx.rst                |  77 ++++
+>  arch/x86/Kconfig                              |  13 +
+>  arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+>  arch/x86/kernel/cpu/sgx/driver.c              |  27 +-
+>  arch/x86/kernel/cpu/sgx/encl.c                |  95 +++-
+>  arch/x86/kernel/cpu/sgx/encl.h                |   4 +-
+>  arch/x86/kernel/cpu/sgx/epc_cgroup.c          | 406 ++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/epc_cgroup.h          |  60 +++
+>  arch/x86/kernel/cpu/sgx/ioctl.c               |  25 +-
+>  arch/x86/kernel/cpu/sgx/main.c                | 406 ++++++++++++++----
+>  arch/x86/kernel/cpu/sgx/sgx.h                 | 113 ++++-
+>  include/linux/misc_cgroup.h                   |  34 ++
+>  kernel/cgroup/misc.c                          |  63 ++-
+>  tools/testing/selftests/sgx/load.c            |   8 +-
+>  tools/testing/selftests/sgx/main.c            | 177 +++++++-
+>  tools/testing/selftests/sgx/main.h            |   6 +-
+>  .../selftests/sgx/run_tests_in_misc_cg.sh     |  68 +++
+>  tools/testing/selftests/sgx/setup_epc_cg.sh   |  29 ++
+>  tools/testing/selftests/sgx/sigstruct.c       |   8 +-
+>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
+>  20 files changed, 1446 insertions(+), 187 deletions(-)
+>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>  create mode 100755 tools/testing/selftests/sgx/run_tests_in_misc_cg.sh
+>  create mode 100755 tools/testing/selftests/sgx/setup_epc_cg.sh
+>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
+>
+> --=20
+> 2.25.1
 
-Although we can indirectly obtain the total per-cpu time
-of the cgroup and its descendants by accumulating the per-cpu
-bstat of each descendant of the cgroup. But after a child cgroup
-is removed, we will lose its bstat information. This will cause
-the cumulative value to be non-monotonic, thus affecting
-the accuracy of cgroup per-cpu usage.
+Thanks for taking the effort, must have been tedious!
 
-So we add the cumul_bstat variable to record the total
-per-cpu time of this cgroup and its descendants, which is
-similar to "cpuacct.usage*" in cgroup v1. And this is
-also helpful for the migration from cgroup v1 to cgroup v2.
-After adding this variable, we can obtain the per-cpu time of
-cgroup and its descendants in user mode through eBPF, etc.
-
-Signed-off-by: Hao Jia <jiahao.os@bytedance.com>
----
- include/linux/cgroup-defs.h | 3 +++
- kernel/cgroup/rstat.c       | 4 ++++
- 2 files changed, 7 insertions(+)
-
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 8a0d5466c7be..25114d62089e 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -341,6 +341,9 @@ struct cgroup_rstat_cpu {
- 	 */
- 	struct cgroup_base_stat last_bstat;
- 
-+	/* Record the cumulative per-cpu time of cgroup and its descendants */
-+	struct cgroup_base_stat cumul_bstat;
-+
- 	/*
- 	 * Child cgroups with stat updates on this cpu since the last read
- 	 * are linked on the parent's ->updated_children through
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 2542c21b6b6d..7c0ddd2e90d7 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -361,11 +361,15 @@ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
- 	cgroup_base_stat_sub(&delta, &rstatc->last_bstat);
- 	cgroup_base_stat_add(&cgrp->bstat, &delta);
- 	cgroup_base_stat_add(&rstatc->last_bstat, &delta);
-+	cgroup_base_stat_add(&rstatc->cumul_bstat, &delta);
- 
- 	/* propagate global delta to parent (unless that's root) */
- 	if (cgroup_parent(parent)) {
- 		delta = cgrp->bstat;
-+		rstatc = cgroup_rstat_cpu(parent, cpu);
-+
- 		cgroup_base_stat_sub(&delta, &cgrp->last_bstat);
-+		cgroup_base_stat_add(&rstatc->cumul_bstat, &delta);
- 		cgroup_base_stat_add(&parent->bstat, &delta);
- 		cgroup_base_stat_add(&cgrp->last_bstat, &delta);
- 	}
--- 
-2.37.0
-
+BR, Jarkko
