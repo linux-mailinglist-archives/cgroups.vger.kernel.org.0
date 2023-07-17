@@ -2,223 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D176756CD1
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 21:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A72756DA5
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 21:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbjGQTJ2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Jul 2023 15:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        id S229471AbjGQTw2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Jul 2023 15:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjGQTJY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 15:09:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAA7198
-        for <cgroups@vger.kernel.org>; Mon, 17 Jul 2023 12:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689620916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ir1J/k3wLKNYp7LI2ijvFBF6ZKrDfOA6Drq2a2Jon50=;
-        b=B4DThB0Lv+ETPz9tIxnhsTUh5Kp+TOxJvpk8PPAEd97110jklxpxktgtbNDlizQhQoSAvQ
-        HZjPR1G3S0xmT0JBFNTa6k2Ue4F6y+TxzVQiHf3wepfXw4yccXvaXlHhA2gjW3b7dumZS5
-        7UT2PTW3mg/Yi9wPoBAcjZyKoDqE3H8=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-shCzoy0LOBaKfGv779l8AQ-1; Mon, 17 Jul 2023 15:08:34 -0400
-X-MC-Unique: shCzoy0LOBaKfGv779l8AQ-1
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-34610c52cf8so30600675ab.0
-        for <cgroups@vger.kernel.org>; Mon, 17 Jul 2023 12:08:34 -0700 (PDT)
+        with ESMTP id S229634AbjGQTw1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 15:52:27 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ABF126;
+        Mon, 17 Jul 2023 12:52:26 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-78654448524so183423139f.2;
+        Mon, 17 Jul 2023 12:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689623546; x=1692215546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xWoO0TUyoZ+Qmv9rHsFJp85hT+0xnOPhDe/kh1QoW+4=;
+        b=b/OD9dQBwXE1T8MrYijlWFmG5nFgVYLUSGDixvQrh4A+Vyno/KDVv+Pz7WNzBol1c7
+         hgPj6C5a/CdM8V4v9GlJbGJegX4cmUqZhY386PFQo/u2kdOS0H4F+ItE8lvfOabQMBq4
+         B+t9XaxuY0MkH70snVL8s0ePHjc8aFM4oFpf04Gbq9YxNiylU21jGRFT0TNyzjtuCIgC
+         4PuELLmlzmV0xkS9mzXnFdHXNCEkugpQcM7PUci+dtuq5vf475R0VjnGL8r4cmHGgXTo
+         /swLnuNI5MMi1CSwtcMJdKE52LgaAn2tNjyeq/xMKoRE3jD+BOKiRoB2KLYtpMkgvRrm
+         2Nwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689620914; x=1692212914;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ir1J/k3wLKNYp7LI2ijvFBF6ZKrDfOA6Drq2a2Jon50=;
-        b=WejQ/kjjLICybahGxP3SXTNfY+iO8Rq33d51Mm+InPZ67FqE1IrlFvRescMJbJZ/eb
-         1Gfhd6S3hfubqtyWwjMNPgB743FoEZFyP5KnT+OKxJVFpXXrYE0o2XtaJCwkV4BmnDKc
-         KrBaQ56Ujr3bewPYb1ozt0nny+5DG3VF3QVhzV6nKV9DYDH+ADPp6gW+rX0zQUYNXDd8
-         LGck5+oLyhlyKf8J6OUd7h9FJU/vf3sGevWUKWpruwGweijWdLRE7W2K5FeBWm4xNKt2
-         OiTUAhqJNk6yb7/DAOam+8eC8nNYRTgRFO7N9BQCT4q/E+ZXt7LAon94JNwGQq6TUC/Q
-         CyAg==
-X-Gm-Message-State: ABy/qLZu30d3HvAIsdqiv1eBgQCX5IB/qqxeYx6VLZvcjkoJINqjue35
-        r/9f3lGRtgDPLCAHCAo2t/GSRlDucC6ROJXeFkc1CFnZzgo7y176Y2G4zKk3C1iSNWBObBPL38v
-        1FJTMqJhuieF7NY7INg==
-X-Received: by 2002:a05:6e02:1a8b:b0:348:8542:a673 with SMTP id k11-20020a056e021a8b00b003488542a673mr578058ilv.22.1689620914115;
-        Mon, 17 Jul 2023 12:08:34 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH8IAKDk/Qq0r0DbEq84CfbH5y70uroq/83Nyu0gFtjM6u4GlatJgupAE/Bg/5ujaAlXs4PMg==
-X-Received: by 2002:a05:6e02:1a8b:b0:348:8542:a673 with SMTP id k11-20020a056e021a8b00b003488542a673mr578040ilv.22.1689620913830;
-        Mon, 17 Jul 2023 12:08:33 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id o9-20020a92dac9000000b003460b456030sm129837ilq.60.2023.07.17.12.08.31
+        d=1e100.net; s=20221208; t=1689623546; x=1692215546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xWoO0TUyoZ+Qmv9rHsFJp85hT+0xnOPhDe/kh1QoW+4=;
+        b=ffEVZK8lXuDEplQMwal+DoztshOHznxH4dIgMJbuhxfAVZ6CaJpWMfgctgjqcmwMnH
+         TuBKOJwJqeKyWqOn5VNcq+Br71kuNAxomHqB7DYrjyyvOuIcgtcH+9YGgwAdTf87tARs
+         Skh6AHesYnLnt6wNOS3NTOlYhl7BJ+h3Tq3mOP0fKwSlT/Tsc710ay8MNYqSDfwuTC6o
+         nVwEAkHMx0ALXBpLdip6NMigNJG+ctVl4rniLtgXgTrIsH1NM/ZWhGh6gjn4QauvbA3+
+         6DSC/4FhvvPZooqICLNQukwAEf7XUV7EHJvqdd/bi6H44QFaT5VNFiGBiTnpYgIU18yi
+         3BnQ==
+X-Gm-Message-State: ABy/qLZrNQkRj3ce/3YsQ+N/yeax0HxwwsShd6fMEBSIMKMH/v4KgJvw
+        2sZL4clAgDTHb2xwnElw7MA=
+X-Google-Smtp-Source: APBJJlHSUjxifSVrVdCDPxEBiVa/8JHHvBQsZfY+DBkng5FQSGGbHQXRLjsIy6hbVB/K0igUqin82w==
+X-Received: by 2002:a5d:9544:0:b0:780:bf50:32ce with SMTP id a4-20020a5d9544000000b00780bf5032cemr615151ios.19.1689623545792;
+        Mon, 17 Jul 2023 12:52:25 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id t11-20020a6b090b000000b0077e35ffac2fsm68393ioi.32.2023.07.17.12.52.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 12:08:33 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 13:08:31 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Grzegorz Jaszczyk <jaz@semihalf.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <20230717130831.0f18381a.alex.williamson@redhat.com>
-In-Reply-To: <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
-        <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
-        <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
-Organization: Red Hat
+        Mon, 17 Jul 2023 12:52:25 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 17 Jul 2023 09:52:24 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup/rstat: record the cumulative per-cpu time of
+ cgroup and its descendants
+Message-ID: <ZLWb-LsBD041hMvr@slm.duckdns.org>
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717093612.40846-1-jiahao.os@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 17 Jul 2023 10:29:34 +0200
-Grzegorz Jaszczyk <jaz@semihalf.com> wrote:
+Hello,
 
-> pt., 14 lip 2023 o 09:05 Christian Brauner <brauner@kernel.org> napisa=C5=
-=82(a):
-> >
-> > On Thu, Jul 13, 2023 at 11:10:54AM -0600, Alex Williamson wrote: =20
-> > > On Thu, 13 Jul 2023 12:05:36 +0200
-> > > Christian Brauner <brauner@kernel.org> wrote:
-> > > =20
-> > > > Hey everyone,
-> > > >
-> > > > This simplifies the eventfd_signal() and eventfd_signal_mask() help=
-ers
-> > > > by removing the count argument which is effectively unused. =20
-> > >
-> > > We have a patch under review which does in fact make use of the
-> > > signaling value:
-> > >
-> > > https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com=
-/ =20
-> >
-> > Huh, thanks for the link.
-> >
-> > Quoting from
-> > https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-=
-jaz@semihalf.com/#25266856
-> > =20
-> > > Reading an eventfd returns an 8-byte value, we generally only use it
-> > > as a counter, but it's been discussed previously and IIRC, it's possi=
-ble
-> > > to use that value as a notification value. =20
-> >
-> > So the goal is to pipe a specific value through eventfd? But it is
-> > explicitly a counter. The whole thing is written around a counter and
-> > each write and signal adds to the counter.
-> >
-> > The consequences are pretty well described in the cover letter of
-> > v6 https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.co=
-m/
-> > =20
-> > > Since the eventfd counter is used as ACPI notification value
-> > > placeholder, the eventfd signaling needs to be serialized in order to
-> > > not end up with notification values being coalesced. Therefore ACPI
-> > > notification values are buffered and signalized one by one, when the
-> > > previous notification value has been consumed. =20
-> >
-> > But isn't this a good indication that you really don't want an eventfd
-> > but something that's explicitly designed to associate specific data with
-> > a notification? Using eventfd in that manner requires serialization,
-> > buffering, and enforces ordering.
+On Mon, Jul 17, 2023 at 05:36:12PM +0800, Hao Jia wrote:
+> Now the member variable bstat of the structure cgroup_rstat_cpu
 
-What would that mechanism be?  We've been iterating on getting the
-serialization and buffering correct, but I don't know of another means
-that combines the notification with a value, so we'd likely end up with
-an eventfd only for notification and a separate ring buffer for
-notification values.
+You said "now" indicating that the behavior has changed recently but I don't
+see what changed there. Can you elaborate?
 
-As this series demonstrates, the current in-kernel users only increment
-the counter and most userspace likely discards the counter value, which
-makes the counter largely a waste.  While perhaps unconventional,
-there's no requirement that the counter may only be incremented by one,
-nor any restriction that I see in how userspace must interpret the
-counter value.
+> records the per-cpu time of the cgroup itself, but does not
+> include the per-cpu time of its descendants. The per-cpu time
 
-As I understand the ACPI notification proposal that Grzegorz links
-below, a notification with an interpreted value allows for a more
-direct userspace implementation when dealing with a series of discrete
-notification with value events.  Thanks,
+It does. The per-cpu delta is added to its parent and then that will in turn
+be used to propagate to its parent.
 
-Alex
+> including descendants is very useful for calculating the
+> per-cpu usage of cgroups.
+> 
+> Although we can indirectly obtain the total per-cpu time
+> of the cgroup and its descendants by accumulating the per-cpu
+> bstat of each descendant of the cgroup. But after a child cgroup
+> is removed, we will lose its bstat information. This will cause
+> the cumulative value to be non-monotonic, thus affecting
+> the accuracy of cgroup per-cpu usage.
+> 
+> So we add the cumul_bstat variable to record the total
+> per-cpu time of this cgroup and its descendants, which is
+> similar to "cpuacct.usage*" in cgroup v1. And this is
+> also helpful for the migration from cgroup v1 to cgroup v2.
+> After adding this variable, we can obtain the per-cpu time of
+> cgroup and its descendants in user mode through eBPF, etc.
 
-> > I have no skin in the game aside from having to drop this conversion
-> > which I'm fine to do if there are actually users for this btu really,
-> > that looks a lot like abusing an api that really wasn't designed for
-> > this. =20
->=20
-> https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-ja=
-z@semihalf.com/
-> was posted at the beginig of March and one of the main things we've
-> discussed was the mechanism for propagating acpi notification value.
-> We've endup with eventfd as the best mechanism and have actually been
-> using it from v2. I really do not want to waste this effort, I think
-> we are quite advanced with v6 now. Additionally we didn't actually
-> modify any part of eventfd support that was in place, we only used it
-> in a specific (and discussed beforehand) way.
+I think you're misunderstanding how the code works. Can you please double
+check?
 
+Thanks.
+
+-- 
+tejun
