@@ -2,120 +2,223 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BA9756CAC
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 21:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D176756CD1
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jul 2023 21:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjGQTBI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Jul 2023 15:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
+        id S230394AbjGQTJ2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Jul 2023 15:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjGQTBI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 15:01:08 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57163A6;
-        Mon, 17 Jul 2023 12:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689620467; x=1721156467;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=sq3GI+ekMZZMEXPDxZHwJHymVmQnKtlKlGxUtHPgnQU=;
-  b=FsNKM1fJRotMfKdt1z+jD0Ve/vGmhRsTj6pFRNGX8puqeAiRvrEcrQtW
-   qWKPO4Ky2XzsSuTTBXRlaVxlvjunwX+P1g7miY6bEgIwd1ltU5gCIPRG6
-   Q002767vDieUlhSYnuRHnZOCUzzSMKCGkRxOkSzwJ8FuOE42wF+gPP/Mp
-   TpdZdsEFOmGVynu6X+Eg7C8nZjY07i4g82Za8phGZeqljBSmx+RT8qVg4
-   ePrTgs51Jgd8tXKV8bAyxow68ND/cDSLbBcouIwCd7CEyOlo3ibDA2a+k
-   2diJJjFCLlLPFsLEuABh/b/GUUphBC1NP4I2Wrtx9inpEo+FgPvJsBa4q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="368654418"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="368654418"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 12:01:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="793353292"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="793353292"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Jul 2023 12:01:04 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, "Tejun Heo" <tj@kernel.org>
-Cc:     dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, cgroups@vger.kernel.org,
-        "Zefan Li" <lizefan.x@bytedance.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>, vipinsh@google.com,
-        kai.huang@intel.com, reinette.chatre@intel.com,
-        zhiquan1.li@intel.com, kristen@linux.intel.com
-Subject: Re: [PATCH] cgroup/misc: Fix an overflow
-References: <20230717184719.85523-1-haitao.huang@linux.intel.com>
- <CU4OCLEHU1S5.359W394902648@seitikki> <ZLWPN_xyGFrqqJkV@slm.duckdns.org>
-Date:   Mon, 17 Jul 2023 14:01:03 -0500
+        with ESMTP id S229931AbjGQTJY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Jul 2023 15:09:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAA7198
+        for <cgroups@vger.kernel.org>; Mon, 17 Jul 2023 12:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689620916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ir1J/k3wLKNYp7LI2ijvFBF6ZKrDfOA6Drq2a2Jon50=;
+        b=B4DThB0Lv+ETPz9tIxnhsTUh5Kp+TOxJvpk8PPAEd97110jklxpxktgtbNDlizQhQoSAvQ
+        HZjPR1G3S0xmT0JBFNTa6k2Ue4F6y+TxzVQiHf3wepfXw4yccXvaXlHhA2gjW3b7dumZS5
+        7UT2PTW3mg/Yi9wPoBAcjZyKoDqE3H8=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-581-shCzoy0LOBaKfGv779l8AQ-1; Mon, 17 Jul 2023 15:08:34 -0400
+X-MC-Unique: shCzoy0LOBaKfGv779l8AQ-1
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-34610c52cf8so30600675ab.0
+        for <cgroups@vger.kernel.org>; Mon, 17 Jul 2023 12:08:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689620914; x=1692212914;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ir1J/k3wLKNYp7LI2ijvFBF6ZKrDfOA6Drq2a2Jon50=;
+        b=WejQ/kjjLICybahGxP3SXTNfY+iO8Rq33d51Mm+InPZ67FqE1IrlFvRescMJbJZ/eb
+         1Gfhd6S3hfubqtyWwjMNPgB743FoEZFyP5KnT+OKxJVFpXXrYE0o2XtaJCwkV4BmnDKc
+         KrBaQ56Ujr3bewPYb1ozt0nny+5DG3VF3QVhzV6nKV9DYDH+ADPp6gW+rX0zQUYNXDd8
+         LGck5+oLyhlyKf8J6OUd7h9FJU/vf3sGevWUKWpruwGweijWdLRE7W2K5FeBWm4xNKt2
+         OiTUAhqJNk6yb7/DAOam+8eC8nNYRTgRFO7N9BQCT4q/E+ZXt7LAon94JNwGQq6TUC/Q
+         CyAg==
+X-Gm-Message-State: ABy/qLZu30d3HvAIsdqiv1eBgQCX5IB/qqxeYx6VLZvcjkoJINqjue35
+        r/9f3lGRtgDPLCAHCAo2t/GSRlDucC6ROJXeFkc1CFnZzgo7y176Y2G4zKk3C1iSNWBObBPL38v
+        1FJTMqJhuieF7NY7INg==
+X-Received: by 2002:a05:6e02:1a8b:b0:348:8542:a673 with SMTP id k11-20020a056e021a8b00b003488542a673mr578058ilv.22.1689620914115;
+        Mon, 17 Jul 2023 12:08:34 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH8IAKDk/Qq0r0DbEq84CfbH5y70uroq/83Nyu0gFtjM6u4GlatJgupAE/Bg/5ujaAlXs4PMg==
+X-Received: by 2002:a05:6e02:1a8b:b0:348:8542:a673 with SMTP id k11-20020a056e021a8b00b003488542a673mr578040ilv.22.1689620913830;
+        Mon, 17 Jul 2023 12:08:33 -0700 (PDT)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id o9-20020a92dac9000000b003460b456030sm129837ilq.60.2023.07.17.12.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 12:08:33 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 13:08:31 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Grzegorz Jaszczyk <jaz@semihalf.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Fei Li <fei1.li@intel.com>, x86@kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Dominik Behr <dbehr@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
+Message-ID: <20230717130831.0f18381a.alex.williamson@redhat.com>
+In-Reply-To: <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+References: <20230630155936.3015595-1-jaz@semihalf.com>
+        <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+        <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.178pr1qewjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <ZLWPN_xyGFrqqJkV@slm.duckdns.org>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 17 Jul 2023 13:57:59 -0500, Tejun Heo <tj@kernel.org> wrote:
+On Mon, 17 Jul 2023 10:29:34 +0200
+Grzegorz Jaszczyk <jaz@semihalf.com> wrote:
 
-> On Mon, Jul 17, 2023 at 06:55:32PM +0000, Jarkko Sakkinen wrote:
->> On Mon Jul 17, 2023 at 6:47 PM UTC, Haitao Huang wrote:
->> > The variable 'new_usage' in misc_cg_try_charge() may overflow if it
->> > becomes above INT_MAX. This was observed when I implement the new SGX
->> > EPC cgroup[1] as a misc cgroup and test on a platform with large SGX  
->> EPC
->> > sizes.
->> >
->> > Change type of new_usage to long from int and check overflow.
->> >
->> > Fixes: a72232eabdfcf ("cgroup: Add misc cgroup controller")
->> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> >
->> > [1]  
->> https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@linux.intel.com/
->> > ---
->> >  kernel/cgroup/misc.c | 6 +++---
->> >  1 file changed, 3 insertions(+), 3 deletions(-)
->> >
->> > diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
->> > index fe3e8a0eb7ed..ff9f900981a3 100644
->> > --- a/kernel/cgroup/misc.c
->> > +++ b/kernel/cgroup/misc.c
->> > @@ -143,7 +143,7 @@ int misc_cg_try_charge(enum misc_res_type type,  
->> struct misc_cg *cg,
->> >  	struct misc_cg *i, *j;
->> >  	int ret;
->> >  	struct misc_res *res;
->> > -	int new_usage;
->> > +	long new_usage;
->> >
->> >  	if (!(valid_type(type) && cg && READ_ONCE(misc_res_capacity[type])))
->> >  		return -EINVAL;
->> > @@ -153,10 +153,10 @@ int misc_cg_try_charge(enum misc_res_type type,  
->> struct misc_cg *cg,
->> >
->> >  	for (i = cg; i; i = parent_misc(i)) {
->> >  		res = &i->res[type];
->> > -
->>
->> This is extra noise in the patch, please remove the change.
->
-> Lemme just revert it. Haitao, can you instead make the resource counters  
-> and
-> all related variables explicit 64bit instead?
->
+> pt., 14 lip 2023 o 09:05 Christian Brauner <brauner@kernel.org> napisa=C5=
+=82(a):
+> >
+> > On Thu, Jul 13, 2023 at 11:10:54AM -0600, Alex Williamson wrote: =20
+> > > On Thu, 13 Jul 2023 12:05:36 +0200
+> > > Christian Brauner <brauner@kernel.org> wrote:
+> > > =20
+> > > > Hey everyone,
+> > > >
+> > > > This simplifies the eventfd_signal() and eventfd_signal_mask() help=
+ers
+> > > > by removing the count argument which is effectively unused. =20
+> > >
+> > > We have a patch under review which does in fact make use of the
+> > > signaling value:
+> > >
+> > > https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com=
+/ =20
+> >
+> > Huh, thanks for the link.
+> >
+> > Quoting from
+> > https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-=
+jaz@semihalf.com/#25266856
+> > =20
+> > > Reading an eventfd returns an 8-byte value, we generally only use it
+> > > as a counter, but it's been discussed previously and IIRC, it's possi=
+ble
+> > > to use that value as a notification value. =20
+> >
+> > So the goal is to pipe a specific value through eventfd? But it is
+> > explicitly a counter. The whole thing is written around a counter and
+> > each write and signal adds to the counter.
+> >
+> > The consequences are pretty well described in the cover letter of
+> > v6 https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.co=
+m/
+> > =20
+> > > Since the eventfd counter is used as ACPI notification value
+> > > placeholder, the eventfd signaling needs to be serialized in order to
+> > > not end up with notification values being coalesced. Therefore ACPI
+> > > notification values are buffered and signalized one by one, when the
+> > > previous notification value has been consumed. =20
+> >
+> > But isn't this a good indication that you really don't want an eventfd
+> > but something that's explicitly designed to associate specific data with
+> > a notification? Using eventfd in that manner requires serialization,
+> > buffering, and enforces ordering.
 
-Will do.
-Thanks
-Haitao
+What would that mechanism be?  We've been iterating on getting the
+serialization and buffering correct, but I don't know of another means
+that combines the notification with a value, so we'd likely end up with
+an eventfd only for notification and a separate ring buffer for
+notification values.
+
+As this series demonstrates, the current in-kernel users only increment
+the counter and most userspace likely discards the counter value, which
+makes the counter largely a waste.  While perhaps unconventional,
+there's no requirement that the counter may only be incremented by one,
+nor any restriction that I see in how userspace must interpret the
+counter value.
+
+As I understand the ACPI notification proposal that Grzegorz links
+below, a notification with an interpreted value allows for a more
+direct userspace implementation when dealing with a series of discrete
+notification with value events.  Thanks,
+
+Alex
+
+> > I have no skin in the game aside from having to drop this conversion
+> > which I'm fine to do if there are actually users for this btu really,
+> > that looks a lot like abusing an api that really wasn't designed for
+> > this. =20
+>=20
+> https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-ja=
+z@semihalf.com/
+> was posted at the beginig of March and one of the main things we've
+> discussed was the mechanism for propagating acpi notification value.
+> We've endup with eventfd as the best mechanism and have actually been
+> using it from v2. I really do not want to waste this effort, I think
+> we are quite advanced with v6 now. Additionally we didn't actually
+> modify any part of eventfd support that was in place, we only used it
+> in a specific (and discussed beforehand) way.
+
