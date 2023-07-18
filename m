@@ -2,170 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E566375817F
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jul 2023 17:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A1B758780
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jul 2023 23:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjGRP4u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jul 2023 11:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
+        id S229699AbjGRVxb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Jul 2023 17:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbjGRP4q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 11:56:46 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01A919A9
-        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-403a3df88a8so42136051cf.3
-        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
+        with ESMTP id S229610AbjGRVxa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 17:53:30 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BFA198D;
+        Tue, 18 Jul 2023 14:53:29 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8b318c5a7so48863515ad.3;
+        Tue, 18 Jul 2023 14:53:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689695800; x=1692287800;
+        d=gmail.com; s=20221208; t=1689717209; x=1692309209;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
-        b=bYsTsBY1ioUL9k8drjTPCTw/fEJ0EAlGX5g4owJLPMPxN2CHLKUwbHRdsGU8yNpkgq
-         tSJhCUQojCe7iZMsDT/aY34J1oz2QHRzCjLM+KqEBEo9M8BD2KOp45IRPvgTMkckJ6dq
-         H9fFQEgiHBZaevHiGZSqEfXqcoEtLjezHUCteBqtpUndGthYRfcrzEkhL4CGHaIFAcmx
-         6wdKboUdDaPeOVdQT0aOEr8C1+gySsRWrc1UqrjcLLXuhZDet2FHUgbuPzKGfDMScL/V
-         K78x7SFpD7MaWzPqAIp0HWYQyARw7uG7tneLlNjtBlR/Fv5UIeG6Vm/K9G6rR6HJEl7q
-         8oNQ==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hSi1Ye4tnidz3swlAKJl5aSHuZF44JYEhatv2BKTlOQ=;
+        b=SZ0tTu6wpG2yNC7ys9W1/E8S7xaA6eRzb41+qynFT6suIRQZeKbOi/JHgHB2znyz8z
+         sUXssVqsuJP79/tRbGRSdAxYoaLQyXa6sNibrztdE7BEm/gXgZlwo7jGSTxBQtgBSoNw
+         P4GAbZI5hNvN10ddluCGqgqbmEB5PMDz4Hp1Vj9REZzygM2MS72ejDUlmt+iG5AyPuI/
+         AG+lCdH0/6kVacWDcXfg62XMDmnOA+SE8ABAWGn9ktSCp5k8m5BvLQs5h4qRVA/ecBvP
+         xY1uHKVfNHWnUQ1SkV7uDA8afxAbyaeycd4JwPnApcmgJjFSv4xHlIM9djPegdDlI8G3
+         kQbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689695800; x=1692287800;
+        d=1e100.net; s=20221208; t=1689717209; x=1692309209;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
-        b=N7Eg+cq1zaRUgoVbQlFDI5hWcEBFZPT1RIgwpT/bJ8zrf9Rtr7Ra7BjFFbgiIl5uLq
-         +WbHF14s+9fXsvEeoc/yqYx+6gPzScjtQuGfVWUgONkx/8Kf/YHj6r35qMQ1cu/4IdhQ
-         iqCYmUTlyzUI8fp8ALP398HW/v73N/zpA0eBjJWj3neRacFKCHAkCFKoZuZs7MRaOqKK
-         zJwSOxHoyz+6UjLQy7i5nJQOsG7JlLD71FYFFB8wcS/n/9Pd7mMGpG5SPa7MH/EJanTH
-         mDCIWStdJfi94emn6gRjVAEmIdGTwDnflH9AQhxEGpkcaMglJuIS03aN+WEI+ulg+g3+
-         PLIA==
-X-Gm-Message-State: ABy/qLZV9XoaGDrafrNcnZ87v3bHbt231tMt656WY9+YT/pZgvyD0Y2K
-        mwD+KTVP7XhjEjJ6IqgXr/5A7A==
-X-Google-Smtp-Source: APBJJlFA9677r6PhZxjwKlQ1fKWxhiNMVqP6N1YqyjTADbRS7wwnXs7xld1btAoYMOwt7mM3Vw+c9w==
-X-Received: by 2002:ac8:7dd0:0:b0:403:a814:ef4d with SMTP id c16-20020ac87dd0000000b00403a814ef4dmr21293071qte.49.1689695800050;
-        Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id s21-20020ac87595000000b003e635f80e72sm727847qtq.48.2023.07.18.08.56.39
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hSi1Ye4tnidz3swlAKJl5aSHuZF44JYEhatv2BKTlOQ=;
+        b=JjPj7yX1EpbwodrMlcWhUYt/NiP/VphX5LV9A+KBHY/c+lkqy9bxzCpwswa5qYgmbO
+         FU9tBrmAjrBfyzDMd8HMaQyZhG8C7gI3t0zXpgz1LeZbGdVFRqcdOsJM6bYqVUZhePot
+         KTUK/eT+/zqMFAMpJKzEiCiTINLa1ntZf7oa4boCTbbEJb9O/FB/023mA4t2c/sf9DOz
+         m39OmECpJuU28DucekbxOqMvIY3zVCdWFBbaEtIZZzilbffb9y/wEajsK6PYOqSqDWH/
+         cRrfbL1D4a0L4GC+segu6C9/seTbefb+v+fHG9/csl08goxthuIi/8isll5Qnzr8/cnH
+         DNUw==
+X-Gm-Message-State: ABy/qLZGXCb65wIFiL2ZwBKKRFp+Vatx4FcQVJsT67kjjdZE2ExMtBcm
+        QdwAt70XX5O6Q39HKzJNhdU=
+X-Google-Smtp-Source: APBJJlFDubl46qLGjElNRyd43o2ozFLnEgGSoc65gpvHAIJMaXhgd6Sy50PIiZ8T02wR0h102on01w==
+X-Received: by 2002:a17:902:a409:b0:1b9:be2e:2b40 with SMTP id p9-20020a170902a40900b001b9be2e2b40mr13780928plq.50.1689717208786;
+        Tue, 18 Jul 2023 14:53:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id jf6-20020a170903268600b001b8918da8d1sm2366011plb.80.2023.07.18.14.53.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 08:56:39 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qLn42-002YJT-5I;
-        Tue, 18 Jul 2023 12:56:38 -0300
-Date:   Tue, 18 Jul 2023 12:56:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <ZLa2NmwexoxPkS9a@ziepe.ca>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
- <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
- <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
- <20230717130831.0f18381a.alex.williamson@redhat.com>
- <ZLW8wEzkhBxd0O0L@ziepe.ca>
- <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
+        Tue, 18 Jul 2023 14:53:28 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 18 Jul 2023 11:53:26 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+Message-ID: <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+ <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 04:52:03PM -0600, Alex Williamson wrote:
-> On Mon, 17 Jul 2023 19:12:16 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> 
-> > On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
-> > 
-> > > What would that mechanism be?  We've been iterating on getting the
-> > > serialization and buffering correct, but I don't know of another means
-> > > that combines the notification with a value, so we'd likely end up with
-> > > an eventfd only for notification and a separate ring buffer for
-> > > notification values.  
-> > 
-> > All FDs do this. You just have to make a FD with custom
-> > file_operations that does what this wants. The uAPI shouldn't be able
-> > to tell if the FD is backing it with an eventfd or otherwise. Have the
-> > kernel return the FD instead of accepting it. Follow the basic design
-> > of eg mlx5vf_save_fops
-> 
-> Sure, userspace could poll on any fd and read a value from it, but at
-> that point we're essentially duplicating a lot of what eventfd provides
-> for a minor(?) semantic difference over how the counter value is
-> interpreted.  Using an actual eventfd allows the ACPI notification to
-> work as just another interrupt index within the existing vfio IRQ
-> uAPI.
+On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
+> https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
 
-Yes, duplicated, sort of, whatever the "ack" is to allow pushing a new
-value can be revised to run as part of the read.
+Isn't that just adding the same numbers twice and verifying that? Maybe I'm
+misunderstanding you. Here's a simpler case:
 
-But I don't really view it as a minor difference. eventfd is a
-counter. It should not be abused otherwise, even if it can be made to
-work.
+  # cd /sys/fs/cgroup
+  # mkdir -p asdf/test0
+  # grep usage_usec asdf/test0/cpu.stat
+  usage_usec 0
+  # echo $$ > asdf/test0/cgroup.procs
+  # stress -c 1 & sleep 1; kill %%
+  [1] 122329
+  stress: info: [122329] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+  # grep usage_usec asdf/test0/cpu.stat
+  usage_usec 1000956
+  [1]+  Terminated              stress -c 1
+  # grep usage_usec asdf/cpu.stat
+  usage_usec 1002548
+  # echo $$ > /sys/fs/cgroup/cgroup.procs
+  # rmdir asdf/test0
+  # grep usage_usec asdf/cpu.stat
+  usage_usec 1006338
 
-It really isn't an IRQ if it is pushing an async message w/data.
+So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
+asdf/cpu.stat correctly reports the cumulative usage. After removing
+asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
+What are you adding?
 
-Jason
+Thanks.
+
+-- 
+tejun
