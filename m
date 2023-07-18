@@ -2,93 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FC875812B
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jul 2023 17:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E566375817F
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jul 2023 17:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbjGRPlh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jul 2023 11:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S231972AbjGRP4u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Jul 2023 11:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjGRPlg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 11:41:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA114B0;
-        Tue, 18 Jul 2023 08:41:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E04A61636;
-        Tue, 18 Jul 2023 15:41:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6087CC433C7;
-        Tue, 18 Jul 2023 15:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689694894;
-        bh=2z4VemvJVhwmItrQCFbXp9Jgb8x1GmS7nNXmRAUmxe4=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=b7YN7txj1on5brdZbnALpUA94GYmyReQ+rClZl8Mz2bWYBYwgmIEkm8pdca4djZv/
-         M0/ca7LkPW9RLp4P5PxIhT4+N4GIFM0+SDwh848mHn+4gCX/qzKQDzYdF/H9OdGwA2
-         LqF+D+CokWv5RrrXVPnDyJ80a2/otiTTB4iz9ik+d0/+wa7T3aHw7GUMCpflWkoxJ5
-         8ocmj/cGk3YWBFL0Cbe1589RT4WHM40Sbl5wCDRS9LLcaY1bliMbadfrb/dDmlHV8e
-         2s0h4K2G6ILAYhmyVG/Wf6mi64APUa8G9zu3M2+1psXxsFLMceexRWUl36HHyJU2ym
-         IVDuIGvKOZKBw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 18 Jul 2023 18:41:27 +0300
-Message-Id: <CU5EUJDXM616.SQKBEGB2RLHL@suppilovahvero>
-Cc:     <dave.hansen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-sgx@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        "Zefan Li" <lizefan.x@bytedance.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>, <vipinsh@google.com>,
-        <kai.huang@intel.com>, <reinette.chatre@intel.com>,
-        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>
-Subject: Re: [PATCH] cgroup/misc: Fix an overflow
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Tejun Heo" <tj@kernel.org>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>
-X-Mailer: aerc 0.14.0
-References: <20230717184719.85523-1-haitao.huang@linux.intel.com>
- <CU4OCLEHU1S5.359W394902648@seitikki> <ZLWPN_xyGFrqqJkV@slm.duckdns.org>
- <op.178pr1qewjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <op.178te0tbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <ZLWmdBfcuPUBtk1K@slm.duckdns.org>
-In-Reply-To: <ZLWmdBfcuPUBtk1K@slm.duckdns.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S233780AbjGRP4q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 11:56:46 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01A919A9
+        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-403a3df88a8so42136051cf.3
+        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689695800; x=1692287800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
+        b=bYsTsBY1ioUL9k8drjTPCTw/fEJ0EAlGX5g4owJLPMPxN2CHLKUwbHRdsGU8yNpkgq
+         tSJhCUQojCe7iZMsDT/aY34J1oz2QHRzCjLM+KqEBEo9M8BD2KOp45IRPvgTMkckJ6dq
+         H9fFQEgiHBZaevHiGZSqEfXqcoEtLjezHUCteBqtpUndGthYRfcrzEkhL4CGHaIFAcmx
+         6wdKboUdDaPeOVdQT0aOEr8C1+gySsRWrc1UqrjcLLXuhZDet2FHUgbuPzKGfDMScL/V
+         K78x7SFpD7MaWzPqAIp0HWYQyARw7uG7tneLlNjtBlR/Fv5UIeG6Vm/K9G6rR6HJEl7q
+         8oNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689695800; x=1692287800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
+        b=N7Eg+cq1zaRUgoVbQlFDI5hWcEBFZPT1RIgwpT/bJ8zrf9Rtr7Ra7BjFFbgiIl5uLq
+         +WbHF14s+9fXsvEeoc/yqYx+6gPzScjtQuGfVWUgONkx/8Kf/YHj6r35qMQ1cu/4IdhQ
+         iqCYmUTlyzUI8fp8ALP398HW/v73N/zpA0eBjJWj3neRacFKCHAkCFKoZuZs7MRaOqKK
+         zJwSOxHoyz+6UjLQy7i5nJQOsG7JlLD71FYFFB8wcS/n/9Pd7mMGpG5SPa7MH/EJanTH
+         mDCIWStdJfi94emn6gRjVAEmIdGTwDnflH9AQhxEGpkcaMglJuIS03aN+WEI+ulg+g3+
+         PLIA==
+X-Gm-Message-State: ABy/qLZV9XoaGDrafrNcnZ87v3bHbt231tMt656WY9+YT/pZgvyD0Y2K
+        mwD+KTVP7XhjEjJ6IqgXr/5A7A==
+X-Google-Smtp-Source: APBJJlFA9677r6PhZxjwKlQ1fKWxhiNMVqP6N1YqyjTADbRS7wwnXs7xld1btAoYMOwt7mM3Vw+c9w==
+X-Received: by 2002:ac8:7dd0:0:b0:403:a814:ef4d with SMTP id c16-20020ac87dd0000000b00403a814ef4dmr21293071qte.49.1689695800050;
+        Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id s21-20020ac87595000000b003e635f80e72sm727847qtq.48.2023.07.18.08.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 08:56:39 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qLn42-002YJT-5I;
+        Tue, 18 Jul 2023 12:56:38 -0300
+Date:   Tue, 18 Jul 2023 12:56:38 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Fei Li <fei1.li@intel.com>, x86@kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Dominik Behr <dbehr@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
+Message-ID: <ZLa2NmwexoxPkS9a@ziepe.ca>
+References: <20230630155936.3015595-1-jaz@semihalf.com>
+ <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+ <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+ <20230717130831.0f18381a.alex.williamson@redhat.com>
+ <ZLW8wEzkhBxd0O0L@ziepe.ca>
+ <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon Jul 17, 2023 at 11:37 PM EEST, Tejun Heo wrote:
-> Hello,
->
-> On Mon, Jul 17, 2023 at 03:19:38PM -0500, Haitao Huang wrote:
-> > Actually, we are using atomic_long_t for 'current' which is the same wi=
-dth
-> > as long defined by arch/compiler. So new_usage should be long to be
-> > consistent?
->
-> We can use atomic64_t, right? It's slower on 32bit machines but I think i=
-t'd
-> be better to guarantee resource counter range than micro-optimizing charg=
-e
-> operations. None of the current users are hot enough for this to matter a=
-nd
-> if somebody becomes that hot, the difference between atomic_t and atomic6=
-4_t
-> isn't gonna matter that much. We'd need to batch allocations per-cpu and =
-so
-> on.
+On Mon, Jul 17, 2023 at 04:52:03PM -0600, Alex Williamson wrote:
+> On Mon, 17 Jul 2023 19:12:16 -0300
+> Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> 
+> > On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
+> > 
+> > > What would that mechanism be?  We've been iterating on getting the
+> > > serialization and buffering correct, but I don't know of another means
+> > > that combines the notification with a value, so we'd likely end up with
+> > > an eventfd only for notification and a separate ring buffer for
+> > > notification values.  
+> > 
+> > All FDs do this. You just have to make a FD with custom
+> > file_operations that does what this wants. The uAPI shouldn't be able
+> > to tell if the FD is backing it with an eventfd or otherwise. Have the
+> > kernel return the FD instead of accepting it. Follow the basic design
+> > of eg mlx5vf_save_fops
+> 
+> Sure, userspace could poll on any fd and read a value from it, but at
+> that point we're essentially duplicating a lot of what eventfd provides
+> for a minor(?) semantic difference over how the counter value is
+> interpreted.  Using an actual eventfd allows the ACPI notification to
+> work as just another interrupt index within the existing vfio IRQ
+> uAPI.
 
-In our context, the microcode of SGX could support 32-bit but by design
-we only support 64-bit. So at least with the current implementation this
-would not be an issue for SGX.
+Yes, duplicated, sort of, whatever the "ack" is to allow pushing a new
+value can be revised to run as part of the read.
 
-BR, Jarkko
+But I don't really view it as a minor difference. eventfd is a
+counter. It should not be abused otherwise, even if it can be made to
+work.
 
+It really isn't an IRQ if it is pushing an async message w/data.
 
+Jason
