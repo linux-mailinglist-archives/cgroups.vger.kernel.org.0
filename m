@@ -2,96 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9167588BC
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 00:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0379E758BB4
+	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 05:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjGRWwj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jul 2023 18:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S229843AbjGSDB5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Jul 2023 23:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbjGRWwj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 18:52:39 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F17812F;
-        Tue, 18 Jul 2023 15:52:12 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-55c85b4b06bso3482133a12.2;
-        Tue, 18 Jul 2023 15:52:12 -0700 (PDT)
+        with ESMTP id S230154AbjGSDBz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 23:01:55 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2831BCF
+        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 20:01:54 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-676f16e0bc4so4291648b3a.0
+        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 20:01:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689720732; x=1692312732;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zaaIJSqrG494B+IR6XnJYhrqBHMp5GMdu1zHCLyiGYI=;
-        b=TyD+VnTKX9Bn+aYMr/dB4EhK/Uv4WMA+GewMLDH1kkehkeagP5XXmyA4q1DIVNjF3w
-         YxT6kyspFNoSp+guSUo2bO81uzyI0lZJ+VlptYiffxLFEgGHupE4u00n21/1oim5FOnW
-         ZSX3QDpgEAcqrqRIZ7rXXuSk5MzJEPdgdYHRIhquAr2s6TAyxY0dwlzMyns6B81gKmqx
-         96TGy+fOwRGp7TXa44C2xpnSvvxyoQO3I2XXNHfq5k+pkwj0FSb71OJdbiX+sdh2QNY1
-         PdJtghSOsIK0thkDKiKWV9YT/pqfhdlDjqnf7acWiUWLLCBEfmoQRz6aG2O4ndwGXhY9
-         kirQ==
+        d=bytedance.com; s=google; t=1689735713; x=1692327713;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=irp3EPa33LK85QAbTktFpig5JEBTIWbUT4zOa4f8pKI=;
+        b=B76s3XuCZrrPV4rWry1FvWh5MrG3pQP4cQK0XiWE+UaqR5NoSB6OcVsURRvVhqwujr
+         4HcIOY1tuqZauHG+Z3H+EyGTqw5NfFK0nSMuIAYjNmwRMw4NoWEUHO88XEYAKGaXDKLR
+         4LeexLiowvf11fQ5xGQrSNVQKmsESazLiHQo4Y7J+OOa6kfjoFP+v5Hbgd4TF4kjxMQJ
+         IV7lHdZbBMgWsdR5PimtHWmeuo+Sc5D4LhaFJrr/opbxUdHUvHQSHn2sZ8800PEf1HXn
+         17rUqRAm01DJV2Cm9PZG45JI+a+31nYWdkzv0qGsNYNS163N7PziWMMMeGBlNl/9gQTP
+         uAhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689720732; x=1692312732;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zaaIJSqrG494B+IR6XnJYhrqBHMp5GMdu1zHCLyiGYI=;
-        b=SjmROMH3IVFiTAAPrHo3FOC+ZSRwmCYxjuZXzejimlixGQRMPGntL+Aiib+lp9nQN3
-         PyZpEL6qZIAZj3NrvVd2ha/ivYKyTB5e+0BL4QdjzPa49RhC1+Vy+iDIiVLqQxGtN4QC
-         HLGaa8+peg+y12u2zdsYxCpASq/cGZB/6CsDYO2y9a56zHOxGG7xXGvKlb9vJIzIAPHx
-         iYpRJPa6ZlWgJmVDPK14TxrAgF57NsOMZQoagRKRk1TYN4lzeTHASBorVkB+IBOqlxKn
-         tb82uF0PllD1eeuwuInWbFRK3fitXW6tj60i70TBVAauemmg5/GOhQc6uE4+PRl0QzUc
-         fTzQ==
-X-Gm-Message-State: ABy/qLbhtAAoagAwfQjlksmwcKZG5aLDM+Ipm6oXrn0JrRv9aHGUwIfp
-        c9PX/YVScbjoBbR+TrRIJKw=
-X-Google-Smtp-Source: APBJJlE5rngX5nDgVJO4NvR0EjzzcP4AxHZIl2HrLcWOA0ALnr22qACdnLMrMkY2G6WmN1hOst1iow==
-X-Received: by 2002:a17:902:c945:b0:1b2:5689:8686 with SMTP id i5-20020a170902c94500b001b256898686mr15146093pla.63.1689720731910;
-        Tue, 18 Jul 2023 15:52:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id z15-20020a1709028f8f00b001b5656b0bf9sm2344653plo.286.2023.07.18.15.52.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 15:52:11 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 18 Jul 2023 12:52:10 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, vipinsh@google.com,
-        kai.huang@intel.com, reinette.chatre@intel.com,
-        zhiquan1.li@intel.com, kristen@linux.intel.com
-Subject: Re: [PATCH 2/2] cgroup/misc: Change counters to be explicit 64bit
- types
-Message-ID: <ZLcXmvDKheCRYOjG@slm.duckdns.org>
-References: <ZLWmdBfcuPUBtk1K@slm.duckdns.org>
- <20230718010845.35197-1-haitao.huang@linux.intel.com>
- <20230718010845.35197-2-haitao.huang@linux.intel.com>
+        d=1e100.net; s=20221208; t=1689735713; x=1692327713;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=irp3EPa33LK85QAbTktFpig5JEBTIWbUT4zOa4f8pKI=;
+        b=CM+hr2+x+iwBBAPFbPobpkzbNGVbpuabKbdlyxDyayMubNaCWxL8Jwm26FdMcoLqpT
+         kqOqUhhcjRNWkxHPFYdfI0STDsWlLFBRtEr9m+888PILkcaSIkLO3D9J+Gc5QEKt/DeG
+         Rmt0kOzifFcs+jFSku9Iv2zJ0SsimDR09CEPFf5aRrXxcVNPPaxVIUVxLIS2ycd/PG8v
+         nVP7MvuTTj3qOyAgLigtADgmHEJuA0QN+0MJQdUzNjnYocycB2JV4PF08MqgN6O4LzSM
+         bxQhYSai+Rloqvq9KdmTOBVrDzJfXDYOZBqGASaugPnRttYypHosQgWQ4KYp4qfNkDHT
+         BuSw==
+X-Gm-Message-State: ABy/qLagkOcd656JUnG7k7gYn76p8IkrjC0BQ7/RKE8K7BlXFbK95HWO
+        y372b5Utp46GjKvRn3vpEY2eWg==
+X-Google-Smtp-Source: APBJJlFGenWZLBnBPUNEL75np9UL/1Ou3Xpj6s1x1kDq4GWQrcTml0C4VCalszw7CxTdgW84Wywo0Q==
+X-Received: by 2002:a05:6a20:7348:b0:133:6e6e:2b11 with SMTP id v8-20020a056a20734800b001336e6e2b11mr18317819pzc.2.1689735713474;
+        Tue, 18 Jul 2023 20:01:53 -0700 (PDT)
+Received: from [10.85.115.102] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id y10-20020aa7804a000000b0065dd1e7c2c1sm2170024pfm.63.2023.07.18.20.01.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 20:01:53 -0700 (PDT)
+Message-ID: <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+Date:   Wed, 19 Jul 2023 11:01:48 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718010845.35197-2-haitao.huang@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+ <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+ <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+From:   Hao Jia <jiahao.os@bytedance.com>
+In-Reply-To: <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:08:45PM -0700, Haitao Huang wrote:
-> So the variables can account for resources of huge quantities even on
-> 32-bit machines.
+
+
+On 2023/7/19 Tejun Heo wrote:
+> On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
+>> https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
 > 
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
+> asdf/cpu.stat correctly reports the cumulative usage. After removing
+> asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
 
-Applied to cgroup/for-6.6 with some whitespace adjustments. I think the code
-is broken when we cross the signed boundary but that's not a new problem
-caused by your patch. I think what we should do is to treat atomic64_t reads
-as u64 instead of putting it in s64.
+Sorry, some of my expressions may have misled you.
 
-Thanks.
+Yes, cpu.stat will display the cumulative **global** cpu time of the 
+cgroup and its descendants (the corresponding kernel variable is 
+"cgrp->bstat"), and it will not be lost when the child cgroup is removed.
 
--- 
-tejun
+Similarly, we need a **per-cpu** variable to record the accumulated 
+per-cpu time of cgroup and its descendants.
+The existing kernel variable "cgroup_rstat_cpu(cgrp, cpu)->bstat" is not 
+satisfied, it only records the per-cpu time of cgroup itself,
+So I try to add "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" to record 
+per-cpu time of cgroup and its descendants.
+
+In order to verify the correctness of my patch, I wrote a kernel module 
+to compare the results of calculating the per-cpu time of cgroup and its 
+descendants in two ways:
+   Method 1. Traverse and add the per-cpu rstatc->bstat of cgroup and 
+each of its descendants.
+   Method 2. Directly read "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" in 
+the kernel.
+
+When the child cgroup is not removed, the results calculated by the two 
+methods should be equal.
+
+> What are you adding?
+I want to add a **per-cpu variable** to record the cumulative per-cpu 
+time of cgroup and its descendants, which is similar to the variable 
+"cgrp->bstat", but it is a per-cpu variable.
+It is very useful and convenient for calculating the usage of cgroup on 
+each cpu, and its behavior is similar to the "cpuacct.usage*" interface 
+of cgroup v1.
+
+Thanks,
+Hao
