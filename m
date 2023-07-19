@@ -2,122 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0379E758BB4
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 05:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFC07590BC
+	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 10:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjGSDB5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jul 2023 23:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        id S230466AbjGSI5j convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Wed, 19 Jul 2023 04:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjGSDBz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jul 2023 23:01:55 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2831BCF
-        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 20:01:54 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-676f16e0bc4so4291648b3a.0
-        for <cgroups@vger.kernel.org>; Tue, 18 Jul 2023 20:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689735713; x=1692327713;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=irp3EPa33LK85QAbTktFpig5JEBTIWbUT4zOa4f8pKI=;
-        b=B76s3XuCZrrPV4rWry1FvWh5MrG3pQP4cQK0XiWE+UaqR5NoSB6OcVsURRvVhqwujr
-         4HcIOY1tuqZauHG+Z3H+EyGTqw5NfFK0nSMuIAYjNmwRMw4NoWEUHO88XEYAKGaXDKLR
-         4LeexLiowvf11fQ5xGQrSNVQKmsESazLiHQo4Y7J+OOa6kfjoFP+v5Hbgd4TF4kjxMQJ
-         IV7lHdZbBMgWsdR5PimtHWmeuo+Sc5D4LhaFJrr/opbxUdHUvHQSHn2sZ8800PEf1HXn
-         17rUqRAm01DJV2Cm9PZG45JI+a+31nYWdkzv0qGsNYNS163N7PziWMMMeGBlNl/9gQTP
-         uAhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689735713; x=1692327713;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=irp3EPa33LK85QAbTktFpig5JEBTIWbUT4zOa4f8pKI=;
-        b=CM+hr2+x+iwBBAPFbPobpkzbNGVbpuabKbdlyxDyayMubNaCWxL8Jwm26FdMcoLqpT
-         kqOqUhhcjRNWkxHPFYdfI0STDsWlLFBRtEr9m+888PILkcaSIkLO3D9J+Gc5QEKt/DeG
-         Rmt0kOzifFcs+jFSku9Iv2zJ0SsimDR09CEPFf5aRrXxcVNPPaxVIUVxLIS2ycd/PG8v
-         nVP7MvuTTj3qOyAgLigtADgmHEJuA0QN+0MJQdUzNjnYocycB2JV4PF08MqgN6O4LzSM
-         bxQhYSai+Rloqvq9KdmTOBVrDzJfXDYOZBqGASaugPnRttYypHosQgWQ4KYp4qfNkDHT
-         BuSw==
-X-Gm-Message-State: ABy/qLagkOcd656JUnG7k7gYn76p8IkrjC0BQ7/RKE8K7BlXFbK95HWO
-        y372b5Utp46GjKvRn3vpEY2eWg==
-X-Google-Smtp-Source: APBJJlFGenWZLBnBPUNEL75np9UL/1Ou3Xpj6s1x1kDq4GWQrcTml0C4VCalszw7CxTdgW84Wywo0Q==
-X-Received: by 2002:a05:6a20:7348:b0:133:6e6e:2b11 with SMTP id v8-20020a056a20734800b001336e6e2b11mr18317819pzc.2.1689735713474;
-        Tue, 18 Jul 2023 20:01:53 -0700 (PDT)
-Received: from [10.85.115.102] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id y10-20020aa7804a000000b0065dd1e7c2c1sm2170024pfm.63.2023.07.18.20.01.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 20:01:53 -0700 (PDT)
-Message-ID: <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
-Date:   Wed, 19 Jul 2023 11:01:48 +0800
+        with ESMTP id S230158AbjGSI5i (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jul 2023 04:57:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1C4171D
+        for <cgroups@vger.kernel.org>; Wed, 19 Jul 2023 01:57:36 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-199-JcrrCbdbNSik7gdKJemqkQ-1; Wed, 19 Jul 2023 09:57:33 +0100
+X-MC-Unique: JcrrCbdbNSik7gdKJemqkQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 19 Jul
+ 2023 09:57:32 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 19 Jul 2023 09:57:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tejun Heo' <tj@kernel.org>, Carlos Bilbao <carlos.bilbao@amd.com>
+CC:     "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd <amd@localhost.localdomain>
+Subject: RE: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Thread-Topic: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Thread-Index: AQHZuN9gMxBfo8Y4UkeL32HKckyYqK/Ay+LQ
+Date:   Wed, 19 Jul 2023 08:57:32 +0000
+Message-ID: <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+In-Reply-To: <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
- per-cpu time of cgroup and its descendants
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230717093612.40846-1-jiahao.os@bytedance.com>
- <ZLWb-LsBD041hMvr@slm.duckdns.org>
- <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
- <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
-From:   Hao Jia <jiahao.os@bytedance.com>
-In-Reply-To: <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 2023/7/19 Tejun Heo wrote:
-> On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
->> https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
+From: Tejun Heo
+> Sent: 17 July 2023 19:49
 > 
-> So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
-> asdf/cpu.stat correctly reports the cumulative usage. After removing
-> asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
+> On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
+> > From: amd <amd@localhost.localdomain>
+> >
+> > Fix two type mismatch errors encountered while compiling blk-iocost.c with
+> > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
+> > result of the division operation to (unsigned int) to match the expected
+> > format specifier %u in two seq_printf invocations.
+> 
+> Can you detail the warnings? Was that on 32bit compiles?
 
-Sorry, some of my expressions may have misled you.
+The problem is caused by gcc 13 changing the types of the
+constants inside an enum to be all the same.
 
-Yes, cpu.stat will display the cumulative **global** cpu time of the 
-cgroup and its descendants (the corresponding kernel variable is 
-"cgrp->bstat"), and it will not be lost when the child cgroup is removed.
+The best fix is (probably) to replace all the enum used to
+define unrelated constants with #defines.
 
-Similarly, we need a **per-cpu** variable to record the accumulated 
-per-cpu time of cgroup and its descendants.
-The existing kernel variable "cgroup_rstat_cpu(cgrp, cpu)->bstat" is not 
-satisfied, it only records the per-cpu time of cgroup itself,
-So I try to add "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" to record 
-per-cpu time of cgroup and its descendants.
+	David
 
-In order to verify the correctness of my patch, I wrote a kernel module 
-to compare the results of calculating the per-cpu time of cgroup and its 
-descendants in two ways:
-   Method 1. Traverse and add the per-cpu rstatc->bstat of cgroup and 
-each of its descendants.
-   Method 2. Directly read "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" in 
-the kernel.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-When the child cgroup is not removed, the results calculated by the two 
-methods should be equal.
-
-> What are you adding?
-I want to add a **per-cpu variable** to record the cumulative per-cpu 
-time of cgroup and its descendants, which is similar to the variable 
-"cgrp->bstat", but it is a per-cpu variable.
-It is very useful and convenient for calculating the usage of cgroup on 
-each cpu, and its behavior is similar to the "cpuacct.usage*" interface 
-of cgroup v1.
-
-Thanks,
-Hao
