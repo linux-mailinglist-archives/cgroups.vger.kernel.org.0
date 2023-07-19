@@ -2,55 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E384C759A99
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 18:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFBE759CAD
+	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 19:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjGSQTE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Jul 2023 12:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
+        id S230376AbjGSRqT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Jul 2023 13:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbjGSQS6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jul 2023 12:18:58 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99362135
-        for <cgroups@vger.kernel.org>; Wed, 19 Jul 2023 09:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689783530; x=1721319530;
-  h=date:from:to:cc:subject:message-id;
-  bh=6yxjOIwtO3jfh0yErWVwQN+xXOlhvl6guyjwhNIgPS8=;
-  b=CZcz1C5zSBu6aXOWQt/68rdVZB7ft5C7edZtxc8BJXkjUks576y6DtTY
-   MHO2Wqh/EUL48phyK+UZU7/0f2jBSMMh8QOCx2UUiG0F4nW9dmoWshzGN
-   JMItrlMIeub1srPSQF2w8bm8KoqgvETNLd4mvmB52X3RfS0do783LcZyU
-   oUYdTXcIuTlz7xaTUtmoWf+D4F3rP45bcuh9oQfj2wA39fVM1UgM9tGWw
-   JFqrDbl2vHgykt36fX6fAbITmdLEdBFZa7OzPXiscu67lvWvaYdic5A11
-   GSjaQ0R1ck74eKO8sMJhDCGH7ek750viN/Pbf19u8qKreSM8ezv5SBnWa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="430279912"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="430279912"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 09:18:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="867535889"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jul 2023 09:18:49 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qM9t2-000570-1A;
-        Wed, 19 Jul 2023 16:18:48 +0000
-Date:   Thu, 20 Jul 2023 00:18:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 32bf85c60ca3584a7ba3bef19da2779b73b2e7d6
-Message-ID: <202307200034.rW85cJBC-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        with ESMTP id S229552AbjGSRqT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jul 2023 13:46:19 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA9319B4
+        for <cgroups@vger.kernel.org>; Wed, 19 Jul 2023 10:46:17 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b8b310553bso56125755ad.3
+        for <cgroups@vger.kernel.org>; Wed, 19 Jul 2023 10:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689788777; x=1692380777;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6e7KuyR5qZ6xCXotERLteVBuiZtk31A4XosqK7/beqs=;
+        b=qQcHhj0foniGWDDkDgux7VVWqWaFxDGN+dbzuBsFo30NW6axCLOXrULxehYv6yMHwO
+         jH8UyWpvMU89UheqpLWuY6AceR7QLFibsdGjWeBHNc4UVV7JAvKCHe+DohloqVnlnsji
+         ogeDFvWIQSpEqF11Bn77AHuju0IchimGYa8p1bIZvDMDediUM4PW9ts4U8YkzJIa5x9a
+         tQYoEjbHB3KdO3hxgnScIFJG5V/1KNIo6cJRQRkAbFtYttlUH1CHzaGUF3Qhf/MJ7iLy
+         wMWj+q+IOdC7KZsTRwCYrC2HWbvNHpWR762aG94pnusjfJNKUEQG9aOKJYgksrUzGeX1
+         Qhag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689788777; x=1692380777;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6e7KuyR5qZ6xCXotERLteVBuiZtk31A4XosqK7/beqs=;
+        b=a8z8x/+B1NNNm9mB6Rldz0w1OYHrEbf9NzDgs1mlddepRdX9+Dzw/MTVKHPWmRowv5
+         ksezuaie7CNbN8kp5m3Ei6J4j7KKFSTHWrck/wK7DJ25JwV56y3/pu+gpFp6G3xOcF23
+         CHlTv6wn+y6N9w7PJou6nVKH7rs0Nlg96leCMeWO/lVryzYid4k5P4qHqPvQM9G4xB/q
+         2U54rDTlQWyJMqUIOUL8QDbOURzi7eCXtYJ7rqjgHH6Yvm607r4SPP374tpd30In6/0u
+         L55sHbz2yA3czwsNq9zP7QiuNTCjLZvZtBE0zDkU+9uHvupCkFDwaTLKSIlDluHEGByK
+         UhRw==
+X-Gm-Message-State: ABy/qLaa7WzwJS3doUrixohm7za/kaRpsg7xjaCdZslDNCYYFHVr+c1f
+        EADqgNc/E0yUjhqnG6v+1mFeDvZ90Nug3zae
+X-Google-Smtp-Source: APBJJlEUiRxTpsrvbnGGBXTcFBfqoa+OttLra1eEzXRriYhTXWucHEY3BX2wQBiQaWUu6OO/SRuy5386wIsNmSAq
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:903:2450:b0:1b3:e4f1:1b3f with SMTP
+ id l16-20020a170903245000b001b3e4f11b3fmr17242pls.2.1689788776892; Wed, 19
+ Jul 2023 10:46:16 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 17:46:13 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230719174613.3062124-1-yosryahmed@google.com>
+Subject: [PATCH] mm: memcg: use rstat for non-hierarchical stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,159 +70,211 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 32bf85c60ca3584a7ba3bef19da2779b73b2e7d6  cgroup/misc: Change counters to be explicit 64bit types
+Currently, memcg uses rstat to maintain hierarchical stats. The rstat
+framework keeps track of which cgroups have updates on which cpus.
 
-elapsed time: 1034m
+For non-hierarchical stats, as memcg moved to rstat, they are no longer
+readily available as counters. Instead, the percpu counters for a given
+stat need to be summed to get the non-hierarchical stat value. This
+causes a performance regression when reading non-hierarchical stats on
+kernels where memcg moved to using rstat. This is especially visible
+when reading memory.stat on cgroup v1. There are also some code paths
+internal to the kernel that read such non-hierarchical stats.
 
-configs tested: 140
-configs skipped: 5
+It is inefficient to iterate and sum counters in all cpus when the rstat
+framework knows exactly when a percpu counter has an update. Instead,
+maintain cpu-aggregated non-hierarchical counters for each stat. During
+an rstat flush, keep those updated as well. When reading
+non-hierarchical stats, we no longer need to iterate cpus, we just need
+to read the maintainer counters, similar to hierarchical stats.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+A caveat is that we now a stats flush before reading
+local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
+or memcg_events_local(), where we previously only needed a flush to
+read hierarchical stats. Most contexts reading non-hierarchical stats
+are already doing a flush, add a flush to the only missing context in
+count_shadow_nodes().
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r023-20230718   gcc  
-alpha                randconfig-r035-20230718   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r034-20230718   gcc  
-arc                  randconfig-r035-20230718   gcc  
-arc                  randconfig-r043-20230718   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                            mps2_defconfig   gcc  
-arm                  randconfig-r026-20230718   gcc  
-arm                  randconfig-r032-20230718   clang
-arm                  randconfig-r046-20230718   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r011-20230718   clang
-arm64                randconfig-r012-20230718   clang
-csky                                defconfig   gcc  
-hexagon              randconfig-r031-20230718   clang
-hexagon              randconfig-r041-20230718   clang
-hexagon              randconfig-r045-20230718   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230718   gcc  
-i386         buildonly-randconfig-r005-20230718   gcc  
-i386         buildonly-randconfig-r006-20230718   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230718   gcc  
-i386                 randconfig-i002-20230718   gcc  
-i386                 randconfig-i003-20230718   gcc  
-i386                 randconfig-i004-20230718   gcc  
-i386                 randconfig-i005-20230718   gcc  
-i386                 randconfig-i006-20230718   gcc  
-i386                 randconfig-i011-20230718   clang
-i386                 randconfig-i012-20230718   clang
-i386                 randconfig-i013-20230718   clang
-i386                 randconfig-i014-20230718   clang
-i386                 randconfig-i015-20230718   clang
-i386                 randconfig-i016-20230718   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r002-20230718   gcc  
-loongarch            randconfig-r003-20230718   gcc  
-loongarch            randconfig-r022-20230718   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-microblaze           randconfig-r006-20230718   gcc  
-microblaze           randconfig-r015-20230718   gcc  
-microblaze           randconfig-r036-20230718   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1000-neo_defconfig   clang
-mips                           jazz_defconfig   gcc  
-mips                        qi_lb60_defconfig   clang
-mips                 randconfig-r013-20230718   gcc  
-mips                 randconfig-r033-20230718   clang
-mips                 randconfig-r036-20230718   clang
-nios2                            alldefconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r021-20230718   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r025-20230718   gcc  
-parisc               randconfig-r032-20230718   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      arches_defconfig   gcc  
-powerpc                          g5_defconfig   clang
-powerpc              randconfig-r014-20230718   clang
-powerpc              randconfig-r015-20230718   clang
-powerpc              randconfig-r022-20230718   clang
-powerpc                     skiroot_defconfig   clang
-powerpc                     tqm8540_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r001-20230718   gcc  
-riscv                randconfig-r013-20230718   clang
-riscv                randconfig-r042-20230718   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r014-20230718   clang
-s390                 randconfig-r031-20230718   gcc  
-s390                 randconfig-r044-20230718   clang
-sh                               allmodconfig   gcc  
-sh                         microdev_defconfig   gcc  
-sh                   randconfig-r011-20230718   gcc  
-sh                   randconfig-r024-20230718   gcc  
-sh                   randconfig-r034-20230718   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r016-20230718   gcc  
-sparc                randconfig-r021-20230718   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64              randconfig-r005-20230718   gcc  
-sparc64              randconfig-r012-20230718   gcc  
-sparc64              randconfig-r023-20230718   gcc  
-sparc64              randconfig-r024-20230718   gcc  
-sparc64              randconfig-r025-20230718   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230718   gcc  
-x86_64       buildonly-randconfig-r002-20230718   gcc  
-x86_64       buildonly-randconfig-r003-20230718   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230718   clang
-x86_64               randconfig-x002-20230718   clang
-x86_64               randconfig-x003-20230718   clang
-x86_64               randconfig-x004-20230718   clang
-x86_64               randconfig-x005-20230718   clang
-x86_64               randconfig-x006-20230718   clang
-x86_64               randconfig-x011-20230718   gcc  
-x86_64               randconfig-x012-20230718   gcc  
-x86_64               randconfig-x013-20230718   gcc  
-x86_64               randconfig-x014-20230718   gcc  
-x86_64               randconfig-x015-20230718   gcc  
-x86_64               randconfig-x016-20230718   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                              defconfig   gcc  
-xtensa               randconfig-r033-20230718   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
+With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
+machine with 256 cpus on cgroup v1:
+ # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+ # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
+ real	 0m0.125s
+ user	 0m0.005s
+ sys	 0m0.120s
 
+After:
+ real	 0m0.032s
+ user	 0m0.005s
+ sys	 0m0.027s
+
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ include/linux/memcontrol.h |  7 ++++---
+ mm/memcontrol.c            | 32 +++++++++++++++++++-------------
+ mm/workingset.c            |  1 +
+ 3 files changed, 24 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5818af8eca5a..a9f2861a57a5 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -112,6 +112,9 @@ struct lruvec_stats {
+ 	/* Aggregated (CPU and subtree) state */
+ 	long state[NR_VM_NODE_STAT_ITEMS];
+ 
++	/* Non-hierarchical (CPU aggregated) state */
++	long state_local[NR_VM_NODE_STAT_ITEMS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long state_pending[NR_VM_NODE_STAT_ITEMS];
+ };
+@@ -1020,14 +1023,12 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	long x = 0;
+-	int cpu;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
++	x = READ_ONCE(pn->lruvec_stats.state_local[idx]);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..90a22637818e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -742,6 +742,10 @@ struct memcg_vmstats {
+ 	long			state[MEMCG_NR_STAT];
+ 	unsigned long		events[NR_MEMCG_EVENTS];
+ 
++	/* Non-hierarchical (CPU aggregated) page state & events */
++	long			state_local[MEMCG_NR_STAT];
++	unsigned long		events_local[NR_MEMCG_EVENTS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long			state_pending[MEMCG_NR_STAT];
+ 	unsigned long		events_pending[NR_MEMCG_EVENTS];
+@@ -775,11 +779,8 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ {
+-	long x = 0;
+-	int cpu;
++	long x = READ_ONCE(memcg->vmstats->state_local[idx]);
+ 
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->state[idx], cpu);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+@@ -926,16 +927,12 @@ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+ 
+ static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+ {
+-	long x = 0;
+-	int cpu;
+ 	int index = memcg_events_index(event);
+ 
+ 	if (index < 0)
+ 		return 0;
+ 
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->events[index], cpu);
+-	return x;
++	return READ_ONCE(memcg->vmstats->events_local[index]);
+ }
+ 
+ static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
+@@ -5526,7 +5523,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+ 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct memcg_vmstats_percpu *statc;
+-	long delta, v;
++	long delta, delta_cpu, v;
+ 	int i, nid;
+ 
+ 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+@@ -5542,9 +5539,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			memcg->vmstats->state_pending[i] = 0;
+ 
+ 		/* Add CPU changes on this level since the last flush */
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->state[i]);
+ 		if (v != statc->state_prev[i]) {
+-			delta += v - statc->state_prev[i];
++			delta_cpu = v - statc->state_prev[i];
++			delta += delta_cpu;
+ 			statc->state_prev[i] = v;
+ 		}
+ 
+@@ -5553,6 +5552,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 
+ 		/* Aggregate counts on this level and propagate upwards */
+ 		memcg->vmstats->state[i] += delta;
++		memcg->vmstats->state_local[i] += delta_cpu;
+ 		if (parent)
+ 			parent->vmstats->state_pending[i] += delta;
+ 	}
+@@ -5562,9 +5562,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (delta)
+ 			memcg->vmstats->events_pending[i] = 0;
+ 
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->events[i]);
+ 		if (v != statc->events_prev[i]) {
+-			delta += v - statc->events_prev[i];
++			delta_cpu = v - statc->events_prev[i];
++			delta += delta_cpu;
+ 			statc->events_prev[i] = v;
+ 		}
+ 
+@@ -5572,6 +5574,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			continue;
+ 
+ 		memcg->vmstats->events[i] += delta;
++		memcg->vmstats->events_local[i] += delta_cpu;
+ 		if (parent)
+ 			parent->vmstats->events_pending[i] += delta;
+ 	}
+@@ -5591,9 +5594,11 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			if (delta)
+ 				pn->lruvec_stats.state_pending[i] = 0;
+ 
++			delta_cpu = 0;
+ 			v = READ_ONCE(lstatc->state[i]);
+ 			if (v != lstatc->state_prev[i]) {
+-				delta += v - lstatc->state_prev[i];
++				delta_cpu = v - lstatc->state_prev[i];
++				delta += delta_cpu;
+ 				lstatc->state_prev[i] = v;
+ 			}
+ 
+@@ -5601,6 +5606,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 				continue;
+ 
+ 			pn->lruvec_stats.state[i] += delta;
++			pn->lruvec_stats.state_local[i] += delta_cpu;
+ 			if (ppn)
+ 				ppn->lruvec_stats.state_pending[i] += delta;
+ 		}
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 4686ae363000..da58a26d0d4d 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -664,6 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+ 		struct lruvec *lruvec;
+ 		int i;
+ 
++		mem_cgroup_flush_stats();
+ 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+ 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+ 			pages += lruvec_page_state_local(lruvec,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0.255.g8b1d071c50-goog
+
