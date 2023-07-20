@@ -2,129 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E4675B6CA
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 20:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6908B75B860
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 21:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjGTSbA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jul 2023 14:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        id S231124AbjGTT5N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jul 2023 15:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjGTSbA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 14:31:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3831E135;
-        Thu, 20 Jul 2023 11:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=TVc0DH5y5ZMGm3BerZTpK/u+XD4hMTin0vDBzxNt6yk=; b=k0wUa4Bc0gX81i186z/h55eQuL
-        vN2ed/onpM28iKxC4yEvpheHnOUG0NwZNNTD58Efa5NxWnv8JEi+GPkO0rBNzcOVbiOC0JDx4vExy
-        62BA0UYuhCnDDXCUAcHUFoby7XFd5M9jWSdS9lfREMafDc3OHhgbMYx7lejYTutJ2gFH9OAkhkD2q
-        Iex0W2rl79yFoa2zJp4tUDJuQY6KkxOA+6Q/NVHpzYBA8oL3jzUcj/YbCkwN9ejIWCcVMrHZOMy/e
-        oILegG1jfTpeFUg80y2sMHbIdrvmHw5WpoMbIiyPvoeDu0hQru9bMv/Xx+SN3p+prtgLGa3MNUuJw
-        4iYrGLKQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMYQL-00Bu7e-1E;
-        Thu, 20 Jul 2023 18:30:49 +0000
-Date:   Thu, 20 Jul 2023 11:30:49 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S229905AbjGTT5N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 15:57:13 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDD226AC;
+        Thu, 20 Jul 2023 12:57:12 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-517bdc9e81dso528668a12.1;
+        Thu, 20 Jul 2023 12:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689883031; x=1690487831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=488yUOu99r9XLGMS28MSYzrMwwZ0NrAxoU1mgPEtyC0=;
+        b=JMOtgIe5DMCQIM5oGBqiM/ylvwu1hwkVQ2QtHWVBkEpUkMxSBsHgJiIR+2G1Cmd92f
+         hAUBEFj/gA1H/BM8ljgqxthlJlVxMD476DlEUWU/1N6EBCogXk6q2lfnqU5N7Y10dcs3
+         AlbzAMThKFik0AKakGGOEzM0/6Q1qkYZTz0YA/AooEzuEbU/CD+SD8lVnNX3xr8RxCSU
+         Z0kfnx/V4AVR80XTFTSA1OHu1ZT0svkQ43EtUm5dBUMiCtXTeSxMUQfZM5+8wHRc1pfI
+         MThEn2/skjYIxiEp09PvzELiObCA7r0EcUFVqOAkb2xbdwig8ciQeTkHCv3PbXXnZNIz
+         WHSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689883031; x=1690487831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=488yUOu99r9XLGMS28MSYzrMwwZ0NrAxoU1mgPEtyC0=;
+        b=Gi5PMVcWbHFpozpCsZZmJBo8xijyxQ8nPeij8iX/18KuIPnMBohTMCn6nMS1beUMRL
+         AKwjUQIJ+zHG/toT0NWU3+EdY88yHDbliQK5bEVyc+kWwJZk3iNEQ01pyyZIfRBoHYhq
+         jO7yZDvs+3MD/djYLu8cVz78YJpXhgL6haQGQxWea8YnJlqyWBYel1dAzjQoQOiC/sUY
+         lHdVkqeyQj5ygKd3FgnlPQXR0RNbuCikvnDrvATUa1Ze6azP0C1x9b2tFiwwiqyji10t
+         AU5rjfxhtVTawnL3Fsy7B+giuc2rk/xnoSfQOC2uFFCjO6LU9YKAG0ZecO5uHjM1Hmy0
+         D1Cw==
+X-Gm-Message-State: ABy/qLYsbDoKglVOHwBTCzHxIrBrhpsoGeVyhVYOmsdMVEifFVhWxWq9
+        4jXiqAGOurxi3aOIu+O0xjk=
+X-Google-Smtp-Source: APBJJlFzO2HyO5mcuIF2ZUo2qUByHsJoAMj9LVDg7u7CaD7sJ5DiLnd7W3E9o4C+kuPn8fD4OmuYrg==
+X-Received: by 2002:a17:90b:1106:b0:256:2fd4:e238 with SMTP id gi6-20020a17090b110600b002562fd4e238mr372828pjb.38.1689883031185;
+        Thu, 20 Jul 2023 12:57:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id iq1-20020a17090afb4100b0025bf9e02e1bsm1320175pjb.51.2023.07.20.12.57.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 12:57:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 Jul 2023 09:57:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>, Kees Cook <keescook@chromium.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Iurii Zaikin <yzaikin@google.com>,
         "T.J. Mercier" <tjmercier@google.com>,
         Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 7/8] memcg: add sysctl and config option to control
- memory recharging
-Message-ID: <ZLl9WfMgZSeKtyX7@bombadil.infradead.org>
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <ZLmRlTej8Tm82kXG@slm.duckdns.org>
 References: <20230720070825.992023-1-yosryahmed@google.com>
- <20230720070825.992023-8-yosryahmed@google.com>
- <ZLl5XA25BIlYyngD@bombadil.infradead.org>
- <CAJD7tkbsZ5rAn5nNUvhuN9uUb4qPcsGZ8pcwCHzbqbajXKP9=g@mail.gmail.com>
+ <20230720153515.GA1003248@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbsZ5rAn5nNUvhuN9uUb4qPcsGZ8pcwCHzbqbajXKP9=g@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230720153515.GA1003248@cmpxchg.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 11:24:20AM -0700, Yosry Ahmed wrote:
-> On Thu, Jul 20, 2023 at 11:13 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Thu, Jul 20, 2023 at 07:08:24AM +0000, Yosry Ahmed wrote:
-> > > Add a sysctl to enable/disable memory recharging for offline memcgs. Add
-> > > a config option to control whether or not it is enabled by default.
-> > >
-> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > ---
-> > >  include/linux/memcontrol.h |  2 ++
-> > >  kernel/sysctl.c            | 11 +++++++++++
-> > >  mm/Kconfig                 | 12 ++++++++++++
-> > >  mm/memcontrol.c            |  9 ++++++++-
-> > >  4 files changed, 33 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index 59b653d4a76e..ae9f09ee90cb 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -60,6 +60,8 @@ struct mem_cgroup_reclaim_cookie {
-> > >
-> > >  #ifdef CONFIG_MEMCG
-> > >
-> > > +extern int sysctl_recharge_offline_memcgs;
-> > > +
-> > >  #define MEM_CGROUP_ID_SHIFT  16
-> > >  #define MEM_CGROUP_ID_MAX    USHRT_MAX
-> > >
-> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > > index 354a2d294f52..1735d1d95652 100644
-> > > --- a/kernel/sysctl.c
-> > > +++ b/kernel/sysctl.c
-> > > @@ -2249,6 +2249,17 @@ static struct ctl_table vm_table[] = {
-> > >               .extra2         = (void *)&mmap_rnd_compat_bits_max,
-> > >       },
-> > >  #endif
-> > > +#ifdef CONFIG_MEMCG
-> > > +     {
-> > > +             .procname       = "recharge_offline_memcgs",
-> > > +             .data           = &sysctl_recharge_offline_memcgs,
-> > > +             .maxlen         = sizeof(sysctl_recharge_offline_memcgs),
-> > > +             .mode           = 0644,
-> > > +             .proc_handler   = proc_dointvec_minmax,
-> > > +             .extra1         = SYSCTL_ZERO,
-> > > +             .extra2         = SYSCTL_ONE,
-> > > +     },
-> > > +#endif /* CONFIG_MEMCG */
-> > >       { }
-> > >  };
-> >
-> > Please don't add any more sysctls to kernel/sysctl.c, git log that file
-> > for a series of cleanups which show how to use your own and why we have
-> > been doing that cleanup.
-> 
-> Thanks for pointing this out, I definitely missed it. Will do that in
-> the next version. I guess this will also reduce the reviewer churn if
-> I won't be touching kernel/sysctl.c?
+On Thu, Jul 20, 2023 at 11:35:15AM -0400, Johannes Weiner wrote:
+> It could also be argued that if you don't want to lose control over a
+> set of resources, then maybe don't delete their control domain while
+> they are still alive and in use. For example, when restarting a
+> workload, and the new instance is expected to have largely the same
+> workingset, consider reusing the cgroup instead of making a new one.
 
-Right, it means I don't have to care anymore about random sysctl knobs.
-Let people knob it all up.
+Or just create a nesting layer so that there's a cgroup which represents the
+persistent resources and a nested cgroup instance inside representing the
+current instance.
 
-  Luis
+Thanks.
+
+-- 
+tejun
