@@ -2,132 +2,173 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD63775AA6C
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 11:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FE275AC72
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 12:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjGTJOf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jul 2023 05:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        id S229618AbjGTKzU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jul 2023 06:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbjGTJMd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 05:12:33 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846AC4C37
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 01:58:37 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-401d1d967beso237501cf.0
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 01:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689843455; x=1690448255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k0Q8HK8TX799KwlVsueVU2Vn6pAZBPxCHZbkBqMog0w=;
-        b=sbu7cKX3RJ4STU+W+JnLifIFmUz7jowp9LlbTrMBKpyqTT6Kt21vKp2H8FzOIS5tep
-         bbXgF86b7ixmUe1C64by8cuyAkXEDJAhk/gJ2VRtUGHb9caKNjgb9OxMQP+zrnCqpcj2
-         0GriA2TxJI0nFyWsYdarH2tV2F8oXchBWBF49T4hNwMZKqRvLpT7KUAaFpv/hWBlJtnr
-         eR3Q7T3Ih01HzEFFJp1vIMbg3XuP9jk+gC3Voy9dtnPLpZFwxTUCMBTiLlhqEnVZspy9
-         c7k4pKrsJ+tQo++vjhDeFYDA9oaDf8lz3TJbJLHFGGmlrXivPKXfPtwH5nnoPelp0XVz
-         2R6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689843455; x=1690448255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k0Q8HK8TX799KwlVsueVU2Vn6pAZBPxCHZbkBqMog0w=;
-        b=Nl8h9HF8Fog5fd9dTQXW/Pc06pE4sVqBYkvE73RPa8VQ2XhJ7F+HpBbgdbTVM8bJBH
-         27q/eur9I64aYQFffLkdXZI+aN7UQ/JShu0p20bWiivO0+MMNm1j5tt5br5lcSOPBc4Y
-         5+lKKMHBAANBhaszYQr4WgsyWgCj4KMcM/UFS542FGXLtDn120k7yVWeIUJJRjphU8lU
-         KeFvAD/joD/tfj8Taqe0sdS0VHqBuF1+KF6Jg3o98BWR1SDEH9m465BnuBxYA3v+uOn7
-         XU+8twjBSzC9LpaO0XikYkHGaTq9kBOKQeBPnYah/N2z3+/KG1thvTQhZ4gh3MRJB6d3
-         Oxwg==
-X-Gm-Message-State: ABy/qLZ9aQmPy9sEv9XBzzCRIIBlB94mTqdnRAUll+syVoOqV83T2cJh
-        GS3nkDCmjFoAuae2hTRxo5AWRYKvMGicGXbTz+wQgQ==
-X-Google-Smtp-Source: APBJJlFqutZVzbsA3NqN/Ssn0odGnTV/YCAAziUPG0pJHG9pnasjigUhJvUq9CLPLsN4fxxZHp1mY/y9L0R6loLApxY=
-X-Received: by 2002:a05:622a:1a12:b0:404:8218:83da with SMTP id
- f18-20020a05622a1a1200b00404821883damr159489qtb.1.1689843455136; Thu, 20 Jul
- 2023 01:57:35 -0700 (PDT)
+        with ESMTP id S229540AbjGTKzT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 06:55:19 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FA61982;
+        Thu, 20 Jul 2023 03:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689850518; x=1721386518;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1nzPh2ldW7JFgjNWEhtnVlvHO52nCzC4d7AFlh05n7E=;
+  b=cVnn+wmexiQEqOxlofbZGplFs6GulSrxjEtfvEJFbDlqGRKE537h5wSj
+   yzaVbv9aIfs2grPxKeOYq+JVUuPXiTZQIxBwISyi5a/zpQ/Y56HcjoLyI
+   uprlf2rKQalk9JBctkKiSB8CljYKZPwRhHXVniiEDr70Upz5EIZpTi6/3
+   zxqJXctyHggP7ToyltD+VsHwVl0g99nHZ/RSS93Wu1jkUbdQ1cwR2XJv7
+   EcAA7wZTZ/5MZ1dhOJ1HX31ZyYfSVUeFInLKQY+8zxW9WzEu/hUVyUwqG
+   b2keXxaMj/cWpoWzBHMrBw3h109zoglbBsjXM+zyPf2X8BEt9sZDSd096
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="397574318"
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="scan'208";a="397574318"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 03:55:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="727644776"
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="scan'208";a="727644776"
+Received: from ctuohy-mobl1.ger.corp.intel.com (HELO [10.213.193.21]) ([10.213.193.21])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 03:55:13 -0700
+Message-ID: <95de5c1e-f03b-8fb7-b5ef-59ac7ca82f31@linux.intel.com>
+Date:   Thu, 20 Jul 2023 11:55:11 +0100
 MIME-Version: 1.0
-References: <20230711124157.97169-1-wuyun.abel@bytedance.com> <d114834c-2336-673f-f200-87fc6efb411f@bytedance.com>
-In-Reply-To: <d114834c-2336-673f-f200-87fc6efb411f@bytedance.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 20 Jul 2023 10:57:23 +0200
-Message-ID: <CANn89iLBLBO0CK-9r-eZiQL+h2bwTHL2nR6az5Az6W_-pBierw@mail.gmail.com>
-Subject: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators of
- sockmem pressure
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RFC v5 00/17] DRM cgroup controller with scheduling control and
+ memory stats
+Content-Language: en-US
+To:     "T.J. Mercier" <tjmercier@google.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Breno Leitao <leitao@debian.org>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <CABdmKX1PUF+X897ZMOr0RNiYdoiL_2NkcSt+Eh55BfW-05LopQ@mail.gmail.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <CABdmKX1PUF+X897ZMOr0RNiYdoiL_2NkcSt+Eh55BfW-05LopQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 9:59=E2=80=AFAM Abel Wu <wuyun.abel@bytedance.com> =
-wrote:
->
-> Gentle ping :)
 
-I was hoping for some feedback from memcg experts.
+Hi,
 
-You claim to fix a bug, please provide a Fixes: tag so that we can
-involve original patch author.
+On 19/07/2023 21:31, T.J. Mercier wrote:
+> On Wed, Jul 12, 2023 at 4:47 AM Tvrtko Ursulin
+> <tvrtko.ursulin@linux.intel.com> wrote:
+>>
+>>    drm.memory.stat
+>>          A nested file containing cumulative memory statistics for the whole
+>>          sub-hierarchy, broken down into separate GPUs and separate memory
+>>          regions supported by the latter.
+>>
+>>          For example::
+>>
+>>            $ cat drm.memory.stat
+>>            card0 region=system total=12898304 shared=0 active=0 resident=12111872 purgeable=167936
+>>            card0 region=stolen-system total=0 shared=0 active=0 resident=0 purgeable=0
+>>
+>>          Card designation corresponds to the DRM device names and multiple line
+>>          entries can be present per card.
+>>
+>>          Memory region names should be expected to be driver specific with the
+>>          exception of 'system' which is standardised and applicable for GPUs
+>>          which can operate on system memory buffers.
+>>
+>>          Sub-keys 'resident' and 'purgeable' are optional.
+>>
+>>          Per category region usage is reported in bytes.
+>>
+>>   * Feedback from people interested in drm.active_us and drm.memory.stat is
+>>     required to understand the use cases and their usefulness (of the fields).
+>>
+>>     Memory stats are something which was easy to add to my series, since I was
+>>     already working on the fdinfo memory stats patches, but the question is how
+>>     useful it is.
+>>
+> Hi Tvrtko,
+> 
+> I think this style of driver-defined categories for reporting of
+> memory could potentially allow us to eliminate the GPU memory tracking
+> tracepoint used on Android (gpu_mem_total). This would involve reading
+> drm.memory.stat at the root cgroup (I see it's currently disabled on
 
-Thanks.
+I can put it available under root too, don't think there is any 
+technical reason to not have it. In fact, now that I look at it again, 
+memory.stat is present on root so that would align with my general 
+guideline to keep the two as similar as possible.
 
->
-> On 7/11/23 8:41 PM, Abel Wu wrote:
-> > Now there are two indicators of socket memory pressure sit inside
-> > struct mem_cgroup, socket_pressure and tcpmem_pressure.
-> >
-> > When in legacy mode aka. cgroupv1, the socket memory is charged
-> > into a separate counter memcg->tcpmem rather than ->memory, so
-> > the reclaim pressure of the memcg has nothing to do with socket's
-> > pressure at all. While for default mode, the ->tcpmem is simply
-> > not used.
-> >
-> > So {socket,tcpmem}_pressure are only used in default/legacy mode
-> > respectively. This patch fixes the pieces of code that make mixed
-> > use of both.
-> >
-> > Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> > ---
-> >   include/linux/memcontrol.h | 4 ++--
-> >   mm/vmpressure.c            | 8 ++++++++
-> >   2 files changed, 10 insertions(+), 2 deletions(-)
-> >
+> the root), which means traversing the whole cgroup tree under the
+> cgroup lock to generate the values on-demand. This would be done
+> rarely, but I still wonder what the cost of that would turn out to be.
+
+Yeah that's ugly. I could eliminate cgroup_lock by being a bit smarter. 
+Just didn't think it worth it for the RFC.
+
+Basically to account memory stats for any sub-tree I need the equivalent 
+one struct drm_memory_stats per DRM device present in the hierarchy. So 
+I could pre-allocate a few and restart if run out of spares, or 
+something. They are really small so pre-allocating a good number, based 
+on past state or something, should would good enough. Or even total 
+number of DRM devices in a system as a pessimistic and safe option for 
+most reasonable deployments.
+
+> The drm_memory_stats categories in the output don't seem like a big
+> value-add for this use-case, but no real objection to them being
+
+You mean the fact there are different categories is not a value add for 
+your use case because you would only use one?
+
+The idea was to align 1:1 with DRM memory stats fdinfo and somewhat 
+emulate how memory.stat also offers a breakdown.
+
+> there. I know it's called the DRM cgroup controller, but it'd be nice
+> if there were a way to make the mem tracking part work for any driver
+> that wishes to participate as many of our devices don't use a DRM
+> driver. But making that work doesn't look like it would fit very
+
+Ah that would be a challenge indeed to which I don't have any answers 
+right now.
+
+Hm if you have a DRM device somewhere in the chain memory stats would 
+still show up. Like if you had a dma-buf producer which is not a DRM 
+driver, but then that buffer was imported by a DRM driver, it would show 
+up in a cgroup. Or vice-versa. But if there aren't any in the whole 
+chain then it would not.
+
+> cleanly into this controller, so I'll just shut up now.
+
+Not all all, good feedback!
+
+Regards,
+
+Tvrtko
