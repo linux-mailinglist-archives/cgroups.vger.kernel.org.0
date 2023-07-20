@@ -2,86 +2,163 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A342875AE43
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 14:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EE875B2E8
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 17:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjGTMXS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jul 2023 08:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S232611AbjGTPfq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jul 2023 11:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTMXS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 08:23:18 -0400
-X-Greylist: delayed 435 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 05:23:16 PDT
-Received: from out-8.mta1.migadu.com (out-8.mta1.migadu.com [IPv6:2001:41d0:203:375::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A6AA2
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 05:23:16 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689855359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1qUoKI3SbOAj4JugO0eFEKpo/XtZkaAZd4jHbDGRCXI=;
-        b=UYRVGSJeMWgVT/Cmj35t2ZweiX0f74MUBaOSw4MLtDmMy3IiuQrHv8RU4qRm/+sTXZG3zj
-        +eK1+VPGThdCpfSCGWbopKgw5Dw3dyzfnI+h4Dk0lnIiYvGH6rNedI6u3cchFohjzDfaRp
-        UtcGfRKuKFeW1oGmtQWsxdDyRcpHit4=
-From:   chengming.zhou@linux.dev
-To:     tj@kernel.org, josef@toxicpanda.com
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-Subject: [PATCH] blk-iocost: skip empty flush bio in iocost
-Date:   Thu, 20 Jul 2023 20:14:41 +0800
-Message-ID: <20230720121441.1408522-1-chengming.zhou@linux.dev>
+        with ESMTP id S232684AbjGTPfb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 11:35:31 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE442D73
+        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 08:35:18 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-403f65a3f8cso8574791cf.2
+        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 08:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689867318; x=1690472118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1n+rFJmpt3qB6JDh31e2VoNgqrjqEMhcmnlZeysYmYE=;
+        b=4k9D+J7Kpdc0v2PabFm8Hmk1Rg0EfWw4RPCEG+efTc4WtuWKXjt/fnBhLoqCeZE2tu
+         ZJZgFzOafPl7KmThIItTT/LAYNvIuj4QKYPs3Y/WUaerPCDvtD8AbSYxdJBV6gq7erZ0
+         QkSqfy+6llSiQFqdoU+Kj0piE8M5QnD+2ORQ6bx9iEqn54wsDOFBvtj9QYGtnMZTZ8U7
+         KfVsmYYL0Ey+U08VcwemcoYSxU65LDlXnWhRO97b+vEfwHygN164fwsiag0Q4Bu72//P
+         +QQgOU1mJjt87DcTNtsI3PcXd+3/ZgW182eFDepQugrD6/ju3NE4lu6THcTcE7LkVK6j
+         uHUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689867318; x=1690472118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1n+rFJmpt3qB6JDh31e2VoNgqrjqEMhcmnlZeysYmYE=;
+        b=N5rjpOdeSSAQ6jv/fDMJoPw1LXcBLmyId45uaYRhJr+QsDc2HmAC6gTtvM4wiWaJbo
+         GPBC1hXjn+MG2liVFBgTYrE/Wl7eU5c+iE6UfMgsSpuHpMBkGaGvzFQgfXlvn47RLpgE
+         /T61IgrQZqxWX2Sq3DhGnh2Dna87o9reb/RTP7nhDCytyS218oVrHolflgnUAXeb1Yfc
+         ZtWyx61Jy4UmcaLrpPL5/5+AaaRAG6TWvlSSfkccXSZoxbMMD25MWa4YbhHqnkOgylgv
+         +dkSVqj0GTwqiMXgmzjUpJXbVJm/k9kHtf/t6e2LiO3p5CrCDZpjq/6faGx8xOvnxKsf
+         vP/Q==
+X-Gm-Message-State: ABy/qLZZW0EC3nkki+JtVUFVsVhfR59z64ykTKk76T2MBTlbN5Wp+wqZ
+        ee4Dumt4ucNskHoOxGp0xYagQQ==
+X-Google-Smtp-Source: APBJJlHmfBUgJQ9Se08lJnq+G/rIdvG63OoRA/rvVvwg/oR7kPGHTKFIctM5V0m+lPCob+QaJys7Ow==
+X-Received: by 2002:a05:622a:15c7:b0:405:42e9:8a8e with SMTP id d7-20020a05622a15c700b0040542e98a8emr2557869qty.57.1689867317844;
+        Thu, 20 Jul 2023 08:35:17 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id fg14-20020a05622a580e00b0040399fb5ef3sm443668qtb.0.2023.07.20.08.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 08:35:17 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 11:35:15 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <20230720153515.GA1003248@cmpxchg.org>
+References: <20230720070825.992023-1-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720070825.992023-1-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+On Thu, Jul 20, 2023 at 07:08:17AM +0000, Yosry Ahmed wrote:
+> This patch series implements the proposal in LSF/MM/BPF 2023 conference
+> for reducing offline/zombie memcgs by memory recharging [1]. The main
+> difference is that this series focuses on recharging and does not
+> include eviction of any memory charged to offline memcgs.
+> 
+> Two methods of recharging are proposed:
+> 
+> (a) Recharging of mapped folios.
+> 
+> When a memcg is offlined, queue an asynchronous worker that will walk
+> the lruvec of the offline memcg and try to recharge any mapped folios to
+> the memcg of one of the processes mapping the folio. The main assumption
+> is that a process mapping the folio is the "rightful" owner of the
+> memory.
+> 
+> Currently, this is only supported for evictable folios, as the
+> unevictable lru is imaginary and we cannot iterate the folios on it. A
+> separate proposal [2] was made to revive the unevictable lru, which
+> would allow recharging of unevictable folios.
+> 
+> (b) Deferred recharging of folios.
+> 
+> For folios that are unmapped, or mapped but we fail to recharge them
+> with (a), we rely on deferred recharging. Simply put, any time a folio
+> is accessed or dirtied by a userspace process, and that folio is charged
+> to an offline memcg, we will try to recharge it to the memcg of the
+> process accessing the folio. Again, we assume this process should be the
+> "rightful" owner of the memory. This is also done asynchronously to avoid
+> slowing down the data access path.
 
-The flush bio may have data, may have no data (empty flush), we couldn't
-calculate cost for empty flush bio. So we'd better just skip it for now.
+I'm super skeptical of this proposal.
 
-Another side effect is that empty flush bio's bio_end_sector() is 0, cause
-iocg->cursor reset to 0, may break the cost calculation of other bios.
+Recharging *might* be the most desirable semantics from a user pov,
+but only if it applies consistently to the whole memory footprint.
+There is no mention of slab allocations such as inodes, dentries,
+network buffers etc. which can be a significant part of a cgroup's
+footprint. These are currently reparented. I don't think doing one
+thing with half of the memory, and a totally different thing with the
+other half upon cgroup deletion is going to be acceptable semantics.
 
-This isn't good enough, since flush bio still consume the device bandwidth,
-but flush request is special, can be merged randomly in the flush state
-machine, we don't know how to calculate cost for it for now.
+It appears this also brings back the reliability issue that caused us
+to deprecate charge moving. The recharge path has trylocks, LRU
+isolation attempts, GFP_ATOMIC allocations. These introduce a variable
+error rate into the relocation process, which causes pages that should
+belong to the same domain to be scattered around all over the place.
+It also means that zombie pinning still exists, but it's now even more
+influenced by timing and race conditions, and so less predictable.
 
-Its completion time also has flaws, which may include the pre-flush or
-post-flush completion time, but I don't know if we need to fix that and
-how to fix it.
+There are two issues being conflated here:
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- block/blk-iocost.c | 4 ++++
- 1 file changed, 4 insertions(+)
+a) the problem of zombie cgroups, and
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 6084a9519883..e735b3e9997c 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2516,6 +2516,10 @@ static void calc_vtime_cost_builtin(struct bio *bio, struct ioc_gq *iocg,
- 	u64 seek_pages = 0;
- 	u64 cost = 0;
- 
-+	/* Can't calculate cost for empty bio */
-+	if (!bio->bi_iter.bi_size)
-+		goto out;
-+
- 	switch (bio_op(bio)) {
- 	case REQ_OP_READ:
- 		coef_seqio	= ioc->params.lcoefs[LCOEF_RSEQIO];
--- 
-2.41.0
+b) who controls resources that outlive the control domain.
 
+For a), reparenting is still the most reasonable proposal. It's
+reliable for one, but it also fixes the problem fully within the
+established, user-facing semantics: resources that belong to a cgroup
+also hierarchically belong to all ancestral groups; if those resources
+outlive the last-level control domain, they continue to belong to the
+parents. This is how it works today, and this is how it continues to
+work with reparenting. The only difference is that those resources no
+longer pin a dead cgroup anymore, but instead are physically linked to
+the next online ancestor. Since dead cgroups have no effective control
+parameters anymore, this is semantically equivalent - it's just a more
+memory efficient implementation of the same exact thing.
+
+b) is a discussion totally separate from this. We can argue what we
+want this behavior to be, but I'd argue strongly that whatever we do
+here should apply to all resources managed by the controller equally.
+
+It could also be argued that if you don't want to lose control over a
+set of resources, then maybe don't delete their control domain while
+they are still alive and in use. For example, when restarting a
+workload, and the new instance is expected to have largely the same
+workingset, consider reusing the cgroup instead of making a new one.
+
+For the zombie problem, I think we should merge Muchun's patches
+ASAP. They've been proposed several times, they have Roman's reviews
+and acks, and they do not change user-facing semantics. There is no
+good reason not to merge them.
