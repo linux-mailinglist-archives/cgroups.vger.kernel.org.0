@@ -2,144 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3ABA759FDC
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jul 2023 22:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463FD75A745
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 09:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbjGSUda (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Jul 2023 16:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
+        id S230228AbjGTHId (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jul 2023 03:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjGSUd2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jul 2023 16:33:28 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC87A2103
-        for <cgroups@vger.kernel.org>; Wed, 19 Jul 2023 13:33:06 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-564e4656fecso100752eaf.0
-        for <cgroups@vger.kernel.org>; Wed, 19 Jul 2023 13:33:06 -0700 (PDT)
+        with ESMTP id S229576AbjGTHI3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 03:08:29 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883702123
+        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 00:08:28 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-56336f5dc6cso230704a12.0
+        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 00:08:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689798726; x=1692390726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hVa5fBSVAdHHhZFj/pRkL4ALpTE995mDIMsnkkRTm0Q=;
-        b=Lde5n1cKOA1T4bKffkRp7OCLFw3kIzNszFORWjdILVZqUjkjtj/r9hJnWetWPtfHma
-         ljuFtQpXVY4jecYQAp9auj6671m4eJtWAWASvcxJ0vh6TBOL3L3JPhny0qmlkfIO9s+W
-         8B9dU1kPuZnzPVLrgJf4wHRzdb2yDbMwGZLSaAOSX8ifu+zNVAZ4k00aAjhvtL71UYFE
-         zBzIW5qzWajLb4R1YlKHx0jzIA1FhXb9NOCMhsidexUSwl+9zzaHMeWSsIwt4d/UKdn3
-         ou8P9mOiEJewUTZVMKvwVKWKgZcn3ZknSYuePQSkjSIgj6WoH4BvzHG+o4ET6ZkJEN1+
-         idEw==
+        d=google.com; s=20221208; t=1689836908; x=1692428908;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=U/LCb/swRVuVzVICP60Gq89mZaxuIEA6maW/j6Ih8uc=;
+        b=NmItOuI1BO8FpivokQJywTfJdRc87myk9anTbJ4UoJVsByhpyWZ2NhGs3XaN2cP2Nt
+         JOV9ihqCzY8Rxsp+r6isfIFkW/SUwj9Vss4W2DuK2ccFsP635edEhy1jQxM9GiR5RwCK
+         5oMMI3/PuSouXpEAZw7u4v68TUmwdBfHnyKCeBIftZE10kZdkxmv5uViyp1Mkr88BgDy
+         w0adw8Rgvu0dZI9YOQ0lxUV8rJvfzPt+gm6BycHBJUwzSYgtNUNUoYFoNjXznI+XvsO6
+         3RMjTaAvwUCkl3RUI9BRhsU/hvOSutDDKijJFjy210IHQPmnpkspt3yoNydMInG9aMxS
+         +bjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689798726; x=1692390726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hVa5fBSVAdHHhZFj/pRkL4ALpTE995mDIMsnkkRTm0Q=;
-        b=UtwcEvXVRPt6/azGG/OczIYZbhkM7+M9safcylAuMs0dxWTLeTTEphx+rrbLiY+DOf
-         sjTJLNoJcXhKj/fxh9LGDFBTMpUMvC40R9wzZdMEMPukHFOTAmtzKfFdsVrvxGOo30a0
-         W/h6Se7VDtrt6u7mWOVYatWY85FUNgaCl/I10A5y8wa4f/7GrAoKEBMa77mCnSTW0Nzs
-         fW3+Q/hRZH2/mawxR/5t/NRNne0Y0JaWrXSco2t/NA5QAC/URPlX7DOVr0PDEtPwLDy3
-         6atVPjMjFkHm7zGMp+PkTBbR0DeBRDU7uX5LQzPiTILTccFtgF5bYJdEMBZe9hp/JJb1
-         ZBow==
-X-Gm-Message-State: ABy/qLYUFS2mZc+adYPhR8Pq8+AVtINh2huihd2E+2VmPl+d1F4BZXua
-        jAQMgJpcsl20V4G7qiApn0E9cAWZvnBBL/c80yRZzw==
-X-Google-Smtp-Source: APBJJlG0LOmFWJJYoiI2DoFv8CdP9UbzzCs8Y7kDwJRTGKPR2LDaC31eQP8L8zN0JJDBJcCQwWuezCzERqGP128mCXI=
-X-Received: by 2002:a05:6808:138c:b0:3a3:eab8:8710 with SMTP id
- c12-20020a056808138c00b003a3eab88710mr4242718oiw.43.1689798726160; Wed, 19
- Jul 2023 13:32:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
-In-Reply-To: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Wed, 19 Jul 2023 13:31:54 -0700
-Message-ID: <CABdmKX1PUF+X897ZMOr0RNiYdoiL_2NkcSt+Eh55BfW-05LopQ@mail.gmail.com>
-Subject: Re: [RFC v5 00/17] DRM cgroup controller with scheduling control and
- memory stats
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>,
+        d=1e100.net; s=20221208; t=1689836908; x=1692428908;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U/LCb/swRVuVzVICP60Gq89mZaxuIEA6maW/j6Ih8uc=;
+        b=F/lgP3ueKXDbnM2tlE7c2cg2FJfEjhUqeyyPIqqnwVez6VDAkxpYTHdFDj8moEwYLM
+         TmqG8tEPo6VEre3FIra/LVyhBvcapv+jWLqE2pEPPYfVP+YHxincqVwNSWLc8T90cw6W
+         TkqUgzLgPEOm3YtgOMOftWhUTEEI6NLKhrMgZg/io3Mp2+Zh0sxYZyHoPlWTthVGdq+A
+         tooCe0u3t72rlsYjBU+KqYHCbQ4YqiWcUz/h0ITwsG4VKiEcVUHDrn1j0b+X7hVG8Idf
+         tl07tGDXb4FdykEFYCWQNlMCtk27FTUoyZh7LFjMR47yWg1mQvirxf95efqWu9BmXYhy
+         3tEg==
+X-Gm-Message-State: ABy/qLb/F/Dr0DHTmNELQWPS+QmZF3730jIKv1u+SjbDr7IFGWCgx6HC
+        Fs7/o1YpN7l5Yz7C1BcHlEcYMHb/wB0OfM77
+X-Google-Smtp-Source: APBJJlGoahb1Hw3DrqI5/DdSPxhCfuqs9wKCySncxj0p/hiZ24g7ZOrRHDY0we6awSzCS5RXF+EZYXNCxdbOuEoT
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a63:6d4f:0:b0:530:3a44:1581 with SMTP
+ id i76-20020a636d4f000000b005303a441581mr20974pgc.9.1689836907839; Thu, 20
+ Jul 2023 00:08:27 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 07:08:17 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230720070825.992023-1-yosryahmed@google.com>
+Subject: [RFC PATCH 0/8] memory recharging for offline memcgs
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=C3=A9phane_Marchesin?= <marcheu@chromium.org>,
-        Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 4:47=E2=80=AFAM Tvrtko Ursulin
-<tvrtko.ursulin@linux.intel.com> wrote:
->
->   drm.memory.stat
->         A nested file containing cumulative memory statistics for the who=
-le
->         sub-hierarchy, broken down into separate GPUs and separate memory
->         regions supported by the latter.
->
->         For example::
->
->           $ cat drm.memory.stat
->           card0 region=3Dsystem total=3D12898304 shared=3D0 active=3D0 re=
-sident=3D12111872 purgeable=3D167936
->           card0 region=3Dstolen-system total=3D0 shared=3D0 active=3D0 re=
-sident=3D0 purgeable=3D0
->
->         Card designation corresponds to the DRM device names and multiple=
- line
->         entries can be present per card.
->
->         Memory region names should be expected to be driver specific with=
- the
->         exception of 'system' which is standardised and applicable for GP=
-Us
->         which can operate on system memory buffers.
->
->         Sub-keys 'resident' and 'purgeable' are optional.
->
->         Per category region usage is reported in bytes.
->
->  * Feedback from people interested in drm.active_us and drm.memory.stat i=
-s
->    required to understand the use cases and their usefulness (of the fiel=
-ds).
->
->    Memory stats are something which was easy to add to my series, since I=
- was
->    already working on the fdinfo memory stats patches, but the question i=
-s how
->    useful it is.
->
-Hi Tvrtko,
+This patch series implements the proposal in LSF/MM/BPF 2023 conference
+for reducing offline/zombie memcgs by memory recharging [1]. The main
+difference is that this series focuses on recharging and does not
+include eviction of any memory charged to offline memcgs.
 
-I think this style of driver-defined categories for reporting of
-memory could potentially allow us to eliminate the GPU memory tracking
-tracepoint used on Android (gpu_mem_total). This would involve reading
-drm.memory.stat at the root cgroup (I see it's currently disabled on
-the root), which means traversing the whole cgroup tree under the
-cgroup lock to generate the values on-demand. This would be done
-rarely, but I still wonder what the cost of that would turn out to be.
-The drm_memory_stats categories in the output don't seem like a big
-value-add for this use-case, but no real objection to them being
-there. I know it's called the DRM cgroup controller, but it'd be nice
-if there were a way to make the mem tracking part work for any driver
-that wishes to participate as many of our devices don't use a DRM
-driver. But making that work doesn't look like it would fit very
-cleanly into this controller, so I'll just shut up now.
+Two methods of recharging are proposed:
 
-Thanks!
--T.J.
+(a) Recharging of mapped folios.
+
+When a memcg is offlined, queue an asynchronous worker that will walk
+the lruvec of the offline memcg and try to recharge any mapped folios to
+the memcg of one of the processes mapping the folio. The main assumption
+is that a process mapping the folio is the "rightful" owner of the
+memory.
+
+Currently, this is only supported for evictable folios, as the
+unevictable lru is imaginary and we cannot iterate the folios on it. A
+separate proposal [2] was made to revive the unevictable lru, which
+would allow recharging of unevictable folios.
+
+(b) Deferred recharging of folios.
+
+For folios that are unmapped, or mapped but we fail to recharge them
+with (a), we rely on deferred recharging. Simply put, any time a folio
+is accessed or dirtied by a userspace process, and that folio is charged
+to an offline memcg, we will try to recharge it to the memcg of the
+process accessing the folio. Again, we assume this process should be the
+"rightful" owner of the memory. This is also done asynchronously to avoid
+slowing down the data access path.
+
+In both cases, we never OOM kill the recharging target if it goes above
+limit. This is to avoid OOM killing a process an arbitrary amount of
+time after it started using memory. This is a conservative policy that
+can be revisited later.
+
+The patches in this series are divided as follows:
+- Patches 1 & 2 are preliminary refactoring and helpers introducion.
+- Patches 3 to 5 implement (a) and (b) above.
+- Patches 6 & 7 add stats, a sysctl, and a config option.
+- Patch 8 is a selftest.
+
+[1]https://lore.kernel.org/linux-mm/CABdmKX2M6koq4Q0Cmp_-=wbP0Qa190HdEGGaHfxNS05gAkUtPA@mail.gmail.com/
+[2]https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@google.com/
+
+Yosry Ahmed (8):
+  memcg: refactor updating memcg->moving_account
+  mm: vmscan: add lruvec_for_each_list() helper
+  memcg: recharge mapped folios when a memcg is offlined
+  memcg: support deferred memcg recharging
+  memcg: recharge folios when accessed or dirtied
+  memcg: add stats for offline memcgs recharging
+  memcg: add sysctl and config option to control memory recharging
+  selftests: cgroup: test_memcontrol: add a selftest for memcg
+    recharging
+
+ include/linux/memcontrol.h                    |  14 +
+ include/linux/swap.h                          |   8 +
+ include/linux/vm_event_item.h                 |   5 +
+ kernel/sysctl.c                               |  11 +
+ mm/Kconfig                                    |  12 +
+ mm/memcontrol.c                               | 376 +++++++++++++++++-
+ mm/page-writeback.c                           |   2 +
+ mm/swap.c                                     |   2 +
+ mm/vmscan.c                                   |  28 ++
+ mm/vmstat.c                                   |   6 +-
+ tools/testing/selftests/cgroup/cgroup_util.c  |  14 +
+ tools/testing/selftests/cgroup/cgroup_util.h  |   1 +
+ .../selftests/cgroup/test_memcontrol.c        | 310 +++++++++++++++
+ 13 files changed, 784 insertions(+), 5 deletions(-)
+
+-- 
+2.41.0.255.g8b1d071c50-goog
+
