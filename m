@@ -2,97 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1F475B874
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 22:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD9D75B87B
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 22:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjGTUCi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jul 2023 16:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        id S230019AbjGTUFb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jul 2023 16:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjGTUCi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 16:02:38 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1902727
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 13:02:29 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-760dff4b701so15248239f.0
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 13:02:29 -0700 (PDT)
+        with ESMTP id S229796AbjGTUFa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 16:05:30 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823F52118;
+        Thu, 20 Jul 2023 13:05:29 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666eec46206so1062390b3a.3;
+        Thu, 20 Jul 2023 13:05:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689883349; x=1690488149;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lm9L8OGKEHZdmU9hnM3GKjbpRPyEmtA8o0crHfCp3hU=;
-        b=4LjnEBByBbYMg48CJm/WiUWl6CGT7KLK3x1yg9e74apbaaiCjJKsG0LP+pH+C5XbpD
-         1aQURjA7F3xiTiJ6/Wt0zs00qVbFZzPBiuuQig0lbZf2eHNKjrWr6awACXx6C43Croe4
-         8Cndlkg1wBerLxo6OEWgL7fBwSPsEnlO7Uj4SkhGi5ts9s2VHSn3XzZlR2DawlFgCJyt
-         g5l4ytQnFqyZdqCSAC3YUl9X6ZKXdCCbcG4PvXmalUn1qRda/jPe5oBVuIXPyeD1fMKF
-         +DlQmLCX9ZNogRTJHsBHSvlrqF02hiYaPoPUX3auskDSRlzsITpO6mzsEkIKviViU/tx
-         3Rqg==
+        d=gmail.com; s=20221208; t=1689883529; x=1690488329;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ShySli6sDETZMpAPGpGb5lvBBzti4dS5P6Lg1E17Uvs=;
+        b=hz1Cuka5AmWn4oFd8xD3RyAUehliZu/h3GyLa0qEvCBnGPlUAswENy+LknBCwgcDrO
+         aHzNRzQ7Jg4PVCAY/Z9r940jKGI4UClejTJhA0b3L+424a6HsmiaZOSaJeI2Ok1hqqdC
+         Ip9e+0/GWLafW040QyOXl1teqgCifhoZLPLaazK47F93L7fVLWOWZoM8VlLLbjRdl6my
+         tZXqV/2B9pQGYWhkccYFgJuEbZ9kf1eSMISBb73DopoLsxEQbi1RE9va1oh7PChiGb2B
+         L+qUsVBtXpQSxWsENguGaaLb5qtr7udDE5SOgcrpWn9yFbCZ9lF7RIrIo5ov+YksX1ld
+         1GdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689883349; x=1690488149;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lm9L8OGKEHZdmU9hnM3GKjbpRPyEmtA8o0crHfCp3hU=;
-        b=JA86EqrBEFRgdaEDSXfTdAHK/ifVMie+aGf4oGrfwh4l5lbqfrfR7/0atZeV8+PsA7
-         W08xW+mfygKjso9s4qweersIhTAle0JYXjCCbzXYOz0Y8vYb9/2aIkUZro4R47YHqEXt
-         urMRrhsZGgHugngKHF0dS8VV/EdM3cWw/4OXNeS7Ci4u2jhbWZgHeqzqpnJfzGgCKOX4
-         EN90TtJmz+VYia/M4vrgRUOFBdEatwdyT9aPqfwMhe0oOl+sA4ZhLr69knHZ/trwldT4
-         BAVURBDWRMVAfg6lG2RG95BdfttF2IhmFPYs9VAKCahtnZK3Hka05VlU4bmCo/3LEkNB
-         XIGA==
-X-Gm-Message-State: ABy/qLbBAPGPxMbhffQVra81EBdenLRayVe0OzQWDpdA8J8l1MNiv6u2
-        SjXJ6x0ZPwhmxdLJVnFSlsJKQw==
-X-Google-Smtp-Source: APBJJlHB6goLkxYv5ILXE586pJX9Lga1Fj3ZiB6JnN3Vmp79WOMDRXlU2CCulL99gF+hoqYcEcVBtg==
-X-Received: by 2002:a05:6602:491:b0:783:63e8:3bfc with SMTP id y17-20020a056602049100b0078363e83bfcmr5058938iov.0.1689883349116;
-        Thu, 20 Jul 2023 13:02:29 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id v6-20020a6b5b06000000b007871aa2f144sm534025ioh.16.2023.07.20.13.02.28
+        d=1e100.net; s=20221208; t=1689883529; x=1690488329;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ShySli6sDETZMpAPGpGb5lvBBzti4dS5P6Lg1E17Uvs=;
+        b=TM5fmD5d02yWO38HCymO1q2n7/xobIM3sp+FKrU/3JosC4LqgjAc3AmAA2wsI4fDHb
+         10HUHEnRcvoYLPnTyYRew497UT6Irl9jP1FxUtKQtI0pLo8XBPfj+cx0wrOkC9oL6NLs
+         9X/BIpxpl7svgWZer+jRy1zUA9GjOWbbNi5HRTAmUGwHOeVrdHbj6I+fqC7K1FbiFT2+
+         U0uDhlP3hmTdFQ8ZpJSrKKHt9qrQVmDlcP1ZpCjwVF3nWjtUOb2Q0M3VXpHHzyrj9iFP
+         xiJmBMeGRFMRt7bkBxnLCsw/JhpFGEO5K4/1nw+FWgxN0PJxvrOubNNqRYBG6FAPa1C5
+         seQA==
+X-Gm-Message-State: ABy/qLb9+NKC66NooRJ1DRURWsHIu0N1pCebR0mAUGwHZyT+ee99j3I3
+        h/V7o18MMECMenQ88f6Efhk=
+X-Google-Smtp-Source: APBJJlG2STMMEfwHgRwBqmoZblu3gm4x6pWp/iJqZswYaybLAJ6Ld086D7JUJArkiVxHpzBph/BmLQ==
+X-Received: by 2002:a05:6a00:178d:b0:682:4c9f:aa0 with SMTP id s13-20020a056a00178d00b006824c9f0aa0mr9330133pfg.29.1689883528816;
+        Thu, 20 Jul 2023 13:05:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id n14-20020aa78a4e000000b00666b3706be6sm1566039pfa.107.2023.07.20.13.05.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 13:02:28 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     tj@kernel.org, josef@toxicpanda.com, chengming.zhou@linux.dev
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
-In-Reply-To: <20230720121441.1408522-1-chengming.zhou@linux.dev>
-References: <20230720121441.1408522-1-chengming.zhou@linux.dev>
-Subject: Re: [PATCH] blk-iocost: skip empty flush bio in iocost
-Message-Id: <168988334811.126089.11961578901520630861.b4-ty@kernel.dk>
-Date:   Thu, 20 Jul 2023 14:02:28 -0600
+        Thu, 20 Jul 2023 13:05:28 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 Jul 2023 10:05:26 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Carlos Bilbao <carlos.bilbao@amd.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        amd <amd@localhost.localdomain>
+Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Message-ID: <ZLmThnoXvEqlgf_q@slm.duckdns.org>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+ <7044d6b3-a5d1-572d-a755-74f8d4fd31c5@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7044d6b3-a5d1-572d-a755-74f8d4fd31c5@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-On Thu, 20 Jul 2023 20:14:41 +0800, chengming.zhou@linux.dev wrote:
-> The flush bio may have data, may have no data (empty flush), we couldn't
-> calculate cost for empty flush bio. So we'd better just skip it for now.
+On Tue, Jul 18, 2023 at 10:37:23AM -0500, Carlos Bilbao wrote:
+> On 7/17/23 13:49, Tejun Heo wrote:
+> > On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
+> > > From: amd <amd@localhost.localdomain>
+> > > 
+> > > Fix two type mismatch errors encountered while compiling blk-iocost.c with
+> > > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
+> > > result of the division operation to (unsigned int) to match the expected
+> > > format specifier %u in two seq_printf invocations.
+> > 
+> > Can you detail the warnings? Was that on 32bit compiles?
 > 
-> Another side effect is that empty flush bio's bio_end_sector() is 0, cause
-> iocg->cursor reset to 0, may break the cost calculation of other bios.
+> The concrete error was: "format ‘%u’ expects argument of type ‘unsigned
+> int’, but argument 3 has type ‘long unsigned int’". If I run:
 > 
-> This isn't good enough, since flush bio still consume the device bandwidth,
-> but flush request is special, can be merged randomly in the flush state
-> machine, we don't know how to calculate cost for it for now.
+> $ echo | cpp -dM | grep __LP64__
+> #define __LP64__ 1
 > 
-> [...]
+> which makes me believe it is not 32 bits.
 
-Applied, thanks!
+So, we broke up the enum definitions so that WEIGHT_ONE doesn't end up being
+a ulong. Which kernel are you building? Can you plesae try the current
+linus#master?
 
-[1/1] blk-iocost: skip empty flush bio in iocost
-      commit: 013adcbef165c3eaf73e297b7482290593815ab8
+Thanks.
 
-Best regards,
 -- 
-Jens Axboe
-
-
-
+tejun
