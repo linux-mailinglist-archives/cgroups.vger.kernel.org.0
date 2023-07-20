@@ -2,126 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2A575A875
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 09:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259DA75A8FE
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jul 2023 10:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbjGTH7c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jul 2023 03:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
+        id S231176AbjGTIUA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jul 2023 04:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbjGTH7a (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 03:59:30 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD04269A
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 00:59:04 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-676f16e0bc4so293175b3a.0
-        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 00:59:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689839944; x=1690444744;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QCBG10jWmv8n11PUl1At+mRhQs+STyCHC9Y8ykk98hs=;
-        b=Nnu9yXWnT11QAdbQ9GUhYKZSFFcUk0bsZdtUNqUMHxBWMFa6402Ny2yH5iQxEZhGtt
-         Kz3XRv01VgrqlGSpLQm7E8BKzJTbIbnZkymzLZbp9YmpoHsQYwRejn13SBbT7IrQTO6U
-         SSKMw0RKNd+ruoF1X7gd4bGzDUdn3VZamns/FpVKcyZVE8bZfh3ZB7SkwGWidjmpWE2S
-         z1eYV6E/QnugvkY/taUn0a53MkAB3OHG65tL3psRnBqx/L04+GCvHT8xrBnv01/ZpdL0
-         kXwHSiBUs/WAYR8ArUnjYyaQ6W/MAMWTQXpvjgTEogO5unsJNpTbyHBzDOtgtGFpgt0g
-         Sp/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689839944; x=1690444744;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QCBG10jWmv8n11PUl1At+mRhQs+STyCHC9Y8ykk98hs=;
-        b=ewb1aTH3L2a3bWtoFQHEciKYE9HJhV4ag0H8jGrhNG706z+y/WFEWU/JR6vkNGCkU7
-         bhG9K0GGurhg+kHbcPADfadndBFui5CagHAp8ahVuQcjgnrieokIsobDr5XaxgXmVcGx
-         ssen+OljBQLKR5rUmSGbN0/PYECJm97n+Cb6PpPJvqMDCLThvqFF94STpXCmwL9JXAmS
-         Ek0jXRKHKTNVR/6V/TngkLdIX80fBQhE7Gkom43YDZ96H85ED1ZO9qMH8icE8A2aBOSX
-         W8Z3m6P2UJ3/MEhFI7G9fpxjllA4y+7uTjEV55Az7Q9tD6pFtA90sflYPPjENNr6eT3+
-         F7nA==
-X-Gm-Message-State: ABy/qLaTG4DC3TUOh6gXDTs0Ggj19tvPmRWh3Dje9yResUq9ShoVJw9L
-        c1W3fDf7byziQzD1zlu8IvtIBw==
-X-Google-Smtp-Source: APBJJlGQceyOTHuEAgshImHxzNJeR5JGceBNvAodrsHOmgwDK+Re8De+gti6K7ICOvS0ObBFvVOw/A==
-X-Received: by 2002:a05:6a20:72a4:b0:133:f5c1:57bb with SMTP id o36-20020a056a2072a400b00133f5c157bbmr17999503pzk.20.1689839943740;
-        Thu, 20 Jul 2023 00:59:03 -0700 (PDT)
-Received: from [10.4.72.29] ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902d48100b001b895a17429sm579947plg.280.2023.07.20.00.58.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 00:59:03 -0700 (PDT)
-Message-ID: <d114834c-2336-673f-f200-87fc6efb411f@bytedance.com>
-Date:   Thu, 20 Jul 2023 15:58:49 +0800
+        with ESMTP id S231246AbjGTITz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jul 2023 04:19:55 -0400
+X-Greylist: delayed 1636 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 01:19:53 PDT
+Received: from bjm7-spam02.kuaishou.com (smtpcn03.kuaishou.com [103.107.217.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51917268C
+        for <cgroups@vger.kernel.org>; Thu, 20 Jul 2023 01:19:53 -0700 (PDT)
+Received: from bjm7-spam02.kuaishou.com (localhost [127.0.0.2] (may be forged))
+        by bjm7-spam02.kuaishou.com with ESMTP id 36K7TohW080274;
+        Thu, 20 Jul 2023 15:29:50 +0800 (GMT-8)
+        (envelope-from yangyifei03@kuaishou.com)
+Received: from bjm7-pm-mail12.kuaishou.com ([172.28.1.94])
+        by bjm7-spam02.kuaishou.com with ESMTPS id 36K7RmOj078771
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 Jul 2023 15:27:54 +0800 (GMT-8)
+        (envelope-from yangyifei03@kuaishou.com)
+DKIM-Signature: v=1; a=rsa-sha256; d=kuaishou.com; s=dkim; c=relaxed/relaxed;
+        t=1689838068; h=from:subject:to:date:message-id;
+        bh=2hvt2nAb9FQGc8JWV2zRVOy7HcAR3TW4z5ZsrMla/mw=;
+        b=Ov9ON0jOMvPY7tYxtSF27RXIYX5/ESwleAfyzbMcRkfahhvPD8+vCRgUolm4nuFAX7xrxXLLqLP
+        VC0ugqxGe1jauqIjydi7S9YH2M2vjCjTteErwqG546qEglqgQx2dxnNycFZVOCvZX9fbPRgt69Um7
+        2ew2dB1E6Kom/DkdCz0=
+Received: from public-bjmt-d51.idcyz.hb1.kwaidc.com (172.28.1.32) by
+ bjm7-pm-mail12.kuaishou.com (172.28.1.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.20; Thu, 20 Jul 2023 15:27:48 +0800
+From:   Efly Young <yangyifei03@kuaishou.com>
+To:     <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH] mm:vmscan: fix inaccurate reclaim during proactive reclaim
+Date:   Thu, 20 Jul 2023 15:27:08 +0800
+Message-ID: <20230720072708.55067-1-yangyifei03@kuaishou.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators of
- sockmem pressure
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Breno Leitao <leitao@debian.org>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
-Content-Language: en-US
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20230711124157.97169-1-wuyun.abel@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.28.1.32]
+X-ClientProxiedBy: bjxm-pm-mail02.kuaishou.com (172.28.128.2) To
+ bjm7-pm-mail12.kuaishou.com (172.28.1.94)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: bjm7-spam02.kuaishou.com 36K7TohW080274
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Gentle ping :)
+Before commit f53af4285d77 ("mm: vmscan: fix extreme overreclaim and
+swap floods"), proactive reclaim will extreme overreclaim sometimes.
+But proactive reclaim still inaccurate and some extent overreclaim.
 
-On 7/11/23 8:41 PM, Abel Wu wrote:
-> Now there are two indicators of socket memory pressure sit inside
-> struct mem_cgroup, socket_pressure and tcpmem_pressure.
-> 
-> When in legacy mode aka. cgroupv1, the socket memory is charged
-> into a separate counter memcg->tcpmem rather than ->memory, so
-> the reclaim pressure of the memcg has nothing to do with socket's
-> pressure at all. While for default mode, the ->tcpmem is simply
-> not used.
-> 
-> So {socket,tcpmem}_pressure are only used in default/legacy mode
-> respectively. This patch fixes the pieces of code that make mixed
-> use of both.
-> 
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> ---
->   include/linux/memcontrol.h | 4 ++--
->   mm/vmpressure.c            | 8 ++++++++
->   2 files changed, 10 insertions(+), 2 deletions(-)
-> 
+Problematic case is easy to construct. Allocate lots of anonymous
+memory (e.g., 20G) in a memcg, then swapping by writing memory.recalim
+and there is a certain probability of overreclaim. For example, request
+1G by writing memory.reclaim will eventually reclaim 1.7G or other
+values more than 1G.
+
+The reason is that reclaimer may have already reclaimed part of requested
+memory in one loop, but before adjust sc->nr_to_reclaim in outer loop,
+call shrink_lruvec() again will still follow the current sc->nr_to_reclaim
+to work. It will eventually lead to overreclaim. In theory, the amount
+of reclaimed would be in [request, 2 * request).
+
+Reclaimer usually tends to reclaim more than request. But either direct
+or kswapd reclaim have much smaller nr_to_reclaim targets, so it is
+less noticeable and not have much impact.
+
+Proactive reclaim can usually come in with a larger value, so the error
+is difficult to ignore. Considering proactive reclaim is usually low
+frequency, handle the batching into smaller chunks is a better approach.
+
+Signed-off-by: Efly Young <yangyifei03@kuaishou.com>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 4b27e24..d36cf88 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6741,8 +6741,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 			lru_add_drain_all();
+ 
+ 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+-						nr_to_reclaim - nr_reclaimed,
+-						GFP_KERNEL, reclaim_options);
++					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
++					GFP_KERNEL, reclaim_options);
+ 
+ 		if (!reclaimed && !nr_retries--)
+ 			return -EAGAIN;
+-- 
+1.8.3.1
+
