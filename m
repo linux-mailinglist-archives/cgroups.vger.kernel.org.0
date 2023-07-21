@@ -2,185 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AE875D61C
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 23:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065B775D738
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jul 2023 00:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjGUVAg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Jul 2023 17:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
+        id S229610AbjGUWO7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jul 2023 18:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjGUVAf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 17:00:35 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B11D30E1
-        for <cgroups@vger.kernel.org>; Fri, 21 Jul 2023 14:00:33 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-993d1f899d7so374081566b.2
-        for <cgroups@vger.kernel.org>; Fri, 21 Jul 2023 14:00:33 -0700 (PDT)
+        with ESMTP id S229552AbjGUWO7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 18:14:59 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4452733;
+        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-66869feb7d1so1551393b3a.3;
+        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689973232; x=1690578032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JOgbHJec+Tti6Wru7OdTqH4+oMnk38DLOG9c4qJJzP8=;
-        b=hkZ+D5g5lDrDl4A690EnFIQrEBWzd57RPaM7SaKw8Y1xk7u1cAMRN4ld2mJkGcGqTY
-         /owNQyHKnflgKZIMZHrBc4AfSR3tYOaMOz+dYxvCdQz1ey2+U9QmjTviN0Qum0KxXOdw
-         8SFQWbBe/mtcxHqLJFyQClCzU3YhFgrJb03GP0qsdY0KqtaR9x7Hx4Kq9tfA6JVlHuMC
-         ypntCYhcJXE3lxIkq+N9LeOkrGyUDm31Kih652QMPZI12bzYmDTEAxVdi1OIoHwEX4uX
-         mQtgA1yxQCz6Ur0+IYN0S57Jk3wDnFBAsv0rrUdhewR+YipnqPXBqEiLqMAQS7fN91mG
-         kzeA==
+        d=gmail.com; s=20221208; t=1689977692; x=1690582492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
+        b=r3cG7lOFcoYQwf+fNGpD139Z1Covyp+2lo5zJD5XnTAf8/K2pT9/dUBD2deat8FKKY
+         npfSKBeTWt4RQmlwADclDm3Xd4QSNgj7U/QuvE7Vkq1WJcsnq0VH2IZGR/0WuWD7+4su
+         kiKtRxjosdCNcaRgSFvEgYafPhLPyLWkrbkuBDotW3bpA9q1EiSVmA2iZ4tTSqwy+x1V
+         KiHpqELnKXUa/gYZKJKU3S/5o+DJixx9URsj4dgQ1EG8f6aW6uYrKfS/sYl7EHM94Nbo
+         9uTZv8JxLxGV3Og6f1YzX10gR7qDoVLgNvBQMuU3LzHEcL3qr43+/kFZWh+cmYCbyOpe
+         7O6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689973232; x=1690578032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689977692; x=1690582492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JOgbHJec+Tti6Wru7OdTqH4+oMnk38DLOG9c4qJJzP8=;
-        b=hvJQqdtg8FihN0Cq+TqeIJBHlVatyDZN6AkJBg5ZFs5zRSNamhNEEpqZ1/IQ9OBse1
-         yeQtrde+rA6jHeYQopXteKiGCcYXtCLPTK0fvRMdIqz9l904DO7QBO42FP+GIndELpVh
-         cxSM/p3WSqcFR7bfU2wLoIGHp5TopUOXs9zkMXnDsX2kKU8twV8tEFhkHDL2zgiZ41WX
-         PuwQuI74YLFkBxTEIFxPB1D9ZBcTeGaHlLd4n3JVit++5XKQJkpEIicA4FhTCYShawmQ
-         VCHs1q5t4bz95ofGmwtwc8P6/iT39r7enPwT4XyInYWIFPhcxXhJ+vsGrKmwIbqcwqIZ
-         oXEw==
-X-Gm-Message-State: ABy/qLYqKbJXklrcSKFR1IHOU8cB+3NXcSLBV/uPEW1NNXxrId1JF5Rf
-        Gr2VVOq6VcD3zmuguB7/tHS8HbzUyMwe+Dk65igcXQ==
-X-Google-Smtp-Source: APBJJlF4w7IolAQjvFt45KYghjPLjVomuKrZ2Ype4QjwYKABfJu98+K6+QIzMGKxUWt/Is9nh3WdSTiYhrlnIY4617k=
-X-Received: by 2002:a17:906:101a:b0:98d:cd3e:c193 with SMTP id
- 26-20020a170906101a00b0098dcd3ec193mr2203336ejm.46.1689973231695; Fri, 21 Jul
- 2023 14:00:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230720070825.992023-1-yosryahmed@google.com>
- <20230720153515.GA1003248@cmpxchg.org> <ZLmRlTej8Tm82kXG@slm.duckdns.org>
- <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
- <ZLmxLUNdxMi5s2Kq@slm.duckdns.org> <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
- <ZLm1ptOYH6F8fGHT@slm.duckdns.org> <CAJD7tkbDxw-hqG8i85NhnjxmXFMbR5OaSW5dHDVYfdA=ZnPAEw@mail.gmail.com>
- <ZLrN1BE42Tsybm6j@slm.duckdns.org> <CAJD7tkatz1JhKVj_iP9J0H7fPJnUSurZkCT1iJTJ=+qRen_nLQ@mail.gmail.com>
- <20230721204408.GA1033322@cmpxchg.org>
-In-Reply-To: <20230721204408.GA1033322@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 21 Jul 2023 13:59:55 -0700
-Message-ID: <CAJD7tkaro0opThQaMTFr_8sAjiFFEsaZK9YzEjBaSiDJ93DOBg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
+        b=D/7tth+tmsD5JN1pZIcTyelmW+o+8VgwQkPGFa0paVZyiwyQHuE2kXPNzQhOmuHdGc
+         KlwBq/w9OQfKdNmSLC7neaCcdWEl5wMVAcW6lmDzma5oKH5/yNvtqZiD2r8yXRqfglMW
+         dSfp9x/c/xzOPOU4WCpXa7UTMTYx5ynioUlQi6HAYKGzh6f8r6Otz1hLUmrh8haaaRru
+         oblvqijWF6HGXWKgTQIRWu3Tj8WmAintCWkEJ7nyTGY9OS1TAoiRAEToNHsSfUF4JyvD
+         /Bzhar88YA3Mzs6cVb9RA3kdSZwv0FRmeteHVtdcupbXQt9TGmzh1teeYdUFq8IVY3LF
+         mQFQ==
+X-Gm-Message-State: ABy/qLZYrXHCxR4LuR4n0RbYyDunaWMto7QZ3MAm58YWR1HqB5cSD3d3
+        negMAdVgHmqY+A8Qqm8qD7w=
+X-Google-Smtp-Source: APBJJlHoNi2MjEt7qTibhO+ffZRb9Yn/LK9ofBG7ZxnPqOG9HkkZfu+1e7w3xEKaYag4IjlOOLyZaw==
+X-Received: by 2002:a05:6a00:80e:b0:67a:31b7:456c with SMTP id m14-20020a056a00080e00b0067a31b7456cmr1390223pfk.9.1689977691056;
+        Fri, 21 Jul 2023 15:14:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id d134-20020a63368c000000b0055be951145csm3613018pga.36.2023.07.21.15.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 15:14:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 21 Jul 2023 12:14:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [PATCH 08/17] drm/cgroup: Track DRM clients per cgroup
+Message-ID: <ZLsDWcwTL9aE0-5h@slm.duckdns.org>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 1:44=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Fri, Jul 21, 2023 at 11:47:49AM -0700, Yosry Ahmed wrote:
-> > On Fri, Jul 21, 2023 at 11:26=E2=80=AFAM Tejun Heo <tj@kernel.org> wrot=
-e:
-> > >
-> > > Hello,
-> > >
-> > > On Fri, Jul 21, 2023 at 11:15:21AM -0700, Yosry Ahmed wrote:
-> > > > On Thu, Jul 20, 2023 at 3:31=E2=80=AFPM Tejun Heo <tj@kernel.org> w=
-rote:
-> > > > > memory at least in our case. The sharing across them comes down t=
-o things
-> > > > > like some common library pages which don't really account for muc=
-h these
-> > > > > days.
-> > > >
-> > > > Keep in mind that even a single page charged to a memcg and used by
-> > > > another memcg is sufficient to result in a zombie memcg.
-> > >
-> > > I mean, yeah, that's a separate issue or rather a subset which isn't =
-all
-> > > that controversial. That can be deterministically solved by reparenti=
-ng to
-> > > the parent like how slab is handled. I think the "deterministic" part=
- is
-> > > important here. As you said, even a single page can pin a dying cgrou=
-p.
-> >
-> > There are serious flaws with reparenting that I mentioned above. We do
-> > it for kernel memory, but that's because we really have no other
-> > choice. Oftentimes the memory is not reclaimable and we cannot find an
-> > owner for it. This doesn't mean it's the right answer for user memory.
-> >
-> > The semantics are new compared to normal charging (as opposed to
-> > recharging, as I explain below). There is an extra layer of
-> > indirection that we did not (as far as I know) measure the impact of.
-> > Parents end up with pages that they never used and we have no
-> > observability into where it came from. Most importantly, over time
-> > user memory will keep accumulating at the root, reducing the accuracy
-> > and usefulness of accounting, effectively an accounting leak and
-> > reduction of capacity. Memory that is not attributed to any user, aka
-> > system overhead.
->
-> Reparenting has been the behavior since the first iteration of cgroups
-> in the kernel. The initial implementation would loop over the LRUs and
-> reparent pages synchronously during rmdir. This had some locking
-> issues, so we switched to the current implementation of just leaving
-> the zombie memcg behind but neutralizing its controls.
+Hello,
 
-Thanks for the context.
+On Wed, Jul 12, 2023 at 12:45:56PM +0100, Tvrtko Ursulin wrote:
+> +void drmcgroup_client_migrate(struct drm_file *file_priv)
+> +{
+> +	struct drm_cgroup_state *src, *dst;
+> +	struct cgroup_subsys_state *old;
+> +
+> +	mutex_lock(&drmcg_mutex);
+> +
+> +	old = file_priv->__css;
+> +	src = css_to_drmcs(old);
+> +	dst = css_to_drmcs(task_get_css(current, drm_cgrp_id));
+> +
+> +	if (src != dst) {
+> +		file_priv->__css = &dst->css; /* Keeps the reference. */
+> +		list_move_tail(&file_priv->clink, &dst->clients);
+> +	}
+> +
+> +	mutex_unlock(&drmcg_mutex);
+> +
+> +	css_put(old);
+> +}
+> +EXPORT_SYMBOL_GPL(drmcgroup_client_migrate);
 
->
-> Thanks to Roman's objcg abstraction, we can now go back to the old
-> implementation of directly moving pages up to avoid the zombies.
->
-> However, these were pure implementation changes. The user-visible
-> semantics never varied: when you delete a cgroup, any leftover
-> resources are subject to control by the remaining parent cgroups.
-> Don't remove control domains if you still need to control resources.
-> But none of this is new or would change in any way!
+So, you're implicitly migrating the fd to the latest ioctl user on the first
+access. While this may work for state-less control like usage time. This
+likely will cause problem if you later want to add stateful control for
+memory consumption. e.g. What happens if the new destination doesn't have
+enough budget to accommodate the fd's usage? Let's say we allow over-commit
+with follow-up reclaim or oom kill actions, if so, can we guarantee that all
+memory ownership for can always be updated? If not, what happens after
+failure?
 
-The problem is that you cannot fully monitor or control all the
-resources charged to a control domain. The example of common shared
-libraries stands, the pages are charged on first touch basis. You
-can't easily control it or monitor who is charged for what exactly.
-Even if you can find out, is the answer to leave the cgroup alive
-forever because it is charged for a shared resource?
+If DRM needs to transfer fd ownership with resources attached to it, it
+likely would be a good idea to make that an explicit operation so that the
+attempt can be verified and failed if necessary.
 
-> Neutralizing
-> controls of a zombie cgroup results in the same behavior and
-> accounting as linking the pages to the parent cgroup's LRU!
->
-> The only thing that's new is the zombie cgroups. We can fix that by
-> effectively going back to the earlier implementation, but thanks to
-> objcg without the locking problems.
->
-> I just wanted to address this, because your description/framing of
-> reparenting strikes me as quite wrong.
+Thanks.
 
-Thanks for the context, and sorry if my framing was inaccurate. I was
-more focused on the in-kernel semantics rather than user-visible
-semantics. Nonetheless, with today's status or with reparenting, once
-the memory is at the root level (whether reparented to the root level,
-or in a zombie memcg whose parent is root), the memory has effectively
-escaped accounting. This is not a new problem that reparenting would
-introduce, but it's a problem that recharging is trying to fix that
-reparenting won't.
-
-As I outlined above, the semantics of recharging are not new, they are
-equivalent to reclaiming and refaulting the memory in a more
-accelerated/efficient manner. The indeterminism in recharging is very
-similar to reclaiming and refaulting.
-
-What do you think?
+-- 
+tejun
