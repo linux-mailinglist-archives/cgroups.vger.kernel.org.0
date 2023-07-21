@@ -2,62 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 515CD75C672
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 14:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8848475D0FD
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 19:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbjGUMEr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Jul 2023 08:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
+        id S230232AbjGUR6a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jul 2023 13:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjGUMEj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 08:04:39 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E653F3A92;
-        Fri, 21 Jul 2023 05:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689941056; x=1721477056;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4uv9zD1JJrwXe0E9I+ej0cnkJSwI8eyQL9t7kRDmIDo=;
-  b=JrMHGcYdzpNM9PLduB1h5Sn+FLeqPXacQsvIBFPFH4chBjg+pDfZ6ksl
-   GGvwSFeQ0lavCreYuva2h76uzqR6rVFmtXQpbfiwcnkevVEVJXERBKjpG
-   KP9Nf/0N812B8pS90yjPIoJzqX79cMVYFwO7zKGZdvNoMCG5ZyVgVBXGM
-   96Ho/79J6m0IhJndRgtx7iaoNjKAkejuoGLPdPaSkHuvQ4gyn3pMPtDEq
-   yvbPmIQrDPaqDGeQvH2NNMl1jLvf5lB9F+C9uO179RPXiN4jIsw7rWIrz
-   t+Gt0ZtZCul+y749XaCYxYrMveKYlVMmXTNXG7X5tGzDv5Tlg/YhUIqSR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="356995884"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="356995884"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:02:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="675019242"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="675019242"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by orsmga003.jf.intel.com with ESMTP; 21 Jul 2023 05:02:31 -0700
-From:   Haitao Huang <haitao.huang@linux.intel.com>
-To:     tj@kernel.org
-Cc:     cgroups@vger.kernel.org, dave.hansen@linux.intel.com,
-        haitao.huang@linux.intel.com, hannes@cmpxchg.org,
-        jarkko@kernel.org, kai.huang@intel.com, kristen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        lizefan.x@bytedance.com, reinette.chatre@intel.com,
-        vipinsh@google.com, zhiquan1.li@intel.com
-Subject: [PATCH] cgroup/misc: Store atomic64_t reads to u64
-Date:   Fri, 21 Jul 2023 05:02:31 -0700
-Message-Id: <20230721120231.13916-1-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ZLcXmvDKheCRYOjG@slm.duckdns.org>
-References: 
+        with ESMTP id S229707AbjGUR63 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 13:58:29 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4B610D2;
+        Fri, 21 Jul 2023 10:58:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b8b318c5a7so16397125ad.3;
+        Fri, 21 Jul 2023 10:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689962308; x=1690567108;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MMbeZmEn/swkwXIwhi1G20TJgN07f15MbpFEH7XJldc=;
+        b=MZVVaJCSJBESRhr44VQl7fRqn1vS0H3bwcrQB8k9au2IGSxCbBIJeZSaUnZyczg1We
+         ceJ9z12LH/pQVCq1gfMKMxVNw7QDr2/EXK8ksWcab4fIbflvH0CYdK4JEUz/lg8UTisF
+         tiFLFaTAAy7ddvrVD1Xqb9inzgg5zxAhJ1Rwdmsll7XFF4uPTNd7GoqahY5GwCzcn3YS
+         aZacoedWo8fACF6ntfMjyh8skU5gM0mWEwz7hkKZ6PCEs/JjzBIfybibTCnf4qmVmc0j
+         0kuSq7AMF4GPNJhMro4tyVSsGyhkHMxNIkFkobQs8pnD2Cz9a3TgWpX2od2nUd7LGafq
+         Fjdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689962308; x=1690567108;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MMbeZmEn/swkwXIwhi1G20TJgN07f15MbpFEH7XJldc=;
+        b=Df+MQqL/ERd+4KhdfzTHylvQj4Pi3MUjKPrEgnB/ZSO0T4uv+ouj25BfAOCqdsGPhc
+         yCf7didZNdkS73ylSPuInLXXLGSyH7KzSq80bEOXLFqx6VtVCStXAFdL7WRUTZjLVrPs
+         /cbPj0oAzjuqq8oazIlZxLedMjpyQwcDsn9Z0f4K89SmS123jd8J70tgQ69d+2vLTNij
+         qUHMjlGhL2mmOuzyHVb2GitKYdhw3UzHAhUGBuioCPULzcwKWF38sWkNJ6NI0mIo7kYY
+         p4ZtN60Ihj89tnTvKSqyFvobTRX662iqDQ45xDgvPhcuWYBsQ+0InLv3OPgBQhfL9a79
+         SYTA==
+X-Gm-Message-State: ABy/qLaZV4I0Hh4rWn3L4/BGUgpHAePx3y73IJIy9f++qdKo+2ryy5WG
+        r/3L+tcMh29wkWf6N7+ODf4=
+X-Google-Smtp-Source: APBJJlFZOxA85hb2alsHxftA/O54YBS4xLQYPlm4wLRgmBlKtHl4K87dLtCcuzdTj3L5ZeuP44pv6A==
+X-Received: by 2002:a17:902:d512:b0:1b6:c229:c350 with SMTP id b18-20020a170902d51200b001b6c229c350mr3400923plg.18.1689962308024;
+        Fri, 21 Jul 2023 10:58:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id e13-20020a17090301cd00b001b83dc8649dsm3767352plh.250.2023.07.21.10.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 10:58:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 21 Jul 2023 07:58:26 -1000
+From:   'Tejun Heo' <tj@kernel.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Carlos Bilbao <carlos.bilbao@amd.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd <amd@localhost.localdomain>
+Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Message-ID: <ZLrHQgIb8jnm5biX@slm.duckdns.org>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+ <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
+ <ZLmT3mXuDlYY61w0@slm.duckdns.org>
+ <fd89f72848da4569a19ec8a1ac9ec94e@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd89f72848da4569a19ec8a1ac9ec94e@AcuMS.aculab.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,29 +82,21 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Change 'new_usage' type to u64 so it can be compared with unsigned 'max'
-and 'capacity' properly even if the value crosses the signed boundary.
+Hello,
 
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
----
- kernel/cgroup/misc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Jul 21, 2023 at 08:05:59AM +0000, David Laight wrote:
+> In any case it is enough to split the enum.
+> If you really need unrelated constants to be defined in an enum
+> them maybe use a separate enum for each.
+> Using (on one line):
+> 	enum { name = constant };
 
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index abbe9aa5cdd1..79a3717a5803 100644
---- a/kernel/cgroup/misc.c
-+++ b/kernel/cgroup/misc.c
-@@ -142,7 +142,7 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount)
- 	struct misc_cg *i, *j;
- 	int ret;
- 	struct misc_res *res;
--	s64 new_usage;
-+	u64 new_usage;
- 
- 	if (!(valid_type(type) && cg && READ_ONCE(misc_res_capacity[type])))
- 		return -EINVAL;
+Yeah, I'm hoping it won't come down to that. Hopefully, we can limp along
+like this until we can always assume the new behavior. Right now, the
+problem is that both gcc<13 and gcc=13 have to supported when the two assign
+different types to the same enum definitions.
 
-base-commit: 32bf85c60ca3584a7ba3bef19da2779b73b2e7d6
+Thanks.
+
 -- 
-2.25.1
-
+tejun
