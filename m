@@ -2,110 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1B875C0C4
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 10:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515CD75C672
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 14:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjGUIGG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Fri, 21 Jul 2023 04:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        id S231262AbjGUMEr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jul 2023 08:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbjGUIGG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 04:06:06 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2634B2710
-        for <cgroups@vger.kernel.org>; Fri, 21 Jul 2023 01:06:03 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-287-XvO-OBw_MAGyU5uoyZk6iw-1; Fri, 21 Jul 2023 09:06:01 +0100
-X-MC-Unique: XvO-OBw_MAGyU5uoyZk6iw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 21 Jul
- 2023 09:06:00 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 21 Jul 2023 09:05:59 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tejun Heo' <tj@kernel.org>
-CC:     Carlos Bilbao <carlos.bilbao@amd.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        amd <amd@localhost.localdomain>
-Subject: RE: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
-Thread-Topic: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
-Thread-Index: AQHZuN9gMxBfo8Y4UkeL32HKckyYqK/Ay+LQgAI9EACAANgLUA==
-Date:   Fri, 21 Jul 2023 08:05:59 +0000
-Message-ID: <fd89f72848da4569a19ec8a1ac9ec94e@AcuMS.aculab.com>
-References: <20230717141852.153965-1-carlos.bilbao@amd.com>
- <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
- <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
- <ZLmT3mXuDlYY61w0@slm.duckdns.org>
-In-Reply-To: <ZLmT3mXuDlYY61w0@slm.duckdns.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S231264AbjGUMEj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 08:04:39 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E653F3A92;
+        Fri, 21 Jul 2023 05:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689941056; x=1721477056;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4uv9zD1JJrwXe0E9I+ej0cnkJSwI8eyQL9t7kRDmIDo=;
+  b=JrMHGcYdzpNM9PLduB1h5Sn+FLeqPXacQsvIBFPFH4chBjg+pDfZ6ksl
+   GGvwSFeQ0lavCreYuva2h76uzqR6rVFmtXQpbfiwcnkevVEVJXERBKjpG
+   KP9Nf/0N812B8pS90yjPIoJzqX79cMVYFwO7zKGZdvNoMCG5ZyVgVBXGM
+   96Ho/79J6m0IhJndRgtx7iaoNjKAkejuoGLPdPaSkHuvQ4gyn3pMPtDEq
+   yvbPmIQrDPaqDGeQvH2NNMl1jLvf5lB9F+C9uO179RPXiN4jIsw7rWIrz
+   t+Gt0ZtZCul+y749XaCYxYrMveKYlVMmXTNXG7X5tGzDv5Tlg/YhUIqSR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="356995884"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="356995884"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:02:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="675019242"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="675019242"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by orsmga003.jf.intel.com with ESMTP; 21 Jul 2023 05:02:31 -0700
+From:   Haitao Huang <haitao.huang@linux.intel.com>
+To:     tj@kernel.org
+Cc:     cgroups@vger.kernel.org, dave.hansen@linux.intel.com,
+        haitao.huang@linux.intel.com, hannes@cmpxchg.org,
+        jarkko@kernel.org, kai.huang@intel.com, kristen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        lizefan.x@bytedance.com, reinette.chatre@intel.com,
+        vipinsh@google.com, zhiquan1.li@intel.com
+Subject: [PATCH] cgroup/misc: Store atomic64_t reads to u64
+Date:   Fri, 21 Jul 2023 05:02:31 -0700
+Message-Id: <20230721120231.13916-1-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ZLcXmvDKheCRYOjG@slm.duckdns.org>
+References: 
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Tejun Heo
-> Sent: 20 July 2023 21:07
-> 
-> On Wed, Jul 19, 2023 at 08:57:32AM +0000, David Laight wrote:
-> > From: Tejun Heo
-> > > Sent: 17 July 2023 19:49
-> > >
-> > > On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
-> > > > From: amd <amd@localhost.localdomain>
-> > > >
-> > > > Fix two type mismatch errors encountered while compiling blk-iocost.c with
-> > > > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
-> > > > result of the division operation to (unsigned int) to match the expected
-> > > > format specifier %u in two seq_printf invocations.
-> > >
-> > > Can you detail the warnings? Was that on 32bit compiles?
-> >
-> > The problem is caused by gcc 13 changing the types of the
-> > constants inside an enum to be all the same.
-> >
-> > The best fix is (probably) to replace all the enum used to
-> > define unrelated constants with #defines.
-> 
-> Yeah, but then you end up without any way to read that value from outside
-> the kernel for BPF, drgn or any other tools which use debug info. That
-> actually matters.
+Change 'new_usage' type to u64 so it can be compared with unsigned 'max'
+and 'capacity' properly even if the value crosses the signed boundary.
 
-Some of those constants (probably including the one that forces
-the enum to 'long' are very boring.
-I don't remember which one caused the change, but some were
-similar to 'microseconds in a second'.
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+---
+ kernel/cgroup/misc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In any case it is enough to split the enum.
-If you really need unrelated constants to be defined in an enum
-them maybe use a separate enum for each.
-Using (on one line):
-	enum { name = constant };
-may work best.
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index abbe9aa5cdd1..79a3717a5803 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -142,7 +142,7 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount)
+ 	struct misc_cg *i, *j;
+ 	int ret;
+ 	struct misc_res *res;
+-	s64 new_usage;
++	u64 new_usage;
+ 
+ 	if (!(valid_type(type) && cg && READ_ONCE(misc_res_capacity[type])))
+ 		return -EINVAL;
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+base-commit: 32bf85c60ca3584a7ba3bef19da2779b73b2e7d6
+-- 
+2.25.1
 
