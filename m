@@ -2,71 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 393E975D119
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 20:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C83675D11D
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jul 2023 20:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjGUSKw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Jul 2023 14:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        id S229531AbjGUSL5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jul 2023 14:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGUSKs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 14:10:48 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFF2E68;
-        Fri, 21 Jul 2023 11:10:47 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-668709767b1so1581834b3a.2;
-        Fri, 21 Jul 2023 11:10:47 -0700 (PDT)
+        with ESMTP id S229518AbjGUSL5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 14:11:57 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FA3E68;
+        Fri, 21 Jul 2023 11:11:55 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8ad907ba4so13595975ad.0;
+        Fri, 21 Jul 2023 11:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689963046; x=1690567846;
+        d=gmail.com; s=20221208; t=1689963115; x=1690567915;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=45g6O9ZlJ9a46173hb9oD6WT0Gj5jDz2sDLA6BPWNec=;
-        b=XU6YpFKPBbH37FVtZHEnptSRL3P3lrRfAIIxJ3QCDkfv56XTKiavtaE0iCqLTm1EAO
-         /RmpapIvZqwgHjlnwe3v7/BAqJhlwdaC9UBDEdyP52asiRdv77jN/FbOHaJigcxI7+KX
-         to4rHwtUxx4KimsHgPF+JAbDI2MWrQkRBcrgf/Dt77/xACrwezXxlq1sl0UFMsbq5iZl
-         9OaS+4ukOVqSlVkZRCUsR24FH/hj14KVi2+45Xcchj9j/j89PstpJXLfX4JCTJ8zubAk
-         f26L7HbfpDFFiUGvojF8dEyUzBdzM8/rbKgnjwX75YppW9YOGpfVrprimMo9Z5orXJ6F
-         JC8w==
+        bh=GRtzlaHKzDk5tTi7aUgo8xmfyZYu4TD/4asfXW62u9M=;
+        b=KG4z0SDNckHDGHzSeIhkND6qLoO8j5teBq6VpviRqg16Aj72e032nyb3O5B1pcvnIe
+         WQ/o2T8nisvb9FYRrcZUxk2uivwBX8j3qs4NzHXyTXiJ8vAW4jwsQWW57215tAVy+gaB
+         dQEGPd9TDAANVz3UGOCGHlGa+sUBl8BeQQEeUpOylgn+/ScVw3HLLzDwJmW5KBJz6J2D
+         oHv4WmXpWWzjUOZiegR5cF46pCFz9WqkduAoAwm81JD1qNOtaKp+y+icQQF8MJV1TgXj
+         cUB3xJXt6jcTR0NjBetioKDiASPLDgIL4O1BngVJEsV9qyGtie4nGK0Cy9GWSnAbkU9i
+         0r+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689963046; x=1690567846;
+        d=1e100.net; s=20221208; t=1689963115; x=1690567915;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=45g6O9ZlJ9a46173hb9oD6WT0Gj5jDz2sDLA6BPWNec=;
-        b=YPzlsXB3uiGApqSyGTAkPO56bofn1dFpRdT6WQ7Qa23SGAfzO2gczLyjb4m9hvxJjl
-         Vs+Tail0nremq7GnqfT3irrku9TeoYBFbg/14ILFTPyscD4YqqcXjUEybBghvm1+FC7v
-         M/GL8b4Cr2LkyPBk9eiPZDGmvjDoNEmM/yj+BvWanNjHprDoD+GUKdbaZvnbZ/vqS6Rk
-         ZmmDws8NLRgIKJHu1uVUoFAFkxPeq+pkgMpy7K0XEuOvL5xnX0s4sbGrB9dUIOQtwLcS
-         AIqktf7E9MqSOHQOWSR4Xy60594KCYUT9l+SQBi06JT6O7Ju7nVeJYUPrlv5zqVGWflu
-         FYNQ==
-X-Gm-Message-State: ABy/qLbrKlb9wMpWa3p/fUorM1apPRtrax3uIV7hJQL70v5oXjdPB3FR
-        kg59BvRXw9AEvQgK59RVYJ+IM7bQUqs=
-X-Google-Smtp-Source: APBJJlGWL/QaHzT9fjxpbPhRKhL3PqU1vZDdIAooBipU5Zb/hmjVWDl8d+UIFe3PszzRVMXaB7E7OA==
-X-Received: by 2002:a05:6a20:5483:b0:133:f5c1:57b7 with SMTP id i3-20020a056a20548300b00133f5c157b7mr2929218pzk.51.1689963046299;
-        Fri, 21 Jul 2023 11:10:46 -0700 (PDT)
+        bh=GRtzlaHKzDk5tTi7aUgo8xmfyZYu4TD/4asfXW62u9M=;
+        b=F/zUNI0KJfuYsi5TTvTw5VaANOwQp3TkCkv2gfv/FKLZEye9oN1tcvzPty0GbJNkMr
+         8Q8Q6sLwlhkoE1A5+3aeE+te5MVAopEHiEmzCl5rh4RJ/T58D53l73AdNXxBRUHo2xOo
+         wkF3ZSDO6DhQMZ9RTxjwpHw4oUcCXeS++zt+EHVdvuE5XMz2dWHQlRH/wpYCvPeUYS5l
+         eoyCGw9YXWZXZTnWRQ6W9gpAbpLgYLwh1WeNhY0Asl/1DiD1E4UG2MEpyIi6kkGOwDIK
+         iCfuh8A2yO8e5oE6NjS8oxM8ljpd4pWu3Ljg2yyAFgpEJr8oluvSGksJvt1bb37PA6ES
+         /6qg==
+X-Gm-Message-State: ABy/qLa8utQtMfGqMrJn8nHppKPcOwj01CRS3jbH5eRuQO2yVg1vLd85
+        omKAZc51Ws5uWimpcvYo31M=
+X-Google-Smtp-Source: APBJJlEc1Xn2cZSlLsIG6kKY+QtZIddos0jsfE2fn81u9tzFt8rm017ySi6BdhhEk0OfNsaObgW5qQ==
+X-Received: by 2002:a17:902:70cc:b0:1b9:cb27:7f43 with SMTP id l12-20020a17090270cc00b001b9cb277f43mr2031685plt.43.1689963115113;
+        Fri, 21 Jul 2023 11:11:55 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id t18-20020a1709028c9200b001b866472e8dsm3771890plo.241.2023.07.21.11.10.45
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001b9e82a6be7sm3804386pli.220.2023.07.21.11.11.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 11:10:45 -0700 (PDT)
+        Fri, 21 Jul 2023 11:11:54 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 21 Jul 2023 08:10:44 -1000
+Date:   Fri, 21 Jul 2023 08:11:53 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     cgroups@vger.kernel.org, dave.hansen@linux.intel.com,
-        hannes@cmpxchg.org, jarkko@kernel.org, kai.huang@intel.com,
-        kristen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, lizefan.x@bytedance.com,
-        reinette.chatre@intel.com, vipinsh@google.com,
-        zhiquan1.li@intel.com
-Subject: Re: [PATCH] cgroup/misc: Store atomic64_t reads to u64
-Message-ID: <ZLrKJAyea-U5Lsiy@slm.duckdns.org>
-References: <ZLcXmvDKheCRYOjG@slm.duckdns.org>
- <20230721120231.13916-1-haitao.huang@linux.intel.com>
+To:     xiongwei.song@windriver.com
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] docs: cgroup-v1: fix typo
+Message-ID: <ZLrKaYfn1qoWm5XM@slm.duckdns.org>
+References: <20230721054938.1666475-1-xiongwei.song@windriver.com>
+ <20230721054938.1666475-2-xiongwei.song@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230721120231.13916-1-haitao.huang@linux.intel.com>
+In-Reply-To: <20230721054938.1666475-2-xiongwei.song@windriver.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -78,13 +75,14 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 05:02:31AM -0700, Haitao Huang wrote:
-> Change 'new_usage' type to u64 so it can be compared with unsigned 'max'
-> and 'capacity' properly even if the value crosses the signed boundary.
+On Fri, Jul 21, 2023 at 01:49:38PM +0800, xiongwei.song@windriver.com wrote:
+> From: Xiongwei Song <xiongwei.song@windriver.com>
 > 
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> "listers" -> "listeners"
+> 
+> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
 
-Applied to cgroup/for-6.6.
+Applied 1-2 to cgroup/for-6.6.
 
 Thanks.
 
