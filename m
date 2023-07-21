@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065B775D738
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jul 2023 00:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F0A75D750
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jul 2023 00:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjGUWO7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Jul 2023 18:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S229675AbjGUWSO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jul 2023 18:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGUWO7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 18:14:59 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4452733;
-        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-66869feb7d1so1551393b3a.3;
-        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
+        with ESMTP id S229640AbjGUWSN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 18:18:13 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4C62D7C;
+        Fri, 21 Jul 2023 15:17:55 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b8ad8383faso17678695ad.0;
+        Fri, 21 Jul 2023 15:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689977692; x=1690582492;
+        d=gmail.com; s=20221208; t=1689977875; x=1690582675;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
-        b=r3cG7lOFcoYQwf+fNGpD139Z1Covyp+2lo5zJD5XnTAf8/K2pT9/dUBD2deat8FKKY
-         npfSKBeTWt4RQmlwADclDm3Xd4QSNgj7U/QuvE7Vkq1WJcsnq0VH2IZGR/0WuWD7+4su
-         kiKtRxjosdCNcaRgSFvEgYafPhLPyLWkrbkuBDotW3bpA9q1EiSVmA2iZ4tTSqwy+x1V
-         KiHpqELnKXUa/gYZKJKU3S/5o+DJixx9URsj4dgQ1EG8f6aW6uYrKfS/sYl7EHM94Nbo
-         9uTZv8JxLxGV3Og6f1YzX10gR7qDoVLgNvBQMuU3LzHEcL3qr43+/kFZWh+cmYCbyOpe
-         7O6Q==
+        bh=Cjm6i6VGWK46ksrSf/WO54+zzsF5ULR5YF0/kPA+stI=;
+        b=sIusdMkhzyYYzt7HTZ12ouC1zo0sibV8H/PYeYkaLxSBDEhc0NmcBhK/VXQFLOMD8W
+         yS7JEFFOviSYIfM0AUhzG9IhwX1q9peWhyLEwZo1fi1Ei5S7h1BqDE1g6Of2+nZ7PTpx
+         Q+UOBogLu+QuJl125anoYUSX9LRIuAPBV+8p+ObtmgkGeVXFhpawz5krJvA98tTOB6Ra
+         lnn6h/GpqJu3CRz4orpNv/dF77t7/T6j5np29gkpvd7deyLug5Qg9GNsgFdanYl8stF4
+         TYc5U1LqMLuLF3QdZikaEvERFBL7v8REuiNxCz5F8AxJJI9Sl1vfdhCDfmupGEmdv0d9
+         iQvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689977692; x=1690582492;
+        d=1e100.net; s=20221208; t=1689977875; x=1690582675;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
-        b=D/7tth+tmsD5JN1pZIcTyelmW+o+8VgwQkPGFa0paVZyiwyQHuE2kXPNzQhOmuHdGc
-         KlwBq/w9OQfKdNmSLC7neaCcdWEl5wMVAcW6lmDzma5oKH5/yNvtqZiD2r8yXRqfglMW
-         dSfp9x/c/xzOPOU4WCpXa7UTMTYx5ynioUlQi6HAYKGzh6f8r6Otz1hLUmrh8haaaRru
-         oblvqijWF6HGXWKgTQIRWu3Tj8WmAintCWkEJ7nyTGY9OS1TAoiRAEToNHsSfUF4JyvD
-         /Bzhar88YA3Mzs6cVb9RA3kdSZwv0FRmeteHVtdcupbXQt9TGmzh1teeYdUFq8IVY3LF
-         mQFQ==
-X-Gm-Message-State: ABy/qLZYrXHCxR4LuR4n0RbYyDunaWMto7QZ3MAm58YWR1HqB5cSD3d3
-        negMAdVgHmqY+A8Qqm8qD7w=
-X-Google-Smtp-Source: APBJJlHoNi2MjEt7qTibhO+ffZRb9Yn/LK9ofBG7ZxnPqOG9HkkZfu+1e7w3xEKaYag4IjlOOLyZaw==
-X-Received: by 2002:a05:6a00:80e:b0:67a:31b7:456c with SMTP id m14-20020a056a00080e00b0067a31b7456cmr1390223pfk.9.1689977691056;
-        Fri, 21 Jul 2023 15:14:51 -0700 (PDT)
+        bh=Cjm6i6VGWK46ksrSf/WO54+zzsF5ULR5YF0/kPA+stI=;
+        b=D1wNs4Y/uPVWUhpC5qT7XcImfXGnQd8SfM8nSSXRzseo+AqL0iFOniHo+TBVhW96mI
+         mjCrZddYEUNOhQ86iLdM1TQM2nqufNq/NIiW61b+mA6CRtDuF0QaqrgwzRQCte3J/hww
+         2qzqjilBQsXqUgyZzZlnkkI4+dLQnbNAY9c4IfLedNKWdgWtkjqtFvOzfmmP2i/0PL36
+         gWtx+0Jv7kR1OMPXmZArT/nN9tFKZ2DXMJaGCr4U8WB6TM7/06NWDpu5AJqSKsJfQsIl
+         /yoXRbrk04MQlRI65wGm5YLLe/80BeJbCR3vXHImjQuF4TD/FSwqZ1uLnnkBYaV97xBl
+         pOkA==
+X-Gm-Message-State: ABy/qLZPvrO5RgpovNXC0roK/tjnfcIqe+2R/jY7ehp9kXhG40JIYFsv
+        HVXsirI5w83MtJd44IiZ47s=
+X-Google-Smtp-Source: APBJJlFHfb0jG/WWODgMdRojw07Pd0F9ziQEPHIpWaqHWQMOzDHQ9v53Ib02LKyBkAYUj3LalcPxeA==
+X-Received: by 2002:a17:903:2304:b0:1bb:4861:d39e with SMTP id d4-20020a170903230400b001bb4861d39emr2970299plh.12.1689977874650;
+        Fri, 21 Jul 2023 15:17:54 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id d134-20020a63368c000000b0055be951145csm3613018pga.36.2023.07.21.15.14.50
+        by smtp.gmail.com with ESMTPSA id t11-20020a170902a5cb00b001b9dab0397bsm2339866plq.29.2023.07.21.15.17.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 15:14:50 -0700 (PDT)
+        Fri, 21 Jul 2023 15:17:54 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 21 Jul 2023 12:14:49 -1000
+Date:   Fri, 21 Jul 2023 12:17:53 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
@@ -64,18 +64,20 @@ Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
         Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: Re: [PATCH 08/17] drm/cgroup: Track DRM clients per cgroup
-Message-ID: <ZLsDWcwTL9aE0-5h@slm.duckdns.org>
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH 12/17] cgroup/drm: Introduce weight based drm cgroup
+ control
+Message-ID: <ZLsEEYDFlJZwrJiV@slm.duckdns.org>
 References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-13-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
+In-Reply-To: <20230712114605.519432-13-tvrtko.ursulin@linux.intel.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,43 +86,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Jul 12, 2023 at 12:46:00PM +0100, Tvrtko Ursulin wrote:
+> +DRM scheduling soft limits
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On Wed, Jul 12, 2023 at 12:45:56PM +0100, Tvrtko Ursulin wrote:
-> +void drmcgroup_client_migrate(struct drm_file *file_priv)
-> +{
-> +	struct drm_cgroup_state *src, *dst;
-> +	struct cgroup_subsys_state *old;
-> +
-> +	mutex_lock(&drmcg_mutex);
-> +
-> +	old = file_priv->__css;
-> +	src = css_to_drmcs(old);
-> +	dst = css_to_drmcs(task_get_css(current, drm_cgrp_id));
-> +
-> +	if (src != dst) {
-> +		file_priv->__css = &dst->css; /* Keeps the reference. */
-> +		list_move_tail(&file_priv->clink, &dst->clients);
-> +	}
-> +
-> +	mutex_unlock(&drmcg_mutex);
-> +
-> +	css_put(old);
-> +}
-> +EXPORT_SYMBOL_GPL(drmcgroup_client_migrate);
-
-So, you're implicitly migrating the fd to the latest ioctl user on the first
-access. While this may work for state-less control like usage time. This
-likely will cause problem if you later want to add stateful control for
-memory consumption. e.g. What happens if the new destination doesn't have
-enough budget to accommodate the fd's usage? Let's say we allow over-commit
-with follow-up reclaim or oom kill actions, if so, can we guarantee that all
-memory ownership for can always be updated? If not, what happens after
-failure?
-
-If DRM needs to transfer fd ownership with resources attached to it, it
-likely would be a good idea to make that an explicit operation so that the
-attempt can be verified and failed if necessary.
+Please don't say soft limits for this. It means something different for
+memcg, so it gets really confusing. Call it "weight based CPU time control"
+and maybe call the triggering points as thresholds.
 
 Thanks.
 
