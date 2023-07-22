@@ -2,141 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F09575D82B
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jul 2023 02:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4F575D88B
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jul 2023 03:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjGVA0g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Jul 2023 20:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S231154AbjGVBON (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jul 2023 21:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGVA0f (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 20:26:35 -0400
-X-Greylist: delayed 343 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 17:26:34 PDT
-Received: from out-14.mta0.migadu.com (out-14.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2283A3A84
-        for <cgroups@vger.kernel.org>; Fri, 21 Jul 2023 17:26:33 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 17:20:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689985248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A7C+8fr0BBPGVeSyRwGjl6x7NUz9yaHHzvCjQiFNnwk=;
-        b=reFwmzSJKDypmXEH61HXIerGh6JIYZnQqxTMEmPW+WGdsJVV2gP66kkp6rKtbHLPm4hu0e
-        yvBiZt6XWYSXhyo/57SYZv/ujqH6Tu6OfJrUrvcVzIB7aKgM1WpQnyOWZfA/3AOr4Recow
-        xRrMKjl726QaHrI7xqB5PF1dcABIDi4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Breno Leitao <leitao@debian.org>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators of
- sockmem pressure
-Message-ID: <ZLsg1wklldKkVI2Z@P9FQF9L96D.corp.robot.car>
-References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
+        with ESMTP id S230031AbjGVBOM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jul 2023 21:14:12 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8CD35B1;
+        Fri, 21 Jul 2023 18:14:12 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68336d06620so2203311b3a.1;
+        Fri, 21 Jul 2023 18:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689988451; x=1690593251;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ge0BDodPbbi0t2/fQVg7nNuXVsJ2KKE3irKK+lnKz00=;
+        b=Q/quBlo055unQKj9s1TErQXtrc0CsCScbBVDQvoDxQ3boCFwjCQle9lI5ltwM2t3AQ
+         euLwJmBg9f7hX/2Fq6r9W1zuhtOCZ1T6VYG/A1DGFtI2aLdi0ljIEMnqnGql59s16QpQ
+         +/yC+ZO+b1Ffy6CeVNYUOU9ETshZjRvrgAAfK5ZEE/5mRrAJNlju+D1wO8ZlvhuJdnHO
+         K+SKwqBbD3/Yh1mXpb1XKP7/4uLzvH7IUydyHMN5F3kObCsKD4bcY7mzNWDSzwsqKcIX
+         cRUr27q41tc7EkvoZkGCEqX4nYOGRlbeHp82Ca9apeJzF8KgnClpDa3obP+WYJVHI0ll
+         7GhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689988451; x=1690593251;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ge0BDodPbbi0t2/fQVg7nNuXVsJ2KKE3irKK+lnKz00=;
+        b=kNg+4s6+dPDRy3MvFuqrx6SDQKbGkPOvRqcTfjHLSNKpDsL2IF6Vd3ZPZC/6yX1JD5
+         +3W55n72MMimJRn6eBRYXR3j4aiaBMF4ElJa2KGADUQh27TvyKRpIEJRD4wxmkOvkQ6/
+         V8BBiv0zW4psfxCalcGPijngNbzaUdDGFip/pBGEEc1gwRJulQaZauul1TcnqpDtDeR1
+         EpunVZ5Sv0OjkO0KODIyiYSou45xE8Yl+n+W0aMT/eF5uv8kOtN21y9WxQNzvvwIppMz
+         KYhnoGPeKbILcXXXrOGMnyWf8XZuTfV+/IfX6O6xGMxvda9MHh72Q8yHju6U0dEoN3dn
+         v2Ow==
+X-Gm-Message-State: ABy/qLbN+DIbSTNc/BdVxorpyH6QlI3gXq0OLSdGmXw7u7Hjzn4YYvha
+        CMuM3KXqL68nM/sR1QaDKkQ=
+X-Google-Smtp-Source: APBJJlEM8VtmMPfrX0tLIxqyOlH1EDvEeJqR/ZAAsVsb5C+p+sVSO05LSklBbfMOmb18iUsXox3gKg==
+X-Received: by 2002:a05:6a00:2ea9:b0:666:d78c:33ab with SMTP id fd41-20020a056a002ea900b00666d78c33abmr2512688pfb.21.1689988451333;
+        Fri, 21 Jul 2023 18:14:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id c25-20020aa78e19000000b00682c864f35bsm3649807pfr.140.2023.07.21.18.14.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 18:14:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 21 Jul 2023 15:14:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Carlos Bilbao <carlos.bilbao@amd.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        amd <amd@localhost.localdomain>
+Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Message-ID: <ZLstYbAzqkqwIRzy@slm.duckdns.org>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <93557f79-c12c-3c3f-2c25-9ba50a618daa@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230711124157.97169-1-wuyun.abel@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <93557f79-c12c-3c3f-2c25-9ba50a618daa@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 08:41:43PM +0800, Abel Wu wrote:
-> Now there are two indicators of socket memory pressure sit inside
-> struct mem_cgroup, socket_pressure and tcpmem_pressure.
-
-Hi Abel!
-
-> When in legacy mode aka. cgroupv1, the socket memory is charged
-> into a separate counter memcg->tcpmem rather than ->memory, so
-> the reclaim pressure of the memcg has nothing to do with socket's
-> pressure at all.
-
-But we still might set memcg->socket_pressure and propagate the pressure,
-right?
-If you're changing this, you need to provide a bit more data on why it's
-a good idea. I'm not saying the current status is perfect, but I think we need
-a bit more justification for this change.
-
-> While for default mode, the ->tcpmem is simply
-> not used.
+On Fri, Jul 21, 2023 at 05:32:04PM -0500, Carlos Bilbao wrote:
+> On 7/17/23 9:18 AM, Carlos Bilbao wrote:
+> > From: amd <amd@localhost.localdomain>
+> > 
+> > Fix two type mismatch errors encountered while compiling blk-iocost.c with
+> > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
+> > result of the division operation to (unsigned int) to match the expected
+> > format specifier %u in two seq_printf invocations.
+> > 
+> > Reviewed-by: Carlos Bilbao <carlos.bilbao@amd.com>
+> This should have been:
 > 
-> So {socket,tcpmem}_pressure are only used in default/legacy mode
-> respectively. This patch fixes the pieces of code that make mixed
-> use of both.
-> 
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> ---
->  include/linux/memcontrol.h | 4 ++--
->  mm/vmpressure.c            | 8 ++++++++
->  2 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 5818af8eca5a..5860c7f316b9 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1727,8 +1727,8 @@ void mem_cgroup_sk_alloc(struct sock *sk);
->  void mem_cgroup_sk_free(struct sock *sk);
->  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
->  {
-> -	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
-> -		return true;
-> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +		return !!memcg->tcpmem_pressure;
+> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
 
-So here you can have something like
-   if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-        do {
-            if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
-                  return true;
-        } while ((memcg = parent_mem_cgroup(memcg)));
-   } else {
-	return !!READ_ONCE(memcg->socket_pressure);
-   }
+Carlos, can you please retest the current linus#master?
 
-And, please, add a bold comment here or nearby the socket_pressure definition
-that it has a different semantics in the legacy and default modes.
+Thanks.
 
-Overall I think it's a good idea to clean these things up and thank you
-for working on this. But I wonder if we can make the next step and leave only
-one mechanism for both cgroup v1 and v2 instead of having this weird setup
-where memcg->socket_pressure is set differently from different paths on cgroup
-v1 and v2.
-
-Thanks!
+-- 
+tejun
