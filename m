@@ -2,76 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5E075DFC3
-	for <lists+cgroups@lfdr.de>; Sun, 23 Jul 2023 05:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFBA75E4E2
+	for <lists+cgroups@lfdr.de>; Sun, 23 Jul 2023 22:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjGWDZo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 22 Jul 2023 23:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
+        id S229503AbjGWUhn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 23 Jul 2023 16:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGWDZn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 22 Jul 2023 23:25:43 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9762C10CA;
-        Sat, 22 Jul 2023 20:25:41 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R7pYP5dPSzVjD4;
-        Sun, 23 Jul 2023 11:24:09 +0800 (CST)
-Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sun, 23 Jul
- 2023 11:25:38 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] mm/memcg: fix obsolete function name in mem_cgroup_protection()
-Date:   Sun, 23 Jul 2023 11:25:38 +0800
-Message-ID: <20230723032538.3190239-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        with ESMTP id S229468AbjGWUhm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 23 Jul 2023 16:37:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232E0E49;
+        Sun, 23 Jul 2023 13:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qy3ZfgxHtTZ+H6cA0c7w6ZZsFamgKKUHdZT7/5uteAk=; b=kTr4Znvd56MMHUXN0EHN8A34Ch
+        yiVFzsJ9la7YOzyYLmo8iAxAVQiM+usii43xNwFPgEB3Dm89Ext45zyoZLgfbRA4T8YE2AeEfACaF
+        hdlN4RXUJW4jvNU4NOJzGo99BTK+HQo9ASaYlCCYkYPE+iNCCcK8LV1kVkn/JsqOaCl/XMoyn0hJx
+        RQw2aR4JbD5kt7Z+XuffKRiNWeewjEJlhH9GuiZ0SgDFWquMWUKmsqdV/kHmkhcqVJkPVS4IHakPG
+        tjL6ymvrdGUk+ht5MZQDwVUrFlesfweWrITUN076QSLeriL/Y/lb2HtYOOEDJfCYwzH0LEY4YDomT
+        0eS8ohCg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qNfpX-003aTh-8Y; Sun, 23 Jul 2023 20:37:27 +0000
+Date:   Sun, 23 Jul 2023 21:37:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] mm/memcg: fix obsolete function name in
+ mem_cgroup_protection()
+Message-ID: <ZL2Ph5g05Ud5vAdT@casper.infradead.org>
+References: <20230723032538.3190239-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230723032538.3190239-1-linmiaohe@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Commit 45c7f7e1ef17 ("mm, memcg: decouple e{low,min} state mutations from
-protection checks") changed the function name but not the corresponding
-comment.
+On Sun, Jul 23, 2023 at 11:25:38AM +0800, Miaohe Lin wrote:
+> @@ -582,9 +582,9 @@ static inline void mem_cgroup_protection(struct mem_cgroup *root,
+>  	/*
+>  	 * There is no reclaim protection applied to a targeted reclaim.
+>  	 * We are special casing this specific case here because
+> -	 * mem_cgroup_protected calculation is not robust enough to keep
+> -	 * the protection invariant for calculated effective values for
+> -	 * parallel reclaimers with different reclaim target. This is
+> +	 * mem_cgroup_calculate_protection calculation is not robust enough
+> +	 * to keep the protection invariant for calculated effective values
+> +	 * for parallel reclaimers with different reclaim target. This is
+>  	 * especially a problem for tail memcgs (as they have pages on LRU)
+>  	 * which would want to have effective values 0 for targeted reclaim
+>  	 * but a different value for external reclaim.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- include/linux/memcontrol.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This reads a little awkwardly now.  How about:
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 058fb748e128..64014b656a0f 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -582,9 +582,9 @@ static inline void mem_cgroup_protection(struct mem_cgroup *root,
- 	/*
- 	 * There is no reclaim protection applied to a targeted reclaim.
  	 * We are special casing this specific case here because
 -	 * mem_cgroup_protected calculation is not robust enough to keep
--	 * the protection invariant for calculated effective values for
--	 * parallel reclaimers with different reclaim target. This is
-+	 * mem_cgroup_calculate_protection calculation is not robust enough
-+	 * to keep the protection invariant for calculated effective values
-+	 * for parallel reclaimers with different reclaim target. This is
- 	 * especially a problem for tail memcgs (as they have pages on LRU)
- 	 * which would want to have effective values 0 for targeted reclaim
- 	 * but a different value for external reclaim.
--- 
-2.33.0
-
++	 * mem_cgroup_calculate_protection is not robust enough to keep
+ 	 * the protection invariant for calculated effective values for
+	 * parallel reclaimers with different reclaim target. This is
