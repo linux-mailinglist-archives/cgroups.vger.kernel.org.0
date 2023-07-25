@@ -2,156 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD6D761AE5
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jul 2023 16:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C02F761AEF
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jul 2023 16:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbjGYOEm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 Jul 2023 10:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S231777AbjGYOHW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 Jul 2023 10:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjGYOEl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 Jul 2023 10:04:41 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35157106
-        for <cgroups@vger.kernel.org>; Tue, 25 Jul 2023 07:04:37 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-63c70dc7ed2so41537076d6.0
-        for <cgroups@vger.kernel.org>; Tue, 25 Jul 2023 07:04:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690293876; x=1690898676;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6q2fbSEUaRmabz4YeOC1QVhb19awtdwyXc9KAJHQSg=;
-        b=NhRu+ZEBbGmHUyV23DWyyUEl6Nq9VUT++p+9QWJdkAJ01svswkr1clQ+XgDEJoKZlu
-         Weht+NskAhuvf8tGjjG2GgCJMoox5KBq9h7cac9rQqrC1vpsp28oMsNe9KY4CjN98NgM
-         2onTXCyaJs2t96h7XB5cCypHFdWg+fwb65PFB8O3ZrvuiaJHuzW2QZDMOqGry5xTxZnL
-         a0LtNC5vIK9Xsexs+3OgGgt5bslUleSsJtnl1gA4F45g2Ko2FIGEpl62me3wUqr1jORf
-         2aM4RpjbPng4AlA4q3lBQwcuniuBSVYARmbS0pCKD+STkQGtoiTn6CFXFLVdidVlar95
-         wCyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690293876; x=1690898676;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L6q2fbSEUaRmabz4YeOC1QVhb19awtdwyXc9KAJHQSg=;
-        b=jevnIyYtIYdmUYWq1edIA6wfyiK+y4lpC3qigl1jeYFQFcSEyWsJsi/vFGmyiGxSUL
-         lKjaCxvjRDGvDBvBUltB2Lh/xjRhsqkIK5FH1qxkfIPzu6WwBnYqwEOcM0VSqeBba8l+
-         jwMvglnzq+UYcv6OLuOxQWt1b/S7uf+BIpTj0hSMeEkxYPRk6OGZ7iWjjMmEYuoQ26x/
-         bXJ8R7ihzfV/ybSIGM3zuhz8C2kkIBjaqKuP9WDm/hejUZD10+PQyipvlUi05IrZMiO8
-         NaY+FnzDF7p6wje28mXM63oierndwDeCo7UItBOoCCfpQs29gr+iXjm1GwDhvboyCYrw
-         7ZiA==
-X-Gm-Message-State: ABy/qLb25Bjn+CNkY14nw2sQr5xGdKvTUhQH8ZZBaA+JQ4Wyl+l6YR2m
-        A6GUHwAP1CzstV5Y60HJRtMnaXxHCUEaPsgGjHBDmQ==
-X-Google-Smtp-Source: APBJJlG3KOFzO2JnzeEJGbYDiAU3LPsExxVCfBgtf0f78SLJnPjtuVXjAyD32F9FLeYCbgmlt2ReZA==
-X-Received: by 2002:a0c:9a4f:0:b0:628:8185:bd6e with SMTP id q15-20020a0c9a4f000000b006288185bd6emr2524662qvd.5.1690293876314;
-        Tue, 25 Jul 2023 07:04:36 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ad06])
-        by smtp.gmail.com with ESMTPSA id q4-20020a0cf5c4000000b00636047c276csm1368975qvm.126.2023.07.25.07.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 07:04:36 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 10:04:35 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S229813AbjGYOHV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 Jul 2023 10:07:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36BE1BD6;
+        Tue, 25 Jul 2023 07:07:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 99DDC22235;
+        Tue, 25 Jul 2023 14:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690294038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J8/twdbVnVALjyy6alnaVgEL7SCtymIvo2fO0lAEw1A=;
+        b=qtdc/DbznROvVm5FX3MMqXZU8IO/sm1dnPWwStcgf8XhwngPg/8F36cKRQCxhatKSPIlfZ
+        +CDxXTnNzaFH/1RRe2u/5bP+Smx254C82UsNjI329f/rkl9GaBWT0AsChmjpADwDrINbLo
+        F78flZYtWWIeNSgv/oDehdNdvzioFhk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CD5713487;
+        Tue, 25 Jul 2023 14:07:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eFfHFRbXv2RvdgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 25 Jul 2023 14:07:18 +0000
+Date:   Tue, 25 Jul 2023 16:07:17 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: memcg: use rstat for non-hierarchical stats
-Message-ID: <20230725140435.GB1146582@cmpxchg.org>
-References: <20230719174613.3062124-1-yosryahmed@google.com>
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in
+ fsid
+Message-ID: <jy7ktvlb4tkg6pl2vll6u4gozfji7giddyseypj4w2d2ue4gvn@4tw7dmjy4hfv>
+References: <20230710183338.58531-1-ivan@cloudflare.com>
+ <2023071039-negate-stalemate-6987@gregkh>
+ <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7ajxxoxppngon7fy"
 Content-Disposition: inline
-In-Reply-To: <20230719174613.3062124-1-yosryahmed@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 05:46:13PM +0000, Yosry Ahmed wrote:
-> Currently, memcg uses rstat to maintain hierarchical stats. The rstat
-> framework keeps track of which cgroups have updates on which cpus.
-> 
-> For non-hierarchical stats, as memcg moved to rstat, they are no longer
-> readily available as counters. Instead, the percpu counters for a given
-> stat need to be summed to get the non-hierarchical stat value. This
-> causes a performance regression when reading non-hierarchical stats on
-> kernels where memcg moved to using rstat. This is especially visible
-> when reading memory.stat on cgroup v1. There are also some code paths
-> internal to the kernel that read such non-hierarchical stats.
 
-It's actually not an rstat regression. It's always been this costly.
+--7ajxxoxppngon7fy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Quick history:
+Hello.
 
-We used to maintain *all* stats in per-cpu counters at the local
-level. memory.stat reads would have to iterate and aggregate the
-entire subtree every time. This was obviously very costly, so we added
-batched upward propagation during stat updates to simplify reads:
+On Mon, Jul 10, 2023 at 02:21:10PM -0700, Ivan Babrou <ivan@cloudflare.com>=
+ wrote:
+> I want to monitor cgroup changes, so that I can have an up to date map
+> of inode -> cgroup path, so that I can resolve the value returned from
+> bpf_get_current_cgroup_id() into something that a human can easily
+> grasp (think system.slice/nginx.service).
 
-commit 42a300353577ccc17ecc627b8570a89fa1678bec
-Author: Johannes Weiner <hannes@cmpxchg.org>
-Date:   Tue May 14 15:47:12 2019 -0700
+Have you considered cgroup_path_from_kernfs_id()?
 
-    mm: memcontrol: fix recursive statistics correctness & scalabilty
+> Currently I do a full sweep to build a map, which doesn't work if a
+> cgroup is short lived, as it just disappears before I can resolve it.
+> Unfortunately, systemd recycles cgroups on restart, changing inode
+> number, so this is a very real issue.
 
-However, that caused a regression in the stat write path, as the
-upward propagation would bottleneck on the cachelines in the shared
-parents. The fix for *that* re-introduced the per-cpu loops in the
-local stat reads:
+So, a historical map of cgroup id -> path is also useful for you, right?
+(IOW, cgroup_path_from_kernfs_id() is possible but it'd inflate log
+buffer size if full paths were stored instead of ids.)
 
-commit 815744d75152078cde5391fc1e3c2d4424323fb6
-Author: Johannes Weiner <hannes@cmpxchg.org>
-Date:   Thu Jun 13 15:55:46 2019 -0700
+(I think a similar map would be beneficial for SCM_CGROUP [1] idea too.)
 
-    mm: memcontrol: don't batch updates of local VM stats and events
 
-So I wouldn't say it's a regression from rstat. Except for that short
-period between the two commits above, the read side for local stats
-was always expensive.
+> There's also this old wiki page from systemd:
+>=20
+> * https://freedesktop.org/wiki/Software/systemd/Optimizations
 
-rstat promises a shot at finally fixing it, with less risk to the
-write path.
+The page also states:
 
-> It is inefficient to iterate and sum counters in all cpus when the rstat
-> framework knows exactly when a percpu counter has an update. Instead,
-> maintain cpu-aggregated non-hierarchical counters for each stat. During
-> an rstat flush, keep those updated as well. When reading
-> non-hierarchical stats, we no longer need to iterate cpus, we just need
-> to read the maintainer counters, similar to hierarchical stats.
-> 
-> A caveat is that we now a stats flush before reading
-> local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
-> or memcg_events_local(), where we previously only needed a flush to
-> read hierarchical stats. Most contexts reading non-hierarchical stats
-> are already doing a flush, add a flush to the only missing context in
-> count_shadow_nodes().
-> 
-> With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
-> machine with 256 cpus on cgroup v1:
->  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
->  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
->  real	 0m0.125s
->  user	 0m0.005s
->  sys	 0m0.120s
-> 
-> After:
->  real	 0m0.032s
->  user	 0m0.005s
->  sys	 0m0.027s
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Last edited Sat 18 May 2013 08:20:38 AM UTC
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Emptiness notifications via release_agent are so 2016 :-), unified
+hiearchy has more convenient API [2], this is FTR.
 
-But I want to be clear: this isn't a regression fix. It's a new
-performance optimization for the deprecated cgroup1 code. And it comes
-at the cost of higher memory footprint for both cgroup1 AND cgroup2.
 
-If this causes a regression, we should revert it again. But let's try.
+My 0.02=E2=82=AC,
+Michal
+
+[1] https://uapi-group.org/kernel-features/
+[2] https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html?#un-p=
+opulated-notification
+
+
+--7ajxxoxppngon7fy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZL/XEgAKCRAGvrMr/1gc
+jnObAQCJ3C0hDVOfZEzkb1UOgnA4h3h266lsMaQDV8ICV1nHDQEAwyoY1QBjJ5E0
+NgxyIDgfAir+2Th7xhf/1vF56yIvUA4=
+=a7jr
+-----END PGP SIGNATURE-----
+
+--7ajxxoxppngon7fy--
