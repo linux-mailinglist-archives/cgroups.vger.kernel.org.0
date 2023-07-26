@@ -2,185 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0DD763586
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jul 2023 13:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE51763A97
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jul 2023 17:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbjGZLo7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jul 2023 07:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S234921AbjGZPOZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jul 2023 11:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbjGZLo6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jul 2023 07:44:58 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9E73582;
-        Wed, 26 Jul 2023 04:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690371876; x=1721907876;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PkVu2FDpja2qAE94z99NnNol7HutAbJ4ogDZ3EgAmRI=;
-  b=KhIG6kDvpcjokOwh8O6CgLrxkDRuIOZcy3ftWAD3wvGZTyOcOrfj1N6A
-   f20rjwyWmPjiv7UngMdw0QhgvIXUtkfqNJKMmhboK7x8gPEMxpakvpdxd
-   WcLTlv1zTayBYq7Jp3V7vtZdMr18ZKNxCzTyyk6rP8Xb4k7Vaf6GUMpMb
-   TCN16WM8nWyf2DXDQ1vRm0INcA+9NC5D9ii+mCrNKRONLpHVtU00LDDN5
-   OvO9YbGxKaj+5cu9KffOOZr8yyXsYUEAH/WdyvzF+TQeUF8nk9qbUSUMH
-   Kyr/n8r8lDZ+gSZwbKXp7qnGoCCGIVIy0Xxs0jN6ph5Tx2CWDMcWmQ2oO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="347601785"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="347601785"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 04:41:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="850437409"
-X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
-   d="scan'208";a="850437409"
-Received: from spsmyth-mobl1.ger.corp.intel.com (HELO [10.213.229.32]) ([10.213.229.32])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 04:41:29 -0700
-Message-ID: <89d7181c-6830-ca6e-0c39-caa49d14d474@linux.intel.com>
-Date:   Wed, 26 Jul 2023 12:41:27 +0100
+        with ESMTP id S235235AbjGZPNm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jul 2023 11:13:42 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5A62D56
+        for <cgroups@vger.kernel.org>; Wed, 26 Jul 2023 08:13:18 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63d170a649eso12867716d6.3
+        for <cgroups@vger.kernel.org>; Wed, 26 Jul 2023 08:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690384396; x=1690989196;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cOppSR5vSHMc40APmcMzvAsvziT5KwEmkPNskmCaQgY=;
+        b=razagjx5BCylQt5gjh9JrWZm0vXpRLG/piHYhTLKRLsw9zcpX1u5k0Vs+hrO22eo3e
+         SfkcFjXF8k7a6zX2GsTDxVI2P7C+p9cdeVVWqBacemwDslPEmqfniR9mE8nddDPpabCq
+         6dpDA4eXbXF/C7KRKLKH9oiVBg422CJtTD+CuvLV8xPXFpUPKo+R5iLBGqZvb3s/Lcgh
+         hcK6qEOL48zST1lv9PuFKcWCke1qdlDDBpP5Om1APf4OhVh7DuHGAn6rqniiipNv2AJS
+         PvL182LpjVrdjNiaGRVqcfKAt3ZgIZ/o2SV1UV7SVi8513mRcui/7i7sk96Jke6mFDC+
+         XSfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690384396; x=1690989196;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cOppSR5vSHMc40APmcMzvAsvziT5KwEmkPNskmCaQgY=;
+        b=P+M04DqRpZ//Bad55iI9MPTAY0Y2hspE/lDxcSlmehloqWEhj5efB/DauCFo7UOAb0
+         +2aS+Lf63oS3KnAQtnsa2CXC3q4kOGDPd08y2jaE2HAX/Fpd1HA1PiBLTzvd1hmT94Da
+         GmzaDhtYHJKHLb8IQscBSHbbjznMH954luaVkaX0wXdlVtqrNTUyHJVcH1IzHkTRsn/Y
+         M6s/PW9LCF83C92quhI1jiL8riF0yKU4zGRmyNBqnQLX7GyjiXANKsurTHUOjGXEo5LS
+         N7xXukk9WtIMJKyiqpPYCW4mOclTliR/YOtWUziUxnrBbYqqWSAAXnEqVAa2e9lNbRFN
+         9MEg==
+X-Gm-Message-State: ABy/qLbd2Da6OFTzKq0sEil4EeCmvwLjiuP42iV6UJgHePFKwQMWP2/3
+        4brLbAPM5LdfVZKdvuU3m3Vgjg==
+X-Google-Smtp-Source: APBJJlFecabGZMkHefQhOYETrzqZggXS46ZDMFNpHahsxsOZeHwJwD3Wm+TOSeeugGs4BmH72plYFQ==
+X-Received: by 2002:a0c:aa99:0:b0:623:690c:3cd7 with SMTP id f25-20020a0caa99000000b00623690c3cd7mr2342136qvb.47.1690384396635;
+        Wed, 26 Jul 2023 08:13:16 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:ad06])
+        by smtp.gmail.com with ESMTPSA id a26-20020a0c8bda000000b006238b37fb05sm283391qvc.119.2023.07.26.08.13.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 08:13:16 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 11:13:15 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Muchun Song <muchun.song@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] mm: memcg: use rstat for non-hierarchical stats
+Message-ID: <20230726151315.GB1365610@cmpxchg.org>
+References: <20230726002904.655377-1-yosryahmed@google.com>
+ <20230726002904.655377-2-yosryahmed@google.com>
+ <CAJD7tkZK2T2ebOPw6K0M+YWyKUtx9bE2uyFj4VOehhd+fYnk8w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
- <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
- <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAJD7tkZK2T2ebOPw6K0M+YWyKUtx9bE2uyFj4VOehhd+fYnk8w@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-On 26/07/2023 11:14, Maarten Lankhorst wrote:
-> Hey,
+On Tue, Jul 25, 2023 at 05:36:45PM -0700, Yosry Ahmed wrote:
+> On Tue, Jul 25, 2023 at 5:29 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > - Fix a subtle bug where updating a local counter would be missed if it
+> >   was cancelled out by a pending update from child memcgs.
 > 
-> On 2023-07-22 00:21, Tejun Heo wrote:
->> On Wed, Jul 12, 2023 at 12:46:04PM +0100, Tvrtko Ursulin wrote:
->>>    $ cat drm.memory.stat
->>>    card0 region=system total=12898304 shared=0 active=0 
->>> resident=12111872 purgeable=167936
->>>    card0 region=stolen-system total=0 shared=0 active=0 resident=0 
->>> purgeable=0
->>>
->>> Data is generated on demand for simplicty of implementation ie. no 
->>> running
->>> totals are kept or accounted during migrations and such. Various
->>> optimisations such as cheaper collection of data are possible but
->>> deliberately left out for now.
->>>
->>> Overall, the feature is deemed to be useful to container orchestration
->>> software (and manual management).
->>>
->>> Limits, either soft or hard, are not envisaged to be implemented on 
->>> top of
->>> this approach due on demand nature of collecting the stats.
->>
->> So, yeah, if you want to add memory controls, we better think through how
->> the fd ownership migration should work.
-> I've taken a look at the series, since I have been working on cgroup 
-> memory eviction.
 > 
-> The scheduling stuff will work for i915, since it has a purely software 
-> execlist scheduler, but I don't think it will work for GuC (firmware) 
-> scheduling or other drivers that use the generic drm scheduler.
+> Johannes, I fixed a subtle bug here and I kept your Ack, I wasn't sure
+> what the Ack retention policy should be here. A quick look at the fix
+> would be great.
 
-It actually works - I used to have a blurb in the cover letter about it 
-but apparently I dropped it. Just a bit less well with many clients, 
-since there are fewer priority levels.
+Ah, I found it:
 
-All that the design requires from the invididual drivers is some way to 
-react to the "you are over budget by this much" signal. The rest is 
-driver and backend specific.
+> > @@ -5542,19 +5539,23 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+> >                         memcg->vmstats->state_pending[i] = 0;
+> >
+> >                 /* Add CPU changes on this level since the last flush */
+> > +               delta_cpu = 0;
+> >                 v = READ_ONCE(statc->state[i]);
+> >                 if (v != statc->state_prev[i]) {
+> > -                       delta += v - statc->state_prev[i];
+> > +                       delta_cpu = v - statc->state_prev[i];
+> > +                       delta += delta_cpu;
+> >                         statc->state_prev[i] = v;
+> >                 }
+> >
+> > -               if (!delta)
+> > -                       continue;
+> > -
+> >                 /* Aggregate counts on this level and propagate upwards */
+> > -               memcg->vmstats->state[i] += delta;
+> > -               if (parent)
+> > -                       parent->vmstats->state_pending[i] += delta;
+> > +               if (delta_cpu)
+> > +                       memcg->vmstats->state_local[i] += delta_cpu;
 
-> For something like this,  you would probably want it to work inside the 
-> drm scheduler first. Presumably, this can be done by setting a weight on 
-> each runqueue, and perhaps adding a callback to update one for a running 
-> queue. Calculating the weights hierarchically might be fun..
+When delta nulls out, but delta_cpu is non-zero... subtle.
 
-It is not needed to work in drm scheduler first. In fact drm scheduler 
-based drivers can plug into what I have since it already has the notion 
-of scheduling priorities.
-
-They would only need to implement a hook which allow the cgroup 
-controller to query client GPU utilisation and another to received the 
-over budget signal.
-
-Amdgpu and msm AFAIK could be easy candidates because they both support 
-per client utilisation and priorities.
-
-Looks like I need to put all this info back into the cover letter.
-
-Also, hierarchic weights and time budgets are all already there. What 
-could be done later is make this all smarter and respect the time budget 
-with more precision. That would however, in many cases including Intel, 
-require co-operation with the firmware. In any case it is only work in 
-the implementation, while the cgroup control interface remains the same.
-
-> I have taken a look at how the rest of cgroup controllers change 
-> ownership when moved to a different cgroup, and the answer was: not at 
-> all. If we attempt to create the scheduler controls only on the first 
-> time the fd is used, you could probably get rid of all the tracking.
-
-Can you send a CPU file descriptor from process A to process B and have 
-CPU usage belonging to process B show up in process' A cgroup, or 
-vice-versa? Nope, I am not making any sense, am I? My point being it is 
-not like-to-like, model is different.
-
-No ownership transfer would mean in wide deployments all GPU utilisation 
-would be assigned to Xorg and so there is no point to any of this. No 
-way to throttle a cgroup with un-important GPU clients for instance.
-
-> This can be done very easily with the drm scheduler.
-> 
-> WRT memory, I think the consensus is to track system memory like normal 
-> memory. Stolen memory doesn't need to be tracked. It's kernel only 
-> memory, used for internal bookkeeping  only.
-> 
-> The only time userspace can directly manipulate stolen memory, is by 
-> mapping the pinned initial framebuffer to its own address space. The 
-> only allocation it can do is when a framebuffer is displayed, and 
-> framebuffer compression creates some stolen memory. Userspace is not
-> aware of this though, and has no way to manipulate those contents.
-
-Stolen memory is irrelevant and not something cgroup controller knows 
-about. Point is drivers say which memory regions they have and their 
-utilisation.
-
-Imagine instead of stolen it said vram0, or on Intel multi-tile it shows 
-local0 and local1. People working with containers are interested to see 
-this breakdown. I guess the parallel and use case here is closer to 
-memory.numa_stat.
-
-Regards,
-
-Tvrtko
+This fixed version looks good, please keep my ack :)
