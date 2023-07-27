@@ -2,255 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFF176598B
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jul 2023 19:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9307765AB0
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jul 2023 19:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjG0RIm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Jul 2023 13:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        id S229715AbjG0Roc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Jul 2023 13:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbjG0RIm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jul 2023 13:08:42 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2494130E2;
-        Thu, 27 Jul 2023 10:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690477714; x=1722013714;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=w8zhJaBeb/+dC493cXRaK73+tZUYEDc899ytyVtCFBY=;
-  b=QL/+YDWKCKvbnWU3c9bzWLDO7Rh+LgeQZ3H+fG9DSiK78Drat+RcrUwa
-   T4rAgIxNeLqpVjtT6YsseCBAPSMQdqOi2UiRtvu9qNddT+iQ+p6rnCSsC
-   95YeaJorVLsiRZsSNrWKA37T0y6W5tshcxFON9cIIDBbzWbUsTLAQ9OgC
-   zTL03JBGzBSwDGsBMCrPESY9YItAB9Sr7oGeitJPApDJhQ9rqNObUTwT0
-   zni8EPdAZkNHGmNQYZneWTsWk0zmnxR1B5Zm2d/3MmWjVmdLMtStJg1Ab
-   0Gy+m6oPwYlNHoOcpamBwv0Aa2ErhQ+NYNS39jRZbUPlRm9Jj8eGtXHj/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="371073850"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="371073850"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 10:08:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817182977"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="817182977"
-Received: from jlenehan-mobl1.ger.corp.intel.com (HELO [10.213.228.208]) ([10.213.228.208])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 10:08:29 -0700
-Message-ID: <5d65d387-2718-06c3-ee5d-8a7da6e3ddfd@linux.intel.com>
-Date:   Thu, 27 Jul 2023 18:08:27 +0100
+        with ESMTP id S229552AbjG0Rob (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jul 2023 13:44:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0274730ED;
+        Thu, 27 Jul 2023 10:44:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso9940345ad.2;
+        Thu, 27 Jul 2023 10:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690479870; x=1691084670;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CMgWDc9HbFTZfCAa6CCrY6Sm3n2por+mG+JbQWL++uA=;
+        b=RCcaFekWryy06wzg7UAG1HDH/IAEIm1lTcU2yxEyeXZqezvcy9ba1nwpBwUzwpGQgc
+         lQ3sb9j9/E0Yaev3i/fzaujjnPQbX7LogkJXoL90KihlX1Zom10V1ZM0F3VdaIkxDOKf
+         dFkC6yqPsAl14hIZglw5FB2XcyowxvSwcPHyuYwmG2oIZ7foSHXypHzsEIgE9jMl8FcR
+         Sb8z/S59K2ojW/sYB4CYTjqALXlxjMX7Hcx7WUUnGJQ4izz77GRc1u4vcaT0OWD5+F00
+         r8vwmL5MFpeJ3guxnS7gaG6omeZ+Tu8E5AIyp2mAWjKMqDs4vCtnF3nlfvVOPCwN9xG0
+         LNbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690479870; x=1691084670;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CMgWDc9HbFTZfCAa6CCrY6Sm3n2por+mG+JbQWL++uA=;
+        b=M/oQShgim3oMboW8cDAQIuVaIJ3dxVA+ZdFZ1mih7ggQreVU6ALPjx4wWbYQfucf3k
+         QnyEc4L3DFcZ6h+RSmI2bIpjBbWU7/Mn10sLCUZZB+PPtAGCHfU/i1qcuye/dX/deMFv
+         aXqA3Zlf7fu7VrOKwS7bFveWsOQXgXAbeJT0v1aH3fWfD6Ca2YbM2+HbAvLXcRU5hGNM
+         P5G1uwLR4zGNh8ERYdm3wwJ/FToowzC2v6NShEqEWRLs41T5mOoR02/onPGYCtuM90Fw
+         /Hw6Nsg1/Zo/MuG4OObqESFCzDAcgi3JeHQz7b6tDfKjxfRcBRmcjk6OmOKkHYTABure
+         yd1Q==
+X-Gm-Message-State: ABy/qLYRqlw/rtSzehwWu9AoNUrUOnHqV5rdPLOAJDRQFCjW1jLMDhSc
+        xsmE/IypIp0sfH+0YjGFp/U=
+X-Google-Smtp-Source: APBJJlHqO6KJcrPmL8ndI3Kt7nuHJUY3BOV2djXSTj7C+MJvcy3AYBia7KUeoSS44rKzovyqSIcHFw==
+X-Received: by 2002:a17:902:ec8e:b0:1b3:d4d5:beb2 with SMTP id x14-20020a170902ec8e00b001b3d4d5beb2mr263plg.9.1690479870092;
+        Thu, 27 Jul 2023 10:44:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:18d])
+        by smtp.gmail.com with ESMTPSA id jk17-20020a170903331100b001bbce3d4774sm1935589plb.79.2023.07.27.10.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 10:44:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 27 Jul 2023 07:44:28 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+Message-ID: <ZMKs_GpHEW6Pfusj@slm.duckdns.org>
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+ <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+ <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+ <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+ <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
- <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
- <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
- <89d7181c-6830-ca6e-0c39-caa49d14d474@linux.intel.com>
- <fb734626-6041-1e68-38d7-221837284cf1@linux.intel.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <fb734626-6041-1e68-38d7-221837284cf1@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-On 27/07/2023 12:54, Maarten Lankhorst wrote:
-> Hey,
+On Thu, Jul 27, 2023 at 08:05:44PM +0800, Hao Jia wrote:
 > 
-> On 2023-07-26 13:41, Tvrtko Ursulin wrote:
->>
->> On 26/07/2023 11:14, Maarten Lankhorst wrote:
->>> Hey,
->>>
->>> On 2023-07-22 00:21, Tejun Heo wrote:
->>>> On Wed, Jul 12, 2023 at 12:46:04PM +0100, Tvrtko Ursulin wrote:
->>>>>    $ cat drm.memory.stat
->>>>>    card0 region=system total=12898304 shared=0 active=0 
->>>>> resident=12111872 purgeable=167936
->>>>>    card0 region=stolen-system total=0 shared=0 active=0 resident=0 
->>>>> purgeable=0
->>>>>
->>>>> Data is generated on demand for simplicty of implementation ie. no 
->>>>> running
->>>>> totals are kept or accounted during migrations and such. Various
->>>>> optimisations such as cheaper collection of data are possible but
->>>>> deliberately left out for now.
->>>>>
->>>>> Overall, the feature is deemed to be useful to container orchestration
->>>>> software (and manual management).
->>>>>
->>>>> Limits, either soft or hard, are not envisaged to be implemented on 
->>>>> top of
->>>>> this approach due on demand nature of collecting the stats.
->>>>
->>>> So, yeah, if you want to add memory controls, we better think 
->>>> through how
->>>> the fd ownership migration should work.
->>> I've taken a look at the series, since I have been working on cgroup 
->>> memory eviction.
->>>
->>> The scheduling stuff will work for i915, since it has a purely 
->>> software execlist scheduler, but I don't think it will work for GuC 
->>> (firmware) scheduling or other drivers that use the generic drm 
->>> scheduler.
->>
->> It actually works - I used to have a blurb in the cover letter about 
->> it but apparently I dropped it. Just a bit less well with many 
->> clients, since there are fewer priority levels.
->>
->> All that the design requires from the invididual drivers is some way 
->> to react to the "you are over budget by this much" signal. The rest is 
->> driver and backend specific.
 > 
-> What I mean is that this signal may not be applicable since the drm 
-> scheduler just schedules jobs that run. Adding a weight might be done in 
-> hardware, since it's responsible for  scheduling which context gets to 
-> run. The over budget signal is useless in that case, and you just need 
-> to set a scheduling priority for the hardware instead.
-
-The over budget callback lets the driver know its assigned budget and 
-its current utilisation. Already with that data drivers could implement 
-something smarter than what I did in my RFC. So I don't think callback 
-is completely useless even for some smarter implementation which 
-potentially ties into firmware scheduling.
-
-Anyway, I maintain this is implementation details.
-
->>> For something like this,  you would probably want it to work inside 
->>> the drm scheduler first. Presumably, this can be done by setting a 
->>> weight on each runqueue, and perhaps adding a callback to update one 
->>> for a running queue. Calculating the weights hierarchically might be 
->>> fun..
->>
->> It is not needed to work in drm scheduler first. In fact drm scheduler 
->> based drivers can plug into what I have since it already has the 
->> notion of scheduling priorities.
->>
->> They would only need to implement a hook which allow the cgroup 
->> controller to query client GPU utilisation and another to received the 
->> over budget signal.
->>
->> Amdgpu and msm AFAIK could be easy candidates because they both 
->> support per client utilisation and priorities.
->>
->> Looks like I need to put all this info back into the cover letter.
->>
->> Also, hierarchic weights and time budgets are all already there. What 
->> could be done later is make this all smarter and respect the time 
->> budget with more precision. That would however, in many cases 
->> including Intel, require co-operation with the firmware. In any case 
->> it is only work in the implementation, while the cgroup control 
->> interface remains the same.
->>
->>> I have taken a look at how the rest of cgroup controllers change 
->>> ownership when moved to a different cgroup, and the answer was: not 
->>> at all. If we attempt to create the scheduler controls only on the 
->>> first time the fd is used, you could probably get rid of all the 
->>> tracking.
->>
->> Can you send a CPU file descriptor from process A to process B and 
->> have CPU usage belonging to process B show up in process' A cgroup, or 
->> vice-versa? Nope, I am not making any sense, am I? My point being it 
->> is not like-to-like, model is different.
->>
->> No ownership transfer would mean in wide deployments all GPU 
->> utilisation would be assigned to Xorg and so there is no point to any 
->> of this. No way to throttle a cgroup with un-important GPU clients for 
->> instance.
-> If you just grab the current process' cgroup when a drm_sched_entity is 
-> created, you don't have everything charged to X.org. No need for 
-> complicated ownership tracking in drm_file. The same equivalent should 
-> be done in i915 as well when a context is created as it's not using the 
-> drm scheduler.
-
-Okay so essentially nuking the concept of DRM clients belongs to one 
-cgroup and instead tracking at the context level. That is an interesting 
-idea. I suspect implementation could require somewhat generalizing the 
-concept of an "execution context", or at least expressing it via the DRM 
-cgroup controller.
-
-I can give this a spin, or at least some more detailed thought, once we 
-close on a few more details regarding charging in general.
-
->>> This can be done very easily with the drm scheduler.
->>>
->>> WRT memory, I think the consensus is to track system memory like 
->>> normal memory. Stolen memory doesn't need to be tracked. It's kernel 
->>> only memory, used for internal bookkeeping  only.
->>>
->>> The only time userspace can directly manipulate stolen memory, is by 
->>> mapping the pinned initial framebuffer to its own address space. The 
->>> only allocation it can do is when a framebuffer is displayed, and 
->>> framebuffer compression creates some stolen memory. Userspace is not
->>> aware of this though, and has no way to manipulate those contents.
->>
->> Stolen memory is irrelevant and not something cgroup controller knows 
->> about. Point is drivers say which memory regions they have and their 
->> utilisation.
->>
->> Imagine instead of stolen it said vram0, or on Intel multi-tile it 
->> shows local0 and local1. People working with containers are interested 
->> to see this breakdown. I guess the parallel and use case here is 
->> closer to memory.numa_stat.
-> Correct, but for the same reason, I think it might be more useful to 
-> split up the weight too.
+> On 2023/7/19 Hao Jia wrote:
+> > 
+> > 
+> > On 2023/7/19 Tejun Heo wrote:
+> > > On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
+> > > > https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
+> > > 
+> > > So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
+> > > asdf/cpu.stat correctly reports the cumulative usage. After removing
+> > > asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
+> > 
+> > Sorry, some of my expressions may have misled you.
+> > 
+> > Yes, cpu.stat will display the cumulative **global** cpu time of the
+> > cgroup and its descendants (the corresponding kernel variable is
+> > "cgrp->bstat"), and it will not be lost when the child cgroup is
+> > removed.
+> > 
+> > Similarly, we need a **per-cpu** variable to record the accumulated
+> > per-cpu time of cgroup and its descendants.
+> > The existing kernel variable "cgroup_rstat_cpu(cgrp, cpu)->bstat" is not
+> > satisfied, it only records the per-cpu time of cgroup itself,
+> > So I try to add "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" to record
+> > per-cpu time of cgroup and its descendants.
+> > 
+> > In order to verify the correctness of my patch, I wrote a kernel module
+> > to compare the results of calculating the per-cpu time of cgroup and its
+> > descendants in two ways:
+> >  � Method 1. Traverse and add the per-cpu rstatc->bstat of cgroup and
+> > each of its descendants.
+> >  � Method 2. Directly read "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" in
+> > the kernel.
+> > 
+> > When the child cgroup is not removed, the results calculated by the two
+> > methods should be equal.
+> > 
+> > > What are you adding?
+> > I want to add a **per-cpu variable** to record the cumulative per-cpu
+> > time of cgroup and its descendants, which is similar to the variable
+> > "cgrp->bstat", but it is a per-cpu variable.
+> > It is very useful and convenient for calculating the usage of cgroup on
+> > each cpu, and its behavior is similar to the "cpuacct.usage*" interface
+> > of cgroup v1.
+> > 
 > 
-> A single scheduling weight for the global GPU might be less useful than 
-> per engine, or per tile perhaps..
+> Hello Tejun,
+> 
+> I don't know if I explained it clearly, and do you understand what I mean?
+> 
+> Would you mind adding a variable like this to facilitate per-cpu usage
+> calculations and migration from cgroup v1 to cgroup v2?
 
-Yeah, there is some complexity there for sure and could be a larger 
-write up. In short per engine stuff tends to work out in practice as is 
-given how each driver can decide upon receiving the signal what to do.
+Oh yeah, I do. I'm just thinking whether we also want to expose that in the
+cgroupfs. We are currently not showing anything per-cpu and the output
+formatting gets nasty with a huge number of CPUs, so maybe that's not going
+to work out all that well. Anyways, I'll get back to you next week.
 
-In the i915 RFC for instance if it gets "over budget" signal from the 
-group, but it sees that the physical engines belonging to this specific 
-GPU are not over-subscribed, it simply omits any throttling. Which in 
-practice works out fine for two clients competing for different engines. 
-Same would be for multiple GPUs (or tiles with our stuff) in the same 
-cgroup.
+Thanks.
 
-Going back to the single scheduling weight or more fine grained. We 
-could choose to follow for instance io.weight format? Start with 
-drm.weight being "default 1000" and later extend to per card (or more):
-
-"""
-default 100
-card0 20
-card1 50
-"""
-
-In this case I would convert drm.weight to this format straight away for 
-the next respin, just wouldn't support per card just yet.
-
-Regards,
-
-Tvrtko
+-- 
+tejun
