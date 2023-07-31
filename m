@@ -2,82 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59147768FFF
-	for <lists+cgroups@lfdr.de>; Mon, 31 Jul 2023 10:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8296769445
+	for <lists+cgroups@lfdr.de>; Mon, 31 Jul 2023 13:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjGaIWF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jul 2023 04:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
+        id S229761AbjGaLLD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 31 Jul 2023 07:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjGaIV1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jul 2023 04:21:27 -0400
-X-Greylist: delayed 584 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 01:21:13 PDT
-Received: from mail.disruptoruni.pl (mail.disruptoruni.pl [51.89.23.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8A610EC
-        for <cgroups@vger.kernel.org>; Mon, 31 Jul 2023 01:21:12 -0700 (PDT)
-Received: by mail.disruptoruni.pl (Postfix, from userid 1002)
-        id AE921244FD; Mon, 31 Jul 2023 08:10:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disruptoruni.pl;
-        s=mail; t=1690791060;
-        bh=xpkxx8+nDX08WAhlyab58iBVjWcuOyVHg/z5BY+uYDY=;
-        h=Date:From:To:Subject:From;
-        b=B8limAFR0ECBZx+l3Hz9IoGJO+WyexVGIaPHdm59HiCdK3IdE8pQ9LRBtQic+Wzjk
-         78PYSUq1AKFpkE3WZRzdJLpEZ6J8pPS6HOBXZKfcpC9G7d8iieBHnKBM0aklx4jxPx
-         JLSAN2C/s1siK7sw7o+M3max/oITz+nJaRbhW9g8gBKmbceP3GCauuEsYc38ILnpIp
-         2dq5hO5CA5OUB3KTNFziKRCBCV8kJqi8fdalTdDDiNgmu8bmxjXDEtLi2D4CzwY+2R
-         IfDIG90ezNr5mHWY7chTxRqVb6gkBH9OU3cfyqV/mDTc2Tuvr3FYTEH6DAm5/fKsOv
-         P2PpNDDg7O8bQ==
-Received: by disruptoruni.pl for <cgroups@vger.kernel.org>; Mon, 31 Jul 2023 08:10:50 GMT
-Message-ID: <20230731064500-0.1.n.2kc6.0.stj2gn4hja@disruptoruni.pl>
-Date:   Mon, 31 Jul 2023 08:10:50 GMT
-From:   "Tomasz Fiszka" <tomasz.fiszka@disruptoruni.pl>
-To:     <cgroups@vger.kernel.org>
-Subject: Zapytanie ofertowe 
-X-Mailer: mail.disruptoruni.pl
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S229643AbjGaLLD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jul 2023 07:11:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4763A1BF;
+        Mon, 31 Jul 2023 04:11:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C59C76105A;
+        Mon, 31 Jul 2023 11:11:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8B06C433C8;
+        Mon, 31 Jul 2023 11:10:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690801861;
+        bh=GQE4ikJOGvMhp7gKtfrRyBB/OigQHtCUYCx9FoUAlLg=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=c+5iI4lBI1Xr9Q6XgHXyYMgH7oUBx77jiwy8HUfsDonzUm3db0QulCo65lQZsc8z+
+         nboML0pAKixv0122Jd994M03a17edVOcADc4PO1XrXlJYoyeBaXt2NUKWDSrDau2Zn
+         GezQAPLMzstIeqp0hm4UIGUVXM2XVVmXCZhehBnHVDFOKZkWhZXhl8XPtxsgQ6v+fe
+         Ma/G2MSniOQNEY7Mst43pQWrr5k4qTh2GlNuOAGS4WIx7+UPem1oqBmX08c4lckeOp
+         osm1Rug37jBNdHdOpauhHvqBBvA0t4gFQYQYQeE04fG2cETavr1hxmQ6YVutpXFH39
+         xxqsBqNSBtCxw==
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 31 Jul 2023 11:10:55 +0000
+Message-Id: <CUGB8HJ4IYB9.1VVYV9GK75UYX@seitikki>
+Cc:     <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        <kai.huang@intel.com>, <reinette.chatre@intel.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>
+Subject: Re: [PATCH v3 11/28] x85/sgx: Return the number of EPC pages that
+ were successfully reclaimed
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Pavel Machek" <pavel@ucw.cz>,
+        "Haitao Huang" <haitao.huang@linux.intel.com>
+X-Mailer: aerc 0.14.0
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-12-haitao.huang@linux.intel.com>
+ <ZMUKd7KY6Kquubjf@duo.ucw.cz>
+In-Reply-To: <ZMUKd7KY6Kquubjf@duo.ucw.cz>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
-        *      blocklist
-        *      [URIs: disruptoruni.pl]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [51.89.23.101 listed in zen.spamhaus.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4478]
-        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
-        *      blocklist
-        *      [URIs: disruptoruni.pl]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Sat Jul 29, 2023 at 12:47 PM UTC, Pavel Machek wrote:
+> Hi!
+>
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> >=20
+> > Return the number of reclaimed pages from sgx_reclaim_pages(), the EPC
+> > cgroup will use the result to track the success rate of its reclaim
+> > calls, e.g. to escalate to a more forceful reclaiming mode if
+> > necessary.
+>
+> Subject says x85. While some would love to see support of Linux on
+> Intel 8085, I guess it should be x86.
 
-Pozwoli=C5=82em sobie na kontakt, poniewa=C5=BC jestem zainteresowany wer=
-yfikacj=C4=85 mo=C5=BCliwo=C5=9Bci nawi=C4=85zania wsp=C3=B3=C5=82pracy.
+hmm... that could potentially be also a step towards also to zilog z80
+compatibility :-)
 
-Wspieramy firmy w pozyskiwaniu nowych klient=C3=B3w biznesowych.
-
-Czy mo=C5=BCemy porozmawia=C4=87 w celu przedstawienia szczeg=C3=B3=C5=82=
-owych informacji?=20
-
-
-Pozdrawiam
-Tomasz Fiszka
+BR, Jarkko
