@@ -2,94 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF45A76A21D
-	for <lists+cgroups@lfdr.de>; Mon, 31 Jul 2023 22:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8292976A4F3
+	for <lists+cgroups@lfdr.de>; Tue,  1 Aug 2023 01:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbjGaUo0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jul 2023 16:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
+        id S229522AbjGaXmz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 31 Jul 2023 19:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGaUoZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jul 2023 16:44:25 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4253690;
-        Mon, 31 Jul 2023 13:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690836265; x=1722372265;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=hu8JTDbJqIGr3TfklVY/QtEKkWMtllj5IhBurxsIJkA=;
-  b=Ct9injIDoK03Q/rBDHWho/HkWMn9PamCrsNn8oYxp2dOiyTR5MoTeAXM
-   1N94JNUF2oYCz0O08eahMoSUV7nnYgg3c9rFMxIsEAMvWgwpilS/gQRcx
-   EXgELVBV/7UNX9AeTCQawZ05ftOl7fqnmEWyx+Xck1hbGvYHYFAHNtupi
-   /YXqZLuIwGuMNPkD3zfYbQI7uRwzsEIV4KyF/E6rt1efIqXNyHSSIYS/Q
-   3lCS0wwKqLqYZGCVfwJyFJP+FLlWTkPFR54MTwU/V9gNpEpNwkcsevnkP
-   /P95Kg4Rf0EwsuthLPoGGR6jjTphTpB+HYU1fMXmzpAxJDQMWT9jD5V0/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="371831414"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="371831414"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:43:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852171619"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="852171619"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.61])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 31 Jul 2023 13:43:55 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        "Kristen Carlson Accardi" <kristen@linux.intel.com>,
-        zhiquan1.li@intel.com, seanjc@google.com
-Subject: Re: [PATCH v3 04/28] x86/sgx: Use sgx_epc_lru_lists for existing
- active page list
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-5-haitao.huang@linux.intel.com>
- <CU4GIFHMTA8N.2GV3WIA7HAVOE@seitikki>
-Date:   Mon, 31 Jul 2023 15:43:54 -0500
+        with ESMTP id S231618AbjGaXmy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jul 2023 19:42:54 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CE01B7;
+        Mon, 31 Jul 2023 16:42:53 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b9cdef8619so31610575ad.0;
+        Mon, 31 Jul 2023 16:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690846973; x=1691451773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E7hg3VxRoU08q5hPKNlW6YF7vv+fBSVfAKzSjCaYJbQ=;
+        b=Czs/46fAFXwgUSVna61zgI+/AxchGe8XwfL1ggFEGfpPl2ji9b6lPJk7MbHlHPha1i
+         bR/0MaWtAeYrdIpEYKXnBVuIpkC8+faTzzvGpr2m1/IL5Twp3uFyKcpqWvyCC86GOp/w
+         W2rnvx24/yGHM9uQmVmN1hPNRNBKX9nPGUY0I+NI/87ViXCISG0j5NeEw5OySKCgmqzu
+         fpPFT1FXlu9DwCY22hs9ZVE2X9oPaKnYxyErsmZI4KaiVQdU5QY9qFTOdZCGK8OethMX
+         UA5zTWztIddDPYXoWBi+LYrrwEEzI4lvioY9AQ0TlhUJgZQzIpo3NB5EKNmC+VTYrntA
+         YXWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690846973; x=1691451773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E7hg3VxRoU08q5hPKNlW6YF7vv+fBSVfAKzSjCaYJbQ=;
+        b=irmeWQ/iCF8fhCSg9Llcdsgd5fljIM1Ppbk8UAnZ0amDi/eB/D1rVuS9bzFkcujboZ
+         FIFcu4SCUCuW6ujnlqp8MFH+/TdyHJKkgR2GIEJwL8oYmGIkqulRd6PdUv/9Cz9YIN8D
+         iR/Yya+zOC8IjR74COGPOlTkJEQqwmDY/YzwgdRgLU3NMUprWQPvC44yeFe0RjiOR6Wl
+         LNt9tyK+SzRPFWchK26HJZyDWQlnsDw0yMbM/5ndjciWSuvE+QaQQptu2zUspmsqp4yL
+         zLQFJL1nWkX/TlEIBG1wTVtGvzxV2YgyMeUPXdGJ0+LaJ4Sw3fQC3J20qQwHNK2SduVc
+         +IHQ==
+X-Gm-Message-State: ABy/qLbsSmTg58g6Me2yr3yQTipNqTf6LdN/HWvKucDxJV8Mg5FQHfUM
+        zxUtrVPUGvJI1KxYK3yZwOA=
+X-Google-Smtp-Source: APBJJlHZfx4s7hLvMz95H3XgsYXWUfqcBomvD8eyg5YnYz3Kwcc7hdNGPxAKY5RoDU0aGIXkGMz2aw==
+X-Received: by 2002:a17:902:ba95:b0:1b8:76ce:9dab with SMTP id k21-20020a170902ba9500b001b876ce9dabmr10508590pls.41.1690846972796;
+        Mon, 31 Jul 2023 16:42:52 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:4a3a])
+        by smtp.gmail.com with ESMTPSA id f8-20020a17090274c800b001b39ffff838sm9075022plt.25.2023.07.31.16.42.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 16:42:52 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 31 Jul 2023 13:42:51 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Li Zetao <lizetao1@huawei.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, shuah@kernel.org,
+        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH -next] selftests: cgroup: Remove redundant if statements
+Message-ID: <ZMhG-yPZttsOY7y9@slm.duckdns.org>
+References: <20230731134205.2723657-1-lizetao1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.18yrvgbvwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CU4GIFHMTA8N.2GV3WIA7HAVOE@seitikki>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731134205.2723657-1-lizetao1@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 17 Jul 2023 07:47:01 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Mon, Jul 31, 2023 at 09:42:05PM +0800, Li Zetao wrote:
+> There is a warning reported by coccinelle:
+> 
+> ./tools/testing/selftests/cgroup/test_zswap.c:211:6-18: WARNING:
+> 		Unsigned expression compared with zero: stored_pages     <     0
+> 
+> The type of "stored_pages" is size_t, which always be an unsigned type,
+> so it is impossible less than zero. Drop the if statements to silence
+> the warning.
+> 
+> Signed-off-by: Li Zetao <lizetao1@huawei.com>
 
-> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> Replace the existing sgx_active_page_list and its spinlock with
->> a global sgx_epc_lru_lists struct.
->
-> Similarly as the previous patch, I would extend this story a tiny
-> bit forward to see the connection with the follow-up patches.
->
-Sure
+Looks fine to me but the zswap test addition is going through akpm's tree, I
+think, so probably best to repost it to Andrew.
 
-I also feel it may flow better by moving all changes related to  
-'unreclaimable' such as owner field for VA, flags for types of owners,  
-storing unreclaimables to LRU, etc. to later after all changes dealing  
-with reclaimables are introduced. The unreclaimables are only of concern  
-when OOM is involved so it'd be better to do them right before OOM.
+Thanks.
 
-Thanks
-Haitao
+-- 
+tejun
