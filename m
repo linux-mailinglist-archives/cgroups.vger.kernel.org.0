@@ -2,63 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EACC76B77F
-	for <lists+cgroups@lfdr.de>; Tue,  1 Aug 2023 16:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755BA76B9CE
+	for <lists+cgroups@lfdr.de>; Tue,  1 Aug 2023 18:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234719AbjHAOb5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Aug 2023 10:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        id S231778AbjHAQje (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Aug 2023 12:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234753AbjHAObg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Aug 2023 10:31:36 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FC435A2;
-        Tue,  1 Aug 2023 07:31:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S231596AbjHAQjb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Aug 2023 12:39:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494F71FE5;
+        Tue,  1 Aug 2023 09:39:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B1B41FD5F;
-        Tue,  1 Aug 2023 14:30:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690900239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pz1l+QMKxerQA4dFIRKVby7zK5mB68xPOHSaoNz0WSY=;
-        b=I+JPhdeNfZHKugkMSm3dRiHW3/+V5hLTM6bz+YUA2ilPxJsvrB1WGeE5MI4+Ty4K/HJ4DI
-        +LGu6r+O8WcwHc1IYlRKJdWvXrBblVNgxExfag+U0p/0INLcESk4JWw8UQa0vrSwpThptj
-        ADb/Vn0X+V4ZvO4iLQqkjORvST1JclQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1DFBD13919;
-        Tue,  1 Aug 2023 14:30:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id of6nBg8XyWT/ZQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 01 Aug 2023 14:30:39 +0000
-Date:   Tue, 1 Aug 2023 16:30:38 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AF72761634;
+        Tue,  1 Aug 2023 16:39:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E39BC433C8;
+        Tue,  1 Aug 2023 16:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690907969;
+        bh=peOB4gYXHi9+NQFqAEhqF+m0ecPnTZOeDb0Ne46VrRw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sstKmFBZwEw5V1wDtDA9C654z/Yt8zMozmuZHnlnXA+FW1Bfr3b4cWTxtjWqAVrMc
+         DGtbYQFs7QmqFA7SlAYC0oArqV3nFtR4/0L4aN7rkwIo83nqld1sh7qIz7oBdHAR9i
+         kWqZ66M4DSoRCfRCezLkRP5GmObapL0IaVJeb+prgzS2jCu0lsFrTMet1a6E59wBeS
+         cJR78bviYofqm3PhnqJ4cHr6D4hD10UeWMTjXBosOQISY7JvEccmRLNse6D3BpiG6R
+         1/i/Z4AXElHXBtgQTqbP1oxoGtE0IF18eC5+32UBmpx4NFOPrmEUvG1h06FdZEjCb7
+         pG1VVo7qCb6Lw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A6A0BCE0908; Tue,  1 Aug 2023 09:39:28 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 09:39:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
-Message-ID: <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
-References: <20230726153223.821757-1-yosryahmed@google.com>
- <20230726153223.821757-2-yosryahmed@google.com>
+        Michal Hocko <mhocko@suse.com>,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_basic false positives
+Message-ID: <c40ca485-f52e-411a-9f33-3adabc53c0fc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230801135632.1768830-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230726153223.821757-2-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <20230801135632.1768830-1-hannes@cmpxchg.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,56 +60,53 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 26-07-23 15:32:23, Yosry Ahmed wrote:
-> Currently, memcg uses rstat to maintain aggregated hierarchical stats.
-> Counters are maintained for hierarchical stats at each memcg. Rstat
-> tracks which cgroups have updates on which cpus to keep those counters
-> fresh on the read-side.
+On Tue, Aug 01, 2023 at 09:56:32AM -0400, Johannes Weiner wrote:
+> This test fails routinely in our prod testing environment, and I can
+> reproduce it locally as well.
 > 
-> Non-hierarchical stats are currently not covered by rstat. Their
-> per-cpu counters are summed up on every read, which is expensive.
-> The original implementation did the same. At some point before rstat,
-> non-hierarchical aggregated counters were introduced by
-> commit a983b5ebee57 ("mm: memcontrol: fix excessive complexity in
-> memory.stat reporting"). However, those counters were updated on the
-> performance critical write-side, which caused regressions, so they were
-> later removed by commit 815744d75152 ("mm: memcontrol: don't batch
-> updates of local VM stats and events"). See [1] for more detailed
-> history.
+> The test allocates dcache inside a cgroup, then drops the memory limit
+> and checks that usage drops correspondingly. The reason it fails is
+> because dentries are freed with an RCU delay - a debugging sleep shows
+> that usage drops as expected shortly after.
 > 
-> Kernel versions in between a983b5ebee57 & 815744d75152 (a year and a
-> half) enjoyed cheap reads of non-hierarchical stats, specifically on
-> cgroup v1. When moving to more recent kernels, a performance regression
-> for reading non-hierarchical stats is observed.
+> Insert a 1s sleep after dropping the limit. This should be good
+> enough, assuming that machines running those tests are otherwise not
+> very busy.
 > 
-> Now that we have rstat, we know exactly which percpu counters have
-> updates for each stat. We can maintain non-hierarchical counters again,
-> making reads much more efficient, without affecting the performance
-> critical write-side. Hence, add non-hierarchical (i.e local) counters
-> for the stats, and extend rstat flushing to keep those up-to-date.
-> 
-> A caveat is that we now need a stats flush before reading
-> local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
-> or memcg_events_local(), where we previously only needed a flush to
-> read hierarchical stats. Most contexts reading non-hierarchical stats
-> are already doing a flush, add a flush to the only missing context in
-> count_shadow_nodes().
-> 
-> With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
-> machine with 256 cpus on cgroup v1:
->  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
->  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
->  real	 0m0.125s
->  user	 0m0.005s
->  sys	 0m0.120s
-> 
-> After:
->  real	 0m0.032s
->  user	 0m0.005s
->  sys	 0m0.027s
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Have you measured any potential regression for cgroup v2 which collects
-all this data without ever using it (AFAICS)?
--- 
-Michal Hocko
-SUSE Labs
+I am putting together something more formal, but this will certainly
+improve things, as Johannes says, assuming the system goes mostly
+idle during that one-second wait.  So:
+
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+
+Yes, there are corner cases, such as the system having millions of
+RCU callbacks queued and being unable to invoke them all during that
+one-second interval.  But that is a corner case, and that is exactly
+why I will be putting together something more formal.  ;-)
+
+							Thanx, Paul
+
+> ---
+>  tools/testing/selftests/cgroup/test_kmem.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+> index 258ddc565deb..1b2cec9d18a4 100644
+> --- a/tools/testing/selftests/cgroup/test_kmem.c
+> +++ b/tools/testing/selftests/cgroup/test_kmem.c
+> @@ -70,6 +70,10 @@ static int test_kmem_basic(const char *root)
+>  		goto cleanup;
+>  
+>  	cg_write(cg, "memory.high", "1M");
+> +
+> +	/* wait for RCU freeing */
+> +	sleep(1);
+> +
+>  	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
+>  	if (slab1 <= 0)
+>  		goto cleanup;
+> -- 
+> 2.41.0
+> 
