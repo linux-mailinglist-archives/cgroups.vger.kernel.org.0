@@ -2,42 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BAA76B4F5
-	for <lists+cgroups@lfdr.de>; Tue,  1 Aug 2023 14:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D24376B673
+	for <lists+cgroups@lfdr.de>; Tue,  1 Aug 2023 15:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjHAMoQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Aug 2023 08:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S233857AbjHAN4n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Aug 2023 09:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjHAMoQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Aug 2023 08:44:16 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFFDE6;
-        Tue,  1 Aug 2023 05:44:15 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RFZXG6M7kzrRgk;
-        Tue,  1 Aug 2023 20:43:10 +0800 (CST)
-Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 1 Aug
- 2023 20:44:11 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] mm/memcg: update obsolete comment above parent_mem_cgroup()
-Date:   Tue, 1 Aug 2023 20:43:59 +0800
-Message-ID: <20230801124359.2266860-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        with ESMTP id S234254AbjHAN4i (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Aug 2023 09:56:38 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F0E2133
+        for <cgroups@vger.kernel.org>; Tue,  1 Aug 2023 06:56:34 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40398ccdaeeso28520811cf.3
+        for <cgroups@vger.kernel.org>; Tue, 01 Aug 2023 06:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690898193; x=1691502993;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XJLGW04mxEToFfRDeoOpyp00hE8LNX9fFBjKrCRhwps=;
+        b=iLH7vqnb28PIkYe34u+mDj70sMwzhlg2Nc9Lt2f4INh+KceFZ4zMmArs8alLU4u0W1
+         xuDos8oBmOj2eI8hOcKxNyjB9tlUl5gULORkj9AFCEfX0mZRPKbeVkBWvQtw3rU0aFZL
+         qGVxwxzioM5kQNEUjBSr/VS4Yudj1ZSYn+Pk67O/2OGEHBnObl0Oxjqh5w56/qFguZeF
+         0P4o7c44YclUPTxHlqXaMpNGRbK83ZiiVTuS+udod4EI3YUzNvZi7AAMVqNq6u/dr4Mv
+         NoUhcNOKuM2pesfsikO7xYyIiTwESwnALMqSuZQOqB6X+3xxzvPkTuuBoUokQu/Pu+Gu
+         /KBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690898193; x=1691502993;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XJLGW04mxEToFfRDeoOpyp00hE8LNX9fFBjKrCRhwps=;
+        b=V/HIkud6lLw7PYgouPyjdhXmBPCYfEJt40Cv8gqxYzEk5imoot5ej087wu0HC1QslF
+         8OTuriqCKCZ0obhBnH4uupPwST64dO/DcwWaofRwbxcMlOAMe60QqMyG5o6WLjyHutn+
+         21c5A1JNsNNBVfKrPactUd4uwgYm/u5u4HNddYulHThp8Ma611++GQ+8CU7wTSk+KB+e
+         3cdPs6wD9lzcejVwRd+X4820ltMOo6cnd2v4WFY71GDrMhMRo0ZuIFR2EiM9w5LvmLSJ
+         eWgLCqeq+3mg8jeKq+MJR/rl9noXZ3X626TzhHRx27sk2CHfTtV4mzC2kCE7wYV0fDPv
+         sLEQ==
+X-Gm-Message-State: ABy/qLaIwJQ9z8sbiyz8aDM7kcQ4VNRuAWAoZW3AXKOOTQlfVuKe4vHp
+        sH8WylhGmKG0XaktbLl7CZslrQ==
+X-Google-Smtp-Source: APBJJlHENlK+WateqGlF3CA9rHgN32+u2UbuYvusGApJRTWPvSgkpYMrWjdUy8Nk/EukrVLPAteZTQ==
+X-Received: by 2002:a05:622a:1a18:b0:402:4bf3:7f41 with SMTP id f24-20020a05622a1a1800b004024bf37f41mr12515923qtb.29.1690898193176;
+        Tue, 01 Aug 2023 06:56:33 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id c27-20020ac8009b000000b004054b435f8csm4446390qtg.65.2023.08.01.06.56.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 06:56:32 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: cgroup: fix test_kmem_basic false positives
+Date:   Tue,  1 Aug 2023 09:56:32 -0400
+Message-ID: <20230801135632.1768830-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,30 +70,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical
-mode"), use_hierarchy is already deprecated. And it's further removed
-via commit 9d9d341df4d5 ("cgroup: remove obsoleted broken_hierarchy
-and warned_broken_hierarchy"). Update corresponding comment.
+This test fails routinely in our prod testing environment, and I can
+reproduce it locally as well.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+The test allocates dcache inside a cgroup, then drops the memory limit
+and checks that usage drops correspondingly. The reason it fails is
+because dentries are freed with an RCU delay - a debugging sleep shows
+that usage drops as expected shortly after.
+
+Insert a 1s sleep after dropping the limit. This should be good
+enough, assuming that machines running those tests are otherwise not
+very busy.
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- include/linux/memcontrol.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/testing/selftests/cgroup/test_kmem.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3bd00f224224..11810a2cfd2d 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -863,8 +863,7 @@ static inline struct mem_cgroup *lruvec_memcg(struct lruvec *lruvec)
-  * parent_mem_cgroup - find the accounting parent of a memcg
-  * @memcg: memcg whose parent to find
-  *
-- * Returns the parent memcg, or NULL if this is the root or the memory
-- * controller is in legacy no-hierarchy mode.
-+ * Returns the parent memcg, or NULL if this is the root.
-  */
- static inline struct mem_cgroup *parent_mem_cgroup(struct mem_cgroup *memcg)
- {
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 258ddc565deb..1b2cec9d18a4 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -70,6 +70,10 @@ static int test_kmem_basic(const char *root)
+ 		goto cleanup;
+ 
+ 	cg_write(cg, "memory.high", "1M");
++
++	/* wait for RCU freeing */
++	sleep(1);
++
+ 	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
+ 	if (slab1 <= 0)
+ 		goto cleanup;
 -- 
-2.33.0
+2.41.0
 
