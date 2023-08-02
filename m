@@ -2,74 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143DC76D91A
-	for <lists+cgroups@lfdr.de>; Wed,  2 Aug 2023 23:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC9B76D9B6
+	for <lists+cgroups@lfdr.de>; Wed,  2 Aug 2023 23:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjHBVCC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Aug 2023 17:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S233010AbjHBVjs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Aug 2023 17:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjHBVCB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Aug 2023 17:02:01 -0400
+        with ESMTP id S233055AbjHBVjr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Aug 2023 17:39:47 -0400
 Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5451E4F;
-        Wed,  2 Aug 2023 14:01:59 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc3d94d40fso2592155ad.3;
-        Wed, 02 Aug 2023 14:01:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC46726AF;
+        Wed,  2 Aug 2023 14:39:44 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc34b32785so2559375ad.3;
+        Wed, 02 Aug 2023 14:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691010119; x=1691614919;
+        d=gmail.com; s=20221208; t=1691012384; x=1691617184;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=B5eoW13Er2byi3F5AVWdPVCJvLFofz+zD3HXMr0r2JM=;
-        b=P1bVrDOw/XQIdFJy0p0oko56FRhKc/+1jthxROevZRwecRH5Uht2TndqyzxXrGGMog
-         7/30DAYMILosXblR2uDbNqmfTJrJMBW568BcowS8vvbiHkiYdm130TChDOkV8z2pXcMs
-         JIQa7odjTt+Hxyp0rxDAR4JkZ68MimCN76/dauJ6lareMIriz1fgAKe/SjYkFD9foGyk
-         RufJNhvEQAOyBDZciJv+71xUTQgxVCkM9UKYs4VDR4ZbVvgFgnbLsUdnW8PCp73IgO3Z
-         188Gk8UPI+WKN3h4oIfAgFSkQZ2mK/9lQRZpLS9Xo5/AK5XjzeLp31hGu5CfFmzyVgKt
-         ryiw==
+        bh=dg1csT6sQap9Rjj/9a7I+zdOC12NSKIzfI8UlxG6Z6s=;
+        b=D5od+G8Q5l6okpcSGorDH8rVDi8dKCBthkqpfYBIBJlUCMIh9J5CpRVct3JKaQvA1B
+         IOL7SasPOzvfL8/mSWNYFSsfFCQWNM5JxkOGVwAatzOmGjXIBKMplWnSyh0G8xhrJ2BM
+         luNIHpVg2gOIh/cf9EmBsozBHMIWBgjLI8ckR675XgH16xGIs4qLRva01KuoNNRPl4kZ
+         oOcthTE0Bt20SOx7bSL00SsleLB3chZI++TfTdJDvk80Z475KNWTj+/NlOOKhwdz6wo5
+         yYKiBWxas6X63T8Vks8qHaljufFTCxBvS8BmXseG1AXraZZ6CUv8U3WDqygStNlRZWxa
+         Z8rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691010119; x=1691614919;
+        d=1e100.net; s=20221208; t=1691012384; x=1691617184;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B5eoW13Er2byi3F5AVWdPVCJvLFofz+zD3HXMr0r2JM=;
-        b=gCdL3iq1/AbTCzlKMY/dWahKtuxwYyD8jF3ROLrJ6eaxY2sfrAkUZ8qGEypaM0zWCH
-         4HcqBFpcjfnH+OQ6UKjq1tL6Umqa4Jat3GLc+HJEV5G+auxwTl43Ol123GsoR0TXyp92
-         sH5CamxZyZj3Xjcf29O/ycvqixRf1Avm5yr0ZxWw5xeUe7JroK6VdFQhKEBJj1AyM7ic
-         9DlgXKXYlajDXLynuWIApXfnf5t+2iDs9GgnTue2t5aZSLsYFIDpmx6m7YAWSMSkB+ei
-         0dvpXGRRSGNK536LuGsuPxL64Mdlk7xY19+Y3xwFUIEea5+loT9Nua8c23XMVTd4zpW/
-         KXuA==
-X-Gm-Message-State: ABy/qLZyPRAdVPf/FrkpXsen4akUk1sRt57wNPdGbj7i1P4BW7xNHpjN
-        7heCaf8Sjj4DPobBY1JSdlMS9ovsmyM=
-X-Google-Smtp-Source: APBJJlHKOmx4rPr7kbwyaqtRbGAy+Uc0YS+OodbIRX4oI5TwcwnzsjZarxKt+MJcjl9FlZnTJJ7/xw==
-X-Received: by 2002:a17:902:7486:b0:1bc:5d0:e8db with SMTP id h6-20020a170902748600b001bc05d0e8dbmr12291661pll.62.1691010118975;
-        Wed, 02 Aug 2023 14:01:58 -0700 (PDT)
+        bh=dg1csT6sQap9Rjj/9a7I+zdOC12NSKIzfI8UlxG6Z6s=;
+        b=INJv5mVVo3QZ6kfZCSyR1VsMj/MxF+CH7K0N710VUQ4Y7vau9UCzTclVKxab4ii3JK
+         /cyxy8gnQdmGaTQYwGW0MhSa3/2kgEknoYXRf+Mw+AwyjU8wmJ2mS2KjflduK75wn9gO
+         dqLJAvvol+kkdDz30RTaSfAfCfxMegMc+5Ew7+i6xK8d3irXmSNnLzl97QOQpbgouCpD
+         lX6nJoU0mab7FKbKox2v3tUzroB943C45JStVvzOGCiyAUHcbok5HvxIbD3/n0VY1a9W
+         TZL9MLVO3lT7YjnXxxusNZmgd2MONLzdl9aY/665lunOqTOwEYXD+zHIpxh8uzM4zx3A
+         Cmcg==
+X-Gm-Message-State: ABy/qLbpWAn9Etgw6wGvC3f7RqIzcfzyO/WDoxd7vv/0Z1M9Fs19mGOw
+        GNfP47+LsnAZ735Sru372Wk=
+X-Google-Smtp-Source: APBJJlFJDCjDYsyfzWyMCiBMOkJ6rBp4oH7PlOzBbLdMFCR3Ufc/nU/ktZy/7IyhCRN25QEJJQI2cQ==
+X-Received: by 2002:a17:902:e841:b0:1bb:ee1b:3cdf with SMTP id t1-20020a170902e84100b001bbee1b3cdfmr16535575plg.67.1691012383533;
+        Wed, 02 Aug 2023 14:39:43 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:9d5d])
-        by smtp.gmail.com with ESMTPSA id kb14-20020a170903338e00b001a5260a6e6csm12878628plb.206.2023.08.02.14.01.58
+        by smtp.gmail.com with ESMTPSA id v11-20020a1709028d8b00b001bb99e188fcsm12850055plo.194.2023.08.02.14.39.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 14:01:58 -0700 (PDT)
+        Wed, 02 Aug 2023 14:39:43 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Aug 2023 11:01:57 -1000
+Date:   Wed, 2 Aug 2023 11:39:41 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Subject: Re: [PATCH v5 4/5] cgroup/cpuset: Documentation update for partition
-Message-ID: <ZMrERWeIeEOGzXHO@slm.duckdns.org>
-References: <20230713172601.3285847-1-longman@redhat.com>
- <20230713172601.3285847-5-longman@redhat.com>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+Message-ID: <ZMrNHf2tg8AZ2F0z@slm.duckdns.org>
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+ <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+ <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+ <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+ <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
+ <ZMKs_GpHEW6Pfusj@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713172601.3285847-5-longman@redhat.com>
+In-Reply-To: <ZMKs_GpHEW6Pfusj@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -81,57 +80,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Waiman.
+Hello,
 
-On Thu, Jul 13, 2023 at 01:26:00PM -0400, Waiman Long wrote:
-...
-> +	When a valid partition is created, the value of this file will
-> +	be automatically set to the largest subset of "cpuset.cpus"
-> +	that can be granted for exclusive access from its parent if
-> +	its value isn't explicitly set before.
-> +
-> +	Users can also manually set it to a value that is different from
-> +	"cpuset.cpus".	In this case, its value becomes invariant and
-> +	may no longer reflect the effective value that is being used
-> +	to create a valid partition if some dependent cpuset control
-> +	files are modified.
-> +
-> +	There are constraints on what values are acceptable to this
-> +	control file.  If a null string is provided, it will invalidate a
-> +	valid partition root and reset its invariant state.  Otherwise,
-> +	its value must be a subset of the cgroup's "cpuset.cpus" value
-> +	and the parent cgroup's "cpuset.cpus.exclusive" value.
+On Thu, Jul 27, 2023 at 07:44:28AM -1000, Tejun Heo wrote:
+> Oh yeah, I do. I'm just thinking whether we also want to expose that in the
+> cgroupfs. We are currently not showing anything per-cpu and the output
+> formatting gets nasty with a huge number of CPUs, so maybe that's not going
+> to work out all that well. Anyways, I'll get back to you next week.
 
-As I wrote before, the hidden state really bothers me. This is fine when
-there is one person configuring the system, but working with automated
-management and monitoring tools can be really confusing at scale when there
-are hidden states like this as there's no way to determine the current state
-by looking at what's visible at the interface level.
+I couldn't come up with an answer. Let's go ahead with adding the field but
+can you please do the followings?
 
-Can't we do something like the following?
+* Name it to something like subtree_bstat instead of cumul_bstat. The
+  counters are all cumulative.
 
-* cpuset.cpus.exclusive can be set to any possible cpus. While I'm not
-  completely against failing certain writes (e.g. siblings having
-  overlapping masks is never correct or useful), expanding that to
-  hierarchical checking quickly gets into trouble around what happens when
-  an ancestor retracts a CPU.
+* Are you sure the upward propagation logic is correct? It's calculating
+  global delta and then propagating to the per-cpu delta of the parent. Is
+  that correct because the two delta calculations always end up the same?
 
-  I don't think it makes sense to reject writes if the applied rules can't
-  be invariants for the same reason given for avoiding hidden states - the
-  system can be managed by multiple agents at different delegation levels.
-  One layer changing resource configuration shouldn't affect the success or
-  failure of configuration operations in other layers.
-
-* cpuset.cpus.exclusive.effective shows what's currently available for
-  exclusive usage - ie. what'd be used for a partition if the cgroup is to
-  become a partition at that point.
-
-  This, I think, gets rid of the need for the hidden states. If .exclusive
-  of a child of a partition is empty, its .exclusive.effective can show all
-  the CPUs allowed in it. If .exclusive is set then, .exclusive.effective
-  shows the available subset.
-
-What do you think?
+* Please add a comment explaining that the field is not currently used
+  outside of being read from bpf / drgn and what not and that we're still
+  trying to determine how to expose that in the cgroupfs interface.
 
 Thanks.
 
