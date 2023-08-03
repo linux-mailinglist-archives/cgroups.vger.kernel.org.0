@@ -2,67 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB2876EC05
-	for <lists+cgroups@lfdr.de>; Thu,  3 Aug 2023 16:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C4376EC7E
+	for <lists+cgroups@lfdr.de>; Thu,  3 Aug 2023 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbjHCOMD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Aug 2023 10:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S236265AbjHCO2P (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Aug 2023 10:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235971AbjHCOLn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Aug 2023 10:11:43 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FCF4C0C
-        for <cgroups@vger.kernel.org>; Thu,  3 Aug 2023 07:10:55 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63d03d3cac6so5429486d6.2
-        for <cgroups@vger.kernel.org>; Thu, 03 Aug 2023 07:10:55 -0700 (PDT)
+        with ESMTP id S236698AbjHCO2C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Aug 2023 10:28:02 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D59DF5
+        for <cgroups@vger.kernel.org>; Thu,  3 Aug 2023 07:28:00 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-63d10da0f26so6358746d6.3
+        for <cgroups@vger.kernel.org>; Thu, 03 Aug 2023 07:28:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1691071854; x=1691676654;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1691072879; x=1691677679;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YK1kR5msnkStlX/fQur0EoisiWFGZLTUdGslkPaUGUk=;
-        b=UFOM7zDVQVcS3LfF/4QazEBXoUPkF5omxMvrFErHuGjaX/itDvATmOxiOE101O+XMw
-         gy8iScRh4vaPBjWLFKcTsyeaw5iLs4Wu6simJm1pMbYQMfGTfZz8rmpbjV3TXtOVh60T
-         YtAfMqN1tYQyoFfKOcgZ2HDeANRxU8tctaXUHZYCq+W3Kagr5a07jSL42pUev4wm3b0h
-         FfWGxKAR53Xvdc/JXLg891qsRI1LjYV81hCLfsAYeVeiOKkE/Wv51Rup2osuUe27Emhy
-         Q2bOYlT5SDplenN//8wyLqeEdGGC4NH8nFk9PaAG3zOL163k7T/MRD7QRT66ot4e2Eu5
-         qTpg==
+        bh=8CXtNf2juTpnNbc2iwpH+iIlLPgtlL44HuZlVb5tpAE=;
+        b=we6Fk7q9zEhw+CJrONTMaJeY7V/kFX0HXrXBKxV2JUSNlNTJWCPnPehRlsHF+z0blk
+         sCi0pOw0r/N0CWun/xl5QKYU5EqnUJgwj5FZ8JNAqoJy1DQT2hCMZCnpOuWyGc48sE3D
+         sTyG5UxVGS4xRHYoxx1I/z/P48lOZIsUcjeK5qGjLLilXjY5rsapUi4EEYINt6r3pbBr
+         gPVHJC6fpUvkYchQcfc6WKZCHsLYaReFuKXCga7sr7uJ92TuEhl1w+DkcZxa64DNoiBq
+         hx0rO7pxXlDuzIVFdnJkvgOiXqqxD81njci1PpeY8re9g1MiTPuvkpD2EJIKFDJIHVOh
+         ol4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691071854; x=1691676654;
+        d=1e100.net; s=20221208; t=1691072879; x=1691677679;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YK1kR5msnkStlX/fQur0EoisiWFGZLTUdGslkPaUGUk=;
-        b=Td5vLyTCZUo7NhcGLxdBlCajbj/iC16sgnEmxoDEJ+7FE2H+PSLIlCFICQneRAX3Oq
-         1oOF5nIFbMFjiUG9r7OVpRmmbHuvmZ9+utsJiruscrJsQXJaTrg+UCuiDkBnfFvaquIq
-         17NzaCkaXDvxNAqlOGjaDPX/OcRMScF+65XFEv6qaBBV5V2A3BkdrKosG3ljJnDjymNx
-         zE1Ay+BJUsMJH65X/wCva4Y05qOdpHQCQfs1HncKUYhYe8ob7g7hTe19SqZhsRnT3PkU
-         1hy0klm6z5Qtu4IQpyBceLFRT8W7MmO8AZfhW0GMWd2GqjmjBzX4MeKN1F2kGlXT619t
-         AKzQ==
-X-Gm-Message-State: ABy/qLY/6hRGcURk7oGkTdZ1NkryALVj/i51tLMi13EWwQ2teDmRNcji
-        lulqa9JjJyEBaOmDvjLFTIKU7w==
-X-Google-Smtp-Source: APBJJlHG/HJ8dg2so1MrmKd58NvGTSjLjHljlytzbh4O2k3vFxYFztSYGJceRVx7+cpcvA/Uzuhi5g==
-X-Received: by 2002:a0c:e14c:0:b0:626:290f:3e80 with SMTP id c12-20020a0ce14c000000b00626290f3e80mr16822152qvl.50.1691071854445;
-        Thu, 03 Aug 2023 07:10:54 -0700 (PDT)
+        bh=8CXtNf2juTpnNbc2iwpH+iIlLPgtlL44HuZlVb5tpAE=;
+        b=cvV7OgfXeyP/0YNK5skVwoWo47d2WE1/SI3gNN5I/+tYPEwbK+B5axfY/myYli5j9W
+         fM0FBxc0sFqwR9jYaFrFCPNxdpy0EpUC4JRUJwj6A8Yc8nHvmsbPDOFCkeEbBOx8Dicf
+         H+jJlr0anUsCQyfW1mGPugvb/NGIs6lr0DZdgCCr52HnAaDqzwOJuPdOVpAuRKi3xKQa
+         8X0lV3G7sGgGDBUtLuoi+6PYQtnmUQ8r9+Pn3MbFe4KFWVvCnZQnxUsF2N47cWlkrVfg
+         VOkawmugBwUEh5N4X7Dqagdo8vDISmkK37aW3Lk8fnxOzwrq+cOYM0WKVTfu0y8A3hRq
+         QDig==
+X-Gm-Message-State: ABy/qLY+9iPzzBfUBog7gopw2Y8TO8yyM7JVGUVrC9IgOFjAIpVOyH7T
+        9FQcGr47Yflk2t9/TEtQT2YlGA==
+X-Google-Smtp-Source: APBJJlGojymVhYXzLWJgFKipyPQ/BnXaUfG9SeeEXt8ZHQ9ePL7qELRqkM608B7MH/EeqxqFYIRldw==
+X-Received: by 2002:ad4:4d87:0:b0:631:f9ad:1d46 with SMTP id cv7-20020ad44d87000000b00631f9ad1d46mr18311921qvb.47.1691072879487;
+        Thu, 03 Aug 2023 07:27:59 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:400::5:9910])
-        by smtp.gmail.com with ESMTPSA id a17-20020a0ce391000000b0063211e61875sm6316535qvl.14.2023.08.03.07.10.53
+        by smtp.gmail.com with ESMTPSA id r10-20020a0ccc0a000000b0063d588c4111sm4748687qvk.82.2023.08.03.07.27.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 07:10:54 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 10:10:53 -0400
+        Thu, 03 Aug 2023 07:27:59 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 10:27:58 -0400
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: fix obsolete function name in
- cgroup_destroy_locked()
-Message-ID: <20230803141053.GB219857@cmpxchg.org>
-References: <20230803115702.741128-1-linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: minor cleanup for cgroup_local_stat_show()
+Message-ID: <20230803142758.GC219857@cmpxchg.org>
+References: <20230803113123.577023-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230803115702.741128-1-linmiaohe@huawei.com>
+In-Reply-To: <20230803113123.577023-1-linmiaohe@huawei.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,11 +69,25 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 07:57:02PM +0800, Miaohe Lin wrote:
-> Since commit e76ecaeef65c ("cgroup: use cgroup_kn_lock_live() in other
-> cgroup kernfs methods"), cgroup_kn_lock_live() is used in cgroup kernfs
-> methods. Update corresponding comment.
+On Thu, Aug 03, 2023 at 07:31:23PM +0800, Miaohe Lin wrote:
+> Make it under CONFIG_CGROUP_SCHED to rid of __maybe_unused annotation.
+> Also put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED as it's only
+> called when CONFIG_CGROUP_SCHED. No functional change intended.
 > 
 > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+> @@ -3686,8 +3686,9 @@ static int cpu_stat_show(struct seq_file *seq, void *v)
+>  	return ret;
+>  }
+>  
+> -static int __maybe_unused cgroup_local_stat_show(struct seq_file *seq,
+> -						 struct cgroup *cgrp, int ssid)
+> +#ifdef CONFIG_CGROUP_SCHED
+> +static int cgroup_local_stat_show(struct seq_file *seq,
+> +				  struct cgroup *cgrp, int ssid)
+
+Andrew, this is based on "sched: add throttled time stat for throttled
+children" in -next (coming in from -tip). Hence the routing through
+you rather than the cgroup tree.
