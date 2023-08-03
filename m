@@ -2,213 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A6F76DA5C
-	for <lists+cgroups@lfdr.de>; Thu,  3 Aug 2023 00:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAAC76DD03
+	for <lists+cgroups@lfdr.de>; Thu,  3 Aug 2023 03:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjHBWDg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Aug 2023 18:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        id S232372AbjHCBJA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Aug 2023 21:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233450AbjHBWDf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Aug 2023 18:03:35 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46941FEF
-        for <cgroups@vger.kernel.org>; Wed,  2 Aug 2023 15:03:33 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-98377c5d53eso37975466b.0
-        for <cgroups@vger.kernel.org>; Wed, 02 Aug 2023 15:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691013812; x=1691618612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HIo3KTyr76k6K1BA/QNGBKeMcM+9rrKO+UG5HeIlUAM=;
-        b=P45Kscjf3OEWZ8OppUx9kF8H15Yd5cbLbFtqdc5LjrYU6q+R+whrc7inBwtatoqMy7
-         IDRGZ7zi0UzY+SBvuz37cl3R4M3iyHS3gJ/O6fLmZVcyvMA6+jqetWNxu+04ksSj4y7j
-         SKnSdjOenyIwiqgOeyzOXSofnTeGALl/BHm+4eziWASUs9HOB7afyEYGOSEJEhd5pW+m
-         Jqoxe+vEXQKCNXGSXvRfnPtt+i3YqOjhnuoIBGSaFPcyVZDnNkSxUTK3ivcrUMHArmJD
-         ZrAhOCGnbLprKU9L4JG4XYeLT7SPR0eqV7FvNosqGDBzvn+UvwH3wX06BMbm/KS6VPK9
-         bSyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691013812; x=1691618612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HIo3KTyr76k6K1BA/QNGBKeMcM+9rrKO+UG5HeIlUAM=;
-        b=aADjzj/UGDjEjZ7ml8SctlQNXm7rAy75KaK3cuzPuwS48T4G5/6708V8872CJQhSIU
-         B9w2hioCMCc++5Fo/KBai7Yf01LFI6LXcm+arjeDaaFQHMprfiTfHtekPPcdmTMJIqxT
-         j3skbfmmYFy01UpePJbwndbz5+4bNQ6F2iFjuxBLaJRJ1SxcVwhxxM2WWa2Mohvihb4c
-         LQ9obiHjbHUrB/TpU70k42XDoGe8ZnatJfTc0tIBtm6FwD56kR6sgbEx3QFMgHWdIx2+
-         FoYlF4DhdMWy+oinYdOIACR/M/CyIXVhiwT5uBOQ/emrQvYPb6i5a+wMVgRA1LvDGpDJ
-         mpDQ==
-X-Gm-Message-State: ABy/qLaD4koteDqXDw3gjogxOyC64LO/et0DKVI/qzqioKwb3D194Cej
-        ikWU3TPBiDsn8QI/FBwhW+ggsK7dqvdCgmV3SgSZ1w==
-X-Google-Smtp-Source: APBJJlFTftZm3m5lcjbMgQ2ymx11qxhas8V+QpXpKyaiCiGLnZSf7izHWUaM2LELOMUBMQsG1Y8hGPtoioeBTXsP7DE=
-X-Received: by 2002:a17:906:53d3:b0:99b:d9f3:9a98 with SMTP id
- p19-20020a17090653d300b0099bd9f39a98mr6126651ejo.74.1691013812145; Wed, 02
- Aug 2023 15:03:32 -0700 (PDT)
+        with ESMTP id S232269AbjHCBI7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Aug 2023 21:08:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B732E4D
+        for <cgroups@vger.kernel.org>; Wed,  2 Aug 2023 18:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691024887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yNCl3TS6o3J06UrSCjbBrl21cvR06Nfa+qdUrrTWUOw=;
+        b=a6hjxVzP4VbUzknaBHrQcQaolSiHo9/QTSiZt92Rrd6LoX55WkNFQLGEYXZgiaXaoidNEF
+        8O1lC/rE2Ytv4U0DzCWTHiG9AyeHn/YMoNlZ8mgMVtNpieLuKWesQ36HIckinu48w3HjLv
+        Ts6mQ8u5S7HcUZKtXq0lELjcsTZoXRg=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-86-kT90DbMtPA-AfZ-sdNrgZQ-1; Wed, 02 Aug 2023 21:08:04 -0400
+X-MC-Unique: kT90DbMtPA-AfZ-sdNrgZQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7DC228237CB;
+        Thu,  3 Aug 2023 01:08:03 +0000 (UTC)
+Received: from [10.22.18.41] (unknown [10.22.18.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C0D7492CA6;
+        Thu,  3 Aug 2023 01:08:01 +0000 (UTC)
+Message-ID: <0c019181-7e9b-0a19-c477-f8630ea98124@redhat.com>
+Date:   Wed, 2 Aug 2023 21:08:01 -0400
 MIME-Version: 1.0
-References: <20230726153223.821757-1-yosryahmed@google.com>
- <20230726153223.821757-2-yosryahmed@google.com> <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
- <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
- <CAJD7tkbZi16w4mYngVK8qA84FMijmHvwzMjHfrJiCsV=WjixOA@mail.gmail.com>
- <ZMoIYLwITUZzXp4C@dhcp22.suse.cz> <CAJD7tkY4hTTCfqSGa_XexbH=WSTJ4WXWeMXSU+6KW8qfr7agfQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkY4hTTCfqSGa_XexbH=WSTJ4WXWeMXSU+6KW8qfr7agfQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 2 Aug 2023 15:02:55 -0700
-Message-ID: <CAJD7tkb17x=qwoO37uxyYXLEUVp15BQKR+Xfh7Sg9Hx-wTQ_=w@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: multipart/mixed; boundary="000000000000967e290601f7d566"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v5 4/5] cgroup/cpuset: Documentation update for partition
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+References: <20230713172601.3285847-1-longman@redhat.com>
+ <20230713172601.3285847-5-longman@redhat.com>
+ <ZMrERWeIeEOGzXHO@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZMrERWeIeEOGzXHO@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---000000000000967e290601f7d566
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 2, 2023 at 1:11=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com> =
-wrote:
+On 8/2/23 17:01, Tejun Heo wrote:
+> Hello, Waiman.
 >
-> On Wed, Aug 2, 2023 at 12:40=E2=80=AFAM Michal Hocko <mhocko@suse.com> wr=
-ote:
-> >
-> > On Tue 01-08-23 10:29:39, Yosry Ahmed wrote:
-> > > On Tue, Aug 1, 2023 at 9:39=E2=80=AFAM Yosry Ahmed <yosryahmed@google=
-.com> wrote:
-> > [...]
-> > > > > Have you measured any potential regression for cgroup v2 which co=
-llects
-> > > > > all this data without ever using it (AFAICS)?
-> > > >
-> > > > I did not. I did not expect noticeable regressions given that all t=
-he
-> > > > extra work is done during flushing, which should mostly be done by =
-the
-> > > > asynchronous worker, but can also happen in the stats reading conte=
-xt.
-> > > > Let me run the same script on cgroup v2 just in case and report bac=
-k.
-> > >
-> > > A few runs on mm-unstable with this patch:
-> > >
-> > > # time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
-> >
-> > Is this really representative test to make? I would have expected the
-> > overhead would be mostly in mem_cgroup_css_rstat_flush (if it is visibl=
-e
-> > at all of course). This would be more likely visible in all cpus busy
-> > situation (you can try heavy parallel kernel build from tmpfs for
-> > example).
+> On Thu, Jul 13, 2023 at 01:26:00PM -0400, Waiman Long wrote:
+> ...
+>> +	When a valid partition is created, the value of this file will
+>> +	be automatically set to the largest subset of "cpuset.cpus"
+>> +	that can be granted for exclusive access from its parent if
+>> +	its value isn't explicitly set before.
+>> +
+>> +	Users can also manually set it to a value that is different from
+>> +	"cpuset.cpus".	In this case, its value becomes invariant and
+>> +	may no longer reflect the effective value that is being used
+>> +	to create a valid partition if some dependent cpuset control
+>> +	files are modified.
+>> +
+>> +	There are constraints on what values are acceptable to this
+>> +	control file.  If a null string is provided, it will invalidate a
+>> +	valid partition root and reset its invariant state.  Otherwise,
+>> +	its value must be a subset of the cgroup's "cpuset.cpus" value
+>> +	and the parent cgroup's "cpuset.cpus.exclusive" value.
+> As I wrote before, the hidden state really bothers me. This is fine when
+> there is one person configuring the system, but working with automated
+> management and monitoring tools can be really confusing at scale when there
+> are hidden states like this as there's no way to determine the current state
+> by looking at what's visible at the interface level.
 >
+> Can't we do something like the following?
 >
-> I see. You are more worried about asynchronous flushing eating cpu
-> time rather than the synchronous flushing being slower. In fact, my
-> test is actually not representative at all because probably most of
-> the cgroups either do not have updates or the asynchronous flusher got
-> to them first.
+> * cpuset.cpus.exclusive can be set to any possible cpus. While I'm not
+>    completely against failing certain writes (e.g. siblings having
+>    overlapping masks is never correct or useful), expanding that to
+>    hierarchical checking quickly gets into trouble around what happens when
+>    an ancestor retracts a CPU.
 >
-> Let me try a workload that is more parallel & cpu intensive and report
-> back. I am thinking of parallel reclaim/refault loops since both
-> reclaim and refault paths invoke stat updates and stat flushing.
+>    I don't think it makes sense to reject writes if the applied rules can't
+>    be invariants for the same reason given for avoiding hidden states - the
+>    system can be managed by multiple agents at different delegation levels.
+>    One layer changing resource configuration shouldn't affect the success or
+>    failure of configuration operations in other layers.
 >
+> * cpuset.cpus.exclusive.effective shows what's currently available for
+>    exclusive usage - ie. what'd be used for a partition if the cgroup is to
+>    become a partition at that point.
+>
+>    This, I think, gets rid of the need for the hidden states. If .exclusive
+>    of a child of a partition is empty, its .exclusive.effective can show all
+>    the CPUs allowed in it. If .exclusive is set then, .exclusive.effective
+>    shows the available subset.
+>
+> What do you think?
+>
+Sure, I can add cpuset.cpus.exclusive.effective and allow users to set 
+cpuset.cpus.exclusive to whatever they want, just like cpuset.cpus. I 
+will rework the patch series and send out a new version sometimes next 
+week.
 
-I am back with more data.
+With the new cpuset.cpus.exclusive.effective file, cpuset.cpus.exclusive 
+will really be invariant and become whatever the users set. 
+cpuset.cpus.exclusive.effective file will only have value if 
+cpuset.cpus.exclusive set or it becomes a local partition.
 
-So I wrote a small reclaim/refault stress test that creates (NR_CPUS *
-2) cgroups, assigns them limits, runs a worker process in each cgroup
-that allocates tmpfs memory equal to quadruple the limit (to invoke
-reclaim) continuously, and then reads back the entire file (to invoke
-refaults). All workers are run in parallel, and zram is used as a
-swapping backend. Both reclaim and refault have conditional stats
-flushing. I ran this on a machine with 112 cpus, once on mm-unstable,
-and once on mm-unstable with this patch reverted. The script is
-attached.
+Hopefully this will be the final version.
 
-(1) A few runs without this patch:
+Cheers,
+Longman
 
-# time ./stress_reclaim_refault.sh
-real 0m9.949s
-user 0m0.496s
-sys 14m44.974s
-
-# time ./stress_reclaim_refault.sh
-real 0m10.049s
-user 0m0.486s
-sys 14m55.791s
-
-# time ./stress_reclaim_refault.sh
-real 0m9.984s
-user 0m0.481s
-sys 14m53.841s
-
-(2) A few runs with this patch:
-
-# time ./stress_reclaim_refault.sh
-real 0m9.885s
-user 0m0.486s
-sys 14m48.753s
-
-# time ./stress_reclaim_refault.sh
-real 0m9.903s
-user 0m0.495s
-sys 14m48.339s
-
-# time ./stress_reclaim_refault.sh
-real 0m9.861s
-user 0m0.507s
-sys 14m49.317s
-
-I do not see any regressions from this patch. There is actually a very
-slight improvement. If I have to guess, maybe it's because we avoid
-the percpu loop in count_shadow_nodes() when calling
-lruvec_page_state_local(), but I could not prove this using perf, it's
-probably in the noise.
-
-Let me know if the testing is satisfactory for you. I can send an
-updated commit log accordingly with a summary of this conversation.
-
-> > --
-> > Michal Hocko
-> > SUSE Labs
-
---000000000000967e290601f7d566
-Content-Type: text/x-sh; charset="US-ASCII"; name="stress_reclaim_refault.sh"
-Content-Disposition: attachment; filename="stress_reclaim_refault.sh"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lku9s0ue0>
-X-Attachment-Id: f_lku9s0ue0
-
-IyEvYmluL2Jhc2gKCk5SX0NQVVM9JChnZXRjb25mIF9OUFJPQ0VTU09SU19PTkxOKQpOUl9DR1JP
-VVBTPSQoKCBOUl9DUFVTICogMiApKQpURVNUX01CPTUwClRPVEFMX01CPSQoKFRFU1RfTUIgKiBO
-Ul9DR1JPVVBTKSkKVE1QRlM9JChta3RlbXAgLWQpClJPT1Q9Ii9zeXMvZnMvY2dyb3VwLyIKWlJB
-TV9ERVY9Ii9tbnQvZGV2dG1wZnMvenJhbTAiCgpjbGVhbnVwKCkgewogIHVtb3VudCAkVE1QRlMK
-ICBybSAtcmYgJFRNUEZTCiAgZm9yIGkgaW4gJChzZXEgJE5SX0NHUk9VUFMpOyBkbwogICAgY2dy
-b3VwPSIkUk9PVC9jZyRpIgogICAgcm1kaXIgJGNncm91cAogIGRvbmUKICBzd2Fwb2ZmICRaUkFN
-X0RFVgogIGVjaG8gMSA+ICIvc3lzL2Jsb2NrL3pyYW0wL3Jlc2V0Igp9CnRyYXAgY2xlYW51cCBJ
-TlQgUVVJVCBFWElUCgojIFNldHVwIHpyYW0KZWNobyAkKChUT1RBTF9NQiA8PCAyMCkpID4gIi9z
-eXMvYmxvY2svenJhbTAvZGlza3NpemUiCm1rc3dhcCAkWlJBTV9ERVYKc3dhcG9uICRaUkFNX0RF
-VgplY2hvICJTZXR1cCB6cmFtIGRvbmUiCgojIENyZWF0ZSBjZ3JvdXBzLCBzZXQgbGltaXRzCmVj
-aG8gIittZW1vcnkiID4gIiRST09UL2Nncm91cC5zdWJ0cmVlX2NvbnRyb2wiCmZvciBpIGluICQo
-c2VxICROUl9DR1JPVVBTKTsgZG8KICBjZ3JvdXA9IiRST09UL2NnJGkiCiAgbWtkaXIgJGNncm91
-cAogIGVjaG8gJCgoIChURVNUX01CIDw8IDIwKSAvIDQpKSA+ICIkY2dyb3VwL21lbW9yeS5tYXgi
-CmRvbmUKZWNobyAiU2V0dXAgY2dyb3VwcyBkb25lIgoKIyBTdGFydCB3b3JrZXJzIHRvIGFsbG9j
-YXRlIHRtcGZzIG1lbW9yeQptb3VudCAtdCB0bXBmcyBub25lICRUTVBGUwpmb3IgaSBpbiAkKHNl
-cSAkTlJfQ0dST1VQUyk7IGRvCiAgY2dyb3VwPSIkUk9PVC9jZyRpIgogIGY9IiRUTVBGUy90bXAk
-aSIKICAoZWNobyAwID4gIiRjZ3JvdXAvY2dyb3VwLnByb2NzIiAmJgogICAgZGQgaWY9L2Rldi96
-ZXJvIG9mPSRmIGJzPTFNIGNvdW50PSRURVNUX01CIHN0YXR1cz1ub25lICYmCiAgICBjYXQgJGYg
-PiAvZGV2L251bGwpJgpkb25lCgojIFdhaXQgZm9yIHdvcmtlcnMKd2FpdAo=
---000000000000967e290601f7d566--
