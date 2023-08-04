@@ -2,55 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5E077061B
-	for <lists+cgroups@lfdr.de>; Fri,  4 Aug 2023 18:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7971B770864
+	for <lists+cgroups@lfdr.de>; Fri,  4 Aug 2023 21:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjHDQhW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Aug 2023 12:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S230003AbjHDTAf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Aug 2023 15:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjHDQhV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Aug 2023 12:37:21 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FAEB2
-        for <cgroups@vger.kernel.org>; Fri,  4 Aug 2023 09:37:19 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-63d23473ed5so13674566d6.1
-        for <cgroups@vger.kernel.org>; Fri, 04 Aug 2023 09:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1691167038; x=1691771838;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUJy9CxyJyDezGa57jwVulgOP6Mhmh9lxMHoUFNxQOg=;
-        b=N8zywGIpRTGhPC/hd5Uaa9XnP65QfObz3MOaQDHYBSgg96x0lu4ubKHgZyvQjRg+92
-         VimNYt6Qi+T2OSX2whxjKdAwU5/KjPFJAJ8FQDdIS6jXwklryXprXrKQGXj9+OlCaDkz
-         3BPikSVV1zG++16OImjNF+EnR6jfDlpZjFzRRbEI2TKM1ALXkZgWSYisS9iRkCf9uPpL
-         wBCvyMsghryoppGBxdYYnIv8JITuv327O30KANkFj9SkQRGLPKdUnIYxkMPnuCb+6MV2
-         utPvzU/Zd0n7b7YmTIV2gNEhgfjpPjenS3EcryRbLfQHd44dgYs/kyhVn6CXzmHTcpuN
-         jP0w==
+        with ESMTP id S229726AbjHDTAd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Aug 2023 15:00:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC8649D8
+        for <cgroups@vger.kernel.org>; Fri,  4 Aug 2023 11:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691175583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8TRlrLFCMco4XO+xD44hANqOAJKBhYI/ogDyetWODDc=;
+        b=h7sp4Sog4dhP+jLK55vXWj/8VefiAvkVBQqOLTL7LDgj9t0tdlVqLn2se6GqLUkzcpgR3I
+        /Ak1YRlVHPOodQnLbjLH/QPfQLxNEXKnEhXCfZ3qIcnsJpKMhCKqhWEK2pTFP294/uzj6l
+        lJ7NSyPpzuJMnCA8HjlAGfwo3oRnLsA=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-641-gpfXs70yNh2LD-eDX43-HQ-1; Fri, 04 Aug 2023 14:59:40 -0400
+X-MC-Unique: gpfXs70yNh2LD-eDX43-HQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63cec391457so22272726d6.0
+        for <cgroups@vger.kernel.org>; Fri, 04 Aug 2023 11:59:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691167038; x=1691771838;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iUJy9CxyJyDezGa57jwVulgOP6Mhmh9lxMHoUFNxQOg=;
-        b=YrK98wZJI41ifSZ+xlDkFUyXO9Ns6IXaFCEGU2D155rojnUtfRLmFSiaRZql9yAdPa
-         Cb8xaqBj8tx2GOtYBCHbtQ8BPKGzRNL7Ytk21bAFrOZoyH5WWdGEqQZML9MxrVOqR9en
-         sgY+l/aCtFaztEq6mGzR1oNPvi0Lkd37nEfkoH+v3c4xDPn3WcibeLP7Y5OGmZXWhVJE
-         xKVMLpi6juBmQQN7cLKtduzUwI7dYbK29IknED0gHKMoIX0EYKM2Q0MGbK1uLn+wDomh
-         CmrU9v+Xczi59lUjVL6Yfj17YGEoyesXD853NKDz5oeF1PyL/YPz8aOLE888EORxZh+B
-         C24w==
-X-Gm-Message-State: AOJu0YzLZOHsjIFIs1QnMZlr9+LlGu7qKs5/zCOBUktHAgnJRnfgP4BX
-        GPF/74J+GkDRwMXnWpMhUbjuYw==
-X-Google-Smtp-Source: AGHT+IGvEQu5HgCOytuEIOWYX6CR56Y/2e5JSlxsagFnROkz1i4u6xSjaOns8WHVi48AGsOpTahDqQ==
-X-Received: by 2002:a0c:e10a:0:b0:62d:f806:7f80 with SMTP id w10-20020a0ce10a000000b0062df8067f80mr2235164qvk.13.1691167038197;
-        Fri, 04 Aug 2023 09:37:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:9910])
-        by smtp.gmail.com with ESMTPSA id e29-20020a0cb45d000000b00632266b569esm782221qvf.87.2023.08.04.09.37.17
+        d=1e100.net; s=20221208; t=1691175580; x=1691780380;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8TRlrLFCMco4XO+xD44hANqOAJKBhYI/ogDyetWODDc=;
+        b=hdd1UZHrIX+jCfNuy6h8hIBR7HMcLUlUfbIhCuuSGEyRsXN23OaVY0mpDgUi6BYKl2
+         BTnpDdNzTuVnAabkfVQkBR70/F1CRIMKJNukThDxOK6RP2LPGbPCrIjM+k9Ztxf/qNth
+         4vyUHJmDvW3vHbqnjTBhWjsTzygGjqwEOqYks/q6TzznB/LnkXSbhhoCPj7WHzHGcXCH
+         mY1zZ19BSW9Tk8vDqPDT13v198Kwo+tEJkSr8RzCuSXwhkJz8/EGl/CR3gXtOcp1Prd9
+         uNa1gT9MZFYkyyxRTOYOWQfLmg5PW7jEt8fTXb0U2mxx2VDd9l3VYC3t+e0nxpVkJWut
+         +w8Q==
+X-Gm-Message-State: AOJu0Yyz1jGyGNJBs7Slhxdb7xmVWCOV97FwVEihf5F13CFTDqYjxuJ4
+        MGM4tiopYbSAu20YxH3z6nJ6rce7hwAx7diINl7VUoxllaU9BmDOOXiomC5xq05yfViwZJG77k3
+        eBD85aMZ2dCTfmDv8BA==
+X-Received: by 2002:a0c:eb02:0:b0:63c:d901:d5d5 with SMTP id j2-20020a0ceb02000000b0063cd901d5d5mr2546174qvp.34.1691175579970;
+        Fri, 04 Aug 2023 11:59:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEd/MtSKV8LZK8i31DkhA+HpBPtfBIuzuujDU0hnNApM9DNuN22ObPimY7Yz0Q78IzG0Slmcw==
+X-Received: by 2002:a0c:eb02:0:b0:63c:d901:d5d5 with SMTP id j2-20020a0ceb02000000b0063cd901d5d5mr2546163qvp.34.1691175579724;
+        Fri, 04 Aug 2023 11:59:39 -0700 (PDT)
+Received: from fedora ([174.89.37.244])
+        by smtp.gmail.com with ESMTPSA id y14-20020a0ce04e000000b0063f7a2847bcsm32703qvk.51.2023.08.04.11.59.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 09:37:17 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 12:37:16 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Lucas Karpinski <lkarpins@redhat.com>
+        Fri, 04 Aug 2023 11:59:38 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 14:59:28 -0400
+From:   Lucas Karpinski <lkarpins@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
@@ -62,40 +68,58 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
  positives
-Message-ID: <20230804163716.GA337691@cmpxchg.org>
+Message-ID: <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
 References: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
+ <20230804163716.GA337691@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230804163716.GA337691@cmpxchg.org>
+User-Agent: NeoMutt/20230517
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
-> The test allocates dcache inside a cgroup, then destroys the cgroups and
-> then checks the sanity of numbers on the parent level. The reason it
-> fails is because dentries are freed with an RCU delay - a debugging
-> sleep shows that usage drops as expected shortly after.
+On Fri, Aug 04, 2023 at 12:37:16PM -0400, Johannes Weiner wrote:
+> On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
+> > The test allocates dcache inside a cgroup, then destroys the cgroups and
+> > then checks the sanity of numbers on the parent level. The reason it
+> > fails is because dentries are freed with an RCU delay - a debugging
+> > sleep shows that usage drops as expected shortly after.
+> > 
+> > Insert a 1s sleep after completing the cgroup creation/deletions. This
+> > should be good enough, assuming that machines running those tests are
+> > otherwise not very busy. This commit is directly inspired by Johannes
+> > over at the link below.
+> > 
+> > Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
+> > 
+> > Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
 > 
-> Insert a 1s sleep after completing the cgroup creation/deletions. This
-> should be good enough, assuming that machines running those tests are
-> otherwise not very busy. This commit is directly inspired by Johannes
-> over at the link below.
+> Maybe I'm missing something, but there isn't a limit set anywhere that
+> would cause the dentries to be reclaimed and freed, no? When the
+> subgroups are deleted, the objects are just moved to the parent. The
+> counters inside the parent (which are hierarchical) shouldn't change.
 > 
-> Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
-> 
-> Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
+> So this seems to be a different scenario than test_kmem_basic. If the
+> test is failing for you, I can't quite see why.
+>
+You're right, the parent inherited the counters and it should behave
+the same whether I'm directly removing the child or if I was moving it
+under another cgroup. I do see the behaviour you described on my
+x86_64 setup, but the wrong behaviour on my aarch64 dev. platform. I'll
+take a closer look, but just wanted to leave an example here of what I
+see.
 
-Maybe I'm missing something, but there isn't a limit set anywhere that
-would cause the dentries to be reclaimed and freed, no? When the
-subgroups are deleted, the objects are just moved to the parent. The
-counters inside the parent (which are hierarchical) shouldn't change.
+Example of slab size pre/post sleep:
+slab_pre = 18164688, slab_post = 3360000
 
-So this seems to be a different scenario than test_kmem_basic. If the
-test is failing for you, I can't quite see why.
+Thanks,
+Lucas
+
