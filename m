@@ -2,105 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA02776FF8F
-	for <lists+cgroups@lfdr.de>; Fri,  4 Aug 2023 13:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720137704F2
+	for <lists+cgroups@lfdr.de>; Fri,  4 Aug 2023 17:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjHDLkF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Aug 2023 07:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44608 "EHLO
+        id S229602AbjHDPih (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Aug 2023 11:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHDLkE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Aug 2023 07:40:04 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1909B9;
-        Fri,  4 Aug 2023 04:40:02 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHNzy65zMz4f3k6Z;
-        Fri,  4 Aug 2023 19:39:58 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgCX_7KO48xkcKosPg--.36807S4;
-        Fri, 04 Aug 2023 19:39:59 +0800 (CST)
-From:   Li Lingfeng <lilingfeng@huaweicloud.com>
-To:     tj@kernel.org
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, yukuai3@huawei.com,
-        linan122@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
-        lilingfeng@huaweicloud.com, lilingfeng3@huawei.com
-Subject: [PATCH -next] block: remove init_mutex in blk_iolatency_try_init
-Date:   Fri,  4 Aug 2023 19:36:59 +0800
-Message-Id: <20230804113659.3816877-1-lilingfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S231325AbjHDPi3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Aug 2023 11:38:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685371734
+        for <cgroups@vger.kernel.org>; Fri,  4 Aug 2023 08:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691163465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=sWUCadNhtS5nrUCHR//9fr6i9W+VBU3reP6ArzIMKD4=;
+        b=IXgb4SEGI77dtLPfazeZyb8o4OIt5EX0rKx3Ymw8vmT0cOtpzk9FCHwKofKSPUKGPqgo27
+        AbpEKS5x1RPkIClfAlQhHrr97ZgQkXQ4njrVL7+Qoxg76PVUu1rlCT1jcAbba/SMeaNq4r
+        Z5zPk3k7jncUHKJ+AP1XGANyEmFneYA=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-219-esIIyHn3P-apPk3wkEZ4lw-1; Fri, 04 Aug 2023 11:37:44 -0400
+X-MC-Unique: esIIyHn3P-apPk3wkEZ4lw-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7659924cf20so233611485a.2
+        for <cgroups@vger.kernel.org>; Fri, 04 Aug 2023 08:37:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691163463; x=1691768263;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sWUCadNhtS5nrUCHR//9fr6i9W+VBU3reP6ArzIMKD4=;
+        b=UngRjemRy7JowJf5gK8Qe+y+uBH2Y2am8p/+85PbAFFV5RtZGJy+njyWSO3cEyf/d1
+         G859a1/+ACdmTMar8CSWU7pPDproj+6pz+cschKqNTZ9OYXBiVKJ3ZpLiMexXlop9lpI
+         iCBWg2Zb0JyXgYhkemTtxOiPMbEQ3QMWcMn1esrQmpIa0mz/r4uJ/iU3MOD/1XSh8NIk
+         0i86sdNm3fTdDwjYoV8RI/VCsAWbLdom3w8+lhiWePMIll3/DHaW8nu1b+g0PTmRJNns
+         w9GaOQgzGgD/mKqPflK+PhwrCSZuRYzuDoScJPlqlf0yvfhs7bGfK4eBtbhk+pkDHUus
+         pfPw==
+X-Gm-Message-State: AOJu0YyHWlLMFhR3vSH/hLzwMTFqEPzMAMJygE5e23LAjJjdCh5gAN84
+        IRvfoeoMxbJDYfPID7w+gLUnCJGKJw4yBzXvEtaDhFDNorl4RKCsB1Y4iHhbQm2vHwZaCXxGE0h
+        CJOsoE3CDyTGGBlsaCw==
+X-Received: by 2002:a05:620a:4116:b0:76c:9884:4dce with SMTP id j22-20020a05620a411600b0076c98844dcemr2754760qko.63.1691163463733;
+        Fri, 04 Aug 2023 08:37:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IESeoIlDIDyx7XJyX0j8/1BX2ln6R1WxXabBDCtJd/UHzVFZ/vkvY/Etd4WOnHu0SSFDWBpIQ==
+X-Received: by 2002:a05:620a:4116:b0:76c:9884:4dce with SMTP id j22-20020a05620a411600b0076c98844dcemr2754733qko.63.1691163463425;
+        Fri, 04 Aug 2023 08:37:43 -0700 (PDT)
+Received: from fedora ([174.89.37.244])
+        by smtp.gmail.com with ESMTPSA id a4-20020a05620a124400b0076c71c1d2f5sm723985qkl.34.2023.08.04.08.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 08:37:42 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:37:33 -0400
+From:   Lucas Karpinski <lkarpins@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
+ positives
+Message-ID: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCX_7KO48xkcKosPg--.36807S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrW8GF48WFWkJr4kJF4kXrb_yoW8XrW5p3
-        yrWrsIk3yUKr4kXF4ktw1xur1UK3ykKFyUGF4rCFy5JFyq9r1SgF18ZF1FgrW8urWfAFs8
-        Jr48Xryvkr45G37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
-        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9
-        -UUUUU=
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20230517
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Li Lingfeng <lilingfeng3@huawei.com>
+The test allocates dcache inside a cgroup, then destroys the cgroups and
+then checks the sanity of numbers on the parent level. The reason it
+fails is because dentries are freed with an RCU delay - a debugging
+sleep shows that usage drops as expected shortly after.
 
-Commit a13696b83da4 ("blk-iolatency: Make initialization lazy") adds
-a mutex named "init_mutex" in blk_iolatency_try_init for the race
-condition of initializing RQ_QOS_LATENCY.
-Now a new lock has been add to struct request_queue by commit a13bd91be223
-("block/rq_qos: protect rq_qos apis with a new lock"). And it has been
-held in blkg_conf_open_bdev before calling blk_iolatency_init.
-So it's not necessary to keep init_mutex in blk_iolatency_try_init, just
-remove it.
+Insert a 1s sleep after completing the cgroup creation/deletions. This
+should be good enough, assuming that machines running those tests are
+otherwise not very busy. This commit is directly inspired by Johannes
+over at the link below.
 
-Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
+
+Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
 ---
- block/blk-iolatency.c | 5 -----
- 1 file changed, 5 deletions(-)
+ tools/testing/selftests/cgroup/test_kmem.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index fd5fec989e39..8fbd6bc96acb 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -826,7 +826,6 @@ static void iolatency_clear_scaling(struct blkcg_gq *blkg)
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 67cc0182058d..7ac384bbfdd5 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -183,6 +183,9 @@ static int test_kmem_memcg_deletion(const char *root)
+ 	if (cg_run_in_subcgroups(parent, alloc_kmem_smp, NULL, 100))
+ 		goto cleanup;
  
- static int blk_iolatency_try_init(struct blkg_conf_ctx *ctx)
- {
--	static DEFINE_MUTEX(init_mutex);
- 	int ret;
- 
- 	ret = blkg_conf_open_bdev(ctx);
-@@ -837,13 +836,9 @@ static int blk_iolatency_try_init(struct blkg_conf_ctx *ctx)
- 	 * blk_iolatency_init() may fail after rq_qos_add() succeeds which can
- 	 * confuse iolat_rq_qos() test. Make the test and init atomic.
- 	 */
--	mutex_lock(&init_mutex);
--
- 	if (!iolat_rq_qos(ctx->bdev->bd_queue))
- 		ret = blk_iolatency_init(ctx->bdev->bd_disk);
- 
--	mutex_unlock(&init_mutex);
--
- 	return ret;
- }
- 
++	/* wait for RCU freeing */
++	sleep(1);
++
+ 	current = cg_read_long(parent, "memory.current");
+ 	slab = cg_read_key_long(parent, "memory.stat", "slab ");
+ 	anon = cg_read_key_long(parent, "memory.stat", "anon ");
 -- 
-2.39.2
+2.41.0
 
