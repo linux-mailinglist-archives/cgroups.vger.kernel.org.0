@@ -2,79 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7971B770864
-	for <lists+cgroups@lfdr.de>; Fri,  4 Aug 2023 21:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0609577091C
+	for <lists+cgroups@lfdr.de>; Fri,  4 Aug 2023 21:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbjHDTAf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Aug 2023 15:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
+        id S229671AbjHDTgm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Aug 2023 15:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjHDTAd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Aug 2023 15:00:33 -0400
+        with ESMTP id S229534AbjHDTgl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Aug 2023 15:36:41 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC8649D8
-        for <cgroups@vger.kernel.org>; Fri,  4 Aug 2023 11:59:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D271E43
+        for <cgroups@vger.kernel.org>; Fri,  4 Aug 2023 12:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691175583;
+        s=mimecast20190719; t=1691177753;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8TRlrLFCMco4XO+xD44hANqOAJKBhYI/ogDyetWODDc=;
-        b=h7sp4Sog4dhP+jLK55vXWj/8VefiAvkVBQqOLTL7LDgj9t0tdlVqLn2se6GqLUkzcpgR3I
-        /Ak1YRlVHPOodQnLbjLH/QPfQLxNEXKnEhXCfZ3qIcnsJpKMhCKqhWEK2pTFP294/uzj6l
-        lJ7NSyPpzuJMnCA8HjlAGfwo3oRnLsA=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=/fEGLQTPa3ePRn0SUruCR/akdAF06PibGk+SoDw6oqs=;
+        b=EKepgm59iEW0B4OmUB2n2dIYEg80eS9pWxANbLzawBzMWgFpg6+l4s5Ruko2L5Ly5/KabE
+        KasgEN0ynKNy8fxLQDBeP7t3iisxryDBy6YvUmnFIr1vCi6Kz3ob9aVvxsa7cmmIMULOFc
+        NmCw4HnM4J3dxnEklTAxl+oVQ9xWBlM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-gpfXs70yNh2LD-eDX43-HQ-1; Fri, 04 Aug 2023 14:59:40 -0400
-X-MC-Unique: gpfXs70yNh2LD-eDX43-HQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63cec391457so22272726d6.0
-        for <cgroups@vger.kernel.org>; Fri, 04 Aug 2023 11:59:40 -0700 (PDT)
+ us-mta-695-GMgpjyzkMrCFIXJfnNVLUQ-1; Fri, 04 Aug 2023 15:35:51 -0400
+X-MC-Unique: GMgpjyzkMrCFIXJfnNVLUQ-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-76cf2dbfba6so98205685a.0
+        for <cgroups@vger.kernel.org>; Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691175580; x=1691780380;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8TRlrLFCMco4XO+xD44hANqOAJKBhYI/ogDyetWODDc=;
-        b=hdd1UZHrIX+jCfNuy6h8hIBR7HMcLUlUfbIhCuuSGEyRsXN23OaVY0mpDgUi6BYKl2
-         BTnpDdNzTuVnAabkfVQkBR70/F1CRIMKJNukThDxOK6RP2LPGbPCrIjM+k9Ztxf/qNth
-         4vyUHJmDvW3vHbqnjTBhWjsTzygGjqwEOqYks/q6TzznB/LnkXSbhhoCPj7WHzHGcXCH
-         mY1zZ19BSW9Tk8vDqPDT13v198Kwo+tEJkSr8RzCuSXwhkJz8/EGl/CR3gXtOcp1Prd9
-         uNa1gT9MZFYkyyxRTOYOWQfLmg5PW7jEt8fTXb0U2mxx2VDd9l3VYC3t+e0nxpVkJWut
-         +w8Q==
-X-Gm-Message-State: AOJu0Yyz1jGyGNJBs7Slhxdb7xmVWCOV97FwVEihf5F13CFTDqYjxuJ4
-        MGM4tiopYbSAu20YxH3z6nJ6rce7hwAx7diINl7VUoxllaU9BmDOOXiomC5xq05yfViwZJG77k3
-        eBD85aMZ2dCTfmDv8BA==
-X-Received: by 2002:a0c:eb02:0:b0:63c:d901:d5d5 with SMTP id j2-20020a0ceb02000000b0063cd901d5d5mr2546174qvp.34.1691175579970;
-        Fri, 04 Aug 2023 11:59:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEd/MtSKV8LZK8i31DkhA+HpBPtfBIuzuujDU0hnNApM9DNuN22ObPimY7Yz0Q78IzG0Slmcw==
-X-Received: by 2002:a0c:eb02:0:b0:63c:d901:d5d5 with SMTP id j2-20020a0ceb02000000b0063cd901d5d5mr2546163qvp.34.1691175579724;
-        Fri, 04 Aug 2023 11:59:39 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691177751; x=1691782551;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/fEGLQTPa3ePRn0SUruCR/akdAF06PibGk+SoDw6oqs=;
+        b=NZ//JSkXZGhJCxtFp1qG549/YhcsccQ57yi6qZuz/W52+grhSurpDgAeOQpmQYDg9z
+         PeIvmTMZUSinXDXDlEY5bAUTdsf0kGLpk0XoytCr2EjWJcLvKAJ+7FE6jVQmQgA6thMw
+         DXfLjsHa8FyddY/lfBXap0uf526JtPclXW/vsUaJZgK20561i4B95tJO26PFnlkCxI7Y
+         zTaCbZb1CN1f33UGdyNEC2EzKSHmM37mrXYstTu+PJyUnUvsp9PBjapsNoflMgaoE6Qm
+         9FY8xoz5b7Qh90NtCTP+oU5dVrRcrN2fffvv/SgTaraCO2d6m5BlByIvvz9B8l6hqMoj
+         YyIg==
+X-Gm-Message-State: AOJu0YyYdtLVnmqBr3BjU5bYBv0ll5k54uMRvhGmu1S5PYnKevpYQ39F
+        H7w8Zk0eLcwOUoXUn2+sv3NBMjCISY2KUZI3Xb6lvPbbT+6GT44UiJRcnJuc3MpH+Zfd68WZX/r
+        NfRH9GE6BnoDsDkBk+g==
+X-Received: by 2002:a05:620a:4456:b0:76c:b476:f712 with SMTP id w22-20020a05620a445600b0076cb476f712mr3876345qkp.51.1691177751274;
+        Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF+9eMVqPJLY6YIUSKa4NNv1paAfI3JX7M2BAluopih9iKnho0rRGuzu78ZOQHGnUECV5Khzw==
+X-Received: by 2002:a05:620a:4456:b0:76c:b476:f712 with SMTP id w22-20020a05620a445600b0076cb476f712mr3876330qkp.51.1691177751036;
+        Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
 Received: from fedora ([174.89.37.244])
-        by smtp.gmail.com with ESMTPSA id y14-20020a0ce04e000000b0063f7a2847bcsm32703qvk.51.2023.08.04.11.59.36
+        by smtp.gmail.com with ESMTPSA id 4-20020a05620a070400b0076745f352adsm847974qkc.59.2023.08.04.12.35.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 11:59:38 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 14:59:28 -0400
+        Fri, 04 Aug 2023 12:35:45 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 15:35:29 -0400
 From:   Lucas Karpinski <lkarpins@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
         linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
- positives
-Message-ID: <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
-References: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
- <20230804163716.GA337691@cmpxchg.org>
+Subject: [PATCH v3] selftests: cgroup: fix test_kmem_basic less than error
+Message-ID: <7d6gcuyzdjcice6qbphrmpmv5skr5jtglg375unnjxqhstvhxc@qkn6dw6bao6v>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230804163716.GA337691@cmpxchg.org>
 User-Agent: NeoMutt/20230517
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -86,40 +82,43 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:37:16PM -0400, Johannes Weiner wrote:
-> On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
-> > The test allocates dcache inside a cgroup, then destroys the cgroups and
-> > then checks the sanity of numbers on the parent level. The reason it
-> > fails is because dentries are freed with an RCU delay - a debugging
-> > sleep shows that usage drops as expected shortly after.
-> > 
-> > Insert a 1s sleep after completing the cgroup creation/deletions. This
-> > should be good enough, assuming that machines running those tests are
-> > otherwise not very busy. This commit is directly inspired by Johannes
-> > over at the link below.
-> > 
-> > Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
-> > 
-> > Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
-> 
-> Maybe I'm missing something, but there isn't a limit set anywhere that
-> would cause the dentries to be reclaimed and freed, no? When the
-> subgroups are deleted, the objects are just moved to the parent. The
-> counters inside the parent (which are hierarchical) shouldn't change.
-> 
-> So this seems to be a different scenario than test_kmem_basic. If the
-> test is failing for you, I can't quite see why.
->
-You're right, the parent inherited the counters and it should behave
-the same whether I'm directly removing the child or if I was moving it
-under another cgroup. I do see the behaviour you described on my
-x86_64 setup, but the wrong behaviour on my aarch64 dev. platform. I'll
-take a closer look, but just wanted to leave an example here of what I
-see.
+test_kmem_basic creates 100,000 negative dentries, with each one mapping
+to a slab object. After memory.high is set, these are reclaimed through
+the shrink_slab function call which reclaims all 100,000 entries. The
+test passes the majority of the time because when slab1 or current is
+calculated, it is often above 0, however, 0 is also an acceptable value.
 
-Example of slab size pre/post sleep:
-slab_pre = 18164688, slab_post = 3360000
+Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
+---
+In the previous patch, I missed a change to the variable 'current' even
+after some testing as the issue was so sporadic. Current takes the slab
+size into account and can also face the same issue where it fails since
+the reported value is 0, which is an acceptable value.
 
-Thanks,
-Lucas
+Drop: b4abfc19 in mm-unstable
+V2: https://lore.kernel.org/all/ix6vzgjqay2x7bskle7pypoint4nj66fwq7odvd5hektatvp2l@kukoifnfj3dr/
+
+ tools/testing/selftests/cgroup/test_kmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 1b2cec9d18a4..ed2e50bb1e76 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -75,11 +75,11 @@ static int test_kmem_basic(const char *root)
+ 	sleep(1);
+ 
+ 	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
+-	if (slab1 <= 0)
++	if (slab1 < 0)
+ 		goto cleanup;
+ 
+ 	current = cg_read_long(cg, "memory.current");
+-	if (current <= 0)
++	if (current < 0)
+ 		goto cleanup;
+ 
+ 	if (slab1 < slab0 / 2 && current < slab0 / 2)
+-- 
+2.41.0
 
