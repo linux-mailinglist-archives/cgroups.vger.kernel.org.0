@@ -2,138 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D332E775CFF
-	for <lists+cgroups@lfdr.de>; Wed,  9 Aug 2023 13:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE299775CFB
+	for <lists+cgroups@lfdr.de>; Wed,  9 Aug 2023 13:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbjHILcx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Aug 2023 07:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
+        id S233945AbjHILco (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Aug 2023 07:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233944AbjHILcw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Aug 2023 07:32:52 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F5C1724;
-        Wed,  9 Aug 2023 04:32:51 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLSbK5c7Gz4f3lVT;
-        Wed,  9 Aug 2023 19:32:45 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgA3xqhcedNkIfkzAQ--.33619S4;
-        Wed, 09 Aug 2023 19:32:46 +0800 (CST)
-From:   Li Lingfeng <lilingfeng@huaweicloud.com>
-To:     tj@kernel.org
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        yukuai3@huawei.com, linan122@huawei.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com, lilingfeng@huaweicloud.com,
-        lilingfeng3@huawei.com
-Subject: [PATCH -next v2] block: remove init_mutex and open-code blk_iolatency_try_init
-Date:   Wed,  9 Aug 2023 19:29:28 +0800
-Message-Id: <20230809112928.2009183-1-lilingfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S233941AbjHILco (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Aug 2023 07:32:44 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA5E1724
+        for <cgroups@vger.kernel.org>; Wed,  9 Aug 2023 04:32:43 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d4789fd9317so4610947276.1
+        for <cgroups@vger.kernel.org>; Wed, 09 Aug 2023 04:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691580762; x=1692185562;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9kydyMnwD//o0quRqImkimRYfrWW9k+FT8t/oHoxyE8=;
+        b=mXnWH84xeJofYu7UlOgnJFm7lCFSFJgZOrbJjlCFduFSrkss4V/jHh4QQYBdHTiHHg
+         +3HwQIWFl1OGgrcAoI7LYbG1zyZHtCCbRrS1lvy/oCinbBxOoGKSTVOhO/otSjlsTN5X
+         VYxz9F06cPvgGU9kjUdAdB0KgiBSGdxP4hktuMyTmwKpePhFJCuMtfWpnI/rfaXwSKgt
+         0Pq5bM5crb8S4wEjQiS5yh7mJOWfPZ9+VdAPywyAbrFLUq8Mi/krNCAFKF354XQg4iq1
+         VU6MAiGS0PEOza+7pD77tJgGbEWGNIf6zgYzIjPtw3jIyEOHkYS9bizyq6LGWh8gMxXm
+         LiAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691580762; x=1692185562;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9kydyMnwD//o0quRqImkimRYfrWW9k+FT8t/oHoxyE8=;
+        b=I4i+ziQJSCPpsDXFz9Xja12tl7H1+ouOieGGAoL5WxN1BZdnkKipqDsIA3sO1vedXl
+         46ijHZmw9z+62NrNEc1nFQfQNTda2Xd80KpULfp9DyS5y/KIpIo7PDIyjQlmvo5fyO/G
+         Qpn554U5dz3W3M1EdvjBkLC5/ZhvTJ8+ILbJcD09lFowAMsWd6uZepaaR9qODJzHI5Cy
+         4vW1EBNVj5SB4md2k7KxvZ7nVH3oUIp+FHoUGCqYbvtHMbXhHZAUqZrIvRqFsH9Ejc+m
+         TiWTPNswjV7c4dsGQdE0tKH7zCI2oFAtOSOGlkx6Zb/riG7patZlqNnG0BQ0aBYqKlnB
+         1RlQ==
+X-Gm-Message-State: AOJu0YzU5qf5qoWc16KFs92cfuaWKSYUCP44DzhT8QM3uLXeGjxQEFOJ
+        rdfC4cabpRX6b/rfRAPFQOj/5AcllF4ruGMoKgc=
+X-Google-Smtp-Source: AGHT+IFjX/lU98biTBPpBkiujFY9vm/RCjD0WupHeTOQfj7VN9zueht+WlXqzmxQ42Sz/Aqpkt+DyKL5UNDvERL3pS0=
+X-Received: by 2002:a25:dc0f:0:b0:d43:a84f:a6aa with SMTP id
+ y15-20020a25dc0f000000b00d43a84fa6aamr3028030ybe.39.1691580762423; Wed, 09
+ Aug 2023 04:32:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3xqhcedNkIfkzAQ--.33619S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrW8GF48WFWkJr4DCF1fXrb_yoW8Kr15p3
-        ySgrsIy3yUGrs7XF1kKw1xur15K3y8Kry7Gr4fCFyrJr1j9r1agF18AF1FgFWfZrZ5Aan8
-        KF48J34kCr4rG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        fUoOJ5UUUUU
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Reply-To: razumkoykhailo@gmail.com
+Sender: mr.leonharris111@gmail.com
+Received: by 2002:a05:7010:4588:b0:36f:cc5:bd6 with HTTP; Wed, 9 Aug 2023
+ 04:32:41 -0700 (PDT)
+From:   "Mr.Razum Khailo" <razumkoykhailo@gmail.com>
+Date:   Wed, 9 Aug 2023 04:32:41 -0700
+X-Google-Sender-Auth: GxM1nfxSdHd0JgxMFUPv04k1Chs
+Message-ID: <CANg__WREPFyOHn9AyPnykMS5KVcG+7SwbYnxqCKUcLjrJzxu9A@mail.gmail.com>
+Subject: Greetings from Ukraine,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_USD,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Li Lingfeng <lilingfeng3@huawei.com>
-
-Commit a13696b83da4 ("blk-iolatency: Make initialization lazy") adds
-a mutex named "init_mutex" in blk_iolatency_try_init for the race
-condition of initializing RQ_QOS_LATENCY.
-Now a new lock has been add to struct request_queue by commit a13bd91be223
-("block/rq_qos: protect rq_qos apis with a new lock"). And it has been
-held in blkg_conf_open_bdev before calling blk_iolatency_init.
-So it's not necessary to keep init_mutex in blk_iolatency_try_init, just
-remove it.
-
-Since init_mutex has been removed, blk_iolatency_try_init can be
-open-coded back to iolatency_set_limit() like ioc_qos_write().
-
-Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
----
-  v1->v2: open-code blk_iolatency_try_init()
-
- block/blk-iolatency.c | 34 ++++++++++------------------------
- 1 file changed, 10 insertions(+), 24 deletions(-)
-
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index fd5fec989e39..e1dbf18a1d1d 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -824,29 +824,6 @@ static void iolatency_clear_scaling(struct blkcg_gq *blkg)
- 	}
- }
- 
--static int blk_iolatency_try_init(struct blkg_conf_ctx *ctx)
--{
--	static DEFINE_MUTEX(init_mutex);
--	int ret;
--
--	ret = blkg_conf_open_bdev(ctx);
--	if (ret)
--		return ret;
--
--	/*
--	 * blk_iolatency_init() may fail after rq_qos_add() succeeds which can
--	 * confuse iolat_rq_qos() test. Make the test and init atomic.
--	 */
--	mutex_lock(&init_mutex);
--
--	if (!iolat_rq_qos(ctx->bdev->bd_queue))
--		ret = blk_iolatency_init(ctx->bdev->bd_disk);
--
--	mutex_unlock(&init_mutex);
--
--	return ret;
--}
--
- static ssize_t iolatency_set_limit(struct kernfs_open_file *of, char *buf,
- 			     size_t nbytes, loff_t off)
- {
-@@ -861,7 +838,16 @@ static ssize_t iolatency_set_limit(struct kernfs_open_file *of, char *buf,
- 
- 	blkg_conf_init(&ctx, buf);
- 
--	ret = blk_iolatency_try_init(&ctx);
-+	ret = blkg_conf_open_bdev(&ctx);
-+	if (ret)
-+		goto out;
-+
-+	/*
-+	 * blk_iolatency_init() may fail after rq_qos_add() succeeds which can
-+	 * confuse iolat_rq_qos() test. Make the test and init atomic.
-+	 */
-+	if (!iolat_rq_qos(ctx.bdev->bd_queue))
-+		ret = blk_iolatency_init(ctx.bdev->bd_disk);
- 	if (ret)
- 		goto out;
- 
--- 
-2.39.2
-
+R3JlZXRpbmdzwqBmcm9twqBVa3JhaW5lLA0KDQpNci7CoFJhenVta292wqBNeWtoYWlsbyzCoGFu
+wqBlbnRyZXByZW5ldXLCoGJ1c2luZXNzbWFuwqBmcm9twqBPZGVzc2ENClVrcmFpbmUuwqBXaXRo
+aW7CoGHCoHllYXLCoHBsdXPCoHNvbWXCoG1vbnRoc8Kgbm93LMKgbW9yZcKgdGhhbsKgOC4ywqBt
+aWxsaW9uDQpwZW9wbGXCoGFyb3VuZMKgdGhlwqBjaXRpZXPCoG9mwqBtecKgY291bnRyecKgVWty
+YWluZcKgaGF2ZcKgYmVlbsKgZXZhY3VhdGVkwqB0bw0KYcKgc2FmZcKgbG9jYXRpb27CoGFuZMKg
+b3V0wqBvZsKgdGhlwqBjb3VudHJ5LMKgbW9zdMKgZXNwZWNpYWxsecKgY2hpbGRyZW7CoHdpdGgN
+CnRoZWlywqBwYXJlbnRzLMKgbnVyc2luZ8KgbW90aGVyc8KgYW5kwqBwcmVnbmFudMKgd29tZW4s
+wqBhbmTCoHRob3NlwqB3aG/CoGhhdmUNCmJlZW7CoHNlcmlvdXNsecKgd291bmRlZMKgYW5kwqBu
+ZWVkwqB1cmdlbnTCoG1lZGljYWzCoGF0dGVudGlvbi7CoEnCoHdhc8KgYW1vbmcNCnRob3NlwqB0
+aGF0wqB3ZXJlwqBhYmxlwqB0b8KgZXZhY3VhdGXCoHRvwqBvdXLCoG5laWdoYm91cmluZ8KgY291
+bnRyaWVzwqBhbmTCoEnigJltDQpub3fCoGluwqB0aGXCoHJlZnVnZWXCoGNhbXDCoG9mwqBUZXLC
+oEFwZWzCoEdyb25pbmdlbsKgaW7CoHRoZcKgTmV0aGVybGFuZHMuDQoNCknCoG5lZWTCoGHCoGZv
+cmVpZ27CoHBhcnRuZXLCoHRvwqBlbmFibGXCoG1lwqB0b8KgdHJhbnNwb3J0wqBtecKgaW52ZXN0
+bWVudA0KY2FwaXRhbMKgYW5kwqB0aGVuwqByZWxvY2F0ZcKgd2l0aMKgbXnCoGZhbWlseSzCoGhv
+bmVzdGx5wqBpwqB3aXNowqBJwqB3aWxsDQpkaXNjdXNzwqBtb3JlwqBhbmTCoGdldMKgYWxvbmcu
+wqBJwqBuZWVkwqBhwqBwYXJ0bmVywqBiZWNhdXNlwqBtecKgaW52ZXN0bWVudA0KY2FwaXRhbMKg
+aXPCoGluwqBtecKgaW50ZXJuYXRpb25hbMKgYWNjb3VudC7CoEnigJltwqBpbnRlcmVzdGVkwqBp
+bsKgYnV5aW5nDQpwcm9wZXJ0aWVzLMKgaG91c2VzLMKgYnVpbGRpbmfCoHJlYWzCoGVzdGF0ZXMs
+wqBtecKgY2FwaXRhbMKgZm9ywqBpbnZlc3RtZW50DQppc8KgKCQzMMKgTWlsbGlvbsKgVVNEKcKg
+LsKgVGhlwqBmaW5hbmNpYWzCoGluc3RpdHV0aW9uc8KgaW7CoG15wqBjb3VudHJ5DQpVa3JhaW5l
+wqBhcmXCoGFsbMKgc2hvdMKgZG93bsKgZHVlwqB0b8KgdGhlwqBjcmlzaXPCoG9mwqB0aGlzwqB3
+YXLCoG9uwqBVa3JhaW5lDQpzb2lswqBiecKgdGhlwqBSdXNzaWFuwqBmb3JjZXMuwqBNZWFud2hp
+bGUswqBpZsKgdGhlcmXCoGlzwqBhbnnCoHByb2ZpdGFibGUNCmludmVzdG1lbnTCoHRoYXTCoHlv
+dcKgaGF2ZcKgc2/CoG11Y2jCoGV4cGVyaWVuY2XCoGluwqB5b3VywqBjb3VudHJ5LMKgdGhlbsKg
+d2UNCmNhbsKgam9pbsKgdG9nZXRoZXLCoGFzwqBwYXJ0bmVyc8Kgc2luY2XCoEnigJltwqBhwqBm
+b3JlaWduZXIuDQoNCknCoGNhbWXCoGFjcm9zc8KgeW91csKgZS1tYWlswqBjb250YWN0wqB0aHJv
+dWdowqBwcml2YXRlwqBzZWFyY2jCoHdoaWxlwqBpbsKgbmVlZA0Kb2bCoHlvdXLCoGFzc2lzdGFu
+Y2XCoGFuZMKgScKgZGVjaWRlZMKgdG/CoGNvbnRhY3TCoHlvdcKgZGlyZWN0bHnCoHRvwqBhc2vC
+oHlvdcKgaWYNCnlvdcKga25vd8KgYW55wqBsdWNyYXRpdmXCoGJ1c2luZXNzwqBpbnZlc3RtZW50
+wqBpbsKgeW91csKgY291bnRyecKgacKgY2FuDQppbnZlc3TCoG15wqBtb25lecKgc2luY2XCoG15
+wqBjb3VudHJ5wqBVa3JhaW5lwqBzZWN1cml0ecKgYW5kwqBlY29ub21pYw0KaW5kZXBlbmRlbnTC
+oGhhc8KgbG9zdMKgdG/CoHRoZcKgZ3JlYXRlc3TCoGxvd2VywqBsZXZlbCzCoGFuZMKgb3VywqBj
+dWx0dXJlwqBoYXMNCmxvc3TCoGluY2x1ZGluZ8Kgb3VywqBoYXBwaW5lc3PCoGhhc8KgYmVlbsKg
+dGFrZW7CoGF3YXnCoGZyb23CoHVzLsKgT3VywqBjb3VudHJ5DQpoYXPCoGJlZW7CoG9uwqBmaXJl
+wqBmb3LCoG1vcmXCoHRoYW7CoGHCoHllYXLCoG5vdy4NCg0KSWbCoHlvdcKgYXJlwqBjYXBhYmxl
+wqBvZsKgaGFuZGxpbmfCoHRoaXPCoGJ1c2luZXNzwqBwYXJ0bmVyc2hpcCzCoGNvbnRhY3TCoG1l
+DQpmb3LCoG1vcmXCoGRldGFpbHMswqBJwqB3aWxswqBhcHByZWNpYXRlwqBpdMKgaWbCoHlvdcKg
+Y2FuwqBjb250YWN0wqBtZQ0KaW1tZWRpYXRlbHkuwqBZb3XCoG1hecKgYXPCoHdlbGzCoHRlbGzC
+oG1lwqBhwqBsaXR0bGXCoG1vcmXCoGFib3V0wqB5b3Vyc2VsZi4NCkNvbnRhY3TCoG1lwqB1cmdl
+bnRsecKgdG/CoGVuYWJsZcKgdXPCoHRvwqBwcm9jZWVkwqB3aXRowqB0aGXCoGJ1c2luZXNzLsKg
+ScKgd2lsbA0KYmXCoHdhaXRpbmfCoGZvcsKgeW91csKgcmVzcG9uc2UuwqBNecKgc2luY2VyZcKg
+YXBvbG9naWVzwqBmb3LCoHRoZQ0KaW5jb252ZW5pZW5jZS4NCg0KDQpUaGFua8KgeW91IQ0KDQpN
+ci4gUmF6dW1rb3bCoE15a2hhaWxvLg0K
