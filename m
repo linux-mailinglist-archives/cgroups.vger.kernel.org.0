@@ -2,173 +2,179 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3DC778109
-	for <lists+cgroups@lfdr.de>; Thu, 10 Aug 2023 21:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A03778511
+	for <lists+cgroups@lfdr.de>; Fri, 11 Aug 2023 03:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjHJTJC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Aug 2023 15:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
+        id S229685AbjHKBpB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Aug 2023 21:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbjHJTJB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Aug 2023 15:09:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD0F90;
-        Thu, 10 Aug 2023 12:09:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C5A3F666A3;
-        Thu, 10 Aug 2023 19:09:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2229BC433C7;
-        Thu, 10 Aug 2023 19:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691694540;
-        bh=Oi7cQ2Coc+w2eRImA7LKy7Tv7W4x0/pEx/hFmFxWWY4=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=jqUWcBesFjkeEEvNGvxmlBPgNV4l5kJJXzmwfZUtOO2h7Voaq2+KUwxqFgxxHUcIM
-         OlX2P3gLDwOE4uwawibqQ1rWZRs6iWRY0qLThpoMY17NXhd6oLQ8A+4nf/sTQCCpYY
-         OG/fpZvT7WHqDau8s0CrZT2PpZfG8OAcrHrAF5H96tS8cll2RR75tiRPZFBOtEhhyV
-         HwPpB4V8YNIRU9OiKa5JP25ZtWWsAMoqsuqYkvGD4JTKTib4E+7t8EOJ1exYMi3O+3
-         XLclUcu42FDLf/MDaZqp7UqYNIlDSJpI986sFQ3D3M0crLBrawi3SCuWZlpIU1A7mx
-         lhWja/BCfbIdQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id F35CEC001E0;
-        Thu, 10 Aug 2023 19:08:59 +0000 (UTC)
-From:   Zachary Goldstein via B4 Relay 
-        <devnull+zachary.goldstein.concurrent-rt.com@kernel.org>
-Date:   Thu, 10 Aug 2023 15:05:34 -0400
-Subject: [PATCH RT] mm/memcg: Fix recursive locking on refill_stock() on
- PREEMPT_RT
+        with ESMTP id S229545AbjHKBpB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Aug 2023 21:45:01 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4703C10D;
+        Thu, 10 Aug 2023 18:45:00 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RMRS64FN1z4f3kj0;
+        Fri, 11 Aug 2023 09:44:54 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBH1qiXktVknRezAQ--.22898S3;
+        Fri, 11 Aug 2023 09:44:57 +0800 (CST)
+Subject: Re: [PATCH -next v3] block: remove init_mutex and open-code
+ blk_iolatency_try_init
+To:     Yu Kuai <yukuai1@huaweicloud.com>,
+        Li Lingfeng <lilingfeng@huaweicloud.com>, tj@kernel.org
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linan122@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+        lilingfeng3@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230810035111.2236335-1-lilingfeng@huaweicloud.com>
+ <6637e6cd-20aa-110a-40ae-53ecd6eb4184@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d4050f7e-d491-c111-3e26-160e7d5a4208@huaweicloud.com>
+Date:   Fri, 11 Aug 2023 09:44:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230809-memcg-fix-recursive-lock-v1-1-0870815484c6@concurrent-rt.com>
-X-B4-Tracking: v=1; b=H4sIAP001WQC/x2NQQ6CMBBFr0Jm7ZgCMYLHMO6Mi3b8QqMUMsWGh
- HB3i8uXl//+ShHqEelSrKRIPvoxZCgPBUlvQwf2z8xUmao2jWl5wCAdv/zCCvlq9An8GeXNEGl
- EHM5tXVOeOxvBTm2Qfg+k07E0rDMHLPPuJ0Wu/K/vdL3RY9t+pvjoHI4AAAA=
-To:     linux-mm@kvack.org, cgroups@vger.kernel.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691694539; l=3174;
- i=zachary.goldstein@concurrent-rt.com; s=20230809; h=from:subject:message-id;
- bh=iGCY5O8pU90PvwzpSq10zAF0Xf00Oq3bpeBOxq/cAek=;
- b=0aJq6ecGEBSIY9wfC7XKUKq9WBhQh5kGwH74a64bwReInzEPOAdFARO74YqaxHYeNuO34f2AC
- CjAntrJQVhPBUN9HNANwJ+l3vOvu1T13Y/zZGi+XgFi0NP+BRcVYOjS
-X-Developer-Key: i=zachary.goldstein@concurrent-rt.com; a=ed25519;
- pk=GLF18lQ96tRolyWMpDtJzDQ9bi7+1+rMHript5TFdSg=
-X-Endpoint-Received: by B4 Relay for zachary.goldstein@concurrent-rt.com/20230809 with auth_id=74
-X-Original-From: Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
-Reply-To: <zachary.goldstein@concurrent-rt.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <6637e6cd-20aa-110a-40ae-53ecd6eb4184@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH1qiXktVknRezAQ--.22898S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4UuFyfZr48AFyxXw1UJrb_yoW5tw1UpF
+        n3WrW7u3yUGrs3XF18Kw18uryUt3y8Ka4UGr1rZFy5JrsF9FyYgF1UZFnYgFW8ZrWkAFs5
+        Jr1UXr97uF15JrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
+Hi,
 
-5.10 suffers from the same recursive locking issue that
-commit a848d25434de4 ("mm/memcg: Opencode the inner part of
-obj_cgroup_uncharge_pages() in drain_obj_stock()") fixes.
+在 2023/08/10 21:43, Yu Kuai 写道:
+> 在 2023/08/10 11:51, Li Lingfeng 写道:
+>> From: Li Lingfeng <lilingfeng3@huawei.com>
+>>
+>> Commit a13696b83da4 ("blk-iolatency: Make initialization lazy") adds
+>> a mutex named "init_mutex" in blk_iolatency_try_init for the race
+>> condition of initializing RQ_QOS_LATENCY.
+>> Now a new lock has been add to struct request_queue by commit 
+>> a13bd91be223
+>> ("block/rq_qos: protect rq_qos apis with a new lock"). And it has been
+>> held in blkg_conf_open_bdev before calling blk_iolatency_init.
+>> So it's not necessary to keep init_mutex in blk_iolatency_try_init, just
+>> remove it.
+>>
+>> Since init_mutex has been removed, blk_iolatency_try_init can be
+>> open-coded back to iolatency_set_limit() like ioc_qos_write().
+>>
+> Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Thanks,
+> Kuai
+>> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+>> ---
+>>    v1->v2: open-code blk_iolatency_try_init()
+>>    v2->v3: add lockdep check
+>>   block/blk-iolatency.c | 35 +++++++++++------------------------
+>>   1 file changed, 11 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+>> index fd5fec989e39..c16aef4be036 100644
+>> --- a/block/blk-iolatency.c
+>> +++ b/block/blk-iolatency.c
+>> @@ -824,29 +824,6 @@ static void iolatency_clear_scaling(struct 
+>> blkcg_gq *blkg)
+>>       }
+>>   }
+>> -static int blk_iolatency_try_init(struct blkg_conf_ctx *ctx)
+>> -{
+>> -    static DEFINE_MUTEX(init_mutex);
+>> -    int ret;
+>> -
+>> -    ret = blkg_conf_open_bdev(ctx);
+>> -    if (ret)
+>> -        return ret;
+>> -
+>> -    /*
+>> -     * blk_iolatency_init() may fail after rq_qos_add() succeeds 
+>> which can
+>> -     * confuse iolat_rq_qos() test. Make the test and init atomic.
+>> -     */
+>> -    mutex_lock(&init_mutex);
+>> -
+>> -    if (!iolat_rq_qos(ctx->bdev->bd_queue))
+>> -        ret = blk_iolatency_init(ctx->bdev->bd_disk);
+>> -
+>> -    mutex_unlock(&init_mutex);
+>> -
+>> -    return ret;
+>> -}
+>> -
+>>   static ssize_t iolatency_set_limit(struct kernfs_open_file *of, char 
+>> *buf,
+>>                    size_t nbytes, loff_t off)
+>>   {
+>> @@ -861,7 +838,17 @@ static ssize_t iolatency_set_limit(struct 
+>> kernfs_open_file *of, char *buf,
+>>       blkg_conf_init(&ctx, buf);
+>> -    ret = blk_iolatency_try_init(&ctx);
+>> +    ret = blkg_conf_open_bdev(&ctx);
+>> +    if (ret)
+>> +        goto out;
+>> +
+>> +    /*
+>> +     * blk_iolatency_init() may fail after rq_qos_add() succeeds 
+>> which can
+>> +     * confuse iolat_rq_qos() test. Make the test and init atomic.
+>> +     */
 
-Modified description from the commit to reflect this patch changes:
+The original mutex and above comments is used to avoid the problem that
+blk_iolatency_init() is not atomic:
 
-Provide the inner part of refill_stock() as __refill_stock() without
-disabling interrupts. This eases the integration of local_lock_t where
-recursive locking must be avoided.
-Open code __memcg_kmem_uncharge() in drain_obj_stock() and
-obj_cgroup_release() and use __refill_stock(). The caller of
-drain_obj_stock() and obj_cgroup_release() already disables interrupts.
+t1:			t2:
+if (!iolat_rq_qos)
+// not exist
+  blk_iolatency_init
+   rq_qos_add
+   blkcg_activate_policy
+   // failed
+			if (!iolat_rq_qos)
+			// now exist
+   rq_qos_del
+			...
+			// continue while rq_qos is deleted
 
-Signed-off-by: Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
----
- mm/memcontrol.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+Now that this problem doesn't exist, I think it's ok just to remove this
+comment.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 5dd77e260c25..d61918cc44c1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -260,6 +260,8 @@ struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
- #ifdef CONFIG_MEMCG_KMEM
- static DEFINE_SPINLOCK(objcg_lock);
- 
-+static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages);
-+
- static void obj_cgroup_release(struct percpu_ref *ref)
- {
- 	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
-@@ -294,8 +296,12 @@ static void obj_cgroup_release(struct percpu_ref *ref)
- 
- 	spin_lock_irqsave(&objcg_lock, flags);
- 	memcg = obj_cgroup_memcg(objcg);
--	if (nr_pages)
--		__memcg_kmem_uncharge(memcg, nr_pages);
-+	if (nr_pages) {
-+		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+			page_counter_uncharge(&memcg->kmem, nr_pages);
-+
-+		__refill_stock(memcg, nr_pages);
-+	}
- 	list_del(&objcg->list);
- 	mem_cgroup_put(memcg);
- 	spin_unlock_irqrestore(&objcg_lock, flags);
-@@ -2319,12 +2325,9 @@ static void drain_local_stock(struct work_struct *dummy)
-  * Cache charges(val) to local per_cpu area.
-  * This will be consumed by consume_stock() function, later.
-  */
--static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-+static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- {
- 	struct memcg_stock_pcp *stock;
--	unsigned long flags;
--
--	local_lock_irqsave(&memcg_stock.lock, flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	if (stock->cached != memcg) { /* reset if necessary */
-@@ -2336,7 +2339,14 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 
- 	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
- 		drain_stock(stock);
-+}
- 
-+static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-+{
-+	unsigned long flags;
-+
-+	local_lock_irqsave(&memcg_stock.lock, flags);
-+	__refill_stock(memcg, nr_pages);
- 	local_unlock_irqrestore(&memcg_stock.lock, flags);
- }
- 
-@@ -3179,7 +3189,11 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
- 				goto retry;
- 			rcu_read_unlock();
- 
--			__memcg_kmem_uncharge(memcg, nr_pages);
-+			if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+				page_counter_uncharge(&memcg->kmem, nr_pages);
-+
-+			__refill_stock(memcg, nr_pages);
-+
- 			css_put(&memcg->css);
- 		}
- 
+Thanks,
+Kuai
 
---
-2.39.2
+>> +    lockdep_assert_held(ctx.bdev->bd_queue->rq_qos_mutex);
+>> +    if (!iolat_rq_qos(ctx.bdev->bd_queue))
+>> +        ret = blk_iolatency_init(ctx.bdev->bd_disk);
+>>       if (ret)
+>>           goto out;
+>>
+> 
+> .
+> 
 
