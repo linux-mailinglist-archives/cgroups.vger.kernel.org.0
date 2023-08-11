@@ -2,134 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E34C27790C1
-	for <lists+cgroups@lfdr.de>; Fri, 11 Aug 2023 15:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D016B77917E
+	for <lists+cgroups@lfdr.de>; Fri, 11 Aug 2023 16:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbjHKN2r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Aug 2023 09:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        id S234620AbjHKOM7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 11 Aug 2023 10:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjHKN2q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Aug 2023 09:28:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1034690;
-        Fri, 11 Aug 2023 06:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691760526; x=1723296526;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=NbxrrXvoiSicJd1C4RwRcvJ2E3Rl98Kr2w0LNsNE+g8=;
-  b=dV/8THL08tgrnGu0xeZ06XzvraKbd8PVUFAtLgY033sn32oI/fK3thEn
-   hG+hUZAYr2zH2UKOk7r4PnqwJQQexLSu0JS3am8KzXMhsHd3OSXVkCNHI
-   GM36NqKd/AYjzSwSWZ9rpqibxKTlZX/CGVUHufBVX0RZyA9bOCjfMy+cA
-   uqd75OGstzgXC3N4BDUg6+ymWY50Qbwp0y2reU3lxSruBjW2GlDFmOFsQ
-   i8C1tnShXMywjOOZj1ZbiOs49xwFp5DOHOpq/qtnJ/OBwk4m8p/2H6J7O
-   e4o2FwXSfK2A8OT35cpe9EizpFN8HurngT+LPxjg0+m4Hec2cGbyT9JIf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369147251"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="369147251"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:28:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="846804187"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="846804187"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Aug 2023 06:28:43 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUSC2-0007oa-1W;
-        Fri, 11 Aug 2023 13:28:42 +0000
-Date:   Fri, 11 Aug 2023 21:28:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Li kunyu <kunyu@nfschina.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Li kunyu <kunyu@nfschina.com>
-Subject: Re: [PATCH] cgroup: cgroup: =?utf-8?Q?Remo?=
- =?utf-8?B?dmUgdW5uZWNlc3Nhcnkg4oCYMOKAmQ==?= values from ret
-Message-ID: <202308112139.lVjuXYZg-lkp@intel.com>
-References: <20230813014734.2916-1-kunyu@nfschina.com>
+        with ESMTP id S232614AbjHKOM7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Aug 2023 10:12:59 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E0DEA
+        for <cgroups@vger.kernel.org>; Fri, 11 Aug 2023 07:12:57 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bda3d0f0f1so2267785ad.0
+        for <cgroups@vger.kernel.org>; Fri, 11 Aug 2023 07:12:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691763177; x=1692367977;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YWMKdnKHrY3LQ9ReS3XwKKHFwVtuTf0+tBs6vf39oT8=;
+        b=ad3sF0Wk5FwYKsnJyn8rp/uYplx8QvXFTFPuX6slqoJ0rG30m4ydbRabAgWupwzr2Z
+         fJLRWDJfTkQ285jQMj9pZsCSsuA44QfT3n8X0C6dQUywz0sn20GuiibBH1DGHxLA42nN
+         sbe6hNOUgCr1DytcXdi2vDecqymQiQxBnOwgxNs/pKbTu4g/debR3e+YYNjHhVf/lwir
+         oI6oAj1aSxFpru89EKB7n5+rsHcfJl0d9Nz3NaCtmejMDecbr/+6NZZib0ViFYl+lMc4
+         qNeugB6bCtbZTKQakX72trtAZGMnHdaaNuT6zmY21JxCGjgX848GQqaRFBYy1I8Gw2m4
+         ZEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691763177; x=1692367977;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YWMKdnKHrY3LQ9ReS3XwKKHFwVtuTf0+tBs6vf39oT8=;
+        b=e3Jtm9b5tan4s8Ef3SnHIlGoy6xFl09pmxkqzZcyeWCObCPqR8pt/LTbHdl5kzob4B
+         aLlQQxZDSGkDn/5VtzzaZrkneMFC6HgIMPLVhmq09Hjkogk/41h8RqTEBd/9Y/3AUY1q
+         2EWoQQHtpCIRVPP9OX7HBJpvQFMh8ip79FtnxATjKZ1Nw/RdXG9hTs0FDHHBK5HGcXXd
+         ujXjDTe7sbt007+R8X0gK04larZczkL5EozywpcIG4exZLC8enWHffQwV2nfQH/8wESW
+         Vr9iyAZoFe2J254vq6N4grC/raYD+K7E/jjxHGCPHYa2I9u5Da59Edu00obbnTRhEbdr
+         iZuQ==
+X-Gm-Message-State: AOJu0YwjazHysxierl0XlTHbCjtKjc5ZAoK3raVEnkVVZCy24XeGSCC+
+        0kj6WQH5dWGWLKcEvCR0i3M5fQ==
+X-Google-Smtp-Source: AGHT+IGvJUiiaYudbczfqwHt6x/VdZTMQY2y+E3p36rtGfneB9ar0Vi58o1hQWC2pD1xaW2kJVo/sg==
+X-Received: by 2002:a17:902:d503:b0:1b8:95fc:cfe with SMTP id b3-20020a170902d50300b001b895fc0cfemr2309319plg.3.1691763177250;
+        Fri, 11 Aug 2023 07:12:57 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902d34c00b001bdb8c0b578sm1559521plk.192.2023.08.11.07.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 07:12:56 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     tj@kernel.org, Li Lingfeng <lilingfeng@huaweicloud.com>
+Cc:     josef@toxicpanda.com, mkoutny@suse.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, yukuai3@huawei.com,
+        linan122@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+        lilingfeng3@huawei.com
+In-Reply-To: <20230810035111.2236335-1-lilingfeng@huaweicloud.com>
+References: <20230810035111.2236335-1-lilingfeng@huaweicloud.com>
+Subject: Re: [PATCH -next v3] block: remove init_mutex and open-code
+ blk_iolatency_try_init
+Message-Id: <169176317573.160467.10047297090390573799.b4-ty@kernel.dk>
+Date:   Fri, 11 Aug 2023 08:12:55 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230813014734.2916-1-kunyu@nfschina.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Li,
 
-kernel test robot noticed the following build warnings:
+On Thu, 10 Aug 2023 11:51:11 +0800, Li Lingfeng wrote:
+> Commit a13696b83da4 ("blk-iolatency: Make initialization lazy") adds
+> a mutex named "init_mutex" in blk_iolatency_try_init for the race
+> condition of initializing RQ_QOS_LATENCY.
+> Now a new lock has been add to struct request_queue by commit a13bd91be223
+> ("block/rq_qos: protect rq_qos apis with a new lock"). And it has been
+> held in blkg_conf_open_bdev before calling blk_iolatency_init.
+> So it's not necessary to keep init_mutex in blk_iolatency_try_init, just
+> remove it.
+> 
+> [...]
 
-[auto build test WARNING on v6.5-rc5]
-[also build test WARNING on linus/master next-20230809]
-[cannot apply to tj-cgroup/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Applied, thanks!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Li-kunyu/cgroup-cgroup-Remove-unnecessary-0-values-from-ret/20230811-171814
-base:   v6.5-rc5
-patch link:    https://lore.kernel.org/r/20230813014734.2916-1-kunyu%40nfschina.com
-patch subject: [PATCH] cgroup: cgroup: Remove unnecessary ‘0’ values from ret
-config: x86_64-randconfig-r035-20230811 (https://download.01.org/0day-ci/archive/20230811/202308112139.lVjuXYZg-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230811/202308112139.lVjuXYZg-lkp@intel.com/reproduce)
+[1/1] block: remove init_mutex and open-code blk_iolatency_try_init
+      commit: 4eb44d10766ac0fae5973998fd2a0103df1d3fe1
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308112139.lVjuXYZg-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/cgroup/cgroup.c:7000:56: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
-           ret = show_delegatable_files(cgroup_base_files, buf + ret,
-                                                                 ^~~
-   kernel/cgroup/cgroup.c:6998:13: note: initialize the variable 'ret' to silence this warning
-           ssize_t ret;
-                      ^
-                       = 0
-   1 warning generated.
-
-
-vim +/ret +7000 kernel/cgroup/cgroup.c
-
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6992  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6993  static ssize_t delegate_show(struct kobject *kobj, struct kobj_attribute *attr,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6994  			      char *buf)
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6995  {
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6996  	struct cgroup_subsys *ss;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6997  	int ssid;
-3d7f13682faf54 Li kunyu       2023-08-13  6998  	ssize_t ret;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6999  
-8a693f7766f9e2 Tejun Heo      2022-09-06 @7000  	ret = show_delegatable_files(cgroup_base_files, buf + ret,
-8a693f7766f9e2 Tejun Heo      2022-09-06  7001  				     PAGE_SIZE - ret, NULL);
-8a693f7766f9e2 Tejun Heo      2022-09-06  7002  	if (cgroup_psi_enabled())
-8a693f7766f9e2 Tejun Heo      2022-09-06  7003  		ret += show_delegatable_files(cgroup_psi_files, buf + ret,
-8a693f7766f9e2 Tejun Heo      2022-09-06  7004  					      PAGE_SIZE - ret, NULL);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7005  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7006  	for_each_subsys(ss, ssid)
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7007  		ret += show_delegatable_files(ss->dfl_cftypes, buf + ret,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7008  					      PAGE_SIZE - ret,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7009  					      cgroup_subsys_name[ssid]);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7010  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7011  	return ret;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7012  }
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7013  static struct kobj_attribute cgroup_delegate_attr = __ATTR_RO(delegate);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7014  
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jens Axboe
+
+
+
