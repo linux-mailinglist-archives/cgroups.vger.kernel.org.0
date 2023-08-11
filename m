@@ -2,192 +2,367 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACA97798A8
-	for <lists+cgroups@lfdr.de>; Fri, 11 Aug 2023 22:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8F9779A5A
+	for <lists+cgroups@lfdr.de>; Sat, 12 Aug 2023 00:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235507AbjHKUkE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Aug 2023 16:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S234788AbjHKWD0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 11 Aug 2023 18:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjHKUkD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Aug 2023 16:40:03 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA5CE42
-        for <cgroups@vger.kernel.org>; Fri, 11 Aug 2023 13:40:03 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c353a395cso329169466b.2
-        for <cgroups@vger.kernel.org>; Fri, 11 Aug 2023 13:40:03 -0700 (PDT)
+        with ESMTP id S234215AbjHKWDZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Aug 2023 18:03:25 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E048C100
+        for <cgroups@vger.kernel.org>; Fri, 11 Aug 2023 15:03:23 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-317744867a6so2158125f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 11 Aug 2023 15:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691786401; x=1692391201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cclQRiJrdAJJ3U9Z+VU5L9YVSiq+e/M7Uw6SXPSKxE4=;
-        b=d1WOKri1V0cTECraZJebIF7uPjJ/cWptkll4toOVmEou35hcRaCIpI4nsi1FBz0bDt
-         H1OpR6GZp3dHH0M8NOiecO4Mb+PrP1GxQgY85QJrdznaUGNBzKM6xEMAaBzJPwa2Hn1+
-         kct6YTFt2DFXdM2WFTU6AkAI5vlvIgW2ee/inEomprJSOrSMNwrqnRw2kETkarbf7ymA
-         DFGoP+5Czy9/SpVvrnSY7zSVKVOBSNy7F8kMRpp1jXroskhpWwValEs9ZSldfCrwKo0/
-         sE0sWwfPNybS1RJOeEdW8MSxg/Obxb7cWaUPVxNk786GCfjgRPMzTSVPm/PTgKYrVKgI
-         sKXQ==
+        d=cloudflare.com; s=google; t=1691791402; x=1692396202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ja3T5Gn8bLTs8qahcXFipYQYmGJRSKtUGuI+S1plgzI=;
+        b=BCkR64PQ+4ZowJnTdL/8Q57Vjgc2DUqxzAKs7PPP/dsDYI643mKbY5uqKbzZBWXkEz
+         g1GYpYTqnZ1R41mWMmSb1tcMTVaZlecl5tpBS2XcUprIKdqCoi+Oo2EK+Tf6Z7aCYkTx
+         C/hlpDMY+tgfhz4ggN8Qn86MQLd+3Lyx51WKQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691786401; x=1692391201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cclQRiJrdAJJ3U9Z+VU5L9YVSiq+e/M7Uw6SXPSKxE4=;
-        b=S+OS33ZZ8B+lS2AUOQ71/Uvk/y9gTob4bkBXHijI9D/2n2/y1hvuITC58lVwrop0yl
-         10BmRI8f+fOLRIne3zkN6erF4pxiQ5uHmmFdFXE4jASuI+RcDEiSA3P3x5+VhX21kJa4
-         baPE2EHHuJgsZgXWz7thyEixMviA7LIZJiEbl0P0RRb44LnxLSqT3dHlWFZlJSTD8Da8
-         GHv6xIg6iAC+8FnXXPK2Y0irW9GVKIT+BtesU1916DTNd3Dkz1R5D/ntqgPSBOWtYujc
-         t/5fxSH5p7LBYD3BwNPpGaiztqrFoNAvUJ+rHk6MhW9EsRhrgwGetlPrCNz/wRYHf7ME
-         m7XA==
-X-Gm-Message-State: AOJu0YwbtuPBsk4yNZ+IQBL3cvUQIEio6FZA38+H01UbQWYJX0MpxxbS
-        d0NJeyDnhIRPKePSwFtXdOBQeoyHuI1FTfLEDliwHC9IH3azAFZQPcQ=
-X-Google-Smtp-Source: AGHT+IE84C1SDaB8TA8b0a5JlyUXp86rQFnINyrSLaRDISNceXMXqq1jzE+JwlE+gZ7IzdEnsTnB019B298P2/WsqX0=
-X-Received: by 2002:a17:906:74de:b0:99c:9e98:70bc with SMTP id
- z30-20020a17090674de00b0099c9e9870bcmr2650126ejl.29.1691786401309; Fri, 11
- Aug 2023 13:40:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691791402; x=1692396202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ja3T5Gn8bLTs8qahcXFipYQYmGJRSKtUGuI+S1plgzI=;
+        b=HI8821eRWSqNWwjsPCCp3g+H21nRX6+Q6KLocVb9VFvPiHbRkN0gFRE+u7i/rXGUYI
+         rX90atpWqJb3rWjrDvQOBFBO4PPZWnGRRjYY9QV0BdGytUZWkr3zmxl1+t5sk4MOGEto
+         X44dw/W4nD45bRVH/0VHeWyrnBTaehD2WVnx2S2yMmGUah0o9MMAxO1RVk/wejaOggUU
+         opagiuOK3msgKHSTfFAUGEoO8KjT3SLydUJnT7thEeIAo401vF64gBezYcIs1UZ1GNMm
+         ikqpEO2+smu2vZmO/xBCEjT0iqcP4jyAAmkA8Wd5BKscQA8Xs9lefjT+YsMlQUxq6Dko
+         +t8Q==
+X-Gm-Message-State: AOJu0YxIwvB7KC/kVKT3si61N3ojQmEv8p7LUOWzdrgCT7YO6hWNoWvS
+        vFXI1/FBkJNWUKf4RBUHx1Hgiff3q+J4PX2myh46BQ==
+X-Google-Smtp-Source: AGHT+IESEWv/Rl1Jy+jhKvpDr9oX97g8iXD1Qt4d7rTfbcNR2B4y1+d+xq9HHmST3FjcoToExwg3sdVTcCqGi77gqqE=
+X-Received: by 2002:a5d:49cf:0:b0:317:5b1b:1a40 with SMTP id
+ t15-20020a5d49cf000000b003175b1b1a40mr2391981wrs.49.1691791402291; Fri, 11
+ Aug 2023 15:03:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230809045810.1659356-1-yosryahmed@google.com>
- <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
- <ZNONgeoytpkchHga@dhcp22.suse.cz> <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
- <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz> <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
- <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz> <CAJD7tkbJ1fnMDudtsS2xubKn0RTWz7t0Hem=PSRQQp3sGf-iOw@mail.gmail.com>
- <ZNaLGVUtPu7Ua/jL@dhcp22.suse.cz>
-In-Reply-To: <ZNaLGVUtPu7Ua/jL@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 11 Aug 2023 13:39:24 -0700
-Message-ID: <CAJD7tkbF1tNi8v0W4Mnqs0rzpRBshOFepxFTa1SiSvmBEBUEvw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+ <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
+ <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
+ <CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-9QzY-a40A@mail.gmail.com>
+In-Reply-To: <CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-9QzY-a40A@mail.gmail.com>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Fri, 11 Aug 2023 15:03:11 -0700
+Message-ID: <CABWYdi0+0gxr7PB4R8rh6hXO=H7ZaCzfk8bmOSeQMuZR7s7Pjg@mail.gmail.com>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+To:     Waiman Long <longman@redhat.com>
+Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-<snip>
-> > > > > I hate to repeat myself but please be more specific. This all sounds
-> > > > > just too wavy to me.
-> > > >
-> > > > Sorry I didn't have the full story in mind, I had to do my homework.
-> > > > One example is userspace OOM killing. Our userspace OOM killer makes
-> > > > decisions based on some stats from memory.stat, and stale stats (a few
-> > > > seconds in this case) can result in an unrightful OOM kill, which can
-> > > > easily cascade.
+On Fri, Jul 14, 2023 at 5:30=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com> w=
+rote:
+>
+> On Thu, Jul 13, 2023 at 4:25=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com>=
+ wrote:
+> > > My understanding of mem-stat and cpu-stat is that they are independen=
+t
+> > > of each other. In theory, reading one shouldn't affect the performanc=
+e
+> > > of reading the others. Since you are doing mem-stat and cpu-stat read=
+ing
+> > > repetitively in a loop, it is likely that all the data are in the cac=
+he
+> > > most of the time resulting in very fast processing time. If it happen=
+s
+> > > that the specific memory location of mem-stat and cpu-stat data are s=
+uch
+> > > that reading one will cause the other data to be flushed out of the
+> > > cache and have to be re-read from memory again, you could see
+> > > significant performance regression.
 > > >
-> > > OK, but how is this any different from having outdated data because you
-> > > have to wait for memory.stat to read (being blocked inside the rstat
-> > > code)? Either your oom killer is reading the stats directly and then you
-> > > depend on that flushing which is something that could be really harmful
-> > > itself or you rely on another thread doing the blocking and you do not
-> > > have up-to-date numbers anyway. So how does blocking actually help?
+> > > It is one of the possible causes, but I may be wrong.
 > >
-> > I am not sure I understand.
+> > Do you think it's somewhat similar to how iterating a matrix in rows
+> > is faster than in columns due to sequential vs random memory reads?
 > >
-> > The problem is that when you skip when someone else is flushing, there
-> > is a chance that the stats we care about haven't been flushed since
-> > the last time the periodic flusher ran. Which is supposed to be ~2
-> > seconds ago, but maybe more depending on how busy the workqueue is.
->
-> Yes, this is clear. You simply get _some_ snapshot of the past.
->
-> > When you block until the flusher finishes, the stats are being
-> > refreshed as you wait. So the stats are not getting more outdated as
-> > you wait in the general case (unless your cgroup was flushed first and
-> > you're waiting for others to be flushed).
-> > [Let's call this approach A]
->
-> Yes, but the amount of waiting is also undeterministic and even after
-> you waited your stats might be outdated already depending on how quickly
-> somebody allocates. That was my point.
-
-Right, we are just trying to minimize the staleness window.
-
->
-> > Furthermore, with the implementation you suggested using a mutex, we
-> > will wait until the ongoing flush is completed, then we will grab the
-> > mutex and do a flush ourselves.
->
-> Flushing would be mostly unnecessary as somebody has just flushed
-> everything. The only point of mutex is to remove the super ugly busy
-> wait for sleepable context construct.
-
-Right, but it also has the (arguably) nice double flush effect, also
-minimizes the staleness window.
-
->
-> [...]
-> > When running a test that is proactively reclaiming some memory and
-> > expecting to see the memory swapped, without this patch, we see
-> > significant inaccuracy. In some failure instances we expect ~2000
-> > pages to be swapped but we only find ~1200.
->
-> That difference is 3MB of memory. What is the precision you are
-> operating on?
-
-I am not concerned with MBs, I am concerned with ratio. On a large
-system with hundreds of cpus there are larger chances of missing
-updates on a bunch of cpus, which might be a lot.
-
->
-> > This is observed on
-> > machines with hundreds of cpus, where the problem is most noticeable.
-> > This is a huge difference. Keep in mind that the inaccuracy would
-> > probably be even worse in a production environment if the system is
-> > under enough pressure (e.g. the periodic flusher is late).
+> > * https://stackoverflow.com/q/9936132
+> > * https://en.wikipedia.org/wiki/Row-_and_column-major_order
+> > * https://en.wikipedia.org/wiki/Loop_interchange
 > >
-> > For both approach A (wait until flusher finishes and exit, i.e this
-> > patch) and approach B (wait until flusher finishes then flush, i.e the
-> > mutex approach), I stop seeing this failure in the proactive reclaim
-> > test and the stats are accurate.
+> > I've had a similar suspicion and it would be good to confirm whether
+> > it's that or something else. I can probably collect perf counters for
+> > different runs, but I'm not sure which ones I'll need.
 > >
-> > I have v2 ready that implements approach B with the mutex ready to
-> > fire, just say the word :)
-> >
-> > >
-> > > In any case I do get the argument about consistency within a subtree
-> > > (children data largely not matching parents'). Examples like that would
-> > > be really helpful as well. If that is indeed the case then I would
-> > > consider it much more serious than accuracy which is always problematic
-> > > (100ms of an actively allocating context can ruin your just read numbers
-> > > and there is no way around that wihtout stopping the world).
-> >
-> > 100% agreed. It's more difficult to get testing results for this, but
-> > that can easily be the case when we have no idea how much is flushed
-> > when we return from mem_cgroup_flush_stats().
-> >
-> > >
-> > > Last note, for /proc/vmstat we have /proc/sys/vm/stat_refresh to trigger
-> > > an explicit refresh. For those users who really need more accurate
-> > > numbers we might consider interface like that. Or allow to write to stat
-> > > file and do that in the write handler.
-> >
-> > This wouldn't be my first option, but if that's the only way to get
-> > accurate stats I'll take it.
+> > In a similar vein, if we could come up with a tracepoint that would
+> > tell us the amount of work done (or any other relevant metric that
+> > would help) during rstat flushing, I can certainly collect that
+> > information as well for every reading combination.
 >
-> To be honest, this would be my preferable option because of 2 reasons.
-> a) we do not want to guarantee to much on the precision front because
-> that would just makes maintainability much more harder with different
-> people having a different opinion of how much precision is enough and b)
-> it makes the more rare (need precise) case the special case rather than
-> the default.
+> Since cgroup_rstat_flush_locked appears in flamegraphs for both fast
+> (discrete) and slow (combined) cases, I grabbed some stats for it:
+>
+> * Slow:
+>
+> completed: 19.43s [manual / mem-stat + cpu-stat]
+>
+> $ sudo /usr/share/bcc/tools/funclatency -uT cgroup_rstat_flush_locked
+> Tracing 1 functions for "cgroup_rstat_flush_locked"... Hit Ctrl-C to end.
+> ^C
+> 00:12:55
+>      usecs               : count     distribution
+>          0 -> 1          : 0        |                                    =
+    |
+>          2 -> 3          : 0        |                                    =
+    |
+>          4 -> 7          : 0        |                                    =
+    |
+>          8 -> 15         : 0        |                                    =
+    |
+>         16 -> 31         : 0        |                                    =
+    |
+>         32 -> 63         : 0        |                                    =
+    |
+>         64 -> 127        : 1        |                                    =
+    |
+>        128 -> 255        : 191      |************                        =
+    |
+>        256 -> 511        : 590      |************************************=
+****|
+>        512 -> 1023       : 186      |************                        =
+    |
+>       1024 -> 2047       : 2        |                                    =
+    |
+>       2048 -> 4095       : 0        |                                    =
+    |
+>       4096 -> 8191       : 0        |                                    =
+    |
+>       8192 -> 16383      : 504      |**********************************  =
+    |
+>      16384 -> 32767      : 514      |**********************************  =
+    |
+>      32768 -> 65535      : 3        |                                    =
+    |
+>      65536 -> 131071     : 1        |                                    =
+    |
+>
+> avg =3D 8852 usecs, total: 17633268 usecs, count: 1992
+>
+> * Fast:
+>
+> completed:  0.95s [manual / mem-stat]
+> completed:  0.05s [manual / cpu-stat]
+>
+> $ sudo /usr/share/bcc/tools/funclatency -uT cgroup_rstat_flush_locked
+> Tracing 1 functions for "cgroup_rstat_flush_locked"... Hit Ctrl-C to end.
+> ^C
+> 00:13:27
+>      usecs               : count     distribution
+>          0 -> 1          : 0        |                                    =
+    |
+>          2 -> 3          : 0        |                                    =
+    |
+>          4 -> 7          : 499      |************************************=
+****|
+>          8 -> 15         : 253      |********************                =
+    |
+>         16 -> 31         : 191      |***************                     =
+    |
+>         32 -> 63         : 41       |***                                 =
+    |
+>         64 -> 127        : 12       |                                    =
+    |
+>        128 -> 255        : 2        |                                    =
+    |
+>        256 -> 511        : 2        |                                    =
+    |
+>        512 -> 1023       : 0        |                                    =
+    |
+>       1024 -> 2047       : 0        |                                    =
+    |
+>       2048 -> 4095       : 0        |                                    =
+    |
+>       4096 -> 8191       : 0        |                                    =
+    |
+>       8192 -> 16383      : 34       |**                                  =
+    |
+>      16384 -> 32767      : 21       |*                                   =
+    |
+>
+> avg =3D 857 usecs, total: 904762 usecs, count: 1055
+>
+> There's a different number of calls into cgroup_rstat_flush_locked and
+> they are much slower in the slow case. There are also two bands in the
+> slow case, with 8ms..32ms having the half of the calls.
+>
+> For mem_cgroup_css_rstat_flush:
+>
+> * Slow:
+>
+> completed: 32.77s [manual / mem-stat + cpu-stat]
+>
+> $ sudo /usr/share/bcc/tools/funclatency -uT mem_cgroup_css_rstat_flush
+> Tracing 1 functions for "mem_cgroup_css_rstat_flush"... Hit Ctrl-C to end=
+.
+> ^C
+> 00:21:25
+>      usecs               : count     distribution
+>          0 -> 1          : 93078    |*                                   =
+    |
+>          2 -> 3          : 3397714  |************************************=
+****|
+>          4 -> 7          : 1009440  |***********                         =
+    |
+>          8 -> 15         : 168013   |*                                   =
+    |
+>         16 -> 31         : 93       |                                    =
+    |
+>
+> avg =3D 3 usecs, total: 17189289 usecs, count: 4668338
+>
+> * Fast:
+>
+> completed:  0.16s [manual / mem-stat]
+> completed:  0.04s [manual / cpu-stat]
+>
+> $ sudo /usr/share/bcc/tools/funclatency -uT mem_cgroup_css_rstat_flush
+> Tracing 1 functions for "mem_cgroup_css_rstat_flush"... Hit Ctrl-C to end=
+.
+> ^C
+> 00:21:57
+>      usecs               : count     distribution
+>          0 -> 1          : 1441     |***                                 =
+    |
+>          2 -> 3          : 18780    |************************************=
+****|
+>          4 -> 7          : 4826     |**********                          =
+    |
+>          8 -> 15         : 732      |*                                   =
+    |
+>         16 -> 31         : 1        |                                    =
+    |
+>
+> avg =3D 3 usecs, total: 89174 usecs, count: 25780
+>
+> There's an 181x difference in the number of calls into
+> mem_cgroup_css_rstat_flush.
+>
+> Does this provide a clue? Perhaps cgroup_rstat_cpu_pop_updated is
+> yielding a ton more iterations for some reason here?
+>
+> * https://elixir.bootlin.com/linux/v6.1/source/kernel/cgroup/rstat.c#L196
+>
+> It's inlined, but I can place a probe into the loop:
+>
+>       7         for_each_possible_cpu(cpu) {
+>       8                 raw_spinlock_t *cpu_lock =3D
+> per_cpu_ptr(&cgroup_rstat_cpu_lock,
+>                                                                cpu);
+>      10                 struct cgroup *pos =3D NULL;
+>                         unsigned long flags;
+>
+>                         /*
+>                          * The _irqsave() is needed because cgroup_rstat_=
+lock is
+>                          * spinlock_t which is a sleeping lock on
+> PREEMPT_RT. Acquiring
+>                          * this lock with the _irq() suffix only
+> disables interrupts on
+>                          * a non-PREEMPT_RT kernel. The raw_spinlock_t
+> below disables
+>                          * interrupts on both configurations. The
+> _irqsave() ensures
+>                          * that interrupts are always disabled and
+> later restored.
+>                          */
+>                         raw_spin_lock_irqsave(cpu_lock, flags);
+>                         while ((pos =3D
+> cgroup_rstat_cpu_pop_updated(pos, cgrp, cpu))) {
+>                                 struct cgroup_subsys_state *css;
+>
+>                                 cgroup_base_stat_flush(pos, cpu);
+>      26                         bpf_rstat_flush(pos, cgroup_parent(pos), =
+cpu);
+>
+>      28                         rcu_read_lock();
+>      29                         list_for_each_entry_rcu(css,
+> &pos->rstat_css_list,
+>                                                         rstat_css_node)
+>      31                                 css->ss->css_rstat_flush(css, cpu=
+);
+>      32                         rcu_read_unlock();
+>                         }
+>      34                 raw_spin_unlock_irqrestore(cpu_lock, flags);
+>
+> I added probes on both line 26 and line 31 to catch the middle and inner =
+loops.
+>
+> * Slow:
+>
+> completed: 32.97s [manual / mem-stat + cpu-stat]
+>
+>  Performance counter stats for '/tmp/derp':
+>
+>          4,702,570      probe:cgroup_rstat_flush_locked_L26
+>          9,301,436      probe:cgroup_rstat_flush_locked_L31
+>
+> * Fast:
+>
+> completed:  0.17s [manual / mem-stat]
+> completed:  0.34s [manual / cpu-stat]
+>
+>  Performance counter stats for '/tmp/derp':
+>
+>             31,769      probe:cgroup_rstat_flush_locked_L26
+>             62,849      probe:cgroup_rstat_flush_locked_L31
+>
+> It definitely looks like cgroup_rstat_cpu_pop_updated is yielding a
+> lot more positions.
+>
+> I'm going to sign off for the week, but let me know if I should place
+> any more probes to nail this down.
 
-How about we go with the proposed approach in this patch (or the mutex
-approach as it's much cleaner), and if someone complains about slow
-reads we revert the change and introduce the refresh API? We might
-just get away with making all reads accurate and avoid the hassle of
-updating some userspace readers to do write-then-read. We don't know
-for sure that something will regress.
+I spent some time looking into this and I think I landed on a fix:
 
-What do you think?
+* https://github.com/bobrik/linux/commit/50b627811d54
+
+I'm not 100% sure if it's the right fix for the issue, but it reduces
+the runtime significantly.
+
+We see a 50x decrease for memory.stat + cpu.stat loop duration with
+the patch applied. TL;DR is that memory.stat flushes all cgroups,
+while cpu.stat flushes just the subtree you're asking for. Both do it
+for cpu and memory at the same time, since both are rstat based. See
+the description for the commit linked above for more details.
+
+There are two more graphs to add. I rebooted 4 servers, 2 of which
+received my patch and 2 were the control. The reboot happened at
+around 05:00Z
+
+First is the latency of scraping cadvisor, where you can clearly see
+that the control group is rising with the daily load, while the test
+group is staying mostly flat:
+
+* https://i.imgur.com/GMtzHIu.png
+
+Second is the CPU time spent by cadvisor, where you can see a similar pictu=
+re:
+
+* https://i.imgur.com/LWHt14P.png
+
+Let me know what you think.
