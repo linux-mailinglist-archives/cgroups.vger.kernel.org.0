@@ -2,175 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE39D77AF5B
-	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 04:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8612B77B217
+	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 09:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjHNCCC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 13 Aug 2023 22:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        id S232575AbjHNHJz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Aug 2023 03:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232582AbjHNCBl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 13 Aug 2023 22:01:41 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FC810D1;
-        Sun, 13 Aug 2023 19:01:27 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RPHgh6fkCz4f3kFt;
-        Mon, 14 Aug 2023 10:01:20 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAH5Kbyitlkc4GkAg--.41869S3;
-        Mon, 14 Aug 2023 10:01:23 +0800 (CST)
-Subject: Re: [PATCH 1/1] blk-throttle: fix throttle configuring not effective
-To:     Yu Kuai <yukuai1@huaweicloud.com>,
-        zhuxiaohui <zhuxiaohui400@gmail.com>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230812072116.42321-1-zhuxiaohui.400@bytedance.com>
- <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <d69f850a-ecfc-61dc-a970-64f57fff806f@huaweicloud.com>
-Date:   Mon, 14 Aug 2023 10:01:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S233586AbjHNHJv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 03:09:51 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C28E77
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 00:09:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565331f0736so3137609a12.0
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 00:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691996990; x=1692601790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0c3TLEEphAL5/eO0YPgnOFzgaQ5OvBXzIFtvrL+QOK4=;
+        b=F1xTxqTrvmFeFiUwpFxZm3x1pFr/mDQ1sBDBqQiiQYoLeWGdyQnoRyVZk+3sIzi6FN
+         aRK8HpgYM40c5hmWVDml1XrE0VoWDzs1SVzl9lbI3gEbCPKixhnm95T164E3BGz7y/fc
+         nFE0Zb0/efoTC2kjjNVHUX8yawznVQg64xNDhBwHnAS6xS7BpCFnXs2mpqZYl77+RHhK
+         T+HC/MQRo2R7lbzcivfMB7kvt5ifzOmX3J5HbBlZl66WmIc3vzCTENJr4WDLctWxXGHp
+         owXjECGkqq1B4C1wHG18SY7DCVj0eB7hN3Wp3RI7qy6LTNpieHLJuLReiOrWMpnH1iOu
+         hQ4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691996990; x=1692601790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0c3TLEEphAL5/eO0YPgnOFzgaQ5OvBXzIFtvrL+QOK4=;
+        b=P0MvME8u3SkMY7kBERHbTtTD+zFML5DpN0W4ZDVdfqzqWHM9a/6AfVi5T45m8CBpzD
+         BltRjvmIlrJaQr8aU3U8fS/xeresHHbiqZdqoVsXMuXK7gGLEy4vkD47XwYCaUjc6wlQ
+         uSzDLe1kJ6AhpY2drP/+Pk91kM1qEkycSV2EPP3BK4I4EBtJJ+zRAfWwld332upFNkMw
+         7z8y7xIS4A/WAkPL6zP26os8X18HcOec1NkaATBnH6c4PtH3XkQ62adK6c/u14P6+5tn
+         QHVvaFi2xoahN0NvKYLznlrrvFvOrg0mWdYl/LjnZWg7+zKDTO/S94G5K+4GBUYyTBkb
+         Dr9Q==
+X-Gm-Message-State: AOJu0YzgtKwh478gS5RTxGbxaVRnQYYUtVoXmCZ2Rp431LTvBIK/pQmd
+        e4WVfystvPAkH765P6R/LttVaQ==
+X-Google-Smtp-Source: AGHT+IH3h9TjelpSKWyiOrXapoN6fmGeM/W3yxjtRhsDcuBlqtxYjfZM4msZETu6o0zwnXEsFk1Lyw==
+X-Received: by 2002:a17:902:9002:b0:1b9:be2e:2b40 with SMTP id a2-20020a170902900200b001b9be2e2b40mr8522331plp.50.1691996989923;
+        Mon, 14 Aug 2023 00:09:49 -0700 (PDT)
+Received: from C02DV8HUMD6R.bytedance.net ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id a12-20020a170902eccc00b001aadd0d7364sm8605394plh.83.2023.08.14.00.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 00:09:49 -0700 (PDT)
+From:   Abel Wu <wuyun.abel@bytedance.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Breno Leitao <leitao@debian.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Abel Wu <wuyun.abel@bytedance.com>, Michal Hocko <mhocko@suse.com>,
+        linux-kernel@vger.kernel.org (open list),
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG)),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH net-next v2] net-memcg: Fix scope of sockmem pressure indicators
+Date:   Mon, 14 Aug 2023 15:09:11 +0800
+Message-Id: <20230814070923.35769-1-wuyun.abel@bytedance.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-In-Reply-To: <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAH5Kbyitlkc4GkAg--.41869S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWfJry3try7Gry8Jw1DJrb_yoWrJF1rpF
-        y8trs8GrWYqFn3G3W3J3W5Ja45Xw48J348JrWIqFy5AF17Cr90gryUXrnY9348Ars7GF48
-        tw1jqr9rZF47urDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-+CC Michal.
+Now there are two indicators of socket memory pressure sit inside
+struct mem_cgroup, socket_pressure and tcpmem_pressure, indicating
+memory reclaim pressure in memcg->memory and ->tcpmem respectively.
 
-在 2023/08/12 15:53, Yu Kuai 写道:
-> Hi,
-> 
-> 在 2023/08/12 15:21, zhuxiaohui 写道:
->> when updating block throttle limit with persistence and stable io
->> pressure, especially a relative high io pressure, fio test e.g.,
->> there may never be a change to start a new slice, and carryover_ios &
->> carryover_bytes will not be cleared.
->>
->> As a result, when reconfiguring block throttle limit, we can notice that
->> the actual iops and throughput is a random value far away from what is
->> set
->>
->> So we need to update carryover value when dispatching bio
-> 
-> I don't understand, not clear carryover_bytes/ios is what expected, and
-> how can they affect actual bandwith/iops.
-> 
-> Can you give a example how you tested and why current calculation is not
-> correct?
+When in legacy mode (cgroupv1), the socket memory is charged into
+->tcpmem which is independent of ->memory, so socket_pressure has
+nothing to do with socket's pressure at all. Things could be worse
+by taking socket_pressure into consideration in legacy mode, as a
+pressure in ->memory can lead to premature reclamation/throttling
+in socket.
 
-I can reporduce this, but this patch is obviously wrong. You must
-explaim how the calculation is not correct.
+While for the default mode (cgroupv2), the socket memory is charged
+into ->memory, and ->tcpmem/->tcpmem_pressure are simply not used.
 
-After a quick loock, I found that carryover_bytes/ios is not updated in
-throtl_trim_slice(), while tg->io/bytes_disp[] can be cleared. This is
-definitly a problem.
+So {socket,tcpmem}_pressure are only used in default/legacy mode
+respectively for indicating socket memory pressure. This patch fixes
+the pieces of code that make mixed use of both.
 
-Thanks,
-Kuai
+Fixes: 8e8ae645249b ("mm: memcontrol: hook up vmpressure to socket pressure")
+Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+---
+v2:
+ - Add a comment to clarify the scope of indicators (Roman)
+ - Drop code cleanup on tcpmem_pressure (Roman)
+ - Fix the lack of a Fixes: tag (Eric)
+---
+ include/linux/memcontrol.h | 9 +++++++--
+ mm/vmpressure.c            | 8 ++++++++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-> 
-> Thanks,
-> Kuai
-> 
->>
->> Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
->> ---
->>   block/blk-throttle.c | 26 ++++++++++++++++++++++++++
->>   block/blk-throttle.h |  4 ++--
->>   2 files changed, 28 insertions(+), 2 deletions(-)
->>
->> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
->> index 7397ff199d66..13c9d87a7201 100644
->> --- a/block/blk-throttle.c
->> +++ b/block/blk-throttle.c
->> @@ -821,6 +821,30 @@ static void tg_update_carryover(struct throtl_grp 
->> *tg)
->>              tg->carryover_ios[READ], tg->carryover_ios[WRITE]);
->>   }
->> +static void tg_charge_carryover(struct throtl_grp *tg, struct bio *bio)
->> +{
->> +    bool rw = bio_data_dir(bio);
->> +
->> +    if (unlikely(tg->carryover_bytes[rw])) {
->> +        unsigned int bio_size = throtl_bio_data_size(bio);
->> +        unsigned int carryout_size = abs(tg->carryover_bytes[rw]);
->> +
->> +        carryout_size = min(carryout_size, bio_size);
->> +
->> +        if (tg->carryover_bytes[rw] < 0)
->> +            tg->carryover_bytes[rw] += carryout_size;
->> +        else
->> +            tg->carryover_bytes[rw] -= carryout_size;
->> +    }
->> +
->> +    if (unlikely(tg->carryover_ios[rw])) {
->> +        if (tg->carryover_ios[rw] < 0)
->> +            tg->carryover_ios[rw] += 1;
->> +        else
->> +            tg->carryover_ios[rw] -= 1;
->> +    }
->> +}
->> +
->>   static unsigned long tg_within_iops_limit(struct throtl_grp *tg, 
->> struct bio *bio,
->>                    u32 iops_limit)
->>   {
->> @@ -965,6 +989,8 @@ static void throtl_charge_bio(struct throtl_grp 
->> *tg, struct bio *bio)
->>       tg->io_disp[rw]++;
->>       tg->last_io_disp[rw]++;
->> +
->> +    tg_charge_carryover(tg, bio);
->>   }
->>   /**
->> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
->> index d1ccbfe9f797..8f1642becb23 100644
->> --- a/block/blk-throttle.h
->> +++ b/block/blk-throttle.h
->> @@ -127,8 +127,8 @@ struct throtl_grp {
->>        * bytes/ios are waited already in previous configuration, and 
->> they will
->>        * be used to calculate wait time under new configuration.
->>        */
->> -    uint64_t carryover_bytes[2];
->> -    unsigned int carryover_ios[2];
->> +    int64_t carryover_bytes[2];
->> +    int carryover_ios[2];
->>       unsigned long last_check_time;
->>
-> 
-> .
-> 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5818af8eca5a..dbf26bc89dd4 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -284,6 +284,11 @@ struct mem_cgroup {
+ 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
+ 	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
+ 
++	/*
++	 * Hint of reclaim pressure for socket memroy management. Note
++	 * that this indicator should NOT be used in legacy cgroup mode
++	 * where socket memory is accounted/charged separately.
++	 */
+ 	unsigned long		socket_pressure;
+ 
+ 	/* Legacy tcp memory accounting */
+@@ -1727,8 +1732,8 @@ void mem_cgroup_sk_alloc(struct sock *sk);
+ void mem_cgroup_sk_free(struct sock *sk);
+ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+ {
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+-		return true;
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return !!memcg->tcpmem_pressure;
+ 	do {
+ 		if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
+ 			return true;
+diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+index b52644771cc4..22c6689d9302 100644
+--- a/mm/vmpressure.c
++++ b/mm/vmpressure.c
+@@ -244,6 +244,14 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 	if (mem_cgroup_disabled())
+ 		return;
+ 
++	/*
++	 * The in-kernel users only care about the reclaim efficiency
++	 * for this @memcg rather than the whole subtree, and there
++	 * isn't and won't be any in-kernel user in a legacy cgroup.
++	 */
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !tree)
++		return;
++
+ 	vmpr = memcg_to_vmpressure(memcg);
+ 
+ 	/*
+-- 
+2.37.3
 
