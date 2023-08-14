@@ -2,91 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8612B77B217
-	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 09:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4679377BD83
+	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 17:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjHNHJz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Aug 2023 03:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
+        id S229801AbjHNP6c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Aug 2023 11:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbjHNHJv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 03:09:51 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C28E77
-        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 00:09:50 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565331f0736so3137609a12.0
-        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 00:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691996990; x=1692601790;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0c3TLEEphAL5/eO0YPgnOFzgaQ5OvBXzIFtvrL+QOK4=;
-        b=F1xTxqTrvmFeFiUwpFxZm3x1pFr/mDQ1sBDBqQiiQYoLeWGdyQnoRyVZk+3sIzi6FN
-         aRK8HpgYM40c5hmWVDml1XrE0VoWDzs1SVzl9lbI3gEbCPKixhnm95T164E3BGz7y/fc
-         nFE0Zb0/efoTC2kjjNVHUX8yawznVQg64xNDhBwHnAS6xS7BpCFnXs2mpqZYl77+RHhK
-         T+HC/MQRo2R7lbzcivfMB7kvt5ifzOmX3J5HbBlZl66WmIc3vzCTENJr4WDLctWxXGHp
-         owXjECGkqq1B4C1wHG18SY7DCVj0eB7hN3Wp3RI7qy6LTNpieHLJuLReiOrWMpnH1iOu
-         hQ4A==
+        with ESMTP id S229704AbjHNP6N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 11:58:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565F2ED
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 08:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692028652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7qH/OU93DvHxo0hLIYaxXR0nJoX5oGDzCEQsY4s9O1c=;
+        b=A4GFCdphoNmiW7VBWxTZmhLZp2rXPB1LhchwHvY59q+Vdr62Z46lBuXhrpsLgWTFFaQWsT
+        NyorszjeYBrs33U1uTMCW/1ZyOA4CqGPfoOo+PsgtrJCz4YmmvYMR33pNp6Xty3N6M6Vkx
+        h2AATDaxKpCW7aEyf6SdNDzxQ6M0Qrw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-336-dzd_6rv9P_GXd089mNHrNg-1; Mon, 14 Aug 2023 11:57:31 -0400
+X-MC-Unique: dzd_6rv9P_GXd089mNHrNg-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-64714cf9438so24351616d6.1
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 08:57:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691996990; x=1692601790;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0c3TLEEphAL5/eO0YPgnOFzgaQ5OvBXzIFtvrL+QOK4=;
-        b=P0MvME8u3SkMY7kBERHbTtTD+zFML5DpN0W4ZDVdfqzqWHM9a/6AfVi5T45m8CBpzD
-         BltRjvmIlrJaQr8aU3U8fS/xeresHHbiqZdqoVsXMuXK7gGLEy4vkD47XwYCaUjc6wlQ
-         uSzDLe1kJ6AhpY2drP/+Pk91kM1qEkycSV2EPP3BK4I4EBtJJ+zRAfWwld332upFNkMw
-         7z8y7xIS4A/WAkPL6zP26os8X18HcOec1NkaATBnH6c4PtH3XkQ62adK6c/u14P6+5tn
-         QHVvaFi2xoahN0NvKYLznlrrvFvOrg0mWdYl/LjnZWg7+zKDTO/S94G5K+4GBUYyTBkb
-         Dr9Q==
-X-Gm-Message-State: AOJu0YzgtKwh478gS5RTxGbxaVRnQYYUtVoXmCZ2Rp431LTvBIK/pQmd
-        e4WVfystvPAkH765P6R/LttVaQ==
-X-Google-Smtp-Source: AGHT+IH3h9TjelpSKWyiOrXapoN6fmGeM/W3yxjtRhsDcuBlqtxYjfZM4msZETu6o0zwnXEsFk1Lyw==
-X-Received: by 2002:a17:902:9002:b0:1b9:be2e:2b40 with SMTP id a2-20020a170902900200b001b9be2e2b40mr8522331plp.50.1691996989923;
-        Mon, 14 Aug 2023 00:09:49 -0700 (PDT)
-Received: from C02DV8HUMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id a12-20020a170902eccc00b001aadd0d7364sm8605394plh.83.2023.08.14.00.09.40
+        d=1e100.net; s=20221208; t=1692028651; x=1692633451;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7qH/OU93DvHxo0hLIYaxXR0nJoX5oGDzCEQsY4s9O1c=;
+        b=Cj7wfDXEURyXud17rvDJA7kI9UA0OZKNAR9aI5DFQV6tFVCdb/TBA12NE3p/cQnaM1
+         A947sWuLMHqkxdiTKLxa2F19/SzIrr1nqRy2WMtdJsILfYTiE3fqIKa7lQGBWgX+bvS7
+         F4gv9p0bXUmLzs4poa8WBGTxKhRnvWUZYBUL9BkKmVWbNb5KIPDi3+F8ZZysPOG+MSg4
+         +UOhFTe2gEHBGzaA85L6FZZAZ8j2YUcmT0+MoEvExv/LNfqo5X0aUjQyWy9adRuP1pmv
+         +dZeeaz3tVaq9iNaf5oJTIRmtD5KN1AnGpuLOof9N4gYvggF5NM2krlgaPtYu4j60Hkq
+         TQXQ==
+X-Gm-Message-State: AOJu0YzkYUscJeQD02Jtg7RZGa7wjgNOQAHb8OPWkWy9LamVDhBBTwUh
+        oMSlPWKAXrqerzxScV2acjTQV18hWo3tzgZoBnw/9zy6BC8TYCeBwjBMKxOhvfFYBGU0AoR6t4H
+        jkWPssjI3bGDQgV+CYQ==
+X-Received: by 2002:a0c:8e45:0:b0:63c:fb61:a201 with SMTP id w5-20020a0c8e45000000b0063cfb61a201mr9439840qvb.35.1692028650890;
+        Mon, 14 Aug 2023 08:57:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFRANvGEcmQZTMaKhUgzhPKVlKrTJYRQomkCbYmgKk3CSjdb0k3TsBz/oJJyzY8rNaOmV349g==
+X-Received: by 2002:a0c:8e45:0:b0:63c:fb61:a201 with SMTP id w5-20020a0c8e45000000b0063cfb61a201mr9439829qvb.35.1692028650657;
+        Mon, 14 Aug 2023 08:57:30 -0700 (PDT)
+Received: from fedora ([174.89.37.104])
+        by smtp.gmail.com with ESMTPSA id d11-20020a05620a166b00b00767d00d10e9sm3078589qko.58.2023.08.14.08.56.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 00:09:49 -0700 (PDT)
-From:   Abel Wu <wuyun.abel@bytedance.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        Mon, 14 Aug 2023 08:56:18 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 11:55:45 -0400
+From:   Lucas Karpinski <lkarpins@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     Abel Wu <wuyun.abel@bytedance.com>, Michal Hocko <mhocko@suse.com>,
-        linux-kernel@vger.kernel.org (open list),
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG)),
-        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG))
-Subject: [PATCH net-next v2] net-memcg: Fix scope of sockmem pressure indicators
-Date:   Mon, 14 Aug 2023 15:09:11 +0800
-Message-Id: <20230814070923.35769-1-wuyun.abel@bytedance.com>
-X-Mailer: git-send-email 2.37.3
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
+ positives
+Message-ID: <eex2vdlg4ow2j5bybmav73nbfzuspkk4zobnk7svua4jaypqb5@7ie6e4mci43t>
+References: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
+ <20230804163716.GA337691@cmpxchg.org>
+ <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
+User-Agent: NeoMutt/20230517
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,82 +87,50 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now there are two indicators of socket memory pressure sit inside
-struct mem_cgroup, socket_pressure and tcpmem_pressure, indicating
-memory reclaim pressure in memcg->memory and ->tcpmem respectively.
+On Fri, Aug 04, 2023 at 02:59:28PM -0400, Lucas Karpinski wrote:
+> On Fri, Aug 04, 2023 at 12:37:16PM -0400, Johannes Weiner wrote:
+> > On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
+> > > The test allocates dcache inside a cgroup, then destroys the cgroups and
+> > > then checks the sanity of numbers on the parent level. The reason it
+> > > fails is because dentries are freed with an RCU delay - a debugging
+> > > sleep shows that usage drops as expected shortly after.
+> > > 
+> > > Insert a 1s sleep after completing the cgroup creation/deletions. This
+> > > should be good enough, assuming that machines running those tests are
+> > > otherwise not very busy. This commit is directly inspired by Johannes
+> > > over at the link below.
+> > > 
+> > > Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
+> > > 
+> > > Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
+> > 
+> > Maybe I'm missing something, but there isn't a limit set anywhere that
+> > would cause the dentries to be reclaimed and freed, no? When the
+> > subgroups are deleted, the objects are just moved to the parent. The
+> > counters inside the parent (which are hierarchical) shouldn't change.
+> > 
+> > So this seems to be a different scenario than test_kmem_basic. If the
+> > test is failing for you, I can't quite see why.
+> >
+> You're right, the parent inherited the counters and it should behave
+> the same whether I'm directly removing the child or if I was moving it
+> under another cgroup. I do see the behaviour you described on my
+> x86_64 setup, but the wrong behaviour on my aarch64 dev. platform. I'll
+> take a closer look, but just wanted to leave an example here of what I
+> see.
+> 
+> Example of slab size pre/post sleep:
+> slab_pre = 18164688, slab_post = 3360000
+> 
+> Thanks,
+> Lucas
+Looked into the failures and I do have a proposed solution, just want
+some feedback first. With how the kernel entry in memory.stat is 
+updated, it takes into account all charged / uncharged pages, it looks 
+like it makes more sense to use that single entry rather than `slab + 
+anon + file + kernel_stack + pagetables + percpu + sock' as it would
+cover all utilization.
 
-When in legacy mode (cgroupv1), the socket memory is charged into
-->tcpmem which is independent of ->memory, so socket_pressure has
-nothing to do with socket's pressure at all. Things could be worse
-by taking socket_pressure into consideration in legacy mode, as a
-pressure in ->memory can lead to premature reclamation/throttling
-in socket.
-
-While for the default mode (cgroupv2), the socket memory is charged
-into ->memory, and ->tcpmem/->tcpmem_pressure are simply not used.
-
-So {socket,tcpmem}_pressure are only used in default/legacy mode
-respectively for indicating socket memory pressure. This patch fixes
-the pieces of code that make mixed use of both.
-
-Fixes: 8e8ae645249b ("mm: memcontrol: hook up vmpressure to socket pressure")
-Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
----
-v2:
- - Add a comment to clarify the scope of indicators (Roman)
- - Drop code cleanup on tcpmem_pressure (Roman)
- - Fix the lack of a Fixes: tag (Eric)
----
- include/linux/memcontrol.h | 9 +++++++--
- mm/vmpressure.c            | 8 ++++++++
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 5818af8eca5a..dbf26bc89dd4 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -284,6 +284,11 @@ struct mem_cgroup {
- 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
- 	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
- 
-+	/*
-+	 * Hint of reclaim pressure for socket memroy management. Note
-+	 * that this indicator should NOT be used in legacy cgroup mode
-+	 * where socket memory is accounted/charged separately.
-+	 */
- 	unsigned long		socket_pressure;
- 
- 	/* Legacy tcp memory accounting */
-@@ -1727,8 +1732,8 @@ void mem_cgroup_sk_alloc(struct sock *sk);
- void mem_cgroup_sk_free(struct sock *sk);
- static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
- {
--	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
--		return true;
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+		return !!memcg->tcpmem_pressure;
- 	do {
- 		if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
- 			return true;
-diff --git a/mm/vmpressure.c b/mm/vmpressure.c
-index b52644771cc4..22c6689d9302 100644
---- a/mm/vmpressure.c
-+++ b/mm/vmpressure.c
-@@ -244,6 +244,14 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
- 	if (mem_cgroup_disabled())
- 		return;
- 
-+	/*
-+	 * The in-kernel users only care about the reclaim efficiency
-+	 * for this @memcg rather than the whole subtree, and there
-+	 * isn't and won't be any in-kernel user in a legacy cgroup.
-+	 */
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !tree)
-+		return;
-+
- 	vmpr = memcg_to_vmpressure(memcg);
- 
- 	/*
--- 
-2.37.3
+Thanks,
+Lucas
 
