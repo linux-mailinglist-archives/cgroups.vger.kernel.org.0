@@ -2,84 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4679377BD83
-	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 17:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFFC77BF68
+	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 19:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjHNP6c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Aug 2023 11:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        id S229490AbjHNR4x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Aug 2023 13:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjHNP6N (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 11:58:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565F2ED
-        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 08:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692028652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7qH/OU93DvHxo0hLIYaxXR0nJoX5oGDzCEQsY4s9O1c=;
-        b=A4GFCdphoNmiW7VBWxTZmhLZp2rXPB1LhchwHvY59q+Vdr62Z46lBuXhrpsLgWTFFaQWsT
-        NyorszjeYBrs33U1uTMCW/1ZyOA4CqGPfoOo+PsgtrJCz4YmmvYMR33pNp6Xty3N6M6Vkx
-        h2AATDaxKpCW7aEyf6SdNDzxQ6M0Qrw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-dzd_6rv9P_GXd089mNHrNg-1; Mon, 14 Aug 2023 11:57:31 -0400
-X-MC-Unique: dzd_6rv9P_GXd089mNHrNg-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-64714cf9438so24351616d6.1
-        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 08:57:31 -0700 (PDT)
+        with ESMTP id S231404AbjHNR4h (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 13:56:37 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD46B5
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 10:56:36 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so42354275e9.1
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 10:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1692035795; x=1692640595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jeN/HGuUgCuQPe5kPvEPkK0pdFU40c32aDEDmB1vFRU=;
+        b=eEoTsU2yEih/aF37TTSzmNf2+4o3WWF1X80OF2loX8zGBdBwW1B6vzzBdK1y20zH/r
+         Sn4ahzedMLMHlay9fr3/eue4Hp1AwOn310a632QCVrN47BPnt+Ui5eBFBTUf6vVlWfFy
+         LM6cmv43Q3SIto1Jjd8qhi9w9cYWGb0eYddco=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692028651; x=1692633451;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692035795; x=1692640595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7qH/OU93DvHxo0hLIYaxXR0nJoX5oGDzCEQsY4s9O1c=;
-        b=Cj7wfDXEURyXud17rvDJA7kI9UA0OZKNAR9aI5DFQV6tFVCdb/TBA12NE3p/cQnaM1
-         A947sWuLMHqkxdiTKLxa2F19/SzIrr1nqRy2WMtdJsILfYTiE3fqIKa7lQGBWgX+bvS7
-         F4gv9p0bXUmLzs4poa8WBGTxKhRnvWUZYBUL9BkKmVWbNb5KIPDi3+F8ZZysPOG+MSg4
-         +UOhFTe2gEHBGzaA85L6FZZAZ8j2YUcmT0+MoEvExv/LNfqo5X0aUjQyWy9adRuP1pmv
-         +dZeeaz3tVaq9iNaf5oJTIRmtD5KN1AnGpuLOof9N4gYvggF5NM2krlgaPtYu4j60Hkq
-         TQXQ==
-X-Gm-Message-State: AOJu0YzkYUscJeQD02Jtg7RZGa7wjgNOQAHb8OPWkWy9LamVDhBBTwUh
-        oMSlPWKAXrqerzxScV2acjTQV18hWo3tzgZoBnw/9zy6BC8TYCeBwjBMKxOhvfFYBGU0AoR6t4H
-        jkWPssjI3bGDQgV+CYQ==
-X-Received: by 2002:a0c:8e45:0:b0:63c:fb61:a201 with SMTP id w5-20020a0c8e45000000b0063cfb61a201mr9439840qvb.35.1692028650890;
-        Mon, 14 Aug 2023 08:57:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRANvGEcmQZTMaKhUgzhPKVlKrTJYRQomkCbYmgKk3CSjdb0k3TsBz/oJJyzY8rNaOmV349g==
-X-Received: by 2002:a0c:8e45:0:b0:63c:fb61:a201 with SMTP id w5-20020a0c8e45000000b0063cfb61a201mr9439829qvb.35.1692028650657;
-        Mon, 14 Aug 2023 08:57:30 -0700 (PDT)
-Received: from fedora ([174.89.37.104])
-        by smtp.gmail.com with ESMTPSA id d11-20020a05620a166b00b00767d00d10e9sm3078589qko.58.2023.08.14.08.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 08:56:18 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 11:55:45 -0400
-From:   Lucas Karpinski <lkarpins@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        bh=jeN/HGuUgCuQPe5kPvEPkK0pdFU40c32aDEDmB1vFRU=;
+        b=Ee/akQaWmRRl1TNjkm7R+DRK0evnJaXZtO9h+iHM4iFNzdpa46vn3nRtSCmA5a0YeK
+         cG4iLC/1W1cZxpLV7oIfVd+C8nXUbfnagaC4TS8t1237k6E53+knnZFO/Q9lyolBC6pb
+         fixy9xXtwoLLhp6i1ujogZfpeQ9r4T4eNmTU+RR+LZEoG12ZK2euM9DZc803u76Egatr
+         AeC392bPTNj1C361H/la5c6Ctu53s8jMlRs0FkKcRoW4+fgAV+UrRzmhioqa2tnHmsZ3
+         MEJvjGdm14JWQgpUm9nomNV4L1GauDeS/M+UjV+5R1RkJCZm76EqpG706PsrXvkFIJ9R
+         1XjQ==
+X-Gm-Message-State: AOJu0YxTa4pRk0+tHGgoKE4029YvdwlqNrMAnxCB52W9ZrowUkFZGbiI
+        /N5dL2x3R7lwSS0OdSWJQdaZjXwJCwwKIqmW6eLbOg==
+X-Google-Smtp-Source: AGHT+IEtr8YhK9rwdhdGnQqyqtbe4YECBg/+Z36CICXvXvvNP5p+ftYBInLJlzQ0Abpx2QVpHp4v6za0CEi0bsvOQJ4=
+X-Received: by 2002:a7b:c3cd:0:b0:3fb:d68d:4c6f with SMTP id
+ t13-20020a7bc3cd000000b003fbd68d4c6fmr7747060wmj.14.1692035794784; Mon, 14
+ Aug 2023 10:56:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+ <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
+ <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
+ <CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-9QzY-a40A@mail.gmail.com>
+ <CABWYdi0+0gxr7PB4R8rh6hXO=H7ZaCzfk8bmOSeQMuZR7s7Pjg@mail.gmail.com>
+ <a052dffe-ed5e-6d22-8af8-0861e618f327@redhat.com> <CABWYdi0CXy2GZax_s6O-Xc0gvH+TGJzKwv_v6QqMty9P-ATJug@mail.gmail.com>
+ <CALvZod65Y-dSkH6a=ASTDTK2oGznTd7Yts1csttxoP0w9jaQUw@mail.gmail.com>
+In-Reply-To: <CALvZod65Y-dSkH6a=ASTDTK2oGznTd7Yts1csttxoP0w9jaQUw@mail.gmail.com>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Mon, 14 Aug 2023 10:56:23 -0700
+Message-ID: <CABWYdi2y+nsbum+0EnK4W_jF-8RNbNJJadiZH2Ofb_wnYjbrbA@mail.gmail.com>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
- positives
-Message-ID: <eex2vdlg4ow2j5bybmav73nbfzuspkk4zobnk7svua4jaypqb5@7ie6e4mci43t>
-References: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
- <20230804163716.GA337691@cmpxchg.org>
- <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
-User-Agent: NeoMutt/20230517
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,50 +77,37 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 02:59:28PM -0400, Lucas Karpinski wrote:
-> On Fri, Aug 04, 2023 at 12:37:16PM -0400, Johannes Weiner wrote:
-> > On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
-> > > The test allocates dcache inside a cgroup, then destroys the cgroups and
-> > > then checks the sanity of numbers on the parent level. The reason it
-> > > fails is because dentries are freed with an RCU delay - a debugging
-> > > sleep shows that usage drops as expected shortly after.
-> > > 
-> > > Insert a 1s sleep after completing the cgroup creation/deletions. This
-> > > should be good enough, assuming that machines running those tests are
-> > > otherwise not very busy. This commit is directly inspired by Johannes
-> > > over at the link below.
-> > > 
-> > > Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
-> > > 
-> > > Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
-> > 
-> > Maybe I'm missing something, but there isn't a limit set anywhere that
-> > would cause the dentries to be reclaimed and freed, no? When the
-> > subgroups are deleted, the objects are just moved to the parent. The
-> > counters inside the parent (which are hierarchical) shouldn't change.
-> > 
-> > So this seems to be a different scenario than test_kmem_basic. If the
-> > test is failing for you, I can't quite see why.
-> >
-> You're right, the parent inherited the counters and it should behave
-> the same whether I'm directly removing the child or if I was moving it
-> under another cgroup. I do see the behaviour you described on my
-> x86_64 setup, but the wrong behaviour on my aarch64 dev. platform. I'll
-> take a closer look, but just wanted to leave an example here of what I
-> see.
-> 
-> Example of slab size pre/post sleep:
-> slab_pre = 18164688, slab_post = 3360000
-> 
-> Thanks,
-> Lucas
-Looked into the failures and I do have a proposed solution, just want
-some feedback first. With how the kernel entry in memory.stat is 
-updated, it takes into account all charged / uncharged pages, it looks 
-like it makes more sense to use that single entry rather than `slab + 
-anon + file + kernel_stack + pagetables + percpu + sock' as it would
-cover all utilization.
+On Fri, Aug 11, 2023 at 7:34=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
+wrote:
+>
+> Hi Ivan,
+>
+> (sorry for late response as I was away)
+>
+> On Fri, Aug 11, 2023 at 3:35=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com>=
+ wrote:
+> [...]
+> > > > I spent some time looking into this and I think I landed on a fix:
+> > > >
+> > > > * https://github.com/bobrik/linux/commit/50b627811d54
+> > > >
+> > > > I'm not 100% sure if it's the right fix for the issue, but it reduc=
+es
+> > > > the runtime significantly.
+>
+> In your patch, can you try to replace mem_cgroup_flush_stats() with
+> mem_cgroup_flush_stats_ratelimited() instead of cgroup_rstat_flush().
+> I wanted to see if you observe any stale stats issues.
 
-Thanks,
-Lucas
+We scrape cgroup metrics every 53s and at that scale I doubt we'd
+notice any staleness. With 2s FLUSH_TIME it would be in the noise. We
+can even remove any sort of flushing from memory.stat as long as
+cpu.stat is read right before it as it does flushing for both.
 
+I agree with Yosry that there's probably no reason to flush both cpu
+and memory stats at the same time.
+
+It doesn't seem right to use delayed flush for memory and direct flush
+for cpu. Perhaps it doesn't matter as much to warrant a bigger rework
+of how it's done, but maybe then my patch to use the same mechanism
+between cpu and memory flushing makes sense?
