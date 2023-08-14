@@ -2,118 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C26877A027
-	for <lists+cgroups@lfdr.de>; Sat, 12 Aug 2023 15:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE39D77AF5B
+	for <lists+cgroups@lfdr.de>; Mon, 14 Aug 2023 04:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjHLNes (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 12 Aug 2023 09:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S231358AbjHNCCC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 13 Aug 2023 22:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjHLNer (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 12 Aug 2023 09:34:47 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5AE1FDD
-        for <cgroups@vger.kernel.org>; Sat, 12 Aug 2023 06:34:50 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26890669c8eso645257a91.1
-        for <cgroups@vger.kernel.org>; Sat, 12 Aug 2023 06:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691847290; x=1692452090;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zu6KYCTe3yYV+vjD7U9dsfBkqKtCevBqbtEfY4AodYs=;
-        b=vgi9tpHvmPpSDbFGy6DqAGQh4+ePr41OZKekFkPcbZ+gCbQud6GMIL4bXNWm1rG9UD
-         vOv2Odm8719ixKdi4QDjO0Iilweec8ic3O48BuH63MHZNHDPsMmlW6142m4JuVJAFeiq
-         GO+KgxkHbV1b4pO+Q8Udb7KWG7npl2uuxIe1ZhQAzVrMWTpqren0W8aKz60b1yW5LIdx
-         0tUcUCOK5SGHIo9OL0sxX3AZ8AZnx/TbC4gFvywiXbQgjMAF7mjCAty2DHfjGIq5OYUF
-         m6YW4mZh0+eYukwyZsE69r7WeRS/HcKPJH5YLs6kSuqb8FuBiL7ape57rq9XBdc7dkmR
-         R1rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691847290; x=1692452090;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zu6KYCTe3yYV+vjD7U9dsfBkqKtCevBqbtEfY4AodYs=;
-        b=aWqt0wlDFk/M+8qBcXaTSKieJWkNJ0c3zZ1EYfjV+YAs98eo8CKFojlX/YarfkFtVI
-         Bp95X2vC+TdUkryCLiFpQXcnVwYDi/5kcCNvQZLnf4z2TEiwHFxiwjkMF05kmOy50U8p
-         Bm5zQZcIupfZAAbrJiFSSoLjvzHl6LmcqhZgaL4Lnq2XLWjZQIqBREJrkEtNCyk9S8Pl
-         Vxh0fbQGfzO0HdihcOFON9vgHwHG/NntTcBL/ElKPYeSfSjQ3S81bDGNDtmdMwEcAfW2
-         zsGfm8zlCy9Lt2ayG7+U1qAdjX4/lC8D3JE7/UUvIiy+Pwe1HbyymnThcz4MbIqZTXJ2
-         ogsg==
-X-Gm-Message-State: AOJu0YyD5t85doiOBdHDzm/8GKmfP+Bb/hLa9EwwNyWa1WEKaae5//JX
-        XG6/0fMxhSWXVJfKZgbQbMCZog==
-X-Google-Smtp-Source: AGHT+IHmmp8Sl0831SmcXnwg3VeF7EIfBZyskBepfFEfxDeOUFJ50O0HAMnGzKLfNXsbUN1PIXIZhA==
-X-Received: by 2002:a17:903:32c7:b0:1b8:17e8:5472 with SMTP id i7-20020a17090332c700b001b817e85472mr5817852plr.1.1691847289948;
-        Sat, 12 Aug 2023 06:34:49 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id x20-20020a170902ea9400b001b9de67285dsm5845999plb.156.2023.08.12.06.34.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Aug 2023 06:34:49 -0700 (PDT)
-Message-ID: <00c3ae48-98c5-470d-ac0e-6096a06b7086@kernel.dk>
-Date:   Sat, 12 Aug 2023 07:34:47 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v3] block: remove init_mutex and open-code
- blk_iolatency_try_init
-Content-Language: en-US
-To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org,
-        Li Lingfeng <lilingfeng@huaweicloud.com>
-Cc:     josef@toxicpanda.com, mkoutny@suse.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linan122@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com, lilingfeng3@huawei.com,
+        with ESMTP id S232582AbjHNCBl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 13 Aug 2023 22:01:41 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FC810D1;
+        Sun, 13 Aug 2023 19:01:27 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RPHgh6fkCz4f3kFt;
+        Mon, 14 Aug 2023 10:01:20 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgAH5Kbyitlkc4GkAg--.41869S3;
+        Mon, 14 Aug 2023 10:01:23 +0800 (CST)
+Subject: Re: [PATCH 1/1] blk-throttle: fix throttle configuring not effective
+To:     Yu Kuai <yukuai1@huaweicloud.com>,
+        zhuxiaohui <zhuxiaohui400@gmail.com>, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>,
         "yukuai (C)" <yukuai3@huawei.com>
-References: <20230810035111.2236335-1-lilingfeng@huaweicloud.com>
- <169176317573.160467.10047297090390573799.b4-ty@kernel.dk>
- <b93e426e-d9b6-34df-be28-90b715c7a711@huaweicloud.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <b93e426e-d9b6-34df-be28-90b715c7a711@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230812072116.42321-1-zhuxiaohui.400@bytedance.com>
+ <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d69f850a-ecfc-61dc-a970-64f57fff806f@huaweicloud.com>
+Date:   Mon, 14 Aug 2023 10:01:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAH5Kbyitlkc4GkAg--.41869S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWfJry3try7Gry8Jw1DJrb_yoWrJF1rpF
+        y8trs8GrWYqFn3G3W3J3W5Ja45Xw48J348JrWIqFy5AF17Cr90gryUXrnY9348Ars7GF48
+        tw1jqr9rZF47urDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/11/23 7:42 PM, Yu Kuai wrote:
-> Hi, Jens
++CC Michal.
+
+在 2023/08/12 15:53, Yu Kuai 写道:
+> Hi,
 > 
-> ? 2023/08/11 22:12, Jens Axboe ??:
+> 在 2023/08/12 15:21, zhuxiaohui 写道:
+>> when updating block throttle limit with persistence and stable io
+>> pressure, especially a relative high io pressure, fio test e.g.,
+>> there may never be a change to start a new slice, and carryover_ios &
+>> carryover_bytes will not be cleared.
 >>
->> On Thu, 10 Aug 2023 11:51:11 +0800, Li Lingfeng wrote:
->>> Commit a13696b83da4 ("blk-iolatency: Make initialization lazy") adds
->>> a mutex named "init_mutex" in blk_iolatency_try_init for the race
->>> condition of initializing RQ_QOS_LATENCY.
->>> Now a new lock has been add to struct request_queue by commit a13bd91be223
->>> ("block/rq_qos: protect rq_qos apis with a new lock"). And it has been
->>> held in blkg_conf_open_bdev before calling blk_iolatency_init.
->>> So it's not necessary to keep init_mutex in blk_iolatency_try_init, just
->>> remove it.
->>>
->>> [...]
+>> As a result, when reconfiguring block throttle limit, we can notice that
+>> the actual iops and throughput is a random value far away from what is
+>> set
 >>
->> Applied, thanks!
+>> So we need to update carryover value when dispatching bio
+> 
+> I don't understand, not clear carryover_bytes/ios is what expected, and
+> how can they affect actual bandwith/iops.
+> 
+> Can you give a example how you tested and why current calculation is not
+> correct?
+
+I can reporduce this, but this patch is obviously wrong. You must
+explaim how the calculation is not correct.
+
+After a quick loock, I found that carryover_bytes/ios is not updated in
+throtl_trim_slice(), while tg->io/bytes_disp[] can be cleared. This is
+definitly a problem.
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Kuai
+> 
 >>
->> [1/1] block: remove init_mutex and open-code blk_iolatency_try_init
->>        commit: 4eb44d10766ac0fae5973998fd2a0103df1d3fe1
+>> Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
+>> ---
+>>   block/blk-throttle.c | 26 ++++++++++++++++++++++++++
+>>   block/blk-throttle.h |  4 ++--
+>>   2 files changed, 28 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+>> index 7397ff199d66..13c9d87a7201 100644
+>> --- a/block/blk-throttle.c
+>> +++ b/block/blk-throttle.c
+>> @@ -821,6 +821,30 @@ static void tg_update_carryover(struct throtl_grp 
+>> *tg)
+>>              tg->carryover_ios[READ], tg->carryover_ios[WRITE]);
+>>   }
+>> +static void tg_charge_carryover(struct throtl_grp *tg, struct bio *bio)
+>> +{
+>> +    bool rw = bio_data_dir(bio);
+>> +
+>> +    if (unlikely(tg->carryover_bytes[rw])) {
+>> +        unsigned int bio_size = throtl_bio_data_size(bio);
+>> +        unsigned int carryout_size = abs(tg->carryover_bytes[rw]);
+>> +
+>> +        carryout_size = min(carryout_size, bio_size);
+>> +
+>> +        if (tg->carryover_bytes[rw] < 0)
+>> +            tg->carryover_bytes[rw] += carryout_size;
+>> +        else
+>> +            tg->carryover_bytes[rw] -= carryout_size;
+>> +    }
+>> +
+>> +    if (unlikely(tg->carryover_ios[rw])) {
+>> +        if (tg->carryover_ios[rw] < 0)
+>> +            tg->carryover_ios[rw] += 1;
+>> +        else
+>> +            tg->carryover_ios[rw] -= 1;
+>> +    }
+>> +}
+>> +
+>>   static unsigned long tg_within_iops_limit(struct throtl_grp *tg, 
+>> struct bio *bio,
+>>                    u32 iops_limit)
+>>   {
+>> @@ -965,6 +989,8 @@ static void throtl_charge_bio(struct throtl_grp 
+>> *tg, struct bio *bio)
+>>       tg->io_disp[rw]++;
+>>       tg->last_io_disp[rw]++;
+>> +
+>> +    tg_charge_carryover(tg, bio);
+>>   }
+>>   /**
+>> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+>> index d1ccbfe9f797..8f1642becb23 100644
+>> --- a/block/blk-throttle.h
+>> +++ b/block/blk-throttle.h
+>> @@ -127,8 +127,8 @@ struct throtl_grp {
+>>        * bytes/ios are waited already in previous configuration, and 
+>> they will
+>>        * be used to calculate wait time under new configuration.
+>>        */
+>> -    uint64_t carryover_bytes[2];
+>> -    unsigned int carryover_ios[2];
+>> +    int64_t carryover_bytes[2];
+>> +    int carryover_ios[2];
+>>       unsigned long last_check_time;
+>>
 > 
-> This version has a minor problem that pss in mutex for
-> lockdep_assert_held() is not a pointer:
+> .
 > 
->> lockdep_assert_held(ctx.bdev->bd_queue->rq_qos_mutex);
-> 
-> should be:
-> lockdep_assert_held(&ctx.bdev->bd_queue->rq_qos_mutex);
-
-Yes, looked like that patch didn't get compiled... Shame.
-
-> Perhaps can you drop this patch for now, and Lingfeng can send a v4?
-
-I did fix that up 2 days ago myself.
-
--- 
-Jens Axboe
 
