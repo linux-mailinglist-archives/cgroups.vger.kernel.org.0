@@ -2,139 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AB577C557
-	for <lists+cgroups@lfdr.de>; Tue, 15 Aug 2023 03:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FBB77C61E
+	for <lists+cgroups@lfdr.de>; Tue, 15 Aug 2023 04:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbjHOBp1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Aug 2023 21:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
+        id S234368AbjHOCyC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Aug 2023 22:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbjHOBpI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 21:45:08 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C76F120;
-        Mon, 14 Aug 2023 18:45:06 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RPvGR03t4z4f4cWN;
-        Tue, 15 Aug 2023 09:45:03 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgA3x6mb2NpkdnTyAg--.15945S8;
-        Tue, 15 Aug 2023 09:45:02 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        yukuai3@huawei.com, mkoutny@suse.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next 4/4] blk-throttle: consider 'carryover_ios/bytes' in throtl_trim_slice()
-Date:   Tue, 15 Aug 2023 09:41:23 +0800
-Message-Id: <20230815014123.368929-5-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230815014123.368929-1-yukuai1@huaweicloud.com>
-References: <20230815014123.368929-1-yukuai1@huaweicloud.com>
+        with ESMTP id S234363AbjHOCxp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Aug 2023 22:53:45 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED295173C
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 19:53:43 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b9964ae2so3207402b3a.3
+        for <cgroups@vger.kernel.org>; Mon, 14 Aug 2023 19:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692068023; x=1692672823;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a8HyUjDBkW62Y7ia/YRzhrRt6SI0MoeiKF06ymvveI4=;
+        b=e5H6YSxaquRTypkZyjRtJDCwTmj5Z8r9Hx5apY8RhyinYxtJgLPHfj1RJYFYO+7j7h
+         /XDrG7/16OKncrgd4rQzDKiDxmTxML7eTcIcJlApNVK7VwSPMRia945Nj3UpFZFqLVxr
+         c+TJdcrrYEsJ2D+NPAvrqWZ/lcET6O9a7jF5NDA3w5oNdN00BW0X7ksw3eGvMmN4iAVv
+         IPJTW3vBweY463qXeEMbiUcYWz3Ge+Zn5GN9ZdDLS+iEAXkLnBKigA9mtVVe0iPmHT/9
+         HIfoGsl7xLunxJrwgoVyzkqCS1QH7hmlNRPFsL1uZKuEccnQq4wlLjkrsukuqlh8NNH1
+         rMpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692068023; x=1692672823;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a8HyUjDBkW62Y7ia/YRzhrRt6SI0MoeiKF06ymvveI4=;
+        b=SZrinctgpV7nIsCe0jITTm6drmKWRxoeg9zDxpGiQvfMnsP1ScI4kGYdbYYtivOFm2
+         6h/VY2T+vLEhZ9sxBYUq5htrDGNEpUnktNznTGqm7tU8xBS5b1QgiuT7vkaxMUmWg2zn
+         9I9KEqvtzQKTFGXrwXokuck54jtJO9494PlKHZgDbmoizQ28jCtXQdXeXrr+HvUjKf7f
+         06tz5Kto3q+hUnacFBVEDIWwhgASsFpJA8EgTxu7NrtTxwfp1mS0KkGO9sLQ2zRVE/1K
+         AAkzpj7OWZq4fTErGPmFxiuAM53gh92rA0PQi9PSmq+8UBp1zgOiKiGmHDD0Ve3tmStX
+         vGLQ==
+X-Gm-Message-State: AOJu0YzGli5nXpaPEiq0eLkrN4BThkeJgSJ42hI3J/HIYLCUqBpXSgUa
+        MePRDmqx3QWakkt/34h2CXzdAA==
+X-Google-Smtp-Source: AGHT+IHjc044e6npnV/BiafJF0UU9FsLZmr9i/ZW8Kkux8QHJDLaNlnB4TRHzQQqdetV8IlA/XzFsw==
+X-Received: by 2002:a05:6a00:13a8:b0:682:2e99:9de0 with SMTP id t40-20020a056a0013a800b006822e999de0mr11561476pfg.23.1692068023296;
+        Mon, 14 Aug 2023 19:53:43 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:11bb:1457:9302:1528:c8f4? ([2408:8000:b001:1:1f:58ff:f102:103])
+        by smtp.gmail.com with ESMTPSA id g4-20020aa78744000000b00686f9789064sm8835581pfo.12.2023.08.14.19.53.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 19:53:42 -0700 (PDT)
+Message-ID: <ef6a383f-56b0-9ac5-b358-1a29cf595a24@bytedance.com>
+Date:   Tue, 15 Aug 2023 10:53:35 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: Re: [PATCH net-next v2] net-memcg: Fix scope of sockmem pressure
+ indicators
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Breno Leitao <leitao@debian.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+References: <20230814070923.35769-1-wuyun.abel@bytedance.com>
+ <CALvZod5C3yWdgWr83EAdVUCH5PEK8ew7Q+FOt_zGOFOE9HVyQQ@mail.gmail.com>
+Content-Language: en-US
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <CALvZod5C3yWdgWr83EAdVUCH5PEK8ew7Q+FOt_zGOFOE9HVyQQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3x6mb2NpkdnTyAg--.15945S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW3ZF47Zw43Ww13trW8WFg_yoW5Xw43pF
-        WftFsrtwsFqFnxK3ZxZ3Z7Z3Wjy3yDAryDGrW5tw4fAF90kryrKr10krZ5tay2yF97CFWx
-        J348ur9rAr4qkrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTY
-        UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On 8/15/23 4:18 AM, Shakeel Butt wrote:
+> On Mon, Aug 14, 2023 at 12:09 AM Abel Wu <wuyun.abel@bytedance.com> wrote:
+>>
+>> Now there are two indicators of socket memory pressure sit inside
+>> struct mem_cgroup, socket_pressure and tcpmem_pressure, indicating
+>> memory reclaim pressure in memcg->memory and ->tcpmem respectively.
+>>
+>> When in legacy mode (cgroupv1), the socket memory is charged into
+>> ->tcpmem which is independent of ->memory, so socket_pressure has
+>> nothing to do with socket's pressure at all. Things could be worse
+>> by taking socket_pressure into consideration in legacy mode, as a
+>> pressure in ->memory can lead to premature reclamation/throttling
+>> in socket.
+>>
+>> While for the default mode (cgroupv2), the socket memory is charged
+>> into ->memory, and ->tcpmem/->tcpmem_pressure are simply not used.
+>>
+>> So {socket,tcpmem}_pressure are only used in default/legacy mode
+>> respectively for indicating socket memory pressure. This patch fixes
+>> the pieces of code that make mixed use of both.
+>>
+>> Fixes: 8e8ae645249b ("mm: memcontrol: hook up vmpressure to socket pressure")
+>> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> 
+> So, this is undoing the unintended exposure of v2 functionality for
 
-Currently, 'carryover_ios/bytes' is not handled in throtl_trim_slice(),
-for consequence, 'carryover_ios/bytes' will be used to throttle bio
-multiple times, for example:
+Exactly.
 
-1) set iops limit to 100, and slice start is 0, slice end is 100ms;
-2) current time is 0, and 10 ios are dispatched, those io won't be
-   throttled and io_disp is 10;
-3) still at current time 0, update iops limit to 1000, carryover_ios is
-   updated to (0 - 10) = -10;
-4) in this slice(0 - 100ms), io_allowed = 100 + (-10) = 90, which means
-   only 90 ios can be dispatched without waiting;
-5) assume that io is throttled in slice(0 - 100ms), and
-   throtl_trim_slice() update silce to (100ms - 200ms). In this case,
-   'carryover_ios/bytes' is not cleared and still only 90 ios can be
-   dispatched between 100ms - 200ms.
+> the v1. I wonder if someone might have started depending upon that
+> behavior but I am more convinced that no one is using v1's tcpmem
+> accounting due to performance impact. So, this looks good to me.
 
-Fix this problem by updating 'carryover_ios/bytes' in
-throtl_trim_slice().
+Agreed. The performance impact is not negligible. While not accounting
+tcpmem is also undesired for Resource Manager to do provision properly.
+So we have to migrate to cgroupv2, and now we encountered a new issue.
+Some discussion with Roman can be found here:
 
-Fixes: a880ae93e5b5 ("blk-throttle: fix io hung due to configuration updates")
-Reported-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
-Link: https://lore.kernel.org/all/20230812072116.42321-1-zhuxiaohui.400@bytedance.com/
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+https://lore.kernel.org/netdev/29de901f-ae4c-a900-a553-17ec4f096f0e@bytedance.com/
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index e5296960c799..75b4a78c1e45 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -729,8 +729,9 @@ static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy_elapsed)
- /* Trim the used slices and adjust slice start accordingly */
- static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- {
--	unsigned long time_elapsed, io_trim;
--	u64 bytes_trim;
-+	unsigned long time_elapsed;
-+	long long bytes_trim;
-+	int io_trim;
- 
- 	BUG_ON(time_before(tg->slice_end[rw], tg->slice_start[rw]));
- 
-@@ -758,17 +759,21 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- 		return;
- 
- 	bytes_trim = calculate_bytes_allowed(tg_bps_limit(tg, rw),
--					     time_elapsed);
--	io_trim = calculate_io_allowed(tg_iops_limit(tg, rw), time_elapsed);
--	if (!bytes_trim && !io_trim)
-+					     time_elapsed) +
-+		     tg->carryover_bytes[rw];
-+	io_trim = calculate_io_allowed(tg_iops_limit(tg, rw), time_elapsed) +
-+		  tg->carryover_ios[rw];
-+	if (bytes_trim <= 0 && io_trim <= 0)
- 		return;
- 
--	if (tg->bytes_disp[rw] >= bytes_trim)
-+	tg->carryover_bytes[rw] = 0;
-+	if ((long long)tg->bytes_disp[rw] >= bytes_trim)
- 		tg->bytes_disp[rw] -= bytes_trim;
- 	else
- 		tg->bytes_disp[rw] = 0;
- 
--	if (tg->io_disp[rw] >= io_trim)
-+	tg->carryover_ios[rw] = 0;
-+	if ((int)tg->io_disp[rw] >= io_trim)
- 		tg->io_disp[rw] -= io_trim;
- 	else
- 		tg->io_disp[rw] = 0;
--- 
-2.39.2
+It would be great if you can shed some light on this!
 
+> 
+> Acked-by: Shakeel Butt <shakeelb@google.com>
+
+Thanks!
+	Abel
+
+> 
+> I do think we should start the deprecation process of v1's tcpmem accounting.
