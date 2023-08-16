@@ -2,84 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B82777E960
-	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 21:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4F777E995
+	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 21:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345704AbjHPTIn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Aug 2023 15:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        id S1345783AbjHPTWs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Aug 2023 15:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345710AbjHPTIa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Aug 2023 15:08:30 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FC22701;
-        Wed, 16 Aug 2023 12:08:29 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-268299d5d9fso3853288a91.1;
-        Wed, 16 Aug 2023 12:08:29 -0700 (PDT)
+        with ESMTP id S1345806AbjHPTWX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Aug 2023 15:22:23 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47404271F;
+        Wed, 16 Aug 2023 12:22:22 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-688142a392eso5573852b3a.3;
+        Wed, 16 Aug 2023 12:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692212909; x=1692817709;
+        d=gmail.com; s=20221208; t=1692213742; x=1692818542;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=oW5kqtKHBtVyg+Cd9YlZqPw+sEx2elEdwRVNVT4N6wk=;
-        b=Gxeh8t9SikI1Mq11KBvKw76Om5qOdzGfIoltkKpAUl4vymSeUkeUy3KcgEcVZONd0o
-         ijkR7PG61Z3sSrP7FjFfnMxlSJnkX2ePVH7AQ/YnoJZk/wJ0+/kOSMWT9ggracNjb5eN
-         9/0yGwRSVDsvyu6XWfUmnQrNW51C2xDY45mYkllYGl1OMVGJ7vYfJHzRFZWVscJ9AByi
-         mKkgeGOShggi0VSnfUbEIE/7BE1SnYI2G1ygiW4yJikjYAJj7oYP7/9G9zUwSBqTezyO
-         YubAzVgBcAKx9ORYgcSg6yQUbIJ6DHYMTz3+erxAwxF2kyTXRzbjI6VOswRPo9JyTyB4
-         FZig==
+        bh=6yZbEgk5hOBil+6p82DAQcLxcHtlq0Gk/Obtt+1CIrw=;
+        b=qKSP52F+/sORslglDOq8VwHya86yPq+jVHh3l/OsdYKeo4vmi0NSnR95HGEjuWXqLJ
+         vr+8+ubITXS7B53tEYaJfBvd88MJ3ox9vuhn7NMOkuEVQBdDyBn9xLXZ1xWX/IsurP0V
+         sz+nsf2GvYQT8vpOSaKmeNmET5kBzjDty1W2qJ75ob3XR94whTAdJyUzFRL1KbsIr2mS
+         zaS+ywl5LBZhindR24QiUrLFEkNzAvUzrI/ezLNYnazWqfs12Q+wSQRHrLikf97SdHp7
+         N1pnzml45IvN6LMVOM44PScABbAiPp+zdHCY6iF4KiGmbSmyTmOuMHGdhY/XIJbg4i+e
+         q57g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692212909; x=1692817709;
+        d=1e100.net; s=20221208; t=1692213742; x=1692818542;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oW5kqtKHBtVyg+Cd9YlZqPw+sEx2elEdwRVNVT4N6wk=;
-        b=gYGs1JP7+nPItNh5NaLQ/1VZPWY9tvC1cjc3rvl995I6WqDTByJhfe4VNwcqWiCUjn
-         Tqgg5D9ylYuT8exV25RAYhgtDytIvVdln6eAvigeQxUY/DZA/FsXfe5Ee6RJtS4CZIte
-         jjJW6wyGbiyce5OATGNqOz6hmZ2CV93VHugWIDKwGXnytRIVTM1pz30t6+HEwWZBkvss
-         4hI6uG5PNLCcM3YJZxX2pkymW0Nm3WK9S1+to/jk4pgoxAWrfJCjxDOUv8EAhvbgwR8+
-         Xw5IuJJ1WDeE5CB89UOjuWR1c9pwelzOhCB4siZuh6lmWE+MjjJ1dEArA7tJhVdEaUDE
-         FUVw==
-X-Gm-Message-State: AOJu0Yz+6bJoHJvFvyGoZ6Tcz8H2mp0+fMpUIu+4Fqa8lozPGP05EyQB
-        8oq6CLYYMVcHj6ezoe8OpT8=
-X-Google-Smtp-Source: AGHT+IFMRgjqD6qS9RDkcPNKp+sp42EgRrn2cqRuywDmeHhg+7JiW8v5/V0EJlDvSLbC2qPcJRPEOw==
-X-Received: by 2002:a17:90a:cc01:b0:263:f5fa:cf1b with SMTP id b1-20020a17090acc0100b00263f5facf1bmr2161321pju.30.1692212908713;
-        Wed, 16 Aug 2023 12:08:28 -0700 (PDT)
+        bh=6yZbEgk5hOBil+6p82DAQcLxcHtlq0Gk/Obtt+1CIrw=;
+        b=EdwAWJyD32FB9lOTSs00ickU1CnpubleTvogfZcNXvxDmzXWGKDYqIIt783JdfQfhw
+         h1qc7OVkmB26O8VMmxRjbOEx3Q9iZALtIaS69STr1ADJqOUbP1hUW2Os7M46i7k2H0XB
+         KdgMQATeqOFLs0vEPTuifD9TGAPIGiweJQNHOmzHdbgITNjH7fxB0Z/8w6osFMLAtkIC
+         MT63RbXxwQD8uFNUhKWZOaux6xBmjaCdD3TgClM5QRVcNYWuhj1q90BC3tNvsKe25ehY
+         ke1Zi8TeqXL2/5IdKyqxwf21hIBYTHm8nvJh17CMglEL15aMGj0nslE9wdA5QLtnmrKn
+         H8EA==
+X-Gm-Message-State: AOJu0YwB0XKkpLVU12jkJNjxj5q28FZmXIZVk8QZkcOoPvqkZCg3OOpq
+        zTBdgBu45YxaWTF2St+tMTY=
+X-Google-Smtp-Source: AGHT+IGYsKXAf+mXo898/kcV1a692ldkmT7Wsj6wlxzGZYBnwBEB140UGbXomi0XKYNNFiiyf7jBDw==
+X-Received: by 2002:a05:6a00:180d:b0:67e:45ab:b86b with SMTP id y13-20020a056a00180d00b0067e45abb86bmr3618148pfa.28.1692213741578;
+        Wed, 16 Aug 2023 12:22:21 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:93bd])
-        by smtp.gmail.com with ESMTPSA id z2-20020a17090a1fc200b0026b46ad94c9sm90263pjz.24.2023.08.16.12.08.27
+        by smtp.gmail.com with ESMTPSA id v11-20020aa7808b000000b0065da94fe917sm11382280pff.36.2023.08.16.12.22.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 12:08:28 -0700 (PDT)
+        Wed, 16 Aug 2023 12:22:20 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Aug 2023 09:08:26 -1000
+Date:   Wed, 16 Aug 2023 09:22:19 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-Message-ID: <ZN0eqq4hLRYQPHCI@slm.duckdns.org>
-References: <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org>
- <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org>
- <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
- <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
- <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
- <CAJD7tkYzr2cg-aQ899vfqB4jR7iP83t8f-Z4AH8d9iW-yw-nnQ@mail.gmail.com>
- <CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] cgroup: Avoid -Wstringop-overflow warnings
+Message-ID: <ZN0h69grtuh2Iv8e@slm.duckdns.org>
+References: <ZIpm3pcs3iCP9UaR@work>
+ <e1c07dd0-e6bf-ca9c-107a-97c5043b1bc7@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com>
+In-Reply-To: <e1c07dd0-e6bf-ca9c-107a-97c5043b1bc7@embeddedor.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,40 +75,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Tue, Aug 15, 2023 at 01:04:32PM -0600, Gustavo A. R. Silva wrote:
+> Hi all,
+> 
+> I wonder if you have any suggestions on how to address this issue. As it seems that
+> my last attempt caused some boot failures[1][2].
+> 
+> At first, I thought that the right way to fix this was through a similar fix as this
+> one[3]. But it seems I'm missing something else that I cannot determine yet.
+> 
+> These -Wstringop-overflow warnings are mostly the last ones remaining before we can
+> finally enable this compiler option, globally.
+> 
+> Any help or advice on how to properly address this is greatly appreciated. :)
 
-On Wed, Aug 16, 2023 at 10:11:20AM -0700, Shakeel Butt wrote:
-> These options are not white and black and there can be something in
-> between but let me be very clear on what I don't want and would NACK.
-
-I'm not a big fan of interfaces with hidden states. What you're proposing
-isn't strictly that but it's still a bit nasty. So, if we can get by without
-doing that, that'd be great.
-
-> I don't want a global sleepable lock which can be taken by potentially
-> any application running on the system. We have seen similar global
-> locks causing isolation and priority inversion issues in production.
-> So, not another lock which needs to be taken under extreme condition
-> (reading stats under OOM) by a high priority task (node controller)
-> and might be held by a low priority task.
-
-Yeah, this is a real concern. Those priority inversions do occur and can be
-serious but causing serious problems under memory pressure usually requires
-involving memory allocations and IOs. Here, it's just all CPU. So, at least
-in OOM conditions, this shouldn't be in the way (the system wouldn't have
-anything else to do anyway).
-
-It is true that this still can lead to priority through CPU competition tho.
-However, that problem isn't necessarily solved by what you're suggesting
-either unless you want to restrict explicit flushing based on permissions
-which is another can of worms.
-
-My preference is not exposing this in user interface. This is mostly arising
-from internal implementation details and isn't what users necessarily care
-about. There are many things we can do on the kernel side to make trade-offs
-among overhead, staleness and priority inversions. If we make this an
-explicit userland interface behavior, we get locked into that semantics
-which we'll likely regret in some future.
+It looks like there are only two functions which misbehave when there are no
+controllers configured. Maybe just fix them so that they don't access empty
+array?
 
 Thanks.
 
