@@ -2,50 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 061DC77D715
-	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 02:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF2B77D786
+	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 03:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbjHPA3r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 15 Aug 2023 20:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        id S236115AbjHPBO4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 15 Aug 2023 21:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240769AbjHPA3n (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 15 Aug 2023 20:29:43 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A43B2112
-        for <cgroups@vger.kernel.org>; Tue, 15 Aug 2023 17:29:41 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bcc0adab4so776181366b.2
-        for <cgroups@vger.kernel.org>; Tue, 15 Aug 2023 17:29:41 -0700 (PDT)
+        with ESMTP id S240997AbjHPBOo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 15 Aug 2023 21:14:44 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6591984
+        for <cgroups@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40a47e8e38dso90611cf.1
+        for <cgroups@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692145780; x=1692750580;
+        d=google.com; s=20221208; t=1692148483; x=1692753283;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cf96gEUuffZ5bugLPGNyrmA+1QjENgh5PWJjdIlY5k8=;
-        b=Roa+zIv+mNU/NtciKeNsOa6uM75uCp+S0VtC8PYEb+ILU6Z2WoUMzfAiQer5N5DYfa
-         0d7dDd1UyioRCzkGgdkIHUDv3RjUiWIzB1V3ou7d64b0bTzbcOhCrHsbRQsd9dl8h7IY
-         axTFam5oPj7T1b09AEAmcI4/Coq6t0G4v0qmyH0BkN9oLhrpmds+rLaJNjcyQ3XMhDvl
-         dZvzpFARC/WYs+JeQyofxaP46UVf9VdGfXHNdgdichb3HG0Z03ZvIQSnwBeAoHG7dqo5
-         yY+Gksx+Dpsq/QyXNfQnwd51qr2HPA1Eohy7B5ID7ZOKuk4GuXOEbH19knKLmtxt3lIZ
-         WrIg==
+        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
+        b=Vyshv/iyYwR/oFEOKc1JYHMUrHXFkWIoQxeD1rRWIN0P1XogOx5MjMYvYkUY6T9etq
+         Zyy+W6dszX02xqzVxcGnzkiWibtt560W+RPTXwER5Qmf0ZZx6l3Swf03vaNrgkidKm5V
+         Ej/KmVtxqPaC0pd4xGzE58TL6WJ5bPesj0D801i/T+wyBZfYfcBz9gQF8xBvFFT6Vqpb
+         uJQox/dXljUPbaHHuiQofbJMHJgJpluHl5tdkpEyPgxbT4CQBHktXf2KCsM0dFTCMBwz
+         kn8NICYHPgpjhsrh4cNbGwSHhulF3tQ+l22DrSd/Dz81D2atgZBtsQPqUUYRbZqq3sKU
+         di6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692145780; x=1692750580;
+        d=1e100.net; s=20221208; t=1692148483; x=1692753283;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Cf96gEUuffZ5bugLPGNyrmA+1QjENgh5PWJjdIlY5k8=;
-        b=UcZsNlexxDxOY3fxrOjEqlQiXZ9xP2aR5LpSj+uhOBPMlYz1Q8m+JA73D5qlbnwJ3L
-         nolpViIHInC90Mgp2lgCeFc/J32szcQTBPj97uWfxgjvQFSJgO712nnY25g3p+cYQ/SY
-         9S6Qa9EKL/kQSr4QkxXZMrbEcnNPSlfE3lvYNaAQfiVeV21FntLyDXlLRDnh/+7qm1AX
-         ZJONghLzuLklknwWjV4MIYRkkIQA/av+HHUCt2ikUdPGhgbCBw0Klgjfg2ts3fgFTWo+
-         G5fL7qCUzPw49VaydbG/J+AjNKiFbvYFGTRkSWRDP01Clpzev4EoKPCXGRUrgoRuGpQ2
-         Qq+A==
-X-Gm-Message-State: AOJu0YzwPyAzAzUot9k4/g7gYrr5EUi37vj4WYL4//8nWYx0tJHFgi9T
-        0gCJRQeKX9TAo233Zno9uOaY3z/wAj0e1vEovmgIZA==
-X-Google-Smtp-Source: AGHT+IET4IObBwFCzpP3WD/a21iSZnldxBuBe2UDZwpFgxUiZEsIeMr8bLYT7X1W29/8Vf7CE5ZXknc+XvfschltiJk=
-X-Received: by 2002:a17:907:7893:b0:99c:b65b:54ed with SMTP id
- ku19-20020a170907789300b0099cb65b54edmr167636ejc.60.1692145779622; Tue, 15
- Aug 2023 17:29:39 -0700 (PDT)
+        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
+        b=hhG9BKDxJQaLzsBdycqHJP4M97fHKOca7zrDw9z/8CpF567bwi9ZGGiSwHB4j/N6aY
+         83nTJJvsnMdWlISvbkk57Z2In8dN4qTlhs4jqRQfZ3rFxaZuqyxge7wpeeFcaUR/ddn4
+         9jX6yNsemvpZHqjWwNsAqpnMcAKdMPL8JOABsgzZb+Ic8mf6DPSftKxnj+7zH8UNa3qv
+         PZaRS5zwZcXgf1Y3fUe7tHZsN9C46Orsa6HCQadQhGQA4oGQc+MGSRmZh+nibou7a7V8
+         7U27uol2SYIT8Or4GOhDK3RaWPhHGYYRhzF7WSsb08jvoMOG2OyqxaFPuAwIRS8ERQu7
+         t4lA==
+X-Gm-Message-State: AOJu0Yw3Yewvi9d97MoeGBWkYQB/j+D4AidtoJiXnlbb1OoThYxPJfqK
+        4BBvh386H4NlXRNYjbqaHdErkHf4RUiAkIty9hMwMQ==
+X-Google-Smtp-Source: AGHT+IH8TYko1Bh6ENJiY9cnctcLBXofliPDjplhGZbCyU2pM4y2EIXq+p6ecUUKdPOKf9+5dRJChmOai1+wd5cANig=
+X-Received: by 2002:ac8:4e86:0:b0:3f5:2006:50f1 with SMTP id
+ 6-20020ac84e86000000b003f5200650f1mr130504qtp.12.1692148483063; Tue, 15 Aug
+ 2023 18:14:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
  <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
@@ -55,13 +55,13 @@ References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
  <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
  <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
  <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
-In-Reply-To: <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 15 Aug 2023 17:29:03 -0700
-Message-ID: <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
+ <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com> <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
+In-Reply-To: <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 15 Aug 2023 18:14:30 -0700
+Message-ID: <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
 Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
@@ -82,77 +82,52 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 5:23=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
+On Tue, Aug 15, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
 >
-> +Ivan
+[...]
+> >
+> > I thought we already reached the decision on how to proceed here. Let
+> > me summarize what I think we should do:
+> >
+> > 1. Completely remove the sync flush from stat files read from userspace=
+.
+> > 2. Provide a separate way/interface to explicitly flush stats for
+> > users who want more accurate stats and can pay the cost. This is
+> > similar to the stat_refresh interface.
+> > 3. Keep the 2 sec periodic stats flusher.
 >
-> On Mon, Aug 14, 2023 at 5:51=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Mon, Aug 14, 2023 at 5:48=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > Hello,
-> > >
-> > > On Mon, Aug 14, 2023 at 05:39:15PM -0700, Yosry Ahmed wrote:
-> > > > I believe dropping unified flushing, if possible of course, may fix
-> > > > both problems.
-> > >
-> > > Yeah, flushing the whole tree for every stat read will push up the bi=
-g O
-> > > complexity of the operation. It shouldn't be too bad because only wha=
-t's
-> > > updated since the last read will need flushing but if you have a real=
-ly big
-> > > machine with a lot of constantly active cgroups, you're still gonna f=
-eel it.
-> > > So, yeah, drop that and switch the global lock to mutex and we should=
- all be
-> > > good?
-> >
-> > I hope so, but I am not sure.
-> >
-> > The unified flushing was added initially to mitigate a thundering herd
-> > problem from concurrent in-kernel flushers (e.g. concurrent reclaims),
-> > but back then flushing was atomic so we had to keep the spinlock held
-> > for a long time. I think it should be better now, but I am hoping
-> > Shakeel will chime in since he added the unified flushing originally.
-> >
-> > We also need to agree on what to do about stats_flushing_threshold and
-> > flush_next_time since they're both global now (since all flushing is
-> > global).
-> >
+> I think this solution is suboptimal to be honest, I think we can do bette=
+r.
 >
-> I thought we already reached the decision on how to proceed here. Let
-> me summarize what I think we should do:
+> With recent improvements to spinlocks/mutexes, and flushers becoming
+> sleepable, I think a better solution would be to remove unified
+> flushing and let everyone only flush the subtree they care about. Sync
+> flushing becomes much better (unless you're flushing root ofc), and
+> concurrent flushing wouldn't cause too many problems (ideally no
+> thundering herd, and rstat lock can be dropped at cpu boundaries in
+> cgroup_rstat_flush_locked()).
 >
-> 1. Completely remove the sync flush from stat files read from userspace.
-> 2. Provide a separate way/interface to explicitly flush stats for
-> users who want more accurate stats and can pay the cost. This is
-> similar to the stat_refresh interface.
-> 3. Keep the 2 sec periodic stats flusher.
+> If we do this, stat reads can be much faster as Ivan demonstrated with
+> his patch that only flushes the cgroup being read, and we do not
+> sacrifice accuracy as we never skip flushing. We also do not need a
+> separate interface for explicit refresh.
+>
+> In all cases, we need to keep the 2 sec periodic flusher. What we need
+> to figure out if we remove unified flushing is:
+>
+> 1. Handling stats_flush_threshold.
+> 2. Handling flush_next_time.
+>
+> Both of these are global now, and will need to be adapted to
+> non-unified non-global flushing.
 
-I think this solution is suboptimal to be honest, I think we can do better.
+The only thing we are disagreeing on is (1) the complete removal of
+sync flush and an explicit flush interface versus (2) keep doing the
+sync flush of the subtree.
 
-With recent improvements to spinlocks/mutexes, and flushers becoming
-sleepable, I think a better solution would be to remove unified
-flushing and let everyone only flush the subtree they care about. Sync
-flushing becomes much better (unless you're flushing root ofc), and
-concurrent flushing wouldn't cause too many problems (ideally no
-thundering herd, and rstat lock can be dropped at cpu boundaries in
-cgroup_rstat_flush_locked()).
-
-If we do this, stat reads can be much faster as Ivan demonstrated with
-his patch that only flushes the cgroup being read, and we do not
-sacrifice accuracy as we never skip flushing. We also do not need a
-separate interface for explicit refresh.
-
-In all cases, we need to keep the 2 sec periodic flusher. What we need
-to figure out if we remove unified flushing is:
-
-1. Handling stats_flush_threshold.
-2. Handling flush_next_time.
-
-Both of these are global now, and will need to be adapted to
-non-unified non-global flushing.
+To me (1) seems more optimal particularly for the server use-case
+where a node controller reads stats of root and as well as cgroups of
+a couple of top levels (we actually do this internally). Doing flush
+once explicitly and then reading the stats for all such cgroups seems
+better to me.
