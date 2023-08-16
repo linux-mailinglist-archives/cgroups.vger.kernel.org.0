@@ -2,89 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2936E77EB08
-	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 22:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807F377EB23
+	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 22:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346268AbjHPUvj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Aug 2023 16:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S234915AbjHPU5h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Aug 2023 16:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346272AbjHPUvQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Aug 2023 16:51:16 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7E01BE6;
-        Wed, 16 Aug 2023 13:51:15 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-26b4cf4f7b9so2376817a91.1;
-        Wed, 16 Aug 2023 13:51:15 -0700 (PDT)
+        with ESMTP id S1346324AbjHPU5T (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Aug 2023 16:57:19 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9492724
+        for <cgroups@vger.kernel.org>; Wed, 16 Aug 2023 13:57:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bc6535027aso59195805ad.2
+        for <cgroups@vger.kernel.org>; Wed, 16 Aug 2023 13:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692219075; x=1692823875;
+        d=chromium.org; s=google; t=1692219437; x=1692824237;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/36aw1xmDrnWgBaeP2BLSKHpeS0jtx76RKcl679jDEk=;
-        b=mlDFmkAWIAw706A5Q/2UucACgJXVkzTw8eFJOQn88+CxlaPt4SaCnnTRx27vUUv7cB
-         Zze96Ru+A+82vcL4rlMlApTPMi+tbSLnFJIFH+vPsFy1dVKvGjbBn0Phe+M+9RX1fnvK
-         uddcN27TPeQWvy1yrDfLBjAMooFbkrYoIW8RNE5HvigZhpXIVsFLiclGGN6w2s/qtpVu
-         bAMiDg9eO/YNn1twwpJs+i9ieBOkRI2PBc4vyJSaw2jmNcUSDWXmPBi6UliFZ69NSjLe
-         /Wu324aj48ZsND83y52LwIU42qOiUNlYAngPwqS/fkFFAnrMsqbDCf3BFIWFensD2oi5
-         VN8A==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PTnRjDgF03Eifi7sf3kpv96X0kZ1CgBBnY922J5YppA=;
+        b=YrnJuLkKAUI9GOoFGUyMxaW0N4JvwWCdrMEG+WXxw28UwGdvMagNkGayO+D+VNRv7W
+         tdSXtKKS34K9MQ4zDTHtW6q2rQmnBOa1Cm/YWl1qMYvmdTxQHD3MejqhxJNse7BFpFZ4
+         taJO9DBM9v9B7HzFifZ/3iQ27MxXyE1MvyhG4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692219075; x=1692823875;
+        d=1e100.net; s=20221208; t=1692219437; x=1692824237;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/36aw1xmDrnWgBaeP2BLSKHpeS0jtx76RKcl679jDEk=;
-        b=UO6Nbc/oYYcpyiyCQkFIqJxU9zaxy39n2QATK7EbTBsAWgcYFglcumCQQNOzhQbcXx
-         wn0TU/MajWgktPm16yBiqa26PCNcfyN5bH9yIA8MtdGDKKxEuRzqHCPppqx7hxtgANYn
-         +yOJR1kLp9gafsWhfURsXOhF7ejbo7LUbQW57rMhr7KJyWGhoCyLB9c+TZjj2FjkamC8
-         7mAUnX+9hDbGpg66nL/OqwVB5QpeFpc2z4BPX+85CyJTTtzYRTqqB62ZN8vimYSi4LwY
-         l5V3+GHgSISC54OA6CO9yoLk8CWStJXsGBkhKyfJ1mVsres+EbW52SG8wtWixu3/cRif
-         glXA==
-X-Gm-Message-State: AOJu0Yw2dxKQIQ/+zU4tLXbpQzk0/uiAzZoXFb/Zedjkr6u+7s4fHqfc
-        FB2utLAuE2PmYsbL/LNcpH8=
-X-Google-Smtp-Source: AGHT+IH6RRSnxIiIpBLIFNY2G3iT+tDaGfu5cKJmIyOKRP68LL2kjCEw3UMmAp1y9w1z/eTcBHh3kg==
-X-Received: by 2002:a17:90a:4a88:b0:267:f8a2:300a with SMTP id f8-20020a17090a4a8800b00267f8a2300amr2351459pjh.7.1692219074627;
-        Wed, 16 Aug 2023 13:51:14 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:93bd])
-        by smtp.gmail.com with ESMTPSA id bo24-20020a17090b091800b00262d6ac0140sm154473pjb.9.2023.08.16.13.51.13
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PTnRjDgF03Eifi7sf3kpv96X0kZ1CgBBnY922J5YppA=;
+        b=F3I7IG472EwW5yNw2OSkKgmak2S/yJvinQfYzecOw4891Ylt0ZQdyRXXpnv3q6wKwn
+         LDw/8VINqZpxLar85lMfRH6MfC1DsLecWN3W/zN+ZNVcPruJSeYXZOCr5a8H3o5yOO5n
+         zSIp1etbsQYOZuCrykTyiwzS2Y1DRcH72qZMbChfCJmtr1MWbL4P9EEwpG8k7QOfiDDt
+         tIi5rUXH/4T2EKWYOFLn26DUkmcplhAfnzvytnKF69IdOp8vmtWOEu8gFTTYHyr4bs5C
+         MMs2HOixwhARUn2oGduXjz0BC7wr1BrNAVft+xIgxw+h9zL9IIBD/W0oqnObL3zhUctm
+         UnLQ==
+X-Gm-Message-State: AOJu0YzqrfQRd6dMyd0YU4GmnzLO10Y4K1TTrdcD4wwub7thWkA+i5rj
+        1l2Ethk2Ikupz/t04O09QuHLpQ==
+X-Google-Smtp-Source: AGHT+IG3SG9qeo0oZfUja9go8C9ZZOvux73Nr1ZbS1VQ53Pv2p6wh5BCDdxyWq4rcnvjgBR0dMyodw==
+X-Received: by 2002:a17:90a:e38a:b0:268:e43a:dbfd with SMTP id b10-20020a17090ae38a00b00268e43adbfdmr2746938pjz.1.1692219436996;
+        Wed, 16 Aug 2023 13:57:16 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id rj6-20020a17090b3e8600b002680f0f2886sm158262pjb.12.2023.08.16.13.57.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 13:51:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Aug 2023 10:51:12 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Wed, 16 Aug 2023 13:57:16 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 13:57:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH v2][next] cgroup: Avoid -Wstringop-overflow warnings
-Message-ID: <ZN02wFqzvwP2JI-K@slm.duckdns.org>
+Message-ID: <202308161356.4AED47263E@keescook>
 References: <ZN02iLcZYgxHFrEN@work>
+ <ZN02wFqzvwP2JI-K@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZN02iLcZYgxHFrEN@work>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZN02wFqzvwP2JI-K@slm.duckdns.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Aug 16, 2023 at 10:51:12AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Aug 16, 2023 at 02:50:16PM -0600, Gustavo A. R. Silva wrote:
+> > Change the notation from pointer-to-array to pointer-to-pointer.
+> > With this, we avoid the compiler complaining about trying
+> > to access a region of size zero as an argument during function
+> > calls.
+> 
+> Haha, I thought the functions were actually accessing the memory. This can't
+> be an intended behavior on the compiler's side, right?
 
-On Wed, Aug 16, 2023 at 02:50:16PM -0600, Gustavo A. R. Silva wrote:
-> Change the notation from pointer-to-array to pointer-to-pointer.
-> With this, we avoid the compiler complaining about trying
-> to access a region of size zero as an argument during function
-> calls.
-
-Haha, I thought the functions were actually accessing the memory. This can't
-be an intended behavior on the compiler's side, right?
-
-Thanks.
+I think it's a result of inlining -- the compiler ends up with a case
+where it looks like it might be possible to index a zero-sized array,
+but it is "accidentally safe".
 
 -- 
-tejun
+Kees Cook
