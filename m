@@ -2,79 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF2B77D786
-	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 03:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CC977D7B2
+	for <lists+cgroups@lfdr.de>; Wed, 16 Aug 2023 03:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbjHPBO4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 15 Aug 2023 21:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        id S236187AbjHPBa4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 15 Aug 2023 21:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240997AbjHPBOo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 15 Aug 2023 21:14:44 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6591984
-        for <cgroups@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40a47e8e38dso90611cf.1
-        for <cgroups@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692148483; x=1692753283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
-        b=Vyshv/iyYwR/oFEOKc1JYHMUrHXFkWIoQxeD1rRWIN0P1XogOx5MjMYvYkUY6T9etq
-         Zyy+W6dszX02xqzVxcGnzkiWibtt560W+RPTXwER5Qmf0ZZx6l3Swf03vaNrgkidKm5V
-         Ej/KmVtxqPaC0pd4xGzE58TL6WJ5bPesj0D801i/T+wyBZfYfcBz9gQF8xBvFFT6Vqpb
-         uJQox/dXljUPbaHHuiQofbJMHJgJpluHl5tdkpEyPgxbT4CQBHktXf2KCsM0dFTCMBwz
-         kn8NICYHPgpjhsrh4cNbGwSHhulF3tQ+l22DrSd/Dz81D2atgZBtsQPqUUYRbZqq3sKU
-         di6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692148483; x=1692753283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
-        b=hhG9BKDxJQaLzsBdycqHJP4M97fHKOca7zrDw9z/8CpF567bwi9ZGGiSwHB4j/N6aY
-         83nTJJvsnMdWlISvbkk57Z2In8dN4qTlhs4jqRQfZ3rFxaZuqyxge7wpeeFcaUR/ddn4
-         9jX6yNsemvpZHqjWwNsAqpnMcAKdMPL8JOABsgzZb+Ic8mf6DPSftKxnj+7zH8UNa3qv
-         PZaRS5zwZcXgf1Y3fUe7tHZsN9C46Orsa6HCQadQhGQA4oGQc+MGSRmZh+nibou7a7V8
-         7U27uol2SYIT8Or4GOhDK3RaWPhHGYYRhzF7WSsb08jvoMOG2OyqxaFPuAwIRS8ERQu7
-         t4lA==
-X-Gm-Message-State: AOJu0Yw3Yewvi9d97MoeGBWkYQB/j+D4AidtoJiXnlbb1OoThYxPJfqK
-        4BBvh386H4NlXRNYjbqaHdErkHf4RUiAkIty9hMwMQ==
-X-Google-Smtp-Source: AGHT+IH8TYko1Bh6ENJiY9cnctcLBXofliPDjplhGZbCyU2pM4y2EIXq+p6ecUUKdPOKf9+5dRJChmOai1+wd5cANig=
-X-Received: by 2002:ac8:4e86:0:b0:3f5:2006:50f1 with SMTP id
- 6-20020ac84e86000000b003f5200650f1mr130504qtp.12.1692148483063; Tue, 15 Aug
- 2023 18:14:43 -0700 (PDT)
+        with ESMTP id S241113AbjHPBaw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 15 Aug 2023 21:30:52 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4AC1BF8;
+        Tue, 15 Aug 2023 18:30:51 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RQVvX1wtfz4f3mHp;
+        Wed, 16 Aug 2023 09:30:48 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAH5KbHJtxkQuVAAw--.55976S4;
+        Wed, 16 Aug 2023 09:30:49 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        yukuai3@huawei.com, mkoutny@suse.com
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH -next v2 0/4] cleanup and fixes for 'carryover_ios/bytes'
+Date:   Wed, 16 Aug 2023 09:27:04 +0800
+Message-Id: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
- <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
- <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
- <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
- <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
- <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com> <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 15 Aug 2023 18:14:30 -0700
-Message-ID: <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAH5KbHJtxkQuVAAw--.55976S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrWrCF18AFWrKw1DWr48JFb_yoWfCFg_uF
+        ykta4rCF1UJayIyFWxAr9xZryrWw4UXw1jg3WDGFW7Ary7Xrn8Gr1fJF4vvFsxuan0krs7
+        trs8Za1xAr1agjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+        XdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,52 +61,30 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-[...]
-> >
-> > I thought we already reached the decision on how to proceed here. Let
-> > me summarize what I think we should do:
-> >
-> > 1. Completely remove the sync flush from stat files read from userspace=
-.
-> > 2. Provide a separate way/interface to explicitly flush stats for
-> > users who want more accurate stats and can pay the cost. This is
-> > similar to the stat_refresh interface.
-> > 3. Keep the 2 sec periodic stats flusher.
->
-> I think this solution is suboptimal to be honest, I think we can do bette=
-r.
->
-> With recent improvements to spinlocks/mutexes, and flushers becoming
-> sleepable, I think a better solution would be to remove unified
-> flushing and let everyone only flush the subtree they care about. Sync
-> flushing becomes much better (unless you're flushing root ofc), and
-> concurrent flushing wouldn't cause too many problems (ideally no
-> thundering herd, and rstat lock can be dropped at cpu boundaries in
-> cgroup_rstat_flush_locked()).
->
-> If we do this, stat reads can be much faster as Ivan demonstrated with
-> his patch that only flushes the cgroup being read, and we do not
-> sacrifice accuracy as we never skip flushing. We also do not need a
-> separate interface for explicit refresh.
->
-> In all cases, we need to keep the 2 sec periodic flusher. What we need
-> to figure out if we remove unified flushing is:
->
-> 1. Handling stats_flush_threshold.
-> 2. Handling flush_next_time.
->
-> Both of these are global now, and will need to be adapted to
-> non-unified non-global flushing.
+From: Yu Kuai <yukuai3@huawei.com>
 
-The only thing we are disagreeing on is (1) the complete removal of
-sync flush and an explicit flush interface versus (2) keep doing the
-sync flush of the subtree.
+changes in v2:
+ - fix missing adjustment in throtl_log().
 
-To me (1) seems more optimal particularly for the server use-case
-where a node controller reads stats of root and as well as cgroups of
-a couple of top levels (we actually do this internally). Doing flush
-once explicitly and then reading the stats for all such cgroups seems
-better to me.
+Patch 1 print signed value for 'carryover_ios/bytes' to user.
+
+Patch 2 fix that comparation ”unsigned value < negative value“ will
+pass, causing that io won't be throttled in the silce.
+
+Patch 3,4 fix that 'carryover_ios/bytes' is not cleared while
+'io/bytes_disp' is cleared, causing that throttle is not accurate.
+
+Yu Kuai (4):
+  blk-throttle: print signed value 'carryover_bytes/ios' for user
+  blk-throttle: fix wrong comparation while 'carryover_ios/bytes' is
+    negative
+  blk-throttle: use calculate_io/bytes_allowed() for throtl_trim_slice()
+  blk-throttle: consider 'carryover_ios/bytes' in throtl_trim_slice()
+
+ block/blk-throttle.c | 112 +++++++++++++++++++++----------------------
+ block/blk-throttle.h |   4 +-
+ 2 files changed, 58 insertions(+), 58 deletions(-)
+
+-- 
+2.39.2
+
