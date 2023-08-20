@@ -2,52 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62970782035
-	for <lists+cgroups@lfdr.de>; Sun, 20 Aug 2023 23:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB887820AD
+	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 01:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbjHTVaF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 20 Aug 2023 17:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        id S232088AbjHTXDE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 20 Aug 2023 19:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjHTV3w (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 20 Aug 2023 17:29:52 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D39E6E;
-        Sat, 19 Aug 2023 17:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=c94fHYxIWl9lBifgcspinxKU2QHJURmIgDdd+1otOjo=; b=GDPo+eqAkD2WDQPmJ2y2konEcv
-        fp4a5Zv29YS4L903aE7mPxLttTS8765T5saJnuvJPvyLla6eC4H2k15yRLsZk3R7Ki3u/Lvn+Z6zE
-        TGWQQ/eEvCNmfI5O51mNrdR+vrat/83NmlbCiG0Fm+d+ri9Km+r67lVW3RYuVeaYKW7ngGHR5K5Si
-        zK6NheDXhSjOVaSmWrHbtKSoO6sXELTTK5D77Co26QjB5BuNUzGZ8UtJO7lZS2QwY/IwZQuYup6w+
-        GTVhZEM9xaKiFQzvO2CwBclmBFzETmmMymycokOU0UkC254WwvrdvT3PfUFGAUDDFCZPe1AlAbuNf
-        YcJfsVmw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qXWfl-00BHp7-1H;
-        Sun, 20 Aug 2023 00:52:05 +0000
-Message-ID: <df2ec434-69cd-fe3b-50de-462a9c7eda41@infradead.org>
-Date:   Sat, 19 Aug 2023 17:52:04 -0700
+        with ESMTP id S231181AbjHTXDE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 20 Aug 2023 19:03:04 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1445BA4
+        for <cgroups@vger.kernel.org>; Sun, 20 Aug 2023 16:03:01 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe12820bffso27049645e9.3
+        for <cgroups@vger.kernel.org>; Sun, 20 Aug 2023 16:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692572579; x=1693177379;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zASfMBgzYAjTR9c8GY5qaV+9MUOdSaUxlBCpiQVP8k0=;
+        b=t/M436gLUC3+++Lm6yg65sJ9KSAuXIfPhOB12Lo8i7//DnPoosE1I3P39EuLVL4PNO
+         zRxoSgoVSQgGE3VjMiyyof23ui1TFdgoOKaNFJqRby3F43/I7OR79Cz5BLE5wPYPtI5T
+         VBr3r68voLEMZTuMRzdBo/IZTrf/8IHoS1DY3JjHEIyBznscOY5H2pCCx6BI5FHNijtM
+         PPDqEKa5XS8oOtFuuVIwZel0iFIUHGm+0+a427vbiMxzGMDaz4p0GD7I/pHZfv3K5R9g
+         SxKsr4mnY/efclf92+bb94JKR4Cr2yuLCpMgCL6hEieNYhRuwNR6i4S5WrF4+WvvQekE
+         eH2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692572579; x=1693177379;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zASfMBgzYAjTR9c8GY5qaV+9MUOdSaUxlBCpiQVP8k0=;
+        b=SyNFMrwSbaCMFeJQMe5QNwOHjXHR6+E9P0Tm9nI9k0h49N1kvvI33gqojZuKaShmyZ
+         cPjyjjx/HRi8xfJCJItjSih9WOyw+COO+TEmKYYrjcgvif+5h46/py4aTcwheFoV4V3a
+         CuqagUzgkqxO3epwU1YOJrW0FVggpChv03pNWccp6p2YpgCWYEQkfvZeVoGR6jNhu+Ul
+         EBb68ERvXNH49XF0rtiG3TSQ5C8NhHfuF+65T+eCzHQOaumaB6+0siJ6CdTuDgi1Z/FY
+         L/nuRQ5Frl3ZBlZvh/C2nqSlwzwmsC8nbO5t2EMlf9kLIPX5wktWnpqWCcvjNvcsq/zD
+         qbgw==
+X-Gm-Message-State: AOJu0YxNGycy3NQdU0EpDVvhfFCjcfiJE0Wh9GUkZldBpSfzwMwtfDlR
+        DHv1SK5KUNDbeweXtSNFfwKWug==
+X-Google-Smtp-Source: AGHT+IEDDxn1gA7l6hN0vwECDX74/sJ63XoHP2U9mIBarT4gPy/ZBfwz83YYHMQoWg88ioS6EzG+NQ==
+X-Received: by 2002:a7b:c8d8:0:b0:3fe:195c:eca3 with SMTP id f24-20020a7bc8d8000000b003fe195ceca3mr3694180wml.9.1692572579582;
+        Sun, 20 Aug 2023 16:02:59 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id l22-20020a7bc456000000b003fe1afb99a9sm10596979wmi.11.2023.08.20.16.02.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 16:02:59 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 00:02:57 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Waiman Long <longman@redhat.com>
+Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Tejun Heo <tj@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
+        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
+ for 5.10.y
+Message-ID: <20230820230257.gmcmjuuirzq6xs52@airbuntu>
+References: <20230820152144.517461-1-qyousef@layalina.io>
+ <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/4] mm: Fix get_mctgt_type() kernel-doc
-Content-Language: en-US
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, Mike Rapoport <rppt@kernel.org>,
-        linux-doc@vger.kernel.org, cgroups@vger.kernel.org
-References: <20230818200630.2719595-1-willy@infradead.org>
- <20230818200630.2719595-3-willy@infradead.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230818200630.2719595-3-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,69 +77,24 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 8/18/23 13:06, Matthew Wilcox (Oracle) wrote:
-> Convert the return values to an ReST list and tidy up the wording while
-> I'm touching it.
+On 08/20/23 12:24, Waiman Long wrote:
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/memcontrol.c | 31 +++++++++++++------------------
->  1 file changed, 13 insertions(+), 18 deletions(-)
+> On 8/20/23 11:21, Qais Yousef wrote:
+> > This is a backport of the series that fixes the way deadline bandwidth
+> > restoration is done which is causing noticeable delay on resume path. It also
+> > converts the cpuset lock back into a mutex which some users on Android too.
+> > I lack the details but AFAIU the read/write semaphore was slower on high
+> > contention.
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e041ba827e59..cd8b3ae6b8d9 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5850,25 +5850,20 @@ static int mem_cgroup_move_account(struct page *page,
->   * @ptent: the pte to be checked
->   * @target: the pointer the target page or swap ent will be stored(can be NULL)
->   *
-> - * Returns
-> - *   0(MC_TARGET_NONE): if the pte is not a target for move charge.
-> - *   1(MC_TARGET_PAGE): if the page corresponding to this pte is a target for
-> - *     move charge. if @target is not NULL, the page is stored in target->page
-> - *     with extra refcnt got(Callers should handle it).
-> - *   2(MC_TARGET_SWAP): if the swap entry corresponding to this pte is a
-> - *     target for charge migration. if @target is not NULL, the entry is stored
-> - *     in target->ent.
-> - *   3(MC_TARGET_DEVICE): like MC_TARGET_PAGE  but page is device memory and
-> - *   thus not on the lru.
-> - *     For now we such page is charge like a regular page would be as for all
-> - *     intent and purposes it is just special memory taking the place of a
-> - *     regular page.
-> - *
-> - *     See Documentations/vm/hmm.txt and include/linux/hmm.h
-> - *
-> - * Called with pte lock held.
-> + * Context: Called with pte lock held.
-> + * Return:
-> + * * MC_TARGET_NONE - If the pte is not a target for move charge.
-> + * * MC_TARGET_PAGE - If the page corresponding to this pte is a target for
-> + *   move charge. If @target is not NULL, the page is stored in target->page
-> + *   with extra refcnt got (Callers should handle it).
+> Note that it was a percpu rwsem before this patch series. It was not a
+> regular rwsem. Percpu rwsem isn't designed to handle high write lock
+> contention. A regular rwsem should be similar to mutex in performance when
+> handling high write lock contention.
 
-I would s/got/taken/.
+Thanks a lot for the clarification Waiman! Much appreciated.
 
-> + * * MC_TARGET_SWAP - If the swap entry corresponding to this pte is a
-> + *   target for charge migration. if @target is not NULL, the entry is stored
 
-s/if/If/
+Cheers
 
-> + *   in target->ent.
-> + * * MC_TARGET_DEVICE - Like MC_TARGET_PAGE but page is device memory and
-> + *   thus not on the lru.  For now such page is charged like a regular page
-> + *   would be as it is just special memory taking the place of a regular page.
-> + *   See Documentations/vm/hmm.txt and include/linux/hmm.h
->   */
-> -
->  static enum mc_target_type get_mctgt_type(struct vm_area_struct *vma,
->  		unsigned long addr, pte_t ptent, union mc_target *target)
->  {
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Thanks.
-
--- 
-~Randy
+--
+Qais Yousef
