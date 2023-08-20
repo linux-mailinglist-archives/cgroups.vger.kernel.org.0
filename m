@@ -2,52 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F55781E80
-	for <lists+cgroups@lfdr.de>; Sun, 20 Aug 2023 17:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57B3781E84
+	for <lists+cgroups@lfdr.de>; Sun, 20 Aug 2023 17:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjHTPZB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S231317AbjHTPZB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Sun, 20 Aug 2023 11:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbjHTPZA (ORCPT
+        with ESMTP id S230253AbjHTPZA (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Sun, 20 Aug 2023 11:25:00 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7704498
-        for <cgroups@vger.kernel.org>; Sun, 20 Aug 2023 08:24:27 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe2ba3e260so25039015e9.2
-        for <cgroups@vger.kernel.org>; Sun, 20 Aug 2023 08:24:27 -0700 (PDT)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A4744AA
+        for <cgroups@vger.kernel.org>; Sun, 20 Aug 2023 08:24:28 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so23759325e9.3
+        for <cgroups@vger.kernel.org>; Sun, 20 Aug 2023 08:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692545066; x=1693149866;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TK555uHCst9oQmvkd3McRBjvZbo0q+tfOD4sf3AzsfM=;
-        b=dFp6Pki6lvfmOuTcHpoH0HRKt3dxycOuRkBLc0wkyKBh7yrau69puh0mXYciWBtNhb
-         PhW9TLxypWWx0zmT4j6dg6nnOpA+rWW6/nuNwJA5TOb5IRkU3BhBLf7mVhbxuugA54YM
-         MZT/e54rzwkjuRm8mIioxlzJf5BrdrMYiJEruzC3HkoqnI7ACDAkoN8v8H89JizsFD4b
-         rtx2+gyEWLj3nV+tXWVuYhXw6yarr/D/we9Wi0OClPsd4bUgis7BkOMRY/Z7zivgLpTX
-         oL7iGgjruAcNHKuU5ewKsjuo1isX9iJ2MEkGBlObRinRikkBngXTWpsQWaW1PiQtSYyD
-         q14A==
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692545067; x=1693149867;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5zB+mFIKo852qISnzn01NoAUuwgxvjRQA9PODsz4aec=;
+        b=lrK//1MkGR+N6RxNCFUirpzXoCWA+P1gsLdONyg7BYhpoeyhVYTVFD6Aj4c5+2WLsK
+         5RNXY7igw+Q1Eas6lOLe/mgcU8W7vp0le6G9DZn8h6xpAvV7TC/EacCEv/tRLIriajSq
+         uDV5nITISjgZZCOxkYOn1m3VQ5riEQCmBdz+4LoKYy2H73kkEuV6HicYvL6Sjcdbip7G
+         pGulw1AnFruuseFJCo+CRmdzftXnm/SScKvCrWHJUoAf0H1oouWrJrGvqXyeCXTjE/Vg
+         uD7dtPu9QQHWc0PJRaFipBNIJfQetOgd9p6FrliiezWUwOqME167eJnqHWRh0r9BtrNJ
+         bYrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692545066; x=1693149866;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TK555uHCst9oQmvkd3McRBjvZbo0q+tfOD4sf3AzsfM=;
-        b=Kii6Y/7SI2j0R4dq2gG5k2pKPVmrTEQVlgLUrz2K3W4hypf/qKoEgFqxCnt+zq+f3P
-         igU+k1LM0e7+PHv7VldeFujCiRzuHJvMOvRMx82EzmztK5QKjmsnXasz8vkffHVb1O8/
-         yxDgo+FL3G/CkcxdS5T+LtOtWvY0IvawZOeFElaA5DtlYWdVPb692HKLBVQ4DYyWzge9
-         hP65Rr+VwJHd2XkWXQRw8RKJmMSMgwLpK+etM89Ujlc6lH3b5jH2TlijP8pPoJpMSkYk
-         M6DNq8IHIsnmquopPF6cssTBdJ2r6xqbOyWuDC5JC3No2ihBoM5Bf1Jaa8ZZ2zFd0EDm
-         Qmjw==
-X-Gm-Message-State: AOJu0Ywgd7bP6dvlZl1DWlXszmkSD+sdJpdFMn28aWYPoqIi8/DC8gpt
-        QkKJ8Usnr3k1L3puOAiWfOnDHQ==
-X-Google-Smtp-Source: AGHT+IHTJ0uHwuQfeABnNnevxeNyCEuvGJaEotUHth1xnQ5IAKBMQIIhvBlkxxCTRROVlPv7pm1KEQ==
-X-Received: by 2002:a5d:4904:0:b0:317:4cf8:35f9 with SMTP id x4-20020a5d4904000000b003174cf835f9mr2998385wrq.16.1692545066086;
-        Sun, 20 Aug 2023 08:24:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692545067; x=1693149867;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5zB+mFIKo852qISnzn01NoAUuwgxvjRQA9PODsz4aec=;
+        b=ItPN8/7e9h8FB37iJmzoyCA2Gh30cOUg4tIw79B4SZ9ZayG9cSYEoF+qzm6HcaunvL
+         vqQJ9XzVHfdFO6xgm9au0rNCIOx0CEAl7uL2e5QQzdw2NciVhp2seMvWbQeHtBWWPF58
+         PBhz2wK2qbqnM7hkMYsnWrzLFjg0q/MGbbIu0k2JGGAmcC4NDSJOpBFEAzqgrUel0K5d
+         QXbOumpiKAg4vvRAPqPZOBFoA/K9a8TXN4BW2/0+2SaP0+P8oVrAPYR+vY/C6B+B8+gE
+         0uKv/rKlaiuXJ+ubPo2kWrSyDisxpt8EB4/yJ2pFcn8DxjbVUGvhb8zC/P92bWhs0p/u
+         xuOA==
+X-Gm-Message-State: AOJu0YxfY22E+lSIFdVRNcrdia/ciD7fPul5RnNmf6AOjGn2Y2Os8yiT
+        YuyoFYxbWRTOJT2oCh9oO44ngg==
+X-Google-Smtp-Source: AGHT+IHXfGjm6SCRltEn2ml1bASWIOTO7ZQvYRd0iFBxbDqF0rVqCH/mQbdFM9ukDmMgYKcDssI4FQ==
+X-Received: by 2002:a7b:c3d0:0:b0:3f9:c0f2:e1a4 with SMTP id t16-20020a7bc3d0000000b003f9c0f2e1a4mr3152114wmj.34.1692545067069;
+        Sun, 20 Aug 2023 08:24:27 -0700 (PDT)
 Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id h11-20020a5d4fcb000000b003141e629cb6sm9419257wrw.101.2023.08.20.08.24.25
+        by smtp.gmail.com with ESMTPSA id h11-20020a5d4fcb000000b003141e629cb6sm9419257wrw.101.2023.08.20.08.24.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 08:24:25 -0700 (PDT)
+        Sun, 20 Aug 2023 08:24:26 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     stable@vger.kernel.org
 Cc:     Juri Lelli <juri.lelli@redhat.com>,
@@ -58,10 +59,12 @@ Cc:     Juri Lelli <juri.lelli@redhat.com>,
         Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
         John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 0/6] Backport rework of deadline bandwidth restoration for 6.1.y
-Date:   Sun, 20 Aug 2023 16:24:11 +0100
-Message-Id: <20230820152417.518806-1-qyousef@layalina.io>
+Subject: [PATCH 1/6] cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+Date:   Sun, 20 Aug 2023 16:24:12 +0100
+Message-Id: <20230820152417.518806-2-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230820152417.518806-1-qyousef@layalina.io>
+References: <20230820152417.518806-1-qyousef@layalina.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,49 +76,67 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This is a backport of the series that fixes the way deadline bandwidth
-restoration is done which is causing noticeable delay on resume path. It also
-converts the cpuset lock back into a mutex which some users on Android too.
-I lack the details but AFAIU the read/write semaphore was slower on high
-contention.
+From: Juri Lelli <juri.lelli@redhat.com>
 
-Compile tested against some randconfig for different archs and tested against
-android14-6.1 GKI kernel.
+commit ad3a557daf6915296a43ef97a3e9c48e076c9dd8 upstream.
 
-My testing is limited to resume path only; and general phone usage to make sure
-nothing falls apart. Would be good to have some deadline specific testing done
-too.
+rebuild_root_domains() and update_tasks_root_domain() have neutral
+names, but actually deal with DEADLINE bandwidth accounting.
 
-Based on v6.1.46
+Rename them to use 'dl_' prefix so that intent is more clear.
 
-Original series:
+No functional change.
 
-	https://lore.kernel.org/lkml/20230508075854.17215-1-juri.lelli@redhat.com/
+Suggested-by: Qais Yousef (Google) <qyousef@layalina.io>
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+Reviewed-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+(cherry picked from commit ad3a557daf6915296a43ef97a3e9c48e076c9dd8)
+Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+---
+ kernel/cgroup/cpuset.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
-
---
-Qais Yousef
-
-Dietmar Eggemann (2):
-  sched/deadline: Create DL BW alloc, free & check overflow interface
-  cgroup/cpuset: Free DL BW in case can_attach() fails
-
-Juri Lelli (4):
-  cgroup/cpuset: Rename functions dealing with DEADLINE accounting
-  sched/cpuset: Bring back cpuset_mutex
-  sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
-  cgroup/cpuset: Iterate only if DEADLINE tasks are present
-
- include/linux/cpuset.h  |  12 +-
- include/linux/sched.h   |   4 +-
- kernel/cgroup/cgroup.c  |   4 +
- kernel/cgroup/cpuset.c  | 246 ++++++++++++++++++++++++++--------------
- kernel/sched/core.c     |  41 +++----
- kernel/sched/deadline.c |  67 ++++++++---
- kernel/sched/sched.h    |   2 +-
- 7 files changed, 246 insertions(+), 130 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index e276db722845..888602c54209 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1066,7 +1066,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	return ndoms;
+ }
+ 
+-static void update_tasks_root_domain(struct cpuset *cs)
++static void dl_update_tasks_root_domain(struct cpuset *cs)
+ {
+ 	struct css_task_iter it;
+ 	struct task_struct *task;
+@@ -1079,7 +1079,7 @@ static void update_tasks_root_domain(struct cpuset *cs)
+ 	css_task_iter_end(&it);
+ }
+ 
+-static void rebuild_root_domains(void)
++static void dl_rebuild_rd_accounting(void)
+ {
+ 	struct cpuset *cs = NULL;
+ 	struct cgroup_subsys_state *pos_css;
+@@ -1107,7 +1107,7 @@ static void rebuild_root_domains(void)
+ 
+ 		rcu_read_unlock();
+ 
+-		update_tasks_root_domain(cs);
++		dl_update_tasks_root_domain(cs);
+ 
+ 		rcu_read_lock();
+ 		css_put(&cs->css);
+@@ -1121,7 +1121,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+ {
+ 	mutex_lock(&sched_domains_mutex);
+ 	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
+-	rebuild_root_domains();
++	dl_rebuild_rd_accounting();
+ 	mutex_unlock(&sched_domains_mutex);
+ }
+ 
 -- 
 2.34.1
 
