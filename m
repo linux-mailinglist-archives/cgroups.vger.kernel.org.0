@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7546A783489
-	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 23:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4FE783480
+	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 23:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjHUUzY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Aug 2023 16:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
+        id S231515AbjHUUz1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Aug 2023 16:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbjHUUzY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 16:55:24 -0400
+        with ESMTP id S231494AbjHUUzZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 16:55:25 -0400
 Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F7012D
-        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 13:55:21 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bf0b05bbbeso57706125ad.0
-        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 13:55:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE3FA1
+        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 13:55:23 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bf58d92bd9so25510125ad.3
+        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 13:55:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692651320; x=1693256120;
+        d=google.com; s=20221208; t=1692651323; x=1693256123;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EWXap7NsEgOymMxjxsCXNzpaZzVX2vYEXhkkwglYb2w=;
-        b=BxE45txI7COiK2llaPLekWLKmnwKvbfF2s+ErO15DE6ofDgcY41orJSnC1lxnC5xSD
-         ns0NI3CFDeBKOgHffDfz8J+snMVDi/Bm1Z7XQP+gB/BJurXrc210wa7+HakGaRIeyfrR
-         gkyrBvxIdVL0w6/wEiEjuj80edhWhBOarSLoMLG6xilaOxakqnBgLMne6hlBqjVYfs4v
-         ENXPjTfI0g332oAIouzQJ4gw4Eqbnd43rlLTg2T4GFT3PPeE9f1Qb7UfSFQpFlOSlXs8
-         BweEjiJ9C0STVkzlpyv7rd/z4Ep9F8B9BTFfyXqsH3AJsnekq8bnFOZfOryTXvrS+E+8
-         DCMw==
+        bh=II24bAIuGVg2YyiqwiCMReE2mVTE25qmDUAuXBGJ4Ok=;
+        b=KmH6O0vZ9sBp7HHBae0PwJCnRa8ujSumjQ0AlsGJ1pi5KbQIxpyrvcCO0krC5ztY+u
+         N8ljzGOzIX6jer2HV1GxzZPCURYnOZC6D1lrlNXbpCHNDpRJB0nITXoN0mon6iaCy4e1
+         QkiLalZ25r1ZxplkbXN+NiDkoW8GDcA+Uj1Shac+wu5psshTskn8q8Lf6B5bKZffckoB
+         jKrEuG2Vw03aNvOQfFER14s8IkriQqDS2U2JTgSKgCtg7TmcMJ9q3B18uyHoSMZM7lnj
+         ioj21pXqwFO1fJbsQwZ0rFa+1Vc07Ob56riuci9Ea7Iw13vPBzZ96Hsd5+OoDw6zGDiR
+         3h5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692651320; x=1693256120;
+        d=1e100.net; s=20221208; t=1692651323; x=1693256123;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EWXap7NsEgOymMxjxsCXNzpaZzVX2vYEXhkkwglYb2w=;
-        b=N1TjBfXmX/SMIbUhUz43+4CuZKO4RV7OSDV5j9ToNjZuIE0H/cDJgh/WXHpopbtSH7
-         rit8sj9L70eE9XSmYgXvzPz1Tl77DuqOreE9rcIpomre2gylijEgWy0TtfcYi11zG+26
-         AUglXGM3/dTrje417sHFb+EFgxRcNLfT6dx4BSnp4R52UUJ8b+UIhKCgL0apR0pQbO2Z
-         epauaB+55T6wHrL8PDa2EzZB0T6QIE+5aKRs8lRFSOayMMhbWuDVa/nVflCH2hUXXRmf
-         YJtBUCdoUfSP9kFNTLCnRCFmCBqM3tWsbhfqFAVvg05xN2GhOqsj0o6/uJv+YbSrFR09
-         1e2Q==
-X-Gm-Message-State: AOJu0YzfXu3PxaPbLBbTOyih8jdLdOD34Ka5+agj1JjwfyZpU7105Ho7
-        zhnpAjaJebNKCBmBi4FjY3mn6AEDqbxaEK2I
-X-Google-Smtp-Source: AGHT+IFrW4DDu5hPoWYHSg5YRuSc/PnkgVYk/IScMtefDrv62gvp7vZ2XxWBYhOW7vd5z08FD5JBCBz/m5ZQr4DG
+        bh=II24bAIuGVg2YyiqwiCMReE2mVTE25qmDUAuXBGJ4Ok=;
+        b=Q+LbWhzphmiVg8EsuOkMRYBIv7a9zskY51czE4V7ZEoqdEXenIGeF9yhLTWw15EFfJ
+         M09C0wenkwRWR2Gs/D9bw94rE4iWAXMtnP1UjUDEAZz8BFISIu9bzx9W9hlQEIS4EOss
+         YOnPxZu/FavnLXqfyPmNhFdyKiQOYgtXiR6GvUF+ZTC2sMa6s949hIR2bnDwJEhkKUWJ
+         NgRYCgqwxPQNcGFBMz+K6T5ThIBUTdjw/4T1exGX5yxsutUMVP9BOaSXQPWRqUG641jc
+         JL1W8RoS7qrsHPFNvgXc0gQ5jh4ClY6SgVQDG6yVlzFWwAllNREIm4k+hsqH1yZKAzdT
+         Xk4w==
+X-Gm-Message-State: AOJu0YzePSceOevFArSBTL6VI3QVl5y+lJdY+6owdNZq2okFo3+BT8x7
+        Nsm4TU+3Fqnd1t4TjclhbgOfWWVAlInw/bJR
+X-Google-Smtp-Source: AGHT+IEvQmiYC84sZKnE5YzQy6JNP4dH1ZNkD129Wrs7O1rPHJU5tveJ2ce7KEKHH/DtaNVXLSxePpzIYxXdsGad
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:903:2806:b0:1bc:5182:1ddb with SMTP
- id kp6-20020a170903280600b001bc51821ddbmr2949941plb.3.1692651320527; Mon, 21
- Aug 2023 13:55:20 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 20:54:57 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:902:eccc:b0:1b8:a555:385d with SMTP
+ id a12-20020a170902eccc00b001b8a555385dmr3847926plh.9.1692651322749; Mon, 21
+ Aug 2023 13:55:22 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 20:54:58 +0000
 In-Reply-To: <20230821205458.1764662-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230821205458.1764662-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230821205458.1764662-3-yosryahmed@google.com>
-Subject: [PATCH 2/3] mm: memcg: add a helper for non-unified stats flushing
+Message-ID: <20230821205458.1764662-4-yosryahmed@google.com>
+Subject: [PATCH 3/3] mm: memcg: use non-unified stats flushing for userspace reads
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
@@ -65,7 +65,7 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,75 +73,123 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Some contexts flush memcg stats outside of unified flushing, directly
-using cgroup_rstat_flush(). Add a helper for non-unified flushing, a
-counterpart for do_unified_stats_flush(), and use it in those contexts,
-as well as in do_unified_stats_flush() itself.
+Unified flushing allows for great concurrency for paths that attempt to
+flush the stats, at the expense of potential staleness and a single
+flusher paying the extra cost of flushing the full tree.
 
-This abstracts the rstat API and makes it easy to introduce
-modifications to either unified or non-unified flushing functions
-without changing callers.
+This tradeoff makes sense for in-kernel flushers that may observe high
+concurrency (e.g. reclaim, refault). For userspace readers, stale stats
+may be unexpected and problematic, especially when such stats are used
+for critical paths such as userspace OOM handling. Additionally, a
+userspace reader will occasionally pay the cost of flushing the entire
+hierarchy, which also causes problems in some cases [1].
 
-No functional change intended.
+Opt userspace reads out of unified flushing. This makes the cost of
+reading the stats more predictable (proportional to the size of the
+subtree), as well as the freshness of the stats. Since userspace readers
+are not expected to have similar concurrency to in-kernel flushers,
+serializing them among themselves and among in-kernel flushers should be
+okay.
+
+This was tested on a machine with 256 cpus by running a synthetic test
+The script that creates 50 top-level cgroups, each with 5 children (250
+leaf cgroups). Each leaf cgroup has 10 processes running that allocate
+memory beyond the cgroup limit, invoking reclaim (which is an in-kernel
+unified flusher). Concurrently, one thread is spawned per-cgroup to read
+the stats every second (including root, top-level, and leaf cgroups --
+so total 251 threads). No regressions were observed in the total running
+time; which means that non-unified userspace readers are not slowing
+down in-kernel unified flushers:
+
+Base (mm-unstable):
+
+real	0m18.228s
+user	0m9.463s
+sys	60m15.879s
+
+real	0m20.828s
+user	0m8.535s
+sys	70m12.364s
+
+real	0m19.789s
+user	0m9.177s
+sys	66m10.798s
+
+With this patch:
+
+real	0m19.632s
+user	0m8.608s
+sys	64m23.483s
+
+real	0m18.463s
+user	0m7.465s
+sys	60m34.089s
+
+real	0m20.309s
+user	0m7.754s
+sys	68m2.392s
+
+Additionally, the average latency for reading stats went from roughly
+40ms to 5 ms, because we mostly read the stats of leaf cgroups in this
+script, so we only have to flush one cgroup, instead of *sometimes*
+flushing the entire tree with unified flushing.
+
+[1]https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- mm/memcontrol.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ mm/memcontrol.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c6150ea54d48..90f08b35fa77 100644
+index 90f08b35fa77..d3b13a06224c 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -639,6 +639,17 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
- }
- 
-+/*
-+ * do_stats_flush - do a flush of the memory cgroup statistics
-+ * @memcg: memory cgroup to flush
-+ *
-+ * Only flushes the subtree of @memcg, does not skip under any conditions.
-+ */
-+static void do_stats_flush(struct mem_cgroup *memcg)
-+{
-+	cgroup_rstat_flush(memcg->css.cgroup);
-+}
-+
- /*
-  * do_unified_stats_flush - do a unified flush of memory cgroup statistics
-  *
-@@ -656,7 +667,7 @@ static void do_unified_stats_flush(void)
- 
- 	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
- 
--	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+	do_stats_flush(root_mem_cgroup);
- 
- 	atomic_set(&stats_flush_threshold, 0);
- 	atomic_set(&stats_flush_ongoing, 0);
-@@ -7790,7 +7801,7 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- 			break;
- 		}
- 
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		do_stats_flush(memcg);
- 		pages = memcg_page_state(memcg, MEMCG_ZSWAP_B) / PAGE_SIZE;
- 		if (pages < max)
- 			continue;
-@@ -7855,8 +7866,10 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
- {
--	cgroup_rstat_flush(css->cgroup);
--	return memcg_page_state(mem_cgroup_from_css(css), MEMCG_ZSWAP_B);
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-+
+@@ -1606,7 +1606,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 	 *
+ 	 * Current memory state:
+ 	 */
+-	mem_cgroup_try_flush_stats();
 +	do_stats_flush(memcg);
-+	return memcg_page_state(memcg, MEMCG_ZSWAP_B);
- }
  
- static int zswap_max_show(struct seq_file *m, void *v)
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		u64 size;
+@@ -4048,7 +4048,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
+ 	int nid;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
+-	mem_cgroup_try_flush_stats();
++	do_stats_flush(memcg);
+ 
+ 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
+ 		seq_printf(m, "%s=%lu", stat->name,
+@@ -4123,7 +4123,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 
+ 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
+ 
+-	mem_cgroup_try_flush_stats();
++	do_stats_flush(memcg);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+@@ -4625,7 +4625,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
+ 	struct mem_cgroup *parent;
+ 
+-	mem_cgroup_try_flush_stats();
++	do_stats_flush(memcg);
+ 
+ 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
+ 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
+@@ -6640,7 +6640,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+ 	int i;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
+-	mem_cgroup_try_flush_stats();
++	do_stats_flush(memcg);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		int nid;
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
