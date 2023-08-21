@@ -2,37 +2,34 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1E9782B93
-	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 16:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0621782BB4
+	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 16:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbjHUOVk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Aug 2023 10:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
+        id S235783AbjHUO0J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Aug 2023 10:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235872AbjHUOVj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 10:21:39 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D1F127;
-        Mon, 21 Aug 2023 07:21:20 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 4332B1866B0F;
-        Mon, 21 Aug 2023 17:21:17 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id nmMrT0FTAkwZ; Mon, 21 Aug 2023 17:21:16 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id D56661865CA5;
-        Mon, 21 Aug 2023 17:21:16 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EwXuEzTsToRB; Mon, 21 Aug 2023 17:21:16 +0300 (MSK)
-Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.13.132])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id B6EF518668CE;
-        Mon, 21 Aug 2023 17:21:14 +0300 (MSK)
-From:   Anastasia Belova <abelova@astralinux.ru>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Anastasia Belova <abelova@astralinux.ru>,
+        with ESMTP id S235724AbjHUO0J (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 10:26:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154EFE3;
+        Mon, 21 Aug 2023 07:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VBLWbhiJ5Y+LfXHbB2wVDfY3nQIzq6btaVbaMioHfUU=; b=Ob3wf54jrst6pqEm8LXcrMnm9m
+        zF7UTAPg+4G/Z5X/gaXsOzPf8/oPTBEWz7UZaZpozdHcPyh6WMpbkSp/NnhWspC2e246EiVEkjRLu
+        d3r7s09NuEB8Dzoy+YQ6SoiraRD8K64+WiEeWNAcaI+BDL6Zjqsfy32mpPbM7Ey+s3JKw4YnuH0rI
+        yxCGVA86DMQPQD/4plE7ar23F5o6tS5xMrhF41ovILa9yv/Ro1TbOpb/vfms/cgwecRF2N8Mt/v0B
+        +JDa9sUH+GMEPdmmz6EU1+XUSOYsC4qneL7wNd5mx3dBA0dplXzyTpv9rJoKsObtBWZB73hH/XH+m
+        LoJI12zg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qY5qs-00AgPo-1d; Mon, 21 Aug 2023 14:25:54 +0000
+Date:   Mon, 21 Aug 2023 15:25:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Anastasia Belova <abelova@astralinux.ru>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
@@ -41,45 +38,42 @@ Cc:     Anastasia Belova <abelova@astralinux.ru>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH] mm: memcomtrol: add warning in case of rtpn = NULL
-Date:   Mon, 21 Aug 2023 17:20:51 +0300
-Message-Id: <20230821142051.31889-1-abelova@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
+Subject: Re: [PATCH] mm: memcomtrol: add warning in case of rtpn = NULL
+Message-ID: <ZONz8Zqwg4cuCGCe@casper.infradead.org>
+References: <20230821142051.31889-1-abelova@astralinux.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821142051.31889-1-abelova@astralinux.ru>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-kzalloc_node may return NULL. So rtpn should be
-checked before dereference in mem_cgroup_init.
+On Mon, Aug 21, 2023 at 05:20:51PM +0300, Anastasia Belova wrote:
+> kzalloc_node may return NULL. So rtpn should be
+> checked before dereference in mem_cgroup_init.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+What good will this do?
 
-Fixes: 95a045f63d98 ("mm: memcontrol: consolidate memory controller initi=
-alization")
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
----
- mm/memcontrol.c | 1 +
- 1 file changed, 1 insertion(+)
+>  
+>  		rtpn = kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
+> +		WARN_ON(!rtpn);
+>  
+>  		rtpn->rb_root = RB_ROOT;
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..7998dbf3c7cd 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7377,6 +7377,7 @@ static int __init mem_cgroup_init(void)
- 		struct mem_cgroup_tree_per_node *rtpn;
-=20
- 		rtpn =3D kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
-+		WARN_ON(!rtpn);
-=20
- 		rtpn->rb_root =3D RB_ROOT;
- 		rtpn->rb_rightmost =3D NULL;
---=20
-2.30.2
+so you'll get a warning right before you get a crash, which will provide
+exactly the same information.  And you'd already have a warning that
+the memory allocation had failed (because __GFP_NOWARN wasn't set).
+So you've increased the amount of data from 2 dumps to 3 without providing
+any neww information.
+
+If you _did_ something to avoid the crash, there might be a point to
+this, but the fact is that small GFP_KERNEL allocations _don't_ fail.
+You need to teach your tool that, or you'll be overwhelmed with
+false positives.
 
