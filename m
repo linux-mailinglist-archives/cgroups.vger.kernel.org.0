@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A337783589
+	by mail.lfdr.de (Postfix) with ESMTP id ED10978358B
 	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 00:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjHUWUj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S231470AbjHUWUj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Mon, 21 Aug 2023 18:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbjHUWUc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 18:20:32 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965EE18F
-        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 15:20:26 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fef34c33d6so10686175e9.3
-        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 15:20:26 -0700 (PDT)
+        with ESMTP id S231398AbjHUWUi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 18:20:38 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B87127
+        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 15:20:27 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe5c0e587eso36876945e9.0
+        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 15:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692656425; x=1693261225;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692656426; x=1693261226;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=am444WNrS3h8wlVCx2H3MlRIk5MPSUP4lUnh4kSEX7U=;
-        b=BPDNlUnLuVmEXdh393SwJy7fbkTa6LxPE5FyC53TuAC/nNeerqqlrPUU2Ql2mFOKge
-         tVisnNDs67BQkQelL5BH3xDB6qlAxIsauKSdCP1u9RbVtQwR23XLMyLlcpNGXB6Iy+9V
-         6h5c6qltYh+VvFXjhEhMAVMkoOH0kzg/O/VFN9flkcaesv4gVW663QWu5QmKnZxZelhW
-         VxA2ruZokQ/13Y4W1iK9D7QTZPDstoYSMzJe7Ut6tGpbcqCR8J9/BzhJDaPnbWSYALlO
-         0wLQY1QKd5mVg7H0581ixiyR8HIbQcWET5YJk7fGoy/pG71Z81LUP2b0nT4PvguFw6cc
-         5C1w==
+        bh=ddy6FCEY5hzeS0746oHXREKMbN9QVr6NPEwblklvNZo=;
+        b=4LGFXD8A8ENlsep9RQwGl10vPxO88NsvzMgXD+9eNRZ/7DkjwMT1Zi45Y77ZHu5j35
+         fAR/SWi67fTJGy6DPHA5dGI0BYGOP9hZRMzlgCTW8qYqB9Ph1w4Hecrw80DG03EL+91s
+         KANRNANdrqCmfVVCsebcxcdAsgsG82MH/roQ1LK+1P2+qhUN+FO31C/FheHaizkfb1Lj
+         EB7ETBvwnb85T1LCOCXiKyHbjloZva22BLI3QZ5anM/mQ6CY4lpl+j0BzBzOZWPDxbMm
+         p0AnclTj2DwBoi/mLAlySk0v3njaL+AL0rpvxPoGFmFSd/hq2dKwRHgy0p4VXMoPEwIz
+         d4Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692656425; x=1693261225;
+        d=1e100.net; s=20221208; t=1692656426; x=1693261226;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=am444WNrS3h8wlVCx2H3MlRIk5MPSUP4lUnh4kSEX7U=;
-        b=B+wMHD3Algepj65BfwyGOpU30OhS9J1k10kUDiqMDbgtLrhq5l4lLzeulfe5CfszaT
-         LB+g0Uqc6Jwrvyz1vsrDXBpYu/PpYBdP95c4lIhu/xBtmMZhPdSm6VBMyEXocej+Ie8e
-         ASwdY7HDdBY7JvzIWWufB/IuxY05J8i1zUUviyZQRgMSiOHKGX9/9/qmFgQ2hky9FDo5
-         O3eM9mji+odwfMpkJFVzeTuB78+6/Ll7v2HuFsJoTICFnO09XuIFKAoQ+bNmmBm8op9w
-         3iLxIloNJ/CgL75wRBOwn+neSVcnvI3sW5YSDfuLdBI6Eal+6gP1I6BQrzTsD8OpXZfe
-         4HBA==
-X-Gm-Message-State: AOJu0YxZvB9xJ1G8kwEbVWyFzh9DosaO+KA1z3Oib2Cgz1y4GNQk/lho
-        lW3GvmpKBefS6cV6hbNS8RUlQw==
-X-Google-Smtp-Source: AGHT+IE7nTgt2xWXl939ycCQCouQu+JbBrOJvWeo+TRBWSL8R/kRvPsatTTyirJH2mgjFLatJZcvYQ==
-X-Received: by 2002:a7b:cb95:0:b0:3fe:1967:447c with SMTP id m21-20020a7bcb95000000b003fe1967447cmr5850301wmi.9.1692656425088;
-        Mon, 21 Aug 2023 15:20:25 -0700 (PDT)
+        bh=ddy6FCEY5hzeS0746oHXREKMbN9QVr6NPEwblklvNZo=;
+        b=VmzRlJyjDh/OB3vHOpbBPxlvfTCiqk9opRELfS9TTBOhLnDPaNxS35VnrGZJEtAHE2
+         iVJsQAraJua7RUJR3mT9qk0UX/fFPUO87IOLY+jz8AzR561RuMhNqF/iTf1Yjup3jDP/
+         h5/1WI9a67fnSiBFBTJhG9NdG8gP9bVqnLXIn9m6PhlHYjysEIquUOGCFmjenOS63lxP
+         6AKpGjBQPEhzU1eWOLULry7tP1h+oAzzQ1hyzUEj4dZYMWY/0W8pVGrZpy09vbKSUKEO
+         5pOOk5bl/zONRpgws0w/YO/x13OcGRymFM8VXU8THXgPUgAbBWOKn7AO1DOsVzVcR0Vu
+         CQ7Q==
+X-Gm-Message-State: AOJu0YyeAdNgFWdD3sDT7LZ57N08xRYlQLJKP1DmwoT+yaGoiNSIDDOS
+        4qCWrQfPwVuJ6AyPpJN00sK3vw==
+X-Google-Smtp-Source: AGHT+IGuL4lJ6a+Hcvj9IHHW0ZedYrdkuqW75STmYvkP3MfMFqU7cHV/ivmQuIUtxDCkFoP1IOnzQg==
+X-Received: by 2002:a05:600c:214a:b0:3fc:25:ced6 with SMTP id v10-20020a05600c214a00b003fc0025ced6mr6358964wml.13.1692656426229;
+        Mon, 21 Aug 2023 15:20:26 -0700 (PDT)
 Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id hn40-20020a05600ca3a800b003fe61c33df5sm17751154wmb.3.2023.08.21.15.20.24
+        by smtp.gmail.com with ESMTPSA id hn40-20020a05600ca3a800b003fe61c33df5sm17751154wmb.3.2023.08.21.15.20.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 15:20:24 -0700 (PDT)
+        Mon, 21 Aug 2023 15:20:25 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     stable@vger.kernel.org
 Cc:     Juri Lelli <juri.lelli@redhat.com>,
@@ -59,17 +59,17 @@ Cc:     Juri Lelli <juri.lelli@redhat.com>,
         Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
         John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 5/6] sched/deadline: Create DL BW alloc, free & check overflow interface
-Date:   Mon, 21 Aug 2023 23:19:55 +0100
-Message-Id: <20230821221956.698117-6-qyousef@layalina.io>
+Subject: [PATCH 6/6] cgroup/cpuset: Free DL BW in case can_attach() fails
+Date:   Mon, 21 Aug 2023 23:19:56 +0100
+Message-Id: <20230821221956.698117-7-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230821221956.698117-1-qyousef@layalina.io>
 References: <20230821221956.698117-1-qyousef@layalina.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,169 +78,199 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-commit 85989106feb734437e2d598b639991b9185a43a6 upstream.
+commit 2ef269ef1ac006acf974793d975539244d77b28f upstream.
 
-While moving a set of tasks between exclusive cpusets,
-cpuset_can_attach() -> task_can_attach() calls dl_cpu_busy(..., p) for
-DL BW overflow checking and per-task DL BW allocation on the destination
-root_domain for the DL tasks in this set.
+cpuset_can_attach() can fail. Postpone DL BW allocation until all tasks
+have been checked. DL BW is not allocated per-task but as a sum over
+all DL tasks migrating.
 
-This approach has the issue of not freeing already allocated DL BW in
-the following error cases:
+If multiple controllers are attached to the cgroup next to the cpuset
+controller a non-cpuset can_attach() can fail. In this case free DL BW
+in cpuset_cancel_attach().
 
-(1) The set of tasks includes multiple DL tasks and DL BW overflow
-    checking fails for one of the subsequent DL tasks.
+Finally, update cpuset DL task count (nr_deadline_tasks) only in
+cpuset_attach().
 
-(2) Another controller next to the cpuset controller which is attached
-    to the same cgroup fails in its can_attach().
-
-To address this problem rework dl_cpu_busy():
-
-(1) Split it into dl_bw_check_overflow() & dl_bw_alloc() and add a
-    dedicated dl_bw_free().
-
-(2) dl_bw_alloc() & dl_bw_free() take a `u64 dl_bw` parameter instead of
-    a `struct task_struct *p` used in dl_cpu_busy(). This allows to
-    allocate DL BW for a set of tasks too rather than only for a single
-    task.
-
+Suggested-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+Reviewed-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Tejun Heo <tj@kernel.org>
-(cherry picked from commit 85989106feb734437e2d598b639991b9185a43a6)
+(cherry picked from commit 2ef269ef1ac006acf974793d975539244d77b28f)
 Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 ---
- include/linux/sched.h   |  2 ++
- kernel/sched/core.c     |  4 ++--
- kernel/sched/deadline.c | 53 +++++++++++++++++++++++++++++++----------
- kernel/sched/sched.h    |  2 +-
- 4 files changed, 45 insertions(+), 16 deletions(-)
+ include/linux/sched.h  |  2 +-
+ kernel/cgroup/cpuset.c | 53 ++++++++++++++++++++++++++++++++++++++----
+ kernel/sched/core.c    | 17 ++------------
+ 3 files changed, 51 insertions(+), 21 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index eed5d65b8d1f..0bee06542450 100644
+index 0bee06542450..2553918f0b61 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1853,6 +1853,8 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
+@@ -1852,7 +1852,7 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
+ }
  
  extern int cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
- extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
-+extern int dl_bw_alloc(int cpu, u64 dl_bw);
-+extern void dl_bw_free(int cpu, u64 dl_bw);
+-extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
++extern int task_can_attach(struct task_struct *p);
+ extern int dl_bw_alloc(int cpu, u64 dl_bw);
+ extern void dl_bw_free(int cpu, u64 dl_bw);
  #ifdef CONFIG_SMP
- extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
- extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 72cd267e3821..50fab8114260 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9319,7 +9319,7 @@ int task_can_attach(struct task_struct *p,
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index b7168970fff2..2c76fcd9f0bc 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -198,6 +198,8 @@ struct cpuset {
+ 	 * know when to rebuild associated root domain bandwidth information.
+ 	 */
+ 	int nr_deadline_tasks;
++	int nr_migrate_dl_tasks;
++	u64 sum_migrate_dl_bw;
  
- 		if (unlikely(cpu >= nr_cpu_ids))
- 			return -EINVAL;
--		ret = dl_cpu_busy(cpu, p);
-+		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
+ 	/* Invalid partition error code, not lock protected */
+ 	enum prs_errcode prs_err;
+@@ -2496,16 +2498,23 @@ static int cpuset_can_attach_check(struct cpuset *cs)
+ 	return 0;
+ }
+ 
++static void reset_migrate_dl_data(struct cpuset *cs)
++{
++	cs->nr_migrate_dl_tasks = 0;
++	cs->sum_migrate_dl_bw = 0;
++}
++
+ /* Called by cgroups to determine if a cpuset is usable; cpuset_mutex held */
+ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ {
+ 	struct cgroup_subsys_state *css;
+-	struct cpuset *cs;
++	struct cpuset *cs, *oldcs;
+ 	struct task_struct *task;
+ 	int ret;
+ 
+ 	/* used later by cpuset_attach() */
+ 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
++	oldcs = cpuset_attach_old_cs;
+ 	cs = css_cs(css);
+ 
+ 	mutex_lock(&cpuset_mutex);
+@@ -2516,7 +2525,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 		goto out_unlock;
+ 
+ 	cgroup_taskset_for_each(task, css, tset) {
+-		ret = task_can_attach(task, cs->effective_cpus);
++		ret = task_can_attach(task);
+ 		if (ret)
+ 			goto out_unlock;
+ 		ret = security_task_setscheduler(task);
+@@ -2524,11 +2533,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 			goto out_unlock;
+ 
+ 		if (dl_task(task)) {
+-			cs->nr_deadline_tasks++;
+-			cpuset_attach_old_cs->nr_deadline_tasks--;
++			cs->nr_migrate_dl_tasks++;
++			cs->sum_migrate_dl_bw += task->dl.dl_bw;
+ 		}
  	}
  
- out:
-@@ -9604,7 +9604,7 @@ static void cpuset_cpu_active(void)
- static int cpuset_cpu_inactive(unsigned int cpu)
- {
- 	if (!cpuhp_tasks_frozen) {
--		int ret = dl_cpu_busy(cpu, NULL);
-+		int ret = dl_bw_check_overflow(cpu);
++	if (!cs->nr_migrate_dl_tasks)
++		goto out_success;
++
++	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
++		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
++
++		if (unlikely(cpu >= nr_cpu_ids)) {
++			reset_migrate_dl_data(cs);
++			ret = -EINVAL;
++			goto out_unlock;
++		}
++
++		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
++		if (ret) {
++			reset_migrate_dl_data(cs);
++			goto out_unlock;
++		}
++	}
++
++out_success:
+ 	/*
+ 	 * Mark attach is in progress.  This makes validate_change() fail
+ 	 * changes which zero cpus/mems_allowed.
+@@ -2551,6 +2580,14 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
+ 	cs->attach_in_progress--;
+ 	if (!cs->attach_in_progress)
+ 		wake_up(&cpuset_attach_wq);
++
++	if (cs->nr_migrate_dl_tasks) {
++		int cpu = cpumask_any(cs->effective_cpus);
++
++		dl_bw_free(cpu, cs->sum_migrate_dl_bw);
++		reset_migrate_dl_data(cs);
++	}
++
+ 	mutex_unlock(&cpuset_mutex);
+ }
  
- 		if (ret)
- 			return ret;
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index e11de074a6fd..166c3e6eae61 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -3058,26 +3058,38 @@ int dl_cpuset_cpumask_can_shrink(const struct cpumask *cur,
+@@ -2651,6 +2688,12 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+ out:
+ 	cs->old_mems_allowed = cpuset_attach_nodemask_to;
+ 
++	if (cs->nr_migrate_dl_tasks) {
++		cs->nr_deadline_tasks += cs->nr_migrate_dl_tasks;
++		oldcs->nr_deadline_tasks -= cs->nr_migrate_dl_tasks;
++		reset_migrate_dl_data(cs);
++	}
++
+ 	cs->attach_in_progress--;
+ 	if (!cs->attach_in_progress)
+ 		wake_up(&cpuset_attach_wq);
+@@ -3330,7 +3373,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
+ 	if (ret)
+ 		goto out_unlock;
+ 
+-	ret = task_can_attach(task, cs->effective_cpus);
++	ret = task_can_attach(task);
+ 	if (ret)
+ 		goto out_unlock;
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 50fab8114260..90005760003f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9294,8 +9294,7 @@ int cpuset_cpumask_can_shrink(const struct cpumask *cur,
  	return ret;
  }
  
--int dl_cpu_busy(int cpu, struct task_struct *p)
-+enum dl_bw_request {
-+	dl_bw_req_check_overflow = 0,
-+	dl_bw_req_alloc,
-+	dl_bw_req_free
-+};
-+
-+static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
+-int task_can_attach(struct task_struct *p,
+-		    const struct cpumask *cs_effective_cpus)
++int task_can_attach(struct task_struct *p)
  {
--	unsigned long flags, cap;
-+	unsigned long flags;
- 	struct dl_bw *dl_b;
--	bool overflow;
-+	bool overflow = 0;
+ 	int ret = 0;
  
- 	rcu_read_lock_sched();
- 	dl_b = dl_bw_of(cpu);
- 	raw_spin_lock_irqsave(&dl_b->lock, flags);
--	cap = dl_bw_capacity(cpu);
--	overflow = __dl_overflow(dl_b, cap, 0, p ? p->dl.dl_bw : 0);
+@@ -9308,21 +9307,9 @@ int task_can_attach(struct task_struct *p,
+ 	 * success of set_cpus_allowed_ptr() on all attached tasks
+ 	 * before cpus_mask may be changed.
+ 	 */
+-	if (p->flags & PF_NO_SETAFFINITY) {
++	if (p->flags & PF_NO_SETAFFINITY)
+ 		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
+-					      cs_effective_cpus)) {
+-		int cpu = cpumask_any_and(cpu_active_mask, cs_effective_cpus);
  
--	if (!overflow && p) {
--		/*
--		 * We reserve space for this task in the destination
--		 * root_domain, as we can't fail after this point.
--		 * We will free resources in the source root_domain
--		 * later on (see set_cpus_allowed_dl()).
--		 */
--		__dl_add(dl_b, p->dl.dl_bw, dl_bw_cpus(cpu));
-+	if (req == dl_bw_req_free) {
-+		__dl_sub(dl_b, dl_bw, dl_bw_cpus(cpu));
-+	} else {
-+		unsigned long cap = dl_bw_capacity(cpu);
-+
-+		overflow = __dl_overflow(dl_b, cap, 0, dl_bw);
-+
-+		if (req == dl_bw_req_alloc && !overflow) {
-+			/*
-+			 * We reserve space in the destination
-+			 * root_domain, as we can't fail after this point.
-+			 * We will free resources in the source root_domain
-+			 * later on (see set_cpus_allowed_dl()).
-+			 */
-+			__dl_add(dl_b, dl_bw, dl_bw_cpus(cpu));
-+		}
- 	}
- 
- 	raw_spin_unlock_irqrestore(&dl_b->lock, flags);
-@@ -3085,6 +3097,21 @@ int dl_cpu_busy(int cpu, struct task_struct *p)
- 
- 	return overflow ? -EBUSY : 0;
+-		if (unlikely(cpu >= nr_cpu_ids))
+-			return -EINVAL;
+-		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
+-	}
+-
+-out:
+ 	return ret;
  }
-+
-+int dl_bw_check_overflow(int cpu)
-+{
-+	return dl_bw_manage(dl_bw_req_check_overflow, cpu, 0);
-+}
-+
-+int dl_bw_alloc(int cpu, u64 dl_bw)
-+{
-+	return dl_bw_manage(dl_bw_req_alloc, cpu, dl_bw);
-+}
-+
-+void dl_bw_free(int cpu, u64 dl_bw)
-+{
-+	dl_bw_manage(dl_bw_req_free, cpu, dl_bw);
-+}
- #endif
- 
- #ifdef CONFIG_SCHED_DEBUG
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 81ac605b9cd5..ead91c1fbe75 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -330,7 +330,7 @@ extern void __getparam_dl(struct task_struct *p, struct sched_attr *attr);
- extern bool __checkparam_dl(const struct sched_attr *attr);
- extern bool dl_param_changed(struct task_struct *p, const struct sched_attr *attr);
- extern int  dl_cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
--extern int  dl_cpu_busy(int cpu, struct task_struct *p);
-+extern int  dl_bw_check_overflow(int cpu);
- 
- #ifdef CONFIG_CGROUP_SCHED
  
 -- 
 2.34.1
