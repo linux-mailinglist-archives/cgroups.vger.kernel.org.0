@@ -2,54 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47785782A76
-	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 15:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1E9782B93
+	for <lists+cgroups@lfdr.de>; Mon, 21 Aug 2023 16:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbjHUN0J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Aug 2023 09:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S235868AbjHUOVk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Aug 2023 10:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233695AbjHUN0I (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 09:26:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4249EB1;
-        Mon, 21 Aug 2023 06:26:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D473561E94;
-        Mon, 21 Aug 2023 13:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9B89C433C7;
-        Mon, 21 Aug 2023 13:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692624366;
-        bh=wo0AEq7EVLKcJNozUw706Dbt/mblagvb19WS0DocC+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V/U5FQXfP7owWoyl3u1JxwD1cHjEUFKG09746gRFkXDP1fKWXpzqEutKp5T+YVlIw
-         6D6CY94Zcc1Emt2MBjamEHENJfOnn/7+afTAltLYm3pkNlcrocUDqmGateOT0InCAn
-         AUxwehIro76XKzfZ3YhS8n84UtJuLMwwG0dhQEG0=
-Date:   Mon, 21 Aug 2023 15:26:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
-        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
- for 6.1.y
-Message-ID: <2023082140-dreaded-hemstitch-84b9@gregkh>
-References: <20230820152417.518806-1-qyousef@layalina.io>
+        with ESMTP id S235872AbjHUOVj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 10:21:39 -0400
+Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D1F127;
+        Mon, 21 Aug 2023 07:21:20 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id 4332B1866B0F;
+        Mon, 21 Aug 2023 17:21:17 +0300 (MSK)
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id nmMrT0FTAkwZ; Mon, 21 Aug 2023 17:21:16 +0300 (MSK)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id D56661865CA5;
+        Mon, 21 Aug 2023 17:21:16 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at astralinux.ru
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id EwXuEzTsToRB; Mon, 21 Aug 2023 17:21:16 +0300 (MSK)
+Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.13.132])
+        by mail.astralinux.ru (Postfix) with ESMTPSA id B6EF518668CE;
+        Mon, 21 Aug 2023 17:21:14 +0300 (MSK)
+From:   Anastasia Belova <abelova@astralinux.ru>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Anastasia Belova <abelova@astralinux.ru>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH] mm: memcomtrol: add warning in case of rtpn = NULL
+Date:   Mon, 21 Aug 2023 17:20:51 +0300
+Message-Id: <20230821142051.31889-1-abelova@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230820152417.518806-1-qyousef@layalina.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,25 +56,30 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 04:24:11PM +0100, Qais Yousef wrote:
-> This is a backport of the series that fixes the way deadline bandwidth
-> restoration is done which is causing noticeable delay on resume path. It also
-> converts the cpuset lock back into a mutex which some users on Android too.
-> I lack the details but AFAIU the read/write semaphore was slower on high
-> contention.
-> 
-> Compile tested against some randconfig for different archs and tested against
-> android14-6.1 GKI kernel.
-> 
-> My testing is limited to resume path only; and general phone usage to make sure
-> nothing falls apart. Would be good to have some deadline specific testing done
-> too.
-> 
-> Based on v6.1.46
+kzalloc_node may return NULL. So rtpn should be
+checked before dereference in mem_cgroup_init.
 
-I can't take these for only some branches, as you know.  Any reason why
-you didn't also do 6.4.y?
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-thanks,
+Fixes: 95a045f63d98 ("mm: memcontrol: consolidate memory controller initi=
+alization")
+Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+---
+ mm/memcontrol.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-greg k-h
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..7998dbf3c7cd 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7377,6 +7377,7 @@ static int __init mem_cgroup_init(void)
+ 		struct mem_cgroup_tree_per_node *rtpn;
+=20
+ 		rtpn =3D kzalloc_node(sizeof(*rtpn), GFP_KERNEL, node);
++		WARN_ON(!rtpn);
+=20
+ 		rtpn->rb_root =3D RB_ROOT;
+ 		rtpn->rb_rightmost =3D NULL;
+--=20
+2.30.2
+
