@@ -2,59 +2,45 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C383B784671
-	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 18:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9992E7847C7
+	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237393AbjHVQAq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Aug 2023 12:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S237907AbjHVQfQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Aug 2023 12:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjHVQAq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 12:00:46 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7AB10F
-        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:00:44 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c0cb7285fso591051166b.0
-        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692720043; x=1693324843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/rWz75d47k1ZaMKSZ8edfmuuQmWRaz5rkymhn45IF0k=;
-        b=15DCdBwX9G07pujOr3Nbx+i2bQ13Rphta48yDKVMfOIAUrZfp2m22HFbnXuC7Oprxc
-         42lqBtGWYqaLduCFwdCo1FynweYmtDURInMRPCUhGUVgu5oG6stOtXegP48Q3A1ICaKY
-         mLXJqLzKp6NFvac+PoOcfeHDT0Ie8vy0eeyyqIA1UQwwnJr8+OV0+tZwBa6fFKNNajbx
-         /R3v6DMUGqUbo0C/VZjwBMI/FVX+Kt7H3Q/NXSv6GsmwHD3pN0N2pSB8V2M4uwhGCThg
-         5KSOGPPN5e+K+6w4K5ICQ5i34gRorsUI8RcNwjR34ZQoyFdkIT0jWtcp9wAs94exiQYO
-         Zklw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692720043; x=1693324843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/rWz75d47k1ZaMKSZ8edfmuuQmWRaz5rkymhn45IF0k=;
-        b=HX6WiHfX9B97BQadv1IGL2jxIrYqcAtpqQjVVih/wLiiemF7w6FCMt8v4RGv0vJgtZ
-         MegUsHSsnvm8QMRsb+DgSS0VqY+NHCY6G+mhd5VQDNN7k7THel9P+3jgjB75LpjZJf5x
-         uyiFQcIAb7R3E2QP5EhqkDyyuvlH2I+pq9DrCxPLL7YfudSQj2BN8toxcEws71AVSfRX
-         Hw4HoRJe9j+AiJd1KkQXynZUPwX2IjKuMI+XK2PgBIO7d3oRwmtDAdjc/RselIm5iDM0
-         jEax+3QwkuKDtr6smOSh+DbevdiyjyCe1aZxI02M0WgAxAFVkUJa2BkrFlQMJ07B8Uqv
-         qqzg==
-X-Gm-Message-State: AOJu0YxCU0v+oS1oGCS/yOyXq/UbDAWYjQYEt8CsOU09WerY/GYsDgIR
-        SuXrgc9NE0FSshu2b7ylJNIDZz0+cmg97axa36K11w==
-X-Google-Smtp-Source: AGHT+IEt/X5C1XEK0W3JF+CDHSqXvExt9Z0Cc0UCTv1JvWTAaDy2qDS+2xdx2UgqhZArlLDuCUYZ3r87ssJ2HmPdBKI=
-X-Received: by 2002:a17:906:32d3:b0:9a1:8a54:145f with SMTP id
- k19-20020a17090632d300b009a18a54145fmr5088359ejk.40.1692720042815; Tue, 22
- Aug 2023 09:00:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-3-yosryahmed@google.com> <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
-In-Reply-To: <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 22 Aug 2023 09:00:06 -0700
-Message-ID: <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: memcg: add a helper for non-unified stats flushing
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+        with ESMTP id S237891AbjHVQfL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 12:35:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488C6CF4;
+        Tue, 22 Aug 2023 09:35:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C1636200EB;
+        Tue, 22 Aug 2023 16:35:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692722101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qt0ZLoOqT9+wpCm2Ny+8HuPkuahGjnCugCYXd8XlMx4=;
+        b=Pax4caF2Ef7NBtayR04STCzFqckSNupMb66tw35QjhgWvF9+wKzVgjJBg9YlG0KcbLsLZ2
+        oCi24HsoJGkFuND2JYvuNfi4s3gIN/HH/BaylrFafuhYEdWG+9nZ1ta4ax3RchF+ksp0vy
+        C1CLitUshYgpH557xXomFZYOIxXdAA8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A2CD13919;
+        Tue, 22 Aug 2023 16:35:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9zIEHbXj5GRMXgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 22 Aug 2023 16:35:01 +0000
+Date:   Tue, 22 Aug 2023 18:35:00 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -64,97 +50,68 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 2/3] mm: memcg: add a helper for non-unified stats
+ flushing
+Message-ID: <5y3e32ek6owren3q5e3gzonzxzdhs53ihywj3mtbhz56hnizfy@fctafygsnfaq>
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-3-yosryahmed@google.com>
+ <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
+ <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7f63xjlvpzzrd5op"
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 6:01=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Mon, Aug 21, 2023 at 08:54:57PM +0000, Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > +static void do_stats_flush(struct mem_cgroup *memcg)
-> > +{
-> > +     cgroup_rstat_flush(memcg->css.cgroup);
->         if(memcg =3D=3D root_mem_cgroup)
->                 atomic_set(&stats_flush_threshold, 0);
-> > +}
-> > +
-> >  /*
-> >   * do_unified_stats_flush - do a unified flush of memory cgroup statis=
-tics
-> >   *
-> > @@ -656,7 +667,7 @@ static void do_unified_stats_flush(void)
-> >
-> >       WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
-> >
-> > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-> > +     do_stats_flush(root_mem_cgroup);
-> >
->   -     atomic_set(&stats_flush_threshold, 0);
-> >       atomic_set(&stats_flush_ongoing, 0);
->
-> You may reset stats_flush_threshold to save the unified flushers some
-> work.
 
-We can probably also kick FLUSH_TIME forward as well. Perhaps I can
-move both into do_stats_flush() then. If I understand correctly this
-is what you mean?
+--7f63xjlvpzzrd5op
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-static void do_stats_flush(struct mem_cgroup *memcg)
-{
-       if (mem_cgroup_is_root(memcg))
-               WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+On Tue, Aug 22, 2023 at 09:00:06AM -0700, Yosry Ahmed <yosryahmed@google.com> wrote:
+> We can probably also kick FLUSH_TIME forward as well.
 
-       cgroup_rstat_flush(memcg->css.cgroup);
+True, they guard same work.
 
-       if (mem_cgroup_is_root(memcg))
-               atomic_set(&stats_flush_threshold, 0);
-}
+> Perhaps I can move both into do_stats_flush() then. If I understand
+> correctly this is what you mean?
 
-  static void do_unified_stats_flush(void)
-  {
-          if (atomic_read(&stats_flush_ongoing) ||
-              atomic_xchg(&stats_flush_ongoing, 1))
-                  return;
+Yes.
 
-          do_stats_flush(root_mem_cgroup);
-          atomic_set(&stats_flush_ongoing, 0);
-  }
+> What do you think?
 
-, or simplify it further by just resetting stats_flush_threshold
-before we flush as well:
+The latter is certainly better looking code.
 
-static void do_stats_flush(struct mem_cgroup *memcg)
-{
-       /* for unified flushing, root non-unified flushing can help as well =
-*/
-       if (mem_cgroup_is_root(memcg)) {
-               WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
-               atomic_set(&stats_flush_threshold, 0);
-       }
+I wasn't sure at first about moving stats_flush_threshold reset before
+actual flush but on second thought it should not be a significant change
+- readers: may skip flushing, the values that they read should still be
+  below the error threshold,
+- writers: may be slowed down a bit (because of conditional atomic write
+  optimization in memcg_rstat_updates), presumably not on average
+  though.
 
-       cgroup_rstat_flush(memcg->css.cgroup);
-}
+So the latter should work too.
 
-  static void do_unified_stats_flush(void)
-  {
-          if (atomic_read(&stats_flush_ongoing) ||
-              atomic_xchg(&stats_flush_ongoing, 1))
-                  return;
+Michal
 
-          do_stats_flush(root_mem_cgroup);
-          atomic_set(&stats_flush_ongoing, 0);
-  }
+--7f63xjlvpzzrd5op
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-What do you think?
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZOTjsgAKCRAGvrMr/1gc
+jnZMAP9j2epDKDEIrW1B1fJASKjVt5dkRJM2SCYyQNX6oNKqUAEAnUs7Pg88u8E/
+lU8WkkS7hOz1ZQ2abpo1AtoV7nqS6QU=
+=FEfo
+-----END PGP SIGNATURE-----
+
+--7f63xjlvpzzrd5op--
