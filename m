@@ -2,140 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E6778379F
-	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 03:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4464783A1A
+	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 08:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjHVBy3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Aug 2023 21:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S233083AbjHVGjx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Aug 2023 02:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232108AbjHVBy3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Aug 2023 21:54:29 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D06113;
-        Mon, 21 Aug 2023 18:54:26 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVC6K1X1rz1L9Kv;
-        Tue, 22 Aug 2023 09:52:57 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 22 Aug
- 2023 09:54:24 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <wangkefeng.wang@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache pages
-Date:   Tue, 22 Aug 2023 10:49:01 +0800
-Message-ID: <20230822024901.2412520-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233087AbjHVGjw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 02:39:52 -0400
+X-Greylist: delayed 473 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Aug 2023 23:39:46 PDT
+Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D69E9
+        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 23:39:46 -0700 (PDT)
+Message-ID: <3ac6b49e-f605-6f8f-ba22-a411269cb818@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692685909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PkmheFjFxExaCu9L5a48Fws0uehvzL2G5MIM97l1kY8=;
+        b=QMPCPA7FLfHqCiIiLXVPW69lDGE0fSXD2eJYvbjXmXmsgFpE/SjABJKQ/WbI6jyP0vVU8P
+        QOGjpKqk+XX2DeE0jyNCysjqWaFWXWicyMZJZNtpMuoMcDIBQmB4q0Lp76NINGsMS2M+Pm
+        15JKLKEgl8zodMWAv3PMCxJ8/bcy5tc=
+Date:   Tue, 22 Aug 2023 14:31:41 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4] mm: oom: introduce cpuset oom
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Gang Li <gang.li@linux.dev>
+To:     Michal Hocko <mhocko@suse.com>, Waiman Long <longman@redhat.com>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com,
+        Zefan Li <lizefan.x@bytedance.com>,
+        linux-kernel@vger.kernel.org, gang.li@linux.dev
+References: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
+ <ZDVwaqzOBNTpuR1w@dhcp22.suse.cz>
+ <9ba0de31-b9b8-fb10-011e-b24e9dba5ccd@linux.dev>
+In-Reply-To: <9ba0de31-b9b8-fb10-011e-b24e9dba5ccd@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When spaces of swap devices are exhausted, only file pages can be reclaimed.
-But there are still some swapcache pages in anon lru list. This can lead
-to a premature out-of-memory.
+Hi,
 
-This problem can be fixed by checking number of swapcache pages in
-can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that can
-be used directly. For memcg v1, use total_swapcache_pages() instead, which
-may not accurate but can solve the problem.
+On 2023/8/17 16:40, Gang Li wrote:
+> On 2023/4/11 22:36, Michal Hocko wrote:
+>> I believe it still wouldn't hurt to be more specific here.
+>> CONSTRAINT_CPUSET is rather obscure. Looking at this just makes my head
+>> spin.
+>>          /* Check this allocation failure is caused by cpuset's wall 
+>> function */
+>>          for_each_zone_zonelist_nodemask(zone, z, oc->zonelist,
+>>                          highest_zoneidx, oc->nodemask)
+>>                  if (!cpuset_zone_allowed(zone, oc->gfp_mask))
+>>                          cpuset_limited = true;
+>> > Does this even work properly and why? prepare_alloc_pages sets
+>> oc->nodemask to current->mems_allowed but the above gives us
+>> cpuset_limited only if there is at least one zone/node that is not
+>> oc->nodemask compatible. So it seems like this wouldn't ever get set
+>> unless oc->nodemask got reset somewhere. This is a maze indeed.Is there
+> 
+> In __alloc_pages:
+> ```
+> /*
+>   * Restore the original nodemask if it was potentially replaced with
+>   * &cpuset_current_mems_allowed to optimize the fast-path attempt.
+>   */
+> ac.nodemask = nodemask;
+> page = __alloc_pages_slowpath(alloc_gfp, order, &ac);
+> 
+> ```
+> 
+> __alloc_pages set ac.nodemask back to mempolicy before call
+> __alloc_pages_slowpath.
+> 
+> 
+>> any reason why we cannot rely on __GFP_HARWALL here? Or should we
+> 
+> In prepare_alloc_pages:
+> ```
+> if (cpusets_enabled()) {
+>      *alloc_gfp |= __GFP_HARDWALL;
+>      ...
+> }
+> ```
+> 
+> Since __GFP_HARDWALL is set as long as cpuset is enabled, I think we can
+> use it to determine if we are under the constraint of CPUSET.
+> 
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- include/linux/swap.h |  6 ++++++
- mm/memcontrol.c      |  8 ++++++++
- mm/vmscan.c          | 12 ++++++++----
- 3 files changed, 22 insertions(+), 4 deletions(-)
+We have two nodemasks: one from the parameters of __alloc_pages and
+another from cpuset. If the node allowed by the parameters of
+__alloc_pages is not allowed by cpuset, it means that this page
+allocation is constrained by cpuset, and thus CONSTRAINT_CPUSET can be
+returned.
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 456546443f1f..0318e918bfa4 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
- }
- 
- extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-+extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
- extern bool mem_cgroup_swap_full(struct folio *folio);
- #else
- static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
-@@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return get_nr_swap_pages();
- }
- 
-+static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	return total_swapcache_pages();
-+}
-+
- static inline bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	return vm_swap_full();
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..3e578f41023e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return nr_swap_pages;
- }
- 
-+long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	if (mem_cgroup_disabled() || do_memsw_account())
-+		return total_swapcache_pages();
-+
-+	return memcg_page_state(memcg, NR_SWAPCACHE);
-+}
-+
- bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	struct mem_cgroup *memcg;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7c33c5b653ef..bcb6279cbae7 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
- 	if (memcg == NULL) {
- 		/*
- 		 * For non-memcg reclaim, is there
--		 * space in any swap device?
-+		 * space in any swap device or swapcache pages?
- 		 */
--		if (get_nr_swap_pages() > 0)
-+		if (get_nr_swap_pages() + total_swapcache_pages() > 0)
- 			return true;
- 	} else {
--		/* Is the memcg below its swap limit? */
--		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
-+		/*
-+		 * Is the memcg below its swap limit or is there swapcache
-+		 * pages can be freed?
-+		 */
-+		if (mem_cgroup_get_nr_swap_pages(memcg) +
-+		    mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
- 			return true;
- 	}
- 
--- 
-2.25.1
+I guess this piece of code is reasonable and we can keep the
+code as it is.
 
+Thanks,
+Gang Li.
