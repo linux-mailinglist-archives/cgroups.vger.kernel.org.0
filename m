@@ -2,134 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA2B7847F7
-	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 18:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6A1784B8E
+	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 22:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237905AbjHVQte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Aug 2023 12:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        id S229934AbjHVUlq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Aug 2023 16:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjHVQtd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 12:49:33 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D371B0
-        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:49:32 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so11818331a12.1
-        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:49:32 -0700 (PDT)
+        with ESMTP id S229486AbjHVUlp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 16:41:45 -0400
+X-Greylist: delayed 903 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Aug 2023 13:41:42 PDT
+Received: from symantec4.comsats.net.pk (symantec4.comsats.net.pk [203.124.41.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBFFA8
+        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 13:41:42 -0700 (PDT)
+X-AuditID: cb7c291e-055ff70000002aeb-4f-64e5051846cb
+Received: from iesco.comsatshosting.com (iesco.comsatshosting.com [210.56.28.11])
+        (using TLS with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        by symantec4.comsats.net.pk (Symantec Messaging Gateway) with SMTP id A7.35.10987.81505E46; Tue, 22 Aug 2023 23:57:28 +0500 (PKT)
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns;
+        d=iesco.com.pk; s=default;
+        h=received:content-type:mime-version:content-transfer-encoding
+          :content-description:subject:to:from:date:reply-to;
+        b=PA4cwdsEeVC8RwLJc24b24SiRMirA4K21lPnG6EdElyLlzQQaJXGS4TJ7w7hiNuIg
+          C6lTDtxNW7Q8I6MWj/jywtGvKlzorvKx0fjQS4k7WcWiudjX+/gm0whsIaHWs8uku
+          XZBx3U3dnB65HUP6cEYBExJqi8mqfKHbLSYzvl7oY=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692722971; x=1693327771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WJmDDFJoMLmcyBm51AyWwKm0mGOPqtKf1wtM4HOCd6M=;
-        b=rhr1id8cCV/kbx6sUBy4JuHXifHwSkFAIdKhBeasC31TcN98NESIu8KmdqnWiDvLNx
-         XVCElQgwl+O+wZiYzPHPSCSCn05CEQlp3i5RqQb+lK1FlRhcDHhBVGdeCc99m+LTx4so
-         4zuklsCgH8G/FHHkdSyD18vRYY4Z3DIPKlPrFye8uXb8CDnospBilvEczdx8lGW2wXxX
-         k7TcpIodpSQNJnxgspTPGM7gBgd1w/lwzYn9EBLnMdhYMfCPzF4ucPffkpJRPhOpkMRP
-         QQfw3YE3NCRa+26WnVXc5hE1sR0WiBM+gFH2GzLxGsziXWtDmMA0VU1Tzs7teeoZQ7ZZ
-         IrOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692722971; x=1693327771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WJmDDFJoMLmcyBm51AyWwKm0mGOPqtKf1wtM4HOCd6M=;
-        b=S3NNsEorpmBOrtJAwoCcjnxU7ByROtpCnJytHagDfBU8TNYDrtYS/4QGPL6JPuuPs8
-         3UCNqYgSZIF4ecMe5phKISUJ15IeR26WRDuE8pZoFAzL+9fgIV3gd3/+1fs4YoiSNtve
-         U+ztQLGQrtc7oRY+xwMVQvlvcaTanjVZ9+B8dUU5f/bV+0yhxBLGymEb7DRBvXgH9pAC
-         2LG6u/+wNr1wl2HDATfqe26vv9aE0Fc4xYHcId6kROByQVmeuGq8qlh9C92ELngAYwF0
-         aXn7fTmoSHSK9R7sYf2SdCesY/E2JOzVTH/4xy4r6qrjw/bdkPHRWEJxT7G0rrSMO7nZ
-         ggow==
-X-Gm-Message-State: AOJu0Ywth3vF0cIrQZm/7HbRXhEjD8OtGL+LH/xzvsPBx/G8NPQ+gs7J
-        /I8ueK/ecxZ/tzk2pFgK+Xx36YF8poz+uxAJlHYCRQ==
-X-Google-Smtp-Source: AGHT+IEmSWJOfsLrRWgrWtGOMYaI3rCgR+YAazW1HntaJGfgHHdcooCvLk9gPLi7fdnb4CMFIaHO9scel4q7H/1YxTI=
-X-Received: by 2002:a17:906:478a:b0:98d:f2c9:a1eb with SMTP id
- cw10-20020a170906478a00b0098df2c9a1ebmr11700024ejc.24.1692722970543; Tue, 22
- Aug 2023 09:49:30 -0700 (PDT)
+        d=iesco.com.pk; s=default;
+        h=reply-to:date:from:to:subject:content-description
+          :content-transfer-encoding:mime-version:content-type;
+        bh=GMzYzcyTxDsE6wX/XHG6MHqAdAiHrhqbmmLQ/TZ1QnQ=;
+        b=eZivOajqjBk7W7o6CPdZmM9rxlcWsXbU2w35HSCUZ+a4/p9SyUNkXnZ+djfZjX3W1
+          vYDeDDMQRRzxxJ842WqSIgEpEKiSNbSU40lJgDBgh6yle+xcWjhzWGcX4IAeFgyPC
+          WB9HXoVr5XZpkDn/OfcWoTjv72Mw3OilEkl64bCbY=
+Received: from [94.156.6.90] (UnknownHost [94.156.6.90]) by iesco.comsatshosting.com with SMTP;
+   Wed, 23 Aug 2023 00:29:14 +0500
+Message-ID: <A7.35.10987.81505E46@symantec4.comsats.net.pk>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-3-yosryahmed@google.com> <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
- <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com> <5y3e32ek6owren3q5e3gzonzxzdhs53ihywj3mtbhz56hnizfy@fctafygsnfaq>
-In-Reply-To: <5y3e32ek6owren3q5e3gzonzxzdhs53ihywj3mtbhz56hnizfy@fctafygsnfaq>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 22 Aug 2023 09:48:54 -0700
-Message-ID: <CAJD7tkagAie6otamEEVZb5ohp_QUGdTKUNJTTXYfVaaxhtNcAg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: memcg: add a helper for non-unified stats flushing
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Description: Mail message body
+Subject: Re; Interest,
+To:     cgroups@vger.kernel.org
+From:   "Chen Yun" <pso.chairmanbod@iesco.com.pk>
+Date:   Tue, 22 Aug 2023 12:29:28 -0700
+Reply-To: chnyne@gmail.com
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNLMWRmVeSWpSXmKPExsVyyUKGW1eC9WmKwcGtIhY3ls9gcWD0+LxJ
+        LoAxissmJTUnsyy1SN8ugStjyboLLAW7mSva+hexNDA+Zupi5OCQEDCReNoEZHJxCAnsYZI4
+        OvsHI4jDIrCaWWLBz1VQzkNmiU/PJ7B1MXIClTUzSnw45wpi8wpYSxw7+YQZxGYW0JO4MXUK
+        G0RcUOLkzCcsEHFtiWULXzODbGMWUJP42lUCEhYWEJP4NG0ZO4gtIiAt0f51OpjNJqAvseJr
+        MyOIzSKgKtF26wkTxFopiY1X1rNNYOSfhWTbLCTbZiHZNgth2wJGllWMEsWVuYnAQEs20UvO
+        zy1OLCnWy0st0SvI3sQIDMLTNZpyOxiXXko8xCjAwajEw/tz3ZMUIdbEMqCuQ4wSHMxKIrzS
+        3x+mCPGmJFZWpRblxxeV5qQWH2KU5mBREue1FXqWLCSQnliSmp2aWpBaBJNl4uCUamBsSKgV
+        aQt8MVlmz17GYyKzWXKlk+yeSU4x+PpTPmmqqHvKimtqsjlJUdqLvuXGJWZraxtzdr9+l/Tl
+        4e9DTTd9loQ2it+In7PuEb9WdObihklPLDjr3Yx4bn9wuK8gzXroid7pEB6ludcneHk8WSr7
+        53Rx1eFZUZt81Opf6mxayP/h9jv71GtKLMUZiYZazEXFiQDG+D7rPgIAAA==
+X-Spam-Status: Yes, score=6.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: iesco.com.pk]
+        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [203.124.41.30 listed in list.dnswl.org]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [94.156.6.90 listed in zen.spamhaus.org]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 9:35=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Tue, Aug 22, 2023 at 09:00:06AM -0700, Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > We can probably also kick FLUSH_TIME forward as well.
->
-> True, they guard same work.
->
-> > Perhaps I can move both into do_stats_flush() then. If I understand
-> > correctly this is what you mean?
->
-> Yes.
->
-> > What do you think?
->
-> The latter is certainly better looking code.
->
-> I wasn't sure at first about moving stats_flush_threshold reset before
-> actual flush but on second thought it should not be a significant change
-> - readers: may skip flushing, the values that they read should still be
->   below the error threshold,
+Re; Interest,
 
-Unified readers will skip anyway as there's an ongoing flush,
-non-unified readers don't check the threshold anyway (with this patch
-series). So for readers it should not be a change.
+I am interested in discussing the Investment proposal as I explained
+in my previous mail. May you let me know your interest and the
+possibility of a cooperation aimed for mutual interest.
 
-> - writers: may be slowed down a bit (because of conditional atomic write
->   optimization in memcg_rstat_updates), presumably not on average
->   though.
+Looking forward to your mail for further discussion.
 
-Yeah writers will start doing atomic writes once a flush starts
-instead of once it ends. I don't think it will matter in practice
-though. The optimization is only effective if we manage to surpass the
-threshold before the periodic flusher (or any unified flusher) kicks
-in and resets it. If we start doing atomic writes earlier, then we
-will also stop earlier; the number of atomic writes should stay the
-same.
+Regards
 
-I think the only difference will be the scenario where we start atomic
-writes early but the periodic flush happens before we reach the
-threshold, in which case we aren't doing a lot of updates anyway.
+------
+Chen Yun - Chairman of CREC
+China Railway Engineering Corporation - CRECG
+China Railway Plaza, No.69 Fuxing Road, Haidian District, Beijing, P.R.
+China
 
-I hope this makes _any_ sense :)
-
->
-> So the latter should work too.
->
-
-I will include that in v2. I will wait for a bit of further review
-comments on this version first.
-
-Thanks for taking a look!
-
-> Michal
