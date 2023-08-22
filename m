@@ -2,112 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4464783A1A
-	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 08:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A870E783C76
+	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 11:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjHVGjx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Aug 2023 02:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
+        id S234145AbjHVJGL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Aug 2023 05:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbjHVGjw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 02:39:52 -0400
-X-Greylist: delayed 473 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Aug 2023 23:39:46 PDT
-Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D69E9
-        for <cgroups@vger.kernel.org>; Mon, 21 Aug 2023 23:39:46 -0700 (PDT)
-Message-ID: <3ac6b49e-f605-6f8f-ba22-a411269cb818@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692685909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S232203AbjHVJGL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 05:06:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D88FCE;
+        Tue, 22 Aug 2023 02:06:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D31811F892;
+        Tue, 22 Aug 2023 09:06:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692695164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PkmheFjFxExaCu9L5a48Fws0uehvzL2G5MIM97l1kY8=;
-        b=QMPCPA7FLfHqCiIiLXVPW69lDGE0fSXD2eJYvbjXmXmsgFpE/SjABJKQ/WbI6jyP0vVU8P
-        QOGjpKqk+XX2DeE0jyNCysjqWaFWXWicyMZJZNtpMuoMcDIBQmB4q0Lp76NINGsMS2M+Pm
-        15JKLKEgl8zodMWAv3PMCxJ8/bcy5tc=
-Date:   Tue, 22 Aug 2023 14:31:41 +0800
+        bh=PjhH5JJ/uYj/hECeKPplzMxBqTx0eSMbwEKi7pYJDLA=;
+        b=m2Duffi8ECPm5ogSxiwZKOFctpoO5fB08TMKXwxMq8yjY4G+cG8jzdmMe/oms4pw/lNOlt
+        5w9rj/Ky0czINnSBLoieks0aLYxh9a2faKlXMdN9+A2q7jnnzFcmLEeyigE2twSMeg+g3G
+        KCx7Wi4jeTs0OyFj8UFIEZm2MZOm3kQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B41AD132B9;
+        Tue, 22 Aug 2023 09:06:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IYKaKXx65GRcfAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 22 Aug 2023 09:06:04 +0000
+Date:   Tue, 22 Aug 2023 11:06:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
+ userspace reads
+Message-ID: <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-4-yosryahmed@google.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4] mm: oom: introduce cpuset oom
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Gang Li <gang.li@linux.dev>
-To:     Michal Hocko <mhocko@suse.com>, Waiman Long <longman@redhat.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org, rientjes@google.com,
-        Zefan Li <lizefan.x@bytedance.com>,
-        linux-kernel@vger.kernel.org, gang.li@linux.dev
-References: <20230411065816.9798-1-ligang.bdlg@bytedance.com>
- <ZDVwaqzOBNTpuR1w@dhcp22.suse.cz>
- <9ba0de31-b9b8-fb10-011e-b24e9dba5ccd@linux.dev>
-In-Reply-To: <9ba0de31-b9b8-fb10-011e-b24e9dba5ccd@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821205458.1764662-4-yosryahmed@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
+> Unified flushing allows for great concurrency for paths that attempt to
+> flush the stats, at the expense of potential staleness and a single
+> flusher paying the extra cost of flushing the full tree.
+> 
+> This tradeoff makes sense for in-kernel flushers that may observe high
+> concurrency (e.g. reclaim, refault). For userspace readers, stale stats
+> may be unexpected and problematic, especially when such stats are used
+> for critical paths such as userspace OOM handling. Additionally, a
+> userspace reader will occasionally pay the cost of flushing the entire
+> hierarchy, which also causes problems in some cases [1].
+> 
+> Opt userspace reads out of unified flushing. This makes the cost of
+> reading the stats more predictable (proportional to the size of the
+> subtree), as well as the freshness of the stats. Since userspace readers
+> are not expected to have similar concurrency to in-kernel flushers,
+> serializing them among themselves and among in-kernel flushers should be
+> okay.
+> 
+> This was tested on a machine with 256 cpus by running a synthetic test
+> The script that creates 50 top-level cgroups, each with 5 children (250
+> leaf cgroups). Each leaf cgroup has 10 processes running that allocate
+> memory beyond the cgroup limit, invoking reclaim (which is an in-kernel
+> unified flusher). Concurrently, one thread is spawned per-cgroup to read
+> the stats every second (including root, top-level, and leaf cgroups --
+> so total 251 threads). No regressions were observed in the total running
+> time; which means that non-unified userspace readers are not slowing
+> down in-kernel unified flushers:
 
-On 2023/8/17 16:40, Gang Li wrote:
-> On 2023/4/11 22:36, Michal Hocko wrote:
->> I believe it still wouldn't hurt to be more specific here.
->> CONSTRAINT_CPUSET is rather obscure. Looking at this just makes my head
->> spin.
->>          /* Check this allocation failure is caused by cpuset's wall 
->> function */
->>          for_each_zone_zonelist_nodemask(zone, z, oc->zonelist,
->>                          highest_zoneidx, oc->nodemask)
->>                  if (!cpuset_zone_allowed(zone, oc->gfp_mask))
->>                          cpuset_limited = true;
->> > Does this even work properly and why? prepare_alloc_pages sets
->> oc->nodemask to current->mems_allowed but the above gives us
->> cpuset_limited only if there is at least one zone/node that is not
->> oc->nodemask compatible. So it seems like this wouldn't ever get set
->> unless oc->nodemask got reset somewhere. This is a maze indeed.Is there
-> 
-> In __alloc_pages:
-> ```
-> /*
->   * Restore the original nodemask if it was potentially replaced with
->   * &cpuset_current_mems_allowed to optimize the fast-path attempt.
->   */
-> ac.nodemask = nodemask;
-> page = __alloc_pages_slowpath(alloc_gfp, order, &ac);
-> 
-> ```
-> 
-> __alloc_pages set ac.nodemask back to mempolicy before call
-> __alloc_pages_slowpath.
-> 
-> 
->> any reason why we cannot rely on __GFP_HARWALL here? Or should we
-> 
-> In prepare_alloc_pages:
-> ```
-> if (cpusets_enabled()) {
->      *alloc_gfp |= __GFP_HARDWALL;
->      ...
-> }
-> ```
-> 
-> Since __GFP_HARDWALL is set as long as cpuset is enabled, I think we can
-> use it to determine if we are under the constraint of CPUSET.
-> 
-
-We have two nodemasks: one from the parameters of __alloc_pages and
-another from cpuset. If the node allowed by the parameters of
-__alloc_pages is not allowed by cpuset, it means that this page
-allocation is constrained by cpuset, and thus CONSTRAINT_CPUSET can be
-returned.
-
-I guess this piece of code is reasonable and we can keep the
-code as it is.
-
-Thanks,
-Gang Li.
+I have to admit I am rather confused by cgroup_rstat_flush (and
+cgroup_rstat_flush_locked). The former says it can block but the later
+doesn't ever block and even if it drops the cgroup_rstat_lock it merely
+cond_rescheds or busy loops. How much of a contention and yielding can
+you see with this patch? What is the worst case? How bad a random user
+can make the situation by going crazy and trying to flush from many
+different contexts?
+-- 
+Michal Hocko
+SUSE Labs
