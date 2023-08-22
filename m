@@ -2,72 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3A17847CF
-	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 18:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA2B7847F7
+	for <lists+cgroups@lfdr.de>; Tue, 22 Aug 2023 18:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237895AbjHVQgZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Aug 2023 12:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50480 "EHLO
+        id S237905AbjHVQte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Aug 2023 12:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237896AbjHVQgY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 12:36:24 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63108187
-        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:36:22 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a19bf6ab66so265377166b.3
-        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:36:22 -0700 (PDT)
+        with ESMTP id S229606AbjHVQtd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Aug 2023 12:49:33 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D371B0
+        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:49:32 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so11818331a12.1
+        for <cgroups@vger.kernel.org>; Tue, 22 Aug 2023 09:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692722181; x=1693326981;
+        d=google.com; s=20221208; t=1692722971; x=1693327771;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J1Og0p3YsszYT5eyrrRdHLABJeyVk3h/09oUuO+tzhE=;
-        b=gDjUEyD73IAB7rXmTKqH6+glsZKCHbYebuG08TAomJFqxwmRCh9mwKKlMjNA+7IOQK
-         HhueFesfKUdocFF9KJVJRMPyUYh5+s60/hD8HTL5/EayDayVWBwRX7w15bEpxAjBr1D+
-         RlTqPsiABd8hN+dvwvSfoI2h0YMFhNtNF2RD4k39TRNWx1WbdsQ9FYVQiKuN9xYEy0Ki
-         OzyzDs3rl7ChWcjUEvNH23dcUPRg2tzRqIGMjnoZnOIOhhClLW/dEwZ3JT8crBXDCAEe
-         WGwU/VxQgVxOK4zS1x8A30TV4dtbZW/lV1r49ZmXV88m9Nj/DEG2P6+6XnrufjLIz9ev
-         hArQ==
+        bh=WJmDDFJoMLmcyBm51AyWwKm0mGOPqtKf1wtM4HOCd6M=;
+        b=rhr1id8cCV/kbx6sUBy4JuHXifHwSkFAIdKhBeasC31TcN98NESIu8KmdqnWiDvLNx
+         XVCElQgwl+O+wZiYzPHPSCSCn05CEQlp3i5RqQb+lK1FlRhcDHhBVGdeCc99m+LTx4so
+         4zuklsCgH8G/FHHkdSyD18vRYY4Z3DIPKlPrFye8uXb8CDnospBilvEczdx8lGW2wXxX
+         k7TcpIodpSQNJnxgspTPGM7gBgd1w/lwzYn9EBLnMdhYMfCPzF4ucPffkpJRPhOpkMRP
+         QQfw3YE3NCRa+26WnVXc5hE1sR0WiBM+gFH2GzLxGsziXWtDmMA0VU1Tzs7teeoZQ7ZZ
+         IrOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692722181; x=1693326981;
+        d=1e100.net; s=20221208; t=1692722971; x=1693327771;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J1Og0p3YsszYT5eyrrRdHLABJeyVk3h/09oUuO+tzhE=;
-        b=HiVcXF+9VsQ4J9YLSaKUfCjrBMb8m7zlMxOzSW7VuBMXZtmdVikVGrOvxKtQ25hb5N
-         nHTVDG3j4vSjpjp1BhhoFviHnbFkBmtaBn3E5Wjj0jffB5sbcREA9bubEGMpPiBSYiZO
-         qgbNsJjNuwEbNXC0rkUV5ZrS1LnoX6uB3lDpYRXOxk8haWBrXAcW7g1+XGWVrI+1VPBL
-         GHP9EhfmkjwIObqSNX/XH3GA37na86j0b0UPvW1f7Ei+60t+54rgbwNuUTgU/8F9fAtM
-         hseCnOaJaWMQrY/ARQcdgl1XAa+/goO0pgx1nwI2hNNPEO6pvEutpZgaIRXOLAu4Qnoo
-         KOkg==
-X-Gm-Message-State: AOJu0YxdFsNaXuGdr5Atbh5+eCelf7zFXa9XElODrQ47zFnH5n/mjgNf
-        InGwiTao7C/OGBzFaQxtduSw0GA613SjLRLpAk2fmQ==
-X-Google-Smtp-Source: AGHT+IF/Y7UW3BC3YfU03L2U7Xdkv8i4Mdi8P+tqfZNTm8Ng+7QrnnOIKOgtGVPZwSXzM/h/03iw9SxllfgCbjoRGas=
-X-Received: by 2002:a17:907:a041:b0:991:c842:2ca2 with SMTP id
- gz1-20020a170907a04100b00991c8422ca2mr7821581ejc.15.1692722180640; Tue, 22
- Aug 2023 09:36:20 -0700 (PDT)
+        bh=WJmDDFJoMLmcyBm51AyWwKm0mGOPqtKf1wtM4HOCd6M=;
+        b=S3NNsEorpmBOrtJAwoCcjnxU7ByROtpCnJytHagDfBU8TNYDrtYS/4QGPL6JPuuPs8
+         3UCNqYgSZIF4ecMe5phKISUJ15IeR26WRDuE8pZoFAzL+9fgIV3gd3/+1fs4YoiSNtve
+         U+ztQLGQrtc7oRY+xwMVQvlvcaTanjVZ9+B8dUU5f/bV+0yhxBLGymEb7DRBvXgH9pAC
+         2LG6u/+wNr1wl2HDATfqe26vv9aE0Fc4xYHcId6kROByQVmeuGq8qlh9C92ELngAYwF0
+         aXn7fTmoSHSK9R7sYf2SdCesY/E2JOzVTH/4xy4r6qrjw/bdkPHRWEJxT7G0rrSMO7nZ
+         ggow==
+X-Gm-Message-State: AOJu0Ywth3vF0cIrQZm/7HbRXhEjD8OtGL+LH/xzvsPBx/G8NPQ+gs7J
+        /I8ueK/ecxZ/tzk2pFgK+Xx36YF8poz+uxAJlHYCRQ==
+X-Google-Smtp-Source: AGHT+IEmSWJOfsLrRWgrWtGOMYaI3rCgR+YAazW1HntaJGfgHHdcooCvLk9gPLi7fdnb4CMFIaHO9scel4q7H/1YxTI=
+X-Received: by 2002:a17:906:478a:b0:98d:f2c9:a1eb with SMTP id
+ cw10-20020a170906478a00b0098df2c9a1ebmr11700024ejc.24.1692722970543; Tue, 22
+ Aug 2023 09:49:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230822024901.2412520-1-liushixin2@huawei.com>
-In-Reply-To: <20230822024901.2412520-1-liushixin2@huawei.com>
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-3-yosryahmed@google.com> <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
+ <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com> <5y3e32ek6owren3q5e3gzonzxzdhs53ihywj3mtbhz56hnizfy@fctafygsnfaq>
+In-Reply-To: <5y3e32ek6owren3q5e3gzonzxzdhs53ihywj3mtbhz56hnizfy@fctafygsnfaq>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 22 Aug 2023 09:35:44 -0700
-Message-ID: <CAJD7tkZkYsopuqGH_Lo=kE4=HO33wmvK6mXhuq4p_KZ6pYuXtw@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache pages
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+Date:   Tue, 22 Aug 2023 09:48:54 -0700
+Message-ID: <CAJD7tkagAie6otamEEVZb5ohp_QUGdTKUNJTTXYfVaaxhtNcAg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: memcg: add a helper for non-unified stats flushing
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,123 +78,58 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 6:54=E2=80=AFPM Liu Shixin <liushixin2@huawei.com> =
-wrote:
+On Tue, Aug 22, 2023 at 9:35=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
 >
-> When spaces of swap devices are exhausted, only file pages can be reclaim=
-ed.
-> But there are still some swapcache pages in anon lru list. This can lead
-> to a premature out-of-memory.
+> On Tue, Aug 22, 2023 at 09:00:06AM -0700, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > We can probably also kick FLUSH_TIME forward as well.
 >
-> This problem can be fixed by checking number of swapcache pages in
-> can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that can
-> be used directly. For memcg v1, use total_swapcache_pages() instead, whic=
-h
-> may not accurate but can solve the problem.
-
-Interesting find. I wonder if we really don't have any handling of
-this situation.
-
+> True, they guard same work.
 >
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  include/linux/swap.h |  6 ++++++
->  mm/memcontrol.c      |  8 ++++++++
->  mm/vmscan.c          | 12 ++++++++----
->  3 files changed, 22 insertions(+), 4 deletions(-)
+> > Perhaps I can move both into do_stats_flush() then. If I understand
+> > correctly this is what you mean?
 >
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 456546443f1f..0318e918bfa4 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry=
-_t entry, unsigned int nr_p
->  }
+> Yes.
 >
->  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
->  extern bool mem_cgroup_swap_full(struct folio *folio);
->  #else
->  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t e=
-ntry)
-> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(stru=
-ct mem_cgroup *memcg)
->         return get_nr_swap_pages();
->  }
+> > What do you think?
 >
-> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *=
-memcg)
-> +{
-> +       return total_swapcache_pages();
-> +}
-> +
->  static inline bool mem_cgroup_swap_full(struct folio *folio)
->  {
->         return vm_swap_full();
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e8ca4bdcb03c..3e578f41023e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgrou=
-p *memcg)
->         return nr_swap_pages;
->  }
+> The latter is certainly better looking code.
 >
-> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> +{
-> +       if (mem_cgroup_disabled() || do_memsw_account())
-> +               return total_swapcache_pages();
-> +
-> +       return memcg_page_state(memcg, NR_SWAPCACHE);
-> +}
+> I wasn't sure at first about moving stats_flush_threshold reset before
+> actual flush but on second thought it should not be a significant change
+> - readers: may skip flushing, the values that they read should still be
+>   below the error threshold,
 
-Is there a reason why we cannot use NR_SWAPCACHE for cgroup v1? Isn't
-that being maintained regardless of cgroup version? It is not exposed
-in cgroup v1's memory.stat, but I don't think there is a reason we
-can't do that -- if only to document that it is being used with cgroup
-v1.
+Unified readers will skip anyway as there's an ongoing flush,
+non-unified readers don't check the threshold anyway (with this patch
+series). So for readers it should not be a change.
 
+> - writers: may be slowed down a bit (because of conditional atomic write
+>   optimization in memcg_rstat_updates), presumably not on average
+>   though.
 
-> +
->  bool mem_cgroup_swap_full(struct folio *folio)
->  {
->         struct mem_cgroup *memcg;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 7c33c5b653ef..bcb6279cbae7 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struct me=
-m_cgroup *memcg,
->         if (memcg =3D=3D NULL) {
->                 /*
->                  * For non-memcg reclaim, is there
-> -                * space in any swap device?
-> +                * space in any swap device or swapcache pages?
->                  */
-> -               if (get_nr_swap_pages() > 0)
-> +               if (get_nr_swap_pages() + total_swapcache_pages() > 0)
->                         return true;
->         } else {
-> -               /* Is the memcg below its swap limit? */
-> -               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
-> +               /*
-> +                * Is the memcg below its swap limit or is there swapcach=
-e
-> +                * pages can be freed?
-> +                */
-> +               if (mem_cgroup_get_nr_swap_pages(memcg) +
-> +                   mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
->                         return true;
->         }
+Yeah writers will start doing atomic writes once a flush starts
+instead of once it ends. I don't think it will matter in practice
+though. The optimization is only effective if we manage to surpass the
+threshold before the periodic flusher (or any unified flusher) kicks
+in and resets it. If we start doing atomic writes earlier, then we
+will also stop earlier; the number of atomic writes should stay the
+same.
 
-I wonder if it would be more efficient to set a bit in struct
-scan_control if we only are out of swap spaces but have swap cache
-pages, and only isolate anon pages that are in the swap cache, instead
-of isolating random anon pages. We may end up isolating pages that are
-not in the swap cache for a few iterations and wasting cycles.
+I think the only difference will be the scenario where we start atomic
+writes early but the periodic flush happens before we reach the
+threshold, in which case we aren't doing a lot of updates anyway.
 
+I hope this makes _any_ sense :)
 
 >
-> --
-> 2.25.1
+> So the latter should work too.
 >
+
+I will include that in v2. I will wait for a bit of further review
+comments on this version first.
+
+Thanks for taking a look!
+
+> Michal
