@@ -2,168 +2,219 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88736787841
-	for <lists+cgroups@lfdr.de>; Thu, 24 Aug 2023 20:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D85787CA6
+	for <lists+cgroups@lfdr.de>; Fri, 25 Aug 2023 02:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238815AbjHXSvh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Aug 2023 14:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
+        id S231526AbjHYAtz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Aug 2023 20:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243144AbjHXSvb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Aug 2023 14:51:31 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5561BCE
-        for <cgroups@vger.kernel.org>; Thu, 24 Aug 2023 11:51:29 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a2185bd83cso12493366b.0
-        for <cgroups@vger.kernel.org>; Thu, 24 Aug 2023 11:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692903088; x=1693507888;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FIntCscqhDfEHiFTt/nLdYcoh0FY54rWEh/TsH/OwaQ=;
-        b=YTj/bsBvUZUTjYN49dDIHhjUbcqUZnmwFrUEPy7wBE1yP8CClRJZcB2EqH8BTQ9L1p
-         9rfVxKZVqXDZQGgj5YVz4GBx700Sa82keEh+vFvHbV2cDP51G+M+h52AeHFmD3rhQT/S
-         KAjaYgd0InsPnpsp6p4u+LcvCftNLUwhzZ+GmDpg07XyqQf+hQVd/5t4uAHmpkqoqyIx
-         vmLOEMUE89WpXkh3oTDnsYgyIlxzeAz8grVxGy6Iux4RvAMQlX6In2y406zdh46ESotF
-         J2SvKFOD1STNKGBtkA7auuwY6QebYfK0veMj/+Eb8DraUFnVMB4WLcrBRvcODMDC0zcu
-         v8Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692903088; x=1693507888;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FIntCscqhDfEHiFTt/nLdYcoh0FY54rWEh/TsH/OwaQ=;
-        b=W8drvaUKHDrQ3K5AtViEgkLsoUdV1FhTfjxMtp3YEj6gKYR/O32rQkbUNVSVtmrsXK
-         5x4KwhgqixmgDAt6v+paXJrUlzT8LO9Bqr+YfOodaw7rqVMIa50ZzUBARtO50cfgjkP+
-         mCKu/ySFrH5mhebeeKnvWjrR5F+q7+No3iWS1RU4dL5T8Q3Of3MqnBjxpSmk9g5Klo5E
-         B0KOkgMgGnebPrD/+L0Bh1T0GZbBFlDR1+WEkiEH6ZOSDRAgcn5+I2XR6FQU3cjpOzLl
-         9fc0935V5dKH049tWP0zYfLUfdNPr1TKSqnGAVOqAn7C0K6vrVyenlXvbsdfywkBaAZE
-         8k6Q==
-X-Gm-Message-State: AOJu0YzWLqJo5jvAMo8IxfgCWVQvTYyYHyPyskcf7XabNrIttkbiTztK
-        ua9cim/cD2QPs3CEXiat++Iutcc7/mK4RYZtVC9SAQ==
-X-Google-Smtp-Source: AGHT+IF+IFNG4EAVUrKQsHTGpc++b97oZVHRYbXxJwtABfkADfSJsBlQZ57k7Xe37dAiSU1MfBG0ZsgWcdHrULKljiE=
-X-Received: by 2002:a17:906:24e:b0:99c:c8ec:bd4a with SMTP id
- 14-20020a170906024e00b0099cc8ecbd4amr14264570ejl.60.1692903087746; Thu, 24
- Aug 2023 11:51:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-4-yosryahmed@google.com> <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
- <CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com>
- <ZOW2PZN8Sgqq6uR2@dhcp22.suse.cz> <CAJD7tka34WjtwBWfkTu8ZCEUkLm7h-AyCXpw=h34n4RZ5qBVwA@mail.gmail.com>
- <ZOcDLD/1WaOwWis9@dhcp22.suse.cz> <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
-In-Reply-To: <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 24 Aug 2023 11:50:51 -0700
-Message-ID: <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S231235AbjHYAta (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Aug 2023 20:49:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863331AD;
+        Thu, 24 Aug 2023 17:49:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692924567; x=1724460567;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version:content-transfer-encoding;
+  bh=SC3CeduAi6sdHjQnC1nP/afnUY7oCpZu6CQrcY684L0=;
+  b=nZxl6YtDq6oe0vMJi7aRlBXzoHjP0srbA25AzSUuH/FuHV+26KDbn5eC
+   paG64ifPJDzUQc8sGP+FIYWeSE5pbp5QFWow70v65A6T6Eh/cTDNbWJld
+   /sUfax1lOD/X28O2mWB9AOf9lU0WxhJ+qWx68HFjrkv11zsztcyY0KNrW
+   cPBPiOePtztZ4c+VQl5yiPpEoteVBmMiToblYWbjc6qC/JNGaJbteT0CK
+   ytbe2uGuldUyyZPV5XjLfY4rQxDNZ2JqFwxIIWiL0aIaJNwmSJhsmuKd+
+   9iNAJvmrNXpt/c1ApgqN5EzyAlWk479QDSlXQZIpRS2X8QjMn4OOiKMpj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354927219"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="354927219"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 17:49:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="827386888"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="827386888"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 17:49:23 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Liu Shixin <liushixin2@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Morton <akpm@linux-foundation.org>,
+        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: vmscan: reclaim anon pages if there are
+ swapcache pages
+References: <20230822024901.2412520-1-liushixin2@huawei.com>
+        <CAJD7tkZkYsopuqGH_Lo=kE4=HO33wmvK6mXhuq4p_KZ6pYuXtw@mail.gmail.com>
+        <87wmxk6d1m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAJD7tkbRyDt6cCo6_UJgt_51BznbTVQx+qX9LmSM7ThLfU+hQg@mail.gmail.com>
+Date:   Fri, 25 Aug 2023 08:47:15 +0800
+In-Reply-To: <CAJD7tkbRyDt6cCo6_UJgt_51BznbTVQx+qX9LmSM7ThLfU+hQg@mail.gmail.com>
+        (Yosry Ahmed's message of "Thu, 24 Aug 2023 11:31:47 -0700")
+Message-ID: <87sf8854oc.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 11:15=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
+Yosry Ahmed <yosryahmed@google.com> writes:
+
+> On Thu, Aug 24, 2023 at 1:51=E2=80=AFAM Huang, Ying <ying.huang@intel.com=
 > wrote:
+>>
+>> Yosry Ahmed <yosryahmed@google.com> writes:
+>>
+>> > On Mon, Aug 21, 2023 at 6:54=E2=80=AFPM Liu Shixin <liushixin2@huawei.=
+com> wrote:
+>> >>
+>> >> When spaces of swap devices are exhausted, only file pages can be rec=
+laimed.
+>> >> But there are still some swapcache pages in anon lru list. This can l=
+ead
+>> >> to a premature out-of-memory.
+>> >>
+>> >> This problem can be fixed by checking number of swapcache pages in
+>> >> can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that=
+ can
+>> >> be used directly. For memcg v1, use total_swapcache_pages() instead, =
+which
+>> >> may not accurate but can solve the problem.
+>> >
+>> > Interesting find. I wonder if we really don't have any handling of
+>> > this situation.
+>> >
+>> >>
+>> >> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> >> ---
+>> >>  include/linux/swap.h |  6 ++++++
+>> >>  mm/memcontrol.c      |  8 ++++++++
+>> >>  mm/vmscan.c          | 12 ++++++++----
+>> >>  3 files changed, 22 insertions(+), 4 deletions(-)
+>> >>
+>> >> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> >> index 456546443f1f..0318e918bfa4 100644
+>> >> --- a/include/linux/swap.h
+>> >> +++ b/include/linux/swap.h
+>> >> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_e=
+ntry_t entry, unsigned int nr_p
+>> >>  }
+>> >>
+>> >>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+>> >> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *mem=
+cg);
+>> >>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>> >>  #else
+>> >>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry=
+_t entry)
+>> >> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(=
+struct mem_cgroup *memcg)
+>> >>         return get_nr_swap_pages();
+>> >>  }
+>> >>
+>> >> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgro=
+up *memcg)
+>> >> +{
+>> >> +       return total_swapcache_pages();
+>> >> +}
+>> >> +
+>> >>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>> >>  {
+>> >>         return vm_swap_full();
+>> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> >> index e8ca4bdcb03c..3e578f41023e 100644
+>> >> --- a/mm/memcontrol.c
+>> >> +++ b/mm/memcontrol.c
+>> >> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_c=
+group *memcg)
+>> >>         return nr_swap_pages;
+>> >>  }
+>> >>
+>> >> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> >> +{
+>> >> +       if (mem_cgroup_disabled() || do_memsw_account())
+>> >> +               return total_swapcache_pages();
+>> >> +
+>> >> +       return memcg_page_state(memcg, NR_SWAPCACHE);
+>> >> +}
+>> >
+>> > Is there a reason why we cannot use NR_SWAPCACHE for cgroup v1? Isn't
+>> > that being maintained regardless of cgroup version? It is not exposed
+>> > in cgroup v1's memory.stat, but I don't think there is a reason we
+>> > can't do that -- if only to document that it is being used with cgroup
+>> > v1.
+>> >
+>> >
+>> >> +
+>> >>  bool mem_cgroup_swap_full(struct folio *folio)
+>> >>  {
+>> >>         struct mem_cgroup *memcg;
+>> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> >> index 7c33c5b653ef..bcb6279cbae7 100644
+>> >> --- a/mm/vmscan.c
+>> >> +++ b/mm/vmscan.c
+>> >> @@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struc=
+t mem_cgroup *memcg,
+>> >>         if (memcg =3D=3D NULL) {
+>> >>                 /*
+>> >>                  * For non-memcg reclaim, is there
+>> >> -                * space in any swap device?
+>> >> +                * space in any swap device or swapcache pages?
+>> >>                  */
+>> >> -               if (get_nr_swap_pages() > 0)
+>> >> +               if (get_nr_swap_pages() + total_swapcache_pages() > 0)
+>> >>                         return true;
+>> >>         } else {
+>> >> -               /* Is the memcg below its swap limit? */
+>> >> -               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>> >> +               /*
+>> >> +                * Is the memcg below its swap limit or is there swap=
+cache
+>> >> +                * pages can be freed?
+>> >> +                */
+>> >> +               if (mem_cgroup_get_nr_swap_pages(memcg) +
+>> >> +                   mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
+>> >>                         return true;
+>> >>         }
+>> >
+>> > I wonder if it would be more efficient to set a bit in struct
+>> > scan_control if we only are out of swap spaces but have swap cache
+>> > pages, and only isolate anon pages that are in the swap cache, instead
+>> > of isolating random anon pages. We may end up isolating pages that are
+>> > not in the swap cache for a few iterations and wasting cycles.
+>>
+>> Scanning swap cache directly will make the code more complex.  IIUC, the
+>> possibility for the swap device to be used up isn't high.  If so, I
+>> prefer the simpler implementation as that in this series.
 >
-> On Thu, Aug 24, 2023 at 12:13=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
-rote:
-> >
-> > On Wed 23-08-23 07:55:40, Yosry Ahmed wrote:
-> > > On Wed, Aug 23, 2023 at 12:33=E2=80=AFAM Michal Hocko <mhocko@suse.co=
-m> wrote:
-> > > >
-> > > > On Tue 22-08-23 08:30:05, Yosry Ahmed wrote:
-> > > > > On Tue, Aug 22, 2023 at 2:06=E2=80=AFAM Michal Hocko <mhocko@suse=
-.com> wrote:
-> > > > > >
-> > > > > > On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
-> > > > [...]
-> > > > > So to answer your question, I don't think a random user can reall=
-y
-> > > > > affect the system in a significant way by constantly flushing. In
-> > > > > fact, in the test script (which I am now attaching, in case you'r=
-e
-> > > > > interested), there are hundreds of threads that are reading stats=
- of
-> > > > > different cgroups every 1s, and I don't see any negative effects =
-on
-> > > > > in-kernel flushers in this case (reclaimers).
-> > > >
-> > > > I suspect you have missed my point.
-> > >
-> > > I suspect you are right :)
-> > >
-> > >
-> > > > Maybe I am just misunderstanding
-> > > > the code but it seems to me that the lock dropping inside
-> > > > cgroup_rstat_flush_locked effectivelly allows unbounded number of
-> > > > contenders which is really dangerous when it is triggerable from th=
-e
-> > > > userspace. The number of spinners at a moment is always bound by th=
-e
-> > > > number CPUs but depending on timing many potential spinners might b=
-e
-> > > > cond_rescheded and the worst time latency to complete can be really
-> > > > high. Makes more sense?
-> > >
-> > > I think I understand better now. So basically because we might drop
-> > > the lock and resched, there can be nr_cpus spinners + other spinners
-> > > that are currently scheduled away, so these will need to wait to be
-> > > scheduled and then start spinning on the lock. This may happen for on=
-e
-> > > reader multiple times during its read, which is what can cause a high
-> > > worst case latency.
-> > >
-> > > I hope I understood you correctly this time. Did I?
-> >
-> > Yes. I would just add that this could also influence the worst case
-> > latency for a different reader - so an adversary user can stall others.
+> I did not mean that, sorry if I wasn't clear. I meant to set a bit in
+> struct scan_control, and then in isolate_lru_folios() for anon lrus,
+> we can skip isolating folios that are not in the swapcache if that bit
+> is set.
 >
-> I can add that for v2 to the commit log, thanks.
->
-> > Exposing a shared global lock in uncontrolable way over generally
-> > available user interface is not really a great idea IMHO.
->
-> I think that's how it was always meant to be when it was designed. The
-> global rstat lock has always existed and was always available to
-> userspace readers. The memory controller took a different path at some
-> point with unified flushing, but that was mainly because of high
-> concurrency from in-kernel flushers, not because userspace readers
-> caused a problem. Outside of memcg, the core cgroup code has always
-> exercised this global lock when reading cpu.stat since rstat's
-> introduction. I assume there hasn't been any problems since it's still
-> there. I was hoping Tejun would confirm/deny this.
+> My main concern was that if we have a few pages in the swapcache we
+> may end up wasting cycles scanning through a lot of other anonymous
+> pages until we reach them. If that's too much complexity that's
+> understandable.
 
-One thing we can do to remedy this situation is to replace the global
-rstat lock with a mutex, and drop the resched/lock dropping condition.
-Tejun suggested this in the previous thread. This effectively reverts
-0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock")
-since now all the flushing contexts are sleepable.
+Sorry, I misunderstood your idea.  This sounds reasonable to me.  We can
+check swap space and swap cache in isolate_lru_folios(), either in
+isolate_lru_folios() directly, or via a bit in scan_control.
 
-My synthetic stress test does not show any regressions with mutexes,
-and there is a small boost to reading latency (probably because we
-stop dropping the lock / rescheduling). Not sure if we may start
-seeing need_resched warnings on big flushes though.
-
-One other concern that Shakeel pointed out to me is preemption. If
-someone holding the mutex gets preempted this may starve other
-waiters. We can disable preemption while we hold the mutex, not sure
-if that's a common pattern though.
+--
+Best Regards,
+Huang, Ying
