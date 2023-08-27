@@ -2,68 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4C6789C28
-	for <lists+cgroups@lfdr.de>; Sun, 27 Aug 2023 10:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4999978A380
+	for <lists+cgroups@lfdr.de>; Mon, 28 Aug 2023 01:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjH0IfZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 27 Aug 2023 04:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
+        id S229568AbjH0XgI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 27 Aug 2023 19:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjH0IfQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 27 Aug 2023 04:35:16 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A2E13E;
-        Sun, 27 Aug 2023 01:35:12 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id B4C383200319;
-        Sun, 27 Aug 2023 04:35:07 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sun, 27 Aug 2023 04:35:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1693125307; x=1693211707; bh=Jv
-        SLkiKnJg7r+Lmp4xfUHOcdesoZivHQDSlyjxiRtjQ=; b=vPqEkglFojsGGcLwBY
-        lG2flpx9r8FmK5nCGywrpMX6PsceUo6YMrQv5fmBo9/gO8FzmGv9znw1P2Yt0jtD
-        c5+R/u/yoDrT9KSfvQWhalUtinE+HIV+zSpAYoxAWisbOyuRKEaMvY5E/o8UCSrm
-        RpRm3pQFxDacMfyK1PcCI+WbXz2DDzzgjLBo1/n150V3elpBEgllIEN9oI/3EzR0
-        Mp3uqCE3pnzLz/XTtdfVsInoFuXIAmSivUvDTfEi+tXp+pYef+22ZzUrWRtWOGr5
-        GaeliZwdz5J+FHRGsCwsO+ZxBT0DOYMBs2nvCz0nIFZ4EnvdXkHmfHldgnQY57H4
-        msrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1693125307; x=1693211707; bh=JvSLkiKnJg7r+
-        Lmp4xfUHOcdesoZivHQDSlyjxiRtjQ=; b=dw9ckfY77+MEfwvYwJUcSP4uls71J
-        VtLEfkwJ8fKC9fY1xQcdppEfrpZUkwBOjqQyjDnagJ3PPReh25wkDsSLS+9ovDO8
-        N9p874zu3l+uWZfRhpeJsqtlz0X/I4E+7hipxtG8glESaI+Tcf0jflqr9LvEFyTQ
-        oOG+jwwFx/AfvdhhVcdkcXPfQlsSsCPJrxjdNU2+8waAwtDrUws71DkJI+V6rvA6
-        7AgCy8tWblmYdWoAYfXeMd9HISZMGaGP/AHF6byvYwlbetg6aLgagHXO1e7gcJHQ
-        CyINkG9SDT8HJjBWhRsckcuzKfuWQANtihzvUr2UVAUYXmEwY+EONbw6w==
-X-ME-Sender: <xms:uQrrZOS-kh0pyOe49ny85SsfJ24F51Y2xJFkp2QUhjpJ-ScJmL29LQ>
-    <xme:uQrrZDw7Imluec5MYyJM4Ck-ryAZyYgxr14T_GLrXA0_5fvzM6VVTCQf_Ei23gpTX
-    dnxaCxahgWz5g>
-X-ME-Received: <xmr:uQrrZL14ex-M6nzQlLzFQ2RgwRmAWIag21IAuU8LUVZWSl7LAOWPIc1z5fPxUQnH2D93n6gpywAlwp3BTtJne6ky2DKRN8lxyXQZUg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefvddgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:uQrrZKCiK88Rv7-CJwZcB91EGASYBfs9G7kv2ibidQZu-ZdAKZPbiQ>
-    <xmx:uQrrZHjCc1Gmb7ondYPb5CyCwN9tXzklK7xM1ivcrW_JZXnguoElrg>
-    <xmx:uQrrZGo5iIZ847KDiZ-nnrTx90AagiXELL4iXqJdYgAPQIgnYXdJug>
-    <xmx:uwrrZGR9hrNTOC1O2i45rppOsf2jHUzYBwAghWFfcDNGUvcYqhQNwQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 27 Aug 2023 04:35:05 -0400 (EDT)
-Date:   Sun, 27 Aug 2023 10:34:53 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Qais Yousef <qyousef@layalina.io>
+        with ESMTP id S229729AbjH0Xft (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 27 Aug 2023 19:35:49 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E82199
+        for <cgroups@vger.kernel.org>; Sun, 27 Aug 2023 16:35:27 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so24186555e9.2
+        for <cgroups@vger.kernel.org>; Sun, 27 Aug 2023 16:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1693179326; x=1693784126;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v5y6/ZTjfXJEZbiKUq7WiVLqlVma4fac9mBsqpVtToc=;
+        b=Y+xN6CskKFlhmnznfmJANIYNZI/rBGg0IytL+b7I6Prqr2/PZa9zDAeilCxz5UEzhC
+         uKpkDYhdrtEzqLfGSZevY+E2VbxaQ3wraLYdFmGP7peBfJYA6jRXniMSUheCvixmXF4m
+         XwKUtu6Nm4PxjGHpu03M2e5C+ZO+30RwBDmnVJPBrQLz+Z9jj2jEhlmuIdQ6QhiXBGvh
+         Z2tnwLaYO1SupFQGAqQLgieByrPF9QyKHtG9zkv+UwwX0TNwYDmZTpc8PiLqRhisVkew
+         e729/B2D9V/fUPjsEcZUNFqJ49LI6svji101PpBPMv7ytDmxQZhBOEcADJmjZLP/Bd8w
+         lgfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693179326; x=1693784126;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v5y6/ZTjfXJEZbiKUq7WiVLqlVma4fac9mBsqpVtToc=;
+        b=ik19zZDpszzZJ9oJHlRY1LqF1zZD9DVmLvWfxXtpF3jdmAPh13ofV1ThfwXmRuSk0k
+         NtEQOVP6MrM26wHi6ve7oP3ckG3ZbE9l7XSj/rhZu26jhAnXyAZ4AzdK3iAOsoWqlPky
+         W3ZvtDhsMyHFVPODbTtFQAR3tFvEOjzUM2OlqjZVIM3Tf59o8Gw6m5oDNGMjKeLZtAtC
+         QH+KETDuyJSDxJeFasQjUjCi+U5zmhbWU2I2M97GWvFL4adMO2cdzKM9zhBkJOARMS77
+         gRRK2VcS023cW9v72BE7XlgdOT3uH6l1XVbQoNZrgvNxtfQUvuQZCt3RYuNTpMVIrofw
+         sbMg==
+X-Gm-Message-State: AOJu0YyPysjCtiR6m+4BSRiZMom+JbCfmmJ26QETifVEDyuCABN0Cla3
+        0MO2wYYVskDVl9a6Q1yWNsEBOA==
+X-Google-Smtp-Source: AGHT+IGx8pXa4uGgS+za3PgW3mU2GQ0Sq4+vpbherXwwFbaV+ELmK+8aQ44JoxJym3E9cwbahi0oBA==
+X-Received: by 2002:a1c:7510:0:b0:3fb:c9f4:150e with SMTP id o16-20020a1c7510000000b003fbc9f4150emr19786178wmc.14.1693179326021;
+        Sun, 27 Aug 2023 16:35:26 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id a13-20020a05600c224d00b003fefca26c72sm9061716wmm.23.2023.08.27.16.35.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 16:35:25 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 00:35:24 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Greg KH <greg@kroah.com>
 Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
         Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -74,39 +61,44 @@ Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
  for 6.4.y
-Message-ID: <2023082742-dad-henna-cb35@gregkh>
+Message-ID: <20230827233524.7anzxffj4v7srxzd@airbuntu>
 References: <20230821221956.698117-1-qyousef@layalina.io>
+ <2023082742-dad-henna-cb35@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230821221956.698117-1-qyousef@layalina.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023082742-dad-henna-cb35@gregkh>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 11:19:50PM +0100, Qais Yousef wrote:
-> This is a backport of the series that fixes the way deadline bandwidth
-> restoration is done which is causing noticeable delay on resume path. It also
-> converts the cpuset lock back into a mutex which some users on Android too.
-> I lack the details but AFAIU the read/write semaphore was slower on high
-> contention.
+On 08/27/23 10:34, Greg KH wrote:
+> On Mon, Aug 21, 2023 at 11:19:50PM +0100, Qais Yousef wrote:
+> > This is a backport of the series that fixes the way deadline bandwidth
+> > restoration is done which is causing noticeable delay on resume path. It also
+> > converts the cpuset lock back into a mutex which some users on Android too.
+> > I lack the details but AFAIU the read/write semaphore was slower on high
+> > contention.
+> > 
+> > Compile tested against some randconfig for different archs. Only boot tested on
+> > x86 qemu.
+> > 
+> > Based on v6.4.11
+> > 
+> > Original series:
+> > 
+> > 	https://lore.kernel.org/lkml/20230508075854.17215-1-juri.lelli@redhat.com/
+> > 
+> > Thanks!
 > 
-> Compile tested against some randconfig for different archs. Only boot tested on
-> x86 qemu.
-> 
-> Based on v6.4.11
-> 
-> Original series:
-> 
-> 	https://lore.kernel.org/lkml/20230508075854.17215-1-juri.lelli@redhat.com/
-> 
-> Thanks!
+> All backports now queued up, thanks for doing this work!
 
-All backports now queued up, thanks for doing this work!
+And thanks for your patience!
 
-greg k-h
+--
+Qais Yousef
