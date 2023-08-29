@@ -2,71 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B102B78CDF8
-	for <lists+cgroups@lfdr.de>; Tue, 29 Aug 2023 23:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A987E78CF6A
+	for <lists+cgroups@lfdr.de>; Wed, 30 Aug 2023 00:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbjH2VCQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Aug 2023 17:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        id S233227AbjH2WSM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Aug 2023 18:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239403AbjH2VCE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Aug 2023 17:02:04 -0400
+        with ESMTP id S238865AbjH2WR7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Aug 2023 18:17:59 -0400
 Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC401BB;
-        Tue, 29 Aug 2023 14:02:02 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c09673b006so25654135ad.1;
-        Tue, 29 Aug 2023 14:02:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79F6194;
+        Tue, 29 Aug 2023 15:17:54 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bdb7b0c8afso30471075ad.3;
+        Tue, 29 Aug 2023 15:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693342922; x=1693947722; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RMyy3L586kb8cKfelvrLkGkpSHTkexvGQpQjE1LwdFo=;
-        b=CyS5CPua06THdQxkbEFgECOylZrddrh+R/xL1V4Hgbp3Hp98GdIh394fmg3cEBkD4G
-         31IuNUsJfa0D1IstYXy7U4jYmK5+fO0hXlKm6aWD/Tcu2lap9D55BoANYlnFxseYEGxS
-         /caoQL8ZEsjObmP5rt/dgXpyl8bgoxPS8r3NpD6F7AEYq4DhYf03g/5zp98nmVY1kmvO
-         CdcTRviQiLJAKOsbOXWzqhVsErGjFQFXVH8E5LaGeuI+TyDsO0OgXAjSnL+S04g67LnL
-         2L4ufEIg+/53OGazOhUdQZNmPdXSL/2GsHeYoO4NFOw+jZF04peiGH0zNlmwEieLC34J
-         W9nA==
+        d=gmail.com; s=20221208; t=1693347474; x=1693952274; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BpZA2JcHwH/YVwVIjbgRb69BfPVjsSUKqWdoLWaX5IU=;
+        b=Rn/1Js/KDV0Yr/7/oRlebVVeYNY8jb3g/STkLRFGJZ4h3NepPW8qIVA/OZI/LVrCnp
+         1fSAV8boAnS6n1lRv0Niti8qBGNS6Cx0AbcGiAqQuSg4Mp2ILgJR3Y3wwloCjIQQ+Ol1
+         DDNrj1PoJuYS6SvX+Apl3/I1AbpAhf8beg7+04dmvd/I+ufbx4X/SVyg2lB6rVaSezsc
+         UHjrKJzWHWsUDgShL22Tz8jpNV+IWj1dvrrZbzkJvSmm/fwV9gtnJKb6Xnm5daIhsvmj
+         uB2CjTkaI4D8lvClzZASiwzxN1L5DpSDffgtmtu1Fs6ZC5uBxoun7axKPHcfwflP6NB9
+         /Dpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693342922; x=1693947722;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RMyy3L586kb8cKfelvrLkGkpSHTkexvGQpQjE1LwdFo=;
-        b=DTj2+UMMnWJv0Buniuw2xC7hl56A/5tsGA5ATcdx/JLj3oCslltTQYfHNceHtDmsh6
-         QjuCqUCgfoA1IywLxx5Y0jr2pByU0zzeonEZivk5hnt8hOdVcQ3rMTWAHs6cuIJS/T2J
-         3gO3RijtkhgsMjRX669vlgLIpTOwBr6YJhHoq0fOcPojWY1/SgUeEwL1m9SKmmWuA/MJ
-         1BvP4NZUurOHhU85oPSnEnR4GdAjzfFMwi1HjWwZUJ5yrc8GUMvQ5SqiHVeFZktT+VFR
-         MCL+uVL7SqGgbmxsNGt2MPRlGqcsYtnESrfEGJO61Etwbkj0/ZBqJtufwFdC7MynW3Rg
-         sDQw==
-X-Gm-Message-State: AOJu0YzmW5BBdN5iN+I2KXBnsN7l37tfj/VQRH402mS+JlRCl1wcrPEC
-        OUDw6bMkrS7Pg+3o4+wCuto=
-X-Google-Smtp-Source: AGHT+IGAgnDe30iZda737JpeCWLLIfCE0Xgd3FyeVLQqqjM+mbrYjt/hp5on64LCBTGZqmA1uSSheA==
-X-Received: by 2002:a17:902:db08:b0:1bd:e64c:5c70 with SMTP id m8-20020a170902db0800b001bde64c5c70mr285730plx.7.1693342921671;
-        Tue, 29 Aug 2023 14:02:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693347474; x=1693952274;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BpZA2JcHwH/YVwVIjbgRb69BfPVjsSUKqWdoLWaX5IU=;
+        b=FdAGlsq8zfKiUd6Y2jAnxE0WFI3IPTaD44FN+IPdaygSXneK8SwCHA9WQ+f9oVfaCC
+         pokeHZlyG5O8dmYFBBtAZrbI0akNgf6GL4vpmxJ+0h4XtIx0Os6uOdDaDhoiGF+7GYyB
+         7wmitRbEE9CdkuIRUUMWRuAd21wYC30MQRBWp8S36yJBRWM+IswWoFE+K68tpnFVcRIg
+         RyFK56GUIXMD/ir9WqNCnciLDqGbe/Xjulbpfq9GvVGsyWtujiArsnX+cK910gJx6rjG
+         KovIZu6ZsL8y01GxhsgmHss1/xjcgItEBh9oVUqijX3a9SVMVpmYHcMhuuRUk19se3UR
+         5EZg==
+X-Gm-Message-State: AOJu0Yw8qmJMQOF31OTEr8E0AFzZyK58HwgjSKZF9IeDMvFm2myKIl1t
+        0BozT7rhtxa1ma41QBNyaAs=
+X-Google-Smtp-Source: AGHT+IHgV7nflrc8oxbJqrHMUriWQbjBaXrI9qfMmln8eWwNuvV9NRz6tKrF5wv0+hbnaG/xMsdAeA==
+X-Received: by 2002:a17:902:ab93:b0:1bc:6dd9:82c3 with SMTP id f19-20020a170902ab9300b001bc6dd982c3mr368344plr.37.1693347474369;
+        Tue, 29 Aug 2023 15:17:54 -0700 (PDT)
 Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id d12-20020a170902cecc00b001bdd7579b5dsm9787431plg.240.2023.08.29.14.02.00
+        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001b9e9f191f2sm9884102plb.15.2023.08.29.15.17.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 14:02:01 -0700 (PDT)
+        Tue, 29 Aug 2023 15:17:53 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 29 Aug 2023 11:01:59 -1000
+Date:   Tue, 29 Aug 2023 12:17:52 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Firo Yang <firo.yang@suse.com>
-Subject: Re: [PATCH 1/2] cgroup: Print v1 cgroup.procs and tasks without
- pidlists
-Message-ID: <ZO5cx9UhqBzP2QX-@slm.duckdns.org>
-References: <20230823174804.23632-1-mkoutny@suse.com>
- <20230823174804.23632-2-mkoutny@suse.com>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
+        mkoutny@suse.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next v2 1/4] blk-throttle: print signed value
+ 'carryover_bytes/ios' for user
+Message-ID: <ZO5ukKSulqnCviAs@slm.duckdns.org>
+References: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
+ <20230816012708.1193747-2-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230823174804.23632-2-mkoutny@suse.com>
+In-Reply-To: <20230816012708.1193747-2-yukuai1@huaweicloud.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -77,29 +76,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Michal.
-
-On Wed, Aug 23, 2023 at 07:48:03PM +0200, Michal Koutný wrote:
-> pidlists are structure that allows printing cgroup member tasks in
-> sorted order and with proper pidns (in)visibility.
+On Wed, Aug 16, 2023 at 09:27:05AM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> The promise of sorted output was removed in the commit 7823da36ce8e
-> ("cgroups: update documentation of cgroups tasks and procs files") (more
-> than 13 years ago at the time of writing this).
+> 'carryover_bytes/ios' can be negative, indicate that some bio is
+> dispatched in advance within slice while configuration is updated.
+> Print a huge value is not user-friendly.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-While this is true, I'm not sure it'd be a good idea to change the behavior
-after all these years. Whoever is still using cgroup1 likely doens't mean to
-update their code at all and it's difficult to rule out odd-ball users that
-might have been depending on the ordered output knowingly or unknowingly.
-
-> On systems that still use v1 hierarchies (e.g. systemd in non-unified
-> mode), pidlists are problematic because:
-> a) their cache unnecessarily busies workqueues (cgroup_pidlist_destroy_wq)
-> b) PID recycling [1] may lead to logging noise:
-> > seq_file: buggy .next function kernfs_seq_next did not update position index
-
-While I like the code reduction, I wonder whether the right course of action
-is just fixing the warning here.
+Acked-by: Tejun Heo <tj@kernel.org>
 
 Thanks.
 
