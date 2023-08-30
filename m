@@ -2,110 +2,215 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BC478CF75
-	for <lists+cgroups@lfdr.de>; Wed, 30 Aug 2023 00:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF9978D1D6
+	for <lists+cgroups@lfdr.de>; Wed, 30 Aug 2023 03:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235767AbjH2WUw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Aug 2023 18:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
+        id S241614AbjH3Bvo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Aug 2023 21:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239036AbjH2WU2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Aug 2023 18:20:28 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5D61B1;
-        Tue, 29 Aug 2023 15:20:25 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf3a2f4528so38766415ad.2;
-        Tue, 29 Aug 2023 15:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693347625; x=1693952425; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4J2rbxAFjfp7sOlwJ88FE+lmdis9M2FRPFOfqh2wKcA=;
-        b=KbXbxf6xPoayllgDXklz5FTcjILcyk4nl5NJJLO+rUG8YC+n82O2+8BByDDZ09JMkY
-         PuM5d+EVVYDUyn7tI4sri+Y/X89Cs830F2BAK7f0ljWfS/kEPl4pnAQSw/4nnQkzQtd4
-         yfzzt2Fxw1ehkpTJRskQVEv8ccCEbqqQuSglP35dlV5Vp/tek9iC5XjegbSEabDfoEoO
-         bz2St0mBliPDu0xtkTkt2cmwW7mgCa2ImDe0YKO5b6X2478MjpBiV/h/mwxObSlhc8k8
-         hLGY2wajQgUWrPgc2jppHYKya/rJMDbJ781EWNP+EAG6heMSUp2RnCM5OkN4YyEmIb2+
-         V6HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693347625; x=1693952425;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4J2rbxAFjfp7sOlwJ88FE+lmdis9M2FRPFOfqh2wKcA=;
-        b=ga2y5h/HEISxPnT8JdAGDp9DFgUsQ+pGL3gNHSvLWR2dCMATiMFgNhb9n9DR2cKrmQ
-         2cMmP2B/ygI1pDaa7zou95Hec2t7uJvOz0/408wXZhGTuZzNjLORRvqOUz7JRZc61dnM
-         LFRtrz4oV6XPvyRXOAXe9aKqMWJrw7F3ztNDsUNvXtUJxc40nef/xHLzuBFQEkz7Rt5b
-         036iWw1M69N9d4yz/W/fsxvxwgdB61lXkqL3M9Z81+UTUF36r1bCPp1HNRoZ6iaJD8QT
-         iB2M36wGW/JE61uvgaNqngNVVggWd9CdD65TUqPfua2sUYxYPa/DlLYH9CmAqUxgBjt1
-         y82A==
-X-Gm-Message-State: AOJu0Yx77W5L+BheKfNMPlbUg/EpZIEMNa7CY+aaHWRF7LX/rg1xzVT8
-        3pTdUb8kzAhUxyYLRbt3aik=
-X-Google-Smtp-Source: AGHT+IF2fVXd4Vn1dSRwPBbsF3aJmvAkwbUbiTaXxWWLBFPtBKhUKtl+cSyk6vS/L+7ijfTVXZLq2Q==
-X-Received: by 2002:a17:902:a411:b0:1bb:9f07:5e0 with SMTP id p17-20020a170902a41100b001bb9f0705e0mr383039plq.60.1693347625213;
-        Tue, 29 Aug 2023 15:20:25 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id i12-20020a170902eb4c00b001bc35b14c99sm9812861pli.212.2023.08.29.15.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 15:20:24 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 29 Aug 2023 12:20:23 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
-        mkoutny@suse.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next v2 4/4] blk-throttle: consider
- 'carryover_ios/bytes' in throtl_trim_slice()
-Message-ID: <ZO5vJ2i3qfvtBC7B@slm.duckdns.org>
-References: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
- <20230816012708.1193747-5-yukuai1@huaweicloud.com>
+        with ESMTP id S241633AbjH3BvQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Aug 2023 21:51:16 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8994CD2;
+        Tue, 29 Aug 2023 18:51:12 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rb6ct37xTzLp7D;
+        Wed, 30 Aug 2023 09:47:58 +0800 (CST)
+Received: from [192.168.106.44] (10.90.31.46) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 30 Aug 2023 09:51:09 +0800
+Subject: Re: [PATCH v4] mm: vmscan: try to reclaim swapcache pages if no swap
+ space
+To:     Yosry Ahmed <yosryahmed@google.com>
+References: <20230829024104.1505530-1-liushixin2@huawei.com>
+ <CAJD7tkZafahYbBs9=HNy4QtFZ4aGTcECvvCt3bQgXaNPUYTOUg@mail.gmail.com>
+CC:     Huang Ying <ying.huang@intel.com>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <wangkefeng.wang@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <a2a237a7-aff5-cf7e-d72f-67537c950448@huawei.com>
+Date:   Wed, 30 Aug 2023 09:51:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816012708.1193747-5-yukuai1@huaweicloud.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkZafahYbBs9=HNy4QtFZ4aGTcECvvCt3bQgXaNPUYTOUg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.90.31.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 09:27:08AM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Currently, 'carryover_ios/bytes' is not handled in throtl_trim_slice(),
-> for consequence, 'carryover_ios/bytes' will be used to throttle bio
-> multiple times, for example:
-> 
-> 1) set iops limit to 100, and slice start is 0, slice end is 100ms;
-> 2) current time is 0, and 10 ios are dispatched, those io won't be
->    throttled and io_disp is 10;
-> 3) still at current time 0, update iops limit to 1000, carryover_ios is
->    updated to (0 - 10) = -10;
-> 4) in this slice(0 - 100ms), io_allowed = 100 + (-10) = 90, which means
->    only 90 ios can be dispatched without waiting;
-> 5) assume that io is throttled in slice(0 - 100ms), and
->    throtl_trim_slice() update silce to (100ms - 200ms). In this case,
->    'carryover_ios/bytes' is not cleared and still only 90 ios can be
->    dispatched between 100ms - 200ms.
-> 
-> Fix this problem by updating 'carryover_ios/bytes' in
-> throtl_trim_slice().
-> 
-> Fixes: a880ae93e5b5 ("blk-throttle: fix io hung due to configuration updates")
-> Reported-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
-> Link: https://lore.kernel.org/all/20230812072116.42321-1-zhuxiaohui.400@bytedance.com/
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
 
-Thanks.
+On 2023/8/29 23:23, Yosry Ahmed wrote:
+> On Mon, Aug 28, 2023 at 6:46 PM Liu Shixin <liushixin2@huawei.com> wrote:
+>> When spaces of swap devices are exhausted, only file pages can be reclaimed.
+>> But there are still some swapcache pages in anon lru list. This can lead
+>> to a premature out-of-memory.
+>>
+>> The problem is found with such step:
+>>
+>>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
+>>  memory limit, then runs an program to allocates about 15MB memory.
+>>
+>> The problem occurs occasionally, which may need about 100 times.
+> The reproducer I used in v2 reproduces this very reliably and simply,
+> could you link to it instead?
+>
+> https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
+OK
+>
+>> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
+>> If the number is not zero, return true either. Moreover, add a new bit
+>> swapcache_only in struct scan_control to skip isolating anon pages that
+>> are not swapcache when only swapcache pages can be reclaimed to accelerate
+>> reclaim efficiency.
+>>
+>> Link: https://lore.kernel.org/linux-mm/14e15f31-f3d3-4169-8ed9-fb36e57cf578@huawei.com/
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> Tested-by: Yosry Ahmed <yosryahmed@google.com>
+> Usually people add the difference from the previous version to make it
+> easy to know what changed.
+>
+> I still prefer to add NR_SWAPCACHE to memcg1_stats. Anyway, the code
+> looks good to me. With the updated reproducer link feel free to add:
+>
+> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+Thanks,
+>
+>> ---
+>>  include/linux/swap.h |  6 ++++++
+>>  mm/memcontrol.c      |  8 ++++++++
+>>  mm/vmscan.c          | 29 +++++++++++++++++++++++++++--
+>>  3 files changed, 41 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 456546443f1f..0318e918bfa4 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+>>  }
+>>
+>>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+>> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>>  #else
+>>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+>> @@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>         return get_nr_swap_pages();
+>>  }
+>>
+>> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +       return total_swapcache_pages();
+>> +}
+>> +
+>>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>         return vm_swap_full();
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index e8ca4bdcb03c..c465829db92b 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>         return nr_swap_pages;
+>>  }
+>>
+>> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +       if (mem_cgroup_disabled())
+>> +               return total_swapcache_pages();
+>> +
+>> +       return memcg_page_state(memcg, NR_SWAPCACHE);
+>> +}
+>> +
+>>  bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>         struct mem_cgroup *memcg;
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 1080209a568b..e73e2df8828d 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -137,6 +137,9 @@ struct scan_control {
+>>         /* Always discard instead of demoting to lower tier memory */
+>>         unsigned int no_demotion:1;
+>>
+>> +       /* Swap space is exhausted, only reclaim swapcache for anon LRU */
+>> +       unsigned int swapcache_only:1;
+>> +
+>>         /* Allocation order */
+>>         s8 order;
+>>
+>> @@ -613,10 +616,20 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>>                  */
+>>                 if (get_nr_swap_pages() > 0)
+>>                         return true;
+>> +               /* Is there any swapcache pages to reclaim? */
+>> +               if (total_swapcache_pages() > 0) {
+>> +                       sc->swapcache_only = 1;
+>> +                       return true;
+>> +               }
+>>         } else {
+>>                 /* Is the memcg below its swap limit? */
+>>                 if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>>                         return true;
+>> +               /* Is there any swapcache pages in memcg to reclaim? */
+>> +               if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
+>> +                       sc->swapcache_only = 1;
+>> +                       return true;
+>> +               }
+>>         }
+>>
+>>         /*
+>> @@ -2280,6 +2293,19 @@ static bool skip_cma(struct folio *folio, struct scan_control *sc)
+>>  }
+>>  #endif
+>>
+>> +static bool skip_isolate(struct folio *folio, struct scan_control *sc,
+>> +                        enum lru_list lru)
+>> +{
+>> +       if (folio_zonenum(folio) > sc->reclaim_idx)
+>> +               return true;
+>> +       if (skip_cma(folio, sc))
+>> +               return true;
+>> +       if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
+>> +           !folio_test_swapcache(folio)))
+>> +               return true;
+>> +       return false;
+>> +}
+>> +
+>>  /*
+>>   * Isolating page from the lruvec to fill in @dst list by nr_to_scan times.
+>>   *
+>> @@ -2326,8 +2352,7 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+>>                 nr_pages = folio_nr_pages(folio);
+>>                 total_scan += nr_pages;
+>>
+>> -               if (folio_zonenum(folio) > sc->reclaim_idx ||
+>> -                               skip_cma(folio, sc)) {
+>> +               if (skip_isolate(folio, sc, lru)) {
+>>                         nr_skipped[folio_zonenum(folio)] += nr_pages;
+>>                         move_to = &folios_skipped;
+>>                         goto move;
+>> --
+>> 2.25.1
+>>
+> .
+>
 
--- 
-tejun
