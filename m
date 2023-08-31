@@ -2,134 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED92578E4F5
-	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 05:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E080178E90F
+	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 11:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbjHaDI4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Aug 2023 23:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
+        id S232453AbjHaJFo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 31 Aug 2023 05:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjHaDIy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Aug 2023 23:08:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFEACC2;
-        Wed, 30 Aug 2023 20:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693451331; x=1724987331;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mYEk4LI2pL8XWPF1zKc5qz6vdX12xJGX7KbAifejJ34=;
-  b=FcJDNC7z0soWTaunVNw+0vkguzfXZPshXnMQrzTRX32YWy649eQuFfx+
-   CEQ6wIkkbMU+9AZvu4AvqHECloNSVSAJ6xTHrXw1s/oRg2D+3sAHCof39
-   1HbyqIczXJK/A9Z0PX99iHPncOKNw3AIomi8PdEsHh6N3EfpdxwMRPOeq
-   xnqXAJl7JOeV/ORv1uFuWXtQQerrKUupK9AMKrs9JbO6bxlbazwjFuN3V
-   auxBZHkPRGCcKGCrTgHPr4Xa21XpZt2AaAKW/sIsIbd1673tItwr2Z2eq
-   5SnMaQppUVIZD/iXnAQlQ3mcB+t2o/c7bpZskzSmGnY1Pbgz5pyVz5bXr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462175921"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="462175921"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:08:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="913042869"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="913042869"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 30 Aug 2023 20:08:47 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbY34-000AWX-1Y;
-        Thu, 31 Aug 2023 03:08:46 +0000
-Date:   Thu, 31 Aug 2023 11:08:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        with ESMTP id S242756AbjHaJFo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Aug 2023 05:05:44 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13696CEA;
+        Thu, 31 Aug 2023 02:05:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BDD2F21871;
+        Thu, 31 Aug 2023 09:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1693472737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DujY6dkqedsXFZeiaLXoDY/sYyiJ8dFrPRvd9QhXe4U=;
+        b=TQbe7rXxOquuL1eiRja1QjBmuTWQRynSoCpR94kHmbf3Tw7pzzFmN0XBlcVvgYoueYiyQZ
+        EAuxq5zsTcDlPZA2bzGEcVIGn3riohjif4a+PCyY7jvWVrgmvzDzsMsNttjkkgrEGpfBJH
+        4CsiLRzknMGJH4L/emjN7lQ08pLIzkU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD66813583;
+        Thu, 31 Aug 2023 09:05:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id WcOdKeFX8GTpDAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 31 Aug 2023 09:05:37 +0000
+Date:   Thu, 31 Aug 2023 11:05:37 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for
+        Ivan Babrou <ivan@cloudflare.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
  userspace reads
-Message-ID: <202308311025.538QuXBV-lkp@intel.com>
-References: <20230830175335.1536008-5-yosryahmed@google.com>
+Message-ID: <ZPBX4S6XKX+HsDdW@dhcp22.suse.cz>
+References: <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
+ <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
+ <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
+ <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
+ <ZO48h7c9qwQxEPPA@slm.duckdns.org>
+ <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com>
+ <ZO5IuULSCXMe9_pN@slm.duckdns.org>
+ <CAJD7tkYtnhemCLBqFqOVurfWEaCjKtyEM745JYRxFS0r5cpZwQ@mail.gmail.com>
+ <ZO5RROsZ1VESCsMG@slm.duckdns.org>
+ <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230830175335.1536008-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Yosry,
+On Tue 29-08-23 13:20:34, Yosry Ahmed wrote:
+[...]
+> I will add a mutex on the userspace read side then and spin a v3.
+> Hopefully this addresses Michal's concern as well. The lock dropping
+> logic will still exist for the inner lock, but when one userspace
+> reader drops the inner lock other readers won't be able to pick it up.
 
-kernel test robot noticed the following build warnings:
+Yes, that would minimize the risk of the worst case pathological
+behavior.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master next-20230830]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > I don't have a strong preference. As long as we stay away from introducing a
+> > new user interface construct and can address the noticed scalability issues,
+> > it should be fine. Note that there are other ways to address priority
+> > inversions and contentions too - e.g. we can always bounce flushing to a
+> > [kthread_]kworker and rate limit (or rather latency limit) how often
+> > different classes of users can trigger flushing. I don't think we have to go
+> > there yet but if the simpler meaures don't work out, there are still many
+> > ways to solve the problem within the kernel.
+> 
+> I whole-heartedly agree with the preference to fix the problem within
+> the kernel with minimal/none user space involvement.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-properly-name-and-document-unified-stats-flushing/20230831-015518
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230830175335.1536008-5-yosryahmed%40google.com
-patch subject: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for userspace reads
-config: i386-randconfig-r013-20230831 (https://download.01.org/0day-ci/archive/20230831/202308311025.538QuXBV-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308311025.538QuXBV-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308311025.538QuXBV-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> mm/memcontrol.c:667:6: warning: no previous prototype for function 'mem_cgroup_user_flush_stats' [-Wmissing-prototypes]
-   void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-        ^
-   mm/memcontrol.c:667:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-   ^
-   static 
-   1 warning generated.
-
-
-vim +/mem_cgroup_user_flush_stats +667 mm/memcontrol.c
-
-   658	
-   659	/*
-   660	 * mem_cgroup_user_flush_stats - do a stats flush for a user read
-   661	 * @memcg: memory cgroup to flush
-   662	 *
-   663	 * Flush the subtree of @memcg. A mutex is used for userspace readers to gate
-   664	 * the global rstat spinlock. This protects in-kernel flushers from userspace
-   665	 * readers hogging the lock.
-   666	 */
- > 667	void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-   668	{
-   669		mutex_lock(&stats_user_flush_mutex);
-   670		do_stats_flush(memcg);
-   671		mutex_unlock(&stats_user_flush_mutex);
-   672	}
-   673	
-
+Let's see. While I would love to see a solution that works for everybody
+without explicit interface we have hit problems with locks involved in
+stat files in the past.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Michal Hocko
+SUSE Labs
