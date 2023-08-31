@@ -2,56 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE5A78F181
-	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 18:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D48678F188
+	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 18:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346234AbjHaQ4W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 31 Aug 2023 12:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
+        id S1346664AbjHaQ4a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 31 Aug 2023 12:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244626AbjHaQ4W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Aug 2023 12:56:22 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBC8185
-        for <cgroups@vger.kernel.org>; Thu, 31 Aug 2023 09:56:19 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68a6cd7c6c0so1170545b3a.3
-        for <cgroups@vger.kernel.org>; Thu, 31 Aug 2023 09:56:19 -0700 (PDT)
+        with ESMTP id S1345539AbjHaQ4Y (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Aug 2023 12:56:24 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3F6D1
+        for <cgroups@vger.kernel.org>; Thu, 31 Aug 2023 09:56:21 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26d49dd574aso1090857a91.1
+        for <cgroups@vger.kernel.org>; Thu, 31 Aug 2023 09:56:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693500978; x=1694105778; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rnl+F2n1kOs4P011p6EJFvzkt9Ylx9T9gDi6gAnNyhk=;
-        b=Y0oi2Z3Eialn+z2e/VxNA/wY4TjO2Jg+n7PCg7nqe2scLJlIjkDEQKaLeSUdSLbRkC
-         xogZcgPCa4eZN1U3uA2KV041NQy5HRobTB/lIkg4XUqF9QEoh2oMVYTsz6hMuO+NVTdu
-         1zn9rVUSES2xOhWecunHa/du1GzVi344f4kaDbI3wAxidvGhH8saP/JFEYj+MYLOVZcI
-         jpNd2zpDaIRWdgWC/FRlXshqlqUKSIfwqW++/D7s78ySzSqFYwEZ39RqhQmBGbLc5C9E
-         mUIiyazbpfjC+KP7kS7YWcL5Wt64UpzSUF1UGn0+Z+CfzAFRYorStCBRreMq+7VHBIkG
-         wBsw==
+        d=google.com; s=20221208; t=1693500981; x=1694105781; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dJkwDc7Wxmywu9Yo0ZIK2ppmyNcYkDsKDS48R26U4fo=;
+        b=onL+yixI1Hw0E45nLUTeAKG663+oWCI/D3IutTPmf516S6mKwzXdm4mDaMAodk1W6b
+         pn7YH+wPBUVBEabXF7KYa+w3QY7DXyiviyVcEqCWY2muuS9/RrHv2ld43n7Sif8YE/i1
+         z6bYsupweiuPGNaewF8ZMWmsE3tyCIkl1kV871VT9aqseA9ry3W2bUsRq9eSGs9mAt4o
+         jMVD/ltODgDJ1HWQEWFhc4uCZW/kxy2mCyroQibAO/6/yXGXd4goPGDD5oebkowPsqyR
+         v9ax0IHNnSt7UPX3WXpER33Lr6ZFY6BJzOdNTOgP2qw2dajW9JCIwWLLnvCl8Df+S8xA
+         XNuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693500978; x=1694105778;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rnl+F2n1kOs4P011p6EJFvzkt9Ylx9T9gDi6gAnNyhk=;
-        b=KtlqJgB6WT/ZxMppF4EIhNN6Gx8G2IhHu8IFy3xGP0vhmbNUBGEgMXvGZcYs4PB4Zw
-         KXtYB1WqBf9d5MLsCyXGEHE4Ucd6MRqLAuJj4+t52dLzgYudfuWHmPiZuGj7MHeH7g4E
-         YuQxdjz1KHRMlmGtE7eCxwJMgl/FTQZFitQv1MBN7TBapsQI++F+EXXDy4GezqfgPKpC
-         XEZuFluQgq3wL+Hi4IQZLYKS5aJxx5ZBLPAewYJbKEZGrjDJSv3UMlH6fjTW4QitdvYj
-         VWDQ9Q/1MlJtcn28qCIG/Y0hoN4rVhsBdoH8yCpe0Gf1B16pm6ICadPvb57iA4qxexXJ
-         3K2g==
-X-Gm-Message-State: AOJu0YyX2oPWelNmMX3QOIW3kHglTBsOWfqSZnWoQqfIajMQmyJ2JqRL
-        2SxclJENvRqy+sV8VWoZE771Eh8Rx0OgW1vG
-X-Google-Smtp-Source: AGHT+IGQaFV/eoJPD0E5YObQdt63kn1VXtZb+DnEHQpo8u+eLis24QVhJvy1qf6oTqJysoROPjRG5kn0lET0eVSr
+        d=1e100.net; s=20221208; t=1693500981; x=1694105781;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dJkwDc7Wxmywu9Yo0ZIK2ppmyNcYkDsKDS48R26U4fo=;
+        b=guAfQc7voFpVGX0g2FA/sde3ojt8I6/NoaI590pwM6bzrDly6iSDG3yENJOrir6hlD
+         mS209BEiaqQDMO33piUu6Qix8uci33+OIjoEEtPs4mDMe4EgzIm7C+jJn3Axag/hPPj5
+         yRb9bDZKM6YAJnd5IMdLzgRu2K5ATaMnTRMpKBvWjZ1f9zOvuDGzXpaVyhJO7+5MJBik
+         CWYUd1TnS70fQsnIGC9rvUbkou7SG+3FzVJR/2cTf22FZ1nhwimy8XU3acLK5dlCP4Zs
+         oZlVYVHyEjbeCYgsJ0vNiBwKyaXfYK3k2Ig9JUIQJR2zeHPPnV/vs50mDvp3Jy1b/yGd
+         kEvQ==
+X-Gm-Message-State: AOJu0YxGO1T3K9MuBgeRK793HUbCqxTm/dGxLO6XPzT4y1TzpB9xyiMB
+        qt+7jq4muA+LFhXntPp8Eyyf66RVVGgIXWpp
+X-Google-Smtp-Source: AGHT+IGBXws1kwasa2qMZ2oV47hWaKQbyN2jJKglhtHqwCQYSWOwpg/OejdryTSoKa2sWR5HEgqm/Qoc3DqRPg8i
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:2d87:b0:68b:dbbc:dd00 with
- SMTP id fb7-20020a056a002d8700b0068bdbbcdd00mr86084pfb.0.1693500978729; Thu,
- 31 Aug 2023 09:56:18 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 16:56:09 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:90a:c68c:b0:268:9cfa:171c with SMTP
+ id n12-20020a17090ac68c00b002689cfa171cmr61794pjt.4.1693500980771; Thu, 31
+ Aug 2023 09:56:20 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 16:56:10 +0000
 In-Reply-To: <20230831165611.2610118-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230831165611.2610118-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230831165611.2610118-3-yosryahmed@google.com>
-Subject: [PATCH v4 2/4] mm: memcg: add a helper for non-unified stats flushing
+Message-ID: <20230831165611.2610118-4-yosryahmed@google.com>
+Subject: [PATCH v4 3/4] mm: memcg: let non-unified root stats flushes help
+ unified flushes
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
@@ -65,85 +68,82 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Some contexts flush memcg stats outside of unified flushing, directly
-using cgroup_rstat_flush(). Add a helper for non-unified flushing, a
-counterpart for do_unified_stats_flush(), and use it in those contexts,
-as well as in do_unified_stats_flush() itself.
+Unified flushing of memcg stats keeps track of the magnitude of pending
+updates, and only allows a flush if that magnitude exceeds a threshold.
+It also keeps track of the time at which ratelimited flushing should be
+allowed as flush_next_time.
 
-This abstracts the rstat API and makes it easy to introduce
-modifications to either unified or non-unified flushing functions
-without changing callers.
+A non-unified flush on the root memcg has the same effect as a unified
+flush, so let it help unified flushing by resetting pending updates and
+kicking flush_next_time forward. Move the logic into the common
+do_stats_flush() helper, and do it for all root flushes, unified or
+not.
 
-No functional change intended.
+There is a subtle change here, we reset stats_flush_threshold before a
+flush rather than after a flush. This probably okay because:
 
+(a) For flushers: only unified flushers check stats_flush_threshold, and
+those flushers skip anyway if there is another unified flush ongoing.
+Having them also skip if there is an ongoing non-unified root flush is
+actually more consistent.
+
+(b) For updaters: Resetting stats_flush_threshold early may lead to more
+atomic updates of stats_flush_threshold, as we start updating it
+earlier. This should not be significant in practice because we stop
+updating stats_flush_threshold when it reaches the threshold anyway. If
+we start early and stop early, the number of atomic updates remain the
+same. The only difference is the scenario where we reset
+stats_flush_threshold early, start doing atomic updates early, and then
+the periodic flusher kicks in before we reach the threshold. In this
+case, we will have done more atomic updates. However, since the
+threshold wasn't reached, then we did not do a lot of updates anyway.
+
+Suggested-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- mm/memcontrol.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ mm/memcontrol.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2d0ec828a1c4..8c046feeaae7 100644
+index 8c046feeaae7..94d5a6751a9e 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -639,6 +639,17 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
- }
- 
-+/*
-+ * do_stats_flush - do a flush of the memory cgroup statistics
-+ * @memcg: memory cgroup to flush
-+ *
-+ * Only flushes the subtree of @memcg, does not skip under any conditions.
-+ */
-+static void do_stats_flush(struct mem_cgroup *memcg)
-+{
-+	cgroup_rstat_flush(memcg->css.cgroup);
-+}
-+
- /*
-  * do_unified_stats_flush - do a unified flush of memory cgroup statistics
-  *
-@@ -656,7 +667,7 @@ static void do_unified_stats_flush(void)
- 
- 	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
- 
--	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+	do_stats_flush(root_mem_cgroup);
- 
- 	atomic_set(&stats_flush_threshold, 0);
- 	atomic_set(&stats_unified_flush_ongoing, 0);
-@@ -7790,7 +7801,7 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- 			break;
- 		}
- 
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		do_stats_flush(memcg);
- 		pages = memcg_page_state(memcg, MEMCG_ZSWAP_B) / PAGE_SIZE;
- 		if (pages < max)
- 			continue;
-@@ -7855,8 +7866,10 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
+@@ -647,6 +647,11 @@ static inline void memcg_rstat_updated(struct mem_cgro=
+up *memcg, int val)
+  */
+ static void do_stats_flush(struct mem_cgroup *memcg)
  {
--	cgroup_rstat_flush(css->cgroup);
--	return memcg_page_state(mem_cgroup_from_css(css), MEMCG_ZSWAP_B);
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-+
-+	do_stats_flush(memcg);
-+	return memcg_page_state(memcg, MEMCG_ZSWAP_B);
++	/* for unified flushing, root non-unified flushing can help as well */
++	if (mem_cgroup_is_root(memcg)) {
++		WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
++		atomic_set(&stats_flush_threshold, 0);
++	}
+ 	cgroup_rstat_flush(memcg->css.cgroup);
  }
- 
- static int zswap_max_show(struct seq_file *m, void *v)
--- 
+=20
+@@ -665,11 +670,8 @@ static void do_unified_stats_flush(void)
+ 	    atomic_xchg(&stats_unified_flush_ongoing, 1))
+ 		return;
+=20
+-	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
+-
+ 	do_stats_flush(root_mem_cgroup);
+=20
+-	atomic_set(&stats_flush_threshold, 0);
+ 	atomic_set(&stats_unified_flush_ongoing, 0);
+ }
+=20
+--=20
 2.42.0.rc2.253.gd59a3bf2b4-goog
 
