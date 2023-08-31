@@ -2,104 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E080178E90F
-	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 11:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8104C78EF7D
+	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 16:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbjHaJFo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 31 Aug 2023 05:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S1346432AbjHaOVp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 31 Aug 2023 10:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242756AbjHaJFo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Aug 2023 05:05:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13696CEA;
-        Thu, 31 Aug 2023 02:05:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BDD2F21871;
-        Thu, 31 Aug 2023 09:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693472737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DujY6dkqedsXFZeiaLXoDY/sYyiJ8dFrPRvd9QhXe4U=;
-        b=TQbe7rXxOquuL1eiRja1QjBmuTWQRynSoCpR94kHmbf3Tw7pzzFmN0XBlcVvgYoueYiyQZ
-        EAuxq5zsTcDlPZA2bzGEcVIGn3riohjif4a+PCyY7jvWVrgmvzDzsMsNttjkkgrEGpfBJH
-        4CsiLRzknMGJH4L/emjN7lQ08pLIzkU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD66813583;
-        Thu, 31 Aug 2023 09:05:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WcOdKeFX8GTpDAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 31 Aug 2023 09:05:37 +0000
-Date:   Thu, 31 Aug 2023 11:05:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZPBX4S6XKX+HsDdW@dhcp22.suse.cz>
-References: <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
- <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
- <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
- <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
- <ZO48h7c9qwQxEPPA@slm.duckdns.org>
- <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com>
- <ZO5IuULSCXMe9_pN@slm.duckdns.org>
- <CAJD7tkYtnhemCLBqFqOVurfWEaCjKtyEM745JYRxFS0r5cpZwQ@mail.gmail.com>
- <ZO5RROsZ1VESCsMG@slm.duckdns.org>
- <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
+        with ESMTP id S1346435AbjHaOVo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Aug 2023 10:21:44 -0400
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A0C107;
+        Thu, 31 Aug 2023 07:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1693491695; x=1725027695;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TvFwiqQmFGnflqPwsI4vDJJirbAMWg8+sAoZoOii/Mg=;
+  b=Y74DhUqJqngXa4ZQ3x76K4gp3EkWdFvoVBl9FgJyTp5vHB3IDZ01jrEu
+   jhsxBaLwLnoI8WXZjSr5u9zEAHr/aRCU2muXxqLqUjat6OwVY3zW/QGfG
+   Qk+a1n4ivcaq5rV6Ze1Cjx+E4xk5NiuvZY7IpxvY9uRzHbuNzHDdGQwn5
+   U=;
+X-IronPort-AV: E=Sophos;i="6.02,217,1688428800"; 
+   d="scan'208";a="356022558"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 14:21:32 +0000
+Received: from EX19MTAUEA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id 842D9A2EE3;
+        Thu, 31 Aug 2023 14:21:30 +0000 (UTC)
+Received: from EX19D028UEC003.ant.amazon.com (10.252.137.159) by
+ EX19MTAUEA001.ant.amazon.com (10.252.134.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Thu, 31 Aug 2023 14:21:29 +0000
+Received: from u4172b55ae79a50.ant.amazon.com (10.106.178.24) by
+ EX19D028UEC003.ant.amazon.com (10.252.137.159) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Thu, 31 Aug 2023 14:21:27 +0000
+From:   Luiz Capitulino <luizcap@amazon.com>
+To:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lcapitulino@gmail.com>
+Subject: [PATH] cgroup: add cgroup_favordynmods= command-line option
+Date:   Thu, 31 Aug 2023 10:20:46 -0400
+Message-ID: <20230831142046.37177-1-luizcap@amazon.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.106.178.24]
+X-ClientProxiedBy: EX19D035UWB001.ant.amazon.com (10.13.138.33) To
+ EX19D028UEC003.ant.amazon.com (10.252.137.159)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 29-08-23 13:20:34, Yosry Ahmed wrote:
-[...]
-> I will add a mutex on the userspace read side then and spin a v3.
-> Hopefully this addresses Michal's concern as well. The lock dropping
-> logic will still exist for the inner lock, but when one userspace
-> reader drops the inner lock other readers won't be able to pick it up.
+We have a need of using favordynmods with cgroup v1, which doesn't support
+changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
+build-time is not an option because we want to be able to selectively
+enable it for certain systems.
 
-Yes, that would minimize the risk of the worst case pathological
-behavior.
+This commit addresses this by introducing the cgroup_favordynmods=
+command-line option. This option works for both cgroup v1 and v2 and
+also allows for disabling favorynmods when the kernel built with
+CONFIG_FAVOR_DYNMODS=y.
 
-> > I don't have a strong preference. As long as we stay away from introducing a
-> > new user interface construct and can address the noticed scalability issues,
-> > it should be fine. Note that there are other ways to address priority
-> > inversions and contentions too - e.g. we can always bounce flushing to a
-> > [kthread_]kworker and rate limit (or rather latency limit) how often
-> > different classes of users can trigger flushing. I don't think we have to go
-> > there yet but if the simpler meaures don't work out, there are still many
-> > ways to solve the problem within the kernel.
-> 
-> I whole-heartedly agree with the preference to fix the problem within
-> the kernel with minimal/none user space involvement.
+Signed-off-by: Luiz Capitulino <luizcap@amazon.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt |  4 ++++
+ kernel/cgroup/cgroup.c                          | 14 +++++++++++---
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-Let's see. While I would love to see a solution that works for everybody
-without explicit interface we have hit problems with locks involved in
-stat files in the past.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0c38a8af95ce..672f76a3c002 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -580,6 +580,10 @@
+ 			named mounts. Specifying both "all" and "named" disables
+ 			all v1 hierarchies.
+ 
++	cgroup_favordynmods= [KNL] Enable or Disable favordynmods.
++			Format: { "true" | "false" }
++			Defaults to the value of CONFIG_CGROUP_FAVOR_DYNMODS.
++
+ 	cgroup.memory=	[KNL] Pass options to the cgroup memory controller.
+ 			Format: <string>
+ 			nosocket -- Disable socket memory accounting.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 5fa95f86cb4d..b625825e270b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
+ static u16 have_release_callback __read_mostly;
+ static u16 have_canfork_callback __read_mostly;
+ 
++static bool have_favordynmods __read_mostly = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
++
+ /* cgroup namespace for init task */
+ struct cgroup_namespace init_cgroup_ns = {
+ 	.ns.count	= REFCOUNT_INIT(2),
+@@ -2265,9 +2267,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
+ 	fc->user_ns = get_user_ns(ctx->ns->user_ns);
+ 	fc->global = true;
+ 
+-#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
+-	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+-#endif
++	if (have_favordynmods)
++		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
++
+ 	return 0;
+ }
+ 
+@@ -6767,6 +6769,12 @@ static int __init enable_cgroup_debug(char *str)
+ }
+ __setup("cgroup_debug", enable_cgroup_debug);
+ 
++static int __init cgroup_favordynmods_setup(char *str)
++{
++	return (kstrtobool(str, &have_favordynmods) == 0);
++}
++__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
++
+ /**
+  * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
+  * @dentry: directory dentry of interest
 -- 
-Michal Hocko
-SUSE Labs
+2.40.1
+
