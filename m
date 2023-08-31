@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A242B78E409
-	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 02:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED92578E4F5
+	for <lists+cgroups@lfdr.de>; Thu, 31 Aug 2023 05:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241621AbjHaAlq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Aug 2023 20:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S233371AbjHaDI4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Aug 2023 23:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjHaAlm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Aug 2023 20:41:42 -0400
+        with ESMTP id S229693AbjHaDIy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Aug 2023 23:08:54 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6F3CCF;
-        Wed, 30 Aug 2023 17:41:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFEACC2;
+        Wed, 30 Aug 2023 20:08:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693442499; x=1724978499;
+  t=1693451331; x=1724987331;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=E0Kpa3glzmhOit+Gfb9EdvlhhILV82Bjg5COBTCvIV4=;
-  b=fOeIwm49maEVtyfdf+ter0TurPRe4CWb4FSupeODdTz5RUZRFVZ3DQx8
-   72albatUQFdQUHI+WzwsnLvInQgtBo7eE+ho2XCG3vXCeNoN6MJYYsSqV
-   0zoLasynUp7xtwRWy0qPKo43wVegbi58uEtEiaqoBmD+45O6ZRUH6dkCt
-   n/iN/ZEUpnHkqMZNVVXJfSbjVwg+nsDn0gbn5GykEUCBy7/bMBHSC2r5W
-   C6EvC4In22qODZ1iu/eE7EK92/TJx7zNQk1WndhTltIo9xKtigoSCHjol
-   MO/eDG4TEnVEFDvokNfzAN6oMnzCksJCr4WXOzQNIK4RQKqkJu1+AQR15
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462160105"
+  bh=mYEk4LI2pL8XWPF1zKc5qz6vdX12xJGX7KbAifejJ34=;
+  b=FcJDNC7z0soWTaunVNw+0vkguzfXZPshXnMQrzTRX32YWy649eQuFfx+
+   CEQ6wIkkbMU+9AZvu4AvqHECloNSVSAJ6xTHrXw1s/oRg2D+3sAHCof39
+   1HbyqIczXJK/A9Z0PX99iHPncOKNw3AIomi8PdEsHh6N3EfpdxwMRPOeq
+   xnqXAJl7JOeV/ORv1uFuWXtQQerrKUupK9AMKrs9JbO6bxlbazwjFuN3V
+   auxBZHkPRGCcKGCrTgHPr4Xa21XpZt2AaAKW/sIsIbd1673tItwr2Z2eq
+   5SnMaQppUVIZD/iXnAQlQ3mcB+t2o/c7bpZskzSmGnY1Pbgz5pyVz5bXr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462175921"
 X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="462160105"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 17:41:39 -0700
+   d="scan'208";a="462175921"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:08:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="774290764"
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="913042869"
 X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="774290764"
+   d="scan'208";a="913042869"
 Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 30 Aug 2023 17:41:35 -0700
+  by orsmga005.jf.intel.com with ESMTP; 30 Aug 2023 20:08:47 -0700
 Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qbVkd-000APv-0I;
-        Thu, 31 Aug 2023 00:41:35 +0000
-Date:   Thu, 31 Aug 2023 08:40:39 +0800
+        id 1qbY34-000AWX-1Y;
+        Thu, 31 Aug 2023 03:08:46 +0000
+Date:   Thu, 31 Aug 2023 11:08:43 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Yosry Ahmed <yosryahmed@google.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
         Linux Memory Management List <linux-mm@kvack.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -59,15 +59,16 @@ Cc:     oe-kbuild-all@lists.linux.dev,
         linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
 Subject: Re: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for
  userspace reads
-Message-ID: <202308310858.19VshX68-lkp@intel.com>
+Message-ID: <202308311025.538QuXBV-lkp@intel.com>
 References: <20230830175335.1536008-5-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230830175335.1536008-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -89,20 +90,25 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-prop
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
 patch link:    https://lore.kernel.org/r/20230830175335.1536008-5-yosryahmed%40google.com
 patch subject: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for userspace reads
-config: m68k-randconfig-r016-20230831 (https://download.01.org/0day-ci/archive/20230831/202308310858.19VshX68-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308310858.19VshX68-lkp@intel.com/reproduce)
+config: i386-randconfig-r013-20230831 (https://download.01.org/0day-ci/archive/20230831/202308311025.538QuXBV-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308311025.538QuXBV-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308310858.19VshX68-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308311025.538QuXBV-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> mm/memcontrol.c:667:6: warning: no previous prototype for 'mem_cgroup_user_flush_stats' [-Wmissing-prototypes]
-     667 | void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> mm/memcontrol.c:667:6: warning: no previous prototype for function 'mem_cgroup_user_flush_stats' [-Wmissing-prototypes]
+   void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
+        ^
+   mm/memcontrol.c:667:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
+   ^
+   static 
+   1 warning generated.
 
 
 vim +/mem_cgroup_user_flush_stats +667 mm/memcontrol.c
