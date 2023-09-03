@@ -2,52 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6EF790C6C
+	by mail.lfdr.de (Postfix) with ESMTP id 94677790C6D
 	for <lists+cgroups@lfdr.de>; Sun,  3 Sep 2023 16:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237929AbjICO2N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S229545AbjICO2N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Sun, 3 Sep 2023 10:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjICO2L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Sep 2023 10:28:11 -0400
+        with ESMTP id S237907AbjICO2N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Sep 2023 10:28:13 -0400
 Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE6E97;
-        Sun,  3 Sep 2023 07:28:08 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68a56401c12so303839b3a.2;
-        Sun, 03 Sep 2023 07:28:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A8697;
+        Sun,  3 Sep 2023 07:28:09 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68c0cb00fb3so585550b3a.2;
+        Sun, 03 Sep 2023 07:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693751288; x=1694356088; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wXDwjjmxqBAOxuWYsnka7JEJGco2H68JBbaxg6PfkIk=;
-        b=jSNWjZ5wyBil44ZjC6NBwT9tp9IDYKITmez76HTetNXNAJrdXuSQ73e82iagc3zblY
-         lT5N439w2C5Lp38k8a5dQNI3BSkVScx/GMR7XBDsAuBF0fQ7TzLkzXiYP+57XulMi4vS
-         Cfj3mL5QoV5IVkF5LWuiqU64aL7FliupZM6JpYFdmXiS6S3+VHDBtqYlmVIDAWuz2i8t
-         tvJ4l24W4SxWYox+tKm8dhLVdAvNhG20EQfWvl/cRh7Xq2Nri1le6V3oJI7788Q7Qffu
-         6TvqjfZMRiGTC/fGFYdIne9UrdoaQ5PQE00jTEgTaE3NBLuNgZ61BP0dUCwNYojiUdpG
-         mOLQ==
+        d=gmail.com; s=20221208; t=1693751289; x=1694356089; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cMXLcIWio9WW57rG1glRWMEPDKGAafnI6Sr1JX6PcGQ=;
+        b=LzVEieRrkSFlJ8mJ+2vRTvgW+b8tuZ1vl3MVX0HWrPwLSZpeV2sJGWL3iZ6LtUg3We
+         aIoe90saY0SE/4qVQTwIq496PdeKhSpaZHQFnmuEeS6BpoRNvz9SnXjtBK8qUPbQYy1C
+         XOPZc6WMep7QcvL9nMB/jlhT2+1/6D5BfllT5fNX15djA+4qvqFP365NbRAu+CGjLTqF
+         bkaheS4ccN4TYmzML38Dh6IhVwMD3mrCjyj4g17UZJRERfG0q3X9rgOrjtDC4OTCiSY5
+         /YxFUU7KgA5zRBQvYBVIDRPy4LQp1MpZFPEHwwzX+bGceV4mqwEdKRniJOA27wCRfk6D
+         e1Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693751288; x=1694356088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wXDwjjmxqBAOxuWYsnka7JEJGco2H68JBbaxg6PfkIk=;
-        b=WbiJnP5it14neHf5Ih8F5iYe2b9KvZkQ7wpp/j4Cd8Q9vIs+ZT+gum9PZarB9BY5Hz
-         4uSqP/R5+Ozil1b8khP6rF7dTJ2Er2N7fRE5zxio1W7BIXBcj3gcJc385BEmDsN6utrA
-         Vq4mq/h2nDZ/kGhRWVvmydKIphEvVpfhb7eyMJnnwGQReclhOOvcoxCSs8wNnWOST7Lj
-         rlzrxcAjd/EZgOcVSDosIE96AAEFrddzVOvKGhwSholI3AuoocB5vsy6RI/VtMVM5g8p
-         fv3D+eZNHjH8D3jH5Qx2RBBBmmUae2VHo07TUUtPVCKbuQH+1fJDO7CzS9vayXgn9+Fc
-         2n5Q==
-X-Gm-Message-State: AOJu0YyFUHmYDwzQDO7b7sp6YgqZIV8LL877Yr8sT8xcBxRmYo2/EbSn
-        yGG+LVn6m/CiYnmAKOJuRNI=
-X-Google-Smtp-Source: AGHT+IHN5LVt6UWxQXM7fpLnvTYDUubpKJGTP1gKhXqoPOAIWTMH5ncDoNt1iwVWBa6pMdruvYageQ==
-X-Received: by 2002:a05:6a00:2385:b0:68c:6ebc:2210 with SMTP id f5-20020a056a00238500b0068c6ebc2210mr7248043pfc.18.1693751287792;
-        Sun, 03 Sep 2023 07:28:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693751289; x=1694356089;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cMXLcIWio9WW57rG1glRWMEPDKGAafnI6Sr1JX6PcGQ=;
+        b=MMSz60v7pIN3jgnsw0KTstU0Z/78K+0DBH/2EWH96/CaNY4NEaSrBuL8pGxEgc5sRo
+         LdSeMBRz3rBH0uJz9ERMgJH9WwXwv/+kuTHhcKW3Oh/3/WcrxFrlttLSa86xMN6zbzGW
+         nNCJdifkqFfxXxZKsF7nRbVsrpnlTUFF3ohmI7VOzByxAtPQblcZByQezyXO8EpVjXoX
+         ZLOpkN5FsjxXyIl159hI+r6jj1DakQwsB1UQtPL4VIW7vN6joCtjzq+uBgj9hrVK4sS+
+         yX4Y7a5bFuh1LcpFWQaGlmxjxH/Ym6UNQoNazjXLByrUkfRNMwMZTMSRZixf+dgm3asI
+         2SXg==
+X-Gm-Message-State: AOJu0Yxc8zWFb1Kg2LGiedozMq9umdYsDXCkwq5Uzc0M6x0oOMbyRQ5V
+        lbZU2p2jkvWeukrHE41kk04=
+X-Google-Smtp-Source: AGHT+IGOu8boHCQGqBvBcdoaGjSTQeTtKihvjht+tXjBHfxM2y+irCbA+orNtXS9XNif83fvsXPpmQ==
+X-Received: by 2002:a05:6a00:22c7:b0:68c:4c29:9c59 with SMTP id f7-20020a056a0022c700b0068c4c299c59mr9909256pfj.14.1693751289245;
+        Sun, 03 Sep 2023 07:28:09 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac02:185:5400:4ff:fe8f:9150])
-        by smtp.gmail.com with ESMTPSA id b23-20020aa78117000000b0065a1b05193asm5809977pfi.185.2023.09.03.07.28.06
+        by smtp.gmail.com with ESMTPSA id b23-20020aa78117000000b0065a1b05193asm5809977pfi.185.2023.09.03.07.28.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 07:28:07 -0700 (PDT)
+        Sun, 03 Sep 2023 07:28:08 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -56,10 +57,12 @@ To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com
 Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1 
-Date:   Sun,  3 Sep 2023 14:27:55 +0000
-Message-Id: <20230903142800.3870-1-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 1/5] cgroup: Enable task_under_cgroup_hierarchy() on cgroup1
+Date:   Sun,  3 Sep 2023 14:27:56 +0000
+Message-Id: <20230903142800.3870-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230903142800.3870-1-laoar.shao@gmail.com>
+References: <20230903142800.3870-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,52 +75,62 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, the cgroup_array map serves as a critical component for
-bpf_current_under_cgroup() and bpf_skb_under_cgroup() functions, allowing
-us to determine whether a task or a socket buffer (skb) resides within a
-specific cgroup. However, a limitation exists as we can only store cgroup2
-file descriptors in the cgroup_array map. This limitation stems from the
-fact that cgroup_get_from_fd() exclusively supports cgroup2 file
-descriptors. Fortunately, an alternative solution presents itself by
-leveraging cgroup_v1v2_get_from_fd(), which accommodates both cgroup1 and
-cgroup2 file descriptors.
+Currently, the function task_under_cgroup_hierarchy() allows us to
+determine if a task resides exclusively within a cgroup2 hierarchy.
+Nevertheless, given the continued prevalence of cgroup1, it's useful that
+we make a minor adjustment to extend its functionality to cgroup1 as well.
+Once this modification is implemented, we will have the ability to
+effortlessly verify a task's cgroup membership within BPF programs. For
+instance, we can easily check if a task belongs to a cgroup1 directory,
+such as /sys/fs/cgroup/cpu,cpuacct/kubepods/burstable/ or
+/sys/fs/cgroup/cpu,cpuacct/kubepods/besteffort/.
 
-It is essential to note that it is safe to utilize a cgroup1 pointer within
-both bpf_current_under_cgroup() and bpf_skb_under_cgroup(), with the result
-of receiving a "false" return value when verifying a cgroup1 pointer. To
-enable the checking of tasks under a cgroup1 hierarchy, we can make a minor
-modification to task_under_cgroup_hierarchy() to add support for cgroup1.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ include/linux/cgroup.h | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-In our specific use case, we intend to use bpf_current_under_cgroup() to
-audit whether the current task resides within specific containers.
-Subsequently, we can use this information to create distinct ACLs within
-our LSM BPF programs, enabling us to control specific operations performed
-by these tasks.
-
-Considering the widespread use of cgroup1 in container environments,
-coupled with the considerable time it will take to transition to cgroup2,
-implementing this change will significantly enhance the utility of BPF
-in container scenarios. This is especially noteworthy because the necessary
-adjustments can be made with minimal alterations to both the cgroup
-subsystem and the BPF subsystem.
-
-Yafang Shao (5):
-  cgroup: Enable task_under_cgroup_hierarchy() on cgroup1
-  bpf: Enable cgroup_array map on cgroup1
-  selftests/bpf: Fix issues in setup_classid_environment()
-  selftests/bpf: Add new cgroup helper open_classid()
-  selftests/bpf: Add selftests for current_under_cgroupv1v2
-
- include/linux/cgroup.h                             | 24 ++++++-
- kernel/bpf/arraymap.c                              |  2 +-
- tools/testing/selftests/bpf/cgroup_helpers.c       | 34 ++++++++--
- tools/testing/selftests/bpf/cgroup_helpers.h       |  1 +
- .../bpf/prog_tests/current_under_cgroupv1v2.c      | 76 ++++++++++++++++++++++
- .../bpf/progs/test_current_under_cgroupv1v2.c      | 31 +++++++++
- 6 files changed, 160 insertions(+), 8 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
-
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index b307013..5414a2c 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -543,15 +543,33 @@ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
+  * @ancestor: possible ancestor of @task's cgroup
+  *
+  * Tests whether @task's default cgroup hierarchy is a descendant of @ancestor.
+- * It follows all the same rules as cgroup_is_descendant, and only applies
+- * to the default hierarchy.
++ * It follows all the same rules as cgroup_is_descendant.
+  */
+ static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
+ 					       struct cgroup *ancestor)
+ {
+ 	struct css_set *cset = task_css_set(task);
++	struct cgroup *cgrp;
++	bool ret = false;
++	int ssid;
++
++	if (ancestor->root == &cgrp_dfl_root)
++		return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
++
++	for (ssid = 0; ssid < CGROUP_SUBSYS_COUNT; ssid++) {
++		if (!ancestor->subsys[ssid])
++			continue;
+ 
+-	return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
++		cgrp = task_css(task, ssid)->cgroup;
++		if (!cgrp)
++			continue;
++
++		if (!cgroup_is_descendant(cgrp, ancestor))
++			return false;
++		if (!ret)
++			ret = true;
++	}
++	return ret;
+ }
+ 
+ /* no synchronization, the result can only be used as a hint */
 -- 
 1.8.3.1
 
