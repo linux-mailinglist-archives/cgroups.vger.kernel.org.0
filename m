@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E72790C6F
-	for <lists+cgroups@lfdr.de>; Sun,  3 Sep 2023 16:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716E9790C71
+	for <lists+cgroups@lfdr.de>; Sun,  3 Sep 2023 16:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238512AbjICO2S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 3 Sep 2023 10:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        id S238073AbjICO2T (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 3 Sep 2023 10:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238363AbjICO2S (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Sep 2023 10:28:18 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FCFFE;
-        Sun,  3 Sep 2023 07:28:14 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-56c2e882416so233679a12.3;
-        Sun, 03 Sep 2023 07:28:14 -0700 (PDT)
+        with ESMTP id S238634AbjICO2T (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Sep 2023 10:28:19 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA11697;
+        Sun,  3 Sep 2023 07:28:15 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68c3b9f85b7so206487b3a.2;
+        Sun, 03 Sep 2023 07:28:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693751294; x=1694356094; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693751295; x=1694356095; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U5k29RdSdgFGrpvgVrSsKwz4bkGSk589c/WSq1cJmNg=;
-        b=UeRpMoL3RZo/I6HJpcYqS1LGiile/X+MgCuNlDOKMNRtUE6jqnjPceQQttncvAEK2+
-         aYcJ8+J7L+V6f2gFhH+unfJ90KOwHhJRqPjeWjpyF5OVbadZkibzHnC1VzgZ4EOx5DGd
-         m4EMWLXBON//VOBc3USZEo623Bt5+Qzf97HwkchdwJDhAQQ5lutidD1qGLm019WVnfU2
-         hs38f59fE1QvY0MHvfFsn9vtiVoPC1B0IbLF9/O0Ll0u2bZceeAzR0pMF7iYsSyljDI7
-         i/0ZPzjS7dz8G5d9ySjiPXB52qZiJ3PIqKqt1mii7arGXDPhTZm7V1rDrcF3W/SlwgIU
-         MkVA==
+        bh=GXV1VH0aENFBhlgyeq6hQvsVgH339T3EWStJqjKjW+o=;
+        b=iry41PyrpkV7Ny57Cr/afcfK2/SS8eUHsGTbKNY/Em4PSPLQkoufrHTR8RHtHkMNyK
+         GIWr3j1nnjSquvklGMlkBdZv9BjuUiglmYUAlB8imGpwus5VZZMky1QclI5sMcPtfOON
+         r0BldredxqtXiKss1b1oKadfQP22tGo/+lfNVuJJI+ZEW3Kmr+/B2qCSwe31X45fLRM/
+         R4H6rNwkASw7AluoQZiiNMxoxqaYysU5hwrww9WuUm3HRaxq/SqMujV4y7/22F9NZkYy
+         iZJ0iLUcj1HV6VIhR+NzB8SaiB07fJGie3z3Naj9eeGIahFWcyt6tQFPVn8rUqXGmQTu
+         /LMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693751294; x=1694356094;
+        d=1e100.net; s=20221208; t=1693751295; x=1694356095;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U5k29RdSdgFGrpvgVrSsKwz4bkGSk589c/WSq1cJmNg=;
-        b=Kg8p7sMm0gRXM/2lGNUIpufIm6pLgvKsaGpFWXG0EVFmyMb3inY42+m1Dl/3SrmA73
-         +GD9Q74vJdQXXCg/0XM+v2q1hGTDvhG2+B2Qnu/J0pSKG/Nqdt2FSiwPI4taUhStaDHT
-         iOtjl54NOKjNZ1Ng94vuKdAUZZJWzEh6r5sCGZt+eZCYxFedcO4eHK38oZQQ3gKO9ZYm
-         LjkuJJpTL8bqx68rXDRljYVZmHoem7/qiR3C067AtyDKoNE9mNz9Seh/8MgVPkuCTxOm
-         QxjEJ0tNn8C0X7YJR11vpMoPwlp4kGDgI77gyokJAiYUBQvBH2gdMnOaKcZTvM3RcOYU
-         93fg==
-X-Gm-Message-State: AOJu0Yx2PHmBL6raMZF6k/jBcNssRe/qdF5zOUOdfUVRBq0WXRyngaUy
-        ei11davpK3Izs8hY6HHQjw9XfmM/i3cVJejpO5M=
-X-Google-Smtp-Source: AGHT+IEhqDvfZebErKX2mJ2WwUkV4KdTuuuwOqND+auGlH5Y9pn2RAyagPR8DzO2OiSjJEqrBrK08w==
-X-Received: by 2002:a05:6a20:974f:b0:14c:f4e1:d9e9 with SMTP id hs15-20020a056a20974f00b0014cf4e1d9e9mr6207216pzc.45.1693751293727;
-        Sun, 03 Sep 2023 07:28:13 -0700 (PDT)
+        bh=GXV1VH0aENFBhlgyeq6hQvsVgH339T3EWStJqjKjW+o=;
+        b=TzlknI79jo77jsDa0FC4L1qDRE/VeWpILVigMl5xuF2G1MQXwDqDpZbyzC/GJEDYWn
+         XJBanESnK2MoM3ChRoXqAB1d7SxcGUa0I73jP6LLCQhNZDSQ4WXs82WNz7YB33Z1qTv7
+         2VSiqwnOYyMDk3/aVmiYTh0H8v7+QbfqoZ7ObIwsNT8+3DLZbjY/FLRxocV3LHVnzCfn
+         2P/AXwALAguil1iAx4NPZbsTMOqkUOeGgdJNFTNSocdjlw5PXd8n5DA9vwNBfmLs4CV1
+         ArIR1kilBLXHXkN4Sv7ijGefXQVQMxj4IeM8sR06xhAO/+haP+spP7KJjkSbNxOF2T/V
+         1Rxg==
+X-Gm-Message-State: AOJu0YwayB2pZfQt9OvZ3cQqdDGREaVuyRGkch31EadI6WKmKJll59Di
+        lWbMUpvUI16GOmR4XpuwMV4=
+X-Google-Smtp-Source: AGHT+IFdvq/JFf626BfUvtNVCJRF9B3u4aRY6TYZl2FFVejJvFTTxCfr34+oEMSX0gsBmAmrtMW9Ng==
+X-Received: by 2002:a05:6a00:1893:b0:68c:42:d3dd with SMTP id x19-20020a056a00189300b0068c0042d3ddmr8198912pfh.27.1693751295248;
+        Sun, 03 Sep 2023 07:28:15 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac02:185:5400:4ff:fe8f:9150])
-        by smtp.gmail.com with ESMTPSA id b23-20020aa78117000000b0065a1b05193asm5809977pfi.185.2023.09.03.07.28.12
+        by smtp.gmail.com with ESMTPSA id b23-20020aa78117000000b0065a1b05193asm5809977pfi.185.2023.09.03.07.28.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 07:28:13 -0700 (PDT)
+        Sun, 03 Sep 2023 07:28:14 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -57,9 +57,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com
 Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 4/5] selftests/bpf: Add new cgroup helper open_classid()
-Date:   Sun,  3 Sep 2023 14:27:59 +0000
-Message-Id: <20230903142800.3870-5-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 5/5] selftests/bpf: Add selftests for current_under_cgroupv1v2
+Date:   Sun,  3 Sep 2023 14:28:00 +0000
+Message-Id: <20230903142800.3870-6-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230903142800.3870-1-laoar.shao@gmail.com>
 References: <20230903142800.3870-1-laoar.shao@gmail.com>
@@ -75,53 +75,142 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add a new cgroup helper open_classid() to get the net_cls cgroup fd.
+Add selftests for bpf_current_task_under_cgroup() on both cgroup1 and
+cgroup2. The result as follows,
+
+  $ tools/testing/selftests/bpf/test_progs --name=current_under_cgroupv1v2
+  #62/1    current_under_cgroupv1v2/test_current_under_cgroup2:OK
+  #62/2    current_under_cgroupv1v2/test_current_under_cgroup1:OK
+  #62      current_under_cgroupv1v2:OK
+  Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/testing/selftests/bpf/cgroup_helpers.c | 16 ++++++++++++++++
- tools/testing/selftests/bpf/cgroup_helpers.h |  1 +
- 2 files changed, 17 insertions(+)
+ .../bpf/prog_tests/current_under_cgroupv1v2.c      | 76 ++++++++++++++++++++++
+ .../bpf/progs/test_current_under_cgroupv1v2.c      | 31 +++++++++
+ 2 files changed, 107 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
 
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index f68fbc6..2631efe 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -578,6 +578,22 @@ int join_classid(void)
- }
- 
- /**
-+ * open_classid() - Open a cgroupv1 net_cls classid
-+ *
-+ * This function expects the cgroup work dir to be already created, as we
-+ * open it here.
-+ *
-+ * On success, it returns the file descriptor. On failure it returns -1.
-+ */
-+int open_classid(void)
-+{
-+	char cgroup_workdir[PATH_MAX + 1];
+diff --git a/tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c b/tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
+new file mode 100644
+index 0000000..62efca3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+	format_classid_path(cgroup_workdir);
-+	return open(cgroup_workdir, O_RDONLY);
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++#include "test_current_under_cgroupv1v2.skel.h"
++
++#define CGROUP2_DIR "/current_under_cgroup2"
++
++static void attach_progs(int cgrp_fd)
++{
++	struct test_current_under_cgroupv1v2 *skel;
++	int cgrp_map_fd, ret, idx = 0;
++
++	skel = test_current_under_cgroupv1v2__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_current_under_cgroupv1v2__open"))
++		return;
++
++	cgrp_map_fd = bpf_map__fd(skel->maps.cgrp_map);
++	ret = bpf_map_update_elem(cgrp_map_fd, &idx, &cgrp_fd, BPF_ANY);
++	if (!ASSERT_OK(ret, "update_cgrp_map"))
++		goto cleanup;
++
++	/* Attach LSM prog first */
++	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
++	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
++		goto cleanup;
++
++	/* LSM prog will be triggered when attaching fentry */
++	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
++	ASSERT_NULL(skel->links.fentry_run, "fentry_attach");
++
++cleanup:
++	test_current_under_cgroupv1v2__destroy(skel);
 +}
 +
-+/**
-  * cleanup_classid_environment() - Cleanup the cgroupv1 net_cls environment
-  *
-  * At call time, it moves the calling process to the root cgroup, and then
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
-index 5c2cb9c..ebc0513 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.h
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.h
-@@ -31,6 +31,7 @@ int write_cgroup_file_parent(const char *relative_path, const char *file,
- /* cgroupv1 related */
- int set_classid(unsigned int id);
- int join_classid(void);
-+int open_classid(void);
- 
- int setup_classid_environment(void);
- void cleanup_classid_environment(void);
++static void current_under_cgroup1(void)
++{
++	int cgrp_fd, ret;
++
++	/* Setup cgroup1 hierarchy */
++	ret = setup_classid_environment();
++	if (!ASSERT_OK(ret, "setup_classid_environment"))
++		return;
++
++	ret = join_classid();
++	if (!ASSERT_OK(ret, "join_cgroup1"))
++		goto cleanup;
++
++	cgrp_fd = open_classid();
++	attach_progs(cgrp_fd);
++	close(cgrp_fd);
++
++cleanup:
++	/* Cleanup cgroup1 hierarchy */
++	cleanup_classid_environment();
++}
++
++static void current_under_cgroup2(void)
++{
++	int cgrp_fd;
++
++	cgrp_fd = test__join_cgroup(CGROUP2_DIR);
++	if (!ASSERT_GE(cgrp_fd, 0, "cgroup_join_cgroup2"))
++		return;
++
++	attach_progs(cgrp_fd);
++	close(cgrp_fd);
++}
++
++void test_current_under_cgroupv1v2(void)
++{
++	if (test__start_subtest("test_current_under_cgroup2"))
++		current_under_cgroup2();
++	if (test__start_subtest("test_current_under_cgroup1"))
++		current_under_cgroup1();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c b/tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
+new file mode 100644
+index 0000000..9f0af0b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_CGROUP_ARRAY);
++	__uint(key_size, sizeof(u32));
++	__uint(value_size, sizeof(u32));
++	__uint(max_entries, 1);
++} cgrp_map SEC(".maps");
++
++SEC("lsm/bpf")
++int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
++{
++	if (cmd != BPF_LINK_CREATE)
++		return 0;
++
++	if (bpf_current_task_under_cgroup(&cgrp_map, 0 /* map index */))
++		return -1;
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(fentry_run)
++{
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 1.8.3.1
 
