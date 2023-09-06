@@ -2,134 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1682C793D47
-	for <lists+cgroups@lfdr.de>; Wed,  6 Sep 2023 15:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22E07943F6
+	for <lists+cgroups@lfdr.de>; Wed,  6 Sep 2023 21:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240890AbjIFNAE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 6 Sep 2023 09:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
+        id S239795AbjIFTyC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 6 Sep 2023 15:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbjIFNAD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Sep 2023 09:00:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D89E10E2
-        for <cgroups@vger.kernel.org>; Wed,  6 Sep 2023 05:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694005155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hgZ9wSbbXHdI9NbJUdhnyHFT9UmT0O3FFw+d3lc9Q3A=;
-        b=hH4PjjNp3VQMGrTDckbJI2zA5Mbj5MPdrulIQ3Svava/Eripc+JukRRuSrzHhsiuDKf8l6
-        Z9xfoxQj1VgBXRGIiciJSnCe235hlg5v/xLjz1fZmtwGe/TbcDKDXVggba83uxudV1n1zK
-        WAq1npmbZZi8nHxHR8LM2k29CydREh8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-596-1ZQCz8nIOM-SugWY1qynrQ-1; Wed, 06 Sep 2023 08:59:12 -0400
-X-MC-Unique: 1ZQCz8nIOM-SugWY1qynrQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9860010264F3;
-        Wed,  6 Sep 2023 12:59:11 +0000 (UTC)
-Received: from [10.22.32.253] (unknown [10.22.32.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E4EB25CC01;
-        Wed,  6 Sep 2023 12:59:10 +0000 (UTC)
-Message-ID: <ac50c7a3-c2af-26c1-cdd3-0add6b299994@redhat.com>
-Date:   Wed, 6 Sep 2023 08:59:10 -0400
+        with ESMTP id S239153AbjIFTx4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Sep 2023 15:53:56 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D161595;
+        Wed,  6 Sep 2023 12:53:51 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c1f8aaab9aso1661265ad.1;
+        Wed, 06 Sep 2023 12:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694030031; x=1694634831; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a6RLg+POdRGD0L8+2lqSSropHtZ6QvcmXiJIAf4zj1Y=;
+        b=srLzk93V7v3lv3920rpFLZD+/3cxcpPAgmCD3eeSeVw/x14HHkU01qvUbVa+/khkHf
+         5Bqa275SvH7gKFHfUEBWNPMHr3NvF/2lRtblbio1MmbKsWHmOoerNqXGYi0dPBP1n0b/
+         3Fa0xeOOpfZ5UCmrAZGYc6nPP3uxxvHU6N+L32qmfEpL/lOZr09+p7RnH00WR4l4okep
+         JobC1UjvGcJwK0KY5Nv2brdAWVTs2KkAwLSnbmLce8HaBpBMPiegmY8FEhwJNolmsGnu
+         3+fGr59MFwKb3CIILiB+MDgnLP1JRL3c6FpnLpg8zyQM9QP0xJQmv+8XDRgpDkKYvFjt
+         5K6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694030031; x=1694634831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a6RLg+POdRGD0L8+2lqSSropHtZ6QvcmXiJIAf4zj1Y=;
+        b=Yfw6aRkea9p3tZ6KVsv5wPBbb+CjUKR6I3DvVrzpxl+AC+/ejPmjb7sM3XpKOdZrjb
+         3T4LQnwXc0Zp1rD9YKMAsC+my3uLhvibRDDMVcWoEsRwRt91TqK1E0IJrhQ8ZE4iaYyR
+         yMouZMkEnvD0EITx2jjOI8NkiWPHyc3eQWKj+4FzHW/ooeX6rLKJioLRKmu3yNn7bq1J
+         r7+iEJy08WeWjQIWLuREFX/iR51EeGLenWvw+zBNKu/Ik5IP07M1LCuFMq0183jd7LtG
+         taRMI99+lYiPC//0n+Wcwg7hKLhooGmJZz6GamBrvkqy4OD9rB7Dnh+KOVQVmEBYaIZF
+         KKJQ==
+X-Gm-Message-State: AOJu0YyENNWwh7G9VM+Ee0KirMMCXMWkmmN9815d4/1Dp7vKFLhqawq9
+        TfC9DRBuDJVBo2kfkR1j5Fw=
+X-Google-Smtp-Source: AGHT+IG0ee2z+hTx2vD4efDO2aJiDvDLpk7CwEEStt96qq+RQZmqP433AtY3APFchEbgtx3/OFNkVQ==
+X-Received: by 2002:a17:903:22c4:b0:1c3:343c:f8b0 with SMTP id y4-20020a17090322c400b001c3343cf8b0mr12405100plg.66.1694030031184;
+        Wed, 06 Sep 2023 12:53:51 -0700 (PDT)
+Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:d4aa])
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902704a00b001b9da8b4eb7sm11356199plt.35.2023.09.06.12.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 12:53:50 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 12:53:46 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com,
+        cgroups@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/5] cgroup: Enable
+ task_under_cgroup_hierarchy() on cgroup1
+Message-ID: <20230906195346.ghrmpku47tmrgnsv@MacBook-Pro-8.local>
+References: <20230903142800.3870-1-laoar.shao@gmail.com>
+ <20230903142800.3870-2-laoar.shao@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
-To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>,
-        Luiz Capitulino <luizcap@amazon.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lcapitulino@gmail.com
-References: <20230906005712.66461-1-luizcap@amazon.com>
- <5487ed0a-8483-0a92-c7c1-9ca3ed8e6162@oracle.com>
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <5487ed0a-8483-0a92-c7c1-9ca3ed8e6162@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230903142800.3870-2-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/6/23 02:58, Kamalesh Babulal wrote:
-> On 9/6/23 06:27, Luiz Capitulino wrote:
-> [...]
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 1fb7f562289d..2b7d74304606 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
->>   static u16 have_release_callback __read_mostly;
->>   static u16 have_canfork_callback __read_mostly;
->>   
->> +static bool have_favordynmods __ro_after_init = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
->> +
->>   /* cgroup namespace for init task */
->>   struct cgroup_namespace init_cgroup_ns = {
->>   	.ns.count	= REFCOUNT_INIT(2),
->> @@ -2243,9 +2245,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
->>   	fc->user_ns = get_user_ns(ctx->ns->user_ns);
->>   	fc->global = true;
->>   
->> -#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
->> -	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
->> -#endif
->> +	if (have_favordynmods)
->> +		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
->> +
->>   	return 0;
->>   }
->>   
->> @@ -6764,6 +6766,12 @@ static int __init enable_cgroup_debug(char *str)
->>   }
->>   __setup("cgroup_debug", enable_cgroup_debug);
->>   
->> +static int __init cgroup_favordynmods_setup(char *str)
->> +{
->> +	return (kstrtobool(str, &have_favordynmods) == 0);
->> +}
->> +__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
->> +
->>   /**
->>    * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
->>    * @dentry: directory dentry of interest
-> Consider a case where the kernel is compiled with
-> CONFIG_CGROUP_FAVOR_DYNMODS=n and kernel command line is passed with
-> cgroup_favordynmods=true, this would set the have_favordynmods to true.
-> In cgroup_favordynmods_setup(), should it return 0 with a pr_warn(),
-> when CONFIG_CGROUP_FAVOR_DYNMODS=n in the above case, or is this
-> expected behavior?
+On Sun, Sep 03, 2023 at 02:27:56PM +0000, Yafang Shao wrote:
+> Currently, the function task_under_cgroup_hierarchy() allows us to
+> determine if a task resides exclusively within a cgroup2 hierarchy.
+> Nevertheless, given the continued prevalence of cgroup1, it's useful that
+> we make a minor adjustment to extend its functionality to cgroup1 as well.
+> Once this modification is implemented, we will have the ability to
+> effortlessly verify a task's cgroup membership within BPF programs. For
+> instance, we can easily check if a task belongs to a cgroup1 directory,
+> such as /sys/fs/cgroup/cpu,cpuacct/kubepods/burstable/ or
+> /sys/fs/cgroup/cpu,cpuacct/kubepods/besteffort/.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  include/linux/cgroup.h | 24 +++++++++++++++++++++---
+>  1 file changed, 21 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index b307013..5414a2c 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -543,15 +543,33 @@ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
+>   * @ancestor: possible ancestor of @task's cgroup
+>   *
+>   * Tests whether @task's default cgroup hierarchy is a descendant of @ancestor.
+> - * It follows all the same rules as cgroup_is_descendant, and only applies
+> - * to the default hierarchy.
+> + * It follows all the same rules as cgroup_is_descendant.
+>   */
+>  static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
+>  					       struct cgroup *ancestor)
+>  {
+>  	struct css_set *cset = task_css_set(task);
+> +	struct cgroup *cgrp;
+> +	bool ret = false;
+> +	int ssid;
+> +
+> +	if (ancestor->root == &cgrp_dfl_root)
+> +		return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
+> +
+> +	for (ssid = 0; ssid < CGROUP_SUBSYS_COUNT; ssid++) {
+> +		if (!ancestor->subsys[ssid])
+> +			continue;
 
-According to the documentation of __setup:
+This looks wrong. I believe cgroup_mutex should be held to iterate.
 
-/*
-  * NOTE: __setup functions return values:
-  * @fn returns 1 (or non-zero) if the option argument is "handled"
-  * and returns 0 if the option argument is "not handled".
-  */
+Tejun ?
 
-So the return value should tell whether the input parameter is a 
-recognizable true or false value, not whether it is true or false. 
-kstrtobool returns 0 if it is a recognizable T/F value or -EINVAL 
-otherwise. So the check is correct. I did double check that before I 
-ack'ed the patch.
-
-Cheers,
-Longman
-
+>  
+> -	return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
+> +		cgrp = task_css(task, ssid)->cgroup;
+> +		if (!cgrp)
+> +			continue;
+> +
+> +		if (!cgroup_is_descendant(cgrp, ancestor))
+> +			return false;
+> +		if (!ret)
+> +			ret = true;
+> +	}
+> +	return ret;
+>  }
+>  
+>  /* no synchronization, the result can only be used as a hint */
+> -- 
+> 1.8.3.1
+> 
