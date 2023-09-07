@@ -2,215 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B84797572
-	for <lists+cgroups@lfdr.de>; Thu,  7 Sep 2023 17:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF987973A4
+	for <lists+cgroups@lfdr.de>; Thu,  7 Sep 2023 17:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235346AbjIGPrO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Sep 2023 11:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
+        id S229478AbjIGP2w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Sep 2023 11:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343900AbjIGPbd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Sep 2023 11:31:33 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6278E1A8;
-        Thu,  7 Sep 2023 08:31:02 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387E8rZB014032;
-        Thu, 7 Sep 2023 14:22:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : content-type :
- content-transfer-encoding : mime-version : subject : message-id : date :
- cc : to; s=pp1; bh=dUkAXyCyHItrF/WsrObVwTovymYudza/V3YjgbOmvic=;
- b=Xy4f0H1OYDXpDdLvEM78QshUbSiNpHvXscBtkT3coNc5wJb+HCscw2p4YsJ4JcxqnYij
- oTP4ejTIRMnXquKRSIg02zpH19QyGTuhfrMzDtT3Tqyr+x7C1jQwFI1yXWdsx72b/jNN
- qEBHryvv0tMtqHEvfTCPEGyWwkua/zLzQW+Er//73hzzGA+s85MPdXghWJW4OaQ1ckoI
- LrrXy0cRYAh9/+ABUPMeLKL/sKxHP484qCCs1AKSQSMUEkRnpV/p++D2R+su5aKMZyDN
- Sr23GJyM6l9XymnenwmvjTZztdGLSefhmZHKOb73s5x73758tq9s9QXtUTIp80eERczF mw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sye3fk9m2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 14:22:36 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 387CMXd0011145;
-        Thu, 7 Sep 2023 14:22:35 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svj323qf6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 14:22:35 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 387EMYkZ44827044
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Sep 2023 14:22:34 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18D942004D;
-        Thu,  7 Sep 2023 14:22:34 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0209B20040;
-        Thu,  7 Sep 2023 14:22:33 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.43.34.62])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  7 Sep 2023 14:22:32 +0000 (GMT)
-From:   Sachin Sant <sachinp@linux.ibm.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Kernel crash during ltp(min_free_kbytes) test run
- (zone_reclaimable_pages)
-Message-Id: <F00144DE-2A3F-4463-8203-45E0D57E313E@linux.ibm.com>
-Date:   Thu, 7 Sep 2023 19:52:21 +0530
-Cc:     open list <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
-To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mm@kvack.org,
-        liushixin2@huawei.com
-X-Mailer: Apple Mail (2.3731.700.6)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: PQaPwk6xKlmw5QaV7EVWohlduXgRF9jr
-X-Proofpoint-GUID: PQaPwk6xKlmw5QaV7EVWohlduXgRF9jr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-07_07,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=759 phishscore=0 impostorscore=0 lowpriorityscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1011
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309070125
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S242498AbjIGPYs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Sep 2023 11:24:48 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919AF1BCA;
+        Thu,  7 Sep 2023 08:24:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 69FCF1F8B3;
+        Thu,  7 Sep 2023 15:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694099209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jlk2aVZRvC2y/qKDlLstKtfgf2Vh9rUftT3QduXr7LQ=;
+        b=og32zLaWxL+nBMJpNev005pWzlZ8xcaftNekvoDckFB9fNls3DMj51BpD/mL6rsum2WDqk
+        NI5Ut9JSRIAYoaRE1XOVzik/fl02jwg7IJvJk3CEKtKN+eWkxj2NTEZTnXLanV5OO58CH1
+        eIfOHGCTdrycY4aDYbYpUKJ3cccECMM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D716138FA;
+        Thu,  7 Sep 2023 15:06:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qo7GDQnn+WRNcgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 07 Sep 2023 15:06:49 +0000
+Date:   Thu, 7 Sep 2023 17:06:48 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Luiz Capitulino <luizcap@amazon.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        longman@redhat.com, lcapitulino@gmail.com
+Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
+Message-ID: <lqcl5cblo3s45afvtgqjkbz2an3zwccsckglhpe3ufyffqavjk@ui45m6itz4ne>
+References: <20230906005712.66461-1-luizcap@amazon.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fb522kinagxi363h"
+Content-Disposition: inline
+In-Reply-To: <20230906005712.66461-1-luizcap@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-While running LTP tests (specifically min_free_kbytes) on a Power server
-booted with 6.5.0-next-20230906 following crash was encountered.
 
-[ 3952.404936] __vm_enough_memory: pid: 440285, comm: min_free_kbytes, =
-not enough memory for the allocation
-[ 3956.895519] __vm_enough_memory: pid: 440286, comm: min_free_kbytes, =
-not enough memory for the allocation
-[ 3961.296168] __vm_enough_memory: pid: 440287, comm: min_free_kbytes, =
-not enough memory for the allocation
-[ 3982.202651] Kernel attempted to read user page (28) - exploit =
-attempt? (uid: 0)
-[ 3982.202669] BUG: Kernel NULL pointer dereference on read at =
-0x00000028
-[ 3982.202674] Faulting instruction address: 0xc000000000469660
-[ 3982.202679] Oops: Kernel access of bad area, sig: 11 [#1]
-[ 3982.202682] LE PAGE_SIZE=3D64K MMU=3DRadix SMP NR_CPUS=3D8192 NUMA =
-pSeries
-[ 3982.202688] Modules linked in: nfsv3 nfs_acl nfs lockd grace fscache =
-netfs brd overlay exfat vfat fat btrfs blake2b_generic xor raid6_pq =
-zstd_compress xfs loop sctp ip6_udp_tunnel udp_tunnel dm_mod =
-nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet =
-nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat =
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bonding rfkill tls ip_set =
-nf_tables libcrc32c nfnetlink sunrpc pseries_rng vmx_crypto ext4 mbcache =
-jbd2 sd_mod t10_pi crc64_rocksoft crc64 sg ibmvscsi ibmveth =
-scsi_transport_srp fuse [last unloaded: init_module(O)]
-[ 3982.202756] CPU: 18 PID: 440288 Comm: min_free_kbytes Tainted: G O =
-6.5.0-next-20230906 #1
-[ 3982.202762] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 =
-0xf000006 of:IBM,FW1030.20 (NH1030_058) hv:phyp pSeries
-[ 3982.202767] NIP: c000000000469660 LR: c0000000004694a8 CTR: =
-0000000000000000
-[ 3982.202771] REGS: c00000001d6af410 TRAP: 0300 Tainted: G O =
-(6.5.0-next-20230906)
-[ 3982.202776] MSR: 8000000000009033 <SF,EE,ME,IR,DR,RI,LE> CR: 24402444 =
-XER: 00000000
-[ 3982.202787] CFAR: c0000000004694fc DAR: 0000000000000028 DSISR: =
-40000000 IRQMASK: 0=20
-[ 3982.202787] GPR00: c0000000004696b8 c00000001d6af6b0 c000000001451100 =
-0000000000000080=20
-[ 3982.202787] GPR04: 0000000000000080 0000000000000081 0000000000000020 =
-0000000000000000=20
-[ 3982.202787] GPR08: 0000000000000080 00000000000048d9 0000000000000000 =
-00000000000014de=20
-[ 3982.202787] GPR12: 0000000000008000 c0000013ffab5300 c000000002f27238 =
-c000000002c9d4d8=20
-[ 3982.202787] GPR16: 0000000000000000 0000000000000000 c000000006924d40 =
-c000000002d174f8=20
-[ 3982.202787] GPR20: c000000002d17500 0000000000000002 60000000000000e0 =
-00000000000008c0=20
-[ 3982.202787] GPR24: 0000000000000000 0000000000000000 0000000000000000 =
-c000000002c9a7e8=20
-[ 3982.202787] GPR28: c000000002c9be10 c0000013ff1d1500 0000000000000488 =
-0000000000000950=20
-[ 3982.202839] NIP [c000000000469660] zone_reclaimable_pages+0x2a0/0x2c0
-[ 3982.202847] LR [c0000000004694a8] zone_reclaimable_pages+0xe8/0x2c0
-[ 3982.202852] Call Trace:
-[ 3982.202854] [c00000001d6af6b0] [5deadbeef0000122] 0x5deadbeef0000122 =
-(unreliable)
-[ 3982.202861] [c00000001d6af710] [c0000000004696b8] =
-allow_direct_reclaim.part.72+0x38/0x190
-[ 3982.202867] [c00000001d6af760] [c000000000469990] =
-throttle_direct_reclaim+0x180/0x400
-[ 3982.202873] [c00000001d6af7e0] [c00000000046de88] =
-try_to_free_pages+0xd8/0x2a0
-[ 3982.202879] [c00000001d6af8a0] [c0000000004e7370] =
-__alloc_pages_slowpath.constprop.92+0x490/0x1000
-[ 3982.202886] [c00000001d6afa50] [c0000000004e822c] =
-__alloc_pages+0x34c/0x3d0
-[ 3982.202893] [c00000001d6afad0] [c0000000004e8ce4] =
-__folio_alloc+0x34/0x90
-[ 3982.202898] [c00000001d6afb00] [c00000000051ba50] =
-vma_alloc_folio+0xe0/0x460
-[ 3982.202905] [c00000001d6afbc0] [c0000000004af108] =
-do_pte_missing+0x2a8/0xca0
-[ 3982.202912] [c00000001d6afc10] [c0000000004b3590] =
-__handle_mm_fault+0x3f0/0x1060
-[ 3982.202917] [c00000001d6afd20] [c0000000004b43c4] =
-handle_mm_fault+0x1c4/0x330
-[ 3982.202923] [c00000001d6afd70] [c000000000092a14] =
-___do_page_fault+0x2d4/0xaa0
-[ 3982.202930] [c00000001d6afe20] [c0000000000934d0] =
-do_page_fault+0xa0/0x2a0
-[ 3982.202936] [c00000001d6afe50] [c000000000008be0] =
-data_access_common_virt+0x210/0x220
-[ 3982.202943] --- interrupt: 300 at 0x7fffb3cc6360
-[ 3982.202946] NIP: 00007fffb3cc6360 LR: 0000000010005644 CTR: =
-0000000000001200
-[ 3982.202950] REGS: c00000001d6afe80 TRAP: 0300 Tainted: G O =
-(6.5.0-next-20230906)
-[ 3982.202955] MSR: 800000000200d033 <SF,VEC,EE,PR,ME,IR,DR,RI,LE> CR: =
-44002444 XER: 00000000
-[ 3982.202966] CFAR: 00007fffb3cc6384 DAR: 00007fea3bc70000 DSISR: =
-42000000 IRQMASK: 0=20
-[ 3982.202966] GPR00: 0000000000002000 00007fffd0497ae0 0000000010057f00 =
-00007fea3bc00000=20
-[ 3982.202966] GPR04: 0000000000000001 0000000000100000 00007fea3bc70000 =
-0000000000000000=20
-[ 3982.202966] GPR08: 1000000000000000 00007fea3bc00000 0000000000000000 =
-0000000000000000=20
-[ 3982.202966] GPR12: 00007fffb3cc62a0 00007fffb410b080 0000000000000000 =
-0000000000000000=20
-[ 3982.202966] GPR16: 0000000000000000 0000000000000000 0000000000000000 =
-0000000000000000=20
-[ 3982.202966] GPR20: 000000001002c260 000000001002c208 cccccccccccccccd =
-a3d70a3d70a3d70b=20
-[ 3982.202966] GPR24: 000000001002c2d0 000000001002c238 00007fffb3e01888 =
-000000001002c260=20
-[ 3982.202966] GPR28: 0000000000000000 000000001002c1f0 000000001002c218 =
-0000000000000000=20
-[ 3982.203016] NIP [00007fffb3cc6360] 0x7fffb3cc6360
-[ 3982.203020] LR [0000000010005644] 0x10005644
-[ 3982.203023] --- interrupt: 300
-[ 3982.203026] Code: eb21ffc8 eb81ffe0 eba1ffe8 ebc1fff0 7fffd214 =
-eb41ffd0 7c0803a6 7fe3fb78 ebe1fff8 4e800020 60000000 60000000 =
-<a12a0028> 3900ffff 7909782c b12a0028=20
-[ 3982.203044] ---[ end trace 0000000000000000 ]---
-[ 3982.299095] pstore: backend (nvram) writing error (-1)
-[ 3982.299105]=20
-[ 3983.299108] Kernel panic - not syncing: Fatal exception
-[ 3983.564309] Rebooting in 10 seconds..
+--fb522kinagxi363h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Git bisect point to the following patch
+On Wed, Sep 06, 2023 at 12:57:12AM +0000, Luiz Capitulino <luizcap@amazon.com> wrote:
+> We have a need of using favordynmods with cgroup v1, which doesn't support
+> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
+> build-time is not an option because we want to be able to selectively
+> enable it for certain systems.
 
-commit 92039ae85e8d018e82b9ba2597ca22e9851447fe
-    mm: vmscan: try to reclaim swapcache pages if no swap space
+Could this be implemented by a utility that would read /proc/cmdline
+(while kernel ignores the arg) and remount respective hierarchies
+accordingly? Or what do I miss?
 
-The system is configured with 60GB of memory and 4GB of swap.
+Thanks,
+Michal
 
-- Sachin
+--fb522kinagxi363h
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZPnnBQAKCRAGvrMr/1gc
+jkAPAP97oDuOi9qLFPYmLAYQvF0zxgwO1uM7BUMdlLfLcLl5cQEAqUN0ZTNPFM6f
+W8z+8KTpA6lbp2Cn/PVij8rH1I/V3wA=
+=YGWh
+-----END PGP SIGNATURE-----
+
+--fb522kinagxi363h--
