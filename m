@@ -2,94 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01924798C3D
-	for <lists+cgroups@lfdr.de>; Fri,  8 Sep 2023 20:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02E5798C46
+	for <lists+cgroups@lfdr.de>; Fri,  8 Sep 2023 20:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234884AbjIHSHJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 Sep 2023 14:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S230334AbjIHSLD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 Sep 2023 14:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjIHSHI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Sep 2023 14:07:08 -0400
-Received: from mail-pf1-x447.google.com (mail-pf1-x447.google.com [IPv6:2607:f8b0:4864:20::447])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E42E26B5
-        for <cgroups@vger.kernel.org>; Fri,  8 Sep 2023 11:06:44 -0700 (PDT)
-Received: by mail-pf1-x447.google.com with SMTP id d2e1a72fcca58-68bec43ec0cso3285727b3a.2
-        for <cgroups@vger.kernel.org>; Fri, 08 Sep 2023 11:06:44 -0700 (PDT)
+        with ESMTP id S231454AbjIHSLD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Sep 2023 14:11:03 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F081FE1;
+        Fri,  8 Sep 2023 11:10:24 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5008d16cc36so3953910e87.2;
+        Fri, 08 Sep 2023 11:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694196555; x=1694801355; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FyPYK0w69+g1akkDzeNAWRhnsMpPNgkPja8VOvx5ZAo=;
+        b=d9JRdGQ58w6J1Evf2LP9ayMZ5BPwN+ugHJ9lnGTSwuI+upsMZbzs1H2IR4WqYXGNMA
+         QGPJR47Vbi8FUwH/OLfINGOr/8T69Jh6Lou3iBsYkKKeFB7i5DH8xdHG7JXhDBu26tQ5
+         GFbgqUahoRrEz+w3amIR4kPiuIZ1gHimAnycSKkTBlbIsvdmGYilyG5V7E+zao+wYmBU
+         fLkJANKX1ivtnNRWXxdz0tMai6CLJw4j/vELzREzL2m96myB+Mqw0XxF3LaWQJ4qQ3Xp
+         hmYqhdS2dk+eO2l8Hy81GM7rPD6MXt8ex/crEwCWeAd4PkwXEQODLmhWUsTKg5B945wp
+         j2xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694196270; x=1694801070;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0lAvPiHpQzYJH2/Evbqeae0jEIobBXd5mkIT/JR5mjU=;
-        b=rUgJ9kX8jWYv4zyR7za2Whgc2F+nR9oGmJD3t1N6pIhqlqFLtjx22f31O3Ar8y1x75
-         Y3W/WtVhB9mLWPEeOONMYjqYQvx3GfgfLcUnjBh8q4vHYaZtRYsRtco78ZiiXmwpFm0P
-         B+6QIbS3C4imYvkgo3A3YWesQe87KxKA6gSq6dagqX658ERXS63IIfbvAB/axAZGhKpL
-         t+hsrZEJTHwY5WCCWviIP/t/Lxi6O0Dr/iKmrdBTOw0H8y7ScFnNRJ4CMogqUtRC5bsT
-         ssAjIQ1DTkaL7dsuD0TM4qrKz/LrdyTjN1NRINy/gcv+5KKq531ILxtY1bnVVae+yjoF
-         2QMA==
-X-Gm-Message-State: AOJu0Yy+r2G0dQC8JEFwe322bXQimzs7uDh60Np/kYTvV0LDD0BYTLrM
-        XjMBjKzoXidrPtRRFo/kYWXuOQh5etcukfa52wdvRWa2ZxVM
-X-Google-Smtp-Source: AGHT+IFG6oZqBOayFovKE0NVKEQ0Xnwtd+Nskzg2qKPXIoko6vfMv+elInHkBKWJh6QlQckbllDdPD2ESA+Mlnx+N1cgB86kBYBd
+        d=1e100.net; s=20230601; t=1694196555; x=1694801355;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FyPYK0w69+g1akkDzeNAWRhnsMpPNgkPja8VOvx5ZAo=;
+        b=T/lix/Ak0kMxmz9L5MB2rewKBdU9Y90v1qnyhbnvSBkJ1pCW8mLMFlAuFtJGeRpn6g
+         rwLgHnThZk0WbpWB8ObHDU2b78br1thc9+I99Vd0IJHqLEpla8JGQEwTcMWEmlzniLEL
+         yt0z4fbyNSdSvqUuP1/1OAfpARmVYPd5sbaDR5rBE0W66Xk5KrDEGdPCJIhAd+I38Aig
+         U3SKamUETuyQ2tO4MpRiHgMTerSaWzyfkDXfgzO5C6ldD7ekSEJ73eUXICQYmTAYyFgx
+         /j2ksIOusl3InmxoVTDlexH6I0uQaqGXLzSiYQ6uFp+OrMAbD0tyBq5taTVb7w9fQQkQ
+         8meQ==
+X-Gm-Message-State: AOJu0YxMMmpAl5vRDClYfhYQiDdhnfn6mxH7sO98vUTLb2bwqCMAQEBD
+        10c/yL0bhksvyRbV5cqSPgLnnu3lDYgumSyiH+k=
+X-Google-Smtp-Source: AGHT+IHwsYTplxotX5Lf+rvziXS8asFzrR6F9PqLGYUCcrUGZWCe0+tAo56ciqkRUBe8JqyHOJftGo7/qa29BIEWT8w=
+X-Received: by 2002:a05:6512:6ca:b0:4f6:3677:54e with SMTP id
+ u10-20020a05651206ca00b004f63677054emr3391806lff.36.1694196554507; Fri, 08
+ Sep 2023 11:09:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:80c:b0:68a:3c7a:128c with SMTP id
- m12-20020a056a00080c00b0068a3c7a128cmr1357477pfk.2.1694196270440; Fri, 08 Sep
- 2023 11:04:30 -0700 (PDT)
-Date:   Fri, 08 Sep 2023 11:04:30 -0700
-In-Reply-To: <000000000000f392a60604a65085@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e127ec0604dcce27@google.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
-From:   syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>
-To:     42.hyeyoo@gmail.com, Liam.Howlett@Oracle.com,
-        agordeev@linux.ibm.com, akpm@linux-foundation.org,
-        alexghiti@rivosinc.com, aou@eecs.berkeley.edu,
-        borntraeger@linux.ibm.com, cgroups@vger.kernel.org,
-        christophe.leroy@csgroup.eu, damon@lists.linux.dev,
-        david@redhat.com, eadavis@sina.com, frankja@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, gor@linux.ibm.com,
-        hannes@cmpxchg.org, hca@linux.ibm.com, imbrenda@linux.ibm.com,
-        jeeheng.sia@starfivetech.com, jglisse@redhat.com,
-        kvm@vger.kernel.org, leyfoon.tan@starfivetech.com,
-        linmiaohe@huawei.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mason.huo@starfivetech.com,
-        mhocko@kernel.org, mpe@ellerman.id.au, muchun.song@linux.dev,
-        naoya.horiguchi@nec.com, npiggin@gmail.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, roman.gushchin@linux.dev,
-        sebastian.reichel@collabora.com, shakeelb@google.com,
-        sj@kernel.org, surenb@google.com, svens@linux.ibm.com,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
+References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
+ <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
+In-Reply-To: <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 8 Sep 2023 11:09:03 -0700
+Message-ID: <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Thu, Sep 7, 2023 at 7:54=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
+rote:
+>
+> On Thu, Sep 7, 2023 at 10:41=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.=
+com> wrote:
+> >
+> > Hello Yafang.
+> >
+> > On Sun, Sep 03, 2023 at 02:27:55PM +0000, Yafang Shao <laoar.shao@gmail=
+.com> wrote:
+> > > In our specific use case, we intend to use bpf_current_under_cgroup()=
+ to
+> > > audit whether the current task resides within specific containers.
+> >
+> > I wonder -- how does this work in practice?
+>
+> In our practice, the cgroup_array map serves as a shared map utilized
+> by both our LSM programs and the target pods. as follows,
+>
+>     ----------------
+>     | target pod |
+>     ----------------
+>            |
+>            |
+>           V                                      ----------------
+>  /sys/fs/bpf/cgoup_array     <--- | LSM progs|
+>                                                   ----------------
+>
+> Within the target pods, we employ a script to update its cgroup file
+> descriptor into the cgroup_array, for instance:
+>
+>     cgrp_fd =3D open("/sys/fs/cgroup/cpu");
+>     cgrp_map_fd =3D bpf_obj_get("/sys/fs/bpf/cgroup_array");
+>     bpf_map_update_elem(cgrp_map_fd, &app_idx, &cgrp_fd, 0);
+>
+> Next, we will validate the contents of the cgroup_array within our LSM
+> programs, as follows:
+>
+>      if (!bpf_current_task_under_cgroup(&cgroup_array, app_idx))
+>             return -1;
+>
+> Within our Kubernetes deployment system, we will inject this script
+> into the target pods only if specific annotations, such as
+> "bpf_audit," are present. Consequently, users do not need to manually
+> modify their code; this process will be handled automatically.
+>
+> Within our Kubernetes environment, there is only a single instance of
+> these target pods on each host. Consequently, we can conveniently
+> utilize the array index as the application ID. However, in scenarios
+> where you have multiple instances running on a single host, you will
+> need to manage the mapping of instances to array indexes
+> independently. For cases with multiple instances, a cgroup_hash may be
+> a more suitable approach, although that is a separate discussion
+> altogether.
 
-commit 49b0638502da097c15d46cd4e871dbaa022caf7c
-Author: Suren Baghdasaryan <surenb@google.com>
-Date:   Fri Aug 4 15:27:19 2023 +0000
-
-    mm: enable page walking API to lock vmas during the walk
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11fd2348680000
-start commit:   7733171926cc Merge tag 'mailbox-v6.6' of git://git.linaro...
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13fd2348680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15fd2348680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b273cdfbc13e9a4b
-dashboard link: https://syzkaller.appspot.com/bug?extid=b591856e0f0139f83023
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d4ecd0680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1055c284680000
-
-Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
-Fixes: 49b0638502da ("mm: enable page walking API to lock vmas during the walk")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Is there a reason you cannot use bpf_get_current_cgroup_id()
+to associate task with cgroup in your lsm prog?
