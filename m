@@ -2,141 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02E5798C46
-	for <lists+cgroups@lfdr.de>; Fri,  8 Sep 2023 20:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348597999BE
+	for <lists+cgroups@lfdr.de>; Sat,  9 Sep 2023 18:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjIHSLD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 Sep 2023 14:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        id S235002AbjIIQZk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 9 Sep 2023 12:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbjIHSLD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Sep 2023 14:11:03 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F081FE1;
-        Fri,  8 Sep 2023 11:10:24 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5008d16cc36so3953910e87.2;
-        Fri, 08 Sep 2023 11:10:24 -0700 (PDT)
+        with ESMTP id S1346701AbjIIPw4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 9 Sep 2023 11:52:56 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337BF180;
+        Sat,  9 Sep 2023 08:52:52 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c1e780aa95so21566655ad.3;
+        Sat, 09 Sep 2023 08:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694196555; x=1694801355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FyPYK0w69+g1akkDzeNAWRhnsMpPNgkPja8VOvx5ZAo=;
-        b=d9JRdGQ58w6J1Evf2LP9ayMZ5BPwN+ugHJ9lnGTSwuI+upsMZbzs1H2IR4WqYXGNMA
-         QGPJR47Vbi8FUwH/OLfINGOr/8T69Jh6Lou3iBsYkKKeFB7i5DH8xdHG7JXhDBu26tQ5
-         GFbgqUahoRrEz+w3amIR4kPiuIZ1gHimAnycSKkTBlbIsvdmGYilyG5V7E+zao+wYmBU
-         fLkJANKX1ivtnNRWXxdz0tMai6CLJw4j/vELzREzL2m96myB+Mqw0XxF3LaWQJ4qQ3Xp
-         hmYqhdS2dk+eO2l8Hy81GM7rPD6MXt8ex/crEwCWeAd4PkwXEQODLmhWUsTKg5B945wp
-         j2xA==
+        d=gmail.com; s=20221208; t=1694274771; x=1694879571; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fgpa7ePPXDf81q5q2R0+qC0wZ59LoDUqcXyRaIm3KfE=;
+        b=a2EtqDj0feMdhivyTEMi3UkoWCVwvdJux7/mjhCaknL0lZvZUR7SgSxz9VQMadR7AV
+         dyzGa/PKGhPfrRGv0KhDFnEemyolJt0d7j7yJh4RYxz4QB0Yf2Mb8RTdcFHBBJs0JS/I
+         jLR8ACm69RNRxSitOos/81qsDSFGe6Rljlc1LPgBllBB+UoEyTmbQcsuAo5LiRszVJNG
+         0lVrxfMzVcdRRKgiQ66SusiMAm19GDVkBFbGKOw83zd9uZiqNeV5AXo3wjfGqR8kySFq
+         /p7Ij9uKdrjq6JrRakUSg51dC17hSq/fNDjMdyeCYDzlM73tPiS55+u/eHWivdVKSwYV
+         6NAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694196555; x=1694801355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FyPYK0w69+g1akkDzeNAWRhnsMpPNgkPja8VOvx5ZAo=;
-        b=T/lix/Ak0kMxmz9L5MB2rewKBdU9Y90v1qnyhbnvSBkJ1pCW8mLMFlAuFtJGeRpn6g
-         rwLgHnThZk0WbpWB8ObHDU2b78br1thc9+I99Vd0IJHqLEpla8JGQEwTcMWEmlzniLEL
-         yt0z4fbyNSdSvqUuP1/1OAfpARmVYPd5sbaDR5rBE0W66Xk5KrDEGdPCJIhAd+I38Aig
-         U3SKamUETuyQ2tO4MpRiHgMTerSaWzyfkDXfgzO5C6ldD7ekSEJ73eUXICQYmTAYyFgx
-         /j2ksIOusl3InmxoVTDlexH6I0uQaqGXLzSiYQ6uFp+OrMAbD0tyBq5taTVb7w9fQQkQ
-         8meQ==
-X-Gm-Message-State: AOJu0YxMMmpAl5vRDClYfhYQiDdhnfn6mxH7sO98vUTLb2bwqCMAQEBD
-        10c/yL0bhksvyRbV5cqSPgLnnu3lDYgumSyiH+k=
-X-Google-Smtp-Source: AGHT+IHwsYTplxotX5Lf+rvziXS8asFzrR6F9PqLGYUCcrUGZWCe0+tAo56ciqkRUBe8JqyHOJftGo7/qa29BIEWT8w=
-X-Received: by 2002:a05:6512:6ca:b0:4f6:3677:54e with SMTP id
- u10-20020a05651206ca00b004f63677054emr3391806lff.36.1694196554507; Fri, 08
- Sep 2023 11:09:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694274771; x=1694879571;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fgpa7ePPXDf81q5q2R0+qC0wZ59LoDUqcXyRaIm3KfE=;
+        b=Z3JBVMxMfaLLWjqL0MysnioCOe9gql6xk5o2slv0nQw6JaclQHTZcB6ykDgrT800iE
+         U1et8KnEjXzuuaQJzGDfsPI4wUP29lauAc0KIXmbkVg4wAf2BmDifHTjGrCL6b0c+XAe
+         HEA4pt6PcGzlf1LBMfTi0meTcIEaLkG2DsHDc/6y01jY2zjo4xa2Le8s8f8vvGUXiqPR
+         CHs2CLxVlLjUKnGIUqirhJ5bhNk9QLMLhR2nP2amX2zxepp7AXZIKXQavj9boxR1sM6q
+         oIsZ6MUJXevHYPpeO26tqxH6RkSqXLHebxWvYKxWgXy/+F3/S4KTrVlJAfj8xaZcjVPM
+         t3RA==
+X-Gm-Message-State: AOJu0Yx0FjUsdc8sqlhbnntJBM5yQn3l2+Yo8su4FGKfhWmFZjXGlx1p
+        8FKp/26nnpWzbjOPC7NpoqZunds7bPrlCQ==
+X-Google-Smtp-Source: AGHT+IHjDCzUL7bJiz6mFbSIE+EIH00p+G4f05fHtvMlNGOTIzh0y+NyM9MBHYLBf8fAqRHqNqAwIQ==
+X-Received: by 2002:a17:90a:4e47:b0:26b:2f9:a898 with SMTP id t7-20020a17090a4e4700b0026b02f9a898mr4980514pjl.47.1694274771484;
+        Sat, 09 Sep 2023 08:52:51 -0700 (PDT)
+Received: from VERNHAO-MC1.tencent.com ([111.197.253.118])
+        by smtp.gmail.com with ESMTPSA id l2-20020a17090a72c200b0025bd4db25f0sm2894612pjk.53.2023.09.09.08.52.47
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 09 Sep 2023 08:52:51 -0700 (PDT)
+From:   Xin Hao <haoxing990@gmail.com>
+X-Google-Original-From: Xin Hao <vernhao@tencent.com>
+To:     hannes@cmpxchg.org
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        haoxing990@gmail.com
+Subject: [PATCH] mm: memcg: add THP swap out info for anonymous reclaim
+Date:   Sat,  9 Sep 2023 23:52:41 +0800
+Message-ID: <20230909155242.22767-1-vernhao@tencent.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
- <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
-In-Reply-To: <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 8 Sep 2023 11:09:03 -0700
-Message-ID: <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 7, 2023 at 7:54=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
-rote:
->
-> On Thu, Sep 7, 2023 at 10:41=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.=
-com> wrote:
-> >
-> > Hello Yafang.
-> >
-> > On Sun, Sep 03, 2023 at 02:27:55PM +0000, Yafang Shao <laoar.shao@gmail=
-.com> wrote:
-> > > In our specific use case, we intend to use bpf_current_under_cgroup()=
- to
-> > > audit whether the current task resides within specific containers.
-> >
-> > I wonder -- how does this work in practice?
->
-> In our practice, the cgroup_array map serves as a shared map utilized
-> by both our LSM programs and the target pods. as follows,
->
->     ----------------
->     | target pod |
->     ----------------
->            |
->            |
->           V                                      ----------------
->  /sys/fs/bpf/cgoup_array     <--- | LSM progs|
->                                                   ----------------
->
-> Within the target pods, we employ a script to update its cgroup file
-> descriptor into the cgroup_array, for instance:
->
->     cgrp_fd =3D open("/sys/fs/cgroup/cpu");
->     cgrp_map_fd =3D bpf_obj_get("/sys/fs/bpf/cgroup_array");
->     bpf_map_update_elem(cgrp_map_fd, &app_idx, &cgrp_fd, 0);
->
-> Next, we will validate the contents of the cgroup_array within our LSM
-> programs, as follows:
->
->      if (!bpf_current_task_under_cgroup(&cgroup_array, app_idx))
->             return -1;
->
-> Within our Kubernetes deployment system, we will inject this script
-> into the target pods only if specific annotations, such as
-> "bpf_audit," are present. Consequently, users do not need to manually
-> modify their code; this process will be handled automatically.
->
-> Within our Kubernetes environment, there is only a single instance of
-> these target pods on each host. Consequently, we can conveniently
-> utilize the array index as the application ID. However, in scenarios
-> where you have multiple instances running on a single host, you will
-> need to manage the mapping of instances to array indexes
-> independently. For cases with multiple instances, a cgroup_hash may be
-> a more suitable approach, although that is a separate discussion
-> altogether.
+At present, we support per-memcg reclaim strategy, however we do not
+know the number of transparent huge pages being reclaimed, as we know
+the transparent huge pages need to be splited before reclaim them, and
+they will bring some performance bottleneck effect. for example, when
+two memcg (A & B) are doing reclaim for anonymous pages at same time,
+and 'A' memcg is reclaiming a large number of transparent huge pages, we
+can better analyze that the performance bottleneck will be caused by 'A'
+memcg.  therefore, in order to better analyze such problems, there add
+THP swap out info for per-memcg.
 
-Is there a reason you cannot use bpf_get_current_cgroup_id()
-to associate task with cgroup in your lsm prog?
+Signed-off-by: Xin Hao <vernhao@tencent.com>
+---
+ mm/memcontrol.c | 6 ++++++
+ mm/page_io.c    | 4 +++-
+ mm/vmscan.c     | 2 ++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ecc07b47e813..a644f601e2ca 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -752,6 +752,8 @@ static const unsigned int memcg_vm_event_stat[] = {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	THP_FAULT_ALLOC,
+ 	THP_COLLAPSE_ALLOC,
++	THP_SWPOUT,
++	THP_SWPOUT_FALLBACK,
+ #endif
+ };
+ 
+@@ -4131,6 +4133,10 @@ static const unsigned int memcg1_events[] = {
+ 	PGPGOUT,
+ 	PGFAULT,
+ 	PGMAJFAULT,
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	THP_SWPOUT,
++	THP_SWPOUT_FALLBACK,
++#endif
+ };
+ 
+ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+diff --git a/mm/page_io.c b/mm/page_io.c
+index fe4c21af23f2..008ada2e024a 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -208,8 +208,10 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+ static inline void count_swpout_vm_event(struct folio *folio)
+ {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	if (unlikely(folio_test_pmd_mappable(folio)))
++	if (unlikely(folio_test_pmd_mappable(folio))) {
++		count_memcg_events(folio_memcg(folio), THP_SWPOUT, 1);
+ 		count_vm_event(THP_SWPOUT);
++	}
+ #endif
+ 	count_vm_events(PSWPOUT, folio_nr_pages(folio));
+ }
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index ea57a43ebd6b..29a82b72345a 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1928,6 +1928,8 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+ 								folio_list))
+ 						goto activate_locked;
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
++					count_memcg_events(folio_memcg(folio),
++							   THP_SWPOUT_FALLBACK, 1);
+ 					count_vm_event(THP_SWPOUT_FALLBACK);
+ #endif
+ 					if (!add_to_swap(folio))
+-- 
+2.42.0
+
