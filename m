@@ -2,41 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F9079A51A
-	for <lists+cgroups@lfdr.de>; Mon, 11 Sep 2023 09:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C2679A51C
+	for <lists+cgroups@lfdr.de>; Mon, 11 Sep 2023 09:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbjIKHzc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Sep 2023 03:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
+        id S232471AbjIKHzk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Sep 2023 03:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbjIKHzb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Sep 2023 03:55:31 -0400
+        with ESMTP id S234808AbjIKHzh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Sep 2023 03:55:37 -0400
 Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on20723.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaf::723])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564F2100;
-        Mon, 11 Sep 2023 00:55:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4598CE3;
+        Mon, 11 Sep 2023 00:55:27 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kZF/PJRVYdOQ7r00wfOb14bKj93GnfcLS1g2121vGLf7x1EexgasbMzoau5DCchZ12ipztxLmr5cYckFaTyXfb1Kz0hAj/+CTwcRcc/eSFnqvaB7jhlSKMADN/TtdmRVcy9oK6iL2gbMRYcwXm+kUouzVHCMqDSHCAUhQiJ2ezMGY4hbu4dAtuVMowaqa9uN6AJ3dBKAySr2W75x30ig4I96jSxEqiQoq0y3tAfsq73YxzYY3xc1iRVwChH8LKL5pwT06l254xGeSU9Wt2nP2edKv+2Gyup2AKhj8Y9XytJ5CWdE99t+qGCf1oHk6O4A/r/9+cJQUaKvtgvRBpQbbQ==
+ b=ENRBrncko2IZrJLySO5XTo5zpFNtPe0y1MbRN3POPmZkw+BAh6FuZTqoyLbtUEwRv46T4NhyFc1M6hHusnblqllcF7bdpm+YNziL1JQqEg6ddZS4ETEWp+gArg92HO/qqFN0LFPj84mcdxHDPge5WiJE0vPLOuORwBUXAiEegl48UilT7Mx70FaFdBrg1icgWr2s+ElrkqgPKU4+uSdPY+/YIyvOYYC4qTS5W8r+BEU2sc1LVM09ry/s97xxAnu7NelJjjyreM+y1Fx1khPzVQU2hE/pn3U2Svr/HcISybFH3MmaQgnA1a97vba3zIJXlWs7CR4aJaPB02/BH11kpA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nCI1H6vMT0KBMX/H5V39gmSgTZSv9N0KOerpNWmPBQM=;
- b=D78tO/ClyvIUrb81kjjmcmDSlxcg4RyoSx/9r3I3766XWuBJoKSNWLV2bBhIDyupO8UDKTOMYr8JWP7HVze1GxyrVZoP3Gq1XGZl/3PLNiJkMNLgeMp4htRiG4fK4HYzk3FMHapl0KbBYYOCIVbRQLqM+cAhvaVItPIeV5WFGGdSl3uGQewygxS+G6sinkdHUT0qOVTQT+VUqXH9koSc/NM45G0EOBHOwuYh0riRF9CU0BUR1AO3/59/zrFMJg+RTaGEY3iEhShdRyvE+pTXu5aTRiNmQZu1EkNcwaFgJL05GM1nUKlrafP4PzYBlrAY0thYm7VQOTDSaAuPOq2A6A==
+ bh=1DKyGwIj4jv7VDoNrsbW4MCGeMC+A7Fjxr12aryd/0k=;
+ b=P3oS0xGEyG/aKRfJcALzD8HK+Vep6qP2TutsmjfZwY9nLU1WwZpwP0w6FK1ule0+cJP9VaCw669uMXuUgKe80i0Zy2Y+cA+X5lpVwGTamkBZJlHWv9fd3nI0qmUg8oC+bz1BT4bS4Cv152YHsfVuYauWaE3Dh7h/HqwRADSuxa8LHvDEZ6snLRiz9LbwFjA4gi3Vk/HUQutbyagb4O4pKoEpREq2rYFiWPyD+5lN97a6tzgE6pTxxqfMBVSx5KSSEBbA9CBwBxWHjZOQiQqvcjgplcNGbSJW6xKGfSB/rwmqxOgXb3K9K4Iqo6o1BoeOoV3txmCHOAUYOhEskaIdhg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nebius.com; dmarc=pass action=none header.from=nebius.com;
  dkim=pass header.d=nebius.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nebius.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nCI1H6vMT0KBMX/H5V39gmSgTZSv9N0KOerpNWmPBQM=;
- b=HI/hnt3GWMfFJYCp5l2aSNd+QM2miP1r89KOAl/v1SjfB22RqQdjVjCqCeVM432EEcw7LKctZbETb7G8l9LkA4nc2BfYQQRSL/uR927efdU38zZ0XdbuGEPl/9f3u6aEnhifIHGacP8Xwk1SrOnc/njfocjrZaDKXFu97BfnMNnMb6Pnkz5KxOlfi29jaTy1OjYz2rN+xF3GrTFpWAG+8L2tZnOjieLPBRC06Ub3PoC5bzIh8ob1BDegjxFHRnjJramWi+UdC8/0JRs0jp5Yz1GMPI7bEOefNk5sntVuGMrnpFnd5Hug0Zh+OnK7yy9OUdnynm7jmOwJnlHDOZ2QHg==
+ bh=1DKyGwIj4jv7VDoNrsbW4MCGeMC+A7Fjxr12aryd/0k=;
+ b=LujzvkldKVdvzkRN2XebIglZAKv450VcgxhrdZKRo/lHjfcSjBuehaMQAFJFZ2LzKKiPtMvBIS+yXuzP4ERRek9DutT5TGoEtx1qp4NKyY2JTDlW3hEpb84/MdsfcrJG//G7jsINTQhbC8PEyEs2Nz+kS6RQuzx2xjloGmBAsJPoohzvhasnIjSTn6W8A69dAj0Ab31gsSxpFGemRW6igDJbanyfF0NkFJMLz7m8mo2veVn6ZMQplqSqiCCufQaDwZLnRI66FSxjNfj9bacRGfXdjcDKd5+HuUTb0iMvk39CGJxNLsT97OU7ncoBjr/9YAI2Sq7eSZgycySwjLEOkw==
 Received: from DU0P190MB1860.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:3a4::9) by
  DBAP190MB0840.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:1a2::24) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.31; Mon, 11 Sep 2023 07:55:09 +0000
+ 15.20.6768.31; Mon, 11 Sep 2023 07:55:15 +0000
 Received: from DU0P190MB1860.EURP190.PROD.OUTLOOK.COM
  ([fe80::1dc2:35fa:896c:8ca3]) by DU0P190MB1860.EURP190.PROD.OUTLOOK.COM
  ([fe80::1dc2:35fa:896c:8ca3%5]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 07:55:09 +0000
+ 07:55:15 +0000
 From:   "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>
 To:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -45,12 +45,17 @@ CC:     NB-Core Team <NB-CoreTeam@nebius.com>,
         "tj@kernel.org" <tj@kernel.org>,
         "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
         "mhocko@kernel.org" <mhocko@kernel.org>,
-        "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>
-Subject: [RFC PATCH 0/3] Helpers for debugging dying cgroups
-Thread-Topic: [RFC PATCH 0/3] Helpers for debugging dying cgroups
-Thread-Index: AQHZ5IVIEdx/726aRkuL9qbz7MGe6g==
-Date:   Mon, 11 Sep 2023 07:55:09 +0000
-Message-ID: <20230911075437.74027-1-zeil@nebius.com>
+        "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrey Ryabinin <arbn@yandex-team.com>
+Subject: [RFC PATCH 1/3] cgroup: list all subsystem states in debugfs files
+Thread-Topic: [RFC PATCH 1/3] cgroup: list all subsystem states in debugfs
+ files
+Thread-Index: AQHZ5IVMonqYoLV7B0qibYNmxbXARA==
+Date:   Mon, 11 Sep 2023 07:55:15 +0000
+Message-ID: <20230911075437.74027-2-zeil@nebius.com>
+References: <20230911075437.74027-1-zeil@nebius.com>
+In-Reply-To: <20230911075437.74027-1-zeil@nebius.com>
 Accept-Language: ru-RU, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -59,54 +64,54 @@ authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nebius.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: DU0P190MB1860:EE_|DBAP190MB0840:EE_
-x-ms-office365-filtering-correlation-id: c3ffe015-d441-4e04-bdd9-08dbb29c6b97
+x-ms-office365-filtering-correlation-id: 1acaef6c-91e9-4e0d-90a1-08dbb29c6f21
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5XIdAGIM4hacVbUN9GesR+8QvtOksAClMan353EmWrP0UdF70Bxoq3qEt0QPPVqNsg69geqYBA31nZwj9BKIIsBZ5BCJUilpkHx9Gdyi7OPDw9mioodNu3fOzeVgWcvWnz+YIKFKGcWfIlr57BHcdYhe1kMZ+YG1uTHNhoxD+eTxR1dKZT+PL6sQbSdcgJz+M1q4DQzsZRr6wejajleqbrfjP04gjzE0ADBWbKT45TZ+sirLw3rlq8d2dFR60OQzCREpAO8hBCSY4HRVjYd3MK/Bj+Q23FwdKbhG62fKfiH0pHhKScf4E8EPXm7RqsTj0gYpRCsW8v6RDkQ/RRC7SE7ben+j27Amx/D0qn8NjJFUhpz8MRngHgAbr4mDymw1GzEdhc9+lJVGp6feEKgVi442dj57qtvdHjU9lJeuby+hoCCxyw2uoQYsl6NhBtv9jQ2YINvrl8U2BZSBqdydvhahl9gHv4hLTYm8yOEN78FUnCql7fxJl+WmxtnLOIeGEllpyyOu5eunfCfjdWLPXE62+Ch49AM+dQ7qradAD0P8DzCT/2suSzlcrSHDm78pdqWDllKSgD+sUUqnswB79iP4z8lRSCeaLhqeWC6b2s0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0P190MB1860.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(346002)(39830400003)(451199024)(1800799009)(186009)(6486002)(71200400001)(6506007)(36756003)(86362001)(38100700002)(38070700005)(122000001)(107886003)(26005)(2616005)(1076003)(2906002)(966005)(6512007)(478600001)(83380400001)(5660300002)(41300700001)(4326008)(76116006)(316002)(110136005)(8676002)(8936002)(66446008)(64756008)(54906003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: ppn0QukgfN6KAteDgq51Ije4yeAt6vGJHRWzQ5q8Z0BUtjnEiyJsRvQlmAqPzNK9GJDETRcFDmIUHs5b3BwK5ByKAs+Fr8f0ezF2EtU/9+3a0zJF4Ya1kIieQx4qExtqjH5nRP3xAHPiM0s7ewPKSwDG8uDPBdQsXbK4MV4Bij8WeVaI3tlyQIVakc2k+dPyoy3JKaA43AhlRMW7eoNyAk7VJtOIR9xcXoT7/lgVBJS7qxMYfCqRaOllsbzMRqKsBKXA3/D/5mspNYamjvWG6Ti9VMNr4NZELbIK8yA3UOcEAcvkfo4/elBBM7cM9YgWPqFnKXzmahaLPDtgGS7Mub489+XxgRB1b+YWKZQs1u7gjKLCPCRvZ7xi5Wrn4cG6Zj/+P4Livfwzi3wTi7BYnG1ZNEAgkSvYymn5tPV00vjBj26/Eokr7LXfS5gMm6v4+Nf05ZveMrWZvawYBKU+t7iNWIzXC0NYprdBRz0cGJXSBnif/JnmrbOiO4pMAcAgUDG8vtNRtYlFfv4TMIbuKQQg8lJ/QmqyjO7V61doGdr6ffTgRvVXNUOv0zWOlAVP+Oh4+sXdjnlJIbEooHrLDSL254lgu9fbc9dVnhvWk6o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0P190MB1860.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(346002)(39830400003)(451199024)(1800799009)(186009)(6486002)(71200400001)(6506007)(36756003)(86362001)(38100700002)(38070700005)(122000001)(26005)(2616005)(1076003)(2906002)(966005)(6512007)(478600001)(83380400001)(5660300002)(41300700001)(4326008)(76116006)(316002)(110136005)(8676002)(8936002)(66446008)(64756008)(54906003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?xC1ftVb5Kf9EweQaQEhiUSXrxqy3Ml+OZqpxNOrzhQZIVH7b2P90Ip7KGr?=
- =?iso-8859-1?Q?rxt8EpBsoH0h/d8onnVMpEXmtvbWsmZZfqln42QVNmTMbJfuyFGzHigcQp?=
- =?iso-8859-1?Q?EidtUuvwYmqictMNYvD+HK1q4e/FecP4YePHgRHaWOjwER8VjFFobaosTE?=
- =?iso-8859-1?Q?LrgMAcenuVqe5jVc9wEgcfOHqUXvA7Nn+bz6jdURVqPgM2fjJZFGPfAzYP?=
- =?iso-8859-1?Q?GM7t26BsiK26lrx1+ydAhxthR41Aafi4oTIZXxIN2ofs0i5rrBIhocPCID?=
- =?iso-8859-1?Q?svj9sM3oU/YpKaX+Dre1EY+i/MujlB+RY9p2iUgMMt/rHsuQsakAPfIEWn?=
- =?iso-8859-1?Q?4Is9dvEwJSlXGEmYcWJVjvxxypM1YpHH9qnk59v60Xrfq9FsCiY8JPg3x9?=
- =?iso-8859-1?Q?5oykspr0VqFGBCW0btG20aUtxPNPAtxLG62EtqtwBefPf868pfX74eXTyE?=
- =?iso-8859-1?Q?OTQkGHSDhd4NHrd36Ij1M5H49rrJOxf+mtmCqnxuCCX7p3h/9p7vDThJ9e?=
- =?iso-8859-1?Q?LiyKqH3a4WEd74GH9VlA7cwcO1nTaz9O5gXfpkg/OwmdiD3wNB6m1LepS8?=
- =?iso-8859-1?Q?MFq03VmzNyasSBJyyZyA89dYft4cabDnm5hwgfjajupvVG7PHerRzz95yu?=
- =?iso-8859-1?Q?FNar3KLcURfZpg0FKU1Kuh8laQS3V2ZfVcWp4wiW+DLF/94UUpzPgwykQv?=
- =?iso-8859-1?Q?3822kTXOwbhnrApLB0jAAaobP/3TdIOMkkijm1bG8YOxrpNoYjmm+k+40a?=
- =?iso-8859-1?Q?XBJDQR5VI4SUfalsgzHc9Wla5y5FgnfzLF/uruvDKOeiIMyVI/ubqR5YPP?=
- =?iso-8859-1?Q?KW8yGB8z3GT1YKStSXmpMkT9Q2ECl56lUsQjBBkuGPg6nQ0jLctW2WG1iL?=
- =?iso-8859-1?Q?eTuZ+ClGrt0tZk0dSWB8yqrt7ihuYc49JHMgdVsBbmKUtPQACv0rENcBxE?=
- =?iso-8859-1?Q?2R8cxEsfLl3+tJ1XKbcpmFqOobvV/BvT68WCzRE5L/fWQ4pOM5g/2Og7Ou?=
- =?iso-8859-1?Q?K0sFwG0V2h8ZXCSv4SdCzVITLXtey4MIxX1SSBR0g+kArY9iMcMv4yaTvA?=
- =?iso-8859-1?Q?6knxcCt8Qt/tprDVI0N5OAZVEuoGKKjb4NK1AM/h9ms6+JwDs0dZzMwl5q?=
- =?iso-8859-1?Q?WceLSw4MVdJRQwo8QlKpcDVT1vSz6XaJnV3x19n1nde9M4C3T4jvkE02/5?=
- =?iso-8859-1?Q?uj8K6crBxVGdjZ6LC0HVkwyiYSV5SIC7Y/PlOv3g5G1XgAa7zeQ8DZ3wHm?=
- =?iso-8859-1?Q?tJzfS7bHW9ShFEkvJsO3Shx3R19MRANXcJOBDFTKu/WckhkBWiEV/VHJ3M?=
- =?iso-8859-1?Q?rquXiyEgapVWMsnY/yqDYrJcieyi7fLEqLfrPnJZt6lvmDOVL0JijihsCv?=
- =?iso-8859-1?Q?qcMJT/bQyQ/gI0MthJtWgJj/zksnLS901HozlBQq5owUME+STdjj7ViG50?=
- =?iso-8859-1?Q?4qPa2fvRCgapVXX8C5dVvlNnNcx8ABON3GN797Q43t/11bt/GqCQAuW00I?=
- =?iso-8859-1?Q?z3pNzzz0kNChG4Xs8kDdJHwIeDbMS7/5N6uOeC4UuqTDYfVI6ghMzs8uCk?=
- =?iso-8859-1?Q?GXF4RacktYduqM713X3XG72xoKZRGaRmeOeT+KmqVi3yj4O66UYm+CbYXk?=
- =?iso-8859-1?Q?J/XRIK2EWb/io=3D?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Uk1um9NzmTDYpWtZ8u9SzU9Y5/IznmX/vusa9tOa7sCYPmsJ89eb5Q5IZk?=
+ =?iso-8859-1?Q?K+6AjWpAliUZMaIt4y5eqkfKJJ4+m5rRGPmb48MlsvvQMIPhVIH1J4b+R3?=
+ =?iso-8859-1?Q?uQnbS/1E2s99GS2cC3WG9jCQ84YAw+OXkq1rVvH1VUUz94UwiDOpwB1ohY?=
+ =?iso-8859-1?Q?eREBk5zl7nfznUtlVyhjrsCYnOrU/ch8wJKj4Ts3p5j7hVqQpsx6gVp5Id?=
+ =?iso-8859-1?Q?nbaG/MLGF962Lys3pXtGIMH5nU7KMfd4PH+WbRytYKjdD5+hZxtfISdoRA?=
+ =?iso-8859-1?Q?zhxIQWOdNhjS58qkiRoqgrjOE4ulboR0IPns4yHqFhp6+KvAj42qJSkx8L?=
+ =?iso-8859-1?Q?eqWC+lwfWiw9fZn1umZ+zeCE81Njh7mqvk5Ta5yImLYtOfw096pSj4WR/5?=
+ =?iso-8859-1?Q?xjJWIeZy61sKfC8UJBsNEkBgyji+xmDI+Qmw5qsbQefjGKLGxjNsQtWwvC?=
+ =?iso-8859-1?Q?SuBrxd4e0Pmy562AxwncEVGh4/JGhfCHYiG+oAIaKKSm7hdS80CuM0n+Lb?=
+ =?iso-8859-1?Q?xLWZUZwdanqFOctgfv3Kt2XEzFli7bSoYC2TGlJ8iAICmDKanzGGkfPOXF?=
+ =?iso-8859-1?Q?hsCnXb/rAABz7deCl4Yfn0QA+FNGzsPLiJ3Or8NLCKQEDRsSJzqwykHNnP?=
+ =?iso-8859-1?Q?24dnfjg6gDIBsVeroEtVyOFm7zc0aYBe+6icKj/MgqE7vytgCAP4fKOf/i?=
+ =?iso-8859-1?Q?/IR1E8ae7S0csO9J9Gair59S9dIUX0pGA9iauzGkbOnaimfhqPPXlXNVHG?=
+ =?iso-8859-1?Q?hhfVhpvPstLgiN7djmTvoNthFaMK2vIIUjGM53zhRRX061NohGnNlGCBpv?=
+ =?iso-8859-1?Q?okawuSHCObEzzgNtZB7QGkn/LxndobC0UfjKZUeXuL+8zIERkYOiESuSHC?=
+ =?iso-8859-1?Q?mVMOppcSyownRse26XbyEe6CtvG0IzE+JHIe9VjH7Ch2icOvy06qxhpGAA?=
+ =?iso-8859-1?Q?A4KfcqKg8g/RuTBvocuS17GKKvLCzN7fi1d5/aK3n2PtXcwGLkAVV/n0me?=
+ =?iso-8859-1?Q?LIq7odcZH6mAlWWh2x4EGrxM46yA80ZrN40+FXuokaWczw1M71hsmFq5yV?=
+ =?iso-8859-1?Q?FApnMKyD225f2xxbj0mVW+Gjetm8h6A2qrWZloFOfHPxtNvZk3ZyhvbM1M?=
+ =?iso-8859-1?Q?/I+MlkYXiomr2Vr8yT/HMmvbQb1PhNUdwj+QgZ1a09/jUTRKs4Vq0HHLCK?=
+ =?iso-8859-1?Q?RxR2iOEF8ydd24/+PyaeaaAZhbPIUyueq3/QLzSsaPoEZD8ASbzf1oXmn1?=
+ =?iso-8859-1?Q?xQGbeWux7HKJd+e7nEW1P44HfBVgty1FS6msXHumqJXPtjGI5OGc/LeLNA?=
+ =?iso-8859-1?Q?qb3v4UfD7O9wseMFChOKELmwu7fqBbkOdiVvgiTRaMHCvN7jPGaecui86F?=
+ =?iso-8859-1?Q?C3Xdv9DP69c4fYrZXSwHETUSAaRcgBh+kyWRHMR98RskZeZD/37Mcz/4JO?=
+ =?iso-8859-1?Q?VLJ9EAHLGyXejEpU+m4T/ZSlM0HWh7rYpCtd9VtcpSd1n1bvpoSjsYs5ht?=
+ =?iso-8859-1?Q?iw15SLJrSgKVGvzu2Yd6QhFvSipvVT7CybGNaFnLvLg2TO0+GaqQ60acxz?=
+ =?iso-8859-1?Q?tveIQNN3WtuQ8MUDHb+vlzuCJZx9xIaMe85P5ctxax2RK/pPf077rzwIUs?=
+ =?iso-8859-1?Q?w3jNTnKyR58I8=3D?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: nebius.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: DU0P190MB1860.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3ffe015-d441-4e04-bdd9-08dbb29c6b97
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 07:55:09.2453
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1acaef6c-91e9-4e0d-90a1-08dbb29c6f21
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 07:55:15.1918
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 4eb23c52-f3a5-49bc-b555-0b061267a984
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fno9nJfDQrqQAVZhcaMnanGVG1hMQ2D2Fc+DJlaI7vjRUnwYXJ4TRHHWi1YDP0Al
+X-MS-Exchange-CrossTenant-userprincipalname: p3P2kjfGUyyP3F5sEc+FsRNrne79XP4BycDBWoowRaWzffu1QHnaqTTs7Baeq0TD
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAP190MB0840
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -117,41 +122,205 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch series is mostly based on Konstantin's patches which he had sent=
+After removing cgroup subsystem state could leak or live in background=0A=
+forever because it is pinned by some reference. For example memory cgroup=
 =0A=
-years ago [1].=0A=
+could be pinned by pages in cache or tmpfs.=0A=
 =0A=
-This functionality still seems very useful for debugging the difference=0A=
-between entities in cgroupfs and counters in /proc/cgroups, e.g.=0A=
-searching for files that have page cache which prevents destruction of memc=
-g.=0A=
+This patch adds common debugfs interface for listing basic state for each=
 =0A=
-I saw the comments in the original thread but didn't understand the Tejun's=
+controller. Controller could define callback for dumping own attributes.=0A=
 =0A=
-comment about usage of filehandle instead of ino. Also I saved the original=
+In file /sys/kernel/debug/cgroup/<controller> each line shows state in=0A=
+format: <common_attr>=3D<value>... [-- <controller_attr>=3D<value>... ]=0A=
 =0A=
-output format in debugfs with extra counters. We can rework this format in=
+Common attributes:=0A=
 =0A=
-the future but now it seems straightforward for just filtering through=0A=
-cmdline utilities.=0A=
+css - css pointer=0A=
+cgroup - cgroup pointer=0A=
+id - css id=0A=
+ino - cgroup inode=0A=
+flags - css flags=0A=
+refcnt - css atomic refcount, for online shows huge bias=0A=
+path - cgroup path=0A=
 =0A=
-[1] https://lore.kernel.org/lkml/153414348591.737150.14229960913953276515.s=
-tgit@buzz/=0A=
+This patch adds memcg attributes:=0A=
 =0A=
-Dmitry Yakunin (3):=0A=
-  cgroup: list all subsystem states in debugfs files=0A=
-  proc/kpagecgroup: report also inode numbers of offline cgroups=0A=
-  tools/mm/page-types: add flag for showing inodes of offline cgroups=0A=
+mem_id - 16-bit memory cgroup id=0A=
+memory - charged pages=0A=
+memsw - charged memory+swap for v1 and swap for v2=0A=
+kmem - charged kernel pages=0A=
+tcpmem - charged tcp pages=0A=
+shmem - shmem/tmpfs pages=0A=
 =0A=
- fs/proc/page.c              |  24 ++++++++-=0A=
+Link: https://lore.kernel.org/lkml/153414348591.737150.14229960913953276515=
+.stgit@buzz=0A=
+Suggested-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>=0A=
+Reviewed-by: Andrey Ryabinin <arbn@yandex-team.com>=0A=
+Signed-off-by: Dmitry Yakunin <zeil@nebius.com>=0A=
+---=0A=
  include/linux/cgroup-defs.h |   1 +=0A=
- include/linux/memcontrol.h  |   2 +-=0A=
  kernel/cgroup/cgroup.c      | 101 ++++++++++++++++++++++++++++++++++++=0A=
- mm/memcontrol.c             |  19 ++++++-=0A=
- mm/memory-failure.c         |   2 +-=0A=
- tools/mm/page-types.c       |  18 ++++++-=0A=
- 7 files changed, 159 insertions(+), 8 deletions(-)=0A=
+ mm/memcontrol.c             |  14 +++++=0A=
+ 3 files changed, 116 insertions(+)=0A=
 =0A=
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h=0A=
+index 8a0d5466c7be..810bd300cbee 100644=0A=
+--- a/include/linux/cgroup-defs.h=0A=
++++ b/include/linux/cgroup-defs.h=0A=
+@@ -673,6 +673,7 @@ struct cgroup_subsys {=0A=
+ 	void (*exit)(struct task_struct *task);=0A=
+ 	void (*release)(struct task_struct *task);=0A=
+ 	void (*bind)(struct cgroup_subsys_state *root_css);=0A=
++	void (*css_dump)(struct cgroup_subsys_state *css, struct seq_file *m);=0A=
+ =0A=
+ 	bool early_init:1;=0A=
+ =0A=
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c=0A=
+index 625d7483951c..fb9931ff7570 100644=0A=
+--- a/kernel/cgroup/cgroup.c=0A=
++++ b/kernel/cgroup/cgroup.c=0A=
+@@ -40,6 +40,7 @@=0A=
+ #include <linux/mount.h>=0A=
+ #include <linux/pagemap.h>=0A=
+ #include <linux/proc_fs.h>=0A=
++#include <linux/debugfs.h>=0A=
+ #include <linux/rcupdate.h>=0A=
+ #include <linux/sched.h>=0A=
+ #include <linux/sched/task.h>=0A=
+@@ -7068,3 +7069,103 @@ static int __init cgroup_sysfs_init(void)=0A=
+ subsys_initcall(cgroup_sysfs_init);=0A=
+ =0A=
+ #endif /* CONFIG_SYSFS */=0A=
++=0A=
++#ifdef CONFIG_DEBUG_FS=0A=
++void *css_debugfs_seqfile_start(struct seq_file *m, loff_t *pos)=0A=
++{=0A=
++	struct cgroup_subsys *ss =3D m->private;=0A=
++	struct cgroup_subsys_state *css;=0A=
++	int id =3D *pos;=0A=
++=0A=
++	rcu_read_lock();=0A=
++	css =3D idr_get_next(&ss->css_idr, &id);=0A=
++	*pos =3D id;=0A=
++	return css;=0A=
++}=0A=
++=0A=
++void *css_debugfs_seqfile_next(struct seq_file *m, void *v, loff_t *pos)=
+=0A=
++{=0A=
++	struct cgroup_subsys *ss =3D m->private;=0A=
++	struct cgroup_subsys_state *css;=0A=
++	int id =3D *pos + 1;=0A=
++=0A=
++	css =3D idr_get_next(&ss->css_idr, &id);=0A=
++	*pos =3D id;=0A=
++	return css;=0A=
++}=0A=
++=0A=
++void css_debugfs_seqfile_stop(struct seq_file *m, void *v)=0A=
++{=0A=
++	rcu_read_unlock();=0A=
++}=0A=
++=0A=
++int css_debugfs_seqfile_show(struct seq_file *m, void *v)=0A=
++{=0A=
++	struct cgroup_subsys *ss =3D m->private;=0A=
++	struct cgroup_subsys_state *css =3D v;=0A=
++	/* data is NULL for root cgroup_subsys_state */=0A=
++	struct percpu_ref_data *data =3D css->refcnt.data;=0A=
++	size_t buflen;=0A=
++	char *buf;=0A=
++	int len;=0A=
++=0A=
++	seq_printf(m, "css=3D%pK cgroup=3D%pK id=3D%d ino=3D%lu flags=3D%#x refcn=
+t=3D%lu path=3D",=0A=
++		   css, css->cgroup, css->id, cgroup_ino(css->cgroup),=0A=
++		   css->flags, data ? atomic_long_read(&data->count) : 0);=0A=
++=0A=
++	buflen =3D seq_get_buf(m, &buf);=0A=
++	if (buf) {=0A=
++		len =3D cgroup_path(css->cgroup, buf, buflen);=0A=
++		seq_commit(m, len < buflen ? len : -1);=0A=
++	}=0A=
++=0A=
++	if (ss->css_dump) {=0A=
++		seq_puts(m, " -- ");=0A=
++		ss->css_dump(css, m);=0A=
++	}=0A=
++=0A=
++	seq_putc(m, '\n');=0A=
++	return 0;=0A=
++}=0A=
++=0A=
++static const struct seq_operations css_debug_seq_ops =3D {=0A=
++	.start =3D css_debugfs_seqfile_start,=0A=
++	.next =3D css_debugfs_seqfile_next,=0A=
++	.stop =3D css_debugfs_seqfile_stop,=0A=
++	.show =3D css_debugfs_seqfile_show,=0A=
++};=0A=
++=0A=
++static int css_debugfs_open(struct inode *inode, struct file *file)=0A=
++{=0A=
++	int ret =3D seq_open(file, &css_debug_seq_ops);=0A=
++	struct seq_file *m =3D file->private_data;=0A=
++=0A=
++	if (!ret)=0A=
++		m->private =3D inode->i_private;=0A=
++	return ret;=0A=
++}=0A=
++=0A=
++static const struct file_operations css_debugfs_fops =3D {=0A=
++	.open =3D css_debugfs_open,=0A=
++	.read =3D seq_read,=0A=
++	.llseek =3D seq_lseek,=0A=
++	.release =3D seq_release,=0A=
++};=0A=
++=0A=
++static int __init css_debugfs_init(void)=0A=
++{=0A=
++	struct cgroup_subsys *ss;=0A=
++	struct dentry *dir;=0A=
++	int ssid;=0A=
++=0A=
++	dir =3D debugfs_create_dir("cgroup", NULL);=0A=
++	if (dir) {=0A=
++		for_each_subsys(ss, ssid)=0A=
++			debugfs_create_file(ss->name, 0644, dir, ss,=0A=
++					    &css_debugfs_fops);=0A=
++	}=0A=
++=0A=
++	return 0;=0A=
++}=0A=
++late_initcall(css_debugfs_init);=0A=
++#endif /* CONFIG_DEBUG_FS */=0A=
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c=0A=
+index 4b27e245a055..7b3d4a10ac63 100644=0A=
+--- a/mm/memcontrol.c=0A=
++++ b/mm/memcontrol.c=0A=
+@@ -5654,6 +5654,20 @@ static void mem_cgroup_css_rstat_flush(struct cgroup=
+_subsys_state *css, int cpu)=0A=
+ 	}=0A=
+ }=0A=
+ =0A=
++static void mem_cgroup_css_dump(struct cgroup_subsys_state *css,=0A=
++				struct seq_file *m)=0A=
++{=0A=
++	struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);=0A=
++=0A=
++	seq_printf(m, "mem_id=3D%u memory=3D%lu memsw=3D%lu kmem=3D%lu tcpmem=3D%=
+lu shmem=3D%lu",=0A=
++		   mem_cgroup_id(memcg),=0A=
++		   page_counter_read(&memcg->memory),=0A=
++		   page_counter_read(&memcg->memsw),=0A=
++		   page_counter_read(&memcg->kmem),=0A=
++		   page_counter_read(&memcg->tcpmem),=0A=
++		   memcg_page_state(memcg, NR_SHMEM));=0A=
++}=0A=
++=0A=
+ #ifdef CONFIG_MMU=0A=
+ /* Handlers for move charge at task migration. */=0A=
+ static int mem_cgroup_do_precharge(unsigned long count)=0A=
 -- =0A=
 2.25.1=0A=
 =0A=
