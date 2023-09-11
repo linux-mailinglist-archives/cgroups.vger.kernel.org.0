@@ -2,125 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F32C879B795
-	for <lists+cgroups@lfdr.de>; Tue, 12 Sep 2023 02:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C30E79BD1C
+	for <lists+cgroups@lfdr.de>; Tue, 12 Sep 2023 02:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbjIKW0D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Sep 2023 18:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S1377492AbjIKW0g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Sep 2023 18:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244312AbjIKUBn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Sep 2023 16:01:43 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D85C5
-        for <cgroups@vger.kernel.org>; Mon, 11 Sep 2023 13:01:39 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31f6ddb3047so4710928f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 11 Sep 2023 13:01:39 -0700 (PDT)
+        with ESMTP id S244417AbjIKU1t (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Sep 2023 16:27:49 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D25185;
+        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf7423ef3eso35417155ad.3;
+        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694462497; x=1695067297; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rc/ITscuXzrOZNzjOX81ClkWsxPRiA/63di+UZB/Fss=;
-        b=loVr5hheOIVu6QcpbW91kAq1raiTl38ExhJf72I1lu/K0nWWQ469avMmQXzMhv6z5A
-         mB4jLNCPgCkONX9xh9AQooa160FrsBB22SHjqDlVOx3DqEaYw/qVA1bNDTgLvtajW8dR
-         MYhpJ+/ltVZd5yes+IDWvg+AWy0pq7lrAKoMWgifahmI4Ocep8YkkamDSR//fi3FhFYa
-         k6rV6eQwg8/jJzqGhsWUebGgxg4+mYCDHKGws/FSVH3jFb+3bs+yxYdFdWp/2AJ5lJjr
-         qBVmQjJh1p2qWInGgN5+OQ3oT56vZjcczn8X9xKQfLhr5UywVbcT55CKtDccOvRbFFKi
-         hM7A==
+        d=gmail.com; s=20221208; t=1694464064; x=1695068864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SNnl2EUxq2zaX99R7tX9+iE5LFUxTKUThPqOegYIa5s=;
+        b=i/kVnY717xMDqCNn3WYnViiOjjcMpjRZ3YDH8aw7uIBl6563xM8YlJRH0UUKIkzMnh
+         Oy+VVJSeiQF17nUJj0keyWSm0EKkS064TuM65gKaN7cKXk+eDxX/f/PE9Mq659URYrHe
+         xEkgSLA+Tf51xJozMHikNt7u5vqNY0lfOICQhaWYHi88CvK60oWo1gb1ggG49IBsOrsr
+         I97r7rWLJyrFw3VLiX6JAeIb06R0U6ZHAoeLgqgUXnnBKcVOSzk6a/eFE9JBnEkHhCIm
+         Ag6sSmOSPB8eLx6IT2BYVgPBkXm6hcCKZiUdcyOdAfD8z8xzunnGYF+heAxUmZMeWs4d
+         Xy1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694462497; x=1695067297;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694464064; x=1695068864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rc/ITscuXzrOZNzjOX81ClkWsxPRiA/63di+UZB/Fss=;
-        b=IEO0IdrxGEEJAwmfD7uPsLZmrF1981i4B0nkpNU4pFz6iEU8UpV3i501xZ7ZzqlkqF
-         Fz/AnBXYITUZP5fmM1gUzPNCcgldjusWhU7UKYPPiHqXyMmpOg6Hj5hwWiTxFMu5x+0T
-         kKA9FBvAJ94I1Nak7kJhg7LMwGoO1pDXtU4V4XrMBLWq86B6LUUh7pBUSQReZoQDHFXV
-         73VUSrtqmHPv6IrJTmgnkrzX2B7Xiy2QRr8GnP9UwVJtAiq8sP7siDm1fEDDkSc6k3XV
-         WQOT+ufvJ1A7ds9CMyx//dZVYeh0wAs0QbRoOTBoNt1fE3OBi4g+xxL5YlZMCL5lcrEm
-         LkWA==
-X-Gm-Message-State: AOJu0YwxXnh90ZIaX15J0ynKOT2Uw0SgMSm+/MTTJO+WIJALvva/mno5
-        cXH8NBTIpuKjm54UH0Sg5UCOMw+rOeGrMOlIH0m2Ag==
-X-Google-Smtp-Source: AGHT+IFl+KdEdEZPM6dgoOAIbUh01xAe49DOxDPyclO9MjoDMPy6oI+PGBUbBzXjIZIb0Pzdpfqm23roWvQdVndSEEw=
-X-Received: by 2002:a5d:4f8c:0:b0:314:3e77:f210 with SMTP id
- d12-20020a5d4f8c000000b003143e77f210mr8531185wru.59.1694462497487; Mon, 11
- Sep 2023 13:01:37 -0700 (PDT)
+        bh=SNnl2EUxq2zaX99R7tX9+iE5LFUxTKUThPqOegYIa5s=;
+        b=GJr1bVNln4mEQkuKMtgrD9dpt5hvsd82mQEf2g7TtbTiiZStZYF1nQEU8L4Xg2AdNU
+         6uecaGWKNVWf8Um07G7tGEQQdr+4S3v5WYGJ3YfVaP+TxEUMJST4cw/0IwWRQ40wnXyX
+         cd9Ro6h5UCZ/Q9s0iyMmluu1ARNM4CWD15ukaUGraFnT2UpNpnMkuW6L8Y2YneZxDYwT
+         jiTXXyLp5GtFMkR76nd2LT1KCg1QRKfgqtLGHEYXYsz5OBN3PqU6z4Yg03fV6Ex0P+wS
+         i0GJZEIYGS0IRYo5gjLI1lTXCl9P98UQsZ15/o5DqIXQeP0/KDTbmXJOZtGbossxSuJS
+         TjSw==
+X-Gm-Message-State: AOJu0YymsTAogienNJIkhaQYwlx0FEjs5X0yIoNrLuTKjy45U7ib059O
+        k+ptkZy1D7vIwPYpjyEWFapA8mWirVFdiA==
+X-Google-Smtp-Source: AGHT+IGngHVyRdmTKS2TRrqK78EOerqzQ008OJjN7s8aS/kznDTkl0Gc09j8mylpOFyQkkxZWS+CFA==
+X-Received: by 2002:a17:903:2302:b0:1bc:2c58:ad97 with SMTP id d2-20020a170903230200b001bc2c58ad97mr10290139plh.22.1694464064016;
+        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902eb0c00b001bf574dd1fesm6835997plb.141.2023.09.11.13.27.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 13:27:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 11 Sep 2023 10:27:42 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, yosryahmed@google.com, cgroups@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/5] cgroup: Enable
+ task_under_cgroup_hierarchy() on cgroup1
+Message-ID: <ZP94Pqiz6PtUy_Ww@mtj.duckdns.org>
+References: <20230903142800.3870-1-laoar.shao@gmail.com>
+ <20230903142800.3870-2-laoar.shao@gmail.com>
+ <ZPjdc3IwX9gjXk_F@slm.duckdns.org>
+ <CALOAHbA7gDFh5Bsr_99-rBa3h9dZw6ntF_+RxTjfK3yQXpYEFA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-5-yosryahmed@google.com> <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
- <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com>
- <ZP8SDdjut9VEVpps@dhcp22.suse.cz> <CAAPL-u8NndkB2zHRtF8pVBSTsz854YmUbx62G7bpw6BMJiLaiQ@mail.gmail.com>
- <ZP9rtiRwRv2bQvde@dhcp22.suse.cz>
-In-Reply-To: <ZP9rtiRwRv2bQvde@dhcp22.suse.cz>
-From:   Wei Xu <weixugc@google.com>
-Date:   Mon, 11 Sep 2023 13:01:25 -0700
-Message-ID: <CAAPL-u9XwMcrqVRu871tGNKa3LKmJSy9pZQ7A98uDbG6ACzMxQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbA7gDFh5Bsr_99-rBa3h9dZw6ntF_+RxTjfK3yQXpYEFA@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 12:34=E2=80=AFPM Michal Hocko <mhocko@suse.com> wro=
-te:
->
-> On Mon 11-09-23 12:15:24, Wei Xu wrote:
-> > On Mon, Sep 11, 2023 at 6:11=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Thu 07-09-23 17:52:12, Wei Xu wrote:
-> > > [...]
-> > > > I tested this patch on a machine with 384 CPUs using a microbenchma=
-rk
-> > > > that spawns 10K threads, each reading its memory.stat every 100
-> > > > milliseconds.
-> > >
-> > > This is rather extreme case but I wouldn't call it utterly insane
-> > > though.
-> > >
-> > > > Most of memory.stat reads take 5ms-10ms in kernel, with
-> > > > ~5% reads even exceeding 1 second.
-> > >
-> > > Just curious, what would numbers look like if the mutex is removed an=
-d
-> > > those threads would be condending on the existing spinlock with lock
-> > > dropping in place and removed. Would you be willing to give it a shot=
-?
-> >
-> > Without the mutex and with the spinlock only, the common read latency
-> > of memory.stat is still 5ms-10ms in kernel. There are very few reads
-> > (<0.003%) going above 10ms and none more than 1 second.
->
-> Is this with the existing spinlock dropping and same 10k potentially
-> contending readers?
+On Thu, Sep 07, 2023 at 11:05:07AM +0800, Yafang Shao wrote:
+> The fd-based cgroup interface plays a crucial role in BPF programs,
+> particularly in components such as cgroup_iter, bpf_cgrp_storage, and
+> cgroup_array maps, as well as in the attachment and detachment of
+> cgroups.
 
-Yes, it is the same test (10K contending readers). The kernel change
-is to remove stats_user_flush_mutex from mem_cgroup_user_flush_stats()
-so that the concurrent mem_cgroup_user_flush_stats() requests directly
-contend on cgroup_rstat_lock in cgroup_rstat_flush().
+Yeah, I know they're used. It's just that they are inferior identifiers from
+cgroup's POV as they are ephemeral, can't easily be transferred across
+process boundaries or persisted beyond the lifetime of the fd-owing process
+or the cgroups which are being pointed to.
 
-> --
-> Michal Hocko
-> SUSE Labs
+Thanks.
+
+-- 
+tejun
