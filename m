@@ -2,298 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A2679C196
-	for <lists+cgroups@lfdr.de>; Tue, 12 Sep 2023 03:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6E079C2B6
+	for <lists+cgroups@lfdr.de>; Tue, 12 Sep 2023 04:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbjILBWr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Sep 2023 21:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
+        id S235801AbjILCZR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Sep 2023 22:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235197AbjILBWb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Sep 2023 21:22:31 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71069D95B
-        for <cgroups@vger.kernel.org>; Mon, 11 Sep 2023 15:39:49 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-502934c88b7so7911187e87.2
-        for <cgroups@vger.kernel.org>; Mon, 11 Sep 2023 15:39:49 -0700 (PDT)
+        with ESMTP id S236447AbjILCZG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Sep 2023 22:25:06 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EB3116B0B;
+        Mon, 11 Sep 2023 18:49:12 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c39a4f14bcso22387805ad.3;
+        Mon, 11 Sep 2023 18:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694471897; x=1695076697; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694483352; x=1695088152; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LEy15wwFS0JVFa3fWkOLjP4htEcsy3rcKHhw++IpAZ4=;
-        b=X5hWE/FcCAozwAMoRpXRAi5ohnTAkFY12viGMekAxWizMH8YHyNTdzBxVI19sCcFQz
-         Q5eblAa358HK1QckYVbRE8AtIN3t08UELW08joIAxZXI0KffGjVXVmU2XqBw5MCAobnX
-         Uo9T6t9FRyFgifPpMDif81pxwlRQVHBE53KFFjHFwNWiz89NX+xHJkKdlONs/okMbdDU
-         3jRNN+pQWRZK1y50jm/BSxTgxh4Z63O/shSMXE5FpU5o5doIeCd88V7hiItgaY9YwzJd
-         wFGUpKv/Uz5nfHwIf2BptS5UYMkutIwuJx6qg5BuE9WtnWTxuy2J0pjXOfsJN4afpL+E
-         dwWQ==
+        bh=4C6fCAbfQ04p8mFbrpL2ZAAFU2CUe5VETqkFVwtItV8=;
+        b=mQgVeNINuE+EX8YyL7/+XZvVpEbnTI6QKJZVbshrNIr330wsnRKU0p+iMqcdprnJCb
+         gcaznEY8HYc1K6p97adQXiTMuZhHSVm73GsfHqaoLfU1r2keKhOOjZeSYa2KJifevH8V
+         cCiWRJ/W4kURpU6TUoDCah2re1zYZkSxZHKQORcXWMJfOMg1XPSu1I8n9Kf4TjCeohkM
+         zFCiI8UvaIztZpX42dY1swbmoI1OJ51NA4PHkz65F1NP6WpPZhObwUXe3Ik5frnptnHY
+         Fh7mLNv38fUZolPANf7OUpWr89lyKImnyruYj0KgmoVQ0bVWrqKfxaKtFxZmuYbfXeL+
+         tEQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694471897; x=1695076697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LEy15wwFS0JVFa3fWkOLjP4htEcsy3rcKHhw++IpAZ4=;
-        b=co3zlrWtiNs6G+bzDQ2FuLY6G6H3Td+UKhNrgIGvavu1Me5wyr8Br+/tqitZvjv1PC
-         6e2QZQhv5SqY8twbKR9i7fjSbSHO5qVcarScbe4p31ciuvrDvciuyTpDS0xKpLAeR7nC
-         jhHD7y7bpZnG78oXG86SuJFV+jVDhrVsRsdhII1V/pDqY/jdixiT299e0OZDqpaENyr9
-         TH9HAvk2pUsjjkBS65pGT4BLYN+pCMtRsDzDJxEQJhvB0+lFzcksuPXVEf973Bztn7gY
-         xdvPF2RXYr9knyg5tAuE1LM9JoEsNXunidE9cCl5wchFX008KhcqW9SMk+IsnwqgJBtw
-         5nyw==
-X-Gm-Message-State: AOJu0YxzX8nr0K8lq7lbvP6QvG3dZ6Ztl4YEMx8CaxRavcMHlNoQwUUf
-        sCKqGmMNGZz5qChw59E3V3A3CWKweimJ5wEyBCTeki7+NhCaHyS6QbIEW155
-X-Google-Smtp-Source: AGHT+IEEhJ2Oc9vOdd9yQHK2XjvJLQAIQ5mVHzAHMG71Zg+fdF4XuEjhFW8bg7PI+LY13J/6L+07IuGYjk1H1eIh+eI=
-X-Received: by 2002:a05:6512:1094:b0:500:7c51:4684 with SMTP id
- j20-20020a056512109400b005007c514684mr11645309lfg.56.1694470627685; Mon, 11
- Sep 2023 15:17:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694483352; x=1695088152;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4C6fCAbfQ04p8mFbrpL2ZAAFU2CUe5VETqkFVwtItV8=;
+        b=dwQYiTje095t4HRp27zFw9LuxGVhbr2AA+iBkeOK+a/JUcOf+UuUkcWySMgtAZeSiE
+         B2m3pD1r9b8HabZGctviSYKw+f+vOgROXcjccQCbw4tSSuQrpWGqLiObmm32iWxYW8TO
+         cuKkiOptB8u/qY6KPk7VwoiMUz1GwV72HYmPowNXmAetz1lnxf/XLGGKloRDIb1asHbE
+         /bmp5JuRbKyoS/FEdbyWuBiU3kzG1QOZzfMQqr979Cixfng66NJl/VfJN6CjppahIo4H
+         n2JMEnlGRQ4xDm2a7dpsN+HiMq86NhHCZoxDjTZweyqYGRhYENzNXGOn1a3SVHvtQaIz
+         werQ==
+X-Gm-Message-State: AOJu0Yz9wPeCTFniCw63tImjLRmClQ1gg6SJuOBxI/JlR5ZDF6pgM6a9
+        W8YDUkH9FueF1b/Gsua2OByxwnxsJXVJpg==
+X-Google-Smtp-Source: AGHT+IGVYjG3N6xVMjxqCoTiiJoeOMMyzd6MFy06jlIH1Xgq48nNfB+PxN+XfZvjb+AdQK1tZEGjpQ==
+X-Received: by 2002:a17:902:db11:b0:1bc:61d6:5fcc with SMTP id m17-20020a170902db1100b001bc61d65fccmr14277093plx.51.1694483352171;
+        Mon, 11 Sep 2023 18:49:12 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id g22-20020a170902869600b001bdc3768ca5sm7138187plo.254.2023.09.11.18.49.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 18:49:11 -0700 (PDT)
+Message-ID: <6b0447d0-30c7-4432-a4f3-97e2d27e9e3b@gmail.com>
+Date:   Tue, 12 Sep 2023 09:49:04 +0800
 MIME-Version: 1.0
-References: <20230911075437.74027-1-zeil@nebius.com> <20230911075437.74027-2-zeil@nebius.com>
-In-Reply-To: <20230911075437.74027-2-zeil@nebius.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 11 Sep 2023 15:16:28 -0700
-Message-ID: <CAJD7tkYM0JBukPMWCWtx-nrzGgPw4Y6m1p2_Ynb9fzSgsS0igg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] cgroup: list all subsystem states in debugfs files
-To:     "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>
-Cc:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        NB-Core Team <NB-CoreTeam@nebius.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Andrey Ryabinin <arbn@yandex-team.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: memcg: add THP swap out info for anonymous reclaim
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230909155242.22767-1-vernhao@tencent.com>
+ <20230911160824.GB103342@cmpxchg.org>
+From:   Vern Hao <haoxing990@gmail.com>
+In-Reply-To: <20230911160824.GB103342@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 12:55=E2=80=AFAM Yakunin, Dmitry (Nebius)
-<zeil@nebius.com> wrote:
->
-> After removing cgroup subsystem state could leak or live in background
-> forever because it is pinned by some reference. For example memory cgroup
-> could be pinned by pages in cache or tmpfs.
->
-> This patch adds common debugfs interface for listing basic state for each
-> controller. Controller could define callback for dumping own attributes.
->
-> In file /sys/kernel/debug/cgroup/<controller> each line shows state in
-> format: <common_attr>=3D<value>... [-- <controller_attr>=3D<value>... ]
->
-> Common attributes:
->
-> css - css pointer
-> cgroup - cgroup pointer
-> id - css id
-> ino - cgroup inode
-> flags - css flags
-> refcnt - css atomic refcount, for online shows huge bias
-> path - cgroup path
->
-> This patch adds memcg attributes:
->
-> mem_id - 16-bit memory cgroup id
-> memory - charged pages
-> memsw - charged memory+swap for v1 and swap for v2
-> kmem - charged kernel pages
-> tcpmem - charged tcp pages
-> shmem - shmem/tmpfs pages
->
-> Link: https://lore.kernel.org/lkml/153414348591.737150.142299609139532765=
-15.stgit@buzz
-> Suggested-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Reviewed-by: Andrey Ryabinin <arbn@yandex-team.com>
-> Signed-off-by: Dmitry Yakunin <zeil@nebius.com>
 
-FWIW, I was just recently working on a debugfs directly that exposes a
-list of all zombie memcgs as well as the "memory.stat" output for all
-of them.
+在 2023/9/12 00:08, Johannes Weiner 写道:
+> On Sat, Sep 09, 2023 at 11:52:41PM +0800, Xin Hao wrote:
+>> At present, we support per-memcg reclaim strategy, however we do not
+>> know the number of transparent huge pages being reclaimed, as we know
+>> the transparent huge pages need to be splited before reclaim them, and
+>> they will bring some performance bottleneck effect. for example, when
+>> two memcg (A & B) are doing reclaim for anonymous pages at same time,
+>> and 'A' memcg is reclaiming a large number of transparent huge pages, we
+>> can better analyze that the performance bottleneck will be caused by 'A'
+>> memcg.  therefore, in order to better analyze such problems, there add
+>> THP swap out info for per-memcg.
+>>
+>> Signed-off-by: Xin Hao <vernhao@tencent.com>
+> That sounds reasonable. A few comments below:
+>
+>> @@ -4131,6 +4133,10 @@ static const unsigned int memcg1_events[] = {
+>>   	PGPGOUT,
+>>   	PGFAULT,
+>>   	PGMAJFAULT,
+>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> +	THP_SWPOUT,
+>> +	THP_SWPOUT_FALLBACK,
+>> +#endif
+>>   };
+> Cgroup1 is maintenance-only, please drop this hunk.
+Will remove it next version thanks.
+>
+>>   static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>> diff --git a/mm/page_io.c b/mm/page_io.c
+>> index fe4c21af23f2..008ada2e024a 100644
+>> --- a/mm/page_io.c
+>> +++ b/mm/page_io.c
+>> @@ -208,8 +208,10 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+>>   static inline void count_swpout_vm_event(struct folio *folio)
+>>   {
+>>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> -	if (unlikely(folio_test_pmd_mappable(folio)))
+>> +	if (unlikely(folio_test_pmd_mappable(folio))) {
+>> +		count_memcg_events(folio_memcg(folio), THP_SWPOUT, 1);
+> count_memcg_folio_events()
+Done.
+>
+>>   		count_vm_event(THP_SWPOUT);
+>> +	}
+>>   #endif
+>>   	count_vm_events(PSWPOUT, folio_nr_pages(folio));
+>>   }
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index ea57a43ebd6b..29a82b72345a 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1928,6 +1928,8 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+>>   								folio_list))
+>>   						goto activate_locked;
+>>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> +					count_memcg_events(folio_memcg(folio),
+>> +							   THP_SWPOUT_FALLBACK, 1);
+> count_memcg_folio_events()
 
-This entails a file at /sys/kernel/debug/zombie_memcgs/all that
-contains a list of zombie memcgs (with indentation to reflect the
-hierarchy) and an id for each of them.
+Done.
 
-This id can be used to index per-memcg directories at
-/sys/kernel/debug/zombie_memcgs/<id>/, which include debug files. The
-only one we have so far is
-/sys/kernel/debug/zombie_memcgs/<id>/memory.stat.
+thanks.
 
-If there is interest in this, I can share more information.
-
-> ---
->  include/linux/cgroup-defs.h |   1 +
->  kernel/cgroup/cgroup.c      | 101 ++++++++++++++++++++++++++++++++++++
->  mm/memcontrol.c             |  14 +++++
->  3 files changed, 116 insertions(+)
->
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index 8a0d5466c7be..810bd300cbee 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -673,6 +673,7 @@ struct cgroup_subsys {
->         void (*exit)(struct task_struct *task);
->         void (*release)(struct task_struct *task);
->         void (*bind)(struct cgroup_subsys_state *root_css);
-> +       void (*css_dump)(struct cgroup_subsys_state *css, struct seq_file=
- *m);
->
->         bool early_init:1;
->
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 625d7483951c..fb9931ff7570 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -40,6 +40,7 @@
->  #include <linux/mount.h>
->  #include <linux/pagemap.h>
->  #include <linux/proc_fs.h>
-> +#include <linux/debugfs.h>
->  #include <linux/rcupdate.h>
->  #include <linux/sched.h>
->  #include <linux/sched/task.h>
-> @@ -7068,3 +7069,103 @@ static int __init cgroup_sysfs_init(void)
->  subsys_initcall(cgroup_sysfs_init);
->
->  #endif /* CONFIG_SYSFS */
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +void *css_debugfs_seqfile_start(struct seq_file *m, loff_t *pos)
-> +{
-> +       struct cgroup_subsys *ss =3D m->private;
-> +       struct cgroup_subsys_state *css;
-> +       int id =3D *pos;
-> +
-> +       rcu_read_lock();
-> +       css =3D idr_get_next(&ss->css_idr, &id);
-> +       *pos =3D id;
-> +       return css;
-> +}
-> +
-> +void *css_debugfs_seqfile_next(struct seq_file *m, void *v, loff_t *pos)
-> +{
-> +       struct cgroup_subsys *ss =3D m->private;
-> +       struct cgroup_subsys_state *css;
-> +       int id =3D *pos + 1;
-> +
-> +       css =3D idr_get_next(&ss->css_idr, &id);
-> +       *pos =3D id;
-> +       return css;
-> +}
-> +
-> +void css_debugfs_seqfile_stop(struct seq_file *m, void *v)
-> +{
-> +       rcu_read_unlock();
-> +}
-> +
-> +int css_debugfs_seqfile_show(struct seq_file *m, void *v)
-> +{
-> +       struct cgroup_subsys *ss =3D m->private;
-> +       struct cgroup_subsys_state *css =3D v;
-> +       /* data is NULL for root cgroup_subsys_state */
-> +       struct percpu_ref_data *data =3D css->refcnt.data;
-> +       size_t buflen;
-> +       char *buf;
-> +       int len;
-> +
-> +       seq_printf(m, "css=3D%pK cgroup=3D%pK id=3D%d ino=3D%lu flags=3D%=
-#x refcnt=3D%lu path=3D",
-> +                  css, css->cgroup, css->id, cgroup_ino(css->cgroup),
-> +                  css->flags, data ? atomic_long_read(&data->count) : 0)=
-;
-> +
-> +       buflen =3D seq_get_buf(m, &buf);
-> +       if (buf) {
-> +               len =3D cgroup_path(css->cgroup, buf, buflen);
-> +               seq_commit(m, len < buflen ? len : -1);
-> +       }
-> +
-> +       if (ss->css_dump) {
-> +               seq_puts(m, " -- ");
-> +               ss->css_dump(css, m);
-> +       }
-> +
-> +       seq_putc(m, '\n');
-> +       return 0;
-> +}
-> +
-> +static const struct seq_operations css_debug_seq_ops =3D {
-> +       .start =3D css_debugfs_seqfile_start,
-> +       .next =3D css_debugfs_seqfile_next,
-> +       .stop =3D css_debugfs_seqfile_stop,
-> +       .show =3D css_debugfs_seqfile_show,
-> +};
-> +
-> +static int css_debugfs_open(struct inode *inode, struct file *file)
-> +{
-> +       int ret =3D seq_open(file, &css_debug_seq_ops);
-> +       struct seq_file *m =3D file->private_data;
-> +
-> +       if (!ret)
-> +               m->private =3D inode->i_private;
-> +       return ret;
-> +}
-> +
-> +static const struct file_operations css_debugfs_fops =3D {
-> +       .open =3D css_debugfs_open,
-> +       .read =3D seq_read,
-> +       .llseek =3D seq_lseek,
-> +       .release =3D seq_release,
-> +};
-> +
-> +static int __init css_debugfs_init(void)
-> +{
-> +       struct cgroup_subsys *ss;
-> +       struct dentry *dir;
-> +       int ssid;
-> +
-> +       dir =3D debugfs_create_dir("cgroup", NULL);
-> +       if (dir) {
-> +               for_each_subsys(ss, ssid)
-> +                       debugfs_create_file(ss->name, 0644, dir, ss,
-> +                                           &css_debugfs_fops);
-> +       }
-> +
-> +       return 0;
-> +}
-> +late_initcall(css_debugfs_init);
-> +#endif /* CONFIG_DEBUG_FS */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 4b27e245a055..7b3d4a10ac63 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5654,6 +5654,20 @@ static void mem_cgroup_css_rstat_flush(struct cgro=
-up_subsys_state *css, int cpu)
->         }
->  }
->
-> +static void mem_cgroup_css_dump(struct cgroup_subsys_state *css,
-> +                               struct seq_file *m)
-> +{
-> +       struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
-> +
-> +       seq_printf(m, "mem_id=3D%u memory=3D%lu memsw=3D%lu kmem=3D%lu tc=
-pmem=3D%lu shmem=3D%lu",
-> +                  mem_cgroup_id(memcg),
-> +                  page_counter_read(&memcg->memory),
-> +                  page_counter_read(&memcg->memsw),
-> +                  page_counter_read(&memcg->kmem),
-> +                  page_counter_read(&memcg->tcpmem),
-> +                  memcg_page_state(memcg, NR_SHMEM));
-> +}
-> +
->  #ifdef CONFIG_MMU
->  /* Handlers for move charge at task migration. */
->  static int mem_cgroup_do_precharge(unsigned long count)
-> --
-> 2.25.1
->
->
