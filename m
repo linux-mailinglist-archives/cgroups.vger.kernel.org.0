@@ -2,54 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C56A79F4B8
-	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 00:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB35879F575
+	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 01:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbjIMWIM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Sep 2023 18:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        id S233095AbjIMX1o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Sep 2023 19:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbjIMWIG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 18:08:06 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56E019A8
-        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 15:08:00 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bf0decd032so202771a34.0
-        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 15:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694642880; x=1695247680; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rfjhWaT9cZxBP5V6PIM2mr46ku8Oc99YcLOA60af1KU=;
-        b=Wi1LCj86ApS9gpVrE9naZ3qyr3fYpgNUpZFYmAIAApZONcdoNpurdU6KjHPdWqqylw
-         zVtzPHyIJwJKksnoF71UPDPQN8Zibhn6mMHHna6ZOqxWBnUBsojK8KYqxDGZ/drjWr0O
-         YtkBgcUwAtsa65E2n39fFUZDBcixbSlgv1o6Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694642880; x=1695247680;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rfjhWaT9cZxBP5V6PIM2mr46ku8Oc99YcLOA60af1KU=;
-        b=ipflKQnQmdoqcBvyH8cxzvmTJsZ7Gh1pOu7hFkiYW9OzBLeKEpcbVQncE3BqDG5EWb
-         y1wt0adWFh0lgSTDPPQ5HnjEutyF/ib2GPkU6yUdrJ4eWJuqrVbmT79xB5TikrOtpYwp
-         lhGcStG4+ZGm40iQo+N0FhF7d5st6c5OU/5h5NlcEI8hJvXBnuqAs3Duf/on9PdbjW1M
-         dgL+IOO0VFQoM9aZ5CiuoHEZDoj+fvUAHJ4Juk/NxJWos5ekR2/PKCuT850fhxhRKfCI
-         PFNl+aP9SFb80bbKwvxgKZmBBXxOFZECwm2w5NYQQZ6pOS5joTaWiIlJy12WXnNuLeCl
-         Uqew==
-X-Gm-Message-State: AOJu0YwkLqYiNIizrbwB6AnzHH1SC+Psm6ml1SpzUYpQyrNaEMZ2Y0Pg
-        MTilf+1aTWJcZD1OUqUOo6L+VhYGhEvYGhkWoXY=
-X-Google-Smtp-Source: AGHT+IEZE3h3wTLMmi2pZgsbif5OpA7FowTFFztJjELuZ5utKxFD22kWo++unfbUiL/8y4QCIePvbQ==
-X-Received: by 2002:a05:6358:4327:b0:132:d32d:d929 with SMTP id r39-20020a056358432700b00132d32dd929mr4380721rwc.20.1694642880172;
-        Wed, 13 Sep 2023 15:08:00 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m30-20020a637d5e000000b0057411f9a516sm19425pgn.7.2023.09.13.15.07.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 15:07:59 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 15:07:59 -0700
-From:   Kees Cook <keescook@chromium.org>
+        with ESMTP id S231515AbjIMX1o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 19:27:44 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEDC1BCB;
+        Wed, 13 Sep 2023 16:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pRKVep8tw/s8sIQ3F3dLcxRmfmkpqBcJ/0UUTodWZc8=; b=FSfwnimiuTJG9Nm4GWjPkE+/Wl
+        tdV1zvdS6cLMU1eSiUbY8aNFgyY7VQe+ltAjMNDv/dFOBn2zXb2GJmoM0Q+HqNaldcCxZJd/HHbLS
+        BS2Utl/AQSnkp62Hq1Ba8VSl5CAjDs4/vWgUYs7tXto9ItzMznllk1eotmCw7YFN4Yb//dDV7CVvc
+        54SMFgAY1WobfE2n6xKuFEMcX8ZzeTOuD9dnL52KitAk8ad/sVhORTWorrkMhkBDt+Q0w1pZFo2rk
+        hA7/Xa6WGJW4FOIuxYkjT6WFQJl2lC/Rrm2ri36l78qEwhTEW/mywJIOwB8jeGiEic5YnFO/2b7PA
+        fXYiSf1A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgZGK-005rzK-1u;
+        Wed, 13 Sep 2023 23:27:12 +0000
+Date:   Thu, 14 Sep 2023 00:27:12 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Christian Brauner <brauner@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -62,6 +43,7 @@ Cc:     Christian Brauner <brauner@kernel.org>,
         Tejun Heo <tj@kernel.org>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Damien Le Moal <dlemoal@kernel.org>,
         Naohiro Aota <naohiro.aota@wdc.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -69,27 +51,38 @@ Cc:     Christian Brauner <brauner@kernel.org>,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
         cgroups@vger.kernel.org
-Subject: Re: [PATCH 12/19] fs: convert kill_litter_super to litter_shutdown_sb
-Message-ID: <202309131507.FAD836921D@keescook>
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230913232712.GC800259@ZenIV>
 References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-13-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913111013.77623-13-hch@lst.de>
+In-Reply-To: <20230913111013.77623-4-hch@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 08:10:06AM -0300, Christoph Hellwig wrote:
-> Replace kill_litter_super with litter_shutdown_sb, which is wired up to
-> the ->shutdown_sb method.  For file systems that wrapped
-> kill_litter_super, ->kill_sb is replaced with ->shutdown and ->free_sb
-> methods as needed.
+On Wed, Sep 13, 2023 at 08:09:57AM -0300, Christoph Hellwig wrote:
+> Releasing an anon dev_t is a very common thing when freeing a
+> super_block, as that's done for basically any not block based file
+> system (modulo the odd mtd special case).  So instead of requiring
+> a special ->kill_sb helper and a lot of boilerplate in more complicated
+> file systems, just release the anon dev_t in deactivate_locked_super if
+> the super_block was using one.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> As the freeing is done after the main call to kill_super_notify, this
+> removes the need for having two slightly different call sites for it.
 
-Reviewed-by: Kees Cook <keescook@chromium.org> # for pstore
+Huh?  At this stage in your series freeing is still in ->kill_sb()
+instances, after the calls of kill_anon_super() you've turned into
+the calls of generic_shutdown_super().
 
--- 
-Kees Cook
+You do split it off into a separate method later in the series, but
+at this point you are reopening the same UAF that had been dealt with
+in dc3216b14160 "super: ensure valid info".
+
+Either move the introduction of ->free_sb() before that one, or
+split it into lifting put_anon_bdev() (left here) and getting rid
+of kill_anon_super() (after ->free_sb() introduction).
