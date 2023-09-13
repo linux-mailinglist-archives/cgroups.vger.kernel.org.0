@@ -2,232 +2,259 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2C479ED38
-	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 17:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C3279ED4B
+	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 17:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjIMPgd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Sep 2023 11:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
+        id S229781AbjIMPiG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Sep 2023 11:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbjIMPgW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 11:36:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2071ACE;
-        Wed, 13 Sep 2023 08:36:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 463A5C433C8;
-        Wed, 13 Sep 2023 15:36:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694619377;
-        bh=jPkGjxr4rba/luvWG/LZeVxI4pDva6nFdt/vUf82FOo=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=X1WpkCXAlTDnkCy3Z7LzujlfdicVZuw40Gxod/WynA/ogZaUFIGZ2L4Pq7PZmlWv9
-         zyzegSzmQelSI5Hq8pc5HhozWr9hPSGidkFcqogbbzV6zd/bCCtq6KT61uKR7Rt50J
-         LML/WJq+8E1K524rf4q6dZvqzlIXAyIyDcGPsiU4cuPhGsgPyRs4qxgz6urFuMsKfZ
-         jzZsQLEF8wZBM3gjSPPDJ4M7oaByt7zYTirGYDyXRqRORz0+15mv/p1WH37MVxARw+
-         vr/r6z18kHCu2CLZaJN9yeopioV/UxbUAGMXj6KPc14OJxqlO2QsWU99v7+k6svjju
-         RnVmh4h+Jo9+w==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 13 Sep 2023 18:36:12 +0300
-Message-Id: <CVHWFKHRNNB2.1ST4QHR6RVH66@suppilovahvero>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v4 13/18] x86/sgx: Expose sgx_reclaim_pages() for use by
- EPC cgroup
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-X-Mailer: aerc 0.14.0
-References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
- <20230913040635.28815-14-haitao.huang@linux.intel.com>
-In-Reply-To: <20230913040635.28815-14-haitao.huang@linux.intel.com>
+        with ESMTP id S229805AbjIMPiE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 11:38:04 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5090B1BC8
+        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 08:38:00 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-57359e85e9bso3804004eaf.2
+        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 08:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694619479; x=1695224279; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pes0x2FgCzst9zO4by3a7HiJnngRgun+ysnigDkdDBI=;
+        b=Dww1p0ZTB4p0ePOsIhtIQmpWQmle9nu5zjD3KSf6t25lF2zPY78d+Lsk2iWhMaP+OJ
+         qFY51+2MvP+EgzNCbdgySWK3za4hGBBNNpYv1ro637wk2CoDdHcFdTMUcqYQdkTzsjpe
+         yV6imxRMH3sl/++viDPVUeIJ/vCevbLMdSjjsZMcj8XSI/rpg9BYepAkyrs3Pd3rJpzQ
+         9Kv5yRYXsUOkeYIg2h7fyjSfKXlCQXOcuWhr4eWZsPuTQVT4k+SVLEhFNkv+wTEbUvHy
+         MR9o+A8r12n0KQSEDWbFyMQCDg9ZyBlO33KnSfi5pa9xemzhG5bGd1yoVbDqRWcdH7Vi
+         6oNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694619479; x=1695224279;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pes0x2FgCzst9zO4by3a7HiJnngRgun+ysnigDkdDBI=;
+        b=X7o6MoxIQm5QA9zTLyitFKlNoeCID0DLGpqJ1FWUhpC17yL3E7X/AcWjr+y/AWS6jC
+         WBEVUPdPtkQss4AFoWN4yVn6ukCqKY0ip8TqW9r9RN9DxSuqdMoKCHsRoFGyi0P8YDiI
+         NOkZLcFAwl8zexiH3JGYmV4mxFH9JMcIqGEKmxVAnshzjuv0HGgI0wr0O7cS0ILRivTA
+         Eev3CuyLVLIKfnJqGPyrurs5N4GMI6Tt02q5jQa+J6R7xt7giJUHkWhaWkZ5UofSIHua
+         hLBfZKexKyBArs8OfyblOSixgKprHDfwQPB4Omp9JMwGq5crSOQo4kiPFKAzt/Kg060N
+         QTnQ==
+X-Gm-Message-State: AOJu0YzzOvn9/vnT6Wg06U5N6deWi5Pr+do6HSMmZQmbo77uHGqTyyRq
+        YHqtlXDTnt215gbdVfLe97PS8A==
+X-Google-Smtp-Source: AGHT+IEPPPHSfrfy7IdWyHRRjhuOQ3KghAaHDzL4YMfoWPb61lBUcsPQqhoRRgadgxgnlLOngUQIqQ==
+X-Received: by 2002:a05:6358:5e01:b0:130:faea:a81f with SMTP id q1-20020a0563585e0100b00130faeaa81fmr2210210rwn.28.1694619479319;
+        Wed, 13 Sep 2023 08:37:59 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id x15-20020a0ce0cf000000b006427145590csm4495804qvk.48.2023.09.13.08.37.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 08:37:58 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 11:37:58 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and
+ accuracy
+Message-ID: <20230913153758.GB45543@cmpxchg.org>
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230913073846.1528938-4-yosryahmed@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Adjust and expose the top-level reclaim function as
-> sgx_reclaim_epc_pages() for use by the upcoming EPC cgroup, which will
-> initiate reclaim to enforce the max limit.
->
-> Make these adjustments to the function signature.
->
-> 1) To take a parameter that specifies the number of pages to scan for
-> reclaiming. Define a max value of 32, but scan 16 in the case for the
-> global reclaimer (ksgxd). The EPC cgroup will use it to specify a
-> desired number of pages to be reclaimed up to the max value of 32.
->
-> 2) To take a flag to force reclaiming a page regardless of its age.  The
-> EPC cgroup will use the flag to enforce its limits by draining the
-> reclaimable lists before resorting to other measures, e.g. forcefully
-> kill enclaves.
->
-> 3) Return the number of reclaimed pages. The EPC cgroup will use the
-> result to track reclaiming progress and escalate to a more forceful
-> reclaiming mode, e.g., calling this function with the flag to ignore age
-> of pages.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> ---
-> V4:
-> - Combined the 3 patches that made the individual changes to the
-> function signature.
-> - Removed 'high' limit in commit message.
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 30 ++++++++++++++++++++----------
->  arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
->  2 files changed, 21 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index c8900d62cfff..e1dde431a400 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -17,6 +17,10 @@
->  #include "driver.h"
->  #include "encl.h"
->  #include "encls.h"
+On Wed, Sep 13, 2023 at 07:38:46AM +0000, Yosry Ahmed wrote:
+> Stats flushing for memcg currently follows the following rules:
+> - Always flush the entire memcg hierarchy (i.e. flush the root).
+> - Only one flusher is allowed at a time. If someone else tries to flush
+>   concurrently, they skip and return immediately.
+> - A periodic flusher flushes all the stats every 2 seconds.
+> 
+> The reason this approach is followed is because all flushes are
+> serialized by a global rstat spinlock. On the memcg side, flushing is
+> invoked from userspace reads as well as in-kernel flushers (e.g.
+> reclaim, refault, etc). This approach aims to avoid serializing all
+> flushers on the global lock, which can cause a significant performance
+> hit under high concurrency.
+> 
+> This approach has the following problems:
+> - Occasionally a userspace read of the stats of a non-root cgroup will
+>   be too expensive as it has to flush the entire hierarchy [1].
+> - Sometimes the stats accuracy are compromised if there is an ongoing
+>   flush, and we skip and return before the subtree of interest is
+>   actually flushed. This is more visible when reading stats from
+>   userspace, but can also affect in-kernel flushers.
+> 
+> This patch aims to solve both problems by reworking how flushing
+> currently works as follows:
+> - Without contention, there is no need to flush the entire tree. In this
+>   case, only flush the subtree of interest. This avoids the latency of a
+>   full root flush if unnecessary.
+> - With contention, fallback to a coalesced (aka unified) flush of the
+>   entire hierarchy, a root flush. In this case, instead of returning
+>   immediately if a root flush is ongoing, wait for it to finish
+>   *without* attempting to acquire the lock or flush. This is done using
+>   a completion. Compared to competing directly on the underlying lock,
+>   this approach makes concurrent flushing a synchronization point
+>   instead of a serialization point. Once  a root flush finishes, *all*
+>   waiters can wake up and continue at once.
+> - Finally, with very high contention, bound the number of waiters to the
+>   number of online cpus. This keeps the flush latency bounded at the tail
+>   (very high concurrency). We fallback to sacrificing stats freshness only
+>   in such cases in favor of performance.
+> 
+> This was tested in two ways on a machine with 384 cpus:
+> - A synthetic test with 5000 concurrent workers doing allocations and
+>   reclaim, as well as 1000 readers for memory.stat (variation of [2]).
+>   No significant regressions were noticed in the total runtime.
+>   Note that if concurrent flushers compete directly on the spinlock
+>   instead of waiting for a completion, this test shows 2x-3x slowdowns.
+>   Even though subsequent flushers would have nothing to flush, just the
+>   serialization and lock contention is a major problem. Using a
+>   completion for synchronization instead seems to overcome this problem.
+> 
+> - A synthetic stress test for concurrently reading memcg stats provided
+>   by Wei Xu.
+>   With 10k threads reading the stats every 100ms:
+>   - 98.8% of reads take <100us
+>   - 1.09% of reads take 100us to 1ms.
+>   - 0.11% of reads take 1ms to 10ms.
+>   - Almost no reads take more than 10ms.
+>   With 10k threads reading the stats every 10ms:
+>   - 82.3% of reads take <100us.
+>   - 4.2% of reads take 100us to 1ms.
+>   - 4.7% of reads take 1ms to 10ms.
+>   - 8.8% of reads take 10ms to 100ms.
+>   - Almost no reads take more than 100ms.
+> 
+> [1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
+> [2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
+> [3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
+> 
+> [weixugc@google.com: suggested the fallback logic and bounding the
+> number of waiters]
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-newline here
+>  	/*
+> +	 * Opportunistically try to only flush the requested subtree. Otherwise
+> +	 * fallback to a coalesced flush below.
+>  	 */
+> -	if (atomic_read(&stats_flush_ongoing) ||
+> -	    atomic_xchg(&stats_flush_ongoing, 1))
+> +	if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mutex)) {
+> +		cgroup_rstat_flush(memcg->css.cgroup);
+> +		mutex_unlock(&subtree_flush_mutex);
+>  		return;
+> +	}
+>  
+> -	WRITE_ONCE(flush_last_time, jiffies_64);
+> -
+> -	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> +	/* A coalesced root flush is in order. Are we the designated flusher? */
+> +	spin_lock(&root_flusher_lock);
 
-> +/**
+I can't say I'm crazy about this.
 
-/*
+Let's say you have a fairly sprawling and active cgroup tree with lots
+of updates in lots of groups in the system.
 
-> + * Maximum number of pages to scan for reclaiming.
-> + */
-> +#define SGX_NR_TO_SCAN_MAX	32
-> =20
->  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
->  static int sgx_nr_epc_sections;
-> @@ -279,7 +283,11 @@ static void sgx_reclaimer_write(struct sgx_epc_page =
-*epc_page,
->  	mutex_unlock(&encl->lock);
->  }
-> =20
-> -/*
-> +/**
-> + * sgx_reclaim_epc_pages() - Reclaim EPC pages from the consumers
-> + * @nr_to_scan:		 Number of EPC pages to scan for reclaim
-> + * @ignore_age:		 Reclaim a page even if it is young
-> + *
->   * Take a fixed number of pages from the head of the active page pool an=
-d
->   * reclaim them to the enclave's private shmem files. Skip the pages, wh=
-ich have
->   * been accessed since the last scan. Move those pages to the tail of ac=
-tive
-> @@ -292,15 +300,15 @@ static void sgx_reclaimer_write(struct sgx_epc_page=
- *epc_page,
->   * problematic as it would increase the lock contention too much, which =
-would
->   * halt forward progress.
->   */
-> -static void sgx_reclaim_pages(void)
-> +size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age)
->  {
-> -	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> +	struct sgx_backing backing[SGX_NR_TO_SCAN_MAX];
->  	struct sgx_epc_page *epc_page, *tmp;
->  	struct sgx_encl_page *encl_page;
->  	pgoff_t page_index;
->  	LIST_HEAD(iso);
-> -	int ret;
-> -	int i;
-> +	size_t ret;
-> +	size_t i;
+Add a periodic memory.stat reader to one of the subgroups, and that
+reader will do very fast, localized aggregation.
 
-I don't mind having these in separate lines but you could also
+Now add a periodic memory.stat reader to some other subgroup. They
+might still both do very fast, localized aggregation. Or they might
+collide; and now - despite having nothing in common, and sharing no
+data besides the rstat lock - will have to flush the entire massive
+tree. The rate at which this happens is purely dependent on timing of
+what should be independent actors. This is really not great for the
+p50 vs p99 gap.
 
-	size_t ret, i;
+I think this whole thing is getting away from us.
 
-> =20
->  	spin_lock(&sgx_global_lru.lock);
->  	for (i =3D 0; i < SGX_NR_TO_SCAN; i++) {
-> @@ -326,13 +334,14 @@ static void sgx_reclaim_pages(void)
->  	spin_unlock(&sgx_global_lru.lock);
-> =20
->  	if (list_empty(&iso))
-> -		return;
-> +		return 0;
-> =20
->  	i =3D 0;
->  	list_for_each_entry_safe(epc_page, tmp, &iso, list) {
->  		encl_page =3D epc_page->encl_page;
-> =20
-> -		if (!sgx_reclaimer_age(epc_page))
-> +		if (i =3D=3D SGX_NR_TO_SCAN_MAX ||
-> +		    (!ignore_age && !sgx_reclaimer_age(epc_page)))
->  			goto skip;
-> =20
->  		page_index =3D PFN_DOWN(encl_page->desc - encl_page->encl->base);
-> @@ -371,6 +380,7 @@ static void sgx_reclaim_pages(void)
-> =20
->  		sgx_free_epc_page(epc_page);
->  	}
+When we first switched to rstat, every reader would take the global
+rstat lock and then flush its local subtree of interest.
 
-newline
+This was changed in the following commit:
 
-> +	return i;
->  }
-> =20
->  static bool sgx_should_reclaim(unsigned long watermark)
-> @@ -387,7 +397,7 @@ static bool sgx_should_reclaim(unsigned long watermar=
-k)
->  void sgx_reclaim_direct(void)
->  {
->  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
-> -		sgx_reclaim_pages();
-> +		sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
->  }
-> =20
->  static int ksgxd(void *p)
-> @@ -410,7 +420,7 @@ static int ksgxd(void *p)
->  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
-> =20
->  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
-> -			sgx_reclaim_pages();
-> +			sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
-> =20
->  		cond_resched();
->  	}
-> @@ -582,7 +592,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
-bool reclaim)
->  			break;
->  		}
-> =20
-> -		sgx_reclaim_pages();
-> +		sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
->  		cond_resched();
->  	}
-> =20
-> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
-h
-> index 3818be5a8bd3..aa4ec2c0ce96 100644
-> --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> @@ -177,6 +177,7 @@ void sgx_record_epc_page(struct sgx_epc_page *page, u=
-nsigned long flags);
->  int sgx_drop_epc_page(struct sgx_epc_page *page);
->  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
->  bool sgx_epc_oom(struct sgx_epc_lru_lists *lrus);
-> +size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age);
-> =20
->  void sgx_ipi_cb(void *info);
-> =20
-> --=20
-> 2.25.1
+commit fd25a9e0e23b995fd0ba5e2f00a1099452cbc3cf
+Author: Shakeel Butt <shakeelb@google.com>
+Date:   Fri Nov 5 13:37:34 2021 -0700
 
-BR, Jarkko
+    memcg: unify memcg stat flushing
+    
+    The memcg stats can be flushed in multiple context and potentially in
+    parallel too.  For example multiple parallel user space readers for
+    memcg stats will contend on the rstat locks with each other.  There is
+    no need for that.  We just need one flusher and everyone else can
+    benefit.
+    
+    In addition after aa48e47e3906 ("memcg: infrastructure to flush memcg
+    stats") the kernel periodically flush the memcg stats from the root, so,
+    the other flushers will potentially have much less work to do.
+    
+    Link: https://lkml.kernel.org/r/20211001190040.48086-2-shakeelb@google.com
+    Signed-off-by: Shakeel Butt <shakeelb@google.com>
+    Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+    Cc: Michal Hocko <mhocko@kernel.org>
+    Cc: "Michal Koutný" <mkoutny@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+The idea was that we can avoid lock contention if somebody is already
+doing the flushing. However, you're now bringing global serialization.
+Clearly that idea didn't work out. What would be an obstacle to go
+back to the original way of doing it?
+
+With one reader, this will work the same as in your proposal.
+
+With two readers, just like in your proposal, flushing must be
+serialized against the root level. But at least the two flushes only
+aggregate the local data they actually care about - not the entire
+tree data that doesn't even have readers! This is much better for lock
+contention and performance.
+
+One concern is the thresholding code. The cost of flushing on every
+read is too high: even when there is no flush work, checking for it is
+kind of expensive due to the locks and the for_each_possible_cpu().
+
+Could we do something like the following?
+
+	mem_cgroup_flush(memcg)
+	{
+		mutex_lock(&memcg_flush_mutex);
+		if (atomic_read(&memcg->stat_delta) > THRESHOLD)
+			cgroup_rstat_flush(memcg);
+		mutex_unlock(&memcg_flush_mutex);
+	}
+
+	mem_cgroup_css_rstat_flush(css, cpu)
+	{
+		...
+		/*
+		 * Reset here instead of mem_cgroup_flush()
+		 * so that each flushed subgroup is reset
+		 * recursively. A recent parent flush will
+		 * allow a child flush to skip.
+		 */
+		atomic_set(&mem_cgroup_from_css(css)->stat_delta, 0);
+	}
+
+	memcg_rstat_updated(memcg, val)
+	{
+		atomic_add(&memcg->stat_delta, val);
+	}
