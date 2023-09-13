@@ -2,42 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962E679DEE8
-	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 06:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC6979DEE9
+	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 06:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237183AbjIMEIx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Sep 2023 00:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
+        id S238261AbjIMEIy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Sep 2023 00:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235953AbjIMEIw (ORCPT
+        with ESMTP id S236258AbjIMEIw (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 00:08:52 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D92CE4B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DA41724;
         Tue, 12 Sep 2023 21:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1694578128; x=1726114128;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HqRj5uRH5mZXfWy3E/kPRnOT0vE/WrAZ/bOtfduqTXE=;
-  b=NBrZ6n5K5gFQKKSBgQzBXscMtI83lmxfUndRVUb5GHTBhU3OJ7IMHoUs
-   uVDKjLRkmXe18FQQejgqN0GJDBd4Sn7jSf+qJq18F/bj60SjE70B1t8MV
-   GPxLIRTLJYc5JBqNQOo9JXH2f5eHg9lfxN9+uI21PYJM6LLHLLP/jB96s
-   a/GFICsuuKILhX3kfT/SWVqoCDCOL83tZmn7C1nGGdZ0x8c1DoC2x4jTF
-   jfNZgFzelm8fCTPpS48r4OvWyot8g5DwlqpJexi1YQjSYYlSkYM6J3BQ8
-   WFJHVtPgXAzPlTBzT/N7kBSsgbUrLDKIiaLSdc1PG+yhK9+e9Wx+/LduT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="357990310"
+  bh=cDgyeKtv6B3r+ik1XD0vDIeZrkcCEVWq0GKDMnVnOT8=;
+  b=U8lKnm4YnxOnoCOuPA58PysRMqfIif6Y13Hmc7mXDQ+ZwgSiI4V10ofk
+   DEyTJASrgR9hlinRylimLE6aVmcnaf6S8ULQEjO9qsA8WDIR7Wi2L5Lvm
+   llJFsslFdypbKaGBJgXpfb3Ymzv4jV0PRzRwBYkgYnlwK1ULS05juZDcY
+   Fegj2E/ZJnoFcFmClOvFflfnSU1o+ddvqEpWnLnEP5j3tVK3HSIBVKGfY
+   bUWYtt3h+VEwsZlu8DdvbS0mziMNiYs6YnbbZHkqb5KOtX45yn47tPM8T
+   lBFPI//LZnzNvTlGSgt38QmvsvIbQAYSs5ipNTVNnJ74HteclK/kA5RLM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="357990322"
 X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="357990310"
+   d="scan'208";a="357990322"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 21:06:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="747155873"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="747155887"
 X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="747155873"
+   d="scan'208";a="747155887"
 Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by fmsmga007.fm.intel.com with ESMTP; 12 Sep 2023 21:06:38 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 12 Sep 2023 21:06:39 -0700
 From:   Haitao Huang <haitao.huang@linux.intel.com>
 To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
         linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
@@ -47,9 +47,9 @@ To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
 Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
         zhanb@microsoft.com, anakrish@microsoft.com,
         mikko.ylinen@linux.intel.com, yangjie@microsoft.com
-Subject: [PATCH v4 02/18] cgroup/misc: Add SGX EPC resource type and export APIs for SGX driver
-Date:   Tue, 12 Sep 2023 21:06:19 -0700
-Message-Id: <20230913040635.28815-3-haitao.huang@linux.intel.com>
+Subject: [PATCH v4 03/18] x86/sgx: Add sgx_epc_lru_lists to encapsulate LRU lists
+Date:   Tue, 12 Sep 2023 21:06:20 -0700
+Message-Id: <20230913040635.28815-4-haitao.huang@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230913040635.28815-1-haitao.huang@linux.intel.com>
 References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
@@ -61,173 +61,67 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Kristen Carlson Accardi <kristen@linux.intel.com>
 
-The SGX driver will need to get access to the root misc_cg object
-to do iterative walks and also determine if a charge will be
-towards the root cgroup or not.
+Introduce a data structure to wrap the existing reclaimable list and its
+spinlock. Each cgroup later will have one instance of this structure to
+track EPC pages allocated for processes associated with the same cgroup.
+Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
+from the reclaimable list in this structure when its usage reaches near
+its limit.
 
-To manage the SGX EPC memory via the misc controller, the SGX
-driver will also need to be able to iterate over the misc cgroup
-hierarchy.
+Currently, ksgxd does not track the VA, SECS pages. They are considered
+as 'unreclaimable' pages that are only deallocated when their respective
+owning enclaves are destroyed and all associated resources released.
 
-Move parent_misc() into misc_cgroup.h and make inline to make this
-function available to SGX, rename it to misc_cg_parent(), and update
-misc.c to use the new name.
+When an EPC cgroup can not reclaim any more reclaimable EPC pages to
+reduce its usage below its limit, the cgroup must also reclaim those
+unreclaimables by killing their owning enclaves. The VA and SECS pages
+later are also tracked in an 'unreclaimable' list added to this structure
+to support this OOM killing of enclaves.
 
-Add per resource type private data so that SGX can store additional
-per cgroup data with the misc_cg struct.
-
-Allow SGX EPC memory to be a valid resource type for the misc
-controller.
-
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>
 ---
 V4:
-- Moved this to the second in the series.
----
- include/linux/misc_cgroup.h | 29 +++++++++++++++++++++++++++++
- kernel/cgroup/misc.c        | 25 ++++++++++++-------------
- 2 files changed, 41 insertions(+), 13 deletions(-)
+- Removed unneeded comments for the spinlock and the non-reclaimables.
+(Kai, Jarkko)
+- Revised the commit to add introduction comments for unreclaimables and
+multiple LRU lists.(Kai)
+- Reordered the patches: delay all changes for unreclaimables to
+later, and this one becomes the first change in the SGX subsystem.
 
-diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-index e1bcd176c2de..6f8330f435ba 100644
---- a/include/linux/misc_cgroup.h
-+++ b/include/linux/misc_cgroup.h
-@@ -17,6 +17,10 @@ enum misc_res_type {
- 	MISC_CG_RES_SEV,
- 	/* AMD SEV-ES ASIDs resource */
- 	MISC_CG_RES_SEV_ES,
-+#endif
-+#ifdef CONFIG_CGROUP_SGX_EPC
-+	/* SGX EPC memory resource */
-+	MISC_CG_RES_SGX_EPC,
- #endif
- 	MISC_CG_RES_TYPES
- };
-@@ -37,6 +41,7 @@ struct misc_res {
- 	u64 max;
- 	atomic64_t usage;
- 	atomic64_t events;
-+	void *priv;
- 
- 	/* per resource callback ops */
- 	int (*misc_cg_alloc)(struct misc_cg *cg);
-@@ -59,6 +64,7 @@ struct misc_cg {
- 	struct misc_res res[MISC_CG_RES_TYPES];
- };
- 
-+struct misc_cg *misc_cg_root(void);
- u64 misc_cg_res_total_usage(enum misc_res_type type);
- int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
- int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount);
-@@ -78,6 +84,20 @@ static inline struct misc_cg *css_misc(struct cgroup_subsys_state *css)
- 	return css ? container_of(css, struct misc_cg, css) : NULL;
+V3:
+- Removed the helper functions and revised commit messages.
+---
+ arch/x86/kernel/cpu/sgx/sgx.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index d2dad21259a8..018414b2abe8 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -83,6 +83,20 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_epc_page *page)
+ 	return section->virt_addr + index * PAGE_SIZE;
  }
  
-+/**
-+ * misc_cg_parent() - Get the parent of the passed misc cgroup.
-+ * @cgroup: cgroup whose parent needs to be fetched.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * struct misc_cg* - Parent of the @cgroup.
-+ * * %NULL - If @cgroup is null or the passed cgroup does not have a parent.
++/*
++ * Tracks EPC pages reclaimable by the reclaimer (ksgxd).
 + */
-+static inline struct misc_cg *misc_cg_parent(struct misc_cg *cgroup)
++struct sgx_epc_lru_lists {
++	spinlock_t lock;
++	struct list_head reclaimable;
++};
++
++static inline void sgx_lru_init(struct sgx_epc_lru_lists *lrus)
 +{
-+	return cgroup ? css_misc(cgroup->css.parent) : NULL;
++	spin_lock_init(&lrus->lock);
++	INIT_LIST_HEAD(&lrus->reclaimable);
 +}
 +
- /*
-  * get_current_misc_cg() - Find and get the misc cgroup of the current task.
-  *
-@@ -102,6 +122,15 @@ static inline void put_misc_cg(struct misc_cg *cg)
- }
+ struct sgx_epc_page *__sgx_alloc_epc_page(void);
+ void sgx_free_epc_page(struct sgx_epc_page *page);
  
- #else /* !CONFIG_CGROUP_MISC */
-+static inline struct misc_cg *misc_cg_root(void)
-+{
-+	return NULL;
-+}
-+
-+static inline struct misc_cg *misc_cg_parent(struct misc_cg *cg)
-+{
-+	return NULL;
-+}
- 
- static inline u64 misc_cg_res_total_usage(enum misc_res_type type)
- {
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index e0092170d0dd..dbd881be773f 100644
---- a/kernel/cgroup/misc.c
-+++ b/kernel/cgroup/misc.c
-@@ -24,6 +24,10 @@ static const char *const misc_res_name[] = {
- 	/* AMD SEV-ES ASIDs resource */
- 	"sev_es",
- #endif
-+#ifdef CONFIG_CGROUP_SGX_EPC
-+	/* Intel SGX EPC memory bytes */
-+	"sgx_epc",
-+#endif
- };
- 
- /* Root misc cgroup */
-@@ -40,18 +44,13 @@ static struct misc_cg root_cg;
- static u64 misc_res_capacity[MISC_CG_RES_TYPES];
- 
- /**
-- * parent_misc() - Get the parent of the passed misc cgroup.
-- * @cgroup: cgroup whose parent needs to be fetched.
-- *
-- * Context: Any context.
-- * Return:
-- * * struct misc_cg* - Parent of the @cgroup.
-- * * %NULL - If @cgroup is null or the passed cgroup does not have a parent.
-+ * misc_cg_root() - Return the root misc cgroup.
-  */
--static struct misc_cg *parent_misc(struct misc_cg *cgroup)
-+struct misc_cg *misc_cg_root(void)
- {
--	return cgroup ? css_misc(cgroup->css.parent) : NULL;
-+	return &root_cg;
- }
-+EXPORT_SYMBOL_GPL(misc_cg_root);
- 
- /**
-  * valid_type() - Check if @type is valid or not.
-@@ -150,7 +149,7 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount)
- 	if (!amount)
- 		return 0;
- 
--	for (i = cg; i; i = parent_misc(i)) {
-+	for (i = cg; i; i = misc_cg_parent(i)) {
- 		res = &i->res[type];
- 
- 		new_usage = atomic64_add_return(amount, &res->usage);
-@@ -163,12 +162,12 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount)
- 	return 0;
- 
- err_charge:
--	for (j = i; j; j = parent_misc(j)) {
-+	for (j = i; j; j = misc_cg_parent(j)) {
- 		atomic64_inc(&j->res[type].events);
- 		cgroup_file_notify(&j->events_file);
- 	}
- 
--	for (j = cg; j != i; j = parent_misc(j))
-+	for (j = cg; j != i; j = misc_cg_parent(j))
- 		misc_cg_cancel_charge(type, j, amount);
- 	misc_cg_cancel_charge(type, i, amount);
- 	return ret;
-@@ -190,7 +189,7 @@ void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64 amount)
- 	if (!(amount && valid_type(type) && cg))
- 		return;
- 
--	for (i = cg; i; i = parent_misc(i))
-+	for (i = cg; i; i = misc_cg_parent(i))
- 		misc_cg_cancel_charge(type, i, amount);
- }
- EXPORT_SYMBOL_GPL(misc_cg_uncharge);
 -- 
 2.25.1
 
