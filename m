@@ -2,32 +2,32 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED7679E5DD
-	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 13:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAF779E5EF
+	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 13:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239934AbjIMLKz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Sep 2023 07:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        id S239979AbjIMLLB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Sep 2023 07:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234271AbjIMLKx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 07:10:53 -0400
+        with ESMTP id S239941AbjIMLK5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 07:10:57 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2FD1726;
-        Wed, 13 Sep 2023 04:10:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2991726;
+        Wed, 13 Sep 2023 04:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=lFN9YgcL4jF9M8y38RT8vgKJ5Uff5/jFhXEUgu10px4=; b=afZ4SOl3iLBIdn7xexEr8bO6HE
-        EzSc4FAIcIGS+0rGFQe/IOIMts7MfkoT2sX+bb6edTrlGUz9JqzD1/bvhKBCYXjEsx6hAhXmc2ubw
-        wVBNxffbYUJh6RmTU6c2jWW4C2he4lGGStqYa/H1h+woVStgY0giJlVcbWx20pS+usQJFV07p4940
-        YDriSSSF63rxg8uvYoepp/TnQvZJ2lFcjeqxBOm+wEJRXaYAA4tDoRCTmyDZPv69DOFTkbF4d0CX0
-        YPlg6Ez4Oas4wWm5inDdI4iyQSF79HWCj01ed1ego43n2UZ1tRYmFxJDvLA5hY+5W0Wzf2hvSho9f
-        VSJpn71Q==;
+        bh=QtxUC0PBd27k/jPmifPKRgeZeU54oAe4sU/iHRhk3us=; b=3jF8AWqft55sENPRPWk4+bWnJK
+        Wny8RJRRcJOCnKQfKis+eSo5Ht8lSO5uqi8Mk14bXtPwXbtoItRQ6VHePz91Wi0ab2Mx2UFCjEuii
+        Erb5f7PDwveImNZXjR7INUB/HtkqxUwJkXmozhdIefKQOvgCkbLc5ytAUJXqOiFLd7nQdZ3Ky3FK/
+        ASQQsIleUTxD3RNLoemOhFq0knghz9g8cMssYrT4BoIMgtK46a+CTEWQg9aY8n9xE3pug5xOGLrCr
+        BsZgMnd69QJGoyJHfXBiq2W06yYu+eBLxYYfm9Pj2TFYIpKFqdq41mYxq2Z5ClsQHnFJlVjb229Zh
+        A/eAxolw==;
 Received: from [190.210.221.22] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgNlY-005hxI-0t;
-        Wed, 13 Sep 2023 11:10:40 +0000
+        id 1qgNlb-005hy2-2X;
+        Wed, 13 Sep 2023 11:10:44 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Christian Brauner <brauner@kernel.org>,
         Al Viro <viro@zeniv.linux.org.uk>
@@ -51,9 +51,9 @@ Cc:     Heiko Carstens <hca@linux.ibm.com>,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
         cgroups@vger.kernel.org
-Subject: [PATCH 05/19] fs: assign an anon dev_t in common code
-Date:   Wed, 13 Sep 2023 08:09:59 -0300
-Message-Id: <20230913111013.77623-6-hch@lst.de>
+Subject: [PATCH 06/19] qibfs: use simple_release_fs
+Date:   Wed, 13 Sep 2023 08:10:00 -0300
+Message-Id: <20230913111013.77623-7-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230913111013.77623-1-hch@lst.de>
 References: <20230913111013.77623-1-hch@lst.de>
@@ -64,380 +64,301 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-All super_blocks need to have a valid dev_t, and except for block
-based file systems that tends to be an anonymouns dev_t.  Instead of
-leaving that work to the file systems, assign the anonymous dev_t in
-the core sget_fc and sget routines unless the file systems already
-assigned on in the set callback.  Note that this now makes the
-set callback optional as a lot of file systems don't need it any more.
+qibfs currently has convoluted code to allow registering HCAs while qibfs
+is not mounted and vice versa.  Switch to using simple_release_fs every
+time an entry is added to pin the fs instance and remove all the boiler
+plate code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/9p/vfs_super.c      |  2 +-
- fs/afs/super.c         | 12 +++-----
- fs/btrfs/super.c       |  6 ++--
- fs/ceph/super.c        |  7 +----
- fs/ecryptfs/main.c     |  2 +-
- fs/fuse/inode.c        |  2 +-
- fs/fuse/virtio_fs.c    |  2 +-
- fs/kernfs/mount.c      |  2 +-
- fs/nfs/super.c         |  2 +-
- fs/orangefs/super.c    |  2 +-
- fs/smb/client/cifsfs.c |  3 +-
- fs/super.c             | 68 +++++++++++++++++++++++++-----------------
- fs/ubifs/super.c       |  2 +-
- include/linux/fs.h     |  2 --
- 14 files changed, 58 insertions(+), 56 deletions(-)
+ drivers/infiniband/hw/qib/qib.h      |   4 +-
+ drivers/infiniband/hw/qib/qib_fs.c   | 105 ++++++---------------------
+ drivers/infiniband/hw/qib/qib_init.c |  32 +++-----
+ 3 files changed, 36 insertions(+), 105 deletions(-)
 
-diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
-index 9e60eddf5179ed..e8b3641c98f886 100644
---- a/fs/9p/vfs_super.c
-+++ b/fs/9p/vfs_super.c
-@@ -40,7 +40,7 @@ static const struct super_operations v9fs_super_ops, v9fs_super_ops_dotl;
- static int v9fs_set_super(struct super_block *s, void *data)
+diff --git a/drivers/infiniband/hw/qib/qib.h b/drivers/infiniband/hw/qib/qib.h
+index 26c615772be390..f73c321d0bff88 100644
+--- a/drivers/infiniband/hw/qib/qib.h
++++ b/drivers/infiniband/hw/qib/qib.h
+@@ -1370,10 +1370,10 @@ void qib_device_remove(struct qib_devdata *);
+ extern int qib_qsfp_dump(struct qib_pportdata *ppd, char *buf, int len);
+ 
+ int __init qib_init_qibfs(void);
+-int __exit qib_exit_qibfs(void);
++void __exit qib_exit_qibfs(void);
+ 
+ int qibfs_add(struct qib_devdata *);
+-int qibfs_remove(struct qib_devdata *);
++void qibfs_remove(struct qib_devdata *);
+ 
+ int qib_pcie_init(struct pci_dev *, const struct pci_device_id *);
+ int qib_pcie_ddinit(struct qib_devdata *, struct pci_dev *,
+diff --git a/drivers/infiniband/hw/qib/qib_fs.c b/drivers/infiniband/hw/qib/qib_fs.c
+index ed7d4b02f45a63..c52ca34b32e67d 100644
+--- a/drivers/infiniband/hw/qib/qib_fs.c
++++ b/drivers/infiniband/hw/qib/qib_fs.c
+@@ -43,7 +43,9 @@
+ 
+ #define QIBFS_MAGIC 0x726a77
+ 
+-static struct super_block *qib_super;
++static struct file_system_type qibfs_fs_type;
++static struct vfsmount *qib_mount;
++static int qib_mnt_count;
+ 
+ #define private2dd(file) (file_inode(file)->i_private)
+ 
+@@ -355,15 +357,19 @@ static const struct file_operations flash_ops = {
+ 	.llseek = default_llseek,
+ };
+ 
+-static int add_cntr_files(struct super_block *sb, struct qib_devdata *dd)
++int qibfs_add(struct qib_devdata *dd)
  {
- 	s->s_fs_info = data;
--	return set_anon_super(s, data);
-+	return 0;
+ 	struct dentry *dir, *tmp;
+ 	char unit[10];
+ 	int ret, i;
++	
++	ret = simple_pin_fs(&qibfs_fs_type, &qib_mount, &qib_mnt_count);
++	if (ret)
++		return ret;
+ 
+ 	/* create the per-unit directory */
+ 	snprintf(unit, sizeof(unit), "%u", dd->unit);
+-	ret = create_file(unit, S_IFDIR|S_IRUGO|S_IXUGO, sb->s_root, &dir,
++	ret = create_file(unit, S_IFDIR|S_IRUGO|S_IXUGO, qib_mount->mnt_root, &dir,
+ 			  &simple_dir_operations, dd);
+ 	if (ret) {
+ 		pr_err("create_file(%s) failed: %d\n", unit, ret);
+@@ -422,65 +428,35 @@ static int add_cntr_files(struct super_block *sb, struct qib_devdata *dd)
+ 		pr_err("create_file(%s/flash) failed: %d\n",
+ 			unit, ret);
+ bail:
++	simple_release_fs(&qib_mount, &qib_mnt_count);
+ 	return ret;
  }
  
- /**
-diff --git a/fs/afs/super.c b/fs/afs/super.c
-index 754b9828233497..84b135ad3496b1 100644
---- a/fs/afs/super.c
-+++ b/fs/afs/super.c
-@@ -435,11 +435,6 @@ static int afs_dynroot_test_super(struct super_block *sb, struct fs_context *fc)
- 		as->dyn_root);
+-static int remove_device_files(struct super_block *sb,
+-			       struct qib_devdata *dd)
++void qibfs_remove(struct qib_devdata *dd)
+ {
+ 	struct dentry *dir;
+ 	char unit[10];
+ 
+ 	snprintf(unit, sizeof(unit), "%u", dd->unit);
+-	dir = lookup_one_len_unlocked(unit, sb->s_root, strlen(unit));
+-
+-	if (IS_ERR(dir)) {
+-		pr_err("Lookup of %s failed\n", unit);
+-		return PTR_ERR(dir);
+-	}
+-	simple_recursive_removal(dir, NULL);
+-	return 0;
++	dir = lookup_one_len_unlocked(unit, qib_mount->mnt_root, strlen(unit));
++	if (!IS_ERR(dir))
++		simple_recursive_removal(dir, NULL);
++	simple_release_fs(&qib_mount, &qib_mnt_count);
  }
  
--static int afs_set_super(struct super_block *sb, struct fs_context *fc)
+-/*
+- * This fills everything in when the fs is mounted, to handle umount/mount
+- * after device init.  The direct add_cntr_files() call handles adding
+- * them from the init code, when the fs is already mounted.
+- */
+ static int qibfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
+-	struct qib_devdata *dd;
+-	unsigned long index;
+-	int ret;
+-
+ 	static const struct tree_descr files[] = {
+ 		[2] = {"driver_stats", &driver_ops[0], S_IRUGO},
+ 		[3] = {"driver_stats_names", &driver_ops[1], S_IRUGO},
+ 		{""},
+ 	};
+-
+-	ret = simple_fill_super(sb, QIBFS_MAGIC, files);
+-	if (ret) {
+-		pr_err("simple_fill_super failed: %d\n", ret);
+-		goto bail;
+-	}
+-
+-	xa_for_each(&qib_dev_table, index, dd) {
+-		ret = add_cntr_files(sb, dd);
+-		if (ret)
+-			goto bail;
+-	}
+-
+-bail:
+-	return ret;
++	return simple_fill_super(sb, QIBFS_MAGIC, files);
+ }
+ 
+ static int qibfs_get_tree(struct fs_context *fc)
+ {
+-	int ret = get_tree_single(fc, qibfs_fill_super);
+-	if (ret == 0)
+-		qib_super = fc->root->d_sb;
+-	return ret;
++	return get_tree_single(fc, qibfs_fill_super);
+ }
+ 
+ static const struct fs_context_operations qibfs_context_ops = {
+@@ -493,46 +469,11 @@ static int qibfs_init_fs_context(struct fs_context *fc)
+ 	return 0;
+ }
+ 
+-static void qibfs_kill_super(struct super_block *s)
 -{
--	return set_anon_super(sb, NULL);
+-	kill_litter_super(s);
+-	qib_super = NULL;
 -}
 -
- /*
-  * fill in the superblock
-  */
-@@ -574,9 +569,10 @@ static int afs_get_tree(struct fs_context *fc)
- 	fc->s_fs_info = as;
+-int qibfs_add(struct qib_devdata *dd)
+-{
+-	int ret;
+-
+-	/*
+-	 * On first unit initialized, qib_super will not yet exist
+-	 * because nobody has yet tried to mount the filesystem, so
+-	 * we can't consider that to be an error; if an error occurs
+-	 * during the mount, that will get a complaint, so this is OK.
+-	 * add_cntr_files() for all units is done at mount from
+-	 * qibfs_fill_super(), so one way or another, everything works.
+-	 */
+-	if (qib_super == NULL)
+-		ret = 0;
+-	else
+-		ret = add_cntr_files(qib_super, dd);
+-	return ret;
+-}
+-
+-int qibfs_remove(struct qib_devdata *dd)
+-{
+-	int ret = 0;
+-
+-	if (qib_super)
+-		ret = remove_device_files(qib_super, dd);
+-
+-	return ret;
+-}
+-
+ static struct file_system_type qibfs_fs_type = {
+-	.owner =        THIS_MODULE,
+-	.name =         "ipathfs",
+-	.init_fs_context = qibfs_init_fs_context,
+-	.kill_sb =      qibfs_kill_super,
++	.owner			= THIS_MODULE,
++	.name			= "ipathfs",
++	.init_fs_context	= qibfs_init_fs_context,
++	.kill_sb		= kill_litter_super,
+ };
+ MODULE_ALIAS_FS("ipathfs");
  
- 	/* allocate a deviceless superblock */
--	sb = sget_fc(fc,
--		     as->dyn_root ? afs_dynroot_test_super : afs_test_super,
--		     afs_set_super);
-+	if (as->dyn_root)
-+		sb = sget_fc(fc, afs_dynroot_test_super, NULL);
-+	else
-+		sb = sget_fc(fc, afs_test_super, NULL);
- 	if (IS_ERR(sb)) {
- 		ret = PTR_ERR(sb);
- 		goto error;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 01b86bd4eae8dc..063b9aa313c227 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1350,10 +1350,8 @@ static int btrfs_test_super(struct super_block *s, void *data)
- 
- static int btrfs_set_super(struct super_block *s, void *data)
- {
--	int err = set_anon_super(s, data);
--	if (!err)
--		s->s_fs_info = data;
--	return err;
-+	s->s_fs_info = data;
-+	return 0;
+@@ -541,7 +482,7 @@ int __init qib_init_qibfs(void)
+ 	return register_filesystem(&qibfs_fs_type);
  }
  
- /*
-diff --git a/fs/ceph/super.c b/fs/ceph/super.c
-index 7feef0b35b97b5..cbeaab8c21d8e6 100644
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -1191,7 +1191,6 @@ static struct dentry *ceph_real_mount(struct ceph_fs_client *fsc,
- static int ceph_set_super(struct super_block *s, struct fs_context *fc)
+-int __exit qib_exit_qibfs(void)
++void __exit qib_exit_qibfs(void)
  {
- 	struct ceph_fs_client *fsc = s->s_fs_info;
+-	return unregister_filesystem(&qibfs_fs_type);
++	unregister_filesystem(&qibfs_fs_type);
+ }
+diff --git a/drivers/infiniband/hw/qib/qib_init.c b/drivers/infiniband/hw/qib/qib_init.c
+index 33667becd52b04..46306573a37a7d 100644
+--- a/drivers/infiniband/hw/qib/qib_init.c
++++ b/drivers/infiniband/hw/qib/qib_init.c
+@@ -1217,9 +1217,13 @@ static int __init qib_ib_init(void)
+ {
+ 	int ret;
+ 
++	ret = qib_init_qibfs();
++	if (ret)
++		return ret;
++
+ 	ret = qib_dev_init();
+ 	if (ret)
+-		goto bail;
++		goto bail_fs;
+ 
+ 	/*
+ 	 * These must be called before the driver is registered with
+@@ -1237,10 +1241,7 @@ static int __init qib_ib_init(void)
+ 		goto bail_dev;
+ 	}
+ 
+-	/* not fatal if it doesn't work */
+-	if (qib_init_qibfs())
+-		pr_err("Unable to register ipathfs\n");
+-	goto bail; /* all OK */
++	return ret;
+ 
+ bail_dev:
+ #ifdef CONFIG_INFINIBAND_QIB_DCA
+@@ -1250,7 +1251,8 @@ static int __init qib_ib_init(void)
+ 	qib_dbg_exit();
+ #endif
+ 	qib_dev_cleanup();
+-bail:
++bail_fs:
++	qib_exit_qibfs();
+ 	return ret;
+ }
+ 
+@@ -1261,14 +1263,6 @@ module_init(qib_ib_init);
+  */
+ static void __exit qib_ib_cleanup(void)
+ {
+-	int ret;
+-
+-	ret = qib_exit_qibfs();
+-	if (ret)
+-		pr_err(
+-			"Unable to cleanup counter filesystem: error %d\n",
+-			-ret);
+-
+ #ifdef CONFIG_INFINIBAND_QIB_DCA
+ 	dca_unregister_notify(&dca_notifier);
+ #endif
+@@ -1282,6 +1276,7 @@ static void __exit qib_ib_cleanup(void)
+ 
+ 	WARN_ON(!xa_empty(&qib_dev_table));
+ 	qib_dev_cleanup();
++	qib_exit_qibfs();
+ }
+ 
+ module_exit(qib_ib_cleanup);
+@@ -1469,7 +1464,7 @@ static int qib_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		if (qib_mini_init)
+ 			goto bail;
+ 		if (!j) {
+-			(void) qibfs_remove(dd);
++			qibfs_remove(dd);
+ 			qib_device_remove(dd);
+ 		}
+ 		if (!ret)
+@@ -1496,7 +1491,6 @@ static int qib_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ static void qib_remove_one(struct pci_dev *pdev)
+ {
+ 	struct qib_devdata *dd = pci_get_drvdata(pdev);
 -	int ret;
  
- 	dout("set_super %p\n", s);
+ 	/* unregister from IB core */
+ 	qib_unregister_ib_device(dd);
+@@ -1513,11 +1507,7 @@ static void qib_remove_one(struct pci_dev *pdev)
+ 	/* wait until all of our (qsfp) queue_work() calls complete */
+ 	flush_workqueue(ib_wq);
  
-@@ -1211,11 +1210,7 @@ static int ceph_set_super(struct super_block *s, struct fs_context *fc)
- 	s->s_flags |= SB_NODIRATIME | SB_NOATIME;
- 
- 	ceph_fscrypt_set_ops(s);
+-	ret = qibfs_remove(dd);
+-	if (ret)
+-		qib_dev_err(dd, "Failed counters filesystem cleanup: %d\n",
+-			    -ret);
 -
--	ret = set_anon_super_fc(s, fc);
--	if (ret != 0)
--		fsc->sb = NULL;
--	return ret;
-+	return 0;
- }
++	qibfs_remove(dd);
+ 	qib_device_remove(dd);
  
- /*
-diff --git a/fs/ecryptfs/main.c b/fs/ecryptfs/main.c
-index d99b2311759166..3ed91537a3991a 100644
---- a/fs/ecryptfs/main.c
-+++ b/fs/ecryptfs/main.c
-@@ -505,7 +505,7 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
- 	}
- 	mount_crypt_stat = &sbi->mount_crypt_stat;
- 
--	s = sget(fs_type, NULL, set_anon_super, flags, NULL);
-+	s = sget(fs_type, NULL, NULL, flags, NULL);
- 	if (IS_ERR(s)) {
- 		rc = PTR_ERR(s);
- 		goto out;
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 42523edb32fd53..5731003b56a9c9 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1511,7 +1511,7 @@ static int fuse_get_tree_submount(struct fs_context *fsc)
- 
- 	fm->fc = fuse_conn_get(fc);
- 	fsc->s_fs_info = fm;
--	sb = sget_fc(fsc, NULL, set_anon_super_fc);
-+	sb = sget_fc(fsc, NULL, NULL);
- 	if (fsc->s_fs_info)
- 		fuse_mount_destroy(fm);
- 	if (IS_ERR(sb))
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 0a0d593e5a9c79..a52957df956394 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -1454,7 +1454,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
- 				    virtqueue_size - FUSE_HEADER_OVERHEAD);
- 
- 	fsc->s_fs_info = fm;
--	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
-+	sb = sget_fc(fsc, virtio_fs_test_super, NULL);
- 	if (fsc->s_fs_info)
- 		fuse_mount_destroy(fm);
- 	if (IS_ERR(sb))
-diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index 772d059d4054ec..d6d3cba669dbdd 100644
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -300,7 +300,7 @@ static int kernfs_set_super(struct super_block *sb, struct fs_context *fc)
- 	struct kernfs_fs_context *kfc = fc->fs_private;
- 
- 	kfc->ns_tag = NULL;
--	return set_anon_super_fc(sb, fc);
-+	return 0;
- }
- 
- /**
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index 561221a87b02a6..89131e855e1393 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -1132,7 +1132,7 @@ static int nfs_set_super(struct super_block *s, struct fs_context *fc)
- 	struct nfs_server *server = fc->s_fs_info;
- 
- 	s->s_d_op = server->nfs_client->rpc_ops->dentry_ops;
--	return set_anon_super(s, server);
-+	return 0;
- }
- 
- static int nfs_compare_super_address(struct nfs_server *server1,
-diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
-index 42cb3e9b1effee..bf3a834ad15033 100644
---- a/fs/orangefs/super.c
-+++ b/fs/orangefs/super.c
-@@ -514,7 +514,7 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
- 		goto free_op;
- 	}
- 
--	sb = sget(fst, NULL, set_anon_super, flags, NULL);
-+	sb = sget(fst, NULL, NULL, flags, NULL);
- 
- 	if (IS_ERR(sb)) {
- 		d = ERR_CAST(sb);
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index fb792acffeca37..5700f1065af756 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -884,8 +884,9 @@ cifs_get_root(struct smb3_fs_context *ctx, struct super_block *sb)
- static int cifs_set_super(struct super_block *sb, void *data)
- {
- 	struct cifs_mnt_data *mnt_data = data;
-+
- 	sb->s_fs_info = mnt_data->cifs_sb;
--	return set_anon_super(sb, NULL);
-+	return 0;
- }
- 
- struct dentry *
-diff --git a/fs/super.c b/fs/super.c
-index bbe55f0651cca4..5c685b4944c2d6 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -787,7 +787,7 @@ struct super_block *sget_fc(struct fs_context *fc,
- 	struct super_block *s = NULL;
- 	struct super_block *old;
- 	struct user_namespace *user_ns = fc->global ? &init_user_ns : fc->user_ns;
--	int err;
-+	int err = 0;
- 
- retry:
- 	spin_lock(&sb_lock);
-@@ -806,14 +806,26 @@ struct super_block *sget_fc(struct fs_context *fc,
- 	}
- 
- 	s->s_fs_info = fc->s_fs_info;
--	err = set(s, fc);
--	if (err) {
--		s->s_fs_info = NULL;
--		spin_unlock(&sb_lock);
--		destroy_unused_super(s);
--		return ERR_PTR(err);
-+	if (set) {
-+		err = set(s, fc);
-+		if (err) {
-+			s->s_fs_info = NULL;
-+			goto unlock_and_destroy;
-+		}
- 	}
- 	fc->s_fs_info = NULL;
-+
-+	if (!s->s_dev) {
-+		/*
-+		 * If the file system didn't set a s_dev (which is usually only
-+		 * done for block based file systems), set an anonymous dev_t
-+		 * here now so that we always have a valid ->s_dev.
-+		 */
-+		err = get_anon_bdev(&s->s_dev);
-+		if (err)
-+			goto unlock_and_destroy;
-+	}
-+
- 	s->s_type = fc->fs_type;
- 	s->s_iflags |= fc->s_iflags;
- 	strscpy(s->s_id, s->s_type->name, sizeof(s->s_id));
-@@ -843,6 +855,10 @@ struct super_block *sget_fc(struct fs_context *fc,
- 		goto retry;
- 	destroy_unused_super(s);
- 	return old;
-+unlock_and_destroy:
-+	spin_unlock(&sb_lock);
-+	destroy_unused_super(s);
-+	return ERR_PTR(err);
- }
- EXPORT_SYMBOL(sget_fc);
- 
-@@ -897,12 +913,18 @@ struct super_block *sget(struct file_system_type *type,
- 		goto retry;
- 	}
- 
--	err = set(s, data);
--	if (err) {
--		spin_unlock(&sb_lock);
--		destroy_unused_super(s);
--		return ERR_PTR(err);
-+	if (set) {
-+		err = set(s, data);
-+		if (err)
-+			goto unlock_and_destroy;
- 	}
-+
-+	if (!s->s_dev) {
-+		err = get_anon_bdev(&s->s_dev);
-+		if (err)
-+			goto unlock_and_destroy;
-+	}
-+
- 	s->s_type = type;
- 	strscpy(s->s_id, type->name, sizeof(s->s_id));
- 	list_add_tail(&s->s_list, &super_blocks);
-@@ -911,6 +933,10 @@ struct super_block *sget(struct file_system_type *type,
- 	get_filesystem(type);
- 	register_shrinker_prepared(&s->s_shrink);
- 	return s;
-+unlock_and_destroy:
-+	spin_unlock(&sb_lock);
-+	destroy_unused_super(s);
-+	return ERR_PTR(err);
- }
- EXPORT_SYMBOL(sget);
- 
-@@ -1288,12 +1314,6 @@ void free_anon_bdev(dev_t dev)
- }
- EXPORT_SYMBOL(free_anon_bdev);
- 
--int set_anon_super(struct super_block *s, void *data)
--{
--	return get_anon_bdev(&s->s_dev);
--}
--EXPORT_SYMBOL(set_anon_super);
--
- void kill_litter_super(struct super_block *sb)
- {
- 	if (sb->s_root)
-@@ -1302,12 +1322,6 @@ void kill_litter_super(struct super_block *sb)
- }
- EXPORT_SYMBOL(kill_litter_super);
- 
--int set_anon_super_fc(struct super_block *sb, struct fs_context *fc)
--{
--	return set_anon_super(sb, NULL);
--}
--EXPORT_SYMBOL(set_anon_super_fc);
--
- static int test_keyed_super(struct super_block *sb, struct fs_context *fc)
- {
- 	return sb->s_fs_info == fc->s_fs_info;
-@@ -1326,7 +1340,7 @@ static int vfs_get_super(struct fs_context *fc,
- 	struct super_block *sb;
- 	int err;
- 
--	sb = sget_fc(fc, test, set_anon_super_fc);
-+	sb = sget_fc(fc, test, NULL);
- 	if (IS_ERR(sb))
- 		return PTR_ERR(sb);
- 
-@@ -1657,7 +1671,7 @@ struct dentry *mount_nodev(struct file_system_type *fs_type,
- 	int (*fill_super)(struct super_block *, void *, int))
- {
- 	int error;
--	struct super_block *s = sget(fs_type, NULL, set_anon_super, flags, NULL);
-+	struct super_block *s = sget(fs_type, NULL, NULL, flags, NULL);
- 
- 	if (IS_ERR(s))
- 		return ERR_CAST(s);
-@@ -1709,7 +1723,7 @@ struct dentry *mount_single(struct file_system_type *fs_type,
- 	struct super_block *s;
- 	int error;
- 
--	s = sget(fs_type, compare_single, set_anon_super, flags, NULL);
-+	s = sget(fs_type, compare_single, NULL, flags, NULL);
- 	if (IS_ERR(s))
- 		return ERR_CAST(s);
- 	if (!s->s_root) {
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 6527175591a729..b9d1ab63e3c87e 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2273,7 +2273,7 @@ static int sb_test(struct super_block *sb, void *data)
- static int sb_set(struct super_block *sb, void *data)
- {
- 	sb->s_fs_info = data;
--	return set_anon_super(sb, NULL);
-+	return 0;
- }
- 
- static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 129b8c0c83960b..31b6b235b36efa 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2385,8 +2385,6 @@ void kill_block_super(struct super_block *sb);
- void kill_litter_super(struct super_block *sb);
- void deactivate_super(struct super_block *sb);
- void deactivate_locked_super(struct super_block *sb);
--int set_anon_super(struct super_block *s, void *data);
--int set_anon_super_fc(struct super_block *s, struct fs_context *fc);
- int get_anon_bdev(dev_t *);
- void free_anon_bdev(dev_t);
- struct super_block *sget_fc(struct fs_context *fc,
+ 	qib_postinit_cleanup(dd);
 -- 
 2.39.2
 
