@@ -2,213 +2,214 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642CA79E63B
-	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 13:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7742279EBE4
+	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 17:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240056AbjIMLM0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Sep 2023 07:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S241008AbjIMPBG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Sep 2023 11:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240084AbjIMLMH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 07:12:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA78D1BCE;
-        Wed, 13 Sep 2023 04:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=S1SFy87Tal1zjTMpG/B1YzaZjyHevEyx/Ud+hlEwuTk=; b=ZAxP4t/djhRJyUxTiB1g1/4wNn
-        Jy/Xo+IIkj7ixqhSE1v83lesrSKtdCY7mtxiQpdDWaA47Ad++ERcNIAoDq2vVNzeVPvQbWXtvvLM6
-        t/UO4IUIIeR8why07hc075q8lHsrKJI7D7mNsK+en+fXUEiPi0sUSYFaYxchkQ79W/EEUGGmwNJ+x
-        DABx1LwgpU4GjE/l8YtCJy55AK2oNY5aPc3B1GTiJgyFJfms8hvozRaT9sViD54yzQ1nCUczSlOb4
-        CHMuF0drthpu+kXBBjg9uc0tJgUiLZA97kWEUVl45SwGmIFrXSS/HTgtHdzV3aMao1S4jWOC29Yio
-        34Xi/lzw==;
-Received: from [190.210.221.22] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgNmL-005iD3-11;
-        Wed, 13 Sep 2023 11:11:29 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <brauner@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: [PATCH 19/19] fs: remove ->kill_sb
-Date:   Wed, 13 Sep 2023 08:10:13 -0300
-Message-Id: <20230913111013.77623-20-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230913111013.77623-1-hch@lst.de>
-References: <20230913111013.77623-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        with ESMTP id S241011AbjIMPBE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 11:01:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848B2E3;
+        Wed, 13 Sep 2023 08:01:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ED32C433C8;
+        Wed, 13 Sep 2023 15:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694617260;
+        bh=HSdEtrygzqfkzkBkJZg8xVNxTnlq6f0NK4eV4pRksxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ll37QBssXbUE+/gqNfjCW21z6o4T/ILJpIF/+0yFJ1FdlmP4avuZsJ51DiMg4IWjf
+         cZozJPQXEMV/0cGTn2pqze66C3QLiUPr6XWtNzjtzQWABjZHvAqmL2pA6OI37WQj6F
+         fYCu2lo9yNyNG8RopMh9qkLEGwkr6+LNXgP84mj0DTR3UHVOp3713qYbkKnby9zWTR
+         WtCMs7yqD+klI4HazpC91VAr/evuX+A3oSI2p9ZNS10ysXySp0ubYR1hBzYKaD0tZY
+         N2PoSnetyh39vONDdSXUma9wmVJ7j/56QAeYUWPuE6VzlUZI3PNSRhUB8WFUynTPWA
+         5DEkQUcS+d1ng==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 13 Sep 2023 18:00:54 +0300
+Message-Id: <CVHVOJEJZEZ1.25VFM2W8FTU8R@suppilovahvero>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v4 04/18] x86/sgx: Use sgx_epc_lru_lists for existing
+ active page list
+X-Mailer: aerc 0.14.0
+References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
+ <20230913040635.28815-5-haitao.huang@linux.intel.com>
+In-Reply-To: <20230913040635.28815-5-haitao.huang@linux.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now that no instances are left, remove ->kill_sb and mark
-generic_shutdown_super static.
+On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>
+> All EPC pages of enclaves including VA and SECS will be tracked in
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- Documentation/filesystems/locking.rst |  5 -----
- Documentation/filesystems/vfs.rst     |  5 -----
- fs/super.c                            | 25 +++++++++----------------
- include/linux/fs.h                    |  2 --
- 4 files changed, 9 insertions(+), 28 deletions(-)
+s/VA/Version Array (VA)/
+s/SECS/SGX Enclave Control Structure (SECS)/
 
-diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-index c33e2f03ed1f69..e4ca99c0828d00 100644
---- a/Documentation/filesystems/locking.rst
-+++ b/Documentation/filesystems/locking.rst
-@@ -221,7 +221,6 @@ prototypes::
- 	struct dentry *(*mount) (struct file_system_type *, int,
- 		       const char *, void *);
- 	void (*shutdown_sb) (struct super_block *);
--	void (*kill_sb) (struct super_block *);
- 	void (*free_sb) (struct super_block *);
- 
- locking rules:
-@@ -231,16 +230,12 @@ ops		may block
- =======		=========
- mount		yes
- shutdown_sb	yes
--kill_sb		yes
- free_sb		yes
- =======		=========
- 
- ->mount() returns ERR_PTR or the root dentry; its superblock should be locked
- on return.
- 
--->kill_sb() takes a write-locked superblock, does all shutdown work on it,
--unlocks and drops the reference.
--
- address_space_operations
- ========================
- prototypes::
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-index 1a7c6926c31f34..29513ee1d34ede 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -120,7 +120,6 @@ members are defined:
- 		struct dentry *(*mount) (struct file_system_type *, int,
- 			const char *, void *);
- 		void (*shutdown_sb) (struct super_block *);
--		void (*kill_sb) (struct super_block *);
- 		void (*free_sb) (struct super_block *);
- 		struct module *owner;
- 		struct file_system_type * next;
-@@ -164,10 +163,6 @@ members are defined:
- 	Note: dentries and inodes are normally taken care of and do not need
- 	specific handling unless they are pinned by kernel users.
- 
--``kill_sb``
--	the method to call when an instance of this filesystem should be
--	shut down
--
- ``free_sb``
- 	Free file system specific resources like sb->s_fs_info that are
- 	still needed while inodes are freed during umount.
-diff --git a/fs/super.c b/fs/super.c
-index 805ca1dd1e23f2..d9c564e70ffcd5 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -458,6 +458,8 @@ static void kill_super_notify(struct super_block *sb)
- 	super_wake(sb, SB_DEAD);
- }
- 
-+static void generic_shutdown_super(struct super_block *sb);
-+
- /**
-  *	deactivate_locked_super	-	drop an active reference to superblock
-  *	@s: superblock to deactivate
-@@ -480,15 +482,11 @@ void deactivate_locked_super(struct super_block *s)
- 
- 	unregister_shrinker(&s->s_shrink);
- 
--	if (fs->kill_sb) {
--		fs->kill_sb(s);
--	} else {
--		if (fs->shutdown_sb)
--			fs->shutdown_sb(s);
--		generic_shutdown_super(s);
--		if (fs->free_sb)
--			fs->free_sb(s);
--	}
-+	if (fs->shutdown_sb)
-+		fs->shutdown_sb(s);
-+	generic_shutdown_super(s);
-+	if (fs->free_sb)
-+		fs->free_sb(s);
- 
- 	kill_super_notify(s);
- 
-@@ -661,16 +659,13 @@ EXPORT_SYMBOL(retire_super);
-  *	@sb: superblock to kill
-  *
-  *	generic_shutdown_super() does all fs-independent work on superblock
-- *	shutdown.  Typical ->kill_sb() should pick all fs-specific objects
-- *	that need destruction out of superblock, call generic_shutdown_super()
-- *	and release aforementioned objects.  Note: dentries and inodes _are_
-- *	taken care of and do not need specific handling.
-+ *	shutdown. 
-  *
-  *	Upon calling this function, the filesystem may no longer alter or
-  *	rearrange the set of dentries belonging to this super_block, nor may it
-  *	change the attachments of dentries to inodes.
-  */
--void generic_shutdown_super(struct super_block *sb)
-+static void generic_shutdown_super(struct super_block *sb)
- {
- 	const struct super_operations *sop = sb->s_op;
- 
-@@ -743,8 +738,6 @@ void generic_shutdown_super(struct super_block *sb)
- 	}
- }
- 
--EXPORT_SYMBOL(generic_shutdown_super);
--
- bool mount_capable(struct fs_context *fc)
- {
- 	if (!(fc->fs_type->fs_flags & FS_USERNS_MOUNT))
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 302be5dfc1a04a..f57d3a27b488f7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2340,7 +2340,6 @@ struct file_system_type {
- 	const struct fs_parameter_spec *parameters;
- 	struct dentry *(*mount) (struct file_system_type *, int,
- 		       const char *, void *);
--	void (*kill_sb) (struct super_block *);
- 	void (*shutdown_sb)(struct super_block *sb);
- 	void (*free_sb)(struct super_block *sb);
- 	struct module *owner;
-@@ -2382,7 +2381,6 @@ extern struct dentry *mount_nodev(struct file_system_type *fs_type,
- 	int (*fill_super)(struct super_block *, void *, int));
- extern struct dentry *mount_subtree(struct vfsmount *mnt, const char *path);
- void retire_super(struct super_block *sb);
--void generic_shutdown_super(struct super_block *sb);
- void block_free_sb(struct super_block *sb);
- void litter_shutdown_sb(struct super_block *sb);
- void deactivate_super(struct super_block *sb);
--- 
-2.39.2
+Just a nitpick, because it is always good to remind what these acronyms
+are (there are so many of them in this world).
 
+> sgx_epc_lru_lists structs, one per cgroup. For now just replace the
+> existing sgx_active_page_list in the reclaimer and its spinlock with a
+> global sgx_epc_lru_lists struct. VA and SECS pages are still not tracked
+> at this point but they will be tracked after an unreclaimable LRU list
+> is added to the sgx_epc_lru_lists struct.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> ---
+> V4:
+> - No change, only reordered the patch.
+>
+> V3:
+> - Remove usage of list wrapper
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 39 +++++++++++++++++-----------------
+>  1 file changed, 20 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index 166692f2d501..afce51d6e94a 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -26,10 +26,9 @@ static DEFINE_XARRAY(sgx_epc_address_space);
+> =20
+>  /*
+>   * These variables are part of the state of the reclaimer, and must be a=
+ccessed
+> - * with sgx_reclaimer_lock acquired.
+> + * with sgx_global_lru.lock acquired.
+>   */
+> -static LIST_HEAD(sgx_active_page_list);
+> -static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+> +static struct sgx_epc_lru_lists sgx_global_lru;
+> =20
+>  static atomic_long_t sgx_nr_free_pages =3D ATOMIC_LONG_INIT(0);
+> =20
+> @@ -304,13 +303,13 @@ static void sgx_reclaim_pages(void)
+>  	int ret;
+>  	int i;
+> =20
+> -	spin_lock(&sgx_reclaimer_lock);
+> +	spin_lock(&sgx_global_lru.lock);
+>  	for (i =3D 0; i < SGX_NR_TO_SCAN; i++) {
+> -		if (list_empty(&sgx_active_page_list))
+> +		epc_page =3D list_first_entry_or_null(&sgx_global_lru.reclaimable,
+> +						    struct sgx_epc_page, list);
+> +		if (!epc_page)
+>  			break;
+> =20
+> -		epc_page =3D list_first_entry(&sgx_active_page_list,
+> -					    struct sgx_epc_page, list);
+>  		list_del_init(&epc_page->list);
+>  		encl_page =3D epc_page->owner;
+> =20
+> @@ -322,7 +321,7 @@ static void sgx_reclaim_pages(void)
+>  			 */
+>  			epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  	}
+> -	spin_unlock(&sgx_reclaimer_lock);
+> +	spin_unlock(&sgx_global_lru.lock);
+> =20
+>  	for (i =3D 0; i < cnt; i++) {
+>  		epc_page =3D chunk[i];
+> @@ -345,9 +344,9 @@ static void sgx_reclaim_pages(void)
+>  		continue;
+> =20
+>  skip:
+> -		spin_lock(&sgx_reclaimer_lock);
+> -		list_add_tail(&epc_page->list, &sgx_active_page_list);
+> -		spin_unlock(&sgx_reclaimer_lock);
+> +		spin_lock(&sgx_global_lru.lock);
+> +		list_add_tail(&epc_page->list, &sgx_global_lru.reclaimable);
+> +		spin_unlock(&sgx_global_lru.lock);
+> =20
+>  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
+> =20
+> @@ -378,7 +377,7 @@ static void sgx_reclaim_pages(void)
+>  static bool sgx_should_reclaim(unsigned long watermark)
+>  {
+>  	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+> -	       !list_empty(&sgx_active_page_list);
+> +	       !list_empty(&sgx_global_lru.reclaimable);
+>  }
+> =20
+>  /*
+> @@ -430,6 +429,8 @@ static bool __init sgx_page_reclaimer_init(void)
+> =20
+>  	ksgxd_tsk =3D tsk;
+> =20
+> +	sgx_lru_init(&sgx_global_lru);
+> +
+>  	return true;
+>  }
+> =20
+> @@ -505,10 +506,10 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+>   */
+>  void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
+>  {
+> -	spin_lock(&sgx_reclaimer_lock);
+> +	spin_lock(&sgx_global_lru.lock);
+>  	page->flags |=3D SGX_EPC_PAGE_RECLAIMER_TRACKED;
+> -	list_add_tail(&page->list, &sgx_active_page_list);
+> -	spin_unlock(&sgx_reclaimer_lock);
+> +	list_add_tail(&page->list, &sgx_global_lru.reclaimable);
+> +	spin_unlock(&sgx_global_lru.lock);
+>  }
+> =20
+>  /**
+> @@ -523,18 +524,18 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page =
+*page)
+>   */
+>  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+>  {
+> -	spin_lock(&sgx_reclaimer_lock);
+> +	spin_lock(&sgx_global_lru.lock);
+>  	if (page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED) {
+>  		/* The page is being reclaimed. */
+>  		if (list_empty(&page->list)) {
+> -			spin_unlock(&sgx_reclaimer_lock);
+> +			spin_unlock(&sgx_global_lru.lock);
+>  			return -EBUSY;
+>  		}
+> =20
+>  		list_del(&page->list);
+>  		page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
+>  	}
+> -	spin_unlock(&sgx_reclaimer_lock);
+> +	spin_unlock(&sgx_global_lru.lock);
+> =20
+>  	return 0;
+>  }
+> @@ -567,7 +568,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
+bool reclaim)
+>  			break;
+>  		}
+> =20
+> -		if (list_empty(&sgx_active_page_list))
+> +		if (list_empty(&sgx_global_lru.reclaimable))
+>  			return ERR_PTR(-ENOMEM);
+> =20
+>  		if (!reclaim) {
+> --=20
+> 2.25.1
+
+Other than that looks good to me (including the commit description).
+
+BR, Jarkko
