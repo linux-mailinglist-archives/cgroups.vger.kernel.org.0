@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1554679E112
-	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 09:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA79E79E0F8
+	for <lists+cgroups@lfdr.de>; Wed, 13 Sep 2023 09:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238578AbjIMHpf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Sep 2023 03:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S234492AbjIMHi7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Sep 2023 03:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232290AbjIMHpf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 03:45:35 -0400
-Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408261729
-        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 00:45:31 -0700 (PDT)
-Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1d593b2dd5bso4660624fac.3
-        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 00:45:31 -0700 (PDT)
+        with ESMTP id S238598AbjIMHi7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Sep 2023 03:38:59 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0F71729
+        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 00:38:55 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59285f1e267so12868837b3.0
+        for <cgroups@vger.kernel.org>; Wed, 13 Sep 2023 00:38:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694591129; x=1695195929; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694590734; x=1695195534; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvedlnHbJ7Xvblewl93Q0+oTKItg5cpjvq/m6HrJuqg=;
-        b=E6YfUakV7w6M2u/r0jr2OyHqrJHxxlNM3xYYDwoQ+8RhkVLMVSdhBOl30Sglf4XZpd
-         dvZxdJdhkNMkt0xIfVjqWYXU81HoZyGSU3oOq/mVp6pVBFIOlqGevcbRPBpNCVJDqn7Q
-         pZpj2MLNHT5vGwL0xuHkGZcW6y+rEOR+hLyF+kcBExgOjpzCtPIQwbFKXsEhzpybHb/h
-         9r96t+2Yx1TdEG2RaQo66UyRvZI8sHtRkjnFKNy4YwJx5Wh8kUrD+cOJdlQA8q3+qS1t
-         zQw2++vjjxWIXUNhy3O85l/2wBHO5PxLWHUf3k2DHif7hz/WqUwNLzQ9fK8aWAwBTJlc
-         axTg==
+        bh=3zT0hHZy8cis/iWPUQS68SvJSs9nRfkwgZ1RrbYh+5w=;
+        b=z8BsSMMkcpxomBbaPryW+olQ3UQVLbWNQ4fOr1/+MTIUMoQH4cQsV+oiqV4atmjOW0
+         iedsLMwd2fKtBeVG3fovUWiTkONwJ9bGazl6w+jRxcRGbWl58plni/H6lz1w+ehkYUp/
+         9Y2DCfAAA5cvmwu485N+09B1zAZBefpR28YqMqsEyVCNiUqupmfcZtMwJar/oheTRJEb
+         J2/3RtWTQdUjBMKHzFjwpWomkyIpvKscHcQk0nkkxRwY/m/b9ATqZw7u1HyN4OZrIDro
+         vpRhi6cCZuULcSRNLz5KDJ1TLOPz3GKy0zMEES4ni0bW2WIZYwpIWXQnqprL2MBfhBli
+         Gs1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694591129; x=1695195929;
+        d=1e100.net; s=20230601; t=1694590734; x=1695195534;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvedlnHbJ7Xvblewl93Q0+oTKItg5cpjvq/m6HrJuqg=;
-        b=CBIZCtrpSnxDmZw3B26eI+rghYg91jSH0UnufxchNE8spSeOIjJSrPftHME1FGBw5g
-         rEMSpKw/+WLde3zF2RkVzVYtDTqaxCAYO2A/iQMbuEs+flZQ2ikhFPdR/w3YmEDtqP/I
-         xrPock3LS8O1mbr53n+1VWerTfgBecSXoPvwVEPnJ+dAVK0kEz/X4bOl87j8PGGIFwch
-         bEAqdotS+QQWXdrUN/DPCPQZx2sjrUv3qe4lhNLk9rHfbFSOVoS/a0zvM27gwIIBaVmp
-         MaWM76ojbo1ZWcfQvTG8rbN5as9Sfz8AaJ0BYc6FfMWwlTYoNv4ZBzmqzm+pGRG0AVxY
-         hpKg==
-X-Gm-Message-State: AOJu0YytzsRhwHdZvOD32sX2kbLZAW9C5Yx8Ue+HlTkBZPByFS7Ag83B
-        QC7ZbcGNb1A/iIKBobs3JA5V9LAiwpEGWMmb
-X-Google-Smtp-Source: AGHT+IHlBNs2Mx/ZSSb+5tjW06WVFGJiIVkb2ZqOrPE3dU6m0k0diTK/q/q6GD3+gQB+u8r6mi7KeG2OWdyZrcyi
+        bh=3zT0hHZy8cis/iWPUQS68SvJSs9nRfkwgZ1RrbYh+5w=;
+        b=Hol0Z65tgskxERXW7tLq8jKyhm2VU3BlAyZWlg3WazbHuEJ3Eb1VZhEV9bT3A8A1P6
+         Ev7l2BM78wVF2GNpM7nkANVPD7TYJz5DM1WTimz0zC4FBg1vEbAHYidBeUcQvof08en0
+         z5To/nW0A/EO7MJvxEqNnqxC1+ZCf0mSKdv4fA2U/wciXbNsKkY1+gtQaUprv7pzGu/a
+         NXqUTm/rHZJWaQx9HT2hSEW8FyMS6Y6qAz25ka4Vny6Drlo+6yJKIxerSUZfCORJCqFu
+         AUWHeTAegmezUeY7SZIIa3mjeBD/h/gsgOR05S+Y9XzL+Aa45gga76+yjGUNJGuMBfxi
+         8rDw==
+X-Gm-Message-State: AOJu0YyKNaVDhX/593xjv952RcTxt0szbK5ptp+pskEBrCQus5vVjrPX
+        1Qg8JIIVqOdRXkDOOhpLLg3sChglOgwzhvtk
+X-Google-Smtp-Source: AGHT+IG3xAxVjeVugRkb9w85c4h3IHyzBTJ6cMwknrJlaNgvG0fGdTwmuzoswAYft+iKkPbWy/xXuohXtxPiB5qL
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:d393:0:b0:d7e:dff4:b0fe with SMTP
- id e141-20020a25d393000000b00d7edff4b0femr32185ybf.7.1694590732515; Wed, 13
- Sep 2023 00:38:52 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 07:38:44 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a25:d2d5:0:b0:d78:28d0:15bc with SMTP
+ id j204-20020a25d2d5000000b00d7828d015bcmr54189ybg.4.1694590734274; Wed, 13
+ Sep 2023 00:38:54 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 07:38:45 +0000
 In-Reply-To: <20230913073846.1528938-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20230913073846.1528938-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230913073846.1528938-2-yosryahmed@google.com>
-Subject: [PATCH 1/3] mm: memcg: change flush_next_time to flush_last_time
+Message-ID: <20230913073846.1528938-3-yosryahmed@google.com>
+Subject: [PATCH 2/3] mm: memcg: rename stats_flush_threshold to stats_updates_order
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
@@ -70,54 +70,87 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-flush_next_time is an inaccurate name. It's not the next time that
-periodic flushing will happen, it's rather the next time that
-ratelimited flushing can happen if the periodic flusher is late.
+stats_flush_threshold is a misnomer. It is not actually a threshold, but
+rather a number that represents the amount of updates that we have. It
+is counted in multiples of MEMCG_CHARGE_BATCH. When this value reaches
+num_online_cpus(), we flush the stats.
 
-Simplify its semantics by just storing the timestamp of the last flush
-instead, flush_last_time. Move the 2*FLUSH_TIME addition to
-mem_cgroup_flush_stats_ratelimited(), and add a comment explaining it.
-This way, all the ratelimiting semantics live in one place.
+Hence, num_online_cpus() is the actual threshold, and
+stats_flush_threshold is actually an order of the stats updates
+magnitude. Rename stats_flush_threshold to stats_updates_order, and
+define a STATS_FLUSH_THRESHOLD constant that resolves to
+num_online_cpus().
 
 No functional change intended.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- mm/memcontrol.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/memcontrol.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b29b850cf399..35a9c013d755 100644
+index 35a9c013d755..d729870505f1 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -590,7 +590,7 @@ static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+@@ -589,10 +589,12 @@ static void flush_memcg_stats_dwork(struct work_struct *w);
+ static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
  static DEFINE_PER_CPU(unsigned int, stats_updates);
  static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
- static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
--static u64 flush_next_time;
-+static u64 flush_last_time;
+-static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
++/* stats_updates_order is in multiples of MEMCG_CHARGE_BATCH */
++static atomic_t stats_updates_order = ATOMIC_INIT(0);
+ static u64 flush_last_time;
  
  #define FLUSH_TIME (2UL*HZ)
++#define STATS_FLUSH_THRESHOLD num_online_cpus()
  
-@@ -650,7 +650,7 @@ static void do_flush_stats(void)
- 	    atomic_xchg(&stats_flush_ongoing, 1))
- 		return;
- 
--	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
-+	WRITE_ONCE(flush_last_time, jiffies_64);
+ /*
+  * Accessors to ensure that preemption is disabled on PREEMPT_RT because it can
+@@ -628,13 +630,11 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 	x = __this_cpu_add_return(stats_updates, abs(val));
+ 	if (x > MEMCG_CHARGE_BATCH) {
+ 		/*
+-		 * If stats_flush_threshold exceeds the threshold
+-		 * (>num_online_cpus()), cgroup stats update will be triggered
+-		 * in __mem_cgroup_flush_stats(). Increasing this var further
+-		 * is redundant and simply adds overhead in atomic update.
++		 * Incrementing stats_updates_order beyond the threshold is
++		 * redundant. Avoid the overhead of the atomic update.
+ 		 */
+-		if (atomic_read(&stats_flush_threshold) <= num_online_cpus())
+-			atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_threshold);
++		if (atomic_read(&stats_updates_order) <= STATS_FLUSH_THRESHOLD)
++			atomic_add(x / MEMCG_CHARGE_BATCH, &stats_updates_order);
+ 		__this_cpu_write(stats_updates, 0);
+ 	}
+ }
+@@ -654,13 +654,13 @@ static void do_flush_stats(void)
  
  	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
  
-@@ -666,7 +666,8 @@ void mem_cgroup_flush_stats(void)
- 
- void mem_cgroup_flush_stats_ratelimited(void)
- {
--	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
-+	/* Only flush if the periodic flusher is one full cycle late */
-+	if (time_after64(jiffies_64, READ_ONCE(flush_last_time) + 2*FLUSH_TIME))
- 		mem_cgroup_flush_stats();
+-	atomic_set(&stats_flush_threshold, 0);
++	atomic_set(&stats_updates_order, 0);
+ 	atomic_set(&stats_flush_ongoing, 0);
  }
  
+ void mem_cgroup_flush_stats(void)
+ {
+-	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
++	if (atomic_read(&stats_updates_order) > STATS_FLUSH_THRESHOLD)
+ 		do_flush_stats();
+ }
+ 
+@@ -674,8 +674,8 @@ void mem_cgroup_flush_stats_ratelimited(void)
+ static void flush_memcg_stats_dwork(struct work_struct *w)
+ {
+ 	/*
+-	 * Always flush here so that flushing in latency-sensitive paths is
+-	 * as cheap as possible.
++	 * Deliberately ignore stats_updates_order here so that flushing in
++	 * latency-sensitive paths is as cheap as possible.
+ 	 */
+ 	do_flush_stats();
+ 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
 -- 
 2.42.0.283.g2d96d420d3-goog
 
