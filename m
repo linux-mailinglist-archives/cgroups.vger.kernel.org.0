@@ -2,165 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC16E7A0C11
-	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 19:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A0B7A0E2B
+	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 21:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240667AbjINR5k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Sep 2023 13:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
+        id S241247AbjINTX5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Sep 2023 15:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240454AbjINR5h (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Sep 2023 13:57:37 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF061FF5
-        for <cgroups@vger.kernel.org>; Thu, 14 Sep 2023 10:57:33 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502d9ce31cbso2125670e87.3
-        for <cgroups@vger.kernel.org>; Thu, 14 Sep 2023 10:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694714251; x=1695319051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7VwkUDvl9cZBLnoPVjTuHGS1QPb1S9F5cL//3ghT7s0=;
-        b=YlWf9sD7GK4cXkl+pkBTdxc9bxdcUbiqFiuxTAoqK5nGIWWh5Tu6glIfvHSNyIVugD
-         W17YoFOy0fJsDwyd2mQA2343Rp3Ecjdy4fSP64NYey8tQe0aeia2U9PclC9gGCLNpGnp
-         Fun3PCAD+MWLDGTBTrXQEHf44ku1/FaD9Evg290F0OOPoGUzcMj/W1B0wKs3badVXY/R
-         n2I0mwhs/mmvKCOWdApbPL4nmCB2+o8gxjh7RZZ/cOS3Gczj8qnZZXmS0p3mK/9S6lw4
-         W2JGa1KxPbuucey4JBvpDSpcRJgic4Ner0KV8VaWA04CSDpRFCd03t703eoPVo0e3q3i
-         k39Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694714251; x=1695319051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7VwkUDvl9cZBLnoPVjTuHGS1QPb1S9F5cL//3ghT7s0=;
-        b=GvBcEAYmKbxKuP0fBFw8mGdWKG1IcGTsZyyDCg5B5R8R5DrS9bhrQYfHEZ2H+KSZKf
-         WQGj+znNG+eB3nwbSIfiaSuqSAKm2u0JruenDS35L60zCbMPiTt3DtvTlhCEYwcEkvtI
-         8meEkroX4cgaSi1iClEnrMxsBxsOTJPw4W5sMKnkW/CnwEwhrsUz8W+1FutYJS69ZUJl
-         CTxHJf2lnM3DbSIH8i2YFMhEfbcEalEGmGLcWHoLWhxLvxyncSQ5Od8/M/OvqU3p5OdI
-         G1GAMtMVxuwnx15mj60yrktXwo693YeyKHbB834vvbNSSZcOuozgkzxAv0SmpV1UA0W7
-         4Zdw==
-X-Gm-Message-State: AOJu0YzyjJC1tVBtGag1PwxDeOUhIxYVpLQFl6D1TJ7yFIm9d95JQ6nQ
-        7sCaURcbRTfp/burMTOV9AOHbN3E5EJdNVXWPg2Ybg==
-X-Google-Smtp-Source: AGHT+IHQgtpNq6uSe+ZaI+1z0+HChrSoQtGuT/yoWpOf0wfrdIwnM85LbTdpIHNp4lwDtm4o2jYW0NAs2G8lxEa0Mdw=
-X-Received: by 2002:a05:6512:2394:b0:4f8:71cc:2b6e with SMTP id
- c20-20020a056512239400b004f871cc2b6emr6333688lfv.33.1694714251252; Thu, 14
- Sep 2023 10:57:31 -0700 (PDT)
+        with ESMTP id S241221AbjINTX5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Sep 2023 15:23:57 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E2026B3;
+        Thu, 14 Sep 2023 12:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4hr36i5Cv0yOjN7Qm9aK+O+t73F0SaG9UQf71oo3coc=; b=TUQ6R0vfZi/dderGJyPUNMNW1S
+        bGBX6G1t2V5wN0IJDFy3lSyvNLxteUnMS7i8LrmlKHnBX7D/46D3VL1LLp3PmhIcrV8xp75QBNrph
+        uhKRrW8158NAtE6Nld12BbWmWTk6GDXfhxGjKJ9K5AQbTyVr5vCqN6iZU3CFmXLSa9W49CQKDf8JC
+        uvti6ZvkSk3v9U6tCGhbhjUC3u1Cko0dd2WrfufnlEMkfYxRNpLRW3s38xAwwJL3hK3fj7qLAGb4y
+        tqzNWInzV2Fz4nBN2aLW1MikDwXWL39jXoxSvpcwL0QBKsfKL2xUZIlLl6IopWufWXsm7kdFdP6cK
+        o/GMz/RA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgrw3-0066QM-1t;
+        Thu, 14 Sep 2023 19:23:31 +0000
+Date:   Thu, 14 Sep 2023 20:23:31 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230914192331.GK800259@ZenIV>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230914023705.GH800259@ZenIV>
+ <20230914053843.GI800259@ZenIV>
+ <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
+ <20230914165805.GJ800259@ZenIV>
 MIME-Version: 1.0
-References: <20230913073846.1528938-1-yosryahmed@google.com>
- <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
-In-Reply-To: <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 14 Sep 2023 10:56:52 -0700
-Message-ID: <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914165805.GJ800259@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 10:36=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
- wrote:
->
-> On Wed, Sep 13, 2023 at 12:38=E2=80=AFAM Yosry Ahmed <yosryahmed@google.c=
-om> wrote:
-> >
-> > Stats flushing for memcg currently follows the following rules:
-> > - Always flush the entire memcg hierarchy (i.e. flush the root).
-> > - Only one flusher is allowed at a time. If someone else tries to flush
-> >   concurrently, they skip and return immediately.
-> > - A periodic flusher flushes all the stats every 2 seconds.
-> >
-> > The reason this approach is followed is because all flushes are
-> > serialized by a global rstat spinlock. On the memcg side, flushing is
-> > invoked from userspace reads as well as in-kernel flushers (e.g.
-> > reclaim, refault, etc). This approach aims to avoid serializing all
-> > flushers on the global lock, which can cause a significant performance
-> > hit under high concurrency.
-> >
-> > This approach has the following problems:
-> > - Occasionally a userspace read of the stats of a non-root cgroup will
-> >   be too expensive as it has to flush the entire hierarchy [1].
->
-> This is a real world workload exhibiting the issue which is good.
->
-> > - Sometimes the stats accuracy are compromised if there is an ongoing
-> >   flush, and we skip and return before the subtree of interest is
-> >   actually flushed. This is more visible when reading stats from
-> >   userspace, but can also affect in-kernel flushers.
->
-> Please provide similar data/justification for the above. In addition:
->
-> 1. How much delayed/stale stats have you observed on real world workload?
+On Thu, Sep 14, 2023 at 05:58:05PM +0100, Al Viro wrote:
 
-I am not really sure. We don't have a wide deployment of kernels with
-rstat yet. These are problems observed in testing and/or concerns
-expressed by our userspace team.
+> Incidentally, I'm going to add a (belated by 10 years) chunk in porting.rst
+> re making sure that anything in superblock that might be needed by methods
+> called in RCU mode should *not* be freed without an RCU delay...  Should've
+> done that back in 3.12 merge window when RCU'd vfsmounts went in; as it
+> is, today we have several filesystems with exact same kind of breakage.
+> hfsplus and affs breakage had been there in 3.13 (missed those two), exfat
+> and ntfs3 - introduced later, by initial merges of filesystems in question.
+> Missed on review...
+> 
+> Hell knows - perhaps Documentation/filesystems/whack-a-mole might be a good
+> idea...
 
-I am trying to solve this now because any problems that result from
-this staleness will be very hard to debug and link back to stale
-stats.
-
->
-> 2. What is acceptable staleness in the stats for your use-case?
-
-Again, unfortunately I am not sure, but right now it can be O(seconds)
-which is not acceptable as we have workloads querying the stats every
-1s (and sometimes more frequently).
-
->
-> 3. What is your use-case?
-
-A few use cases we have that may be affected by this:
-- System overhead: calculations using memory.usage and some stats from
-memory.stat. If one of them is fresh and the other one isn't we have
-an inconsistent view of the system.
-- Userspace OOM killing: We use some stats in memory.stat to gauge the
-amount of memory that will be freed by killing a task as sometimes
-memory.usage includes shared resources that wouldn't be freed anyway.
-- Proactive reclaim: we read memory.stat in a proactive reclaim
-feedback loop, stale stats may cause us to mistakenly think reclaim is
-ineffective and prematurely stop.
-
->
-> 4. Does your use-case care about staleness of all the stats in
-> memory.stat or some specific stats?
-
-We have multiple use cases that can be affected by this, so I don't
-think there are some specific stats. I am also not aware of all
-possibly affected use cases.
-
->
-> 5. If some specific stats in memory.stat, does it make sense to
-> decouple them from rstat and just pay the price up front to maintain
-> them accurately?
->
-> Most importantly please please please be concise in your responses.
-
-I try, sometimes I am not sure how much detail is needed. Sorry about that =
-:)
-
->
-> I know I am going back on some of the previous agreements but this
-> whole locking back and forth has made in question the original
-> motivation.
-
-That's okay. Taking a step back, having flushing being indeterministic
-in this way is a time bomb in my opinion. Note that this also affects
-in-kernel flushers like reclaim or dirty isolation, which I suspect
-will be more affected by staleness. No one complained yet AFAICT, but
-I think it's a time bomb. The worst part is that if/when a problem
-happens, we won't be able to easily tell what went wrong.
+Actually, utf8 casefolding stuff also has the same problem, so ext4 and f2fs
+with casefolding are also affected ;-/
