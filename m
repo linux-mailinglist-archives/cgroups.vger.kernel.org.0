@@ -2,133 +2,238 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFC07A0B17
-	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 18:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00A97A0B70
+	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 19:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjINQ6l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Sep 2023 12:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S238922AbjINRU4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Sep 2023 13:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbjINQ6l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Sep 2023 12:58:41 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270858E;
-        Thu, 14 Sep 2023 09:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OegaqNYe7r/8g+jxupTPdfeZq9KJj2OTDDvHBPIaVRM=; b=RaDan93BbmgqvP/klzEFdds2eX
-        b7IkvPoHF6e1c3Qwa5SEuXQNKpqse3rk12yT18ICKdfI7a3VckJMEILdWLlbPuVYu2ikn++I4wXvt
-        w+i7SX8a1a6dW7cMTedrWSnk40HFt49t9T/tHHEsDSZTulc9VAD6mfnRu95MdKXU6o+4gx8ccOYCl
-        tzR3nVCHyShKKJCvDGpl2tGT/4EnlVLt+glK08TUPmS5nCJyZcU67evdh1flfJb6C4+28BCONKdlH
-        o2QcR8W9m9qZ3e3/lEoYnSGID6WJVx2XavJ6wJ2qDN3BMDjs3iQqHL/hIjEVtRJN3bEfYNC532EZP
-        98mkJSUw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgpfJ-0064a2-0E;
-        Thu, 14 Sep 2023 16:58:05 +0000
-Date:   Thu, 14 Sep 2023 17:58:05 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230914165805.GJ800259@ZenIV>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230914023705.GH800259@ZenIV>
- <20230914053843.GI800259@ZenIV>
- <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
+        with ESMTP id S238934AbjINRUy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Sep 2023 13:20:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1785CF
+        for <cgroups@vger.kernel.org>; Thu, 14 Sep 2023 10:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694711999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H7p/gt3aVq7lD7iyp0WPGqSXTJ30HA29PvaQkx1SlYw=;
+        b=G23anJLpk0D8q+oLjicgDON5JaX1C8QPfX0PJ995gG7lPGqZrUByZ2C5l39i/bvkUC6Myx
+        tNrgOOUtu09Hx/HtS1UbnN4KNZVMEgZNkvVe37nYYzFCOLqz6C0lllebn+q/fOXzQ5NIQA
+        trTmeIHLpgX+IqfYAG1/Y6F0jKBSAlU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-211-Zvip7LpjNBabTauwqCxrkQ-1; Thu, 14 Sep 2023 13:19:54 -0400
+X-MC-Unique: Zvip7LpjNBabTauwqCxrkQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 84307855321;
+        Thu, 14 Sep 2023 17:19:53 +0000 (UTC)
+Received: from [10.22.34.133] (unknown [10.22.34.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97EBD7B62;
+        Thu, 14 Sep 2023 17:19:52 +0000 (UTC)
+Message-ID: <cbad0762-892f-229e-280e-1faafbcb36b8@redhat.com>
+Date:   Thu, 14 Sep 2023 13:19:52 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and
+ accuracy
+Content-Language: en-US
+To:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        kernel-team@cloudflare.com, Wei Xu <weixugc@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230913073846.1528938-4-yosryahmed@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 04:02:25PM +0200, Christian Brauner wrote:
 
-> Yes, you're right that making the superblock and not the filesytem type
-> the bd_holder changes the logic and we are aware of that of course. And
-> it requires changes such as moving additional block device closing from
-> where some callers currently do it.
-
-Details, please?
-
-> But the filesytem type is not a very useful holder itself and has other
-> drawbacks. The obvious one being that it requires us to wade through all
-> superblocks on the system trying to find the superblock associated with
-> a given block device continously grabbing and dropping sb_lock and
-> s_umount. None of that is very pleasant nor elegant and it is for sure
-> not very easy to understand (Plus, it's broken for btrfs freezing and
-> syncing via block level ioctls.).
-
-"Constantly" is a bit of a stretch - IIRC, we grabbed sb_lock once, then
-went through the list comparing ->s_bdev (without any extra locking),
-then bumped ->s_count on the found superblock, dropped sb_lock,
-grabbed ->s_umount on the sucker and verified it's still alive.
-
-Repeated grabbing of any lock happened only on a race with fs shutdown;
-normal case is one spin_lock, one spin_unlock, one down_read().
-
-Oh, well...
-
-> Using the superblock as holder makes this go away and is overall a lot
-> more useful and intuitive and can be extended to filesystems with
-> multiple devices (Of which we apparently are bound to get more.).
+On 9/13/23 03:38, Yosry Ahmed wrote:
+> Stats flushing for memcg currently follows the following rules:
+> - Always flush the entire memcg hierarchy (i.e. flush the root).
+> - Only one flusher is allowed at a time. If someone else tries to flush
+>    concurrently, they skip and return immediately.
+> - A periodic flusher flushes all the stats every 2 seconds.
 >
-> So I think this change is worth the pain.
-> 
-> It's a fair point that these lifetime rules should be documented in
-> Documentation/filesystems/. The old lifetime documentation is too sparse
-> to be useful though.
+> The reason this approach is followed is because all flushes are
+> serialized by a global rstat spinlock. On the memcg side, flushing is
+> invoked from userspace reads as well as in-kernel flushers (e.g.
+> reclaim, refault, etc). This approach aims to avoid serializing all
+> flushers on the global lock, which can cause a significant performance
+> hit under high concurrency.
+>
+> This approach has the following problems:
+> - Occasionally a userspace read of the stats of a non-root cgroup will
+>    be too expensive as it has to flush the entire hierarchy [1].
+> - Sometimes the stats accuracy are compromised if there is an ongoing
+>    flush, and we skip and return before the subtree of interest is
+>    actually flushed. This is more visible when reading stats from
+>    userspace, but can also affect in-kernel flushers.
+>
+> This patch aims to solve both problems by reworking how flushing
+> currently works as follows:
+> - Without contention, there is no need to flush the entire tree. In this
+>    case, only flush the subtree of interest. This avoids the latency of a
+>    full root flush if unnecessary.
+> - With contention, fallback to a coalesced (aka unified) flush of the
+>    entire hierarchy, a root flush. In this case, instead of returning
+>    immediately if a root flush is ongoing, wait for it to finish
+>    *without* attempting to acquire the lock or flush. This is done using
+>    a completion. Compared to competing directly on the underlying lock,
+>    this approach makes concurrent flushing a synchronization point
+>    instead of a serialization point. Once  a root flush finishes, *all*
+>    waiters can wake up and continue at once.
+> - Finally, with very high contention, bound the number of waiters to the
+>    number of online cpus. This keeps the flush latency bounded at the tail
+>    (very high concurrency). We fallback to sacrificing stats freshness only
+>    in such cases in favor of performance.
+>
+> This was tested in two ways on a machine with 384 cpus:
+> - A synthetic test with 5000 concurrent workers doing allocations and
+>    reclaim, as well as 1000 readers for memory.stat (variation of [2]).
+>    No significant regressions were noticed in the total runtime.
+>    Note that if concurrent flushers compete directly on the spinlock
+>    instead of waiting for a completion, this test shows 2x-3x slowdowns.
+>    Even though subsequent flushers would have nothing to flush, just the
+>    serialization and lock contention is a major problem. Using a
+>    completion for synchronization instead seems to overcome this problem.
+>
+> - A synthetic stress test for concurrently reading memcg stats provided
+>    by Wei Xu.
+>    With 10k threads reading the stats every 100ms:
+>    - 98.8% of reads take <100us
+>    - 1.09% of reads take 100us to 1ms.
+>    - 0.11% of reads take 1ms to 10ms.
+>    - Almost no reads take more than 10ms.
+>    With 10k threads reading the stats every 10ms:
+>    - 82.3% of reads take <100us.
+>    - 4.2% of reads take 100us to 1ms.
+>    - 4.7% of reads take 1ms to 10ms.
+>    - 8.8% of reads take 10ms to 100ms.
+>    - Almost no reads take more than 100ms.
+>
+> [1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
+> [2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
+> [3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
+>
+> [weixugc@google.com: suggested the fallback logic and bounding the
+> number of waiters]
+>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+>   include/linux/memcontrol.h |   4 +-
+>   mm/memcontrol.c            | 100 ++++++++++++++++++++++++++++---------
+>   mm/vmscan.c                |   2 +-
+>   mm/workingset.c            |   8 ++-
+>   4 files changed, 85 insertions(+), 29 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 11810a2cfd2d..4453cd3fc4b8 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1034,7 +1034,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>   	return x;
+>   }
+>   
+> -void mem_cgroup_flush_stats(void);
+> +void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
+>   void mem_cgroup_flush_stats_ratelimited(void);
+>   
+>   void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+> @@ -1519,7 +1519,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>   	return node_page_state(lruvec_pgdat(lruvec), idx);
+>   }
+>   
+> -static inline void mem_cgroup_flush_stats(void)
+> +static inline void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+>   {
+>   }
+>   
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d729870505f1..edff41e4b4e7 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -588,7 +588,6 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+>   static void flush_memcg_stats_dwork(struct work_struct *w);
+>   static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+>   static DEFINE_PER_CPU(unsigned int, stats_updates);
+> -static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
+>   /* stats_updates_order is in multiples of MEMCG_CHARGE_BATCH */
+>   static atomic_t stats_updates_order = ATOMIC_INIT(0);
+>   static u64 flush_last_time;
+> @@ -639,36 +638,87 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>   	}
+>   }
+>   
+> -static void do_flush_stats(void)
+> +/*
+> + * do_flush_stats - flush the statistics of a memory cgroup and its tree
+> + * @memcg: the memory cgroup to flush
+> + * @wait: wait for an ongoing root flush to complete before returning
+> + *
+> + * All flushes are serialized by the underlying rstat global lock. If there is
+> + * no contention, we try to only flush the subtree of the passed @memcg to
+> + * minimize the work. Otherwise, we coalesce multiple flushing requests into a
+> + * single flush of the root memcg. When there is an ongoing root flush, we wait
+> + * for its completion (unless otherwise requested), to get fresh stats. If the
+> + * number of waiters exceeds the number of cpus just skip the flush to bound the
+> + * flush latency at the tail with very high concurrency.
+> + *
+> + * This is a trade-off between stats accuracy and flush latency.
+> + */
+> +static void do_flush_stats(struct mem_cgroup *memcg, bool wait)
+>   {
+> +	static DECLARE_COMPLETION(root_flush_done);
+> +	static DEFINE_SPINLOCK(root_flusher_lock);
+> +	static DEFINE_MUTEX(subtree_flush_mutex);
+> +	static atomic_t waiters = ATOMIC_INIT(0);
+> +	static bool root_flush_ongoing;
+> +	bool root_flusher = false;
+> +
+> +	/* Ongoing root flush, just wait for it (unless otherwise requested) */
+> +	if (READ_ONCE(root_flush_ongoing))
+> +		goto root_flush_or_wait;
+> +
+>   	/*
+> -	 * We always flush the entire tree, so concurrent flushers can just
+> -	 * skip. This avoids a thundering herd problem on the rstat global lock
+> -	 * from memcg flushers (e.g. reclaim, refault, etc).
+> +	 * Opportunistically try to only flush the requested subtree. Otherwise
+> +	 * fallback to a coalesced flush below.
+>   	 */
+> -	if (atomic_read(&stats_flush_ongoing) ||
+> -	    atomic_xchg(&stats_flush_ongoing, 1))
+> +	if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mutex)) {
+> +		cgroup_rstat_flush(memcg->css.cgroup);
+> +		mutex_unlock(&subtree_flush_mutex);
+>   		return;
+> +	}
 
-What *are* these lifetime rules?  Seriously, you have 3 chunks of
-fs-dependent actions at the moment:
-	* the things needed to get rid of internal references pinning
-inodes/dentries + whatever else we need done before generic_shutdown_super()
-	* the stuff to be done between generic_shutdown_super() and
-making the sucker invisible to sget()/sget_fc()
-	* the stuff that must be done after we are sure that sget
-callbacks won't be looking at this instance.
+If mutex_trylock() is the only way to acquire subtree_flush_mutex, you 
+don't really need a mutex. Just a simple integer flag with xchg() call 
+should be enough.
 
-Note that Christoph's series has mashed (2) and (3) together, resulting
-in UAF in a bunch of places.  And I'm dead serious about
-Documentation/filesystems/porting being the right place; any development
-tree of any filesystem (in-tree one or not) will have to go through the
-changes and figure out WTF to do with their existing code.  We are
-going to play whack-a-mole for at least several years as development
-branches get rebased and merged.
+Cheers,
+Longman
 
-Incidentally, I'm going to add a (belated by 10 years) chunk in porting.rst
-re making sure that anything in superblock that might be needed by methods
-called in RCU mode should *not* be freed without an RCU delay...  Should've
-done that back in 3.12 merge window when RCU'd vfsmounts went in; as it
-is, today we have several filesystems with exact same kind of breakage.
-hfsplus and affs breakage had been there in 3.13 (missed those two), exfat
-and ntfs3 - introduced later, by initial merges of filesystems in question.
-Missed on review...
-
-Hell knows - perhaps Documentation/filesystems/whack-a-mole might be a good
-idea...
