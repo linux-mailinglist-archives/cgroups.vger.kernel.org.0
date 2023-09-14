@@ -2,43 +2,43 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2067A01F0
-	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 12:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6936C7A01F4
+	for <lists+cgroups@lfdr.de>; Thu, 14 Sep 2023 12:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbjINKss (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Sep 2023 06:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        id S237110AbjINKs4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Sep 2023 06:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236129AbjINKsr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Sep 2023 06:48:47 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2092.outbound.protection.outlook.com [40.107.215.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E09D1FD4;
-        Thu, 14 Sep 2023 03:48:42 -0700 (PDT)
+        with ESMTP id S236280AbjINKsx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Sep 2023 06:48:53 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2134.outbound.protection.outlook.com [40.107.215.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BA11BFE;
+        Thu, 14 Sep 2023 03:48:48 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NOPanoPlg8bseAhnL7sPBKbUB8KfMX28xEzpYI3ntGzsCuSyZQ37F6pWO8yuEX4vhAHfFoef0Ga8WZTjFG/u9Q3ib7/doQqSKV+DbOP6f05DK/MUa4WaDWLrHw42k5ch3XUCHuRRAm9ntf4kR20NtXX0RETEgk473tRotnN+2pL33VMlrAeZjonxXbdbyiIfavRblWANhPonBUn2+/EvWGBlB1g27CxGS2nZM3/YezTgvnkz9UrKaBs3dPVSwG8DWaWWR2vzRTyxsCFE9wsZEqACMB7ahiGjMuKlSDpExEgyhjTG3Yz0KAblYQM/mE1HCVwVzsWNUQL6FH3PaWfKFQ==
+ b=HI/xeXDzAaKhqc+B4XlSUIoGcfWe3ghjM+oax4YqIHjnBGUe01DXmtxMpC2b8cfYrphR4mhw++09e7cnFRdT11Ar63t6hBhL+JUSAITPUi/lh+/lgoTGuhSLz/EnaZBjAhAAIag+exutCX8wobtDDC3evz9WxHXyIZZND0pS84HEZh58eGBWsJIMcEP9KZvOilBPspnH+7pZQCdXIcTm+xBLz0pU2Nyjo288viJ42vME+E3VfKlDsaP7age/ZgR+VG1uMcFavSvOUK3tU33X1DxXCh4DRjsfyBv6KzMpOszElxnco3wel2wk3ggU3K6zwxJYPZ2F5utPcF/crWn77Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0C8N66XH3EPgkxilo68Mh0apGkR0cAE3HBoIonCw0Yc=;
- b=EiHcI+/gdxmDnZWtvX2lKvpN1Z05BJmnOEogrF9cfi/qCF9Gd8rBmdn5p1BF1z8iQo7Pc4qKT/DqotX1MPgRK/w45RLb0H47Z0CRFPlufVH5OiXUlJce5s3qWU8p3+rLDOjKJRCYD6fBhpXI7W6oDRP4xTflCFBl3uGSnBg+0KVmeBDiP1stWa79i0dSHO5PpZ1bTM+eZqOY3JLS+XUjpefkhum3t9aSPGvcwJmXiBRhY7Ue6GV7Qu9d0ONQunAtbUNuef/drBkcHRHynQOrmT7bEVujTih9u0iibkpnxMw2XL54eQzbX0QU7ch+dYFAtdTibXlPqrYqqzWUMFq0xQ==
+ bh=33kzHFfosaT3/g9ZykY5vCyTfSUp4+rL/3ljfHikklM=;
+ b=StJDNHlZ2KpiKMXUJCUk5CI5xAagt//Tq8VoA4cuvlmWslMqwB8nO3AH7kHMc8SrIX1K1fSgq3heojsRinkaTGN4SzPCnZHVlGcft83+UjcdChIasTZW4iM2iDpXWBPeGJksSNOeL9cabTCQC3D0IFWRP+Oc/9trPx5+BKvaBaP0PVj6umUBMYhKd07b9+8MsUu/V+k0P3bhPlG0wf38npZ+/b+n+64va2MtAK8PYgqoGNx7Ou1elHCIMnKRaLFQa2G3KrB7cP+qyUcXtcuFd5njeaEZa3w55wo4L91tAeJegj4+TEW0vAzbkQYPfAhmdpnSywRA2xMjKXIOIV+K4g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0C8N66XH3EPgkxilo68Mh0apGkR0cAE3HBoIonCw0Yc=;
- b=bzTL9qkPZQ+omu8iK7UQBPZb9vgNx+01XztxjXtNl3nSG2nPhlqV52IiIkLsg8VOrBm1WyJCPHjZRSRfXHgJJuT+g9MTwlY7XuGw+UN7ZHVCcEQ+8SZFNS4fekPYbIj4Pq1T1bvGntYhUpziO5EmFnFDEOAxlOxzkLWlnRewOFyHb2PH7aMY4XrkqJPnDi9o5S16InDTTEb2oFR3a5+p6BYF2IPxSspxmC09RJNBfGI1QrfFeIbyGL5ojCJDbawVWNrFhGOO2EFDOByP0cKHis8m35dn2olXVN5bD8zy3KaGodFiTRo1dy0ZdGV3DJxu4LSKzuXaU4t0y6AZeYhNZg==
+ bh=33kzHFfosaT3/g9ZykY5vCyTfSUp4+rL/3ljfHikklM=;
+ b=fykUqdvv0ARCGvduwSmSyeZieb4iagXe1y8y8SWrC93GOlWmcTPIVdT3h1JGsGVWawaUcL2YDcvPxY5ABwmlT0eDLsQaNUdlQ4EyDsFs77ZsT1Xv91xapLeirUrUKRfwJPRAU+zcSbDel+AsX7O3JEGWmnhnMAXOmKxqbfdCcgC9xtSQQb42gKnaWxhepmI0fufkOtJB1q03k+3BvYATibcoLLmlO+dKF3CAh5gjSSp1vlXy64uh7g8rJQI65nkZk/Dih3DYUQbtF11QbfedSeJgKmU7nLkEqNINplhMxi0GuA9bJE3T+MC/bkqtOeS+XL1s1QgRYJLzcJBDLG/76w==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
  by SI2PR06MB4267.apcprd06.prod.outlook.com (2603:1096:4:15e::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20; Thu, 14 Sep
- 2023 10:48:37 +0000
+ 2023 10:48:45 +0000
 Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
  ([fe80::64c1:bd7f:ced7:7d02]) by PUZPR06MB5676.apcprd06.prod.outlook.com
  ([fe80::64c1:bd7f:ced7:7d02%4]) with mapi id 15.20.6792.020; Thu, 14 Sep 2023
- 10:48:37 +0000
+ 10:48:45 +0000
 From:   Huan Yang <link@vivo.com>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -63,9 +63,9 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         Steven Barrett <steven@liquorix.net>,
         Suren Baghdasaryan <surenb@google.com>
 Cc:     kernel@vivo.com
-Subject: [PATCH 1/3] mm: multi-gen LRU: fold lru_gen run cmd
-Date:   Thu, 14 Sep 2023 18:47:43 +0800
-Message-Id: <20230914104754.55-2-link@vivo.com>
+Subject: [PATCH 2/3] mm: memcg: add per memcg "lru_gen" node
+Date:   Thu, 14 Sep 2023 18:47:44 +0800
+Message-Id: <20230914104754.55-3-link@vivo.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230914104754.55-1-link@vivo.com>
 References: <20230914104754.55-1-link@vivo.com>
@@ -76,157 +76,321 @@ X-ClientProxiedBy: SG3P274CA0004.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SI2PR06MB4267:EE_
-X-MS-Office365-Filtering-Correlation-Id: b73aa587-e954-4842-c263-08dbb5102637
+X-MS-Office365-Filtering-Correlation-Id: 94820ea5-d049-4b99-c1db-08dbb5102b62
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ybVcbCl7l1skbKUfIituhK3pOU19EcwbqCw/JQqOIya8kXYo+vES8mLyIaClv1J38ZS+hvgmXWFQUXFCXPJvrB008dgXh2zFerZgXX6pkstxOtfBF9tOx+fBPkK/rPw080Qp/QImgKoCJxqv4YFU0Oftc0s/5K9d+vQdhXEWAgWQieCIv73vW3X2a5Oq2YG+xvp333PZsGl7VfZGggNAmbJNAkm8rRG29LxSYaGaxadsUOx6yIxifvDDGkmtQ0RchE/KB/9+13gtB77Wsp8a9NNsDWE2Gsxn01uyu1tAN+6U2ZGHTBqyKUitnzAcRccty7psNU45QbGpY9j+IoDS5aciKEt90df6ushgzsKNMNXLBTBewCUIymTDxgGImeJgxmOEaTtJ2DhzcirKZCmYRrNadpVXASxf+bob+BNYtnZjp6rbqGoJCKaOnVmuDmvcLQ+2VguGMQ2P3ODL4FGCCtoMmAN64sRwXVOqRQQm9VbpbVwU31cE7Dubddtb4s2jhSFVAAudcyBVzgy51PAkxIin/2EwzlZaV0JPlYVc+yq0kN15QukxUY6CDo6o5S9w3nX5zixj2TLFslS3PSVfMvfNYKV9sI+qBI8WEp7EthVJL5NYCXL0xS6O0JB2NoFXThL3JmcJGkpQrVHokGZAww==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(39860400002)(136003)(346002)(451199024)(1800799009)(186009)(6506007)(6486002)(52116002)(6666004)(38100700002)(36756003)(86362001)(921005)(38350700002)(1076003)(2616005)(26005)(83380400001)(107886003)(6512007)(478600001)(2906002)(110136005)(4326008)(316002)(8676002)(8936002)(41300700001)(5660300002)(7416002)(66946007)(66476007)(66556008);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Z1MahWZvQTmME7axQj3ySs4GyBhPqw8gHl25Usdf24O9fwFfVHnzjdmySALkJmWJkUmoilmx8jZS6WdQSSlwoSUoW8Vv6kJ7UL/HI6DgZTk5W5LX7mI2vr71B5gPMa5TKRhyF8Ou36VnEN7XxXqob3g+GZLYF4Dg0eunDCqVcfhmpzOLsgpfenIqvEVgsNhZCGA8plgah0egSxCA8MlcyrLIi8uAB9ZJ6jgDo/U0W7zsS+TldzxXq5zoPUDiQQVLuNb53pgW+ogtqdJVgAyajBjTZD4ohyxWLYR6aLL2sBZhyZMu6MzYtpHfzKW0GQ2FCy2Hl0h848fz27giVRuSkUtDPILK1jW6fgp8zb17hABv/wHBu+BLj4Ep0QkaCA2jqgGFrZYdbNz2YV8ZpM/46EmHsjkXYFvWIUpRxYNdnc68sKQArVq8zkWsFm1bjzl8rRtrEJiaphs0BzCVCSenIS96ccuQVyP2grN6Dp58pVNL6gjJzGhtt7DOGOWM5bdpSPKpiGG874SWQ2SxW0nQ7VPFbag6+8/hIaHiwAhnAunfG1eG2RdMJhwW59HroXpyRwU9HTlCrIz71D4Cp/80z1PFu/P0W39emr6+WqpvJoqEw/kQOfx56kdcgla8ef6aSTT1TocQq2A/g7TLNpYQmQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(39860400002)(136003)(346002)(451199024)(1800799009)(186009)(6506007)(6486002)(52116002)(38100700002)(36756003)(86362001)(921005)(38350700002)(1076003)(2616005)(26005)(83380400001)(107886003)(6512007)(478600001)(2906002)(110136005)(4326008)(316002)(8676002)(8936002)(41300700001)(5660300002)(7416002)(66946007)(66476007)(66556008);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OIf6VHXOFZPEurL+UTwOum+6V5RvQYiPmsJw7Mwdzq0U3nSKPZolS98/YtD3?=
- =?us-ascii?Q?Hk1mbBLQC+OopEpaGUWvd1AIChW/TwlDQ5HUVDLQjhQPmjf41i749lmYrTnQ?=
- =?us-ascii?Q?f63SrvbineYpSTAdmOMIDjMF+AuSz/0BV+XaOek6CG6JdpjkpLJ7AJq8bmzT?=
- =?us-ascii?Q?T79SPlg6TFPP3o09rqNogtQ88vUmOKDX9aaQs7v8DRcQDQVB8xxDIU4Dn63T?=
- =?us-ascii?Q?qWIZualGlAEoBfft3vvuL6qAN01IBZ2KitrG2NwDZ5TRgWk67yxY9N8Ye0xX?=
- =?us-ascii?Q?AdARIDbYpF99inGoKzxRVBSlviZ6PKgwBTF3Met+w/G7rLVgoMLbfFcYXHk3?=
- =?us-ascii?Q?7L17FkX2DlxCCOIav9LwiUVFXwhQ00SR+awkdRBXoJgF1ch9w4XJScHQ6GPk?=
- =?us-ascii?Q?l6BTzSYpbTwH0hndjSCNbnErecJh8ex0j/EezQSNa7W7IIG2XKZM01nc7uPY?=
- =?us-ascii?Q?EaUDr1SpejtvOPziW+Ffngku70+R+GfiNLmTZM2zQSArgWvRXkpOurU6tDbO?=
- =?us-ascii?Q?gxQva5lLBXbR+5oIXpPux/asbyzGJsxO+vp/fEcef+QS60LEa8KNis+g6FEf?=
- =?us-ascii?Q?9/3W2yn49HYk+wX+xXgD5DEr7sNr7C9EZTVfmOjgP3GCp9NZGHm4QsGFAo4b?=
- =?us-ascii?Q?ec5rh5ScuOhxp9gmLAeFO8hPgzulj/FI49xP3Ez0msFxHFLixvYVCqsf74rn?=
- =?us-ascii?Q?fp09SaaQvswIDW9hhvmWvAKp8ohWxVmY4olcBoOT4yp9Pd4+8uhgrMS/jnPt?=
- =?us-ascii?Q?1hTE/WhwPnIpCdiGhI1OHgLOZFhznhEicSon9Lbbzt+iZrWlyEFDi8luHNge?=
- =?us-ascii?Q?E3XuIBxkwnQxQcJGqoFi+LV2yDkwHnHJsidbRQfVYFA3xnnPScW74Tba7L09?=
- =?us-ascii?Q?YptioTVKBy/16rEP4vkZAoI3EokM1UsmsKPUr2RxumNnkmqpSoGRoYbhFS0S?=
- =?us-ascii?Q?ICcf55E1UXYkHOHkvLyezjsVEmhoOMoVTkl8Va/QDLFCG1jT0mZB/1L33WQq?=
- =?us-ascii?Q?WW+/z/1hAk+gWc75sKoSZtumULmIUtyFzMo3Jg9uM8tvBsb7hJTUCWTheR9W?=
- =?us-ascii?Q?ab0HVaskGVjn9rT8SH7wrFA3elSEASrWXD5k8Vw0a+rXMj397HKEa4RjCEA9?=
- =?us-ascii?Q?Wn3WdjaQDvkBmAFed2LLuiMUKFXJ/8zR0CEANT1Ybsw2SPfop6nWavTij5E3?=
- =?us-ascii?Q?ceFeEAlnGHOkkfIDfsrHMqBwukdjL4znmDM4nBCmQLMvV28TVJxPRsd+z7OQ?=
- =?us-ascii?Q?FerbK5fsfd/cY6g9/cO6BjZ2Tepy446sG4s/xFRXXnjCiCpNkfCaOvBjErRv?=
- =?us-ascii?Q?JMFQqNeIp4OYA2CcaqlE7XkV1SpJPQ5DzFZrggkZae/yxM9sgT80u4NjpSnb?=
- =?us-ascii?Q?ud2HzcA8N+W7NrKxZiLYdLlZybBY3Uus9teT+jHTLgJdQM4G1ta8XdpgimFi?=
- =?us-ascii?Q?PPdR5+xcSSijiLmGSQPz04rZ84oGQvYAOAZZEzqLlOQYH2ltAv4b0soIDksB?=
- =?us-ascii?Q?Aonlwz3suYnrAGnakXXQZtxVeEV/F/kiV/e7FX5EeJhqoMotCmUVnfQLx+GA?=
- =?us-ascii?Q?EL+bEaiQeNiC12Z62qN8Av47sO5pqjAqTxXG21oy?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aYF/4aKs2sZ31o+Z2L0iJdi9WeDRgvrbqBNQXIVbZuNrgPq6+lk8Q4SyOrH6?=
+ =?us-ascii?Q?59Wv/RUNqsbIf2vqpfH3QuZX8AQnPi20nNYeVk2RQkc+O7K0eQvmVPPp3LXq?=
+ =?us-ascii?Q?rzh87PDpo3oUxrp2OqksVsUIWYgX/KGafin6e0QmgO94KbSJU9i//5dQ1a/3?=
+ =?us-ascii?Q?aj8qzi3uw2efy1IelkcAbpON+rSwn5SaOMxDVUYjzbJ0CQbY1H2oXBvUYzsU?=
+ =?us-ascii?Q?mKXasUJpUP8ERXbtXfB9tdxqj3Sn1D23kXKWgEHsH0cb+U5xoAekuEE+GVpK?=
+ =?us-ascii?Q?nd0jRDhwBN182JfLN0khTAzuAUNuucDxv6MzA+AR5i5RmnNXcQ5kXI5JDFkt?=
+ =?us-ascii?Q?3LYCz2TP5s1vTFHRPbtIX6YWRd/Z95+DpoOrmj+Lds1l5ajN1rUXARqHbmR3?=
+ =?us-ascii?Q?B1AmtG663PnDnTtoLuAeNsXLxv8Sd6VafOcwAXDxwI4h0NnQSAolxkZAU0Hl?=
+ =?us-ascii?Q?FpmIpOV0ObqmHqbX9jGv826qjbCfeDjQtAEKghkLAE4zeqLpeBG2qTyL+Ijl?=
+ =?us-ascii?Q?W9kt0AOcup8m4aAjZ5LoKGVl9efVG+upCxPmmLNxX0xSxef1RrCfRnrzGoUH?=
+ =?us-ascii?Q?mgsLmbqyuyfzlNa5IdPVFHfLgqgoR2i9p8ekg/zaeIq75LK2KlqSll2YbpmL?=
+ =?us-ascii?Q?3PC7Dr5Ec99QPOqX1W/QwPjwfN5tgMLIsni4Jme4s5p1yN8Vl9Tv1qSh+8Q/?=
+ =?us-ascii?Q?hKqUGnMD83GkBxZrgT4gT+mP0n2I6d+2cFp8M6YaVEwcZokvPOWlHE1RHBqU?=
+ =?us-ascii?Q?LdJ6qh0sGkyfbhxFKthIn7i9lqjIdSQoauLNsjtvhuSDiaBbELi7MP+mZy6J?=
+ =?us-ascii?Q?GjBaS9X+uElZ72UKHFk4I1UZ4waWaZSLAqbt24YouCYOP3y1Es6429ahdPY1?=
+ =?us-ascii?Q?QaJfnL5iphubyMOMrABIfb0flzMkaxlDvltGX7/7N1NQV+WRAWzXg+5rkjh2?=
+ =?us-ascii?Q?lxKasiHPwfcSkHVi4jlAj9YlKeqx7kJdmtieTpC8kEam39+H6gAx/yI3Jhs1?=
+ =?us-ascii?Q?wAseHny5xIaV0SoJ1AtWi5VL6clGJ9YIHQukdYpNhJAuMl/KXOcHgdLQy8mc?=
+ =?us-ascii?Q?Sn94aML8ml2E9utrJIfuao7pqk2D21LHyRVa2rA7QV9Mj136VluFSAo44LA2?=
+ =?us-ascii?Q?dxIyIZvDh+OoYAn1Z440n0CkxB/r2UHPi3Xz1L+2E/bk0qA4YE8jPW5dqIeZ?=
+ =?us-ascii?Q?afmWdWSzwJrD5aRfy4nQMSVvC8BfPAPgi3TxzqxgUbToqn2o+VCWBJ82nU6/?=
+ =?us-ascii?Q?iDm/g8FHtNIE/yKDF7blNWLaSCRdoISRwVRkgBPi2gSH4v+aTNOVlvP2cuAC?=
+ =?us-ascii?Q?q9E5uJYzPkZwXXG0TIy3KLSkw8EvC8UhGkSGsJsFxSwn8E384l5DlZ/6r5xN?=
+ =?us-ascii?Q?8bBjxPudGZlk0NJY+kGTC77YNIBzRtAnECC0yHo3fXAQCkZo8ON4hFCyQu0I?=
+ =?us-ascii?Q?RCtvYYOuNVbS6lKVi3SZLIQ0J2ZzXrVWDyf9GDXMmjAlm3YDdpS0PKbuRDe/?=
+ =?us-ascii?Q?irlWdiSmK48C7/X7NB3HXwFWJviaTWLV8l0YqLcxIMBxWbZ4hzDu0ejoOP+f?=
+ =?us-ascii?Q?xiG53xuVivoj/hNm3NeqAp6aAmDskk5y91e+wCt3?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b73aa587-e954-4842-c263-08dbb5102637
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94820ea5-d049-4b99-c1db-08dbb5102b62
 X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 10:48:37.0229
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2023 10:48:45.6948
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X1Vm2JhefifHOrsmTcEGT59gWSATiCdZYqlyR4XBtUW00uW+1IZOQfUe6sklvtzDyNiTBOYSK1jQUrRsYZGVPw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Sm59AwrKOXz5Rp0owZ2a2u3WuAc4uBbvBwCI3jK7Ib+QzYwbsxsSymt/CeK5Stf5veAqpzSwcopRzx5r4obzGg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB4267
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch move LRU_GEN define helper into mm_inline which will
-used in per memcg lru gen node.
+This patch add "lru_gen" node in mem cgroup both in v1 and v2.
 
-let run aging/eviction into func, per memcg also will run this.
+mem_cgroup_lru_gen_show just like global node, show lru_gen info,
+but always show the full info due to per memcg no need to simple output.
+
+Just like global node, per memcg "lru_gen" node can input cmd, but we
+no need to type memcgid anymore to select one memcg.
 
 Signed-off-by: Huan Yang <link@vivo.com>
 ---
- include/linux/mm_inline.h |  9 ++++++++
- mm/vmscan.c               | 45 +++++++++++++++++++++------------------
- 2 files changed, 33 insertions(+), 21 deletions(-)
+ include/linux/mmzone.h |   4 +-
+ mm/memcontrol.c        | 163 +++++++++++++++++++++++++++++++++++++++++
+ mm/vmscan.c            |  37 ++++++++++
+ 3 files changed, 203 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 8148b30a9df1..b953b305c8a2 100644
---- a/include/linux/mm_inline.h
-+++ b/include/linux/mm_inline.h
-@@ -101,6 +101,15 @@ static __always_inline enum lru_list folio_lru_list(struct folio *folio)
- 
- #ifdef CONFIG_LRU_GEN
- 
-+#define DEFINE_MAX_SEQ(lruvec)						\
-+	unsigned long max_seq = READ_ONCE((lruvec)->lrugen.max_seq)
-+
-+#define DEFINE_MIN_SEQ(lruvec)						\
-+	unsigned long min_seq[ANON_AND_FILE] = {			\
-+		READ_ONCE((lruvec)->lrugen.min_seq[LRU_GEN_ANON]),	\
-+		READ_ONCE((lruvec)->lrugen.min_seq[LRU_GEN_FILE]),	\
-+	}
-+
- #ifdef CONFIG_LRU_GEN_ENABLED
- static inline bool lru_gen_enabled(void)
- {
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index ea57a43ebd6b..f59977964e81 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3285,15 +3285,6 @@ static bool should_clear_pmd_young(void)
- 
- #define LRU_REFS_FLAGS	(BIT(PG_referenced) | BIT(PG_workingset))
- 
--#define DEFINE_MAX_SEQ(lruvec)						\
--	unsigned long max_seq = READ_ONCE((lruvec)->lrugen.max_seq)
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 4106fbc5b4b3..3d399ef177a4 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -553,7 +553,9 @@ void lru_gen_online_memcg(struct mem_cgroup *memcg);
+ void lru_gen_offline_memcg(struct mem_cgroup *memcg);
+ void lru_gen_release_memcg(struct mem_cgroup *memcg);
+ void lru_gen_soft_reclaim(struct mem_cgroup *memcg, int nid);
 -
--#define DEFINE_MIN_SEQ(lruvec)						\
--	unsigned long min_seq[ANON_AND_FILE] = {			\
--		READ_ONCE((lruvec)->lrugen.min_seq[LRU_GEN_ANON]),	\
--		READ_ONCE((lruvec)->lrugen.min_seq[LRU_GEN_FILE]),	\
--	}
--
- #define for_each_gen_type_zone(gen, type, zone)				\
- 	for ((gen) = 0; (gen) < MAX_NR_GENS; (gen)++)			\
- 		for ((type) = 0; (type) < ANON_AND_FILE; (type)++)	\
-@@ -6058,6 +6049,29 @@ static int run_eviction(struct lruvec *lruvec, unsigned long seq, struct scan_co
- 	return -EINTR;
- }
++int mem_cgroup_lru_gen_cmd(char cmd, struct mem_cgroup *memcg, int nid,
++			   unsigned long seq, int swappiness,
++			   unsigned long opt);
+ #else /* !CONFIG_MEMCG */
  
-+static int __process_one_cmd(char cmd, struct lruvec *lruvec, unsigned long seq,
-+			     struct scan_control *sc, int swappiness,
-+			     unsigned long opt)
+ #define MEMCG_NR_GENS	1
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ecc07b47e813..56385142c5b8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5052,6 +5052,155 @@ static int mem_cgroup_slab_show(struct seq_file *m, void *p)
+ 
+ static int memory_stat_show(struct seq_file *m, void *v);
+ 
++#ifdef CONFIG_LRU_GEN
++static ssize_t mem_cgroup_lru_gen_write(struct kernfs_open_file *of, char *buf,
++					size_t nbytes, loff_t off)
 +{
-+	int err;
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++	int n;
++	int end;
++	char cmd;
++	unsigned int nid;
++	unsigned long seq;
++	unsigned int swappiness = -1;
++	unsigned long opt = -1;
++	int ret;
 +
-+	if (swappiness < 0)
-+		swappiness = get_swappiness(lruvec, sc);
-+	else if (swappiness > 200)
++	buf = strstrip(buf);
++	n = sscanf(buf, "%c %u %lu %n %u %n %lu %n", &cmd, &nid, &seq, &end,
++		   &swappiness, &end, &opt, &end);
++	if (n < 3 || buf[end])
 +		return -EINVAL;
 +
-+	switch (cmd) {
-+	case '+':
-+		err = run_aging(lruvec, seq, sc, swappiness, opt);
-+		break;
-+	case '-':
-+		err = run_eviction(lruvec, seq, sc, swappiness, opt);
-+		break;
++	if (nid < 0 || nid >= MAX_NUMNODES || !node_state(nid, N_MEMORY))
++		return -EINVAL;
++
++	ret = mem_cgroup_lru_gen_cmd(cmd, memcg, nid, seq, swappiness, opt);
++	if (ret)
++		return ret;
++
++	return nbytes;
++}
++
++static void __lru_gen_show_info_full(struct seq_file *m, struct lruvec *lruvec,
++				  unsigned long max_seq, unsigned long *min_seq,
++				  unsigned long seq)
++{
++	int i;
++	int type, tier;
++	int hist = lru_hist_from_seq(seq);
++	struct lru_gen_folio *lrugen = &lruvec->lrugen;
++
++	for (tier = 0; tier < MAX_NR_TIERS; tier++) {
++		seq_printf(m, "            %10d", tier);
++		for (type = 0; type < ANON_AND_FILE; type++) {
++			const char *s = "   ";
++			unsigned long n[3] = {};
++
++			if (seq == max_seq) {
++				s = "RT ";
++				n[0] = READ_ONCE(lrugen->avg_refaulted[type][tier]);
++				n[1] = READ_ONCE(lrugen->avg_total[type][tier]);
++			} else if (seq == min_seq[type] || NR_HIST_GENS > 1) {
++				s = "rep";
++				n[0] = atomic_long_read(&lrugen->refaulted[hist][type][tier]);
++				n[1] = atomic_long_read(&lrugen->evicted[hist][type][tier]);
++				if (tier)
++					n[2] = READ_ONCE(lrugen->protected[hist][type][tier - 1]);
++			}
++
++			for (i = 0; i < 3; i++)
++				seq_printf(m, " %10lu%c", n[i], s[i]);
++		}
++		seq_putc(m, '\n');
 +	}
++
++	seq_puts(m, "                      ");
++	for (i = 0; i < NR_MM_STATS; i++) {
++		const char *s = "      ";
++		unsigned long n = 0;
++
++		if (seq == max_seq && NR_HIST_GENS == 1) {
++			s = "LOYNFA";
++			n = READ_ONCE(lruvec->mm_state.stats[hist][i]);
++		} else if (seq != max_seq && NR_HIST_GENS > 1) {
++			s = "loynfa";
++			n = READ_ONCE(lruvec->mm_state.stats[hist][i]);
++		}
++
++		seq_printf(m, " %10lu%c", n, s[i]);
++	}
++	seq_putc(m, '\n');
++}
++
++
++static int __lru_gen_show_info(struct seq_file *m, struct mem_cgroup *memcg, int nid)
++{
++	unsigned long seq;
++	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
++	struct lru_gen_folio *lrugen = &lruvec->lrugen;
++	DEFINE_MAX_SEQ(lruvec);
++	DEFINE_MIN_SEQ(lruvec);
++	char *path = kvmalloc(PATH_MAX, GFP_KERNEL);
++
++	if (unlikely(!path))
++		return -ENOMEM;
++
++	if (nid == first_memory_node) {
++		cgroup_path(memcg->css.cgroup, path, PATH_MAX);
++		seq_printf(m, "memcg %5u %s\n", mem_cgroup_id(memcg), path);
++	}
++
++	seq_printf(m, " node %5d\n", nid);
++
++	if (max_seq >= MAX_NR_GENS)
++		seq = max_seq - MAX_NR_GENS + 1;
++	else
++		seq = 0;
++
++	for (; seq <= max_seq; seq++) {
++		int type, zone;
++		int gen = lru_gen_from_seq(seq);
++		unsigned long birth = READ_ONCE(lrugen->timestamps[gen]);
++
++		seq_printf(m, " %10lu %10u", seq, jiffies_to_msecs(jiffies - birth));
++
++		for (type = 0; type < ANON_AND_FILE; type++) {
++			unsigned long size = 0;
++			char mark = seq < min_seq[type] ? 'x' : ' ';
++
++			for (zone = 0; zone < MAX_NR_ZONES; zone++)
++				size += max(READ_ONCE(lrugen->nr_pages[gen][type][zone]), 0L);
++
++			seq_printf(m, " %10lu%c", size, mark);
++		}
++
++		seq_putc(m, '\n');
++
++
++		__lru_gen_show_info_full(m, lruvec, max_seq, min_seq, seq);
++	}
++
++	kvfree(path);
++
++	return 0;
++}
++
++static int mem_cgroup_lru_gen_show(struct seq_file *m, void *v)
++{
++	int nid, ret;
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
++
++	for_each_node_state(nid, N_MEMORY) {
++		ret = __lru_gen_show_info(m, memcg, nid);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++#endif
++
+ static struct cftype mem_cgroup_legacy_files[] = {
+ 	{
+ 		.name = "usage_in_bytes",
+@@ -5172,6 +5321,13 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 		.write = mem_cgroup_reset,
+ 		.read_u64 = mem_cgroup_read_u64,
+ 	},
++#ifdef CONFIG_LRU_GEN
++	{
++		.name = "lru_gen",
++		.write = mem_cgroup_lru_gen_write,
++		.seq_show = mem_cgroup_lru_gen_show,
++	},
++#endif
+ 	{ },	/* terminate */
+ };
+ 
+@@ -6831,6 +6987,13 @@ static struct cftype memory_files[] = {
+ 		.flags = CFTYPE_NS_DELEGATABLE,
+ 		.write = memory_reclaim,
+ 	},
++#ifdef CONFIG_LRU_GEN
++	{
++		.name = "lru_gen",
++		.write = mem_cgroup_lru_gen_write,
++		.seq_show = mem_cgroup_lru_gen_show,
++	},
++#endif
+ 	{ }	/* terminate */
+ };
+ 
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index f59977964e81..4da200cda0b9 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -6072,6 +6072,43 @@ static int __process_one_cmd(char cmd, struct lruvec *lruvec, unsigned long seq,
+ 	return err;
+ }
+ 
++#ifdef CONFIG_MEMCG
++int mem_cgroup_lru_gen_cmd(char cmd, struct mem_cgroup *memcg, int nid,
++			   unsigned long seq, int swappiness, unsigned long opt)
++{
++	int err;
++	struct lruvec *lruvec;
++	unsigned int flags;
++	struct blk_plug plug;
++	struct scan_control sc = {
++		.may_writepage = true,
++		.may_unmap = true,
++		.may_swap = true,
++		.reclaim_idx = MAX_NR_ZONES - 1,
++		.gfp_mask = GFP_KERNEL,
++	};
++
++	set_task_reclaim_state(current, &sc.reclaim_state);
++	flags = memalloc_noreclaim_save();
++	blk_start_plug(&plug);
++	if (!set_mm_walk(NULL, true)) {
++		err = -ENOMEM;
++		goto done;
++	}
++
++	lruvec = get_lruvec(memcg, nid);
++	err = __process_one_cmd(cmd, lruvec, seq, &sc, swappiness, opt);
++
++done:
++	clear_mm_walk();
++	blk_finish_plug(&plug);
++	memalloc_noreclaim_restore(flags);
++	set_task_reclaim_state(current, NULL);
 +
 +	return err;
 +}
++#endif
 +
  static int run_cmd(char cmd, int memcg_id, int nid, unsigned long seq,
  		   struct scan_control *sc, int swappiness, unsigned long opt)
  {
-@@ -6086,19 +6100,8 @@ static int run_cmd(char cmd, int memcg_id, int nid, unsigned long seq,
- 
- 	lruvec = get_lruvec(memcg, nid);
- 
--	if (swappiness < 0)
--		swappiness = get_swappiness(lruvec, sc);
--	else if (swappiness > 200)
--		goto done;
-+	err = __process_one_cmd(cmd, lruvec, seq, sc, swappiness, opt);
- 
--	switch (cmd) {
--	case '+':
--		err = run_aging(lruvec, seq, sc, swappiness, opt);
--		break;
--	case '-':
--		err = run_eviction(lruvec, seq, sc, swappiness, opt);
--		break;
--	}
- done:
- 	mem_cgroup_put(memcg);
- 
 -- 
 2.34.1
 
