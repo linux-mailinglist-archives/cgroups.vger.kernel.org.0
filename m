@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C54787A2539
-	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 19:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607327A253D
+	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 19:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbjIORz4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Sep 2023 13:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        id S235637AbjIOR6g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Sep 2023 13:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236326AbjIORzw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 13:55:52 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8584B10D;
-        Fri, 15 Sep 2023 10:55:47 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c1ff5b741cso22273485ad.2;
-        Fri, 15 Sep 2023 10:55:47 -0700 (PDT)
+        with ESMTP id S235770AbjIOR6T (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 13:58:19 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D99C10D;
+        Fri, 15 Sep 2023 10:58:14 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c44c0f9138so1393035ad.2;
+        Fri, 15 Sep 2023 10:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694800547; x=1695405347; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694800694; x=1695405494; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WaFcn1QzXPssaV1y6SpztPUVojrCHgnKF1dhNtlMGp4=;
-        b=gkZvq6P00k5PUTsA89cAMAWHBG2rxmwaEnZaA1Dui3FGpsn8CeB6QBfPyADwkiSNrX
-         dqbWmJtalDGj5/icUCkXffvKVzMU2S6nva0A26HdrYFmBs2t7P5B/J2ATtwKiZ1j+MYG
-         2kPEGTe/9HLgHjsjCZgEfKkLjbMvACBlDtNVbpg9vRXszJoJgwtrflTxaCtTTA93fR2r
-         IfmnBFcvAahdRUryWm17p1BZAbKnWi4jn0bebTAKb1SAbW8UUDySzppGIlEGQbGfuHR3
-         BOl30qLJyJiDa5ZRx7N64CdbR1t4IhQX4BiToTfkCEY3EE/iR2Dl5Dn4OH8BNxkjOinm
-         RPRw==
+        bh=mmdT62MLeEsA6axk7W0K2pDhI35EHOQeEKc3uSsgrQ0=;
+        b=hZuXMt1J3dQIPEM02Z4526qVSrcu3LkoUQ3N27PorLBdZ14WEh4V0cFMEFrbbyDQ75
+         USKcvjmgTEVSwV12oJtSKokKx9B3+rsh2WRMSbWPLpLy3aolTxoDvGFUDhpAa9wjlgAJ
+         lrUpK5VDuodvZxhrk690IjivVlyzS3YxOVKMakW5nM/bpp+gMG/RYT5BabsvGXv85O/F
+         oDhJDhyUUERxrFMUHQIigoSo4Nu+vyGwlciTkWrfSdgqfjyMef9pa9WSkYecy/6XwDT2
+         jgs/OlN5s55OfrvjKZGQ4KGuNrpnlWJx4R+duIVhETvCIXh8PlFvP6On0gSM+6bnZpw3
+         Rnjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694800547; x=1695405347;
+        d=1e100.net; s=20230601; t=1694800694; x=1695405494;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WaFcn1QzXPssaV1y6SpztPUVojrCHgnKF1dhNtlMGp4=;
-        b=AXIqjZ5n+L2Ps+A5U21jYrZJqfwfZ7TXLjx1fF3aRv7xc+8mLSoaEFrMTXB9gUOArO
-         euKiW1KrifYFzADJMSvWSagfWDrPtUWxAoKRbKLtxFgpnVznHP+KCZUnu6VBac6AJf5k
-         Kpr5pTVRPevSncLaX3C3h/JCrxvcdsnRxBr0sHW3dtmSYsSMTWI4G9jV723HosjyWFo1
-         2+QrNOGd5WW3n+sb4cIcFN2FZzECcDy5h2JZvgLEnc+jKN/uLvUEpE/zjIc7DgDY1MAe
-         qg7lcV+JjcKKY/YoJaEWEV8XuuLmuET9yksqiD8GTeSLhAl1lUoi1glqCoy4uJ/wQpug
-         dRCw==
-X-Gm-Message-State: AOJu0YysJfybWAhyMOZar3g3YljeD+gP1CUAvcKLGDVW8Zm0fEP+CrkQ
-        bc+UBI0pP3pKkNKLe3CivJo=
-X-Google-Smtp-Source: AGHT+IGRKGAnyvhP9vrm2smcwDqLMNs/LZm4mYvCnAl2BqNU2eg1F0wc2J6eK1BHRcqsAtUi+Kr87w==
-X-Received: by 2002:a17:902:b943:b0:1bc:61d6:5fcc with SMTP id h3-20020a170902b94300b001bc61d65fccmr2096478pls.51.1694800546861;
-        Fri, 15 Sep 2023 10:55:46 -0700 (PDT)
+        bh=mmdT62MLeEsA6axk7W0K2pDhI35EHOQeEKc3uSsgrQ0=;
+        b=wRW8ArU2JHWBjZe2kNfwX3KLYtMxwljvAwh+XNaPQ+4xk6k36NBCQZvkzXjzUPQGPT
+         8YZb12ELLzRGCiHov740af4si/9bOfpvQhiaEg/a+k3QKXz3nPZWMQ37+l/XMueFtyrC
+         6QP/Lpj06tc0rw0t5qRf2ITqeSwcOF+WqjFWXMMRXEsZLbv4MBgM69gKYtXbkh90/Z8c
+         Z050GU8APMf1j/bws9Asv06yQV56qr5a8oxIUDk83p2BDB5/OIXJ0FbzQomefdl190Ez
+         cM/nr5+x+ItawPM4bpDcXhOHBwYdGiB3xgtLNQBvoZxpnx8KwT/WJXHRxRpdQCl5yW7M
+         smPQ==
+X-Gm-Message-State: AOJu0YzDHXwk81qybe7Dvpel/yxJHAPSXkX24aPhdwyAohLHonCFSPvC
+        bqHOacRF50Ke7Sl9mFndnk0NY63lQ3b6LA==
+X-Google-Smtp-Source: AGHT+IE4zEUkV7iAX8li6H1844OYAVO6n++R9UUl9kws075PdsKy+RdBOleZQhtiyIl4yj8Lhi19RQ==
+X-Received: by 2002:a17:902:c1c9:b0:1c3:ebfc:5198 with SMTP id c9-20020a170902c1c900b001c3ebfc5198mr1970771plc.11.1694800693925;
+        Fri, 15 Sep 2023 10:58:13 -0700 (PDT)
 Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id u6-20020a17090341c600b001c3f7fd1ef7sm3780417ple.12.2023.09.15.10.55.45
+        by smtp.gmail.com with ESMTPSA id i6-20020a17090332c600b001a183ade911sm3774119plr.56.2023.09.15.10.58.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 10:55:46 -0700 (PDT)
+        Fri, 15 Sep 2023 10:58:12 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 15 Sep 2023 07:55:45 -1000
+Date:   Fri, 15 Sep 2023 07:58:11 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Haitao Huang <haitao.huang@linux.intel.com>
 Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com,
@@ -63,16 +63,17 @@ Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com,
         yangjie@microsoft.com
 Subject: Re: [PATCH v4 01/18] cgroup/misc: Add per resource callbacks for CSS
  events
-Message-ID: <ZQSaoXBg-X4cwFdX@mtj.duckdns.org>
+Message-ID: <ZQSbM9ItXVyeIU7F@mtj.duckdns.org>
 References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
  <20230913040635.28815-2-haitao.huang@linux.intel.com>
+ <ZQSaoXBg-X4cwFdX@mtj.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913040635.28815-2-haitao.huang@linux.intel.com>
+In-Reply-To: <ZQSaoXBg-X4cwFdX@mtj.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,19 +81,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:06:18PM -0700, Haitao Huang wrote:
-> @@ -37,6 +37,11 @@ struct misc_res {
->  	u64 max;
->  	atomic64_t usage;
->  	atomic64_t events;
-> +
-> +	/* per resource callback ops */
-> +	int (*misc_cg_alloc)(struct misc_cg *cg);
-> +	void (*misc_cg_free)(struct misc_cg *cg);
-> +	void (*misc_cg_max_write)(struct misc_cg *cg);
+On Fri, Sep 15, 2023 at 07:55:45AM -1000, Tejun Heo wrote:
+> On Tue, Sep 12, 2023 at 09:06:18PM -0700, Haitao Huang wrote:
+> > @@ -37,6 +37,11 @@ struct misc_res {
+> >  	u64 max;
+> >  	atomic64_t usage;
+> >  	atomic64_t events;
+> > +
+> > +	/* per resource callback ops */
+> > +	int (*misc_cg_alloc)(struct misc_cg *cg);
+> > +	void (*misc_cg_free)(struct misc_cg *cg);
+> > +	void (*misc_cg_max_write)(struct misc_cg *cg);
+> 
+> A nit about naming. These are already in misc_res and cgroup_ and cgrp_
+> prefixes are a lot more common. So, maybe go for sth like cgrp_alloc?
 
-A nit about naming. These are already in misc_res and cgroup_ and cgrp_
-prefixes are a lot more common. So, maybe go for sth like cgrp_alloc?
+Ah, never mind about the prefix part. misc is using cg_ prefix widely
+already.
 
 Thanks.
 
