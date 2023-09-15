@@ -2,34 +2,33 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DFA7A2114
-	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 16:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885D17A2130
+	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 16:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbjIOOeH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Sep 2023 10:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
+        id S235671AbjIOOkU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Sep 2023 10:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235633AbjIOOeG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 10:34:06 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111311AC;
-        Fri, 15 Sep 2023 07:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tqcCFg+GZbSgwZKnqTUl8J8yKTkkr5or8a2TzqKdwfE=; b=fI03x0kfMwTyWxXp0q9RswfM3A
-        kbA9MXFRf4J4DxmUwHoBdDY8tdCbQDKmmRR0wSeZ/O5QcnoQ/OO7EAWa2cT/b5N/VqRspAalCW9x7
-        f+Wm67Sdn+ONcURBcbs7KKK7upRaV+2FlkVVuyK/sRhy7ddvUV56FEvtMaGUnI/F8F2p7b/+noDyT
-        jczSmUTmHrCWdQANori9mXgiTJ3Mg54g4LDIXCW6OrIGlzNfwGvn+gKJvLG5vvGji8SvjvZzxf5eX
-        mrJlm/8G9rWZmQ+0cv4Lj91/6YyMGTkxIfW5GAGSzneczvuVPPWV8ffiFIKmlaN4R5ROY1siEVCv0
-        xE6+/x8A==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qh9t9-006Kf9-2j;
-        Fri, 15 Sep 2023 14:33:43 +0000
-Date:   Fri, 15 Sep 2023 15:33:43 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <brauner@kernel.org>
+        with ESMTP id S235633AbjIOOkT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 10:40:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9AC1AC;
+        Fri, 15 Sep 2023 07:40:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6453C433C9;
+        Fri, 15 Sep 2023 14:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694788814;
+        bh=PvlOjbLkc3tgSHNCaVnS82ty1H0lvym1p0dyZTkOFDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GsMXd6mZ8RM6Ehv3+oeXSFdJBK4XfA1s5jG3qJW397E3aH+o329rZ/VtgcJhEI2Ek
+         GIJfdrxXDV/D+2h214W5hbDliVTBm3yN1eUgvtUVVZ1/ZgLJyELtBnprCB74Mvp2bO
+         Y9yAjyDUJYhLQ2LABIiRFS7SjQAloadGL5GvZIH6h3ow+QooG9ilUBP37mYSe/gnfx
+         Oe0um8v+i1YG5HcXkyDRJwPVS8rwGOnzAUkEZB8JlS5KwPI8HWoWokIviZ30JYSJLI
+         VjWkPZQ6+IEwE3hlmnfM8EB719A4Al+/b90kwWaliUnxciX021zodiQcb+zRxyFzBc
+         v2OPDzI9ovPwA==
+Date:   Fri, 15 Sep 2023 16:40:06 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
@@ -52,7 +51,7 @@ Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
         linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
         cgroups@vger.kernel.org
 Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230915143343.GM800259@ZenIV>
+Message-ID: <20230915-brust-gratis-156b7572a7c9@brauner>
 References: <20230913111013.77623-1-hch@lst.de>
  <20230913111013.77623-4-hch@lst.de>
  <20230913232712.GC800259@ZenIV>
@@ -64,42 +63,22 @@ References: <20230913111013.77623-1-hch@lst.de>
  <20230915-zweit-frech-0e06394208a3@brauner>
  <20230915142814.GL800259@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20230915142814.GL800259@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 03:28:14PM +0100, Al Viro wrote:
-> On Fri, Sep 15, 2023 at 04:12:07PM +0200, Christian Brauner wrote:
-> > +	static void some_fs_kill_sb(struct super_block *sb)
-> > +	{
-> > +		struct some_fs_info *info = sb->s_fs_info;
-> > +
-> > +		kill_*_super(sb);
-> > +		kfree(info);
-> > +	}
-> > +
-> > +It's best practice to never deviate from this pattern.
-> 
-> The last part is flat-out incorrect.  If e.g. fatfs or cifs ever switches
-> to that pattern, you'll get UAF - they need freeing of ->s_fs_info
-> of anything that ever had been mounted done with RCU delay; moreover,
-> unload_nls() in fatfs needs to be behind the same.
-> 
 > Lifetime rules for fs-private parts of superblock are really private to
-> filesystem; their use by sget/sget_fc callbacks might impose restrictions
-> on those, but that again is none of the VFS business.
 
-PS: and no, we don't want to impose such RCU delay on every filesystem
-out there; what's more, there's nothing to prohibit e.g. having ->s_fs_info
-pointing to a refcounted fs-private object (possibly shared by various
-superblocks), so freeing might very well be "drop the reference and destroy
-if refcount has reached 0".
+Fine, I'll drop that. It's still correct that a filesystem needs to take
+care when it frees sb->s_fs_info. See the RCU fun you just encountered.
+
+
