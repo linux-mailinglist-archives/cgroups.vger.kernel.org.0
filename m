@@ -2,140 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921307A239A
-	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 18:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD457A2421
+	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 19:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbjIOQ3O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Sep 2023 12:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
+        id S234470AbjIORBz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Sep 2023 13:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbjIOQ2n (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 12:28:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA46199;
-        Fri, 15 Sep 2023 09:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694795318; x=1726331318;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=cj9l7n2Bmb5XcYMcAhASPfEHm9/0gmYiOFma5VsXwGU=;
-  b=MzFaLDBa+DuoIw3OwezMGLM0QNB+PCgUYfIHVyv5pH+iGEiTqMn/lGqi
-   nmWDOWhMiRQtu3dOzyuuI2L9pHm1FpkAdd7Li/XG3ws0FYZciGeOmpb4p
-   IT3TfIvujsF1XvIt4OaZP9n0qhIuiILFbhmB/jTbGt63+2eD2eK3U00SA
-   isllENiclTUZcGsnBSsUB4+ZSPKwpnworVDmB7cWwLc7c2JXpN7KaPLnH
-   N7Gcv1edFhFyArbsnp8tF6e543DRQ7DrM86evj17R58y+XTYsGR/54+wq
-   tjgqsMkHNOoXqBRrNB4D8NYIernupCDUJPW65sOXnBbWg9uYMnLzqgEri
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358708133"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="358708133"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 09:28:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="810585199"
-X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
-   d="scan'208";a="810585199"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.25])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 15 Sep 2023 09:28:33 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v4 03/18] x86/sgx: Add sgx_epc_lru_lists to encapsulate
- LRU lists
-References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
- <20230913040635.28815-4-haitao.huang@linux.intel.com>
- <851f9b3043732c17cd8f86a77ccee0b7c6caa22f.camel@intel.com>
-Date:   Fri, 15 Sep 2023 11:28:28 -0500
+        with ESMTP id S235855AbjIORBj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 13:01:39 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FCF2126;
+        Fri, 15 Sep 2023 10:01:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8BBEC1FD79;
+        Fri, 15 Sep 2023 17:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694797290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h3dIzvlBxdfOKjCtJrhlIGa8SoPY/rHAEBMPc40WOHY=;
+        b=ItWumZaKbB6MhyTFNvPvoRKIfR1BnhsSzAtHBbxB5AYaIPuuDtGocpcWkIRDqMRURhLaD1
+        +dhWbASomi6ckyQwLTVQG26DQtMUWyB6LfE6IMAICGBkwWu6uiY5PIzteBQ83UBqRIkmNb
+        BqnhHDqtx6ubU+pv5iOW75r1MvwugWg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D5A413251;
+        Fri, 15 Sep 2023 17:01:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DD4bDuqNBGUkRQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 15 Sep 2023 17:01:30 +0000
+Date:   Fri, 15 Sep 2023 19:01:28 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on
+ cgroup1
+Message-ID: <jikppfidbxyqpsswzamsqwcj4gy4ppysvcskrw4pa2ndajtul7@pns7byug3yez>
+References: <20230903142800.3870-1-laoar.shao@gmail.com>
+ <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
+ <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
+ <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
+ <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
+ <ZP93gUwf_nLzDvM5@mtj.duckdns.org>
+ <CALOAHbC=yxSoBR=vok2295ejDOEYQK2C8LRjDLGRruhq-rDjOQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2bbmpqncwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <851f9b3043732c17cd8f86a77ccee0b7c6caa22f.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bwbu34nvlbqq3rqp"
+Content-Disposition: inline
+In-Reply-To: <CALOAHbC=yxSoBR=vok2295ejDOEYQK2C8LRjDLGRruhq-rDjOQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 14 Sep 2023 05:31:30 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-> Some non-technical staff:
->
-> On Tue, 2023-09-12 at 21:06 -0700, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->
-> The patch was from Kristen, but ...
->
->>
->> Introduce a data structure to wrap the existing reclaimable list and its
->> spinlock. Each cgroup later will have one instance of this structure to
->> track EPC pages allocated for processes associated with the same cgroup.
->> Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
->> from the reclaimable list in this structure when its usage reaches near
->> its limit.
->>
->> Currently, ksgxd does not track the VA, SECS pages. They are considered
->> as 'unreclaimable' pages that are only deallocated when their respective
->> owning enclaves are destroyed and all associated resources released.
->>
->> When an EPC cgroup can not reclaim any more reclaimable EPC pages to
->> reduce its usage below its limit, the cgroup must also reclaim those
->> unreclaimables by killing their owning enclaves. The VA and SECS pages
->> later are also tracked in an 'unreclaimable' list added to this  
->> structure
->> to support this OOM killing of enclaves.
->>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->
-> ... it was firstly signed by Sean and then Kristen, which doesn't sound  
-> right.
->
-> If the patch was from Kristen, then either Sean's SoB should come after
-> Kristen's (which means Sean took Kristen's patch and signed it), or you  
-> need to
-> have a Co-developed-by tag for Sean right before his SoB (which  
-> indicates Sean
-> participated in the development of the patch but likely he wasn't the  
-> main
-> developer).
->
-> But I _guess_ the patch was just from Sean.
->
- From what I see:
-In v1 kristen included a "From" tsg for Sean. In v2 she split the original  
-patch into two and added some wrappers/ At that time, she removed the  
-"From" tag for both patches but kept the SOB and CC.
+--bwbu34nvlbqq3rqp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-@Kristen, could you confirm?
+Hello.
 
-I only removed the wrappers from v2 based on Dave's comments.
-So if confirmed by Kristen, should we add "From" tag for Sean?
+On Tue, Sep 12, 2023 at 11:30:32AM +0800, Yafang Shao <laoar.shao@gmail.com> wrote:
+> With the above changes, I think it can meet most use cases with BPF on cgroup1.
+> What do you think ?
 
-I'll double check the other patches.
-Thanks
-Haitao
+I think the presented use case of LSM hooks is better served by the
+default hierarchy (see also [1]).
+Relying on a chosen subsys v1 hierarchy is not systematic. And extending
+ancestry checking on named v1 hierarchies seems backwards given
+the existence of the default hierarchy.
+
+
+Michal
+
+[1] https://docs.kernel.org/admin-guide/cgroup-v2.html#delegation-containment
+
+--bwbu34nvlbqq3rqp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZQSN5gAKCRAGvrMr/1gc
+jqoaAQDSlFTLyvMU3pnG272pXuMMF5KmhsnId0TP0peVan9QcAEAw2Zhpgzlxa7y
+db4CtFmbfl/wQ7HfdVDyaYQ/I92Zowo=
+=lHHe
+-----END PGP SIGNATURE-----
+
+--bwbu34nvlbqq3rqp--
