@@ -2,146 +2,184 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C15837A1B2D
-	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 11:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F237A1E32
+	for <lists+cgroups@lfdr.de>; Fri, 15 Sep 2023 14:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233948AbjIOJtU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Sep 2023 05:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S234471AbjIOMOF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Sep 2023 08:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234052AbjIOJtQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 05:49:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DC32721;
-        Fri, 15 Sep 2023 02:45:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69430C433BC;
-        Fri, 15 Sep 2023 09:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694771103;
-        bh=S1BwYDOPxFQM2OWQ2AqApQaGICqwuhOVxXD8qmxE9S4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mURAPfRa9T3jtCGyciJ8MEx6GxAXXErYK/nk44LIiNuhQs4hAslmdKcbJGnwNr9yr
-         khjb/5RMcscuYstsLOI6NvWil24K0+ArclzY0efQjxn9PUH99SSUAaSmkq9xXRww33
-         D/cJpPY6TQqbwxENu6oH38/2UMU7Iwfy2g28OUoDDGr/wtOISoK8VDOzHT3yuzXToy
-         FJN0vch/sUeVsu8AlKNt4MAYtCuBryfyrHC1PPfKKoq3NDzwvQ6be1KBhyl8BCnp5T
-         nXMCa9awTrv7+HcgRXW454HBbFjCW3+Jd6AjiAAKeJDz/1GJ9aQ9+yAN7I9Dxewp8z
-         TkuylnV+nQKEg==
-Date:   Fri, 15 Sep 2023 11:44:55 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230915-elstern-etatplanung-906c6780af19@brauner>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230914023705.GH800259@ZenIV>
- <20230914053843.GI800259@ZenIV>
- <20230914-munkeln-pelzmantel-3e3a761acb72@brauner>
- <20230914165805.GJ800259@ZenIV>
+        with ESMTP id S234018AbjIOMOE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Sep 2023 08:14:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5961FFA;
+        Fri, 15 Sep 2023 05:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694780039; x=1726316039;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Zgee8zDq5uKDULAwPLWtzSfzZ94ccRmOL76tpinp1co=;
+  b=E5RJNW4uh4PHolr1cicb6fIJR3EWfdp6mw2cndY+M9RYaMAKumxXrYw7
+   RNUCeQya5DKzC6fapOIR/EcXCiZ5drj+6W1Vdn3DHvACuapABzRZVi6eR
+   VbEpzBWqtFCepOHAhL7owrxiL1+asa+66km7I0JmXUyo1xrUVuaUdbqGW
+   WzehFcoqCaA5yKz1w/DdnN1hlJNNDnhGjHj4TPEcJNC4oPzC/Q4u9vU9G
+   B5syvV9D3mykGwFytkSbtK3XxJmnucbH4lqlhTUHbz/OSgZvZp/+yqUCV
+   qm7mZnCFzydJJFuac6ypG4aaX4Uoqw25DBeEo2ZWSDYzruQJXYyzTIe79
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="358647958"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="358647958"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 05:13:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="810499293"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000"; 
+   d="scan'208";a="810499293"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Sep 2023 05:13:54 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qh7ho-0002wZ-0z;
+        Fri, 15 Sep 2023 12:13:52 +0000
+Date:   Fri, 15 Sep 2023 20:13:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org
+Cc:     oe-kbuild-all@lists.linux.dev, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 2/2] zswap: shrinks zswap pool based on memory pressure
+Message-ID: <202309152048.GDMxTtFF-lkp@intel.com>
+References: <20230911164024.2541401-3-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914165805.GJ800259@ZenIV>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230911164024.2541401-3-nphamcs@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 05:58:05PM +0100, Al Viro wrote:
-> On Thu, Sep 14, 2023 at 04:02:25PM +0200, Christian Brauner wrote:
-> 
-> > Yes, you're right that making the superblock and not the filesytem type
-> > the bd_holder changes the logic and we are aware of that of course. And
-> > it requires changes such as moving additional block device closing from
-> > where some callers currently do it.
-> 
-> Details, please?
+Hi Nhat,
 
-Filesystems like xfs and ext4 that closed additional block devices (For
-example, the logdev= mount option for xfs.) in put_super() could go
-through stuff like:
+kernel test robot noticed the following build errors:
 
-blkdev_put()
--> bdev->bd_disk->fops->release() == lo_release()
-   -> __loop_clr_fd()
-      -> disk_force_media_change()
-         -> __invalidate_device()
-            -> get_super()
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.6-rc1 next-20230915]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-which wouldn't have been a problem before because get_super() matched on
-sb->s_bdev which obviously doesn't work because a log device or rt
-device or whatever isn't the main block device. So we couldn't have
-deadlocked.
+url:    https://github.com/intel-lab-lkp/linux/commits/Nhat-Pham/zswap-make-shrinking-memcg-aware/20230912-004147
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230911164024.2541401-3-nphamcs%40gmail.com
+patch subject: [PATCH 2/2] zswap: shrinks zswap pool based on memory pressure
+config: loongarch-randconfig-001-20230914 (https://download.01.org/0day-ci/archive/20230915/202309152048.GDMxTtFF-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230915/202309152048.GDMxTtFF-lkp@intel.com/reproduce)
 
-But the fact that it is called in that manner from that place in the
-first place is wildly adventurous especially considering that there
-isn't __a single comment__ in that code why that is safe. So good luck
-figuring this all out.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309152048.GDMxTtFF-lkp@intel.com/
 
-Now that we don't have to do that s_bdev matching thing anymore because
-we directly associate the superblock with the block device we can go
-straight from block device to superblock. But now calling blkdev_put()
-under put_super() which holds s_umount could deadlock. So it's moved to
-kill_sb where it should've always been called. Even without the
-potential deadlock in the new scheme that's cleaner and easier to
-understand imho and it just works for any block device.
+All errors (new ones prefixed by >>):
 
-> Note that Christoph's series has mashed (2) and (3) together, resulting
-> in UAF in a bunch of places.  And I'm dead serious about
+   mm/zswap.c: In function 'zswap_lru_add':
+   mm/zswap.c:341:17: error: implicit declaration of function 'get_mem_cgroup_from_objcg'; did you mean 'get_mem_cgroup_from_mm'? [-Werror=implicit-function-declaration]
+     341 |                 get_mem_cgroup_from_objcg(entry->objcg) : NULL;
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~
+         |                 get_mem_cgroup_from_mm
+   mm/zswap.c:341:57: warning: pointer/integer type mismatch in conditional expression
+     341 |                 get_mem_cgroup_from_objcg(entry->objcg) : NULL;
+         |                                                         ^
+   mm/zswap.c: In function 'zswap_lru_del':
+   mm/zswap.c:366:57: warning: pointer/integer type mismatch in conditional expression
+     366 |                 get_mem_cgroup_from_objcg(entry->objcg) : NULL;
+         |                                                         ^
+   mm/zswap.c: In function 'zswap_shrinker_count':
+>> mm/zswap.c:546:9: error: implicit declaration of function 'cgroup_rstat_flush' [-Werror=implicit-function-declaration]
+     546 |         cgroup_rstat_flush(memcg->css.cgroup);
+         |         ^~~~~~~~~~~~~~~~~~
+   mm/zswap.c:546:33: error: invalid use of undefined type 'struct mem_cgroup'
+     546 |         cgroup_rstat_flush(memcg->css.cgroup);
+         |                                 ^~
+   mm/zswap.c: In function 'shrink_memcg_cb':
+   mm/zswap.c:816:80: warning: pointer/integer type mismatch in conditional expression
+     816 |                 memcg = entry->objcg ? get_mem_cgroup_from_objcg(entry->objcg) : NULL;
+         |                                                                                ^
+   mm/zswap.c: In function 'shrink_worker':
+   mm/zswap.c:896:51: error: invalid use of undefined type 'struct mem_cgroup'
+     896 |                         css_put(&pool->next_shrink->css);
+         |                                                   ^~
+   mm/zswap.c: In function 'zswap_pool_destroy':
+   mm/zswap.c:1054:43: error: invalid use of undefined type 'struct mem_cgroup'
+    1054 |                 css_put(&pool->next_shrink->css);
+         |                                           ^~
+   mm/zswap.c: In function 'zswap_store':
+   mm/zswap.c:1446:23: warning: assignment to 'struct mem_cgroup *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    1446 |                 memcg = get_mem_cgroup_from_objcg(objcg);
+         |                       ^
+   mm/zswap.c:1448:39: error: invalid use of undefined type 'struct mem_cgroup'
+    1448 |                         css_put(&memcg->css);
+         |                                       ^~
+   mm/zswap.c:1451:31: error: invalid use of undefined type 'struct mem_cgroup'
+    1451 |                 css_put(&memcg->css);
+         |                               ^~
+   mm/zswap.c:1497:23: warning: assignment to 'struct mem_cgroup *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    1497 |                 memcg = get_mem_cgroup_from_objcg(objcg);
+         |                       ^
+   mm/zswap.c:1499:31: error: invalid use of undefined type 'struct mem_cgroup'
+    1499 |                 css_put(&memcg->css);
+         |                               ^~
+   cc1: some warnings being treated as errors
 
-Yes, that I did fix as far as I'm aware. If the rules would've been
-written down where when something was freed we would've had an easier
-time figuring this out though. But they weren't so we missed it.
 
-> Documentation/filesystems/porting being the right place; any development
+vim +/cgroup_rstat_flush +546 mm/zswap.c
 
-Yes, agreed. I'll write a document for Christoph's next version.
+   537	
+   538	static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+   539			struct shrink_control *sc)
+   540	{
+   541		struct zswap_pool *pool = container_of(shrinker, typeof(*pool), shrinker);
+   542		struct mem_cgroup *memcg = sc->memcg;
+   543		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+   544		unsigned long nr_backing, nr_stored, nr_freeable, flags;
+   545	
+ > 546		cgroup_rstat_flush(memcg->css.cgroup);
+   547		nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+   548		nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+   549	
+   550		if (!is_shrinker_enabled(memcg) || !nr_stored)
+   551			return 0;
+   552	
+   553		nr_freeable  = list_lru_shrink_count(&pool->list_lru, sc);
+   554		/*
+   555		 * Subtract the lru size by an estimate of the number of pages
+   556		 * that should be protected.
+   557		 */
+   558		spin_lock_irqsave(&lruvec->lru_lock, flags);
+   559		nr_freeable = nr_freeable > lruvec->nr_zswap_protected ?
+   560			nr_freeable - lruvec->nr_zswap_protected : 0;
+   561		spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+   562	
+   563		/*
+   564		 * Scale the number of freeable pages by the memory saving factor.
+   565		 * This ensures that the better zswap compresses memory, the fewer
+   566		 * pages we will evict to swap (as it will otherwise incur IO for
+   567		 * relatively small memory saving).
+   568		 */
+   569		return mult_frac(nr_freeable, nr_backing, nr_stored);
+   570	}
+   571	
 
-I know that what you're saying is roughly that we shouldn't make the
-same mistake as were done before but the fact that the old lifetime
-rules weren't documented in any meaningful way and now we get grumbled
-at in turn makes me grumble a bit. :) But overall point duly taken.
-
-> tree of any filesystem (in-tree one or not) will have to go through the
-> changes and figure out WTF to do with their existing code.  We are
-> going to play whack-a-mole for at least several years as development
-> branches get rebased and merged.
-
-Let me write something up.
-
-> 
-> Incidentally, I'm going to add a (belated by 10 years) chunk in porting.rst
-> re making sure that anything in superblock that might be needed by methods
-> called in RCU mode should *not* be freed without an RCU delay...  Should've
-> done that back in 3.12 merge window when RCU'd vfsmounts went in; as it
-> is, today we have several filesystems with exact same kind of breakage.
-> hfsplus and affs breakage had been there in 3.13 (missed those two), exfat
-> and ntfs3 - introduced later, by initial merges of filesystems in question.
-> Missed on review...
-
-Cool, thanks for adding that.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
