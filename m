@@ -2,140 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949687A3413
-	for <lists+cgroups@lfdr.de>; Sun, 17 Sep 2023 09:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577A67A36A9
+	for <lists+cgroups@lfdr.de>; Sun, 17 Sep 2023 18:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbjIQHa4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 17 Sep 2023 03:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        id S235961AbjIQQwv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Sep 2023 12:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbjIQHap (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Sep 2023 03:30:45 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC2A186;
-        Sun, 17 Sep 2023 00:30:40 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-6563409d7c2so12324356d6.1;
-        Sun, 17 Sep 2023 00:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694935839; x=1695540639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CHboe8nA34+TWlqz42IVoMs0G+Rp7/msDkEqBjUm0qo=;
-        b=bnrM6vELY9l2Q8Hxvlc7bvaVyeJI4bcW2g54ddAJF/B2UkLjz7FmorHubjqieJBaDu
-         nsy/S1x9vZj+l5PLakfU55A3nWfDT+9LRJ1s/eiURB9qJt2KgrChdGWd17EL2QyA2Imn
-         9Z4zuZMzcDYJQrRf3GPYIF3xlxXtgoP0mcUeK1k+ElV5Clrv1LvpPqq7jzkib7HrJ/nD
-         wWfQUTH0sb36FSaqTAFYlvZlCnDYwuzgPJm4TKw658OxSWVywbIfYOmO7YWb05v2LM5W
-         lhbtNstGFY0GAvBduZJgZ4DJzIG9SFEFf0H6IuTnkCg11GA3t85r1cxJnWvJ7OH73lUW
-         siIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694935839; x=1695540639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CHboe8nA34+TWlqz42IVoMs0G+Rp7/msDkEqBjUm0qo=;
-        b=IXvLotbajtrGr1zG9eHScvBw2OYADEKWtjG6+xXd/C6icn7wZkcNtUCP3+EreixZFx
-         aBIvZJKORjmS+yxDf2hnoy9dUrSfXg4DeMcnQpte2tDSFb5hyvNuiPNP8xvO0p78iW/3
-         AxIzU+xtYal+ODXJzqZv5UkZ+0fbuCYqPlm8LV/krqg6HZV1sz2I0dUx3GShgcit7QPA
-         kygd90nFk2+FeFZjXe/v6WxIluzso8b4ddOk6OK6smk0YNVEkPwCnidfRF0LMjWWEKV/
-         gljq74iDPuN8koqP0EWT5UnNjw91aPPMsjdb3fqTXT2Sx35syH/qarDWfbnqdRT6qbuU
-         TrQQ==
-X-Gm-Message-State: AOJu0YyPB757mvCnTtEWKaL2po3a9ynfJHu/PZWUi8qAJi+KZDRac3od
-        Kd3/TYpoUTqjfj1d3KqdoNISKGojq0uWGHzidPA=
-X-Google-Smtp-Source: AGHT+IEdtZPbxcCu1aE5YY4gCTN5TPLXm2UZndKbvCU3l3gT+owKRWVE8u4yi6benAyozDXj/C/8JD5XjdbaSwZMJvg=
-X-Received: by 2002:a0c:de07:0:b0:656:3c43:6bc5 with SMTP id
- t7-20020a0cde07000000b006563c436bc5mr5430699qvk.7.1694935839502; Sun, 17 Sep
- 2023 00:30:39 -0700 (PDT)
+        with ESMTP id S236956AbjIQQwo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Sep 2023 12:52:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D495218B
+        for <cgroups@vger.kernel.org>; Sun, 17 Sep 2023 09:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694969508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rgW2MUYlHHfdCZ+QdWezRlOQ9jHuf7PY43yzWv+wfSM=;
+        b=IjU9t6MWj6lTsBF26yp59OqLh75sOW83MeuNLLdgC3tqWjhtB5KaKqbxVH1famW+lto3Px
+        lsOoGYfBLh28K7z6vKxDWcyzTz73AUhxO2I/xuwB8LyCrRs4WTacf+B9hiwdhgwbe4NB6C
+        7YMtVzuQKwzk63z52DSk3Q2r+l+LNz4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-118-7D-EcRCMNxOI8vbd2BqiLg-1; Sun, 17 Sep 2023 12:51:44 -0400
+X-MC-Unique: 7D-EcRCMNxOI8vbd2BqiLg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4F192945926;
+        Sun, 17 Sep 2023 16:51:44 +0000 (UTC)
+Received: from [10.22.8.73] (unknown [10.22.8.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C64110F1BE7;
+        Sun, 17 Sep 2023 16:51:43 +0000 (UTC)
+Message-ID: <5e513c72-7198-a55e-6e2b-a811d5529284@redhat.com>
+Date:   Sun, 17 Sep 2023 12:51:43 -0400
 MIME-Version: 1.0
-References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
- <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
- <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
- <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
- <ZP93gUwf_nLzDvM5@mtj.duckdns.org> <CALOAHbC=yxSoBR=vok2295ejDOEYQK2C8LRjDLGRruhq-rDjOQ@mail.gmail.com>
- <CA+khW7hah317_beZ7QDA1R=sWi5q7TanRC+efMhivPKtWzbA4w@mail.gmail.com>
-In-Reply-To: <CA+khW7hah317_beZ7QDA1R=sWi5q7TanRC+efMhivPKtWzbA4w@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 17 Sep 2023 15:30:01 +0800
-Message-ID: <CALOAHbAYTYasEHgd9C2Oc8yznR9bR9Q2M-QS9vzBpOYvmG7F+w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
-To:     Hao Luo <haoluo@google.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/1] cgroup/cpuset: Rebuild sched domains if isolated
+ partition changed
+Content-Language: en-US
+To:     Pierre Gondois <pierre.gondois@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     rui.zhang@intel.com, aaron.lu@intel.com,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+References: <20230915154505.363754-1-pierre.gondois@arm.com>
+ <20230915154505.363754-2-pierre.gondois@arm.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230915154505.363754-2-pierre.gondois@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 2:57=E2=80=AFAM Hao Luo <haoluo@google.com> wrote:
+On 9/15/23 11:45, Pierre Gondois wrote:
+> When an isolated parition is created, the sched domains (sds) are
+> rebuilt and the sds of the isolated CPUs are detached. This only
+> happens at the creation of the isolated parition. Updating
+> the cpuset of the partition doesn't rebuild the sds:
 >
-> On Mon, Sep 11, 2023 at 8:31=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 4:24=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > On Sun, Sep 10, 2023 at 11:17:48AM +0800, Yafang Shao wrote:
-> > > > To acquire the cgroup_id, we can resort to open coding, as exemplif=
-ied below:
-> > > >
-> > > >     task =3D bpf_get_current_task_btf();
-> > > >     cgroups =3D task->cgroups;
-> > > >     cgroup =3D cgroups->subsys[cpu_cgrp_id]->cgroup;
-> > > >     key =3D cgroup->kn->id;
-> > >
-> > > You can't hardcode it to a specific controller tree like that. You ei=
-ther
-> > > stick with fd based interface or need also add something to identify =
-the
-> > > specifc cgroup1 tree.
-> >
-> > As pointed out by Alexei, I think we can introduce some
-> > cgroup_id-based kfuncs which can work for both cgroup1 and cgroup2.
-> >
-> > Something as follows (untested),
-> >
-> > __bpf_kfunc u64 bpf_current_cgroup_id_from_subsys(int subsys)
-> > {
-> >         struct cgroup *cgroup;
-> >
-> >         cgroup =3D task_cgroup(current, subsys);
-> >         if (!cgroup)
-> >             return 0;
-> >         return cgroup_id(cgroup);
-> > }
-> >
+> To reproduce:
+>    # ls /sys/kernel/debug/sched/domains/cpu0/
+>    domain0
+>    # ls /sys/kernel/debug/sched/domains/cpu1/
+>    domain0
+>    #
+>    # mkdir cgroup
+>    # mount -t cgroup2 none cgroup/
+>    # mkdir cgroup/A1/
+>    # echo "+cpuset" > cgroup/cgroup.subtree_control
+>    # echo 0-3 > cgroup/A1/cpuset.cpus
+>    # echo isolated > cgroup/A1/cpuset.cpus.partition
+>    #
+>    # ls /sys/kernel/debug/sched/domains/cpu0/
+>    # ls /sys/kernel/debug/sched/domains/cpu1/
+>    #
+>    # echo 0 > cgroup/A1/cpuset.cpus
+>    # ls /sys/kernel/debug/sched/domains/cpu0/
+>    # ls /sys/kernel/debug/sched/domains/cpu1/
+>    #
 >
-> Can we also support checking arbitrary tasks, instead of just current?
-> I find myself often needing to find the cgroup only given a
-> task_struct. For example, when attaching to context switch, I want to
-> know whether the next task is under a cgroup. Having such a kfunc
-> would be very useful. It can also be used in task_iter programs.
+> Here CPU1 should have a sched domain re-attached.
+>
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+> ---
+>   kernel/cgroup/cpuset.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 58e6f18f01c1..e3eb27ff9b68 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1680,11 +1680,15 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
+>   		 * empty cpuset is changed, we need to rebuild sched domains.
+>   		 * On default hierarchy, the cpuset needs to be a partition
+>   		 * root as well.
+> +		 * Also rebuild sched domains if the cpuset of an isolated
+> +		 * partition changed.
+>   		 */
+> -		if (!cpumask_empty(cp->cpus_allowed) &&
+> -		    is_sched_load_balance(cp) &&
+> -		   (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+> -		    is_partition_valid(cp)))
+> +		if ((!cpumask_empty(cp->cpus_allowed) &&
+> +		     is_sched_load_balance(cp) &&
+> +		     (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+> +		      is_partition_valid(cp))) ||
+> +		    (cp->partition_root_state == PRS_ISOLATED ||
+> +		     cp->partition_root_state == PRS_INVALID_ISOLATED))
+>   			need_rebuild_sched_domains = true;
+>   
+>   		rcu_read_lock();
 
-Agree. Will do it.
+Thanks for spotting the problem and sending out a patch to fix it. 
+However, it should be done in the update_cpumask(). The sched_domain 
+rebuild in update_cpumasks_hier() is supposed to be used for impacted 
+descendant cpusets lower down in the hierarchy.
 
---=20
-Regards
-Yafang
+Anyway, I believe this problem should have been fixed in commit 
+a86ce68078b2 ("cgroup/cpuset: Extract out CS_CPU_EXCLUSIVE & 
+CS_SCHED_LOAD_BALANCE handling") recently merged into the v6.6 kernel. 
+Would you mind testing the latest upstream kernel to see if this problem 
+is gone or not?
+
+Thanks,
+Longman
+
