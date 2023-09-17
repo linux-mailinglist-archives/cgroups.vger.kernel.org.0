@@ -2,64 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FC77A340F
-	for <lists+cgroups@lfdr.de>; Sun, 17 Sep 2023 09:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601097A3411
+	for <lists+cgroups@lfdr.de>; Sun, 17 Sep 2023 09:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbjIQHUQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 17 Sep 2023 03:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        id S230089AbjIQH3w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Sep 2023 03:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjIQHTu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Sep 2023 03:19:50 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896FB135;
-        Sun, 17 Sep 2023 00:19:45 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76f2843260bso235064985a.3;
-        Sun, 17 Sep 2023 00:19:45 -0700 (PDT)
+        with ESMTP id S229550AbjIQH3b (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Sep 2023 03:29:31 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EBD139;
+        Sun, 17 Sep 2023 00:29:25 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-656351b6d74so11208556d6.0;
+        Sun, 17 Sep 2023 00:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694935184; x=1695539984; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694935764; x=1695540564; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CRzdICGYkpsfyS2a+MV5klEIYz7EG73NrctrxBdiSuU=;
-        b=AWi7djdkjI7wgvSowXYB1Ndy2/XQB+dV7lE3TDa3fBoRm+KkWEo560WpA4ZqO1tWXw
-         APsqw9cmQdcfEjZjmLHhqsOlw7FuuGAIhGkEZyfLiRB5UaKnFdTSbcH+yi1p4d+HZ7eJ
-         NwmF0eJnSh+hdn9ax4UgLwyWWU3oFaIVFT9rlTYX5loW0F/iVQUUh6jZ3vT8DIeK/28B
-         z5FUFk3EwTlWRuJOCBIiJ+hzDMKGTpKrqIF9I5rX5vWvxZQ+hzptRCnyaOnLwkCvePmx
-         wzbzSu0h0adIKWP1pHzYCtFNebrT9MeB5vC7EzM6laxageM0hvmAucOdPgLSGGQykfkC
-         bq1A==
+        bh=UztY6Cngw+1MjErY3AcXouGizLW2/eHL4pwNAma3V7k=;
+        b=fmrtSWwijJmREUyPRnXKjTTnahY7T0PsBPd4pN2QQ7zfztk43zzkYHMbo+/TGdUvUx
+         7RE8LUa2hbSISx8NexCDvZg5K3Z+mXfBlf/rchw42OlrzMk81Q8scIhU9AEKSCUXVKZb
+         MDAPQEgWviK2oBlb/vQlYLLcccKm7AtTU+8HEXgKrBHxM6mDw8o5gzTsCgg+x0uUZvCa
+         UEmGwJMykEYyBXQMjzKu3mJEW3xtP/pT0R4aPJLTAmszV9fRHtGFG8x+tslqFDrZVfLM
+         Ca0kviDiSRWo8Rjo7f1X9L00/U+gWKfiq5FW4CDHIfB4lPobts5D7OoK6dVR5Gb7lt6u
+         Yd/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694935184; x=1695539984;
+        d=1e100.net; s=20230601; t=1694935764; x=1695540564;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CRzdICGYkpsfyS2a+MV5klEIYz7EG73NrctrxBdiSuU=;
-        b=OMYQJHQLlb/l4Ayzx03X0wyHgPLz6yilVjFsneQpb/zvWoX9USxmQHz7KZIHmX6vdC
-         jL6cTZkhv1G0e9qGSDTVkFIs5xBn1NRdMW5N2uqvjPz5TtcwgC5EZHWU6TQiQ7boUXn2
-         YML0/92aPFJhjSRnEmb+aAmTXdnxSXl4Wu+06HsCWObwL0Vz+O51E1qJrYcp6uFkF2hB
-         pcQa8MSFPU4Zf6eEeyifnDnfkwJ3dpYNwYK7SPEDvJ0wggJZGMRbXiwGpSdU2VN6WU7D
-         sLosAq99O8TxBoPN0wSFKsyNn0X+qsHnSoZLmXJWRkc2tlQASPGj8i+KD7hSLy/Sn7h+
-         zkAw==
-X-Gm-Message-State: AOJu0Yy60JP0YapkdqQaO/6EgvW/xjq+Z0o0wrE8ayi6rkL6XoMupWMe
-        NCPpEzMeVMFbi7mk687J+RnC+xTY2Sp+0S+gJP4=
-X-Google-Smtp-Source: AGHT+IFg4ipBwPSxHzts7K9EmcEDkhAlQcIyJyZRVBJNpp3rYTA+KrRM4TXxueQIXJ3A8n+JyeUBitkv3fX3Ah9dC2w=
-X-Received: by 2002:a05:620a:31a7:b0:76f:f0b:a1ba with SMTP id
- bi39-20020a05620a31a700b0076f0f0ba1bamr6425213qkb.30.1694935184579; Sun, 17
- Sep 2023 00:19:44 -0700 (PDT)
+        bh=UztY6Cngw+1MjErY3AcXouGizLW2/eHL4pwNAma3V7k=;
+        b=LWVjWnPW359X1luo/Y4qOAfLpbBZSI0AiIPgtZMe/mrkJKncgWeTjLB/6uFN+mK7sk
+         Yw8gII5NxCSBFkucEJffXS9yyct+1aDWW8xM8adGUqfHCvh7gY+uv2s2LAh9OTJU/5Lo
+         xxwr8GHcra7xXBEpTY5e7eIxTgpbyPRqwFsBtKxVVlYGdVgaFO1kDuepeE7p7kwt7+GC
+         GpUuxFnvE0kHbG/CY/sGPUa+mfkispMNMLAumuaS5OFTKyUZZsJXA+qemr4WxniRnGJR
+         hFpAn2T6zf7AceZIr30rnyvx04sN4BOjKjqQkS8tXryPVkR5NpzZjaLo0yoqMTudktY1
+         cztQ==
+X-Gm-Message-State: AOJu0Yx8QDtnHyPBqEaz5bNcZLF9I5oSZJYdYjKrMSxNqVQL/UGhT4MK
+        CPl78LdIPjLnAvdAsZXJTyL4PYCtz5MAE67Absgi0Xcf0VpaPSmI
+X-Google-Smtp-Source: AGHT+IFXKFyvj1t7E4o+uOtIcoul8vTE1Mo4G5L80Pv+NHAVqHAJu/1eYJ9+xMA+ROnGORjrAq9Tpe56MZXEBDVFKBE=
+X-Received: by 2002:a0c:f14b:0:b0:647:35b7:4955 with SMTP id
+ y11-20020a0cf14b000000b0064735b74955mr6623914qvl.52.1694935764655; Sun, 17
+ Sep 2023 00:29:24 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
  <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
  <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
  <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
  <ZP93gUwf_nLzDvM5@mtj.duckdns.org> <CALOAHbC=yxSoBR=vok2295ejDOEYQK2C8LRjDLGRruhq-rDjOQ@mail.gmail.com>
- <jikppfidbxyqpsswzamsqwcj4gy4ppysvcskrw4pa2ndajtul7@pns7byug3yez>
-In-Reply-To: <jikppfidbxyqpsswzamsqwcj4gy4ppysvcskrw4pa2ndajtul7@pns7byug3yez>
+ <jikppfidbxyqpsswzamsqwcj4gy4ppysvcskrw4pa2ndajtul7@pns7byug3yez> <ZQSU_0RhpVw-Y0v2@mtj.duckdns.org>
+In-Reply-To: <ZQSU_0RhpVw-Y0v2@mtj.duckdns.org>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 17 Sep 2023 15:19:06 +0800
-Message-ID: <CALOAHbCG6W+dxpcO-f=U5=9WD-sEqRoLuhFrYAps-p944=sVgw@mail.gmail.com>
+Date:   Sun, 17 Sep 2023 15:28:46 +0800
+Message-ID: <CALOAHbDspQnOCFiYPjy34narygyApRQVnM1nZ+Qt2Cyq1VGx9Q@mail.gmail.com>
 Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>,
+To:     Tejun Heo <tj@kernel.org>
+Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -88,51 +88,47 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 1:01=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
+On Sat, Sep 16, 2023 at 1:31=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 >
-> Hello.
+> On Fri, Sep 15, 2023 at 07:01:28PM +0200, Michal Koutn=C3=BD wrote:
+> > Hello.
+> >
+> > On Tue, Sep 12, 2023 at 11:30:32AM +0800, Yafang Shao <laoar.shao@gmail=
+.com> wrote:
+> > > With the above changes, I think it can meet most use cases with BPF o=
+n cgroup1.
+> > > What do you think ?
+> >
+> > I think the presented use case of LSM hooks is better served by the
+> > default hierarchy (see also [1]).
+> > Relying on a chosen subsys v1 hierarchy is not systematic. And extendin=
+g
+> > ancestry checking on named v1 hierarchies seems backwards given
+> > the existence of the default hierarchy.
 >
-> On Tue, Sep 12, 2023 at 11:30:32AM +0800, Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > With the above changes, I think it can meet most use cases with BPF on =
-cgroup1.
-> > What do you think ?
->
-> I think the presented use case of LSM hooks is better served by the
-> default hierarchy (see also [1]).
+> Yeah, identifying cgroup1 hierarchies by subsys leave out pretty good chu=
+nk
+> of usecases - e.g. systemd used to use a named hierarchy for primary proc=
+ess
+> organization on cgroup1.
 
-Hi Michal,
-
-The crucial issue at hand is not whether the LSM hooks are better
-suited for the cgroup default hierarchy. What truly matters is the
-effort and time required to migrate all cgroup1-based applications to
-cgroup2-based ones. While transitioning a single component from
-cgroup1-based to cgroup2-based is a straightforward task, the
-complexity arises when multiple interdependent components in a
-production environment necessitate this transition. In such cases, the
-work becomes significantly challenging.
-
-> Relying on a chosen subsys v1 hierarchy is not systematic. And extending
-> ancestry checking on named v1 hierarchies seems backwards given
-> the existence of the default hierarchy.
-
-The cgroup becomes active only when it has one or more of its
-controllers enabled. In a production environment, a task is invariably
-governed by at least one cgroup controller. Even in hybrid cgroup
-mode, a task is subject to either a cgroup1 controller or a cgroup2
-controller. Our objective is to enhance BPF support for
-controller-based scenarios, eliminating the need to concern ourselves
-with hierarchies, whether they involve cgroup1 or cgroup2. This change
-seems quite reasonable, in my opinion.
+Systemd-managed tasks invariably have one or more cgroup controllers
+enabled, as exemplified by entries like
+"/sys/fs/cgroup/cpu/{system.slice, user.slice, XXX.service}".
+Consequently, the presence of a cgroup controller can be employed as
+an indicator to identify a systemd-managed task.
 
 >
->
-> Michal
->
-> [1] https://docs.kernel.org/admin-guide/cgroup-v2.html#delegation-contain=
-ment
+> Also, you don't have to switch to cgroup2 wholesale. You can just build t=
+he
+> same hierarchy in cgroup2 for process organization and combine that with =
+any
+> cgroup1 hierarchies.
 
---
+The challenge lies in the need to adapt a multitude of applications to
+this system, and furthermore, not all of these applications are under
+our direct management. This poses a formidable task.
+
+--=20
 Regards
 Yafang
