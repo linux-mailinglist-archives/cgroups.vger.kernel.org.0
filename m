@@ -2,126 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25257A4C34
-	for <lists+cgroups@lfdr.de>; Mon, 18 Sep 2023 17:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40297A4FD7
+	for <lists+cgroups@lfdr.de>; Mon, 18 Sep 2023 18:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbjIRP2y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Sep 2023 11:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
+        id S230138AbjIRQyE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Sep 2023 12:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjIRP2l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Sep 2023 11:28:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1DC12A;
-        Mon, 18 Sep 2023 08:26:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1F9761FF93;
-        Mon, 18 Sep 2023 15:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695050653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229937AbjIRQyD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Sep 2023 12:54:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5922A94
+        for <cgroups@vger.kernel.org>; Mon, 18 Sep 2023 09:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695055992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZTsaizh9uJKTEcz6c5p2g2QGw5JzmlLl2sAISOCHTb0=;
-        b=uNDNyyEycKJBCT8u9QqHT2QXUZQSV7KEwqPhRKMT8g78tvewNow7/PM0Dx8tyzi3UtSwzx
-        cITrOJ3w7steQa1htyVtogiSbMXtJDg/hwSQ96Jf43HJYSsCYwhj25c8Sf6DEVuyfURH1Y
-        aU9810o4zzQKZkEvrA6beovh34oBypU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=nnaf/+YZv/hYci2QoG7tyRLioIFXko+bbyYD+KlJj7w=;
+        b=JJaxI6QmvlRZ/q7RxiugS87XmdhS+rW0Hvd/+gjGzbMd0y3wVksVqTMxEggKVfX0ImaIy4
+        oT0GS++7uZAtH9PgLVoaPQWZwh/QYanqbbVkCpq0iZ6HUtRL0k7CTf41ScoAHy8oYRyAIM
+        SOEbrwUOuSyW8fL3q4Jsm2dg7iRaCBk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-678-WXi8OPpMNaWVQaKM7neKUw-1; Mon, 18 Sep 2023 09:47:04 -0400
+X-MC-Unique: WXi8OPpMNaWVQaKM7neKUw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A48001358A;
-        Mon, 18 Sep 2023 15:24:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7NFIJ5xrCGVOWQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 18 Sep 2023 15:24:12 +0000
-Date:   Mon, 18 Sep 2023 17:24:11 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 15/19] kernfs: split ->kill_sb
-Message-ID: <vqax7efvf5h4agxge5g43pdl6tsa5on5mob74bydydd5vdxwb5@5fj2qgmuxjj3>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-16-hch@lst.de>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D5391C0514C;
+        Mon, 18 Sep 2023 13:47:03 +0000 (UTC)
+Received: from [10.22.9.159] (unknown [10.22.9.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E1F540C6EA8;
+        Mon, 18 Sep 2023 13:47:02 +0000 (UTC)
+Message-ID: <e4e9505d-f55c-5047-5686-40cd49742d45@redhat.com>
+Date:   Mon, 18 Sep 2023 09:47:02 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fb5cgu6m55xbwjgl"
-Content-Disposition: inline
-In-Reply-To: <20230913111013.77623-16-hch@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/1] cgroup/cpuset: Rebuild sched domains if isolated
+ partition changed
+Content-Language: en-US
+To:     Pierre Gondois <pierre.gondois@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     rui.zhang@intel.com, aaron.lu@intel.com,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+References: <20230915154505.363754-1-pierre.gondois@arm.com>
+ <20230915154505.363754-2-pierre.gondois@arm.com>
+ <5e513c72-7198-a55e-6e2b-a811d5529284@redhat.com>
+ <9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 9/18/23 03:07, Pierre Gondois wrote:
+> Hello Longman,
+>
+> On 9/17/23 18:51, Waiman Long wrote:
+>> On 9/15/23 11:45, Pierre Gondois wrote:
+>>> When an isolated parition is created, the sched domains (sds) are
+>>> rebuilt and the sds of the isolated CPUs are detached. This only
+>>> happens at the creation of the isolated parition. Updating
+>>> the cpuset of the partition doesn't rebuild the sds:
+>>>
+>>> To reproduce:
+>>>     # ls /sys/kernel/debug/sched/domains/cpu0/
+>>>     domain0
+>>>     # ls /sys/kernel/debug/sched/domains/cpu1/
+>>>     domain0
+>>>     #
+>>>     # mkdir cgroup
+>>>     # mount -t cgroup2 none cgroup/
+>>>     # mkdir cgroup/A1/
+>>>     # echo "+cpuset" > cgroup/cgroup.subtree_control
+>>>     # echo 0-3 > cgroup/A1/cpuset.cpus
+>>>     # echo isolated > cgroup/A1/cpuset.cpus.partition
+>>>     #
+>>>     # ls /sys/kernel/debug/sched/domains/cpu0/
+>>>     # ls /sys/kernel/debug/sched/domains/cpu1/
+>>>     #
+>>>     # echo 0 > cgroup/A1/cpuset.cpus
+>>>     # ls /sys/kernel/debug/sched/domains/cpu0/
+>>>     # ls /sys/kernel/debug/sched/domains/cpu1/
+>>>     #
+>>>
+>>> Here CPU1 should have a sched domain re-attached.
+>>>
+>>> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+>>> ---
+>>>    kernel/cgroup/cpuset.c | 12 ++++++++----
+>>>    1 file changed, 8 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index 58e6f18f01c1..e3eb27ff9b68 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -1680,11 +1680,15 @@ static void update_cpumasks_hier(struct 
+>>> cpuset *cs, struct tmpmasks *tmp,
+>>>             * empty cpuset is changed, we need to rebuild sched 
+>>> domains.
+>>>             * On default hierarchy, the cpuset needs to be a partition
+>>>             * root as well.
+>>> +         * Also rebuild sched domains if the cpuset of an isolated
+>>> +         * partition changed.
+>>>             */
+>>> -        if (!cpumask_empty(cp->cpus_allowed) &&
+>>> -            is_sched_load_balance(cp) &&
+>>> -           (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+>>> -            is_partition_valid(cp)))
+>>> +        if ((!cpumask_empty(cp->cpus_allowed) &&
+>>> +             is_sched_load_balance(cp) &&
+>>> +             (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+>>> +              is_partition_valid(cp))) ||
+>>> +            (cp->partition_root_state == PRS_ISOLATED ||
+>>> +             cp->partition_root_state == PRS_INVALID_ISOLATED))
+>>>                need_rebuild_sched_domains = true;
+>>>               rcu_read_lock();
+>>
+>> Thanks for spotting the problem and sending out a patch to fix it.
+>> However, it should be done in the update_cpumask(). The sched_domain
+>> rebuild in update_cpumasks_hier() is supposed to be used for impacted
+>> descendant cpusets lower down in the hierarchy.
+>>
+>> Anyway, I believe this problem should have been fixed in commit
+>> a86ce68078b2 ("cgroup/cpuset: Extract out CS_CPU_EXCLUSIVE &
+>> CS_SCHED_LOAD_BALANCE handling") recently merged into the v6.6 kernel.
+>> Would you mind testing the latest upstream kernel to see if this problem
+>> is gone or not?
+>
+> Yes right, v6.6-rc2 kernel doesn't have this issue. My bad for not 
+> updating
+> it ...
+>
+> However I think the second issue described in the cover letter can 
+> still be
+> reproduced on v6.6-rc2. This present patch was not aiming to fix it 
+> though.
+>
+> Commands:
+> # mkdir cgroup
+> # mount -t cgroup2 none cgroup/
+> # mkdir cgroup/A1 cgroup/B1
+> # echo "+cpuset" > cgroup/cgroup.subtree_control
+> # echo 0-3 > cgroup/A1/cpuset.cpus
+> # echo isolated > cgroup/A1/cpuset.cpus.partition
+> # echo 4-6 > cgroup/B1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated
+> # echo 0-4 > cgroup/A1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated invalid (Cpu list in cpuset.cpus not exclusive)
+> # echo 0-3 > cgroup/A1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated invalid (Cpu list in cpuset.cpus not exclusive)
+>
+> Cgroup A1 should be a valid isolated partition once its CPUs become
+> exclusive again I believe,
 
---fb5cgu6m55xbwjgl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, the current code doesn't always detect that an invalid partition 
+can be valid again and turn it back on. Will try to fix that. In the 
+mean time, a workaround is to do
 
-On Wed, Sep 13, 2023 at 08:10:09AM -0300, Christoph Hellwig <hch@lst.de> wr=
-ote:
-> Split the kernfs_kill_sb helper into helpers for the new split
-> shutdown_sb and free_sb methods.  Note that resctrl has very odd
-> locking in ->kill_sb, so this commit only releases the locking
-> acquired in rdt_shutdown_sb in rdt_free_sb.  This is not very good
-> code and relies on ->shutdown_sb and ->free_sb to always be called
-> in pairs, which it currently is.  The next commit will try to clean
-> this up.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 12 +++++++++---
->  fs/kernfs/mount.c                      | 18 ++++++++----------
->  fs/sysfs/mount.c                       |  7 ++++---
->  include/linux/kernfs.h                 |  5 ++---
->  kernel/cgroup/cgroup.c                 | 10 ++++++----
->  5 files changed, 29 insertions(+), 23 deletions(-)
+# echo member > cgroup/A1/cpuset.cpus.partition
+# echo isolated > cgroup/A1/cpuset.cpus.partition
 
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+Thanks,
+Longman
 
-(Also, I didn't find a necessity to have kernfs_free_sb(sb) under
-rdtgroup_mutex, so folding the following patch of the series may be fine
-too.)
-
-
---fb5cgu6m55xbwjgl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZQhrmQAKCRAGvrMr/1gc
-joA0AQCDANwuvql51NVbMvBdMPjFI6Th8lDr5goiUMJIkDInfAEAgIpZtJp32qUD
-1HpNpPzzwxVHRHauSQjOpc8j5wdn+Qk=
-=yjqf
------END PGP SIGNATURE-----
-
---fb5cgu6m55xbwjgl--
