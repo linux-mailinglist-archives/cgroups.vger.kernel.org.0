@@ -2,86 +2,205 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6617A5430
-	for <lists+cgroups@lfdr.de>; Mon, 18 Sep 2023 22:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945EB7A5956
+	for <lists+cgroups@lfdr.de>; Tue, 19 Sep 2023 07:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbjIRUdO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Sep 2023 16:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        id S231128AbjISFa2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Sep 2023 01:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjIRUdO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Sep 2023 16:33:14 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF0A10A;
-        Mon, 18 Sep 2023 13:33:08 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68fc9a4ebe9so4499281b3a.2;
-        Mon, 18 Sep 2023 13:33:08 -0700 (PDT)
+        with ESMTP id S229960AbjISFaZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Sep 2023 01:30:25 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473F1114
+        for <cgroups@vger.kernel.org>; Mon, 18 Sep 2023 22:30:19 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a65f9147ccso691125666b.1
+        for <cgroups@vger.kernel.org>; Mon, 18 Sep 2023 22:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695069188; x=1695673988; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UEnHEVF0sQxeNUYZ0vdBfHCJqqJDyzd1BEi34ZYEm3U=;
-        b=hMuQzLRkcNz/aszxtvzUu66z+V/pkZbL59f9lf8wALxgkUl+0BNRXJ4MTDxQQONGOy
-         q479/s4OzLr6KbPsjTUB0+8uajOCR/5+Vgs1hyExvrfRlAgkPX9OX43IlZM25oA6mdjL
-         FBHruqXSBxK91sPRIaKew6BuT4tjaKMjszy5YgvZhPWAyZEm8JUcm9ShpMAOvGoUZdo3
-         yB9kpiLrSV8M6UszoaZmETWOHtCRh4Sqyyw+BlhYSk6fx5iJimJNFbuBlIfeU6wZ7gJt
-         OyBpIuBnmK3Jj+cSQCTna5MHPEMl8HisVlAvXw0SsLthCm8vHC1XoL9G0az6J/mvZuCS
-         mnDg==
+        d=google.com; s=20230601; t=1695101418; x=1695706218; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fneQXzvskbWAJ/u8RbohNhmDqQxy1hEL61UT0wNAZho=;
+        b=n+hkRywlkXvqXRXYkd6GjF6nP8DsNC6F0mvMGKVBzHflUYLPfg3aiDk99QYMyzn78H
+         o3gRGBX95B8NQJQdGbWpcJH1pIiePnxIYcl24auvrKEFUmLcUhDDQvJOlyOon1ycRYTZ
+         L/TyPvCBzCZVhi+t7hFBL3JZ4pmfUkPpsFEhImM+pR0tSwLOFNEWlSxzyiwMXM7C4wCT
+         gk5X72MVmV6vMMkjfhCJ3CK7rvbuT4NfEnav5uN4N1D9HGNk9kS6F29PyYihqeBTj67j
+         ciOm2YcHFdQ7jMtzDQj2MT6u9P56suWMikwj91N7BRCk9XTHLm8ZDyqsiC+Zq1Sh40d8
+         AT4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695069188; x=1695673988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695101418; x=1695706218;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UEnHEVF0sQxeNUYZ0vdBfHCJqqJDyzd1BEi34ZYEm3U=;
-        b=Op5XNvgAbmbHV0MSrWnHcJNX3rvFFJSXIqfy6spkD2Tu6dLzv1zZ56Azt8HMLBSvyo
-         DyohIOupR69r/1CG4ZRPNH46+5nwYk1mI0XX8hmo7VO4wAxyDJM9hsz2+c0jK1T85mDv
-         BvJYqPIFAuYR1HYZnV3Naamr2FRXBY84ESCcm59WutFvcaMGOvL9PKVaoWoxq7NarEzz
-         eeVDF+mrG97Hd56il0GzeYs8RUNNT32uoBoEqki5fyNGD3f41SzKvTKvA2jYFI8f9Az8
-         z1LVN7Q2M9/rW+EFHwH0UQmFFbSyJQGcML1wxgmrE+cGiOfpda9ppDtodIIaPWFP4PkI
-         gBKQ==
-X-Gm-Message-State: AOJu0YzbHbuyqMcvPwi9J/Sgobr1kfTufaN7NEc+/Z2ZW7IXheV5L1Yc
-        SZ/KrCe6VMFTXeBahjlEXSA0n4Ef0hljNw==
-X-Google-Smtp-Source: AGHT+IERed95QSiCHzx43lZz/euKSpl7uXrl5kMEO6Z5GV5+1eW1WB8QYKHtT5uYGs8Na3+0QMlo2Q==
-X-Received: by 2002:a05:6a21:47cb:b0:153:a160:89dc with SMTP id as11-20020a056a2147cb00b00153a16089dcmr9076643pzc.58.1695069188157;
-        Mon, 18 Sep 2023 13:33:08 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id c21-20020aa781d5000000b0068fe68de4e1sm7676539pfn.145.2023.09.18.13.33.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Sep 2023 13:33:07 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 18 Sep 2023 10:33:06 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Subject: Re: [PATCH v8 0/7] cgroup/cpuset: Support remote partitions
-Message-ID: <ZQi0AvvYJqaKkKG9@slm.duckdns.org>
-References: <20230905133243.91107-1-longman@redhat.com>
+        bh=fneQXzvskbWAJ/u8RbohNhmDqQxy1hEL61UT0wNAZho=;
+        b=mYBA4S1gAysV6ZT4gbP/pwU1eyLq1ArYhsGWiXhtlH7LbPBygkSmU0BMoqe56n+IvG
+         VTONh7iVy6CnEEjaytqaiJH4BPv9uL8W/fX159dkakoap4tsDjRWvIVNnfz7H/OvUf+T
+         0YNGsimQ/G52/rci2zb2AjU5M1TxkVI61QHB1NYT/iBmW3ofClwaMfkPoKiS+BEkeJKg
+         PKdQgbn2WJwas1CK0DM15BLAdevQX4a6n9B9EbOtdTru4gmBvE4STBTJwiSRveCAWvUK
+         4NprvGwMxq9oxflWOkMyJl/ZJbOUegKquveCTFrnJEbOXUHSq2yDIqhDo0wpYz7Qof2l
+         vJzQ==
+X-Gm-Message-State: AOJu0YyjargUNAWtbuXOUF9uCpbAZCEPF36sD7FnjAGzzL0iUwsxpp6s
+        Gv/d80PYAAXMwiL6kjhzAFoDn9zMrQSCvR615GsvIw==
+X-Google-Smtp-Source: AGHT+IFh3eaDnagGr449OpW6h5lWcLN4qCWCJI29FyabrvA5jV7YdqmIzWIOkN+ZlW9n5bkwgIP12w4Gr4EbgrEVCiA=
+X-Received: by 2002:a17:907:2c6b:b0:9ae:1872:d0ab with SMTP id
+ ib11-20020a1709072c6b00b009ae1872d0abmr2757113ejc.0.1695101417573; Mon, 18
+ Sep 2023 22:30:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905133243.91107-1-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <CALvZod6j5E2MXFz463LRcrP6XY8FedzLUKW88c=ZY39B6mYyMA@mail.gmail.com>
+ <CAJD7tkbb5zxEPSW6vvijDpQKCZiDcUJqe8SPvLHfo0RX7iHXAw@mail.gmail.com>
+ <20230914225844.woz7mke6vnmwijh7@google.com> <CAJD7tkb_pDxqqhB25aZpbfur=YodBRb1nmdpNZt1DB_1ozDpPQ@mail.gmail.com>
+ <20230915010138.knjli6ovpozxbpss@google.com>
+In-Reply-To: <20230915010138.knjli6ovpozxbpss@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 18 Sep 2023 22:29:38 -0700
+Message-ID: <CAJD7tka-Rzn77J4cDwVb1jqiMF0XFsTHpJLAVsMbVTTyxZZVew@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Applied the series to cgroup/for-6.7.
+On Thu, Sep 14, 2023 at 6:01=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
+wrote:
+>
+> On Thu, Sep 14, 2023 at 04:30:56PM -0700, Yosry Ahmed wrote:
+> [...]
+> > >
+> > > I think first you need to show if this (2 sec stale stats) is really =
+a
+> > > problem.
+> >
+> > That's the thing, my main concern is that if this causes a problem, we
+> > probably won't be able to tell it was because of stale stats. It's
+> > very hard to make that connection.
+> >
+>
+> Please articulate what the problem would look like which you did in the
+> use-cases description below, let's discuss there.
+>
+> > Pre-rstat, reading stats would always yield fresh stats (as much as
+> > possible). Now the stats can be up to 2s stale, and we don't really
+> > know how this will affect our existing workloads.
+> >
+>
+> Pre-rstat the stat read would traverse the memcg tree. With rstat
+> the tradeoff was made between expensive read and staleness.
+> Yeah there
+> might still be memcg update tree traversal which I would like to remove
+> completely. However you are saying to
 
-Thanks.
+I think this sentence is truncated.
 
--- 
-tejun
+>
+> [...]
+> > >
+> > > I don't see why userspace OOM killing and proactive reclaim need
+> > > subsecond accuracy. Please explain.
+> >
+> > For proactive reclaim it is not about sub-second accuracy. It is about
+> > doing the reclaim then reading the stats immediately to see the
+> > effect. Naturally one would expect that a stat read after reclaim
+> > would show the system state after reclaim.
+> >
+> > For userspace OOM killing I am not really sure. It depends on how
+> > dynamic the workload is. If a task recently had a spike in memory
+> > usage causing a threshold to be hit, userspace can kill a different
+> > task if the stats are stale.
+> >
+>
+> Please add above reasoning in your commit message (though I am not
+> convinced but let's leave it at that).
+
+Will do in the next version, thanks.
+
+>
+> > I think the whole point is *not* about the amount of staleness. It is
+> > more about that you expect a stats read after an event to reflect the
+> > system state after the event.
+>
+> The whole point is to understand the tradeoff between accuracy and cost
+> of accuracy. I don't think you want to pay the cost of strong
+> consistency/ordering between stats reading and an event. My worry is
+> that you are enforcing a tradeoff which *might* be just applicable to
+> your use-cases. Anyways this is not something that can not be changed
+> later.
+
+Given the numbers I got with the patch, it doesn't seem like we are
+paying a significant cost for the accuracy. Anyway, as you say, it's
+not something that can not be changed. In fact, I have another
+proposal that I am currently testing, please see my next response to
+Johannes.
+
+>
+> >
+> > > Same for system overhead but I can
+> > > see the complication of two different sources for stats. Can you prov=
+ide
+> > > the formula of system overhead? I am wondering why do you need to rea=
+d
+> > > stats from memory.stat files. Why not the memory.current of top level
+> > > cgroups and /proc/meminfo be enough. Something like:
+> > >
+> > > Overhead =3D MemTotal - MemFree - SumOfTopCgroups(memory.current)
+> >
+> > We use the amount of compressed memory in zswap from memory.stat,
+> > which is not accounted as memory usage in cgroup v1.
+> >
+>
+> There are zswap stats in /proc/meminfo. Will those work for you?
+
+Yeah this should work for this specific use case, thanks.
+
+>
+> [...]
+> > > Fix the in-kernel flushers separately.
+> >
+> > The in-kernel flushers are basically facing the same problem. For
+> > instance, reclaim would expect a stats read after a reclaim iteration
+> > to reflect the system state after the reclaim iteration.
+> >
+>
+> I have not seen any complains on memory reclaim recently. Maybe
+> reclaim does not really need that such accuracy :P
+
+Perhaps, it's full of heuristics anyway :)
+
+>
+> > > Also the problem Cloudflare is facing does not need to be tied with t=
+his.
+> >
+> > When we try to wait for flushing to complete we run into the same
+> > latency problem of the root flush.
+>
+> Not sure what wait for flushing has to do with Cloudflare's report. They
+> are ok with no sync flushing at all stat read.
+
+Oh I am not saying the wait benefits their use case. I am saying when
+the wait is implemented, we face the same problem (expensive flush of
+the entire hierarchy), so we need to mitigate it anyway -- hence the
+relevance to Cloudflare's use case.
+
+Anyway, I have an alternative that I will propose shortly in response
+to Johannes's reply.
