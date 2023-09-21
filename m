@@ -2,219 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C857A9971
-	for <lists+cgroups@lfdr.de>; Thu, 21 Sep 2023 20:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29B47A9EDE
+	for <lists+cgroups@lfdr.de>; Thu, 21 Sep 2023 22:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjIUSO6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Sep 2023 14:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
+        id S229576AbjIUUNp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Sep 2023 16:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjIUSO4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Sep 2023 14:14:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32307E50;
-        Thu, 21 Sep 2023 10:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695318603; x=1726854603;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FjWBe0gquMx3lNYmeIOSoDBa7nBK8aydjByq9TyafbE=;
-  b=JuwufzhiuqmcvPH4RfML1r0fw9NOvsz4Sh8rnL7VzBP5pK4kLuY1LvNH
-   cz03XKR1E/vXvVxVIZEx5BEAYonHVWI3m4bf54WUT+mKkQ2nPshG/l/T9
-   RygW7LyGVOlvAnPu5N5H5+oxWtNz6L51JrgL0WCRxXUc0qnUpC0bECOjb
-   unaGXYK+B+XWdlHydlHhW/3gpqUelMYtjG2u/DHEYkuE/PERinX+kvnbY
-   YXNANGwiR3cbmAkARjHpG9bw1g69DePtqRX3SXdGKoLW7s6nS4eNfcvNi
-   kUAceIHwDXAbgBXspY5bdDFwBK2+fG57CiVHtXzatoJ6UXdLqhjJ0qDuk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="359871047"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="359871047"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 04:06:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="870765809"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="870765809"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 21 Sep 2023 04:06:23 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qjHVl-0009uA-1C;
-        Thu, 21 Sep 2023 11:06:21 +0000
-Date:   Thu, 21 Sep 2023 19:05:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S230334AbjIUUNa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Sep 2023 16:13:30 -0400
+Received: from mail-ot1-x34a.google.com (mail-ot1-x34a.google.com [IPv6:2607:f8b0:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717C340646
+        for <cgroups@vger.kernel.org>; Thu, 21 Sep 2023 10:25:29 -0700 (PDT)
+Received: by mail-ot1-x34a.google.com with SMTP id 46e09a7af769-6c0dc76e736so1541851a34.1
+        for <cgroups@vger.kernel.org>; Thu, 21 Sep 2023 10:25:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695317128; x=1695921928; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mOW1s/LOhiEKmGFQGGQ/gb7iNiCsFWbcKv8d4ZT/dpI=;
+        b=CjJ5DEmctwvJmDivlGOZayu69dVslBOYB8GS02XumWAWtE/qbYB1LwhIY2JTvPcMoS
+         2owXtm1ci+xfViV2S4eg0C9davVlZoJ6Xb48fOyMmeEXtD9K/sMBcs+cqmyuSf+CcLOB
+         3aG6XTpQNU7Tn9sVR/09W4N4l8cgpG/Nsy7WPN6CdDQJ5ee+Rev9iDsJlSfhKHlrPKDz
+         KFZqit/YC11Uwa3ESxYOf7OwccbPF167rX6y0bY/fBs0UQO5/uHgJ2BGESj4UPiEianJ
+         PXU3kLxI5drqlD2CFpHn2HajA2MSwIRL9RC44i8890RvLMO684knJwXf1vdZpH1qk+7A
+         ye6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695317128; x=1695921928;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mOW1s/LOhiEKmGFQGGQ/gb7iNiCsFWbcKv8d4ZT/dpI=;
+        b=EOXcdf0CDbBKUsb4Uoxtv08I2T5rfEYHqjcW2sycgVwD0GO88bvPmgVGiMXfoPtRGE
+         AEIv8yy0V0kzVvslhWESMrgTAw0Xn25Zbr65f9RMq/J6YYzIo+gy7nUuWnv8zKfeavZe
+         3l1lvh6Rexu+7zW5EYZhgieNYiYIiSdxQ/2f//x32lYaTgoCFTsAteXSdj2zcxa9PUGo
+         KaOupGwzEX5S8I9rKM+hfa0Cyqvzgg9u3TUNATiZSKBHeZvxdcvtNV3H7nd/563ruple
+         8GlUrwN71u4Z9KXeb3egnXm62dwfp3Eh1qDwFhjORtNoGSCQM1+IQxyd2wd1b2pAGOOh
+         x0Bw==
+X-Gm-Message-State: AOJu0YzPp9TBNfyZl6SnCTqS/V4lHbLGpcRYBqepRPDFV2CI2Mtoq1hX
+        A+RJGJXNjTvrchb5u59paWlXUq5hqAvChAK4
+X-Google-Smtp-Source: AGHT+IFTPKV8hb5qPNKFt3PlKNQhm1PDDliL803lQAuNf6oYVsKA/DfLdwy4CO7/lb7z+piXyQB3c4gswMGqoV1s
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a81:ae59:0:b0:59b:ebe0:9fcd with SMTP
+ id g25-20020a81ae59000000b0059bebe09fcdmr73922ywk.7.1695283861434; Thu, 21
+ Sep 2023 01:11:01 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 08:10:52 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230921081057.3440885-1-yosryahmed@google.com>
+Subject: [PATCH 0/5] mm: memcg: subtree stats flushing and thresholds
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
         Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
         Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
         Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH 4/5] mm: workingset: move the stats flush into
- workingset_test_recent()
-Message-ID: <202309211829.Efuqg8NE-lkp@intel.com>
-References: <20230921081057.3440885-5-yosryahmed@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921081057.3440885-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Yosry,
+This series attempts to address shortages in today's approach for memcg
+stats flushing, namely occasionally stale or expensive stat reads. The
+series does so by changing the threshold that we use to decide whether
+to trigger a flush to be per memcg instead of global (patch 3), and then
+changing flushing to be per memcg (i.e. subtree flushes) instead of
+global (patch 5).
 
-kernel test robot noticed the following build errors:
+Patch 3 & 5 are the core of the series, and they include more details
+and testing results. The rest are either cleanups or prep work.
 
-[auto build test ERROR on akpm-mm/mm-everything]
+This series replaces the "memcg: more sophisticated stats flushing"
+series [1], which also replaces another series, in a long list of
+attempts to improve memcg stats flushing. It is not a v2 as it is a
+completely different approach. This is based on collected feedback from
+discussions on lkml in all previous attempts. Hopefully, this is the
+final attempt.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-change-flush_next_time-to-flush_last_time/20230921-161246
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230921081057.3440885-5-yosryahmed%40google.com
-patch subject: [PATCH 4/5] mm: workingset: move the stats flush into workingset_test_recent()
-config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/20230921/202309211829.Efuqg8NE-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230921/202309211829.Efuqg8NE-lkp@intel.com/reproduce)
+[1]https://lore.kernel.org/lkml/20230913073846.1528938-1-yosryahmed@google.com/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309211829.Efuqg8NE-lkp@intel.com/
+Yosry Ahmed (5):
+  mm: memcg: change flush_next_time to flush_last_time
+  mm: memcg: move vmstats structs definition above flushing code
+  mm: memcg: make stats flushing threshold per-memcg
+  mm: workingset: move the stats flush into workingset_test_recent()
+  mm: memcg: restore subtree stats flushing
 
-All errors (new ones prefixed by >>):
-
-   mm/workingset.c: In function 'workingset_test_recent':
->> mm/workingset.c:461:32: error: invalid use of undefined type 'struct mem_cgroup'
-     461 |         css_get(&eviction_memcg->css);
-         |                                ^~
-
-
-vim +461 mm/workingset.c
-
-   405	
-   406	/**
-   407	 * workingset_test_recent - tests if the shadow entry is for a folio that was
-   408	 * recently evicted. Also fills in @workingset with the value unpacked from
-   409	 * shadow.
-   410	 * @shadow: the shadow entry to be tested.
-   411	 * @file: whether the corresponding folio is from the file lru.
-   412	 * @workingset: where the workingset value unpacked from shadow should
-   413	 * be stored.
-   414	 *
-   415	 * Return: true if the shadow is for a recently evicted folio; false otherwise.
-   416	 */
-   417	bool workingset_test_recent(void *shadow, bool file, bool *workingset)
-   418	{
-   419		struct mem_cgroup *eviction_memcg;
-   420		struct lruvec *eviction_lruvec;
-   421		unsigned long refault_distance;
-   422		unsigned long workingset_size;
-   423		unsigned long refault;
-   424		int memcgid;
-   425		struct pglist_data *pgdat;
-   426		unsigned long eviction;
-   427	
-   428		rcu_read_lock();
-   429	
-   430		if (lru_gen_enabled()) {
-   431			bool recent = lru_gen_test_recent(shadow, file,
-   432							  &eviction_lruvec, &eviction,
-   433							  workingset);
-   434			rcu_read_unlock();
-   435			return recent;
-   436		}
-   437	
-   438		unpack_shadow(shadow, &memcgid, &pgdat, &eviction, workingset);
-   439		eviction <<= bucket_order;
-   440	
-   441		/*
-   442		 * Look up the memcg associated with the stored ID. It might
-   443		 * have been deleted since the folio's eviction.
-   444		 *
-   445		 * Note that in rare events the ID could have been recycled
-   446		 * for a new cgroup that refaults a shared folio. This is
-   447		 * impossible to tell from the available data. However, this
-   448		 * should be a rare and limited disturbance, and activations
-   449		 * are always speculative anyway. Ultimately, it's the aging
-   450		 * algorithm's job to shake out the minimum access frequency
-   451		 * for the active cache.
-   452		 *
-   453		 * XXX: On !CONFIG_MEMCG, this will always return NULL; it
-   454		 * would be better if the root_mem_cgroup existed in all
-   455		 * configurations instead.
-   456		 */
-   457		eviction_memcg = mem_cgroup_from_id(memcgid);
-   458		if (!mem_cgroup_disabled() && !eviction_memcg)
-   459			return false;
-   460	
- > 461		css_get(&eviction_memcg->css);
-   462		rcu_read_unlock();
-   463	
-   464		/* Flush stats (and potentially sleep) outside the RCU read section */
-   465		mem_cgroup_flush_stats_ratelimited();
-   466	
-   467		eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
-   468		refault = atomic_long_read(&eviction_lruvec->nonresident_age);
-   469	
-   470		/*
-   471		 * Calculate the refault distance
-   472		 *
-   473		 * The unsigned subtraction here gives an accurate distance
-   474		 * across nonresident_age overflows in most cases. There is a
-   475		 * special case: usually, shadow entries have a short lifetime
-   476		 * and are either refaulted or reclaimed along with the inode
-   477		 * before they get too old.  But it is not impossible for the
-   478		 * nonresident_age to lap a shadow entry in the field, which
-   479		 * can then result in a false small refault distance, leading
-   480		 * to a false activation should this old entry actually
-   481		 * refault again.  However, earlier kernels used to deactivate
-   482		 * unconditionally with *every* reclaim invocation for the
-   483		 * longest time, so the occasional inappropriate activation
-   484		 * leading to pressure on the active list is not a problem.
-   485		 */
-   486		refault_distance = (refault - eviction) & EVICTION_MASK;
-   487	
-   488		/*
-   489		 * Compare the distance to the existing workingset size. We
-   490		 * don't activate pages that couldn't stay resident even if
-   491		 * all the memory was available to the workingset. Whether
-   492		 * workingset competition needs to consider anon or not depends
-   493		 * on having free swap space.
-   494		 */
-   495		workingset_size = lruvec_page_state(eviction_lruvec, NR_ACTIVE_FILE);
-   496		if (!file) {
-   497			workingset_size += lruvec_page_state(eviction_lruvec,
-   498							     NR_INACTIVE_FILE);
-   499		}
-   500		if (mem_cgroup_get_nr_swap_pages(eviction_memcg) > 0) {
-   501			workingset_size += lruvec_page_state(eviction_lruvec,
-   502							     NR_ACTIVE_ANON);
-   503			if (file) {
-   504				workingset_size += lruvec_page_state(eviction_lruvec,
-   505							     NR_INACTIVE_ANON);
-   506			}
-   507		}
-   508	
-   509		mem_cgroup_put(eviction_memcg);
-   510		return refault_distance <= workingset_size;
-   511	}
-   512	
+ include/linux/memcontrol.h |   8 +-
+ mm/memcontrol.c            | 269 +++++++++++++++++++++----------------
+ mm/vmscan.c                |   2 +-
+ mm/workingset.c            |  37 +++--
+ 4 files changed, 181 insertions(+), 135 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0.459.ge4e396fd5e-goog
+
