@@ -2,59 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4447AA0C4
-	for <lists+cgroups@lfdr.de>; Thu, 21 Sep 2023 22:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150337AA2A5
+	for <lists+cgroups@lfdr.de>; Thu, 21 Sep 2023 23:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbjIUUs2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Sep 2023 16:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
+        id S232754AbjIUV1f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Sep 2023 17:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232374AbjIUUsO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Sep 2023 16:48:14 -0400
+        with ESMTP id S231481AbjIUV1X (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Sep 2023 17:27:23 -0400
 Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A657B45F
-        for <cgroups@vger.kernel.org>; Thu, 21 Sep 2023 10:50:34 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3216ba1b01eso1241075f8f.2
-        for <cgroups@vger.kernel.org>; Thu, 21 Sep 2023 10:50:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE87900CA
+        for <cgroups@vger.kernel.org>; Thu, 21 Sep 2023 14:01:38 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31f737b8b69so1237705f8f.3
+        for <cgroups@vger.kernel.org>; Thu, 21 Sep 2023 14:01:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695318631; x=1695923431; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695330097; x=1695934897; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Cl15FReM+0BOvrBRx7ZaDFvWKYaZDzCR+8xQoQoeQk=;
-        b=rfWKokqEceL8xygObJ2tG6Z3G+Bn222vbZ6+kd+diBffjgc/KZoOP1oL1hbTXd5mkW
-         R/6JdL5kVQP2sIYWFNE8pH8ZFasZZldVhMqVbML3ZIGyyHB1gEiI3HLT7Dy99aGFYDwQ
-         zsJymDVYmMOceERsEUSxcUnXapuL61U+r3sTlvVDFEMCvrYV06adkLBkIuJNEg0KfdJF
-         PH2oR/kOnswUdZMhUeEoY2bSMBn1cg7fxGycpuf+nVus1LLigwQ7BleyRybrKDtxYsKz
-         NVenQ0EpR0Jtwo+ZbQHjlMNOcT6IZn/2Aj40uT0SuCXJyJ21MoDfT/RD/CjzLrQlvUSa
-         abfQ==
+        bh=0rUsUqKbiTN+5AJFY5VneI8NJRSroN3WWkp9ziiQqp0=;
+        b=LeT0qvzwdIkJKnc0j1Tny7Ql3nEAmAyZAQ459bCBozcmtHPyEML9EgxSMlN9x85XYR
+         frT+YJZGqjeEoszbIVz6/OhXGGRqqRdBaFN/aIIhhcJLWZ4ZlZfNHcBZlp1iTQh0BQJX
+         ysEyDTuXQhYRTHxxTy03fzrcQCoeoImdvG0zppGhKUCZMr62UC9uYJ5udK+T/f4Ar0Bb
+         hz0/g7tT7xIjZRtIXAmjDTQz7lgQjPhyALtmRVtXxDEC+Deg/NnVvJ80jyWxmbv6WqJB
+         Sq2d99IGSY6/ntoYsLUbM9jNS/MLs/eoNfHD22AvQ5rden58ZUL2hsBCZpsRvgOd130a
+         Nlmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695318631; x=1695923431;
+        d=1e100.net; s=20230601; t=1695330097; x=1695934897;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Cl15FReM+0BOvrBRx7ZaDFvWKYaZDzCR+8xQoQoeQk=;
-        b=Kl24eL/F1muiU9mi9BXoYnIaC3Q3XN+huB8w+2wCyC3BwQVGCbxwYUS2rqGV1mOwKr
-         JtlS/4+LXM0OXYfhtEu4ZDzxabbRYJveQWFbeewkPXZ7o0vuL08T0LQ+zvnYX2oAn5wf
-         59JaaLHK7jxVt6J2hTcBlXxLkyN0XvKeQeOIy0d4SddJS0C1Vc3F8uJuE/iOu1dnrEPN
-         hsKqOIg/mabk+pUGleAepy33CH52nYoTHaQXOZv+nl5IKQlZKN6juv86eaPMA3PdMfRI
-         npCO7begIjcrldyHgYvIogvFL9LLigqu92E73BC89I64Jc2RU/4LDTuI4NaGVTiMw5mc
-         3hjA==
-X-Gm-Message-State: AOJu0YzdPPtoTQdsLXhRWR8U3ITj3p03aqlRrFU7Xgu7oUgjXOfChlwg
-        NOMhJDXcsY9hQMhiKJ5UZqPlMq4afHfHdE27vQxKMb2WA2OS+YMeKhM=
-X-Google-Smtp-Source: AGHT+IHRXu+qQsgMk8i/pqSEscfhp/KwvJHJJu8f+ujgpgcmtBn6YNtHGfK16HPFoLtaZY9/THdAkg9SzWdjU4yq9sU=
-X-Received: by 2002:a17:906:5dce:b0:9ae:406c:3425 with SMTP id
- p14-20020a1709065dce00b009ae406c3425mr4180099ejv.0.1695284043103; Thu, 21 Sep
- 2023 01:14:03 -0700 (PDT)
+        bh=0rUsUqKbiTN+5AJFY5VneI8NJRSroN3WWkp9ziiQqp0=;
+        b=rcbwyx3erCqlYMFO6fPJMMFC8Mt0UssnXm7V/LcJsE6WvpXPRjKlr7YahAhAvNiFEV
+         ScA+LkicbMtIInEGUuF0JZZksMEsa/BhnU4WPm64wderyP9cGhn7588CBTImeY2w7Tri
+         0lzeUmRuf2n36XicZYqUZBGiFTvWEtC+BnAnwbR3qS0UdKnk/HOVaD5QFh8twAP2gFX5
+         41qGsNy7GBvJHcgYEB3YBbE8R2XpIwUBXi4iFjU7NaV/ekCrF2jZUkiHmJcsZy4UwTc+
+         6mdcESTBjzBAdl0igCJzpfaN1nTwajGha0Dve2znBkW+vyJdY/fZ+Qx5Qkd5l5DV2U+d
+         B60g==
+X-Gm-Message-State: AOJu0YxCIgBiLzSQI6jIvEflnpM3pmuPWuB/UP8sxoPTbOhW6hJzttot
+        rE37BOW6BGs6h0pQbdLmuYSQRAk2Gj9/NXOz7HsGcA==
+X-Google-Smtp-Source: AGHT+IG+lgB6b0FlP6FTLmxGTFwXXXbuDjRWJ1vjsbR9lCrf7xYl/EarkvsXMyrafWLuLdoGAIYtDTgDuHS2NedZsQM=
+X-Received: by 2002:a5d:638a:0:b0:321:6fe4:d4eb with SMTP id
+ p10-20020a5d638a000000b003216fe4d4ebmr4827582wru.2.1695330097084; Thu, 21 Sep
+ 2023 14:01:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230921081057.3440885-1-yosryahmed@google.com> <20230921081057.3440885-4-yosryahmed@google.com>
-In-Reply-To: <20230921081057.3440885-4-yosryahmed@google.com>
+References: <20230921081057.3440885-5-yosryahmed@google.com> <202309211829.Efuqg8NE-lkp@intel.com>
+In-Reply-To: <202309211829.Efuqg8NE-lkp@intel.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 21 Sep 2023 01:13:23 -0700
-Message-ID: <CAJD7tkabLAwg6D1xfc=+eQZm7Xpp+76KgVyJo8vS2teFeyDAjg@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Johannes Weiner <hannes@cmpxchg.org>
+Date:   Thu, 21 Sep 2023 14:00:57 -0700
+Message-ID: <CAJD7tkam6BV0p99t503x0V__ygVk_3sdrDSLjiEP5dsE_5T7Qg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] mm: workingset: move the stats flush into workingset_test_recent()
+To:     kernel test robot <lkp@intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
@@ -63,267 +66,217 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
         Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
         Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-16.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 1:11=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+On Thu, Sep 21, 2023 at 4:06=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
 >
-> A global counter for the magnitude of memcg stats update is maintained
-> on the memcg side to avoid invoking rstat flushes when the pending
-> updates are not significant. This avoids unnecessary flushes, which are
-> not very cheap even if there isn't a lot of stats to flush. It also
-> avoids unnecessary lock contention on the underlying global rstat lock.
+> Hi Yosry,
 >
-> Make this threshold per-memcg. The scheme is followed where percpu (now
-> also per-memcg) counters are incremented in the update path, and only
-> propagated to per-memcg atomics when they exceed a certain threshold.
+> kernel test robot noticed the following build errors:
 >
-> This provides two benefits:
-> (a) On large machines with a lot of memcgs, the global threshold can be
-> reached relatively fast, so guarding the underlying lock becomes less
-> effective. Making the threshold per-memcg avoids this.
+> [auto build test ERROR on akpm-mm/mm-everything]
 >
-> (b) Having a global threshold makes it hard to do subtree flushes, as we
-> cannot reset the global counter except for a full flush. Per-memcg
-> counters removes this as a blocker from doing subtree flushes, which
-> helps avoid unnecessary work when the stats of a small subtree are
-> needed.
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-mem=
+cg-change-flush_next_time-to-flush_last_time/20230921-161246
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-ev=
+erything
+> patch link:    https://lore.kernel.org/r/20230921081057.3440885-5-yosryah=
+med%40google.com
+> patch subject: [PATCH 4/5] mm: workingset: move the stats flush into work=
+ingset_test_recent()
+> config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/2023=
+0921/202309211829.Efuqg8NE-lkp@intel.com/config)
+> compiler: powerpc-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20230921/202309211829.Efuqg8NE-lkp@intel.com/reproduce)
 >
-> Nothing is free, of course. This comes at a cost:
-> (a) A new per-cpu counter per memcg, consuming NR_CPUS * NR_MEMCGS * 4
-> bytes.
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309211829.Efuqg8NE-lkp=
+@intel.com/
 >
-> (b) More work on the update side, although in the common case it will
-> only be percpu counter updates. The amount of work scales with the
-> number of ancestors (i.e. tree depth). This is not a new concept, adding
-> a cgroup to the rstat tree involves a parent loop, so is charging.
-> Testing in a later patch shows this doesn't introduce significant
-> regressions.
+> All errors (new ones prefixed by >>):
 >
-> (c) The error margin in the stats for the system as a whole increases
-> from NR_CPUS * MEMCG_CHARGE_BATCH to NR_CPUS * MEMCG_CHARGE_BATCH *
-> NR_MEMCGS. This is probably fine because we have a similar per-memcg
-> error in charges coming from percpu stocks, and we have a periodic
-> flusher that makes sure we always flush all the stats every 2s anyway.
+>    mm/workingset.c: In function 'workingset_test_recent':
+> >> mm/workingset.c:461:32: error: invalid use of undefined type 'struct m=
+em_cgroup'
+>      461 |         css_get(&eviction_memcg->css);
+>          |                                ^~
 >
-> This patch was tested to make sure no significant regressions are
-> introduced on the update path as follows. In a cgroup that is 4 levels
-> deep (/sys/fs/cgroup/a/b/c/d), the following benchmarks were ran:
->
-> (a) neper [1] with 1000 flows and 100 threads (single machine). The
-> values in the table are the average of server and client throughputs in
-> mbps after 30 iterations, each running for 30s:
->
->                                 tcp_rr          tcp_stream
-> Base                            9504218.56      357366.84
-> Patched                         9656205.68      356978.39
-> Delta                           +1.6%           -0.1%
-> Standard Deviation              0.95%           1.03%
->
-> An increase in the performance of tcp_rr doesn't really make sense, but
-> it's probably in the noise. The same tests were ran with 1 flow and 1
-> thread but the throughput was too noisy to make any conclusions (the
-> averages did not show regressions nonetheless).
->
-> Looking at perf for one iteration of the above test, __mod_memcg_state()
-> (which is where memcg_rstat_updated() is called) does not show up at all
-> without this patch, but it shows up with this patch as 1.06% for tcp_rr
-> and 0.36% for tcp_stream.
->
-> (b) Running "stress-ng --vm 0 -t 1m --times --perf". I don't understand
-> stress-ng very well, so I am not sure that's the best way to test this,
-> but it spawns 384 workers and spits a lot of metrics which looks nice :)
-> I picked a few ones that seem to be relevant to the stats update path. I
-> also included cache misses as this patch introduce more atomics that may
-> bounce between cpu caches:
->
-> Metric                  Base            Patched         Delta
-> Cache Misses            3.394 B/sec     3.433 B/sec     +1.14%
-> Cache L1D Read          0.148 T/sec     0.154 T/sec     +4.05%
-> Cache L1D Read Miss     20.430 B/sec    21.820 B/sec    +6.8%
-> Page Faults Total       4.304 M/sec     4.535 M/sec     +5.4%
-> Page Faults Minor       4.304 M/sec     4.535 M/sec     +5.4%
-> Page Faults Major       18.794 /sec     0.000 /sec
-> Kmalloc                 0.153 M/sec     0.152 M/sec     -0.65%
-> Kfree                   0.152 M/sec     0.153 M/sec     +0.65%
-> MM Page Alloc           4.640 M/sec     4.898 M/sec     +5.56%
-> MM Page Free            4.639 M/sec     4.897 M/sec     +5.56%
-> Lock Contention Begin   0.362 M/sec     0.479 M/sec     +32.32%
-> Lock Contention End     0.362 M/sec     0.479 M/sec     +32.32%
-> page-cache add          238.057 /sec    0.000 /sec
-> page-cache del          6.265 /sec      6.267 /sec      -0.03%
->
-> This is only using a single run in each case. I am not sure what to
-> make out of most of these numbers, but they mostly seem in the noise
-> (some better, some worse). The lock contention numbers are interesting.
-> I am not sure if higher is better or worse here. No new locks or lock
-> sections are introduced by this patch either way.
->
-> Looking at perf, __mod_memcg_state() shows up as 0.00% with and without
-> this patch. This is suspicious, but I verified while stress-ng is
-> running that all the threads are in the right cgroup.
->
-> [1]https://github.com/google/neper
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-
-Johannes, I think this might be what you have suggested in our
-previous discussion, but I am not sure this is what you meant for the
-update path, so I did not add a Suggested-by. Please let me know if
-this is what you meant and I can amend the tag as such.
+Ah yes, I cannot dereference the memcg pointer here. I think we want
+mem_cgroup_get_from_id (a getter version of mem_cgroup_from_id) or
+mem_cgroup_get (similar to mem_cgroup_put) to have stubs when
+!CONFIG_MEMCG. I will do this change in the next version, but I'll
+wait for feedback on this version first.
 
 >
-> ---
->  mm/memcontrol.c | 49 +++++++++++++++++++++++++++++++++----------------
->  1 file changed, 33 insertions(+), 16 deletions(-)
+> vim +461 mm/workingset.c
 >
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ef7ad66a9e4c..c273c65bb642 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -627,6 +627,9 @@ struct memcg_vmstats_percpu {
->         /* Cgroup1: threshold notifications & softlimit tree updates */
->         unsigned long           nr_page_events;
->         unsigned long           targets[MEM_CGROUP_NTARGETS];
-> +
-> +       /* Stats updates since the last flush */
-> +       unsigned int            stats_updates;
->  };
->
->  struct memcg_vmstats {
-> @@ -641,6 +644,9 @@ struct memcg_vmstats {
->         /* Pending child counts during tree propagation */
->         long                    state_pending[MEMCG_NR_STAT];
->         unsigned long           events_pending[NR_MEMCG_EVENTS];
-> +
-> +       /* Stats updates since the last flush */
-> +       atomic64_t              stats_updates;
->  };
->
->  /*
-> @@ -660,9 +666,7 @@ struct memcg_vmstats {
->   */
->  static void flush_memcg_stats_dwork(struct work_struct *w);
->  static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwor=
-k);
-> -static DEFINE_PER_CPU(unsigned int, stats_updates);
->  static atomic_t stats_flush_ongoing =3D ATOMIC_INIT(0);
-> -static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
->  static u64 flush_last_time;
->
->  #define FLUSH_TIME (2UL*HZ)
-> @@ -689,26 +693,37 @@ static void memcg_stats_unlock(void)
->         preempt_enable_nested();
->  }
->
-> +
-> +static bool memcg_should_flush_stats(struct mem_cgroup *memcg)
-> +{
-> +       return atomic64_read(&memcg->vmstats->stats_updates) >
-> +               MEMCG_CHARGE_BATCH * num_online_cpus();
-> +}
-> +
->  static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val=
-)
->  {
-> +       int cpu =3D smp_processor_id();
->         unsigned int x;
->
->         if (!val)
->                 return;
->
-> -       cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
-> +       cgroup_rstat_updated(memcg->css.cgroup, cpu);
-> +
-> +       for (; memcg; memcg =3D parent_mem_cgroup(memcg)) {
-> +               x =3D __this_cpu_add_return(memcg->vmstats_percpu->stats_=
-updates,
-> +                                         abs(val));
-> +
-> +               if (x < MEMCG_CHARGE_BATCH)
-> +                       continue;
->
-> -       x =3D __this_cpu_add_return(stats_updates, abs(val));
-> -       if (x > MEMCG_CHARGE_BATCH) {
->                 /*
-> -                * If stats_flush_threshold exceeds the threshold
-> -                * (>num_online_cpus()), cgroup stats update will be trig=
-gered
-> -                * in __mem_cgroup_flush_stats(). Increasing this var fur=
-ther
-> -                * is redundant and simply adds overhead in atomic update=
-.
-> +                * If @memcg is already flush-able, increasing stats_upda=
-tes is
-> +                * redundant. Avoid the overhead of the atomic update.
->                  */
-> -               if (atomic_read(&stats_flush_threshold) <=3D num_online_c=
-pus())
-> -                       atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_t=
-hreshold);
-> -               __this_cpu_write(stats_updates, 0);
-> +               if (!memcg_should_flush_stats(memcg))
-> +                       atomic64_add(x, &memcg->vmstats->stats_updates);
-> +               __this_cpu_write(memcg->vmstats_percpu->stats_updates, 0)=
+>    405
+>    406  /**
+>    407   * workingset_test_recent - tests if the shadow entry is for a fo=
+lio that was
+>    408   * recently evicted. Also fills in @workingset with the value unp=
+acked from
+>    409   * shadow.
+>    410   * @shadow: the shadow entry to be tested.
+>    411   * @file: whether the corresponding folio is from the file lru.
+>    412   * @workingset: where the workingset value unpacked from shadow s=
+hould
+>    413   * be stored.
+>    414   *
+>    415   * Return: true if the shadow is for a recently evicted folio; fa=
+lse otherwise.
+>    416   */
+>    417  bool workingset_test_recent(void *shadow, bool file, bool *workin=
+gset)
+>    418  {
+>    419          struct mem_cgroup *eviction_memcg;
+>    420          struct lruvec *eviction_lruvec;
+>    421          unsigned long refault_distance;
+>    422          unsigned long workingset_size;
+>    423          unsigned long refault;
+>    424          int memcgid;
+>    425          struct pglist_data *pgdat;
+>    426          unsigned long eviction;
+>    427
+>    428          rcu_read_lock();
+>    429
+>    430          if (lru_gen_enabled()) {
+>    431                  bool recent =3D lru_gen_test_recent(shadow, file,
+>    432                                                    &eviction_lruve=
+c, &eviction,
+>    433                                                    workingset);
+>    434                  rcu_read_unlock();
+>    435                  return recent;
+>    436          }
+>    437
+>    438          unpack_shadow(shadow, &memcgid, &pgdat, &eviction, workin=
+gset);
+>    439          eviction <<=3D bucket_order;
+>    440
+>    441          /*
+>    442           * Look up the memcg associated with the stored ID. It mi=
+ght
+>    443           * have been deleted since the folio's eviction.
+>    444           *
+>    445           * Note that in rare events the ID could have been recycl=
+ed
+>    446           * for a new cgroup that refaults a shared folio. This is
+>    447           * impossible to tell from the available data. However, t=
+his
+>    448           * should be a rare and limited disturbance, and activati=
+ons
+>    449           * are always speculative anyway. Ultimately, it's the ag=
+ing
+>    450           * algorithm's job to shake out the minimum access freque=
+ncy
+>    451           * for the active cache.
+>    452           *
+>    453           * XXX: On !CONFIG_MEMCG, this will always return NULL; i=
+t
+>    454           * would be better if the root_mem_cgroup existed in all
+>    455           * configurations instead.
+>    456           */
+>    457          eviction_memcg =3D mem_cgroup_from_id(memcgid);
+>    458          if (!mem_cgroup_disabled() && !eviction_memcg)
+>    459                  return false;
+>    460
+>  > 461          css_get(&eviction_memcg->css);
+>    462          rcu_read_unlock();
+>    463
+>    464          /* Flush stats (and potentially sleep) outside the RCU re=
+ad section */
+>    465          mem_cgroup_flush_stats_ratelimited();
+>    466
+>    467          eviction_lruvec =3D mem_cgroup_lruvec(eviction_memcg, pgd=
+at);
+>    468          refault =3D atomic_long_read(&eviction_lruvec->nonresiden=
+t_age);
+>    469
+>    470          /*
+>    471           * Calculate the refault distance
+>    472           *
+>    473           * The unsigned subtraction here gives an accurate distan=
+ce
+>    474           * across nonresident_age overflows in most cases. There =
+is a
+>    475           * special case: usually, shadow entries have a short lif=
+etime
+>    476           * and are either refaulted or reclaimed along with the i=
+node
+>    477           * before they get too old.  But it is not impossible for=
+ the
+>    478           * nonresident_age to lap a shadow entry in the field, wh=
+ich
+>    479           * can then result in a false small refault distance, lea=
+ding
+>    480           * to a false activation should this old entry actually
+>    481           * refault again.  However, earlier kernels used to deact=
+ivate
+>    482           * unconditionally with *every* reclaim invocation for th=
+e
+>    483           * longest time, so the occasional inappropriate activati=
+on
+>    484           * leading to pressure on the active list is not a proble=
+m.
+>    485           */
+>    486          refault_distance =3D (refault - eviction) & EVICTION_MASK=
 ;
->         }
->  }
+>    487
+>    488          /*
+>    489           * Compare the distance to the existing workingset size. =
+We
+>    490           * don't activate pages that couldn't stay resident even =
+if
+>    491           * all the memory was available to the workingset. Whethe=
+r
+>    492           * workingset competition needs to consider anon or not d=
+epends
+>    493           * on having free swap space.
+>    494           */
+>    495          workingset_size =3D lruvec_page_state(eviction_lruvec, NR=
+_ACTIVE_FILE);
+>    496          if (!file) {
+>    497                  workingset_size +=3D lruvec_page_state(eviction_l=
+ruvec,
+>    498                                                       NR_INACTIVE_=
+FILE);
+>    499          }
+>    500          if (mem_cgroup_get_nr_swap_pages(eviction_memcg) > 0) {
+>    501                  workingset_size +=3D lruvec_page_state(eviction_l=
+ruvec,
+>    502                                                       NR_ACTIVE_AN=
+ON);
+>    503                  if (file) {
+>    504                          workingset_size +=3D lruvec_page_state(ev=
+iction_lruvec,
+>    505                                                       NR_INACTIVE_=
+ANON);
+>    506                  }
+>    507          }
+>    508
+>    509          mem_cgroup_put(eviction_memcg);
+>    510          return refault_distance <=3D workingset_size;
+>    511  }
+>    512
 >
-> @@ -727,13 +742,12 @@ static void do_flush_stats(void)
->
->         cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
->
-> -       atomic_set(&stats_flush_threshold, 0);
->         atomic_set(&stats_flush_ongoing, 0);
->  }
->
->  void mem_cgroup_flush_stats(void)
->  {
-> -       if (atomic_read(&stats_flush_threshold) > num_online_cpus())
-> +       if (memcg_should_flush_stats(root_mem_cgroup))
->                 do_flush_stats();
->  }
->
-> @@ -747,8 +761,8 @@ void mem_cgroup_flush_stats_ratelimited(void)
->  static void flush_memcg_stats_dwork(struct work_struct *w)
->  {
->         /*
-> -        * Always flush here so that flushing in latency-sensitive paths =
-is
-> -        * as cheap as possible.
-> +        * Deliberately ignore memcg_should_flush_stats() here so that fl=
-ushing
-> +        * in latency-sensitive paths is as cheap as possible.
->          */
->         do_flush_stats();
->         queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_T=
-IME);
-> @@ -5622,6 +5636,9 @@ static void mem_cgroup_css_rstat_flush(struct cgrou=
-p_subsys_state *css, int cpu)
->                         }
->                 }
->         }
-> +       /* We are in a per-cpu loop here, only do the atomic write once *=
-/
-> +       if (atomic64_read(&memcg->vmstats->stats_updates))
-> +               atomic64_set(&memcg->vmstats->stats_updates, 0);
->  }
->
->  #ifdef CONFIG_MMU
 > --
-> 2.42.0.459.ge4e396fd5e-goog
->
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
