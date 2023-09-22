@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD9E7AB09A
-	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 13:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1BD7AB09F
+	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 13:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbjIVL3Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Sep 2023 07:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        id S233653AbjIVL3U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Sep 2023 07:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjIVL3P (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 07:29:15 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578FC180;
-        Fri, 22 Sep 2023 04:29:09 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bd0a0a6766so1187299a34.2;
-        Fri, 22 Sep 2023 04:29:09 -0700 (PDT)
+        with ESMTP id S233542AbjIVL3T (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 07:29:19 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048AE91;
+        Fri, 22 Sep 2023 04:29:11 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso1651276b3a.0;
+        Fri, 22 Sep 2023 04:29:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695382148; x=1695986948; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695382150; x=1695986950; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DtklZII5h1uoYCXRNe+Jd8s2AyutOaiGxtLZvkF5nNg=;
-        b=clBXYtOSYXNPBpTEclQPQQ8+t6XK2x15ADB9Hsb8LeW8sNnP+2YVdHFGADMOuT6HJB
-         NXiOG2WQRXMTA388pVk5YJxQdp/3XBIExf5Ycn9KcvdlM+WwBPI9JcsoesenTemAeb7b
-         oEl7xz/eBMHtbVOeHLIOdN5MuuUCaIiaI+v+0TVx7z9H3C0Uyz5+163dglxeIxLtnA6r
-         Vd0YbH66a/qHa1K/ofpA3fHfe755Ow4a4614XmtTA7Ul6U9Q1mZk5eyya/2NoY9uecjb
-         UX55yMvvL4O8IW/sgRTTSh+xl2kJzccSD0G/qgAm2jF2B5eF9ioaLzoxspOgfdZiH4dY
-         EO5g==
+        bh=IHx9zaz06OEXWU+TLyQGeUCpNolCvM+zvySDcLZVKEk=;
+        b=e6XHujtU2Xmv56Jn0+m+2DYhpGsthOUu9Gte9bZzvYYRAIDR0u29uGpH//SACfBzLI
+         MQrgx5QZnM8YL3OQxZvjXzYscm18DEr9t5cuO5dih6pUDkW11ejfi2nol1lrvKNWHpXK
+         dkrvX5fCWdvVh68V2SZJhBoPunsf8YH2tpmxfFQBT+N6R9S1p1TqBdrCddg+9m0JT14J
+         lqW1aBfBnS2iXB3y+/g0zDZSBdosQQlIDNLx6rcVP7MvIGEQ6oyuysubH9rhlMUGwB5T
+         z7UxooOhIwl+Cs+/ZCc5VEUgUxAZmNls+tsHfLt2PARq5Tjp+GElRAZZbCUDawbdYtj7
+         zcuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695382148; x=1695986948;
+        d=1e100.net; s=20230601; t=1695382150; x=1695986950;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DtklZII5h1uoYCXRNe+Jd8s2AyutOaiGxtLZvkF5nNg=;
-        b=VzgURzcvG7gwdaCmf/kyIh2foBjnWe3x9RP02NLBzSbANxVKXTIYF0pCuWUUL8AnCd
-         WX2HVyc5C/a7oYu+sCIBss2zcyD4sIkGDTl23IoH3IzSRRu0xQco0KM/fr530iDLfkbH
-         6WeCI0F5vOqHvPq3vzytXzE3ceWNS7Dx4FO3Hh+2IB7ZCJUbpQ3oMPYr6uKVL4B38mtf
-         jL4j+WpAFtwWqYpkMnkmJIQ5zvLNj2AOBZJc6vyKUtwYL9v9ByedgQXM8XbZnuqxzTlJ
-         iU6jI0javArgfjNV8g3FPeyOGWlU5scEpQ3394P7I1CzZ7pDFzqI4Wh1+UZCdGbR8Xfg
-         Wv8Q==
-X-Gm-Message-State: AOJu0YxRD8MC6wcow7CQfsyUheWc1vRnjpdS/sFjz1YcxDT+Rg/sF/wK
-        r79Z1HVtfTtHx8PWG/fK+r4=
-X-Google-Smtp-Source: AGHT+IHJndWMEJEjR9wUNcrfPZmW/KKZIJLe/nfxeG/OgTO8j6z/eoHjsDAvjGMMlNQHRNZ5OI/uTg==
-X-Received: by 2002:a05:6358:7247:b0:135:99fa:5040 with SMTP id i7-20020a056358724700b0013599fa5040mr11290945rwa.12.1695382148452;
-        Fri, 22 Sep 2023 04:29:08 -0700 (PDT)
+        bh=IHx9zaz06OEXWU+TLyQGeUCpNolCvM+zvySDcLZVKEk=;
+        b=WJkutIzUJwdk5ItVg0zT1Khnx5B6GLnYziRMzn4ZoBkHhx1Y5kMTONEF+nmPMAhU3U
+         yHlW81QreVALCe8s2OGZPAF7lKhwYbUer7Aeq3cbCtcxbvPf2g4nICoOkkUWsHyoB3PE
+         2n70nNHpe5ghLCaFdSmjpui8RSugqT7rMqyL2xyNYSGeu5aSef+GAe4n3xiR/e51xyy0
+         7s827xVmolNob4x7zRHKZW6Bdt99nl6xbpA8RMjcJUFi7x8rgC6q6i3psmNiT8S0X9Sy
+         5iDrMwPyyAUlcf0SOpYSLQkci6m6Fyt3Scb4Qboc97TeEf+b16+5RAJ6vQspdnpocpgI
+         bx5g==
+X-Gm-Message-State: AOJu0YxNmM171ngABFTfuxFeMqa7JbmXkhGyGn4kHLeUdQTR8077u2lz
+        SCaDLFPSiSDXOttGtyYyKxc=
+X-Google-Smtp-Source: AGHT+IFmdHkwv++M6SDNQlmrcG9FGrpSN70P30Er1/YnrdybTEQ90BaY94ATOGJvWNJaZSPWlHimpQ==
+X-Received: by 2002:a05:6a20:258f:b0:134:73f6:5832 with SMTP id k15-20020a056a20258f00b0013473f65832mr3745501pzd.16.1695382150344;
+        Fri, 22 Sep 2023 04:29:10 -0700 (PDT)
 Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id v16-20020aa78090000000b00690beda6987sm2973493pff.77.2023.09.22.04.29.04
+        by smtp.gmail.com with ESMTPSA id v16-20020aa78090000000b00690beda6987sm2973493pff.77.2023.09.22.04.29.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:29:05 -0700 (PDT)
+        Fri, 22 Sep 2023 04:29:09 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -58,9 +58,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         mkoutny@suse.com
 Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 2/8] cgroup: Enable task_under_cgroup_hierarchy() on cgroup1
-Date:   Fri, 22 Sep 2023 11:28:40 +0000
-Message-Id: <20230922112846.4265-3-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 3/8] cgroup: Add cgroup_get_from_id_within_subsys()
+Date:   Fri, 22 Sep 2023 11:28:41 +0000
+Message-Id: <20230922112846.4265-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230922112846.4265-1-laoar.shao@gmail.com>
 References: <20230922112846.4265-1-laoar.shao@gmail.com>
@@ -76,142 +76,83 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-At present, the task_under_cgroup_hierarchy() function serves the purpose
-of determining whether a task resides exclusively within a cgroup2
-hierarchy. However, considering the ongoing prevalence of cgroup1 and the
-substantial effort and time required to migrate all cgroup1-based
-applications to the cgroup2 framework, it becomes beneficial to make a
-minor adjustment that expands its functionality to encompass cgroup1 as
-well. By implementing this modification, we will gain the capability to
-easily confirm a task's cgroup membership within BPF programs. For example,
-we can effortlessly verify if a task belongs to a cgroup1 directory, such
-as '/sys/fs/cgroup/cpu,cpuacct/kubepods/', or
-'/sys/fs/cgroup/cpu,cpuacct/system.slice/'.
+Introduce a new helper function to retrieve the cgroup associated with a
+specific cgroup ID within a particular subsystem.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/cgroup-defs.h     | 20 ++++++++++++++++++++
- include/linux/cgroup.h          | 30 ++++++++++++++++++++++++++----
- kernel/cgroup/cgroup-internal.h | 20 --------------------
- 3 files changed, 46 insertions(+), 24 deletions(-)
+ include/linux/cgroup.h |  1 +
+ kernel/cgroup/cgroup.c | 32 +++++++++++++++++++++++++++-----
+ 2 files changed, 28 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index f1b3151ac30b..5795825a04ff 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -299,6 +299,26 @@ struct css_set {
- 	struct rcu_head rcu_head;
- };
- 
-+/*
-+ * A cgroup can be associated with multiple css_sets as different tasks may
-+ * belong to different cgroups on different hierarchies.  In the other
-+ * direction, a css_set is naturally associated with multiple cgroups.
-+ * This M:N relationship is represented by the following link structure
-+ * which exists for each association and allows traversing the associations
-+ * from both sides.
-+ */
-+struct cgrp_cset_link {
-+	/* the cgroup and css_set this link associates */
-+	struct cgroup		*cgrp;
-+	struct css_set		*cset;
-+
-+	/* list of cgrp_cset_links anchored at cgrp->cset_links */
-+	struct list_head	cset_link;
-+
-+	/* list of cgrp_cset_links anchored at css_set->cgrp_links */
-+	struct list_head	cgrp_link;
-+};
-+
- struct cgroup_base_stat {
- 	struct task_cputime cputime;
- 
 diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index b307013b9c6c..e16cfb98b44c 100644
+index e16cfb98b44c..9f7616cbf710 100644
 --- a/include/linux/cgroup.h
 +++ b/include/linux/cgroup.h
-@@ -387,8 +387,8 @@ static inline void cgroup_unlock(void)
-  * The caller can also specify additional allowed conditions via @__c, such
-  * as locks used during the cgroup_subsys::attach() methods.
-  */
--#ifdef CONFIG_PROVE_RCU
- extern spinlock_t css_set_lock;
-+#ifdef CONFIG_PROVE_RCU
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference_check((task)->cgroups,				\
- 		rcu_read_lock_sched_held() ||				\
-@@ -543,15 +543,37 @@ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
-  * @ancestor: possible ancestor of @task's cgroup
-  *
-  * Tests whether @task's default cgroup hierarchy is a descendant of @ancestor.
-- * It follows all the same rules as cgroup_is_descendant, and only applies
-- * to the default hierarchy.
-+ * It follows all the same rules as cgroup_is_descendant.
-  */
- static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
- 					       struct cgroup *ancestor)
- {
- 	struct css_set *cset = task_css_set(task);
-+	struct cgrp_cset_link *link;
-+	struct cgroup *cgrp = NULL;
-+	bool ret = false;
-+
-+	if (ancestor->root == &cgrp_dfl_root)
-+		return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
-+
-+	if (cset == &init_css_set)
-+		return ancestor == &ancestor->root->cgrp;
-+
-+	spin_lock_irq(&css_set_lock);
-+	list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-+		struct cgroup *c = link->cgrp;
-+
-+		if (c->root == ancestor->root) {
-+			cgrp = c;
-+			break;
-+		}
-+	}
-+	spin_unlock_irq(&css_set_lock);
+@@ -656,6 +656,7 @@ static inline void cgroup_kthread_ready(void)
  
--	return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
-+	WARN_ON_ONCE(!cgrp);
-+	if (cgroup_is_descendant(cgrp, ancestor))
-+		ret = true;
-+	return ret;
+ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen);
+ struct cgroup *cgroup_get_from_id(u64 id);
++struct cgroup *cgroup_get_from_id_within_subsys(u64 cgid, int ssid);
+ #else /* !CONFIG_CGROUPS */
+ 
+ struct cgroup_subsys_state;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1fb7f562289d..d30a62eed14c 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6195,17 +6195,28 @@ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
  }
  
- /* no synchronization, the result can only be used as a hint */
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index c56071f150f2..620c60c9daa3 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -83,26 +83,6 @@ struct cgroup_file_ctx {
- 	} procs1;
- };
+ /*
+- * cgroup_get_from_id : get the cgroup associated with cgroup id
+- * @id: cgroup id
++ * cgroup_get_from_id_within_subsys - get the cgroup associated with cgroup id
++ *                                    within specific subsystem
++ * @cgid: cgroup id
++ * @ssid: cgroup subsystem id, -1 for cgroup default tree
+  * On success return the cgrp or ERR_PTR on failure
+  * Only cgroups within current task's cgroup NS are valid.
+  */
+-struct cgroup *cgroup_get_from_id(u64 id)
++struct cgroup *cgroup_get_from_id_within_subsys(u64 cgid, int ssid)
+ {
++	struct cgroup_root *root;
+ 	struct kernfs_node *kn;
+-	struct cgroup *cgrp, *root_cgrp;
++	struct cgroup *cgrp;
  
--/*
-- * A cgroup can be associated with multiple css_sets as different tasks may
-- * belong to different cgroups on different hierarchies.  In the other
-- * direction, a css_set is naturally associated with multiple cgroups.
-- * This M:N relationship is represented by the following link structure
-- * which exists for each association and allows traversing the associations
-- * from both sides.
-- */
--struct cgrp_cset_link {
--	/* the cgroup and css_set this link associates */
--	struct cgroup		*cgrp;
--	struct css_set		*cset;
--
--	/* list of cgrp_cset_links anchored at cgrp->cset_links */
--	struct list_head	cset_link;
--
--	/* list of cgrp_cset_links anchored at css_set->cgrp_links */
--	struct list_head	cgrp_link;
--};
--
- /* used to track tasks and csets during migration */
- struct cgroup_taskset {
- 	/* the src and dst cset list running through cset->mg_node */
+-	kn = kernfs_find_and_get_node_by_id(cgrp_dfl_root.kf_root, id);
++	if (ssid == -1) {
++		root = &cgrp_dfl_root;
++	} else {
++		if (ssid >= CGROUP_SUBSYS_COUNT)
++			return ERR_PTR(-EINVAL);
++		root = cgroup_subsys[ssid]->root;
++	}
++
++	kn = kernfs_find_and_get_node_by_id(root->kf_root, cgid);
+ 	if (!kn)
+ 		return ERR_PTR(-ENOENT);
+ 
+@@ -6226,6 +6237,17 @@ struct cgroup *cgroup_get_from_id(u64 id)
+ 	if (!cgrp)
+ 		return ERR_PTR(-ENOENT);
+ 
++	return cgrp;
++}
++
++struct cgroup *cgroup_get_from_id(u64 id)
++{
++	struct cgroup *root_cgrp, *cgrp;
++
++	cgrp = cgroup_get_from_id_within_subsys(id, -1);
++	if (IS_ERR(cgrp))
++		return cgrp;
++
+ 	root_cgrp = current_cgns_cgroup_dfl();
+ 	if (!cgroup_is_descendant(cgrp, root_cgrp)) {
+ 		cgroup_put(cgrp);
 -- 
 2.30.1 (Apple Git-130)
 
