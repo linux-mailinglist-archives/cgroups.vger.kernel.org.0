@@ -2,81 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0CD7AABE6
-	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 10:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385777AAC89
+	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 10:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjIVIIs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Sep 2023 04:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        id S230183AbjIVIZw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Sep 2023 04:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbjIVIIr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 04:08:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2011A5;
-        Fri, 22 Sep 2023 01:08:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F92BC433C7;
-        Fri, 22 Sep 2023 08:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695370121;
-        bh=EFZdZuA1bgAXV5AvWlugKRnoAhOxAfKWHVnlSpBHmsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UVH7BLlMFJgfpXuwIOQyMJKeDa7uMySj42MzRYs1UY/wWNQ2tuCTY/wOvIpDlq/k/
-         O35vjFv3Yg8edSeTIZQWm4omxME67E3ctvgOJgleY9P2/RG6T3SmHoHJJLFdS3ctLw
-         tr+HovOZyeqp6y/RbkZWtFyISCuaGDTWGchtjioQAqmGIRSFVaTEvqbg75apFUYJEI
-         MUx0sNMMPHgoBDjiaK74rvSf8gZDxPTpkO3CGVuUrCF2l0RfTu6HqfzL2Rtk7xvGnr
-         tXBX2aDMNbxaUNn9fdJwLUEj27V3FxJqxpAMBw5eW10kSI/WMEeTGGifAkd5jq2JTo
-         jRhhF49G7kqfw==
-Date:   Fri, 22 Sep 2023 10:08:36 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Cai Xinchen <caixinchen1@huawei.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [BUG?] fsconfig restart_syscall failed
-Message-ID: <20230922-drillen-muschel-c9bd03acfe00@brauner>
-References: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229709AbjIVIZw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 04:25:52 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8829E
+        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 01:25:46 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7fd4c23315so2359609276.2
+        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 01:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695371145; x=1695975945; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6DHfRiy16OkhCPchGcMG2Wr8n1hI6+/4vWiAKStiZAI=;
+        b=PO4IDZ1CB4avwfl3+ABGZsQgyS0OgbqDTbDSsd/oo5A1NOkxQyfLG/b+73VZ8Q2Jmc
+         ogmIkaIDH4lSZuvsRh9BHQiMjpFuLjnl6mvazisQhMeZprACGdFk9EBsXfgbDKXOIhOp
+         UUqr/8pj4b8na8fxqnevO6zqQiFohqr+Cde1vQh5X/xTfiVVfohXV6Eo7pDCLQ1RzYJ2
+         nqxm1ccoeJlcpcucz//1Zl8rUuZiZWtrlCpy0HeCDj61qvqMknFC4JVsy1EjiaSwlH+3
+         BjeJfyodIQiwAosBX6lrTU2GZiVnN5fKqxHX4FUT4zqhQ39RuzJ0LmMySUNiZzfFkC+Y
+         /FQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695371145; x=1695975945;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6DHfRiy16OkhCPchGcMG2Wr8n1hI6+/4vWiAKStiZAI=;
+        b=SprR4GtJJnFevUjZ8geSc4fwyN/7YJ5/EEOVJLrGxHaif8NmBy/vfE1OUirqzdLdWF
+         5RQ2WV0lB2xqxNGNB7MOkWrX7+3ASWFDwaq3Eanx0m7iGv86UAHiZh+gJGOeso+VdkSS
+         o9rqPtuW9wGMSDuS+y3m2zd5YnAFFXxm9LGXxAnrnejQRPJcGFQXJ+D+C6F0HG+gMI0N
+         aknM3DBX3ahzd9HL3XJERdihY3pyn5ZnS/JJXZCss+0phkNm35Mybtpah+Lw0Q/sS5en
+         OJO5BgofQrwRGgZsR60LQhMDPuytCQRQvhhQ1XVsvP+V/B4VVW6cWR8QGbzNPq9XFw9n
+         O70g==
+X-Gm-Message-State: AOJu0YzLCE64KSuXUDyFOapG5p2Ih49RdaP+h29RQmL9HihFbUfmjX06
+        SuJj8tMP3lyKdDZ4/COcDMbBAz6xUgEzvKZ9
+X-Google-Smtp-Source: AGHT+IE3FBqDUOqRr+DcHoUUQ9BpPeYFPo2AfexflfmNzR4QbtyXevRCS9yUS0doAcOFrE4Z0r+YFn0lXrwSsS7T
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a25:ac55:0:b0:d80:cf4:7e80 with SMTP id
+ r21-20020a25ac55000000b00d800cf47e80mr97585ybd.7.1695371145763; Fri, 22 Sep
+ 2023 01:25:45 -0700 (PDT)
+Date:   Fri, 22 Sep 2023 08:25:40 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Message-ID: <20230922082542.466579-1-yosryahmed@google.com>
+Subject: [PATCH 0/2] mm: memcg: fix tracking of pending stats updates values
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:18:24AM +0800, Cai Xinchen wrote:
-> Hello:
->   I am doing some test for kernel 6.4, util-linux version:2.39.1.
-> Have you encountered similar problems? If there is a fix, please
-> let me know.
-> Thank you very much
-> 
-> --------------------------------------------------
-> 
-> util-linux version 2.39.1 call mount use fsopen->fsconfig->fsmount->close
-> instead of mount syscall.
-> 
-> And use this shell test:
-> 
-> #!/bin/bash
-> mkdir -p /tmp/cgroup/cgrouptest
-> while true
-> do
->         mount -t cgroup -o none,name=foo cgroup /tmp/cgroup/cgrouptest
+While working on adjacent code [1], I realized that the values passed
+into memcg_rstat_updated() to keep track of the magnitude of pending
+updates is consistent. It is mostly in pages, but sometimes it can be in
+bytes or KBs. Fix that.
 
+Patch 1 reworks memcg_page_state_unit() so that we can reuse it in patch
+2 to check and normalize the units of state updates.
 
-> in mount syscall, no function will check fs->phase, and fc is recreate
-> in monnt syscall. However, in fdconfig syscall, fc->phase is not initial as
-> FS_CONTEXT_CREATE_PARAMS, restart_syscall will return -EBUSY. fc is created
-> in fsopen syscall.
+[1]https://lore.kernel.org/lkml/20230921081057.3440885-1-yosryahmed@google.com/
 
-Mount api system calls aren't restartable so that doesn't work. cgroup2
-doesn't have this issue, only cgroup1 has. So cgroup1_get_tree() should
-probably be fixed if anyone cares.
+Yosry Ahmed (2):
+  mm: memcg: refactor page state unit helpers
+  mm: memcg: normalize the value passed into memcg_rstat_updated()
+
+ mm/memcontrol.c | 64 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 51 insertions(+), 13 deletions(-)
+
+-- 
+2.42.0.515.g380fc7ccd1-goog
+
