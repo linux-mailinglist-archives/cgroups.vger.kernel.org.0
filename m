@@ -2,141 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB227AB8C1
-	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 20:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550DE7AB8C3
+	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 20:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjIVSAO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Sep 2023 14:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
+        id S233196AbjIVSAP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Sep 2023 14:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233501AbjIVR7i (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 13:59:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198F42D50
-        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 10:57:48 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d814a1f7378so458179276.1
-        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 10:57:48 -0700 (PDT)
+        with ESMTP id S234291AbjIVSAD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 14:00:03 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47437CCE
+        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 10:59:55 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so43031701fa.2
+        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 10:59:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695405467; x=1696010267; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3CSLPc6OXSIH75VPEK2Or6+ByoA8DGo3BCTW1zZyxTA=;
-        b=XSDFVFUj0s4Agwlv19dfVnA8fyANS3Lio1Mu22DmB1ClvVA1YT+CSVeqE0EWxIbDkm
-         SAOwHueWm2RAHr7SLAyT7mtrmUF/p3ORh/dRzumeM8ShBlB/eZ49uVQkTDrPZvOXa3XG
-         U29dF0ipmdT7qgaXW/sTeHjT5QcTJTbW0lQMSCXZoeo/RTkaUTIwfORnOtEzIRVTLqd8
-         bXAbpQVdO5Lhp7LQ1XxgAJ4MTH98wJEJ9XVqEtqyOKGB7vCX6eCUAODfsLHNMKALhOHf
-         9vlWXS0Zt6co266BHa3btRr3isBFVGn1eqvxEeXTsc7qG3q58Ws3hXBi5lb3+lId+t+K
-         Pq+g==
+        d=google.com; s=20230601; t=1695405593; x=1696010393; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=neFKDss4Eoz4zqBDkZFgiJEWmdfT57VEWXtM0Jgtcu8=;
+        b=NO2GxxrARKtVZOSuIAMt9Ix6EPjYW5hGkY5KMhlhPvlklZuBBhdfW3kQzC5UIS0Gcu
+         noUJVp1dkiwSLCuovsS6cydQnDXH5XO0oIM8TJa8aHmqSkWc0U4djBl2EYpwmbdTenLW
+         vcxon6A//JrFRuM567ICtp58sVYzH8TcEqvFnfhqISxB/TlRsu+WI0S2TS8QM2H8sJzG
+         daE25I68Iq6ByjiVUOX/McVVxqTLPVx+wNqyzVrYjk3mtwbMlk7VZtjfSvuX6jdrEtlv
+         jaNpj23Rwq3D197kfypZs0chiG70X45KWoPd8usq1ljHbZxU6qyxmR9Fp46Kd0XMX9Vs
+         ToCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405467; x=1696010267;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3CSLPc6OXSIH75VPEK2Or6+ByoA8DGo3BCTW1zZyxTA=;
-        b=LpKqQTpEBlwHlYNrw98DlgqvRwStYZ0efms/rbxteqHml8PybDl+6sxOk4sAiDBdV3
-         BzWt3Fpizhp/nFJvBuJcKG/mNq8Kq15wGJvYT2SLtywt2ZsKqSkk/y8ZAUmZo9otVqF9
-         wDcQ5QLN1+hnlVjh5kndDXZ7YrWUVEI6bmxZwrOySFv5r9zre47VtUsS/uns3h0LjgW3
-         RUtxwnaDQ6cCUgDRxIsCALT+LbTQEJ2Wgr2WAnOPRtrxt7z/NFOQZh7Jbxmidjbnw4nk
-         L/Wu8ouI8xcutbhAn80RBZomiojlks/HmGvedNAc2dVxgh4guFvoaZspwmZSURt4rwne
-         AI6Q==
-X-Gm-Message-State: AOJu0YyEReVTKZt0QiMYdlJR/PxkSNJi0X/Mxgct3qM1tmLWUWKqyxc8
-        t0v1fx5KnHs2+0tLVTyCtQxxnNHI9hP9ia5m
-X-Google-Smtp-Source: AGHT+IH/GVgcWoyTnI6CjuidQQj2eCHCb/7OcETmpcRHx+mMydVisjSv3mlfwbIqt/FcEH+WIvuFEmX/eSnvqJcR
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:8304:0:b0:d86:5913:55cb with SMTP
- id s4-20020a258304000000b00d86591355cbmr1694ybk.0.1695405467283; Fri, 22 Sep
- 2023 10:57:47 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 17:57:40 +0000
-In-Reply-To: <20230922175741.635002-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20230922175741.635002-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230922175741.635002-3-yosryahmed@google.com>
-Subject: [PATCH v2 2/2] mm: memcg: normalize the value passed into memcg_rstat_updated()
+        d=1e100.net; s=20230601; t=1695405593; x=1696010393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=neFKDss4Eoz4zqBDkZFgiJEWmdfT57VEWXtM0Jgtcu8=;
+        b=U5vMQxnYQPvS+IcF8N8lwUisUHGgrTR29qDNPRxnz3GAe3TkI8+7+S2LQJDZxBaEMi
+         ZduCsTGWuJWo9I6fGYicatGeViqiKeAdFeNRRzg4F+1ETETrY+2kvGOIzzP7qA+Dv60y
+         Cpk9dCGQzOF98tLuVEd1Qfav5SJdseQZmzlue4sVybs++cK1LouRqAkVmsN+5P1+pWTD
+         GfYokyerm8uD+rWr/Zzvug3TrW1ylPKk5xEzNuw7vG6jZel1H+/IR9CHB89QHToW+Vwh
+         Po6dn8w9f5iprevOk8DKu+B4lAjowvsIY6amksoDrSUXhx6tlt1UuTCfIK6s7zXxu7vO
+         VlfQ==
+X-Gm-Message-State: AOJu0YzAhZgUuEEc3bt+cb198ag2S8JsyGWdlilQ/i/oOrgWatW91iyJ
+        QncL7hFUbLYgNJQ604Q6nEuuLF3JIQNeM1VYq4OouA==
+X-Google-Smtp-Source: AGHT+IELut1xHfbiwqDVm6Sq/3W8KL4RFEb3KaEJoxNiOhq0MLqeWIIK2Jkfl56eDAdwP2sEzoc2VncrFBFuV7o/z/g=
+X-Received: by 2002:a05:6512:2512:b0:503:8fb:f738 with SMTP id
+ be18-20020a056512251200b0050308fbf738mr259391lfb.17.1695405593333; Fri, 22
+ Sep 2023 10:59:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230922082542.466579-1-yosryahmed@google.com> <20230922100310.102aa12ac2bdf0568e6e7432@linux-foundation.org>
+In-Reply-To: <20230922100310.102aa12ac2bdf0568e6e7432@linux-foundation.org>
 From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+Date:   Fri, 22 Sep 2023 10:59:13 -0700
+Message-ID: <CAJD7tkbHcJ59XLk1VqhkLtuZOqqw=VQyCqB1eooy6hR7eb3RSQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mm: memcg: fix tracking of pending stats updates values
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <muchun.song@linux.dev>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-memcg_rstat_updated() uses the value of the state update to keep track
-of the magnitude of pending updates, so that we only do a stats flush
-when it's worth the work. Most values passed into memcg_rstat_updated()
-are in pages, however, a few of them are actually in bytes or KBs.
+On Fri, Sep 22, 2023 at 10:03=E2=80=AFAM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Fri, 22 Sep 2023 08:25:40 +0000 Yosry Ahmed <yosryahmed@google.com> wr=
+ote:
+>
+> > While working on adjacent code [1], I realized that the values passed
+> > into memcg_rstat_updated() to keep track of the magnitude of pending
+> > updates is consistent. It is mostly in pages, but sometimes it can be i=
+n
+> > bytes or KBs. Fix that.
+>
+> Clashes with "memcg: remove unused do_memsw_account in
+> memcg1_stat_format", and maybe other things.  Can you please redo
+> against mm-unsstable or linux-next?
 
-To put this into perspective, a 512 byte slab allocation today would
-look the same as allocating 512 pages. This may result in premature
-flushes, which means unnecessary work and latency.
+Done, sent v2:
+https://lore.kernel.org/linux-mm/20230922175741.635002-1-yosryahmed@google.=
+com/
 
-Normalize all the state values passed into memcg_rstat_updated() to
-pages. Round up non-zero sub-page to 1 page, because
-memcg_rstat_updated() ignores 0 page updates.
-
-Fixes: 5b3be698a872 ("memcg: better bounds on the memcg stats updates")
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/memcontrol.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 308cc7353ef0..d1a322a75172 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -763,6 +763,22 @@ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
- 	return x;
- }
- 
-+static int memcg_page_state_unit(int item);
-+
-+/*
-+ * Normalize the value passed into memcg_rstat_updated() to be in pages. Round
-+ * up non-zero sub-page updates to 1 page as zero page updates are ignored.
-+ */
-+static int memcg_state_val_in_pages(int idx, int val)
-+{
-+	int unit = memcg_page_state_unit(idx);
-+
-+	if (!val || unit == PAGE_SIZE)
-+		return val;
-+	else
-+		return max(val * unit / PAGE_SIZE, 1UL);
-+}
-+
- /**
-  * __mod_memcg_state - update cgroup memory statistics
-  * @memcg: the memory cgroup
-@@ -775,7 +791,7 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
- 		return;
- 
- 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
--	memcg_rstat_updated(memcg, val);
-+	memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
- }
- 
- /* idx can be of type enum memcg_stat_item or node_stat_item. */
-@@ -826,7 +842,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 	/* Update lruvec */
- 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
- 
--	memcg_rstat_updated(memcg, val);
-+	memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
- 	memcg_stats_unlock();
- }
- 
--- 
-2.42.0.515.g380fc7ccd1-goog
-
+Thanks!
