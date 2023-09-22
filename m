@@ -2,97 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E787AA9B1
-	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 09:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0CD7AABE6
+	for <lists+cgroups@lfdr.de>; Fri, 22 Sep 2023 10:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjIVHFy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Sep 2023 03:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        id S232007AbjIVIIs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Sep 2023 04:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbjIVHFw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 03:05:52 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC595195
-        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 00:05:46 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3adf115ba79so1170568b6e.3
-        for <cgroups@vger.kernel.org>; Fri, 22 Sep 2023 00:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1695366346; x=1695971146; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XVblwGEZgzzMamuC2lPhj14gVXLYTQn0EwcGLXw/zVI=;
-        b=Yi3IgC1J4m1C1Iaz12L0Qr/sEJYpVFT7xpKLE/VYVUXL7BIzQ4AAfW8GK8ivNTU++L
-         fISQcvxWPyVVy2J7XsL8bFQu/gHRdVNyt1hmKSn+3OBGzUMOoe4+zUoVtKuz2IS/8tmb
-         JFA+RMSRsDqSNxR3BcZdVzqLeu8iUhmr2kOzUsOIiUZc6wwwsu3oM2VEqx4FiR6w/L/Z
-         nInXOAoZztjSv1UmyyMHiqf0t4U4hMuUjPk51jbTsLM3yw534hqv2OEiZy2myh5YvIcv
-         p/J8P/gELrybiQmttcV04RxQ+Ns1LRcwlbsBWoSUG+fJ2I2czj+DDyUFJufmqB5Jkhr8
-         E3pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695366346; x=1695971146;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XVblwGEZgzzMamuC2lPhj14gVXLYTQn0EwcGLXw/zVI=;
-        b=KOekaujAYwf5x9gsUoRmVwWpc55g/YFRYrraqflF+BTVoWi3iqgbAjfNsjL6hVOTOY
-         6XcmBkaW2BNMqK3BXJZAAMMhrkjYfUatM+vmm/giuLb8CWZkD2w6kzbhdq8Lsv+U1CAq
-         AZLvG+GsUPj5TH3ljfpqHnGXMPGHMSoCSADAyYl5A8Ge66/nwVrRfGOUruZfC4nnmxD1
-         e9SacJ6DjowTP1urRSq9bi3n2nA6+rrEMQS1iZ2fxGoFuIt9d0hSWzUM2dsUhJM2XbLe
-         wkn+U6rgnccIZ2OksxuYzD9EQ/IDlUUZ/jXeW9v+U6K/95kPC6sN3c5ncAQ7rLeP5w/P
-         K+Zw==
-X-Gm-Message-State: AOJu0YytLpFfm/UtQ54rD3WwKgyfBeF7vqGoFrV7ZIQoKNwuqJARpJ/u
-        WfZRCOBF7A5/EUYmlTeJDioS+QZe6pSmMc6RX76qKQ==
-X-Google-Smtp-Source: AGHT+IH9MSQlxPTmkRds3kblO6QJzbPrCLMsYiY6pIkK+VRtBVthOwW96tHki/2mFPqvo3VMINXFNQ==
-X-Received: by 2002:a05:6808:1b23:b0:3a7:73e0:d18f with SMTP id bx35-20020a0568081b2300b003a773e0d18fmr9552660oib.14.1695366346098;
-        Fri, 22 Sep 2023 00:05:46 -0700 (PDT)
-Received: from ubuntu-hf2.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id k17-20020a637b51000000b0056b27af8715sm2443723pgn.43.2023.09.22.00.05.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 00:05:45 -0700 (PDT)
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-To:     mhocko@kernel.org
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH 2/2] memcg, oom: do not wake up memcg_oom_waitq if waitqueue is empty
-Date:   Fri, 22 Sep 2023 07:05:29 +0000
-Message-Id: <20230922070529.362202-2-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231888AbjIVIIr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 04:08:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2011A5;
+        Fri, 22 Sep 2023 01:08:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F92BC433C7;
+        Fri, 22 Sep 2023 08:08:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695370121;
+        bh=EFZdZuA1bgAXV5AvWlugKRnoAhOxAfKWHVnlSpBHmsk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UVH7BLlMFJgfpXuwIOQyMJKeDa7uMySj42MzRYs1UY/wWNQ2tuCTY/wOvIpDlq/k/
+         O35vjFv3Yg8edSeTIZQWm4omxME67E3ctvgOJgleY9P2/RG6T3SmHoHJJLFdS3ctLw
+         tr+HovOZyeqp6y/RbkZWtFyISCuaGDTWGchtjioQAqmGIRSFVaTEvqbg75apFUYJEI
+         MUx0sNMMPHgoBDjiaK74rvSf8gZDxPTpkO3CGVuUrCF2l0RfTu6HqfzL2Rtk7xvGnr
+         tXBX2aDMNbxaUNn9fdJwLUEj27V3FxJqxpAMBw5eW10kSI/WMEeTGGifAkd5jq2JTo
+         jRhhF49G7kqfw==
+Date:   Fri, 22 Sep 2023 10:08:36 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Cai Xinchen <caixinchen1@huawei.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [BUG?] fsconfig restart_syscall failed
+Message-ID: <20230922-drillen-muschel-c9bd03acfe00@brauner>
+References: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Only when memcg oom killer is disabled, the task which triggers memecg
-oom handling will sleep on a waitqueue. Except this case, the waitqueue
-is empty though under_oom is true. There is no need to step into wake
-up path when resolve the oom situation. So add a check that whether the
-waitqueue is empty.
+On Fri, Sep 22, 2023 at 10:18:24AM +0800, Cai Xinchen wrote:
+> Hello:
+>   I am doing some test for kernel 6.4, util-linux version:2.39.1.
+> Have you encountered similar problems? If there is a fix, please
+> let me know.
+> Thank you very much
+> 
+> --------------------------------------------------
+> 
+> util-linux version 2.39.1 call mount use fsopen->fsconfig->fsmount->close
+> instead of mount syscall.
+> 
+> And use this shell test:
+> 
+> #!/bin/bash
+> mkdir -p /tmp/cgroup/cgrouptest
+> while true
+> do
+>         mount -t cgroup -o none,name=foo cgroup /tmp/cgroup/cgrouptest
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0b6ed63504ca..2bb98ff5be3d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1918,7 +1918,7 @@ static void memcg_oom_recover(struct mem_cgroup *memcg)
- 	 * achieved by invoking mem_cgroup_mark_under_oom() before
- 	 * triggering notification.
- 	 */
--	if (memcg && memcg->under_oom)
-+	if (memcg && memcg->under_oom && !list_empty(&memcg_oom_waitq.head))
- 		__wake_up(&memcg_oom_waitq, TASK_NORMAL, 0, memcg);
- }
- 
--- 
-2.25.1
+> in mount syscall, no function will check fs->phase, and fc is recreate
+> in monnt syscall. However, in fdconfig syscall, fc->phase is not initial as
+> FS_CONTEXT_CREATE_PARAMS, restart_syscall will return -EBUSY. fc is created
+> in fsopen syscall.
 
+Mount api system calls aren't restartable so that doesn't work. cgroup2
+doesn't have this issue, only cgroup1 has. So cgroup1_get_tree() should
+probably be fixed if anyone cares.
