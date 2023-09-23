@@ -2,42 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A647ABD68
-	for <lists+cgroups@lfdr.de>; Sat, 23 Sep 2023 05:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBF67ABD64
+	for <lists+cgroups@lfdr.de>; Sat, 23 Sep 2023 05:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjIWDH0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Sep 2023 23:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
+        id S230242AbjIWDH1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Sep 2023 23:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjIWDHM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 23:07:12 -0400
+        with ESMTP id S229999AbjIWDHV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Sep 2023 23:07:21 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF361AC;
-        Fri, 22 Sep 2023 20:07:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154551B1;
+        Fri, 22 Sep 2023 20:07:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695438426; x=1726974426;
+  t=1695438427; x=1726974427;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=6rGwrEe4Ukw7FcCDvhuspXyNUODXLObGeH1s03Sjd5k=;
-  b=NQAKpaPCKs6WV2O14ecofFZZ9esdSnu0asaZdOVT+XQageN1ztqicilL
-   rzAY1Oc6Dj3M1jWLYOwxjOf003wyh9gJpnluU4FkJiYW5BPqxk9+TVxpI
-   Uyukf/dregEBk1zKYgAO1z//YfiwxErw/Si3OBB/C9mBM64Ht/Yernpur
-   HDErU2BNxrok2XAhulmiKK7Y8dL+xGUCwVSG9gEJOn2GMNzgdjvswrEU1
-   avvk1vtjlIOzvXABdLE2yrt07Jhu8RPC0f8CwtJyO4cZ7swcDqY33gc2m
-   3ohVt24lWqYDZrkNv/JFTWdTwaoeU47on21VzB/EkYFlGnQpnRv1CQCLX
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="447466795"
+  bh=C63qJ730rbliOEJWIvRszebH9fI5wJTL885JlaOiRVw=;
+  b=Dpj3LOxn5sbyqXNxDgx8ly+nkJEviBSKrGMtBUpvgyuRW1on8C9y1F6H
+   BJ9Gn3ddYnvhqnOo2OcmQkAbH1AM4JMO1jR1V+xKOqfH4fUmQuXxI5IyS
+   QxXNM7JHutMbfPL1r++5BR1xtCWtgjqLeRRv4RRrUdxdlnF1+GZKDfwU2
+   RZ52hluiazsvjy3RmwJfoV7mkKNxs7e8LSSI+RznArLUjkmf3bn5bS6Fg
+   I4aEjLL5lCgy3VaGAWF8+o4/NsJaL3FbpMHRL7yDPO2G3qEfni/QtB1Ib
+   V3nmaUyX7uk+Az8O0bU9EpsZvFg/5EPLWRhpbg3a9mfjEwVM0d8K3N67n
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="447466805"
 X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="447466795"
+   d="scan'208";a="447466805"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 20:07:05 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 20:07:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="891048558"
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="891048565"
 X-IronPort-AV: E=Sophos;i="6.03,169,1694761200"; 
-   d="scan'208";a="891048558"
+   d="scan'208";a="891048565"
 Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Sep 2023 20:06:09 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 22 Sep 2023 20:06:10 -0700
 From:   Haitao Huang <haitao.huang@linux.intel.com>
 To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
         linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
@@ -47,9 +47,9 @@ To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
 Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
         zhanb@microsoft.com, anakrish@microsoft.com,
         mikko.ylinen@linux.intel.com, yangjie@microsoft.com
-Subject: [PATCH v5 10/18] x86/sgx: Add EPC page flags to identify owner types
-Date:   Fri, 22 Sep 2023 20:06:49 -0700
-Message-Id: <20230923030657.16148-11-haitao.huang@linux.intel.com>
+Subject: [PATCH v5 11/18] x86/sgx: store unreclaimable pages in LRU lists
+Date:   Fri, 22 Sep 2023 20:06:50 -0700
+Message-Id: <20230923030657.16148-12-haitao.huang@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230923030657.16148-1-haitao.huang@linux.intel.com>
 References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
@@ -66,12 +66,13 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Two types of owners of struct sgx_epc_page, 'sgx_encl' for VA pages and
-'sgx_encl_page' can be stored in the previously introduced union field.
+When an OOM event occurs, all pages associated with an enclave will need
+to be freed, including pages that are not currently tracked by the
+cgroup LRU lists.
 
-OOM support for cgroups requires that the owner needs to be identified
-when selecting pages from the unreclaimable list. Address this by adding
-flags for the owner type.
+Add a new "unreclaimable" list to the sgx_epc_lru_lists struct and
+update the "sgx_record/drop_epc_pages()" functions for adding/removing
+VA and SECS pages to/from this "unreclaimable" list.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
@@ -82,103 +83,104 @@ Cc: Sean Christopherson <seanjc@google.com>
 ---
 V4:
 - Updates for patch reordering.
-- Rename SGX_EPC_OWNER_ENCL_PAGE to SGX_EPC_OWNER_PAGE. (Jarkko)
-- Commit message changes. (Jarkko)
+- Revised commit messages.
+- Revised comments for the list.
+
+V3:
+- Removed tracking virtual EPC pages in unreclaimable list as host
+kernel does not reclaim them. The EPC cgroups implemented later only
+blocks allocating for a guest if the limit is reached by returning
+-ENOMEM from sgx_alloc_epc_page() called by virt_epc, and does nothing
+else. Therefore, no need to track those in LRU lists.
 ---
- arch/x86/kernel/cpu/sgx/encl.c  | 9 +++++----
- arch/x86/kernel/cpu/sgx/ioctl.c | 6 ++++--
- arch/x86/kernel/cpu/sgx/sgx.h   | 6 ++++++
- 3 files changed, 15 insertions(+), 6 deletions(-)
+ arch/x86/kernel/cpu/sgx/encl.c  | 2 ++
+ arch/x86/kernel/cpu/sgx/ioctl.c | 1 +
+ arch/x86/kernel/cpu/sgx/main.c  | 3 +++
+ arch/x86/kernel/cpu/sgx/sgx.h   | 8 +++++++-
+ 4 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index ec3402d41b63..da1657813fce 100644
+index da1657813fce..a8617e6a4b4e 100644
 --- a/arch/x86/kernel/cpu/sgx/encl.c
 +++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -248,6 +248,7 @@ static struct sgx_epc_page *sgx_encl_load_secs(struct sgx_encl *encl)
- 		epc_page = sgx_encl_eldu(&encl->secs, NULL);
- 		if (!IS_ERR(epc_page))
- 			sgx_record_epc_page(epc_page,
-+					    SGX_EPC_OWNER_PAGE |
- 					    SGX_EPC_PAGE_UNRECLAIMABLE);
+@@ -746,6 +746,7 @@ void sgx_encl_release(struct kref *ref)
+ 	xa_destroy(&encl->page_array);
+ 
+ 	if (!encl->secs_child_cnt && encl->secs.epc_page) {
++		sgx_drop_epc_page(encl->secs.epc_page);
+ 		sgx_encl_free_epc_page(encl->secs.epc_page);
+ 		encl->secs.epc_page = NULL;
  	}
- 
-@@ -276,7 +277,7 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 		return ERR_CAST(epc_page);
- 
- 	encl->secs_child_cnt++;
--	sgx_record_epc_page(epc_page, SGX_EPC_PAGE_RECLAIMABLE);
-+	sgx_record_epc_page(epc_page, SGX_EPC_OWNER_PAGE | SGX_EPC_PAGE_RECLAIMABLE);
- 
- 	return entry;
- }
-@@ -402,7 +403,7 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
- 	encl_page->type = SGX_PAGE_TYPE_REG;
- 	encl->secs_child_cnt++;
- 
--	sgx_record_epc_page(epc_page, SGX_EPC_PAGE_RECLAIMABLE);
-+	sgx_record_epc_page(epc_page, SGX_EPC_OWNER_PAGE | SGX_EPC_PAGE_RECLAIMABLE);
- 
- 	phys_addr = sgx_get_epc_phys_addr(epc_page);
- 	/*
-@@ -1261,8 +1262,8 @@ struct sgx_epc_page *sgx_alloc_va_page(struct sgx_encl *encl, bool reclaim)
- 		sgx_encl_free_epc_page(epc_page);
- 		return ERR_PTR(-EFAULT);
+@@ -754,6 +755,7 @@ void sgx_encl_release(struct kref *ref)
+ 		va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
+ 					   list);
+ 		list_del(&va_page->list);
++		sgx_drop_epc_page(va_page->epc_page);
+ 		sgx_encl_free_epc_page(va_page->epc_page);
+ 		kfree(va_page);
  	}
--	sgx_record_epc_page(epc_page,
--			    SGX_EPC_PAGE_UNRECLAIMABLE);
-+	sgx_record_epc_page(epc_page, SGX_EPC_OWNER_ENCL |
-+				      SGX_EPC_PAGE_UNRECLAIMABLE);
- 
- 	return epc_page;
- }
 diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 164256ea18d0..cd338e93acc1 100644
+index cd338e93acc1..50ddd8988452 100644
 --- a/arch/x86/kernel/cpu/sgx/ioctl.c
 +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -114,6 +114,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	encl->attributes_mask = SGX_ATTR_UNPRIV_MASK;
+@@ -48,6 +48,7 @@ void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page)
+ 	encl->page_cnt--;
  
- 	sgx_record_epc_page(encl->secs.epc_page,
-+			    SGX_EPC_OWNER_PAGE |
- 			    SGX_EPC_PAGE_UNRECLAIMABLE);
+ 	if (va_page) {
++		sgx_drop_epc_page(va_page->epc_page);
+ 		sgx_encl_free_epc_page(va_page->epc_page);
+ 		list_del(&va_page->list);
+ 		kfree(va_page);
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index ed813288af44..f3a3ed894616 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -268,6 +268,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
+ 			goto out;
  
- 	/* Set only after completion, as encl->lock has not been taken. */
-@@ -325,7 +326,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- 			goto err_out;
- 	}
+ 		sgx_encl_ewb(encl->secs.epc_page, &secs_backing);
++		sgx_drop_epc_page(encl->secs.epc_page);
+ 		sgx_encl_free_epc_page(encl->secs.epc_page);
+ 		encl->secs.epc_page = NULL;
  
--	sgx_record_epc_page(epc_page, SGX_EPC_PAGE_RECLAIMABLE);
-+	sgx_record_epc_page(epc_page, SGX_EPC_OWNER_PAGE | SGX_EPC_PAGE_RECLAIMABLE);
- 	mutex_unlock(&encl->lock);
- 	mmap_read_unlock(current->mm);
- 	return ret;
-@@ -979,7 +980,8 @@ static long sgx_enclave_modify_types(struct sgx_encl *encl,
+@@ -510,6 +511,8 @@ void sgx_record_epc_page(struct sgx_epc_page *page, unsigned long flags)
+ 	page->flags |= flags;
+ 	if (sgx_epc_page_reclaimable(flags))
+ 		list_add_tail(&page->list, &sgx_global_lru.reclaimable);
++	else
++		list_add_tail(&page->list, &sgx_global_lru.unreclaimable);
+ 	spin_unlock(&sgx_global_lru.lock);
+ }
  
- 			mutex_lock(&encl->lock);
- 
--			sgx_record_epc_page(entry->epc_page, SGX_EPC_PAGE_RECLAIMABLE);
-+			sgx_record_epc_page(entry->epc_page,
-+					    SGX_EPC_OWNER_PAGE | SGX_EPC_PAGE_RECLAIMABLE);
- 		}
- 
- 		/* Change EPC type */
 diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 5110dd433b80..51aba1cd1937 100644
+index 51aba1cd1937..337747bef7c2 100644
 --- a/arch/x86/kernel/cpu/sgx/sgx.h
 +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -64,6 +64,12 @@ enum sgx_epc_page_state {
+@@ -152,17 +152,23 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_epc_page *page)
+ }
  
- #define SGX_EPC_PAGE_STATE_MASK GENMASK(2, 0)
+ /*
+- * Tracks EPC pages reclaimable by the reclaimer (ksgxd).
++ * Contains EPC pages tracked by the reclaimer (ksgxd).
+  */
+ struct sgx_epc_lru_lists {
+ 	spinlock_t lock;
+ 	struct list_head reclaimable;
++	/*
++	 * Tracks SECS, VA pages,etc., pages only freeable after all its
++	 * dependent reclaimables are freed.
++	 */
++	struct list_head unreclaimable;
+ };
  
-+/* flag for pages owned by a sgx_encl_page */
-+#define SGX_EPC_OWNER_PAGE		BIT(3)
-+
-+/* flag for pages owned by a sgx_encl struct */
-+#define SGX_EPC_OWNER_ENCL		BIT(4)
-+
- struct sgx_epc_page {
- 	unsigned int section;
- 	u16 flags;
+ static inline void sgx_lru_init(struct sgx_epc_lru_lists *lrus)
+ {
+ 	spin_lock_init(&lrus->lock);
+ 	INIT_LIST_HEAD(&lrus->reclaimable);
++	INIT_LIST_HEAD(&lrus->unreclaimable);
+ }
+ 
+ struct sgx_epc_page *__sgx_alloc_epc_page(void);
 -- 
 2.25.1
 
