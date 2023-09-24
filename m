@@ -2,100 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4273F7ABECE
-	for <lists+cgroups@lfdr.de>; Sat, 23 Sep 2023 10:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6E97AC6CE
+	for <lists+cgroups@lfdr.de>; Sun, 24 Sep 2023 08:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjIWITO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Sep 2023 04:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
+        id S229437AbjIXGc7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 24 Sep 2023 02:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjIWITN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Sep 2023 04:19:13 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF546198
-        for <cgroups@vger.kernel.org>; Sat, 23 Sep 2023 01:19:07 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-351098a1e8cso10616875ab.2
-        for <cgroups@vger.kernel.org>; Sat, 23 Sep 2023 01:19:07 -0700 (PDT)
+        with ESMTP id S229450AbjIXGc7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 24 Sep 2023 02:32:59 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7605109;
+        Sat, 23 Sep 2023 23:32:52 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-6563c23b356so25491636d6.2;
+        Sat, 23 Sep 2023 23:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1695457147; x=1696061947; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=53y+MSASX7iIoRiw0N0MaPINtyDxfHQ2/xhc/ZQOZdc=;
-        b=BAGk2HHKrLK2UGICWdY8buG7pDqs5uR9HbtIFuj4ToKGt9FTCzsPi4r3WdpoyH3EPE
-         xbpIBLRg3df4Ah9DMtpiRHE5kPyT/4jzpl+hwyum31gNAWGC9aU1LNDMOPFsHpd/ez2f
-         0Cqf1x+3+m3VJykXt/ed30ZmVzJD+ta8+CTSSaaFwx+O1qpBwmcJEc2jDErvGq9VN6XT
-         HQ5+ppYZGAI5M9SrPnjdhEinMC3S19d5bbrD/eF2e4ZAV35tgAXA9WUa4kZ6mnIB/19o
-         SQXDn6PI7qxJPNXXhuloHwV7J2CmlH2zPdzv6m2VQOOmqJRYTetQOc5WuuACkzXx9EA5
-         M9QA==
+        d=gmail.com; s=20230601; t=1695537172; x=1696141972; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bpxJPlID+SCs56C8IjY5nt1fLBEKnY3cZH9wb2ckaP8=;
+        b=jL6NdW+nLX1RMVyTaV0poc9JFbgOZHEGMj8karfGXWD8NucfiM7Sd91vXaW5QyTYu2
+         Zy/oNYTkIdETP2EsmWq7aQTeoLh+AqYFkx5awPhM6iTMOMcY+BAbDWSI8ZytqFPlwX6t
+         gq5Sp6jjl77PlYmSzNseL+RAoVSwLEn85Iy1SPM+zUNHSOkSEBsBlPalFBlPCgDfkmsQ
+         lY2lQrF17VE2GLdB0gbFbESl4MEI9boMa4TZLo7eSUwguaLVZtdkub87qb+sP7s9NnQC
+         o/RufIPEXa25GPksYsFZAdOC2qoYxEiJ7YbC7ZyngHxF2maembS4KSs+C7nDsfQQaaxb
+         eN5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695457147; x=1696061947;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=53y+MSASX7iIoRiw0N0MaPINtyDxfHQ2/xhc/ZQOZdc=;
-        b=bT4nr1FntRhjAmkJCj4D4TNUIZ3PbuujZtsLKuKZG5qBDxNPlJegGxxS2kFFLZtkwA
-         U6hIAxCZg/k8YIsH3SrBDI8X+S2YWP+EQWhu/p+0V44y6DILezj6D7ni6qC1A0M6oYaL
-         YS+AVYc2YTTZ1QKDuS+i5OaMgtlY/EZaq8NBB7wueYBX+B36hOPXOBWVIYu8FBHXhUOe
-         M0hWUTG51IdHQlTq2sdIske1/FWTuI17qyp4VhFER0Zx/DJ9O65oGVR11QtyvTJtbpaJ
-         KgDEFsa9QJ+x/lcUxkEW7Cao9ABgm/g27eAAQuorfXR09+lXABXh5uSH6+SuBB9FP/wg
-         5sPg==
-X-Gm-Message-State: AOJu0YwOPjQEQ6Ne6nuureyfBwCOR3+WxShldgpblyj3WnJsVv8RFMXg
-        cD6lFv4rieuxTS9rzbtyYv5q4Q==
-X-Google-Smtp-Source: AGHT+IHBNbl6IYAGI8nr8YQtW/FP5fMEN/o90a3CpDDMTaYSF6PS3d98V+TNXLqc0Tu5l1jKXPiM4w==
-X-Received: by 2002:a05:6e02:1c82:b0:34f:7e36:5f8b with SMTP id w2-20020a056e021c8200b0034f7e365f8bmr2693146ill.25.1695457147258;
-        Sat, 23 Sep 2023 01:19:07 -0700 (PDT)
-Received: from ubuntu-hf2.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id u74-20020a63794d000000b00565e2ad12e5sm4219928pgc.91.2023.09.23.01.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 01:19:06 -0700 (PDT)
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-To:     roman.gushchin@linux.dev
-Cc:     mhocko@kernel.org, hannes@cmpxchg.org, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH RESEND] memcg, oom: unmark under_oom after the oom killer is done
-Date:   Sat, 23 Sep 2023 08:17:39 +0000
-Message-Id: <20230923081739.398912-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1695537172; x=1696141972;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bpxJPlID+SCs56C8IjY5nt1fLBEKnY3cZH9wb2ckaP8=;
+        b=Hrf0AdInMZrKV5LUFdtfCiJInXUUlPnV6kfsscAyokciRRDZK5qpoTDoFDQm4EOW4i
+         3TSNuj6bD/iE8W9IoNp0xOUZhcyF+fRy5hRs/zuWv+134ZGtg8ls8tEoCbl4I+awRGr7
+         cefeD+oken7LKaQgHTQiPeetKqXu/WCn3PCnrpOMqNNUdWM8uhCu6xdwK5xbxof4G2dV
+         ZjDdfTaKWneP/DREuzVS9xLaeZHgROyoh8MjzUmr7ZaG+tG3Vyt0BTLcJgkIajTtVhMC
+         xaX3CP7sI6vWdT0/e+ETXLL4La16mwUNECp0Pf2PavTQjkxoF+169+2A855ARv6LXHHc
+         q/dQ==
+X-Gm-Message-State: AOJu0YwIpRsZwpBnbYiznaUEE1ExqkHxRZxqOR7b6TCfofkeeMdqb01/
+        iaIiOOLUBiX54mckOf/KzRBOOnX04SzFXQqigX8=
+X-Google-Smtp-Source: AGHT+IG4iJb6ZapH+EJvQvCVW6z0mEXz+UEmqp29Mgj2lYIPut7HPUco4rtRh2jSapiCQ3Nq2VvfR6673ZCg3uBhRkQ=
+X-Received: by 2002:a05:6214:d6b:b0:656:49a3:21ae with SMTP id
+ 11-20020a0562140d6b00b0065649a321aemr5845870qvs.15.1695537172064; Sat, 23 Sep
+ 2023 23:32:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230922112846.4265-1-laoar.shao@gmail.com> <ZQ3GQmYrYyKAg2uK@slm.duckdns.org>
+In-Reply-To: <ZQ3GQmYrYyKAg2uK@slm.duckdns.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 24 Sep 2023 14:32:14 +0800
+Message-ID: <CALOAHbA9-BT1daw-KXHtsrN=uRQyt-p6LU=BEpvF2Yk42A_Vxw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/8] bpf, cgroup: Add bpf support for cgroup controller
+To:     Tejun Heo <tj@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+        cgroups@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When application in userland receives oom notification from kernel
-and reads the oom_control file, it's confusing that under_oom is 0
-though the omm killer hasn't finished. The reason is that under_oom
-is cleared before invoking mem_cgroup_out_of_memory(), so move the
-action that unmark under_oom after completing oom handler. Therefore
-the value of under_oom won't mislead users.
+On Sat, Sep 23, 2023 at 12:52=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Fri, Sep 22, 2023 at 11:28:38AM +0000, Yafang Shao wrote:
+> > - bpf_cgroup_id_from_task_within_controller
+> >   Retrieves the cgroup ID from a task within a specific cgroup controll=
+er.
+> > - bpf_cgroup_acquire_from_id_within_controller
+> >   Acquires the cgroup from a cgroup ID within a specific cgroup control=
+ler.
+> > - bpf_cgroup_ancestor_id_from_task_within_controller
+> >   Retrieves the ancestor cgroup ID from a task within a specific cgroup
+> >   controller.
+> >
+> > The advantage of these new BPF kfuncs is their ability to abstract away=
+ the
+> > complexities of cgroup hierarchies, irrespective of whether they involv=
+e
+> > cgroup1 or cgroup2.
+>
+> I'm afraid this is more likely to bring the unnecessary complexities of
+> cgroup1 into cgroup2.
 
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I concur with the idea that we should avoid introducing the
+complexities of cgroup1 into cgroup2. Which specific change do you
+believe might introduce these complexities into cgroup2? Is it the
+modification within task_under_cgroup_hierarchy() or
+cgroup_get_from_id()?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..0b6ed63504ca 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1970,8 +1970,8 @@ static bool mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int order)
- 	if (locked)
- 		mem_cgroup_oom_notify(memcg);
- 
--	mem_cgroup_unmark_under_oom(memcg);
- 	ret = mem_cgroup_out_of_memory(memcg, mask, order);
-+	mem_cgroup_unmark_under_oom(memcg);
- 
- 	if (locked)
- 		mem_cgroup_oom_unlock(memcg);
--- 
-2.25.1
+In fact, we have the option to utilize
+bpf_cgroup_ancestor_id_from_task_within_controller() as a substitute
+for bpf_task_under_cgroup(), which allows us to sidestep the need for
+changes within task_under_cgroup_hierarchy() altogether.
 
+>
+> > In the future, we may expand controller-based support to other BPF
+> > functionalities, such as bpf_cgrp_storage, the attachment and detachmen=
+t
+> > of cgroups, skb_under_cgroup, and more.
+>
+> I'm okay with minor / trivial quality of life improvements to cgroup1 but
+> this goes much beyond that and is starting to complications to cgroup2
+> users, which I think is a pretty bad idea long term. I'm afraid I'm gonna
+> have to nack this approach.
+>
+> Thanks.
+>
+> --
+> tejun
+
+
+
+--=20
+Regards
+Yafang
