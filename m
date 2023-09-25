@@ -2,200 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A2F7ADD97
-	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 19:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4335F7ADDA1
+	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 19:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbjIYRJf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Sep 2023 13:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
+        id S232981AbjIYRL7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Sep 2023 13:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYRJe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 13:09:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2688ABC;
-        Mon, 25 Sep 2023 10:09:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1E4DC433C7;
-        Mon, 25 Sep 2023 17:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695661767;
-        bh=p6AzNXPdHriEeTlj5yWJ1nJYbwWDrFUzUL7AtEgJGzM=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=Rb57uamRYmdcgr+E9zoGsXBzpmzv/veQrH19wWJksDsp7SCwfr8QNfo91IbyIwlAi
-         vUvSWHrqtcbHFH3jKgQEb1Sp1WvEEiKBpnLKgwLeB0DIYOt8WjigfyOuYKS1U5w2sa
-         lNiYTHsjCWxtY3T36p26/qrL7CtC7ESUnjgQttsgFpImVpu044JCrt0An0XNXtT2er
-         r/fqJa9NCk4bn5FviDfTYHqYod3kAR3CJR7OGn1qUcpEIHMDqefAg6fBdETBDvq2rr
-         cyrZVyS3K9sWaWv3zjHvMCeeAJ3mri9QhCnHwKCd/pphO5WL5+Ts6ZZieqdEndkTwr
-         ANLbSJkRngJwQ==
-Mime-Version: 1.0
+        with ESMTP id S232948AbjIYRL5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 13:11:57 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E6E11F
+        for <cgroups@vger.kernel.org>; Mon, 25 Sep 2023 10:11:46 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso861448366b.2
+        for <cgroups@vger.kernel.org>; Mon, 25 Sep 2023 10:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695661904; x=1696266704; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g/hhWT30YqLg2rKDYw/SVPqxcdoluiD8cyVoB8LNRKU=;
+        b=BhbFLIYhbToxGSyNhmIR8RyXG8uDpP3SL/ihsVdl2fCTdoC/u3JkUu3jFcM8J9LOVR
+         D0IwmB8UB5VHnsFDTQ/cmCpvDwBTgJYK0ZhOno12xXmA8s+MK6OPB5D848e5PNSElx+Y
+         ptjSZDGTj7fx91tqgAz2vP1Di68wx5SYSOb/4blCBoY2M1w5lHoYqTQtvPHuolmbHfw1
+         BIApqzBaC/dLNjPS4UWVoNmjwOW7XC8tZjQj3Or/ADiCk/S5wezNBFfMEPRQqDu35vL0
+         mxxfPQpvZCylecGQZi+WKUyq2/9L+Tp6TVjNMwE+h50ji7lwrUuLuDKFIsetsQ90Me+e
+         nADg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695661904; x=1696266704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g/hhWT30YqLg2rKDYw/SVPqxcdoluiD8cyVoB8LNRKU=;
+        b=Ecibd0NDhBP56BxHHtwDS9MTPoDvHmlS5G1kO+7eD9MJVJnZVLO4B4myNmR67Q0ilb
+         dVSOAqMaBh/CCybAB6Y3Hap3i+Ja/Je7f2sxH+/PUR9zehcIq8AoJO7Yr8j2h3/0hM9S
+         /LI8k8mdWcMOIu60LiOuq5jC43RMcz5KcPdlH/BZFOPjlxXDMKxRWtLMGPbbwBx+bvqV
+         yNmXQip3rMRr4+w5PQY3ueNpQl4kWjEk2MT3LqWTVVNUqmzCRhqaS5U1l+8J/UruBwpU
+         Iub33HMBHVkIUg+M/NyKof9MlMCbGHIwvQhUj50BK5tiGyRmYhruKerC1zCLCA6f8SgO
+         daSg==
+X-Gm-Message-State: AOJu0Yz/YCu7BzdV9Duftc4F+aEY8X7b0DKdxYGAhnZoi0huC/UHYFhi
+        bGSV4fl4O74mP/JNfzrMpFrsWfs/0WcWdMXTFLjgLQ==
+X-Google-Smtp-Source: AGHT+IHxGHsl4fbZlvFzA9O7Txe+gu98zwtJVfYdbeIxZvboXX+P0miQrKoiw4gPdaoz5mGEa0wc4CVeBercB/7xDI0=
+X-Received: by 2002:a17:906:25d:b0:9ae:587a:e5ce with SMTP id
+ 29-20020a170906025d00b009ae587ae5cemr7423657ejl.27.1695661904205; Mon, 25 Sep
+ 2023 10:11:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230922175741.635002-1-yosryahmed@google.com> <ZRGQIhWF02SRzN4D@dhcp22.suse.cz>
+In-Reply-To: <ZRGQIhWF02SRzN4D@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 25 Sep 2023 10:11:05 -0700
+Message-ID: <CAJD7tkbWz7mx6mUrvFQHP10ncqL-iVwD4ymHTm=oXW5qGgrZtA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mm: memcg: fix tracking of pending stats updates values
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 25 Sep 2023 20:09:21 +0300
-Message-Id: <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
- CSS events
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-X-Mailer: aerc 0.14.0
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-2-haitao.huang@linux.intel.com>
-In-Reply-To: <20230923030657.16148-2-haitao.huang@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat Sep 23, 2023 at 6:06 AM EEST, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+On Mon, Sep 25, 2023 at 6:50=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
 >
-> The misc cgroup controller (subsystem) currently does not perform
-> resource type specific action for Cgroups Subsystem State (CSS) events:
-> the 'css_alloc' event when a cgroup is created and the 'css_free' event
-> when a cgroup is destroyed, or in event of user writing the max value to
-> the misc.max file to set the usage limit of a specific resource
-> [admin-guide/cgroup-v2.rst, 5-9. Misc].
+> On Fri 22-09-23 17:57:38, Yosry Ahmed wrote:
+> > While working on adjacent code [1], I realized that the values passed
+> > into memcg_rstat_updated() to keep track of the magnitude of pending
+> > updates is consistent. It is mostly in pages, but sometimes it can be i=
+n
+> > bytes or KBs. Fix that.
 >
-> Define callbacks for those events and allow resource providers to
-> register the callbacks per resource type as needed. This will be
-> utilized later by the EPC misc cgroup support implemented in the SGX
-> driver:
-> - On css_alloc, allocate and initialize necessary structures for EPC
-> reclaiming, e.g., LRU list, work queue, etc.
-> - On css_free, cleanup and free those structures created in alloc.
-> - On max_write, trigger EPC reclaiming if the new limit is at or below
-> current usage.
->
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> ---
-> V5:
-> - Remove prefixes from the callback names (tj)
-> - Update commit message (Jarkko)
->
-> V4:
-> - Moved this to the front of the series.
-> - Applies on cgroup/for-6.6 with the overflow fix for misc.
->
-> V3:
-> - Removed the released() callback
-> ---
->  include/linux/misc_cgroup.h |  5 +++++
->  kernel/cgroup/misc.c        | 32 +++++++++++++++++++++++++++++---
->  2 files changed, 34 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> index e799b1f8d05b..96a88822815a 100644
-> --- a/include/linux/misc_cgroup.h
-> +++ b/include/linux/misc_cgroup.h
-> @@ -37,6 +37,11 @@ struct misc_res {
->  	u64 max;
->  	atomic64_t usage;
->  	atomic64_t events;
-> +
-> +	/* per resource callback ops */
-> +	int (*alloc)(struct misc_cg *cg);
-> +	void (*free)(struct misc_cg *cg);
-> +	void (*max_write)(struct misc_cg *cg);
->  };
-> =20
->  /**
-> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> index 79a3717a5803..62c9198dee21 100644
-> --- a/kernel/cgroup/misc.c
-> +++ b/kernel/cgroup/misc.c
-> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct kernfs_open=
-_file *of, char *buf,
-> =20
->  	cg =3D css_misc(of_css(of));
-> =20
-> -	if (READ_ONCE(misc_res_capacity[type]))
-> +	if (READ_ONCE(misc_res_capacity[type])) {
->  		WRITE_ONCE(cg->res[type].max, max);
-> -	else
-> +		if (cg->res[type].max_write)
-> +			cg->res[type].max_write(cg);
-> +	} else {
->  		ret =3D -EINVAL;
-> +	}
-> =20
->  	return ret ? ret : nbytes;
->  }
-> @@ -383,23 +386,39 @@ static struct cftype misc_cg_files[] =3D {
->  static struct cgroup_subsys_state *
->  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
->  {
-> +	struct misc_cg *parent_cg;
->  	enum misc_res_type i;
->  	struct misc_cg *cg;
-> +	int ret;
-> =20
->  	if (!parent_css) {
->  		cg =3D &root_cg;
-> +		parent_cg =3D &root_cg;
->  	} else {
->  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
->  		if (!cg)
->  			return ERR_PTR(-ENOMEM);
-> +		parent_cg =3D css_misc(parent_css);
->  	}
-> =20
->  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
->  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
->  		atomic64_set(&cg->res[i].usage, 0);
-> +		if (parent_cg->res[i].alloc) {
-> +			ret =3D parent_cg->res[i].alloc(cg);
-> +			if (ret)
-> +				goto alloc_err;
-> +		}
->  	}
-> =20
->  	return &cg->css;
-> +
-> +alloc_err:
-> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> +		if (parent_cg->res[i].free)
-> +			cg->res[i].free(cg);
-> +	kfree(cg);
-> +	return ERR_PTR(ret);
->  }
-> =20
->  /**
-> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state *parent_css=
-)
->   */
->  static void misc_cg_free(struct cgroup_subsys_state *css)
->  {
-> -	kfree(css_misc(css));
-> +	struct misc_cg *cg =3D css_misc(css);
-> +	enum misc_res_type i;
-> +
-> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> +		if (cg->res[i].free)
-> +			cg->res[i].free(cg);
-> +
-> +	kfree(cg);
->  }
-> =20
->  /* Cgroup controller callbacks */
-> --=20
-> 2.25.1
+> What kind of practical difference does this change make? Is it worth
+> additional code?
 
-Since the only existing client feature requires all callbacks, should
-this not have that as an invariant?
+As explained in patch 2's commit message, the value passed into
+memcg_rstat_updated() is used for the "flush only if not worth it"
+heuristic. As we have discussed in different threads in the past few
+weeks, unnecessary flushes can cause increased global lock contention
+and/or latency.
 
-I.e. it might be better to fail unless *all* ops are non-nil (e.g. to
-catch issues in the kernel code).
+Byte-sized paths (percpu, slab, zswap, ..) feed bytes into the
+heuristic, but those are interpreted as pages, which means we will
+flush earlier than we should. This was noticed by code inspection. How
+much does this matter in practice? I would say it depends on the
+workload: how many percpu/slab allocations are being made vs. how many
+flushes are requested.
 
-BR, Jarkko
+On a system with 100 cpus, 25M of stat updates are needed for a flush
+usually, but ~6K of slab/percpu updates will also (mistakenly) cause a
+flush.
+
+>
+> > Patch 1 reworks memcg_page_state_unit() so that we can reuse it in patc=
+h
+> > 2 to check and normalize the units of state updates.
+> >
+> > [1]https://lore.kernel.org/lkml/20230921081057.3440885-1-yosryahmed@goo=
+gle.com/
+> >
+> > v1 -> v2:
+> > - Rebased on top of mm-unstable.
+> >
+> > Yosry Ahmed (2):
+> >   mm: memcg: refactor page state unit helpers
+> >   mm: memcg: normalize the value passed into memcg_rstat_updated()
+> >
+> >  mm/memcontrol.c | 64 +++++++++++++++++++++++++++++++++++++++----------
+> >  1 file changed, 51 insertions(+), 13 deletions(-)
+> >
+> > --
+> > 2.42.0.515.g380fc7ccd1-goog
+>
+> --
+> Michal Hocko
+> SUSE Labs
