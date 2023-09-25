@@ -2,63 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D907AD982
-	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 15:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E247ADD7B
+	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 18:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjIYNuh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Sep 2023 09:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        id S231664AbjIYQ5b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Sep 2023 12:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjIYNug (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 09:50:36 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9BEB3;
-        Mon, 25 Sep 2023 06:50:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2880021857;
-        Mon, 25 Sep 2023 13:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695649829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jcHoHaiIokbvVhLAntZeHFBs/mSZ9sLRljn4JH46n+8=;
-        b=Y+Ze5tZaa/vhJYJpUpwQ0pZmKaOFR5s0ikzu9g5De+vsjp3KrPoNIbfEpJEqnpebKz7H2H
-        cXibuPUBw6pEV4FasYGv0okod+puihW3ODDK0rw/6LlqrOe6N0+uNiT2vmYKLuq3S8sK/b
-        e+u3WHYLF6e4U7Ku6SU3U1Iwmz9SDMY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0246A1358F;
-        Mon, 25 Sep 2023 13:50:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F8kFOSSQEWXiHQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 25 Sep 2023 13:50:28 +0000
-Date:   Mon, 25 Sep 2023 15:50:26 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] mm: memcg: fix tracking of pending stats updates
- values
-Message-ID: <ZRGQIhWF02SRzN4D@dhcp22.suse.cz>
-References: <20230922175741.635002-1-yosryahmed@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922175741.635002-1-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        with ESMTP id S231393AbjIYQ5a (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 12:57:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D139110D;
+        Mon, 25 Sep 2023 09:57:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EA55C433C7;
+        Mon, 25 Sep 2023 16:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695661043;
+        bh=/TClsZXVGXCV9uINJx9IgXVRoHxhac9DAEBNZbscd1w=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=WBNUXt/WPWhBOc7FN29nn/y8nh1h4+x9bTO6ai3NHcfLzlWG/RF6iEYi1pEp1HTh8
+         4LwFwL0c28Mm3QpAWj77WQVmkvBNkEA5CR6+zaET2Tlk2gaYI/0IrX/HOpkMeoOXyb
+         cPRErNZxEP2NLg9LCXSqWIwcIYiputLZ3MLdTsN12Q68acODnioW443+WPg+HKIizl
+         Nd/Z1N48K4NZ1DXFnadVJkdgIPRFCwXvnphpYImcEgrmtpxS/DHAc9lqiYJIEazOF2
+         8r33lZHLd77+B7WO3wIROGBDbMbJwg0Yueyzyb71wNWRiLWJ6wUFrQTOGAvx3S6DS/
+         40ITz+rb7puIw==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 25 Sep 2023 19:57:17 +0300
+Message-Id: <CVS5O6QV7OWF.UBP59U46WUBX@suppilovahvero>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v4 01/18] cgroup/misc: Add per resource callbacks for
+ CSS events
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+X-Mailer: aerc 0.14.0
+References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
+ <20230913040635.28815-2-haitao.huang@linux.intel.com>
+ <CVHOU5G1SCUT.RCBVZ3W8G2NJ@suppilovahvero>
+ <op.2bci9anpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2bci9anpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,33 +59,64 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 22-09-23 17:57:38, Yosry Ahmed wrote:
-> While working on adjacent code [1], I realized that the values passed
-> into memcg_rstat_updated() to keep track of the magnitude of pending
-> updates is consistent. It is mostly in pages, but sometimes it can be in
-> bytes or KBs. Fix that.
+On Sat Sep 16, 2023 at 7:11 AM EEST, Haitao Huang wrote:
+> Hi Jarkko
+>
+> On Wed, 13 Sep 2023 04:39:06 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
+> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >>
+> >> Consumers of the misc cgroup controller might need to perform separate
+> >> actions for Cgroups Subsystem State(CSS) events: cgroup alloc and free=
+.
+> >
+> > nit: s/State(CSS)/State (CSS)/
+> >
+> > "cgroup alloc" and "cgroup free" mean absolutely nothing.
+> >
+> >
+> >> In addition, writes to the max value may also need separate action. Ad=
+d
+> >
+> > What "the max value"?
+> >
+> >> the ability to allow downstream users to setup callbacks for these
+> >> operations, and call the corresponding per-resource-type callback when
+> >> appropriate.
+> >
+> > Who are "the downstream users" and what sort of callbacks they setup?
+>
+> How about this?
+>
+> The misc cgroup controller (subsystem) currently does not perform resourc=
+e =20
+> type specific action for Cgroups Subsystem State (CSS) events: the =20
+> 'css_alloc' event when a cgroup is created and the 'css_free' event when =
+a =20
+> cgroup is destroyed, or in event of user writing the max value to the =20
+> misc.max file to set the consumption limit of a specific resource =20
+> [admin-guide/cgroup-v2.rst, 5-9. Misc].
+>
+> Define callbacks for those events and allow resource providers to registe=
+r =20
+> the callbacks per resource type as needed. This will be utilized later by=
+ =20
+> the EPC misc cgroup support implemented in the SGX driver:
+> - On cgroup alloc, allocate and initialize necessary structures for EPC =
+=20
+> reclaiming, e.g., LRU list, work queue, etc.
+> - On cgroup free, cleanup and free those structures created in alloc.
+> - On max write, trigger EPC reclaiming if the new limit is at or below =
+=20
+> current consumption.
 
-What kind of practical difference does this change make? Is it worth
-additional code?
- 
-> Patch 1 reworks memcg_page_state_unit() so that we can reuse it in patch
-> 2 to check and normalize the units of state updates.
-> 
-> [1]https://lore.kernel.org/lkml/20230921081057.3440885-1-yosryahmed@google.com/
-> 
-> v1 -> v2:
-> - Rebased on top of mm-unstable.
-> 
-> Yosry Ahmed (2):
->   mm: memcg: refactor page state unit helpers
->   mm: memcg: normalize the value passed into memcg_rstat_updated()
-> 
->  mm/memcontrol.c | 64 +++++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 51 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.42.0.515.g380fc7ccd1-goog
+Yeah, this is much better (I was on holiday, thus the delay on
+response).
 
--- 
-Michal Hocko
-SUSE Labs
+> Thanks
+> Haitao
+
+BR, Jarkko
