@@ -2,114 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDFD7ADF47
-	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 20:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387537ADFA3
+	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 21:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbjIYSu1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Sep 2023 14:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        id S229844AbjIYTkP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Sep 2023 15:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjIYSu0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 14:50:26 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7628695;
-        Mon, 25 Sep 2023 11:50:20 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3ae015b6441so4681558b6e.1;
-        Mon, 25 Sep 2023 11:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695667820; x=1696272620; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FS6Sm1WF5Sz2XYLA9mMdoZkfL6tjoxQpUMHovY5b5ok=;
-        b=WArYuSizFbQch4iYYOBhbeOvqWchppb5jh7GoQ/2nYKVSP++XKuZ3AeE9lsZ7ZxtoA
-         ZgsBp/IZ2sSKOuA3qFU7/IYaOdqOgGwcBNUQXhdUO3Tga5iHSsrceir8EOtZpzDHMv79
-         w8o1YI0MzecUKu2TmblpCGWqF51MlG04HchbGsMgSKhsNOftHfMrwa40mfxtwrApY9Tq
-         HHLt7Mas9OkbE3eBT91Bi/TXDIBOgjFS+1DTNV8Q18tBh7Lv4bHvekkPOJuglYXbMycG
-         LwGGoyJeYryzIgcNdlJs3DwAUJVB0aXwwGpMgzHyKENxTyRMmkMLFMc6om6fwTjJ+cmE
-         pUrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695667820; x=1696272620;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FS6Sm1WF5Sz2XYLA9mMdoZkfL6tjoxQpUMHovY5b5ok=;
-        b=kgGedOYlycDLs4Ppk+9cLlOCVwGcEBkTow2EwjoyGbOi3qlQcpILSfI6Ju4Pycis1+
-         kRa6KWdNyGSzXFR64WkzGK/9bcOlu5oLCVETHOjpJacGAXPZ2rV8/QoSRGP+AhUJwN5X
-         ZAFbtGFsEqPXaTO6uQzCMvS39JX3yxjr/jD0LQj/UMJMdwknUQvaAxn/NMhXIKdkRib8
-         k5nhIeUc3bHlqCnfAmutB4JtQ788dxxQuhSgZhGC1872uGoRTIpm9rscYzLp+wUFCN3J
-         QRDHYmx6FhIZJpDoazsvdKHkbne/PyjibOK2365FNXWd5H9UMuJ+QKi7i3Iw0HO4m6cZ
-         1QWg==
-X-Gm-Message-State: AOJu0YwOBya2oA1j53C8sYKUCzMxS02BLjN0iIXebWAfAIifp6yAutUs
-        GlBlDyIzUBfzf0RTyZgS3C0=
-X-Google-Smtp-Source: AGHT+IHRZMr6IhaOtGpvWwk25Rio4U4ABsE8JYOC/UUsGmYjv3f6Sq6emPCM4JRvywQlAlRRXp7n3A==
-X-Received: by 2002:a05:6808:10d6:b0:3a9:e8e2:5799 with SMTP id s22-20020a05680810d600b003a9e8e25799mr11663773ois.14.1695667819737;
-        Mon, 25 Sep 2023 11:50:19 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:dfcd])
-        by smtp.gmail.com with ESMTPSA id y4-20020aa78544000000b0068ff0a633fdsm8406684pfn.131.2023.09.25.11.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 11:50:19 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 25 Sep 2023 08:50:17 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        sohil.mehta@intel.com, zhiquan1.li@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
-        anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
-        yangjie@microsoft.com
-Subject: Re: [PATCH v5 02/18] cgroup/misc: Add SGX EPC resource type and
- export APIs for SGX driver
-Message-ID: <ZRHWaZB5BeXt2EcY@slm.duckdns.org>
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-3-haitao.huang@linux.intel.com>
+        with ESMTP id S229481AbjIYTkO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 15:40:14 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01olkn2046.outbound.protection.outlook.com [40.92.64.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8B9101;
+        Mon, 25 Sep 2023 12:40:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nlz6ugNUKeTCgUyepL2qJgkraoGSPfXK9vIIkQzgAViYv1OG0MAnwcGQbFCl5huJ2lZEZfAquN29cpLIXiangpCnJ16PiGoLu6OQ6ZZINM5g8+n+RNBzfzHzmbBL+7CIe5tsKLbaXv6ihfOwYxV0ei7biTs52HmjB2TTRcYFMVzWB1qYqHNVhnnhY0T19L1B38Oc3ZSNQHHQbbHjrRDkorTWy6S4AQ59wgChnTJUl3pLpvBkAMKSx6TL/szOXRSJ1xBBCeKAN/PcXp2XG7VMOWaEk5F1ys/8xRooOQqKE5ob20v+CsxYzi9A16grg6sNrxmwkX18C8/dUV2cpedABA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+CVD3Q27nJ01Fi3J203j4E6t6HvjGWGCK3DuwnLbYCo=;
+ b=UZbJA0kxBn6ecM1RAMYB1lrQkyh0x7A4aL6XLqF7UNaFATBurVr6aMfkE5/xueCel6Oy+tm44TkDc9XqD6oOafG96wTNrOblMWhtL6dSS/24HdV/5jgOBzKySDXZ5K2Dj0a1JOhzMo8y7S1shDW5yN8YtTjwB/auMG0I18UkaUNJWMmbyk6bUfQtzlAi2/MFBI5unWgXu3PDnPYiDq3Q+BrAmWzz9p4tVu/vSV7mvs9Jcg14hbGZdXE1lFQ+xsLcn+oX43bnTxQjxnKA+ifpmQR/4UWrwyrAW3ZRvrl7ZCKprkWI8HmZ71muD4lsKq1XDqyisAF6usPfoCtq1V9kgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+CVD3Q27nJ01Fi3J203j4E6t6HvjGWGCK3DuwnLbYCo=;
+ b=D8EQyz4jg/6CC4JQm/FP5pf4VTLA59h3U2ePZ6fJdQvanEzYQMDI4fDgrYAbqYNTBBaGzd7QPPmoMFc176wHOXK2hiXswA3WEwVd9kDRKcmkUEo2Y7VlEKo6t7cBR0nuTDxZx/5dBEPixwdvX/F6P9ap9CNkcJRKvolB4EI8yk53NtIW4KTWstKaArEParXravT0wu0Q/F05+Zkl5P4Mmokpc2YYYfICVtQAl00cqyjeZXPc3Pf3lcu0ztiKSKubM140/fEObSFz+LyJ9bt/RfqYKaGoe8CuNBQ81yrSsa9H6mWHzKS/z3z9q7IVyv9vDeqw5EoOSU/cVnuHZv/mIw==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by AS8P193MB1207.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:33b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
+ 2023 19:40:04 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Mon, 25 Sep 2023
+ 19:40:04 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     longman@redhat.com, lizefan.x@bytedance.com, tj@kernel.org,
+        hannes@cmpxchg.org, shuah@kernel.org
+Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] selftests/cgroup: Fix awk usage in test_cpuset_prs.sh that may cause error
+Date:   Tue, 26 Sep 2023 03:38:19 +0800
+Message-ID: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [Q1FYZPJYQuqtuAZ0vMiCQViRc0oaC9I1]
+X-ClientProxiedBy: AS4PR09CA0001.eurprd09.prod.outlook.com
+ (2603:10a6:20b:5e0::7) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20230925193819.6603-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230923030657.16148-3-haitao.huang@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AS8P193MB1207:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f3ef119-0c17-40ad-8e14-08dbbdff3734
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rh6O9R7gcPbGz2f0EnL3urW8Um8l7GqeWqbVkLguPjfnMvebqm4/ORzyJ1bYNs59ZXzG9bECHvMECy83R7QPXZ0zOPeyM+WNT6mRPRSKqtYHqPdynZM9VEZKPZ1ewG4q2h7npHUvrXeC4UbVfmdF4vocmuTzMe5qAGMqQaMa+kXd9xllqOzLsZyU+2emsr8hUNb9CYUS96TLjGwgRoKQSKDeFkFgL+EJEkOpEwDJpmjYzIZ2ros78Bo+9enoGt9qX40bUu5Jl6XRgQjF41PNWGkSaNpGk3VbVO51tec4CmTTeqJ/Spa3tdddAUK0109eDUDUORljrIJfXV01yLoZnK1CA2UXbDqhslR2LbUD7PlhrIJz89S7lRdKeSU7cOzAL+qMRZkBAQ59xIOX1Rj5xpYX/sdgTczCkMUqOlXxdz6K/M1WYIMQhBZQM8afw1G1Bk53PDCwpPJk/RcLZMM5P6cL5TYiUY9OMqtBVUARXeH4DjofjIobMQvylE2Q1/5qrnSY/HOs7pPmTzvw3IWfNBm8cQWKO52tP7lznbVgej8mgYP/w/bENvfZP75cHAtB
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RMbnDoI0ZvOB9E6cLBGpBS7bT8PnpuMfRLvL2JAzElvBpwJlprOQiEz2B9ux?=
+ =?us-ascii?Q?AHkPKgi4qkUCTVf+19iCkPBlTWFOsiUjCTIdtYC4D5ANkZWaw/NaBxEwi6R5?=
+ =?us-ascii?Q?zUpqgnoxLDsrlWa+/D8359HeOPtgyUBETwJTZL2gwjKcfI+ZB9DzklrwmV4f?=
+ =?us-ascii?Q?slVlv1qmbAq1mZ0veyFwW1JKZ4X8ErlLd67q3q7Z+BgW+MriuoPEyHdiVRXi?=
+ =?us-ascii?Q?EYXMahFNVtlhlW5x30hoIJlfbNdeg71QvqcqNi8wYMwKHNRIKeaUBh5unIuK?=
+ =?us-ascii?Q?vj7tnLw3HhaBJE4V8HtW0EoYe/CKl3Ll1Uhw1wvf3/FBAMn7rvN91SMF8qEY?=
+ =?us-ascii?Q?LlvlgI+TtqrdBpWBF3HKFOM5YPsmsv7048PfgApAMUoRbV+tLdoc+VRJvVEJ?=
+ =?us-ascii?Q?rmdH9GEcOLcVtdwumOoFqOkfYfMg7MNPi6icpJHjf5ZFZkoTEOHuSDx4en9P?=
+ =?us-ascii?Q?1y7G+DMoIF78MJD7Q6IKKf2FKZPv4e2ZukC9E9qp6MryyA5RANmPdSOnv/iF?=
+ =?us-ascii?Q?601aSmZI/KDWHYbPogpBuhZItCXx4TFV9O5H9UyWRSdOli7DDC2ZdGP5kmUE?=
+ =?us-ascii?Q?/PcE0qRJHVBBKlyCocVtmykA+A9OaS/gGWTP3ujlmbNow7dax0SkvW7XAFZz?=
+ =?us-ascii?Q?M3ae3EwYvhv3z5OalNcawtjfV1EiGRjfdViqxKek4KqTPlH+Wg+9QdiK1tll?=
+ =?us-ascii?Q?nHquVQKoQmABlVo1trZPtvs59r4xIqti9U4BvmPcN+WCaPHDB/qZjWuf+Vta?=
+ =?us-ascii?Q?XtUzPyGo1fyQhQif+Qz3QTUZf/cVVOwOPSqYGVlzQAbShn34Brfl3v71uH+8?=
+ =?us-ascii?Q?+aivyW6y8h+InSOl4xCzWYaKZp+xPMy86bxrk2KljZ8pJb/iYot+bS4mBHui?=
+ =?us-ascii?Q?cUNRLOHkyLDQ2XnedeAFsdxKNPjLw66ZHqUz83Zcu0nBjfBx/BW+xRYQHJ1P?=
+ =?us-ascii?Q?AShT5eisDAkhqAPcMkGuHlfKNmDqFX31ItjY31fdCxg+aWoyXqu8UPgG6+Oq?=
+ =?us-ascii?Q?kBYL4NYrLPjDOVUtyCIjdiis6yfm3G5YRLvv8U6/w5xtS6hbhbQK0mHq4H3h?=
+ =?us-ascii?Q?Nqy2csAtYLjbrD8FQ/vntuh5/mr/rGdgzKHGEZ9Msvp6MWc0+VpnPJjFQ9Fj?=
+ =?us-ascii?Q?0yUt6u1PX9PrvIGNWH2I9N/x9Ce4iy87xb+3ydzC94S0cVEUDp1rYjnDPMCC?=
+ =?us-ascii?Q?WsNvUTfMfnGct2mQi4HVJPupP8+0f8Cs14smmZ39427IeoPCMGaubu+uxQM?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f3ef119-0c17-40ad-8e14-08dbbdff3734
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 19:40:04.6035
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1207
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 08:06:41PM -0700, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
-> 
-> Add SGX EPC memory, MISC_CG_RES_SGX_EPC, to be a valid resource type
-> for the misc controller.
-> 
-> Add per resource type private data so that SGX can store additional per
-> cgroup data in misc_cg->misc_cg_res[MISC_CG_RES_SGX_EPC].
-> 
-> Export misc_cg_root() so the SGX driver can initialize and add those
-> additional structures to the root misc cgroup as part of initialization
-> for EPC cgroup support. This bootstraps the same additional
-> initialization for non-root cgroups in the 'alloc()' callback added in the
-> previous patch.
-> 
-> The SGX driver, as the EPC memory provider, will have a background
-> worker to reclaim EPC pages to make room for new allocations in the same
-> cgroup when its usage counter reaches near the limit controlled by the
-> cgroup and its ancestors. Therefore it needs to do a walk from the
-> current cgroup up to the root. To enable this walk, move parent_misc()
-> into misc_cgroup.h and make inline to make this function available to
-> SGX, rename it to misc_cg_parent(), and update kernel/cgroup/misc.c to
-> use the new name.
-> 
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+According to the awk manual, the -e option does not need to be specified
+in front of 'program' (unless you need to mix program-file).
 
-Acked-by: Tejun Heo <tj@kernel.org>
+The redundant -e option can cause error when users use awk tools other
+than gawk (for example, mawk does not support the -e option).
 
-Thanks.
+Error Example:
+awk: not an option: -e
+Cgroup v2 mount point not found!
 
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index 4afb132e4e4f..6820653e8432 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -20,7 +20,7 @@ skip_test() {
+ WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
+ 
+ # Find cgroup v2 mount point
+-CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
++CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
+ [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
+ 
+ CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
 -- 
-tejun
+2.39.2
+
