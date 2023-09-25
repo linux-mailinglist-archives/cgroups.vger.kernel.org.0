@@ -2,42 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EE87AD241
-	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 09:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2F57AD27B
+	for <lists+cgroups@lfdr.de>; Mon, 25 Sep 2023 09:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjIYHrV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Sep 2023 03:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
+        id S229475AbjIYH55 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Sep 2023 03:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbjIYHrK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 03:47:10 -0400
-X-Greylist: delayed 357 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Sep 2023 00:47:02 PDT
-Received: from mail.venturescope.pl (mail.venturescope.pl [213.32.88.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E30FFF
-        for <cgroups@vger.kernel.org>; Mon, 25 Sep 2023 00:47:01 -0700 (PDT)
-Received: by mail.venturescope.pl (Postfix, from userid 1002)
-        id F267F21757; Mon, 25 Sep 2023 07:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturescope.pl;
-        s=mail; t=1695627661;
-        bh=N7EUmjUjvoA0soGYYZX/vouj2hUEMB8mEigJSTJe2zE=;
-        h=Date:From:To:Subject:From;
-        b=n8/BokwvYXXCzetDGPnOTqxkauSAciw4dMlMmheUlGnCvE/XdSW/nk5FdgAqDQxHZ
-         vmHotr3++ROwNv7XTgk2G4yGlczPp2BGZ23eA5wLjM26L4GG4wQ4fuqtUxWNHc+gQt
-         CeMfnkDiUx5HGXFSWxipr3jMUQgnod3Q+i3SXnEJLnlJjB6f9XPtLSfV6uYqgT/Po4
-         oiG9qYLcq4K7+308a/aphq9/YvzQOfE3nt0vd9Gt7zi7K1gukYxz2L5JrTNju2hn7D
-         Vk7Yb5JIaX5WCckjOcxu6ZOMWAz03kr2bnWPcwkQgmWixQR718yohIEZhtqQxw7vhG
-         5bVqf86cptTUw==
-Received: by mail.venturescope.pl for <cgroups@vger.kernel.org>; Mon, 25 Sep 2023 07:40:32 GMT
-Message-ID: <20230925064500-0.1.1r.83ky.0.q93gnw70j7@venturescope.pl>
-Date:   Mon, 25 Sep 2023 07:40:32 GMT
-From:   "Szymon Kudra" <szymon.kudra@venturescope.pl>
-To:     <cgroups@vger.kernel.org>
-Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
-X-Mailer: mail.venturescope.pl
+        with ESMTP id S229588AbjIYH55 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Sep 2023 03:57:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52ACDD3
+        for <cgroups@vger.kernel.org>; Mon, 25 Sep 2023 00:57:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 02DEE21858;
+        Mon, 25 Sep 2023 07:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695628669; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=878uZwZWbWAa9WLyZURZrcUcT1iIEeDeTu8lVz1v0Rk=;
+        b=GGSnKBycveNXuhvySz5Lw/xh2lozc1ZmzaQDsxf5W5dyn6hUclOjeLkrKuIqtqO6I2wXG4
+        706kpSTT1iyYaW+01rawFVNd0/Q7oqVIwcBPhvtVNGw9q7AjKxEhgEajXimZrZR6zQBZnR
+        ze4hHML9wJSp8x6JjkgH6cIFhwQLfe4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DAF2F13A67;
+        Mon, 25 Sep 2023 07:57:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ihwJM3w9EWUeTAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 25 Sep 2023 07:57:48 +0000
+Date:   Mon, 25 Sep 2023 09:57:48 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] memcg, oom: unmark under_oom after the oom killer is
+ done
+Message-ID: <ZRE9fAf1dId2U4cu@dhcp22.suse.cz>
+References: <20230922070529.362202-1-haifeng.xu@shopee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922070529.362202-1-haifeng.xu@shopee.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -46,18 +60,49 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Fri 22-09-23 07:05:28, Haifeng Xu wrote:
+> When application in userland receives oom notification from kernel
+> and reads the oom_control file, it's confusing that under_oom is 0
+> though the omm killer hasn't finished. The reason is that under_oom
+> is cleared before invoking mem_cgroup_out_of_memory(), so move the
+> action that unmark under_oom after completing oom handling. Therefore,
+> the value of under_oom won't mislead users.
 
-Czy jest mo=C5=BCliwo=C5=9B=C4=87 nawi=C4=85zania wsp=C3=B3=C5=82pracy z =
-Pa=C5=84stwem?
+I do not really remember why are we doing it this way but trying to track
+this down shows that we have been doing that since fb2a6fc56be6 ("mm:
+memcg: rework and document OOM waiting and wakeup"). So this is an
+established behavior for 10 years now. Do we really need to change it
+now? The interface is legacy and hopefully no new workloads are
+emerging.
 
-Z ch=C4=99ci=C4=85 porozmawiam z osob=C4=85 zajmuj=C4=85c=C4=85 si=C4=99 =
-dzia=C5=82aniami zwi=C4=85zanymi ze sprzeda=C5=BC=C4=85.
+I agree that the placement is surprising but I would rather not change
+that unless there is a very good reason for that. Do you have any actual
+workload which depends on the ordering? And if yes, how do you deal with
+timing when the consumer of the notification just gets woken up after
+mem_cgroup_out_of_memory completes?
 
-Pomagamy skutecznie pozyskiwa=C4=87 nowych klient=C3=B3w.
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e8ca4bdcb03c..0b6ed63504ca 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1970,8 +1970,8 @@ static bool mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int order)
+>  	if (locked)
+>  		mem_cgroup_oom_notify(memcg);
+>  
+> -	mem_cgroup_unmark_under_oom(memcg);
+>  	ret = mem_cgroup_out_of_memory(memcg, mask, order);
+> +	mem_cgroup_unmark_under_oom(memcg);
+>  
+>  	if (locked)
+>  		mem_cgroup_oom_unlock(memcg);
+> -- 
+> 2.25.1
 
-Zapraszam do kontaktu.
-
-
-Pozdrawiam
-Szymon Kudra
+-- 
+Michal Hocko
+SUSE Labs
