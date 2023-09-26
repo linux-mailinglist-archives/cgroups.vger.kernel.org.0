@@ -2,102 +2,231 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA32F7AEC55
-	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 14:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C4D7AEDBC
+	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 15:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234562AbjIZMTM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Sep 2023 08:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
+        id S233754AbjIZNKp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Sep 2023 09:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234564AbjIZMTL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 08:19:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ED5FC
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 05:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695730701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cFOa8v6HmzDuwfUtqIaAE2BKKG96nSYmL5UwcSOkLOQ=;
-        b=dlRnsQZYIX0+iGdU3x/cOsnO7QfyBQCAqjIsCBU2J04/RcKEhQEcikt78Z96qcMM1/VJ4g
-        MOTVG1CYXMvUtb86oVZ7usfR8OrkgR1Fo685vrbWWWtL5zQpfTqKqrgCnULjmmWgi+sHYU
-        cUIuGVQSQ+lxQ2f9u7lamQkSQ1SqpdA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-463-sYah3oPLMR63Rnk3t4ymVg-1; Tue, 26 Sep 2023 08:18:18 -0400
-X-MC-Unique: sYah3oPLMR63Rnk3t4ymVg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DBA521C06356;
-        Tue, 26 Sep 2023 12:18:17 +0000 (UTC)
-Received: from [10.22.16.230] (unknown [10.22.16.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5442F492C37;
-        Tue, 26 Sep 2023 12:18:17 +0000 (UTC)
-Message-ID: <ed2993f2-4bdc-19c5-5a0f-1e96da44fb24@redhat.com>
-Date:   Tue, 26 Sep 2023 08:18:17 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] selftests/cgroup: Fix awk usage in test_cpuset_prs.sh
- that may cause error
-Content-Language: en-US
-To:     Juntong Deng <juntong.deng@outlook.com>, lizefan.x@bytedance.com,
-        tj@kernel.org, hannes@cmpxchg.org, shuah@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229604AbjIZNKo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 09:10:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A36D10E;
+        Tue, 26 Sep 2023 06:10:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA60AC433C7;
+        Tue, 26 Sep 2023 13:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695733836;
+        bh=GDQp7RRyC5swsgr+p465JJc4d2vBoN5WMysJHZ++naU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nzht4gYm6auaMDpvFO3Q3sroRMOACCjpWaWumOcbekI+j6alECIBYEYDumT23Et3N
+         VcAWkq2onCsdBltq8qAjOWtoblLW451bXVGKcmeflXYOS4++rDcEAhegAV4P/qreo5
+         3rJWLxleexp6I3PQgKYLczdoKI7Lrf7waVOheGzkn+DyHUfZBpPK1JmTGwo1mItGK9
+         qP2xvlvl/pWKckbiBrxBFdFvwuxykzhQnnZwOoh8gDT9jGfXNn9rLdUhhAgw8Eb/xt
+         yIj22r2NsghGoKMQVB6OPYKF6rf1Wyq63s7A+C3y+06vSTwptNyQc1xuMuMbZrfpfY
+         PaoFQzGv/ZPQg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 26 Sep 2023 16:10:30 +0300
+Message-Id: <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
+ CSS events
+X-Mailer: aerc 0.15.2
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+ <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
+ <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/25/23 15:38, Juntong Deng wrote:
-> According to the awk manual, the -e option does not need to be specified
-> in front of 'program' (unless you need to mix program-file).
+On Tue Sep 26, 2023 at 6:04 AM EEST, Haitao Huang wrote:
+> Hi Jarkko
 >
-> The redundant -e option can cause error when users use awk tools other
-> than gawk (for example, mawk does not support the -e option).
+> On Mon, 25 Sep 2023 12:09:21 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
 >
-> Error Example:
-> awk: not an option: -e
-> Cgroup v2 mount point not found!
+> > On Sat Sep 23, 2023 at 6:06 AM EEST, Haitao Huang wrote:
+> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >>
+> >> The misc cgroup controller (subsystem) currently does not perform
+> >> resource type specific action for Cgroups Subsystem State (CSS) events=
+:
+> >> the 'css_alloc' event when a cgroup is created and the 'css_free' even=
+t
+> >> when a cgroup is destroyed, or in event of user writing the max value =
+to
+> >> the misc.max file to set the usage limit of a specific resource
+> >> [admin-guide/cgroup-v2.rst, 5-9. Misc].
+> >>
+> >> Define callbacks for those events and allow resource providers to
+> >> register the callbacks per resource type as needed. This will be
+> >> utilized later by the EPC misc cgroup support implemented in the SGX
+> >> driver:
+> >> - On css_alloc, allocate and initialize necessary structures for EPC
+> >> reclaiming, e.g., LRU list, work queue, etc.
+> >> - On css_free, cleanup and free those structures created in alloc.
+> >> - On max_write, trigger EPC reclaiming if the new limit is at or below
+> >> current usage.
+> >>
+> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> ---
+> >> V5:
+> >> - Remove prefixes from the callback names (tj)
+> >> - Update commit message (Jarkko)
+> >>
+> >> V4:
+> >> - Moved this to the front of the series.
+> >> - Applies on cgroup/for-6.6 with the overflow fix for misc.
+> >>
+> >> V3:
+> >> - Removed the released() callback
+> >> ---
+> >>  include/linux/misc_cgroup.h |  5 +++++
+> >>  kernel/cgroup/misc.c        | 32 +++++++++++++++++++++++++++++---
+> >>  2 files changed, 34 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> >> index e799b1f8d05b..96a88822815a 100644
+> >> --- a/include/linux/misc_cgroup.h
+> >> +++ b/include/linux/misc_cgroup.h
+> >> @@ -37,6 +37,11 @@ struct misc_res {
+> >>  	u64 max;
+> >>  	atomic64_t usage;
+> >>  	atomic64_t events;
+> >> +
+> >> +	/* per resource callback ops */
+> >> +	int (*alloc)(struct misc_cg *cg);
+> >> +	void (*free)(struct misc_cg *cg);
+> >> +	void (*max_write)(struct misc_cg *cg);
+> >>  };
+> >>
+> >>  /**
+> >> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+> >> index 79a3717a5803..62c9198dee21 100644
+> >> --- a/kernel/cgroup/misc.c
+> >> +++ b/kernel/cgroup/misc.c
+> >> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct =20
+> >> kernfs_open_file *of, char *buf,
+> >>
+> >>  	cg =3D css_misc(of_css(of));
+> >>
+> >> -	if (READ_ONCE(misc_res_capacity[type]))
+> >> +	if (READ_ONCE(misc_res_capacity[type])) {
+> >>  		WRITE_ONCE(cg->res[type].max, max);
+> >> -	else
+> >> +		if (cg->res[type].max_write)
+> >> +			cg->res[type].max_write(cg);
+> >> +	} else {
+> >>  		ret =3D -EINVAL;
+> >> +	}
+> >>
+> >>  	return ret ? ret : nbytes;
+> >>  }
+> >> @@ -383,23 +386,39 @@ static struct cftype misc_cg_files[] =3D {
+> >>  static struct cgroup_subsys_state *
+> >>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+> >>  {
+> >> +	struct misc_cg *parent_cg;
+> >>  	enum misc_res_type i;
+> >>  	struct misc_cg *cg;
+> >> +	int ret;
+> >>
+> >>  	if (!parent_css) {
+> >>  		cg =3D &root_cg;
+> >> +		parent_cg =3D &root_cg;
+> >>  	} else {
+> >>  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
+> >>  		if (!cg)
+> >>  			return ERR_PTR(-ENOMEM);
+> >> +		parent_cg =3D css_misc(parent_css);
+> >>  	}
+> >>
+> >>  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
+> >>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+> >>  		atomic64_set(&cg->res[i].usage, 0);
+> >> +		if (parent_cg->res[i].alloc) {
+> >> +			ret =3D parent_cg->res[i].alloc(cg);
+> >> +			if (ret)
+> >> +				goto alloc_err;
+> >> +		}
+> >>  	}
+> >>
+> >>  	return &cg->css;
+> >> +
+> >> +alloc_err:
+> >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> >> +		if (parent_cg->res[i].free)
+> >> +			cg->res[i].free(cg);
+> >> +	kfree(cg);
+> >> +	return ERR_PTR(ret);
+> >>  }
+> >>
+> >>  /**
+> >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state =20
+> >> *parent_css)
+> >>   */
+> >>  static void misc_cg_free(struct cgroup_subsys_state *css)
+> >>  {
+> >> -	kfree(css_misc(css));
+> >> +	struct misc_cg *cg =3D css_misc(css);
+> >> +	enum misc_res_type i;
+> >> +
+> >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> >> +		if (cg->res[i].free)
+> >> +			cg->res[i].free(cg);
+> >> +
+> >> +	kfree(cg);
+> >>  }
+> >>
+> >>  /* Cgroup controller callbacks */
+> >> --
+> >> 2.25.1
+> >
+> > Since the only existing client feature requires all callbacks, should
+> > this not have that as an invariant?
+> >
+> > I.e. it might be better to fail unless *all* ops are non-nil (e.g. to
+> > catch issues in the kernel code).
+> >
 >
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
->   tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 4afb132e4e4f..6820653e8432 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -20,7 +20,7 @@ skip_test() {
->   WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
->   
->   # Find cgroup v2 mount point
-> -CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
-> +CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
->   [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
->   
->   CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
+> These callbacks are chained from cgroup_subsys, and they are defined =20
+> separately so it'd be better follow the same pattern.  Or change together=
+ =20
+> with cgroup_subsys if we want to do that. Reasonable?
 
-Yes, the -e option is redundant. Thanks for catching that.
+I noticed this one later:
 
-Acked-by: Waiman Long <longman@redhat.com>
+It would better to create a separate ops struct and declare the instance
+as const at minimum.
 
+Then there is no need for dynamic assigment of ops and all that is in
+rodata. This is improves both security and also allows static analysis
+bit better.
+
+Now you have to dynamically trace the struct instance, e.g. in case of
+a bug. If this one done, it would be already in the vmlinux.
+
+BR, Jarkko
