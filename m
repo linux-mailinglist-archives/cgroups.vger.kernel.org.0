@@ -2,125 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE367AF58A
-	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 22:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DDF7AF676
+	for <lists+cgroups@lfdr.de>; Wed, 27 Sep 2023 00:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbjIZUua (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Sep 2023 16:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
+        id S230102AbjIZWwB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Sep 2023 18:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235885AbjIZUu3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 16:50:29 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCBC121
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 13:50:22 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-45260b91a29so4476561137.2
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 13:50:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695761421; x=1696366221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lJ8eTdCcCBk/Huq43GsPZLcFxSomyGvN9/0CZ/gCf4w=;
-        b=OZk9g8T/H5mFedfr/3ZMv/1zS62oeFXPwKK7+mPF2Mq0EEh+0vJM0ngV5yEeOdEpZF
-         4f0R4wMOuS667vrzkQgja1rMLOfI/DzCr7/3qp8U5nQc7GP92W6KkJIzmXQ2XpLwtLHs
-         gaD0xXvtdIjX3qOdp9j+4FprTeoganIsrx+WULRf2xMSkKNanejZET3I2q8Es3oUMGlA
-         A41YmFUWtRAR5BUqrtFSHgQdPl90Onz2HystmfelgzpccoiNA5J/UdcvxNkZhNUc9CAJ
-         kjxGTGCbRgeOxMYNLqo2NIhu/NBMCtNwK67qB5tsdn/TQCNywPul25H/A1aGPL2dNvMU
-         K2kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695761421; x=1696366221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lJ8eTdCcCBk/Huq43GsPZLcFxSomyGvN9/0CZ/gCf4w=;
-        b=HCLx1EFwnb/knTQG95w33MFqUYYQvw+cL3xSQo9yYBmQ2n7N0/lavoz7C4lUKfL1Z1
-         TpJPlkAhZHFeBZe5/M5M+hyMiE9ljs72ClfrOkQ6fUJq//oPY56q5hxVzoVfGssJAMSV
-         LSv5PpberMcsko93Af9ZSojcEKEDujJ+FT+CAJQNv9IEuSKXvNgNYmlfmffhH5hBa+Jq
-         UAonH1aS6F3w7oXHpfWCk6fhVFdw+Tbo10x7MLGmtPUXKxQ+nU+nIN5FZ9OHijDEZPDV
-         SNJFZnhRNttbOidSj6LZf1tLZQaAIEeh69SYfgcG9a1fOMHXmuuKwNkwv2LS/Ry/sHps
-         jd2A==
-X-Gm-Message-State: AOJu0Yw0w/r9WcUsHE9RdyTpkJpm8fkx0EpDMHMaTm74URQXQKOkWKGk
-        lWnfX9lEgpMSjTa+Jgw2k1QqIqXxyVEan46v2pi5IQ==
-X-Google-Smtp-Source: AGHT+IHiSxZQR8jJmMne+tkZHh5aFyaxecm2LkIPWS70wLORNzYm/SDGJADtfduU14OQahYm6KZWNzyI9bWKucCDjjE=
-X-Received: by 2002:a05:6102:34e5:b0:452:6e60:3eba with SMTP id
- bi5-20020a05610234e500b004526e603ebamr204435vsb.1.1695761421124; Tue, 26 Sep
- 2023 13:50:21 -0700 (PDT)
+        with ESMTP id S231808AbjIZWuA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 18:50:00 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76A2900F;
+        Tue, 26 Sep 2023 14:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WccGIMN5Qv0lQD3hgxuM1vcIL4JfsNLSXHYfA6JcKbA=; b=OsDkrrtpZVXrV5cPooFVpQ+DsW
+        efu7lcfWUFBZQaHC0VFHyjjlC9IDm/yz/ZSlLHkS56BIBF1rqS35BSa4iOCFAMWKpcXpAAhZiLrpb
+        /5MwxV8qJttJgFtRzaN+w6Z85LOr7HVhGxkZL88Sv5A/SkYZv7JMKEyrCWFeL2Yf9rWDNOyHisFva
+        qNGTFJp2isj0JVlKyHCS19X3cR12y4OMvncSwP7i60r/thlVuHEHxR25fZSDXn83II/AWC7INUFn6
+        8+uAPErM2QG6BrRdCCZ6OQ8tCEmDrSMgrY6TSaupVewWlaEaPlhNXIhz6JXLVcFKp8/OKJhckJeHZ
+        DAUjL3zQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qlFYR-00Bljq-2w;
+        Tue, 26 Sep 2023 21:25:16 +0000
+Date:   Tue, 26 Sep 2023 22:25:15 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230926212515.GN800259@ZenIV>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230926093834.GB13806@lst.de>
 MIME-Version: 1.0
-References: <20230926194949.2637078-1-nphamcs@gmail.com>
-In-Reply-To: <20230926194949.2637078-1-nphamcs@gmail.com>
-From:   Frank van der Linden <fvdl@google.com>
-Date:   Tue, 26 Sep 2023 13:50:10 -0700
-Message-ID: <CAPTztWY8eDSa1qKx35hTm5ef+e13SDnRHDrevc-1V1v7-pEP3w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] hugetlb memcg accounting
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926093834.GB13806@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 12:49=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
->
-> Currently, hugetlb memory usage is not acounted for in the memory
-> controller, which could lead to memory overprotection for cgroups with
-> hugetlb-backed memory. This has been observed in our production system.
->
-> This patch series rectifies this issue by charging the memcg when the
-> hugetlb folio is allocated, and uncharging when the folio is freed. In
-> addition, a new selftest is added to demonstrate and verify this new
-> behavior.
->
-> Nhat Pham (2):
->   hugetlb: memcg: account hugetlb-backed memory in memory controller
->   selftests: add a selftest to verify hugetlb usage in memcg
->
->  MAINTAINERS                                   |   2 +
->  fs/hugetlbfs/inode.c                          |   2 +-
->  include/linux/hugetlb.h                       |   6 +-
->  include/linux/memcontrol.h                    |   8 +
->  mm/hugetlb.c                                  |  23 +-
->  mm/memcontrol.c                               |  40 ++++
->  tools/testing/selftests/cgroup/.gitignore     |   1 +
->  tools/testing/selftests/cgroup/Makefile       |   2 +
->  .../selftests/cgroup/test_hugetlb_memcg.c     | 222 ++++++++++++++++++
->  9 files changed, 297 insertions(+), 9 deletions(-)
->  create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
->
-> --
-> 2.34.1
->
+On Tue, Sep 26, 2023 at 11:38:34AM +0200, Christoph Hellwig wrote:
 
-We've had this behavior at Google for a long time, and we're actually
-getting rid of it. hugetlb pages are a precious resource that should
-be accounted for separately. They are not just any memory, they are
-physically contiguous memory, charging them the same as any other
-region of the same size ended up not making sense, especially not for
-larger hugetlb page sizes.
+> How?
+> 
+> Old sequence before his patch:
+> 
+> 	deactivate_locked_super()
+> 	  -> kill_anon_super()
+> 	    -> generic_shutdown_super()
+> 	    -> kill_super_notify()
+> 	    -> free_anon_bdev()
+> 	  -> kill_super_notify()
+> 
+> New sequence with this patch:
+> 
+> 	deactivate_locked_super()
+> 	  -> generic_shutdown_super()
+> 	    -> kill_super_notify()
+> 	    -> free_anon_bdev()
+> 
 
-Additionally, if this behavior is changed just like that, there will
-be quite a few workloads that will break badly because they'll hit
-their limits immediately - imagine a container that uses 1G hugetlb
-pages to back something large (a database, a VM), and 'plain' memory
-for control processes.
+Before your patch: foo_kill_super() calls kill_anon_super(),
+which calls kill_super_notify(), which removes the sucker from
+the list, then frees ->s_fs_info.  After your patch:
+removal from the lists happens via the call of kill_super_notify()
+*after* both of your methods had been called, while freeing
+->s_fs_info happens from the method call.  IOW, you've restored
+the situation prior to "super: ensure valid info".  The whole
+point of that commit had been to make sure that we have nothing
+in the lists with ->s_fs_info pointing to a freed object.
 
-What do your workloads do? Is it not possible for you to account for
-hugetlb pages separately? Sure, it can be annoying to have to deal
-with 2 separate totals that you need to take into account, but again,
-hugetlb pages are a resource that is best dealt with separately.
+It's not about free_anon_bdev(); that part is fine - it's the
+"we can drop the weird second call site of kill_super_notify()"
+thing that is broken.
 
-- Frank
+Al, still slogging through the rcu pathwalk races in the methods...
+The latest catch: nfs_set_verifier() can get called on a dentry
+that had just been seen to have positive parent, but is not
+pinned down.
+	grab ->d_lock; OK, we know that dentry won't get freed under us
+	fetch ->d_parent->d_inode
+	pass that to nfs_verify_change_attribute()
+... which assumes that inode it's been given is not NULL.  Normally it
+would've been - ->d_lock stabilizes ->d_parent, and negative dentries
+obviously have no children.  Except that we might've been just hit
+by dentry_kill() due to eviction on memory pressure, got ->d_lock
+right after that and proceeded to play with ->d_parent, just as
+that parent is going through dentry_kill() from the same eviction on
+memory pressure...  If it gets to dentry_unlink_inode() before we get to
+fetching ->d_parent->d_inode, nfs_verify_change_attribute(NULL, whatever)
+is going to oops...
