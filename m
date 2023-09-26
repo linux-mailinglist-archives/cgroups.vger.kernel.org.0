@@ -2,24 +2,25 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 343EB7AE943
-	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 11:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DCD7AE964
+	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 11:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbjIZJbl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Sep 2023 05:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
+        id S234289AbjIZJis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Sep 2023 05:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZJbk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 05:31:40 -0400
+        with ESMTP id S234260AbjIZJiq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 05:38:46 -0400
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D50BE;
-        Tue, 26 Sep 2023 02:31:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E96EF3;
+        Tue, 26 Sep 2023 02:38:39 -0700 (PDT)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1A2D668AA6; Tue, 26 Sep 2023 11:31:30 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 11:31:29 +0200
+        id B018168AA6; Tue, 26 Sep 2023 11:38:34 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 11:38:34 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -41,12 +42,12 @@ Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
         linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
         cgroups@vger.kernel.org
 Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230926093129.GA13806@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV> <20230914-zielt-einzog-00389009b293@brauner>
+Message-ID: <20230926093834.GB13806@lst.de>
+References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914-zielt-einzog-00389009b293@brauner>
+In-Reply-To: <20230913232712.GC800259@ZenIV>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -56,32 +57,44 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:56:57AM +0200, Christian Brauner wrote:
-> > BTW, this part of commit message in 2c18a63b760a is rather confused:
-> >     Recent rework moved block device closing out of sb->put_super() and into
-> >     sb->kill_sb() to avoid deadlocks as s_umount is held in put_super() and
-> >     blkdev_put() can end up taking s_umount again.
+On Thu, Sep 14, 2023 at 12:27:12AM +0100, Al Viro wrote:
+> On Wed, Sep 13, 2023 at 08:09:57AM -0300, Christoph Hellwig wrote:
+> > Releasing an anon dev_t is a very common thing when freeing a
+> > super_block, as that's done for basically any not block based file
+> > system (modulo the odd mtd special case).  So instead of requiring
+> > a special ->kill_sb helper and a lot of boilerplate in more complicated
+> > file systems, just release the anon dev_t in deactivate_locked_super if
+> > the super_block was using one.
 > > 
-> > That was *NOT* what a recent rework had done.  Block device closing had never
-> > been inside ->put_super() - at no point since that (closing, that is) had been
-> > introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
+> > As the freeing is done after the main call to kill_super_notify, this
+> > removes the need for having two slightly different call sites for it.
 > 
-> I think the commit message probably just isn't clear enough. The main
-> block device of a superblock isn't closed in sb->put_super(). That's
-> always been closed in kill_block_super() after generic_shutdown_super().
+> Huh?  At this stage in your series freeing is still in ->kill_sb()
+> instances, after the calls of kill_anon_super() you've turned into
+> the calls of generic_shutdown_super().
 
-Yes.
+The above refers to freeing the anon dev_t, which at this stage is done
+right after the kill_super_notify in generic_shutdown_super.
 
-> But afaict filesystem like ext4 and xfs may have additional block
-> devices open exclusively and closed them in sb->put_super():
-> 
-> xfs_fs_put_super()
-> -> xfs_close_devices()
->    -> xfs_blkdev_put()
->       -> blkdev_put()
-> 
-> ext4_put_super()
-> -> ext4_blkdev_remove()
->    -> blkdev_put()
+> You do split it off into a separate method later in the series, but
+> at this point you are reopening the same UAF that had been dealt with
+> in dc3216b14160 "super: ensure valid info".
 
-Yes.
+How?
+
+Old sequence before his patch:
+
+	deactivate_locked_super()
+	  -> kill_anon_super()
+	    -> generic_shutdown_super()
+	    -> kill_super_notify()
+	    -> free_anon_bdev()
+	  -> kill_super_notify()
+
+New sequence with this patch:
+
+	deactivate_locked_super()
+	  -> generic_shutdown_super()
+	    -> kill_super_notify()
+	    -> free_anon_bdev()
+
