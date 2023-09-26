@@ -2,72 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB7A7AF30D
-	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 20:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58DE7AF466
+	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 21:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbjIZSiF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Sep 2023 14:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
+        id S234630AbjIZTt7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Sep 2023 15:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235420AbjIZSiF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 14:38:05 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC66E5
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 11:37:57 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32320381a07so5402096f8f.0
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 11:37:57 -0700 (PDT)
+        with ESMTP id S229829AbjIZTt5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 15:49:57 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D5EA3;
+        Tue, 26 Sep 2023 12:49:50 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5db4925f9so69183375ad.1;
+        Tue, 26 Sep 2023 12:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695753476; x=1696358276; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o9U+hyK0DC2msywzl8E5WSklE3JM2O4AFWpd5vWieyg=;
-        b=qZoEA6tNGIf86kFye+vtDlYn0NwynKxS3QN5nciFYrgAmUK+uRSaQHEQf7u5/wDYK6
-         hM1a3uHc+MQFEMUrpu+yhNvb43T3OaQYEUWV0WpxPtI/hfXeqSFkmdUfDzduZSGp+Otm
-         ssFK8lf3Nog/PDg/eHN12j9h5C5WhIhj73NfA/Gf6OTVzVEjuQO/q9HeWiGx8wNIuV79
-         b5c2tqq7eoiqdOtCroAKV/rCQ54GcGKOKUiQGl6dZYHIwQCnj5w9oxJdygkOlbQsz7F6
-         rgphE2wOT/+vIVQdizptmp96tzLuL+J5EsYbha3312iJ2dDyQ1APs0Y32KfikCcuXaC3
-         mVcw==
+        d=gmail.com; s=20230601; t=1695757790; x=1696362590; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eOqgy57dPqf5vnOZG5GluAdrnFdDMotUGmbkzIntuoI=;
+        b=cMi+dVzCMxIl5V8uHyvS0g5XJQjv84d7ORx2jDwmbZGm5d/Dh0wN4LHeABFPxL6j0J
+         sn0V2L+U9z3ximkOu90jAKlf1gDY1vAS5AtmutwaMgcnZFS2DZSUhNNNsqknK1Dz8Hwq
+         Nr0M07VEoJAa9WXm5jTgqKJ1OHP3kSd+xwSyp1iyxSpcU9kowTnOcGStIFnbDmTucmBB
+         aDkSF2evrajTYxnaOYjOSaczWpTBdA8u4cBUh9/RFcNs2BBRcFjSrOjhxY0tO5vg26Lb
+         vXh+w8dV9di5NXW8cSkn5cwxNjckk74gf563c4Nh6/EgBQLcM67Yg5vtNd8Wl1it9M02
+         VnxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695753476; x=1696358276;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o9U+hyK0DC2msywzl8E5WSklE3JM2O4AFWpd5vWieyg=;
-        b=BWSWPkZeOGM6Ts/f/vln4FWQKlFPah968+d0LStFsUHjWb19Bn73gjbiYXeuby+laB
-         ZI/Wa+G03MU6k6yx+WQ8GUNWRJfb9FCjgo7LaG2JEJhkmk6t5Npcht6c4YQuXjMC+BOq
-         bpBLK9HfD2fXTxKyaDOPT7QP+P7M4Ng71no1737K/WYyGvBujwlfotdRskwOMx8COGvs
-         KA6fH7swUyDYiwixZaH5u1VNzs8gI7928pswJsNr2pV8Kwgd7mSoZCHCSdtEypCUyqZU
-         hlI9dbgsP3u5xgwvCF9t1mUOJIA4jFXYN9uOpWT75WjR63ZdjNMpFmLotReMsv5YjpwC
-         kOBA==
-X-Gm-Message-State: AOJu0Yy5pq3EjELviDsLWv7/p07cydij7gKjAvO9IW+wfQu/omiLHPLg
-        Cr/EAv+mXKtdv7tnS0toIt08ZEy3WBFe999Q9HwKow==
-X-Google-Smtp-Source: AGHT+IFAjP8KuW4iDeZ3x3Vs1/DfJYlj4R1eAd9xqe2b40gmueIHHWwtEC+M5UyEkHoWh5saxpwpLNX+V8ZCpHBn5MM=
-X-Received: by 2002:a5d:404d:0:b0:31f:e534:2d6f with SMTP id
- w13-20020a5d404d000000b0031fe5342d6fmr10166471wrp.11.1695753476063; Tue, 26
- Sep 2023 11:37:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230919171447.2712746-1-nphamcs@gmail.com> <20230919171447.2712746-2-nphamcs@gmail.com>
- <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com> <20230926182436.GB348484@cmpxchg.org>
-In-Reply-To: <20230926182436.GB348484@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 26 Sep 2023 11:37:17 -0700
-Message-ID: <CAJD7tkYN=S8uMeXthJ1rqsRwFar-nzDGESevtM_+C6yVB1VatQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        d=1e100.net; s=20230601; t=1695757790; x=1696362590;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eOqgy57dPqf5vnOZG5GluAdrnFdDMotUGmbkzIntuoI=;
+        b=eLQI97AHPv0RUsNdJrdeKyWomvWzmoF19qvqxEHL3QjzjdqEltpN3Q+rXLAMTBl/Be
+         uECiGE8DujKaCMvlJo4MXIStv37P0oKTrWz3u0mU9kcKySG3pTjUw3L9x7mYap8ZxXbW
+         fM77oHiiD2DwQ5x/6KlWbnxP+oFFCKaBoGVCCvEigRi2rH5mwIc2ZFnjeX/LMmRN4yoq
+         +k8UhcTrKH6aSbMxQ8iZTc/JEmzMYHZVebp/K5mu/MJM79VWFORgEksJz1o7yBGjBe6h
+         2wDHBC/5U9NWfG91NztJG6rCHwvepTb9RFlE3YQKaltqK30jy43EYvUyYDzkyNY3I98H
+         JZxg==
+X-Gm-Message-State: AOJu0Ywhm/WJ7aa/lpEN9UCuEGmsl4skCfVAXyHuN9iZNbXONp+nmETT
+        FwvmwL7syYHoQaTK8hy2vTs=
+X-Google-Smtp-Source: AGHT+IFQfxmqpXOGPhPftE1Oew2BkuLJR/1RBVCaXchkMkCZp8u2HGDbytSnuJCV42SIu1TGzStKUw==
+X-Received: by 2002:a17:902:ecca:b0:1c3:432f:9f69 with SMTP id a10-20020a170902ecca00b001c3432f9f69mr5532611plh.23.1695757790307;
+        Tue, 26 Sep 2023 12:49:50 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-007.fbsv.net. [2a03:2880:ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id o3-20020a170902d4c300b001b8622c1ad2sm11395931plg.130.2023.09.26.12.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 12:49:49 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
         roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Chris Li <chrisl@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH 0/2] hugetlb memcg accounting
+Date:   Tue, 26 Sep 2023 12:49:47 -0700
+Message-Id: <20230926194949.2637078-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,76 +72,30 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:24=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
->
-> On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
-> > +Chris Li
-> >
-> > On Tue, Sep 19, 2023 at 10:14=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> =
-wrote:
-> > >
-> > > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> > >
-> > > Currently, we only have a single global LRU for zswap. This makes it
-> > > impossible to perform worload-specific shrinking - an memcg cannot
-> > > determine which pages in the pool it owns, and often ends up writing
-> > > pages from other memcgs. This issue has been previously observed in
-> > > practice and mitigated by simply disabling memcg-initiated shrinking:
-> > >
-> > > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.co=
-m/T/#u
-> > >
-> > > This patch fully resolves the issue by replacing the global zswap LRU
-> > > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> > >
-> > > a) When a store attempt hits an memcg limit, it now triggers a
-> > >    synchronous reclaim attempt that, if successful, allows the new
-> > >    hotter page to be accepted by zswap.
-> > > b) If the store attempt instead hits the global zswap limit, it will
-> > >    trigger an asynchronous reclaim attempt, in which an memcg is
-> > >    selected for reclaim in a round-robin-like fashion.
-> >
-> > Hey Nhat,
-> >
-> > I didn't take a very close look as I am currently swamped, but going
-> > through the patch I have some comments/questions below.
-> >
-> > I am not very familiar with list_lru, but it seems like the existing
-> > API derives the node and memcg from the list item itself. Seems like
-> > we can avoid a lot of changes if we allocate struct zswap_entry from
-> > the same node as the page, and account it to the same memcg. Would
-> > this be too much of a change or too strong of a restriction? It's a
-> > slab allocation and we will free memory on that node/memcg right
-> > after.
->
-> My 2c, but I kind of hate that assumption made by list_lru.
->
-> We ran into problems with it with the THP shrinker as well. That one
-> strings up 'struct page', and virt_to_page(page) results in really fun
-> to debug issues.
->
-> IMO it would be less error prone to have memcg and nid as part of the
-> regular list_lru_add() function signature. And then have an explicit
-> list_lru_add_obj() that does a documented memcg lookup.
+Currently, hugetlb memory usage is not acounted for in the memory
+controller, which could lead to memory overprotection for cgroups with
+hugetlb-backed memory. This has been observed in our production system.
 
-I also didn't like/understand that assumption, but again I don't have
-enough familiarity with the code to judge, and I don't know why it was
-done that way. Adding memcg and nid as arguments to the standard
-list_lru API makes the pill easier to swallow. In any case, this
-should be done in a separate patch to make the diff here more focused
-on zswap changes.
+This patch series rectifies this issue by charging the memcg when the
+hugetlb folio is allocated, and uncharging when the folio is freed. In
+addition, a new selftest is added to demonstrate and verify this new
+behavior.
 
->
-> Because of the overhead, we've been selective about the memory we
-> charge. I'd hesitate to do it just to work around list_lru.
+Nhat Pham (2):
+  hugetlb: memcg: account hugetlb-backed memory in memory controller
+  selftests: add a selftest to verify hugetlb usage in memcg
 
-On the other hand I am worried about the continuous growth of struct
-zswap_entry. It's now at ~10 words on 64-bit? That's ~2% of the size
-of the page getting compressed if I am not mistaken. So I am skeptical
-about storing the nid there.
+ MAINTAINERS                                   |   2 +
+ fs/hugetlbfs/inode.c                          |   2 +-
+ include/linux/hugetlb.h                       |   6 +-
+ include/linux/memcontrol.h                    |   8 +
+ mm/hugetlb.c                                  |  23 +-
+ mm/memcontrol.c                               |  40 ++++
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ .../selftests/cgroup/test_hugetlb_memcg.c     | 222 ++++++++++++++++++
+ 9 files changed, 297 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
 
-A middle ground would be allocating struct zswap_entry on the correct
-node without charging it. We don't need to store the nid and we don't
-need to charge struct zswap_entry. It doesn't get rid of
-virt_to_page() though.
+-- 
+2.34.1
