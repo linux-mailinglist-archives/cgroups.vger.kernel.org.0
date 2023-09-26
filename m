@@ -2,153 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B96E7AEF10
-	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 16:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA537AF291
+	for <lists+cgroups@lfdr.de>; Tue, 26 Sep 2023 20:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjIZOjY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Sep 2023 10:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
+        id S235398AbjIZSYq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Sep 2023 14:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbjIZOjY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 10:39:24 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FF411D
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 07:39:16 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c63164a2b6so9278675ad.0
-        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 07:39:16 -0700 (PDT)
+        with ESMTP id S229885AbjIZSYp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Sep 2023 14:24:45 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5433F3
+        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 11:24:38 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-65b0e623189so25209746d6.1
+        for <cgroups@vger.kernel.org>; Tue, 26 Sep 2023 11:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1695739156; x=1696343956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ZMXF8YIgmXq287DcMIVtUFj6/ih+HVnxZvIQtNcrEY=;
-        b=BmPvVBWl2/BiKFAr7R5TsYv4Sy45WtOL+zQldw1nBLVlYJn/PgQ0KBqqWXG/2x/Qqw
-         eebMzmxQ172VDe/sSEfqx+rhiUh6mZUcqKH+9rpXZao0DGHZXrNEj8d9wu+AW4c4KPQf
-         t/rrAL+fzdy7rqrOXqKOdM8+x8W/jEkReCMRT/L4qSzjaNpq0e0cE3Z8XOx1PoM9a2/H
-         /gUaRH8w8mqXxNpIIq1SniCVROuPGnpflqT70eAkR0+Q1LBhkWzYteuEUEexL38NqNqs
-         pLdYn82c/BIdK8HTJ8vhYsEUmGmtTkiPLp0tkZ2GVRzuSOyfIDtMHZ5HhXb9DWeJhjYc
-         hVQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695739156; x=1696343956;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695752678; x=1696357478; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=/ZMXF8YIgmXq287DcMIVtUFj6/ih+HVnxZvIQtNcrEY=;
-        b=IRN2y69VOy90dfui8EWM2PziLxqnqd8SWAY0yzhcKXNmsElFnCcDFwHk0yQIMqydjL
-         XS8mcJOvfyHRWRhWZlUA3332VW06FDlEdq7zI7ug5Ay2YSp5jQu3NzwRSOr9bbjLLMEX
-         3EUpoTBFf46vSNX/G/VCwHfbe8gh2/v3Dxz+MvDTmGY1d2cMNKTZfm7mESB40GD3rNdJ
-         My/MvIsgdkiYOJUvnidq8VXyaDYkgFzYEtDyTLNVOds4r0YyvO05Lxa4RIyHQ1LKYeKO
-         lkvF6L5L2FgVhzN/DnD/ThVE/wACQsDlbj8F+usOLRuH8FM3qy203sYfdN5T/SdFTpYK
-         xjwg==
-X-Gm-Message-State: AOJu0Yxmk4ssg6lEgyawQHvFesUjFd4wtjBu5yeHZGCcVKfPuydY00Wy
-        NEQDV88wsrEmpBVJ98NU/Lcrn3haTuf0ZlAp1Rkq91Oc
-X-Google-Smtp-Source: AGHT+IE8cD7K790ljU+1IkDvZWi5Dj5TOXB3ftfmds13xIambK+plb3iDNtzhSJRoiVGj1Nmmznz7g==
-X-Received: by 2002:a17:902:e84d:b0:1c7:21cc:2750 with SMTP id t13-20020a170902e84d00b001c721cc2750mr170585plg.28.1695739156268;
-        Tue, 26 Sep 2023 07:39:16 -0700 (PDT)
-Received: from [10.12.180.44] ([143.92.127.225])
-        by smtp.gmail.com with ESMTPSA id b5-20020a170902d50500b001b89a6164desm5225447plg.118.2023.09.26.07.39.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 07:39:15 -0700 (PDT)
-Message-ID: <fe80b246-3f92-2a83-6e50-3b923edce27c@shopee.com>
-Date:   Tue, 26 Sep 2023 22:39:11 +0800
+        bh=rhTI8dcDdjEZYE7dpMYfMSA1DN/2lzmSQcv8fWKSSFk=;
+        b=1fvEyH24SAykUGlk20UIHvgMA+IAh4UvzSsJna+6I0dS7ODbdFP6D85ZIIQ1cvdtDL
+         +QEF1ysibquPY7SaNb3ScwEyXhsu62LnTRQgxOVxxBZKFqWL5TwfYh81Zek8RhjqnXd2
+         gssMv8hXhMA/lsNXxzDvBR0G5LwgVOmOEMUba5KLbZInWS1cgTKYDmUAuB72HDYRLeZk
+         PAYvtogBHNKPqvBl7Xf3RlCGEakTolu1v19kWBA3yXD2tgPkDkdlMDF40uCfYVway3pw
+         Ob/Nx7D4FIwMoqETd6a7CxDK20DpQ8dfxVkDnhqZoNEyiOtTp10qcn31iOyOcj/pDoIZ
+         YLiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695752678; x=1696357478;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhTI8dcDdjEZYE7dpMYfMSA1DN/2lzmSQcv8fWKSSFk=;
+        b=MOPXxyHlmRqpyiDwvKUGouyfFqDphBXI4z6uMMA2yHVbsP/j90lfhCIEjJix8x18+4
+         l3U9PQL/U4835ozCkUgFkp22Jf3PeRxt/sGS07L2BR8kzxxcOU/6f3D11OBwV627bI9g
+         YHHO/DT1TpWbM5uceVXPr87JkRiEc6qA7nL/XKfuZ1s33hmELhD8bh6wCpFp5YsRPzqE
+         qId5zGHJ7VV5UlvIEPzvg6Yj5eudCViAAZHw94JpUT0BKyuvMAX22+LH5EMwGBn5wBwI
+         urXUz924Tz7zDSvOkFGuOIDwI9qQtlvVhC1uaD45KGEDegqGE7VZAdXzGasByyDMljuH
+         2Ekw==
+X-Gm-Message-State: AOJu0YyletqdK92ygzZIwg82XF9HVXpis1EnKl5UyoYIw+xrDb7o5yIG
+        pAgrShxnk4TarL/IN/yrHDwT9Q==
+X-Google-Smtp-Source: AGHT+IGrllrqWC0EKYtowvbvW5nW/cSOOf9HD2lBbguXAWo9ez72h7EB7JcAv/d+4OtMR5uQ2cxa0A==
+X-Received: by 2002:a05:6214:2d04:b0:649:8baa:2986 with SMTP id mz4-20020a0562142d0400b006498baa2986mr10287586qvb.2.1695752677986;
+        Tue, 26 Sep 2023 11:24:37 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:ba06])
+        by smtp.gmail.com with ESMTPSA id r1-20020a0c9e81000000b00656e2464719sm100717qvd.92.2023.09.26.11.24.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 11:24:37 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 14:24:36 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Chris Li <chrisl@kernel.org>
+Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
+Message-ID: <20230926182436.GB348484@cmpxchg.org>
+References: <20230919171447.2712746-1-nphamcs@gmail.com>
+ <20230919171447.2712746-2-nphamcs@gmail.com>
+ <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] memcg, oom: unmark under_oom after the oom killer is
- done
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <20230922070529.362202-1-haifeng.xu@shopee.com>
- <ZRE9fAf1dId2U4cu@dhcp22.suse.cz>
- <6b7af68c-2cfb-b789-4239-204be7c8ad7e@shopee.com>
- <ZRFxLuJp1xqvp4EH@dhcp22.suse.cz>
- <94b7ed1d-9ca8-7d34-a0f4-c46bc995a3d2@shopee.com>
- <ZRF/CTk4MGPZY6Tc@dhcp22.suse.cz>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <ZRF/CTk4MGPZY6Tc@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 2023/9/25 20:37, Michal Hocko wrote:
-> On Mon 25-09-23 20:28:02, Haifeng Xu wrote:
->>
->>
->> On 2023/9/25 19:38, Michal Hocko wrote:
->>> On Mon 25-09-23 17:03:05, Haifeng Xu wrote:
->>>>
->>>>
->>>> On 2023/9/25 15:57, Michal Hocko wrote:
->>>>> On Fri 22-09-23 07:05:28, Haifeng Xu wrote:
->>>>>> When application in userland receives oom notification from kernel
->>>>>> and reads the oom_control file, it's confusing that under_oom is 0
->>>>>> though the omm killer hasn't finished. The reason is that under_oom
->>>>>> is cleared before invoking mem_cgroup_out_of_memory(), so move the
->>>>>> action that unmark under_oom after completing oom handling. Therefore,
->>>>>> the value of under_oom won't mislead users.
->>>>>
->>>>> I do not really remember why are we doing it this way but trying to track
->>>>> this down shows that we have been doing that since fb2a6fc56be6 ("mm:
->>>>> memcg: rework and document OOM waiting and wakeup"). So this is an
->>>>> established behavior for 10 years now. Do we really need to change it
->>>>> now? The interface is legacy and hopefully no new workloads are
->>>>> emerging.
->>>>>
->>>>> I agree that the placement is surprising but I would rather not change
->>>>> that unless there is a very good reason for that. Do you have any actual
->>>>> workload which depends on the ordering? And if yes, how do you deal with
->>>>> timing when the consumer of the notification just gets woken up after
->>>>> mem_cgroup_out_of_memory completes?
->>>>
->>>> yes, when the oom event is triggered, we check the under_oom every 10 seconds. If it
->>>> is cleared, then we create a new process with less memory allocation to avoid oom again.
->>>
->>> OK, I do understand what you mean and I could have made myself
->>> more clear previously. Even if the state is cleared _after_
->>> mem_cgroup_out_of_memory then you won't get what you need I am
->>> afraid. The memcg stays under OOM until a memory is freed (uncharged)
->>> from that memcg. mem_cgroup_out_of_memory itself doesn't really free
->>> any memory on its own. It relies on the task to wake up and die or
->>> oom_reaper to do the work on its behalf. All of that is time dependent.
->>> under_oom would have to be reimplemented to be cleared when a memory is
->>> unchanrged to meet your demands. Something that has never really been
->>> the semantic.
->>>
->>
->> yes, but at least before we create the new process, it has more chance to get some memory freed.
+On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
+> +Chris Li
 > 
-> The time window we are talking about is the call of
-> mem_cgroup_out_of_memory which, depending on the number of evaluated
-> processes, could be a very short time. So what kind of practical
-> difference does this have on your workload? Is this measurable in any
-> way.
-
-The oom events in this group seems less than before.
-
+> On Tue, Sep 19, 2023 at 10:14 AM Nhat Pham <nphamcs@gmail.com> wrote:
+> >
+> > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> >
+> > Currently, we only have a single global LRU for zswap. This makes it
+> > impossible to perform worload-specific shrinking - an memcg cannot
+> > determine which pages in the pool it owns, and often ends up writing
+> > pages from other memcgs. This issue has been previously observed in
+> > practice and mitigated by simply disabling memcg-initiated shrinking:
+> >
+> > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
+> >
+> > This patch fully resolves the issue by replacing the global zswap LRU
+> > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+> >
+> > a) When a store attempt hits an memcg limit, it now triggers a
+> >    synchronous reclaim attempt that, if successful, allows the new
+> >    hotter page to be accepted by zswap.
+> > b) If the store attempt instead hits the global zswap limit, it will
+> >    trigger an asynchronous reclaim attempt, in which an memcg is
+> >    selected for reclaim in a round-robin-like fashion.
 > 
->>> Btw. is this something new that you are developing on top of v1? And if
->>> yes, why don't you use v2?
->>>
->>
->> yes, v2 doesn't have the "cgroup.event_control" file.
+> Hey Nhat,
 > 
-> Yes, it doesn't. But why is it necessary? Relying on v1 just for this is
-> far from ideal as v1 is deprecated and mostly frozen. Why do you need to
-> rely on the oom notifications (or oom behavior in general) in the first
-> place? Could you share more about your workload and your requirements?
+> I didn't take a very close look as I am currently swamped, but going
+> through the patch I have some comments/questions below.
 > 
+> I am not very familiar with list_lru, but it seems like the existing
+> API derives the node and memcg from the list item itself. Seems like
+> we can avoid a lot of changes if we allocate struct zswap_entry from
+> the same node as the page, and account it to the same memcg. Would
+> this be too much of a change or too strong of a restriction? It's a
+> slab allocation and we will free memory on that node/memcg right
+> after.
 
-for example, we want to run processes in the group but those parametes related to 
-memory allocation is hard to decide, so use the notifications to inform us that we
-need to adjust the paramters automatically and we don't need to create the new processes
-manually.
+My 2c, but I kind of hate that assumption made by list_lru.
+
+We ran into problems with it with the THP shrinker as well. That one
+strings up 'struct page', and virt_to_page(page) results in really fun
+to debug issues.
+
+IMO it would be less error prone to have memcg and nid as part of the
+regular list_lru_add() function signature. And then have an explicit
+list_lru_add_obj() that does a documented memcg lookup.
+
+Because of the overhead, we've been selective about the memory we
+charge. I'd hesitate to do it just to work around list_lru.
