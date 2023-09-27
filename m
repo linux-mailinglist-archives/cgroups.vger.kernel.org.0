@@ -2,109 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573FD7B0EE5
-	for <lists+cgroups@lfdr.de>; Thu, 28 Sep 2023 00:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312077B0F93
+	for <lists+cgroups@lfdr.de>; Thu, 28 Sep 2023 01:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbjI0W3d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Sep 2023 18:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        id S229472AbjI0XeP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Sep 2023 19:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjI0W3d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 18:29:33 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8632102;
-        Wed, 27 Sep 2023 15:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Y5BdNredrDHTYUunP3kApqKLWcDG2AzXoWP37/0LaLo=; b=ndvyW/v5AnnTWjFcOaHmQtJ2tQ
-        BC/6lzWxYgmdgHXT3PvPZcC090LQrp5ml02Ae1GnoSZckoSqvjoU59jpnfAR30t9sQc4/Tr/mYnNI
-        X6fsO3Ipq3PoKVycIJsEvT0+99hFr4CUSn/aQRGG2eC0g6Iw2svNRD/I3rMzmeTP9B1nb7c4dqeqA
-        JN6364DWbEtruq3HNM0pL9YLgknS628sDSI3CSoX5x4axSRNWXVW2YPZpfLHfh77TVYhq6vn6Ypxd
-        WcP/K9r5N10De0XaKEEw5J4cGIg6JXFmGw4wiy5LDY2ZiUC1DhwwA6Vw2c8s4Kjh2Vk+HNoezE5u+
-        4u/hMT3A==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qld1m-00CP4N-2B;
-        Wed, 27 Sep 2023 22:29:07 +0000
-Date:   Wed, 27 Sep 2023 23:29:06 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230927222906.GO800259@ZenIV>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230926093834.GB13806@lst.de>
- <20230926212515.GN800259@ZenIV>
+        with ESMTP id S229464AbjI0XeO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 19:34:14 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4E6F4;
+        Wed, 27 Sep 2023 16:34:13 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3513dcd38ebso23185875ab.1;
+        Wed, 27 Sep 2023 16:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695857652; x=1696462452; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KuiLzV6CGoqkNcJvWLJWVbKjSzC7FqUZFKmUnpswKQ8=;
+        b=C3268e7bN9aOEMO7H0jXdQF/P1NjjXjeZmbw4E76oKkwDl3SC5GhIG9mcaAfwx9uBT
+         nucMpVJNPBPqjeQlLTlcx0dz7w/WQ0IPu30uwa7diCpK2t805rzWUDIMGB6YBmU0mL0Q
+         0UQWCuhRdOY69IgQiWFfhP0llOC97H38KsTpDdU4Wovyih58YmrrpCDnSvRaHWiJT2/f
+         irGze5IsJpIka+E70FvScswcB3RvXtEG4qk6Diy7wBtiwvZj1T/mB5CkrXAZnQHiP/Qs
+         MF5kTY1N7Ewprhz8FLNvf3xd/TWpYB48GZXav9F7MccRe/FPYtVmeqUPBesAFxvwn1Ez
+         XIVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695857652; x=1696462452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KuiLzV6CGoqkNcJvWLJWVbKjSzC7FqUZFKmUnpswKQ8=;
+        b=PTlrYh9WhEs9ZqvJuRij93+mW8syWiE+ROATDkTGsxfgqFG4G55Pyt+YRWPLjtH4vF
+         DkBDAfN6XFIe+aNG8GOtGLndSPNKxqy2czlf3FVyyz8UTNGbyi8FrQP6z5H9XO8WvT4V
+         uAIfnwzotDkhUNvD0CnqYy0snz6IHSEBrK5lK1qkYGr5vgxDIVdWeqDKeaCbRRzLmw1/
+         TrSQW/sGbErx3FFLcH1dUnRsIm4F0lsgZx03V8Ljbdf3qoL8QNxP7FE8FPmrUSGpeXzP
+         /QIfMa4kf99tPBp6qy6u9hSBvIxAH3JgqI5DqfU1T0nsou2fjKCqBZ+z8YHtC4Bs+8/U
+         MZMw==
+X-Gm-Message-State: AOJu0YyHZAWL4PnxufqDsN3brGdzDABNbH+AnT7eVNGHZhj7c7X8iiIR
+        FkwUKWMwELdqy7R4EGU6lw3OD4lpbfvVU0blIwk=
+X-Google-Smtp-Source: AGHT+IH240jOGmryB4DKmJdrSZ0sw76v69veXHjvxbIKdhdqV6ViGFilCGJvjsPnRuNvxUyXjajBAwH8Z5Q4GyT1Ep0=
+X-Received: by 2002:a05:6e02:1a29:b0:351:a18:51be with SMTP id
+ g9-20020a056e021a2900b003510a1851bemr4644664ile.15.1695857652609; Wed, 27 Sep
+ 2023 16:34:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926212515.GN800259@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926194949.2637078-1-nphamcs@gmail.com> <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
+In-Reply-To: <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 27 Sep 2023 16:33:59 -0700
+Message-ID: <CAKEwX=MVcHSHRTzHMo7W6PCiWkTNdR8zp0c4UxR4xKDZCVbPQQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] hugetlb memcg accounting
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:25:15PM +0100, Al Viro wrote:
+On Wed, Sep 27, 2023 at 4:21=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 26-09-23 12:49:47, Nhat Pham wrote:
+> > Currently, hugetlb memory usage is not acounted for in the memory
+> > controller, which could lead to memory overprotection for cgroups with
+> > hugetlb-backed memory. This has been observed in our production system.
+> >
+> > This patch series rectifies this issue by charging the memcg when the
+> > hugetlb folio is allocated, and uncharging when the folio is freed. In
+> > addition, a new selftest is added to demonstrate and verify this new
+> > behavior.
+>
+> The primary reason why hugetlb is living outside of memcg (and the core
+> MM as well) is that it doesn't really fit the whole scheme. In several
+> aspects. First and the foremost it is an independently managed resource
+> with its own pool management, use and lifetime.
+>
+> There is no notion of memory reclaim and this makes a huge difference
+> for the pool that might consume considerable amount of memory. While
+> this is the case for many kernel allocations as well they usually do not
+> consume considerable portions of the accounted memory. This makes it
+> really tricky to handle limit enforcement gracefully.
+>
+> Another important aspect comes from the lifetime semantics when a proper
+> reservations accounting and managing needs to handle mmap time rather
+> than than usual allocation path. While pages are allocated they do not
+> belong to anybody and only later at the #PF time (or read for the fs
+> backed mapping) the ownership is established. That makes it really hard
+> to manage memory as whole under the memcg anyway as a large part of
+> that pool sits without an ownership yet it cannot be used for any other
+> purpose.
+>
+> These and more reasons where behind the earlier decision o have a
+> dedicated hugetlb controller.
 
-> Before your patch: foo_kill_super() calls kill_anon_super(),
-> which calls kill_super_notify(), which removes the sucker from
-> the list, then frees ->s_fs_info.  After your patch:
-> removal from the lists happens via the call of kill_super_notify()
-> *after* both of your methods had been called, while freeing
-> ->s_fs_info happens from the method call.  IOW, you've restored
-> the situation prior to "super: ensure valid info".  The whole
-> point of that commit had been to make sure that we have nothing
-> in the lists with ->s_fs_info pointing to a freed object.
+While I believe all of these are true, I think they are not reasons not to
+have memcg accounting. As everyone has pointed out, memcg
+accounting by itself cannot handle all situations - it is not a fix-all.
+Other mechanisms, such as the HugeTLB controller, could be the better
+solution in these cases, and hugetlb memcg accounting is definitely not
+an attempt to infringe upon these control domains.
 
-More detailed example: take a look at NFS.  We have ->get_tree() there
-call sget_fc() with nfs_compare_super() as possible 'test' callback.
-It does look at ->s_fs_info of the superblocks found on the list
-of instances for fs type in question.  Moreover, it proceeds to
-call nfs_compare_mount_options(), which chases pointers from that
-(at the very least fetch ->client in nfs_server instance ->s_fs_info
-points to and dereferences that).
+However, memcg accounting is still necessary for certain memory limits
+enforcement to work cleanly and properly - such as the use cases we have
+(as Johannes has beautifully described). It will certainly help
+administrators simplify their control workflow a lot (assuming we do not
+surprise them with this change - a new mount option to opt-in should
+help with the transition).
 
-We really, really do not want nfs_free_server() happen while the
-superblock is visible in the instances list.  Now, in your tree
-nfs_free_sb() call nfs_free_server().  *Without* having called
-kill_super_notify() first - you do that only after the call of
-->free_sb().
+>
+> Also I will also Nack involving hugetlb pages being accounted by
+> default. This would break any setups which mix normal and hugetlb memory
+> with memcg limits applied.
 
-So with this series applied we have UAF on race between mount and
-umount.  For NFS.  No block devices involved.
+Got it! I'll introduce some opt-in mechanisms in the next version. This is
+my oversight.
 
-Old logics had been "after generic_shutdown_super() the private
-parts of superblock belong to filesystem alone; they might be
-accessed by methods called from RCU pathwalk, but that's it".
 
-I still don't see any clear rules for the new one.  And the more
-I'm looking, the more sceptical I get about the approach you've
-taken, TBH...
+> --
+> Michal Hocko
+> SUSE Labs
