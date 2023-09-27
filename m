@@ -2,142 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A21C7B0505
-	for <lists+cgroups@lfdr.de>; Wed, 27 Sep 2023 15:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8687B0593
+	for <lists+cgroups@lfdr.de>; Wed, 27 Sep 2023 15:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbjI0NOj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Sep 2023 09:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
+        id S231905AbjI0NhB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Sep 2023 09:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbjI0NOh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 09:14:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E968F5
-        for <cgroups@vger.kernel.org>; Wed, 27 Sep 2023 06:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695820434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KgZz7s6OjsVA3iD+wDSANk03wfe8Z4jKIykypmODx90=;
-        b=WlFWCb11WhkCyXbtAbmM7wn8RaI15bivNJl0HBrZd3KdRF8AWGU6mrx5WApwOu4ND4UDJl
-        zhwLfJzgLpvHkJrC1JynFaD3GCAfcppKKxh7dj2F61BgpHRVqxdxp+HIi1UnfbIvUxcTBQ
-        cQbG1/rEGup3vhNWXup5+7d+yfMq33o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-149-EzV1qdJ5MUidfBf-x9yyig-1; Wed, 27 Sep 2023 09:13:51 -0400
-X-MC-Unique: EzV1qdJ5MUidfBf-x9yyig-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S231766AbjI0NhA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 09:37:00 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1DFFC
+        for <cgroups@vger.kernel.org>; Wed, 27 Sep 2023 06:36:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7D830811E88;
-        Wed, 27 Sep 2023 13:13:50 +0000 (UTC)
-Received: from [10.22.33.167] (unknown [10.22.33.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 739A9100651E;
-        Wed, 27 Sep 2023 13:13:49 +0000 (UTC)
-Message-ID: <01f5d9c9-31c1-1b55-f4b1-8153104faa76@redhat.com>
-Date:   Wed, 27 Sep 2023 09:13:49 -0400
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6FD182187E;
+        Wed, 27 Sep 2023 13:36:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695821817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i7Idmtu02QxC4J8MQAv/PYEFXdZAAEtQqz7PpTqRFdg=;
+        b=GSrPzI/mGR0aGY9Vy3vDNvNTbmKRpRiWEXFjj/ZHOWwvx5sUzEdHREesizQmkM77ygBX/T
+        AWC6fMGPjIwkZT1FeiKEh1RTtMegD5IBwhb7ZeV9HsZzvWQzuL4dKQ1UK9Sgd96TaiJ4yq
+        6ab9X3T98PD5WWbSTjAfeF0dmboLxC8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 451E613479;
+        Wed, 27 Sep 2023 13:36:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AMWoEPkvFGX9JgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 27 Sep 2023 13:36:57 +0000
+Date:   Wed, 27 Sep 2023 15:36:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] memcg, oom: unmark under_oom after the oom killer is
+ done
+Message-ID: <ZRQv+E1plKLj8Xe3@dhcp22.suse.cz>
+References: <20230922070529.362202-1-haifeng.xu@shopee.com>
+ <ZRE9fAf1dId2U4cu@dhcp22.suse.cz>
+ <6b7af68c-2cfb-b789-4239-204be7c8ad7e@shopee.com>
+ <ZRFxLuJp1xqvp4EH@dhcp22.suse.cz>
+ <94b7ed1d-9ca8-7d34-a0f4-c46bc995a3d2@shopee.com>
+ <ZRF/CTk4MGPZY6Tc@dhcp22.suse.cz>
+ <fe80b246-3f92-2a83-6e50-3b923edce27c@shopee.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH next] cgroup/cpuset: Cleanup signedness issue in
- cpu_exclusive_check()
-Content-Language: en-US
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, kamalesh.babulal@oracle.com,
-        kernel test robot <lkp@intel.com>
-References: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe80b246-3f92-2a83-6e50-3b923edce27c@shopee.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/27/23 02:58, Harshit Mogalapalli wrote:
-> Smatch complains about returning negative error codes from a type
-> bool function.
->
-> kernel/cgroup/cpuset.c:705 cpu_exclusive_check() warn:
-> 	signedness bug returning '(-22)'
->
-> The code works correctly, but it is confusing.  The current behavior is
-> that cpu_exclusive_check() returns true if it's *NOT* exclusive.  Rename
-> it to cpusets_are_exclusive() and reverse the returns so it returns true
-> if it is exclusive and false if it's not.  Update both callers as well.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <error27@gmail.com>
-> Closes: https://lore.kernel.org/r/202309201706.2LhKdM6o-lkp@intel.com/
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> ---
-> This is based on sattic analysis, only compile tested
-> ---
->   kernel/cgroup/cpuset.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 15f399153a2e..afefddd33c3e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -719,18 +719,18 @@ static inline struct cpumask *fetch_xcpus(struct cpuset *cs)
->   }
->   
->   /*
-> - * cpu_exclusive_check() - check if two cpusets are exclusive
-> + * cpusets_are_exclusive() - check if two cpusets are exclusive
->    *
-> - * Return 0 if exclusive, -EINVAL if not
-> + * Return true if exclusive, false if not
->    */
-> -static inline bool cpu_exclusive_check(struct cpuset *cs1, struct cpuset *cs2)
-> +static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
->   {
->   	struct cpumask *xcpus1 = fetch_xcpus(cs1);
->   	struct cpumask *xcpus2 = fetch_xcpus(cs2);
->   
->   	if (cpumask_intersects(xcpus1, xcpus2))
-> -		return -EINVAL;
-> -	return 0;
-> +		return false;
-> +	return true;
->   }
->   
->   /*
-> @@ -833,7 +833,7 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
->   	cpuset_for_each_child(c, css, par) {
->   		if ((is_cpu_exclusive(trial) || is_cpu_exclusive(c)) &&
->   		    c != cur) {
-> -			if (cpu_exclusive_check(trial, c))
-> +			if (!cpusets_are_exclusive(trial, c))
->   				goto out;
->   		}
->   		if ((is_mem_exclusive(trial) || is_mem_exclusive(c)) &&
-> @@ -1864,7 +1864,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->   			cpuset_for_each_child(child, css, parent) {
->   				if (child == cs)
->   					continue;
-> -				if (cpu_exclusive_check(cs, child)) {
-> +				if (!cpusets_are_exclusive(cs, child)) {
->   					exclusive = false;
->   					break;
->   				}
+On Tue 26-09-23 22:39:11, Haifeng Xu wrote:
+> 
+> 
+> On 2023/9/25 20:37, Michal Hocko wrote:
+> > On Mon 25-09-23 20:28:02, Haifeng Xu wrote:
+> >>
+> >>
+> >> On 2023/9/25 19:38, Michal Hocko wrote:
+> >>> On Mon 25-09-23 17:03:05, Haifeng Xu wrote:
+> >>>>
+> >>>>
+> >>>> On 2023/9/25 15:57, Michal Hocko wrote:
+> >>>>> On Fri 22-09-23 07:05:28, Haifeng Xu wrote:
+> >>>>>> When application in userland receives oom notification from kernel
+> >>>>>> and reads the oom_control file, it's confusing that under_oom is 0
+> >>>>>> though the omm killer hasn't finished. The reason is that under_oom
+> >>>>>> is cleared before invoking mem_cgroup_out_of_memory(), so move the
+> >>>>>> action that unmark under_oom after completing oom handling. Therefore,
+> >>>>>> the value of under_oom won't mislead users.
+> >>>>>
+> >>>>> I do not really remember why are we doing it this way but trying to track
+> >>>>> this down shows that we have been doing that since fb2a6fc56be6 ("mm:
+> >>>>> memcg: rework and document OOM waiting and wakeup"). So this is an
+> >>>>> established behavior for 10 years now. Do we really need to change it
+> >>>>> now? The interface is legacy and hopefully no new workloads are
+> >>>>> emerging.
+> >>>>>
+> >>>>> I agree that the placement is surprising but I would rather not change
+> >>>>> that unless there is a very good reason for that. Do you have any actual
+> >>>>> workload which depends on the ordering? And if yes, how do you deal with
+> >>>>> timing when the consumer of the notification just gets woken up after
+> >>>>> mem_cgroup_out_of_memory completes?
+> >>>>
+> >>>> yes, when the oom event is triggered, we check the under_oom every 10 seconds. If it
+> >>>> is cleared, then we create a new process with less memory allocation to avoid oom again.
+> >>>
+> >>> OK, I do understand what you mean and I could have made myself
+> >>> more clear previously. Even if the state is cleared _after_
+> >>> mem_cgroup_out_of_memory then you won't get what you need I am
+> >>> afraid. The memcg stays under OOM until a memory is freed (uncharged)
+> >>> from that memcg. mem_cgroup_out_of_memory itself doesn't really free
+> >>> any memory on its own. It relies on the task to wake up and die or
+> >>> oom_reaper to do the work on its behalf. All of that is time dependent.
+> >>> under_oom would have to be reimplemented to be cleared when a memory is
+> >>> unchanrged to meet your demands. Something that has never really been
+> >>> the semantic.
+> >>>
+> >>
+> >> yes, but at least before we create the new process, it has more chance to get some memory freed.
+> > 
+> > The time window we are talking about is the call of
+> > mem_cgroup_out_of_memory which, depending on the number of evaluated
+> > processes, could be a very short time. So what kind of practical
+> > difference does this have on your workload? Is this measurable in any
+> > way.
+> 
+> The oom events in this group seems less than before.
 
-Thanks for fixing that.
+Let me see if I follow. You are launching new workloads after oom
+happens as soon as under_oom becomes 0. With the patch applied you see
+fewer oom invocations which imlies that fewer re-launchings hit the
+stil-under-oom situations? I would also expect that those are compared
+over the same time period. Do you have any actual numbers to present?
+Are they statistically representative?
 
-Acked-by: Waiman Long <longman@redhat.com>
+I really have to say that I am skeptical over the presented usecase.
+Optimizing over oom events seems just like a very wrong way to scale the
+workload. Timing of oom handling is a subject to change at any time and
+what you are optimizing for might change.
 
+That being said, I do not see any obvious problem with the patch. IMO we
+should rather not apply it because it is slighly changing a long term
+behavior for something that is in a legacy mode now. But I will not Nack
+it either as it is just a trivial thing. I just do not like an idea we
+would be changing the timing of under_oom clearing just to fine tune
+some workloads.
+ 
+> >>> Btw. is this something new that you are developing on top of v1? And if
+> >>> yes, why don't you use v2?
+> >>>
+> >>
+> >> yes, v2 doesn't have the "cgroup.event_control" file.
+> > 
+> > Yes, it doesn't. But why is it necessary? Relying on v1 just for this is
+> > far from ideal as v1 is deprecated and mostly frozen. Why do you need to
+> > rely on the oom notifications (or oom behavior in general) in the first
+> > place? Could you share more about your workload and your requirements?
+> > 
+> 
+> for example, we want to run processes in the group but those parametes related to 
+> memory allocation is hard to decide, so use the notifications to inform us that we
+> need to adjust the paramters automatically and we don't need to create the new processes
+> manually.
+
+I do understand that but OOM is just way too late to tune anything
+upon. Cgroup v2 has a notion of high limit which can throttle memory
+allocations way before the hard limit is set and this along with PSI
+metrics could give you a much better insight on the memory pressure
+in a memcg.
+
+-- 
+Michal Hocko
+SUSE Labs
