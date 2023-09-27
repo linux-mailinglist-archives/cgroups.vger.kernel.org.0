@@ -2,100 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC4E7B0E2F
-	for <lists+cgroups@lfdr.de>; Wed, 27 Sep 2023 23:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573FD7B0EE5
+	for <lists+cgroups@lfdr.de>; Thu, 28 Sep 2023 00:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjI0ViJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Sep 2023 17:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60862 "EHLO
+        id S229711AbjI0W3d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Sep 2023 18:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjI0ViI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 17:38:08 -0400
-Received: from out-192.mta0.migadu.com (out-192.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B621E11D
-        for <cgroups@vger.kernel.org>; Wed, 27 Sep 2023 14:38:06 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 14:37:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695850683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fue+26Fi7AotWRkg3AT4B3mHGA43i1+EdYHYGE/Ep4Y=;
-        b=KKIpmjs6N2RDl4NoQebosFZc/837RlU9Q67hiMiiXzWdf8Ho9dWsfnrAZhwHmYazDbIVIc
-        5MThELoMpe7+7DOttUKIcQjnYbyC3R0i+uvwLgpxT0H3vhysicEt9Zz3rz+6MRCSp45NZG
-        bITBCQdsIGuUN5iEPoPt2o4bmYasj5c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, riel@surriel.com, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 0/2] hugetlb memcg accounting
-Message-ID: <ZRSgq_l2IXmedy4V@P9FQF9L96D.corp.robot.car>
-References: <20230926194949.2637078-1-nphamcs@gmail.com>
- <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
- <20230927184738.GC365513@cmpxchg.org>
+        with ESMTP id S229547AbjI0W3d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 18:29:33 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8632102;
+        Wed, 27 Sep 2023 15:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Y5BdNredrDHTYUunP3kApqKLWcDG2AzXoWP37/0LaLo=; b=ndvyW/v5AnnTWjFcOaHmQtJ2tQ
+        BC/6lzWxYgmdgHXT3PvPZcC090LQrp5ml02Ae1GnoSZckoSqvjoU59jpnfAR30t9sQc4/Tr/mYnNI
+        X6fsO3Ipq3PoKVycIJsEvT0+99hFr4CUSn/aQRGG2eC0g6Iw2svNRD/I3rMzmeTP9B1nb7c4dqeqA
+        JN6364DWbEtruq3HNM0pL9YLgknS628sDSI3CSoX5x4axSRNWXVW2YPZpfLHfh77TVYhq6vn6Ypxd
+        WcP/K9r5N10De0XaKEEw5J4cGIg6JXFmGw4wiy5LDY2ZiUC1DhwwA6Vw2c8s4Kjh2Vk+HNoezE5u+
+        4u/hMT3A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qld1m-00CP4N-2B;
+        Wed, 27 Sep 2023 22:29:07 +0000
+Date:   Wed, 27 Sep 2023 23:29:06 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230927222906.GO800259@ZenIV>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230926093834.GB13806@lst.de>
+ <20230926212515.GN800259@ZenIV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230927184738.GC365513@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230926212515.GN800259@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 02:47:38PM -0400, Johannes Weiner wrote:
-> On Wed, Sep 27, 2023 at 01:21:20PM +0200, Michal Hocko wrote:
-> > On Tue 26-09-23 12:49:47, Nhat Pham wrote:
-> > > Currently, hugetlb memory usage is not acounted for in the memory
-> > > controller, which could lead to memory overprotection for cgroups with
-> > > hugetlb-backed memory. This has been observed in our production system.
-> > > 
-> > > This patch series rectifies this issue by charging the memcg when the
-> > > hugetlb folio is allocated, and uncharging when the folio is freed. In
-> > > addition, a new selftest is added to demonstrate and verify this new
-> > > behavior.
-> > 
-> > The primary reason why hugetlb is living outside of memcg (and the core
-> > MM as well) is that it doesn't really fit the whole scheme. In several
-> > aspects. First and the foremost it is an independently managed resource
-> > with its own pool management, use and lifetime.
-> 
-> Honestly, the simpler explanation is that few people have used hugetlb
-> in regular, containerized non-HPC workloads.
-> 
-> Hugetlb has historically been much more special, and it retains a
-> specialness that warrants e.g. the hugetlb cgroup container. But it
-> has also made strides with hugetlb_cma, migratability, madvise support
-> etc. that allows much more on-demand use. It's no longer the case that
-> you just put a static pool of memory aside during boot and only a few
-> blessed applications are using it.
-> 
-> For example, we're using hugetlb_cma very broadly with generic
-> containers. The CMA region is fully usable by movable non-huge stuff
-> until huge pages are allocated in it. With the hugetlb controller you
-> can define a maximum number of hugetlb pages that can be used per
-> container. But what if that container isn't using any? Why shouldn't
-> it be allowed to use its overall memory allowance for anon and cache
-> instead?
+On Tue, Sep 26, 2023 at 10:25:15PM +0100, Al Viro wrote:
 
-Cool, I remember proposing hugetlb memcg stats several years ago and if
-I remember correctly at that time you was opposing it based on the idea
-that huge pages are not a part of the overall memcg flow: they are not
-a subject for memory pressure, can't be evicted, etc. And thp's were seen
-as a long-term replacement. Even though all above it's true, hugetlb has
-it's niche and I don't think thp's will realistically replace it any time
-soon.
+> Before your patch: foo_kill_super() calls kill_anon_super(),
+> which calls kill_super_notify(), which removes the sucker from
+> the list, then frees ->s_fs_info.  After your patch:
+> removal from the lists happens via the call of kill_super_notify()
+> *after* both of your methods had been called, while freeing
+> ->s_fs_info happens from the method call.  IOW, you've restored
+> the situation prior to "super: ensure valid info".  The whole
+> point of that commit had been to make sure that we have nothing
+> in the lists with ->s_fs_info pointing to a freed object.
 
-So I'm glad to see this effort (and very supportive) on making hugetlb
-more convenient and transparent for an end user.
+More detailed example: take a look at NFS.  We have ->get_tree() there
+call sget_fc() with nfs_compare_super() as possible 'test' callback.
+It does look at ->s_fs_info of the superblocks found on the list
+of instances for fs type in question.  Moreover, it proceeds to
+call nfs_compare_mount_options(), which chases pointers from that
+(at the very least fetch ->client in nfs_server instance ->s_fs_info
+points to and dereferences that).
 
-Thanks!
+We really, really do not want nfs_free_server() happen while the
+superblock is visible in the instances list.  Now, in your tree
+nfs_free_sb() call nfs_free_server().  *Without* having called
+kill_super_notify() first - you do that only after the call of
+->free_sb().
+
+So with this series applied we have UAF on race between mount and
+umount.  For NFS.  No block devices involved.
+
+Old logics had been "after generic_shutdown_super() the private
+parts of superblock belong to filesystem alone; they might be
+accessed by methods called from RCU pathwalk, but that's it".
+
+I still don't see any clear rules for the new one.  And the more
+I'm looking, the more sceptical I get about the approach you've
+taken, TBH...
