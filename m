@@ -2,170 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8687B0593
-	for <lists+cgroups@lfdr.de>; Wed, 27 Sep 2023 15:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135D07B06B3
+	for <lists+cgroups@lfdr.de>; Wed, 27 Sep 2023 16:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbjI0NhB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Sep 2023 09:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        id S232046AbjI0O0O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Sep 2023 10:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbjI0NhA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 09:37:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1DFFC
-        for <cgroups@vger.kernel.org>; Wed, 27 Sep 2023 06:36:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6FD182187E;
-        Wed, 27 Sep 2023 13:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695821817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i7Idmtu02QxC4J8MQAv/PYEFXdZAAEtQqz7PpTqRFdg=;
-        b=GSrPzI/mGR0aGY9Vy3vDNvNTbmKRpRiWEXFjj/ZHOWwvx5sUzEdHREesizQmkM77ygBX/T
-        AWC6fMGPjIwkZT1FeiKEh1RTtMegD5IBwhb7ZeV9HsZzvWQzuL4dKQ1UK9Sgd96TaiJ4yq
-        6ab9X3T98PD5WWbSTjAfeF0dmboLxC8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 451E613479;
-        Wed, 27 Sep 2023 13:36:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AMWoEPkvFGX9JgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 27 Sep 2023 13:36:57 +0000
-Date:   Wed, 27 Sep 2023 15:36:56 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] memcg, oom: unmark under_oom after the oom killer is
- done
-Message-ID: <ZRQv+E1plKLj8Xe3@dhcp22.suse.cz>
-References: <20230922070529.362202-1-haifeng.xu@shopee.com>
- <ZRE9fAf1dId2U4cu@dhcp22.suse.cz>
- <6b7af68c-2cfb-b789-4239-204be7c8ad7e@shopee.com>
- <ZRFxLuJp1xqvp4EH@dhcp22.suse.cz>
- <94b7ed1d-9ca8-7d34-a0f4-c46bc995a3d2@shopee.com>
- <ZRF/CTk4MGPZY6Tc@dhcp22.suse.cz>
- <fe80b246-3f92-2a83-6e50-3b923edce27c@shopee.com>
+        with ESMTP id S232045AbjI0O0O (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Sep 2023 10:26:14 -0400
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1BE12A;
+        Wed, 27 Sep 2023 07:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695824773; x=1727360773;
+  h=date:from:to:subject:message-id:mime-version;
+  bh=bF86Jsr4UsRLbjrkpS8N1tTTbCkokOYDSGQM/g+5iNc=;
+  b=pzcASaOxEL9/ECi9ylitPInrUfd4DL0QLz+9AXuLahmK5ibu3Pz1/zPx
+   sOiaRej8Rg/U0UZwS8CM82fk9NFxnn1gTXOMqv4cuV2D6ePtPgFOxKoMf
+   r1++6kIV80Yywjo+dgt3wAITuLUMD+H4D6jZrD2/J7Eo0uB+wbpm+kNoH
+   E=;
+X-IronPort-AV: E=Sophos;i="6.03,181,1694736000"; 
+   d="scan'208";a="674844881"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 14:25:47 +0000
+Received: from EX19MTAUEB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id 7CF358A5E5;
+        Wed, 27 Sep 2023 14:25:45 +0000 (UTC)
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19MTAUEB001.ant.amazon.com (10.252.135.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 27 Sep 2023 14:25:40 +0000
+Received: from dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com (10.39.210.33)
+ by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Wed, 27 Sep 2023 14:25:40 +0000
+Received: by dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com (Postfix, from userid 23276196)
+        id 4E712BDE; Wed, 27 Sep 2023 14:25:40 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 14:25:40 +0000
+From:   Luiz Capitulino <luizcap@amazon.com>
+To:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <longman@redhat.com>, <kamalesh.babulal@oracle.com>,
+        <mkoutny@suse.com>
+Subject: [RESEND v3] cgroup: add cgroup_favordynmods= command-line option
+Message-ID: <20230927142539.GB65411@dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <fe80b246-3f92-2a83-6e50-3b923edce27c@shopee.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 26-09-23 22:39:11, Haifeng Xu wrote:
-> 
-> 
-> On 2023/9/25 20:37, Michal Hocko wrote:
-> > On Mon 25-09-23 20:28:02, Haifeng Xu wrote:
-> >>
-> >>
-> >> On 2023/9/25 19:38, Michal Hocko wrote:
-> >>> On Mon 25-09-23 17:03:05, Haifeng Xu wrote:
-> >>>>
-> >>>>
-> >>>> On 2023/9/25 15:57, Michal Hocko wrote:
-> >>>>> On Fri 22-09-23 07:05:28, Haifeng Xu wrote:
-> >>>>>> When application in userland receives oom notification from kernel
-> >>>>>> and reads the oom_control file, it's confusing that under_oom is 0
-> >>>>>> though the omm killer hasn't finished. The reason is that under_oom
-> >>>>>> is cleared before invoking mem_cgroup_out_of_memory(), so move the
-> >>>>>> action that unmark under_oom after completing oom handling. Therefore,
-> >>>>>> the value of under_oom won't mislead users.
-> >>>>>
-> >>>>> I do not really remember why are we doing it this way but trying to track
-> >>>>> this down shows that we have been doing that since fb2a6fc56be6 ("mm:
-> >>>>> memcg: rework and document OOM waiting and wakeup"). So this is an
-> >>>>> established behavior for 10 years now. Do we really need to change it
-> >>>>> now? The interface is legacy and hopefully no new workloads are
-> >>>>> emerging.
-> >>>>>
-> >>>>> I agree that the placement is surprising but I would rather not change
-> >>>>> that unless there is a very good reason for that. Do you have any actual
-> >>>>> workload which depends on the ordering? And if yes, how do you deal with
-> >>>>> timing when the consumer of the notification just gets woken up after
-> >>>>> mem_cgroup_out_of_memory completes?
-> >>>>
-> >>>> yes, when the oom event is triggered, we check the under_oom every 10 seconds. If it
-> >>>> is cleared, then we create a new process with less memory allocation to avoid oom again.
-> >>>
-> >>> OK, I do understand what you mean and I could have made myself
-> >>> more clear previously. Even if the state is cleared _after_
-> >>> mem_cgroup_out_of_memory then you won't get what you need I am
-> >>> afraid. The memcg stays under OOM until a memory is freed (uncharged)
-> >>> from that memcg. mem_cgroup_out_of_memory itself doesn't really free
-> >>> any memory on its own. It relies on the task to wake up and die or
-> >>> oom_reaper to do the work on its behalf. All of that is time dependent.
-> >>> under_oom would have to be reimplemented to be cleared when a memory is
-> >>> unchanrged to meet your demands. Something that has never really been
-> >>> the semantic.
-> >>>
-> >>
-> >> yes, but at least before we create the new process, it has more chance to get some memory freed.
-> > 
-> > The time window we are talking about is the call of
-> > mem_cgroup_out_of_memory which, depending on the number of evaluated
-> > processes, could be a very short time. So what kind of practical
-> > difference does this have on your workload? Is this measurable in any
-> > way.
-> 
-> The oom events in this group seems less than before.
+We have a need of using favordynmods with cgroup v1, which doesn't support
+changing mount flags during remount. Enabling CONFIG_CGROUP_FAVOR_DYNMODS at
+build-time is not an option because we want to be able to selectively
+enable it for certain systems.
 
-Let me see if I follow. You are launching new workloads after oom
-happens as soon as under_oom becomes 0. With the patch applied you see
-fewer oom invocations which imlies that fewer re-launchings hit the
-stil-under-oom situations? I would also expect that those are compared
-over the same time period. Do you have any actual numbers to present?
-Are they statistically representative?
+This commit addresses this by introducing the cgroup_favordynmods=
+command-line option. This option works for both cgroup v1 and v2 and also
+allows for disabling favorynmods when the kernel built with
+CONFIG_CGROUP_FAVOR_DYNMODS=y.
 
-I really have to say that I am skeptical over the presented usecase.
-Optimizing over oom events seems just like a very wrong way to scale the
-workload. Timing of oom handling is a subject to change at any time and
-what you are optimizing for might change.
+Also, note that when cgroup_favordynmods=true favordynmods is never
+disabled in cgroup_destroy_root().
 
-That being said, I do not see any obvious problem with the patch. IMO we
-should rather not apply it because it is slighly changing a long term
-behavior for something that is in a legacy mode now. But I will not Nack
-it either as it is just a trivial thing. I just do not like an idea we
-would be changing the timing of under_oom clearing just to fine tune
-some workloads.
+Signed-off-by: Luiz Capitulino <luizcap@amazon.com>
+---
+ .../admin-guide/kernel-parameters.txt          |  4 ++++
+ kernel/cgroup/cgroup.c                         | 18 ++++++++++++++----
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+o v3
+ - Handle destroy case [Michal]
+ - Fix type in commit log [Michal]
+
+o v2
+ - Use __ro_after_init [Waiman]
+
+Michal,
+
+For the cgroup_destroy_root() case, I opted to keep disabling favordynmods
+when cgroup_favordynmods=false. The rationale is that it should allow
+for disabling favordynmods when/if all cgroups are gone if the user so wants.
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0a1731a0f0ef..8b744d39d393 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -580,6 +580,10 @@
+ 			named mounts. Specifying both "all" and "named" disables
+ 			all v1 hierarchies.
  
-> >>> Btw. is this something new that you are developing on top of v1? And if
-> >>> yes, why don't you use v2?
-> >>>
-> >>
-> >> yes, v2 doesn't have the "cgroup.event_control" file.
-> > 
-> > Yes, it doesn't. But why is it necessary? Relying on v1 just for this is
-> > far from ideal as v1 is deprecated and mostly frozen. Why do you need to
-> > rely on the oom notifications (or oom behavior in general) in the first
-> > place? Could you share more about your workload and your requirements?
-> > 
-> 
-> for example, we want to run processes in the group but those parametes related to 
-> memory allocation is hard to decide, so use the notifications to inform us that we
-> need to adjust the paramters automatically and we don't need to create the new processes
-> manually.
-
-I do understand that but OOM is just way too late to tune anything
-upon. Cgroup v2 has a notion of high limit which can throttle memory
-allocations way before the hard limit is set and this along with PSI
-metrics could give you a much better insight on the memory pressure
-in a memcg.
-
++	cgroup_favordynmods= [KNL] Enable or Disable favordynmods.
++			Format: { "true" | "false" }
++			Defaults to the value of CONFIG_CGROUP_FAVOR_DYNMODS.
++
+ 	cgroup.memory=	[KNL] Pass options to the cgroup memory controller.
+ 			Format: <string>
+ 			nosocket -- Disable socket memory accounting.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1fb7f562289d..06515550e609 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
+ static u16 have_release_callback __read_mostly;
+ static u16 have_canfork_callback __read_mostly;
+ 
++static bool have_favordynmods __ro_after_init = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
++
+ /* cgroup namespace for init task */
+ struct cgroup_namespace init_cgroup_ns = {
+ 	.ns.count	= REFCOUNT_INIT(2),
+@@ -1350,7 +1352,9 @@ static void cgroup_destroy_root(struct cgroup_root *root)
+ 		cgroup_root_count--;
+ 	}
+ 
+-	cgroup_favor_dynmods(root, false);
++	if (!have_favordynmods)
++		cgroup_favor_dynmods(root, false);
++
+ 	cgroup_exit_root_id(root);
+ 
+ 	cgroup_unlock();
+@@ -2243,9 +2247,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
+ 	fc->user_ns = get_user_ns(ctx->ns->user_ns);
+ 	fc->global = true;
+ 
+-#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
+-	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+-#endif
++	if (have_favordynmods)
++		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
++
+ 	return 0;
+ }
+ 
+@@ -6764,6 +6768,12 @@ static int __init enable_cgroup_debug(char *str)
+ }
+ __setup("cgroup_debug", enable_cgroup_debug);
+ 
++static int __init cgroup_favordynmods_setup(char *str)
++{
++	return (kstrtobool(str, &have_favordynmods) == 0);
++}
++__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
++
+ /**
+  * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
+  * @dentry: directory dentry of interest
 -- 
-Michal Hocko
-SUSE Labs
+2.40.1
+
