@@ -2,133 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21D17B3653
-	for <lists+cgroups@lfdr.de>; Fri, 29 Sep 2023 17:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035AD7B3660
+	for <lists+cgroups@lfdr.de>; Fri, 29 Sep 2023 17:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbjI2PGR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Sep 2023 11:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
+        id S233485AbjI2PIf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Sep 2023 11:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjI2PGR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Sep 2023 11:06:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FFAF7;
-        Fri, 29 Sep 2023 08:06:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695999975; x=1727535975;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=qj0eh55UwGPngvSahx/UIAzAqFq0pQb7yzApIYUtOY4=;
-  b=BRE41RjQBTNMmwb8tpnOFwW1wWMpN7EvzwD/IELFxJ/G40jd57XdIUOz
-   +ANJbGasMNMTnMzJNssgEj4I2WDESrbfnFas54euY2K1vW8mxzsZj3KWp
-   GF8Ke+aoV8xDn/c9BWcduxph4RXNtiSWS0LEeF33AEdd/NJ0HMONhxnlZ
-   OtZbkmpPPpFnIv+YOOYblgcTi5p/Kkpma/y4gfuaaZl1OspWYiWRrcWdO
-   jvzaB8if4NDy5xwDK28v83s0Fvu7Zb/RhM+O7gQ69HQ2nuSYtr6DLyD79
-   AIssbRvQe728TXX5FSgNzXtWAJ8b9VCamMOnSuFS5Hu9yHW6eL4hiqm+H
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385136058"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="385136058"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:06:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="840294789"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="840294789"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 29 Sep 2023 08:06:10 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>
-Subject: Re: [PATCH v5 09/18] x86/sgx: Store struct sgx_encl when allocating
- new VA pages
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-10-haitao.huang@linux.intel.com>
- <46fecb95ae2c4cd156ad7bda99522214fcfe5774.camel@intel.com>
- <op.2bxr9aj7wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <fd2049b46a2e508a90006731a5d0cd2b90db9e45.camel@intel.com>
-Date:   Fri, 29 Sep 2023 10:06:09 -0500
+        with ESMTP id S232490AbjI2PIe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Sep 2023 11:08:34 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096DC1B3
+        for <cgroups@vger.kernel.org>; Fri, 29 Sep 2023 08:08:32 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7740c8509c8so891483985a.3
+        for <cgroups@vger.kernel.org>; Fri, 29 Sep 2023 08:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696000111; x=1696604911; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eIoMc56bIfBZy6/PdEQktEjOwAzqVOREk+ePKY8LOlo=;
+        b=WaJN+sV5qzEK10CrLxzNdJpS2PkqLQfHjpAUbAmNRbBP1rRl3tpoNcI+8KWsyWXgoT
+         IBJtyI7AP46HIBLMaGvgNQl43CmAjBGz1lPlYjXcuh4w6K+sJgRRryjxwyQCLDb9a/rZ
+         aja7LzFm9LyQ16WMFYa3Y2mvSil9ej1ioS0Owg9/kAX04FMow8UezH/oyAPR+KUyXSyB
+         ec6vEx6w317xztWJI5zyVngjzDPkoMbBrZV7UE6yfhdtjZbjZR1nDOBbdPn4cGV4Wxla
+         IC3nfFN23j4B6OWTB8ofwpHqGobugE6oV/Jxl6ePFYFBPLyPjMv7gULJ0jvHOMB3Dwnf
+         PO2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696000111; x=1696604911;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eIoMc56bIfBZy6/PdEQktEjOwAzqVOREk+ePKY8LOlo=;
+        b=QGyPtv5LdH8/q4mPKYnpeZ3qgWycrMl1wRDsJTDiO1P1CqUObzLEiDVpEt68Qb6CHX
+         uLs84/rYgkL7gPFNLJNy3/cNRjyhyI8uXsxjnRZKTjeK67hxKIK1CY91NfcCZdcmuF1o
+         QKVis1BkFYbYgAoOSb+U6y0xCTT6xbZJz/MFbEFPt8Zq71VwGgIx5AChIsu76EyZ6j11
+         J356+47RymaP7yo5bVOd785WW04Dn/RqJLb6+Fqnn6IXFe9SQfj0Park+ZkAAcRv0tYg
+         TAMS1gHGzTq3SNY5yxHN0/Co0QoQj57yrY2tb45Bwj7sTIIsaKWO3D60V5rBhdCZmhLR
+         jPCw==
+X-Gm-Message-State: AOJu0YyLushV4kOHhXdcP/L833NgzKcRmM/xgudlBOk+zZ3ws+YzoFtA
+        v0AB5SCBrFlWDZQqtVq4uPEC2Q==
+X-Google-Smtp-Source: AGHT+IHV/YhrWHzDQ207LDHTmLp/zJOODiEdUhE2mMsIH7bmfSsTIGwBXN4fFashJ84I4V1XDq3Rdg==
+X-Received: by 2002:a05:620a:bc1:b0:76d:90c9:595b with SMTP id s1-20020a05620a0bc100b0076d90c9595bmr4744478qki.24.1696000111010;
+        Fri, 29 Sep 2023 08:08:31 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:a683])
+        by smtp.gmail.com with ESMTPSA id q21-20020ae9e415000000b00767177a5bebsm6959059qkc.56.2023.09.29.08.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 08:08:30 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 11:08:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
+        lizefan.x@bytedance.com, shuah@kernel.org, mike.kravetz@oracle.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+Message-ID: <20230929150829.GA16353@cmpxchg.org>
+References: <20230928005723.1709119-1-nphamcs@gmail.com>
+ <20230928005723.1709119-2-nphamcs@gmail.com>
+ <CAJD7tkanr99d_Y=LefQTFsykyiO5oZpPUC=suD3P-L5eS=0SXA@mail.gmail.com>
+ <CAKEwX=M=8KYqvBTz9z1csrsFUpGf2tgWj-oyu96dSpRjn3ZnUQ@mail.gmail.com>
+ <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
+ <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2b1f8j1bwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <fd2049b46a2e508a90006731a5d0cd2b90db9e45.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 27 Sep 2023 16:21:19 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Thu, Sep 28, 2023 at 06:18:19PM -0700, Yosry Ahmed wrote:
+> My concern is the scenario where the memory controller is mounted in
+> cgroup v1, and cgroup v2 is mounted with memory_hugetlb_accounting.
+> 
+> In this case it seems like the current code will only check whether
+> memory_hugetlb_accounting was set on cgroup v2 or not, disregarding
+> the fact that cgroup v1 did not enable hugetlb accounting.
+> 
+> I obviously prefer that any features are also added to cgroup v1,
+> because we still didn't make it to cgroup v2, especially when the
+> infrastructure is shared. On the other hand, I am pretty sure the
+> maintainers will not like what I am saying :)
 
-> On Wed, 2023-09-27 at 10:35 -0500, Haitao Huang wrote:
->> > > +
->> > > +	/* Possible owner types */
->> > > +	union {
->> > > +		struct sgx_encl_page *encl_page;
->> > > +		struct sgx_encl *encl;
->> > > +	};
->> >
->> > Sadly for virtual EPC page the owner is set to the 'sgx_vepc'  
->> instance it
->> > belongs to.
->> >
->> > Given how sgx_{alloc|free}_epc_page() arbitrarily uses encl_page,>  
->> perhaps we
->> > should do below?
->> >
->> >  	union {
->> >  		struct sgx_encl_page *encl_page;
->> >  		struct sgx_encl *encl;
->> >  		struct sgx_vepc *vepc;
->> >  		void *owner;
->> >  	};
->> >
->> > And in sgx_{alloc|free}_epc_page() we can use 'owner' instead.
->> >
->>
->> As I mentioned in cover letter and change log in 11/18, this series does 
->> not track virtual EPC.
->
-> It's not about how does the cover letter says.  We cannot ignore the  
-> fact that
-> currently virtual EPC uses owner too.
->
-> But given the virtual EPC code currently doesn't use the owner, I can  
-> live with
-> not having the 'vepc' member in the union now.
+I have a weak preference.
 
-Ah, I forgot even though we don't use the owner field assigned by vepc, it  
-is still passed into sgx_alloc/free_epc_page().
+It's definitely a little weird that the v1 controller's behavior
+changes based on the v2 mount flag. And that if you want it as an
+otherwise exclusive v1 user, you'd have to mount a dummy v2.
 
-Will add back "void* owner" and use it for assignment inside  
-sgx_alloc/free_epc_page().
+But I also don't see a scenario where it would hurt, or where there
+would be an unresolvable conflict between v1 and v2 in expressing
+desired behavior, since the memory controller is exclusive to one.
 
-Thanks
+While we could eliminate this quirk with a simple
+!cgroup_subsys_on_dfl(memory_cgrp_subsys) inside the charge function,
+it would seem almost punitive to add extra code just to take something
+away that isn't really a problem and could be useful to some people.
 
-Haitao
+If Tejun doesn't object, I'd say let's just keep implied v1 behavior.
