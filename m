@@ -2,162 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E087B5437
-	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 15:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B067B55E1
+	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 17:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237460AbjJBNnY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Oct 2023 09:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S237754AbjJBOm4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Oct 2023 10:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237452AbjJBNnY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 09:43:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C2DAD;
-        Mon,  2 Oct 2023 06:43:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B77E32185E;
-        Mon,  2 Oct 2023 13:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1696254199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=caakDTqPQiiqSKbfuYgVTeM3IkU7B/tdKX/DWu+ptPg=;
-        b=mftAFFZeLc7dpw7U7ba2KaL8anrudYFIbm8u+J+/kblE3rVxtHFiYu+9utSCfI8EwdsCWZ
-        hW+KUdT5id10aCyLZEhUWNgzHRIkMdA9d3veD2tJYxxnH0YMNYnt6CgY8vT8bWLtRWKCV4
-        /4gLkQNoELYuWRV/vevKHB2Y8avyPa8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9355613456;
-        Mon,  2 Oct 2023 13:43:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3YcEIffIGmVzTgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 02 Oct 2023 13:43:19 +0000
-Date:   Mon, 2 Oct 2023 15:43:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
+        with ESMTP id S237704AbjJBOmz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 10:42:55 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEF691
+        for <cgroups@vger.kernel.org>; Mon,  2 Oct 2023 07:42:52 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-774105e8c37so1105145285a.3
+        for <cgroups@vger.kernel.org>; Mon, 02 Oct 2023 07:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696257772; x=1696862572; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9gT0sJ6bxJ7LFGJ3qcn0lur/HHwUZlrfxhEFRGE3Lc=;
+        b=c6OXd9YFBsot277vrDT83xXwBobB0wm3QiKoEK3jxGefiNII0hx0/53I6hHHWBXXVI
+         PjFknMvxds4R53+FJpAlBJ054OExLeKNeXw7qmnc4NxhEvXGplheOaY1MxMALVEdpnEm
+         W9xaYOEaB8aSe+ML2F/9TOrJtMvONMM7IqgjwKu4XXCQXF2/cTBOxwCBeOnLp3QkJYMR
+         JT0J8y/YwBi84rPL28BZJBtN5ohIIA/Rz8NRLRykwAuige0IT+Hi03kYU4VokLkQ+4dT
+         su6T6pt0wlQHfEpCPdEAQscQR4fNXz7ttI3OKWzyE9lr6OI8GD7BTbehBqmSuPE8mkIC
+         kwGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696257772; x=1696862572;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9gT0sJ6bxJ7LFGJ3qcn0lur/HHwUZlrfxhEFRGE3Lc=;
+        b=McooobVHvyL6/gzldsodMAbyyRf14Ke0o9NvaKb96Roab74O63E3wKsDpEGgNXTYHL
+         i4I+h7l3Nz3JChQ3NtBnUymNznaC+Jrt2wVEUEGN67C5SYkvRE3c7g8TKKFvq+pi2dXX
+         lN/8MN2/NPJj4zyCEzIkWUOluTknKlkMec6/WUHz/JyXivKuoM7gZrz8Tr58DxSRtN4E
+         MtCKozb7m8xS1wBpGY840K32cpI1NCIo2ojh45OvwK/NojCG7SnNO1rILe7YzEbDhhv5
+         DuzMpHFdIOQjHRePrRsQ9InuNUikab3jtsLdvH7qd88bO4/2V5gOEa1kmjkk6hY6Oq88
+         rm5A==
+X-Gm-Message-State: AOJu0Yxd4rV+uGHklXgrU0+CQdHtlqVbeFfxMJE99akDqrXnOUtG8nIj
+        ZRWmaanE1zHEtuQwKnKxb9Mh2A==
+X-Google-Smtp-Source: AGHT+IFa+AtbCwYbo1F1bL/0dGXEiEXwwHQPJD08WSpIXpwHS50M5VhohUTqeEfXszT9O2DE8i1vpg==
+X-Received: by 2002:ac8:588a:0:b0:417:95e7:a2f7 with SMTP id t10-20020ac8588a000000b0041795e7a2f7mr12774184qta.19.1696257771693;
+        Mon, 02 Oct 2023 07:42:51 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id h20-20020ac846d4000000b0041812600a47sm6261207qto.59.2023.10.02.07.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 07:42:51 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 10:42:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Nhat Pham <nphamcs@gmail.com>,
+        akpm@linux-foundation.org, riel@surriel.com,
         roman.gushchin@linux.dev, shakeelb@google.com,
         muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
-References: <20230928005723.1709119-1-nphamcs@gmail.com>
- <20230928005723.1709119-2-nphamcs@gmail.com>
+        shuah@kernel.org, yosryahmed@google.com, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 0/2] hugetlb memcg accounting
+Message-ID: <20231002144250.GA4414@cmpxchg.org>
+References: <20230926194949.2637078-1-nphamcs@gmail.com>
+ <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
+ <20230927184738.GC365513@cmpxchg.org>
+ <20231001232730.GA11194@monkey>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928005723.1709119-2-nphamcs@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231001232730.GA11194@monkey>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 27-09-23 17:57:22, Nhat Pham wrote:
-> Currently, hugetlb memory usage is not acounted for in the memory
-> controller, which could lead to memory overprotection for cgroups with
-> hugetlb-backed memory. This has been observed in our production system.
+On Sun, Oct 01, 2023 at 04:27:30PM -0700, Mike Kravetz wrote:
+> On 09/27/23 14:47, Johannes Weiner wrote:
+> > On Wed, Sep 27, 2023 at 01:21:20PM +0200, Michal Hocko wrote:
+> > > On Tue 26-09-23 12:49:47, Nhat Pham wrote:
+> > 
+> > So that if you use 80% hugetlb, the other memory is forced to stay in
+> > the remaining 20%, or it OOMs; and that if you don't use hugetlb, the
+> > group is still allowed to use the full 100% of its host memory
+> > allowance, without requiring some outside agent continuously
+> > monitoring and adjusting the container limits.
 > 
-> This patch rectifies this issue by charging the memcg when the hugetlb
-> folio is allocated, and uncharging when the folio is freed (analogous to
-> the hugetlb controller).
+> Jumping in late here as I was traveling last week.  In addition, I want
+> to state my limited cgroup knowledge up front.
+> 
+> I was thinking of your scenario above a little differently.  Suppose a
+> group is up and running at almost 100% memory usage.  However, the majority
+> of that memory is reclaimable.  Now, someone wants to allocate a 2M hugetlb
+> page.  There is not 2MB free, but we could easily reclaim 2MB to make room
+> for the hugetlb page.  I may be missing something, but I do not see how that
+> is going to happen.  It seems like we would really want that behavior.
 
-This changelog is missing a lot of information. Both about the usecase
-(we do not want to fish that out from archives in the future) and the
-actual implementation and the reasoning behind that.
+But that is actually what it does, no?
 
-AFAICS you have decided to charge on the hugetlb use rather than hugetlb
-allocation to the pool. I suspect the underlying reasoning is that pool
-pages do not belong to anybody. This is a deliberate decision and it
-should be documented as such.
+alloc_hugetlb_folio
+  mem_cgroup_hugetlb_charge_folio
+    charge_memcg
+      try_charge
+        !page_counter_try_charge ?
+          !try_to_free_mem_cgroup_pages ?
+            mem_cgroup_oom
 
-It is also very important do describe subtle behavior properties that
-might be rather unintuitive to users. Most notably 
-- there is no hugetlb pool management involved in the memcg
-  controller. One has to use hugetlb controller for that purpose.
-  Also the pre allocated pool as such doesn't belong to anybody so the
-  memcg host overcommit management has to consider it when configuring
-  hard limits.
-- memcg limit reclaim doesn't assist hugetlb pages allocation when
-  hugetlb overcommit is configured (i.e. pages are not consumed from the
-  pool) which means that the page allocation might disrupt workloads
-  from other memcgs.
-- failure to charge a hugetlb page results in SIGBUS rather
-  than memcg oom killer. That could be the case even if the
-  hugetlb pool still has pages available and there is
-  reclaimable memory in the memcg.
-- hugetlb pages are contributing to memory reclaim protection 
-  implicitly. This means that the low,min limits tunning has to consider
-  hugetlb memory as well.
+So it does reclaim when the hugetlb hits the cgroup limit. And if that
+fails to make room, it OOMs the cgroup.
 
-I suspect there is more than the above. To be completely honest I am
-still not convinced this is a good idea.
-
-I do recognize that this might work in a very limited environments but
-hugetlb management is quite challenging on its own and this just adds
-another layer of complexity which is really hard to see through without
-an intimate understanding of both memcg and hugetlb. The reason that
-hugetlb has been living outside of the core MM (and memcg) is not just
-because we like it that way. And yes I do fully understand that users
-shouldn't really care about that because this is just a memory to them.
-
-We should also consider the global control for this functionality. I am
-especially worried about setups where a mixed bag of workloads
-(containers) is executed. While some of them will be ready for the new
-accounting mode many will leave in their own world without ever being
-modified. How do we deal with that situation?
-
-All that being said, I am not going to ack nor nack this but I really do
-prefer to be much more explicit about the motivation and current
-implementation specifics so that we can forward users to something
-they can digest.
-
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-[...]
-
-a minor implementation detail below. I couldn't spot anything obviously
-broken with the rest of the hugetlb specific code. restore_reserve_on_memcg_failure
-is rather clumsy and potentially error prone but I will leave that out
-to Mike as he is much more familiar with that behavior than me.
-
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index de220e3ff8be..ff88ea4df11a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-[...]
-> @@ -3119,6 +3121,15 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
->  			hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
->  					pages_per_huge_page(h), folio);
->  	}
-> +
-> +	/* undo allocation if memory controller disallows it. */
-> +	if (mem_cgroup_hugetlb_charge_folio(folio, GFP_KERNEL)) {
-
-htlb_alloc_mask(h) rather than GFP_KERNEL. Ideally with
-__GFP_RETRY_MAYFAIL which is a default allocation policy.
-
-> +		if (restore_reserve_on_memcg_failure)
-> +			restore_reserve_on_error(h, vma, addr, folio);
-> +		folio_put(folio);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
->  	return folio;
->  
->  out_uncharge_cgroup:
-
--- 
-Michal Hocko
-SUSE Labs
+Or maybe I'm missing something?
