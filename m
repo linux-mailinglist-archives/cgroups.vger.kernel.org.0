@@ -2,161 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3797B5950
-	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 19:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA65E7B5BDC
+	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 22:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjJBRlw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Oct 2023 13:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
+        id S231178AbjJBUNB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Oct 2023 16:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236446AbjJBRlv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 13:41:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD26AC
-        for <cgroups@vger.kernel.org>; Mon,  2 Oct 2023 10:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696268456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4f3o6Dy0aKfMhbFfem3eSrFYgmkRkeAED7I//e1+Hvw=;
-        b=dnMNOycmFCR5aLNYPRjbg//POxfUwscMQsgd7MP8xcmBmj363G6JY+fBex9FhJ3zCI2HMT
-        DwlvaXRVfnTshl2h9IbE3NfMwa9aEWIwYp0AXUJOsY1nqOkIOpU72pvm6TSEnMHlGR28eX
-        V/FFLa2lctQNtjcRrCkUTTg0YkBAD7Q=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-645-daL--MNsPvSgVE23VMIfuA-1; Mon, 02 Oct 2023 13:40:53 -0400
-X-MC-Unique: daL--MNsPvSgVE23VMIfuA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E0583C23641;
-        Mon,  2 Oct 2023 17:40:52 +0000 (UTC)
-Received: from [10.22.34.33] (unknown [10.22.34.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A1BF2026D4B;
-        Mon,  2 Oct 2023 17:40:52 +0000 (UTC)
-Message-ID: <a284696f-6c73-02b6-1ce5-1017eb257bb1@redhat.com>
-Date:   Mon, 2 Oct 2023 13:40:51 -0400
+        with ESMTP id S229714AbjJBUNA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 16:13:00 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52980AC
+        for <cgroups@vger.kernel.org>; Mon,  2 Oct 2023 13:12:56 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7740cf93901so13228385a.2
+        for <cgroups@vger.kernel.org>; Mon, 02 Oct 2023 13:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696277575; x=1696882375; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ig8P4cQOGE/ZtlmRjRCjZeop9P1BTd8W7jj+VA+9aI=;
+        b=0o3ncYFUuY+VowDql8yoKEm4jD156AkUWgkCakspTyKKENrQzoWyT9LVMULUFmoNAq
+         65B4xG+Rw57tZewQ31g0/fXyOXx5MQTsIi45a/IjAqLTIETvhT0IsUQNAdLWASVYkAXS
+         oXGn6kQHjyjA3+WTTDe6l/Kjk+Curm1vMk0O9hGsaLVdNnLjpHkiZ4cxfg1ZxfPku5uT
+         5vJULhGHXmwgYAsk3/NyfH8tGgXtSvd79b4AQKB0Sx/8l8dqPN3M1X75VYsvj6n1WYVe
+         1siVBFaRj3lqntyINalRF1J0gaH+FzV7tJMcrEUWtFGfEFMkrd80ESGCbLmetl7wFmJg
+         MLGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696277575; x=1696882375;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ig8P4cQOGE/ZtlmRjRCjZeop9P1BTd8W7jj+VA+9aI=;
+        b=oBFKvQ/f7v215G4rAUxvlSQGWUhKkiR9TyzWyWMAoxQaZsSCNUvc/RfbeMSvQYBon6
+         Qx6zdiiM43UOgfh2QqHC06QpapBY58UFUcBcCjEZngOUIYORTrTj/2aa244QH4bTJUl3
+         FizWKtEinqVQX0k7uQfZSAdkb0dEEIMQuZHKaoLsbfvAZ7/JJrfWjTyf3QidvJCs043r
+         gohxH0hqWDEp/xHeE3gX2L7NutSDqmM8eKNw8HM2/88bQTlGoUkdJP4hXfwb27zk6DtA
+         n7jlkghqcswFvyFLDfMJgi0OnkK+9Q+uTWRLM7qxC/VlWIFIBM1B3RMTAUBzEeNjvsmV
+         gxIQ==
+X-Gm-Message-State: AOJu0YwGXKTN/nXfPVRfuy6UORjuKAXhXjIn3h0VhW70e41EbP4z3Ar2
+        SJ5IwakULrJycMnOqzwLE/pPZwcnT4hT9GkMgyA=
+X-Google-Smtp-Source: AGHT+IEQxVBvmIIyECAYi31Co1WajvJKUAwk2DEdf2g2H2l51M3wsw7tatmmX4E/BLzu5B0qPOINzA==
+X-Received: by 2002:a05:620a:854:b0:774:1d7f:2730 with SMTP id u20-20020a05620a085400b007741d7f2730mr10977679qku.46.1696277575439;
+        Mon, 02 Oct 2023 13:12:55 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id c2-20020a05620a134200b007743360b3fasm6248556qkl.34.2023.10.02.13.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 13:12:55 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 16:12:54 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
+Message-ID: <20231002201254.GA8435@cmpxchg.org>
+References: <20230927150832.335132-1-roman.gushchin@linux.dev>
+ <20230927150832.335132-3-roman.gushchin@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH-cgroup] cgroup/cpuset: Enable invalid to valid local
- partition transition
-Content-Language: en-US
-To:     Pierre Gondois <pierre.gondois@arm.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20230930034402.2776278-1-longman@redhat.com>
- <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927150832.335132-3-roman.gushchin@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/2/23 06:06, Pierre Gondois wrote:
-> Hello Waiman,
->
-> I could test the patch using the for-next branch in your tree.
-> Just a NIT, it seemed that the message indicating the reason
-> the isolated configuration was invalid is not printed anymore:
->
-> Commands:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # echo isolated > cgroup/A1/cpuset.cpus.partition
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid                      <--- used to have '(Cpu list in 
-> cpuset.cpus not exclusive)'
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated                              <--- now working!
->
->
-> But when creating an isolated partition from overlapping cpusets,
-> the message is printed:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # echo isolated > cgroup/B1/cpuset.cpus.partition
->
-> # cat cgroup/A1/cpuset.cpus.partition
-> member
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid (Cpu list in cpuset.cpus not exclusive) <--- Complete 
-> message printed
->
->
-> On 9/30/23 05:44, Waiman Long wrote:
->> When a local partition becomes invalid, it won't transition back to
->> valid partition automatically if a proper "cpuset.cpus.exclusive" or
->> "cpuset.cpus" change is made. Instead, system administrators have to
->> explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
->> file at the partition root.
->>
->> This patch now enables the automatic transition of an invalid local
->> partition back to valid when there is a proper "cpuset.cpus.exclusive"
->> or "cpuset.cpus" change.
->>
->> Automatic transition of an invalid remote partition to a valid one,
->> however, is not covered by this patch. They still need an explicit
->> write to "cpuset.cpus.partition" to become valid again.
->
-> I'm not sure I understand what is meant by 'remote partition',
-> is it possible to explain ? Or is the following illustrating what you
-> mean ?
->
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # echo isolated > cgroup/A1/cpuset.cpus.partition
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # echo isolated > cgroup/B1/cpuset.cpus.partition
->
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid
->
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid        <--- The remote CPU is not updated
+On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
+> @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+>  	return objcg;
+>  }
+>  
+> +static DEFINE_SPINLOCK(current_objcg_lock);
+> +
+> +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
+> +{
+> +	struct mem_cgroup *memcg;
+> +	struct obj_cgroup *objcg;
+> +	unsigned long flags;
+> +
+> +	old = current_objcg_clear_update_flag(old);
+> +	if (old)
+> +		obj_cgroup_put(old);
+> +
+> +	spin_lock_irqsave(&current_objcg_lock, flags);
+> +	rcu_read_lock();
+> +	memcg = mem_cgroup_from_task(current);
+> +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
+> +		objcg = rcu_dereference(memcg->objcg);
+> +		if (objcg && obj_cgroup_tryget(objcg))
+> +			break;
+> +		objcg = NULL;
+> +	}
+> +	rcu_read_unlock();
 
-It is probably another corner case that has not been handled. I will 
-look into that.
+Can this tryget() actually fail when this is called on the current
+task during fork() and attach()? A cgroup cannot be offlined while
+there is a task in it.
 
-Thanks for the test.
+> @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
+>  		mem_cgroup_clear_mc();
+>  	}
+>  }
+> +
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static void mem_cgroup_fork(struct task_struct *task)
+> +{
+> +	task->objcg = (struct obj_cgroup *)0x1;
 
--Longman
-
-
+dup_task_struct() will copy this pointer from the old task. Would it
+be possible to bump the refcount here instead? That would save quite a
+bit of work during fork().
