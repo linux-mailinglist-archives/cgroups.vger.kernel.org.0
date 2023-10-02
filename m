@@ -2,62 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3349F7B592F
-	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 19:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72897B5960
+	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 19:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjJBR2x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Oct 2023 13:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S232054AbjJBRcW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Oct 2023 13:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJBR2w (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 13:28:52 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7592FB4;
-        Mon,  2 Oct 2023 10:28:48 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-79fa5d9f3a2so516464539f.3;
-        Mon, 02 Oct 2023 10:28:48 -0700 (PDT)
+        with ESMTP id S231794AbjJBRcV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 13:32:21 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C5D9;
+        Mon,  2 Oct 2023 10:32:18 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3528bc102adso4010885ab.2;
+        Mon, 02 Oct 2023 10:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696267728; x=1696872528; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696267938; x=1696872738; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/+gPI7karCGwOfvdi9At0XF2O3t7B4eyDINiSd4rikE=;
-        b=DMci7H0fOPQCtwnpg2AHotRw3yF/vPTyh6yn7qrnfE3p5bo3AY2xN4VQB3I+1gCREZ
-         v9eDCuqN1yzbmIM0Zu9mtiSk99LfyLkN1y8yx4awr1QBBGIAINVH8psrZOU8af0VdbfW
-         LfZf98SeAdh8MtQu3A9XEhF/w6dxsUILz60E/ZyU/D0IGyJbpG/eaco9Bwz9DmzBQANM
-         63MEuMoKvHDFzoiFK1gpbeHay4ODiJQkkhIjQrzbyGJ68yBec6tBZbaH14RbLQvSCLQk
-         yRo7Xgr6bpJAsOkukZ4QcUs3Zz9g8bq169Rm1eysglUGaOHNr64vzrgzl1y/VL5wfS7D
-         oC2g==
+        bh=cOcvNtoCPG98RS11q56sK5rtazXlCaKT/ov5ePtmTYw=;
+        b=HQhw7KfciLByyvGcx8T9S0xInHY44XhYRXIMKhCNKqD6MqWMAvaD6hSTuGKvRLvoy/
+         lwZpfybjwljszcfcMHeLMK68Fdy/GqrthE9BK5sRndb3zUVsnacBF/X3q1vTzQ41Cpbc
+         t73Eyf1471396yHdOEgdo9QcveYtwKqZ2FYD6cQYubiWb1Ru8EIWQowJ5+TW9yh3+edm
+         cp/NCwn6FlWdyzWceGjZTZebfNPEf6QY3r7Ap+JDQT73rTULHg0Rc+lx6DF7kI1S/zUu
+         kIynetfc5dqVKYZ96JOwmX018VXx/xax0MMyQ7p1U+QL3IF6dOEy+NSnx/mvzHaLTUei
+         kqJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696267728; x=1696872528;
+        d=1e100.net; s=20230601; t=1696267938; x=1696872738;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/+gPI7karCGwOfvdi9At0XF2O3t7B4eyDINiSd4rikE=;
-        b=gpqSFRJGxDBiG7lcsfKNgTmVFikYc2Txo/paF+f4UUKjgA+c4YFm+P9u6CG3vLBW3j
-         Lxa+U8qi2FewPMtW268fQ4+brWxczzCwUQyJLYGtDyyA9TN8cg+jWQotkh+CmxqZh/e8
-         9erxEswqm9GOqU2PuvTnnrIMUG66pJfmdCR+qlhPEATfbBcHu6WpNtd32+hTYCZIxp/X
-         AP0vSCxHblop9YpcOsCxTwUkuyf+kKaBLTxqkqExidYkjbXIrBV4RSJSODEorEw6Dgn2
-         Odc+C5JQLre/BDEq9VlEW6VDVbGGV72Vc76tBN8FuTWGtaY7yBKjTPUn7Zq5Mqbjb1vf
-         AseQ==
-X-Gm-Message-State: AOJu0Yz6zKU8W0mxchevlpq9Ier8OrOS4UrFdfzQsx7zIxwy4FQgZj/7
-        58EwFYL0Y7ASqcDCxfJG5PbTL0o/22dwD0uJy8Q=
-X-Google-Smtp-Source: AGHT+IED9P/sdhWflPI5nZpkF9sxImJVIZAlrYm2HirkirDwKllAD69cNEDugkzKyvrzn1PiwUA8gd/WJCRrppMRfNk=
-X-Received: by 2002:a6b:7318:0:b0:79f:a3ac:71dc with SMTP id
- e24-20020a6b7318000000b0079fa3ac71dcmr12901656ioh.8.1696267727558; Mon, 02
- Oct 2023 10:28:47 -0700 (PDT)
+        bh=cOcvNtoCPG98RS11q56sK5rtazXlCaKT/ov5ePtmTYw=;
+        b=f7TC6vXy/D3p/OR2X4/HcGPpXlxXYkyOQmpc6RTDMranJ+JRwv4y55xtkV6JmJv5Fj
+         SnlYLag8hfXhTgb5i2SckfjXYiZpnmAAfn5SKevr/niRkBjdH+gZijXd5566mtGceLcZ
+         vqnPwNjvKqFVlJRYvSt+owK/XU/ehkMb1APD/M/JGf4HK6ynY/82GL07c+Ujy7tpK1z3
+         eHOQ3VrWls/vWNRMVpLw7XBx31303yXT/drVnfNnKMJCjXBkQPb0xxdC87O5/u4joSVe
+         awSXadkQuB79MkJ8W9cCvE6Nm3HXnbi/FLa643ncw6/KXaNeqLG5WZl1AF6skFrNJ2v7
+         MxYA==
+X-Gm-Message-State: AOJu0YzCqUaOXKSWKf4ulNrsQMAfxWxfkslMyNs2uChP31SuJJR9Ot0z
+        +R5Z1w4L+sjKgvXqe4u962Ch5arzbr36jANnDLI=
+X-Google-Smtp-Source: AGHT+IEngd3huTiNWRKhSAhYvvfitjNpvnUhpR7tSZ7IfW+0b6vK/Dtf2oCc8q9C6d4q6yVwFCOESBbY5foNkYh0IXY=
+X-Received: by 2002:a05:6e02:1c0f:b0:351:56de:515c with SMTP id
+ l15-20020a056e021c0f00b0035156de515cmr15191810ilh.6.1696267937801; Mon, 02
+ Oct 2023 10:32:17 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230928005723.1709119-1-nphamcs@gmail.com> <20230928005723.1709119-2-nphamcs@gmail.com>
- <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
-In-Reply-To: <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
+ <ZRrI90KcRBwVZn/r@dhcp22.suse.cz> <20231002145026.GB4414@cmpxchg.org>
+ <ZRrc8hv4t740MZar@dhcp22.suse.cz> <20231002152555.GA5054@cmpxchg.org>
+In-Reply-To: <20231002152555.GA5054@cmpxchg.org>
 From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Mon, 2 Oct 2023 10:28:36 -0700
-Message-ID: <CAKEwX=OwrMNMAvve9a965mBJm8as+njtXE993VcnKXdccd5GEw@mail.gmail.com>
+Date:   Mon, 2 Oct 2023 10:32:06 -0700
+Message-ID: <CAKEwX=NLBs=Oi8VDUyawWvKKhwU08kbgq8RKrY8CqrcG9G2QWA@mail.gmail.com>
 Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
  memory controller
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
+        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
         muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
         shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
         linux-mm@kvack.org, kernel-team@meta.com,
@@ -74,138 +75,60 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 6:43=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
+On Mon, Oct 2, 2023 at 8:25=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
 >
-> On Wed 27-09-23 17:57:22, Nhat Pham wrote:
-> > Currently, hugetlb memory usage is not acounted for in the memory
-> > controller, which could lead to memory overprotection for cgroups with
-> > hugetlb-backed memory. This has been observed in our production system.
+> On Mon, Oct 02, 2023 at 05:08:34PM +0200, Michal Hocko wrote:
+> > On Mon 02-10-23 10:50:26, Johannes Weiner wrote:
+> > > On Mon, Oct 02, 2023 at 03:43:19PM +0200, Michal Hocko wrote:
+> > > > On Wed 27-09-23 17:57:22, Nhat Pham wrote:
+> > [...]
+> > > > - memcg limit reclaim doesn't assist hugetlb pages allocation when
+> > > >   hugetlb overcommit is configured (i.e. pages are not consumed fro=
+m the
+> > > >   pool) which means that the page allocation might disrupt workload=
+s
+> > > >   from other memcgs.
+> > > > - failure to charge a hugetlb page results in SIGBUS rather
+> > > >   than memcg oom killer. That could be the case even if the
+> > > >   hugetlb pool still has pages available and there is
+> > > >   reclaimable memory in the memcg.
+> > >
+> > > Are these actually true? AFAICS, regardless of whether the page comes
+> > > from the pool or the buddy allocator, the memcg code will go through
+> > > the regular charge path, attempt reclaim, and OOM if that fails.
 > >
-> > This patch rectifies this issue by charging the memcg when the hugetlb
-> > folio is allocated, and uncharging when the folio is freed (analogous t=
-o
-> > the hugetlb controller).
->
-> This changelog is missing a lot of information. Both about the usecase
-> (we do not want to fish that out from archives in the future) and the
-> actual implementation and the reasoning behind that.
->
-> AFAICS you have decided to charge on the hugetlb use rather than hugetlb
-> allocation to the pool. I suspect the underlying reasoning is that pool
-> pages do not belong to anybody. This is a deliberate decision and it
-> should be documented as such.
-
-Yep that was the intention behind placing the charging of the hugetlb folio
-in alloc_hugetlb_folio(). I'll document this in the changelog and/or code.
-
->
-> It is also very important do describe subtle behavior properties that
-> might be rather unintuitive to users. Most notably
-
-If you don't mind, I'll summarize these into the next version of
-the patch's changelog :)
-
-> - there is no hugetlb pool management involved in the memcg
->   controller. One has to use hugetlb controller for that purpose.
->   Also the pre allocated pool as such doesn't belong to anybody so the
->   memcg host overcommit management has to consider it when configuring
->   hard limits.
-> - memcg limit reclaim doesn't assist hugetlb pages allocation when
->   hugetlb overcommit is configured (i.e. pages are not consumed from the
->   pool) which means that the page allocation might disrupt workloads
->   from other memcgs.
-> - failure to charge a hugetlb page results in SIGBUS rather
->   than memcg oom killer. That could be the case even if the
->   hugetlb pool still has pages available and there is
->   reclaimable memory in the memcg.
-
-Ah yes that should be documented indeed.
-
-> - hugetlb pages are contributing to memory reclaim protection
->   implicitly. This means that the low,min limits tunning has to consider
->   hugetlb memory as well.
-
-This was the original inspiration for this change. I'll expand on it
-in the new version's changelog.
-
->
-> I suspect there is more than the above. To be completely honest I am
-> still not convinced this is a good idea.
->
-> I do recognize that this might work in a very limited environments but
-> hugetlb management is quite challenging on its own and this just adds
-> another layer of complexity which is really hard to see through without
-> an intimate understanding of both memcg and hugetlb. The reason that
-> hugetlb has been living outside of the core MM (and memcg) is not just
-> because we like it that way. And yes I do fully understand that users
-> shouldn't really care about that because this is just a memory to them.
->
-> We should also consider the global control for this functionality. I am
-> especially worried about setups where a mixed bag of workloads
-> (containers) is executed. While some of them will be ready for the new
-> accounting mode many will leave in their own world without ever being
-> modified. How do we deal with that situation?
-
-Johannes already responded to this, but I also think this hypothetical
-situation isn't super urgent to handle right now. That said, we can
-always revisit it if/when it proves to be an issue and add appropriate
-memcg-specific control for this feature as a follow-up.
-
->
-> All that being said, I am not going to ack nor nack this but I really do
-> prefer to be much more explicit about the motivation and current
-> implementation specifics so that we can forward users to something
-> they can digest.
->
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> [...]
->
-> a minor implementation detail below. I couldn't spot anything obviously
-> broken with the rest of the hugetlb specific code. restore_reserve_on_mem=
-cg_failure
-> is rather clumsy and potentially error prone but I will leave that out
-> to Mike as he is much more familiar with that behavior than me.
-
-That part irks me too, but I'm trying to follow the error handling logic
-that follows each alloc_hugetlb_folio() call site.
-
-If anyone has any suggestions, I'd be happy to listen!
-
->
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index de220e3ff8be..ff88ea4df11a 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> [...]
-> > @@ -3119,6 +3121,15 @@ struct folio *alloc_hugetlb_folio(struct vm_area=
-_struct *vma,
-> >                       hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h=
-),
-> >                                       pages_per_huge_page(h), folio);
-> >       }
-> > +
-> > +     /* undo allocation if memory controller disallows it. */
-> > +     if (mem_cgroup_hugetlb_charge_folio(folio, GFP_KERNEL)) {
->
-> htlb_alloc_mask(h) rather than GFP_KERNEL. Ideally with
-> __GFP_RETRY_MAYFAIL which is a default allocation policy.
-
-Oh I wasn't aware of htlb_alloc_mask(h). So I'll fix this to:
-
-htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL
-
->
-> > +             if (restore_reserve_on_memcg_failure)
-> > +                     restore_reserve_on_error(h, vma, addr, folio);
-> > +             folio_put(folio);
-> > +             return ERR_PTR(-ENOMEM);
-> > +     }
-> > +
-> >       return folio;
+> > OK, I should have been more explicit. Let me expand. Charges are
+> > accounted only _after_ the actual allocation is done. So the actual
+> > allocation is not constrained by the memcg context. It might reclaim
+> > from the memcg at that time but the disruption could have already
+> > happened. Not really any different from regular memory allocation
+> > attempt but much more visible with GB pages and one could reasonably
+> > expect that memcg should stop such a GB allocation if the local reclaim
+> > would be hopeless to free up enough from its own consumption.
 > >
-> >  out_uncharge_cgroup:
+> > Makes more sense?
 >
-> --
-> Michal Hocko
-> SUSE Labs
+> Yes, that makes sense.
+>
+> This should be fairly easy to address by having hugetlb do the split
+> transaction that charge_memcg() does in one go, similar to what we do
+> for the hugetlb controller as well. IOW,
+>
+> alloc_hugetlb_folio()
+> {
+>         if (mem_cgroup_hugetlb_try_charge())
+>                 return ERR_PTR(-ENOMEM);
+>
+>         folio =3D dequeue();
+>         if (!folio) {
+>                 folio =3D alloc_buddy();
+>                 if (!folio)
+>                         goto uncharge;
+>         }
+>
+>         mem_cgroup_hugetlb_commit_charge();
+> }
+
+Ah actually, I like this better.
+If I do this I can circumvent all the redo_reserve bogus as well!
