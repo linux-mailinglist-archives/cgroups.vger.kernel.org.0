@@ -2,55 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8BB7B4B9D
-	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 08:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E254D7B4E6C
+	for <lists+cgroups@lfdr.de>; Mon,  2 Oct 2023 10:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235457AbjJBGqx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Oct 2023 02:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58384 "EHLO
+        id S235920AbjJBI75 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Oct 2023 04:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235321AbjJBGqx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 02:46:53 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6119E;
-        Sun,  1 Oct 2023 23:46:50 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BB46A68C7B; Mon,  2 Oct 2023 08:46:46 +0200 (CEST)
-Date:   Mon, 2 Oct 2023 08:46:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20231002064646.GA1799@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230926093834.GB13806@lst.de> <20230926212515.GN800259@ZenIV>
+        with ESMTP id S235966AbjJBI7z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 04:59:55 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D243E9
+        for <cgroups@vger.kernel.org>; Mon,  2 Oct 2023 01:59:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5363227cc80so6302192a12.3
+        for <cgroups@vger.kernel.org>; Mon, 02 Oct 2023 01:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696237191; x=1696841991; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0Aq3VBo7qjCCeRanT50rVNMQkGTY1nNBetMjfH25Y1Y=;
+        b=F9je5l33FfdHoTiCcZBgcLRUPLah56SobUhtp9KrV+Vqvpc30UPEawPX50AaiMqoQ7
+         zT/S6I2tvEIOmc+OQ7HyyD6OpsIm2ktIVQD7QR7pDqdjPgIi2DXmXXvPR/2sCO+LcyDN
+         ODGurFOm6A9UiwevYAMtwj9LA4bHAN+1es/xR4RRXMqWmOholF0tjwl3y837n2eL4/aS
+         g7eaczIHIqcRzuGHaU/Q3NtCYO+xHC0ziz34FbsO2UbYv2Yeuo/ADKU43vKTMO2pl4cD
+         ZrnvVvmtbIXeSZJxA/4psaYGMPtWkDldBq0P07uGd7zBdLWSPgxQHFDM+MNpVLOcRi5O
+         IMAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696237191; x=1696841991;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0Aq3VBo7qjCCeRanT50rVNMQkGTY1nNBetMjfH25Y1Y=;
+        b=MDVC7DyccQZ9VBNXWYL9nK0yoQeXqOxoaNwDwulya3XSfQDM7/v4N+HgM7MfHzNFR5
+         ewjw5hxG5Sq9sAaWWVG1iUwmWxi9Auajwj9cMOkBqzV0yz41Nz0MVv8hpdJw7bzNdQDr
+         HddZzeZ87O+9NDqwxhXzqDqwELFoBMl5uUhbZEUPIrgA7zB0G4hUTgKFRsFDLhL38Nqx
+         G8XBIhmmkY0u7oAi6c+ZwVQ7puuOvWuyvDUaQHkb7FNu3DWIkpfKhWGryiekrCcgXr44
+         wzKtstVYMYfJt4hLOPBpaYe8yGsRDGLG9qu93Vf39PY5qw9nRlVbeMSMGetVXHWjnDwX
+         6VhA==
+X-Gm-Message-State: AOJu0YziRSjUQxG06xU2mvNHvHzkIwryho0+6BIWkksXdRJtz9BVXcim
+        JKZ5BXsfECdWs4nXNHJ0QAUrhbDLZ7J0re/1S7qGF78V
+X-Google-Smtp-Source: AGHT+IFe9vfYszGIqmifCNIgBIKDRYU0O9JcINTWllB2HlPSBtLh4ZD16UErZWHIN1+uWEF/4Rpgv7WjgNZ0GpEPvz8=
+X-Received: by 2002:aa7:c157:0:b0:523:102f:3ce1 with SMTP id
+ r23-20020aa7c157000000b00523102f3ce1mr10251146edp.10.1696237190736; Mon, 02
+ Oct 2023 01:59:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926212515.GN800259@ZenIV>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+From:   Felip Moll <lipixx@gmail.com>
+Date:   Mon, 2 Oct 2023 10:59:34 +0200
+Message-ID: <CAOv3p80vCV1_FeynQ_sZhzYbif_-4k4odZHex9NbhzuZ204gLg@mail.gmail.com>
+Subject: VSZ from cgroup interfaces
+To:     cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,25 +61,24 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:25:15PM +0100, Al Viro wrote:
-> Before your patch: foo_kill_super() calls kill_anon_super(),
-> which calls kill_super_notify(), which removes the sucker from
-> the list, then frees ->s_fs_info.  After your patch:
-> removal from the lists happens via the call of kill_super_notify()
-> *after* both of your methods had been called, while freeing
-> ->s_fs_info happens from the method call.  IOW, you've restored
-> the situation prior to "super: ensure valid info".  The whole
-> point of that commit had been to make sure that we have nothing
-> in the lists with ->s_fs_info pointing to a freed object.
-> 
-> It's not about free_anon_bdev(); that part is fine - it's the
-> "we can drop the weird second call site of kill_super_notify()"
-> thing that is broken.
+Hello,
 
-The point has been to only release the anon dev_t after
-kill_super_notify, to prevent two of them beeing reused.
+I am trying to get the VSZ of the pids of a cgroup and its
+descendants, but I am not finding which is the best way to achieve
+this in any of the interfaces of cgroups. In kernel code I can see how
+memory.current includes anon and pagecache (file), and
+memory.swap.current includes all the swap. I also see how pages
+accounted in memory.current are discharged when they are charged to
+memory.swap.current.
 
-Which we do as the free_anon_bdev is done directly in
-deactivate_locked_super.  The new ->free_sb for non-block file systems
-frees resources, but none of them matter for sget.
+Also, I tested with a simple program which just does a malloc uses
+VSZ. I get the value from /proc, but I see no way to get this value in
+cgroups (e.g. from memory.stat fields).
 
+Does cgroups account for virtual memory? Is it too expensive to
+account for it? I cannot find it by reading the kernel but I might be
+wrong.
+
+Thanks
+Pd. I don't know where to ask it, so please forward me to the correct
+mailing list/source if this is not the one.
