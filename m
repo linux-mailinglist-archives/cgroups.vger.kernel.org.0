@@ -2,49 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B5F7B5CFD
-	for <lists+cgroups@lfdr.de>; Tue,  3 Oct 2023 00:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADEE7B5D4A
+	for <lists+cgroups@lfdr.de>; Tue,  3 Oct 2023 00:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjJBWEA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Oct 2023 18:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        id S235791AbjJBWrq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Oct 2023 18:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbjJBWD7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 18:03:59 -0400
-Received: from out-199.mta1.migadu.com (out-199.mta1.migadu.com [95.215.58.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C994CE
-        for <cgroups@vger.kernel.org>; Mon,  2 Oct 2023 15:03:56 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 15:03:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696284234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o3rGOO1zzAI6sGQiZBiVHTxVUTx8U4hPLeaBLW4Dbqo=;
-        b=aMU8C6+gDYX9Rh2K28PLdF/LkSHtF/2ivJP7BkQWxGfsHbFh8sB+WnyZIJH8mjr5lSASnq
-        2C83mJ6EBVkBQ3aJZeCXqktu2U86y9f3ij7rS5q8KUT5HSqgeObIkkB9411jnq6KVMeunM
-        qQMKuH2QKt/oJGXu3jYdhpz+uDzDQpo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
-Message-ID: <ZRs-RKsOhtO3eclx@P9FQF9L96D>
-References: <20230927150832.335132-1-roman.gushchin@linux.dev>
- <20230927150832.335132-3-roman.gushchin@linux.dev>
- <20231002201254.GA8435@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002201254.GA8435@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        with ESMTP id S229879AbjJBWrq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 18:47:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A819E93;
+        Mon,  2 Oct 2023 15:47:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCF62C433C7;
+        Mon,  2 Oct 2023 22:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696286863;
+        bh=28kekbe9MiZUa316MRCxUdXRzkm3hMRvIjbqD7/s5i8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G+iHZLhJB3/4FRAtEYCyZESHh0hPip6cxNlaTyjXlB6JYTzF8XN6GnvnEk+sPOnSm
+         EgcYdfR98TPQmwnGiIBHyR7rHh0pum6Pz3DEk2uRauB6/NXkm9eGn2HUU8eWoJyhBS
+         OqGCwnfoEIiynY5pYtO+ox5GojUkfifjoel/vsx0voArid8oyFQOIeOgAXNnXrbfeP
+         FQhd0vD8qdpeo/X3D3MPmGaNwDGjCI/XQCO7uPlE+fwDZWzfqZYq1dJJ+LZeYC+o9E
+         YCLtoYK6YxY9E2PXxUP3Mbrne+8OEO66b7EzCl75bFVE3amH0ZgCY5bAK/gRx88PWC
+         7SBTDwOmNOtAw==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 03 Oct 2023 01:47:34 +0300
+Message-Id: <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
+ CSS events
+X-Mailer: aerc 0.14.0
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+ <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
+ <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
+ <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
+ <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,66 +62,91 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 04:12:54PM -0400, Johannes Weiner wrote:
-> On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
-> > @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> >  	return objcg;
-> >  }
-> >  
-> > +static DEFINE_SPINLOCK(current_objcg_lock);
-> > +
-> > +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
-> > +{
-> > +	struct mem_cgroup *memcg;
-> > +	struct obj_cgroup *objcg;
-> > +	unsigned long flags;
-> > +
-> > +	old = current_objcg_clear_update_flag(old);
-> > +	if (old)
-> > +		obj_cgroup_put(old);
-> > +
-> > +	spin_lock_irqsave(&current_objcg_lock, flags);
-> > +	rcu_read_lock();
-> > +	memcg = mem_cgroup_from_task(current);
-> > +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-> > +		objcg = rcu_dereference(memcg->objcg);
-> > +		if (objcg && obj_cgroup_tryget(objcg))
-> > +			break;
-> > +		objcg = NULL;
-> > +	}
-> > +	rcu_read_unlock();
-> 
-> Can this tryget() actually fail when this is called on the current
-> task during fork() and attach()? A cgroup cannot be offlined while
-> there is a task in it.
+On Wed Sep 27, 2023 at 4:56 AM EEST, Haitao Huang wrote:
+> On Tue, 26 Sep 2023 08:13:18 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> ...
+> >> > >>  /**
+> >> > >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state
+> >> > >> *parent_css)
+> >> > >>   */
+> >> > >>  static void misc_cg_free(struct cgroup_subsys_state *css)
+> >> > >>  {
+> >> > >> -	kfree(css_misc(css));
+> >> > >> +	struct misc_cg *cg =3D css_misc(css);
+> >> > >> +	enum misc_res_type i;
+> >> > >> +
+> >> > >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> >> > >> +		if (cg->res[i].free)
+> >> > >> +			cg->res[i].free(cg);
+> >> > >> +
+> >> > >> +	kfree(cg);
+> >> > >>  }
+> >> > >>
+> >> > >>  /* Cgroup controller callbacks */
+> >> > >> --
+> >> > >> 2.25.1
+> >> > >
+> >> > > Since the only existing client feature requires all callbacks, =20
+> >> should
+> >> > > this not have that as an invariant?
+> >> > >
+> >> > > I.e. it might be better to fail unless *all* ops are non-nil (e.g.=
+ =20
+> >> to
+> >> > > catch issues in the kernel code).
+> >> > >
+> >> >
+> >> > These callbacks are chained from cgroup_subsys, and they are defined
+> >> > separately so it'd be better follow the same pattern.  Or change =20
+> >> together
+> >> > with cgroup_subsys if we want to do that. Reasonable?
+> >>
+> >> I noticed this one later:
+> >>
+> >> It would better to create a separate ops struct and declare the instan=
+ce
+> >> as const at minimum.
+> >>
+> >> Then there is no need for dynamic assigment of ops and all that is in
+> >> rodata. This is improves both security and also allows static analysis
+> >> bit better.
+> >>
+> >> Now you have to dynamically trace the struct instance, e.g. in case of
+> >> a bug. If this one done, it would be already in the vmlinux.
+> >I.e. then in the driver you can have static const struct declaration
+> > with *all* pointers pre-assigned.
+> >
+> > Not sure if cgroups follows this or not but it is *objectively*
+> > better. Previous work is not always best possible work...
+> >
+>
+> IIUC, like vm_ops field in vma structs. Although function pointers in =20
+> vm_ops are assigned statically, but you still need dynamically assign =20
+> vm_ops for each instance of vma.
+>
+> So the code will look like this:
+>
+> if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
+> {
+> ...
+> }
+>
+> I don't see this is the pattern used in cgroups and no strong opinion =20
+> either way.
+>
+> TJ, do you have preference on this?
 
-Highly theoretically it can if it races against a migration of the current
-task to another memcg and the previous memcg is getting offlined.
+I do have strong opinion on this. In the client side we want as much
+things declared statically as we can because it gives more tools for
+statical analysis.
 
-I actually might make sense to apply the same approach for memcgs as well
-(saving a lazily-updating memcg pointer on task_struct). Then it will be
-possible to ditch this "for" loop. But I need some time to master the code
-and run benchmarks. Idk if it will make enough difference to justify the change.
+I don't want to see dynamic assignments in the SGX driver, when they
+are not actually needed, no matter things are done in cgroups.
 
-Btw, this is the rfc version, while there is a newer v1 version, which Andrew
-already picked for mm-unstable. Both of your comments still apply, just fyi.
+> Thanks
+> Haitao
 
-> 
-> > @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
-> >  		mem_cgroup_clear_mc();
-> >  	}
-> >  }
-> > +
-> > +#ifdef CONFIG_MEMCG_KMEM
-> > +static void mem_cgroup_fork(struct task_struct *task)
-> > +{
-> > +	task->objcg = (struct obj_cgroup *)0x1;
-> 
-> dup_task_struct() will copy this pointer from the old task. Would it
-> be possible to bump the refcount here instead? That would save quite a
-> bit of work during fork().
-
-Yeah, it should be possible. It won't save a lot, but I agree it makes
-sense. I'll take a look and will prepare a separate patch for this.
-
-Thank you!
+BR, Jarkko
