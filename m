@@ -2,167 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0B77B5D65
-	for <lists+cgroups@lfdr.de>; Tue,  3 Oct 2023 00:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C39B7B5E0A
+	for <lists+cgroups@lfdr.de>; Tue,  3 Oct 2023 02:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbjJBWz2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Oct 2023 18:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S237475AbjJCASf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Oct 2023 20:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjJBWz2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 18:55:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F84B4;
-        Mon,  2 Oct 2023 15:55:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B25CDC433C8;
-        Mon,  2 Oct 2023 22:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696287324;
-        bh=gmdRKizE3oTVXTlKcTqPrbSyT6DkwUQHbEcrgV5Lbik=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=EjB/Tpuf7nIqhQQh1mNjV42RYxAVimZmhMyTZPwNPVZsZM52f4N0/PEqZJd6YeeRO
-         R3ROXTVmszEzYthyI/NuSVmaFAGOlpF0y2mUJ+vGRDkRn07HlFlLnhBTS3OwcCfS5q
-         +ZFRxpWiwsxEI2Cjni5hE3PgB7lFAg8LM0Aki/ZR4bAMXxa6RKJ1BcoFEKV2OiRWgF
-         tHEQF01FW7oS4Th1d7urGTxmJZhv5rFb2lcNDiln2GRLYKBuidRlI5BqD5gudQi55U
-         3HdUCcsB4wZyFMFfzxKz8tw4DHPCZlwK/Cajw38vdHzl0oq1m1acl6wJpEFL7HXya8
-         oc5FUEsIgAb2Q==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 03 Oct 2023 01:55:14 +0300
-Message-Id: <CVYBO2F1D1NC.1N7LNWPTDRG04@seitikki>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
- CSS events
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-X-Mailer: aerc 0.14.0
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-2-haitao.huang@linux.intel.com>
- <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
- <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
- <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
- <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki>
-In-Reply-To: <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229595AbjJCASf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Oct 2023 20:18:35 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E96ECC;
+        Mon,  2 Oct 2023 17:18:30 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-578d0d94986so189221a12.2;
+        Mon, 02 Oct 2023 17:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696292310; x=1696897110; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/BmJv0MBfIMWl5p2QDJcq2KnxKw0Xqy0pinCaSmlKA0=;
+        b=VD9NIKD452HLZ8DEp455A/rYwZAkoO1wiQWV7kqhlsLGYWzgiESZ7D7T6Ah3Iw+I+A
+         7fQXwfHHEBM+D0rWLiG1oqXaCBG3oVFzzj+AUvItsvQZ/u2YltsTKK0A06+61eDpoDH+
+         8m8XMasPr8Uo0oOU5ZlpsxGa9n6QoXGoLAHVuUjkHYhnsMU5cunoiPwLS9b/T0o0tYME
+         rGAmdAoucOx9Shdldo29QZ+HeGeCVYB+Ohc2CEuJnaaaDLDVF0dKlP95jutJYhZyqzwN
+         HXuSSdQbCWqXaPUC4baQansXOBYZUoDj92COSiHmBs+BghclVGkgrQD0c/sSpgPAAhXH
+         0kqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696292310; x=1696897110;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/BmJv0MBfIMWl5p2QDJcq2KnxKw0Xqy0pinCaSmlKA0=;
+        b=OXrPWmD4pdUb6cmZe5cI31TJOSIcmj6PzU7NCBbOHHhOw11NxXhhja6M2enRm/NfZP
+         t4J0eI+UT2Q0LfWjbyOUhHhW+wxVl2g//lpWS8aYH8+drWt1BuidmABstK2PncLsbreT
+         mL+2X43SVr7nObqDDcTnWlCANgJ8mUkqdqCkWYJLozK3zlVZ7V6T/CTElI879WgccY16
+         zvDvzdpd864tkOXgGCEcShkXtAN6OG4sJhxHy2G9fR5drrush7uRJ2alf0RSktDraMH6
+         KIUYEh/saBXNiBv3BHpfULsADSzYKiqwqutno4PFTzeY7mr/MC9hxRyvhg2hIQddhZ57
+         2jig==
+X-Gm-Message-State: AOJu0YwLlbfMqkLZyB7kYPwZsKfYKmPHzxFub6TuphzJw5P8dJwdJ0LH
+        re7CzGzyV90G3RAl4HLmLy2w8TozhjqPHQ==
+X-Google-Smtp-Source: AGHT+IEtRLbmYGNzQPbUlvZunesWVPYxVjxoOOuUZUSuJa0fiHw8kPNU15WfO3xHatmOWY85p7O+XQ==
+X-Received: by 2002:a05:6a20:9719:b0:162:6588:7174 with SMTP id hr25-20020a056a20971900b0016265887174mr11557807pzc.28.1696292309933;
+        Mon, 02 Oct 2023 17:18:29 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-018.fbsv.net. [2a03:2880:ff:12::face:b00c])
+        by smtp.gmail.com with ESMTPSA id g7-20020aa78187000000b00688435a9915sm73158pfi.189.2023.10.02.17.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 17:18:29 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v3 0/3] hugetlb memcg accounting
+Date:   Mon,  2 Oct 2023 17:18:25 -0700
+Message-Id: <20231003001828.2554080-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue Oct 3, 2023 at 1:47 AM EEST, Jarkko Sakkinen wrote:
-> On Wed Sep 27, 2023 at 4:56 AM EEST, Haitao Huang wrote:
-> > On Tue, 26 Sep 2023 08:13:18 -0500, Jarkko Sakkinen <jarkko@kernel.org>=
- =20
-> > wrote:
-> >
-> > ...
-> > >> > >>  /**
-> > >> > >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state
-> > >> > >> *parent_css)
-> > >> > >>   */
-> > >> > >>  static void misc_cg_free(struct cgroup_subsys_state *css)
-> > >> > >>  {
-> > >> > >> -	kfree(css_misc(css));
-> > >> > >> +	struct misc_cg *cg =3D css_misc(css);
-> > >> > >> +	enum misc_res_type i;
-> > >> > >> +
-> > >> > >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> > >> > >> +		if (cg->res[i].free)
-> > >> > >> +			cg->res[i].free(cg);
-> > >> > >> +
-> > >> > >> +	kfree(cg);
-> > >> > >>  }
-> > >> > >>
-> > >> > >>  /* Cgroup controller callbacks */
-> > >> > >> --
-> > >> > >> 2.25.1
-> > >> > >
-> > >> > > Since the only existing client feature requires all callbacks, =
-=20
-> > >> should
-> > >> > > this not have that as an invariant?
-> > >> > >
-> > >> > > I.e. it might be better to fail unless *all* ops are non-nil (e.=
-g. =20
-> > >> to
-> > >> > > catch issues in the kernel code).
-> > >> > >
-> > >> >
-> > >> > These callbacks are chained from cgroup_subsys, and they are defin=
-ed
-> > >> > separately so it'd be better follow the same pattern.  Or change =
-=20
-> > >> together
-> > >> > with cgroup_subsys if we want to do that. Reasonable?
-> > >>
-> > >> I noticed this one later:
-> > >>
-> > >> It would better to create a separate ops struct and declare the inst=
-ance
-> > >> as const at minimum.
-> > >>
-> > >> Then there is no need for dynamic assigment of ops and all that is i=
-n
-> > >> rodata. This is improves both security and also allows static analys=
-is
-> > >> bit better.
-> > >>
-> > >> Now you have to dynamically trace the struct instance, e.g. in case =
-of
-> > >> a bug. If this one done, it would be already in the vmlinux.
-> > >I.e. then in the driver you can have static const struct declaration
-> > > with *all* pointers pre-assigned.
-> > >
-> > > Not sure if cgroups follows this or not but it is *objectively*
-> > > better. Previous work is not always best possible work...
-> > >
-> >
-> > IIUC, like vm_ops field in vma structs. Although function pointers in =
-=20
-> > vm_ops are assigned statically, but you still need dynamically assign =
-=20
-> > vm_ops for each instance of vma.
-> >
-> > So the code will look like this:
-> >
-> > if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
-> > {
-> > ...
-> > }
-> >
-> > I don't see this is the pattern used in cgroups and no strong opinion =
-=20
-> > either way.
-> >
-> > TJ, do you have preference on this?
->
-> I do have strong opinion on this. In the client side we want as much
-> things declared statically as we can because it gives more tools for
-> statical analysis.
->
-> I don't want to see dynamic assignments in the SGX driver, when they
-> are not actually needed, no matter things are done in cgroups.
+Changelog:
+v3:
+	* Add a prep patch at the start of the series to extend the memory
+	  controller interface with new helper functions for hugetlb
+	  accounting.
+	* Do not account hugetlb memory for memcontroller in cgroup v1
+	  (patch 2) (suggested by Johannes Weiner).
+	* Change the gfp flag passed to mem cgroup charging (patch 2)
+	  (suggested by Michal Hocko).
+	* Add caveats to cgroup admin guide and commit changelog
+	  (patch 2) (suggested by Michal Hocko).
+v2:
+	* Add a cgroup mount option to enable/disable the new hugetlb memcg
+	  accounting behavior (patch 1) (suggested by Johannes Weiner).
+	* Add a couple more ksft_print_msg() on error to aid debugging when
+	  the selftest fails. (patch 2)
 
-I.e. I don't really even care what crazy things cgroups subsystem
-might do or not do. It's not my problem.
+Currently, hugetlb memory usage is not acounted for in the memory
+controller, which could lead to memory overprotection for cgroups with
+hugetlb-backed memory. This has been observed in our production system.
 
-All I care is that we *do not* have any use for assigning those
-pointers at run-time. So do whatever you want with cgroups side
-as long as this is not the case.
+For instance, here is one of our usecases: suppose there are two 32G
+containers. The machine is booted with hugetlb_cma=6G, and each 
+container may or may not use up to 3 gigantic page, depending on the 
+workload within it. The rest is anon, cache, slab, etc. We can set the
+hugetlb cgroup limit of each cgroup to 3G to enforce hugetlb fairness. 
+But it is very difficult to configure memory.max to keep overall 
+consumption, including anon, cache, slab etc. fair.
+ 
+What we have had to resort to is to constantly poll hugetlb usage and
+readjust memory.max. Similar procedure is done to other memory limits
+(memory.low for e.g). However, this is rather cumbersome and buggy.
+Furthermore, when there is a delay in memory limits correction, (for
+e.g when hugetlb usage changes within consecutive runs of the userspace
+agent), the system could be in an over/underprotected state.
 
-BR, Jarkko
+This patch series rectifies this issue by charging the memcg when the
+hugetlb folio is allocated, and uncharging when the folio is freed. In
+addition, a new selftest is added to demonstrate and verify this new
+behavior.
+
+Nhat Pham (3):
+  memcontrol: add helpers for hugetlb memcg accounting
+  hugetlb: memcg: account hugetlb-backed memory in memory controller
+  selftests: add a selftest to verify hugetlb usage in memcg
+
+ Documentation/admin-guide/cgroup-v2.rst       |  29 +++
+ MAINTAINERS                                   |   2 +
+ include/linux/cgroup-defs.h                   |   5 +
+ include/linux/memcontrol.h                    |  30 +++
+ kernel/cgroup/cgroup.c                        |  15 +-
+ mm/hugetlb.c                                  |  35 ++-
+ mm/memcontrol.c                               |  94 ++++++-
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ .../selftests/cgroup/test_hugetlb_memcg.c     | 234 ++++++++++++++++++
+ 10 files changed, 427 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+
+-- 
+2.34.1
