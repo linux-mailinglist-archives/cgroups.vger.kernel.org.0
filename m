@@ -2,157 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D117B6B56
-	for <lists+cgroups@lfdr.de>; Tue,  3 Oct 2023 16:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974217B6B97
+	for <lists+cgroups@lfdr.de>; Tue,  3 Oct 2023 16:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239639AbjJCOXB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Oct 2023 10:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S240044AbjJCOaS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Oct 2023 10:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239535AbjJCOXB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Oct 2023 10:23:01 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A49BB
-        for <cgroups@vger.kernel.org>; Tue,  3 Oct 2023 07:22:57 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-65b0dad1f98so6595796d6.0
-        for <cgroups@vger.kernel.org>; Tue, 03 Oct 2023 07:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696342976; x=1696947776; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mQJcLp1PNbZ/HCxUuAL8GIttYWoNS8rEFxPDJqSSreg=;
-        b=mCsHqU4TyV4ikwllGDTn0FCGSV87iPHWPpRwhJ8lUdb3OF2/hInibMKNtrA9fxkDRJ
-         1WNmNp241LuiiBoCAs+1ZEQ5E/BvP15QOGezVGTOn4zQFIFfXY5hCemoVyR4fjt/O46F
-         UA9nt5qv6D/LrKoqKL27RJ/Wc8HQ7COjjPk5/fPA7zg0ZLZ3JNGVf0n7z9ZXDmePWSSb
-         ZZPUFUNyN7KNLcnQ5qeIiWYycDLK1EbjKIR0EVn3hRb4SVskcpV+BzhAouk/iGNok3Zo
-         9oFkWZ/8JSzz7ymzQ3OF3FvDJk5R0uvWO8G/bcUI7MUVhE+yzrMLfbD8O9w3qoJ5ighl
-         lCBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696342976; x=1696947776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mQJcLp1PNbZ/HCxUuAL8GIttYWoNS8rEFxPDJqSSreg=;
-        b=KY4cY1/7Tm3t9g/bzGiGLiWscX4XyG4OjdrI7kjcbDqfdpfY7qzrrdBmCsvVqpeImu
-         bzJwuNruo2BIpuFPXdm2P8B2hLOKK7q6mn+Xk1XItabVikUeNyCkxQq0x1qT/SG1S2MT
-         ubXJcaRPcMP0WPr5K77ffovqZ8htcubI98dS6f3Qg8H8idKLcFKrKDLTOeBsAfPNxK9K
-         JVYstZRMFQ6vkiVGUFgLgTeyCQIgVBa56Lxc3mX1mXScCRVO8lIDkqPut5fEXsOl9LQ/
-         HR2wlJwOvJWRuUhgaLuF9BciR0C0ljws4+HaFEOaCx6gBvOUzxMLTR9mgjwPQAjXNVQH
-         rgnA==
-X-Gm-Message-State: AOJu0Yx56bxC8IRxO8LK/7A9g2qz1pT/yfj6RumRFtLQNKTBLqtnAhAD
-        0caSR0tOIDCuLfDI2YJZwFA7ew==
-X-Google-Smtp-Source: AGHT+IGv7PLU7uRYjnFUgK7YvvEdjfi3advrrLLcN7FRUz6vDMpEs0fGL3cW+2lAdwL2wIvXdR0haw==
-X-Received: by 2002:a0c:e18a:0:b0:65d:d:a114 with SMTP id p10-20020a0ce18a000000b0065d000da114mr15681428qvl.55.1696342976103;
-        Tue, 03 Oct 2023 07:22:56 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id h9-20020a0cab09000000b006616fbcc077sm519329qvb.129.2023.10.03.07.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 07:22:55 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 10:22:55 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
-Message-ID: <20231003142255.GE17012@cmpxchg.org>
-References: <20230927150832.335132-1-roman.gushchin@linux.dev>
- <20230927150832.335132-3-roman.gushchin@linux.dev>
- <20231002201254.GA8435@cmpxchg.org>
- <ZRs-RKsOhtO3eclx@P9FQF9L96D>
+        with ESMTP id S240060AbjJCOaQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Oct 2023 10:30:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B31D7;
+        Tue,  3 Oct 2023 07:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696343412; x=1727879412;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=UCQJOYqv97Otv7CHu/YgGsnF34DQhXKpnmZyn56+66U=;
+  b=VMrvM8Cv7VaaPHf1EpcL7duora/oBx5Mvin/jI0/pjMw466UNxkbylwj
+   a0iBhuSMEyp0+oHUBhb4cE4f0IAnSe9biuQuaGBkfut2wxH12sAFRaduu
+   nVdT5uIExE96FPaX8vj6EXFWw7pf9IN3NtpdCHjHJrf6aE0ZPalKqwp0S
+   eVXtFYUCZePWRo/0mhCsmiPZrwtNV/D9qot9Dl65Ycfa5YZpX0XuSNSo/
+   VjVzGu6jKyfMGvBwGFKvUerfCoSr83jroLgsgMFin8+y7fpLdYaYRpf6Q
+   sGBmPvyBF44gpKYNZeKzEbrKTbzCGFrd7aKl0BqULfM3lCGeykuAN9YD6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="413798077"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="413798077"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:29:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1082038574"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="1082038574"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 03 Oct 2023 07:29:49 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for CSS
+ events
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+ <8f08f0b0f2b04b90d7cdb7b628f16f9080687c43.camel@intel.com>
+Date:   Tue, 03 Oct 2023 09:29:48 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRs-RKsOhtO3eclx@P9FQF9L96D>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2b8s7yzawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <8f08f0b0f2b04b90d7cdb7b628f16f9080687c43.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 03:03:48PM -0700, Roman Gushchin wrote:
-> On Mon, Oct 02, 2023 at 04:12:54PM -0400, Johannes Weiner wrote:
-> > On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
-> > > @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > >  	return objcg;
-> > >  }
-> > >  
-> > > +static DEFINE_SPINLOCK(current_objcg_lock);
-> > > +
-> > > +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
-> > > +{
-> > > +	struct mem_cgroup *memcg;
-> > > +	struct obj_cgroup *objcg;
-> > > +	unsigned long flags;
-> > > +
-> > > +	old = current_objcg_clear_update_flag(old);
-> > > +	if (old)
-> > > +		obj_cgroup_put(old);
-> > > +
-> > > +	spin_lock_irqsave(&current_objcg_lock, flags);
-> > > +	rcu_read_lock();
-> > > +	memcg = mem_cgroup_from_task(current);
-> > > +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-> > > +		objcg = rcu_dereference(memcg->objcg);
-> > > +		if (objcg && obj_cgroup_tryget(objcg))
-> > > +			break;
-> > > +		objcg = NULL;
-> > > +	}
-> > > +	rcu_read_unlock();
-> > 
-> > Can this tryget() actually fail when this is called on the current
-> > task during fork() and attach()? A cgroup cannot be offlined while
-> > there is a task in it.
-> 
-> Highly theoretically it can if it races against a migration of the current
-> task to another memcg and the previous memcg is getting offlined.
+On Wed, 27 Sep 2023 04:20:55 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Ah right, if this runs between css_set_move_task() and ->attach(). The
-cache would be briefly updated to a parent in the old hierarchy, but
-then quickly reset from the ->attach().
+> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> The misc cgroup controller (subsystem) currently does not perform
+>> resource type specific action for Cgroups Subsystem State (CSS) events:
+>> the 'css_alloc' event when a cgroup is created and the 'css_free' event
+>> when a cgroup is destroyed, or in event of user writing the max value to
+>> the misc.max file to set the usage limit of a specific resource
+>> [admin-guide/cgroup-v2.rst, 5-9. Misc].
+>>
+>> Define callbacks for those events and allow resource providers to
+>> register the callbacks per resource type as needed. This will be
+>> utilized later by the EPC misc cgroup support implemented in the SGX
+>> driver:
+>> - On css_alloc, allocate and initialize necessary structures for EPC
+>> reclaiming, e.g., LRU list, work queue, etc.
+>> - On css_free, cleanup and free those structures created in alloc.
+>> - On max_write, trigger EPC reclaiming if the new limit is at or below
+>> current usage.
+>
+> Nit:
+>
+> Wondering why we should trigger EPC reclaiming if the new limit is *at*  
+> current
+> usage?
+>
+> I actually don't quite care about why here, but writing these details in  
+> the
+> changelog may bring unnecessary confusion.  I guess you can just remove  
+> all the
+> details about what SGX driver needs to do on these callbacks.
+>
+>
+Okay, I'll remove the three bullets on the SGX drive implementation  
+details.
 
-Can you please add a comment along these lines?
-
-> I actually might make sense to apply the same approach for memcgs as well
-> (saving a lazily-updating memcg pointer on task_struct). Then it will be
-> possible to ditch this "for" loop. But I need some time to master the code
-> and run benchmarks. Idk if it will make enough difference to justify the change.
-
-Yeah the memcg pointer is slightly less attractive from an
-optimization POV because it already is a pretty direct pointer from
-task through the cset array.
-
-If you still want to look into it from a simplification POV that
-sounds reasonable, but IMO it would be fine with a comment.
-
-> > > @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
-> > >  		mem_cgroup_clear_mc();
-> > >  	}
-> > >  }
-> > > +
-> > > +#ifdef CONFIG_MEMCG_KMEM
-> > > +static void mem_cgroup_fork(struct task_struct *task)
-> > > +{
-> > > +	task->objcg = (struct obj_cgroup *)0x1;
-> > 
-> > dup_task_struct() will copy this pointer from the old task. Would it
-> > be possible to bump the refcount here instead? That would save quite a
-> > bit of work during fork().
-> 
-> Yeah, it should be possible. It won't save a lot, but I agree it makes
-> sense. I'll take a look and will prepare a separate patch for this.
-
-I guess the hairiest part would be synchronizing against a migration
-because all these cgroup core callbacks are unlocked.
-
-Would it make sense to add ->fork_locked() and ->attach_locked()
-callbacks that are dispatched under the css_set_lock? Then this could
-be a simple if (p && !(p & 0x1)) obj_cgroup_get(), which would
-certainly be nice to workloads where fork() is hot, with little
-downside otherwise.
+Thanks
+Haitao
