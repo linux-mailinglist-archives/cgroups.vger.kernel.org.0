@@ -2,70 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEE57B8C9D
-	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE7D7B8CE7
+	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245138AbjJDTAr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Oct 2023 15:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
+        id S245641AbjJDTKb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Oct 2023 15:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245140AbjJDS6q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 14:58:46 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0C510CC;
-        Wed,  4 Oct 2023 11:55:11 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690fe10b6a4so91319b3a.3;
-        Wed, 04 Oct 2023 11:55:11 -0700 (PDT)
+        with ESMTP id S245357AbjJDTKU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 15:10:20 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690FE729B;
+        Wed,  4 Oct 2023 11:59:24 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5ff5f858dso704975ad.2;
+        Wed, 04 Oct 2023 11:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696445711; x=1697050511; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696445964; x=1697050764; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zRoTTT+olEk9QPCtVtm8UsKlLIAIQzhUpSB6cf5g+W4=;
-        b=ELKGviabcfJvis9/3KS2V7eQjvWzWrsNyBOPj6LS5q65IkXfFNWMaty9nwAHNT8huN
-         V4FEj/cUUihwgkTtnxvjHtIDb7BKFXUAeUtbEOLQak+t60omQx0G4fU+8srp2fZs0wk4
-         0qKfxxStyQYcJgUJp+3aUymMpt882f9ct2Gn1LJ5hd15piiVJ6sn2eIlHokOTUerdYrE
-         YhHg04zDhXCcWNBIjHNJQNJz+v1k2sLlA/nb6BYrTZmDj1yxYu8XwBCsWhWnjXJBDi49
-         ydpC9cIJ8n10ahbcTKZ7Zu+BYXBEDLwEwVHgJHvUtPqRQm8SL2uofG3ylkkoIMQvOpgA
-         uBpg==
+        bh=w1hvqdbML9jmUrBMXlybcpZa1pczZCR/HKc4A1lMQgY=;
+        b=EXj7eEauLHNRVgPNSHL+gIZiflgb0o3nF9Yix91EZSPGjQzOHJSk0QJonjOexxoi51
+         FCnUlG1hrb7r1EGPFx4mo2OzpFvjqXLuqwhSFMagbVilzov51KePeNeYKnTjXzXedeJG
+         eo9Q5z56moM3WP/zxoawmkjtOYPCiiwR3oyAk0CacLp6mKHQFTW2lkGjURUYW1D4OUDp
+         J0SKiyDbyBa7OwNTkCgTA4I5TsT27Up293x/5bBIa2/DUZElpL2YNfbEizrcBccty8t/
+         TMe+UOJvLjqjseVSp01wT37ada5k19Gd3LygWeizvVQfG0YoHMI7x9KPiG/ZmZNM9/WV
+         o3MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696445711; x=1697050511;
+        d=1e100.net; s=20230601; t=1696445964; x=1697050764;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zRoTTT+olEk9QPCtVtm8UsKlLIAIQzhUpSB6cf5g+W4=;
-        b=AfUQ8RyO12vb9cXZ0RfbIoAm2c5GhdRqq9a0prm+O0z+2qN0o1yZJYVZkDYHKjRsf9
-         rs0QExupDpD8fL/DZnIznARsQ0SJFQRbeljngYVeMQqeASGnKOjGFSep1EkTRf9F6JnM
-         Oeb9UOIRrkij3GISwPqvWgklzgjUQnDYgzH62gvLvfK0FnPxM3cbVajTlj4EW2mb2Mr+
-         gZKrKqXIq33KjSVweY0DI99LQIG/ndFrgx7YV1OJ8bB0TwyEFfJ439OcBhNZPhQsQmHs
-         bapaZ3Eg7bbVatsFNyVKWWoDJpPK/i/BqOOuljRi06inr5vkV7J55VIFXwqhVPikMhg/
-         ApZA==
-X-Gm-Message-State: AOJu0YytF14cvbCzS2uV32feGZdMoVzP34LGRGmB1sUj3esKTnyJwByr
-        EXGuHecJFWdETRuxicKYTfP2uryyRga3Fw==
-X-Google-Smtp-Source: AGHT+IGH8UOAeBNqXCXrrve+eWueFektU2xFOfxd9ExxG1b9dFbSOBg1Qrj4IRC8VsavCM7LocsfCw==
-X-Received: by 2002:a05:6a20:3d85:b0:133:f0b9:856d with SMTP id s5-20020a056a203d8500b00133f0b9856dmr3619962pzi.17.1696445711098;
-        Wed, 04 Oct 2023 11:55:11 -0700 (PDT)
+        bh=w1hvqdbML9jmUrBMXlybcpZa1pczZCR/HKc4A1lMQgY=;
+        b=P5qD+VeBQU3bHXJqzdYcVZJ1EUXxqzCUYZO3aFA6GJieZs9+l9lw7rPkEXzjObPFgw
+         L1j2u4uiVNIPUJlRfZTSSVuQrvBj+MWlpcaB2SBuOWM/CbH/45TZCGso1ANiIYda2pVi
+         czSpQ47sTr9PXnCeLONNg5rAbfFoUurwlUwpIxT9KkV4v0vuDgv3CEm8TmAodOpbF2PE
+         ZijU++PPxrfcxdhl2BXUP8hLQ/WlGesDbi8A0Ki66m394nDx6PWVU7whnYxIfSNxu7Ei
+         M+3KlymH8zrTtXcY5GmlJPo1NXrvSkHEMVx4lhJQ0qSpE2r+JtIvpERfqcm6T0MFSdRY
+         ai9Q==
+X-Gm-Message-State: AOJu0YwpuZP47dfedcidOgJDGvM6TR052gbOeQg7gnPGiBsXG5Ujb1cP
+        68J2c7mrFCvheZcWNjtWb9o=
+X-Google-Smtp-Source: AGHT+IG75w5n02io1w2XgbjxayXe88gCBJkiBf/LNuRQyB6rWxM/VHoLwG47D/pBOW+f3fVlwp6+Wg==
+X-Received: by 2002:a17:902:c40a:b0:1c3:a4f2:7c92 with SMTP id k10-20020a170902c40a00b001c3a4f27c92mr3777226plk.65.1696445963644;
+        Wed, 04 Oct 2023 11:59:23 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::4:cef])
-        by smtp.gmail.com with ESMTPSA id d8-20020aa78688000000b0068fece22469sm3537444pfo.4.2023.10.04.11.55.10
+        by smtp.gmail.com with ESMTPSA id j2-20020a170902da8200b001b891259eddsm4071184plx.197.2023.10.04.11.59.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 11:55:10 -0700 (PDT)
+        Wed, 04 Oct 2023 11:59:23 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 4 Oct 2023 08:55:08 -1000
+Date:   Wed, 4 Oct 2023 08:59:21 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Pierre Gondois <pierre.gondois@arm.com>
-Subject: Re: [PATCH-cgroup v2] cgroup/cpuset: Enable invalid to valid local
- partition transition
-Message-ID: <ZR21DHx3oJJWs8AI@slm.duckdns.org>
-References: <20231003144420.2895515-1-longman@redhat.com>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
+        kernel-janitors@vger.kernel.org, error27@gmail.com,
+        kamalesh.babulal@oracle.com, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH next] cgroup/cpuset: Cleanup signedness issue in
+ cpu_exclusive_check()
+Message-ID: <ZR22CYkZCv52AmML@slm.duckdns.org>
+References: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003144420.2895515-1-longman@redhat.com>
+In-Reply-To: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -76,27 +77,22 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 10:44:20AM -0400, Waiman Long wrote:
-> When a local partition becomes invalid, it won't transition back to
-> valid partition automatically if a proper "cpuset.cpus.exclusive" or
-> "cpuset.cpus" change is made. Instead, system administrators have to
-> explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
-> file at the partition root.
+On Tue, Sep 26, 2023 at 11:58:01PM -0700, Harshit Mogalapalli wrote:
+> Smatch complains about returning negative error codes from a type
+> bool function.
 > 
-> This patch now enables the automatic transition of an invalid local
-> partition back to valid when there is a proper "cpuset.cpus.exclusive"
-> or "cpuset.cpus" change.
+> kernel/cgroup/cpuset.c:705 cpu_exclusive_check() warn:
+> 	signedness bug returning '(-22)'
 > 
-> Automatic transition of an invalid remote partition to a valid one,
-> however, is not covered by this patch. They still need an explicit
-> write to "cpuset.cpus.partition" to become valid again.
+> The code works correctly, but it is confusing.  The current behavior is
+> that cpu_exclusive_check() returns true if it's *NOT* exclusive.  Rename
+> it to cpusets_are_exclusive() and reverse the returns so it returns true
+> if it is exclusive and false if it's not.  Update both callers as well.
 > 
-> The test_cpuset_prs.sh test script is updated to add new test cases to
-> test this automatic state transition.
-> 
-> Reported-by: Pierre Gondois <pierre.gondois@arm.com>
-> Link: https://lore.kernel.org/lkml/9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <error27@gmail.com>
+> Closes: https://lore.kernel.org/r/202309201706.2LhKdM6o-lkp@intel.com/
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
 Applied to cgroup/for-6.7.
 
