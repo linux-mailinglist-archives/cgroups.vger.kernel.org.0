@@ -2,101 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE7D7B8CE7
-	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B277B8D21
+	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245641AbjJDTKb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Oct 2023 15:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        id S244883AbjJDTH2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Oct 2023 15:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245357AbjJDTKU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 15:10:20 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690FE729B;
-        Wed,  4 Oct 2023 11:59:24 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5ff5f858dso704975ad.2;
-        Wed, 04 Oct 2023 11:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696445964; x=1697050764; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w1hvqdbML9jmUrBMXlybcpZa1pczZCR/HKc4A1lMQgY=;
-        b=EXj7eEauLHNRVgPNSHL+gIZiflgb0o3nF9Yix91EZSPGjQzOHJSk0QJonjOexxoi51
-         FCnUlG1hrb7r1EGPFx4mo2OzpFvjqXLuqwhSFMagbVilzov51KePeNeYKnTjXzXedeJG
-         eo9Q5z56moM3WP/zxoawmkjtOYPCiiwR3oyAk0CacLp6mKHQFTW2lkGjURUYW1D4OUDp
-         J0SKiyDbyBa7OwNTkCgTA4I5TsT27Up293x/5bBIa2/DUZElpL2YNfbEizrcBccty8t/
-         TMe+UOJvLjqjseVSp01wT37ada5k19Gd3LygWeizvVQfG0YoHMI7x9KPiG/ZmZNM9/WV
-         o3MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696445964; x=1697050764;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w1hvqdbML9jmUrBMXlybcpZa1pczZCR/HKc4A1lMQgY=;
-        b=P5qD+VeBQU3bHXJqzdYcVZJ1EUXxqzCUYZO3aFA6GJieZs9+l9lw7rPkEXzjObPFgw
-         L1j2u4uiVNIPUJlRfZTSSVuQrvBj+MWlpcaB2SBuOWM/CbH/45TZCGso1ANiIYda2pVi
-         czSpQ47sTr9PXnCeLONNg5rAbfFoUurwlUwpIxT9KkV4v0vuDgv3CEm8TmAodOpbF2PE
-         ZijU++PPxrfcxdhl2BXUP8hLQ/WlGesDbi8A0Ki66m394nDx6PWVU7whnYxIfSNxu7Ei
-         M+3KlymH8zrTtXcY5GmlJPo1NXrvSkHEMVx4lhJQ0qSpE2r+JtIvpERfqcm6T0MFSdRY
-         ai9Q==
-X-Gm-Message-State: AOJu0YwpuZP47dfedcidOgJDGvM6TR052gbOeQg7gnPGiBsXG5Ujb1cP
-        68J2c7mrFCvheZcWNjtWb9o=
-X-Google-Smtp-Source: AGHT+IG75w5n02io1w2XgbjxayXe88gCBJkiBf/LNuRQyB6rWxM/VHoLwG47D/pBOW+f3fVlwp6+Wg==
-X-Received: by 2002:a17:902:c40a:b0:1c3:a4f2:7c92 with SMTP id k10-20020a170902c40a00b001c3a4f27c92mr3777226plk.65.1696445963644;
-        Wed, 04 Oct 2023 11:59:23 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:cef])
-        by smtp.gmail.com with ESMTPSA id j2-20020a170902da8200b001b891259eddsm4071184plx.197.2023.10.04.11.59.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 11:59:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 4 Oct 2023 08:59:21 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
-        kernel-janitors@vger.kernel.org, error27@gmail.com,
-        kamalesh.babulal@oracle.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH next] cgroup/cpuset: Cleanup signedness issue in
- cpu_exclusive_check()
-Message-ID: <ZR22CYkZCv52AmML@slm.duckdns.org>
-References: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
+        with ESMTP id S1343809AbjJDTHU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 15:07:20 -0400
+Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [95.215.58.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4D430DE
+        for <cgroups@vger.kernel.org>; Wed,  4 Oct 2023 12:02:44 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 12:02:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696446162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jkCd19CwQrPmu8oeXBKgORvhKgKP0KURMRX76XbJ8X4=;
+        b=GPvMdCBdjfSQr376dX+S6ZkziYW6v58FjLd6pXRyRfIAjZwWPfOYUCigqgOEVLXM4Iq1CR
+        /E4fW+l2mj2UbQ0fEPjsPSl7MjKRgF4s5GrszkP2p0Pzb8/v8PFxTRuCLTw5MQVIJXbbtH
+        d/pR3EHSoW9yJY/LV7jLBB3swXFa09I=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v1 0/5] mm: improve performance of accounted kernel
+ memory allocations
+Message-ID: <ZR22wUtVq_vz3NJZ@P9FQF9L96D.corp.robot.car>
+References: <20230929180056.1122002-1-roman.gushchin@linux.dev>
+ <n3x64d2wk7qr42tvcmqisbbrntppcwe6omv6li67ui6rz6umyk@wativjrwvh5g>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <n3x64d2wk7qr42tvcmqisbbrntppcwe6omv6li67ui6rz6umyk@wativjrwvh5g>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:58:01PM -0700, Harshit Mogalapalli wrote:
-> Smatch complains about returning negative error codes from a type
-> bool function.
+On Wed, Oct 04, 2023 at 08:32:39PM +0200, Michal Koutný wrote:
+> On Fri, Sep 29, 2023 at 11:00:50AM -0700, Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > This patchset improves the performance of accounted kernel memory allocations
+> > by ~30% as measured by a micro-benchmark [1]. The benchmark is very
+> > straightforward: 1M of 64 bytes-large kmalloc() allocations.
 > 
-> kernel/cgroup/cpuset.c:705 cpu_exclusive_check() warn:
-> 	signedness bug returning '(-22)'
-> 
-> The code works correctly, but it is confusing.  The current behavior is
-> that cpu_exclusive_check() returns true if it's *NOT* exclusive.  Rename
-> it to cpusets_are_exclusive() and reverse the returns so it returns true
-> if it is exclusive and false if it's not.  Update both callers as well.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <error27@gmail.com>
-> Closes: https://lore.kernel.org/r/202309201706.2LhKdM6o-lkp@intel.com/
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> Nice.
 
-Applied to cgroup/for-6.7.
+Thanks!
 
-Thanks.
+> Have you tried how these +34% compose with -34% reported way back [1]
+> when file lock accounting was added (because your benchmark and lock1
+> sound quite similar)?
 
--- 
-tejun
+No, I haven't. I'm kindly waiting for an automatic report here :)
+But if someone can run these tests manually, I'll appreciate it a lot.
+
+> (BTW Is that your motivation (too)?)
+
+Not really, it was on my todo list for a long time and I just got some spare
+cycles to figure out missing parts (mostly around targeted/remote charging).
+
+Also plan to try similar approach to speed up generic memcg charging.
+
+Thanks!
