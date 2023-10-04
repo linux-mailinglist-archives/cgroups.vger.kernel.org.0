@@ -2,114 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7027B8DB0
-	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22C27B8E13
+	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 22:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233703AbjJDTxS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Oct 2023 15:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
+        id S232977AbjJDUbL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Oct 2023 16:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233573AbjJDTxR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 15:53:17 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FF0A6;
-        Wed,  4 Oct 2023 12:53:14 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79faba5fe12so9543339f.3;
-        Wed, 04 Oct 2023 12:53:14 -0700 (PDT)
+        with ESMTP id S244982AbjJDUbK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 16:31:10 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94749C1
+        for <cgroups@vger.kernel.org>; Wed,  4 Oct 2023 13:31:02 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7740c8509c8so14609485a.3
+        for <cgroups@vger.kernel.org>; Wed, 04 Oct 2023 13:31:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696449193; x=1697053993; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696451461; x=1697056261; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=miM9Rii6r7WYSuGpAV4z/io68HUwHuAXAnsLamrRpmw=;
-        b=cgP+U1NMOp+xBRSQ6pPNS81Oj1VumE05K202Q8rW57F7NtsY9XiNUm7QulMYgbhyeQ
-         PB7AQIzXnvd+blaAZhTAezIUwovwqJof8N71VedIIXKB50bhVnlCzIYSDCG6nbhsWGk7
-         F729pgGeT8QinwCrGwZVUXFNXHOYNa22iyvlONy32ncyA9cfWljP1IlGlmc0VTwYUjFy
-         CAihzSeVtqS1eW+n9x0iM7iNCecowD/z6p6fQS22HyXiiATqvYnUeo0AbLL834vhxKS5
-         TO7ZHbcHQx9RBr0LRjFstFOPXdAo7ElVYp6ZF+HewwBDJyxVXBZnR/v6AAaU8xuGkfAc
-         rt1A==
+        bh=lXYkNNwyK1dpfEtHp9sOFR0NjxTumXuiYxFY0CQML8E=;
+        b=Yb/yLZ/lSKqCcNTFd0++jfe7LwtA1e2a8fxeowPvo/ZqVvAxCu+eFjSfwtxq4GwSp0
+         qQ1jy/fxuFb1yaqaYa/1Bi1CvsCNRFEaFo7kHIcJu1+M/U+xfJ3IqjFmPw1VhpAoPDfp
+         Nfd1qFtaYZ1veD5XH8E6d/9JxtzEc4pQAwljQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696449193; x=1697053993;
+        d=1e100.net; s=20230601; t=1696451461; x=1697056261;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=miM9Rii6r7WYSuGpAV4z/io68HUwHuAXAnsLamrRpmw=;
-        b=Ggd+gmD8hbl+IwvGSwU6+cA22rbY1iTENOKO5xFutl2wDgLBAQLArwR6d55Zkt6yty
-         Euf8iIB0EEwhEPuvoyA65IBjXxOZxP0uIjv6eyyF8cHveg7TStN6hsMdNSNIA7JSx7DI
-         0syIs+vyNmQHwGmtLEqcwtqzXo7dz+mCN+sTFg6VgEBKZz/CR0awAw7egcHRZEyrIay3
-         kSdfc1gCazUSKdpvgTDGU9cwjgobTeZMJyhXXXGTFF6N06jfLbv7BDx3RAjmdu43GXSl
-         TH8y0uiiyL76sB/qTQgDoiEAACMZRtXZM1PK3RBmr0UHg1Bm61yqtGlxDIY2XWITpu/A
-         hR7A==
-X-Gm-Message-State: AOJu0Yz+BJxERnMdhKIPaOBGp10Ufr94t3mz5ehe+j68C2yxJuGjm6CW
-        9uSHRjT6tWkYoAUTSQ3qeuTYkO5++erRIhqo3sY=
-X-Google-Smtp-Source: AGHT+IFKg00R5moLNg6dEnKgS3rIAz2WiRfEfg5bKT/ca2Wy/+DA5vO4GbgFWE3mxG0yLDaSHARh6d8ackVGNstxcck=
-X-Received: by 2002:a5d:9943:0:b0:79f:d194:d6e2 with SMTP id
- v3-20020a5d9943000000b0079fd194d6e2mr3780651ios.10.1696449193517; Wed, 04 Oct
- 2023 12:53:13 -0700 (PDT)
+        bh=lXYkNNwyK1dpfEtHp9sOFR0NjxTumXuiYxFY0CQML8E=;
+        b=oq1pJh6eMO2XndJ8HeQoqTRYYFNjjkrt0OwYJqbl4Qbc1G05od3vq4jDLjzymrEawM
+         fCHv4hgHkoCM9eQSV/AnhUDqX4PfNmo5MnwvYQXeWC4mtNK2Isl0+zxGL6b4Agl9+nXx
+         gW7ArxY9oIKq2h7iZIEa5SIS7pq7rPokb7iVKqYUK0GbZ8xHBdajq9D2w46BEuGM8r5j
+         XQfmFWlC+Z0Vpk78rxtBEylMb2LkJ1zLtBcIUYDDa+jJSSQVMx09GEC9oK51L3E9W5qm
+         +DeruFkgQcUWw15UpVIPCtTsV4I1DORBfVBAQR+HKiUOCZUa5AaKGHWVBJ9hmVXojc7W
+         Mgxg==
+X-Gm-Message-State: AOJu0Yw7OXJcGSnjQUyJDLT4QCn6KMcYfXFgBelfbcWc77VKDfFUBf7X
+        gUYZN1jQFQnUd0LlmmQTLrqrCs6KZrr0E9HRp81ImQ==
+X-Google-Smtp-Source: AGHT+IGLZP33HnZS7bG9xtyaa74P8ZAeBNdPd6PgpTcqRfaa7OqDoemhVNJ3IZ0HDt0/MrPs8ICW6w==
+X-Received: by 2002:a05:620a:908:b0:767:e993:5702 with SMTP id v8-20020a05620a090800b00767e9935702mr3401179qkv.35.1696451461307;
+        Wed, 04 Oct 2023 13:31:01 -0700 (PDT)
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com. [209.85.160.179])
+        by smtp.gmail.com with ESMTPSA id s14-20020ae9f70e000000b00774309d3e89sm1512300qkg.7.2023.10.04.13.30.59
+        for <cgroups@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 13:30:59 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-419768e69dfso94581cf.0
+        for <cgroups@vger.kernel.org>; Wed, 04 Oct 2023 13:30:59 -0700 (PDT)
+X-Received: by 2002:a05:622a:1a92:b0:419:6cf4:244f with SMTP id
+ s18-20020a05622a1a9200b004196cf4244fmr64519qtc.20.1696451458698; Wed, 04 Oct
+ 2023 13:30:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231004193622.900383-1-nphamcs@gmail.com> <20231004194630.GC39112@cmpxchg.org>
-In-Reply-To: <20231004194630.GC39112@cmpxchg.org>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 4 Oct 2023 12:53:02 -0700
-Message-ID: <CAKEwX=Pa1ADcfQJWskjwtGBVGB7BH1MCauSoZYJR54QGrfqd6A@mail.gmail.com>
-Subject: Re: [PATCH v2] memcontrol: only transfer the memcg data for migration
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20230928015858.1809934-1-linan666@huaweicloud.com> <ZR29mvoQMxcZcppw@slm.duckdns.org>
+In-Reply-To: <ZR29mvoQMxcZcppw@slm.duckdns.org>
+From:   Khazhy Kumykov <khazhy@chromium.org>
+Date:   Wed, 4 Oct 2023 13:30:44 -0700
+X-Gmail-Original-Message-ID: <CACGdZYLFkNs7uOuq+ftSE7oMGNbB19nm40E86xiagCFfLZ1P0w@mail.gmail.com>
+Message-ID: <CACGdZYLFkNs7uOuq+ftSE7oMGNbB19nm40E86xiagCFfLZ1P0w@mail.gmail.com>
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linan666@huaweicloud.com, josef@toxicpanda.com, axboe@kernel.dk,
+        yukuai3@huawei.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 12:46=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
+On Wed, Oct 4, 2023 at 12:32=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
-> On Wed, Oct 04, 2023 at 12:36:22PM -0700, Nhat Pham wrote:
-> > For most migration use cases, only transfer the memcg data from the old
-> > folio to the new folio, and clear the old folio's memcg data. No
-> > charging and uncharging will be done.
-> >
-> > This shaves off some work on the migration path, and avoids the
-> > temporary double charging of a folio during its migration.
-> >
-> > The only exception is replace_page_cache_folio(), which will use the ol=
-d
-> > mem_cgroup_migrate() (now renamed to mem_cgroup_replace_folio). In that
-> > context, the isolation of the old page isn't quite as thorough as with
-> > migration, so we cannot use our new implementation directly.
-> >
-> > This patch is the result of the following discussion on the new hugetlb
-> > memcg accounting behavior:
-> >
-> > https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
-> >
-> > This should be added as the second prep patch in the following series:
-> > https://lore.kernel.org/all/20231003001828.2554080-1-nphamcs@gmail.com/
-> > (hugetlb memcg accounting)
-> >
-> > and should go right before the following patch:
-> > hugetlb: memcg: account hugetlb-backed memory in memory controller
-> >
-> > Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > Closes: https://lore.kernel.org/lkml/20231003171329.GB314430@monkey/
+> Hello,
 >
-> These two tags shouldn't be here, but in the fixlet instead. This is
-> the dependency patch. Otherwise looks good to me:
+> On Thu, Sep 28, 2023 at 09:58:58AM +0800, linan666@huaweicloud.com wrote:
+> > From: Li Nan <linan122@huawei.com>
+> >
+> > When the throttle of bps is not enabled, tg_bps_limit() returns U64_MAX=
+,
+> > which is be used in calculate_bytes_allowed(), and divide 0 error will
+> > happen.
 >
-> > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> calculate_bytes_allowed() is just
 >
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>   return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64)HZ);
+>
+> The only division is by HZ. How does divide by 0 happen?
 
-Thanks for the review, Johannes!
+We've also noticed this - haven't looked too deeply but I don't think
+it's a divide by zero, but an overflow (bps_limit * jiffy_elapsed / HZ
+will overflow for jiffies > HZ). mul_u64_u64_div_u64 does say it will
+throw DE if the mul overflows
+
+>
+> Thanks.
+>
+> --
+> tejun
