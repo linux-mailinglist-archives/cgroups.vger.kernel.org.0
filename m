@@ -2,84 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B277B8D21
-	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BF17B8CEA
+	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244883AbjJDTH2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Oct 2023 15:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S233650AbjJDTR7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Oct 2023 15:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343809AbjJDTHU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 15:07:20 -0400
-Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [95.215.58.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4D430DE
-        for <cgroups@vger.kernel.org>; Wed,  4 Oct 2023 12:02:44 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 12:02:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696446162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jkCd19CwQrPmu8oeXBKgORvhKgKP0KURMRX76XbJ8X4=;
-        b=GPvMdCBdjfSQr376dX+S6ZkziYW6v58FjLd6pXRyRfIAjZwWPfOYUCigqgOEVLXM4Iq1CR
-        /E4fW+l2mj2UbQ0fEPjsPSl7MjKRgF4s5GrszkP2p0Pzb8/v8PFxTRuCLTw5MQVIJXbbtH
-        d/pR3EHSoW9yJY/LV7jLBB3swXFa09I=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v1 0/5] mm: improve performance of accounted kernel
- memory allocations
-Message-ID: <ZR22wUtVq_vz3NJZ@P9FQF9L96D.corp.robot.car>
-References: <20230929180056.1122002-1-roman.gushchin@linux.dev>
- <n3x64d2wk7qr42tvcmqisbbrntppcwe6omv6li67ui6rz6umyk@wativjrwvh5g>
+        with ESMTP id S244630AbjJDTR5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 15:17:57 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88A2CE;
+        Wed,  4 Oct 2023 12:17:53 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690fa0eea3cso144530b3a.0;
+        Wed, 04 Oct 2023 12:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696447073; x=1697051873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/ELgqsOMecsnfYY/Zh/7I2mC+TPNVeHWk4zwTLsS3gI=;
+        b=CUS6Jsm/DM9i5h+HagVzjdgzIICGkE4hcXX1nH3UJRz2ff6nYVCQjY5WCVUWWc8rbC
+         9FJs+zsYbmEtJCyFzheKlkrRbX8agTdypAagGgm60s+Dmw23Aaqt3GAq3odfy8OwBwNF
+         7X0EIFky4iJ1HOQF/43eEEbrhkpgCX5ocKMoBN4AiKoWwdC+yr6kjWUje2xIg6ojYCp3
+         mQ3BAmA3u6fx1m9MLoNv+wn8NHiAmvaaYPzaEX/sHcgjfcPHSfDZ4YsNVynTi0/Lp+aX
+         JU3yCza76pJzKgh/n96pi+mkUd4yDLWrqU9SKfUHrOiVgECrcYKyUjreoSqaAz2g+yEk
+         aAfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696447073; x=1697051873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ELgqsOMecsnfYY/Zh/7I2mC+TPNVeHWk4zwTLsS3gI=;
+        b=LKU0qjpVyzwGr/DrfRZ1PEQrrp2vTy7aogQJ7k0uP6HerrvkEHWxsqOTxRPQdMNqys
+         yo/fERdDq358++30uh2ITPy1ZAdGOOjTBKK1s37MIj5YFpUZITtbl0v866kelYeq4jcA
+         5EdhlqFHUkHXtaEp3Vc4raQIzGUBGMac9OSLdiYNm8C2wMjhGZmKE45pvG7K+ENXLFka
+         u1VKLFNDi6wC6zD58tC5xTZD1sbQfTdX84w8GDeC2zrdlAGNZOrsoHTRKku3XCnTVf9h
+         D61qNIHiFVTMI9Zy10rnoKymR6hAmbPHcaNoBc+wUw8erA+6v0qM7Xtkt9UCboNwG4st
+         ckUg==
+X-Gm-Message-State: AOJu0Yxwo0n2EAFWn9A+JaT/W5vN+i/7fw9hgWaczCKeKsocZ40vATTt
+        Kq31ZipIGreq+kLo78k9KxA=
+X-Google-Smtp-Source: AGHT+IE8uyANwVGnLow9zSZiiFgN0i4GjAlKVChwj+E22AvWzl6KM/h8H/frIev3CXgVexUqtkCR0A==
+X-Received: by 2002:a05:6300:8095:b0:151:b96f:88b4 with SMTP id ap21-20020a056300809500b00151b96f88b4mr2832293pzc.23.1696447073054;
+        Wed, 04 Oct 2023 12:17:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:cef])
+        by smtp.gmail.com with ESMTPSA id b20-20020aa78714000000b0068842ebfd10sm3564296pfo.160.2023.10.04.12.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 12:17:52 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 4 Oct 2023 09:17:51 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: In cgroup_no_v1() check v1 controllers only
+Message-ID: <ZR26X4EJaNgQP5Be@slm.duckdns.org>
+References: <20230920102513.55772-1-kamalesh.babulal@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <n3x64d2wk7qr42tvcmqisbbrntppcwe6omv6li67ui6rz6umyk@wativjrwvh5g>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230920102513.55772-1-kamalesh.babulal@oracle.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 08:32:39PM +0200, Michal Koutný wrote:
-> On Fri, Sep 29, 2023 at 11:00:50AM -0700, Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > This patchset improves the performance of accounted kernel memory allocations
-> > by ~30% as measured by a micro-benchmark [1]. The benchmark is very
-> > straightforward: 1M of 64 bytes-large kmalloc() allocations.
+On Wed, Sep 20, 2023 at 03:55:12PM +0530, Kamalesh Babulal wrote:
+> cgroup v1 or v2 or both controller names can be passed as arguments to
+> the 'cgroup_no_v1' kernel parameter, though most of the controller's
+> names are the same for both cgroup versions. This can be confusing when
+> both versions are used interchangeably, i.e., passing cgroup_no_v1=io
 > 
-> Nice.
+> $ sudo dmesg |grep cgroup
+> ...
+> cgroup: Disabling io control group subsystem in v1 mounts
+> cgroup: Disabled controller 'blkio'
 
-Thanks!
+So, making the printed names consistent makes sense but I'm not sure about
+not matching "io" anymore. That's gonna break users who already use them,
+right?
 
-> Have you tried how these +34% compose with -34% reported way back [1]
-> when file lock accounting was added (because your benchmark and lock1
-> sound quite similar)?
+Thanks.
 
-No, I haven't. I'm kindly waiting for an automatic report here :)
-But if someone can run these tests manually, I'll appreciate it a lot.
-
-> (BTW Is that your motivation (too)?)
-
-Not really, it was on my todo list for a long time and I just got some spare
-cycles to figure out missing parts (mostly around targeted/remote charging).
-
-Also plan to try similar approach to speed up generic memcg charging.
-
-Thanks!
+-- 
+tejun
