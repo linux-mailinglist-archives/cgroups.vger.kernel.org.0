@@ -2,70 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D155B7B8BE1
-	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 20:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEE57B8C9D
+	for <lists+cgroups@lfdr.de>; Wed,  4 Oct 2023 21:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244863AbjJDSy5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Oct 2023 14:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        id S245138AbjJDTAr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Oct 2023 15:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244710AbjJDSyk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 14:54:40 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5497710B
-        for <cgroups@vger.kernel.org>; Wed,  4 Oct 2023 11:54:13 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bf58009a8dso94740a34.1
-        for <cgroups@vger.kernel.org>; Wed, 04 Oct 2023 11:54:13 -0700 (PDT)
+        with ESMTP id S245140AbjJDS6q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Oct 2023 14:58:46 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0C510CC;
+        Wed,  4 Oct 2023 11:55:11 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690fe10b6a4so91319b3a.3;
+        Wed, 04 Oct 2023 11:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696445652; x=1697050452; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SmAXU9qtB1zbz18w4Nloh90w0549irCsN8QhQ+w85ys=;
-        b=icvdSKu+HyjypXTncLhJS0WvhjL26lkt1nLh46DnaEN0T0PNUCMNo7oi8wvfbwyJhl
-         BxUprWAkJ1sFpp8k7GUBRi5ipSF7q/Fp1Dk/rYALQ/nM6Aqp/SbBAxJGxRMpvXFi9Jc+
-         PZR3KSE+y8KQbTWeeUwWsiPOb4lMhp8eEkj29Z8uvfUCKQO1zUumCBkPYcwnWHl94KuM
-         bf5f7p/dheaG+zuJ6QyEQj3n6isBFXCj+RYtvuvdbEW268ikI1ROnp9ElhPDZD1e6Bmb
-         9OxzGcGTF/PDpPyJBvogAFLckqR4mQ26+IuTpFk78RRmdQGdw1jrhBTSkC1tAan9Qjnm
-         yraw==
+        d=gmail.com; s=20230601; t=1696445711; x=1697050511; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zRoTTT+olEk9QPCtVtm8UsKlLIAIQzhUpSB6cf5g+W4=;
+        b=ELKGviabcfJvis9/3KS2V7eQjvWzWrsNyBOPj6LS5q65IkXfFNWMaty9nwAHNT8huN
+         V4FEj/cUUihwgkTtnxvjHtIDb7BKFXUAeUtbEOLQak+t60omQx0G4fU+8srp2fZs0wk4
+         0qKfxxStyQYcJgUJp+3aUymMpt882f9ct2Gn1LJ5hd15piiVJ6sn2eIlHokOTUerdYrE
+         YhHg04zDhXCcWNBIjHNJQNJz+v1k2sLlA/nb6BYrTZmDj1yxYu8XwBCsWhWnjXJBDi49
+         ydpC9cIJ8n10ahbcTKZ7Zu+BYXBEDLwEwVHgJHvUtPqRQm8SL2uofG3ylkkoIMQvOpgA
+         uBpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696445652; x=1697050452;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SmAXU9qtB1zbz18w4Nloh90w0549irCsN8QhQ+w85ys=;
-        b=Ul+zJaq6EG+l8aLddoPBfjhMkaKPZaA9Vd88X+Zx8TYn59wlnijNfth0dHP+TAZSHa
-         9sqoWTcr9c3iEix8btLBgqv2HfFbBQ+R6xyUrqH318ySs2z8eMzovpl+qILKN2sLH4zI
-         os5rqmLGrxK+JMuuFN7PDG9tXFhL+hz2LnRz1ifWGCdG5zdMFtXDiLwFoIHao1MpuzJc
-         05ISktLCgmsKHyc7moyoRarXV9iHt8qubYp/7/xFSR8rOi5eQ6VuCrbbeWuDNhxi0FXA
-         keKeOgY1SZPtQWngx4z0QJ2YhLizwR+sv75AWpWlkQRjpDeqzSfTPkaEPdrEkGWeKup2
-         sc8Q==
-X-Gm-Message-State: AOJu0YwYsEwjmxpF3JLWN5/GDXb+4P6vTlScylNXAraUNGLeNtU2KMbd
-        tXklShtK3FnmqKmObndEFak=
-X-Google-Smtp-Source: AGHT+IHfbLoUnEDs9U8e7uSVP7BufT9EcOoG3LFWjgU4dwK47j3+FYQaqLIAScSI2HzhWMBwQ5m7xw==
-X-Received: by 2002:a05:6358:788:b0:142:d097:3725 with SMTP id n8-20020a056358078800b00142d0973725mr3313283rwj.9.1696445652255;
-        Wed, 04 Oct 2023 11:54:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696445711; x=1697050511;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zRoTTT+olEk9QPCtVtm8UsKlLIAIQzhUpSB6cf5g+W4=;
+        b=AfUQ8RyO12vb9cXZ0RfbIoAm2c5GhdRqq9a0prm+O0z+2qN0o1yZJYVZkDYHKjRsf9
+         rs0QExupDpD8fL/DZnIznARsQ0SJFQRbeljngYVeMQqeASGnKOjGFSep1EkTRf9F6JnM
+         Oeb9UOIRrkij3GISwPqvWgklzgjUQnDYgzH62gvLvfK0FnPxM3cbVajTlj4EW2mb2Mr+
+         gZKrKqXIq33KjSVweY0DI99LQIG/ndFrgx7YV1OJ8bB0TwyEFfJ439OcBhNZPhQsQmHs
+         bapaZ3Eg7bbVatsFNyVKWWoDJpPK/i/BqOOuljRi06inr5vkV7J55VIFXwqhVPikMhg/
+         ApZA==
+X-Gm-Message-State: AOJu0YytF14cvbCzS2uV32feGZdMoVzP34LGRGmB1sUj3esKTnyJwByr
+        EXGuHecJFWdETRuxicKYTfP2uryyRga3Fw==
+X-Google-Smtp-Source: AGHT+IGH8UOAeBNqXCXrrve+eWueFektU2xFOfxd9ExxG1b9dFbSOBg1Qrj4IRC8VsavCM7LocsfCw==
+X-Received: by 2002:a05:6a20:3d85:b0:133:f0b9:856d with SMTP id s5-20020a056a203d8500b00133f0b9856dmr3619962pzi.17.1696445711098;
+        Wed, 04 Oct 2023 11:55:11 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::4:cef])
-        by smtp.gmail.com with ESMTPSA id b13-20020a63d80d000000b00565dd935938sm3723307pgh.85.2023.10.04.11.54.11
+        by smtp.gmail.com with ESMTPSA id d8-20020aa78688000000b0068fece22469sm3537444pfo.4.2023.10.04.11.55.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 11:54:11 -0700 (PDT)
+        Wed, 04 Oct 2023 11:55:10 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 4 Oct 2023 08:54:10 -1000
+Date:   Wed, 4 Oct 2023 08:55:08 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
-Message-ID: <ZR200rty1bYXkVqv@slm.duckdns.org>
-References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
- <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Pierre Gondois <pierre.gondois@arm.com>
+Subject: Re: [PATCH-cgroup v2] cgroup/cpuset: Enable invalid to valid local
+ partition transition
+Message-ID: <ZR21DHx3oJJWs8AI@slm.duckdns.org>
+References: <20231003144420.2895515-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
+In-Reply-To: <20231003144420.2895515-1-longman@redhat.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -76,31 +76,29 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 11:01:46AM -0700, T.J. Mercier wrote:
-> On Tue, Oct 3, 2023 at 10:40 AM T.J. Mercier <tjmercier@google.com> wrote:
-> >
-> > Hi all,
-> >
-> > Samsung reported an Android bug where over 1000 cgroups were left
-> > empty without being removed. These cgroups should have been removed
-> > after no processes were observed to be remaining in the cgroup by this
-> > code [1], which loops until cgroup.procs is empty and then attempts to
-> > rmdir the cgroup. That works most of the time, but occasionally the
-> > rmdir fails with EBUSY *after cgroup.procs is empty*, which seems
-> > wrong. No controllers are enabled in this cgroup v2 hierarchy; it's
-> > currently used only for freezer. I spoke with Suren about this, who
-> > recalled a similar problem and fix [2], but all the kernels I've
-> > tested contain this fix. I have been able to reproduce this on 5.10,
-> > 5.15, 6.1, and 6.3 on various hardware. I've written a reproducer
-> > (below) which typically hits the issue in under a minute.
-> >
-> > The trace events look like this when the problem occurs. I'm guessing
-> > the rmdir is attempted in that window between signal_deliver and
-> > cgroup_notify_populated = 0.
+On Tue, Oct 03, 2023 at 10:44:20AM -0400, Waiman Long wrote:
+> When a local partition becomes invalid, it won't transition back to
+> valid partition automatically if a proper "cpuset.cpus.exclusive" or
+> "cpuset.cpus" change is made. Instead, system administrators have to
+> explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
+> file at the partition root.
+> 
+> This patch now enables the automatic transition of an invalid local
+> partition back to valid when there is a proper "cpuset.cpus.exclusive"
+> or "cpuset.cpus" change.
+> 
+> Automatic transition of an invalid remote partition to a valid one,
+> however, is not covered by this patch. They still need an explicit
+> write to "cpuset.cpus.partition" to become valid again.
+> 
+> The test_cpuset_prs.sh test script is updated to add new test cases to
+> test this automatic state transition.
+> 
+> Reported-by: Pierre Gondois <pierre.gondois@arm.com>
+> Link: https://lore.kernel.org/lkml/9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-So, the recommendation is to always trigger cleanup on the !populated
-notification. That said, I don't immediately see why your reproducer doesn't
-work. I'll dig into it later.
+Applied to cgroup/for-6.7.
 
 Thanks.
 
