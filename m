@@ -2,117 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3748F7BA6D8
-	for <lists+cgroups@lfdr.de>; Thu,  5 Oct 2023 18:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C147BA6E6
+	for <lists+cgroups@lfdr.de>; Thu,  5 Oct 2023 18:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbjJEQmq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Oct 2023 12:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S233263AbjJEQnS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Oct 2023 12:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbjJEQkq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Oct 2023 12:40:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898AE55A1
-        for <cgroups@vger.kernel.org>; Thu,  5 Oct 2023 09:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696523123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcIHJd8zrYki+Wg0RoULYhP1Y/OyxEQ+26ogj6n5WEc=;
-        b=i7hty6kqPZmdFFdAWH4JjD15l//U7thddu6NJZNG8el/PIdPm7FQzlq59e/gSXx5h15c1K
-        AQacdJfrvuehHIQtq2tmL46wFQRbehqMN99pz75rI/KnRVfKGTX950sbeqRVElf9ZWc4Q0
-        EacJ3FaCUNkkd7XpWCwqm5rFKm+w61c=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-470-R_aqFmEYMeisHvtuHQG8fQ-1; Thu, 05 Oct 2023 12:25:20 -0400
-X-MC-Unique: R_aqFmEYMeisHvtuHQG8fQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232409AbjJEQlg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Oct 2023 12:41:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A1B6700;
+        Thu,  5 Oct 2023 09:30:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F1AA85A5A8;
-        Thu,  5 Oct 2023 16:25:19 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.69])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6A7E02156711;
-        Thu,  5 Oct 2023 16:25:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  5 Oct 2023 18:24:21 +0200 (CEST)
-Date:   Thu, 5 Oct 2023 18:24:17 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Li Nan <linan666@huaweicloud.com>
-Cc:     Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-Message-ID: <20231005162417.GA32420@redhat.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 17A2A21891;
+        Thu,  5 Oct 2023 16:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1696523427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sL+tYRULSD7EToNAPlVDPfOq2xfKv5cMBZyMAxFpTd0=;
+        b=UZZ53f4TXC5JQzxPTJ9sLJfQTWS3CHG7J8bELDoeC52FohqWngE6Go84OsbBcs18zx/tPg
+        e5M/41FvvX8womtQdSKsxYi0bFAdB/t+eq3mRTBA07sUbO1T5qNkdIjQGpAjIo6t2LCVYz
+        Oj/tDV+FGnqaWVHlB5JZXOiyCNYR0TM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB069139C2;
+        Thu,  5 Oct 2023 16:30:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rTedNKLkHmU4dQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 05 Oct 2023 16:30:26 +0000
+Date:   Thu, 5 Oct 2023 18:30:25 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm: memcg: refactor page state unit helpers
+Message-ID: <4h5uae72ti6jyiibcyfg2bytooy6d6ggtkrgod5a6rmpateyra@4setu5jmd5kn>
+References: <20230922175741.635002-1-yosryahmed@google.com>
+ <20230922175741.635002-2-yosryahmed@google.com>
+ <lflzirgjvnodndnuncbulipka6qcif5yijtbqpvbcr3zp3532u@6b37ks523gnt>
+ <CAJD7tkbfq8P514-8Y1uZG9E0fMN2HwEaBmxEutBhjVtbtyEdCQ@mail.gmail.com>
+ <vet5qmfj5xwge4ebznzihknxvpmrmkg6rndhani3fk75oo2rdm@lk3krzcresap>
+ <20231004183619.GB39112@cmpxchg.org>
+ <542ggmgjc27yoosxg466c6n4mzcad2z63t3wdbzevzm43g7xlt@5l7qaepzbth6>
+ <CAJD7tkbaTRu838U=e_A+89PY1t4K+t_G1qkYq84BSDO7wAEtEg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tpu3njifk2lp5cu6"
 Content-Disposition: inline
-In-Reply-To: <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+In-Reply-To: <CAJD7tkbaTRu838U=e_A+89PY1t4K+t_G1qkYq84BSDO7wAEtEg@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Li,
 
-On 10/05, Li Nan wrote:
->
-> >I don't think this change is sufficient to prevent kernel crash, as a
-> >"clever" user could still set the bps_limit to U64_MAX - 1 (or another
-> >large value), which probably would still result in the same crash. The
-> >comment in mul_u64_u64_div_u64 suggests there's something we can do to
-> >better handle the overflow case, but I'm not sure what it's referring
-> >to. ("Will generate an #DE when the result doesn't fit u64, could fix
-> >with an __ex_table[] entry when it becomes an issue.") Otherwise, we
->
-> When (a * mul) overflows, a divide 0 error occurs in
-> mul_u64_u64_div_u64(). Commit 3dc167ba5729 ("sched/cputime: Improve
-> cputime_adjust()") changed func and said: "Will generate an #DE when the
-> result doesn't fit u64, could fix with an __ex_table[] entry when it
-> becomes an issue." But we are unsure of how to fix it. Could you please
-> explain how to fix this issue.
+--tpu3njifk2lp5cu6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Not sure I understand the question...
+On Thu, Oct 05, 2023 at 02:31:03AM -0700, Yosry Ahmed <yosryahmed@google.com> wrote:
+> I am not really sure what you mean here.
 
-OK, we can change mul_u64_u64_div_u64() to trap the exception, say,
+My "vision" is to treat WORKINGSET_ entries as events.
+That would mean implementing per-node tracking for vm_event_item
+(costlier?).
+That would mean node_stat_item and vm_event_item being effectively
+equal, so they could be merged in one.
+That would be situation to come up with new classification based on use
+cases (e.g. precision/timeliness requirements, state vs change
+semantics).
 
-	static inline u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div)
-	{
-		u64 q;
+(Do not take this as blocker of the patch 1/2, I rather used the
+opportunity to discuss a greater possible cleanup.)
 
-		asm ("mulq %2; 1: divq %3; 2:\n"
-		     _ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_DEFAULT|EX_FLAG_CLEAR_AX)
-					: "=a" (q)
-					: "a" (a), "rm" (mul), "rm" (div)
-					: "rdx");
+> We don't track things like OOM_KILL and DROP_PAGECACHE per memcg as
+> far as I can tell.
 
-		return q;
-	}
+Ah, good. (I forgot only subset of entries is relevant for memcgs.)
 
-should (iiuc) return 0 if the result doesn't fit u64 or div == 0.
+> This will mean that WORKINGSET_* state will become more stale. We will
+> need 4096 as many updates as today to get a flush. These are used by
+> internal flushers (reclaim), and are exposed to userspace. I am not
+> sure we want to do that.
 
-But even if we forget that this is x86-specific, how can this help?
-What should calculate_bytes_allowed() do/return in this case?
+snapshot_refaults() doesn't seem to follow after flush
+and
+workigset_refault()'s flush doesn't seem to preceed readers
 
-> >probably need to remove the mul_u64_u64_div_u64 and check for
-> >overflow/potential overflow ourselves?
+Is the flush misplaced or have I overlooked something?
+(If the former, it seems to work good enough even with the current
+flushing heuristics :-))
 
-probably yes...
 
-Oleg.
+Michal
 
+--tpu3njifk2lp5cu6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZR7knwAKCRAGvrMr/1gc
+jmuCAQDLOZF2u7hvOxa6XliRfkYY1Be/D0QEHOZynh1+OxsDKQD/aGTjJFAWvb5D
+qEcqxkg0fd9+iYdI1PSQdU3ICEFERAs=
+=t1Ez
+-----END PGP SIGNATURE-----
+
+--tpu3njifk2lp5cu6--
