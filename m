@@ -2,111 +2,293 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCFC7BA8D1
-	for <lists+cgroups@lfdr.de>; Thu,  5 Oct 2023 20:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303847BA9FD
+	for <lists+cgroups@lfdr.de>; Thu,  5 Oct 2023 21:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjJESMm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Oct 2023 14:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        id S230317AbjJETXy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Oct 2023 15:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbjJESM3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Oct 2023 14:12:29 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6D690;
-        Thu,  5 Oct 2023 11:12:28 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdf4752c3cso9202795ad.2;
-        Thu, 05 Oct 2023 11:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696529547; x=1697134347; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yrVZ9ksg7P5W8XI53drIp4BTDrzYBAzM+oiMueHO5kk=;
-        b=CZQFTr/Dup0QgIodnN0VoUM1rmTswhEEhtHcnysmQXGxtByZePOnSOp6bVVQ4f5dUW
-         mLcHXCGXpgaLLQFPADg2cxjHx9fIaMv74WJ15k654ZmgEh/fqDHiE2AKHQcTwHi/MjCR
-         m5ocdURtsGLmGtbXlRtTsYRUuafteEv03x0rQhBUxE9swZ3UeZRwdF84cEOzYzrDfAlN
-         sBLmHEGgmsuQxgUhq4yefkOSx8hA3U7rIrv42CDgYtKSQK6ivHnd9WapIOYdsg1ubcak
-         iAlL1BiubUBuChUpHipDTI3P3sdK7Y/R+F4e/4TnJrxJalsICiEdV6vwiwVayLw4PQwj
-         j1tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696529547; x=1697134347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yrVZ9ksg7P5W8XI53drIp4BTDrzYBAzM+oiMueHO5kk=;
-        b=Io3XAeM9Am0q8x7WFBA9wAONxjNpTW3z0A34m7Ji7FAIeQgosz8pEKycLe6kr0di+y
-         nKD8LjRxUDpaZiOAtsYgTXzL88X3mNVmt8TgNS6XnfBxVQBSGZOlAwcMaw9HI4K9ni6T
-         xDfXk5zcJsOfpDkqGn1iv6Kjf+EGpJJwSf23CnhhCKEMFUuUaj5w4R6ep9Ri8K+cPSrZ
-         M2Ry4730wQcOycF+3wD8WTu4CMUTAnWBwiSmRTTaoaRnCiT1X33W01vAYV6IRxOCwUBR
-         sM/117rxQvxGU7QeRswZ9+MAfMHy10gCPrA5ow+EcjpxIFYSv9+la5HUCwIwaF8YNOlq
-         D0Sg==
-X-Gm-Message-State: AOJu0Ywpf25VzBzLfw4oIOY6r0JVCBDsO9AN08qnl3h1obSow0gMMR5S
-        6BzPyAcOQWc6td9YL4R7LNN7zSP4ghvx7w==
-X-Google-Smtp-Source: AGHT+IE8TNqgBjfKv4QBPtF0Yv+QLYEwlsjnHzsejdTgDSXyAa3xVzojhvHlZ8gXpK7zjeICSZ+8nw==
-X-Received: by 2002:a17:902:edd0:b0:1c7:69a1:751e with SMTP id q16-20020a170902edd000b001c769a1751emr4681876plk.43.1696529547443;
-        Thu, 05 Oct 2023 11:12:27 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:cef])
-        by smtp.gmail.com with ESMTPSA id t19-20020a1709028c9300b001b9d95945afsm2025606plo.155.2023.10.05.11.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 11:12:26 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 5 Oct 2023 08:12:25 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Kamalesh Babulal <kamalesh.babulal@oracle.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [External] : Re: [PATCH] cgroup: In cgroup_no_v1() check v1
- controllers only
-Message-ID: <ZR78iXWk-kTt4gf5@slm.duckdns.org>
-References: <20230920102513.55772-1-kamalesh.babulal@oracle.com>
- <ZR26X4EJaNgQP5Be@slm.duckdns.org>
- <dc74f0ed-f647-cd1d-1bab-42366d2321b7@oracle.com>
+        with ESMTP id S229734AbjJETXx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Oct 2023 15:23:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D2D98;
+        Thu,  5 Oct 2023 12:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696533832; x=1728069832;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=u1S0DXXpS1RSMwy7Zw2lAhn+BzDfe+4Ay+Z5+dril2c=;
+  b=M2QtOdYF1OpgjIp4t7NZ5TXhOVk8f6EZEScO4kzMHYhoWfaOSxjcAOuD
+   wtyuK9mfKROrw79dsbj3SC3eZ0dOVc+374brxmLZqzJKCaZJZGlMXYqoI
+   Idf99hwBNzeUI51abZfo85LWX0Vl1v3ITlH9yH/6dUZXXwt3wvtwqVN/j
+   YR4rI7L4Pm5F3R24t7FpOScMsrENiSCHejBYCZ64Vi9cYFOqfseIFSuig
+   4KCiIZAjlKZz35UQn0XUYuFTEtJ1I7dLb8VnwmBUUeaJMYKUL1RVvFLFZ
+   yy8TvOXodVtVlZljjYsv+zgAtvsz22Yw4Z+ZaE4osPogBfHjs1uKYBG0/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="2198307"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="2198307"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 12:23:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="895570087"
+X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
+   d="scan'208";a="895570087"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 05 Oct 2023 12:21:48 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 13/18] x86/sgx: Expose sgx_reclaim_pages() for use by
+ EPC cgroup
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-14-haitao.huang@linux.intel.com>
+ <a03cf29a5ff35b9467470a0cd38e4096820eab8d.camel@intel.com>
+Date:   Thu, 05 Oct 2023 14:23:15 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc74f0ed-f647-cd1d-1bab-42366d2321b7@oracle.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2ccv41dwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <a03cf29a5ff35b9467470a0cd38e4096820eab8d.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 04:51:52PM +0530, Kamalesh Babulal wrote:
-> 
-> 
-> On 10/5/23 00:47, Tejun Heo wrote:
-> > On Wed, Sep 20, 2023 at 03:55:12PM +0530, Kamalesh Babulal wrote:
-> >> cgroup v1 or v2 or both controller names can be passed as arguments to
-> >> the 'cgroup_no_v1' kernel parameter, though most of the controller's
-> >> names are the same for both cgroup versions. This can be confusing when
-> >> both versions are used interchangeably, i.e., passing cgroup_no_v1=io
-> >>
-> >> $ sudo dmesg |grep cgroup
-> >> ...
-> >> cgroup: Disabling io control group subsystem in v1 mounts
-> >> cgroup: Disabled controller 'blkio'
-> > 
-> > So, making the printed names consistent makes sense but I'm not sure about
-> > not matching "io" anymore. That's gonna break users who already use them,
-> > right?
-> 
-> Agreed, users might pass "io" in place of "blkio", I was thinking
-> in terms of cgroup v1 users, for whom it is "blkio" controller but
-> as an argument, "cgroup_no_v1" makes the controllers passed to it,
-> available under cgroup v2, where the controller is named "io",
-> which the user may use interchangeably.
-> 
-> Shall I re-send the patch to print the controller legacy_name only?
+On Thu, 05 Oct 2023 07:24:12 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Yes, let's do that.
+> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
+>> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>>
+>> Adjust and expose the top-level reclaim function as
+>> sgx_reclaim_epc_pages() for use by the upcoming EPC cgroup, which will
+>> initiate reclaim to enforce the max limit.
+>>
+>> Make these adjustments to the function signature.
+>>
+>> 1) To take a parameter that specifies the number of pages to scan for
+>> reclaiming. Define a max value of 32, but scan 16 in the case for the
+>> global reclaimer (ksgxd). The EPC cgroup will use it to specify a
+>> desired number of pages to be reclaimed up to the max value of 32.
+>>
+>> 2) To take a flag to force reclaiming a page regardless of its age.  The
+>> EPC cgroup will use the flag to enforce its limits by draining the
+>> reclaimable lists before resorting to other measures, e.g. forcefully
+>> kill enclaves.
+>>
+>> 3) Return the number of reclaimed pages. The EPC cgroup will use the
+>> result to track reclaiming progress and escalate to a more forceful
+>> reclaiming mode, e.g., calling this function with the flag to ignore age
+>> of pages.
+>>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Cc: Sean Christopherson <seanjc@google.com>
+>> ---
+>> V4:
+>> - Combined the 3 patches that made the individual changes to the
+>> function signature.
+>> - Removed 'high' limit in commit message.
+>> ---
+>>  arch/x86/kernel/cpu/sgx/main.c | 31 +++++++++++++++++++++----------
+>>  arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
+>>  2 files changed, 22 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
+>> b/arch/x86/kernel/cpu/sgx/main.c
+>> index 3b875ab4dcd0..4e1a3e038db5 100644
+>> --- a/arch/x86/kernel/cpu/sgx/main.c
+>> +++ b/arch/x86/kernel/cpu/sgx/main.c
+>> @@ -18,6 +18,11 @@
+>>  #include "encl.h"
+>>  #include "encls.h"
+>>
+>> +/*
+>> + * Maximum number of pages to scan for reclaiming.
+>> + */
+>> +#define SGX_NR_TO_SCAN_MAX	32
+>> +
+>>  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+>>  static int sgx_nr_epc_sections;
+>>  static struct task_struct *ksgxd_tsk;
+>> @@ -279,7 +284,11 @@ static void sgx_reclaimer_write(struct  
+>> sgx_epc_page *epc_page,
+>>  	mutex_unlock(&encl->lock);
+>>  }
+>>
+>> -/*
+>> +/**
+>> + * sgx_reclaim_epc_pages() - Reclaim EPC pages from the consumers
+>> + * @nr_to_scan:		 Number of EPC pages to scan for reclaim
+>> + * @ignore_age:		 Reclaim a page even if it is young
+>> + *
+>>   * Take a fixed number of pages from the head of the active page pool  
+>> and
+>>   * reclaim them to the enclave's private shmem files. Skip the pages,  
+>> which have
+>>   * been accessed since the last scan. Move those pages to the tail of  
+>> active
+>> @@ -292,15 +301,14 @@ static void sgx_reclaimer_write(struct  
+>> sgx_epc_page *epc_page,
+>>   * problematic as it would increase the lock contention too much,  
+>> which would
+>>   * halt forward progress.
+>>   */
+>> -static void sgx_reclaim_pages(void)
+>> +size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age)
+>
+> 'size_t' looks odd.  Any reason to use it?
+>
+> Given you only scan 32 at maximum, seems 'int' is good enough?
+>
 
-Thanks.
+Initially was int.
+Jarkko was suggesting ssize_t. I changed to size_t as this function will  
+never return negative.
 
--- 
-tejun
+>>  {
+>> -	struct sgx_backing backing[SGX_NR_TO_SCAN];
+>> +	struct sgx_backing backing[SGX_NR_TO_SCAN_MAX];
+>>  	struct sgx_epc_page *epc_page, *tmp;
+>>  	struct sgx_encl_page *encl_page;
+>>  	pgoff_t page_index;
+>>  	LIST_HEAD(iso);
+>> -	int ret;
+>> -	int i;
+>> +	size_t ret, i;
+>>
+>>  	spin_lock(&sgx_global_lru.lock);
+>>  	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
+>
+This should be nr_to_scan
+It was missed during some rebase and reordering operations.
+
+> The function comment says
+>
+> 	* @nr_to_scan:		 Number of EPC pages to scan for reclaim
+>
+> But I don't see it is even used, if my eye isn't deceiving me?
+> 	
+>> @@ -326,13 +334,14 @@ static void sgx_reclaim_pages(void)
+>>  	spin_unlock(&sgx_global_lru.lock);
+>>
+>>  	if (list_empty(&iso))
+>> -		return;
+>> +		return 0;
+>>
+>>  	i = 0;
+>>  	list_for_each_entry_safe(epc_page, tmp, &iso, list) {
+>>  		encl_page = epc_page->encl_page;
+>>
+>> -		if (!sgx_reclaimer_age(epc_page))
+>> +		if (i == SGX_NR_TO_SCAN_MAX ||
+>
+> i == nr_to_scan?
+>
+Not needed if above for statement fixed for nr_to_scan.
+Anything above MAX will be skipped and put back to LRU.
+
+> And should we have a
+>
+> 	if (nr_to_scan < SGX_NR_TO_SCAN_MAX)
+> 		return 0;
+>
+> at the very beginning of this function?
+>
+
+  In final version caller to make sure not call with nr_to_scan not larger  
+than SGX_NR_TO_SCAN_MAX
+
+>> +		    (!ignore_age && !sgx_reclaimer_age(epc_page)))
+>>  			goto skip;
+>>
+>>  		page_index = PFN_DOWN(encl_page->desc - encl_page->encl->base);
+>> @@ -371,6 +380,8 @@ static void sgx_reclaim_pages(void)
+>>
+>>  		sgx_free_epc_page(epc_page);
+>>  	}
+>> +
+>> +	return i;
+>>  }
+>>
+>
+> I found this function a little bit odd, given the mixing of 'nr_to_scan',
+> SGX_NR_TO_SCAN and SGX_NR_TO_SCAN_MAX.
+>
+> From the changelog:
+>
+> 	1) To take a parameter that specifies the number of pages to scan for
+> 	reclaiming. Define a max value of 32, but scan 16 in the case for the
+> 	global reclaimer (ksgxd).
+>
+> It appears we want to make this function to scan @nr_to_scan for cgroup,  
+> but
+> still want to scan a fixed value for ksgxd, which is SGX_NR_TO_SCAN.  And
+> @nr_to_scan can be larger than SGX_NR_TO_SCAN but smaller than
+> SGX_NR_TO_SCAN_MAX.
+>
+> Putting behind the mystery of why above is needed, to achieve it, is it  
+> more
+> clear if we do below?
+>
+> int __sgx_reclaim_epc_pages(int nr_to_scan, bool ignore_age)
+> {
+> 	struct sgx_backing backing[SGX_NR_TO_SCAN_MAX];
+> 	...
+>
+> 	if (nr_to_scan > SGX_NR_TO_SCAN_MAX)
+> 		return 0;
+
+We could set nr_to_scan to MAX but since this is code internal to driver,  
+maybe just make sure callers don't call with bigger numbers.
+
+>
+> 	for (i = 0; i < nr_to_scan; i++) {
+> 		...
+> 	}
+>
+
+yes
+
+> 	return reclaimed;
+> }
+>
+> /* This is for ksgxd() */
+> int sgx_reclaim_epc_page(void)
+> {
+> 	return __sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
+> }
+
+Some maintainers may prefer no wrapping.
+
+Thanks
+Haitao
