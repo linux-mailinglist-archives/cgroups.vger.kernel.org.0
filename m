@@ -2,203 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6EE7B9EDE
-	for <lists+cgroups@lfdr.de>; Thu,  5 Oct 2023 16:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3748F7BA6D8
+	for <lists+cgroups@lfdr.de>; Thu,  5 Oct 2023 18:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbjJEOOn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Oct 2023 10:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
+        id S231814AbjJEQmq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Oct 2023 12:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbjJEOMd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Oct 2023 10:12:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A029B28104
-        for <cgroups@vger.kernel.org>; Thu,  5 Oct 2023 06:44:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696513474; x=1728049474;
-  h=date:from:to:cc:subject:message-id;
-  bh=M1N4b/K9ogqhP5YuKLs9hVi5Q/Cno9+SCjnibs847W0=;
-  b=CdScvP7FdAAycUlW9lLo3KrD2NUVLQMp8G/oG9SWVSkTWijjGhAD8vBg
-   gerbR5swAscHx3K11BYawkWQqMaAhFTSXjKc9VPFRf76vrccyVfApjC2J
-   ayn4IWzIoavAIfoUHCLW/Id8tJY7tJeL2pd3o5XD+Yj2cNP0KpdAaQ51G
-   THxRO4DAxwR40iX09lKgPUJ2q59IczAFrgOb6I4ZGNdsCNFxF2+lrC53J
-   gz/9C7lh20wLzodTh+zIwnq5+vz5hllHKqvVgZrMgChFuF6l+z8xxsuHH
-   liHY5JcKkkisjgQHyt80PMCO4yc33nn/hnRok4ed1tk9aEJLz8uEYT9eu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="387355958"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="387355958"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2023 05:41:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10854"; a="875548843"
-X-IronPort-AV: E=Sophos;i="6.03,203,1694761200"; 
-   d="scan'208";a="875548843"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 05 Oct 2023 05:41:52 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoNfp-000LO6-16;
-        Thu, 05 Oct 2023 12:41:49 +0000
-Date:   Thu, 05 Oct 2023 20:41:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 783a8334ec1cadefbb992ca2adbb459b0ee0f9f7
-Message-ID: <202310052031.XPKssxOz-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S233169AbjJEQkq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Oct 2023 12:40:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898AE55A1
+        for <cgroups@vger.kernel.org>; Thu,  5 Oct 2023 09:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696523123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kcIHJd8zrYki+Wg0RoULYhP1Y/OyxEQ+26ogj6n5WEc=;
+        b=i7hty6kqPZmdFFdAWH4JjD15l//U7thddu6NJZNG8el/PIdPm7FQzlq59e/gSXx5h15c1K
+        AQacdJfrvuehHIQtq2tmL46wFQRbehqMN99pz75rI/KnRVfKGTX950sbeqRVElf9ZWc4Q0
+        EacJ3FaCUNkkd7XpWCwqm5rFKm+w61c=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-470-R_aqFmEYMeisHvtuHQG8fQ-1; Thu, 05 Oct 2023 12:25:20 -0400
+X-MC-Unique: R_aqFmEYMeisHvtuHQG8fQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F1AA85A5A8;
+        Thu,  5 Oct 2023 16:25:19 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.69])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6A7E02156711;
+        Thu,  5 Oct 2023 16:25:16 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  5 Oct 2023 18:24:21 +0200 (CEST)
+Date:   Thu, 5 Oct 2023 18:24:17 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Li Nan <linan666@huaweicloud.com>
+Cc:     Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+Message-ID: <20231005162417.GA32420@redhat.com>
+References: <20230928015858.1809934-1-linan666@huaweicloud.com>
+ <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
+ <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 783a8334ec1cadefbb992ca2adbb459b0ee0f9f7  cgroup/cpuset: Cleanup signedness issue in cpu_exclusive_check()
+Hi Li,
 
-elapsed time: 886m
+On 10/05, Li Nan wrote:
+>
+> >I don't think this change is sufficient to prevent kernel crash, as a
+> >"clever" user could still set the bps_limit to U64_MAX - 1 (or another
+> >large value), which probably would still result in the same crash. The
+> >comment in mul_u64_u64_div_u64 suggests there's something we can do to
+> >better handle the overflow case, but I'm not sure what it's referring
+> >to. ("Will generate an #DE when the result doesn't fit u64, could fix
+> >with an __ex_table[] entry when it becomes an issue.") Otherwise, we
+>
+> When (a * mul) overflows, a divide 0 error occurs in
+> mul_u64_u64_div_u64(). Commit 3dc167ba5729 ("sched/cputime: Improve
+> cputime_adjust()") changed func and said: "Will generate an #DE when the
+> result doesn't fit u64, could fix with an __ex_table[] entry when it
+> becomes an issue." But we are unsure of how to fix it. Could you please
+> explain how to fix this issue.
 
-configs tested: 126
-configs skipped: 2
+Not sure I understand the question...
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+OK, we can change mul_u64_u64_div_u64() to trap the exception, say,
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231005   gcc  
-arm                              alldefconfig   clang
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   gcc  
-arm                      footbridge_defconfig   gcc  
-arm                         orion5x_defconfig   clang
-arm                          pxa3xx_defconfig   gcc  
-arm                   randconfig-001-20231005   gcc  
-arm                         s5pv210_defconfig   clang
-arm                           sunxi_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231005   gcc  
-i386         buildonly-randconfig-002-20231005   gcc  
-i386         buildonly-randconfig-003-20231005   gcc  
-i386         buildonly-randconfig-004-20231005   gcc  
-i386         buildonly-randconfig-005-20231005   gcc  
-i386         buildonly-randconfig-006-20231005   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231005   gcc  
-i386                  randconfig-002-20231005   gcc  
-i386                  randconfig-003-20231005   gcc  
-i386                  randconfig-004-20231005   gcc  
-i386                  randconfig-005-20231005   gcc  
-i386                  randconfig-006-20231005   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231005   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         alldefconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                      acadia_defconfig   clang
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                    klondike_defconfig   gcc  
-powerpc                     ksi8560_defconfig   clang
-powerpc                  storcenter_defconfig   gcc  
-powerpc                         wii_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231005   gcc  
-x86_64                randconfig-002-20231005   gcc  
-x86_64                randconfig-003-20231005   gcc  
-x86_64                randconfig-004-20231005   gcc  
-x86_64                randconfig-005-20231005   gcc  
-x86_64                randconfig-006-20231005   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+	static inline u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div)
+	{
+		u64 q;
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+		asm ("mulq %2; 1: divq %3; 2:\n"
+		     _ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_DEFAULT|EX_FLAG_CLEAR_AX)
+					: "=a" (q)
+					: "a" (a), "rm" (mul), "rm" (div)
+					: "rdx");
+
+		return q;
+	}
+
+should (iiuc) return 0 if the result doesn't fit u64 or div == 0.
+
+But even if we forget that this is x86-specific, how can this help?
+What should calculate_bytes_allowed() do/return in this case?
+
+> >probably need to remove the mul_u64_u64_div_u64 and check for
+> >overflow/potential overflow ourselves?
+
+probably yes...
+
+Oleg.
+
