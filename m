@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 399AA7BBEE9
-	for <lists+cgroups@lfdr.de>; Fri,  6 Oct 2023 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3061F7BBEE6
+	for <lists+cgroups@lfdr.de>; Fri,  6 Oct 2023 20:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbjJFSqo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Oct 2023 14:46:44 -0400
+        id S233300AbjJFSqp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Oct 2023 14:46:45 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbjJFSqm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Oct 2023 14:46:42 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA2CC5;
-        Fri,  6 Oct 2023 11:46:35 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c5bf7871dcso20584005ad.1;
-        Fri, 06 Oct 2023 11:46:35 -0700 (PDT)
+        with ESMTP id S233269AbjJFSqn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Oct 2023 14:46:43 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B85D6;
+        Fri,  6 Oct 2023 11:46:36 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3ae5ee80c0dso1535581b6e.3;
+        Fri, 06 Oct 2023 11:46:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696617995; x=1697222795; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696617996; x=1697222796; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S8WFxmGmo8Wm2uPAMHU1NgqFhq3Wq2AWhdy0gUN56bU=;
-        b=m0fRJiSMC/GW4gnnIkjS2qEw0WweRetaH1KBGS4nSALS6mhCRVYqfgXJrSvzF77NYn
-         M7F1IVw4V2nOj7GXLTUmZ9T0VzhjOLPgjFxulp6hBz3X/qzpFj2Q0aSyoEGzWYgnUBsp
-         s6uXASzgU4Ohe4zBnXyb6i3MGkHU20QathciVF1nrDsKQNJ8OLZtfHCYNZ8Ee+grHPyQ
-         n23qH6z3x7phHSgZqcoug8DHEDSIPLue+K7uiapSIytbCwF49+vSZP0zbc9zEfkkPIkN
-         0IfBGSzO8OSj1Y6OJ4II7kCarQuDpHiJLUUvyuc1Ejnk/65fboUEGp2n+IVIqZKotv6a
-         0gCg==
+        bh=vY+Soyh4ezPzEsiTwAjxm3PLfRjJVUJ94CEs1TUSu9g=;
+        b=J4fXz1Xk5EqxkJOGtF3SFwrKH5hRiQasPMJP75AvlgwJxXuNhr3Y/is41FytLfI/xT
+         RVUqLYfLOW9MOKhosnnjAPgxyntvxNTcci9sNyAGTOuv4yPyXhslt5eSTm4+qiTHJLRH
+         eG+LMzfx1iSY6uZUmuFKlF0hWPQrTK+dpBRFduvxoz55HCqO44btJas9yoJEGXaC4P4M
+         qFzHdfwV+SxvCSkfaLWZhSrResgIgQhDddcBScuX1U4lVLIsLfxrG3YkmgP2c9JWlMFB
+         IyfjuvMV8TtsNZXrgPjd0y/29d79OfIRRnvnXG46o/EU450yCIW1bs1qI/p+WBB3L2qQ
+         YVvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696617995; x=1697222795;
+        d=1e100.net; s=20230601; t=1696617996; x=1697222796;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S8WFxmGmo8Wm2uPAMHU1NgqFhq3Wq2AWhdy0gUN56bU=;
-        b=b250ldXcYg50gH2WfrfYNZbL2GzcYZO43DuyPvSSYZ9oWdnMzdZeNvVWwCw40/8D/j
-         HrZplf3kRplPFaQN3sD9aD5/4QdA1k/xEEX34g+QcgGobRrA/g65DfPNUE5OyfYO1UIP
-         tm7rab2dceHoY3+GLgfEs94vRYID8+zlN65fBtkspwV2C24YI2ADXCxxudrXPqNNR/xN
-         KeU8QNuEp1Uf/ccBd+vE7dgEsu0ZkYl+KxnWWx1TBuTMTHIShjGhIbh1VC73kKnbX84R
-         aZuM3K8yGZjwd8jS9Uk4zunbKZ0vYMQSyBrEtPUnhza29TlVQF/40C4KOZJzyGGbOWIA
-         /g8g==
-X-Gm-Message-State: AOJu0YwFhMqh7h02oKm8f/ssO/gs8XN6+a55soOtCWSD7mTsAhTB1OMY
-        Q4GXQfYBPOcqLUB8r/+9VRQ=
-X-Google-Smtp-Source: AGHT+IFxR6wHAD2nVbIRv2FkwmdHHCgfiwmUD4DnTGWC/ogkLmz36RVmuDPIhydPU2RqgCuhvYX+eQ==
-X-Received: by 2002:a17:903:228a:b0:1c3:2423:8e24 with SMTP id b10-20020a170903228a00b001c324238e24mr11013936plh.8.1696617994752;
-        Fri, 06 Oct 2023 11:46:34 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-118.fbsv.net. [2a03:2880:ff:76::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ja18-20020a170902efd200b001bb750189desm4263819plb.255.2023.10.06.11.46.34
+        bh=vY+Soyh4ezPzEsiTwAjxm3PLfRjJVUJ94CEs1TUSu9g=;
+        b=BB9O1P9OFoXsOAPeAvFgC+1CK7QftiqAuzG6hxuQZv5PXFApprQ4a0FcJPkSPocPQ9
+         qyt1Y+3oYWDK2eTpvCvEDVuVT4z1RQgQf2oGNfZ7ZEhcz5IvrtAXflWyDslDIp4/YPK3
+         WKDQXwAuNPHjSw16dfbmmo4s6ltE9dgtPJMwwfYI+AgWfibwis6IQ8/53mWS5AzHC2u/
+         tZrjgn2Q7qECYtznxVLZnrCSg45vt5/9RbNJibVUVcS1uFFN12F3DK3sHTnXsz69Zr46
+         hqgHyLJy5AiM/wXg5/o7bNuAh1Ybq9QDgboPrqnK3pVqwlk9nFLAJsToybvoydOzjvLP
+         b4Ew==
+X-Gm-Message-State: AOJu0YyS4lpthtTdxz/nAVUqpNEdQUlUEoIwyQbdE7hf+10Dbymanxu6
+        +bm6zly2L+8xo9QQzFIBSxo=
+X-Google-Smtp-Source: AGHT+IEy8b9pbe0uvLgz2KimcopbbkeJwi6+OhwuqZtXmIDIBfGt5NNnJWLdEFwXkYOWepQdee4kyg==
+X-Received: by 2002:a54:4812:0:b0:3ad:c497:1336 with SMTP id j18-20020a544812000000b003adc4971336mr9048765oij.16.1696617995913;
+        Fri, 06 Oct 2023 11:46:35 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-013.fbsv.net. [2a03:2880:ff:d::face:b00c])
+        by smtp.gmail.com with ESMTPSA id a24-20020a637058000000b00581048ffc13sm3722085pgn.81.2023.10.06.11.46.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 11:46:34 -0700 (PDT)
+        Fri, 06 Oct 2023 11:46:35 -0700 (PDT)
 From:   Nhat Pham <nphamcs@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -57,9 +57,9 @@ Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
         shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
         fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH v4 3/4] hugetlb: memcg: account hugetlb-backed memory in memory controller
-Date:   Fri,  6 Oct 2023 11:46:28 -0700
-Message-Id: <20231006184629.155543-4-nphamcs@gmail.com>
+Subject: [PATCH v4 4/4] selftests: add a selftest to verify hugetlb usage in memcg
+Date:   Fri,  6 Oct 2023 11:46:29 -0700
+Message-Id: <20231006184629.155543-5-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231006184629.155543-1-nphamcs@gmail.com>
 References: <20231006184629.155543-1-nphamcs@gmail.com>
@@ -67,7 +67,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,362 +75,304 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, hugetlb memory usage is not acounted for in the memory
-controller, which could lead to memory overprotection for cgroups with
-hugetlb-backed memory. This has been observed in our production system.
-
-For instance, here is one of our usecases: suppose there are two 32G
-containers. The machine is booted with hugetlb_cma=6G, and each
-container may or may not use up to 3 gigantic page, depending on the
-workload within it. The rest is anon, cache, slab, etc. We can set the
-hugetlb cgroup limit of each cgroup to 3G to enforce hugetlb fairness.
-But it is very difficult to configure memory.max to keep overall
-consumption, including anon, cache, slab etc. fair.
-
-What we have had to resort to is to constantly poll hugetlb usage and
-readjust memory.max. Similar procedure is done to other memory limits
-(memory.low for e.g). However, this is rather cumbersome and buggy.
-Furthermore, when there is a delay in memory limits correction, (for e.g
-when hugetlb usage changes within consecutive runs of the userspace
-agent), the system could be in an over/underprotected state.
-
-This patch rectifies this issue by charging the memcg when the hugetlb
-folio is utilized, and uncharging when the folio is freed (analogous to
-the hugetlb controller). Note that we do not charge when the folio is
-allocated to the hugetlb pool, because at this point it is not owned by
-any memcg.
-
-Some caveats to consider:
-  * This feature is only available on cgroup v2.
-  * There is no hugetlb pool management involved in the memory
-    controller. As stated above, hugetlb folios are only charged towards
-    the memory controller when it is used. Host overcommit management
-    has to consider it when configuring hard limits.
-  * Failure to charge towards the memcg results in SIGBUS. This could
-    happen even if the hugetlb pool still has pages (but the cgroup
-    limit is hit and reclaim attempt fails).
-  * When this feature is enabled, hugetlb pages contribute to memory
-    reclaim protection. low, min limits tuning must take into account
-    hugetlb memory.
-  * Hugetlb pages utilized while this option is not selected will not
-    be tracked by the memory controller (even if cgroup v2 is remounted
-    later on).
+This patch add a new kselftest to demonstrate and verify the new
+hugetlb memcg accounting behavior.
 
 Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 29 +++++++++++++++++
- include/linux/cgroup-defs.h             |  5 +++
- include/linux/memcontrol.h              |  9 ++++++
- kernel/cgroup/cgroup.c                  | 15 ++++++++-
- mm/hugetlb.c                            | 35 ++++++++++++++++-----
- mm/memcontrol.c                         | 42 ++++++++++++++++++++++++-
- mm/migrate.c                            |  3 +-
- 7 files changed, 127 insertions(+), 11 deletions(-)
+ MAINTAINERS                                   |   2 +
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ .../selftests/cgroup/test_hugetlb_memcg.c     | 234 ++++++++++++++++++
+ 4 files changed, 239 insertions(+)
+ create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 622a7f28db1f..606b2e0eac4b 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -210,6 +210,35 @@ cgroup v2 currently supports the following mount options.
-         relying on the original semantics (e.g. specifying bogusly
-         high 'bypass' protection values at higher tree levels).
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bf0f54c24f81..ce9f40bcc2ba 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5269,6 +5269,7 @@ S:	Maintained
+ F:	mm/memcontrol.c
+ F:	mm/swap_cgroup.c
+ F:	tools/testing/selftests/cgroup/memcg_protection.m
++F:	tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+ F:	tools/testing/selftests/cgroup/test_kmem.c
+ F:	tools/testing/selftests/cgroup/test_memcontrol.c
  
-+  memory_hugetlb_accounting
-+        Count HugeTLB memory usage towards the cgroup's overall
-+        memory usage for the memory controller (for the purpose of
-+        statistics reporting and memory protetion). This is a new
-+        behavior that could regress existing setups, so it must be
-+        explicitly opted in with this mount option.
-+
-+        A few caveats to keep in mind:
-+
-+        * There is no HugeTLB pool management involved in the memory
-+          controller. The pre-allocated pool does not belong to anyone.
-+          Specifically, when a new HugeTLB folio is allocated to
-+          the pool, it is not accounted for from the perspective of the
-+          memory controller. It is only charged to a cgroup when it is
-+          actually used (for e.g at page fault time). Host memory
-+          overcommit management has to consider this when configuring
-+          hard limits. In general, HugeTLB pool management should be
-+          done via other mechanisms (such as the HugeTLB controller).
-+        * Failure to charge a HugeTLB folio to the memory controller
-+          results in SIGBUS. This could happen even if the HugeTLB pool
-+          still has pages available (but the cgroup limit is hit and
-+          reclaim attempt fails).
-+        * Charging HugeTLB memory towards the memory controller affects
-+          memory protection and reclaim dynamics. Any userspace tuning
-+          (of low, min limits for e.g) needs to take this into account.
-+        * HugeTLB pages utilized while this option is not selected
-+          will not be tracked by the memory controller (even if cgroup
-+          v2 is remounted later on).
-+
+@@ -9652,6 +9653,7 @@ F:	include/linux/hugetlb.h
+ F:	mm/hugetlb.c
+ F:	mm/hugetlb_vmemmap.c
+ F:	mm/hugetlb_vmemmap.h
++F:	tools/testing/selftests/cgroup/test_hugetlb_memcg.c
  
- Organizing Processes and Threads
- --------------------------------
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index f1b3151ac30b..8641f4320c98 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -115,6 +115,11 @@ enum {
- 	 * Enable recursive subtree protection
- 	 */
- 	CGRP_ROOT_MEMORY_RECURSIVE_PROT = (1 << 18),
+ HVA ST MEDIA DRIVER
+ M:	Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
+diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/selftests/cgroup/.gitignore
+index af8c3f30b9c1..2732e0b29271 100644
+--- a/tools/testing/selftests/cgroup/.gitignore
++++ b/tools/testing/selftests/cgroup/.gitignore
+@@ -7,4 +7,5 @@ test_kill
+ test_cpu
+ test_cpuset
+ test_zswap
++test_hugetlb_memcg
+ wait_inotify
+diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+index c27f05f6ce9b..00b441928909 100644
+--- a/tools/testing/selftests/cgroup/Makefile
++++ b/tools/testing/selftests/cgroup/Makefile
+@@ -14,6 +14,7 @@ TEST_GEN_PROGS += test_kill
+ TEST_GEN_PROGS += test_cpu
+ TEST_GEN_PROGS += test_cpuset
+ TEST_GEN_PROGS += test_zswap
++TEST_GEN_PROGS += test_hugetlb_memcg
+ 
+ LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
+ 
+@@ -27,3 +28,4 @@ $(OUTPUT)/test_kill: cgroup_util.c
+ $(OUTPUT)/test_cpu: cgroup_util.c
+ $(OUTPUT)/test_cpuset: cgroup_util.c
+ $(OUTPUT)/test_zswap: cgroup_util.c
++$(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
+diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+new file mode 100644
+index 000000000000..f0fefeb4cc24
+--- /dev/null
++++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+@@ -0,0 +1,234 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
 +
-+	/*
-+	 * Enable hugetlb accounting for the memory controller.
-+	 */
-+	 CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING = (1 << 19),
- };
- 
- /* cftype->flags */
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 5daf14da3759..e3eaa123256b 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -679,6 +679,9 @@ static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
- 	return __mem_cgroup_charge(folio, mm, gfp);
- }
- 
-+int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
-+		long nr_pages);
++#include <linux/limits.h>
++#include <sys/mman.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <fcntl.h>
++#include "../kselftest.h"
++#include "cgroup_util.h"
 +
- int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct *mm,
- 				  gfp_t gfp, swp_entry_t entry);
- void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
-@@ -1264,6 +1267,12 @@ static inline int mem_cgroup_charge(struct folio *folio,
- 	return 0;
- }
- 
-+static inline int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg,
-+		gfp_t gfp, long nr_pages)
++#define ADDR ((void *)(0x0UL))
++#define FLAGS (MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
++/* mapping 8 MBs == 4 hugepages */
++#define LENGTH (8UL*1024*1024)
++#define PROTECTION (PROT_READ | PROT_WRITE)
++
++/* borrowed from mm/hmm-tests.c */
++static long get_hugepage_size(void)
 +{
-+	return 0;
++	int fd;
++	char buf[2048];
++	int len;
++	char *p, *q, *path = "/proc/meminfo", *tag = "Hugepagesize:";
++	long val;
++
++	fd = open(path, O_RDONLY);
++	if (fd < 0) {
++		/* Error opening the file */
++		return -1;
++	}
++
++	len = read(fd, buf, sizeof(buf));
++	close(fd);
++	if (len < 0) {
++		/* Error in reading the file */
++		return -1;
++	}
++	if (len == sizeof(buf)) {
++		/* Error file is too large */
++		return -1;
++	}
++	buf[len] = '\0';
++
++	/* Search for a tag if provided */
++	if (tag) {
++		p = strstr(buf, tag);
++		if (!p)
++			return -1; /* looks like the line we want isn't there */
++		p += strlen(tag);
++	} else
++		p = buf;
++
++	val = strtol(p, &q, 0);
++	if (*q != ' ') {
++		/* Error parsing the file */
++		return -1;
++	}
++
++	return val;
 +}
 +
- static inline int mem_cgroup_swapin_charge_folio(struct folio *folio,
- 			struct mm_struct *mm, gfp_t gfp, swp_entry_t entry)
- {
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 1fb7f562289d..f11488b18ceb 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1902,6 +1902,7 @@ enum cgroup2_param {
- 	Opt_favordynmods,
- 	Opt_memory_localevents,
- 	Opt_memory_recursiveprot,
-+	Opt_memory_hugetlb_accounting,
- 	nr__cgroup2_params
- };
- 
-@@ -1910,6 +1911,7 @@ static const struct fs_parameter_spec cgroup2_fs_parameters[] = {
- 	fsparam_flag("favordynmods",		Opt_favordynmods),
- 	fsparam_flag("memory_localevents",	Opt_memory_localevents),
- 	fsparam_flag("memory_recursiveprot",	Opt_memory_recursiveprot),
-+	fsparam_flag("memory_hugetlb_accounting", Opt_memory_hugetlb_accounting),
- 	{}
- };
- 
-@@ -1936,6 +1938,9 @@ static int cgroup2_parse_param(struct fs_context *fc, struct fs_parameter *param
- 	case Opt_memory_recursiveprot:
- 		ctx->flags |= CGRP_ROOT_MEMORY_RECURSIVE_PROT;
- 		return 0;
-+	case Opt_memory_hugetlb_accounting:
-+		ctx->flags |= CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING;
-+		return 0;
- 	}
- 	return -EINVAL;
- }
-@@ -1960,6 +1965,11 @@ static void apply_cgroup_root_flags(unsigned int root_flags)
- 			cgrp_dfl_root.flags |= CGRP_ROOT_MEMORY_RECURSIVE_PROT;
- 		else
- 			cgrp_dfl_root.flags &= ~CGRP_ROOT_MEMORY_RECURSIVE_PROT;
-+
-+		if (root_flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING)
-+			cgrp_dfl_root.flags |= CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING;
-+		else
-+			cgrp_dfl_root.flags &= ~CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING;
- 	}
- }
- 
-@@ -1973,6 +1983,8 @@ static int cgroup_show_options(struct seq_file *seq, struct kernfs_root *kf_root
- 		seq_puts(seq, ",memory_localevents");
- 	if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_RECURSIVE_PROT)
- 		seq_puts(seq, ",memory_recursiveprot");
-+	if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING)
-+		seq_puts(seq, ",memory_hugetlb_accounting");
- 	return 0;
- }
- 
-@@ -7050,7 +7062,8 @@ static ssize_t features_show(struct kobject *kobj, struct kobj_attribute *attr,
- 			"nsdelegate\n"
- 			"favordynmods\n"
- 			"memory_localevents\n"
--			"memory_recursiveprot\n");
-+			"memory_recursiveprot\n"
-+			"memory_hugetlb_accounting\n");
- }
- static struct kobj_attribute cgroup_features_attr = __ATTR_RO(features);
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index de220e3ff8be..74472e911b0a 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1902,6 +1902,7 @@ void free_huge_folio(struct folio *folio)
- 				     pages_per_huge_page(h), folio);
- 	hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
- 					  pages_per_huge_page(h), folio);
-+	mem_cgroup_uncharge(folio);
- 	if (restore_reserve)
- 		h->resv_huge_pages++;
- 
-@@ -3009,11 +3010,20 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 	struct hugepage_subpool *spool = subpool_vma(vma);
- 	struct hstate *h = hstate_vma(vma);
- 	struct folio *folio;
--	long map_chg, map_commit;
-+	long map_chg, map_commit, nr_pages = pages_per_huge_page(h);
- 	long gbl_chg;
--	int ret, idx;
-+	int memcg_charge_ret, ret, idx;
- 	struct hugetlb_cgroup *h_cg = NULL;
-+	struct mem_cgroup *memcg;
- 	bool deferred_reserve;
-+	gfp_t gfp = htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL;
-+
-+	memcg = get_mem_cgroup_from_current();
-+	memcg_charge_ret = mem_cgroup_hugetlb_try_charge(memcg, gfp, nr_pages);
-+	if (memcg_charge_ret == -ENOMEM) {
-+		mem_cgroup_put(memcg);
-+		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	idx = hstate_index(h);
- 	/*
-@@ -3022,8 +3032,12 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 	 * code of zero indicates a reservation exists (no change).
- 	 */
- 	map_chg = gbl_chg = vma_needs_reservation(h, vma, addr);
--	if (map_chg < 0)
-+	if (map_chg < 0) {
-+		if (!memcg_charge_ret)
-+			mem_cgroup_cancel_charge(memcg, nr_pages);
-+		mem_cgroup_put(memcg);
- 		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	/*
- 	 * Processes that did not create the mapping will have no
-@@ -3034,10 +3048,8 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 	 */
- 	if (map_chg || avoid_reserve) {
- 		gbl_chg = hugepage_subpool_get_pages(spool, 1);
--		if (gbl_chg < 0) {
--			vma_end_reservation(h, vma, addr);
--			return ERR_PTR(-ENOSPC);
--		}
-+		if (gbl_chg < 0)
-+			goto out_end_reservation;
- 
- 		/*
- 		 * Even though there was no reservation in the region/reserve
-@@ -3119,6 +3131,11 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 			hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
- 					pages_per_huge_page(h), folio);
- 	}
-+
-+	if (!memcg_charge_ret)
-+		mem_cgroup_commit_charge(folio, memcg);
-+	mem_cgroup_put(memcg);
-+
- 	return folio;
- 
- out_uncharge_cgroup:
-@@ -3130,7 +3147,11 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- out_subpool_put:
- 	if (map_chg || avoid_reserve)
- 		hugepage_subpool_put_pages(spool, 1);
-+out_end_reservation:
- 	vma_end_reservation(h, vma, addr);
-+	if (!memcg_charge_ret)
-+		mem_cgroup_cancel_charge(memcg, nr_pages);
-+	mem_cgroup_put(memcg);
- 	return ERR_PTR(-ENOSPC);
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b9c479d768e2..a3adfecf5977 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7085,6 +7085,41 @@ int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
- 	return ret;
- }
- 
-+/**
-+ * mem_cgroup_hugetlb_try_charge - try to charge the memcg for a hugetlb folio
-+ * @memcg: memcg to charge.
-+ * @gfp: reclaim mode.
-+ * @nr_pages: number of pages to charge.
-+ *
-+ * This function is called when allocating a huge page folio to determine if
-+ * the memcg has the capacity for it. It does not commit the charge yet,
-+ * as the hugetlb folio itself has not been obtained from the hugetlb pool.
-+ *
-+ * Once we have obtained the hugetlb folio, we can call
-+ * mem_cgroup_commit_charge() to commit the charge. If we fail to obtain the
-+ * folio, we should instead call mem_cgroup_cancel_charge() to undo the effect
-+ * of try_charge().
-+ *
-+ * Returns 0 on success. Otherwise, an error code is returned.
-+ */
-+int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
-+			long nr_pages)
++static int set_file(const char *path, long value)
 +{
-+	/*
-+	 * If hugetlb memcg charging is not enabled, do not fail hugetlb allocation,
-+	 * but do not attempt to commit charge later (or cancel on error) either.
-+	 */
-+	if (mem_cgroup_disabled() || !memcg ||
-+		!cgroup_subsys_on_dfl(memory_cgrp_subsys) ||
-+		!(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
-+		return -EOPNOTSUPP;
++	FILE *file;
++	int ret;
 +
-+	if (try_charge(memcg, gfp, nr_pages))
-+		return -ENOMEM;
-+
-+	return 0;
++	file = fopen(path, "w");
++	if (!file)
++		return -1;
++	ret = fprintf(file, "%ld\n", value);
++	fclose(file);
++	return ret;
 +}
 +
- /**
-  * mem_cgroup_swapin_charge_folio - Charge a newly allocated folio for swapin.
-  * @folio: folio to charge.
-@@ -7354,7 +7389,12 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
- 		return;
- 
- 	memcg = folio_memcg(old);
--	VM_WARN_ON_ONCE_FOLIO(!memcg, old);
-+	/*
-+	 * Note that it is normal to see !memcg for a hugetlb folio.
-+	 * For e.g, itt could have been allocated when memory_hugetlb_accounting
-+	 * was not selected.
-+	 */
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg, old);
- 	if (!memcg)
- 		return;
- 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 7d1804c4a5d9..6034c7ed1d65 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -633,8 +633,7 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
- 
- 	folio_copy_owner(newfolio, folio);
- 
--	if (!folio_test_hugetlb(folio))
--		mem_cgroup_migrate(folio, newfolio);
-+	mem_cgroup_migrate(folio, newfolio);
- }
- EXPORT_SYMBOL(folio_migrate_flags);
- 
++static int set_nr_hugepages(long value)
++{
++	return set_file("/proc/sys/vm/nr_hugepages", value);
++}
++
++static unsigned int check_first(char *addr)
++{
++	return *(unsigned int *)addr;
++}
++
++static void write_data(char *addr)
++{
++	unsigned long i;
++
++	for (i = 0; i < LENGTH; i++)
++		*(addr + i) = (char)i;
++}
++
++static int hugetlb_test_program(const char *cgroup, void *arg)
++{
++	char *test_group = (char *)arg;
++	void *addr;
++	long old_current, expected_current, current;
++	int ret = EXIT_FAILURE;
++
++	old_current = cg_read_long(test_group, "memory.current");
++	set_nr_hugepages(20);
++	current = cg_read_long(test_group, "memory.current");
++	if (current - old_current >= MB(2)) {
++		ksft_print_msg(
++			"setting nr_hugepages should not increase hugepage usage.\n");
++		ksft_print_msg("before: %ld, after: %ld\n", old_current, current);
++		return EXIT_FAILURE;
++	}
++
++	addr = mmap(ADDR, LENGTH, PROTECTION, FLAGS, 0, 0);
++	if (addr == MAP_FAILED) {
++		ksft_print_msg("fail to mmap.\n");
++		return EXIT_FAILURE;
++	}
++	current = cg_read_long(test_group, "memory.current");
++	if (current - old_current >= MB(2)) {
++		ksft_print_msg("mmap should not increase hugepage usage.\n");
++		ksft_print_msg("before: %ld, after: %ld\n", old_current, current);
++		goto out_failed_munmap;
++	}
++	old_current = current;
++
++	/* read the first page */
++	check_first(addr);
++	expected_current = old_current + MB(2);
++	current = cg_read_long(test_group, "memory.current");
++	if (!values_close(expected_current, current, 5)) {
++		ksft_print_msg("memory usage should increase by around 2MB.\n");
++		ksft_print_msg(
++			"expected memory: %ld, actual memory: %ld\n",
++			expected_current, current);
++		goto out_failed_munmap;
++	}
++
++	/* write to the whole range */
++	write_data(addr);
++	current = cg_read_long(test_group, "memory.current");
++	expected_current = old_current + MB(8);
++	if (!values_close(expected_current, current, 5)) {
++		ksft_print_msg("memory usage should increase by around 8MB.\n");
++		ksft_print_msg(
++			"expected memory: %ld, actual memory: %ld\n",
++			expected_current, current);
++		goto out_failed_munmap;
++	}
++
++	/* unmap the whole range */
++	munmap(addr, LENGTH);
++	current = cg_read_long(test_group, "memory.current");
++	expected_current = old_current;
++	if (!values_close(expected_current, current, 5)) {
++		ksft_print_msg("memory usage should go back down.\n");
++		ksft_print_msg(
++			"expected memory: %ld, actual memory: %ld\n",
++			expected_current, current);
++		return ret;
++	}
++
++	ret = EXIT_SUCCESS;
++	return ret;
++
++out_failed_munmap:
++	munmap(addr, LENGTH);
++	return ret;
++}
++
++static int test_hugetlb_memcg(char *root)
++{
++	int ret = KSFT_FAIL;
++	char *test_group;
++
++	test_group = cg_name(root, "hugetlb_memcg_test");
++	if (!test_group || cg_create(test_group)) {
++		ksft_print_msg("fail to create cgroup.\n");
++		goto out;
++	}
++
++	if (cg_write(test_group, "memory.max", "100M")) {
++		ksft_print_msg("fail to set cgroup memory limit.\n");
++		goto out;
++	}
++
++	/* disable swap */
++	if (cg_write(test_group, "memory.swap.max", "0")) {
++		ksft_print_msg("fail to disable swap.\n");
++		goto out;
++	}
++
++	if (!cg_run(test_group, hugetlb_test_program, (void *)test_group))
++		ret = KSFT_PASS;
++out:
++	cg_destroy(test_group);
++	free(test_group);
++	return ret;
++}
++
++int main(int argc, char **argv)
++{
++	char root[PATH_MAX];
++	int ret = EXIT_SUCCESS, has_memory_hugetlb_acc;
++
++	has_memory_hugetlb_acc = proc_mount_contains("memory_hugetlb_accounting");
++	if (has_memory_hugetlb_acc < 0)
++		ksft_exit_skip("Failed to query cgroup mount option\n");
++	else if (!has_memory_hugetlb_acc)
++		ksft_exit_skip("memory hugetlb accounting is disabled\n");
++
++	/* Unit is kB! */
++	if (get_hugepage_size() != 2048) {
++		ksft_print_msg("test_hugetlb_memcg requires 2MB hugepages\n");
++		ksft_test_result_skip("test_hugetlb_memcg\n");
++		return ret;
++	}
++
++	if (cg_find_unified_root(root, sizeof(root)))
++		ksft_exit_skip("cgroup v2 isn't mounted\n");
++
++	switch (test_hugetlb_memcg(root)) {
++	case KSFT_PASS:
++		ksft_test_result_pass("test_hugetlb_memcg\n");
++		break;
++	case KSFT_SKIP:
++		ksft_test_result_skip("test_hugetlb_memcg\n");
++		break;
++	default:
++		ret = EXIT_FAILURE;
++		ksft_test_result_fail("test_hugetlb_memcg\n");
++		break;
++	}
++
++	return ret;
++}
 -- 
 2.34.1
