@@ -2,69 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52517BBECB
-	for <lists+cgroups@lfdr.de>; Fri,  6 Oct 2023 20:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE297BBEE2
+	for <lists+cgroups@lfdr.de>; Fri,  6 Oct 2023 20:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbjJFShe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Oct 2023 14:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
+        id S232789AbjJFSqd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Oct 2023 14:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbjJFShd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Oct 2023 14:37:33 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B3BBE
-        for <cgroups@vger.kernel.org>; Fri,  6 Oct 2023 11:37:32 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a24b03e22eso29933217b3.0
-        for <cgroups@vger.kernel.org>; Fri, 06 Oct 2023 11:37:32 -0700 (PDT)
+        with ESMTP id S233130AbjJFSqc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Oct 2023 14:46:32 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D91C6;
+        Fri,  6 Oct 2023 11:46:31 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-69af8a42066so1392393b3a.1;
+        Fri, 06 Oct 2023 11:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696617452; x=1697222252; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zo8j5LctJjOXSOwYPtAww0DYBAOog101Ybo6uL6Dc3M=;
-        b=gf+S7DqEqeNyrZ2ClCfmF6M48HHOUiJSkRtLeRYpVSI3L4O+RaZKsFMOHV/yDjFv7z
-         2nc796dmQ4LG+Y15IDKCami/HKe9ubrCHP2hi2Ra9BtrvB7lK3dSbU1RayCgJa8ROtRs
-         ty007Ps3mOkzXTJVbBMID8TuYUh/ECwSO6Fz4MQvDyGW/JGoY/E54m9IqUqe/bZ2G4ev
-         D8LXJgRCtfLS68LUNtRotLrts/X4e21nr99bO9Cg1UNivvOG1x57bc6sIOyWzJHDGnXq
-         OqMV7ZaFd8Kok2oMyE0qQmSp/Uq7xE1R1khWGu//ok337nOXVItaq6RY6QJkCqFJF+BG
-         FlOw==
+        d=gmail.com; s=20230601; t=1696617991; x=1697222791; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2s4i0NFYgIBv1cJZUrejLYvQnyIri0mts0GvRI59+ZQ=;
+        b=m71AVx5Asuo1MG15b1CAY92Bhkf80JrPz70M8VdbrR6q2eu/Nf+Q8q7i3cyG5ow4eb
+         8+ukgjpTzNxPPwHBg6wgKZ0zA2hFtF0D7ddIE/gORHKxSSpYIiauq+O12WQawBwVLnc3
+         SKoOIfjBoUkbylxSveZOEnwbIX2Bo7Kgp3u95WMV9UHe4773EEStyjV4E/mqkBBR3y3m
+         zK2bSxLX7YC2IgRJBpLLZsQmfRYYdMhiNrOaNK6QUKSFzugiRQzZ6S1bN4EVZtHovqlF
+         CnVKzAIBoFiCQ1/kYBbgl+02l0s8YHz/I4zps/W0YcdaLjmDLYzTqCO++nSg5XuLbaWp
+         XL2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696617452; x=1697222252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zo8j5LctJjOXSOwYPtAww0DYBAOog101Ybo6uL6Dc3M=;
-        b=K8HPqXYJNXYEd/8bqO1cXnu5H8+9ol2dvtnhiEBzvLrCvfLnNbzNcztJTJ49PcIXHS
-         KLVZwd1+5/AEuy/FKGLzuZzMH0hvuBVQKF9JAV8k3o/QjhCKBKknkQ6sn218jJB3d/TS
-         53qpfZduk6Wg4OSvoCa+lHLucxoNbJSQu6b3/TBXwkmbdwOHa0fnBL2LdkZshQsI5BV+
-         +8BcRdz0I8bGyNMJgPN11lgnFdrvjoJK1VYRjVrglo8vhrJDAxX93q50Fi1KoM60pe7F
-         LS3+Je25Ava5Dyb5JbyQ0mWueQMbFnCi3QNPjq0cobS7dYZk0QlHkKsYcnXgP9fn59uT
-         YhGA==
-X-Gm-Message-State: AOJu0YxptzQiTv3gorKYVBZplcLyTDDV0dEXBt4avnly6htJ02tO9NRJ
-        wua7kYJPnBDgnouwS9MrHkd6MR5AHuOIujTETl2w4g==
-X-Google-Smtp-Source: AGHT+IG/j49d480i2hrz2vHadaqN2itDTmAzUEVueGHTrOrPgfMjS3jh67+jKlqf1IGijjdxHU7CNTp3QG6FmwLQpt0=
-X-Received: by 2002:a25:2109:0:b0:d90:a7a4:7093 with SMTP id
- h9-20020a252109000000b00d90a7a47093mr8307317ybh.55.1696617451513; Fri, 06 Oct
- 2023 11:37:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696617991; x=1697222791;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2s4i0NFYgIBv1cJZUrejLYvQnyIri0mts0GvRI59+ZQ=;
+        b=qfO56BxcXoiv4E5JNfUbhHfmx+TUReqLOqfjctBbDtUI9/9fjew02nnGdjMsv+S2ap
+         G9Cqj+duq7zMosMPfpAvi3w9lcP9D26aIICD4jiLLGmTYFgma0LChLSj+/YTqJU8h3m9
+         0mBf8wYtj35VEkdqgDoH5Hn36XZSg7aFIYokZ9oZj1O4I7z6Sx5tRifWwSMJGbHOr/Y9
+         hlrorw71b+15PtJ3rrIR0RYgtPUv5dGD6kzaRM/9l0caJvzbFhs7q7LCMYEzR15EVfsM
+         7K9yvykKs40sgT+0Z5IFo+ohov1HLc7UlHqdEjBipi1sM+OahlwUJiP8ZAgdmfq8NkKU
+         PbPg==
+X-Gm-Message-State: AOJu0YxneR69uGhJY/Q2r8DLScsuyYwK1luBCqIn26HAYANxmIb1ZvpO
+        HLozRSkHMcx9vpYrxxprKfA=
+X-Google-Smtp-Source: AGHT+IFh2JBtLTorBxbati1NWKp48DoHPTohn7WHY69D8nGHAnt4czmX5CCj+n6BTX0EGyhcAYyzdw==
+X-Received: by 2002:a05:6a20:841b:b0:137:2f8c:fab0 with SMTP id c27-20020a056a20841b00b001372f8cfab0mr10387583pzd.49.1696617990622;
+        Fri, 06 Oct 2023 11:46:30 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-000.fbsv.net. [2a03:2880:ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id v13-20020aa7808d000000b0068ffd4eb66dsm1812830pff.35.2023.10.06.11.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 11:46:30 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v4 0/4] hugetlb memcg accounting
+Date:   Fri,  6 Oct 2023 11:46:25 -0700
+Message-Id: <20231006184629.155543-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
- <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com> <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
-In-Reply-To: <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Fri, 6 Oct 2023 11:37:19 -0700
-Message-ID: <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
-Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,85 +72,73 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 9:58=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
->
-> Hello T.J.
->
-> A curious case.
->
-> I was staring at the code and any ways occurring to me would imply
-> css_set_lock doesn't work.
->
-> OTOH, I can bring the reproducer to rmdir()=3D-EBUSY on my machine
-> (6.4.12-1-default) [1].
->
-> I notice that there are 2*nr_cpus parallel readers of cgroup.procs.
-> And a single thread's testimony is enough to consider cgroup empty.
-> Could it be that despite the 200ms delay, some of the threads see the
-> cgroup empty _yet_?
-> (I didn't do own tracing but by reducing the delay, I could reduce the
-> time before EBUSY was hit, otherwise it took several minutes (on top of
-> desktop background).)
->
-Hm yes, it's possible a thread runs before the child migrates and sets
-noProcs =3D true too early. I added a loop to wait for B to be populated
-before running the threads, and now I can't reproduce it. :\
+Changelog:
+v4:
+	* Add another prep patch to clean up memory controller migration
+	  logic.
+	* Fix an issue in hugetlb folio migration where the new folio
+	  is not properly charged (patch 3) (reported by Mike Kravetz)
+	  (suggested by Johannes Weiner).
+v3:
+	* Add a prep patch at the start of the series to extend the memory
+	  controller interface with new helper functions for hugetlb
+	  accounting.
+	* Do not account hugetlb memory for memcontroller in cgroup v1
+	  (patch 2) (suggested by Johannes Weiner).
+	* Change the gfp flag passed to mem cgroup charging (patch 2)
+	  (suggested by Michal Hocko).
+	* Add caveats to cgroup admin guide and commit changelog
+	  (patch 2) (suggested by Michal Hocko).
+v2:
+	* Add a cgroup mount option to enable/disable the new hugetlb memcg
+	  accounting behavior (patch 1) (suggested by Johannes Weiner).
+	* Add a couple more ksft_print_msg() on error to aid debugging when
+	  the selftest fails. (patch 2)
 
-> On Tue, Oct 03, 2023 at 11:01:46AM -0700, "T.J. Mercier" <tjmercier@googl=
-e.com> wrote:
-> ...
-> > > The trace events look like this when the problem occurs. I'm guessing
-> > > the rmdir is attempted in that window between signal_deliver and
-> > > cgroup_notify_populated =3D 0.
->
-> But rmdir() happens after empty cgroup.procs was spotted, right?
-> (That's why it is curious.)
->
-Right, we read cgroup.procs to find which processes to kill. Kill them
-all, wait until cgroup.procs is empty, and then attempt to rmdir.
+Currently, hugetlb memory usage is not acounted for in the memory
+controller, which could lead to memory overprotection for cgroups with
+hugetlb-backed memory. This has been observed in our production system.
 
-I will try changing the cgroup_rmdir trace event to always fire
-instead of only when the rmdir succeeds. That way I can get a more
-complete timeline.
+For instance, here is one of our usecases: suppose there are two 32G
+containers. The machine is booted with hugetlb_cma=6G, and each 
+container may or may not use up to 3 gigantic page, depending on the 
+workload within it. The rest is anon, cache, slab, etc. We can set the
+hugetlb cgroup limit of each cgroup to 3G to enforce hugetlb fairness. 
+But it is very difficult to configure memory.max to keep overall 
+consumption, including anon, cache, slab etc. fair.
+ 
+What we have had to resort to is to constantly poll hugetlb usage and
+readjust memory.max. Similar procedure is done to other memory limits
+(memory.low for e.g). However, this is rather cumbersome and buggy.
+Furthermore, when there is a delay in memory limits correction, (for
+e.g when hugetlb usage changes within consecutive runs of the userspace
+agent), the system could be in an over/underprotected state.
 
-> > > However on Android we retry the rmdir for 2 seconds after cgroup.proc=
-s
-> > > is empty and we're still occasionally hitting the failure. On my
-> > > primary phone with 3 days of uptime I see a handful of cases, but the
-> > > problem is orders of magnitude worse on Samsung's device.
->
-> Would there also be short-lived members of cgroups and reading
-> cgroup.procs under load?
->
-I think the only short-lived members should be due to launch failures
-/ crashes. Reading cgroup.procs does frequently happen under load. One
-scenario that comes to mind is under memory pressure where LMKD hunts
-for apps to kill (after which their cgroups are removed), while
-reclaim and compaction are also occurring.
+This patch series rectifies this issue by charging the memcg when the
+hugetlb folio is allocated, and uncharging when the folio is freed. In
+addition, a new selftest is added to demonstrate and verify this new
+behavior.
 
-I suppose it's also possible there is PID reuse by the same app,
-causing the cgroup to become repopulated at the same time as a kill,
-but that seems extremely unlikely. Plus, at the point where these
-kills are occurring we shouldn't normally be simultaneously launching
-new processes for the app. Similarly if a process forks right before
-it is killed, maybe it doesn't show up in cgroup.procs until after
-we've observed it to be empty?
+Nhat Pham (4):
+  memcontrol: add helpers for hugetlb memcg accounting
+  memcontrol: only transfer the memcg data for migration
+  hugetlb: memcg: account hugetlb-backed memory in memory controller
+  selftests: add a selftest to verify hugetlb usage in memcg
 
-I will investigate some more on a phone where I'm seeing this since my
-reproducer isn't doing the trick.
+ Documentation/admin-guide/cgroup-v2.rst       |  29 +++
+ MAINTAINERS                                   |   2 +
+ include/linux/cgroup-defs.h                   |   5 +
+ include/linux/memcontrol.h                    |  37 +++
+ kernel/cgroup/cgroup.c                        |  15 +-
+ mm/filemap.c                                  |   2 +-
+ mm/hugetlb.c                                  |  35 ++-
+ mm/memcontrol.c                               | 139 +++++++++--
+ mm/migrate.c                                  |   3 +-
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ .../selftests/cgroup/test_hugetlb_memcg.c     | 234 ++++++++++++++++++
+ 12 files changed, 478 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
 
-Thanks for taking a look Michal.
-
->
-> Thanks,
-> Michal
->
-> [1] FTR, a hunk to run it without sudo on a modern desktop:
-> -static const std::filesystem::path CG_A_PATH =3D "/sys/fs/cgroup/A";
-> -static const std::filesystem::path CG_B_PATH =3D "/sys/fs/cgroup/B";
-> +static const std::filesystem::path CG_A_PATH =3D "/sys/fs/cgroup/user.sl=
-ice/user-1000.slice/user@1000.service/app.slice/a";
-> +static const std::filesystem::path CG_B_PATH =3D "/sys/fs/cgroup/user.sl=
-ice/user-1000.slice/user@1000.service/app.slice/b";
->
+-- 
+2.34.1
