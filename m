@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5288E7BC838
+	by mail.lfdr.de (Postfix) with ESMTP id D61727BC839
 	for <lists+cgroups@lfdr.de>; Sat,  7 Oct 2023 16:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343946AbjJGODZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S1344004AbjJGODZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Sat, 7 Oct 2023 10:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343933AbjJGODY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 10:03:24 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33043C5;
-        Sat,  7 Oct 2023 07:03:22 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c723f1c80fso22656085ad.1;
-        Sat, 07 Oct 2023 07:03:22 -0700 (PDT)
+        with ESMTP id S1343933AbjJGODZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 10:03:25 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099D2BD;
+        Sat,  7 Oct 2023 07:03:24 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c5c91bec75so23168595ad.3;
+        Sat, 07 Oct 2023 07:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696687401; x=1697292201; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696687403; x=1697292203; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YxmghcOcb4Lv1mKG5g6exWWWkajf/SPl1xKizlQXNEE=;
-        b=Sa9UsKe33dTiCY3bB2MaRtiMogiuNxho6tGFMfRq09aWsDEflo0zr/PiFGDsMJ9T1M
-         0SX4DQw1fvdOkOTV+zg0tJMTGO7IjiI7mhFtCDlSswmvI374Kop3OzRwdNKi3HiRPTEJ
-         CUVoW1IH/4sQbSlWs4aojpxtkbLxxPTqMRuXenj9eDXAQYdbZfnF42uJPfohFZgxeMvJ
-         e8F36ghm6huXPjdGLlf+Ark3p9IOY/QzGYAqEXIAtLeX6Ml3IqiV83se8A5KqwIR3+dP
-         iA/4SlHfLuHss4BKxpoZcPJDyvauo0gkwx866hv7omf+gVFEdYGt4UWiae2OyYsg4cmP
-         dn/A==
+        bh=STXdhtnmTI3etV8zPaY3R9oC/tPAoDIEDC13dA2eLMM=;
+        b=FwSZbahfWgi2/baWR7klHWtCrdDGwmkX4RmxB1y7tD7wn5+Bkq+Y7jgCw0WjEvD+xd
+         e6rQXD/Day6GlBv9zry/8Nl5Vn3eny8nfrCKrq2FxUMnDDF9m2wZ9zoqQWCa7uXBXYk1
+         xjLaxvfJiU88jpXHWHarBscV++DDBLexkn8fF/IHnFgaIcwBh77dAr+qeQ+4z22cpeTu
+         gDk7kKBYvh63pEsJG6NUL0DO+CZ0Ajiu5tPWHR7Qp9fyDoVucjKLSTmnl0higF3EgeTq
+         yMDiTN8uXv/V+nSa+Ek8pcvS6YK4Y2+iurSFu9sJCbMUUoklLaP+f3aL7+0xqlRLF1qe
+         wbgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696687401; x=1697292201;
+        d=1e100.net; s=20230601; t=1696687403; x=1697292203;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YxmghcOcb4Lv1mKG5g6exWWWkajf/SPl1xKizlQXNEE=;
-        b=r0awJEgu5+VWmVDzBb8tjnwiFTdR0fw7a4NCd+ZAf54xnAAnnzmEgCH+btIYywEOQ3
-         dundZJChF5sXP9KrwZ/FzxnKZ7jbQj6iJfYCJOPlBsBTwlqC5tYHwOiDhrkPnzZAGcIF
-         uF8l1XPkUTN09wS2Ao6qtouUkXTUqoV0MP752qQhF/+8RZEyU1ZGoZD1cu7hXWpbAHsh
-         uu9kfwdakBYpFOphaTeBExi4g7FNIlKgd21AbHh9tCPv/LfqW1dJ2eNfDj/PAGvnzsUC
-         /WmAq6CuzQiDcZTgMSMmz6u/L6MsOqd+jTvaPNwCrrZxsQaqDhUh1o+qq6m4xW71ac2s
-         ZjTg==
-X-Gm-Message-State: AOJu0YzvSWT3ya94YGVRo//AlOxTUIajPppp7U7xaxsGSVVcK0M8umWv
-        8HWZmf8FcXudulzhfWOeIFU=
-X-Google-Smtp-Source: AGHT+IEezGGRhbK03ax3JNIzFoLUpg5F1k0ZqeF9wak/y1NjlOW2XuFsrwhecuU/W1o0P5dcQkrwLQ==
-X-Received: by 2002:a17:903:1d0:b0:1c5:bea4:8537 with SMTP id e16-20020a17090301d000b001c5bea48537mr12692272plh.15.1696687401584;
-        Sat, 07 Oct 2023 07:03:21 -0700 (PDT)
+        bh=STXdhtnmTI3etV8zPaY3R9oC/tPAoDIEDC13dA2eLMM=;
+        b=IYXT2CIoa/G9xlEhFaWSyQCQV5kfj40WNZs0G0ArpKvuUqQ0QZM4TW8YXVaFeNzsmk
+         mx1W1XimZxArvb7XVu8SDvY6s5sXWCb8+5LBHfCygBtMFEIS7dtB4ydiDmyVaTO/ErUS
+         hOzUguHEgCT6XSuTVVOT6Ndb8kz+kH48pLcVIiedUxpQ9X8EiXpzWIC2bGhe+GVuNCEI
+         XHQ/owpTMErmB6/qrSWT+g4W5/xUvz5dtdqmhX7fEBksIBsYQOIJjU41YV3VPk0+s80o
+         rEDjFizOS/PEMB7VtjL+mogb59Xe9gW7+Wsk/L4E3M5wuQx7YI7VdCfGHCiHAubBo8Ex
+         +e/Q==
+X-Gm-Message-State: AOJu0Yx0X6rHj5RtMK3Luggx+nG0oGC6ou01FDaN7YRNe4BAR1Wc2d+Z
+        QAbgTJizTkj0k3NhhYtSkZM=
+X-Google-Smtp-Source: AGHT+IHtvkrd6iYtNGvkTLbptz6laKnr44PN3Ek6NbIjaWkMapFuSct5onQ0NQ6wq5211TZ8p4QYVQ==
+X-Received: by 2002:a17:902:be03:b0:1c4:c5d:d7fa with SMTP id r3-20020a170902be0300b001c40c5dd7famr9316704pls.45.1696687403452;
+        Sat, 07 Oct 2023 07:03:23 -0700 (PDT)
 Received: from vultr.guest ([45.77.191.53])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170902f68d00b001c0a414695dsm5897550plg.62.2023.10.07.07.03.20
+        by smtp.gmail.com with ESMTPSA id l13-20020a170902f68d00b001c0a414695dsm5897550plg.62.2023.10.07.07.03.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 07:03:21 -0700 (PDT)
+        Sat, 07 Oct 2023 07:03:22 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -58,9 +58,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         mkoutny@suse.com, sinquersw@gmail.com
 Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 4/8] selftests/bpf: Fix issues in setup_classid_environment()
-Date:   Sat,  7 Oct 2023 14:03:00 +0000
-Message-Id: <20231007140304.4390-5-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 5/8] selftests/bpf: Add parallel support for classid
+Date:   Sat,  7 Oct 2023 14:03:01 +0000
+Message-Id: <20231007140304.4390-6-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231007140304.4390-1-laoar.shao@gmail.com>
 References: <20231007140304.4390-1-laoar.shao@gmail.com>
@@ -76,76 +76,94 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If the net_cls subsystem is already mounted, attempting to mount it again
-in setup_classid_environment() will result in a failure with the error code
-EBUSY. Despite this, tmpfs will have been successfully mounted at
-/sys/fs/cgroup/net_cls. Consequently, the /sys/fs/cgroup/net_cls directory
-will be empty, causing subsequent setup operations to fail.
-
-Here's an error log excerpt illustrating the issue when net_cls has already
-been mounted at /sys/fs/cgroup/net_cls prior to running
-setup_classid_environment():
-
-- Before that change
-
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  test_cgroup_v1v2:PASS:client_fd 0 nsec
-  test_cgroup_v1v2:PASS:cgroup_fd 0 nsec
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  test_cgroup_v1v2:PASS:cgroup-v2-only 0 nsec
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
-  (cgroup_helpers.c:540: errno: No such file or directory) Opening cgroup classid: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/net_cls.classid
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/cgroup.procs
-  run_test:FAIL:join_classid unexpected error: 1 (errno 2)
-  test_cgroup_v1v2:FAIL:cgroup-v1v2 unexpected error: -1 (errno 2)
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
-  #44      cgroup_v1v2:FAIL
-  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-
-- After that change
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
-  #44      cgroup_v1v2:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Include the current pid in the classid cgroup path. This way, different
+testers relying on classid-based configurations will have distinct classid
+cgroup directories, enabling them to run concurrently. Additionally, we
+leverage the current pid as the classid, ensuring unique identification.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/testing/selftests/bpf/cgroup_helpers.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/cgroup_helpers.c  | 19 ++++++++++++-------
+ tools/testing/selftests/bpf/cgroup_helpers.h  |  2 +-
+ .../selftests/bpf/prog_tests/cgroup_v1v2.c    |  2 +-
+ 3 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index 24ba56d42f2d..9c36d1db9f94 100644
+index 9c36d1db9f94..e378fa057757 100644
 --- a/tools/testing/selftests/bpf/cgroup_helpers.c
 +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -518,10 +518,20 @@ int setup_classid_environment(void)
+@@ -45,9 +45,12 @@
+ #define format_parent_cgroup_path(buf, path) \
+ 	format_cgroup_path_pid(buf, path, getppid())
+ 
+-#define format_classid_path(buf)				\
+-	snprintf(buf, sizeof(buf), "%s%s", NETCLS_MOUNT_PATH,	\
+-		 CGROUP_WORK_DIR)
++#define format_classid_path_pid(buf, pid)				\
++	snprintf(buf, sizeof(buf), "%s%s%d", NETCLS_MOUNT_PATH,	\
++		 CGROUP_WORK_DIR, pid)
++
++#define format_classid_path(buf)	\
++	format_classid_path_pid(buf, getpid())
+ 
+ static __thread bool cgroup_workdir_mounted;
+ 
+@@ -546,15 +549,17 @@ int setup_classid_environment(void)
+ 
+ /**
+  * set_classid() - Set a cgroupv1 net_cls classid
+- * @id: the numeric classid
+  *
+- * Writes the passed classid into the cgroup work dir's net_cls.classid
++ * Writes the classid into the cgroup work dir's net_cls.classid
+  * file in order to later on trigger socket tagging.
+  *
++ * To make sure different classid testers have different classids, we use
++ * the current pid as the classid by default.
++ *
+  * On success, it returns 0, otherwise on failure it returns 1. If there
+  * is a failure, it prints the error to stderr.
+  */
+-int set_classid(unsigned int id)
++int set_classid(void)
+ {
+ 	char cgroup_workdir[PATH_MAX - 42];
+ 	char cgroup_classid_path[PATH_MAX + 1];
+@@ -570,7 +575,7 @@ int set_classid(unsigned int id)
  		return 1;
  	}
  
--	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls") &&
--	    errno != EBUSY) {
--		log_err("mount cgroup net_cls");
--		return 1;
-+	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls")) {
-+		if (errno != EBUSY) {
-+			log_err("mount cgroup net_cls");
-+			return 1;
-+		}
-+
-+		if (rmdir(NETCLS_MOUNT_PATH)) {
-+			log_err("rmdir cgroup net_cls");
-+			return 1;
-+		}
-+		if (umount(CGROUP_MOUNT_DFLT)) {
-+			log_err("umount cgroup base");
-+			return 1;
-+		}
+-	if (dprintf(fd, "%u\n", id) < 0) {
++	if (dprintf(fd, "%u\n", getpid()) < 0) {
+ 		log_err("Setting cgroup classid");
+ 		rc = 1;
  	}
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
+index 5c2cb9c8b546..92fc41daf4a4 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.h
++++ b/tools/testing/selftests/bpf/cgroup_helpers.h
+@@ -29,7 +29,7 @@ int setup_cgroup_environment(void);
+ void cleanup_cgroup_environment(void);
  
+ /* cgroupv1 related */
+-int set_classid(unsigned int id);
++int set_classid(void);
+ int join_classid(void);
+ 
+ int setup_classid_environment(void);
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c b/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
+index 9026b42914d3..addf720428f7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
+@@ -71,7 +71,7 @@ void test_cgroup_v1v2(void)
+ 	}
+ 	ASSERT_OK(run_test(cgroup_fd, server_fd, false), "cgroup-v2-only");
+ 	setup_classid_environment();
+-	set_classid(42);
++	set_classid();
+ 	ASSERT_OK(run_test(cgroup_fd, server_fd, true), "cgroup-v1v2");
  	cleanup_classid_environment();
+ 	close(server_fd);
 -- 
 2.30.1 (Apple Git-130)
 
