@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AA77BC834
-	for <lists+cgroups@lfdr.de>; Sat,  7 Oct 2023 16:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588167BC835
+	for <lists+cgroups@lfdr.de>; Sat,  7 Oct 2023 16:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343974AbjJGODU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Oct 2023 10:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S1343979AbjJGODW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Oct 2023 10:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343934AbjJGODU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 10:03:20 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013E9BF;
-        Sat,  7 Oct 2023 07:03:18 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c88b46710bso15851165ad.1;
-        Sat, 07 Oct 2023 07:03:18 -0700 (PDT)
+        with ESMTP id S1343934AbjJGODV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 10:03:21 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1F3BD;
+        Sat,  7 Oct 2023 07:03:20 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c723f1c80fso22655865ad.1;
+        Sat, 07 Oct 2023 07:03:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696687398; x=1697292198; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696687400; x=1697292200; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MkiSkPJNlBcvA6l1NV7Ut81Ds5KMxgHRuVtA5iQDQsI=;
-        b=cs8JY3EimbuWuvf4U8SkPXEl7a/GolsviKZrx2EpFy4Uo2ktVZ+r3z6x21t+1Wlq+v
-         SQhJA2TPyKzab+nf2D7nmE9hWpfgYEEy+iLLmMNDLOKGFwI6trR8OWtfiNMV5Ehw9GhH
-         gq8cK+vAtBZFZawwCkDL66kcQqQsXhlLHBC40v6pI8ELjZEyVOdvYh6GS+fPs+3gFRgx
-         i2ahi04fSVXk8ICbVa9MLp3PDrndfiF2Sk2NN9JapvgBu8eLRmkDUOXhBC92sDZcjCCr
-         XWjnb5iGoDAOM+S8T0IBEwobNj1eGNyOSxJTz5dp3G4MXzAW0kHXFWY0mh0HtQIvKZ5b
-         4AOQ==
+        bh=LivZSfWCIUy5PpRi4LmDDyNFOui9+vIDSPEwDR4bKrQ=;
+        b=KU23cJD0fQVql8ViEE/maaRDtcoGXWt0mtsIRir78EuFkRiZk5cj7xevhr0N4LWu9u
+         6pBbHffamFLbWmmTerx3YdbTUnqNPGfRyIy1zY1t56jRBduT5eHrAsN/+yE8KZvvW+VS
+         cZkzaBReNyjxY/2AI5KL6oMbqxfhw1YZW1f3X82r1fBStWKJFoS1G/V+lNHXOOhWBYfb
+         +MakrpWp9NTXABUKFkC9G+6jlMNl+p5PVb+Yygro2boqnXeGVPxqxsbMdDGGxktuUQl2
+         KPfU3v065OrZ/I9MCfznacbkrtpfig5tV2cO+QBrdylWlJ65jrX/gds9MpR1HyheNqiW
+         ys1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696687398; x=1697292198;
+        d=1e100.net; s=20230601; t=1696687400; x=1697292200;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MkiSkPJNlBcvA6l1NV7Ut81Ds5KMxgHRuVtA5iQDQsI=;
-        b=EbNAE2HZ2oVekCcUjWrAQGm2Z8lfWsZRdEAIIz7Q5VCCesWmC9xzQTSfQYK4dqKm3q
-         FeyckhYAnOLf98GYfNKLT92z8o6HxaTYFnjhUPQfetIVmJ5dzivPtOjz7jLZtYYhrBiM
-         1X1o6kbMP399JmthsERttD5GwHd7U+D5RYwQ00pMINkgJl3B0c+7m2AE07tQhXol+X5P
-         wxSJspvAuI11dg7rJsgnjfAVuylrM+RTPkeaGCOrOuxzU3se8QWC1fHarYsOdjxr0p/f
-         XJXXwDxAvAPehOKIw8JnlSIHITLQJy+qH287tbRs7g5tV7RurrYbdwpH+OmRg9Dj7TeJ
-         BPAg==
-X-Gm-Message-State: AOJu0YxETiB4tvWGN7fP3wVTVyJinFGpOpscVtecOOJv86NmBlk/Dt4m
-        /kCeWTyD6ScD3AeDpYzCINg=
-X-Google-Smtp-Source: AGHT+IFp1QBFglX6sgNBthLjSggy2Qb0y5OJgEH+4nXhgW0J6vvd+IMzpex1q4E2TiCX2lYtihQZHA==
-X-Received: by 2002:a17:903:41c1:b0:1c6:30d1:7214 with SMTP id u1-20020a17090341c100b001c630d17214mr11696784ple.55.1696687398305;
-        Sat, 07 Oct 2023 07:03:18 -0700 (PDT)
+        bh=LivZSfWCIUy5PpRi4LmDDyNFOui9+vIDSPEwDR4bKrQ=;
+        b=sU4ryyMYJHaFdYjHXEQ9XXrWqpHWnMJYC0dTBE4Lr5f3oIa9lgWeBpRaNqZzze8EtQ
+         6aDdrguoutM8Zbt/pMGdtldU9cy1x1TFOx9dFO1qxj8MFoiZapqxjysQ3bF9RlyjEJ+7
+         A5v/nNQtfxWtB4hWEi1gsstl+v7GCrQIRbNkoV07MxbvYOfUfUwSw7v4GHPzG/f7plSV
+         BMGLi2Yen6rGeVUcc16c3IY3QzCcK/LNCFU0n/TF4p7hrX3zVT/6t95YcFPRLxhHIvro
+         ZM50P43fbrkweXlkxzydVID9ADVbhqCelJoGKNiJO+B5yPO4YszVAm0VkR3xeDZXX16C
+         PFxw==
+X-Gm-Message-State: AOJu0Yyp+dbyY0QhtogTv8GzoK7avmjg1kbr1pALxsM5KbQWjenZGdZ4
+        cYWR0lTYbEw/PD4kqtIouoE=
+X-Google-Smtp-Source: AGHT+IGnJGM/pQcim+t2+9WjcgTCzzeVDoPAyYRShRNA04b+Tvx3soDrYvABnMi3D4KMNSmDUQ3nQg==
+X-Received: by 2002:a17:903:32cf:b0:1c7:56b9:eae with SMTP id i15-20020a17090332cf00b001c756b90eaemr12318684plr.32.1696687399959;
+        Sat, 07 Oct 2023 07:03:19 -0700 (PDT)
 Received: from vultr.guest ([45.77.191.53])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170902f68d00b001c0a414695dsm5897550plg.62.2023.10.07.07.03.16
+        by smtp.gmail.com with ESMTPSA id l13-20020a170902f68d00b001c0a414695dsm5897550plg.62.2023.10.07.07.03.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 07:03:17 -0700 (PDT)
+        Sat, 07 Oct 2023 07:03:19 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -58,9 +58,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         mkoutny@suse.com, sinquersw@gmail.com
 Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 2/8] cgroup: Add new helpers for cgroup1 hierarchy
-Date:   Sat,  7 Oct 2023 14:02:58 +0000
-Message-Id: <20231007140304.4390-3-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 3/8] bpf: Add kfuncs for cgroup1 hierarchy
+Date:   Sat,  7 Oct 2023 14:02:59 +0000
+Message-Id: <20231007140304.4390-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231007140304.4390-1-laoar.shao@gmail.com>
 References: <20231007140304.4390-1-laoar.shao@gmail.com>
@@ -76,158 +76,69 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Two new helpers are added for cgroup1 hierarchy:
+Two new kfuncs are added to retrieve the cgroup1 IDs.
 
-- task_cgroup1_id_within_hierarchy
-  Retrieves the associated cgroup ID of a task within a specific cgroup1
-  hierarchy. The cgroup1 hierarchy is identified by its hierarchy ID.
-- task_ancestor_cgroup1_id_within_hierarchy
+- bpf_task_cgroup1_id_within_hierarchy
+  Retrieves the associated cgroup ID of a task whithin a specific
+  cgroup1 hierarchy. The cgroup1 hierarchy is identified by its
+  hierarchy ID.
+- bpf_task_ancestor_cgroup1_id_within_hierarchy
   Retrieves the associated ancestor cgroup ID of a task whithin a
-  specific cgroup1 hierarchy. The specific ancestor level is determined by
-  its ancestor level.
+  specific cgroup1 hierarchy. he specific ancestor cgroup is determined by
+  the ancestor level within the cgroup1 hierarchy.
 
-These helper functions have been added to facilitate the tracing of tasks
-within a particular container or cgroup in BPF programs. It's important to
-note that these helpers are designed specifically for cgroup1.
+These two new kfuncs enable the tracing of tasks within a designated
+container or cgroup directory in BPF programs.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/cgroup.h          |  9 ++++-
- kernel/cgroup/cgroup-internal.h |  2 -
- kernel/cgroup/cgroup-v1.c       | 67 +++++++++++++++++++++++++++++++++
- 3 files changed, 75 insertions(+), 3 deletions(-)
+ kernel/bpf/helpers.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index b307013b9c6c..65bde6eb41ef 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -71,6 +71,8 @@ struct css_task_iter {
- extern struct file_system_type cgroup_fs_type;
- extern struct cgroup_root cgrp_dfl_root;
- extern struct css_set init_css_set;
-+extern struct list_head cgroup_roots;
-+extern spinlock_t css_set_lock;
- 
- #define SUBSYS(_x) extern struct cgroup_subsys _x ## _cgrp_subsys;
- #include <linux/cgroup_subsys.h>
-@@ -159,6 +161,8 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
- 			 struct css_task_iter *it);
- struct task_struct *css_task_iter_next(struct css_task_iter *it);
- void css_task_iter_end(struct css_task_iter *it);
-+struct cgroup *task_cgroup_from_root(struct task_struct *task,
-+				     struct cgroup_root *root);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index dd1c69ee3375..39ec6f9f2027 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2214,6 +2214,30 @@ __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
+ {
+ 	return task_under_cgroup_hierarchy(task, ancestor);
+ }
++
++/**
++ * bpf_task_cgroup_id_within_hierarchy - Retrieves the associated cgroup ID of a
++ * task within a specific cgroup1 hierarchy.
++ * @task: The target task
++ * @hierarchy_id: The ID of a cgroup1 hierarchy
++ */
++__bpf_kfunc u64 bpf_task_cgroup1_id_within_hierarchy(struct task_struct *task, int hierarchy_id)
++{
++	return task_cgroup1_id_within_hierarchy(task, hierarchy_id);
++}
++
++/**
++ * bpf_task_ancestor_cgroup_id_within_hierarchy - Retrieves the associated
++ * ancestor cgroup ID of a task within a specific cgroup1 hierarchy.
++ * @task: The target task
++ * @hierarchy_id: The ID of a cgroup1 hierarchy
++ * @ancestor_level: The cgroup level of the ancestor in the cgroup1 hierarchy
++ */
++__bpf_kfunc u64 bpf_task_ancestor_cgroup1_id_within_hierarchy(struct task_struct *task,
++							      int hierarchy_id, int ancestor_level)
++{
++	return task_ancestor_cgroup1_id_within_hierarchy(task, hierarchy_id, ancestor_level);
++}
+ #endif /* CONFIG_CGROUPS */
  
  /**
-  * css_for_each_child - iterate through children of a css
-@@ -388,7 +392,6 @@ static inline void cgroup_unlock(void)
-  * as locks used during the cgroup_subsys::attach() methods.
-  */
- #ifdef CONFIG_PROVE_RCU
--extern spinlock_t css_set_lock;
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference_check((task)->cgroups,				\
- 		rcu_read_lock_sched_held() ||				\
-@@ -855,4 +858,8 @@ static inline void cgroup_bpf_put(struct cgroup *cgrp) {}
- 
- #endif /* CONFIG_CGROUP_BPF */
- 
-+u64 task_cgroup1_id_within_hierarchy(struct task_struct *tsk, int hierarchy_id);
-+u64 task_ancestor_cgroup1_id_within_hierarchy(struct task_struct *tsk, int hierarchy_id,
-+					      int ancestor_level);
-+
- #endif /* _LINUX_CGROUP_H */
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index c56071f150f2..2c32a80c1334 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -164,9 +164,7 @@ struct cgroup_mgctx {
- #define DEFINE_CGROUP_MGCTX(name)						\
- 	struct cgroup_mgctx name = CGROUP_MGCTX_INIT(name)
- 
--extern spinlock_t css_set_lock;
- extern struct cgroup_subsys *cgroup_subsys[];
--extern struct list_head cgroup_roots;
- 
- /* iterate across the hierarchies */
- #define for_each_root(root)						\
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index c487ffef6652..18064de0a883 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -1263,6 +1263,73 @@ int cgroup1_get_tree(struct fs_context *fc)
- 	return ret;
- }
- 
-+/**
-+ * task_cgroup_id_within_hierarchy - Retrieves the associated cgroup ID from
-+ * a task within a specific cgroup1 hierarchy.
-+ * @task: The task to be tested
-+ * @hierarchy_id: The hierarchy ID of a cgroup1
-+ *
-+ * We limit it to cgroup1 only.
-+ */
-+u64 task_cgroup1_id_within_hierarchy(struct task_struct *tsk, int hierarchy_id)
-+{
-+	struct cgroup_root *root;
-+	struct cgroup *cgrp;
-+	u64 cgid = 0;
-+
-+	spin_lock_irq(&css_set_lock);
-+	list_for_each_entry(root, &cgroup_roots, root_list) {
-+		/* cgroup1 only*/
-+		if (root == &cgrp_dfl_root)
-+			continue;
-+		if (root->hierarchy_id != hierarchy_id)
-+			continue;
-+		cgrp = task_cgroup_from_root(tsk, root);
-+		WARN_ON_ONCE(!cgrp);
-+		cgid = cgroup_id(cgrp);
-+		break;
-+	}
-+	spin_unlock_irq(&css_set_lock);
-+	return cgid;
-+}
-+
-+/**
-+ * task_ancestor_cgroup_id_within_hierarchy - Retrieves the associated ancestor
-+ * cgroup ID from a task within a specific cgroup1 hierarchy.
-+ * @task: The task to be tested
-+ * @hierarchy_id: The hierarchy ID of a cgroup1
-+ * @ancestor_level: level of ancestor to find starting from root
-+ *
-+ * We limit it to cgroup1 only.
-+ */
-+u64 task_ancestor_cgroup1_id_within_hierarchy(struct task_struct *tsk, int hierarchy_id,
-+					      int ancestor_level)
-+{
-+	struct cgroup *cgrp, *ancestor;
-+	struct cgroup_root *root;
-+	u64 cgid = 0;
-+
-+	spin_lock_irq(&css_set_lock);
-+	list_for_each_entry(root, &cgroup_roots, root_list) {
-+		/* cgroup1 only*/
-+		if (root == &cgrp_dfl_root)
-+			continue;
-+		if (root->hierarchy_id != hierarchy_id)
-+			continue;
-+
-+		cgrp = task_cgroup_from_root(tsk, root);
-+		WARN_ON_ONCE(!cgrp);
-+		ancestor = cgroup_ancestor(cgrp, ancestor_level);
-+		if (!ancestor)
-+			break;
-+
-+		cgid = cgroup_id(ancestor);
-+		break;
-+	}
-+	spin_unlock_irq(&css_set_lock);
-+	return cgid;
-+}
-+
- static int __init cgroup1_wq_init(void)
- {
- 	/*
+@@ -2520,6 +2544,8 @@ BTF_ID_FLAGS(func, bpf_cgroup_release, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_cgroup_ancestor, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_under_cgroup, KF_RCU)
++BTF_ID_FLAGS(func, bpf_task_cgroup1_id_within_hierarchy, KF_RCU)
++BTF_ID_FLAGS(func, bpf_task_ancestor_cgroup1_id_within_hierarchy, KF_RCU)
+ #endif
+ BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_throw)
 -- 
 2.30.1 (Apple Git-130)
 
