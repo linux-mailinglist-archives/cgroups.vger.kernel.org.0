@@ -2,104 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEB47BC894
-	for <lists+cgroups@lfdr.de>; Sat,  7 Oct 2023 17:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7067BC8EB
+	for <lists+cgroups@lfdr.de>; Sat,  7 Oct 2023 17:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344006AbjJGPSK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Oct 2023 11:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        id S1344053AbjJGPum (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Oct 2023 11:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343893AbjJGPSJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 11:18:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84DCBC
-        for <cgroups@vger.kernel.org>; Sat,  7 Oct 2023 08:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696691847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PPtQSncuXiGIg7RBOh+ShvADCBAgeQPrkAF7VWeTPLA=;
-        b=UDtrXGfLa1xYxyp1jExhletha02622/UkiRd9zAdZrGCR+KXwPAhFUC4kCqPaRquFfxzNL
-        1nOqhI/ecAr4wcKQ/0c2IjArdWmwkBYD08DLAKORkeGEb/1GDKNcIJ5lheU8JM5vEuOJLl
-        m2QAQ0OxozJJsC2R5jI8rw422Ob6q48=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-677-fko8I_r8MS2GPNjMFFWdRg-1; Sat, 07 Oct 2023 11:17:10 -0400
-X-MC-Unique: fko8I_r8MS2GPNjMFFWdRg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FCE885A5A8;
-        Sat,  7 Oct 2023 15:17:10 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.9])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1BA47215670B;
-        Sat,  7 Oct 2023 15:17:06 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat,  7 Oct 2023 17:16:11 +0200 (CEST)
-Date:   Sat, 7 Oct 2023 17:16:08 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Li Nan <linan666@huaweicloud.com>,
-        Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-Message-ID: <20231007151607.GA24726@redhat.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
- <20231005162417.GA32420@redhat.com>
- <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
+        with ESMTP id S1344038AbjJGPul (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 11:50:41 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EF9BF;
+        Sat,  7 Oct 2023 08:50:40 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3af604c3f8fso2098734b6e.1;
+        Sat, 07 Oct 2023 08:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696693840; x=1697298640; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bRb4xyVggbiNdF/CuWm/83mjhA2PGKIdFUSg0RWfnOE=;
+        b=NVc0hYUUBqTebhXu5sTTZTz9hNNpT7vy+t73CmmHG1D/fIBDRsQGl7zMjQ0XfnLff8
+         Y/vWbrZaiecPfW24b1R3e8cbmv0r0pvkp/8eZu7Gt5sbBw1c+Y59elP0zpb7qp3wyXIz
+         dqKnUwOGYBpmQlLJevqNHjTd2cIF39v7FpURQJLeWA5tb2RwkDG+IwSdkqwHE2zmFjFX
+         iehEWtviuK3UPD1vx8WvanKYCkzEoQH/tzSxb15gzeduQlyYIab/OVz1QJN4Igg9WV6H
+         3t9mBL1Vz4Niuh9761lm4wmaLgvw1Ka5WKVzYGn8nmPVsZ2+k9nnB9tQcxvdmVPYGYKC
+         5Deg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696693840; x=1697298640;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bRb4xyVggbiNdF/CuWm/83mjhA2PGKIdFUSg0RWfnOE=;
+        b=dsTn788J/CoHMCk5p7SDXxemyk+n7+l5NQ4MqaDDjwcxL/Bxd0sT/c31Lv5h0SxTut
+         L7MjBos9N3QtxKAbz5f0mhVqKen3mYjtQ9wAWfnga+Pjmsw/+0tE757MNLQO4BR9LIUd
+         PwYFyRYWrVjSHQCGNK7/2ttPkC4XgPHPfCYKVXwcuH1QH1wXeVRc1dhqbQ6ioIhFP/T7
+         kRzbY2KZx0iw2qv2pw6RATJJC79l7hR1oCe3WFvVxVFEQpWUdq87cEm1rgFNftZTjXfo
+         07FqFlTQQ4YJ7ICi3UilbQZqj3sFVORSZ6p5JAue07PFbXaHTtZIvevMQbnrdG1xtug6
+         cE6A==
+X-Gm-Message-State: AOJu0YzUASP+ae1A6sXz7UtNMYZmN1uXWPD6DtT6Pv520igWNwPuli72
+        6Vd8nbEQvxJU91C744TQJfE=
+X-Google-Smtp-Source: AGHT+IGKDslXMsVHZ8g50T+5zfWAxU0NHbnVre1UM1pKyhAb/W4tJK9zhKPyMcfFooUpuTTGNyvT6A==
+X-Received: by 2002:a05:6358:988d:b0:143:723:8f89 with SMTP id q13-20020a056358988d00b0014307238f89mr13481795rwa.4.1696693840007;
+        Sat, 07 Oct 2023 08:50:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:cced])
+        by smtp.gmail.com with ESMTPSA id d6-20020a17090ad3c600b00256799877ffsm5313614pjw.47.2023.10.07.08.50.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 08:50:39 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sat, 7 Oct 2023 05:50:37 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+        sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/8] cgroup: Don't have to hold cgroup_mutex
+ in task_cgroup_from_root()
+Message-ID: <ZSF-TeyAxq6xqcII@slm.duckdns.org>
+References: <20231007140304.4390-1-laoar.shao@gmail.com>
+ <20231007140304.4390-2-laoar.shao@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231007140304.4390-2-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/07, Yu Kuai wrote:
->
-> >>>probably need to remove the mul_u64_u64_div_u64 and check for
-> >>>overflow/potential overflow ourselves?
-> >
-> >probably yes...
->
-> How about this?
->
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index 1101fb6f6cc8..5482c316a103 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -723,6 +723,10 @@ static unsigned int calculate_io_allowed(u32
-> iops_limit,
->
->  static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long
-> jiffy_elapsed)
->  {
-> +       if (jiffy_elapsed > HZ &&
-> +           bps_limit > mul_u64_u64_div_u64(U64_MAX, (u64)HZ,
-> (u64)jiffy_elapsed);
-> +               return U64_MAX;
-> +
+On Sat, Oct 07, 2023 at 02:02:57PM +0000, Yafang Shao wrote:
+> The task cannot modify cgroups if we have already acquired the
+> css_set_lock, thus eliminating the need to hold the cgroup_mutex. Following
+> this change, task_cgroup_from_root() can be employed in non-sleepable contexts.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-I can't suggest anything better...
+Maybe just drop lockdep_assert_held(&cgroup_mutex) from
+cset_cgroup_from_root()?
 
-but I do not know if it is possible that HZ > jiffy_elapsed. If yes, then
-mul_u64_u64_div_u64() above is not safe too.
+Thanks.
 
-Oleg.
-
+-- 
+tejun
