@@ -2,111 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCA77BC8F4
-	for <lists+cgroups@lfdr.de>; Sat,  7 Oct 2023 17:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BFB7BCB6D
+	for <lists+cgroups@lfdr.de>; Sun,  8 Oct 2023 03:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343997AbjJGP54 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Oct 2023 11:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
+        id S233855AbjJHBRK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Oct 2023 21:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343992AbjJGP54 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 11:57:56 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409E5B9;
-        Sat,  7 Oct 2023 08:57:55 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-577e62e2adfso2012293a12.2;
-        Sat, 07 Oct 2023 08:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696694275; x=1697299075; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YqV8KtIkUDb0Wc1yq1sRlVDydB3Tj3UfRPNMUmN2hVY=;
-        b=dgjaHjZfkMFOB7GGxYC3VsF0DZTdCAQmXAi+We6rmjz0hvDmcPSRge7SQInUgIWIkr
-         OnIlwQELnqvLBuKlMGGMsC8JscwGcUq2eCVdjLt23hneCUUHJADyzbMlAasE6o3KR1mY
-         X9UyAzpakYbugvWfVleiUms+d9hOHK0UYcdnRNEW3SyS7YCgfNFxEeenPzRaS3V4TSas
-         8XuM6nevxurN6bseHa3ZFKrc5tTq5L5aaVz/NGR3ujnKtR7DQkjujrnBzmALq3Wd5xAP
-         Iha9rV2yH0xS7FTmVr/Ij4mp6b6QHK1kmDuy00/0Q8AyiHL0mTBRd35ZNW7XtKUM0qqP
-         NWPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696694275; x=1697299075;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YqV8KtIkUDb0Wc1yq1sRlVDydB3Tj3UfRPNMUmN2hVY=;
-        b=bvETHUvjHXZRl+dBvD5tl/U3wXcCX8n2X0I3pJPRspsL7uOwxZ0sv90D8kXkHtAq99
-         1ahaiw3fslw3Ak/ZKBezcfZZ0JOAlm6iwFDKvX4YHcCzr8RixBju8HYFVbFDv+phLCnC
-         yzBtqP+icGMsLGl2j5ambUorv5VYuC+Y69y3q+PMKY6/vo24SSBDGoXAttfqc3P7gKk6
-         z+szcnsZP4KukLGHZRzfjVizqU/I0p32Hgvl4xkdSS0wGEemeTGTGo6IO085HH3J+qDM
-         1WnrfWrfbVsCek+FnvK9GKzmAo/cR6x/nf9KrHTDs12ZgrYKukL8XCHxunrodE4gdEY/
-         HjRA==
-X-Gm-Message-State: AOJu0YzBBLVp+CmmMUgCpBE0rB0Xkovi2c6p8RnRb1NL960+/TYPMlc9
-        Vn7dmj0QDFAgJtRptIzDS58=
-X-Google-Smtp-Source: AGHT+IFN/gZY0+BJYYYR2WuThcx4S5VRT6cPHJ62Sqfs7KdKnp5mzkw0doBmVczEp+X5k3Z9wN/hTw==
-X-Received: by 2002:a17:90a:b283:b0:274:c637:4b97 with SMTP id c3-20020a17090ab28300b00274c6374b97mr9958823pjr.16.1696694274640;
-        Sat, 07 Oct 2023 08:57:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:cced])
-        by smtp.gmail.com with ESMTPSA id o24-20020a17090ad25800b00276b60aa43bsm7179307pjw.17.2023.10.07.08.57.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 08:57:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sat, 7 Oct 2023 05:57:52 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
-        sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 3/8] bpf: Add kfuncs for cgroup1 hierarchy
-Message-ID: <ZSGAACHHNAYbk34i@slm.duckdns.org>
-References: <20231007140304.4390-1-laoar.shao@gmail.com>
- <20231007140304.4390-4-laoar.shao@gmail.com>
+        with ESMTP id S229634AbjJHBRJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Oct 2023 21:17:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF158F;
+        Sat,  7 Oct 2023 18:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696727828; x=1728263828;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=BObmF+e1EHfAcOcXWcw1IxrBQsQNIWGH7aR97cf+Zh4=;
+  b=Gyhe3xeAlVflBgX3cmPyUHIdQByb/faclzNH8gvbsIfZERAxGIlcwTJq
+   s14mJMl8/zYYjRLBYgBJ4YZ5EszMKUUDxwHCK4zx1ZXEOX7Sy4semLZNz
+   L8ps+rS4M21bhWR6z4AfTgJxzuRr9kJf0b1Lxb8e/usoTng8Ssj21xbYy
+   0ApCLZr2S88LPb/YQDwIkmeFdiK1RvMasYbKebITrEVMvK0Synsi1mAEP
+   uueBJGcJ6xlASRZWUBZjIz9tACu/dbGQTAWE9S16OTJAiXabM23agHEvX
+   o5Z7so/W4J2e/hrR7odac+3uRHablCc9StKnMivFhdfQSp525zdIbwN57
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="387834737"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="387834737"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 18:17:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="729268794"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="729268794"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 18:17:01 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Jianlin Lv <iecedge@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev,
+        akpm@linux-foundation.org, yosryahmed@google.com,
+        willy@infradead.org, linmiaohe@huawei.com,
+        wangkefeng.wang@huawei.com, laoar.shao@gmail.com,
+        yuzhao@google.com, wuyun.abel@bytedance.com, david@redhat.com,
+        peterx@redhat.com, vishal.moola@gmail.com, hughd@google.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jianlv@ebay.com
+Subject: Re: [PATCH] memcg: add interface to force disable swap
+References: <20231007130905.78554-1-jianlv@ebay.com>
+Date:   Sun, 08 Oct 2023 09:14:54 +0800
+In-Reply-To: <20231007130905.78554-1-jianlv@ebay.com> (Jianlin Lv's message of
+        "Sat, 7 Oct 2023 21:09:05 +0800")
+Message-ID: <87mswtkj8x.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007140304.4390-4-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 02:02:59PM +0000, Yafang Shao wrote:
-> +
-> +/**
-> + * bpf_task_cgroup_id_within_hierarchy - Retrieves the associated cgroup ID of a
-> + * task within a specific cgroup1 hierarchy.
-> + * @task: The target task
-> + * @hierarchy_id: The ID of a cgroup1 hierarchy
-> + */
-> +__bpf_kfunc u64 bpf_task_cgroup1_id_within_hierarchy(struct task_struct *task, int hierarchy_id)
-> +{
-> +	return task_cgroup1_id_within_hierarchy(task, hierarchy_id);
-> +}
-> +
-> +/**
-> + * bpf_task_ancestor_cgroup_id_within_hierarchy - Retrieves the associated
-> + * ancestor cgroup ID of a task within a specific cgroup1 hierarchy.
-> + * @task: The target task
-> + * @hierarchy_id: The ID of a cgroup1 hierarchy
-> + * @ancestor_level: The cgroup level of the ancestor in the cgroup1 hierarchy
-> + */
-> +__bpf_kfunc u64 bpf_task_ancestor_cgroup1_id_within_hierarchy(struct task_struct *task,
-> +							      int hierarchy_id, int ancestor_level)
-> +{
-> +	return task_ancestor_cgroup1_id_within_hierarchy(task, hierarchy_id, ancestor_level);
-> +}
+Jianlin Lv <iecedge@gmail.com> writes:
 
-The same here. Please make one helper that returns a kptr and then let the
-user call bpf_cgroup_ancestor() if desired.
+> From: Jianlin Lv <iecedge@gmail.com>
+>
+> Global reclaim will swap even if swappiness is set to 0.
 
-Thanks.
+Why?  Can you elaborate the situation?
 
--- 
-tejun
+> In particular
+> case, users wish to be able to completely disable swap for specific
+> processes. One scenario is that if JVM memory pages falls into swap,
+> the performance will noticeably reduce and the GC pauses tend to increase
+> to levels not tolerable by most applications.
+> If it's possible to only disable swap out for specific processes, it can
+> address the JVM GC pauses issues, and at the same time, memory reclaim
+> pressure is also manageable.
+>
+> This patch adds "memory.swap_force_disable" control file to support disable
+> swap for non-root cgroup. When process is associated with a cgroup,
+> 'echo 1 > memory.swap_force_disable' will forbid anon pages be swapped out.
+> This patch also adds read and write handler of the control file.
+
+--
+Best Regards,
+Huang, Ying
