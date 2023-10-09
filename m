@@ -2,172 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D728C7BCF1F
-	for <lists+cgroups@lfdr.de>; Sun,  8 Oct 2023 17:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC7E7BD23B
+	for <lists+cgroups@lfdr.de>; Mon,  9 Oct 2023 04:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344819AbjJHPkA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 8 Oct 2023 11:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S1344903AbjJIC56 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 8 Oct 2023 22:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbjJHPkA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 8 Oct 2023 11:40:00 -0400
-Received: from out-206.mta1.migadu.com (out-206.mta1.migadu.com [95.215.58.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487E6A6
-        for <cgroups@vger.kernel.org>; Sun,  8 Oct 2023 08:39:58 -0700 (PDT)
-Date:   Sun, 8 Oct 2023 08:39:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696779593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QEqs1Sw8E7P0dy9p9WLRazNx8byzw02+pGjh+FjuPzI=;
-        b=ODSESEx1Ssd5JrDmbh0EXH1OGEyKJZlGJp4qFMxwqj7mA30oo3dR66TjnTDl1DeCX9wXKk
-        Si5n5Q8FgZjVIBLM7aGALdzS9U7EqPpy0N0ZJ/m0vWsyry0FKOKtH9483C34GWNcOodHb8
-        HkN0s1pUmwwfnsCNoPQ62uoUll2+fEY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Lucas Karpinski <lkarpins@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
+        with ESMTP id S232350AbjJIC55 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 8 Oct 2023 22:57:57 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2120.outbound.protection.outlook.com [40.107.255.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5839E;
+        Sun,  8 Oct 2023 19:57:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SS/4wQE6VdEkAZyF5Hw4VWp8KRSVFGIlqBiMd04YWDyGWTyl9+gUJJbE7QA6gROzWiNZgTYoYznofsHhJXEvucw8OylLJcGUs6uz6NjXaJr6d9OUxLKL2Cg9ANCRe/82jTCzCepYFXV7jby3pTXhUgaLzhvmOaULWtbvWm029K4zNcgo7RVtq2+fqgDOP9WsmEUwWxCwSetbWN8bhbp170pAJibtXuBcTXRPn6dLOPFCXfbsCvybuGGIFMjYBME8X27ZAc+aC8TWVEKboJ3z2cftpsSjulEb2z4Tbm2oALAAnxiRdW+Y+Kfq9lu4z0bKJiMD/HyzAxwj//Zy+mP7Ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3qQSxYVcIRdZYlpy4CK2cf8P/SAzI3dXY8TsE1Jz0rs=;
+ b=e8Y7JAFkLoYIKp72yyWvyH3S777OW4o/jf8IHYljR4euDsMETmmIxXET9w1u/oePDp8Wu29drKxWdGvQK794qiW3JgUBJkOH4v52+tqMIQo2PwZrT2u35es29gU4Gsa1FOCNvWHQjdsDBe6BNkqB3oMawUXTp7OVWiquH6Hjgzs1zAtNS3L7sQrYoCTgqVsNBfc1jXBkPqVc/3oHCmm45Ayux63iqucYVjGeuEMUuebRAqOuEUrJu/P8Jjy1SaoeJINswvvDQ/EhSZ6GIzM0T3JMZ5oeQZ5394l55JyCNF25lQN1IZKTeRP0YCPVdJ+Yjc6IONpjalCEqcRtyfMsIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3qQSxYVcIRdZYlpy4CK2cf8P/SAzI3dXY8TsE1Jz0rs=;
+ b=X1YKheHKevB3tvzlxdvdSkTSFP09hpl2Ta9Y3rID6npcPPsO+NRHnuKQ3bWmiokZfO0DzY7r9i+vong7GGDdL5cwzkbltUVGM5mVkpqYc2HFjljQI/+9b8Xzeek8ot0+0s69ArYnyaMGl04/tP1j7tGVHX6wsVm+qOdvUgCmJPWFKAjNWnUuW7B3EfgiOYD8CzxmDyPWwcB5uhJfvBxgXfZwobTFyQZPdUmLQF+7cuDoTbjxZLHBzhOl0oC3Bo+ulRMJIXwWlWTR8MVtPvU9oCoz0dqWhSk3lnNYK+vPwYmqHOiJ1QoNjQQZ9YPrq5hxb43X87s96341vRcXH31Gkg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by TYZPR06MB5396.apcprd06.prod.outlook.com (2603:1096:400:200::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Mon, 9 Oct
+ 2023 02:57:52 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::40ac:5701:4617:f503]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::40ac:5701:4617:f503%4]) with mapi id 15.20.6838.033; Mon, 9 Oct 2023
+ 02:57:51 +0000
+From:   Huan Yang <link@vivo.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
-        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: selftests: cgroup: test_core - Unable to handle kernel NULL
- pointer dereference at virtual address
-Message-ID: <ZSLNQjzoYcLq1hEo@P9FQF9L96D>
-References: <CA+G9fYsJA4fkLCDdXfCdjqJz3q3K0TErgKjypuLmPZ=EU3MbDg@mail.gmail.com>
+        Yu Zhao <yuzhao@google.com>, Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        "T.J. Alumbaugh" <talumbau@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Cc:     opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
+Subject: [PATCH 0/3 RESEND] Per memcg lru_gen node stat
+Date:   Mon,  9 Oct 2023 10:57:19 +0800
+Message-Id: <20231009025726.5982-1-link@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0011.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::19) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYsJA4fkLCDdXfCdjqJz3q3K0TErgKjypuLmPZ=EU3MbDg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYZPR06MB5396:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18cddc44-10cf-44f5-5a02-08dbc87386fc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ff6B0cugS8N9cWX1L32R+mFTs201eyZL4jzvNDwKZO1cx8VRJ5pDFI4xHHkHD54O/cbPrjRew3FPRoPhAbwWeKzdxP42Berg4iDmEGLojzSgU5fQGlKckVitSwouR2Y5JOLY2tP75va1A9IVf3JDThbkn6cRex260biHB+R9XhnHOV1D3hKnumGKAFQcVPqJakcriTxsqqAP02oqIdpVMkTk8aU0AcwWfVQuHwC/BAHEZ2rS1u1zi+6vywsMd+Sker3VgNwSz34LdXzxTDZN6gl+bBiOJVyNpY80EvHutzOTKb5+06Huns08n580PN4xC5GHyCmAK6RcnHXDev3XmE8UTzDGUwLQkCn1P3l+gsxtU48qd/XmpCtsie2+p19pdkAceMNkq6DswibXB/RsUXXBprqS1ysicVT5Vcs8Q4j9D7Pqyt/Wl0UJuuN/A505a30t13XB28ikte9qtOK92EBDJM2WOglX+q0DqP6Q3EsCiYgjmFa4dqidtkpvC7QPVMGEC/GnqwV4y02EV3jpo+fgjYmkedNEt8zy1rHTMRNmlYsAxskBnvSPqrDsCYkr3DR5hmaxjnzWRqVCcWUKKg69zpyFBoyX1jyxzI28PHyUreCRQZyCskAn6snbkAPjCkQoPRYdrNGZtCluMZ3GFw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(396003)(39850400004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(83380400001)(1076003)(107886003)(2616005)(66946007)(26005)(316002)(66476007)(66556008)(110136005)(7416002)(8936002)(8676002)(4326008)(5660300002)(41300700001)(6506007)(6666004)(2906002)(6512007)(4744005)(6486002)(478600001)(52116002)(36756003)(38100700002)(38350700002)(921005)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r/eiNj8sbQ2pv2XmDG+AQIQlTkoT7q9m9656HL+3rrqz7LHZOcAt4cyXp4GA?=
+ =?us-ascii?Q?4BAgvWkmEg6ZKork3CrTjYnhREvc9n+YrtREPu3bYaNyVDNUYDnIiqSl8g2k?=
+ =?us-ascii?Q?mUY6O0t/ntRZtrhFcTgnQVP2Yo6En5xhw3spIc6ZK3LGi8cjL3whiX7zuZk3?=
+ =?us-ascii?Q?nqiNg1vCWp3LzXjkh9NEbIT2CD+TiV9ZgYbLaAgExI/dUcNqt2TOx8zp3LAd?=
+ =?us-ascii?Q?A9j7DlixVUNQ0VwlaBuS2DnLyO+Dg+WZ84fIfAXEL1v+pVUOn5xhrQTb0KCE?=
+ =?us-ascii?Q?bo8rVr8RGNVHKWkftH0IJ6TnSZYOLohpIPqEq6jC0Txk9+vsI3ieEkIaXy4b?=
+ =?us-ascii?Q?h8W/BMaHHLavua7+AGUEwwoE2io3fAK/97aKGMnzGP/vqc48H9Yqd9Vo4qXl?=
+ =?us-ascii?Q?ASLK5Q0MkNrYArCtQdGMXdS+S+wSeXYhdoxQLVGNsAfqnxuRstbC8jdsAWoF?=
+ =?us-ascii?Q?KhaSdzqjI/y1J2mahhn7hiMyL+myTZ92mYjpfahFTuDau5i0PF+goPEco40a?=
+ =?us-ascii?Q?ynIEVP/h3jXOSSsnjheE1scKNQMZ1QUgOdjIWMOPSIZDiruQDfynnmb5iQrw?=
+ =?us-ascii?Q?5n5ljOAk09RYuCOBuath+QFHPPmtdAo8ckh5fLpfpa09FMkMPXqiRGKU+To0?=
+ =?us-ascii?Q?FI5SvzFPtSCs3tw+TpTzjL+240/Ismaa9P6IYSuVVtDEOrQnV0kVVAtpddqJ?=
+ =?us-ascii?Q?pEoQY+5aQj1mOZlTLSFRBaY9IG8uVx/7tqJTndl0JXdilMWWOozEHRO//msz?=
+ =?us-ascii?Q?i7KVff1b8v1zP0E7Y/ouU82bpJYTaPfENBI5eED/eBzS4V471aUTaeiY2+j9?=
+ =?us-ascii?Q?x3O563x8YrLvxDMR07Rett4X+8zdPe4bNJoQSre3OfgSI30MVtNEYtKtye2C?=
+ =?us-ascii?Q?/9FGwfbv2jW1/h2y5xjdW32fZ7hlX3NvRzR3u8fPqNsLIvuEyBdo+ViLzr2t?=
+ =?us-ascii?Q?5T6/CIZ44IuDZW9cTk5xrs2H9Hlx5dnTkP36moG5FM0QJSRD2Tk5j5GxlN6Y?=
+ =?us-ascii?Q?WPHed4wQ2MnkpORkFksbsehcBVlnMKNK14171ldnN5uXHfEA/xBy3SDZmUTu?=
+ =?us-ascii?Q?lkU1Lyo4lrmUmIeN1Lae6KHw7k/aKHRrm8TxJcE+y/C1Iy4ETh48hjFTW2oH?=
+ =?us-ascii?Q?Vty40Zx2FB59gdMSb0k8PA5f5XyvOuknCtJTAQVNjqwsQpoyXMjAtzFWkcYU?=
+ =?us-ascii?Q?nYo28mLbEQ0Y7uQsTjHCbKw3hMrmpZN0jhW//1+c7m21cNh6MDefjNmBTLiE?=
+ =?us-ascii?Q?P89bP8DA2V6Z7030xZ25Mo76c3xorgp/ZJTOw6o9KmCLxmGNUhOgOTzY6X36?=
+ =?us-ascii?Q?YzBFnS4o3bBsIJ/1ZNk+aPeldIXTbwWiYn6jGpyNYVlPENp+pb9CEfzhhzdh?=
+ =?us-ascii?Q?9xPJ5eGUaPuOZa30MuSRhkaF1L/kdQpRyp3nF3Qhchp+JeTR+NZsJurBXbg7?=
+ =?us-ascii?Q?EhZvRdjRg4p075CwtE9r+a/5XRqHnQIqh75N9Tgu1XyWzC+EHv7jRFOHCSLF?=
+ =?us-ascii?Q?KavfIQilSqHmD/V9eDq0j1DvABiZ00zpVXmgdczF0OLIwrbKUlwpEZI/TtqY?=
+ =?us-ascii?Q?eZamD9jW5bdnakZanvfYIktDZTUT2Qe8OBGEXUzG?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18cddc44-10cf-44f5-5a02-08dbc87386fc
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 02:57:51.8723
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WSuR39iWb4dXKXrG/RXo8quRGjVAsXQenS7jqKWbMOjuPrZi2pwH55QgGg+uAzMkxAXE08IBX7rD/LQ1ad2Jrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5396
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 11:30:52AM +0530, Naresh Kamboju wrote:
-> While running selftests: cgroup: test_kmem on FVP following kernel crash
-> noticed on Linux next 6.6.0-rc4-next-20231006.
+On original global lru_gen node in debugfs, it can all show each memcg's
+lru gen info in "lru_gen" or "lru_gen_full", and can type cmd into lru_gen.
+But which show info contains all memcg's info, and cmd need to 
+know memcg's id.
 
-Hi Naresh!
+This patchset add lru_gen node in per memcg, with this node, we can
+get lru_gen info in each memcg.
+Also, we can type cmd to control each memcg's lru_gen seq, but, this node
+don't support multi cmd, single memcg just process one cmd once time.
 
-Thank you for the report!
+HuanYang (3):
+  mm: multi-gen LRU: fold lru_gen run cmd
+  mm: memcg: add per memcg "lru_gen" node
+  mm: multi-gen LRU: add per memcg "lru_gen" document
 
-I've tried to reproduce it, but wasn't successful so far: I've run test_kmem
-for several hundred times and haven't seen the crash.
+ Documentation/admin-guide/mm/multigen_lru.rst |  10 ++
+ include/linux/mm_inline.h                     |   9 +
+ include/linux/mmzone.h                        |   4 +-
+ mm/memcontrol.c                               | 163 ++++++++++++++++++
+ mm/vmscan.c                                   |  82 ++++++---
+ 5 files changed, 246 insertions(+), 22 deletions(-)
 
-Can you, please, provide some additional information?
-How easy to reproduce it? Do you see it every time or with some probability?
-Do you see it on other platforms?
-Can you, please, check where exactly the crash happens using addr2line?
+-- 
+2.34.1
 
-Thanks!
-
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Boot log:
-> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd0f0]
-> [    0.000000] Linux version 6.6.0-rc4-next-20231006 (tuxmake@tuxmake)
-> (aarch64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0, GNU ld (GNU Binutils
-> for Debian) 2.41) #1 SMP PREEMPT @1696592107
-> [    0.000000] KASLR enabled
-> [    0.000000] Machine model: FVP Base RevC
-> ...
-> 
-> Running selftests: cgroup
-> 
-> # selftests: cgroup: test_kmem
-> # ok 1 test_kmem_basic
-> #
-> not ok 2 selftests: cgroup: test_kmem # TIMEOUT 45 seconds
-> # timeout set to 45
-> # selftests: cgroup: test_core
-> # ok 1 test_cgcore_internal_process_constraint
-> # ok 2 test_cgcore_top_down_constraint_enable
-> # ok 3 test_cgcore_top_down_constraint_disable
-> # ok 4 test_cgcore_no_internal_process_constraint_on_threads
-> # ok 5 test_cgcore_parent_becomes_threaded
-> # ok 6 test_cgcore_invalid_domain
-> # ok 7 test_cgcore_populated
-> # ok 8 test_cgcore_proc_migration
-> # ok 9 test_cgcore_thread_migration
-> # ok 10 test_cgcore_destroy
-> # ok 11 test_cgcore_lesser_euid_open
-> # ok 12 test_cgcore_lesser_ns_open
-> [  400.108176] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000000
-> [  400.108404] Mem abort info:
-> [  400.108523]   ESR = 0x0000000096000004
-> [  400.108656]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [  400.108810]   SET = 0, FnV = 0
-> [  400.108942]   EA = 0, S1PTW = 0
-> [  400.109074]   FSC = 0x04: level 0 translation fault
-> [  400.109219] Data abort info:
-> [  400.109338]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> [  400.109488]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> ok 3 selftests: cgroup: test_core
-> [  400.109644]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [  400.109802] user pgtable: 4k pages, 48-bit VAs, pgdp=00000008898f3000
-> [  400.109969] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-> [  400.110267] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> [  400.110372] Modules linked in: pl111_drm drm_dma_helper arm_spe_pmu
-> panel_simple crct10dif_ce drm_kms_helper fuse drm backlight dm_mod
-> ip_tables x_tables
-> [  400.110872] CPU: 4 PID: 131 Comm: kworker/4:2 Not tainted
-> 6.6.0-rc4-next-20231006 #1
-> [  400.111010] Hardware name: FVP Base RevC (DT)
-> [  400.111093] Workqueue: cgroup_destroy css_free_rwork_fn
-> [  400.111238] pstate: 03402009 (nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-> [  400.111380] pc : percpu_ref_put_many.constprop.0+0xa0/0xf0
-> [  400.111540] lr : percpu_ref_put_many.constprop.0+0x18/0xf0
-> [  400.111700] sp : ffff800080713ca0
-> [  400.111774] x29: ffff800080713ca0 x28: 0000000000000000 x27: 0000000000000000
-> [  400.111970] x26: ffff00087f779d28 x25: ffff000800a3f700 x24: ffff0008003c2205
-> [  400.112173] x23: 0000000000000036 x22: ffffd7c64df6a000 x21: ffffd7c64df6cb70
-> [  400.112373] x20: ffff0008094d2000 x19: ffff000806dfa4c0 x18: ffff800083893c48
-> [  400.112575] x17: 0000000000000000 x16: 0000000000000001 x15: 0000000000000001
-> [  400.112765] x14: 0000000000000004 x13: ffffd7c64df87258 x12: 0000000000000000
-> [  400.112964] x11: ffff000800402e60 x10: ffff000800402da0 x9 : ffffd7c64b786a90
-> [  400.113166] x8 : ffff800080713b68 x7 : 0000000000000000 x6 : 0000000000000001
-> [  400.113360] x5 : ffffd7c64df6a000 x4 : ffffd7c64df6a288 x3 : 0000000000000000
-> [  400.113558] x2 : ffff0008044e0000 x1 : 0000000000000000 x0 : ffffffffffffffff
-> [  400.113756] Call trace:
-> [  400.113819]  percpu_ref_put_many.constprop.0+0xa0/0xf0
-> [  400.113980]  __mem_cgroup_free+0x2c/0xe8
-> [  400.114129]  mem_cgroup_css_free+0x16c/0x1e8
-> [  400.114281]  css_free_rwork_fn+0x54/0x370
-> [  400.114408]  process_one_work+0x148/0x3b8
-> [  400.114530]  worker_thread+0x32c/0x450
-> [  400.114650]  kthread+0x104/0x118
-> [  400.114797]  ret_from_fork+0x10/0x20
-> [  400.114954] Code: d65f03c0 f9400661 d503201f 92800000 (f8e00020)
-> [  400.115051] ---[ end trace 0000000000000000 ]---
-> 
-> 
-> Links:
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231006/testrun/20279395/suite/log-parser-test/test/check-kernel-oops/log
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231006/testrun/20279395/suite/log-parser-test/tests/
->  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2WO7SlYRh87RbfNXUbvVZx2HBL8
->  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RIllBsiwSAbiLChz9w6KXn8/
-> - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RIllBsiwSAbiLChz9w6KXn8/config
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RIllBsiwSAbiLChz9w6KXn8/tuxmake_reproducer.sh
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
