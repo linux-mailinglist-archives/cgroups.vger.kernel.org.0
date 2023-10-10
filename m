@@ -2,233 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8C67BFD5E
-	for <lists+cgroups@lfdr.de>; Tue, 10 Oct 2023 15:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D4D7BFF00
+	for <lists+cgroups@lfdr.de>; Tue, 10 Oct 2023 16:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjJJN0Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Oct 2023 09:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S232879AbjJJOVA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Oct 2023 10:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbjJJN0W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 09:26:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2A9AC;
-        Tue, 10 Oct 2023 06:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696944380; x=1728480380;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=1iKcLdvY0pEQsgy+QtjSl8KFecbKvPbHD3wfo/zirDY=;
-  b=mA6jqtux/avndJBvnpOB/hBbnua/B91nvMe+G2CMhZNOm8AKpl3iCkGO
-   jAJsUKFevwnVgLNGNgEJ++uDgOeQllVnnY2HP0tl+tECMyjsd2i/Iopv3
-   wZ0POg39pvXbh60y1jhZvYizh+MtECgT15zKKG5SHrjrJ2EqLKnuNmO0L
-   xBgYTGB6uqmIjSA6gfhy3i2aqS9isUMQOhEckhkMMZMDcwQ9aa3H9AvXh
-   6dRRAb+w/tbH+RQU9HeLhArbfC2uTgqRdhvMONXmDH3G+9GA1sIXLfQtE
-   GH5tECRH9xQ5Bwevs5rNi7vZ6sSPYAAwDm/p9Hp3JDW4VzHWx/eTrz+EC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="448585021"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="448585021"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 06:26:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="782876184"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="782876184"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 10 Oct 2023 06:26:17 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <ZSSZaFrxvCvR1SOy@google.com>
- <op.2cksdjamwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <548d2ab828307f7d1c6d7f707e587cd27b0e7fe4.camel@intel.com>
-Date:   Tue, 10 Oct 2023 08:26:16 -0500
+        with ESMTP id S232663AbjJJOU6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 10:20:58 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D49106
+        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 07:20:52 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id d75a77b69052e-41959feaae2so36318491cf.0
+        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 07:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696947652; x=1697552452; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RauVDwCZ6u0rcUr+gmJviY5+pWPqnBMyOCfnWtt3YIs=;
+        b=ig5K0gMlG6fJxAPuwdhBMEEeN8Ai8RQC4EBAr6jXEZ+4Zm1kQ6IqhAbaXOb8pc81/O
+         CnyifNI5WWjMqCkk83otepqaLXsONwYeat6o5MVZLm52pLGdBFnZPDJWwh/ecK4Vo8a2
+         AXw/CvHe3YcdjQ8B6W9CHUgnHU62Y617mrsfM6qV6pd8H2MtM002yPhyy2OQI/1E06/L
+         jDB25klQp843QYF3MpD21Q2Nq48G7/w2Yc/dh6VLmObp3mi7R6npOAvBQK1vbWrM3Hdm
+         ogzSk48iDrUylQrzQC8uzfIyTrgPcNnPyJmDeNMSLjHr52GsPyIrT60cjNEiaTY9U9PO
+         Lgyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696947652; x=1697552452;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RauVDwCZ6u0rcUr+gmJviY5+pWPqnBMyOCfnWtt3YIs=;
+        b=bgH3BHYQd1yTvVbyrNnqcG8MjxzKoXI1whdGWTo3YeRY5ueCdx8FUwqi2O+nnhHRAD
+         DLWNKamsUILj8grTeNDngiIZttigomtYz9lObmOZj+n6PVBRyuFwQFopebWHAxQ8eWRt
+         GAIU1OEITqdj6tExjmBnKs11wTEPOzWalqucEtcdduGIfqcQeVDmf2BMDDDBjQVpf50y
+         K7TKcSwY0wrWw5LjvUIlbirUuqx+if1NDHISGiV5lqAHFKKtXu6fJeaOV7c85UTYwvcN
+         Td1gH69DdjEJUeSJRozVxVjZyFK2hdgGKCSzitfDbcGeIelWvG7lVRfjG9MzYFo6fdxs
+         601A==
+X-Gm-Message-State: AOJu0YzMPm7L/GIWXniuDdScuK2ObLNGd/Trs2UXK9LCFjO2IRdF63PM
+        at60+qur3+M/8iRvrZ+bLYZLuQ==
+X-Google-Smtp-Source: AGHT+IEliuUCFDxSpOfLDRYhT6ks1EAn9dsueLogYHl/+td/ofq+7V4XKDqQRhN9MtOWA3xWnn5cdw==
+X-Received: by 2002:ac8:1383:0:b0:418:11de:ce1 with SMTP id h3-20020ac81383000000b0041811de0ce1mr16506979qtj.24.1696947651775;
+        Tue, 10 Oct 2023 07:20:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:66a6])
+        by smtp.gmail.com with ESMTPSA id q5-20020ac84505000000b0041b0a7d1872sm3563448qtn.70.2023.10.10.07.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 07:20:51 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 10:20:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
+Message-ID: <20231010142050.GA128254@cmpxchg.org>
+References: <0000000000001db97f06075bf98b@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2clox2zewjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <548d2ab828307f7d1c6d7f707e587cd27b0e7fe4.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000001db97f06075bf98b@google.com>
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 09 Oct 2023 21:23:12 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Tue, Oct 10, 2023 at 05:37:43AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1716036e680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=831ba898b5db8d5617ea
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com
+> 
+>  kernel_init+0x1c/0x2a0 init/main.c:1437
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5208 at mm/memcontrol.c:7552 mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
 
-> On Mon, 2023-10-09 at 20:42 -0500, Haitao Huang wrote:
->> Hi Sean
->>
->> On Mon, 09 Oct 2023 19:23:04 -0500, Sean Christopherson
->> <seanjc@google.com> wrote:
->>
->> > On Mon, Oct 09, 2023, Kai Huang wrote:
->> > > On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
->> > > > +/**
->> > > > + * sgx_epc_oom() - invoke EPC out-of-memory handling on target  
->> LRU
->> > > > + * @lru:	LRU that is low
->> > > > + *
->> > > > + * Return:	%true if a victim was found and kicked.
->> > > > + */
->> > > > +bool sgx_epc_oom(struct sgx_epc_lru_lists *lru)
->> > > > +{
->> > > > +	struct sgx_epc_page *victim;
->> > > > +
->> > > > +	spin_lock(&lru->lock);
->> > > > +	victim = sgx_oom_get_victim(lru);
->> > > > +	spin_unlock(&lru->lock);
->> > > > +
->> > > > +	if (!victim)
->> > > > +		return false;
->> > > > +
->> > > > +	if (victim->flags & SGX_EPC_OWNER_PAGE)
->> > > > +		return sgx_oom_encl_page(victim->encl_page);
->> > > > +
->> > > > +	if (victim->flags & SGX_EPC_OWNER_ENCL)
->> > > > +		return sgx_oom_encl(victim->encl);
->> > >
->> > > I hate to bring this up, at least at this stage, but I am wondering  
->> why
->> > > we need
->> > > to put VA and SECS pages to the unreclaimable list, but cannot keep  
->> an
->> > > "enclave_list" instead?
->> >
->> > The motivation for tracking EPC pages instead of enclaves was so that
->> > the EPC
->> > OOM-killer could "kill" VMs as well as host-owned enclaves.  The  
->> virtual
->> > EPC code
->> > didn't actually kill the VM process, it instead just freed all of the
->> > EPC pages
->> > and abused the SGX architecture to effectively make the guest recreate
->> > all its
->> > enclaves (IIRC, QEMU does the same thing to "support" live migration).
->> >
->> > Looks like y'all punted on that with:
->> >
->> >   The EPC pages allocated for KVM guests by the virtual EPC driver are
->> > not
->> >   reclaimable by the host kernel [5]. Therefore they are not tracked  
->> by
->> > any
->> >   LRU lists for reclaiming purposes in this implementation, but they  
->> are
->> >   charged toward the cgroup of the user processs (e.g., QEMU)  
->> launching
->> > the
->> >   guest.  And when the cgroup EPC usage reaches its limit, the virtual
->> > EPC
->> >   driver will stop allocating more EPC for the VM, and return SIGBUS  
->> to
->> > the
->> >   user process which would abort the VM launch.
->> >
->> > which IMO is a hack, unless returning SIGBUS is actually enforced
->> > somehow.  Relying
->> > on userspace to be kind enough to kill its VMs kinda defeats the  
->> purpose
->> > of cgroup
->> > enforcement.  E.g. if the hard limit for a EPC cgroup is lowered,
->> > userspace running
->> > encalves in a VM could continue on and refuse to give up its EPC, and
->> > thus run above
->> > its limit in perpetuity.
->> >
->> Cgroup would refuse to allocate more when limit is reached so VMs can  
->> not
->> run above limit.
->>
->> IIRC VMs only support static EPC size right now, reaching limit at  
->> launch
->> means the EPC size given in command line for QEMU is not appropriate. So
->> VM should not launch, hence the current behavior.
->>
->> [all EPC pages in guest are allocated on page fault caused by the
->> sensitization process in guest kernel during init, which is part of the  
->> VM
->> Launch process. So SIGNBUS will turn into failed VM launch.]
->>
->> Once it is launched, guest kernel would have 'total capacity' given by  
->> the
->> static value from QEMU option. And it would start paging when it is used
->> up, never would ask for more from host.
->>
->> For future with dynamic EPC for running guests, QEMU could handle
->> allocation failure and pass SIGBUS to the running guest kernel.  Is that
->> correct understanding?
->>
->>
->> > I can see userspace wanting to explicitly terminate the VM instead of
->> > "silently"
->> > the VM's enclaves, but that seems like it should be a knob in the
->> > virtual EPC
->> > code.
->>
->> If my understanding above is correct and understanding your statement
->> above correctly, then don't see we really need separate knob for vEPC
->> code. Reaching a cgroup limit by a running guest (assuming dynamic
->> allocation implemented) should not translate automatically killing the  
->> VM.
->> Instead, it's user space job to work with guest to handle allocation
->> failure. Guest could page and kill enclaves.
->>
->
-> IIUC Sean was talking about changing misc.max _after_ you launch SGX VMs:
->
-> 1) misc.max = 100M
-> 2) Launch VMs with total virtual EPC size = 100M	<- success
-> 3) misc.max = 50M
->
-> 3) will also succeed, but nothing will happen, the VMs will be still  
-> holding
-> 100M EPC.
->
-> You need to somehow track virtual EPC and kill VM instead.
->
-> (or somehow fail to do 3) if it is also an acceptable option.)
->
-Thanks for explaining it.
+This is the earlier version of the hugetlb cgroup accounting patches
+that trigger on an uncharged hugetlbfs:
 
-There is an error code to return from max_write. I can add that too to the  
-callback definition and fail it when it can't be enforced for any reason.
-Would like some community feedback if this is acceptable though.
+  7547          /*
+  7548           * Note that it is normal to see !memcg for a hugetlb folio.
+  7549           * It could have been allocated when memory_hugetlb_accounting was not
+  7550           * selected, for e.g.
+  7551           */
+  7552          VM_WARN_ON_ONCE_FOLIO(!memcg, old);
 
-I think to solve it ultimately, we need be able to adjust 'capacity' of  
-VMs not to just kill them, which is basically the same as dynamic  
-allocation support for VMs (being able to increase/decrease epc size when  
-it is running). For now, we only have static allocation so max can't be  
-enforced once it is launched.
+It's been fixed in the revision that's in the latest next release:
 
-Haitao
+  7539          /*
+  7540           * Note that it is normal to see !memcg for a hugetlb folio.
+  7541           * For e.g, itt could have been allocated when memory_hugetlb_accounting
+  7542           * was not selected.
+  7543           */
+  7544          VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg, old);
+  7545          if (!memcg)
+  7546                  return;
+
+> Modules linked in:
+> CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+> RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
+> Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7 c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
+> RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
+> RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
+> RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
+> RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
+> R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
+> FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
+>  hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
+>  move_to_new_folio+0x183/0x690 mm/migrate.c:966
+>  unmap_and_move_huge_page mm/migrate.c:1428 [inline]
+>  migrate_hugetlbs mm/migrate.c:1546 [inline]
+>  migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
+>  migrate_to_node mm/mempolicy.c:1072 [inline]
+>  do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
+>  kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
+>  __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
+>  __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
+>  __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fc15da7cae9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
+> RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
+> RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
+> RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
+> R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
+> R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
+>  </TASK>
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+
+#syz fix: next-20231010
