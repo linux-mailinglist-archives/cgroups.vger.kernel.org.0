@@ -2,131 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4083F7C01A2
-	for <lists+cgroups@lfdr.de>; Tue, 10 Oct 2023 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C1F7C01EF
+	for <lists+cgroups@lfdr.de>; Tue, 10 Oct 2023 18:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbjJJQbZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Oct 2023 12:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        id S233843AbjJJQs7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Oct 2023 12:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232508AbjJJQbY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 12:31:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9688997
-        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 09:31:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4BE8C215D5;
-        Tue, 10 Oct 2023 16:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1696955480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Q1U1CHyXGVO2PbSA3d0dUiTq95KBSuvwcgYtdrhTwA=;
-        b=pT+Yy06v+X0puT9a7QKxnhYs2UQQT7k1V5iXUDUdxzAWQUoOomos5Gb3ija4MX23icxbJP
-        FIl8YmMgXB1RckjFIzFjezEFeFxIlJPcZ5uTMouum7ssWtzqI03kIkAJI2qfdd8rqnspHg
-        /UbFAdgDA3LzvqKBpNETrUIh0l266l0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B1A21358F;
-        Tue, 10 Oct 2023 16:31:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ocd+CVh8JWWPNwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 10 Oct 2023 16:31:20 +0000
-Date:   Tue, 10 Oct 2023 18:31:18 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
-Message-ID: <s2xtlyyyxu4rbv7gjyl7jbi5tt7lrz7qyr3axfeahsij443ahx@me6wx5gvyqni>
-References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
- <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
- <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
- <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
+        with ESMTP id S232338AbjJJQs7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 12:48:59 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301958E;
+        Tue, 10 Oct 2023 09:48:57 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d9a5adc8cefso1008413276.0;
+        Tue, 10 Oct 2023 09:48:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696956536; x=1697561336; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=F6yfbZUcdTYweQuQIVJ4G7iiHQ0Y4iE8YHYGN5BB78g=;
+        b=M667UaDewUiIRCot52Asmdw75GRjVUueZRmmT+qwUSIhXUat/GGao6ACXpToELgwFB
+         DeXarmYeXk2Wo4oIbmyxslW4wr4cXbAj/lCuMjMPLwW04G/XXB4xqM2a9tQwOK3O904+
+         n3bxFuv+c5K4IY6YW3688u9ZoRP3HGo0lj9LnnkB2kv4EMAdhTz4sxSHXHSZDQKiBgZF
+         b5NbTO1YzNVLaT5El+7/k8cpeHkouDrkgKddNow7uj/W68o9YERZT2SNyxwN+sL+Ib32
+         JGMKLE62XbH5bEuKQLGYTD9vpl4CAdWVv9BAGikHEuH9C/8e5ALaSWXj5XB6CHcAsELY
+         VpJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696956536; x=1697561336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F6yfbZUcdTYweQuQIVJ4G7iiHQ0Y4iE8YHYGN5BB78g=;
+        b=Bnr35v6J84Y+AxNIX98uGmFqfuin/xhLjkoF3lOS0xDKYeU1qNY+PNjFMSNJ4KZNC+
+         esi349OPs1ab3Ip+ZIdbL+zHB7o0IesIR5JLvc45a2gxVjLlr72d7K3mL9Td9+QinUDA
+         aDREldrxHHhteyJoyAaWtsIA5k2kH4i0jhe96SZO+6LbA7lMwOUFRA+4FJpc0MHspMzt
+         2GASb6vyZ6Haf1l8bjc9jRHPByy2Hc6daVNYvXV93Xn4z98EUUSbWsC88xep6v/I8nhT
+         O87ISz8jgbCp8SOchrqBZb7L6prqNHhVS1bU2tEOchdo5SIAjeeE+E4OHWuK2MAt4d40
+         kqSQ==
+X-Gm-Message-State: AOJu0Yy+lfoET7mM6SV5hTL8k5Z84tOZtwvQA0IuBL+bp+Kb05MRZM40
+        hEBLMlgdVhqb3hbG/jK+SuTKfAD3VmYGAvKODKg=
+X-Google-Smtp-Source: AGHT+IG1Q1H2aRZkN+GdQsf18X5YRzerJzVeovsTDs2fjFiqLpKPd7sueu8wJF9sq0/Vlu99kOr7hui0Jdwrt8Phsgg=
+X-Received: by 2002:a25:2390:0:b0:d9a:4367:1a92 with SMTP id
+ j138-20020a252390000000b00d9a43671a92mr3092795ybj.50.1696956536082; Tue, 10
+ Oct 2023 09:48:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zcajmngpzzh7f7m4"
-Content-Disposition: inline
-In-Reply-To: <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+In-Reply-To: <20231010032117.1577496-1-yosryahmed@google.com>
+From:   domenico cerasuolo <cerasuolodomenico@gmail.com>
+Date:   Tue, 10 Oct 2023 18:48:45 +0200
+Message-ID: <CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0dPYEL7nK77e2A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] mm: memcg: subtree stats flushing and thresholds
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Il giorno mar 10 ott 2023 alle ore 05:21 Yosry Ahmed
+<yosryahmed@google.com> ha scritto:
+>
+> This series attempts to address shortages in today's approach for memcg
+> stats flushing, namely occasionally stale or expensive stat reads. The
+> series does so by changing the threshold that we use to decide whether
+> to trigger a flush to be per memcg instead of global (patch 3), and then
+> changing flushing to be per memcg (i.e. subtree flushes) instead of
+> global (patch 5).
+>
+> Patch 3 & 5 are the core of the series, and they include more details
+> and testing results. The rest are either cleanups or prep work.
+>
+> This series replaces the "memcg: more sophisticated stats flushing"
+> series [1], which also replaces another series, in a long list of
+> attempts to improve memcg stats flushing. It is not a new version of
+> the same patchset as it is a completely different approach. This is
+> based on collected feedback from discussions on lkml in all previous
+> attempts. Hopefully, this is the final attempt.
+>
+> [1]https://lore.kernel.org/lkml/20230913073846.1528938-1-yosryahmed@google.com/
+>
+> v1 -> v2:
+> - Fixed compilation error reported by the kernel robot in patch 4, also
+>   added a missing rcu_read_unlock().
+> - More testing results in the commit message of patch 3.
+>
+> Yosry Ahmed (5):
+>   mm: memcg: change flush_next_time to flush_last_time
+>   mm: memcg: move vmstats structs definition above flushing code
+>   mm: memcg: make stats flushing threshold per-memcg
+>   mm: workingset: move the stats flush into workingset_test_recent()
+>   mm: memcg: restore subtree stats flushing
+>
+>  include/linux/memcontrol.h |   8 +-
+>  mm/memcontrol.c            | 269 +++++++++++++++++++++----------------
+>  mm/vmscan.c                |   2 +-
+>  mm/workingset.c            |  42 ++++--
+>  4 files changed, 185 insertions(+), 136 deletions(-)
+>
+> --
+> 2.42.0.609.gbb76f46606-goog
+>
+>
 
---zcajmngpzzh7f7m4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Yosry,
 
-On Fri, Oct 06, 2023 at 11:37:19AM -0700, "T.J. Mercier" <tjmercier@google.=
-com> wrote:
-> I suppose it's also possible there is PID reuse by the same app,
-> causing the cgroup to become repopulated at the same time as a kill,
-> but that seems extremely unlikely. Plus, at the point where these
-> kills are occurring we shouldn't normally be simultaneously launching
-> new processes for the app. Similarly if a process forks right before
-> it is killed, maybe it doesn't show up in cgroup.procs until after
-> we've observed it to be empty?
+thanks for this series! We backported it on a 5.19-based kernel and ran it on a
+machine for almost a week now. The goal was to fix a CPU utilization regression
+caused by memory stats readings, it seems that this series was the last bit
+needed to completely fix it and bring CPU utilization to 5.12 levels.
 
-Something like this:
+FWIW,
 
-							kill (before)
-cgroup_fork
-cgroup_can_fork .. begin(threadgroup_rwsem)
-tasklist_lock
-fatal_signal_pending -> cgroup_cancel_fork		kill (mid)
-tasklist_unlock
-							seq_start,
-							seq_next...
-
-cgroup_post_fork  .. end(threadgroup_rwsem)	=09
-							kill (after)
-
-Only the third option `kill (after)` means the child would end up on the
-css_set list. But that would mean the reader squeezed before
-cgroup_post_fork() would still see the parent.
-(I.e. I don't see the kill/fork race could skew the listed procs.)
-
-(But it reminds me another pathological case of "group leader
- separation" where:
-- there is a multithreaded process,
-- threadgroup leader exits,
-- threadgroup is migrated from A to B (write to cgroup.procs)
-  - but leader stays in A (because it has PF_EXITING),
-- A will still show it in cgroup.procs,
-- B will not include it in cgroup.procs despite it hosts some threads of
-  the threadgroup (effectively populated).
-It's been some time, I didn't check if it's still possible nowadays.)
-
-BTW is there any fundamental reason the apps cannot use the
-notifications via cgroup.events as recommended by Tejun?
-
-Thanks,
-Michal
-
---zcajmngpzzh7f7m4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHQEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZSV8VAAKCRAGvrMr/1gc
-jsWdAQDPj0t4X2+v7sZxp1Sa0s6sT3E6sfs9Ls5aUrDY9r7CJAD4pMa5kWFEEeur
-T5hm4LGVm29UfXT7guB4/p+AXytjBA==
-=lLLj
------END PGP SIGNATURE-----
-
---zcajmngpzzh7f7m4--
+Tested-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
