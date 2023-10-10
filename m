@@ -2,263 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921917C4104
-	for <lists+cgroups@lfdr.de>; Tue, 10 Oct 2023 22:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3E77C4112
+	for <lists+cgroups@lfdr.de>; Tue, 10 Oct 2023 22:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjJJUSq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Oct 2023 16:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
+        id S230510AbjJJUXL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Oct 2023 16:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjJJUSp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 16:18:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A327AAF
-        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 13:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696969123; x=1728505123;
-  h=date:from:to:cc:subject:message-id;
-  bh=lKwsQKIzun/IA3sgFHzbRoOhqXmiLSSuzQGd8rB8cko=;
-  b=XcxGfKQqnZdU5xj2UXspccG/DwWv9Nme8vKcQwBYkK0bDXW5RiHF4Sya
-   0a3rLnvjwKBGW9ekhmyPu5GM3oQeW9w2EoRNpPIPhgOsJ688c3UmIeWTt
-   ZcmqQmxvjoVcM+xJyNhT8AinNdR9QEde0Q+gU1WvA3u35ItrDOgSqT5PL
-   6AWFNwHvQctpDjm+1DibaWq3ld5DAu7ugg8m1TQiWELtSP6592GLDari9
-   C+67rW0tK53V9NvybSnXkCF8QIgTdhcL6Iqb+sau0023wt/wqEagQwFGX
-   P1t0ABAGJ5gQHYfDAQpa+ce2/a9Fktm2Hln8Utqe42rJWOHd/n8s9UFQ7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="381750870"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="381750870"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 13:18:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="730235449"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="730235449"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 10 Oct 2023 13:18:40 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqJBe-00012n-00;
-        Tue, 10 Oct 2023 20:18:38 +0000
-Date:   Wed, 11 Oct 2023 04:17:58 +0800
-From:   kernel test robot <lkp@intel.com>
+        with ESMTP id S229437AbjJJUXL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 16:23:11 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA60B8
+        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 13:23:09 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9a389db3c7so216975276.1
+        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 13:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696969388; x=1697574188; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uYgkUNINwcenUseeTVeq/bExT5fIfYMT1S3rwt4UQkU=;
+        b=YDqvtdEqtNhqLrYyIOsLw8nHGBX0j64EfifGv8jaYTh1zIdBwWxPA9w+C8SKnpjVyO
+         4ErS312DeLe5RQQOzDLMC4ksnMc3QwcK74bhJQp+7sKuJfaH8Q2CPvwYDd/OliAvIBHP
+         0Zl2mFFSk2Vk+DQBRXa8FbbNsieCuI0ArGLyQ8qAFYAwXROhYOzRHXKleXvxw3BmqMAn
+         zmgcTvF+ci+d2ZmtoJLvYSFM3jeZ1fPhm/y1ZpDa0arNpYgTZpi7BogFi/JRMa1bWO0z
+         goUPX3iCHR7CxgrmRHOludGOuKVEYYJn5rpCIc6LTRkW3ecVPodoGhDw8WIcGer/uYhS
+         kYGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696969388; x=1697574188;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uYgkUNINwcenUseeTVeq/bExT5fIfYMT1S3rwt4UQkU=;
+        b=Ud8Lh2Cls9exkCEkeWr7YK47lvG1ukfA0yzNiqklIS2meABf2moaw3AecZ/NMW2/Ne
+         cyJJE/I04da5bcuj5m7hrsPRuRDmTQ+6qfCNuk3tiww1aDaDLSiyCmSIwWWwMjwISBuY
+         InPKPr7hEX9QzAtWXDIF2fsJ3iOtgq/xKWKfSb5aEWIjVD0YmHuXQtkMjE1Z3Dc14x0L
+         hBwKSYg2ZxIgeLq+2dymQFmgx8igp322C+tGStnvn0UxELxeN/V++8lrqvHXyFAq9yGp
+         53HqUBmFqCzuu1Qw9vo9/rXLFv2sIOQy+jUwagdRGR0nATwForCRs/gTNQyZfnfI1n+t
+         DWoA==
+X-Gm-Message-State: AOJu0YwvsNxaUmdIx69eYX4WXAVxOd4GaIm7/Eq1Pv41P+YHo8V91lst
+        6fpEEY+s3WWXPTvZtjzpN5fU726sTgFKuGCDta2s/Q==
+X-Google-Smtp-Source: AGHT+IH3XzOe35P+mGX9r5IaxByNc6AZhNSEOBcITvJ1kazwBDUAXXYUx9b5cxJV3CAwhxlXVl68lf2TLW6LOK/ZUDI=
+X-Received: by 2002:a25:6645:0:b0:d9a:61b4:cd31 with SMTP id
+ z5-20020a256645000000b00d9a61b4cd31mr1864734ybm.20.1696969388120; Tue, 10 Oct
+ 2023 13:23:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
+ <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
+ <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
+ <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
+ <s2xtlyyyxu4rbv7gjyl7jbi5tt7lrz7qyr3axfeahsij443ahx@me6wx5gvyqni>
+ <CABdmKX0Aiu7Run9YCYXVAX4o3-eP6nKcnzyWh_yuhVKVXTPQkA@mail.gmail.com> <ZSWay-22Gh9opIC_@slm.duckdns.org>
+In-Reply-To: <ZSWay-22Gh9opIC_@slm.duckdns.org>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Tue, 10 Oct 2023 13:22:56 -0700
+Message-ID: <CABdmKX1MYpBerSe2oCTx7vBSQQt8PaYpNpp6Pn0ZE-yymowVjw@mail.gmail.com>
+Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
 To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.6-fixes] BUILD SUCCESS
- 1ca0b605150501b7dc59f3016271da4eb3e96fce
-Message-ID: <202310110456.xcEPa5bo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.6-fixes
-branch HEAD: 1ca0b605150501b7dc59f3016271da4eb3e96fce  cgroup: Remove duplicates in cgroup v1 tasks file
+On Tue, Oct 10, 2023 at 11:41=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, Oct 10, 2023 at 10:14:26AM -0700, T.J. Mercier wrote:
+> > > BTW is there any fundamental reason the apps cannot use the
+> > > notifications via cgroup.events as recommended by Tejun?
+> > >
+> > This would require that we read both cgroup.procs and cgroup.events,
+> > since we'd still want to know which processes to signal. I assumed
+> > this would increase lock contention but there's no synchronization on
+> > cgroup_is_populated so it looks like not. I had already identified
+> > this as a workaround, but I'd prefer to depend on just one file to do
+> > everything.
+>
+> I don't think we can guarantee that. There's a reason why we have
+> [!]populated events. Maybe we can find this particular situation better b=
+ut
+> there isn't going to be a guarantee that a cgroup is removable if its
+> cgroup.procs file is seen empty.
+>
+I understand that there are cases where the cgroup can become
+populated after a read of cgroup.procs shows nothing and before a
+removal is attempted. But that doesn't seem to be what's happening
+here.
 
-elapsed time: 1479m
+> Note that cgroup.events file is pollable. You can just poll the file and
+> then respond to them. I don't understand the part of having to read
+> cgroup.procs, which btw is an a lot more expensive operation. You said
+> "which processes to signal". If this is to kill all processes in the cgro=
+up,
+> you can use cgroup.kill which sends signal atomically to all member tasks=
+.
+>
+That's coming, but we still need to support kills without cgroup.kill
+for kernels before it was introduced. There are some non-SIGKILL use
+cases that code supports, so that's what I meant when I said, "which
+processes to signal". I guess we could separate these two paths so
+that one uses cgroup.kill and blocks until populated =3D 0, and the
+other just reads cgroup.procs to generate the signals and then
+returns. But it would be nice to have cgroup.procs just show the pids
+until after cgroup_exit when the condition for removal is satisfied.
 
-configs tested: 185
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231010   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                   randconfig-001-20231010   gcc  
-arm                   randconfig-001-20231011   gcc  
-arm                             rpc_defconfig   gcc  
-arm                         s3c6400_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   clang
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231010   gcc  
-i386         buildonly-randconfig-002-20231010   gcc  
-i386         buildonly-randconfig-003-20231010   gcc  
-i386         buildonly-randconfig-004-20231010   gcc  
-i386         buildonly-randconfig-005-20231010   gcc  
-i386         buildonly-randconfig-006-20231010   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231010   gcc  
-i386                  randconfig-001-20231011   gcc  
-i386                  randconfig-002-20231010   gcc  
-i386                  randconfig-002-20231011   gcc  
-i386                  randconfig-003-20231010   gcc  
-i386                  randconfig-003-20231011   gcc  
-i386                  randconfig-004-20231010   gcc  
-i386                  randconfig-004-20231011   gcc  
-i386                  randconfig-005-20231010   gcc  
-i386                  randconfig-005-20231011   gcc  
-i386                  randconfig-006-20231010   gcc  
-i386                  randconfig-006-20231011   gcc  
-i386                  randconfig-011-20231010   gcc  
-i386                  randconfig-012-20231010   gcc  
-i386                  randconfig-013-20231010   gcc  
-i386                  randconfig-014-20231010   gcc  
-i386                  randconfig-015-20231010   gcc  
-i386                  randconfig-016-20231010   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231010   gcc  
-loongarch             randconfig-001-20231011   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5475evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         bigsur_defconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                 mpc8313_rdb_defconfig   clang
-powerpc                 mpc832x_rdb_defconfig   clang
-powerpc                      pcm030_defconfig   gcc  
-powerpc                    socrates_defconfig   clang
-powerpc                     tqm8555_defconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231010   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231010   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231010   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231010   gcc  
-x86_64       buildonly-randconfig-001-20231011   gcc  
-x86_64       buildonly-randconfig-002-20231010   gcc  
-x86_64       buildonly-randconfig-002-20231011   gcc  
-x86_64       buildonly-randconfig-003-20231010   gcc  
-x86_64       buildonly-randconfig-003-20231011   gcc  
-x86_64       buildonly-randconfig-004-20231010   gcc  
-x86_64       buildonly-randconfig-004-20231011   gcc  
-x86_64       buildonly-randconfig-005-20231010   gcc  
-x86_64       buildonly-randconfig-005-20231011   gcc  
-x86_64       buildonly-randconfig-006-20231010   gcc  
-x86_64       buildonly-randconfig-006-20231011   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231010   gcc  
-x86_64                randconfig-001-20231011   gcc  
-x86_64                randconfig-002-20231010   gcc  
-x86_64                randconfig-002-20231011   gcc  
-x86_64                randconfig-003-20231010   gcc  
-x86_64                randconfig-003-20231011   gcc  
-x86_64                randconfig-004-20231010   gcc  
-x86_64                randconfig-004-20231011   gcc  
-x86_64                randconfig-005-20231010   gcc  
-x86_64                randconfig-005-20231011   gcc  
-x86_64                randconfig-006-20231010   gcc  
-x86_64                randconfig-006-20231011   gcc  
-x86_64                randconfig-011-20231010   gcc  
-x86_64                randconfig-011-20231011   gcc  
-x86_64                randconfig-012-20231010   gcc  
-x86_64                randconfig-012-20231011   gcc  
-x86_64                randconfig-013-20231010   gcc  
-x86_64                randconfig-013-20231011   gcc  
-x86_64                randconfig-014-20231010   gcc  
-x86_64                randconfig-014-20231011   gcc  
-x86_64                randconfig-015-20231010   gcc  
-x86_64                randconfig-015-20231011   gcc  
-x86_64                randconfig-016-20231010   gcc  
-x86_64                randconfig-016-20231011   gcc  
-x86_64                randconfig-071-20231010   gcc  
-x86_64                randconfig-071-20231011   gcc  
-x86_64                randconfig-072-20231010   gcc  
-x86_64                randconfig-072-20231011   gcc  
-x86_64                randconfig-073-20231010   gcc  
-x86_64                randconfig-073-20231011   gcc  
-x86_64                randconfig-074-20231010   gcc  
-x86_64                randconfig-074-20231011   gcc  
-x86_64                randconfig-075-20231010   gcc  
-x86_64                randconfig-075-20231011   gcc  
-x86_64                randconfig-076-20231010   gcc  
-x86_64                randconfig-076-20231011   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> It feels like the use case is just trying to do things in an unsupported =
+way
+> when there's no actual benefit to doing so. Is there something preventing
+> you guys from doing how it's supposed to be used?
+>
+Isn't this avoiding the problem? The docs say, "A cgroup which doesn't
+have any children or live processes can be destroyed by removing the
+directory." If it has live processes they should show up in
+cgroup.procs. FWIW that's also the language used to describe how the
+populated notification works, so the two shouldn't report different
+things. (Assuming they could actually be read simultaneously.)
