@@ -2,140 +2,221 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0912F7C5483
-	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 14:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3C37C57A8
+	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 17:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346933AbjJKMzu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Oct 2023 08:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        id S232506AbjJKPCf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Oct 2023 11:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346360AbjJKMzo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 08:55:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0988BC6
-        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 05:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697028899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C3Q22l8FHOtSNLSPzzVZTuNcPC2ZofW6W5zArgJ64/4=;
-        b=Ba4klxknMS5VMWO6UoWHBqn9+eFEN4jTh4L7OHbo5ILE87UxFWqbn0JcYjlas7aRe8c/7y
-        E6662thTJEZxt1a3SU2/y59ckILrFOFJJ3Ck14NydST0ouUXJvn+QRJj0npUtUmVZwQhv3
-        3/lxfLr8DvLBDFtqZvPE+cRwGmE6B4U=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-298-eBsTBDv4PaiW8hiycp8iNg-1; Wed, 11 Oct 2023 08:54:56 -0400
-X-MC-Unique: eBsTBDv4PaiW8hiycp8iNg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A8E33822E87;
-        Wed, 11 Oct 2023 12:54:56 +0000 (UTC)
-Received: from [10.22.16.239] (unknown [10.22.16.239])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 886E3215670B;
-        Wed, 11 Oct 2023 12:54:54 +0000 (UTC)
-Message-ID: <389a8abc-7f0f-7bcc-bc58-f70f045d00a5@redhat.com>
-Date:   Wed, 11 Oct 2023 08:54:54 -0400
+        with ESMTP id S232246AbjJKPCf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 11:02:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCD592;
+        Wed, 11 Oct 2023 08:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697036553; x=1728572553;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=rcaM/QXDjeb5pjruo3uYNr3IKZQ2KQs7ApHKV/3WpXM=;
+  b=iqd82FuhnxYDwVQQP70P18aHwlOHipKJJSY2jHtIa+C5qQDN2CwsPf0s
+   xajHocPqD4ObDZ7KLbpKxIhB8QKSYAftK0PlNA4fcDC6f+hxkX5oTiduu
+   s8MvNJX2mvElph/Vhox58KJkr694/J+Me87vkMSb6ZzCxuTA95nBFXvT8
+   G0TWuaflFp8upZDFOc1Ly0B4tdfoxg7Pt5+xrDoxEN7ef4KFYuB4oYidp
+   Mlz2XTTnbpWfX6wVKvDg1dQHnP5iuoYI269/N9RNS//2MgxOTE0MV2Dci
+   w451h7cwwEzyekvnymdhWqjG+hh9l7MUuHY8dFkRjyBlaRuKuBGUeY/5y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="383550872"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="383550872"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 08:02:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="897655926"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="897655926"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 11 Oct 2023 08:00:42 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Sean Christopherson" <seanjc@google.com>
+Cc:     "Kai Huang" <kai.huang@intel.com>,
+        "Bo Zhang" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Zhiquan1 Li" <zhiquan1.li@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Sohil Mehta" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-13-haitao.huang@linux.intel.com>
+ <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+ <ZSSZaFrxvCvR1SOy@google.com>
+ <op.2cksdjamwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <548d2ab828307f7d1c6d7f707e587cd27b0e7fe4.camel@intel.com>
+ <op.2clox2zewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <ZSXl1VXTM0c8qpZj@google.com>
+Date:   Wed, 11 Oct 2023 10:02:25 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
- value
-Content-Language: en-US
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Xia Fukun <xiafukun@huawei.com>
-References: <20231009191515.3262292-1-longman@redhat.com>
- <ZSTiULEnD7SF9n7y@localhost.localdomain>
- <6b769316-6434-5054-43f5-7933fc2bee01@redhat.com>
- <31e06652-1dbd-e32f-3123-d17e178c5c27@redhat.com>
- <ZSZZfImXuCG4Xvaz@localhost.localdomain>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZSZZfImXuCG4Xvaz@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cnn2bplwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <ZSXl1VXTM0c8qpZj@google.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, 10 Oct 2023 19:01:25 -0500, Sean Christopherson  
+<seanjc@google.com> wrote:
 
-On 10/11/23 04:14, Juri Lelli wrote:
-> On 10/10/23 16:03, Waiman Long wrote:
->> On 10/10/23 15:44, Waiman Long wrote:
->>> On 10/10/23 01:34, Juri Lelli wrote:
->>>> Hi,
->>>>
->>>> On 09/10/23 15:15, Waiman Long wrote:
->>>>> The nr_deadline_tasks field in cpuset structure was introduced by
->>>>> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
->>>>> in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
->>>>> cpuset_mutex, nr_deadline_tasks can be updated in various contexts
->>>>> under different locks. As a result, data races may happen that cause
->>>>> incorrect value to be stored in nr_deadline_tasks leading to incorrect
->>>> Could you please make an example of such data races?
->>> Since update to cs->nr_deadline_tasks is not protected by a single lock,
->>> it is possible that multiple CPUs may try to modify it at the same
->>> time.  It is possible that nr_deadline_tasks++ and nr_deadline_tasks--
->>> can be done in a single instruction like in x86 and hence atomic.
->>> However, operation like "cs->nr_deadline_tasks +=
->>> cs->nr_migrate_dl_tasks" is likely a RMW operation and so is subjected
->>> to racing. It is mostly theoretical, but probably not impossible.
->> Sorry, even increment and decrement operators are not atomic.
+> On Tue, Oct 10, 2023, Haitao Huang wrote:
+>> On Mon, 09 Oct 2023 21:23:12 -0500, Huang, Kai <kai.huang@intel.com>  
+>> wrote:
 >>
->> inc_dl_tasks_cs() is only called from switched_to_dl() in deadline.c which
->> is protected by the rq_lock, but there are multiple rq's. dec_dl_tasks_cs()
->> is called from switched_from_dl() in deadline.c and cgroup_exit() in
->> cgroup.c. The later one is protected by css_set_lock. The other place where
->> nr_deadline_tasks can be changed is in cpuset_attach() protected by
->> cpuset_mutex.
-> So, let's see. :)
+>> > On Mon, 2023-10-09 at 20:42 -0500, Haitao Huang wrote:
+>> > > Hi Sean
+>> > >
+>> > > On Mon, 09 Oct 2023 19:23:04 -0500, Sean Christopherson
+>> > > <seanjc@google.com> wrote:
+>> > > > I can see userspace wanting to explicitly terminate the VM  
+>> instead of
+>> > > > "silently"
+>> > > > the VM's enclaves, but that seems like it should be a knob in the
+>> > > > virtual EPC
+>> > > > code.
+>> > >
+>> > > If my understanding above is correct and understanding your  
+>> statement
+>> > > above correctly, then don't see we really need separate knob for  
+>> vEPC
+>> > > code. Reaching a cgroup limit by a running guest (assuming dynamic
+>> > > allocation implemented) should not translate automatically killing
+>> > > the VM.
+>> > > Instead, it's user space job to work with guest to handle allocation
+>> > > failure. Guest could page and kill enclaves.
+>> > >
+>> >
+>> > IIUC Sean was talking about changing misc.max _after_ you launch SGX  
+>> VMs:
+>> >
+>> > 1) misc.max = 100M
+>> > 2) Launch VMs with total virtual EPC size = 100M	<- success
+>> > 3) misc.max = 50M
+>> >
+>> > 3) will also succeed, but nothing will happen, the VMs will be still
+>> > holding 100M EPC.
+>> >
+>> > You need to somehow track virtual EPC and kill VM instead.
+>> >
+>> > (or somehow fail to do 3) if it is also an acceptable option.)
+>> >
+>> Thanks for explaining it.
+>>
+>> There is an error code to return from max_write. I can add that too to  
+>> the
+>> callback definition and fail it when it can't be enforced for any  
+>> reason.
+>> Would like some community feedback if this is acceptable though.
 >
-> switched_to_dl(), switched_from_dl() and cpuset_attach() should all be
-> protected (for DEADLINE tasks) by cpuset_mutex, see [1] for the former
-> two.
-Yes, I missed the cpuset_lock() call.
-> What leaves me perplexed is indeed cgroup_exit(), which seems to operate
-> under css_set_lock as you say. I however wonder why is that not racy
-> already wrt, say, cpuset_attach() which AFAIU uses css information w/o
-> holding css_set_lock?
+> That likely isn't acceptable.  E.g. create a cgroup with both a host  
+> enclave and
+> virtual EPC, set the hard limit to 100MiB.  Virtual EPC consumes 50MiB,  
+> and the
+> host enclave consumes 50MiB.  Userspace lowers the limit to 49MiB.  The  
+> cgroup
+> code would reclaim all of the enclave's reclaimable EPC, and then kill  
+> the enclave
+> because it's still over the limit.  And then fail the max_write because  
+> the cgroup
+> is *still* over the limit.  So in addition to burning a lot of cycles,  
+> from
+> userspace's perspective its enclave was killed for no reason, as the new  
+> limit
+> wasn't actually set.
 
-The css_set_lock protects changes made to css_set. Looking at 
-cgroup_migrate_execute(), css_set_lock is taken when the tasks are 
-actually moving from one css_set to another one. cpuset_attach() is 
-called just to update the CPU and node affinity and cpuset_mutex is 
-taken to ensure stability of the CPU and node masks. There is no change 
-to css_set and so css_set_lock isn't needed.
+I was thinking before reclaiming enclave pages, if we know the untracked  
+vepc pages (current-tracked) is larger than limit, we just return error  
+without enforcing the limit. That way user also knows something is wrong.
 
-We can argue that there can be racing between cgroup_exit() and the 
-iteration of tasks in cpuset_attach() or cpuset_can_attach(). An 
-rcu_read_lock() is probably needed. I am stilling investigating that.
+But I get that we want to be able to kill VMs to enforce the newer lower  
+limit. I assume we can't optimize efficiency/priority of killing: enclave  
+pages will be reclaimed first no matter what just because they are  
+reclaimable; no good rules to choose victim between enclave and VMs in  
+your example so enclaves could be killed still before VMs.
 
-Cheers,
-Longman
-
-
+>> I think to solve it ultimately, we need be able to adjust 'capacity' of  
+>> VMs
+>> not to just kill them, which is basically the same as dynamic allocation
+>> support for VMs (being able to increase/decrease epc size when it is
+>> running). For now, we only have static allocation so max can't be  
+>> enforced
+>> once it is launched.
 >
-> Thanks,
-> Juri
+> No, reclaiming virtual EPC is not a requirement.  VMM EPC  
+> oversubscription is
+> insanely complex, and I highly doubt any users actually want to  
+> oversubcribe VMs.
 >
-> 1 - https://elixir.bootlin.com/linux/latest/source/kernel/sched/core.c#L7688
+> There are use cases for cgroups beyond oversubscribing/swapping, e.g.  
+> privileged
+> userspace may set limits on a container to ensure the container doesn't  
+> *accidentally*
+> consume more EPC than it was allotted, e.g. due to a configuration bug  
+> that created
+> a VM with more EPC than it was supposed to have.
 >
+> My comments on virtual EPC vs. cgroups is much more about having sane,  
+> well-defined
+> behavior, not about saying the kernel actually needs to support  
+> oversubscribing EPC
+> for KVM guests.
 
+So here are the steps I see now, let me know if this is aligned with your  
+thinking or I'm off track.
+
+0) when all left are enclave VA, SECS pages and VEPC in a cgroup, the OOM  
+kill process starts.
+1) The cgroup identifies a victim vepc for OOM kill(this could be before  
+or after enclaves being killed), sets a new flag VEPC_NO_MEMORY in the  
+vepc.
+2) call sgx_vepc_remove_all(), ignore failure counts returned. This will  
+perform best effort to eremove all normal pages used by the vepc.
+3) Guest may trigger fault again, return SIGBUS in sgx_vepc_fault when  
+VEPC_NO_MEMORY is set. Do the same for mmap.
+4) That would eventually cause sgx_vepc_release() before VM dies or killed  
+by user space, which does the final cleanup.
+
+Q: should we reset VEPC_NO_MEMORY flag if #4 never happens and cgroup  
+usage is below limit? I suppose we can do it, but not sure it is sane  
+because VM would try to load as much pages as configured originally.
+
+I'm still thinking about using one unreclaimable list, justification is  
+simplicity and lack of rules to select items from separate lists, but may  
+change my mind if I found it's inconvenient.
+
+Not sure how age/youngness can be accounted for guest pages though Kai  
+indicated we don't need that for first version. So I assume we can deal  
+with it later and add separate list for vEPC if needed
+for that reason.
+
+Thanks a lot for your input.
+Haitao
