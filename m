@@ -2,130 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7FA7C4D64
-	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 10:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D44C7C5440
+	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 14:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345232AbjJKImf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Oct 2023 04:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        id S231524AbjJKMqP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Oct 2023 08:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344899AbjJKIme (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 04:42:34 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EB994;
-        Wed, 11 Oct 2023 01:42:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VtwDfcD_1697013748;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VtwDfcD_1697013748)
-          by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 16:42:29 +0800
-From:   Jingbo Xu <jefflexu@linux.alibaba.com>
-To:     tj@kernel.org, guro@fb.com
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, jack@suse.cz,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
-        joseph.qi@linux.alibaba.com
-Subject: [PATCH] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
-Date:   Wed, 11 Oct 2023 16:42:28 +0800
-Message-Id: <20231011084228.77615-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        with ESMTP id S234889AbjJKMqO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 08:46:14 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201E4B0
+        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 05:46:11 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso37065ad.0
+        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 05:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697028370; x=1697633170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vRxnYW++U+8TlQsWmKaGw4xOnyl04ESkzrCSiOYHMOw=;
+        b=qAp+K8S1JOrv4Vc471JGQA+DzbmURcp2VnW7zVvKSnLxZcsqjnvD1EyFbYWy1yQvcJ
+         cC/z2Gw/e7ugaCWm7gjfZbQq8y6s9fcVGTPFdmA3pZnXuKwoVue/Pr6fGZugZM1pbCOA
+         BCS7SB0cbmfxRkcoB3pmxGYZh0BMHry3B4igIIPD8A23wjI+Kagc5TbzRRrhXBPgj0v6
+         OgfH9rmczoqwjJhdQwQ83Zy0/Fqcmb5L9QumXCStW6VyUDmlYu7+ig0uC6AI+p7Lxy5v
+         aU+UOtCe6vztHNA/UZfIsVQiTrp5GG80RnnsYi70iuwcRsh+/UVg+1iuMnliz8oT9+RW
+         jx3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697028370; x=1697633170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vRxnYW++U+8TlQsWmKaGw4xOnyl04ESkzrCSiOYHMOw=;
+        b=L+zN6zsRvL9whYlDq9BCxqS2+RhhRTDnW7lSPY5zJyebl8n6CcSxv4oZJUFXK6TRBt
+         /TWjgfgSNMC/Twre0is95mPTcGcPAgaQ75Y5aLn3u89b5adumAoFHCgLTuMGdtHHApNM
+         YGnnuDmyJydb0WCN+8hZjchvFoMo9o2CBJX/JU2hJyjZK3fzcky424yf8e1Pz+CFn899
+         yumiWXTJmMkW+Cw03CyMVGArgcg7FqZDMxtatfS1V2RTOR+MIZ4YwMA2d56B49b773Zg
+         LIxm3b9G8td99jHmNmjvdVcI6O37l0RcseDhWgge2J0Y1ggxj5QzW8ovfD6x7+GEXMDb
+         mebg==
+X-Gm-Message-State: AOJu0YwpVhRqeCehE/yxHTda53YBquVLi/jqYUGoE/HwFVumCQwOazed
+        Gx2IiuKiSXjPz/Xtke7jrFi6MEkL1V7SSfpMktwQOg==
+X-Google-Smtp-Source: AGHT+IHSO7IpzlUaTsA99RK2xosy3goKI41ZEFNsKGFVZUUg12a2Etj4aZSQgVylWCCjwh0GKeVN7byl8b9dfg6R6Zs=
+X-Received: by 2002:a17:902:ecc9:b0:1c6:212f:c8e5 with SMTP id
+ a9-20020a170902ecc900b001c6212fc8e5mr218432plh.26.1697028370195; Wed, 11 Oct
+ 2023 05:46:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+In-Reply-To: <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 11 Oct 2023 05:45:58 -0700
+Message-ID: <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The cgwb cleanup routine will try to release the dying cgwb by switching
-the attached inodes.  It fetches the attached inodes from wb->b_attached
-list, omitting the fact that inodes only with dirty timestamps reside in
-wb->b_dirty_time list, which is the case when lazytime is enabled.  This
-causes enormous zombie memory cgroup when lazytime is enabled, as inodes
-with dirty timestamps can not be switched to a live cgwb for a long time.
+On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@google.com=
+> wrote:
+> >
+> > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
+> > [...]
+> > >
+> > > I tried this on a machine with 72 cpus (also ixion), running both
+> > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
+> > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
+> > > # mkdir /sys/fs/cgroup/a
+> > > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
+> > > # mkdir /sys/fs/cgroup/a/b
+> > > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
+> > > # mkdir /sys/fs/cgroup/a/b/c
+> > > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
+> > > # mkdir /sys/fs/cgroup/a/b/c/d
+> > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> > > # ./netserver -6
+> > >
+> > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
+> > > -m 10K; done
+> >
+> > You are missing '&' at the end. Use something like below:
+> >
+> > #!/bin/bash
+> > for i in {1..22}
+> > do
+> >    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
+> > done
+> > wait
+> >
+>
+> Oh sorry I missed the fact that you are running instances in parallel, my=
+ bad.
+>
+> So I ran 36 instances on a machine with 72 cpus. I did this 10 times
+> and got an average from all instances for all runs to reduce noise:
+>
+> #!/bin/bash
+>
+> ITER=3D10
+> NR_INSTANCES=3D36
+>
+> for i in $(seq $ITER); do
+>   echo "iteration $i"
+>   for j in $(seq $NR_INSTANCES); do
+>     echo "iteration $i" >> "out$j"
+>     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
+>   done
+>   wait
+> done
+>
+> cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
+>
+> Base: 22169 mbps
+> Patched: 21331.9 mbps
+>
+> The difference is ~3.7% in my runs. I am not sure what's different.
+> Perhaps it's the number of runs?
 
-It is reasonable not to switch cgwb for inodes with dirty data, as
-otherwise it may break the bandwidth restrictions.  However since the
-writeback of inode metadata is not accounted, let's also switch inodes
-with dirty timestamps to avoid zombie memory and block cgroups when
-laztytime is enabled.
-
-Fixs: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
-This issue is reported on our production environment (5.10 kernel with
-the dying cgwbs optimization[1] backported, and ext4 mounted with "-o
-relatime,lazytime"), while I can also reproduce it on the latest
-mainline kernel.
-
-[1] c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching
-attached inodes")
----
- fs/fs-writeback.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index c1af01b2c42d..89125760e4ad 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -613,6 +613,24 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
- 	kfree(isw);
- }
- 
-+static bool isw_prepare_wbs_switch(struct inode_switch_wbs_context *isw,
-+				   struct list_head *list, int *nr)
-+{
-+	struct inode *inode;
-+
-+	list_for_each_entry(inode, list, i_io_list) {
-+		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-+			continue;
-+
-+		isw->inodes[*nr] = inode;
-+		(*nr)++;
-+
-+		if (*nr >= WB_MAX_INODES_PER_ISW - 1)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /**
-  * cleanup_offline_cgwb - detach associated inodes
-  * @wb: target wb
-@@ -625,7 +643,6 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
- {
- 	struct cgroup_subsys_state *memcg_css;
- 	struct inode_switch_wbs_context *isw;
--	struct inode *inode;
- 	int nr;
- 	bool restart = false;
- 
-@@ -647,17 +664,9 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
- 
- 	nr = 0;
- 	spin_lock(&wb->list_lock);
--	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
--		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
--			continue;
--
--		isw->inodes[nr++] = inode;
--
--		if (nr >= WB_MAX_INODES_PER_ISW - 1) {
--			restart = true;
--			break;
--		}
--	}
-+	restart = isw_prepare_wbs_switch(isw, &wb->b_attached, &nr);
-+	if (!restart)
-+		restart = isw_prepare_wbs_switch(isw, &wb->b_dirty_time, &nr);
- 	spin_unlock(&wb->list_lock);
- 
- 	/* no attached inodes? bail out */
--- 
-2.19.1.6.gb485710b
-
+My base kernel is next-20231009 and I am running experiments with
+hyperthreading disabled.
