@@ -2,149 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D44C7C5440
-	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 14:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0912F7C5483
+	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 14:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjJKMqP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Oct 2023 08:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S1346933AbjJKMzu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Oct 2023 08:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbjJKMqO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 08:46:14 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201E4B0
-        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 05:46:11 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso37065ad.0
-        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 05:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697028370; x=1697633170; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vRxnYW++U+8TlQsWmKaGw4xOnyl04ESkzrCSiOYHMOw=;
-        b=qAp+K8S1JOrv4Vc471JGQA+DzbmURcp2VnW7zVvKSnLxZcsqjnvD1EyFbYWy1yQvcJ
-         cC/z2Gw/e7ugaCWm7gjfZbQq8y6s9fcVGTPFdmA3pZnXuKwoVue/Pr6fGZugZM1pbCOA
-         BCS7SB0cbmfxRkcoB3pmxGYZh0BMHry3B4igIIPD8A23wjI+Kagc5TbzRRrhXBPgj0v6
-         OgfH9rmczoqwjJhdQwQ83Zy0/Fqcmb5L9QumXCStW6VyUDmlYu7+ig0uC6AI+p7Lxy5v
-         aU+UOtCe6vztHNA/UZfIsVQiTrp5GG80RnnsYi70iuwcRsh+/UVg+1iuMnliz8oT9+RW
-         jx3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697028370; x=1697633170;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vRxnYW++U+8TlQsWmKaGw4xOnyl04ESkzrCSiOYHMOw=;
-        b=L+zN6zsRvL9whYlDq9BCxqS2+RhhRTDnW7lSPY5zJyebl8n6CcSxv4oZJUFXK6TRBt
-         /TWjgfgSNMC/Twre0is95mPTcGcPAgaQ75Y5aLn3u89b5adumAoFHCgLTuMGdtHHApNM
-         YGnnuDmyJydb0WCN+8hZjchvFoMo9o2CBJX/JU2hJyjZK3fzcky424yf8e1Pz+CFn899
-         yumiWXTJmMkW+Cw03CyMVGArgcg7FqZDMxtatfS1V2RTOR+MIZ4YwMA2d56B49b773Zg
-         LIxm3b9G8td99jHmNmjvdVcI6O37l0RcseDhWgge2J0Y1ggxj5QzW8ovfD6x7+GEXMDb
-         mebg==
-X-Gm-Message-State: AOJu0YwpVhRqeCehE/yxHTda53YBquVLi/jqYUGoE/HwFVumCQwOazed
-        Gx2IiuKiSXjPz/Xtke7jrFi6MEkL1V7SSfpMktwQOg==
-X-Google-Smtp-Source: AGHT+IHSO7IpzlUaTsA99RK2xosy3goKI41ZEFNsKGFVZUUg12a2Etj4aZSQgVylWCCjwh0GKeVN7byl8b9dfg6R6Zs=
-X-Received: by 2002:a17:902:ecc9:b0:1c6:212f:c8e5 with SMTP id
- a9-20020a170902ecc900b001c6212fc8e5mr218432plh.26.1697028370195; Wed, 11 Oct
- 2023 05:46:10 -0700 (PDT)
+        with ESMTP id S1346360AbjJKMzo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 08:55:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0988BC6
+        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 05:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697028899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C3Q22l8FHOtSNLSPzzVZTuNcPC2ZofW6W5zArgJ64/4=;
+        b=Ba4klxknMS5VMWO6UoWHBqn9+eFEN4jTh4L7OHbo5ILE87UxFWqbn0JcYjlas7aRe8c/7y
+        E6662thTJEZxt1a3SU2/y59ckILrFOFJJ3Ck14NydST0ouUXJvn+QRJj0npUtUmVZwQhv3
+        3/lxfLr8DvLBDFtqZvPE+cRwGmE6B4U=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-298-eBsTBDv4PaiW8hiycp8iNg-1; Wed, 11 Oct 2023 08:54:56 -0400
+X-MC-Unique: eBsTBDv4PaiW8hiycp8iNg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A8E33822E87;
+        Wed, 11 Oct 2023 12:54:56 +0000 (UTC)
+Received: from [10.22.16.239] (unknown [10.22.16.239])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 886E3215670B;
+        Wed, 11 Oct 2023 12:54:54 +0000 (UTC)
+Message-ID: <389a8abc-7f0f-7bcc-bc58-f70f045d00a5@redhat.com>
+Date:   Wed, 11 Oct 2023 08:54:54 -0400
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
-In-Reply-To: <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 11 Oct 2023 05:45:58 -0700
-Message-ID: <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
+ value
+Content-Language: en-US
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Xia Fukun <xiafukun@huawei.com>
+References: <20231009191515.3262292-1-longman@redhat.com>
+ <ZSTiULEnD7SF9n7y@localhost.localdomain>
+ <6b769316-6434-5054-43f5-7933fc2bee01@redhat.com>
+ <31e06652-1dbd-e32f-3123-d17e178c5c27@redhat.com>
+ <ZSZZfImXuCG4Xvaz@localhost.localdomain>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZSZZfImXuCG4Xvaz@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@google.com=
-> wrote:
-> >
-> > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
-> > [...]
-> > >
-> > > I tried this on a machine with 72 cpus (also ixion), running both
-> > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
-> > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a
-> > > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a/b
-> > > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a/b/c
-> > > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a/b/c/d
-> > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > # ./netserver -6
-> > >
-> > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
-> > > -m 10K; done
-> >
-> > You are missing '&' at the end. Use something like below:
-> >
-> > #!/bin/bash
-> > for i in {1..22}
-> > do
-> >    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
-> > done
-> > wait
-> >
->
-> Oh sorry I missed the fact that you are running instances in parallel, my=
- bad.
->
-> So I ran 36 instances on a machine with 72 cpus. I did this 10 times
-> and got an average from all instances for all runs to reduce noise:
->
-> #!/bin/bash
->
-> ITER=3D10
-> NR_INSTANCES=3D36
->
-> for i in $(seq $ITER); do
->   echo "iteration $i"
->   for j in $(seq $NR_INSTANCES); do
->     echo "iteration $i" >> "out$j"
->     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
->   done
->   wait
-> done
->
-> cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
->
-> Base: 22169 mbps
-> Patched: 21331.9 mbps
->
-> The difference is ~3.7% in my runs. I am not sure what's different.
-> Perhaps it's the number of runs?
 
-My base kernel is next-20231009 and I am running experiments with
-hyperthreading disabled.
+On 10/11/23 04:14, Juri Lelli wrote:
+> On 10/10/23 16:03, Waiman Long wrote:
+>> On 10/10/23 15:44, Waiman Long wrote:
+>>> On 10/10/23 01:34, Juri Lelli wrote:
+>>>> Hi,
+>>>>
+>>>> On 09/10/23 15:15, Waiman Long wrote:
+>>>>> The nr_deadline_tasks field in cpuset structure was introduced by
+>>>>> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
+>>>>> in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
+>>>>> cpuset_mutex, nr_deadline_tasks can be updated in various contexts
+>>>>> under different locks. As a result, data races may happen that cause
+>>>>> incorrect value to be stored in nr_deadline_tasks leading to incorrect
+>>>> Could you please make an example of such data races?
+>>> Since update to cs->nr_deadline_tasks is not protected by a single lock,
+>>> it is possible that multiple CPUs may try to modify it at the same
+>>> time.  It is possible that nr_deadline_tasks++ and nr_deadline_tasks--
+>>> can be done in a single instruction like in x86 and hence atomic.
+>>> However, operation like "cs->nr_deadline_tasks +=
+>>> cs->nr_migrate_dl_tasks" is likely a RMW operation and so is subjected
+>>> to racing. It is mostly theoretical, but probably not impossible.
+>> Sorry, even increment and decrement operators are not atomic.
+>>
+>> inc_dl_tasks_cs() is only called from switched_to_dl() in deadline.c which
+>> is protected by the rq_lock, but there are multiple rq's. dec_dl_tasks_cs()
+>> is called from switched_from_dl() in deadline.c and cgroup_exit() in
+>> cgroup.c. The later one is protected by css_set_lock. The other place where
+>> nr_deadline_tasks can be changed is in cpuset_attach() protected by
+>> cpuset_mutex.
+> So, let's see. :)
+>
+> switched_to_dl(), switched_from_dl() and cpuset_attach() should all be
+> protected (for DEADLINE tasks) by cpuset_mutex, see [1] for the former
+> two.
+Yes, I missed the cpuset_lock() call.
+> What leaves me perplexed is indeed cgroup_exit(), which seems to operate
+> under css_set_lock as you say. I however wonder why is that not racy
+> already wrt, say, cpuset_attach() which AFAIU uses css information w/o
+> holding css_set_lock?
+
+The css_set_lock protects changes made to css_set. Looking at 
+cgroup_migrate_execute(), css_set_lock is taken when the tasks are 
+actually moving from one css_set to another one. cpuset_attach() is 
+called just to update the CPU and node affinity and cpuset_mutex is 
+taken to ensure stability of the CPU and node masks. There is no change 
+to css_set and so css_set_lock isn't needed.
+
+We can argue that there can be racing between cgroup_exit() and the 
+iteration of tasks in cpuset_attach() or cpuset_can_attach(). An 
+rcu_read_lock() is probably needed. I am stilling investigating that.
+
+Cheers,
+Longman
+
+
+>
+> Thanks,
+> Juri
+>
+> 1 - https://elixir.bootlin.com/linux/latest/source/kernel/sched/core.c#L7688
+>
+
