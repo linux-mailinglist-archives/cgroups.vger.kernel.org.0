@@ -2,77 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB387C43AB
-	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 00:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BCD7C45CC
+	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 02:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjJJWWb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Oct 2023 18:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S1344272AbjJKABc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Oct 2023 20:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbjJJWWa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 18:22:30 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B350E98
-        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 15:22:27 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad810be221so1046144266b.2
-        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 15:22:27 -0700 (PDT)
+        with ESMTP id S1344268AbjJKAB3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Oct 2023 20:01:29 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B097D91
+        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 17:01:27 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f61a639b9so96101467b3.1
+        for <cgroups@vger.kernel.org>; Tue, 10 Oct 2023 17:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696976546; x=1697581346; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D9ytv1y2yvSa4MvbD/ZRdqp1EA4N80KA40csq2dEErQ=;
-        b=cGQNz3qBuGwIL0oWollP/UdGwjV7RCie2FXDlhQvit8a8pXDdaOigVznTKUKXd034E
-         5wa0wac7XnK8vc2zqZa4C6YjObiL7e3q9DtzlTqxFs/lXXNWNiuPpEkXLg/dlkY8qCn7
-         2FKWGRlm9l9wBL1w7viVC4H7knpAv9am9OHzmYwYJYkJtXJc7lziz/3itrTDO0q/pNZS
-         VAI5A9vR4KVZdOYw8njVJaP+5dMXd3LtAa88G+xf8voexP3z0pUf5BBduCgc23vHV8ii
-         xsIvmdBZnNf8oWCtWraxRT+hS0PcS8zbW2LUYn4mE76PfHpOSa+kerIfIjycArp8CTM6
-         7i7Q==
+        d=google.com; s=20230601; t=1696982487; x=1697587287; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zx6blw3s97QmWxGpjq4G1Ep7AiFARQsfwR/ogZE8NGk=;
+        b=cYxIPgft69sX9irmLtF0U6HBpxczMc/SfecP0u31r3wQL1jpZy51X2LfuGlmvkdg8X
+         QAP5NEAC18akGQHyT7LThqI160sgPyslaSr6zqbC5+znjgtk33z+f2bt+4Tp/bejRJkj
+         KfKzdhcg8q64gUR7aY4CDIFWk/XQ1m1PbqwlsXW0jOZDoTM72Dno0ByIrXhX5WG5/QLi
+         IRsYElQ6aGhAsUuV5U4pBBBDDdjlmcfnSn39b+Y3FA5yfyew1VSfqXkvUULIEeIIr6b6
+         jNhysV1DfFHQenxyRnVwUsp+WZAf0Heqim2KshNGIQGGI9yEzkBU5y8FtM8Tmhb/dL9u
+         sNMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696976546; x=1697581346;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D9ytv1y2yvSa4MvbD/ZRdqp1EA4N80KA40csq2dEErQ=;
-        b=NtVz6zVCVxLCnK7m7s4gcbbvs6IXTayPOrRI8OJVV4fhwfPMnA0/OoA2xXGwTG3CFd
-         NilHsbTcWRXdKUGD+qlrUYvtQDfuxbY2ueLhcYWsteo8yBf3WU1ZqzQJUBlviHIfOMJJ
-         +j6UIDpcjYjkG1WTcKs3iJy9aCBn7FzWf6MADIkJZYDBwcwS+NQoO7REcoTPhzPPxgWu
-         EUI1RMjmIt7GXjQdd+M91UuMk1eI5Sh9iGCXQnjD1gA/lbOKDfRo/egNmozNB1aHznYY
-         KBY/S11fEoz36ay868q4hBCpDEL++2fjaGf2NRGff+JYToxu2tERTJc+Bupf/N+Am3PG
-         ZfZw==
-X-Gm-Message-State: AOJu0Yz0MZ76gP0dVKcRmq0LPTLmPRp1szSEh0gnnJAh4Jnggw+Aurwx
-        DU/tqzgxpdRIY8oA9Em6PdQxDsYbNQI2Qk1fsg+QMQ==
-X-Google-Smtp-Source: AGHT+IGiBCpXck43PPvlJ3+rqPaZEMLPOQYkkdbd1Jrk+SG9At/A+vBYi5VVZg79jP3TkAytynbWMp6WW63no4Z9iIY=
-X-Received: by 2002:a17:906:5349:b0:9b2:8b14:7a20 with SMTP id
- j9-20020a170906534900b009b28b147a20mr18547846ejo.45.1696976546026; Tue, 10
- Oct 2023 15:22:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
-In-Reply-To: <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 10 Oct 2023 15:21:47 -0700
-Message-ID: <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1696982487; x=1697587287;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zx6blw3s97QmWxGpjq4G1Ep7AiFARQsfwR/ogZE8NGk=;
+        b=OvVmkAzyoqSCsPU2BBshTTdGA6GYLXboTj4s0L0ZBbIg4w3BvenVapKuSgehBeMxf1
+         Sm29jNxhOfcq0HAuh57aYb8OOEeFU5YjIc26Vb86Hf103cuVC677dNoxhm2JuEEkAh/n
+         TTbk047cloChAergle2NTTDD8bioIQCVnNCCuYEnpnL+hxtm8kWQWrLfBC/N8mCpQeQi
+         4wV8HwhNYKTujT+69A1yBb8Q9TMoDOhvkQNzmDAbrFvq2jghHjgKk2OgVzbs7GJN9z05
+         KkWWvsjOeaGImgeJEC/VAcBelspf/ygdHJP2Ayki/CwVExRNsA4+mYcgS+Ro24upjSrK
+         CW+A==
+X-Gm-Message-State: AOJu0YxoScY3OfKv0E2bDIoDPdrhnuxhwf9CUPqJ2jJTkPGcv+o6BRUa
+        S6xEUsaU2CCSc8843kmHhdXwHtbRIMM=
+X-Google-Smtp-Source: AGHT+IEKuW2OKzqEEWYv+2fZtWZtfiPj3BAGUj929Zhf8Qm2555JJ1KwmHC9AyWLdElRmEBP1Fx5a9qarns=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ca4d:0:b0:59b:e81f:62ab with SMTP id
+ y13-20020a81ca4d000000b0059be81f62abmr403963ywk.7.1696982486958; Tue, 10 Oct
+ 2023 17:01:26 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:01:25 -0700
+In-Reply-To: <op.2clox2zewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Mime-Version: 1.0
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-13-haitao.huang@linux.intel.com> <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+ <ZSSZaFrxvCvR1SOy@google.com> <op.2cksdjamwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <548d2ab828307f7d1c6d7f707e587cd27b0e7fe4.camel@intel.com> <op.2clox2zewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Message-ID: <ZSXl1VXTM0c8qpZj@google.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim EPC
+From:   Sean Christopherson <seanjc@google.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Kai Huang <kai.huang@intel.com>, Bo Zhang <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        Zhiquan1 Li <zhiquan1.li@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,236 +84,71 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 2:02=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Tue, Oct 10, 2023 at 1:45=E2=80=AFPM Shakeel Butt <shakeelb@google.com=
-> wrote:
-> >
-> > On Mon, Oct 9, 2023 at 8:21=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
-om> wrote:
-> > >
-> > > A global counter for the magnitude of memcg stats update is maintaine=
-d
-> > > on the memcg side to avoid invoking rstat flushes when the pending
-> > > updates are not significant. This avoids unnecessary flushes, which a=
-re
-> > > not very cheap even if there isn't a lot of stats to flush. It also
-> > > avoids unnecessary lock contention on the underlying global rstat loc=
-k.
-> > >
-> > > Make this threshold per-memcg. The scheme is followed where percpu (n=
-ow
-> > > also per-memcg) counters are incremented in the update path, and only
-> > > propagated to per-memcg atomics when they exceed a certain threshold.
-> > >
-> > > This provides two benefits:
-> > > (a) On large machines with a lot of memcgs, the global threshold can =
-be
-> > > reached relatively fast, so guarding the underlying lock becomes less
-> > > effective. Making the threshold per-memcg avoids this.
-> > >
-> > > (b) Having a global threshold makes it hard to do subtree flushes, as=
- we
-> > > cannot reset the global counter except for a full flush. Per-memcg
-> > > counters removes this as a blocker from doing subtree flushes, which
-> > > helps avoid unnecessary work when the stats of a small subtree are
-> > > needed.
-> > >
-> > > Nothing is free, of course. This comes at a cost:
-> > > (a) A new per-cpu counter per memcg, consuming NR_CPUS * NR_MEMCGS * =
-4
-> > > bytes. The extra memory usage is insigificant.
-> > >
-> > > (b) More work on the update side, although in the common case it will
-> > > only be percpu counter updates. The amount of work scales with the
-> > > number of ancestors (i.e. tree depth). This is not a new concept, add=
-ing
-> > > a cgroup to the rstat tree involves a parent loop, so is charging.
-> > > Testing results below show no significant regressions.
-> > >
-> > > (c) The error margin in the stats for the system as a whole increases
-> > > from NR_CPUS * MEMCG_CHARGE_BATCH to NR_CPUS * MEMCG_CHARGE_BATCH *
-> > > NR_MEMCGS. This is probably fine because we have a similar per-memcg
-> > > error in charges coming from percpu stocks, and we have a periodic
-> > > flusher that makes sure we always flush all the stats every 2s anyway=
-.
-> > >
-> > > This patch was tested to make sure no significant regressions are
-> > > introduced on the update path as follows. The following benchmarks we=
-re
-> > > ran in a cgroup that is 4 levels deep (/sys/fs/cgroup/a/b/c/d), which=
- is
-> > > deeper than a usual setup:
-> > >
-> > > (a) neper [1] with 1000 flows and 100 threads (single machine). The
-> > > values in the table are the average of server and client throughputs =
-in
-> > > mbps after 30 iterations, each running for 30s:
-> > >
-> > >                                 tcp_rr          tcp_stream
-> > > Base                            9504218.56      357366.84
-> > > Patched                         9656205.68      356978.39
-> > > Delta                           +1.6%           -0.1%
-> > > Standard Deviation              0.95%           1.03%
-> > >
-> > > An increase in the performance of tcp_rr doesn't really make sense, b=
-ut
-> > > it's probably in the noise. The same tests were ran with 1 flow and 1
-> > > thread but the throughput was too noisy to make any conclusions (the
-> > > averages did not show regressions nonetheless).
-> > >
-> > > Looking at perf for one iteration of the above test, __mod_memcg_stat=
-e()
-> > > (which is where memcg_rstat_updated() is called) does not show up at =
-all
-> > > without this patch, but it shows up with this patch as 1.06% for tcp_=
-rr
-> > > and 0.36% for tcp_stream.
-> > >
-> > > (b) "stress-ng --vm 0 -t 1m --times --perf". I don't understand
-> > > stress-ng very well, so I am not sure that's the best way to test thi=
-s,
-> > > but it spawns 384 workers and spits a lot of metrics which looks nice=
- :)
-> > > I picked a few ones that seem to be relevant to the stats update path=
-. I
-> > > also included cache misses as this patch introduce more atomics that =
-may
-> > > bounce between cpu caches:
-> > >
-> > > Metric                  Base            Patched         Delta
-> > > Cache Misses            3.394 B/sec     3.433 B/sec     +1.14%
-> > > Cache L1D Read          0.148 T/sec     0.154 T/sec     +4.05%
-> > > Cache L1D Read Miss     20.430 B/sec    21.820 B/sec    +6.8%
-> > > Page Faults Total       4.304 M/sec     4.535 M/sec     +5.4%
-> > > Page Faults Minor       4.304 M/sec     4.535 M/sec     +5.4%
-> > > Page Faults Major       18.794 /sec     0.000 /sec
-> > > Kmalloc                 0.153 M/sec     0.152 M/sec     -0.65%
-> > > Kfree                   0.152 M/sec     0.153 M/sec     +0.65%
-> > > MM Page Alloc           4.640 M/sec     4.898 M/sec     +5.56%
-> > > MM Page Free            4.639 M/sec     4.897 M/sec     +5.56%
-> > > Lock Contention Begin   0.362 M/sec     0.479 M/sec     +32.32%
-> > > Lock Contention End     0.362 M/sec     0.479 M/sec     +32.32%
-> > > page-cache add          238.057 /sec    0.000 /sec
-> > > page-cache del          6.265 /sec      6.267 /sec      -0.03%
-> > >
-> > > This is only using a single run in each case. I am not sure what to
-> > > make out of most of these numbers, but they mostly seem in the noise
-> > > (some better, some worse). The lock contention numbers are interestin=
-g.
-> > > I am not sure if higher is better or worse here. No new locks or lock
-> > > sections are introduced by this patch either way.
-> > >
-> > > Looking at perf, __mod_memcg_state() shows up as 0.00% with and witho=
-ut
-> > > this patch. This is suspicious, but I verified while stress-ng is
-> > > running that all the threads are in the right cgroup.
-> > >
-> > > (3) will-it-scale page_fault tests. These tests (specifically
-> > > per_process_ops in page_fault3 test) detected a 25.9% regression befo=
-re
-> > > for a change in the stats update path [2]. These are the
-> > > numbers from 30 runs (+ is good):
-> > >
-> > >              LABEL            |     MEAN    |   MEDIAN    |   STDDEV =
-  |
-> > > ------------------------------+-------------+-------------+----------=
----
-> > >   page_fault1_per_process_ops |             |             |          =
-  |
-> > >   (A) base                    | 265207.738  | 262941.000  | 12112.379=
-  |
-> > >   (B) patched                 | 249249.191  | 248781.000  | 8767.457 =
-  |
-> > >                               | -6.02%      | -5.39%      |          =
-  |
-> > >   page_fault1_per_thread_ops  |             |             |          =
-  |
-> > >   (A) base                    | 241618.484  | 240209.000  | 10162.207=
-  |
-> > >   (B) patched                 | 229820.671  | 229108.000  | 7506.582 =
-  |
-> > >                               | -4.88%      | -4.62%      |          =
-  |
-> > >   page_fault1_scalability     |             |             |
-> > >   (A) base                    | 0.03545     | 0.035705    | 0.0015837=
-  |
-> > >   (B) patched                 | 0.029952    | 0.029957    | 0.0013551=
-  |
-> > >                               | -9.29%      | -9.35%      |          =
-  |
-> >
-> > This much regression is not acceptable.
-> >
-> > In addition, I ran netperf with the same 4 level hierarchy as you have
-> > run and I am seeing ~11% regression.
->
-> Interesting, I thought neper and netperf should be similar. Let me try
-> to reproduce this.
->
-> Thanks for testing!
->
-> >
-> > More specifically on a machine with 44 CPUs (HT disabled ixion machine)=
-:
-> >
-> > # for server
-> > $ netserver -6
-> >
-> > # 22 instances of netperf clients
-> > $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
-> >
-> > (averaged over 4 runs)
-> >
-> > base (next-20231009): 33081 MBPS
-> > patched: 29267 MBPS
-> >
-> > So, this series is not acceptable unless this regression is resolved.
+On Tue, Oct 10, 2023, Haitao Huang wrote:
+> On Mon, 09 Oct 2023 21:23:12 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+> 
+> > On Mon, 2023-10-09 at 20:42 -0500, Haitao Huang wrote:
+> > > Hi Sean
+> > > 
+> > > On Mon, 09 Oct 2023 19:23:04 -0500, Sean Christopherson
+> > > <seanjc@google.com> wrote:
+> > > > I can see userspace wanting to explicitly terminate the VM instead of
+> > > > "silently"
+> > > > the VM's enclaves, but that seems like it should be a knob in the
+> > > > virtual EPC
+> > > > code.
+> > > 
+> > > If my understanding above is correct and understanding your statement
+> > > above correctly, then don't see we really need separate knob for vEPC
+> > > code. Reaching a cgroup limit by a running guest (assuming dynamic
+> > > allocation implemented) should not translate automatically killing
+> > > the VM.
+> > > Instead, it's user space job to work with guest to handle allocation
+> > > failure. Guest could page and kill enclaves.
+> > > 
+> > 
+> > IIUC Sean was talking about changing misc.max _after_ you launch SGX VMs:
+> > 
+> > 1) misc.max = 100M
+> > 2) Launch VMs with total virtual EPC size = 100M	<- success
+> > 3) misc.max = 50M
+> > 
+> > 3) will also succeed, but nothing will happen, the VMs will be still
+> > holding 100M EPC.
+> > 
+> > You need to somehow track virtual EPC and kill VM instead.
+> > 
+> > (or somehow fail to do 3) if it is also an acceptable option.)
+> > 
+> Thanks for explaining it.
+> 
+> There is an error code to return from max_write. I can add that too to the
+> callback definition and fail it when it can't be enforced for any reason.
+> Would like some community feedback if this is acceptable though.
 
-I tried this on a machine with 72 cpus (also ixion), running both
-netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
-# echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
-# mkdir /sys/fs/cgroup/a
-# echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
-# mkdir /sys/fs/cgroup/a/b
-# echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
-# mkdir /sys/fs/cgroup/a/b/c
-# echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
-# mkdir /sys/fs/cgroup/a/b/c/d
-# echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-# ./netserver -6
+That likely isn't acceptable.  E.g. create a cgroup with both a host enclave and
+virtual EPC, set the hard limit to 100MiB.  Virtual EPC consumes 50MiB, and the
+host enclave consumes 50MiB.  Userspace lowers the limit to 49MiB.  The cgroup
+code would reclaim all of the enclave's reclaimable EPC, and then kill the enclave
+because it's still over the limit.  And then fail the max_write because the cgroup
+is *still* over the limit.  So in addition to burning a lot of cycles, from
+userspace's perspective its enclave was killed for no reason, as the new limit
+wasn't actually set.
 
-# echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-# for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
--m 10K; done
+> I think to solve it ultimately, we need be able to adjust 'capacity' of VMs
+> not to just kill them, which is basically the same as dynamic allocation
+> support for VMs (being able to increase/decrease epc size when it is
+> running). For now, we only have static allocation so max can't be enforced
+> once it is launched.
 
-Base:
-540000 262144 10240 60.00 54613.89
-540000 262144 10240 60.00 54940.52
-540000 262144 10240 60.00 55168.86
-540000 262144 10240 60.00 54800.15
-540000 262144 10240 60.00 54452.55
-540000 262144 10240 60.00 54501.60
-540000 262144 10240 60.00 55036.11
-540000 262144 10240 60.00 52018.91
-540000 262144 10240 60.00 54877.78
-540000 262144 10240 60.00 55342.38
+No, reclaiming virtual EPC is not a requirement.  VMM EPC oversubscription is
+insanely complex, and I highly doubt any users actually want to oversubcribe VMs.
 
-Average: 54575.275
+There are use cases for cgroups beyond oversubscribing/swapping, e.g. privileged
+userspace may set limits on a container to ensure the container doesn't *accidentally*
+consume more EPC than it was allotted, e.g. due to a configuration bug that created
+a VM with more EPC than it was supposed to have.  
 
-Patched:
-540000 262144 10240 60.00 53694.86
-540000 262144 10240 60.00 54807.68
-540000 262144 10240 60.00 54782.89
-540000 262144 10240 60.00 51404.91
-540000 262144 10240 60.00 55024.00
-540000 262144 10240 60.00 54725.84
-540000 262144 10240 60.00 51400.40
-540000 262144 10240 60.00 54212.63
-540000 262144 10240 60.00 51951.47
-540000 262144 10240 60.00 51978.27
-
-Average: 53398.295
-
-That's ~2% regression. Did I do anything incorrectly?
+My comments on virtual EPC vs. cgroups is much more about having sane, well-defined
+behavior, not about saying the kernel actually needs to support oversubscribing EPC
+for KVM guests.
