@@ -2,71 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C147C5DD9
-	for <lists+cgroups@lfdr.de>; Wed, 11 Oct 2023 21:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279BB7C6148
+	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 01:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbjJKTvH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Oct 2023 15:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        id S233796AbjJKX6E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Oct 2023 19:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbjJKTvG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 15:51:06 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A56B9D
-        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 12:51:05 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a4fb3e096so234132276.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 12:51:05 -0700 (PDT)
+        with ESMTP id S233648AbjJKX6E (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Oct 2023 19:58:04 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9099A94
+        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 16:58:02 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7a80a96dbso13655137b3.0
+        for <cgroups@vger.kernel.org>; Wed, 11 Oct 2023 16:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697053864; x=1697658664; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d+xtwxP2GC6kynmr5TxkkaN6Dd0EQSD998taM6zjmZM=;
-        b=aH9SKfTjQQPm7zt5NpDoSSUrBv05JMJpjwuakeAh7Lqdm9ucO+spkUVIoQX4Tyie40
-         Ke9qmroayCawzLLFFaeQizOk5TB1T0r5N8au45Hh1SP3IqrR7BHe3Itau4ZlPollbtLN
-         GP/BS0yAaT+n9waIRYfTQXhcV7ZaNrjtgXkcUqSEbq4q9D3zRNiWlaDNfjU+W5JH3RG/
-         z0DLm50Kyj1BNnfru9znffDzSgdwZI7EOZ5T31KXC10i04gyibFe2CKz98xIH7cFvPDa
-         fkZD3m6Osomtu7uoGNPZcSq2JTIMD4GMDe6MZe/qfcD7n/O5VR/SxtpIbaf+FVXdUD5Z
-         /sdw==
+        d=google.com; s=20230601; t=1697068682; x=1697673482; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=04nvNIqvjfdJGa9HNQL1RXDxXpr464tpbF5PLlKxJI0=;
+        b=tlKdVWq66cCajjKw8PyzkvuH/CQMyusE/t8F0xciShPEC26nalPcNwFhu8QDyHA1/0
+         RYm5uY4yVPp4jhJ1gvpk9f92Y+iTQueAC+xivGS1AbGX2+l+ChjsUUG1jS/g04eYEOmM
+         DLePBmJL4MnF6cTsaXFgNBXYJJfKa0T4v64Njozy4+lWp3X641UxpvYo9lcXwfCvAanG
+         yPt8nwtwOZZ95Mlxjb16Z/qYv9/ocKtdqQVWArLSGR8kiOeKGxdsaqmdT8LvgpQgEjvr
+         wrUuqyRvAJ53FUZDZFtCHju23QPpd0O7eBMknFbtbH1lm5IwGkbGL8Wpc99W//jhb0WQ
+         nY2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697053864; x=1697658664;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d+xtwxP2GC6kynmr5TxkkaN6Dd0EQSD998taM6zjmZM=;
-        b=LgoL8dw0ZFryNJZw3RnGGnkNMeMHDHUnrxma1FwHJLgx387Pyv0DWugMcmUxYn22uJ
-         XmH07K1aW14KBUJBR0sGDpAboFUegISn4AvDhHrAK2CWtIaRxvAfiShnMtLoIGoHjeDN
-         KURk5HsgyYEYJigsuT9+uWz4MVlZJupbFKPI7btddQF65ufptEtEJOQEwWcG9FtkK4UF
-         eGBmLOULruA8OPr1Ik7aZgWW3ma0DUJOVLbCYk27sRLbEnKaEvSNN6YTtkHiQPNHRTI9
-         Bi0m4DCNB2amOFy9nsdInh+l4YHNrPUMMknhQFOMapzMSeUNcHIe9e1VGh21u05Q4UgQ
-         d80w==
-X-Gm-Message-State: AOJu0YzggQX0tY4/Uz/Vm2dh0F6kEHgANXiVn6QEAt53nBWsGhHlF+9s
-        kjfFJGAYgVwQRjWtGJiws0nQM6gz9FlFMQ==
-X-Google-Smtp-Source: AGHT+IHjew1mpcUCKFj3tFkSQZF7ofzPnjUyZuwxOERyXzmESyX2Xjd1WD47puAaQY5ep5Qx7SzxUmEk0SOM2g==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a25:df45:0:b0:d9a:3e96:b549 with SMTP id
- w66-20020a25df45000000b00d9a3e96b549mr140481ybg.10.1697053864458; Wed, 11 Oct
- 2023 12:51:04 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 19:51:02 +0000
-In-Reply-To: <20231010000929.450702-4-roman.gushchin@linux.dev>
-Mime-Version: 1.0
-References: <20231010000929.450702-1-roman.gushchin@linux.dev> <20231010000929.450702-4-roman.gushchin@linux.dev>
-Message-ID: <20231011195102.mym2mrgqyavp3n6r@google.com>
-Subject: Re: [PATCH v2 3/5] mm: kmem: make memcg keep a reference to the
- original objcg
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697068682; x=1697673482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=04nvNIqvjfdJGa9HNQL1RXDxXpr464tpbF5PLlKxJI0=;
+        b=inC3B/4F7km6PrxRkqZCn7olVtj/2vK5ePSYCTARya3MFKDCcAKBp5outuIRVFfTx5
+         +Q+ETN3RtbV/h2abUMyQ0uriEtbVaQ0EA5C/mPc2+i+EgWGhymQBveBqMcbzYNzrA9Ga
+         FsbduAmA8s72EQkYP8mo41C7cCR2SxaOXRFX1QtblDfOX8PTQ6i9+ltSinn78fgtnaEb
+         yYciPMjlfyOwtqTi8OmLzsE8UYR57O/34NYyTjvcnNK2wZ0TyMVDeAJt9NHOCJoA0mYB
+         zDavPBHgMp+0z0kWlAqfMP5h4uJe76mbGvGe9zcLWAlyGNVveWvIkyI2QeLlmQDH2bG2
+         oPIA==
+X-Gm-Message-State: AOJu0YwugxbD9RhTBpSLqkTo0+Yyr9x0GCfM7WEqcZ6tWkM6QaZk42az
+        s9ZANFT9MapqNy8PduP1Fb48oWcyur/iO6pC1fIn2g==
+X-Google-Smtp-Source: AGHT+IHFHnasFKjtzM6hx3ViXaYko/yzkLmeKvl7aiPUrc1DdFg8X/Ukst0T/n0jMttIBy/FSjX9ys88BcnqhQ6BiAc=
+X-Received: by 2002:a25:d481:0:b0:d9a:bba3:5e39 with SMTP id
+ m123-20020a25d481000000b00d9abba35e39mr498998ybf.30.1697068681638; Wed, 11
+ Oct 2023 16:58:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
+ <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
+ <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
+ <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
+ <s2xtlyyyxu4rbv7gjyl7jbi5tt7lrz7qyr3axfeahsij443ahx@me6wx5gvyqni> <CABdmKX0Aiu7Run9YCYXVAX4o3-eP6nKcnzyWh_yuhVKVXTPQkA@mail.gmail.com>
+In-Reply-To: <CABdmKX0Aiu7Run9YCYXVAX4o3-eP6nKcnzyWh_yuhVKVXTPQkA@mail.gmail.com>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Wed, 11 Oct 2023 16:57:49 -0700
+Message-ID: <CABdmKX1O4gFpALG03+Fna0fHgMgKjZyUamNcgSh-Dr+64zfyRg@mail.gmail.com>
+Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,18 +75,56 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:09:27PM -0700, Roman Gushchin wrote:
-> Keep a reference to the original objcg object for the entire life
-> of a memcg structure.
-> 
-> This allows to simplify the synchronization on the kernel memory
-> allocation paths: pinning a (live) memcg will also pin the
-> corresponding objcg.
-> 
-> The memory overhead of this change is minimal because object cgroups
-> usually outlive their corresponding memory cgroups even without this
-> change, so it's only an additional pointer per memcg.
-> 
-> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+On Tue, Oct 10, 2023 at 10:14=E2=80=AFAM T.J. Mercier <tjmercier@google.com=
+> wrote:
+>
+> On Tue, Oct 10, 2023 at 9:31=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.=
+com> wrote:
+> >
+> > On Fri, Oct 06, 2023 at 11:37:19AM -0700, "T.J. Mercier" <tjmercier@goo=
+gle.com> wrote:
+> > > I suppose it's also possible there is PID reuse by the same app,
+> > > causing the cgroup to become repopulated at the same time as a kill,
+> > > but that seems extremely unlikely. Plus, at the point where these
+> > > kills are occurring we shouldn't normally be simultaneously launching
+> > > new processes for the app. Similarly if a process forks right before
+> > > it is killed, maybe it doesn't show up in cgroup.procs until after
+> > > we've observed it to be empty?
+> >
+> > Something like this:
+> >
+> >                                                         kill (before)
+> > cgroup_fork
+> > cgroup_can_fork .. begin(threadgroup_rwsem)
+> > tasklist_lock
+> > fatal_signal_pending -> cgroup_cancel_fork              kill (mid)
+> > tasklist_unlock
+> >                                                         seq_start,
+> >                                                         seq_next...
+> >
+> > cgroup_post_fork  .. end(threadgroup_rwsem)
+> >                                                         kill (after)
+> >
+> > Only the third option `kill (after)` means the child would end up on th=
+e
+> > css_set list. But that would mean the reader squeezed before
+> > cgroup_post_fork() would still see the parent.
+> > (I.e. I don't see the kill/fork race could skew the listed procs.)
+> >
+> So here is a trace from a phone where the kills happen (~100ms) after
+> the forks. All but one of the children die before we read cgroup.procs
+> for the first time, and cgroup.procs is not empty. 5ms later we read
+> again and cgroup.procs is empty, but the last child still hasn't
+> exited. So it makes sense that the cset from that last child is still
+> on the list.
+> https://pastebin.com/raw/tnHhnZBE
+>
+Collected a bit more info. It's before exit_mm that the process
+disappears from cgroup.procs, but the delay to populated=3D0 seems to be
+exacerbated by CPU contention during this time. What's weird is that I
+can see the task blocking the rmdir on cgrp->cset_links->cset->tasks
+inside of cgroup_destroy_locked when the rmdir is attempted, so I
+don't understand why it doesn't show up when iterating tasks for
+cgroup.procs.
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+I'm going to be out until next Wednesday when I'll look some more.
