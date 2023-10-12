@@ -2,50 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F37C7884
-	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 23:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7817C78AE
+	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 23:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442889AbjJLVUi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Oct 2023 17:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
+        id S1344182AbjJLVjM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Oct 2023 17:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442824AbjJLVUh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 17:20:37 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575F59D
-        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 14:20:35 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9adb9fa7200so291553166b.0
-        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 14:20:35 -0700 (PDT)
+        with ESMTP id S1344161AbjJLVjL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 17:39:11 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920C7C9
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 14:39:10 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9c496c114so64655ad.0
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 14:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697145634; x=1697750434; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697146750; x=1697751550; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6E+ctilpvTRp1sWziPGrKb0bFclcGitH24520WnSwgs=;
-        b=JSK08vOudVUto1Q85NbEBLbPAjFq7RUlB4moKaknBcZRMtp+TKx5Ir771l3TMCnwXO
-         p4jfmVL5xfwwKTtWb3Rwn7VQ1FttL2OlYFIncHgSL/tpyzEF4/PJ6dEi319D185H9kgL
-         okpUIicCZ9wG+uDaUSA1M7yzr0KSsxln9JaA5uTFw7L0Ig6VB6/THAGkxt8sWUGEJ94j
-         PJ9ta3nO66/EQIdqnB9UBBlYT42kR0eXmwA6+rs4i9Z9eDn0o9vX2eIwzoM6dG5dgFcw
-         ICxoNTQyznjbZPy+mxmFqZMDMxn5BkEyFVZJ+Qlk0ru3F+XbEwhvRzafMQwr3h2R2xNL
-         SwGg==
+        bh=yZaBwnc9uNu74MX7ZLYzqaku34OafJp0HOL1x0Q9+w4=;
+        b=CR6QYJgBByrcU3jzoq4+xYPe90tnQmRd+2Djhg9VwBkgphGj2vMgwOss9aSKirGItl
+         dnBS3BSySfWc2zsbFAAOiGTRgnOhtFGZ6HI10YRJpRAXZCJf/f5mqFOLh0oHJwPHqgfI
+         s+1x310LBt9gTrF+xKOLALF4GptCvIbHF3/5tH7kTl9zuExl2bKigKvY5QZz1vjwvdLu
+         9riHrpk51rWTy3J0SLSDjxhyyq0HQfRaBpFe/0to8Dzln94YbMBvZkbsGru4sNH+3wQG
+         LhobMSZpCQ855seLxJgUX9bSdQ6YF/lMBlkx1Iln/adpVeIbIHU6M6rzNEyzz460Lsju
+         R8yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697145634; x=1697750434;
+        d=1e100.net; s=20230601; t=1697146750; x=1697751550;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6E+ctilpvTRp1sWziPGrKb0bFclcGitH24520WnSwgs=;
-        b=r4fPNzlDMUOGWx3Cw4Rn3lT5b/yiAKPBTi31I0DrFMvHbPSH4rr5ctrrGv1ikE15g5
-         ZSVo+Nl3pSH7l0Sza4vpVRYtO6VhIBJmmCkkBQ4s7ez3aPHWkzVfbQRO8R9ILCD5cSUe
-         EYiNkHilYr39dIQ0gjq/3OeRPkM6B4ZA8W8ZwC2Qsq+4Gz40GSg2t/sCb12Jvmw7iYj7
-         kUwf1m7SB22353KYPi6cBBJirHdpRxZwwVHqUH8m1WHc5UeamjjEBSNemCNBlPpSEzEW
-         lEnCSMNXO401ghMhs7JTCKg17cwQM8695VsouAFC3Ve0QOVJBIcOaGLi9gS0y/UI28Et
-         Ka3w==
-X-Gm-Message-State: AOJu0YxPNHzEiOzlF1IgG7Pm0UhNqG4Or5R4j2CuQwVjnuf4TCvvy9Wc
-        rbAvlUwxZnCDgCRq19TTsylphbtDLDbvKVtdU4uacQ==
-X-Google-Smtp-Source: AGHT+IHYyMKX/mt1qXenjXQXNg9i7QjMRmRu+cx5Qv0V/h53iTtEzf7z7GQSkj9UBoDduFKAXaEjA9B83NI+fRf1ZIE=
-X-Received: by 2002:a17:907:3e1a:b0:9ae:699d:8a31 with SMTP id
- hp26-20020a1709073e1a00b009ae699d8a31mr26012691ejc.33.1697145633579; Thu, 12
- Oct 2023 14:20:33 -0700 (PDT)
+        bh=yZaBwnc9uNu74MX7ZLYzqaku34OafJp0HOL1x0Q9+w4=;
+        b=l1CwEuyK7deG07GbuaPeHDSoGbi6bZdV/E2ITg8D96/1gwaEEYnbEOa/eVQRTaOQDk
+         vj0kLoLiSRrym/zW7pI/I8srklU9OC+gT/cf4X3yzkxMBVm55hAgc0JSL8OLka9X0fzp
+         iYUvsq9NFOKP/NksxhVAn8Ceu/X3lsPwz3EwWNWKq7JPqwAccldpm34fay2puvxiCKk5
+         8MgyTWRK1q+j5waY4TVCfrMhO/uULyecPzgfX4CRNyBhRLzSXS1OD1cFIz65zh2oyEcj
+         inswTPVaDORfGPZt7DPfBFMYIyoNulUBk/HhPezh/ARLGfU6oSaQjnt1r7O/u2pWairM
+         OCRQ==
+X-Gm-Message-State: AOJu0YwXIh4+Rs5KeACGZ/gsMvf+S8O49oYOhVUY6NgAn3FBRkL8zH9S
+        evy1bJJKnqB+WmrxpZcyZLgmHD6FaoAbweAexeH54g==
+X-Google-Smtp-Source: AGHT+IHYfc8IcgbTLPAkxELNwiOXnqgBWr+m3vbfGn3tda4JkEDig7mFMjwz2dSvHJZSuXgEFJjYQPqFixYh0QCwwag=
+X-Received: by 2002:a17:903:40c1:b0:1b8:9551:de55 with SMTP id
+ t1-20020a17090340c100b001b89551de55mr70184pld.26.1697146749794; Thu, 12 Oct
+ 2023 14:39:09 -0700 (PDT)
 MIME-Version: 1.0
 References: <20231010032117.1577496-1-yosryahmed@google.com>
  <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
@@ -57,13 +57,16 @@ References: <20231010032117.1577496-1-yosryahmed@google.com>
  <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
  <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
  <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
- <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com> <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
-In-Reply-To: <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 12 Oct 2023 14:19:55 -0700
-Message-ID: <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
+ <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
+ <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com> <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
+In-Reply-To: <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 12 Oct 2023 14:38:58 -0700
+Message-ID: <CALvZod6cu6verk=vHVFrOUoA-gj_yBVzU9_vv7eUfcjhzfvtcA@mail.gmail.com>
 Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>, michael@phoronix.com,
+        Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -88,162 +91,28 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 2:16=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
+On Thu, Oct 12, 2023 at 2:20=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
 >
-> On Thu, Oct 12, 2023 at 2:06=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
+[...]
 > >
-> > [..]
-> > > > > >
-> > > > > > Using next-20231009 and a similar 44 core machine with hyperthr=
-eading
-> > > > > > disabled, I ran 22 instances of netperf in parallel and got the
-> > > > > > following numbers from averaging 20 runs:
-> > > > > >
-> > > > > > Base: 33076.5 mbps
-> > > > > > Patched: 31410.1 mbps
-> > > > > >
-> > > > > > That's about 5% diff. I guess the number of iterations helps re=
-duce
-> > > > > > the noise? I am not sure.
-> > > > > >
-> > > > > > Please also keep in mind that in this case all netperf instance=
-s are
-> > > > > > in the same cgroup and at a 4-level depth. I imagine in a pract=
-ical
-> > > > > > setup processes would be a little more spread out, which means =
-less
-> > > > > > common ancestors, so less contended atomic operations.
-> > > > >
-> > > > >
-> > > > > (Resending the reply as I messed up the last one, was not in plai=
-n text)
-> > > > >
-> > > > > I was curious, so I ran the same testing in a cgroup 2 levels dee=
-p
-> > > > > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
-> > > > > experience. Here are the numbers:
-> > > > >
-> > > > > Base: 40198.0 mbps
-> > > > > Patched: 38629.7 mbps
-> > > > >
-> > > > > The regression is reduced to ~3.9%.
-> > > > >
-> > > > > What's more interesting is that going from a level 2 cgroup to a =
-level
-> > > > > 4 cgroup is already a big hit with or without this patch:
-> > > > >
-> > > > > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
-> > > > > Patched: 38629.7 -> 31410.1 (~18.7% regression)
-> > > > >
-> > > > > So going from level 2 to 4 is already a significant regression fo=
-r
-> > > > > other reasons (e.g. hierarchical charging). This patch only makes=
- it
-> > > > > marginally worse. This puts the numbers more into perspective imo=
- than
-> > > > > comparing values at level 4. What do you think?
-> > > >
-> > > > This is weird as we are running the experiments on the same machine=
-. I
-> > > > will rerun with 2 levels as well. Also can you rerun the page fault
-> > > > benchmark as well which was showing 9% regression in your original
-> > > > commit message?
-> > >
-> > > Thanks. I will re-run the page_fault tests, but keep in mind that the
-> > > page fault benchmarks in will-it-scale are highly variable. We run
-> > > them between kernel versions internally, and I think we ignore any
-> > > changes below 10% as the benchmark is naturally noisy.
-> > >
-> > > I have a couple of runs for page_fault3_scalability showing a 2-3%
-> > > improvement with this patch :)
-> >
-> > I ran the page_fault tests for 10 runs on a machine with 256 cpus in a
-> > level 2 cgroup, here are the results (the results in the original
-> > commit message are for 384 cpus in a level 4 cgroup):
-> >
-> >                LABEL            |     MEAN    |   MEDIAN    |   STDDEV =
-  |
-> > ------------------------------+-------------+-------------+------------=
--
-> >   page_fault1_per_process_ops |             |             |            =
-|
-> >   (A) base                    | 270249.164  | 265437.000  | 13451.836  =
-|
-> >   (B) patched                 | 261368.709  | 255725.000  | 13394.767  =
-|
-> >                               | -3.29%      | -3.66%      |            =
-|
-> >   page_fault1_per_thread_ops  |             |             |            =
-|
-> >   (A) base                    | 242111.345  | 239737.000  | 10026.031  =
-|
-> >   (B) patched                 | 237057.109  | 235305.000  | 9769.687   =
-|
-> >                               | -2.09%      | -1.85%      |            =
-|
-> >   page_fault1_scalability     |             |             |
-> >   (A) base                    | 0.034387    | 0.035168    | 0.0018283  =
-|
-> >   (B) patched                 | 0.033988    | 0.034573    | 0.0018056  =
-|
-> >                               | -1.16%      | -1.69%      |            =
-|
-> >   page_fault2_per_process_ops |             |             |
-> >   (A) base                    | 203561.836  | 203301.000  | 2550.764   =
-|
-> >   (B) patched                 | 197195.945  | 197746.000  | 2264.263   =
-|
-> >                               | -3.13%      | -2.73%      |            =
-|
-> >   page_fault2_per_thread_ops  |             |             |
-> >   (A) base                    | 171046.473  | 170776.000  | 1509.679   =
-|
-> >   (B) patched                 | 166626.327  | 166406.000  | 768.753    =
-|
-> >                               | -2.58%      | -2.56%      |            =
-|
-> >   page_fault2_scalability     |             |             |
-> >   (A) base                    | 0.054026    | 0.053821    | 0.00062121 =
-|
-> >   (B) patched                 | 0.053329    | 0.05306     | 0.00048394 =
-|
-> >                               | -1.29%      | -1.41%      |            =
-|
-> >   page_fault3_per_process_ops |             |             |
-> >   (A) base                    | 1295807.782 | 1297550.000 | 5907.585   =
-|
-> >   (B) patched                 | 1275579.873 | 1273359.000 | 8759.160   =
-|
-> >                               | -1.56%      | -1.86%      |            =
-|
-> >   page_fault3_per_thread_ops  |             |             |
-> >   (A) base                    | 391234.164  | 390860.000  | 1760.720   =
-|
-> >   (B) patched                 | 377231.273  | 376369.000  | 1874.971   =
-|
-> >                               | -3.58%      | -3.71%      |            =
-|
-> >   page_fault3_scalability     |             |             |
-> >   (A) base                    | 0.60369     | 0.60072     | 0.0083029  =
-|
-> >   (B) patched                 | 0.61733     | 0.61544     | 0.009855   =
-|
-> >                               | +2.26%      | +2.45%      |            =
-|
-> >
-> > The numbers are much better. I can modify the commit log to include
-> > the testing in the replies instead of what's currently there if this
-> > helps (22 netperf instances on 44 cpus and will-it-scale page_fault on
-> > 256 cpus -- all in a level 2 cgroup).
+> > Yes this looks better. I think we should also ask intel perf and
+> > phoronix folks to run their benchmarks as well (but no need to block
+> > on them).
 >
-> Yes this looks better. I think we should also ask intel perf and
-> phoronix folks to run their benchmarks as well (but no need to block
-> on them).
+> Anything I need to do for this to happen? (I thought such testing is
+> already done on linux-next)
 
-Anything I need to do for this to happen? (I thought such testing is
-already done on linux-next)
+Just Cced the relevant folks.
 
-Also, any further comments on the patch (or the series in general)? If
-not, I can send a new commit message for this patch in-place.
+Michael, Oliver & Feng, if you have some time/resource available,
+please do trigger your performance benchmarks on the following series
+(but nothing urgent):
+
+https://lore.kernel.org/all/20231010032117.1577496-1-yosryahmed@google.com/
+
+>
+> Also, any further comments on the patch (or the series in general)? If
+> not, I can send a new commit message for this patch in-place.
+
+Sorry, I haven't taken a look yet but will try in a week or so.
