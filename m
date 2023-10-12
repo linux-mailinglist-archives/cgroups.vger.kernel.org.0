@@ -2,106 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49507C6F27
-	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 15:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D8D7C6F5C
+	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343952AbjJLN3v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Oct 2023 09:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        id S1378899AbjJLNf4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Oct 2023 09:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233757AbjJLN3u (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 09:29:50 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBA494
-        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 06:29:48 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41959feaae2so5885021cf.0
-        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 06:29:48 -0700 (PDT)
+        with ESMTP id S1378871AbjJLNfz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 09:35:55 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB24B8
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 06:35:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9c145bb5bso140045ad.1
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 06:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1697117388; x=1697722188; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ybk+sUTEHYxJD085NMJHTHmsqfChe2BT9mQZhimnZfU=;
-        b=jIuNn9BpNZ5E0CMi0rcrvn45N7C0GjqytSfQslPSzr9InqVKk9jkq8WGvuxTDJxisY
-         8doClCialO18/c0W4KBXdbq2b3VQrJOaXI1gR2l16L+tzuKuxVvC2KfBepJwyEWWJ7Cx
-         RKQXv3Ff31I0mgZooTn1TPTCUEDlfwYT7rmoRPqO/0bGsqjCgEn68Z8XBhiGMHICNr6V
-         1trdWQc032Em+0mlqzUfmcrGffCSywJw/QadkpUk129XEGjq5MaS485arIHI6gaTPh2Y
-         vJ7eJ0h6tH+/c1tlt4mzHhh2/GhNIyOF+oO6gTX/rk2TV8wqGlf7gfu4u9SuojgUe965
-         5hfg==
+        d=google.com; s=20230601; t=1697117753; x=1697722553; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s/IHfa2K6n1mcSpH55sMGbJybaWLv+iEOtk/2jmt1/I=;
+        b=TcapRLni3kBnPSMWOjsFa7AGkQazBF7Y9KJPRMMjSAOO2HLbwgWghUxmYq7jjL4eNq
+         yklG2penf3S0lpko2ILIpCl1zQsijTOOFfnn49wd8Ms7VFmDNzaTaqyWF03euMPnF/ri
+         ILVmiADK0V6lnoJMSBkfMUmSJSI+1wQdCbTts+02JJesW7e3844cb6wJu61mpDjCbQUo
+         JoWsPbdUQzuvfsbFr/edrwzkyYf500pJoZ2LRPHPZy3mnvRTaCoSZ9K2cxfonnvQ5+Z+
+         +66Qu2h/QGYNRqPUl/oud9R0zkrvlY/+ShzHL4e7u3a59NyvB3wo74SjzPla22TulwHI
+         a/Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697117388; x=1697722188;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ybk+sUTEHYxJD085NMJHTHmsqfChe2BT9mQZhimnZfU=;
-        b=KdxbyJRFnTGKQn0WrSlsXPi31Xb3lXBofNVQYAxROzM0pkUMgi9AEu4IBWxSdp4S0F
-         9CN7UZr01OA8xgofJN3bngB+KvMBQS1F+F4t8CsL9eXT3yQvTldo4PEvwrSMNH57COuQ
-         MUs2JG0NQhWL2U584apASloSQasG9jl5SCa3alDeXDS+4AMxvPUeaORND2OzCO0PJT5x
-         xg2sCPhh3Sib4yMsyMV0MiBdMM8JCPt41MvOANMqlJa21UulgOfepCe644HkZjbiVjPI
-         yM5O5PWYeQLLVuxjulgfHKX/cIJ9Hz4NfNCscIayYkWGhtW6nWZjA0djX1Na/v7xBRCk
-         K7Ng==
-X-Gm-Message-State: AOJu0Yx23p1nG9ziBgHo3ZpyRoZ64XgDXgqZ8bgwWRnOgbauptit4jgD
-        dqL658/fV3UfYoda1zWMJaWRuA==
-X-Google-Smtp-Source: AGHT+IEu9EQEyDkwsQbhuGY67hZLMSeQYZ5ijIozLtPEEZ9plkLT155cbIZs7B+UAUVtPaIKEj7Fzg==
-X-Received: by 2002:a05:622a:11d4:b0:416:5e11:f7ec with SMTP id n20-20020a05622a11d400b004165e11f7ecmr31277304qtk.52.1697117387879;
-        Thu, 12 Oct 2023 06:29:47 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:66a6])
-        by smtp.gmail.com with ESMTPSA id g26-20020ac870da000000b00400a99b8b38sm6146339qtp.78.2023.10.12.06.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 06:29:47 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 09:29:46 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
+        d=1e100.net; s=20230601; t=1697117753; x=1697722553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s/IHfa2K6n1mcSpH55sMGbJybaWLv+iEOtk/2jmt1/I=;
+        b=Oh4yAYkgTrPf7o5sEeeVEXUp5ERdgaX4H374XiAa9ejr8e2mGotSSdPBBHdZCiRZfC
+         2K70ka6ZsLgLcmOIDJgJiLE8rTpUr+w34U2re9KI9S2Ddt7uNsQ72FIXBvoIIj+aLf1c
+         FAqvRuRrszYfy0SC+eeKx/OYXf8nsyH6vdtkqj+svuB/3YHtwlRHDRne7CIWZcvjZ4B7
+         o7kMjX9XQ2magzlW5875xbCO5mpxRgCoLtTBSlMtAm4WoSza0pGFe9EWtVxDoBRnMwqB
+         hUtPrAJIWiUbJ6FoU+fQTyxWAJGQq7P/BP96gBojyRTpx8ya4FsycJT7PFYTgWkuGM2+
+         BqHA==
+X-Gm-Message-State: AOJu0Yz81H3A+Oy4gEob3f5RLzyYo1aUO9alQmAKW6gRPSWbEnm0HBg9
+        AAiX5qt3mqZ34jqy1hBzYNfZx3wnk9U39aLP1oFu+g==
+X-Google-Smtp-Source: AGHT+IFIQPiUjxAepWYWkZcNl2QcaX7znO99g+5O/6OHWHM+twceLTKy3udHT9xGrmOpBud3ydIlVyHq67mULq4BbXc=
+X-Received: by 2002:a17:903:2444:b0:1c3:3649:1f6a with SMTP id
+ l4-20020a170903244400b001c336491f6amr444875pls.7.1697117752910; Thu, 12 Oct
+ 2023 06:35:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+ <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com> <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+In-Reply-To: <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 12 Oct 2023 06:35:41 -0700
+Message-ID: <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
 To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <muchun.song@linux.dev>,
         Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
         Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
         Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-Message-ID: <20231012132946.GA470544@cmpxchg.org>
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com>
- <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com>
- <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:04:03AM -0700, Yosry Ahmed wrote:
-> On Wed, Oct 11, 2023 at 8:13 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+On Thu, Oct 12, 2023 at 1:04=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Wed, Oct 11, 2023 at 8:13=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
 > >
-> > On Wed, Oct 11, 2023 at 5:46 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > On Wed, Oct 11, 2023 at 5:46=E2=80=AFAM Shakeel Butt <shakeelb@google.c=
+om> wrote:
 > > >
-> > > On Tue, Oct 10, 2023 at 6:48 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
+e.com> wrote:
 > > > >
-> > > > On Tue, Oct 10, 2023 at 5:36 PM Shakeel Butt <shakeelb@google.com> wrote:
+> > > > On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@goog=
+le.com> wrote:
 > > > > >
 > > > > > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
 > > > > > [...]
 > > > > > >
-> > > > > > I tried this on a machine with 72 cpus (also ixion), running both
+> > > > > > I tried this on a machine with 72 cpus (also ixion), running bo=
+th
 > > > > > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
 > > > > > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
 > > > > > > # mkdir /sys/fs/cgroup/a
@@ -115,7 +117,8 @@ On Thu, Oct 12, 2023 at 01:04:03AM -0700, Yosry Ahmed wrote:
 > > > > > > # ./netserver -6
 > > > > > >
 > > > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > > > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
+> > > > > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDF=
+ILE --
 > > > > > > -m 10K; done
 > > > > >
 > > > > > You are missing '&' at the end. Use something like below:
@@ -128,26 +131,29 @@ On Thu, Oct 12, 2023 at 01:04:03AM -0700, Yosry Ahmed wrote:
 > > > > > wait
 > > > > >
 > > > >
-> > > > Oh sorry I missed the fact that you are running instances in parallel, my bad.
+> > > > Oh sorry I missed the fact that you are running instances in parall=
+el, my bad.
 > > > >
-> > > > So I ran 36 instances on a machine with 72 cpus. I did this 10 times
+> > > > So I ran 36 instances on a machine with 72 cpus. I did this 10 time=
+s
 > > > > and got an average from all instances for all runs to reduce noise:
 > > > >
 > > > > #!/bin/bash
 > > > >
-> > > > ITER=10
-> > > > NR_INSTANCES=36
+> > > > ITER=3D10
+> > > > NR_INSTANCES=3D36
 > > > >
 > > > > for i in $(seq $ITER); do
 > > > >   echo "iteration $i"
 > > > >   for j in $(seq $NR_INSTANCES); do
 > > > >     echo "iteration $i" >> "out$j"
-> > > >     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
+> > > >     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" =
+&
 > > > >   done
 > > > >   wait
 > > > > done
 > > > >
-> > > > cat out* | grep 540000 | awk '{sum += $5} END {print sum/NR}'
+> > > > cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
 > > > >
 > > > > Base: 22169 mbps
 > > > > Patched: 21331.9 mbps
@@ -172,32 +178,31 @@ On Thu, Oct 12, 2023 at 01:04:03AM -0700, Yosry Ahmed wrote:
 > > in the same cgroup and at a 4-level depth. I imagine in a practical
 > > setup processes would be a little more spread out, which means less
 > > common ancestors, so less contended atomic operations.
-> 
-> 
+>
+>
 > (Resending the reply as I messed up the last one, was not in plain text)
-> 
+>
 > I was curious, so I ran the same testing in a cgroup 2 levels deep
 > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
 > experience. Here are the numbers:
-> 
+>
 > Base: 40198.0 mbps
 > Patched: 38629.7 mbps
-> 
+>
 > The regression is reduced to ~3.9%.
-> 
+>
 > What's more interesting is that going from a level 2 cgroup to a level
 > 4 cgroup is already a big hit with or without this patch:
-> 
+>
 > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
 > Patched: 38629.7 -> 31410.1 (~18.7% regression)
-> 
+>
 > So going from level 2 to 4 is already a significant regression for
 > other reasons (e.g. hierarchical charging). This patch only makes it
 > marginally worse. This puts the numbers more into perspective imo than
 > comparing values at level 4. What do you think?
 
-I think it's reasonable.
-
-Especially comparing to how many cachelines we used to touch on the
-write side when all flushing happened there. This looks like a good
-trade-off to me.
+This is weird as we are running the experiments on the same machine. I
+will rerun with 2 levels as well. Also can you rerun the page fault
+benchmark as well which was showing 9% regression in your original
+commit message?
