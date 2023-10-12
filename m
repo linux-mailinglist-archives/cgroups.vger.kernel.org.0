@@ -2,107 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 987CC7C74CB
-	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 19:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4187C7671
+	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 21:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344091AbjJLRbN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Oct 2023 13:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
+        id S1442046AbjJLTLu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Oct 2023 15:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344166AbjJLRbL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 13:31:11 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03249182;
-        Thu, 12 Oct 2023 10:31:10 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b95943beso10873895ad.1;
-        Thu, 12 Oct 2023 10:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697131869; x=1697736669; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v1DANaDEHOucqubqJ4/b/aNrMNFhI1eFitx/RoQbRb8=;
-        b=F9JvIr2em32HFZF/djAEzFjgX4RuTj6a3ud4BBXRc3DkqduDSW+xW2HtzZ2vlUXNl7
-         nvo86Z2EHWPB5TMzSsPzhkEbDZeOBGP7pynRJZXA3u+A5VFYeuIdJwlCIiQw5d79idiN
-         T9jBPhGnlK0Z2ty4nG6jzv3id4JH5gUkUUUL7hkaz52XiSct542Ctlsfd2/d5WGJ4d1P
-         hPFbyTIIQDlbEK/vMJ9azlSAjfOJxke5krwgBKvVarV9Ty16hCSjYyEYHr2M93w4YCcC
-         hGjIyZpHVBUeu9kvAdnkAMg8O2AiE6XLL4rAnPPMkvuBU/fcT/N/Q5kMEMeo+8Tol1FX
-         3yDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131869; x=1697736669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v1DANaDEHOucqubqJ4/b/aNrMNFhI1eFitx/RoQbRb8=;
-        b=aaifymGcJoNPxj7QGFtNH/3Z1Lrx6UeWHl/00FiuIsYo6Bk6LVMQR859iX/qPmJMYL
-         P7fvorykLMd7xDTO+ube/51RExB/Gm7AChBo81+mE8Wo1CQwDDYdNdtFNSIbqqIuv+4+
-         8XmCW96GeUEd6fORcduAFxl7VQjgkc/tDokRcC9G7nmYHfa64IiUQ5tzP0GguHUbhWBb
-         W2T8Wv9uxK3NcjuOeKtomC4GN4kdUquwSQQZxGM8xq3rz/am+Ym3f7JPX6R53CqRJkhH
-         RyhyDFsUE4LP8kNiabyvwYYREHWvGz61v3CgQ01S5TRDIeRU4XgnaMuFgLWaejukkHB9
-         +Xww==
-X-Gm-Message-State: AOJu0YyLU0ZkwrLAOthTsAb2ftAdrfq4iz3ONYGpZ4qMfY1Ex+i4mj1V
-        iYmYH3LpEo/Le0dljwvlOkWv1NZGMSXMFw==
-X-Google-Smtp-Source: AGHT+IGq/d2q/qrQoh3AnyQyCl8AR4fKt3fghwW8Pm7f+T9b/MyONsNEnanxjJMz2+mJxVjMy0m/Cw==
-X-Received: by 2002:a17:902:c115:b0:1c5:e1b7:1c13 with SMTP id 21-20020a170902c11500b001c5e1b71c13mr22664289pli.3.1697131869277;
-        Thu, 12 Oct 2023 10:31:09 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170902d50b00b001c57aac6e5esm2278311plg.23.2023.10.12.10.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:31:08 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 Oct 2023 07:31:07 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc:     guro@fb.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, jack@suse.cz,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
-        joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH] writeback, cgroup: switch inodes with dirty timestamps
- to release dying cgwbs
-Message-ID: <ZSgtW0wGZZ3N3oKl@slm.duckdns.org>
-References: <20231011084228.77615-1-jefflexu@linux.alibaba.com>
+        with ESMTP id S1441905AbjJLTLu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 15:11:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185BAB7
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 12:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697137862;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hQUSlWXqP7fdJBvIHewmJ/XbyH4Qojk9VyW+H5X9CBk=;
+        b=g80hw/d5qr3emEvUL5AgMLISrxJEYGBfoQr5ubYWXvZzkcI2IkfnFkfZ2niScLjGPvz9TV
+        zefSUbcpml1SQ7neidn6Xw0QDEWdNO4fDP9oBi4FTFtz2XTI7RJjfYiRa9/6cFH0wdzwp4
+        EMCjAziHM7kMMToUz/vbxiOvmvtCqXM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-478-7FqDobdUP-y8uDiXMGdhmg-1; Thu, 12 Oct 2023 15:10:48 -0400
+X-MC-Unique: 7FqDobdUP-y8uDiXMGdhmg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 40359381079F;
+        Thu, 12 Oct 2023 19:10:48 +0000 (UTC)
+Received: from [10.22.32.234] (unknown [10.22.32.234])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E73B202701E;
+        Thu, 12 Oct 2023 19:10:47 +0000 (UTC)
+Message-ID: <f7c9b6a6-3c60-431d-3f91-3dc9b012adc6@redhat.com>
+Date:   Thu, 12 Oct 2023 15:10:46 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011084228.77615-1-jefflexu@linux.alibaba.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: Question Regarding isolcpus
+Content-Language: en-US
+To:     Joseph Salisbury <joseph.salisbury@canonical.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-rt-users@vger.kernel.org, cgroups@vger.kernel.org
+References: <5afe86b4-bae3-2fa8-ec33-9686d3c18255@canonical.com>
+ <20230928083909.KySJvo1d@linutronix.de>
+ <11efaeb8-eac1-4a12-8283-6e9ce168e809@canonical.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <11efaeb8-eac1-4a12-8283-6e9ce168e809@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 04:42:28PM +0800, Jingbo Xu wrote:
-> The cgwb cleanup routine will try to release the dying cgwb by switching
-> the attached inodes.  It fetches the attached inodes from wb->b_attached
-> list, omitting the fact that inodes only with dirty timestamps reside in
-> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
-> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
-> with dirty timestamps can not be switched to a live cgwb for a long time.
-> 
-> It is reasonable not to switch cgwb for inodes with dirty data, as
-> otherwise it may break the bandwidth restrictions.  However since the
-> writeback of inode metadata is not accounted, let's also switch inodes
-> with dirty timestamps to avoid zombie memory and block cgroups when
-> laztytime is enabled.
-> 
-> Fixs: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+On 10/12/23 13:27, Joseph Salisbury wrote:
+>
+>
+> On 9/28/23 04:39, Sebastian Andrzej Siewior wrote:
+>> On 2023-09-26 12:45:14 [-0400], Joseph Salisbury wrote:
+>>> Hi All,
+>> Hi,
+>>
+>>> I have a question regarding the isolcpus parameter.  I've been 
+>>> seeing this
+>>> parameter commonly used. However, in the kernel.org documentation[0],
+>>> isolcpus is listed as depreciated.
+>>>
+>>> Is it the case that isolcpus should not be used at all?  I've seen 
+>>> it used
+>>> in conjunction with taskset.  However, should we now be telling rt 
+>>> users to
+>>> use only cpusets in cgroups?  I see that CPUAffinity can be set in
+>>> /etc/systemd/system.conf.  Is that the preferred method, so the process
+>>> scheduler will automatically migrate processes between the cpusets 
+>>> in the
+>>> cgroup cpuset or the list set by CPUAffinity?
+>> Frederic might know if there is an actual timeline to remove it. The
+>> suggestions since then is to use cpusets which should be more flexible.
+>> There was also some work (which went into v6.1 I think) to be able to
+>> reconfigure the partitions at run-time while isolcpus= is a boot time
+>> option.
+>>  From what I remember, you have a default/system cpuset which all tasks
+>> use by default and then you can add another cpuset for the "isolated"
+>> CPUs. Based on the partition it can be either the default one or
+>> isolated [0]. The latter would exclude the CPUs from load balancing
+>> which is what isolcpus= does.
+>>
+>> [0] f28e22441f353 ("cgroup/cpuset: Add a new isolated cpus.partition 
+>> type")
+>
+> This question may be for the cgroups folks.  The kernel.org 
+> documentation has a WARNING which states: "cgroup2 doesn't yet support 
+> control of realtime processes and the cpu controller can only be 
+> enabled when all RT processes are in the root cgroup "[0]. Does this 
+> mean real-time processes are only supported on cgroupsV1?
+>
+> Also, this warning is stated for the "CPU" Controller, but there is no 
+> mention of this for a "cpuset" controller. Does this imply that 
+> real-time processes are supported with "cpuset" controllers?
 
-The patch looks fine to me.
+Yes, the quoted description applies only to cpu controller. Even for v1 
+cpu controller, the realtime support is problematic and there is no easy 
+solution to that. That is why cgroup v2 doesn't support it.
 
-...
-> +	restart = isw_prepare_wbs_switch(isw, &wb->b_attached, &nr);
-> +	if (!restart)
-> +		restart = isw_prepare_wbs_switch(isw, &wb->b_dirty_time, &nr);
+For other controllers, whether the processes are RT or not are 
+irrelevant. They are equally supported.
 
-But can you add a comment explaining why we're also migrating b_dirty_time?
+Cheers,
+Longman
 
-Thanks.
 
--- 
-tejun
