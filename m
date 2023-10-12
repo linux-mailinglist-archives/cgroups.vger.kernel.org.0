@@ -2,166 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B327C76A3
-	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 21:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D4C7C785D
+	for <lists+cgroups@lfdr.de>; Thu, 12 Oct 2023 23:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379700AbjJLTXZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Oct 2023 15:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
+        id S1442372AbjJLVGO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Oct 2023 17:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442125AbjJLTXW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 15:23:22 -0400
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C1DFC;
-        Thu, 12 Oct 2023 12:23:17 -0700 (PDT)
-Received: from [10.172.66.188] (1.general.jsalisbury.us.vpn [10.172.66.188])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 3656C3F6C3;
-        Thu, 12 Oct 2023 19:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697138593;
-        bh=20vMW8rXM/m+fods5+JgqlCOx1Ds3mHKLfQHeyOZVXE=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=MHh+nwGwBCZvPqrUJpwWZHVLOTXlxWkZ/xyXiRvIHzjjdcrFdkVG4jeiUyMbJAuOL
-         VmvjPT6MWCdjedo6fBAQPq5HeS8jMScwIJxNahjoIvrfnrK+brBHzUT9qUBYetDhQd
-         gCescUCDJNSk0wkrbw5wswD5BeXpY1GDYAkfVpDJ4h8Gw4GdZNDiHKqaFB7eWOJqC/
-         EcW/uiiq27Rf145fKW2rzzNPOUqufrl749OkDjWkxrfyqMjhPKCno4VjeSxn9PNVeF
-         3lerhZeFDT6PZLm4eLtkVFSfcxF0qjrxJiR5VQuz/ZTKBOiqtK1hmNm7pG0Av4UP5G
-         ppDpUGnKnY/Yg==
-Message-ID: <f3604bef-6834-4b69-8708-7d3f6727a873@canonical.com>
-Date:   Thu, 12 Oct 2023 15:23:11 -0400
+        with ESMTP id S1442643AbjJLVGN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 17:06:13 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D29C0
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 14:06:11 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso547366366b.0
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 14:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697144770; x=1697749570; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=U+qU6BUc+Yf/LfU49BhL9yi5ulNhXzI9oQByMXuhbEg=;
+        b=0m+gXYYDkFe14NmT4YPiXVLt4L/kvFGgiMzyKP8SQ8MD52objZpTGbOqyQSAFHy6xf
+         sIzXV+OHcDRVggQFzx5V4Yd6RPX4lvOFVCjJVL7PCPlJloUHR33ZX8ApG/IEjXAk1nKR
+         PDErzQF9doM0mqxnqevDtiRoM8kMqDmKQLyp/xbQmIiSMaGwg+uvmeKXRg23CcH+hmzu
+         ThWtvwFyZCmtIwCipkTSjNJfbuNLhtvEVf9N7aNl6Jsj5sa7RqNOjajkQ5dpItgz5NxE
+         hlo3S27B+vInT63nx1XRJRPeVHGIlFEtCnK098rTpbXkDbaNgdXYkPiyaGEP14/p4Dyv
+         YYhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697144770; x=1697749570;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U+qU6BUc+Yf/LfU49BhL9yi5ulNhXzI9oQByMXuhbEg=;
+        b=Wf7eVQtneSSQ9j/qDT/kSUGqK9iHtdJtKApIRrCFCAn5mk+PDiVcqIT5zL9Icqd7co
+         68SXlAU2AvWFHsLdYPYwKg2ZWIB3UN9NeSYJ33dn9inir66HyS1DHl10Jm9VHdmIT3HU
+         50d2ks/bnoXGJPv7axTNWQ3k8wLKFDIrbuAhpPkx5dgMlnHGIsMdn++2jhiGI1Tc4q+O
+         3minhoJtxjemkhBDAEHlk3QqEmixIUtHMHw7P+a/TzCOXzUEaMGsWtwEl5FsYSLpeN9l
+         MxKoMV7vJp+5IF79z99Fu7aHP1vF9gMpMuXESKr1rklAY50QyhojfFn1M6x2wD54R7/u
+         skcA==
+X-Gm-Message-State: AOJu0YypKGSSj7pHT6aKe6plR6vlJYwc0UKrCCEvcPOvEunQAYvDxWEK
+        APBQs/gLRhNi1Kc+/5KlkQEHg0/zd+yLfsVPfpDemQ==
+X-Google-Smtp-Source: AGHT+IEMEev1fCcpfuV8sPYSsL+tp51FurlzcduDBSyW680ptIpoot7s6rm+mhDt5HS2vIKEyVOU5nII/oglFVQ0YlM=
+X-Received: by 2002:a17:906:fe08:b0:9a1:e0b1:e919 with SMTP id
+ wy8-20020a170906fe0800b009a1e0b1e919mr20987908ejb.4.1697144769713; Thu, 12
+ Oct 2023 14:06:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question Regarding isolcpus
-Content-Language: en-US
-To:     Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-rt-users@vger.kernel.org, cgroups@vger.kernel.org
-References: <5afe86b4-bae3-2fa8-ec33-9686d3c18255@canonical.com>
- <20230928083909.KySJvo1d@linutronix.de>
- <11efaeb8-eac1-4a12-8283-6e9ce168e809@canonical.com>
- <f7c9b6a6-3c60-431d-3f91-3dc9b012adc6@redhat.com>
-From:   Joseph Salisbury <joseph.salisbury@canonical.com>
-Autocrypt: addr=joseph.salisbury@canonical.com; keydata=
- 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
- p24lPxLL08SuCEzuBw==
-In-Reply-To: <f7c9b6a6-3c60-431d-3f91-3dc9b012adc6@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+ <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+ <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+ <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com> <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
+In-Reply-To: <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 12 Oct 2023 14:05:30 -0700
+Message-ID: <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+[..]
+> > > >
+> > > > Using next-20231009 and a similar 44 core machine with hyperthreading
+> > > > disabled, I ran 22 instances of netperf in parallel and got the
+> > > > following numbers from averaging 20 runs:
+> > > >
+> > > > Base: 33076.5 mbps
+> > > > Patched: 31410.1 mbps
+> > > >
+> > > > That's about 5% diff. I guess the number of iterations helps reduce
+> > > > the noise? I am not sure.
+> > > >
+> > > > Please also keep in mind that in this case all netperf instances are
+> > > > in the same cgroup and at a 4-level depth. I imagine in a practical
+> > > > setup processes would be a little more spread out, which means less
+> > > > common ancestors, so less contended atomic operations.
+> > >
+> > >
+> > > (Resending the reply as I messed up the last one, was not in plain text)
+> > >
+> > > I was curious, so I ran the same testing in a cgroup 2 levels deep
+> > > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
+> > > experience. Here are the numbers:
+> > >
+> > > Base: 40198.0 mbps
+> > > Patched: 38629.7 mbps
+> > >
+> > > The regression is reduced to ~3.9%.
+> > >
+> > > What's more interesting is that going from a level 2 cgroup to a level
+> > > 4 cgroup is already a big hit with or without this patch:
+> > >
+> > > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
+> > > Patched: 38629.7 -> 31410.1 (~18.7% regression)
+> > >
+> > > So going from level 2 to 4 is already a significant regression for
+> > > other reasons (e.g. hierarchical charging). This patch only makes it
+> > > marginally worse. This puts the numbers more into perspective imo than
+> > > comparing values at level 4. What do you think?
+> >
+> > This is weird as we are running the experiments on the same machine. I
+> > will rerun with 2 levels as well. Also can you rerun the page fault
+> > benchmark as well which was showing 9% regression in your original
+> > commit message?
+>
+> Thanks. I will re-run the page_fault tests, but keep in mind that the
+> page fault benchmarks in will-it-scale are highly variable. We run
+> them between kernel versions internally, and I think we ignore any
+> changes below 10% as the benchmark is naturally noisy.
+>
+> I have a couple of runs for page_fault3_scalability showing a 2-3%
+> improvement with this patch :)
 
+I ran the page_fault tests for 10 runs on a machine with 256 cpus in a
+level 2 cgroup, here are the results (the results in the original
+commit message are for 384 cpus in a level 4 cgroup):
 
-On 10/12/23 15:10, Waiman Long wrote:
-> On 10/12/23 13:27, Joseph Salisbury wrote:
->>
->>
->> On 9/28/23 04:39, Sebastian Andrzej Siewior wrote:
->>> On 2023-09-26 12:45:14 [-0400], Joseph Salisbury wrote:
->>>> Hi All,
->>> Hi,
->>>
->>>> I have a question regarding the isolcpus parameter.  I've been 
->>>> seeing this
->>>> parameter commonly used. However, in the kernel.org documentation[0],
->>>> isolcpus is listed as depreciated.
->>>>
->>>> Is it the case that isolcpus should not be used at all? I've seen 
->>>> it used
->>>> in conjunction with taskset.  However, should we now be telling rt 
->>>> users to
->>>> use only cpusets in cgroups?  I see that CPUAffinity can be set in
->>>> /etc/systemd/system.conf.  Is that the preferred method, so the 
->>>> process
->>>> scheduler will automatically migrate processes between the cpusets 
->>>> in the
->>>> cgroup cpuset or the list set by CPUAffinity?
->>> Frederic might know if there is an actual timeline to remove it. The
->>> suggestions since then is to use cpusets which should be more flexible.
->>> There was also some work (which went into v6.1 I think) to be able to
->>> reconfigure the partitions at run-time while isolcpus= is a boot time
->>> option.
->>>  From what I remember, you have a default/system cpuset which all tasks
->>> use by default and then you can add another cpuset for the "isolated"
->>> CPUs. Based on the partition it can be either the default one or
->>> isolated [0]. The latter would exclude the CPUs from load balancing
->>> which is what isolcpus= does.
->>>
->>> [0] f28e22441f353 ("cgroup/cpuset: Add a new isolated cpus.partition 
->>> type")
->>
->> This question may be for the cgroups folks.  The kernel.org 
->> documentation has a WARNING which states: "cgroup2 doesn't yet 
->> support control of realtime processes and the cpu controller can only 
->> be enabled when all RT processes are in the root cgroup "[0]. Does 
->> this mean real-time processes are only supported on cgroupsV1?
->>
->> Also, this warning is stated for the "CPU" Controller, but there is 
->> no mention of this for a "cpuset" controller. Does this imply that 
->> real-time processes are supported with "cpuset" controllers?
->
-> Yes, the quoted description applies only to cpu controller. Even for 
-> v1 cpu controller, the realtime support is problematic and there is no 
-> easy solution to that. That is why cgroup v2 doesn't support it.
->
-> For other controllers, whether the processes are RT or not are 
-> irrelevant. They are equally supported.
->
-> Cheers,
-> Longman
-Thanks for the feedback, Longman!
+               LABEL            |     MEAN    |   MEDIAN    |   STDDEV   |
+------------------------------+-------------+-------------+-------------
+  page_fault1_per_process_ops |             |             |            |
+  (A) base                    | 270249.164  | 265437.000  | 13451.836  |
+  (B) patched                 | 261368.709  | 255725.000  | 13394.767  |
+                              | -3.29%      | -3.66%      |            |
+  page_fault1_per_thread_ops  |             |             |            |
+  (A) base                    | 242111.345  | 239737.000  | 10026.031  |
+  (B) patched                 | 237057.109  | 235305.000  | 9769.687   |
+                              | -2.09%      | -1.85%      |            |
+  page_fault1_scalability     |             |             |
+  (A) base                    | 0.034387    | 0.035168    | 0.0018283  |
+  (B) patched                 | 0.033988    | 0.034573    | 0.0018056  |
+                              | -1.16%      | -1.69%      |            |
+  page_fault2_per_process_ops |             |             |
+  (A) base                    | 203561.836  | 203301.000  | 2550.764   |
+  (B) patched                 | 197195.945  | 197746.000  | 2264.263   |
+                              | -3.13%      | -2.73%      |            |
+  page_fault2_per_thread_ops  |             |             |
+  (A) base                    | 171046.473  | 170776.000  | 1509.679   |
+  (B) patched                 | 166626.327  | 166406.000  | 768.753    |
+                              | -2.58%      | -2.56%      |            |
+  page_fault2_scalability     |             |             |
+  (A) base                    | 0.054026    | 0.053821    | 0.00062121 |
+  (B) patched                 | 0.053329    | 0.05306     | 0.00048394 |
+                              | -1.29%      | -1.41%      |            |
+  page_fault3_per_process_ops |             |             |
+  (A) base                    | 1295807.782 | 1297550.000 | 5907.585   |
+  (B) patched                 | 1275579.873 | 1273359.000 | 8759.160   |
+                              | -1.56%      | -1.86%      |            |
+  page_fault3_per_thread_ops  |             |             |
+  (A) base                    | 391234.164  | 390860.000  | 1760.720   |
+  (B) patched                 | 377231.273  | 376369.000  | 1874.971   |
+                              | -3.58%      | -3.71%      |            |
+  page_fault3_scalability     |             |             |
+  (A) base                    | 0.60369     | 0.60072     | 0.0083029  |
+  (B) patched                 | 0.61733     | 0.61544     | 0.009855   |
+                              | +2.26%      | +2.45%      |            |
 
->
->
-
+The numbers are much better. I can modify the commit log to include
+the testing in the replies instead of what's currently there if this
+helps (22 netperf instances on 44 cpus and will-it-scale page_fault on
+256 cpus -- all in a level 2 cgroup).
