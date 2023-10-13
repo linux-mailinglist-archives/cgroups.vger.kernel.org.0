@@ -2,67 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9C07C7AE9
-	for <lists+cgroups@lfdr.de>; Fri, 13 Oct 2023 02:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6357C7BA3
+	for <lists+cgroups@lfdr.de>; Fri, 13 Oct 2023 04:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbjJMAju (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Oct 2023 20:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
+        id S229482AbjJMCde (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Oct 2023 22:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjJMAjt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 20:39:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E070FC0;
-        Thu, 12 Oct 2023 17:39:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 86E5AC433C8;
-        Fri, 13 Oct 2023 00:39:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697157587;
-        bh=fR00E7rM2JZPTT8rudt1QCQfjBs9sW/dyC4aN4lXNB8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PgVK9Q4m9rKIum2GeXRHTp3lXSRniTaKhs88MxokBgckQMFi2ebti/m7PPSVjON3o
-         /Z13Dr1MB5J4RCYLA6k0OiDxbdWPQWkaD896kTGz9v9ZVWcswwX0I0431A97xtmvTL
-         /fqjHTYFRYPyReRVpx5nliiMDblAFHztEwr1LhiL7SlPu2IptqYeoJmaAyPScrZAXZ
-         m63rvGcGas4vMxr1SLyEfus7c1xCWHjg3jqHHwjDq0ZNs98uEvhi5fzhTCUpu3CIbY
-         zTNpK6Kl9N1rp6p2OsW51zPN96taEXbwDkVXZ8NniLrvbnpnJiog4aRLieP8WjgV5d
-         A57UUy22yPliA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6DF35C595C3;
-        Fri, 13 Oct 2023 00:39:47 +0000 (UTC)
-Subject: Re: [GIT PULL] Cgroup fixes for v6.6-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZSh_Vf5whzHV-H1S@slm.duckdns.org>
-References: <ZSh_Vf5whzHV-H1S@slm.duckdns.org>
-X-PR-Tracked-List-Id: <cgroups.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZSh_Vf5whzHV-H1S@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.6-rc5-fixes
-X-PR-Tracked-Commit-Id: 13cc9ee8f8ed58e563294d87d74a62006be40f21
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 20f4757fa5ed2d9a7746d01b8950cfe04d593a0a
-Message-Id: <169715758744.17241.6223034096344205530.pr-tracker-bot@kernel.org>
-Date:   Fri, 13 Oct 2023 00:39:47 +0000
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229461AbjJMCdd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Oct 2023 22:33:33 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CB9E0
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 19:33:31 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7741c2e76a3so104415785a.1
+        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 19:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1697164410; x=1697769210; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HQBjX16wvpXqrz4aN4i3iIOyZKlCqR0jktD0mRwUDK8=;
+        b=v+v6xCwCyJXsXnt60GuPHdcfffRgm9LBKFXYPKOw55RzZnySUIzBr1/6fAtDyi+O2L
+         CwZu9zfrX/NkMaX1H8BsF7nct8aZMeCqRI3G883dnE5T+QeAIX4kO2SkGLIt+N8qLGov
+         sOxwNwu8BAX2zJAzk9OfAY8cAjEAtoSQwCux3HPqd17TRB3SQJx7R/4pVb+Fuo4Xe1F1
+         7UAHbhN2LaNYqmKrM60UDxuIoqrmNNPkJOGyYu0ZjSgb0N7hR8e0V0GSWvmp/scH1Gf+
+         IOQ30cTT6RDPNGx5JtqYRrExN/UKfci9BGH3wkUIsm00iql6UpDNSk4sPLQ7NtZLE+WJ
+         Efhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697164410; x=1697769210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HQBjX16wvpXqrz4aN4i3iIOyZKlCqR0jktD0mRwUDK8=;
+        b=VaPdISBskyn8UTBHCggNqUCQGePjPl0+4Zx4FD9dk7W/fkAWdh8ump6ORP+OKQcNFG
+         jmzsb3NxHZ6kjnUjjSwqBXB7kOStOZ7WJOm8VrmhuV1AovcSqooz6p4fmA6L37kPMO97
+         L/ZcDOOzJ29WvWPcMFAV5tFrB7DCiBN5oX0Xo5oHtWHVTVX4WfDABlJQlnQSpv6cjwAz
+         meBC9bZ3Cr/pyHBDEh+sCb3j4YMP6gccN2r2knTdnhRon0T24enOenDjS4Gklze/EVsf
+         IkVe/vFtGXpq2hv3dg0t3+WsFnAql4ZLLZQfKCacNlRs4En+NeNcjC14jFSGqnc+uIab
+         K5Qg==
+X-Gm-Message-State: AOJu0YxEGjMSujlJiGpdvlFeo+FEHXyMOW3jQLX9QI24hYkuK2GmoPXb
+        nrnllL0fF20s4WQBcRoG6AGtng==
+X-Google-Smtp-Source: AGHT+IHce1yeyufcNiwtojg097ZByIxT0sqkyjp7IUQBwixMQxEAA1gP7NZxZR02opFmmqgWe9qyng==
+X-Received: by 2002:a0c:f194:0:b0:66c:ff4f:a35f with SMTP id m20-20020a0cf194000000b0066cff4fa35fmr9751346qvl.51.1697164410198;
+        Thu, 12 Oct 2023 19:33:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:66a6])
+        by smtp.gmail.com with ESMTPSA id e9-20020a056214162900b00656329bb3b1sm304909qvw.10.2023.10.12.19.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 19:33:29 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 22:33:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+Message-ID: <20231013023329.GG470544@cmpxchg.org>
+References: <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com>
+ <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+ <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+ <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+ <20231012132946.GA470544@cmpxchg.org>
+ <CAJD7tkbrR=6SmVxo4pVKHVu4eGBYN+xXuu5+zFPh6LSqt8vGcw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkbrR=6SmVxo4pVKHVu4eGBYN+xXuu5+zFPh6LSqt8vGcw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pull request you sent on Thu, 12 Oct 2023 13:20:53 -1000:
+On Thu, Oct 12, 2023 at 04:28:49PM -0700, Yosry Ahmed wrote:
+> [..]
+> > > >
+> > > > Using next-20231009 and a similar 44 core machine with hyperthreading
+> > > > disabled, I ran 22 instances of netperf in parallel and got the
+> > > > following numbers from averaging 20 runs:
+> > > >
+> > > > Base: 33076.5 mbps
+> > > > Patched: 31410.1 mbps
+> > > >
+> > > > That's about 5% diff. I guess the number of iterations helps reduce
+> > > > the noise? I am not sure.
+> > > >
+> > > > Please also keep in mind that in this case all netperf instances are
+> > > > in the same cgroup and at a 4-level depth. I imagine in a practical
+> > > > setup processes would be a little more spread out, which means less
+> > > > common ancestors, so less contended atomic operations.
+> > >
+> > >
+> > > (Resending the reply as I messed up the last one, was not in plain text)
+> > >
+> > > I was curious, so I ran the same testing in a cgroup 2 levels deep
+> > > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
+> > > experience. Here are the numbers:
+> > >
+> > > Base: 40198.0 mbps
+> > > Patched: 38629.7 mbps
+> > >
+> > > The regression is reduced to ~3.9%.
+> > >
+> > > What's more interesting is that going from a level 2 cgroup to a level
+> > > 4 cgroup is already a big hit with or without this patch:
+> > >
+> > > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
+> > > Patched: 38629.7 -> 31410.1 (~18.7% regression)
+> > >
+> > > So going from level 2 to 4 is already a significant regression for
+> > > other reasons (e.g. hierarchical charging). This patch only makes it
+> > > marginally worse. This puts the numbers more into perspective imo than
+> > > comparing values at level 4. What do you think?
+> >
+> > I think it's reasonable.
+> >
+> > Especially comparing to how many cachelines we used to touch on the
+> > write side when all flushing happened there. This looks like a good
+> > trade-off to me.
+> 
+> Thanks.
+> 
+> Still wanting to figure out if this patch is what you suggested in our
+> previous discussion [1], to add a
+> Suggested-by if appropriate :)
+> 
+> [1]https://lore.kernel.org/lkml/20230913153758.GB45543@cmpxchg.org/
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.6-rc5-fixes
+Haha, sort of. I suggested the cgroup-level flush-batching, but my
+proposal was missing the clever upward propagation of the pending stat
+updates that you added.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/20f4757fa5ed2d9a7746d01b8950cfe04d593a0a
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+You can add the tag if you're feeling generous, but I wouldn't be mad
+if you don't!
