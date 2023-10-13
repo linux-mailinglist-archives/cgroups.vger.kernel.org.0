@@ -2,140 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B507C7D7E
-	for <lists+cgroups@lfdr.de>; Fri, 13 Oct 2023 08:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173167C7ECA
+	for <lists+cgroups@lfdr.de>; Fri, 13 Oct 2023 09:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjJMGKH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 Oct 2023 02:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
+        id S229919AbjJMHpC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 Oct 2023 03:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjJMGKG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Oct 2023 02:10:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F74D9
-        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 23:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697177357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TdKa29R/s7p3SCM8FO+OVeTHJOkKpc2DM547C4oMUjs=;
-        b=bd2nAkb7vh1it4hAyNOfDiq4g11Nvhgn1v/DQyE1xqs8o8RYetgVEwhY/JuUKi6LhBVufg
-        VTaDrxE4hf9VkLhmJGCVSkXYeEXutVZIS01tvdIuwBxBpc9/bs827pqH5r5mpk8fn5Ip0/
-        tcdR3vhOOGOrq8HAL2bv180OgMbfPVU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-253-3xyV0xSoPeiawEZdqj4vAQ-1; Fri, 13 Oct 2023 02:09:16 -0400
-X-MC-Unique: 3xyV0xSoPeiawEZdqj4vAQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6557c921df1so16782926d6.2
-        for <cgroups@vger.kernel.org>; Thu, 12 Oct 2023 23:09:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697177356; x=1697782156;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TdKa29R/s7p3SCM8FO+OVeTHJOkKpc2DM547C4oMUjs=;
-        b=kYfs0snq1Mt+a3/DTy0Lis6e6jlL5v5dqeXhWQRbAouok+IdNGUZebzMv8dWNHP3y/
-         hq2Ih9mfDjrN6P4x1Y5h8w3htKll8QUENUHshcXdCFz+IVB7PNxKT3FHWsR6kGoujDoU
-         W95nc4Li8uCqHH9YTefL6K3JVHZmla+law037VLZJGCqHyH/lA9v62QtT5TmaF5wp/fC
-         6Ed7jLpX3A4co8cz/g3bCArvWsthqwW+4otgY30wQ+xH7lll53gOKVftpTAKO5yKgnW7
-         2gLalcl3mqL+GP/pXDNmgKH5xwe0UrcNf4ejki25YoETML6xWU8Iob2CJGyadSRTFkbr
-         6b7w==
-X-Gm-Message-State: AOJu0Yw+xqx+NJ98aKOMOALZI3Qs8XZ7GKXYG+6rH6JVoer0vH56xuTK
-        hPzqVIZSS4vziV1/egBkWT0u6L1EkLcvMTXY4MvKaAokN4/Fm0JMWb9Ok6gWVaDLSQyRHroij6I
-        dbgOuGK+Rv2HeOA/XIA==
-X-Received: by 2002:a05:6214:2582:b0:66d:2140:1f88 with SMTP id fq2-20020a056214258200b0066d21401f88mr2318765qvb.5.1697177355447;
-        Thu, 12 Oct 2023 23:09:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHnAnXBBGQtF8EmDjLlH7fKrVFzQ8FDgdZEmabajsIP1Nje6CRdy3z0hXW8LQAgNsSsrRi3w==
-X-Received: by 2002:a05:6214:2582:b0:66d:2140:1f88 with SMTP id fq2-20020a056214258200b0066d21401f88mr2318741qvb.5.1697177355096;
-        Thu, 12 Oct 2023 23:09:15 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.94.163])
-        by smtp.gmail.com with ESMTPSA id dm9-20020ad44e29000000b0066d15724ff7sm419693qvb.52.2023.10.12.23.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 23:09:14 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 08:09:09 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Xia Fukun <xiafukun@huawei.com>
-Subject: Re: [PATCH] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
- value
-Message-ID: <ZSjfBWgZf15TchA5@localhost.localdomain>
-References: <20231009191515.3262292-1-longman@redhat.com>
- <ZSTiULEnD7SF9n7y@localhost.localdomain>
- <6b769316-6434-5054-43f5-7933fc2bee01@redhat.com>
- <31e06652-1dbd-e32f-3123-d17e178c5c27@redhat.com>
- <ZSZZfImXuCG4Xvaz@localhost.localdomain>
- <389a8abc-7f0f-7bcc-bc58-f70f045d00a5@redhat.com>
- <c421a8d5-b364-d3c6-df18-2a6766fc069b@redhat.com>
+        with ESMTP id S229959AbjJMHpB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Oct 2023 03:45:01 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0C4DC
+        for <cgroups@vger.kernel.org>; Fri, 13 Oct 2023 00:44:59 -0700 (PDT)
+Received: from dggpeml500015.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S6JMs3Qtqz1kv6J;
+        Fri, 13 Oct 2023 15:40:57 +0800 (CST)
+Received: from huawei.com (10.174.149.20) by dggpeml500015.china.huawei.com
+ (7.185.36.226) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 13 Oct
+ 2023 15:44:57 +0800
+From:   Ruifeng Su <suruifeng1@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <cgroups@vger.kernel.org>
+Subject: [PATCH] mm, memcg: avoid recycling when there is no more recyclable memory
+Date:   Fri, 13 Oct 2023 23:40:43 +0800
+Message-ID: <20231013154043.1236185-1-suruifeng1@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c421a8d5-b364-d3c6-df18-2a6766fc069b@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.149.20]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500015.china.huawei.com (7.185.36.226)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/10/23 12:35, Waiman Long wrote:
-> On 10/11/23 08:54, Waiman Long wrote:
+When the number of alloc anonymous pages exceeds the memory.high,
+exc_page_fault successfully alloc code pages,
+and is released by mem_cgroup_handle_over_high before return to user mode.
+As a result, the program is trapped in a loop to exc page fault and reclaim
+pages.
 
-...
+Here is an example of test code(do_alloc_memory is static compilation):
+Execution Procedure:
+	mkdir -p /sys/fs/cgroup/memory/memcg_high_A
+	echo 50M > /sys/fs/cgroup/memory/memcg_high_A/memory.high
+	cgexec -g memory:memcg_high_A ./common/do_alloc_memory anon 100M &
+Phenomenon:
+	[root@localhost memcg_high_A]# cat memory.usage_in_bytes
+	53903360
 
-> > We can argue that there can be racing between cgroup_exit() and the
-> > iteration of tasks in cpuset_attach() or cpuset_can_attach(). An
-> > rcu_read_lock() is probably needed. I am stilling investigating that.
-> 
-> Cgroup has a rather complex task migration and iteration scheme. According
-> to the following comments in include/linux/cgroup-defs.h:
-> 
->         /*
->          * Lists running through all tasks using this cgroup group.
->          * mg_tasks lists tasks which belong to this cset but are in the
->          * process of being migrated out or in.  Protected by
->          * css_set_lock, but, during migration, once tasks are moved to
->          * mg_tasks, it can be read safely while holding cgroup_mutex.
->          */
->         struct list_head tasks;
->         struct list_head mg_tasks;
->         struct list_head dying_tasks;
-> 
-> I haven't fully figured out how that protection works yet. Assuming that is
-> the case, task iteration in cpuset_attach() should be fine since
-> cgroup_mutex is indeed held when it is invoked. That protection, however,
-> does not applied to nr_deadline_tasks. It may be too costly to acquire
-> cpuset_mutex before updating nr_deadline_tasks in cgroup_exit(). So changing
-> it to an atomic_t should be the easy way out of the potential racing
-> problem.
+The test result shows that the program frequently sync iCache & dcache.
+As a result, 
+the number of anon pages requested by the program cannot increase.
 
-My biggest perplexity is/was still about dl_rebuild_rd_accounting() and
-cgroup_exit(); I wonder if the latter, operating outside cpuset_mutex
-guard, might still be racy wrt the former (even if we change to
-atomic_t).
+This patch changes the behavior of retry recycling.
+As long as the number of successfully reclaimed pages is 
+less than the target number of reclaimed pages,
+memory reclamation exits, 
+indicating that there is no more memory to reclaim directly.
 
-However, looking again at it, dl_rebuild_rd_accounting() operates on
-css(es) via css_task_iter_start(), which grabs css_set_lock. So maybe we
-are OK already also for this case?
+Signed-off-by: Ruifeng Su <suruifeng1@huawei.com>
+---
+ mm/memcontrol.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Apologies for being pedantic, but we fought already several times with
-races around these bits and now I'm probably over-suspicious. :)
-
-Thanks,
-Juri
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5b009b233ab8..e6b5d2ddb4d2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2561,7 +2561,6 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	unsigned long pflags;
+ 	unsigned long nr_reclaimed;
+ 	unsigned int nr_pages = current->memcg_nr_pages_over_high;
+-	int nr_retries = MAX_RECLAIM_RETRIES;
+ 	struct mem_cgroup *memcg;
+ 	bool in_retry = false;
+ 
+@@ -2616,7 +2615,7 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	 * memory.high, we want to encourage that rather than doing allocator
+ 	 * throttling.
+ 	 */
+-	if (nr_reclaimed || nr_retries--) {
++	if (nr_reclaimed >= (in_retry ? SWAP_CLUSTER_MAX : nr_pages)) {
+ 		in_retry = true;
+ 		goto retry_reclaim;
+ 	}
+-- 
+2.33.0
 
