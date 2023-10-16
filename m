@@ -2,77 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B6C7C9731
-	for <lists+cgroups@lfdr.de>; Sun, 15 Oct 2023 01:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E65A7C9CFD
+	for <lists+cgroups@lfdr.de>; Mon, 16 Oct 2023 03:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjJNXIl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 14 Oct 2023 19:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S230283AbjJPBrI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 Oct 2023 21:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjJNXIk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 14 Oct 2023 19:08:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BC2B7;
-        Sat, 14 Oct 2023 16:08:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C10ACC433C7;
-        Sat, 14 Oct 2023 23:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1697324919;
-        bh=RgLpE5WIF7OFkcHrVyY+Kssa7QBfiqyymC1Ifbz/pP4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1ayv1hEjimnQdvLsRqAWXWfBANW2cPCvc6/OYW9IeqYaM9JST5hcE11s646ejHAuk
-         jQxm9iLrXULoaUYDXcEc+xHQ3etz5iwqW3uWhf0JXv5ytzRWEEzyW/ZuY6QkosDcn2
-         AKkGrKdb4yqvHCmzRjrh2x84JseIZqoiq3D4qMt4=
-Date:   Sat, 14 Oct 2023 16:08:31 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, michael@phoronix.com,
-        Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold
- per-memcg
-Message-Id: <20231014160831.73785b15e9b34eb6146d5497@linux-foundation.org>
-In-Reply-To: <CAJD7tkavJDMSZdwtfxUc67mNBSkrz7XCa_z8FGH0FGg6m4RuAA@mail.gmail.com>
-References: <20231010032117.1577496-1-yosryahmed@google.com>
-        <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
-        <20231011003646.dt5rlqmnq6ybrlnd@google.com>
-        <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
-        <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
-        <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
-        <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
-        <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
-        <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
-        <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
-        <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
-        <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
-        <CALvZod6cu6verk=vHVFrOUoA-gj_yBVzU9_vv7eUfcjhzfvtcA@mail.gmail.com>
-        <CAJD7tkavJDMSZdwtfxUc67mNBSkrz7XCa_z8FGH0FGg6m4RuAA@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229459AbjJPBrH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 15 Oct 2023 21:47:07 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94601A9;
+        Sun, 15 Oct 2023 18:47:05 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4S80Mz6W1Gz4f3kp1;
+        Mon, 16 Oct 2023 09:46:55 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgD3jd0TlixlP1JPDA--.33169S3;
+        Mon, 16 Oct 2023 09:47:01 +0800 (CST)
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+To:     Khazhy Kumykov <khazhy@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Yu Kuai <yukuai1@huaweicloud.com>,
+        Li Nan <linan666@huaweicloud.com>, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230928015858.1809934-1-linan666@huaweicloud.com>
+ <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
+ <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
+ <20231005162417.GA32420@redhat.com>
+ <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
+ <20231007151607.GA24726@redhat.com>
+ <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com>
+ <20231008113602.GB24726@redhat.com>
+ <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com>
+Date:   Mon, 16 Oct 2023 09:46:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3jd0TlixlP1JPDA--.33169S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wr4xAFWkWr1DZF17tF48Xrb_yoW8JrWxpF
+        WIgw12vrs0qas7JF1Iyw1jvF1UZFZrGFy5J3yDC34qvas5G3s7GF17CrZ0yr47X348Wa1r
+        JwnIyF9rArnFqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 12 Oct 2023 15:23:06 -0700 Yosry Ahmed <yosryahmed@google.com> wrote:
+Hi,
 
-> Meanwhile, Andrew, could you please replace the commit log of this
-> patch as follows for more updated testing info:
+在 2023/10/14 5:51, Khazhy Kumykov 写道:
+> Looking at the generic mul_u64_u64_div_u64 impl, it doesn't handle
+> overflow of the final result either, as far as I can tell. So while on
+> x86 we get a DE, on non-x86 we just get the wrong result.
+> 
+> (Aside: after 8d6bbaada2e0 ("blk-throttle: prevent overflow while
+> calculating wait time"), setting a very-high bps_limit would probably
+> also cause this crash, no?)
+> 
+> Would it be possible to have a "check_mul_u64_u64_div_u64_overflow()",
+> where if the result doesn't fit in u64, we indicate (and let the
+> caller choose what to do? Here we should just return U64_MAX)?
+> 
+> Absent that, maybe we can take inspiration from the generic
+> mul_u64_u64_div_u64? (Forgive the paste)
+> 
+>   static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy_elapsed)
+>   {
+> +       /* Final result probably won't fit in u64 */
+> +       if (ilog2(bps_limit) + ilog2(jiffy_elapsed) - ilog2(HZ) > 62)
 
-Done.
+I'm not sure, but this condition looks necessary, but doesn't look
+sufficient, for example, jiffy_elapsed cound be greater than HZ, while
+ilog2(jiffy_elapsed) is equal to ilog2(HZ).
+
+Thanks,
+Kuai
+
+> +               return U64_MAX;
+>          return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64)HZ);
+>   }
+> 
+> .
+> 
+
