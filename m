@@ -2,105 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8616F7CB2C5
-	for <lists+cgroups@lfdr.de>; Mon, 16 Oct 2023 20:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBE07CB37F
+	for <lists+cgroups@lfdr.de>; Mon, 16 Oct 2023 21:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbjJPSnU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 Oct 2023 14:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
+        id S232365AbjJPTwf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Oct 2023 15:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJPSnT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Oct 2023 14:43:19 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2DE95
-        for <cgroups@vger.kernel.org>; Mon, 16 Oct 2023 11:43:17 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so8564674a12.0
-        for <cgroups@vger.kernel.org>; Mon, 16 Oct 2023 11:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697481796; x=1698086596; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aZ0ZrYffOwIERykWVa6KRaarkUZ2JSWpphezZN2YtPM=;
-        b=kAaakvXUQbABtmokJ/RUkRQDfv+r0whhspu9BQUxYskXYPfYGQoq2Ry0Mp/e5Onzpz
-         PMM3PcXJyp0/NkuUM7HT/9z44E9Ca3XPqVbSZBB2UTdpZNifIPl5LjgG6wBQ8AG2x+yO
-         9xqJOn5qKsuyr3o57SuvwPx9kmBKodku464a5DMGVhE6tjWpCB7WQKrNwhgEHGWYUex5
-         6l2PxX2u8VV03N4le/kQ9tTnD4FfAzRXqoBq041NzMVnHadxpAVsJP58R9bVIA+K2TFV
-         m+djX74TlQfCy0C5A0EA0IhN6+lOl86s5fHmeSlRj7q9xPzF8/6tYQIifXmAlN3iaqJe
-         fBnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697481796; x=1698086596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aZ0ZrYffOwIERykWVa6KRaarkUZ2JSWpphezZN2YtPM=;
-        b=Zrt7wX2NoxlJkjCZwfxEfqZJ2l6iVHnohRJkjgl/nBEkMowbYv5uiywlcjBLZj6fHj
-         eztPhvmILXLNP64BqcOPNg8qSuMHF9dIA/pnVX3dH2Nx0G3Q4F04rINTUkRza4i2wUDO
-         1FzzVkYVwUVQhicrKmcL3jqepAMO4fmot2ZrBtPDUeJc0ggozpjGpwUrta24GXBo8vaO
-         2253Pj7lYp/YGnjIKZEO6wqsb1FYlchSQoW2gBrQWhKXgRBUCN/C0tjHSL6Qdxw1xMMf
-         7fuR7TjGvHiGcNWWzYB0jMKF466KjKlUkveWYEN9qLh0gMs03U8tzhh5Y/apSWz7LuVz
-         57Kw==
-X-Gm-Message-State: AOJu0YzWFeLJZKLyZnqDTMF1K6k33RCUh0EmCrwsjqKayF+SjpP94/mC
-        6NF58tCdWewcQRtXLp0SLQc2q6ESpiswKBhufGnpTg==
-X-Google-Smtp-Source: AGHT+IHcJAnmkcuBDL7y5ZpP65UFgSMdET49K6xGRe4fwTypGO5gVyfv4ceeGWM+Ifjo5ROYf+94PVO8qSP4TGucYTY=
-X-Received: by 2002:a17:906:ef07:b0:9bd:e99b:82d2 with SMTP id
- f7-20020a170906ef0700b009bde99b82d2mr7535901ejs.9.1697481795750; Mon, 16 Oct
- 2023 11:43:15 -0700 (PDT)
+        with ESMTP id S232798AbjJPTwe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Oct 2023 15:52:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DA78F;
+        Mon, 16 Oct 2023 12:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697485952; x=1729021952;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=MggiAk4RnmF8RUencBb93AiXjdxf5PvxYAIUeWm3Oho=;
+  b=DPynDWUtImTpucq0bYCB8rOe4/1j+CsE47T1J4qmabedR6fW2g+1S2u1
+   2H5df9N+BOA8Fo2d5ybSJ08GNxNIed8dpuvxB8dJc4f/5FqyBIfRbdebX
+   ixYDgkgZK18L5Eh6cJ5NWH5F5fgI7xD4ozGKfNLKrKTOSGmLm9lclBWMS
+   uV95E3zS1/+E7az8m0Hh6CqFQBVzY4K3ZPEUpGnKnufL4dZx3gtXE7vBi
+   kzF23suJKWfAkoX65YsA8DcJFV4LeVusHVIGyueR6KdGwPfoMUbqJw6ad
+   p9untLpwSq+XFiAhEgyo0A9g+7Ll9Wh6T+LaLqJghlgz0B2ZHT2gx9Hgv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388485872"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="388485872"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 12:52:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="821693902"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="821693902"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 16 Oct 2023 12:52:29 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-13-haitao.huang@linux.intel.com>
+ <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+ <ZSSZaFrxvCvR1SOy@google.com>
+ <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
+ <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+Date:   Mon, 16 Oct 2023 14:52:23 -0500
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
- <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
- <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
- <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
- <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
- <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
- <CALvZod6cu6verk=vHVFrOUoA-gj_yBVzU9_vv7eUfcjhzfvtcA@mail.gmail.com>
- <CAJD7tkavJDMSZdwtfxUc67mNBSkrz7XCa_z8FGH0FGg6m4RuAA@mail.gmail.com> <20231014160831.73785b15e9b34eb6146d5497@linux-foundation.org>
-In-Reply-To: <20231014160831.73785b15e9b34eb6146d5497@linux-foundation.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 16 Oct 2023 11:42:35 -0700
-Message-ID: <CAJD7tkbSJL4sk8yG9H_kHhqAwZDZAS=6DzUUVHURDK3Ug9nCog@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Shakeel Butt <shakeelb@google.com>, michael@phoronix.com,
-        Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 4:08=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Thu, 12 Oct 2023 15:23:06 -0700 Yosry Ahmed <yosryahmed@google.com> wr=
-ote:
->
-> > Meanwhile, Andrew, could you please replace the commit log of this
-> > patch as follows for more updated testing info:
->
-> Done.
+On Mon, 16 Oct 2023 05:57:36 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Thanks!
+> On Thu, 2023-10-12 at 08:27 -0500, Haitao Huang wrote:
+>> On Tue, 10 Oct 2023 19:51:17 -0500, Huang, Kai <kai.huang@intel.com>  
+>> wrote:
+>> [...]
+>> > (btw, even you track VA/SECS pages in unreclaimable list, given they
+>> > both have
+>> > 'enclave' as the owner,  do you still need SGX_EPC_OWNER_ENCL and
+>> > SGX_EPC_OWNER_PAGE ?)
+>>
+>> Let me think about it, there might be also a way just track encl objects
+>> not unreclaimable pages.
+>>
+>> I still not get why we need kill the VM not just remove just enough  
+>> pages.
+>> Is it due to the static allocation not able to reclaim?
+>
+> We can choose to "just remove enough EPC pages".  The VM may or may not  
+> be
+> killed when it wants the EPC pages back, depending on whether the  
+> current EPC
+> cgroup can provide enough EPC pages or not.  And this depends on how we
+> implement the cgroup algorithm to reclaim EPC pages.
+>
+> One problem could be: for a EPC cgroup only has SGX VMs, you may end up  
+> with
+> moving EPC pages from one VM to another and then vice versa endlessly,
+
+This could be a valid use case though if people intend to share EPCs  
+between two VMs. Understand no one would be able to use VMs this way  
+currently with the static allocation.
+
+> because
+> you never really actually mark any VM to be dead just like OOM does to  
+> the
+> normal enclaves.
+>
+> From this point, you still need a way to kill a VM, IIUC.
+>
+> I think the key point of virtual EPC vs cgroup, as quoted from Sean,  
+> should be
+> "having sane, well-defined behavior".
+>
+> Does "just remove enough EPC pages" meet this?  If the problem mentioned  
+> above
+> can be avoided, I suppose so?  So if there's an easy way to achieve, I  
+> guess it
+> can be an option too.
+>
+> But for the initial support, IMO we are not looking for a perfect but yet
+> complicated solution.  I would say, from review's point of view, it's  
+> preferred
+> to have a simple implementation to achieve a not-prefect, but  
+> consistent, well-
+> defined behaviour.
+>
+> So to me looks killing the VM when cgroup cannot reclaim any more EPC  
+> pages is a
+> simple option.
+>
+> But I might have missed something, especially since middle of last week  
+> I have
+> been having fever and headache :-)
+>
+> So as mentioned above, you can try other alternatives, but please avoid
+> complicated ones.
+>
+> Also, I guess it will be helpful if we can understand the typical SGX  
+> app and/or
+> SGX VM deployment under EPC cgroup use case.  This may help us on  
+> justifying why
+> the EPC cgroup algorithm to select victim is reasonable.
+>
+
+
+ From this perspective, I think the current implementation is  
+"well-defined": EPC cgroup limits for VMs are only enforced at VM launch  
+time, not runtime. In practice,  SGX VM can be launched only with fixed  
+EPC size and all those EPCs are fully committed to the VM once launched.  
+Because of that, I imagine people are using VMs to primarily partition the  
+physical EPCs, i.e, the static size itself is the 'limit' for the workload  
+of a single VM and not expecting EPCs taken away at runtime.
+
+So killing does not really add much value for the existing usages IIUC.
+
+That said, I don't anticipate adding the enforcement of killing VMs at  
+runtime would break such usages as admin/user can simply choose to set the  
+limit equal to the static size to launch the VM and forget about it.
+
+Given that, I'll propose an add-on patch to this series as RFC and have  
+some feedback from community before we decide if that needs be included in  
+first version or we can skip it until we have EPC reclaiming for VMs.
+
+Thanks
+Haitao
+ 
