@@ -2,100 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D277B7CCC99
-	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 21:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3F27CD054
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 01:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344435AbjJQTvL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 15:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41270 "EHLO
+        id S234650AbjJQXV4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 19:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344424AbjJQTvK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 15:51:10 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282CBF0;
-        Tue, 17 Oct 2023 12:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GNBVHxO35CtDJJ50FQl58Qlyu6FwrHZDEfJe+KyOfnA=; b=TOLZFA3ZsXFSoHiXsJUWtNefxf
-        /7Ldgtep1APqXhU3Pnqp43XUP8SdedLg/FnZnEa23b65yJg1PfwulbjHBUlUTaUICa4TsIf6p6dZf
-        zVGDN0pNEzmeQFLKd0mQN/u8ANpEZVs+GsafaCNfu8XON4VcC/6GlURdiGwVltij/6p+JrNRqP66N
-        Ot4MY5I81RTajeTMxvIckOEqNf94el+KrpwOPumLy5wVHCrvO8B0HZ3w2LxgTiCZRNCYrPdYECmdl
-        yJtunmqBT9I9ddYUnyIH+5Bp6kTy7ZaMtLmUkYG7kqdRIIJ3hUHRbCCF97ijTRlTKUnW46xBK+4nq
-        +sYDDQ4Q==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qsq5R-0027ua-2y;
-        Tue, 17 Oct 2023 19:50:42 +0000
-Date:   Tue, 17 Oct 2023 20:50:41 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20231017195041.GQ800259@ZenIV>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230926093834.GB13806@lst.de>
- <20230926212515.GN800259@ZenIV>
- <20231002064646.GA1799@lst.de>
- <20231009215754.GL800259@ZenIV>
- <20231010-zulagen-bisschen-9657746c1fc0@brauner>
+        with ESMTP id S230219AbjJQXVz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 19:21:55 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF04892;
+        Tue, 17 Oct 2023 16:21:53 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b1e3a809so41668775ad.2;
+        Tue, 17 Oct 2023 16:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697584913; x=1698189713; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AsfyhFO7p0RUOzLnEBAeg12shRu5DCBIJmIbrYlrbQQ=;
+        b=ns0iD/hOCcWTWTlQVQcycHbUcZ1ZD0Zc7E/uQqm9vO7D5+obLV9YL1e3z+5O4fivBr
+         ZGamCI/SjnI3p1jNIjAl8wcr0g0HKHa9IMdInrIhKwHebYsDbzQ5tfU9CXLE6JTqKW6W
+         piq/BFsAS81fPEl5uP29w9DhrWzxWu2+MqjAArHrccfIQxG2EUOj2zglF1rizE6epjjm
+         o2cYoowY0/Yzwp+xRL4+7HM5QvDb1lWc6oKSmwuhEKYDYh84vKhlve8SE9FGBVTfgLlA
+         7bYcui2qM6+/Esh74ufzBrzPjXVsKMWW+P1BITsXDkZB35QWJ1gXKCfSlC2xJo59OdgM
+         3S6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697584913; x=1698189713;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AsfyhFO7p0RUOzLnEBAeg12shRu5DCBIJmIbrYlrbQQ=;
+        b=s30EHQe2I0FXHeqUTCjhlHRnKvL9Lzzhc/F9xYcMay5g2eKec+8UgFjkS0jisvYPOR
+         BXZQQqZsFJr90A2AtjOuN4Rti/GO9HIVKmBmBV0AOmNwtohl1ow+e0i0LFAUJU3Uj7kk
+         spndV4uOM0PdCYgMjks+lB8J8CKVm/fnS26DmSaS18WuN0BD7HNweIGyZgMSS3L8Dg85
+         ZQBe5guM7Ozsp1lehBqyObWnBcs4qStROLHod9biv845nqj8fFN7ZRWCwC43+5yvI//p
+         6a1j+URdx9AoGTO4Aons06MiRsOxdZAMI4JBa3ADc2mMbCg01K4UESX+xR4mGaiT6Qmc
+         LcfA==
+X-Gm-Message-State: AOJu0YxmXurtUOtrBI4HlSGACj14D/imKIuTPN7b9X3153ylya1uP9F5
+        bo844juf2woMBT8ngSYe2TQ=
+X-Google-Smtp-Source: AGHT+IEB1bkpliZr4/0wwEWk35bjMHS8jcWP7je173r3nrnISt5OHU2yyH0fIdSym0BtiLsCs5IyAQ==
+X-Received: by 2002:a17:902:e5c6:b0:1ca:8abd:6b52 with SMTP id u6-20020a170902e5c600b001ca8abd6b52mr4311445plf.69.1697584913016;
+        Tue, 17 Oct 2023 16:21:53 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-003.fbsv.net. [2a03:2880:ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id t9-20020a1709028c8900b001b8a00d4f7asm2126736plo.9.2023.10.17.16.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 16:21:52 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Subject: [PATCH v3 0/5] workload-specific and memory pressure-driven zswap writeback
+Date:   Tue, 17 Oct 2023 16:21:47 -0700
+Message-Id: <20231017232152.2605440-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010-zulagen-bisschen-9657746c1fc0@brauner>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:44:09AM +0200, Christian Brauner wrote:
-> > list removal should happen after generic_shutdown_super().  Sure, you
-> > want the superblock to serve as bdev holder, which leads to fun
-> > with -EBUSY if mount comes while umount still hadn't closed the
-> > device.  I suspect that it would make a lot more sense to
-> > introduce an intermediate state - "held, but will be released
-> > in a short while".  You already have something similar, but
-> > only for the entire disk ->bd_claiming stuff.
-> > 
-> > Add a new primitive (will_release_bdev()), so that attempts to
-> > claim the sucker will wait until it gets released instead of
-> > failing with -EBUSY.  And do *that* before generic_shutdown_super()
-> > when unmounting something that is block-based.  Allows to bring
-> > the list removal back where it used to be, no UAF at all...
-> 
-> This is essentially equivalent to what is done right now. Only that this
-> would then happen in the block layer. I'm not sure it would buy us that
-> much. In all likelyhood we just get a range of other issues to fix.
+Changelog:
+v3:
+   * Add a patch to export per-cgroup zswap writeback counters
+   * Add a patch to update zswap's kselftest
+   * Separate the new list_lru functions into its own prep patch
+   * Do not start from the top of the hierarchy when encounter a memcg
+     that is not online for the global limit zswap writeback (patch 2)
+     (suggested by Yosry Ahmed)
+   * Do not remove the swap entry from list_lru in
+     __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
+   * Removed a redundant zswap pool getting (patch 2)
+     (reported by Ryan Roberts)
+   * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
+     (patch 5) (suggested by Yosry Ahmed)
+   * Remove the per-cgroup zswap shrinker knob (patch 5)
+     (suggested by Yosry Ahmed)
+v2:
+   * Fix loongarch compiler errors
+   * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
 
-The difference is, we separate the "close the block device" (which
-can't be done until we stopped generating any IO on it, obviously)
-from "tell anyone who wants to claim the sucker that we are going
-to release it and they just need to wait".  That can be done before
-generic_shutdown_super(), or from it (e.g. from ->put_super()),
-untangling the ordering mess.
+There are currently several issues with zswap writeback:
+
+1. There is only a single global LRU for zswap, making it impossible to
+   perform worload-specific shrinking - an memcg under memory pressure
+   cannot determine which pages in the pool it owns, and often ends up
+   writing pages from other memcgs. This issue has been previously
+   observed in practice and mitigated by simply disabling
+   memcg-initiated shrinking:
+
+   https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
+
+   But this solution leaves a lot to be desired, as we still do not
+   have an avenue for an memcg to free up its own memory locked up in
+   the zswap pool.
+
+2. We only shrink the zswap pool when the user-defined limit is hit.
+   This means that if we set the limit too high, cold data that are
+   unlikely to be used again will reside in the pool, wasting precious
+   memory. It is hard to predict how much zswap space will be needed
+   ahead of time, as this depends on the workload (specifically, on
+   factors such as memory access patterns and compressibility of the
+   memory pages).
+
+This patch series solves these issues by separating the global zswap
+LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+(i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+new shrinker does not have any parameter that must be tuned by the
+user, and can be opted in or out on a per-memcg basis.
+
+As a proof of concept, we ran the following synthetic benchmark:
+build the linux kernel in a memory-limited cgroup, and allocate some
+cold data in tmpfs to see if the shrinker could write them out and
+improved the overall performance. Depending on the amount of cold data
+generated, we observe from 14% to 35% reduction in kernel CPU time used
+in the kernel builds.
+
+Domenico Cerasuolo (3):
+  zswap: make shrinking memcg-aware
+  mm: memcg: add per-memcg zswap writeback stat
+  selftests: cgroup: update per-memcg zswap writeback selftest
+
+Nhat Pham (2):
+  mm: list_lru: allow external numa node and cgroup tracking
+  zswap: shrinks zswap pool based on memory pressure
+
+ Documentation/admin-guide/mm/zswap.rst      |   7 +
+ include/linux/list_lru.h                    |  38 +++
+ include/linux/memcontrol.h                  |   7 +
+ include/linux/mmzone.h                      |  14 +
+ mm/list_lru.c                               |  43 ++-
+ mm/memcontrol.c                             |  15 +
+ mm/mmzone.c                                 |   3 +
+ mm/swap.h                                   |   3 +-
+ mm/swap_state.c                             |  38 ++-
+ mm/zswap.c                                  | 335 ++++++++++++++++----
+ tools/testing/selftests/cgroup/test_zswap.c |  74 +++--
+ 11 files changed, 485 insertions(+), 92 deletions(-)
+
+-- 
+2.34.1
