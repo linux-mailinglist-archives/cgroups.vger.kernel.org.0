@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F117CC383
+	by mail.lfdr.de (Postfix) with ESMTP id C7EBD7CC385
 	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 14:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbjJQMqL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 08:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S234843AbjJQMqN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 08:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234939AbjJQMqJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 08:46:09 -0400
+        with ESMTP id S234850AbjJQMqL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 08:46:11 -0400
 Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F7E10E;
-        Tue, 17 Oct 2023 05:46:07 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-581de3e691dso226036eaf.3;
-        Tue, 17 Oct 2023 05:46:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AB2FB;
+        Tue, 17 Oct 2023 05:46:09 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57bca5b9b0aso2950763eaf.3;
+        Tue, 17 Oct 2023 05:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697546767; x=1698151567; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697546769; x=1698151569; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yCXtSvPvz316d1Voc+hvRatGwRHZV08vgvHRUKG7YWA=;
-        b=E0EWeZq6RgytvYJvN0y+Ga/WkK88rEYn8Lr8Rqt5vb4L1Ep0p6901ta9lrpYVNnpC3
-         IBoPqV+Ibm9CpSQZvUVK7Cm2TkOHROuO03+jBaPuoygUANzE07jrCZfp+uj+CPLAURct
-         RzBt4xm4Nr2o3i/VyAu/DqBMF8N1DIoSjgqscDBHwE6gdBnlW7NXD/aEXHsQhG61fXWl
-         cL7GuPDLFAVVXCIZnFYZOAHkFlbTO632PZpkSIyobr4nvqTyaKflJ7igOM4KiSgaLiKm
-         bv5AIidOprjR9hoDVkxo0BKjHDQFDeWRZEqjw1+S7GI6SVyFu6UlWQnIk0noxc2Hm32q
-         JkEg==
+        bh=TH+izS6IgAWJi6hgilQUZOMAoXXgYkaiGHHHch4343w=;
+        b=Shb7bDIKpkX13ahbT3Wu08UXssFoOBiGzVsCW1UdYv+L7dDcpVylFhiVkzzDJoXLae
+         zHRFsykCKknPNzrzIP+37LVeim4RhDSt8EyuQO7UOvCbP0uYeLbCzRGihpoLcRZzWsKI
+         OpKdIQTzklapeFVsEwjsk1LFr750FLCjcIY4EyIpIQX9Nz3d+HPqfd+sb5M9ZCQCQCbp
+         7NEMwAqeOTS13rgnOGfWmdZdEmWdmE4IzXv8ndZ7xzK+QraRAed2koSumFVwES0CcuuN
+         226OP/qxjGxVHdaQCZ9PsVtwpXCAjE7hqxUW5A8XRruMcaGi5lQAfYwzRAzu5guoiDYi
+         pMjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697546767; x=1698151567;
+        d=1e100.net; s=20230601; t=1697546769; x=1698151569;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yCXtSvPvz316d1Voc+hvRatGwRHZV08vgvHRUKG7YWA=;
-        b=O7QvY/snbobqJ3/l+NCmGLDTm1eS7v7Cd1rwLQABsAV3zLDvSDG6Y6HxM7t2dDbwLl
-         tvtQZOiO38txENVY5EQx6QwbCbDpziPhDzlkuY0lNeIsn0zvu+88WNnAy89BXBjvNA0O
-         uu8d6mjZw2Uo9KB+CPYhDKpRzBCb3+/5XaRWmT/TdQEUxyHdephA0jg+JNEUZjBaOTUG
-         8JW57WUWf2mwcXm+vvlixKRzkh31pV1gtYNVqVuYPGRZ0tIz+dYVXEs+Y3EJKbLd4Tax
-         0lb2vtRFMzRIAotVA1ZoHTm6C7GPGEIA/i1VbRZMHTLYuzk079CaifTQ84Tifn7ZAXN8
-         /2Ug==
-X-Gm-Message-State: AOJu0YwkToMh8W2yY28N/ljGVVixJh8t27iwlEc/P695ySdBojqEVgSp
-        EDbeF3XIElvA6pOnsdDxXBvDcKc7/NOEuSpJ
-X-Google-Smtp-Source: AGHT+IEEJqflxC8e3DYCx6Y5qEdFTsXJBr8j9YkChDHIK4M0U4dIb2kAryppGN93U4HIcrSrwzxp0A==
-X-Received: by 2002:a05:6359:100e:b0:166:cc78:ee9b with SMTP id ib14-20020a056359100e00b00166cc78ee9bmr2385097rwb.8.1697546766634;
-        Tue, 17 Oct 2023 05:46:06 -0700 (PDT)
+        bh=TH+izS6IgAWJi6hgilQUZOMAoXXgYkaiGHHHch4343w=;
+        b=mAHqAltRGLMUKnapH/29GYvUOjPvUKeK83GgVB4EZejQxz5apo9cJ6J5oH3ZBtIrX9
+         OI8vjPUVgRdntxKJOzn0LUIkTe2OWomuxhV09gt7GEnAmhTu1wy/mK0U4EXCYB4TaQjM
+         xn/my5W25gkVl1pqpKzM7roWAG1gyz/62n00BYTTZl9wwpR6gz9tHwsDGXZ20HbMO7iP
+         zh0e8mMQrArrFs+2YhIsSWd184XNISQ6PwjBqQ6eG+ZQqz2nFYGWxzfnOpV+wPHZb69j
+         MwRODkJN2/2vdckgtQNsyIcFrSzwE2nS9T+TUNaeU+0Xd5/9y0rr3SWBeheyqNZ4EaRz
+         3WHg==
+X-Gm-Message-State: AOJu0YwYzrY4UqHYRe5s6TIlVKjrHb4tgLZmXfHhaSTCISxbTtQU5ewk
+        kNLMQ1JbOmcMbt30KfIRcnM=
+X-Google-Smtp-Source: AGHT+IHom0u3EVjkJF7bWSDQ7AT/KDYUsJY1p0g4trXbL5i3GhbvxiGdUHqpMjLfBe5Dqp2kbJ4BYw==
+X-Received: by 2002:a05:6359:d0f:b0:133:595:1c with SMTP id gp15-20020a0563590d0f00b001330595001cmr1849779rwb.31.1697546768245;
+        Tue, 17 Oct 2023 05:46:08 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:3b2:5400:4ff:fe9b:d21b])
-        by smtp.gmail.com with ESMTPSA id fa36-20020a056a002d2400b006bdf4dfbe0dsm1375595pfb.12.2023.10.17.05.46.05
+        by smtp.gmail.com with ESMTPSA id fa36-20020a056a002d2400b006bdf4dfbe0dsm1375595pfb.12.2023.10.17.05.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 05:46:06 -0700 (PDT)
+        Tue, 17 Oct 2023 05:46:07 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -58,9 +58,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         mkoutny@suse.com, sinquersw@gmail.com
 Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup root_list RCU safe
-Date:   Tue, 17 Oct 2023 12:45:38 +0000
-Message-Id: <20231017124546.24608-2-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next v2 2/9] cgroup: Eliminate the need for cgroup_mutex in proc_cgroup_show()
+Date:   Tue, 17 Oct 2023 12:45:39 +0000
+Message-Id: <20231017124546.24608-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231017124546.24608-1-laoar.shao@gmail.com>
 References: <20231017124546.24608-1-laoar.shao@gmail.com>
@@ -76,115 +76,78 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-At present, when we perform operations on the cgroup root_list, we must
-hold the cgroup_mutex, which is a relatively heavyweight lock. In reality,
-we can make operations on this list RCU-safe, eliminating the need to hold
-the cgroup_mutex during traversal. Modifications to the list only occur in
-the cgroup root setup and destroy paths, which should be infrequent in a
-production environment. In contrast, traversal may occur frequently.
-Therefore, making it RCU-safe would be beneficial.
+The cgroup root_list is already RCU-safe. Therefore, we can replace the
+cgroup_mutex with the RCU read lock in some particular paths. This change
+will be particularly beneficial for frequent operations, such as
+`cat /proc/self/cgroup`, in a cgroup1-based container environment.
+
+I did stress tests with this change, as outlined below
+(with CONFIG_PROVE_RCU_LIST enabled):
+
+- Continuously mounting and unmounting named cgroups in some tasks,
+  for example:
+
+  cgrp_name=$1
+  while true
+  do
+      mount -t cgroup -o none,name=$cgrp_name none /$cgrp_name
+      umount /$cgrp_name
+  done
+
+- Continuously triggering proc_cgroup_show() in some tasks concurrently,
+  for example:
+  while true; do cat /proc/self/cgroup > /dev/null; done
+
+They can ran successfully after implementing this change, with no RCU
+warnings in dmesg. It's worth noting that this change can also catch
+deleted cgroups, as demonstrated by running the following task at the
+same time:
+
+  while true; do grep deleted /proc/self/cgroup; done
+
+Results in output like:
+
+  7995:name=cgrp2: (deleted)
+  8594:name=cgrp1: (deleted)
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/cgroup-defs.h     |  1 +
- kernel/cgroup/cgroup-internal.h |  3 ++-
- kernel/cgroup/cgroup.c          | 17 ++++++++++-------
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ kernel/cgroup/cgroup.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index f1b3151ac30b..8505eeae6e41 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -558,6 +558,7 @@ struct cgroup_root {
- 
- 	/* A list running through the active hierarchies */
- 	struct list_head root_list;
-+	struct rcu_head rcu;
- 
- 	/* Hierarchy-specific flags */
- 	unsigned int flags;
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index c56071f150f2..321af20ea15f 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -170,7 +170,8 @@ extern struct list_head cgroup_roots;
- 
- /* iterate across the hierarchies */
- #define for_each_root(root)						\
--	list_for_each_entry((root), &cgroup_roots, root_list)
-+	list_for_each_entry_rcu((root), &cgroup_roots, root_list,	\
-+				!lockdep_is_held(&cgroup_mutex))
- 
- /**
-  * for_each_subsys - iterate all enabled cgroup subsystems
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 1fb7f562289d..bae8f9f27792 100644
+index bae8f9f27792..30bdb3bf1dcd 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -1313,7 +1313,7 @@ static void cgroup_exit_root_id(struct cgroup_root *root)
+@@ -6256,7 +6256,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 	if (!buf)
+ 		goto out;
  
- void cgroup_free_root(struct cgroup_root *root)
- {
--	kfree(root);
-+	kfree_rcu(root, rcu);
- }
+-	cgroup_lock();
++	rcu_read_lock();
+ 	spin_lock_irq(&css_set_lock);
  
- static void cgroup_destroy_root(struct cgroup_root *root)
-@@ -1346,7 +1346,7 @@ static void cgroup_destroy_root(struct cgroup_root *root)
+ 	for_each_root(root) {
+@@ -6279,6 +6279,10 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 		seq_putc(m, ':');
+ 
+ 		cgrp = task_cgroup_from_root(tsk, root);
++		if (!cgrp) {
++			seq_puts(m, " (deleted)\n");
++			continue;
++		}
+ 
+ 		/*
+ 		 * On traditional hierarchies, all zombie tasks show up as
+@@ -6311,7 +6315,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 	retval = 0;
+ out_unlock:
  	spin_unlock_irq(&css_set_lock);
- 
- 	if (!list_empty(&root->root_list)) {
--		list_del(&root->root_list);
-+		list_del_rcu(&root->root_list);
- 		cgroup_root_count--;
- 	}
- 
-@@ -1386,13 +1386,15 @@ static inline struct cgroup *__cset_cgroup_from_root(struct css_set *cset,
- 		}
- 	}
- 
--	BUG_ON(!res_cgroup);
-+	WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
- 	return res_cgroup;
- }
- 
- /*
-  * look up cgroup associated with current task's cgroup namespace on the
-- * specified hierarchy
-+ * specified hierarchy. Umount synchronization is ensured via VFS layer,
-+ * so we don't have to hold cgroup_mutex to prevent the root from being
-+ * destroyed.
-  */
- static struct cgroup *
- current_cgns_cgroup_from_root(struct cgroup_root *root)
-@@ -1445,7 +1447,6 @@ static struct cgroup *current_cgns_cgroup_dfl(void)
- static struct cgroup *cset_cgroup_from_root(struct css_set *cset,
- 					    struct cgroup_root *root)
- {
--	lockdep_assert_held(&cgroup_mutex);
- 	lockdep_assert_held(&css_set_lock);
- 
- 	return __cset_cgroup_from_root(cset, root);
-@@ -1453,7 +1454,9 @@ static struct cgroup *cset_cgroup_from_root(struct css_set *cset,
- 
- /*
-  * Return the cgroup for "task" from the given hierarchy. Must be
-- * called with cgroup_mutex and css_set_lock held.
-+ * called with css_set_lock held to prevent task's groups from being modified.
-+ * Must be called with either cgroup_mutex or rcu read lock to prevent the
-+ * cgroup root from being destroyed.
-  */
- struct cgroup *task_cgroup_from_root(struct task_struct *task,
- 				     struct cgroup_root *root)
-@@ -2097,7 +2100,7 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
- 	 * care of subsystems' refcounts, which are explicitly dropped in
- 	 * the failure exit path.
- 	 */
--	list_add(&root->root_list, &cgroup_roots);
-+	list_add_rcu(&root->root_list, &cgroup_roots);
- 	cgroup_root_count++;
- 
- 	/*
+-	cgroup_unlock();
++	rcu_read_unlock();
+ 	kfree(buf);
+ out:
+ 	return retval;
 -- 
 2.30.1 (Apple Git-130)
 
