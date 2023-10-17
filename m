@@ -2,110 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335F17CC1FC
-	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 13:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D4C7CC382
+	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 14:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbjJQLtW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 07:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S234787AbjJQMqK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 08:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbjJQLtW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 07:49:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211CEED;
-        Tue, 17 Oct 2023 04:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697543361; x=1729079361;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yC4cz3ihcA96cBD2ueuoEZVThf+uaD16uw3EeuzEiU8=;
-  b=mfNxvWYYCfN3N40Rzt7Hg2goMqYMrjPrv8joUAymZNroJoksZamWW47T
-   ojak8nHEEhIeeCktfEchI/gHc67O3zwBI3AEMtDMAyt+5/SPuUp+q94HZ
-   jPJTCdH/U38VadNjeyilku81z6K6liEDw5BazufvnII72YwnrURJkVJw5
-   t6DvUgKOLopi3bIp/QeXvBR2Lt8NLpNlKNzJqYgqCQjZenvRruJVqMJYB
-   FKDAXa3+HDQqbRknfjr3mUR9l7TavIA8OEb8J6pmAGFuV+q6+Kg3f1asw
-   KqVA7WJv55bdtZwwX05NT2396Zl1v3+yecx/fCHJUCoGAP7EitpO+7L76
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365113163"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="365113163"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 04:49:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785457902"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="785457902"
-Received: from kkoning-desk.ger.corp.intel.com (HELO himmelriiki) ([10.249.37.197])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 04:49:13 -0700
-Date:   Tue, 17 Oct 2023 14:49:04 +0300
-From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Bo Zhang <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        Zhiquan1 Li <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Message-ID: <ZS50sCxte6fz0iqv@himmelriiki>
-References: <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <ZSSZaFrxvCvR1SOy@google.com>
- <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
- <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
- <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
- <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <ZS2r7-EAEovpV4BN@google.com>
+        with ESMTP id S234888AbjJQMqI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 08:46:08 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933F5100;
+        Tue, 17 Oct 2023 05:46:05 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so3923363b3a.1;
+        Tue, 17 Oct 2023 05:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697546765; x=1698151565; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1PEAO9uUD2HLuTz2oxUS0AZ8D9nP4m2XuUuNZk6pCg=;
+        b=bqZEXx3WcCNUtj9KWOXSbfGU8zCtnIRC1YfXT0JCnjX7Pm2wpwlYPEcm7XARMSK3Bw
+         c8AUVoUP5rVakfkNsgldPSUN4imxp1op/FOt1Ql0PtZeHHeUHwqgHOFYa5O5L96B+Z4J
+         XgGbGQyCQrqXLf/UdxpDuhG9gnyYKtdDCT2IJVra7OeHjjL6cxYjo85I0NetoucueGvC
+         QBV56rc107pWYUGD9IrOOHutD4hEZwvHZ7gkY/kNtCWAQZbVZVjtfufirsCpDpDJ/02t
+         lS7bNT4oDiDPiHJMn0sLEIfS7NAV+yf1wounLTyYw5am5MdwXCD2o+yoKAs2sgTQaTgj
+         w2vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697546765; x=1698151565;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u1PEAO9uUD2HLuTz2oxUS0AZ8D9nP4m2XuUuNZk6pCg=;
+        b=oJ1IwOjvGl5Q0fmwjbXw5IL7bAnQn0DUiR3H0NnL2FOQqxpGOI52zC0qJm07ed2HXm
+         /75HpvEZsLrfTO+wqCNGZpROaKWMRt0ZrMly5OSBF77xOTZxhuQTHfrVJ2tewhcB1Wvg
+         rajXOjt1vWduErguwViN3EWUBHe9drCyZR9WGnUykUmRElBI56pFtFjFfmiKVRyQF3iC
+         +uJKe/xMGn+pzUCI6TdEkA9ncO5ltMslfCJLSf142POcDuN2yRPAAzs7h5AfZ/a5dUrk
+         G2ZTIO+pYjZH3Vte9sI7KiaHduYzbw3bdNTC486aqVOd2M2YeHjTv/EtySyGSj9zclIM
+         cTOQ==
+X-Gm-Message-State: AOJu0Yxn3NeBFX/xuEmNhaqM/vLKZj1VpbSTMGBRyJbK2dRKVTam9dLe
+        cZJEOlHa6iJgldcOi8lX2X71B9vcHzYKHTSq
+X-Google-Smtp-Source: AGHT+IEvshRN7yOizLfUI87HlJjGU3wxGTUolki6aZMbM1cow/RuRe22bWjGehZk1mvvGdzXmCTtrg==
+X-Received: by 2002:a05:6a00:2355:b0:6b2:6835:2a7f with SMTP id j21-20020a056a00235500b006b268352a7fmr2448876pfj.22.1697546764949;
+        Tue, 17 Oct 2023 05:46:04 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac01:3b2:5400:4ff:fe9b:d21b])
+        by smtp.gmail.com with ESMTPSA id fa36-20020a056a002d2400b006bdf4dfbe0dsm1375595pfb.12.2023.10.17.05.46.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 05:46:04 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com,
+        mkoutny@suse.com, sinquersw@gmail.com
+Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next v2 0/9] bpf, cgroup: Add BPF support for cgroup1 hierarchy 
+Date:   Tue, 17 Oct 2023 12:45:37 +0000
+Message-Id: <20231017124546.24608-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS2r7-EAEovpV4BN@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 02:32:31PM -0700, Sean Christopherson wrote:
-> Genuinely curious, who is asking for EPC cgroup support that *isn't* running VMs?
+Currently, BPF is primarily confined to cgroup2, with the exception of
+cgroup_iter, which supports cgroup1 fds. Unfortunately, this limitation
+prevents us from harnessing the full potential of BPF within cgroup1
+environments.
 
-People who work with containers: [1], [2]. 
+In our endeavor to seamlessly integrate BPF within our Kubernetes
+environment, which relies on cgroup1, we have been exploring the
+possibility of transitioning to cgroup2. While this transition is
+forward-looking, it poses challenges due to the necessity for numerous
+applications to adapt.
 
-> AFAIK, these days, SGX is primarily targeted at cloud.  I assume virtual EPC is
-> the primary use case for an EPC cgroup.
+While we acknowledge that cgroup2 represents the future, we also recognize
+that such transitions demand time and effort. As a result, we are
+considering an alternative approach. Instead of migrating to cgroup2, we
+are contemplating modifications to the BPF kernel code to ensure
+compatibility with cgroup1. These adjustments appear to be relatively
+minor, making this option more feasible.
 
-The common setup is that a cloud VM instance with vEPC is created and then
-several SGX enclave containers are run simultaneously on that instance. EPC
-cgroups is used to ensure that each container gets their own share of EPC
-(and any attempts to go beyond the limit is reclaimed and charged from
-the container's memcg). The same containers w/ enclaves use case is
-applicable to baremetal also, though.
+As discussed with Tejun[1], it has been determined that tying the interface
+directly to the cgroup1 hierarchies is acceptable. As a result, this
+patchset introduces cgroup1-only interfaces that operate with both
+hierarchy ID and cgroup ID as parameters.
 
-As far as Kubernetes orchestrated containers are concerned, "in-place" resource
-scaling is still in very early stages which means that the cgroups values are
-adjusted by *re-creating* the container. The hierarchies are also built
-such that there's no mix of VMs w/ vEPC and enclaves in the same tree.
+Within this patchset, a new cgroup1-only interface have been introduced,
+which is also suggested by Tejun.
 
-Mikko
+- [bpf_]task_get_cgroup1_within_hierarchy
+  Acquires the associated cgroup of a task within a specific cgroup1
+  hierarchy. The cgroup1 hierarchy is identified by its hierarchy ID.
 
-[1] https://lore.kernel.org/linux-sgx/20221202183655.3767674-1-kristen@linux.intel.com/T/#m6d1c895534b4c0636f47c2d1620016b4c362bb9b
-[2] https://lore.kernel.org/linux-sgx/20221202183655.3767674-1-kristen@linux.intel.com/T/#m37600e457b832feee6e8346aa74dcff8f21965f8
+This new kfunc enables the tracing of tasks within a designated container
+or its ancestor cgroup directory in BPF programs. Additionally, it is
+capable of operating on named cgroups, providing valuable utility for
+hybrid cgroup mode scenarios.
+
+To enable the use of this new kfunc in non-sleepable contexts, we need to
+eliminate the reliance on the cgroup_mutex. Consequently, the cgroup
+root_list is made RCU-safe, allowing us to replace the cgroup_mutex with
+RCU read lock in specific paths. This enhancement can also bring
+benefits to common operations in a production environment, such as
+`cat /proc/self/cgroup`.
+
+[1]. https://lwn.net/ml/cgroups/ZRHU6MfwqRxjBFUH@slm.duckdns.org/
+
+Changes:
+- RFC v1 -> RFC v2:
+  - Introduce a new kunc to get cgroup kptr instead of getting the cgrp ID
+    (Tejun)
+  - Eliminate the cgroup_mutex by making cgroup root_list RCU-safe, as
+    disccussed with Michal 
+- RFC v1: bpf, cgroup: Add BPF support for cgroup1 hierarchy
+  https://lwn.net/Articles/947130/
+- bpf, cgroup: Add bpf support for cgroup controller
+  https://lwn.net/Articles/945318/
+- bpf, cgroup: Enable cgroup_array map on cgroup1
+  https://lore.kernel.org/bpf/20230903142800.3870-1-laoar.shao@gmail.com
+
+Yafang Shao (9):
+  cgroup: Make operations on the cgroup root_list RCU safe
+  cgroup: Eliminate the need for cgroup_mutex in proc_cgroup_show()
+  cgroup: Add a new helper for cgroup1 hierarchy
+  bpf: Add a new kfunc for cgroup1 hierarchy
+  selftests/bpf: Fix issues in setup_classid_environment()
+  selftests/bpf: Add parallel support for classid
+  selftests/bpf: Add a new cgroup helper get_classid_cgroup_id()
+  selftests/bpf: Add a new cgroup helper get_cgroup_hierarchy_id()
+  selftests/bpf: Add selftests for cgroup1 hierarchy
+
+ include/linux/cgroup-defs.h                   |   1 +
+ include/linux/cgroup.h                        |   6 +-
+ kernel/bpf/helpers.c                          |  20 +++
+ kernel/cgroup/cgroup-internal.h               |   4 +-
+ kernel/cgroup/cgroup-v1.c                     |  33 ++++
+ kernel/cgroup/cgroup.c                        |  25 ++-
+ tools/testing/selftests/bpf/cgroup_helpers.c  | 113 +++++++++++--
+ tools/testing/selftests/bpf/cgroup_helpers.h  |   4 +-
+ .../bpf/prog_tests/cgroup1_hierarchy.c        | 159 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/cgroup_v1v2.c    |   2 +-
+ .../bpf/progs/test_cgroup1_hierarchy.c        |  73 ++++++++
+ 11 files changed, 409 insertions(+), 31 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
+
+-- 
+2.30.1 (Apple Git-130)
+
