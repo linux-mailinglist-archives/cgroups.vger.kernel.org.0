@@ -2,193 +2,172 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB0F7CCA92
-	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 20:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81107CCB4A
+	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 20:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343653AbjJQSZ7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 14:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
+        id S232380AbjJQSyw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 14:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344088AbjJQSZ6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 14:25:58 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D32C09E;
-        Tue, 17 Oct 2023 11:25:55 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FBC02F4;
-        Tue, 17 Oct 2023 11:26:36 -0700 (PDT)
-Received: from [10.57.66.147] (unknown [10.57.66.147])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78A483F5A1;
-        Tue, 17 Oct 2023 11:25:53 -0700 (PDT)
-Message-ID: <0dd0bedf-a6de-4176-8c2e-6abab2aed3fc@arm.com>
-Date:   Tue, 17 Oct 2023 19:25:52 +0100
+        with ESMTP id S232228AbjJQSyv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 14:54:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EC8C6;
+        Tue, 17 Oct 2023 11:54:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0881421CFC;
+        Tue, 17 Oct 2023 18:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697568888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WV8+QfL+W0GjUUx4DVAHsFccb/fwVlTGl0IqfxdfoSI=;
+        b=hLnG6JFP3CdGIUwngJLGTg1Pjd+QkNnRPjs0lMTnDR4yiNmTTwaFJrGgiaiyQNDd+27Qk1
+        MhoccU3MgS2tABD7xx+ADwcnn25XXp4MRS5pptOW6luVxMfvx8ob50SVQHOaiM0KDb1r2b
+        qhTrQ9Kg8OlKfpwVZg9X2sGHNiJfg9M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB4C913584;
+        Tue, 17 Oct 2023 18:54:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lHYZKXfYLmWmIgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 17 Oct 2023 18:54:47 +0000
+Date:   Tue, 17 Oct 2023 20:54:46 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+Message-ID: <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-Content-Language: en-GB
-To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, yosryahmed@google.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20230919171447.2712746-1-nphamcs@gmail.com>
- <20230919171447.2712746-2-nphamcs@gmail.com>
- <21606fe5-fb9b-4d37-98ab-38c96819893b@arm.com>
- <CA+CLi1iPK8PS8KFH=VtiZ=mMb8xqn6UOQg3Cj=0eegg+bjrX2w@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CA+CLi1iPK8PS8KFH=VtiZ=mMb8xqn6UOQg3Cj=0eegg+bjrX2w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="d2qvdlt5oh6ne5ty"
+Content-Disposition: inline
+In-Reply-To: <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -12.70
+X-Spamd-Result: default: False [-12.70 / 50.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.20)[multipart/signed,text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[21];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:~];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 17/10/2023 18:56, Domenico Cerasuolo wrote:
-> 
-> 
-> On Tue, Oct 17, 2023 at 7:44 PM Ryan Roberts <ryan.roberts@arm.com
-> <mailto:ryan.roberts@arm.com>> wrote:
-> 
->     On 19/09/2023 18:14, Nhat Pham wrote:
->     > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com
->     <mailto:cerasuolodomenico@gmail.com>>
->     >
->     > Currently, we only have a single global LRU for zswap. This makes it
->     > impossible to perform worload-specific shrinking - an memcg cannot
->     > determine which pages in the pool it owns, and often ends up writing
->     > pages from other memcgs. This issue has been previously observed in
->     > practice and mitigated by simply disabling memcg-initiated shrinking:
->     >
->     >
->     https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
->     <https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u>
->     >
->     > This patch fully resolves the issue by replacing the global zswap LRU
->     > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
->     >
->     > a) When a store attempt hits an memcg limit, it now triggers a
->     >    synchronous reclaim attempt that, if successful, allows the new
->     >    hotter page to be accepted by zswap.
->     > b) If the store attempt instead hits the global zswap limit, it will
->     >    trigger an asynchronous reclaim attempt, in which an memcg is
->     >    selected for reclaim in a round-robin-like fashion.
->     >
->     > Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com
->     <mailto:cerasuolodomenico@gmail.com>>
->     > Co-developed-by: Nhat Pham <nphamcs@gmail.com <mailto:nphamcs@gmail.com>>
->     > Signed-off-by: Nhat Pham <nphamcs@gmail.com <mailto:nphamcs@gmail.com>>
->     > ---
->     >  include/linux/list_lru.h   |  39 +++++++
->     >  include/linux/memcontrol.h |   5 +
->     >  include/linux/zswap.h      |   9 ++
->     >  mm/list_lru.c              |  46 ++++++--
->     >  mm/swap_state.c            |  19 ++++
->     >  mm/zswap.c                 | 221 +++++++++++++++++++++++++++++--------
->     >  6 files changed, 287 insertions(+), 52 deletions(-)
->     >
-> 
->     [...]
-> 
->     > @@ -1199,8 +1272,10 @@ bool zswap_store(struct folio *folio)
->     >       struct scatterlist input, output;
->     >       struct crypto_acomp_ctx *acomp_ctx;
->     >       struct obj_cgroup *objcg = NULL;
->     > +     struct mem_cgroup *memcg = NULL;
->     >       struct zswap_pool *pool;
->     >       struct zpool *zpool;
->     > +     int lru_alloc_ret;
->     >       unsigned int dlen = PAGE_SIZE;
->     >       unsigned long handle, value;
->     >       char *buf;
->     > @@ -1218,14 +1293,15 @@ bool zswap_store(struct folio *folio)
->     >       if (!zswap_enabled || !tree)
->     >               return false;
->     > 
->     > -     /*
->     > -      * XXX: zswap reclaim does not work with cgroups yet. Without a
->     > -      * cgroup-aware entry LRU, we will push out entries system-wide based on
->     > -      * local cgroup limits.
->     > -      */
->     >       objcg = get_obj_cgroup_from_folio(folio);
->     > -     if (objcg && !obj_cgroup_may_zswap(objcg))
->     > -             goto reject;
->     > +     if (objcg && !obj_cgroup_may_zswap(objcg)) {
->     > +             memcg = get_mem_cgroup_from_objcg(objcg);
->     > +             if (shrink_memcg(memcg)) {
->     > +                     mem_cgroup_put(memcg);
->     > +                     goto reject;
->     > +             }
->     > +             mem_cgroup_put(memcg);
->     > +     }
->     > 
->     >       /* reclaim space if needed */
->     >       if (zswap_is_full()) {
->     > @@ -1240,7 +1316,11 @@ bool zswap_store(struct folio *folio)
->     >               else
->     >                       zswap_pool_reached_full = false;
->     >       }
->     > -
->     > +     pool = zswap_pool_current_get();
->     > +     if (!pool) {
->     > +             ret = -EINVAL;
->     > +             goto reject;
->     > +     }
-> 
-> 
->     Hi, I'm working to add support for large folios within zswap, and noticed this
->     piece of code added by this change. I don't see any corresponding put. Have I
->     missed some detail or is there a bug here?
-> 
-> 
->     >       /* allocate entry */
->     >       entry = zswap_entry_cache_alloc(GFP_KERNEL);
->     >       if (!entry) {
->     > @@ -1256,6 +1336,7 @@ bool zswap_store(struct folio *folio)
->     >                       entry->length = 0;
->     >                       entry->value = value;
->     >                       atomic_inc(&zswap_same_filled_pages);
->     > +                     zswap_pool_put(pool);
-> 
->     I see you put it in this error path, but after that, there is no further
->     mention.
-> 
->     >                       goto insert_entry;
->     >               }
->     >               kunmap_atomic(src);
->     > @@ -1264,6 +1345,15 @@ bool zswap_store(struct folio *folio)
->     >       if (!zswap_non_same_filled_pages_enabled)
->     >               goto freepage;
->     > 
->     > +     if (objcg) {
->     > +             memcg = get_mem_cgroup_from_objcg(objcg);
->     > +             lru_alloc_ret = memcg_list_lru_alloc(memcg, &pool->list_lru,
->     GFP_KERNEL);
->     > +             mem_cgroup_put(memcg);
->     > +
->     > +             if (lru_alloc_ret)
->     > +                     goto freepage;
->     > +     }
->     > +
->     >       /* if entry is successfully added, it keeps the reference */
->     >       entry->pool = zswap_pool_current_get();
-> 
->     The entry takes it's reference to the pool here.
-> 
->     Thanks,
->     Ryan
-> 
-> 
-> Thanks Ryan, I think you're right. Coincidentally, we're about to send a new
-> version of the series, and will make sure to address this too.
 
-Ahh... I'm on top of mm-unstable - for some reason I thought I was on an rc and
-this was already in. I guess it's less of an issue in that case.
+--d2qvdlt5oh6ne5ty
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hello Haitao.
+
+On Tue, Oct 17, 2023 at 07:58:02AM -0500, Haitao Huang <haitao.huang@linux.intel.com> wrote:
+> AFAIK, before we introducing max_write() callback in this series, no misc
+> controller would possibly enforce the limit when misc.max is reduced. e.g. I
+> don't think CVMs be killed when ASID limit is reduced and the cgroup was
+> full before limit is reduced.
+
+Yes, misccontroller was meant to be simple, current >= max serves to
+prevent new allocations.
+
+FTR, at some point in time memory.max was considered for reclaim control
+of regular pages but it turned out to be too coarse (and OOM killing
+processes if amount was not sensed correctly) and this eventually
+evolved into specific mechanism of memory.reclaim.
+So I'm mentioning this should that be an interface with better semantic
+for your use case (and misc.max writes can remain non-preemptive).
+
+One more note -- I was quite confused when I read in the rest of the
+series about OOM and _kill_ing but then I found no such measure in the
+code implementation. So I would suggest two terminological changes:
+
+- the basic premise of the series (00/18) is that EPC pages are a
+  different resource than memory, hence choose a better suiting name
+  than OOM (out of memory) condition,
+- killing -- (unless you have an intention to implement process
+  termination later) My current interpretation that it is rather some
+  aggressive unmapping within address space, so less confusing name for
+  that would be "reclaim".
 
 
+> I think EPC pages to VMs could have the same behavior, once they are given
+> to a guest, never taken back by the host. For enclaves on host side, pages
+> are reclaimable, that allows us to enforce in a similar way to memcg.
 
+Is this distinction between preemptability of EPC pages mandated by the
+HW implementation? (host/"process" enclaves vs VM enclaves) Or do have
+users an option to lock certain pages in memory that yields this
+difference?
+
+Regards,
+Michal
+
+--d2qvdlt5oh6ne5ty
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS7YdAAKCRAGvrMr/1gc
+jpc5AP9tTv+0BiQvCbDojRuouQdurDiPml67Obr1FdJ6Jqfb1AEAvxfWBD/03b86
+jE2isDspp+sfjhBkmc8tAl7umLlKJwc=
+=3VCm
+-----END PGP SIGNATURE-----
+
+--d2qvdlt5oh6ne5ty--
