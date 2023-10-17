@@ -2,93 +2,172 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECCB7CC99E
-	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 19:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD56F7CCA0D
+	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 19:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjJQRPA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 13:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S234976AbjJQRoM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 13:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQRPA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 13:15:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAB2B0
-        for <cgroups@vger.kernel.org>; Tue, 17 Oct 2023 10:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697562854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tJHuMYgfyryTZGUvqLcpzrOcz/yjy5LJnlWOHUnXTfY=;
-        b=DXGy/cUpl8J5VVQs9kvP6ZV7FimIAY02rUD2y1svgERm8X42+0gY6NtGsxY2VFSJiy1mVx
-        7AzmhyiEpATRJhHEH4FS5whxGAF+HpanYw4gLNbRowVCQMfdI17Wt+O8tSrsW934lww4Ki
-        QGhQVe8cq1lwnNjDxF29iUll9/7XynE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-73--3wFHCaTPaOwPLl3R7pQhA-1; Tue, 17 Oct 2023 13:14:08 -0400
-X-MC-Unique: -3wFHCaTPaOwPLl3R7pQhA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4DA803C0252B;
-        Tue, 17 Oct 2023 17:14:07 +0000 (UTC)
-Received: from llong.com (unknown [10.22.16.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 78C8E1C060AE;
-        Tue, 17 Oct 2023 17:14:06 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Hunt <pehunt@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] docs/cgroup: Add the list of threaded controllers to cgroup-v2.rst
-Date:   Tue, 17 Oct 2023 13:13:41 -0400
-Message-Id: <20231017171341.3683352-1-longman@redhat.com>
+        with ESMTP id S230343AbjJQRoL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 13:44:11 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D4A7A4;
+        Tue, 17 Oct 2023 10:44:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C66182F4;
+        Tue, 17 Oct 2023 10:44:47 -0700 (PDT)
+Received: from [10.57.66.147] (unknown [10.57.66.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E7AA3F64C;
+        Tue, 17 Oct 2023 10:44:04 -0700 (PDT)
+Message-ID: <21606fe5-fb9b-4d37-98ab-38c96819893b@arm.com>
+Date:   Tue, 17 Oct 2023 18:44:03 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
+Content-Language: en-GB
+To:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20230919171447.2712746-1-nphamcs@gmail.com>
+ <20230919171447.2712746-2-nphamcs@gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230919171447.2712746-2-nphamcs@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The cgroup-v2 file mentions the concept of threaded controllers which can
-be used in a threaded cgroup. However, it doesn't mention clearly which
-controllers are threaded leading to some confusion about what controller
-can be used requiring some experimentation. Clear this up by explicitly
-listing the controllers that can be used currently in a threaded cgroup.
+On 19/09/2023 18:14, Nhat Pham wrote:
+> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> 
+> Currently, we only have a single global LRU for zswap. This makes it
+> impossible to perform worload-specific shrinking - an memcg cannot
+> determine which pages in the pool it owns, and often ends up writing
+> pages from other memcgs. This issue has been previously observed in
+> practice and mitigated by simply disabling memcg-initiated shrinking:
+> 
+> https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
+> 
+> This patch fully resolves the issue by replacing the global zswap LRU
+> with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+> 
+> a) When a store attempt hits an memcg limit, it now triggers a
+>    synchronous reclaim attempt that, if successful, allows the new
+>    hotter page to be accepted by zswap.
+> b) If the store attempt instead hits the global zswap limit, it will
+>    trigger an asynchronous reclaim attempt, in which an memcg is
+>    selected for reclaim in a round-robin-like fashion.
+> 
+> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Co-developed-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  include/linux/list_lru.h   |  39 +++++++
+>  include/linux/memcontrol.h |   5 +
+>  include/linux/zswap.h      |   9 ++
+>  mm/list_lru.c              |  46 ++++++--
+>  mm/swap_state.c            |  19 ++++
+>  mm/zswap.c                 | 221 +++++++++++++++++++++++++++++--------
+>  6 files changed, 287 insertions(+), 52 deletions(-)
+> 
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 7 +++++++
- 1 file changed, 7 insertions(+)
+[...]
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index b26b5274eaaf..a6f58aecb431 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -364,6 +364,13 @@ constraint, a threaded controller must be able to handle competition
- between threads in a non-leaf cgroup and its child cgroups.  Each
- threaded controller defines how such competitions are handled.
- 
-+Currently, the following controllers are threaded and can be enabled
-+in a threaded cgroup::
-+
-+- cpu
-+- cpuset
-+- perf_event
-+- pids
- 
- [Un]populated Notification
- --------------------------
--- 
-2.39.3
+> @@ -1199,8 +1272,10 @@ bool zswap_store(struct folio *folio)
+>  	struct scatterlist input, output;
+>  	struct crypto_acomp_ctx *acomp_ctx;
+>  	struct obj_cgroup *objcg = NULL;
+> +	struct mem_cgroup *memcg = NULL;
+>  	struct zswap_pool *pool;
+>  	struct zpool *zpool;
+> +	int lru_alloc_ret;
+>  	unsigned int dlen = PAGE_SIZE;
+>  	unsigned long handle, value;
+>  	char *buf;
+> @@ -1218,14 +1293,15 @@ bool zswap_store(struct folio *folio)
+>  	if (!zswap_enabled || !tree)
+>  		return false;
+>  
+> -	/*
+> -	 * XXX: zswap reclaim does not work with cgroups yet. Without a
+> -	 * cgroup-aware entry LRU, we will push out entries system-wide based on
+> -	 * local cgroup limits.
+> -	 */
+>  	objcg = get_obj_cgroup_from_folio(folio);
+> -	if (objcg && !obj_cgroup_may_zswap(objcg))
+> -		goto reject;
+> +	if (objcg && !obj_cgroup_may_zswap(objcg)) {
+> +		memcg = get_mem_cgroup_from_objcg(objcg);
+> +		if (shrink_memcg(memcg)) {
+> +			mem_cgroup_put(memcg);
+> +			goto reject;
+> +		}
+> +		mem_cgroup_put(memcg);
+> +	}
+>  
+>  	/* reclaim space if needed */
+>  	if (zswap_is_full()) {
+> @@ -1240,7 +1316,11 @@ bool zswap_store(struct folio *folio)
+>  		else
+>  			zswap_pool_reached_full = false;
+>  	}
+> -
+> +	pool = zswap_pool_current_get();
+> +	if (!pool) {
+> +		ret = -EINVAL;
+> +		goto reject;
+> +	}
+
+
+Hi, I'm working to add support for large folios within zswap, and noticed this
+piece of code added by this change. I don't see any corresponding put. Have I
+missed some detail or is there a bug here?
+
+
+>  	/* allocate entry */
+>  	entry = zswap_entry_cache_alloc(GFP_KERNEL);
+>  	if (!entry) {
+> @@ -1256,6 +1336,7 @@ bool zswap_store(struct folio *folio)
+>  			entry->length = 0;
+>  			entry->value = value;
+>  			atomic_inc(&zswap_same_filled_pages);
+> +			zswap_pool_put(pool);
+
+I see you put it in this error path, but after that, there is no further mention.
+
+>  			goto insert_entry;
+>  		}
+>  		kunmap_atomic(src);
+> @@ -1264,6 +1345,15 @@ bool zswap_store(struct folio *folio)
+>  	if (!zswap_non_same_filled_pages_enabled)
+>  		goto freepage;
+>  
+> +	if (objcg) {
+> +		memcg = get_mem_cgroup_from_objcg(objcg);
+> +		lru_alloc_ret = memcg_list_lru_alloc(memcg, &pool->list_lru, GFP_KERNEL);
+> +		mem_cgroup_put(memcg);
+> +
+> +		if (lru_alloc_ret)
+> +			goto freepage;
+> +	}
+> +
+>  	/* if entry is successfully added, it keeps the reference */
+>  	entry->pool = zswap_pool_current_get();
+
+The entry takes it's reference to the pool here.
+
+Thanks,
+Ryan
+
 
