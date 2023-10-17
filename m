@@ -2,43 +2,43 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AB77CCB4D
-	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 20:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7503E7CCB54
+	for <lists+cgroups@lfdr.de>; Tue, 17 Oct 2023 20:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbjJQSy7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 14:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S1344127AbjJQSzK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 14:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234971AbjJQSy7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 14:54:59 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587BEF5;
-        Tue, 17 Oct 2023 11:54:57 -0700 (PDT)
+        with ESMTP id S1343885AbjJQSzH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 14:55:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C18F5;
+        Tue, 17 Oct 2023 11:55:05 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CF4371F8B5;
-        Tue, 17 Oct 2023 18:54:55 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F31EA1F8BA;
+        Tue, 17 Oct 2023 18:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697568895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1697568904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6wQOh3FH9b2rnyijAjQaLtuaZg6t2cVu7jm6tXATJYw=;
-        b=bupwfa13hhgne16QMB8JCzQVS/2H7SV0HOqyzL0hemmXj+KZaUOhwdGuTvyJI1MRzrjSn5
-        zKQktwiIgjjGdUPwynyoJyC/pcS4fDQpiZaVbXOzeqtrjR2X0zZegVAz82C5zuxCKBABRn
-        kUrimFf5KOWe5U0Y4QlkWKy1nlncKjQ=
+        bh=uLnZcT7m+cR+ihtjfCvEhepXOzUUYRn52NrGv1VdUws=;
+        b=meIVwqTadDKAQhLi24bvP59mxV0LhjzH3G5WlmQV3YNY1/6YBi1D/D3bFWofMsuMxG9FoB
+        maWj+eH9qeSQNFgUH1+rO4jn9v1r41gRjlmP1YayH2fzln+iUGaCiu3Ojsa1D0SvxcJpli
+        5I+MMZyv9W3FOYI3kM7hSWGo0Rpj1qA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 803C713584;
-        Tue, 17 Oct 2023 18:54:55 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A316413584;
+        Tue, 17 Oct 2023 18:55:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id crmSHn/YLmWzIgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 17 Oct 2023 18:54:55 +0000
-Date:   Tue, 17 Oct 2023 20:54:54 +0200
+        id qH8QJ4fYLmXGIgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 17 Oct 2023 18:55:03 +0000
+Date:   Tue, 17 Oct 2023 20:55:02 +0200
 From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To:     Haitao Huang <haitao.huang@linux.intel.com>
 Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
@@ -49,21 +49,21 @@ Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
         kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
         anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
         yangjie@microsoft.com
-Subject: Re: [PATCH v5 16/18] x86/sgx: Limit process EPC usage with misc
- cgroup controller
-Message-ID: <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for CSS
+ events
+Message-ID: <k4hvow3juyelizqrlwdjmuu57kscvcwanu3xhpeuqnppynzrdu@hmxuvgefqpo5>
 References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-17-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="edw5ydf5cclnwdcr"
+        protocol="application/pgp-signature"; boundary="do7f6ref46fav4tn"
 Content-Disposition: inline
-In-Reply-To: <20230923030657.16148-17-haitao.huang@linux.intel.com>
+In-Reply-To: <20230923030657.16148-2-haitao.huang@linux.intel.com>
 Authentication-Results: smtp-out2.suse.de;
         none
 X-Spam-Level: 
-X-Spam-Score: -7.86
-X-Spamd-Result: default: False [-7.86 / 50.00];
+X-Spam-Score: -8.66
+X-Spamd-Result: default: False [-8.66 / 50.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          FROM_HAS_DN(0.00)[];
@@ -80,7 +80,7 @@ X-Spamd-Result: default: False [-7.86 / 50.00];
          MID_RHS_NOT_FQDN(0.50)[];
          RCVD_COUNT_TWO(0.00)[2];
          RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.16)[95.97%]
+         BAYES_HAM(-2.96)[99.83%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -91,50 +91,46 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---edw5ydf5cclnwdcr
+--do7f6ref46fav4tn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 22, 2023 at 08:06:55PM -0700, Haitao Huang <haitao.huang@linux.intel.com> wrote:
-> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
-> +{
-> +	struct sgx_epc_cgroup *epc_cg;
-> +
-> +	epc_cg = sgx_epc_cgroup_from_misc_cg(cg);
+On Fri, Sep 22, 2023 at 08:06:40PM -0700, Haitao Huang <haitao.huang@linux.=
+intel.com> wrote:
+> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct kernfs_open=
+_file *of, char *buf,
+> =20
+>  	cg =3D css_misc(of_css(of));
+> =20
+> -	if (READ_ONCE(misc_res_capacity[type]))
+> +	if (READ_ONCE(misc_res_capacity[type])) {
+>  		WRITE_ONCE(cg->res[type].max, max);
+> -	else
+> +		if (cg->res[type].max_write)
+> +			cg->res[type].max_write(cg);
+> +	} else {
+>  		ret =3D -EINVAL;
+>
+> +	}
 
-It should check for !epc_cg since the misc controller implementation
-in misc_cg_alloc() would roll back even on non-allocated resources.
+Is it time for a misc_cg_mutex? This given no synchronization guarantees
+to implementors of max_write. (Alternatively, document it that the
+callback must implement own synchronization.)
 
-> +	cancel_work_sync(&epc_cg->reclaim_work);
-> +	kfree(epc_cg);
-> +}
-> +
-> +static void sgx_epc_cgroup_max_write(struct misc_cg *cg)
-> +{
-> +	struct sgx_epc_reclaim_control rc;
-> +	struct sgx_epc_cgroup *epc_cg;
-> +
-> +	epc_cg = sgx_epc_cgroup_from_misc_cg(cg);
-> +
-> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
-> +	/* Let the reclaimer to do the work so user is not blocked */
-> +	queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
-
-This is weird. The writer will never learn about the result of the
-operation.
 
 Thanks,
 Michal
 
---edw5ydf5cclnwdcr
+--do7f6ref46fav4tn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS7YfAAKCRAGvrMr/1gc
-jiXBAQCjRWtn93e1A3lqtdgEQbgCQbqbDof6U4NlLFxKtLfdygD9HjQFcAbLr/8e
-MoCT1oqhzmRq++UsUrnxa/WIAnreTwI=
-=CV66
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS7YhAAKCRAGvrMr/1gc
+jtZGAP9yG0GJSSTgY45EqfHcfkzqyBg2KvAFA7gx5WotIRHTkwD+Mo6bB7HpvmUH
+8ZJECbI9T8hXKU0Ff2O/oEC4KwR3Mw8=
+=5qrs
 -----END PGP SIGNATURE-----
 
---edw5ydf5cclnwdcr--
+--do7f6ref46fav4tn--
