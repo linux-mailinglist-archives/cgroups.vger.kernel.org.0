@@ -2,82 +2,164 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4146D7CD786
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 11:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603997CD7D9
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 11:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjJRJHl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 05:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
+        id S229544AbjJRJYf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 05:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJRJHl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 05:07:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26AF9;
-        Wed, 18 Oct 2023 02:07:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8165EC433C8;
-        Wed, 18 Oct 2023 09:07:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697620055;
-        bh=l4Oi5jf7qwP7CNkVZZNY8DYKTprQka+ShuoW7/Do0XQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Es+vckhML6CwqSwgV65RXAlRZMWLbJFu15MMUKk8v2FW7P8yVmNtSfevXtU6CZVpi
-         1aXIT0xlmZQxoHDSB41Hd0M6Yl5gvFB9ndB/3MMRYkyK0SVbwmycZILJ34ScJgsEI1
-         MZkiuI/7TrNP63l93BvLPwohbV30RvwSgY0KJADjWYGGcJ4x2qNuqCiAWWW1CQej3z
-         +CgXIt6LkEbIqhSbQyziW92oHc+fMua0o8X8/UXdgEeNT6MJ66KP0XhIvN7LfbQTlu
-         zwj2I0fNQaXGsNv7zZnI7XS/xDrYK4X5emfstphKe1WOs4AyPbL86nShPFJAslBb0b
-         kaYvjnNnjiEUA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc:     Christian Brauner <brauner@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, willy@infradead.org,
-        joseph.qi@linux.alibaba.com, tj@kernel.org, jack@suse.cz,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [PATCH v3] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
-Date:   Wed, 18 Oct 2023 11:07:20 +0200
-Message-Id: <20231018-dinkelbrot-botanik-b119bb8f4989@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
-References: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
+        with ESMTP id S229749AbjJRJYd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 05:24:33 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEA1FD;
+        Wed, 18 Oct 2023 02:24:32 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so5062178b3a.2;
+        Wed, 18 Oct 2023 02:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697621071; x=1698225871; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XNODfCJOfjqEYgALnWtSMFHwQkcZjrciucUthP4q5zM=;
+        b=EPTayhges6SubgIe2UQDVS+32aO3vGkKFe8kbYt7WgY5hcH5IN/IBe/xetyAZOouIf
+         LlNPKD+MK9kw0S1G9cJ46hqP5ipBjihPkUBJpN2h+tbZEZ0V6MIV3sY+bFu7VOcXgreS
+         IEee3cTr0iXdPN8+GmJUXgkwuCG3P05MGw4+vBL9al7KKq3AFkwSMQrO2cX2/Jk2Y+CE
+         mO1ehOBR0Fov9pdAkkmrnoZEY1+LqyCH/cho/jihaKRnRtl2iBKGU+2kNuevdoiB/s7N
+         1RAAdxgwIlbRZjJV2utvoYfz9HtlGmncc/Lli+GPOHffEiZrOW2LyRnuqHlN+MQIEK3P
+         uriA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697621071; x=1698225871;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XNODfCJOfjqEYgALnWtSMFHwQkcZjrciucUthP4q5zM=;
+        b=gmPPd5L32wREBlfvqCWqx2hUcUS07EvK7InIZKtmWAAzN7nrHQXnnylzuz/tMJfhSG
+         NhzhK0rLiE4GGsReWVqjeV4j2M57jCA9fW/Zc8tYpwFarzyTw4RdUw3sIB9BRM9jyhzj
+         5JWJaXbN9P5dfmKPTVa54uuOAj2n7r/ptPeDvee7e47cQG+tv9oPeVVSDWCiBAHYIJDI
+         su5/VmNrpP2c91NSnyWS+vhJTPn02Ni8TcEapWccFqlZAYPTTn2PUoUrsVernBw1s8wi
+         5leIY77do2xS085li/KKnMXFLj3Wa6ae8R1gro0z7Ej10XZu5t7o+ylItPoWVuLzqAmq
+         1aeA==
+X-Gm-Message-State: AOJu0Yw2u5JyP5V//GH0hPovQW7y6+SVdTs0wY0oL8UcVeAjwkH8Rkj2
+        IHwesTqlm6R/Yj3lfQ9bVsw=
+X-Google-Smtp-Source: AGHT+IHMtkomy48m2lIkAxF4mw34c4FzfowG/XQaP/plDDeQIwFErlB+vSFZKCbh1uGV3u+wOayZ5g==
+X-Received: by 2002:a05:6a00:218f:b0:68a:54e5:24e6 with SMTP id h15-20020a056a00218f00b0068a54e524e6mr5142412pfi.8.1697621071197;
+        Wed, 18 Oct 2023 02:24:31 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id n8-20020aa79848000000b00689f5940061sm2945737pfq.17.2023.10.18.02.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 02:24:30 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 17 Oct 2023 23:24:29 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH-cgroup 1/4] workqueue: Add
+ workqueue_unbound_exclude_cpumask() to exclude CPUs from wq_unbound_cpumask
+Message-ID: <ZS-kTXgSZoc985ul@slm.duckdns.org>
+References: <20231013181122.3518610-1-longman@redhat.com>
+ <20231013181122.3518610-2-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1313; i=brauner@kernel.org; h=from:subject:message-id; bh=l4Oi5jf7qwP7CNkVZZNY8DYKTprQka+ShuoW7/Do0XQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTqL9D597YqabVumacg890tWi7FOTdf1KYeag5488dwi5LI iveXOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYSm8vI0GzdrhQdq1mSnma6TOJwtz XT0uMtbxSiu66+2fQ6IyFgKiPDR7GfSf1cU1mbQo5t+FomoMy+3rL19dQL72xfbnh0TDCOCwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013181122.3518610-2-longman@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, 14 Oct 2023 20:55:11 +0800, Jingbo Xu wrote:
-> The cgwb cleanup routine will try to release the dying cgwb by switching
-> the attached inodes.  It fetches the attached inodes from wb->b_attached
-> list, omitting the fact that inodes only with dirty timestamps reside in
-> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
-> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
-> with dirty timestamps can not be switched to a live cgwb for a long time.
+Hello,
+
+On Fri, Oct 13, 2023 at 02:11:19PM -0400, Waiman Long wrote:
+> When the "isolcpus" boot command line option is used to add a set
+> of isolated CPUs, those CPUs will be excluded automatically from
+> wq_unbound_cpumask to avoid running work functions from unbound
+> workqueues.
 > 
-> [...]
+> Recently cpuset has been extended to allow the creation of partitions
+> of isolated CPUs dynamically. To make it closer to the "isolcpus"
+> in functionality, the CPUs in those isolated cpuset partitions should be
+> excluded from wq_unbound_cpumask as well. This can be done currently by
+> explicitly writing to the workqueue's cpumask sysfs file after creating
+> the isolated partitions. However, this process can be error prone.
+> Ideally, the cpuset code should be allowed to request the workqueue code
+> to exclude those isolated CPUs from wq_unbound_cpumask so that this
+> operation can be done automatically and the isolated CPUs will be returned
+> back to wq_unbound_cpumask after the destructions of the isolated
+> cpuset partitions.
+> 
+> This patch adds a new workqueue_unbound_exclude_cpumask() to enable
+> that. This new function will exclude the specified isolated CPUs
+> from wq_unbound_cpumask. To be able to restore those isolated CPUs
+> back after the destruction of isolated cpuset partitions, a new
+> wq_user_unbound_cpumask is added to store the user provided unbound
+> cpumask either from the boot command line options or from writing to
+> the cpumask sysfs file. This new cpumask provides the basis for CPU
+> exclusion.
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+The behaviors around wq_unbound_cpumask is getting pretty inconsistent:
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+1. Housekeeping excludes isolated CPUs on boot but allows user to override
+   it to include isolated CPUs afterwards.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+2. If an unbound wq's cpumask doesn't have any intersection with
+   wq_unbound_cpumask we ignore the per-wq cpumask and falls back to
+   wq_unbound_cpumask.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+3. You're adding a masking layer on top with exclude which fails to set if
+   the intersection is empty.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
+Can we do the followings for consistency?
 
-[1/1] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
-      https://git.kernel.org/vfs/vfs/c/27890db5162c
+1. User's requested_unbound_cpumask is stored separately (as in this patch).
+
+2. The effect wq_unbound_cpumask is determined by requested_unbound_cpumask
+   & housekeeping_cpumask & cpuset_allowed_cpumask. The operation order
+   matters. When an & operation yields an cpumask, the cpumask from the
+   previous step is the effective one.
+
+3. Expose these cpumasks in sysfs so that what's happening is obvious.
+
+> +int workqueue_unbound_exclude_cpumask(cpumask_var_t exclude_cpumask)
+> +{
+> +	cpumask_var_t cpumask;
+> +	int ret = 0;
+> +
+> +	if (!zalloc_cpumask_var(&cpumask, GFP_KERNEL))
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * The caller of this function may have called cpus_read_lock(),
+> +	 * use cpus_read_trylock() to avoid potential deadlock.
+> +	 */
+> +	if (!cpus_read_trylock())
+> +		return -EBUSY;
+
+This means that a completely unrelated cpus_write_lock() can fail this
+operation and thus cpuset config writes. Let's please not do this. Can't we
+just make sure that the caller holds the lock?
+
+> +	mutex_lock(&wq_pool_mutex);
+> +
+> +	if (!cpumask_andnot(cpumask, wq_user_unbound_cpumask, exclude_cpumask))
+> +		ret = -EINVAL;	/* The new cpumask can't be empty */
+
+For better or worse, the usual mode-of-failure for "no usable CPU" is just
+falling back to something which works rather than failing the operation.
+Let's follow that.
+
+Thanks.
+
+-- 
+tejun
