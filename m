@@ -2,152 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEE67CE48F
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 19:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B32D7CE5E9
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 20:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbjJRRaM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 13:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S231865AbjJRSJB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 14:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbjJRR3s (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 13:29:48 -0400
-Received: from out-200.mta0.migadu.com (out-200.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5909B3C03
-        for <cgroups@vger.kernel.org>; Wed, 18 Oct 2023 10:22:40 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 10:22:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697649756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ZHjqgjJ0DJw5b20QDmJoc6vBigpsp2ZBEUURZnoLsI=;
-        b=GaTsb0RAXezus1Vlp+8lGAEICHr1ef9aRz8NOtZuHWbQyJ/aZCBv92T34FHPtPUwZXDY/u
-        w9iKSPUBX7e5vW9uGpTT0cLKiU+yCd07Pknzq0bCZdZ/qDG3KDpkKs2qgawTgbKrwuk2gq
-        DOEP/2oNVLZm88rFvJQFv0J9V5YGklU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        with ESMTP id S1344808AbjJRSIz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 14:08:55 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E37118;
+        Wed, 18 Oct 2023 11:08:53 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9d407bb15so60384125ad.0;
+        Wed, 18 Oct 2023 11:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697652533; x=1698257333; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ld6HmXLSYRRRsAXk7NaS7NcT8UF+AvonAWMQInf21LE=;
+        b=UD7MVgXNuSYKv1eZYy22clNA9NTWtaxLqRhxKkHPSPZxhELa0z40BF/KmR0zmQ0ppG
+         +uGwd0u+CNucMQGtrCGq4Az+kNOvC+q15pjg3zJTkMlzitoqG7igm/HRpbtYCsJi73Rq
+         1i39Y/HaNF5r8dwGgMUWaiThbatG8Fvizc1q1ESMaRRDKqSOwEeMHdvVugyGy5ZGFRvc
+         20DSsqreZqzEYenaKx58gw4qTeXI8s3c/mGPkgE8QgL+JeSFnqUMHu7yEuaGe4+XrVNb
+         HFqerREvEdn1vetR5V2I3LrcR49e8+AHJWV2dxbrIlIpZhoxwJXvSYMLxplBd/Ap9dtT
+         dJyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697652533; x=1698257333;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ld6HmXLSYRRRsAXk7NaS7NcT8UF+AvonAWMQInf21LE=;
+        b=b4nEuYnaPxwvvmO/gFgGpcDW88HUT6nXIyC2/uhlKkSkCSMpF6pA+sF8NWqR+fC6uo
+         P3OJ9LBBul/H2oORi4UulHf+FptjCHvwdbwcGSp+K2UBVYjFlOagvPqN0v8YKD7E9SGI
+         OKsRiGDUU2/ZN7CEhNH4gkpBuyqC2Lja+pm8wF5STk6mmWatM7qW3QINSQxW4H9P/asv
+         7hNfoQKBueokLTqQou3CJOBOfzpAeDXVEE4K+mnpj41/B8XttzbUiSZdTU4wsqgE6fkI
+         QqqcvadWOqSATMGm5qGONWc0QbQaAj6x/4zGWMNk0yOYzPr7eSHaAqBY+7zo+qLwUI3e
+         XR+w==
+X-Gm-Message-State: AOJu0Yz0/R/jUsYOZDaGm6pVNbkRjIsJR+DTniLgIzF4wKpZufEtdC7c
+        PJezY7g/Whs7NtWzPYIJt3o=
+X-Google-Smtp-Source: AGHT+IFL9GKGXOI+lJTZ8Q9Eg5fpHQMg6T7SyCcLceWEuAVXgtxy1Uj2YcAhoiWi9vp+15dl+P+M/A==
+X-Received: by 2002:a17:903:320c:b0:1c6:d88:dc07 with SMTP id s12-20020a170903320c00b001c60d88dc07mr125730plh.48.1697652533114;
+        Wed, 18 Oct 2023 11:08:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:dfd0])
+        by smtp.gmail.com with ESMTPSA id ix11-20020a170902f80b00b001b7fd27144dsm233555plb.40.2023.10.18.11.08.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 11:08:52 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 18 Oct 2023 08:08:51 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH v3 2/5] mm: kmem: add direct objcg pointer to task_struct
-Message-ID: <ZTAUTWO2UfI0VoPL@P9FQF9L96D.corp.robot.car>
-References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
- <20231016221900.4031141-3-roman.gushchin@linux.dev>
- <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH-cgroup 3/4] cgroup/cpuset: Keep track of CPUs in isolated
+ partitions
+Message-ID: <ZTAfM0msp8Cg-qLy@slm.duckdns.org>
+References: <20231013181122.3518610-1-longman@redhat.com>
+ <20231013181122.3518610-4-longman@redhat.com>
+ <ZS-kt6X5Dd1lktAw@slm.duckdns.org>
+ <9e2772e3-f615-5e80-6922-5a2dd06a8b07@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <9e2772e3-f615-5e80-6922-5a2dd06a8b07@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 11:52:27AM +0200, Vlastimil Babka wrote:
-> On 10/17/23 00:18, Roman Gushchin wrote:
-> > To charge a freshly allocated kernel object to a memory cgroup, the
-> > kernel needs to obtain an objcg pointer. Currently it does it
-> > indirectly by obtaining the memcg pointer first and then calling to
-> > __get_obj_cgroup_from_memcg().
-> > 
-> > Usually tasks spend their entire life belonging to the same object
-> > cgroup. So it makes sense to save the objcg pointer on task_struct
-> > directly, so it can be obtained faster. It requires some work on fork,
-> > exit and cgroup migrate paths, but these paths are way colder.
-> > 
-> > To avoid any costly synchronization the following rules are applied:
-> > 1) A task sets it's objcg pointer itself.
-> > 
-> > 2) If a task is being migrated to another cgroup, the least
-> >    significant bit of the objcg pointer is set atomically.
-> > 
-> > 3) On the allocation path the objcg pointer is obtained locklessly
-> >    using the READ_ONCE() macro and the least significant bit is
-> >    checked. If it's set, the following procedure is used to update
-> >    it locklessly:
-> >        - task->objcg is zeroed using cmpxcg
-> >        - new objcg pointer is obtained
-> >        - task->objcg is updated using try_cmpxchg
-> >        - operation is repeated if try_cmpxcg fails
-> >    It guarantees that no updates will be lost if task migration
-> >    is racing against objcg pointer update. It also allows to keep
-> >    both read and write paths fully lockless.
-> > 
-> > Because the task is keeping a reference to the objcg, it can't go away
-> > while the task is alive.
-> > 
-> > This commit doesn't change the way the remote memcg charging works.
-> > 
-> > Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
-> > Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > ---
-> >  include/linux/sched.h |   4 ++
-> >  mm/memcontrol.c       | 130 +++++++++++++++++++++++++++++++++++++++---
-> >  2 files changed, 125 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 16ac2a5838fb..0605e45bd4a2 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
+On Wed, Oct 18, 2023 at 09:30:04AM -0400, Waiman Long wrote:
+> On 10/18/23 05:26, Tejun Heo wrote:
+> > On Fri, Oct 13, 2023 at 02:11:21PM -0400, Waiman Long wrote:
+> > ...
+> > > @@ -3875,6 +3931,13 @@ static struct cftype dfl_files[] = {
+> > >   		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
+> > >   	},
+> > > +	{
+> > > +		.name = "cpus.isolated",
+> > > +		.seq_show = cpuset_common_seq_show,
+> > > +		.private = FILE_ISOLATED_CPULIST,
+> > > +		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
+> > > +	},
+> > I'd much rather show this in a wq sysfs file along with other related masks,
+> > and not in a DEBUG file.
 > 
-> So IIUC here we increase objcg refcount.
-> 
-> > +				break;
-> > +			objcg = NULL;
-> > +		}
-> > +		rcu_read_unlock();
-> > +
-> > +		/*
-> > +		 * Try set up a new objcg pointer atomically. If it
-> > +		 * fails, it means the update flag was set concurrently, so
-> > +		 * the whole procedure should be repeated.
-> > +		 */
-> > +	} while (!try_cmpxchg(&current->objcg, &old, objcg));
-> 
-> And if this fails we throw objcg away and try again, but we should do
-> obj_cgroup_put(objcg) first, as otherwise it would cause a leak?
+> It can certainly be exposed as a permanent addition to the cgroup control
+> files instead of a debug only file. However this set of isolated CPUs may be
+> used by others not just by workqueue. So I doubt if it should be a sysfs
+> file in the workqueue directory. I can see if it is possible to put a
+> symlink there point back to the cgroupfs.
 
-Great catch! Thanks!
+I don't know whether it will happen but let's say there will be three
+subsystems which call into workqueue for this. Wouldn't it be better to have
+all of them in workqueue sysfs using a consistent naming scheme? What does
+putting it in cgroupfs buy us?
 
-> 
-> > +
-> > +	return objcg;
-> > +}
-> > +
-> >  __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-> >  {
-> >  	struct mem_cgroup *memcg;
-> > @@ -3008,19 +3054,26 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-> >  
-> >  	if (in_task()) {
-> >  		memcg = current->active_memcg;
-> > +		if (unlikely(memcg))
-> > +			goto from_memcg;
-> >  
-> > -		/* Memcg to charge can't be determined. */
-> > -		if (likely(!memcg) && (!current->mm || (current->flags & PF_KTHREAD)))
-> 
-> The checks for current->mm and PF_KTHREAD seem to be gone completely after
-> the patch, was that intended and why?
+Thanks.
 
-There is no need for those anymore because it's as cheap or cheaper
-to check task->objcg for being NULL. Those were primarily used to rule out
-kernel threads allocations early.
-
-I gonna fix the objcg ref leak, add the comment you asked above and post v4
-of this particular patch.
-
-Thank you for reviewing the series!
+-- 
+tejun
