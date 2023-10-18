@@ -2,47 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 438D27CE1B4
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 17:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9117CE458
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 19:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbjJRPw3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 11:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
+        id S229585AbjJRRYY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 13:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbjJRPw3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 11:52:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0F89F;
-        Wed, 18 Oct 2023 08:52:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7106821855;
-        Wed, 18 Oct 2023 15:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697644345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m3Va38a8sZL3iVjAWsTHHzZGt8WWZ+pcUoedGjqgQR0=;
-        b=g9UH8xytD9YucQsxopJFs9GuKq5iUz2a8QIb7sS/H33jKkzP3mmDW2TKVBZrgGO6yfOudr
-        sKHARkYPO34cJIoI6JqjFrRFRM0YTg5yQTMJOZ1vyW4tqcR2BJ+4biBpXzPQlUEzbtihgu
-        9AJEbM9oDqICRMHlLXdW26ErRDoS4fY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CC6213915;
-        Wed, 18 Oct 2023 15:52:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dSRSBjn/L2X7BgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 18 Oct 2023 15:52:25 +0000
-Date:   Wed, 18 Oct 2023 17:52:23 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
+        with ESMTP id S231754AbjJRQZh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 12:25:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFD711D;
+        Wed, 18 Oct 2023 09:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697646335; x=1729182335;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=3SzZhMSgWPufMQv3UDQZF8yioB50y/KqV65kuToF9No=;
+  b=JgmRUzClX6MKH0AEVqBGTXpTtU7/rKrOw/bMSsiMHE9Tz5bt5FcU8kiE
+   +vetL7brflYzmYNbgOqaO/9CCfRZs85bkDNMQvrvzSuIq7qmbb5sD239A
+   MrxKtI4stKJtbvaAiGaCejVDd0+hicAPruhDD2bI7ZZnrVQ45DxBMsaVM
+   KFTpMUubFMMsWJfSANPGHRAhvqEiVWA5/e5tyL6/KUQ6Iye7WVDEnv018
+   enPnsS0iRtTm2PnRVjccyTonw0OjUpMhbipbxV6QHTXSQVPIVYhx/ty5C
+   brp1J7+lPCQQOGXrhbDyvcNhc0AXdy05Zd/eGfsOf8Gsiqs4QyqZi8jCc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="366306231"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="366306231"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 09:25:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756643245"
+X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
+   d="scan'208";a="756643245"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Oct 2023 09:25:29 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Dave Hansen" <dave.hansen@intel.com>,
+        =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
         "Huang, Kai" <kai.huang@intel.com>,
         "Zhang, Bo" <zhanb@microsoft.com>,
         "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
@@ -63,7 +62,6 @@ Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
         "kristen@linux.intel.com" <kristen@linux.intel.com>
 Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
  EPC
-Message-ID: <yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3>
 References: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
  <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
@@ -74,76 +72,58 @@ References: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
  <op.2c0nt109wjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com>
+ <yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3>
+Date:   Wed, 18 Oct 2023 11:25:28 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sfycubn7gx2ldoil"
-Content-Disposition: inline
-In-Reply-To: <7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -12.53
-X-Spamd-Result: default: False [-12.53 / 50.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[22];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.83)[99.27%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2c0qkqrowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, 18 Oct 2023 10:52:23 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
 
---sfycubn7gx2ldoil
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Oct 18, 2023 at 08:37:25AM -0700, Dave Hansen  =
 
-On Wed, Oct 18, 2023 at 08:37:25AM -0700, Dave Hansen <dave.hansen@intel.co=
-m> wrote:
-> 1. Admin sets a limit
-> 2. Enclave is created
-> 3. Enclave hits limit, allocation fails
+> <dave.hansen@intel.com> wrote:
+>> 1. Admin sets a limit
+>> 2. Enclave is created
+>> 3. Enclave hits limit, allocation fails
+>
+> I was actually about to suggest reorganizing the series to a part
+> implementing this simple limiting and a subsequent part with the recla=
+im
+> stuff for easier digestability.
+>
+>> Nothing else matters.
+>
+> If the latter part is an unncessary overkill, it's even better.
+>
 
-I was actually about to suggest reorganizing the series to a part
-implementing this simple limiting and a subsequent part with the reclaim
-stuff for easier digestability.=20
+Ok. I'll take out max_write() callback and only implement non-preemptive=
+  =
 
-> Nothing else matters.
+misc.max for EPC.
+I can also separate OOEPC_killing enclaves out, which is not needed if w=
+e  =
 
-If the latter part is an unncessary overkill, it's even better.
+only block allocation at limit, no need killing one enclave to make spac=
+e  =
 
-Thanks,
-Michal
+for another. This will simplify a lot.
 
---sfycubn7gx2ldoil
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks to all for your input!
 
------BEGIN PGP SIGNATURE-----
+Haitao
+ =
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS//NQAKCRAGvrMr/1gc
-jjuFAQD2xyk+E8YDQEiLZRkzZgLNNa9uj65olyt01GBofYgW0wD/WHDRxDomdgb3
-KyYKGF1P6hM7GDWbgwRHcCg5PSgE/gE=
-=+mep
------END PGP SIGNATURE-----
-
---sfycubn7gx2ldoil--
