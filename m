@@ -2,73 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EDF7CD6D0
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 10:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BCC7CD6E0
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 10:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjJRIoY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 04:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        id S230098AbjJRIqU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 04:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbjJRIoX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 04:44:23 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF1F100;
-        Wed, 18 Oct 2023 01:44:20 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-694ed847889so5355486b3a.2;
-        Wed, 18 Oct 2023 01:44:20 -0700 (PDT)
+        with ESMTP id S230094AbjJRIqT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 04:46:19 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA43C6;
+        Wed, 18 Oct 2023 01:46:17 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b20a48522fso4214744b3a.1;
+        Wed, 18 Oct 2023 01:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697618660; x=1698223460; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697618777; x=1698223577; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g9T8yAaYcutbx/cIRFOhb5zMfg4BEF8miGlVCWRkfNY=;
-        b=TxsqS0j8MVk4nmshhSlD2QThB2tQW2K6cRywONHq41R5TB26bdep1UeftIcjgGRlmY
-         HaKlgM+ONUJ4PyBYABQknXCvDrTfB1T71hrOZHT3SJKk9/jrscWRB9HXlGdSeGPkQmO0
-         Yu89JxHjXpiHeFZpGb0yhzGuhn9xIAoKsCavtSsfbWbwV2OJdoqmc7LL9Le/RZ2s/6tA
-         W/Isl/MK6bgDzFDigRKJeQH8s8gRSm0s5RyZs2MILgC5+M+o19vyAn3K1ujC2KafIUhb
-         J/nJSZFUXTiolAs3ucc8xjf298F1/Np3wxnR69jo9qQsrD7KQGCIlP+0DLbUs4IAAzMF
-         x7Cg==
+        bh=MjM8NJM6JVllRLYgSnqxLAwOLXcWEQAjyuI0Ba4HE+U=;
+        b=RGlUJPgaAbhah3No4hAbopJ/BSPdzOf73CA5yt/f9lEedbf2sGeYlPbBig4bNV5M7E
+         jbdI9tq9uRFGRXaeUph+SDUdF9TJWKB/R9536oRY6dtYwlda5eO1vagy+/mYTYtcV4Jg
+         m1WFK9uV+DTfGD5UFmDz5AbpoWOfP6cGPhgFP51XcEpWxICEZmP/GwMxbifqDzguCL2c
+         eez7ZK4OrIQqfBRkoT8hGzH4jhR4QUXk+tBknd665sHhmWvKG9koV6Wx99tiACicpiEa
+         HXVrwpHMUYsTemTBiYM59yQS0Sj+SEiqTWR8iS8SJLuAcDuaI3OA6wvnPbCP0bdvQGyY
+         7bMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697618660; x=1698223460;
+        d=1e100.net; s=20230601; t=1697618777; x=1698223577;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g9T8yAaYcutbx/cIRFOhb5zMfg4BEF8miGlVCWRkfNY=;
-        b=ZoFHFcbDMQo4sPTyoUiKs9qKKgCxYntl/jHS1lZJY2bi8MeZ/0a5gLteLlJ61gQ77B
-         E2C+x57W3jB2a9uPc5G+6vg4FoaT25j7rn7Up96F407lZZZPaZpD0m0+Z8BlqJLoCElz
-         sV8P/gHjjQMsPEGGxgtkS8xUZMJsH65OrsTpSJQD2LVlrh+olqIDSPEVb/Pp7grV7vbC
-         N2gLZjiD2vy1VmyaPdYtdbuluzFEntBRSUOB27S9ng7q76uZYZgLiJxdLv5tYbWsk9/C
-         NbDVSvXZ7I+ew0LTRzBX4N2O905h6s/qgUkD7UKEL8XKKE2wipgRTLudqhL2JuZ0q6cU
-         c0/w==
-X-Gm-Message-State: AOJu0Yxm+SMxIY79q35dMhqBxVGIZcRbrBw6pkKz0hXek10VWKCmXtRt
-        X5nPsn2Z+ENnoqgHQd4wPrQ=
-X-Google-Smtp-Source: AGHT+IGm4cMzz6aQRVd8olXln/NScqR32TREk75esIbuuqb6IvkmGiL8+iIfnpFvLX/SQnCvZe9CIQ==
-X-Received: by 2002:a05:6a20:244e:b0:16b:8bcf:9e27 with SMTP id t14-20020a056a20244e00b0016b8bcf9e27mr5013200pzc.20.1697618660175;
-        Wed, 18 Oct 2023 01:44:20 -0700 (PDT)
+        bh=MjM8NJM6JVllRLYgSnqxLAwOLXcWEQAjyuI0Ba4HE+U=;
+        b=n9n3qvt/uOyxy3a2D7mgHoU1377hcABSsnPZTzGCjhOMQjHJaUq2AdiRIT2iBDndoD
+         O9sdJ5LHo5Z9iFDhS6MjukyKa5lgD4JKErfKGrcBlxWPlqa/PWaK/H4JEXg9kDUIn3Kc
+         z+tP2E2co8jxYpDRrnpW7Gd1RtaQ3bU64ZVFdyvb3QPACMvS6/eEkrgJjUydN+2PdCOU
+         //YDak8uNO+gblp6HHUetAfz8QSdN0si2/6Zm0IIwUmmX5CFw3Vg4rI3RgEyRi/IGnni
+         psdmToqKf3lVsmrxXl9D4rFvt1o/ZU2rg4G/gmkQ7zVDW0zW3jGfVS6JGkUKDm8JDNtR
+         +ZgA==
+X-Gm-Message-State: AOJu0YyQVuCEqzZQ5ay3oS9VJFuoJLd6A7+imQ04pql9AK8w4i7umlX4
+        1PEG22uvHrnzZHJbHso7S7k=
+X-Google-Smtp-Source: AGHT+IG8R9G5TZ+zQwGOq2WBl4PnJCcrqIk75aloxXiztkp1XP4DNIRMi5/iueAfV9rDsF01rx7A2A==
+X-Received: by 2002:a05:6a20:a123:b0:159:b7ba:74bd with SMTP id q35-20020a056a20a12300b00159b7ba74bdmr5205717pzk.50.1697618777184;
+        Wed, 18 Oct 2023 01:46:17 -0700 (PDT)
 Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id y9-20020a17090264c900b001c61901ed37sm3003927pli.191.2023.10.18.01.44.19
+        by smtp.gmail.com with ESMTPSA id a7-20020a170902b58700b001ca4c20003dsm2954311pls.69.2023.10.18.01.46.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 01:44:19 -0700 (PDT)
+        Wed, 18 Oct 2023 01:46:16 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 17 Oct 2023 22:44:18 -1000
+Date:   Tue, 17 Oct 2023 22:46:15 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc:     guro@fb.com, jack@suse.cz, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
-        joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH v3] writeback, cgroup: switch inodes with dirty
- timestamps to release dying cgwbs
-Message-ID: <ZS-a4s2eIspiv43P@slm.duckdns.org>
-References: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Hunt <pehunt@redhat.com>
+Subject: Re: [PATCH] docs/cgroup: Add the list of threaded controllers to
+ cgroup-v2.rst
+Message-ID: <ZS-bVxCAptXLotC_@slm.duckdns.org>
+References: <20231017171341.3683352-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
+In-Reply-To: <20231017171341.3683352-1-longman@redhat.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,25 +76,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 08:55:11PM +0800, Jingbo Xu wrote:
-> The cgwb cleanup routine will try to release the dying cgwb by switching
-> the attached inodes.  It fetches the attached inodes from wb->b_attached
-> list, omitting the fact that inodes only with dirty timestamps reside in
-> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
-> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
-> with dirty timestamps can not be switched to a live cgwb for a long time.
+On Tue, Oct 17, 2023 at 01:13:41PM -0400, Waiman Long wrote:
+> The cgroup-v2 file mentions the concept of threaded controllers which can
+> be used in a threaded cgroup. However, it doesn't mention clearly which
+> controllers are threaded leading to some confusion about what controller
+> can be used requiring some experimentation. Clear this up by explicitly
+> listing the controllers that can be used currently in a threaded cgroup.
 > 
-> It is reasonable not to switch cgwb for inodes with dirty data, as
-> otherwise it may break the bandwidth restrictions.  However since the
-> writeback of inode metadata is not accounted for, let's also switch
-> inodes with dirty timestamps to avoid zombie memory and block cgroups
-> when laztytime is enabled.
-> 
-> Fixes: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Applied to cgroup/for-6.7.
 
 Thanks.
 
