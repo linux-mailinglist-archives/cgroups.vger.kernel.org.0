@@ -2,89 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D697CD10F
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 01:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE257CD271
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 04:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjJQXwu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 19:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        id S229450AbjJRCw0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 22:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjJQXwt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 19:52:49 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AC9C4
-        for <cgroups@vger.kernel.org>; Tue, 17 Oct 2023 16:52:48 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9b6559cbd74so1081679466b.1
-        for <cgroups@vger.kernel.org>; Tue, 17 Oct 2023 16:52:47 -0700 (PDT)
+        with ESMTP id S229453AbjJRCw0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 22:52:26 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D233A4;
+        Tue, 17 Oct 2023 19:52:24 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41cb76f3cf0so4918991cf.2;
+        Tue, 17 Oct 2023 19:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697586766; x=1698191566; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697597543; x=1698202343; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8ijNKUZrGV/QasB3HbEVN0PUNmDp0ZQ9fTyJ7U2oDSY=;
-        b=odOFKQKRCbpd6C7Ejnzx3VM1Q6iAxZ3l+kMpObxGf8hjWkvbi19wt0Qwr2c3tiS6D1
-         LCLCG4k12av6qNtUFvUWXs0XR8jWIfxV9FV7M796lUUcWTYlRrJo4z8wyPl59ONdtVCH
-         GSJ4iEIUzGQBCBEX7y89MxmNou3bumZCH/mkX8Pqn+ZoOBW8yOKQMp/i9WhgPUExS+k8
-         xP/71emdLGrp+REGBrk9R2c072rp8t4cxyEsWixRfSc8TmtzVM3q+gl9yKDRqogCscqs
-         2Vaqaer67Smqknbd8kID1v6uZgrqRjE7+jSlOB6ItMXP1X8sJl7t88+sMtZZDUt94W1p
-         WWVg==
+        bh=+qElkA+zxQIebaUG8W2et9dcIHXvx+tdSh2/GiEiI4w=;
+        b=O+lUo8adxat3y2peweYGQQoRwxoYChy0viJIOc91zUBfvulI6dLY9aZJ/dke/WCXwE
+         hYEANcADM8/XrPGaSmQCPtTB1OCpOJDlB8SxK7OzIdtZpENQawAr5e5u3B6NgUviYU3z
+         yOWUvfytpqyOqW7hTK7vZbecG/G44vr5klUIEFSgl1ieTlQusbAOK5I3/rAdUG37mkzl
+         KiObu/Xa8NNrgOT9k+ckwJIw1/BH3b2XhEckNw7NkQxKRyLbAOqVie6kMNMzBSvPAmRS
+         lSrnBgvbL4UeTuQAFTDjiA/5/rwpFFObqI6AT2ZWJB0SlbL8UjwzFtQuhXVCHL5beS7L
+         jqDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697586766; x=1698191566;
+        d=1e100.net; s=20230601; t=1697597543; x=1698202343;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8ijNKUZrGV/QasB3HbEVN0PUNmDp0ZQ9fTyJ7U2oDSY=;
-        b=XVCUNLHFKO1KV1cLaIOjLdD+4dJf49C3DaL4P09h2dM0LoFwXYOTYKNDnIahlZMhPy
-         o+l+kA6KejTuEdsPv71BuZwobCt+smSSDIuWyhEW5dxy/O8NmKj1C6UFyGec8TFG/WEF
-         /lZr5SXFEvLf38vnXOa7QU73pjmT9c/8PiZaau+rdFg/8yApyraFZFBc0gCAWjGK1q4k
-         UBmVT8IMOygmoiMtchzwZP3EHUNVSZpY3hhxUc7/3I2Njihczy/7+1ba/b/Ay+7fSlnl
-         wQqS2CnzS/hAPyCQtc+6ile1R6Xv5x6Z3NtJBiK7eFkid0nmzrU6+9b0NdJcOqCgm2vh
-         UJ7A==
-X-Gm-Message-State: AOJu0Yyq+C86fdFiIbe7qVEu2lb7h7WOljdr8pL0Iq9HPK6h9S4ZtdEN
-        3LGYYAPq4dByWbYfQuGzZZRQpiWAC4AY67JTQx2ytw==
-X-Google-Smtp-Source: AGHT+IEzYA1bgwAcUa3xXt5MPooJrDGhJmuxWFHodU9x0oj0lJCyt5H9ezXwDqD75m2OTGyAg6uLlLHUJW4p500RG5o=
-X-Received: by 2002:a17:907:7ba0:b0:9be:ca44:87b6 with SMTP id
- ne32-20020a1709077ba000b009beca4487b6mr2683655ejc.3.1697586766359; Tue, 17
- Oct 2023 16:52:46 -0700 (PDT)
+        bh=+qElkA+zxQIebaUG8W2et9dcIHXvx+tdSh2/GiEiI4w=;
+        b=K6GbGtL4Iqdz/7dh3xZLXYOk3/cZIr3AsQMdBy+Z68ECPmnTwdNS0tIDiYOMbzK1vn
+         L5lvR7xlh04TSl4y29ITOGZuGIvxWU6bG9ZGw0zsxf6zfRT9yLAojviGEf/Z1ktiDZy7
+         y/ywJUr+MSU6EDtD+cMeX0dNv8J01SfyEFN4KeCPcpbxguY9jZhSyhxX4JyW42G3g7+l
+         348NcmXKLRCMqvYHsUqpGUaENi5JJH7BMbbjGlXV01A3a1BjoBml1ztAZzPnbItseBjF
+         X/F9RKYQSRi6fz1FClZoG/4rSxFwErfiEdZniAfwnZh68JrFtd/9ywHe3FLbQ4jbmZVs
+         78Eg==
+X-Gm-Message-State: AOJu0YxSjc2WpNTCakEWk0HmHl2ZWAR24rCmHkNhi56Bk+5/kYOFB5zq
+        VJ2FzFNpLCyX16pqZCUWBT4bhrPNwANYa/1DaI0=
+X-Google-Smtp-Source: AGHT+IEzKA+3F6z+XjvrFPyFYNwGNXlr2HVJYIEpXI446/Lwu18lyLzlmFYnb+mr9ky5p/kEfIaSZbIg0h0cFjXf4v4=
+X-Received: by 2002:ac8:598f:0:b0:415:1683:9cf1 with SMTP id
+ e15-20020ac8598f000000b0041516839cf1mr4618462qte.21.1697597543320; Tue, 17
+ Oct 2023 19:52:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
- <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
- <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
- <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
- <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
- <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
- <CALvZod6cu6verk=vHVFrOUoA-gj_yBVzU9_vv7eUfcjhzfvtcA@mail.gmail.com>
- <CAJD7tkavJDMSZdwtfxUc67mNBSkrz7XCa_z8FGH0FGg6m4RuAA@mail.gmail.com> <20231014160831.73785b15e9b34eb6146d5497@linux-foundation.org>
-In-Reply-To: <20231014160831.73785b15e9b34eb6146d5497@linux-foundation.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 17 Oct 2023 16:52:06 -0700
-Message-ID: <CAJD7tkZDarDn_38ntFg5bK2fAmFdSe+Rt6DKOZA7Sgs_kERoVA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Shakeel Butt <shakeelb@google.com>, michael@phoronix.com,
-        Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-2-laoar.shao@gmail.com>
+ <q7yaokzrcg5effyr2j7n6f6ljlez755uunlzfzpjgktfmrvhnb@t44uxkbj7k5k>
+In-Reply-To: <q7yaokzrcg5effyr2j7n6f6ljlez755uunlzfzpjgktfmrvhnb@t44uxkbj7k5k>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 18 Oct 2023 10:51:47 +0800
+Message-ID: <CALOAHbCP8HVs2UjuegLHvZSRHbfJ2ONMNC58AQxwVaNGSDYzOg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup
+ root_list RCU safe
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com,
+        sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,46 +74,83 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 4:08=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
+On Tue, Oct 17, 2023 at 9:20=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
 >
-> On Thu, 12 Oct 2023 15:23:06 -0700 Yosry Ahmed <yosryahmed@google.com> wr=
-ote:
+> On Tue, Oct 17, 2023 at 12:45:38PM +0000, Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > Therefore, making it RCU-safe would be beneficial.
 >
-> > Meanwhile, Andrew, could you please replace the commit log of this
-> > patch as follows for more updated testing info:
+> Notice that whole cgroup_destroy_root() is actually an RCU callback (via
+> css_free_rwork_fn()). So the list traversal under RCU should alreay be
+> OK wrt its stability. Do you see a loophole in this argument?
+
+css_free_rwork_fn() is designed for handling the cgroup's CSS. When
+the RCU callback is executed, this specific CSS is not accessible to
+other tasks. However, the cgroup root remains accessible to other
+tasks. For instance, other tasks can still traverse the cgroup
+root_list and access the cgroup root that is currently being
+destroyed. Hence, we must take explicit measures to make access to the
+cgroup root RCU-safe.
+
 >
-> Done.
+>
+> >  /* iterate across the hierarchies */
+> >  #define for_each_root(root)                                          \
+> > -     list_for_each_entry((root), &cgroup_roots, root_list)
+> > +     list_for_each_entry_rcu((root), &cgroup_roots, root_list,       \
+> > +                             !lockdep_is_held(&cgroup_mutex))
+>
+> The extra condition should be constant false (regardless of
+> cgroup_mutex). IOW, RCU read lock is always required.
 
+IIUC, the RCU read lock is not required, while the cgroup_mutex is
+required when we want to traverse the cgroup root_list, such as in the
+case of cgroup_attach_task_all.
 
-Sorry Andrew, but could you please also take this fixlet?
+>
+> > @@ -1386,13 +1386,15 @@ static inline struct cgroup *__cset_cgroup_from=
+_root(struct css_set *cset,
+> >               }
+> >       }
+> >
+> > -     BUG_ON(!res_cgroup);
+> > +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
+> >       return res_cgroup;
+>
+> Hm, this would benefit from a comment why !res_cgroup is conditionally
+> acceptable.
 
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 17 Oct 2023 23:07:59 +0000
-Subject: [PATCH] mm: memcg: clear percpu stats_pending during stats flush
+The cgrp_cset_link is freed before we remove the cgroup root from the
+root_list. Consequently, when accessing a cgroup root, the cset_link
+may have already been freed, resulting in a NULL res_cgroup. However,
+by holding the cgroup_mutex, we ensure that res_cgroup cannot be NULL.
 
-When flushing memcg stats, we clear the per-memcg count of pending stat
-updates, as they are captured by the flush. Also clear the percpu count
-for the cpu being flushed.
+Will add the comments in the next version.
 
-Suggested-by: Wei Xu <weixugc@google.com>
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/memcontrol.c | 1 +
- 1 file changed, 1 insertion(+)
+>
+> >  }
+> >
+> >  /*
+> >   * look up cgroup associated with current task's cgroup namespace on t=
+he
+> > - * specified hierarchy
+> > + * specified hierarchy. Umount synchronization is ensured via VFS laye=
+r,
+> > + * so we don't have to hold cgroup_mutex to prevent the root from bein=
+g
+> > + * destroyed.
+>
+> I tried the similar via explicit lockdep invocation (in a thread I
+> linked to you previously) and VFS folks weren't ethusiastic about it.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0b1377b16b3e0..fa92de780ac89 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5653,6 +5653,7 @@ static void mem_cgroup_css_rstat_flush(struct
-cgroup_subsys_state *css, int cpu)
-                        }
-                }
-        }
-+       statc->stats_updates =3D 0;
-        /* We are in a per-cpu loop here, only do the atomic write once */
-        if (atomic64_read(&memcg->vmstats->stats_updates))
-                atomic64_set(&memcg->vmstats->stats_updates, 0);
+Thanks for your information. will take a look at it.
+
+>
+> You cannot hide this synchronization assumption in a mere comment.
+
+will think about how to address it.
+
 --
-2.42.0.655.g421f12c284-goog
+Regards
+Yafang
