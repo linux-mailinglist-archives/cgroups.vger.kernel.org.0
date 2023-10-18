@@ -2,161 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754EE7CD715
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 10:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4146D7CD786
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 11:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbjJRIzG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 04:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S229532AbjJRJHl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 05:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjJRIzE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 04:55:04 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F436FA
-        for <cgroups@vger.kernel.org>; Wed, 18 Oct 2023 01:55:01 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ad8a822508so1069747666b.0
-        for <cgroups@vger.kernel.org>; Wed, 18 Oct 2023 01:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697619299; x=1698224099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yL/UZARaAWUIf6+4o54rQD6Gfs68ZHxoU8jk1dJAyXQ=;
-        b=kk/2/pPkkiZmVUHI2gAJs5ixlwqzBytCoss2FWxrBodYlEMyl+CesseG89gfUQ073i
-         7UWs0zfmq38UuCFIa+1jJbU9O2q0ymh7YpDkIa2KQu46g+YkbFskBjy+95hNUEJqtQmL
-         n4T2zr2WblAx9Ok8Z3DdhuX+nfLiNy2yK1haqi11I8M5S8OIUi8Az+xGel8+IETsOkGy
-         BzwVnQLEvSKCmHc5uAqD5TWpoY7JoVDMGrJm5H/PAJrNeLGxiB9z3tSYcLdsiSzQq66A
-         lKrrk86Yc3aOyuptGvBUyfoWI3eZYJ+5yOz33ijcVXbF8r9y8/lrcZWO/PAlY71PJOzJ
-         wqvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697619299; x=1698224099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yL/UZARaAWUIf6+4o54rQD6Gfs68ZHxoU8jk1dJAyXQ=;
-        b=gdQPZ8SZUhVchG1cRzSyngEayqQ7QmmwDCIcCSAUkTj5XyIDkuvT1rp5fKdJmDMosD
-         3ahHbhEUsAlbXNxYkCZUKA9jeNRR2lBjWTotmXedeIqdiF0xdeXcb5ilObifqFF/oGl8
-         HJKNzXeGfZAU/GbzFeSmOes2DFEvKdKAJOyqPKY9oJcaW0/xC3tQeNBmh8UspGAtdrio
-         CwjrK1mNnhEI2JGBN7y7VetJjFKcHLzM0iLxeg78JfSpK3Gz77g/d6ePyrv6ASF/23oY
-         IaamZjPnDhtXfJyk47+nGDx6s+Tp8Rc5EJTqSGUde6wElN6RjNwECfs6QPP1JX6Q/nGt
-         fLpQ==
-X-Gm-Message-State: AOJu0YwTH7nxF5SEAbkVXyvwAcnC1Kwgh0Sp2/Pb+bc8wQwZRWrbUqMx
-        dYRPjg0EIkOgHO8pe7oJUoirQm9DjrtDns4vSkcGJQ==
-X-Google-Smtp-Source: AGHT+IGGtmOH11oZ1Cb59UA//7N6str2jENUft6xZQE93G81xgY9OLXEg+0bgebtR43pEb9PTMWIKAdCJH6cxE6feGU=
-X-Received: by 2002:a17:907:9712:b0:9ae:50e3:7e40 with SMTP id
- jg18-20020a170907971200b009ae50e37e40mr3787316ejc.52.1697619299344; Wed, 18
- Oct 2023 01:54:59 -0700 (PDT)
+        with ESMTP id S229482AbjJRJHl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 05:07:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26AF9;
+        Wed, 18 Oct 2023 02:07:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8165EC433C8;
+        Wed, 18 Oct 2023 09:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697620055;
+        bh=l4Oi5jf7qwP7CNkVZZNY8DYKTprQka+ShuoW7/Do0XQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Es+vckhML6CwqSwgV65RXAlRZMWLbJFu15MMUKk8v2FW7P8yVmNtSfevXtU6CZVpi
+         1aXIT0xlmZQxoHDSB41Hd0M6Yl5gvFB9ndB/3MMRYkyK0SVbwmycZILJ34ScJgsEI1
+         MZkiuI/7TrNP63l93BvLPwohbV30RvwSgY0KJADjWYGGcJ4x2qNuqCiAWWW1CQej3z
+         +CgXIt6LkEbIqhSbQyziW92oHc+fMua0o8X8/UXdgEeNT6MJ66KP0XhIvN7LfbQTlu
+         zwj2I0fNQaXGsNv7zZnI7XS/xDrYK4X5emfstphKe1WOs4AyPbL86nShPFJAslBb0b
+         kaYvjnNnjiEUA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc:     Christian Brauner <brauner@kernel.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, willy@infradead.org,
+        joseph.qi@linux.alibaba.com, tj@kernel.org, jack@suse.cz,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH v3] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
+Date:   Wed, 18 Oct 2023 11:07:20 +0200
+Message-Id: <20231018-dinkelbrot-botanik-b119bb8f4989@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
+References: <20231014125511.102978-1-jefflexu@linux.alibaba.com>
 MIME-Version: 1.0
-References: <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
- <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
- <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
- <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
- <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
- <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
- <CALvZod6cu6verk=vHVFrOUoA-gj_yBVzU9_vv7eUfcjhzfvtcA@mail.gmail.com>
- <CAJD7tkavJDMSZdwtfxUc67mNBSkrz7XCa_z8FGH0FGg6m4RuAA@mail.gmail.com> <ZS+VqgmMVStQ9X8m@xsang-OptiPlex-9020>
-In-Reply-To: <ZS+VqgmMVStQ9X8m@xsang-OptiPlex-9020>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 18 Oct 2023 01:54:20 -0700
-Message-ID: <CAJD7tkY9KTwDWJUtnQ8qygeHkWvzyFSM7w07z_=PYLh1kHcRMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        michael@phoronix.com, Feng Tang <feng.tang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1313; i=brauner@kernel.org; h=from:subject:message-id; bh=l4Oi5jf7qwP7CNkVZZNY8DYKTprQka+ShuoW7/Do0XQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTqL9D597YqabVumacg890tWi7FOTdf1KYeag5488dwi5LI iveXOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYSm8vI0GzdrhQdq1mSnma6TOJwtz XT0uMtbxSiu66+2fQ6IyFgKiPDR7GfSf1cU1mbQo5t+FomoMy+3rL19dQL72xfbnh0TDCOCwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 1:22=E2=80=AFAM Oliver Sang <oliver.sang@intel.com>=
- wrote:
->
-> hi, Yosry Ahmed, hi, Shakeel Butt,
->
-> On Thu, Oct 12, 2023 at 03:23:06PM -0700, Yosry Ahmed wrote:
-> > On Thu, Oct 12, 2023 at 2:39=E2=80=AFPM Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > >
-> > > On Thu, Oct 12, 2023 at 2:20=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> > > >
-> > > [...]
-> > > > >
-> > > > > Yes this looks better. I think we should also ask intel perf and
-> > > > > phoronix folks to run their benchmarks as well (but no need to bl=
-ock
-> > > > > on them).
-> > > >
-> > > > Anything I need to do for this to happen? (I thought such testing i=
-s
-> > > > already done on linux-next)
-> > >
-> > > Just Cced the relevant folks.
-> > >
-> > > Michael, Oliver & Feng, if you have some time/resource available,
-> > > please do trigger your performance benchmarks on the following series
-> > > (but nothing urgent):
-> > >
-> > > https://lore.kernel.org/all/20231010032117.1577496-1-yosryahmed@googl=
-e.com/
-> >
-> > Thanks for that.
->
-> we (0day team) have already applied the patch-set as:
->
-> c5f50d8b23c79 (linux-review/Yosry-Ahmed/mm-memcg-change-flush_next_time-t=
-o-flush_last_time/20231010-112257) mm: memcg: restore subtree stats flushin=
-g
-> ac8a48ba9e1ca mm: workingset: move the stats flush into workingset_test_r=
-ecent()
-> 51d74c18a9c61 mm: memcg: make stats flushing threshold per-memcg
-> 130617edc1cd1 mm: memcg: move vmstats structs definition above flushing c=
-ode
-> 26d0ee342efc6 mm: memcg: change flush_next_time to flush_last_time
-> 25478183883e6 Merge branch 'mm-nonmm-unstable' into mm-everything   <----=
- the base our tool picked for the patch set
->
-> they've already in our so-called hourly-kernel which under various functi=
-on
-> and performance tests.
->
-> our 0day test logic is if we found any regression by these hourly-kernels
-> comparing to base (e.g. milestone release), auto-bisect will be triggnere=
-d.
-> then we only report when we capture a first bad commit for a regression.
->
-> based on this, if you don't receive any report in following 2-3 weeks, yo=
-u
-> could think 0day cannot capture any regression from your patch-set.
->
-> *However*, please be aware that 0day is not a traditional CI system, and =
-also
-> due to resource constraints, we cannot guaratee coverage, we cannot tigge=
-r
-> specific tests for your patchset, either.
-> (sorry if this is not your expectation)
->
+On Sat, 14 Oct 2023 20:55:11 +0800, Jingbo Xu wrote:
+> The cgwb cleanup routine will try to release the dying cgwb by switching
+> the attached inodes.  It fetches the attached inodes from wb->b_attached
+> list, omitting the fact that inodes only with dirty timestamps reside in
+> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
+> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
+> with dirty timestamps can not be switched to a live cgwb for a long time.
+> 
+> [...]
 
-Thanks for taking a look and clarifying this, much appreciated.
-Fingers crossed for not getting any reports :)
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
+      https://git.kernel.org/vfs/vfs/c/27890db5162c
