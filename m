@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE257CD271
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 04:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232887CD28F
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 05:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229450AbjJRCw0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 22:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        id S229456AbjJRDM7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Oct 2023 23:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJRCw0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 22:52:26 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D233A4;
-        Tue, 17 Oct 2023 19:52:24 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41cb76f3cf0so4918991cf.2;
-        Tue, 17 Oct 2023 19:52:24 -0700 (PDT)
+        with ESMTP id S229450AbjJRDM7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 23:12:59 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D728FF;
+        Tue, 17 Oct 2023 20:12:57 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-457c2d81f7fso2162758137.3;
+        Tue, 17 Oct 2023 20:12:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697597543; x=1698202343; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697598776; x=1698203576; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+qElkA+zxQIebaUG8W2et9dcIHXvx+tdSh2/GiEiI4w=;
-        b=O+lUo8adxat3y2peweYGQQoRwxoYChy0viJIOc91zUBfvulI6dLY9aZJ/dke/WCXwE
-         hYEANcADM8/XrPGaSmQCPtTB1OCpOJDlB8SxK7OzIdtZpENQawAr5e5u3B6NgUviYU3z
-         yOWUvfytpqyOqW7hTK7vZbecG/G44vr5klUIEFSgl1ieTlQusbAOK5I3/rAdUG37mkzl
-         KiObu/Xa8NNrgOT9k+ckwJIw1/BH3b2XhEckNw7NkQxKRyLbAOqVie6kMNMzBSvPAmRS
-         lSrnBgvbL4UeTuQAFTDjiA/5/rwpFFObqI6AT2ZWJB0SlbL8UjwzFtQuhXVCHL5beS7L
-         jqDg==
+        bh=AghwLt6vblwpQhnA94BUMc1jL2ubPg4j6VP77aoRAzc=;
+        b=UVo6ZKq+j/7sCFHrbzDkIhJA97jvQTqsIqxV47nwRb7V+XuWYDf3KJ2Mbg6N+GB6k9
+         NI7wN1sqjwhMjYnylf85mJ9qzFwFrDrsMKR6+rBKtjDCgUV6ucrMt5dS5yD5Aq1ZA+hh
+         xq4oXhVIEN1Oh07oAK0r2WoKTZW5KWgcU8384H9yE1eOYUnWSJK3jxPp5rNVngtx759f
+         iQ3AkK1/z/e2TceezsVnaJ9JJQKC7EVVFg6w2WB2/T5p+uNCNSJ9i3f242ePgqzjX45C
+         t64owlEkrDg/URlqzvv67HwC2aLtaGN9pv99/+qfEy+LkxWHegNVejE0NUoM+vnAXpyI
+         9dow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697597543; x=1698202343;
+        d=1e100.net; s=20230601; t=1697598776; x=1698203576;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+qElkA+zxQIebaUG8W2et9dcIHXvx+tdSh2/GiEiI4w=;
-        b=K6GbGtL4Iqdz/7dh3xZLXYOk3/cZIr3AsQMdBy+Z68ECPmnTwdNS0tIDiYOMbzK1vn
-         L5lvR7xlh04TSl4y29ITOGZuGIvxWU6bG9ZGw0zsxf6zfRT9yLAojviGEf/Z1ktiDZy7
-         y/ywJUr+MSU6EDtD+cMeX0dNv8J01SfyEFN4KeCPcpbxguY9jZhSyhxX4JyW42G3g7+l
-         348NcmXKLRCMqvYHsUqpGUaENi5JJH7BMbbjGlXV01A3a1BjoBml1ztAZzPnbItseBjF
-         X/F9RKYQSRi6fz1FClZoG/4rSxFwErfiEdZniAfwnZh68JrFtd/9ywHe3FLbQ4jbmZVs
-         78Eg==
-X-Gm-Message-State: AOJu0YxSjc2WpNTCakEWk0HmHl2ZWAR24rCmHkNhi56Bk+5/kYOFB5zq
-        VJ2FzFNpLCyX16pqZCUWBT4bhrPNwANYa/1DaI0=
-X-Google-Smtp-Source: AGHT+IEzKA+3F6z+XjvrFPyFYNwGNXlr2HVJYIEpXI446/Lwu18lyLzlmFYnb+mr9ky5p/kEfIaSZbIg0h0cFjXf4v4=
-X-Received: by 2002:ac8:598f:0:b0:415:1683:9cf1 with SMTP id
- e15-20020ac8598f000000b0041516839cf1mr4618462qte.21.1697597543320; Tue, 17
- Oct 2023 19:52:23 -0700 (PDT)
+        bh=AghwLt6vblwpQhnA94BUMc1jL2ubPg4j6VP77aoRAzc=;
+        b=b2KXfHB2EXRKvHqBbQIVBicAHVLpbfcrjGp6g6YJAVGVk0l3msTsThsX2/CqS/rYtC
+         WoHmdpwHKmrVLMZNSvEBjp8OFLh0sgtWydSoEyvOaa3gQ911cRWKzqsvEuwiDBwseeIW
+         HAaNerUS1sGPlJQhqnD9RUMzr04S/dBZ/ZxaaejAplG6rkpz2P60kBgUAIXWT56Tp1Qa
+         5VJfZ+Me9QHAToQQ1b6CBv1YdJai891k42KntMipU/xRSsZAqOeMJoqKTiEATr9R8//7
+         M8r+EI+Z38F5D2b87ITnUaie2Jc0+xIru+CV7TOi+oe7dQ+jRBxSd4+QmJygWWPExCqr
+         vkEQ==
+X-Gm-Message-State: AOJu0YwsmJ5n+lwitJIkpZMspRpUB6rmNY7K+/SZNmiozGXdU5z7woA/
+        3N0zhQLdTxkxlZL7QUcdZrGGSf91XGnEoMmPz3E=
+X-Google-Smtp-Source: AGHT+IEj7G5WeYkodabVlnYoyo36Kp8Nsl/bPYtUNii0JHPGHyLEXA8gnlzq7lKQCQ9wY2xZQfeBv0xtfL5zvV1sb0Y=
+X-Received: by 2002:a05:6102:2051:b0:457:c052:1949 with SMTP id
+ q17-20020a056102205100b00457c0521949mr4573010vsr.25.1697598776608; Tue, 17
+ Oct 2023 20:12:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-2-laoar.shao@gmail.com>
- <q7yaokzrcg5effyr2j7n6f6ljlez755uunlzfzpjgktfmrvhnb@t44uxkbj7k5k>
-In-Reply-To: <q7yaokzrcg5effyr2j7n6f6ljlez755uunlzfzpjgktfmrvhnb@t44uxkbj7k5k>
+References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-3-laoar.shao@gmail.com>
+ <ujaxujz3xczccobmiu2jxsstn3n7v4ly7vp72dqbgu5dyonrrw@nhzk7fhrpkkp>
+In-Reply-To: <ujaxujz3xczccobmiu2jxsstn3n7v4ly7vp72dqbgu5dyonrrw@nhzk7fhrpkkp>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 18 Oct 2023 10:51:47 +0800
-Message-ID: <CALOAHbCP8HVs2UjuegLHvZSRHbfJ2ONMNC58AQxwVaNGSDYzOg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup
- root_list RCU safe
+Date:   Wed, 18 Oct 2023 11:12:20 +0800
+Message-ID: <CALOAHbAgWoFGSc=uF5gFWXmsALECUaGGScQuXpRcwjgzv+TPGQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 2/9] cgroup: Eliminate the need for
+ cgroup_mutex in proc_cgroup_show()
 To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -74,83 +74,56 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 9:20=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Tue, Oct 17, 2023 at 12:45:38PM +0000, Yafang Shao <laoar.shao@gmail.c=
+On Tue, Oct 17, 2023 at 10:04=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
 om> wrote:
-> > Therefore, making it RCU-safe would be beneficial.
 >
-> Notice that whole cgroup_destroy_root() is actually an RCU callback (via
-> css_free_rwork_fn()). So the list traversal under RCU should alreay be
-> OK wrt its stability. Do you see a loophole in this argument?
+> Hi.
+>
+> I'd like this proc_cgroup_show de-contention.
+> (Provided the previous patch and this one can be worked out somehow.)
 
-css_free_rwork_fn() is designed for handling the cgroup's CSS. When
-the RCU callback is executed, this specific CSS is not accessible to
-other tasks. However, the cgroup root remains accessible to other
-tasks. For instance, other tasks can still traverse the cgroup
-root_list and access the cgroup root that is currently being
-destroyed. Hence, we must take explicit measures to make access to the
-cgroup root RCU-safe.
+Thanks
 
 >
+> On Tue, Oct 17, 2023 at 12:45:39PM +0000, Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > They can ran successfully after implementing this change, with no RCU
+> > warnings in dmesg. It's worth noting that this change can also catch
+> > deleted cgroups, as demonstrated by running the following task at the
+> > same time:
 >
-> >  /* iterate across the hierarchies */
-> >  #define for_each_root(root)                                          \
-> > -     list_for_each_entry((root), &cgroup_roots, root_list)
-> > +     list_for_each_entry_rcu((root), &cgroup_roots, root_list,       \
-> > +                             !lockdep_is_held(&cgroup_mutex))
->
-> The extra condition should be constant false (regardless of
-> cgroup_mutex). IOW, RCU read lock is always required.
+> Can those be other than v1 root cgroups? A suffix "(unmounted)" may be
+> more informative then.
 
-IIUC, the RCU read lock is not required, while the cgroup_mutex is
-required when we want to traverse the cgroup root_list, such as in the
-case of cgroup_attach_task_all.
+They can only be a v1 root cgroups. will use the "(unmounted)"
+instead. Thanks for your suggestion.
 
 >
-> > @@ -1386,13 +1386,15 @@ static inline struct cgroup *__cset_cgroup_from=
-_root(struct css_set *cset,
-> >               }
-> >       }
+> (Non-zombie tasks prevent their cgroup removal, zombie tasks won't have
+> any non-trivial path rendered.)
+>
+>
+> > @@ -6256,7 +6256,7 @@ int proc_cgroup_show(struct seq_file *m, struct p=
+id_namespace *ns,
+> >       if (!buf)
+> >               goto out;
 > >
-> > -     BUG_ON(!res_cgroup);
-> > +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
-> >       return res_cgroup;
+> > -     cgroup_lock();
+> > +     rcu_read_lock();
 >
-> Hm, this would benefit from a comment why !res_cgroup is conditionally
-> acceptable.
+> What about the cgroup_path_ns_locked() that prints the path?
 
-The cgrp_cset_link is freed before we remove the cgroup root from the
-root_list. Consequently, when accessing a cgroup root, the cset_link
-may have already been freed, resulting in a NULL res_cgroup. However,
-by holding the cgroup_mutex, we ensure that res_cgroup cannot be NULL.
-
-Will add the comments in the next version.
+I believe we can further enhance cgroup_path_ns() by replacing the
+cgroup_lock with rcu_read_lock. However, we need to explicitly address
+the NULL root case, which may necessitate some refactoring. Perhaps
+this can be improved in a separate patchset?
 
 >
-> >  }
-> >
-> >  /*
-> >   * look up cgroup associated with current task's cgroup namespace on t=
-he
-> > - * specified hierarchy
-> > + * specified hierarchy. Umount synchronization is ensured via VFS laye=
-r,
-> > + * so we don't have to hold cgroup_mutex to prevent the root from bein=
-g
-> > + * destroyed.
+> (I argue above that no non-trivial path is rendered but I'm not sure
+> whether rcu_read_lock() is sufficient sync wrt cgroup rmdir.)
 >
-> I tried the similar via explicit lockdep invocation (in a thread I
-> linked to you previously) and VFS folks weren't ethusiastic about it.
 
-Thanks for your information. will take a look at it.
 
->
-> You cannot hide this synchronization assumption in a mere comment.
-
-will think about how to address it.
-
---
+--=20
 Regards
 Yafang
