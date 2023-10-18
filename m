@@ -2,128 +2,218 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 232887CD28F
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 05:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C6D7CD332
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 06:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjJRDM7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Oct 2023 23:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
+        id S235184AbjJREjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 00:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJRDM7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Oct 2023 23:12:59 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D728FF;
-        Tue, 17 Oct 2023 20:12:57 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-457c2d81f7fso2162758137.3;
-        Tue, 17 Oct 2023 20:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697598776; x=1698203576; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AghwLt6vblwpQhnA94BUMc1jL2ubPg4j6VP77aoRAzc=;
-        b=UVo6ZKq+j/7sCFHrbzDkIhJA97jvQTqsIqxV47nwRb7V+XuWYDf3KJ2Mbg6N+GB6k9
-         NI7wN1sqjwhMjYnylf85mJ9qzFwFrDrsMKR6+rBKtjDCgUV6ucrMt5dS5yD5Aq1ZA+hh
-         xq4oXhVIEN1Oh07oAK0r2WoKTZW5KWgcU8384H9yE1eOYUnWSJK3jxPp5rNVngtx759f
-         iQ3AkK1/z/e2TceezsVnaJ9JJQKC7EVVFg6w2WB2/T5p+uNCNSJ9i3f242ePgqzjX45C
-         t64owlEkrDg/URlqzvv67HwC2aLtaGN9pv99/+qfEy+LkxWHegNVejE0NUoM+vnAXpyI
-         9dow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697598776; x=1698203576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AghwLt6vblwpQhnA94BUMc1jL2ubPg4j6VP77aoRAzc=;
-        b=b2KXfHB2EXRKvHqBbQIVBicAHVLpbfcrjGp6g6YJAVGVk0l3msTsThsX2/CqS/rYtC
-         WoHmdpwHKmrVLMZNSvEBjp8OFLh0sgtWydSoEyvOaa3gQ911cRWKzqsvEuwiDBwseeIW
-         HAaNerUS1sGPlJQhqnD9RUMzr04S/dBZ/ZxaaejAplG6rkpz2P60kBgUAIXWT56Tp1Qa
-         5VJfZ+Me9QHAToQQ1b6CBv1YdJai891k42KntMipU/xRSsZAqOeMJoqKTiEATr9R8//7
-         M8r+EI+Z38F5D2b87ITnUaie2Jc0+xIru+CV7TOi+oe7dQ+jRBxSd4+QmJygWWPExCqr
-         vkEQ==
-X-Gm-Message-State: AOJu0YwsmJ5n+lwitJIkpZMspRpUB6rmNY7K+/SZNmiozGXdU5z7woA/
-        3N0zhQLdTxkxlZL7QUcdZrGGSf91XGnEoMmPz3E=
-X-Google-Smtp-Source: AGHT+IEj7G5WeYkodabVlnYoyo36Kp8Nsl/bPYtUNii0JHPGHyLEXA8gnlzq7lKQCQ9wY2xZQfeBv0xtfL5zvV1sb0Y=
-X-Received: by 2002:a05:6102:2051:b0:457:c052:1949 with SMTP id
- q17-20020a056102205100b00457c0521949mr4573010vsr.25.1697598776608; Tue, 17
- Oct 2023 20:12:56 -0700 (PDT)
+        with ESMTP id S235197AbjJREh7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 00:37:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455EED5E;
+        Tue, 17 Oct 2023 21:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697603850; x=1729139850;
+  h=cc:references:subject:to:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=lIB89A9HTSI42WxpivOXWDogJZFBgaPgowbpA6kdqGg=;
+  b=hwn/t0gUbNYQrhl42XDvhJHb/NQQRrSUNztGNkxP3YLK6Z8mRaF/JSMB
+   rnY5OPX0uy5xdoU+D7VzFMQHWhtKvyXxqnW809V4qkS92Wf+LmmYmII6D
+   lo8yGMrJVgrQCqVmoipKupBCBgVWsdJ+E9FbNSlHu74V4niNMiktx1geO
+   3tm3bZ7N6PYRM9lvcqdkY1PVtsXOqVXcRfByr3pzM+xjRCIy5pesOKAhi
+   7resV/5PlKenMPvJGUovvNdWyr7G6bIdpKlfSqHFFfNSgAF5GrATHRNhl
+   kpc5ygticPLRzPFHsQC28zh2LwRODPOBWyDWFAkStTGte2n9a5xy/ermO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383158038"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="383158038"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 21:37:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791452733"
+X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
+   d="scan'208";a="791452733"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Oct 2023 21:37:25 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Date:   Tue, 17 Oct 2023 23:37:23 -0500
 MIME-Version: 1.0
-References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-3-laoar.shao@gmail.com>
- <ujaxujz3xczccobmiu2jxsstn3n7v4ly7vp72dqbgu5dyonrrw@nhzk7fhrpkkp>
-In-Reply-To: <ujaxujz3xczccobmiu2jxsstn3n7v4ly7vp72dqbgu5dyonrrw@nhzk7fhrpkkp>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 18 Oct 2023 11:12:20 +0800
-Message-ID: <CALOAHbAgWoFGSc=uF5gFWXmsALECUaGGScQuXpRcwjgzv+TPGQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 2/9] cgroup: Eliminate the need for
- cgroup_mutex in proc_cgroup_show()
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com,
-        sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 10:04=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
-om> wrote:
+Hi Michal,
+
+On Tue, 17 Oct 2023 13:54:46 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
+
+> Hello Haitao.
 >
-> Hi.
+> On Tue, Oct 17, 2023 at 07:58:02AM -0500, Haitao Huang  =
+
+> <haitao.huang@linux.intel.com> wrote:
+>> AFAIK, before we introducing max_write() callback in this series, no =
+ =
+
+>> misc
+>> controller would possibly enforce the limit when misc.max is reduced.=
+  =
+
+>> e.g. I
+>> don't think CVMs be killed when ASID limit is reduced and the cgroup =
+was
+>> full before limit is reduced.
 >
-> I'd like this proc_cgroup_show de-contention.
-> (Provided the previous patch and this one can be worked out somehow.)
+> Yes, misccontroller was meant to be simple, current >=3D max serves to=
+
+> prevent new allocations.
+>
+Thanks for confirming. Maybe another alternative we just keep max_write
+non-preemptive. No need to add max_write() callback.
+
+The EPC controller only triggers reclaiming on new allocations or return=
+
+NOMEM if no more to reclaim. Reclaiming here includes normal EPC page  =
+
+reclaiming and killing enclaves in out of EPC cases. vEPCs assigned to  =
+
+guests are basically carved out and never reclaimable by the host.
+
+As we no longer enforce limits on max_write a lower value, user should n=
+ot  =
+
+expect cgroup to force reclaim pages from enclave or kill VMs/enclaves a=
+s  =
+
+a result of reducing limits 'in-place'. User should always create cgroup=
+s,  =
+
+set limits, launch enclave/VM into the groups created.
+
+> FTR, at some point in time memory.max was considered for reclaim contr=
+ol
+> of regular pages but it turned out to be too coarse (and OOM killing
+> processes if amount was not sensed correctly) and this eventually
+> evolved into specific mechanism of memory.reclaim.
+> So I'm mentioning this should that be an interface with better semanti=
+c
+> for your use case (and misc.max writes can remain non-preemptive).
+>
+
+Yes we can introduce misc.reclaim to give user a knob to forcefully  =
+
+reducing usage if
+that is really needed in real usage. The semantics would make force-kill=
+  =
+
+VMs explicit to user.
+
+> One more note -- I was quite confused when I read in the rest of the
+> series about OOM and _kill_ing but then I found no such measure in the=
+
+> code implementation. So I would suggest two terminological changes:
+>
+> - the basic premise of the series (00/18) is that EPC pages are a
+>   different resource than memory, hence choose a better suiting name
+>   than OOM (out of memory) condition,
+
+I couldn't come up a good name. Out of EPC (OOEPC) maybe? I feel OOEPC  =
+
+would be hard to read in code though. OOM was relatable as it is similar=
+  =
+
+to normal OOM but special kind of memory :-) I'm open to any better  =
+
+suggestions.
+
+> - killing -- (unless you have an intention to implement process
+>   termination later) My current interpretation that it is rather some
+>   aggressive unmapping within address space, so less confusing name fo=
+r
+>   that would be "reclaim".
+>
+
+yes. Killing here refers to killing enclave, analogous to killing proces=
+s,
+not just 'reclaim' though. I can change to always use 'killing enclave' =
+ =
+
+explicitly.
+
+>
+>> I think EPC pages to VMs could have the same behavior, once they are =
+ =
+
+>> given
+>> to a guest, never taken back by the host. For enclaves on host side, =
+ =
+
+>> pages
+>> are reclaimable, that allows us to enforce in a similar way to memcg.=
+
+>
+> Is this distinction between preemptability of EPC pages mandated by th=
+e
+> HW implementation? (host/"process" enclaves vs VM enclaves) Or do have=
+
+> users an option to lock certain pages in memory that yields this
+> difference?
+>
+
+The difference is really a result of current vEPC implementation. Becaus=
+e
+enclave pages once in use contains confidential content, they need speci=
+al
+process to reclaim. So it's complex to implement host reclaiming guest E=
+PCs
+gracefully.
 
 Thanks
-
->
-> On Tue, Oct 17, 2023 at 12:45:39PM +0000, Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > They can ran successfully after implementing this change, with no RCU
-> > warnings in dmesg. It's worth noting that this change can also catch
-> > deleted cgroups, as demonstrated by running the following task at the
-> > same time:
->
-> Can those be other than v1 root cgroups? A suffix "(unmounted)" may be
-> more informative then.
-
-They can only be a v1 root cgroups. will use the "(unmounted)"
-instead. Thanks for your suggestion.
-
->
-> (Non-zombie tasks prevent their cgroup removal, zombie tasks won't have
-> any non-trivial path rendered.)
->
->
-> > @@ -6256,7 +6256,7 @@ int proc_cgroup_show(struct seq_file *m, struct p=
-id_namespace *ns,
-> >       if (!buf)
-> >               goto out;
-> >
-> > -     cgroup_lock();
-> > +     rcu_read_lock();
->
-> What about the cgroup_path_ns_locked() that prints the path?
-
-I believe we can further enhance cgroup_path_ns() by replacing the
-cgroup_lock with rcu_read_lock. However, we need to explicitly address
-the NULL root case, which may necessitate some refactoring. Perhaps
-this can be improved in a separate patchset?
-
->
-> (I argue above that no non-trivial path is rendered but I'm not sure
-> whether rcu_read_lock() is sufficient sync wrt cgroup rmdir.)
->
-
-
---=20
-Regards
-Yafang
+Haitao
