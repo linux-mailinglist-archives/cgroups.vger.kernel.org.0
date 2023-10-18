@@ -2,141 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9564D7CDDFA
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 15:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06037CDE40
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 16:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344796AbjJRNzS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 09:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S231874AbjJROFG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 10:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344789AbjJRNzR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 09:55:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF52FA;
-        Wed, 18 Oct 2023 06:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697637315; x=1729173315;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UExmWG4JzxoyY7odaAF1fGZX+qYk0oJ0tWdiswdiu0k=;
-  b=Q1X5pPJWmgWPoITLvqG9TwBFBMjzcHYodAAxftkpjKDzhoh2cUP1n6ju
-   BRKXtDqWCzuT4N+KhGNsZ7grXfRu4S1NkvZ+Bd0W1S5Cf1qWv3NIDdbl7
-   xPWFn44vsdwTPp3a4voAteyP1u0bnRD0sIVqIQU6YdQrIHgkcYwajar1E
-   vvtQnqC0dpO4wen8idbYZhrZ328tmylTMGO4RxY5MLCYL0GJeDu3IhPJ0
-   ntkTY1P9V+daynbK8/dseOC5x6pQsUvnUIFHgxdW9FXMd3uQXmssjCNim
-   oKTgXz7o0b0PgVD8CqUPCsgLrd98okECrMDMe0+xsinXjo9AK9TC9DNR4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="389892051"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="389892051"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:55:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756596405"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="756596405"
-Received: from asomasun-mobl3.amr.corp.intel.com (HELO [10.209.45.156]) ([10.209.45.156])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:55:13 -0700
-Message-ID: <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
-Date:   Wed, 18 Oct 2023 06:55:12 -0700
+        with ESMTP id S231839AbjJROFF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 10:05:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3131DFA;
+        Wed, 18 Oct 2023 07:05:02 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6910B1F37E;
+        Wed, 18 Oct 2023 14:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697637900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SsQxhsXnIr7Z2WAF9+fEfFsGy8r27zDk+QEwu45RAUk=;
+        b=sejrAI/b+RIgxvnafZx2UdISVWeL4WV4kK2U0+73bXZmNEFuf97rkRxmhJNb18Kl1WVy2f
+        62gnNaKpLr/yKnh/ajACEPKdOeki4gwyUy3uHkk2fDnePOFhIsbge9nL3MciNrxwzuvroj
+        y3eEGo2OXOqIG5ZJ512UIlKLWvqfKAQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697637900;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SsQxhsXnIr7Z2WAF9+fEfFsGy8r27zDk+QEwu45RAUk=;
+        b=BK+welAkUKNdlp0QjigqX8KEnJeqAMCwSQ5RmlN6vlFGv1tGoX7YdfTPO0us9cKgD5v397
+        VtdaZvTOdWS1pXDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F0DF13915;
+        Wed, 18 Oct 2023 14:05:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XqHnCgzmL2VUTAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 18 Oct 2023 14:05:00 +0000
+Message-ID: <549f20e0-d0d7-b379-6725-4f76dddcd6fc@suse.cz>
+Date:   Wed, 18 Oct 2023 16:04:59 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 4/5] mm: kmem: scoped objcg protection
 Content-Language: en-US
-To:     Haitao Huang <haitao.huang@linux.intel.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
- <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
- <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
- <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
- <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
- <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, shakeelb@google.com,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
+ <20231016221900.4031141-5-roman.gushchin@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231016221900.4031141-5-roman.gushchin@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.99
+X-Spamd-Result: default: False [-5.99 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-1.89)[94.38%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/17/23 21:37, Haitao Huang wrote:
-> Yes we can introduce misc.reclaim to give user a knob to forcefully 
-> reducing usage if that is really needed in real usage. The semantics
-> would make force-kill VMs explicit to user.
+On 10/17/23 00:18, Roman Gushchin wrote:
+> Switch to a scope-based protection of the objcg pointer on slab/kmem
+> allocation paths. Instead of using the get_() semantics in the
+> pre-allocation hook and put the reference afterwards, let's rely
+> on the fact that objcg is pinned by the scope.
+> 
+> It's possible because:
+> 1) if the objcg is received from the current task struct, the task is
+>    keeping a reference to the objcg.
+> 2) if the objcg is received from an active memcg (remote charging),
+>    the memcg is pinned by the scope and has a reference to the
+>    corresponding objcg.
+> 
+> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-Do any other controllers do something like this?  It seems odd.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
