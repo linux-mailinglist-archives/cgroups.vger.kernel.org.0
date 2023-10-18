@@ -2,43 +2,44 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C6D7CD332
-	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 06:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6747CD33B
+	for <lists+cgroups@lfdr.de>; Wed, 18 Oct 2023 06:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjJREjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 00:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
+        id S234909AbjJREuY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Oct 2023 00:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235197AbjJREh7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 00:37:59 -0400
+        with ESMTP id S229936AbjJREt7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 00:49:59 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455EED5E;
-        Tue, 17 Oct 2023 21:37:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDBD55B2;
+        Tue, 17 Oct 2023 21:41:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697603850; x=1729139850;
-  h=cc:references:subject:to:date:mime-version:
+  t=1697604098; x=1729140098;
+  h=to:cc:subject:references:date:mime-version:
    content-transfer-encoding:from:message-id:in-reply-to;
-  bh=lIB89A9HTSI42WxpivOXWDogJZFBgaPgowbpA6kdqGg=;
-  b=hwn/t0gUbNYQrhl42XDvhJHb/NQQRrSUNztGNkxP3YLK6Z8mRaF/JSMB
-   rnY5OPX0uy5xdoU+D7VzFMQHWhtKvyXxqnW809V4qkS92Wf+LmmYmII6D
-   lo8yGMrJVgrQCqVmoipKupBCBgVWsdJ+E9FbNSlHu74V4niNMiktx1geO
-   3tm3bZ7N6PYRM9lvcqdkY1PVtsXOqVXcRfByr3pzM+xjRCIy5pesOKAhi
-   7resV/5PlKenMPvJGUovvNdWyr7G6bIdpKlfSqHFFfNSgAF5GrATHRNhl
-   kpc5ygticPLRzPFHsQC28zh2LwRODPOBWyDWFAkStTGte2n9a5xy/ermO
+  bh=F/dSfCnfGZ0vy8R6NzqQ9H0Paj53OwpGh0/vX+zt4EU=;
+  b=l+Nei83eiXQqaeLM/51Ss2RoqbJMGj0GhxQd60bDHe1wHLgDuYUbQ14k
+   ddVktWDlsIHgLNYBedZ8g8XoKNaY3LUMiDL3gQVuJ6ak6m9iPdydcuVTY
+   yNZSVUkLZcmIXYaEk8sMAtBcwoLehj/JcGbGmaa2iFTEif8qUl52KyzBp
+   t3wExoaLZGWk3HzxodciPgyeSvBH1IA1kkXuQE43YvWjhI9EZS46la0Ks
+   hDL9AYjZOn2hagpTqEED5LBHKGJDEhIJQWmRhVo37xxETy/Yq8irdfrXL
+   jRlaCLM0xsZB9dWuxiEDoq5XNYhKMYLiehWcGp79PEDb5drspVt4WfxBr
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383158038"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383158307"
 X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="383158038"
+   d="scan'208";a="383158307"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 21:37:29 -0700
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 21:39:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791452733"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791453312"
 X-IronPort-AV: E=Sophos;i="6.03,234,1694761200"; 
-   d="scan'208";a="791452733"
+   d="scan'208";a="791453312"
 Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Oct 2023 21:37:25 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Oct 2023 21:39:27 -0700
 Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
 Cc:     "Christopherson,, Sean" <seanjc@google.com>,
         "Huang, Kai" <kai.huang@intel.com>,
         "Zhang, Bo" <zhanb@microsoft.com>,
@@ -58,8 +59,9 @@ Cc:     "Christopherson,, Sean" <seanjc@google.com>,
         "Mehta, Sohil" <sohil.mehta@intel.com>,
         "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
         "kristen@linux.intel.com" <kristen@linux.intel.com>
-References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
  <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
@@ -69,16 +71,14 @@ References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
  <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
  <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
-Date:   Tue, 17 Oct 2023 23:37:23 -0500
+ <hl3elk273qrxqfajgn6izxwx2kkjq3osrbbtf77pvwcxvqy225@ryev3txohsm7>
+Date:   Tue, 17 Oct 2023 23:39:27 -0500
 MIME-Version: 1.0
 Content-Transfer-Encoding: Quoted-Printable
 From:   "Haitao Huang" <haitao.huang@linux.intel.com>
 Organization: Intel
-Message-ID: <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+Message-ID: <op.2cztv1bewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <hl3elk273qrxqfajgn6izxwx2kkjq3osrbbtf77pvwcxvqy225@ryev3txohsm7>
 User-Agent: Opera Mail/1.0 (Win32)
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -89,131 +89,36 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Michal,
-
-On Tue, 17 Oct 2023 13:54:46 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+On Tue, 17 Oct 2023 14:13:22 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
 rote:
 
-> Hello Haitao.
->
-> On Tue, Oct 17, 2023 at 07:58:02AM -0500, Haitao Huang  =
+> On Tue, Oct 17, 2023 at 08:54:48PM +0200, Michal Koutn=FD  =
 
-> <haitao.huang@linux.intel.com> wrote:
->> AFAIK, before we introducing max_write() callback in this series, no =
- =
-
->> misc
->> controller would possibly enforce the limit when misc.max is reduced.=
-  =
-
->> e.g. I
->> don't think CVMs be killed when ASID limit is reduced and the cgroup =
-was
->> full before limit is reduced.
->
-> Yes, misccontroller was meant to be simple, current >=3D max serves to=
-
-> prevent new allocations.
->
-Thanks for confirming. Maybe another alternative we just keep max_write
-non-preemptive. No need to add max_write() callback.
-
-The EPC controller only triggers reclaiming on new allocations or return=
-
-NOMEM if no more to reclaim. Reclaiming here includes normal EPC page  =
-
-reclaiming and killing enclaves in out of EPC cases. vEPCs assigned to  =
-
-guests are basically carved out and never reclaimable by the host.
-
-As we no longer enforce limits on max_write a lower value, user should n=
-ot  =
-
-expect cgroup to force reclaim pages from enclave or kill VMs/enclaves a=
-s  =
-
-a result of reducing limits 'in-place'. User should always create cgroup=
-s,  =
-
-set limits, launch enclave/VM into the groups created.
-
-> FTR, at some point in time memory.max was considered for reclaim contr=
-ol
-> of regular pages but it turned out to be too coarse (and OOM killing
-> processes if amount was not sensed correctly) and this eventually
-> evolved into specific mechanism of memory.reclaim.
-> So I'm mentioning this should that be an interface with better semanti=
-c
-> for your use case (and misc.max writes can remain non-preemptive).
->
-
-Yes we can introduce misc.reclaim to give user a knob to forcefully  =
-
-reducing usage if
-that is really needed in real usage. The semantics would make force-kill=
-  =
-
-VMs explicit to user.
-
-> One more note -- I was quite confused when I read in the rest of the
-> series about OOM and _kill_ing but then I found no such measure in the=
-
-> code implementation. So I would suggest two terminological changes:
->
-> - the basic premise of the series (00/18) is that EPC pages are a
->   different resource than memory, hence choose a better suiting name
->   than OOM (out of memory) condition,
-
-I couldn't come up a good name. Out of EPC (OOEPC) maybe? I feel OOEPC  =
-
-would be hard to read in code though. OOM was relatable as it is similar=
-  =
-
-to normal OOM but special kind of memory :-) I'm open to any better  =
-
-suggestions.
-
-> - killing -- (unless you have an intention to implement process
->   termination later) My current interpretation that it is rather some
->   aggressive unmapping within address space, so less confusing name fo=
-r
->   that would be "reclaim".
->
-
-yes. Killing here refers to killing enclave, analogous to killing proces=
-s,
-not just 'reclaim' though. I can change to always use 'killing enclave' =
- =
-
-explicitly.
-
->
->> I think EPC pages to VMs could have the same behavior, once they are =
- =
-
->> given
->> to a guest, never taken back by the host. For enclaves on host side, =
- =
-
->> pages
->> are reclaimable, that allows us to enforce in a similar way to memcg.=
-
->
-> Is this distinction between preemptability of EPC pages mandated by th=
+> <mkoutny@suse.com> wrote:
+>> Is this distinction between preemptability of EPC pages mandated by t=
+he
+>> HW implementation? (host/"process" enclaves vs VM enclaves) Or do hav=
 e
-> HW implementation? (host/"process" enclaves vs VM enclaves) Or do have=
-
-> users an option to lock certain pages in memory that yields this
-> difference?
+>> users an option to lock certain pages in memory that yields this
+>> difference?
 >
+> (After skimming Documentation/arch/x86/sgx.rst, Section "Virtual EPC")=
 
-The difference is really a result of current vEPC implementation. Becaus=
-e
-enclave pages once in use contains confidential content, they need speci=
-al
-process to reclaim. So it's complex to implement host reclaiming guest E=
-PCs
-gracefully.
+>
+> Or would these two types warrant also two types of miscresource? (To
+> deal with each in own way.)
+
+They are from the same bucket of HW resource so I think it's more suitab=
+le  =
+
+to be one resource type. Otherwise need to policy to dividing the  =
+
+capacity, etc. And it is still possible in future vEPC become reclaimabl=
+e.
+
+My current thinking is we probably can get away with non-preemptive  =
+
+max_write for enclaves too. See my other reply.
 
 Thanks
 Haitao
