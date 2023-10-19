@@ -2,137 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A647CEE1E
-	for <lists+cgroups@lfdr.de>; Thu, 19 Oct 2023 04:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3A57CF036
+	for <lists+cgroups@lfdr.de>; Thu, 19 Oct 2023 08:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbjJSCdG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Oct 2023 22:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
+        id S232676AbjJSGjb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 Oct 2023 02:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbjJSCcz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Oct 2023 22:32:55 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2115.outbound.protection.outlook.com [40.107.215.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CA5D71;
-        Wed, 18 Oct 2023 19:32:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BMcrAb19ho4o84FfMuIIErQfnWu3u+H9RY/IXULCNOz0kZV/0fuGvFrxNWjS3vEDbfqTPx5VtCm9H6UGZGfBmYcX4fVDKEh9PCpFR9dLQsRWLuZsKYkHvLkOvdAgfV5FvctRepHeYyQ4Dt8MaNjvqQGOxLG30aY7Ild0MI0hJqP8kdeGlQaCXra+hmivxiKwnO855M5/KcUhx9hfqNPBNBAGbpTOompPl+YzBadibqTttx6GZStul3dBKo+L+3wkDqSXeO3zqVXWJi8+QHuiBntZW1aBL9ye8DLU3vA/rou/pC4SeRQ2pT+JqHNvbHos+2FZhvoq7DhyoJ9inYIxuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AvMaeYR4txS+Qyh65EZnNk4KCVOxaq8GMP9qckkYsOE=;
- b=hevXL5f9tsThqCb59qlIB+ZfkF9v0vkDk1e+RqEvvkGoMq/FNJKyAbVAA+JVptml35aYRpPleP1jukBiQWHOKsNkiCbEO68KrDh2EhaaQmeio6E1Db1O+h8W+01ElxnIa+26qmc6uYaphS82uouA8L7QtPoXK/M4sBJmILwyxK7+elaKtZWChmC9LQBsdLSk8lrZz3BIuz9s/VVFbgZV7EZs43687jcJg2tiH/KVStw77U8HvU2SuvxvdgYYb81ra4VhogGhgINcea0qO7W8XnSelF+0TvQzTseMeTNbJZdWlfcS0ClJKlAAYr+4hwI366AJ4nV6nG4T2mGlUFcD5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AvMaeYR4txS+Qyh65EZnNk4KCVOxaq8GMP9qckkYsOE=;
- b=NfDw7bLJrznNZ223gquXsGfP9Jl32uUse1cYzbmr5ZtTTzBBTWn1k8kdHLSE2uwpTqGse+Lwmag91z497EJSkP823/RAV6QLa4zGhDndc31+BxpH4nnPaG4yEt0FiNxiLVaLx+wMc/9SKMYLtwTur7hxVkQrMm3YPXvUVLQThbJBaW1tcrnMOAZ23DZPs/UF/3U4oPO45YkTQ6GrYIH4e821cs3MfsgnPf9/WNwx7riOYuW1Af3P1U6EeN4898ddXMvIERDuTnIb3+4+5J8d0BzkoqzE5O4+lpcex1MqmQ21rw3Zp2deByZxUTNtdnFDbVaO5JrRRNNw/KJ14e0PBg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by TY0PR06MB5756.apcprd06.prod.outlook.com (2603:1096:400:27e::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.25; Thu, 19 Oct
- 2023 02:32:22 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::40ac:5701:4617:f503]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::40ac:5701:4617:f503%4]) with mapi id 15.20.6907.021; Thu, 19 Oct 2023
- 02:32:22 +0000
-Message-ID: <d9b31019-9374-4531-8967-d289af3f4f06@vivo.com>
-Date:   Thu, 19 Oct 2023 10:32:15 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3 RESEND] Per memcg lru_gen node stat
-To:     "T.J. Mercier" <tjmercier@google.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        "T.J. Alumbaugh" <talumbau@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>, opensource.kernel@vivo.com
-References: <20231009025726.5982-1-link@vivo.com>
- <CAOUHufaX35Y6MfwKj_XUWXJwdC=9M=g1gXpQpQghBZ2fXrkEAw@mail.gmail.com>
- <CABdmKX0xevnJfcgsDEWsfX9J5T2x0EV7x-p4ommq_Deg98WwYA@mail.gmail.com>
-From:   Huan Yang <link@vivo.com>
-In-Reply-To: <CABdmKX0xevnJfcgsDEWsfX9J5T2x0EV7x-p4ommq_Deg98WwYA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0183.apcprd04.prod.outlook.com
- (2603:1096:4:14::21) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        with ESMTP id S232587AbjJSGja (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Oct 2023 02:39:30 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F879116;
+        Wed, 18 Oct 2023 23:39:29 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7741b18a06aso551387085a.1;
+        Wed, 18 Oct 2023 23:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697697568; x=1698302368; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r9ZsHqJLwA+8C0bKpNAFMlm9CdR6RyXfCZFn1e/5/2w=;
+        b=JbJM/W4+rljHwMTvsjKCmcMpYvUW6Nuh37aq/uOB7Nx0Hq4f4QC3fb2hW8mTYh7ivn
+         trZi0Hec1HF1OSzeIjFFxPlp8xWEXznfUytde3KMf/hj6qjxI2dZyIRQgrlylMNdB7eF
+         wSBreeikFVeFUbOx/cOWf7dCaF4MiksmgO/8clq2T5iKmueWLYTSVOURp9oU7j8bSClY
+         sMCCXqsergGUqH08BSEmvKkdvzNdtOLgkX6A56Ftvu1qnKyIW6h7QTgmuFZck5WHBLDp
+         xPqb5kWMPZKGOjv8JNvmTQ3c3W/bOew819/5cuf/jRQPnY+y4paM4g+rH2+1Eft+zkny
+         780g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697697568; x=1698302368;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r9ZsHqJLwA+8C0bKpNAFMlm9CdR6RyXfCZFn1e/5/2w=;
+        b=saxmMc1yOLpnYy8jGyul7vVMti6DolP64qxtVwxHhBqtbJK4I1Fe1op4nfJvIf7tgJ
+         65a8rx5ZtC5e33XtX5ZePl/EZHEtv+Iid9fBNPyeTvh1HMiaA7xG+I49XPF7JZS/QVZA
+         G3WhdkPrsxfXQpqHQRDeuyDKvYl9Id+ahU0E39QI03f5theMTMkyZFwMEVHJnyHzwseh
+         RKNBaeM6Da8RV1y1VPyCludimkZ/fym3myL+bSTt5U4yGefd15MWInPJEZZchJpBlRMx
+         3QL9KDyq9lcWt3ksaGOBC56x68DpMhKQfA25zAtK6DA9gFGmvBO2lTe/1GWvx+C2L+jB
+         8rUg==
+X-Gm-Message-State: AOJu0YyY3vIsKTTNpdvfHm8pF215gv+Aceh7yxw9TUMX1Djr3qaROKJC
+        1n1wO9inJ51uBMm4ff7S0qAFV+dsd917Bp5ddFE=
+X-Google-Smtp-Source: AGHT+IGX0Wi333UrDCooJ04O3JfucX0UUD1XQ01jNvgTTbFoISHizTrWjj695jy+J0auhREZGZw1955Sua80J6Bnffg=
+X-Received: by 2002:ad4:5de4:0:b0:66d:25cb:43ba with SMTP id
+ jn4-20020ad45de4000000b0066d25cb43bamr1595817qvb.20.1697697567992; Wed, 18
+ Oct 2023 23:39:27 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TY0PR06MB5756:EE_
-X-MS-Office365-Filtering-Correlation-Id: 097ff8db-c5a0-478c-abff-08dbd04b9f8e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gr3NamqVEp4UaeRpQ45LO2LpqoPIDxkCE+ZhaUkO9eJlFX2SHxMgemau90CtGc94YyVVGsaA/S+seGtXogF9sHrt4eU6Ll8nEip+YR4hkyeE5lNiz0/x9RPCjljIpoAt1xNu7koAezNSZxP7mOv4hbeInBOEY141Ep2x0pq4pO47Hh0sh38VFFtj7K26dcDC82LkhSsRagNpQG2gZ60wRHL2w3vrke3kSBvAQ42iTmfrc+I1oAMDH1t7pe0hNnjbRKuHyNuRj5qntDOIKX3b4SsxfHqCAArq0FQaia3P51KOA8ZCnQR++Pr5L8vqof8bBsngFu4nNfHKoI1et8f9qdjR4d0WgbLELdw6USI8xKwbw66p/26vk7OrSG/NDUniyqj6NeXVztIYKQkZrjdSX1DS/cgx1kQ0b1w/hLTnxp5RHL+RuYh7l5kxftOE1u0M2RTt1QuMJEvSFEJeHxdnWzOGKmm42T3pB7xKQH7/wMpORJoxQa0WaJuuuM62UUpv9EZO+cLbNiJrEiK2AY3wRpw6cwKAzPMXfqtRSsOQF6YxUMqhgoYkExCTaXseaQo/G5kpZC5VvNSoQFGmkTTHNToP/v1LJ37YLRY2oOQ1QJmJQjoHgmNK83PTXQUNVPc3bPCWllkh4BfXmoptxzaZrux8ualDQWet6nTE36z3r3R+xGW+oc6VK69/RWE+MefA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(376002)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(31686004)(66899024)(2906002)(7416002)(26005)(5660300002)(36756003)(8936002)(4326008)(8676002)(38350700005)(41300700001)(66946007)(54906003)(316002)(66476007)(66556008)(110136005)(86362001)(478600001)(966005)(6486002)(6506007)(31696002)(6666004)(52116002)(53546011)(6512007)(2616005)(107886003)(38100700002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dWw0YWp5Y1diZWtnd3A5VUhQby9ZRjdLSzFOVDYydU9tM3FIaEowZXV4T2lX?=
- =?utf-8?B?a2MzWlhyRkt5M2d4eVJJb0FWMnZ3WXRtN1BJY2tzZjgxUUlGVUU3bkkzZE5M?=
- =?utf-8?B?alRva2VMWkdKMldHMzZVb01mN3N2RFNsMUtqT2cyaUFXZFBMUmg5YkJSZDBE?=
- =?utf-8?B?bEM4aDFpd0tuMmg1ODNEcXdPQ2lyeEVWVXZPTmJqNnl1V1R2a1gvR3Y2VzJI?=
- =?utf-8?B?UGFxdHpadzFlQitiNUlhUGpUeXlkQWxNY1RyUnNtZ1JvZnBMTlJGMnltRVg5?=
- =?utf-8?B?eEZadVJuMTZkSlFUSzY4bk1EU25VMmlCMTVRQndLOThzVks5SGtsQmN1WjZm?=
- =?utf-8?B?ZUpsdnc2UUtZRU9FWTJVSjRJUmdPVDVpeU9vS052UWNsZUhmNGVhZnN6a2E4?=
- =?utf-8?B?ektoK1M3anZiSU5sbkprTFhkcXpKWTlhZFNQWXlndFlGKzI0bHlYbHhIMUov?=
- =?utf-8?B?ZklwZDJhY1BwdGhMS2ZLNitBSVZQTW55T2tNQStNQ04wbTVGd1I4VUErMmtO?=
- =?utf-8?B?L3lYYi9KQ1c4bTFYQnhndE1rYVlJVkNxc3pYOGRMd3lxRCtYeTV1a1pqbGtT?=
- =?utf-8?B?bmQrbWNzQ0lQUTR3VHBMVUVnYStpK25qcy8rMUlvTUxERUxWUlpqNjlXWFFs?=
- =?utf-8?B?MzFTMDZnb1V4M21wb1ZEYnY0NEFJYjE5OTMvOWo4VFlKRW52SFcyQUoyVmxG?=
- =?utf-8?B?bVJCbi9Za1Fwc3R5Z0tJQ01xN1g5L2p3RGE1dkZoTlo0Wi80K3N5SGV5L21O?=
- =?utf-8?B?WU1wdlFLM3lKM2oyVzc4OXYybWp1UWs4cFlWUnNTWXNKcFA3d0tNS2VOenhF?=
- =?utf-8?B?UnJzS2xVZkRWVllvU3JQK3R2YUs1TTRxdnV1c1Q1dlQ2UHRVSTRGYjl6K09D?=
- =?utf-8?B?eVFTcWFiZThiTjFIUjlmN2FKeHlXaWtFOXF1OXVydlJ4YVM0NGljOWpTZG9l?=
- =?utf-8?B?aVVhL1lTODBRbUlHZVRLc3pta2tVcnpIS0ZsRG95b0IxTThuejFJYzdLYUxO?=
- =?utf-8?B?Umptbyt2YW4yZm5zZ3N4QTN3MkhXajBRZ2hoQXNSeTgzK25xZlVHMFNpMHhM?=
- =?utf-8?B?UHNNU1NwcTR5Si9NQVVCaHZmMGlkQ3BnVis4R05rYWZTd1c1TTd2Q1VXWC9u?=
- =?utf-8?B?R0hxU2YyQklVamE0ZFNkaVppMndORHRmT0FIVWdsUnYyYjZEZ01ZMS9SbThF?=
- =?utf-8?B?VDkvMXd4SVJRU0F6WFI3R01Bc25UWDlSNEVkTzJrOU1ZdEc2MlI2Q29BMldp?=
- =?utf-8?B?aGhJOWdQNnJnYXdLWGVMMDJiT2RnenM3ZHZGREhLWlB0ejhnUzBweEtMYk9H?=
- =?utf-8?B?d1E5WGRsUnh1cloycE1DcGpYM3M2VlB0TW5Ya1lXSFgxdkZEMWwwQTVBSjhW?=
- =?utf-8?B?ZTl0cDRManhHSDN4bkk2bU1MRGdSalB0M0Ewc0duUEIvQ2JhNkM1TG1QcWhY?=
- =?utf-8?B?Z0lGZE9SNE0zem5DZUFnMXBUYnZJY1ZCRjJwdlBpMWpPSTVWWXZ1VTR6SGxF?=
- =?utf-8?B?RVZVOURhaFdGTXh1MEY0enNKaWdteWJNK0RPYlI0WlZJMXpTQkZBeG00UHBD?=
- =?utf-8?B?SjdqQWVBSkp4WG1SdForR1NyY0xnYkNFbytCRXVEd0o0S0E2TU9XYlUwWkw3?=
- =?utf-8?B?NzMybTQ0OE5ZM2tWRHhjdDdVRDVWM1ZlbGNGWlIrTmhkY01XVm9Ya2FjMjFn?=
- =?utf-8?B?eHFzU2NIcFc1UmlUNlhBOTF0a1dLTjBQUEsxSGpDdWQwSmpkQ1ZVaGt4eE51?=
- =?utf-8?B?ZzZrenpzOUtEdG1PVjNvY29XakR3aGYyeEtNVER4Y2R1QkJnNi8wVWdYaW44?=
- =?utf-8?B?VzlLUkVsSlpZOGZkaE9IMjhCMkhCVWwvN2hUZXN5a2orWnlncUhDOFJoeE5W?=
- =?utf-8?B?eFlGbTlHOGhnWGx2M3FjeEJDVFVJa0dGUGJRcUpjOWV3eUNCR0Q2NU5RTjF4?=
- =?utf-8?B?US9ySU45bVU3N0R4Q0o3YzhHWEpsUzA0NmNvVzZNUE5mVCtZVlZ6cTFxd0tB?=
- =?utf-8?B?R2dCbllwMldJK0kwQnhBSDh3aE1vVVVkeGxWZ1VsK01NRDRwUlNkWEZwWUJP?=
- =?utf-8?B?OHYrUHl2bkg4aUl1aGdtQkZqS3J2bmEvbTZDV3poM1pKdWJHTERUajRvcEpV?=
- =?utf-8?Q?3X15lRu+XZcNpNxmt1PhB6bMz?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 097ff8db-c5a0-478c-abff-08dbd04b9f8e
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 02:32:22.3433
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aVQpWOMLi6FPXTs0A6lqvvrhvRHArYI7A8UgQQs3BLLtDi085LwcG7YCdPSKowBbE7jU8GhROoVaO1x4PUndaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5756
+References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-2-laoar.shao@gmail.com>
+ <ZS-m3t-_daPzEsJL@slm.duckdns.org>
+In-Reply-To: <ZS-m3t-_daPzEsJL@slm.duckdns.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 19 Oct 2023 14:38:52 +0800
+Message-ID: <CALOAHbAd2S--=72c2267Lrcj_czkitdG9j97pai2zGqdAskvQQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup
+ root_list RCU safe
+To:     Tejun Heo <tj@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+        sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,45 +74,50 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-在 2023/10/19 3:59, T.J. Mercier 写道:
-> [你通常不会收到来自 tjmercier@google.com 的电子邮件。请访问 https://aka.ms/LearnAboutSenderIdentification，以了解这一点为什么很重要]
+On Wed, Oct 18, 2023 at 5:35=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
-> On Wed, Oct 18, 2023 at 9:34 AM Yu Zhao <yuzhao@google.com> wrote:
->> On Sun, Oct 8, 2023 at 8:57 PM Huan Yang <link@vivo.com> wrote:
->>> On original global lru_gen node in debugfs, it can all show each memcg's
->>> lru gen info in "lru_gen" or "lru_gen_full", and can type cmd into lru_gen.
->>> But which show info contains all memcg's info, and cmd need to
->>> know memcg's id.
->>>
->>> This patchset add lru_gen node in per memcg, with this node, we can
->>> get lru_gen info in each memcg.
->>> Also, we can type cmd to control each memcg's lru_gen seq, but, this node
->>> don't support multi cmd, single memcg just process one cmd once time.
->> Adding TJ from the Android team. (The other TJ you CC'ed is from the
->> ChromeOS team.)
->>
->> This series introduced a new ABI, which has to be maintained forever.
->> How exactly would it be used in *production*?
->>
->> Android doesn't officially support memcgs. So I want to understand the
->> real-world use cases first.
-> Not sure how Android came up but I'm happy to chat. We want to turn on
-> memcg v2 for Android but I'm currently working through perf impacts
-> before that happens. Android can't use debugfs in production, but I
-> think we'd prefer to use memory.reclaim for eviction anyway because it
-> respects memcg limits and reclaims from slab.
-Yes, shrink control this actually can use proactive reclaim.
+> On Tue, Oct 17, 2023 at 12:45:38PM +0000, Yafang Shao wrote:
+> >  #define for_each_root(root)                                          \
+> > -     list_for_each_entry((root), &cgroup_roots, root_list)
+> > +     list_for_each_entry_rcu((root), &cgroup_roots, root_list,       \
+> > +                             !lockdep_is_held(&cgroup_mutex))
 >
-> So maybe it's possible to add just aging functionality specific to
-> MGLRU? It'd be nice to know how you're going to use the aging, or why
-Due to debugfs not always mount, if we want to now lrugen's info, maybe
-nice to offer a memcg's node to show per memcg's lrugen info.
-> you want this version of eviction instead of what memory.reclaim does.
+> Shouldn't that be lockdep_is_held() without the leading negation?
 
-So, this node not want to instead of memory.reclaim, it's good enough. 
-age or other control just flow debugfs global node's behavior. If no 
-need, delete write is OK.
+right. will fix it.
 
-Thanks
+>
+> > @@ -1386,13 +1386,15 @@ static inline struct cgroup *__cset_cgroup_from=
+_root(struct css_set *cset,
+> >               }
+> >       }
+> >
+> > -     BUG_ON(!res_cgroup);
+> > +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
+>
+> This doesn't work. lockdep_is_held() is always true if !PROVE_LOCKING.
 
+will use mutex_is_locked() instead.
+
+>
+> >       return res_cgroup;
+> >  }
+> >
+> >  /*
+> >   * look up cgroup associated with current task's cgroup namespace on t=
+he
+> > - * specified hierarchy
+> > + * specified hierarchy. Umount synchronization is ensured via VFS laye=
+r,
+> > + * so we don't have to hold cgroup_mutex to prevent the root from bein=
+g
+> > + * destroyed.
+> >   */
+>
+> Yeah, as Michal said, let's not do it this way.
+
+sure, will do it.
+
+--=20
+Regards
+Yafang
