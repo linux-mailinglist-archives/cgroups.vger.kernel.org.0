@@ -2,104 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF307CFEF7
-	for <lists+cgroups@lfdr.de>; Thu, 19 Oct 2023 18:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D477CFF08
+	for <lists+cgroups@lfdr.de>; Thu, 19 Oct 2023 18:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346502AbjJSQCD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Oct 2023 12:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        id S1345108AbjJSQGN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 Oct 2023 12:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346503AbjJSQCC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Oct 2023 12:02:02 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0436181
-        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 09:01:56 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9a7a3e17d1so9456522276.2
-        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 09:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697731316; x=1698336116; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QAEbVxck7NIMOPFoyufkI7+poSNQZD0kt5lDnU1GmDY=;
-        b=wWcQIDL39rUsqDiUSrhQesgnzs++1sOmT2AoGZrzDEHpC54Xf4PF5W+6I54F8wl48j
-         vSBv6uBvlD8ph/3X/5lBMzExPF1JTS6nrfITdCQVZMyhTt3j/e/yvchiZCBj6vdyaDPh
-         XYejc/h1rMFyc//XMgw9foepsVhh4rqBS0xBYFcRpBxfpvOMUMqxtireJdDFfdwPCY/Z
-         MoOFXj4BBDkybxTC6R56DbyCACXUSEyXfC7wV2tT7ONbfS9mlowZgk3PRz4a42s4Adh7
-         5SP/xuJ3oQmuiqU2qzrRpWB675P9oMtGRiv+HsZK83dsq76fWpRFoyJDLXSe8EKvpMQZ
-         5f4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697731316; x=1698336116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QAEbVxck7NIMOPFoyufkI7+poSNQZD0kt5lDnU1GmDY=;
-        b=rc/oBIzdApOsOyQqau/XDvgn2ZUcj0xMoj2GslQVHhyN1DPK6RKM2c+oqcRToPvjFg
-         S7HJQrj6gM1WsGBOo5NOrFyFhXQX4GOPYs4Gg93RJ+9SWRqyASmknyZcd8OJl7qbpGlt
-         YqPOO52ZyDcKaJtFE1yJASS9B/ORcj5Q+X8pNDVVxU4ghh9n/lnJCYL9eU+UaZ4RQMq7
-         /bo4sX98B5t0PiYzm69/oN8ATqPnvCAkCEs+mE4SOw+vFEYx+JQQehMAOFzWhJYUMEZD
-         43XGVmgJFxXyTd+AT7SDsuR88rUqFG5EOMEc7Ju71ghTVsazI9KpnUvMMfTBxSj6blKv
-         GznQ==
-X-Gm-Message-State: AOJu0Yx4UnYxYA1ZC96UqOiA/VszH2yJeJRV6i4aQn+0i7nrt344AYWS
-        6k6sHfT3/lYi+FV8+H+/FTi2NkSqt0UwU5gWR+qFlA==
-X-Google-Smtp-Source: AGHT+IGcA4f1SZU3KuXOFAud9yeTFGruISOrerlndO0A2eRzNDv5uXbJb5LMllwxmz+k5CXCF6OOr1VBQANuxlqvmBw=
-X-Received: by 2002:a05:6902:c7:b0:d9a:e6d6:42f8 with SMTP id
- i7-20020a05690200c700b00d9ae6d642f8mr2773004ybs.29.1697731315891; Thu, 19 Oct
- 2023 09:01:55 -0700 (PDT)
+        with ESMTP id S1345210AbjJSQGK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Oct 2023 12:06:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E15B3;
+        Thu, 19 Oct 2023 09:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697731570; x=1729267570;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=SlREd5rAEUIr1hUoGq+4u2bMdbm4gp8hOc98GrHIKzc=;
+  b=Wp/gCMcvxeR10KjXSZY4XOGCPz9mab5GtZ/iH6uc4gIx9bTwAAqybh3o
+   CTcObgWhQtIfLifNBOp1nvsYyZk95FqKW2RyQ9eVppN5jBvi8d9WCiB5Y
+   Gxe9fdoiFMbXhMIyIQwqUcIcu8hm7FRBY5trEAf1pTkRxylAjEVhKRlD1
+   Mg8583Hj/mw0RbLIZ7MGf1azOMiGe6MVaKS6Xh2Y5/JrLhw37crssFVic
+   Rf/R4dhb0gN1SAmMYYC8SUQ+b5hnv7MRdtZvyVbL3g2I9A/rAi6219DQB
+   iCqat+Nw7noxezcMqjEudXyHiQQRVgzSL+Vki4a50pXkKqIblA612AWzv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="4898559"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="4898559"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 09:05:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="930664073"
+X-IronPort-AV: E=Sophos;i="6.03,237,1694761200"; 
+   d="scan'208";a="930664073"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 19 Oct 2023 09:05:22 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
+Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        sohil.mehta@intel.com, zhiquan1.li@intel.com,
+        kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
+        anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+        yangjie@microsoft.com
+Subject: Re: [PATCH v5 16/18] x86/sgx: Limit process EPC usage with misc
+ cgroup controller
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-17-haitao.huang@linux.intel.com>
+ <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
+Date:   Thu, 19 Oct 2023 11:05:18 -0500
 MIME-Version: 1.0
-References: <20231009025726.5982-1-link@vivo.com> <CAOUHufaX35Y6MfwKj_XUWXJwdC=9M=g1gXpQpQghBZ2fXrkEAw@mail.gmail.com>
- <CABdmKX0xevnJfcgsDEWsfX9J5T2x0EV7x-p4ommq_Deg98WwYA@mail.gmail.com> <d9b31019-9374-4531-8967-d289af3f4f06@vivo.com>
-In-Reply-To: <d9b31019-9374-4531-8967-d289af3f4f06@vivo.com>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Thu, 19 Oct 2023 09:01:43 -0700
-Message-ID: <CABdmKX21QfTDXJ2o=CbATmeX1OSgB1XnM=escE7xf8gMrvMhGA@mail.gmail.com>
-Subject: Re: [PATCH 0/3 RESEND] Per memcg lru_gen node stat
-To:     Huan Yang <link@vivo.com>
-Cc:     Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        "T.J. Alumbaugh" <talumbau@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>, opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: Quoted-Printable
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2c2ka4kwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <mc3js6ye7sw2z4gyppqwld7lepke5swqlfbx4mchqwxbwgwts3@c5vzusgelgyc>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 7:32=E2=80=AFPM Huan Yang <link@vivo.com> wrote:
-> > Android can't use debugfs in production, but I
-> > think we'd prefer to use memory.reclaim for eviction anyway because it
-> > respects memcg limits and reclaims from slab.
-> Yes, shrink control this actually can use proactive reclaim.
-> >
-> > So maybe it's possible to add just aging functionality specific to
-> > MGLRU? It'd be nice to know how you're going to use the aging, or why
-> Due to debugfs not always mount, if we want to now lrugen's info, maybe
-> nice to offer a memcg's node to show per memcg's lrugen info.
-> > you want this version of eviction instead of what memory.reclaim does.
+On Tue, 17 Oct 2023 13:54:54 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
+rote:
+
+> On Fri, Sep 22, 2023 at 08:06:55PM -0700, Haitao Huang  =
+
+> <haitao.huang@linux.intel.com> wrote:
+>> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
 >
-I think Yu's inquiry was about whether you will look at the lrugen
-info from the memcg file for a production use case, or just for
-debugging where you don't have debugfs for some reason. Because it's a
-long term commitment to add the file.
+> It should check for !epc_cg since the misc controller implementation
+> in misc_cg_alloc() would roll back even on non-allocated resources.
+
+Good catch. Will fix.
+
+>
+>> +	cancel_work_sync(&epc_cg->reclaim_work);
+>> +	kfree(epc_cg);
+>> +}
+>> +
+>> +static void sgx_epc_cgroup_max_write(struct misc_cg *cg)
+>> +{
+>> +	struct sgx_epc_reclaim_control rc;
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
+>> +
+>> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
+>> +	/* Let the reclaimer to do the work so user is not blocked */
+>> +	queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
+>
+> This is weird. The writer will never learn about the result of the
+> operation.
+>
+Right. With the new plan, this callback will be removed.
+
+Thanks
+Haitao
