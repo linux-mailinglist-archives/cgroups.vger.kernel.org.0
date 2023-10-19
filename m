@@ -2,75 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 135107CFF8E
-	for <lists+cgroups@lfdr.de>; Thu, 19 Oct 2023 18:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915587CFFB3
+	for <lists+cgroups@lfdr.de>; Thu, 19 Oct 2023 18:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbjJSQ26 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Oct 2023 12:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        id S231837AbjJSQhA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 Oct 2023 12:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235470AbjJSQ2z (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Oct 2023 12:28:55 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCC611D
-        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 09:28:51 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so1309375366b.3
-        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 09:28:51 -0700 (PDT)
+        with ESMTP id S232946AbjJSQhA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Oct 2023 12:37:00 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84F811D
+        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 09:36:56 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9b70b9671so190585ad.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 09:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697732929; x=1698337729; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697733416; x=1698338216; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ujM1wfP0X1TfyN6UNvLQZYpXjOqlX96jhGMomCpg6WI=;
-        b=AQyjuLqISg0ol/mOPtn6SNlLQA+qjuWdrfLrsRK8KDMNU27oQCYaQbuEx/E03Z7r3l
-         ixzsh7gathuMmEdmjAqwGN7kDSIYAx3vynocFxmpsmXOaQISiz13D8LxiP0TrpUy4c/s
-         2uBZwKIQKf4kAN+XKW8/ekaMnHimQLFExuGMyN5r9OzFpsu5i3U4TlYsxWV05eQc2KqW
-         3PD2ooI0VHxGegUb+WErzby4DMX9jrr5E4CPu30C2OkK5cCTCcmaSTOYOoGA8qbXwS1i
-         VaoYgLRj7zzBAs27Wo3yEKUI1Y4YvAkZFES/ipnmmVEH4uOKemE9t11M0RXDcLsadpmN
-         29fA==
+        bh=GqqnclXhs4cCCpvokt/fb4m7AIKZQCSfSgxNcK5aM1A=;
+        b=LHu0fzukgKPo24/oc0yX2NCiExJAPYBy6/lFDfsEEsjpIStwwqa04pe05GWXwXx8/H
+         cWpGo3+DMI4uwG77/biwTDw/JujFNihdv3BRgE/NulE5fL/xfAL9UYCWQBdklCxWmliF
+         W2cqOp2Eu6kjZc5fG/VEsS5jk4ghZlScE1u+j+pE56eYR7bvpOWXUaDjRllmWUyTG4+r
+         jpBQXRINEN/uCSxN/qNmqZ71WHx1UcaWviHJbucof3TbmY7mnweXkpGQ+TcbMYF5H1tz
+         eslpulBHVDPL802dtaQgdXpmvqgBBbPct1484nNZyI3PdcUJZJqjWl99VzSqTinmzqFZ
+         Q10Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697732929; x=1698337729;
+        d=1e100.net; s=20230601; t=1697733416; x=1698338216;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ujM1wfP0X1TfyN6UNvLQZYpXjOqlX96jhGMomCpg6WI=;
-        b=qOIUWdiOAZCWQ9ZgLKGeigP8xntb6o12z5Vdx9lEFjYpZLM1OOe6qsREKOAppB0GX0
-         764PoJY96obIgxhk2NpS9gB4iQ+jtvMoq0AOvQInB+DinnBbqQCBD66m+fU5cwiJCMYB
-         Dz64mhZNnJMtdV4veeJ9XbMaWsetrqnzeKvIJpF4fz7CDtIsrtM3uN++8K8GBvU7O2ir
-         gXYm5DX9zmIHEDY9VySJME/BPdEgWFzJoO17RgdziwR+FWjnI8Kt6MI5VFAVuyrou0am
-         fBMXdSWm8bAJJf9R0vV3u40yc2yVgp38xjdL/EXtUL+ygodfHD/Oy3mk/U1U8fTgr/IO
-         qGPw==
-X-Gm-Message-State: AOJu0YzY8qUDwJBoB5ub2V92QlqieiPgLWlBwkRzLi5WYgca2txMlzrW
-        p9wW6RvRGe+10CngBOyOkHNplOU6Y7aaDJ/B7h+HOQ==
-X-Google-Smtp-Source: AGHT+IH1mhZ593C522jUwS7zeIu38LLXk4SWolAFCunW7qpDA82KIVoklWuarRvwv+WrfLGsNtAXOyLsixAfdhaKuns=
-X-Received: by 2002:a17:906:7308:b0:9c7:5a01:ffe6 with SMTP id
- di8-20020a170906730800b009c75a01ffe6mr2197542ejc.13.1697732929159; Thu, 19
- Oct 2023 09:28:49 -0700 (PDT)
+        bh=GqqnclXhs4cCCpvokt/fb4m7AIKZQCSfSgxNcK5aM1A=;
+        b=Y1dl3WSGJAg3ILeVHBDXtUbaipS7IAoZb9C/8NqHzbcLA5rB/9tBkU58S/neq0M+DS
+         XdVrVuIqFdQy6jDdBlH2UMpj3YnthDLtbGKowzfh6Y/y1FeAxloLGhPw3Xm1wht3GBIt
+         ZdwX4BvEqYVeIOH1xw0FTygV3P45CXwkQazPKcJAyC/FYHzNVjTa+qBa5Fe7jUxtEBpA
+         2Gle8PDYSEfTAKMw/IcCiIULn9n2Bs8shkiG3ky+vrQaxFhPgsseUsl6/BO/tj7BfS1e
+         PrXmaKjyGQFQOwJPvAv6rWsdRsBIo6f9IVj1zmLUDGaADPH1vJMu4fQn5NE+62VEuOQY
+         9mYg==
+X-Gm-Message-State: AOJu0YxUahMeu0bxQoVkHbFgrW/JljOpRzHHn599rRXwIu637dnlqEfw
+        JKiByyE4uzw668dmZWbl4yoa+PWtwyFNv79qmH5EMQ==
+X-Google-Smtp-Source: AGHT+IF/FmgwwkFbueug0gQ/QNGZWgBxC0LpJY/aTW6J9U5PxSjbKAZRbNoGEm/tgIvlcnrLa8B3geAueo0mvnPzK2k=
+X-Received: by 2002:a17:903:2410:b0:1c1:efe5:cce5 with SMTP id
+ e16-20020a170903241000b001c1efe5cce5mr222146plo.3.1697733415932; Thu, 19 Oct
+ 2023 09:36:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-3-nphamcs@gmail.com>
- <CAJD7tka2aVKBJj6cYutcVzOGzj_6gop6-ytSmWWML=sEe9qHbA@mail.gmail.com>
- <CAKEwX=N3CnKE+gu-EP98Wr3goQV0Z8fXn_nBPW_H_rupjkBwhA@mail.gmail.com>
- <CAJD7tkbBBTatK7LUHw__0K_8hykoepygfYLJuZx01CD8V+CZvg@mail.gmail.com> <CA+CLi1i9GHxMvMj16WPr7h_SNUhYo1rr9U8VtJDtOxiVhVznbg@mail.gmail.com>
-In-Reply-To: <CA+CLi1i9GHxMvMj16WPr7h_SNUhYo1rr9U8VtJDtOxiVhVznbg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 19 Oct 2023 09:28:09 -0700
-Message-ID: <CAJD7tkZqpU6cVD6VGKooOJ2yf4Oodd5QUuHWLh8PYMLtZA-9Lw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] zswap: make shrinking memcg-aware
-To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+References: <20231016221900.4031141-1-roman.gushchin@linux.dev>
+ <20231016221900.4031141-3-roman.gushchin@linux.dev> <d698b8d0-1697-e336-bccb-592e633e8b98@suse.cz>
+ <ZTAUTWO2UfI0VoPL@P9FQF9L96D.corp.robot.car> <CALvZod6mb91o9pW57suovtW1UQ8G8j=2S3Tjoqzjh6L+jqz-EQ@mail.gmail.com>
+ <ZTBeRu3iDu7nnPV8@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <ZTBeRu3iDu7nnPV8@P9FQF9L96D.corp.robot.car>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 19 Oct 2023 09:36:44 -0700
+Message-ID: <CALvZod5kXRY0LV6VOnctTYVhdHu+=yqzsQzKYa2_6_Jg+cOWfQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] mm: kmem: add direct objcg pointer to task_struct
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,166 +79,73 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 5:47=E2=80=AFAM Domenico Cerasuolo
-<cerasuolodomenico@gmail.com> wrote:
+On Wed, Oct 18, 2023 at 3:38=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
 >
-> On Thu, Oct 19, 2023 at 3:12=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Wed, Oct 18, 2023 at 4:47=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> w=
-rote:
+> On Wed, Oct 18, 2023 at 11:26:59AM -0700, Shakeel Butt wrote:
+> > On Wed, Oct 18, 2023 at 10:22=E2=80=AFAM Roman Gushchin
+> > <roman.gushchin@linux.dev> wrote:
 > > >
-> > > On Wed, Oct 18, 2023 at 4:20=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
+> > [...]
+> > > > >     struct mem_cgroup *memcg;
+> > > > > @@ -3008,19 +3054,26 @@ __always_inline struct obj_cgroup *get_ob=
+j_cgroup_from_current(void)
+> > > > >
+> > > > >     if (in_task()) {
+> > > > >             memcg =3D current->active_memcg;
+> > > > > +           if (unlikely(memcg))
+> > > > > +                   goto from_memcg;
+> > > > >
+> > > > > -           /* Memcg to charge can't be determined. */
+> > > > > -           if (likely(!memcg) && (!current->mm || (current->flag=
+s & PF_KTHREAD)))
 > > > >
-> > > > On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.co=
-m> wrote:
-> > > > >
-> > > > > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> > > > >
-> > > > > Currently, we only have a single global LRU for zswap. This makes=
- it
-> > > > > impossible to perform worload-specific shrinking - an memcg canno=
-t
-> > > > > determine which pages in the pool it owns, and often ends up writ=
-ing
-> > > > > pages from other memcgs. This issue has been previously observed =
-in
-> > > > > practice and mitigated by simply disabling memcg-initiated shrink=
-ing:
-> > > > >
-> > > > > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmai=
-l.com/T/#u
-> > > > >
-> > > > > This patch fully resolves the issue by replacing the global zswap=
- LRU
-> > > > > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> > > > >
-> > > > > a) When a store attempt hits an memcg limit, it now triggers a
-> > > > >    synchronous reclaim attempt that, if successful, allows the ne=
-w
-> > > > >    hotter page to be accepted by zswap.
-> > > > > b) If the store attempt instead hits the global zswap limit, it w=
-ill
-> > > > >    trigger an asynchronous reclaim attempt, in which an memcg is
-> > > > >    selected for reclaim in a round-robin-like fashion.
-> > > >
-> > > > Could you explain the rationale behind the difference in behavior h=
-ere
-> > > > between the global limit and the memcg limit?
+> > > > The checks for current->mm and PF_KTHREAD seem to be gone completel=
+y after
+> > > > the patch, was that intended and why?
 > > >
-> > > The global limit hit reclaim behavior was previously asynchronous too=
-.
-> > > We just added the round-robin part because now the zswap LRU is
-> > > cgroup-aware :)
+> > > There is no need for those anymore because it's as cheap or cheaper
+> > > to check task->objcg for being NULL. Those were primarily used to rul=
+e out
+> > > kernel threads allocations early.
 > > >
-> > > For the cgroup limit hit, however, we cannot make it asynchronous,
-> > > as it is a bit hairy to add a per-cgroup shrink_work. So, we just
-> > > perform the reclaim synchronously.
-> > >
-> > > The question is whether it makes sense to make the global limit
-> > > reclaim synchronous too. That is a task of its own IMO.
 > >
-> > Let's add such context to the commit log, and perhaps an XXX comment
-> > in the code asking whether we should consider doing the reclaim
-> > synchronously for the global limit too.
+> > I have the same understanding but please correct my suspicions here.
+> > We can echo the kernel thread's pid to cgroup.procs which have
+> > PF_NO_SETAFFINITY and thus this will cause the lower bit of the kernel
+> > thread's task->objcg to be set. Please correct me if I am missing
+> > something.
 >
-> Makes sense, I wonder if the original reason for switching from a synchro=
-nous
-> to asynchronous reclaim will still be valid with the shrinker in place.
+> Yes, you seem to be right. It's a gray zone because moving kernel threads=
+ out of
+> the root cgroup doesn't sound like a good idea, but I agree it's better t=
+o keep
+> the old behavior in place.
+>
+> Does this fixlet look good to you?
 >
 
-Seems like it was done as part of the hysteresis that stops accepting
-pages into zswap once full until it reaches a certain threshold,
-commit 45190f01dd40 ("mm/zswap.c: add allocation hysteresis if pool
-limit is hit"). I guess the point is that zswap will stop accepting
-pages when the limit is hit anyway, so no need to synchronously shrink
-it since we can't store soon anyway. More useful context for the
-commit log.
+This looks fine. Another option is not to set the bit for such
+task_structs in fork/attach.
 
-> >
-> > >
-> > > (FWIW, this somewhat mirrors the direct reclaimer v.s kswapd
-> > > story to me, but don't quote me too hard on this).
-> > >
-> > [..]
-> > >
-> > > >
-> > > > >         /* Hold a reference to prevent a free during writeback */
-> > > > >         zswap_entry_get(entry);
-> > > > >         spin_unlock(&tree->lock);
-> > > > >
-> > > > > -       ret =3D zswap_writeback_entry(entry, tree);
-> > > > > +       writeback_result =3D zswap_writeback_entry(entry, tree);
-> > > > >
-> > > > >         spin_lock(&tree->lock);
-> > > > > -       if (ret) {
-> > > > > -               /* Writeback failed, put entry back on LRU */
-> > > > > -               spin_lock(&pool->lru_lock);
-> > > > > -               list_move(&entry->lru, &pool->lru);
-> > > > > -               spin_unlock(&pool->lru_lock);
-> > > > > +       if (writeback_result) {
-> > > > > +               zswap_reject_reclaim_fail++;
-> > > > > +               memcg =3D get_mem_cgroup_from_entry(entry);
-> > > > > +               spin_lock(lock);
-> > > > > +               /* we cannot use zswap_lru_add here, because it i=
-ncrements node's lru count */
-> > > > > +               list_lru_putback(&entry->pool->list_lru, item, en=
-try_to_nid(entry), memcg);
-> > > > > +               spin_unlock(lock);
-> > > > > +               mem_cgroup_put(memcg);
-> > > > > +               ret =3D LRU_RETRY;
-> > > > >                 goto put_unlock;
-> > > > >         }
-> > > > > +       zswap_written_back_pages++;
-> > > >
-> > > > Why is this moved here from zswap_writeback_entry()? Also why is
-> > > > zswap_reject_reclaim_fail incremented here instead of inside
-> > > > zswap_writeback_entry()?
-> > >
-> > > Domenico should know this better than me, but my understanding
-> > > is that moving it here protects concurrent modifications of
-> > > zswap_written_back_pages with the tree lock.
-> > >
-> > > Is writeback single-threaded in the past? This counter is non-atomic,
-> > > and doesn't seem to be protected by any locks...
-> > >
-> > > There definitely can be concurrent stores now though - with
-> > > a synchronous reclaim from cgroup-limit hit and another
-> > > from the old shrink worker.
-> > >
-> > > (and with the new zswap shrinker, concurrent reclaim is
-> > > the expectation!)
-> >
-> > The comment above the stats definition stats that they are left
-> > unprotected purposefully. If we want to fix that let's do it
-> > separately. If this patch makes it significantly worse such that it
-> > would cause a regression, let's at least do it in a separate patch.
-> > The diff here is too large already.
-> >
-> > >
-> > > zswap_reject_reclaim_fail was previously incremented in
-> > > shrink_worker I think. We need it to be incremented
-> > > for the shrinker as well, so might as well move it here.
-> >
-> > Wouldn't moving it inside zswap_writeback_entry() near incrementing
-> > zswap_written_back_pages make it easier to follow?
+> Thanks!
 >
-> As Nhat said, zswap_reject_reclaim_fail++ had to be moved, I naturally mo=
-ved it
-> here because it's where we act upon the result of the writeback. I then n=
-oticed
-> that zswap_written_back_pages++ was elsewhere and decided to move that as=
- well
-> so that they're in the same place and at least they're under the tree loc=
-k.
+> --
 >
-> It's not meant to fix the unprotected counters, it's just a mitigation si=
-nce we
-> are forced to move at least one of them.
-
-I see. Just for my own understanding, it would be correct to update
-them in zswap_writeback_entry(), but we choose to do it here as we
-happen to hold the lock so we get the free synchronization? I think it
-could be beneficial as we may see increased concurrent writeback with
-this series. Probably something to call out in the commit log as well.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 1a2835448028..0b0d2dc7a7d4 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3021,6 +3021,10 @@ static struct obj_cgroup *current_objcg_update(voi=
+d)
+>                         old =3D NULL;
+>                 }
+>
+> +               /* If new objcg is NULL, no reason for the second atomic =
+update. */
+> +               if (!current->mm || (current->flags & PF_KTHREAD))
+> +                       return NULL;
+> +
+>                 /*
+>                  * Release the objcg pointer from the previous iteration,
+>                  * if try_cmpxcg() below fails.
