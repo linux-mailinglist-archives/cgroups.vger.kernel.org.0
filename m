@@ -2,73 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3837D16AE
-	for <lists+cgroups@lfdr.de>; Fri, 20 Oct 2023 21:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDD97D1901
+	for <lists+cgroups@lfdr.de>; Sat, 21 Oct 2023 00:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjJTT6f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Oct 2023 15:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S229803AbjJTWUN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Oct 2023 18:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjJTT6e (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Oct 2023 15:58:34 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6853DD52;
-        Fri, 20 Oct 2023 12:58:31 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35749078a59so4103585ab.3;
-        Fri, 20 Oct 2023 12:58:31 -0700 (PDT)
+        with ESMTP id S229555AbjJTWUM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Oct 2023 18:20:12 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC931FA;
+        Fri, 20 Oct 2023 15:20:10 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so1215213b3a.3;
+        Fri, 20 Oct 2023 15:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697831911; x=1698436711; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DMaTpdy0i75iy95ltl1vU/e0Nep1hsEs0WMhGjfkl4k=;
-        b=dM1k2pA1SIXnjXjKOD/nz+P+B2/eL2F6eevtuMY7QKoTwNmR/lcuyT7iFBFlsdQiNq
-         r8jDvdwyww5bb593O4eHrDq9nPDa+dx+CaN5CFKS8KmxIRDP7q9Gy/EII/CZXlI/iUnk
-         3/TlB+Wueo9CBJhlKDDdfjyLjjn1CzHmRwB00Q4mqXs6vCNxNAUyJ9Frr6Cknh8xBHzg
-         LGkO97iZ9sVzKjHC65es4iB0/Xz83Qul/67N5tB4bEMaE119GDIx3eAudDlxLy6LELAU
-         Tj/S8zN/VegqMF1LLzoCCkr/kroSpguUnv3Vu7tID8ekrLkjG0dsLhWUVrriA5N1VtXG
-         Cf8A==
+        d=gmail.com; s=20230601; t=1697840410; x=1698445210; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1EeBCEVO9LxbVa6WaU7VSYBs+wBD9B64Uc+nZwPxkVM=;
+        b=jtJgRmqRI099rYVDuO22gC9JWgf3RBMof1ocGLbzMoqCvpMPDKbyzUq8jB61M3kJZL
+         KoKPdpF7BE+PoX+g9Y4Fwwmy1mGLKwUOlKNGcBWVNM8f0zKydF1K0lT2WQhfDXCB+lf6
+         kPFyw+rD0kcPlqZX5HL3aVvvQGts65NEh75gYAO4fk/eW1BdP7qtXCEBslAXmvH1x7E8
+         IpQzxA8yt2/Xz2SyFf0s6whbC+srHHH5Z6/cFFhA7emTaGpu5UfznjIUfjc7oFJjLM8j
+         /6ZdnI///1py+7PtUyhpqczTAzsxJ5AVRDpkA96Fm8XxuPTVVvrLkaKbGmLaRDdFjV/f
+         Nsmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697831911; x=1698436711;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DMaTpdy0i75iy95ltl1vU/e0Nep1hsEs0WMhGjfkl4k=;
-        b=xG7TMi4zjMbZtZrBz3n/IRKH3z+F7wNc6HzvDVOAQ6Y+kFrA4W2fVxaXXsdPxSJdkH
-         tJywExb6Ka3VwVCd+Syc1SFDa9ks8ANPXY8lj2oqDbd0rc6iE1LBhapmkt6CxBE9d8a7
-         AR25eXROkPhFXryCH2QLhKnmGFX1Rt0qhICa1tb42GzpDc9Q6JMjxIj1cpqVsi7mxTQ0
-         HFkhN/PiI6wXtkjhM4eJQgJ1TEtM6Uc1CtFeXQWqs6Vji6UWX139EA7V7e1cRcYm3bNy
-         6P6OLYljZdxE8Vy1qe+DBVYMgvwiCj3o6tjuqHSfwmX2kxl/spnsvvyFfpU+f07mIOFG
-         0WPA==
-X-Gm-Message-State: AOJu0YyFYShaO8K5CbBdBW02YsOGTOUZByTHGzZ8hTmcjH/aeQUaQQ3a
-        NvZl4ZOK4ZL5pICpVMub6iaRAQqjZbfnYwRrJ98=
-X-Google-Smtp-Source: AGHT+IGR8W7Xi0YQ/7dCUZ2Jb3c+qTsFkmiWPSTao7GyIUJ9F1uL0JV4qYZmZW/AoBcAKMHA3vnqiBBpxyI24w52tdA=
-X-Received: by 2002:a92:c26a:0:b0:34f:f2d3:ea70 with SMTP id
- h10-20020a92c26a000000b0034ff2d3ea70mr4009375ild.6.1697831910562; Fri, 20 Oct
- 2023 12:58:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-3-nphamcs@gmail.com>
- <CAJD7tka2aVKBJj6cYutcVzOGzj_6gop6-ytSmWWML=sEe9qHbA@mail.gmail.com>
- <CA+CLi1jiyY3oueWrLtd5JOrtP-aYQ90sPgSCBoWtB2jVL_-FxA@mail.gmail.com> <CAJD7tka_gvNPgu4gim9-dqx0Wf-zdGj+==nwx2yrmOuZoe=oyw@mail.gmail.com>
-In-Reply-To: <CAJD7tka_gvNPgu4gim9-dqx0Wf-zdGj+==nwx2yrmOuZoe=oyw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1697840410; x=1698445210;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1EeBCEVO9LxbVa6WaU7VSYBs+wBD9B64Uc+nZwPxkVM=;
+        b=OrnR+HbU6vqXLb4n0AvsBxGqC4M84na805u4dKQa59c5S6ttO2WRyDWclgX746u8BJ
+         l9M3YI3tlROsfUho0NvA4mLJ2qE6uURGUN49ycEQE3VIAFGlIDgQG5vMQvZtoB81/dRP
+         GRTKwChazPehZq2rXjBB334fdDTrPB8uIfJkfpfb8Untk9dGUGaLlZiG73CnN8rZHDQX
+         2mC5h6aufnX1igiW53SxrcG83+bkQa3Nefk23SWZmS2ycZX/mph7JZFr7XMiH6n2ScIr
+         OgfozYV8bRHEprImITNJURrSPShDt2NErESd6eKrOfi6BiagG/8GDDaKoMeD8igObtOR
+         Ldcw==
+X-Gm-Message-State: AOJu0YygfB5FvSFJFovuE4iDTMdVU1BbxcKOndX/XeDlXuCA7Vd9muXo
+        k4cKxtDi+br7+3XTShqiz7Y=
+X-Google-Smtp-Source: AGHT+IECXhrANA0QgW4lL0jF6pcm/XmBaXcujdog1r7b1mT3+gIIldlT9Fee7TiRI8hSTb0nqBkZTQ==
+X-Received: by 2002:a05:6a21:3b45:b0:16b:7602:1837 with SMTP id zy5-20020a056a213b4500b0016b76021837mr2842010pzb.29.1697840410254;
+        Fri, 20 Oct 2023 15:20:10 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-015.fbsv.net. [2a03:2880:ff:f::face:b00c])
+        by smtp.gmail.com with ESMTPSA id f20-20020a056a001ad400b006b2677d3684sm2028041pfv.206.2023.10.20.15.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 15:20:10 -0700 (PDT)
 From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Fri, 20 Oct 2023 12:58:19 -0700
-Message-ID: <CAKEwX=OVcAEnOEmhy2dGwE7Zm-L-y8Mq=bx4BFUeQnTXaAA_FQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] zswap: make shrinking memcg-aware
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+To:     shuah@kernel.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com, tj@kernel.org,
+        lizefan.x@bytedance.com, linux-mm@kvack.org, kernel-team@meta.com,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests: add a sanity check for zswap
+Date:   Fri, 20 Oct 2023 15:20:09 -0700
+Message-Id: <20231020222009.2358953-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,291 +70,105 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 9:15=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> [..]
-> > > >
-> > > > +/*********************************
-> > > > +* lru functions
-> > > > +**********************************/
-> > > > +static bool zswap_lru_add(struct list_lru *list_lru, struct zswap_=
-entry *entry)
-> > > > +{
-> > > > +       struct mem_cgroup *memcg =3D get_mem_cgroup_from_entry(entr=
-y);
-> > >
-> > > Could we avoid the need for get/put with an rcu_read_lock() instead?
-> >
-> > I think we can, I'm not entirely sure of the consequences though. By th=
-e
-> > look of it I'd say it's safe but I wouldn't trust my judgement on this.
->
-> It just seems like we have a pattern of short-lived get/put. If RCU
-> gives enough protection it should be simpler. IIUC taking a reference
-> does not protect against offlining or reparenting, so I am not sure if
-> taking a reference here would provide any more protection than
->
+We recently encountered a bug that makes all zswap store attempt fail.
+Specifically, after:
 
-I'd keep it for now. Sounds like an optimization to me, which could
-always be done as a follow-up :)
+"141fdeececb3 mm/zswap: delay the initialization of zswap"
 
-Unless of course, if somebody has a really strong opinion regarding
-this.
+if we build a kernel with zswap disabled by default, then enabled after
+the swapfile is set up, the zswap tree will not be initialized. As a
+result, all zswap store calls will be short-circuited. We have to
+perform another swapon to get zswap working properly again.
 
-> >
-> > >
-> [..]
-> > > > @@ -686,7 +716,36 @@ static int zswap_reclaim_entry(struct zswap_po=
-ol *pool)
-> > > >         zswap_entry_put(tree, entry);
-> > > >  unlock:
-> > > >         spin_unlock(&tree->lock);
-> > > > -       return ret ? -EAGAIN : 0;
-> > > > +       spin_lock(lock);
-> > > > +       return ret;
-> > > > +}
-> > > > +
-> > > > +static int shrink_memcg(struct mem_cgroup *memcg)
-> > > > +{
-> > > > +       struct zswap_pool *pool;
-> > > > +       int nid, shrunk =3D 0;
-> > > > +
-> > > > +       pool =3D zswap_pool_current_get();
-> > > > +       if (!pool)
-> > > > +               return -EINVAL;
-> > > > +
-> > > > +       /*
-> > > > +        * Skip zombies because their LRUs are reparented and we wo=
-uld be
-> > > > +        * reclaiming from the parent instead of the dead memcgroup=
-.
-> > >
-> > > nit: s/memcgroup/memcg.
-> > >
-> > > > +        */
-> > > > +       if (memcg && !mem_cgroup_online(memcg))
-> > > > +               goto out;
-> > >
-> > > If we move this above zswap_pool_current_get(), we can return directl=
-y
-> > > and remove the label. I noticed we will return -EAGAIN if memcg is
-> > > offline. IIUC -EAGAIN for the caller will move on to the next memcg,
-> > > but I am wondering if a different errno would be clearer here.
-> >
-> > True, I remember spending some time staring at error codes but couldn't=
- find a
-> > better one. What if we use -EINVAL for retryable errors, and use someth=
-ing else
-> > for the one where there is no pool? -ENODEV?
->
-> Do you mean -EINVAL for non-retryable errors? Perhaps -ENOENT is more
-> appropriate as a return for offline memcgs?
->
-> >
-> > >
-> [..]
-> > > >  static void shrink_worker(struct work_struct *w)
-> > > > @@ -695,10 +754,13 @@ static void shrink_worker(struct work_struct =
-*w)
-> > > >                                                 shrink_work);
-> > > >         int ret, failures =3D 0;
-> > > >
-> > > > +       /* global reclaim will select cgroup in a round-robin fashi=
-on. */
-> > > >         do {
-> > > > -               ret =3D zswap_reclaim_entry(pool);
-> > > > +               pool->next_shrink =3D mem_cgroup_iter(NULL, pool->n=
-ext_shrink, NULL);
-> > >
-> > > Perhaps next_shrink_memcg is a better name here?
-> >
-> > Will change if you have a strong preference, I'd keep it shorter becaus=
-e it's
-> > always used in conjunction with a memcg type or function.
->
-> I'd rather have the more explicit name unless it causes some annoying
-> line breaks or so.
->
-> >
-> > >
-> > > > +
-> > > > +               ret =3D shrink_memcg(pool->next_shrink);
-> > > > +
-> > > >                 if (ret) {
-> > > > -                       zswap_reject_reclaim_fail++;
-> > > >                         if (ret !=3D -EAGAIN)
-> > > >                                 break;
-> > > >                         if (++failures =3D=3D MAX_RECLAIM_RETRIES)
-> > > > @@ -764,8 +826,7 @@ static struct zswap_pool *zswap_pool_create(cha=
-r *type, char *compressor)
-> > > >          */
-> > > >         kref_init(&pool->kref);
-> > > >         INIT_LIST_HEAD(&pool->list);
-> > > > -       INIT_LIST_HEAD(&pool->lru);
-> > > > -       spin_lock_init(&pool->lru_lock);
-> > > > +       list_lru_init_memcg(&pool->list_lru, NULL);
-> > > >         INIT_WORK(&pool->shrink_work, shrink_worker);
-> > > >
-> > > >         zswap_pool_debug("created", pool);
-> > > > @@ -831,6 +892,9 @@ static void zswap_pool_destroy(struct zswap_poo=
-l *pool)
-> > > >
-> > > >         cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &po=
-ol->node);
-> > > >         free_percpu(pool->acomp_ctx);
-> > > > +       list_lru_destroy(&pool->list_lru);
-> > > > +       if (pool->next_shrink)
-> > > > +               mem_cgroup_put(pool->next_shrink);
-> > > >         for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
-> > > >                 zpool_destroy_pool(pool->zpools[i]);
-> > > >         kfree(pool);
-> > > > @@ -1076,7 +1140,7 @@ static int zswap_writeback_entry(struct zswap=
-_entry *entry,
-> > > >
-> > > >         /* try to allocate swap cache page */
-> > > >         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, NULL=
-, 0,
-> > > > -                                      &page_was_allocated);
-> > > > +                                      &page_was_allocated, true);
-> > > >         if (!page) {
-> > > >                 ret =3D -ENOMEM;
-> > > >                 goto fail;
-> > > > @@ -1142,7 +1206,6 @@ static int zswap_writeback_entry(struct zswap=
-_entry *entry,
-> > > >         /* start writeback */
-> > > >         __swap_writepage(page, &wbc);
-> > > >         put_page(page);
-> > > > -       zswap_written_back_pages++;
-> > > >
-> > > >         return ret;
-> > > >
-> > > > @@ -1199,8 +1262,10 @@ bool zswap_store(struct folio *folio)
-> > > >         struct scatterlist input, output;
-> > > >         struct crypto_acomp_ctx *acomp_ctx;
-> > > >         struct obj_cgroup *objcg =3D NULL;
-> > > > +       struct mem_cgroup *memcg =3D NULL;
-> > > >         struct zswap_pool *pool;
-> > > >         struct zpool *zpool;
-> > > > +       int lru_alloc_ret;
-> > > >         unsigned int dlen =3D PAGE_SIZE;
-> > > >         unsigned long handle, value;
-> > > >         char *buf;
-> > > > @@ -1230,15 +1295,15 @@ bool zswap_store(struct folio *folio)
-> > > >                 zswap_invalidate_entry(tree, dupentry);
-> > > >         }
-> > > >         spin_unlock(&tree->lock);
-> > > > -
-> > > > -       /*
-> > > > -        * XXX: zswap reclaim does not work with cgroups yet. Witho=
-ut a
-> > > > -        * cgroup-aware entry LRU, we will push out entries system-=
-wide based on
-> > > > -        * local cgroup limits.
-> > > > -        */
-> > > >         objcg =3D get_obj_cgroup_from_folio(folio);
-> > > > -       if (objcg && !obj_cgroup_may_zswap(objcg))
-> > > > -               goto reject;
-> > > > +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> > > > +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> > > > +               if (shrink_memcg(memcg)) {
-> > > > +                       mem_cgroup_put(memcg);
-> > > > +                       goto reject;
-> > > > +               }
-> > > > +               mem_cgroup_put(memcg);
-> > > > +       }
-> > > >
-> > > >         /* reclaim space if needed */
-> > > >         if (zswap_is_full()) {
-> > > > @@ -1254,10 +1319,15 @@ bool zswap_store(struct folio *folio)
-> > > >                         zswap_pool_reached_full =3D false;
-> > > >         }
-> > > >
-> > > > +       pool =3D zswap_pool_current_get();
-> > > > +       if (!pool)
-> > > > +               goto reject;
-> > > > +
-> > >
-> > > Why do we need to move zswap_pool_current_get() up here?
-> >
-> > Ah, thanks. This is a leftover from a previous version where the pool w=
-as needed
-> > to allocate the entry.
-> >
-> >
-> > >
-> > > >         /* allocate entry */
-> > > > -       entry =3D zswap_entry_cache_alloc(GFP_KERNEL);
-> > > > +       entry =3D zswap_entry_cache_alloc(GFP_KERNEL, page_to_nid(p=
-age));
-> > > >         if (!entry) {
-> > > >                 zswap_reject_kmemcache_fail++;
-> > > > +               zswap_pool_put(pool);
-> > > >                 goto reject;
-> > > >         }
-> > > >
-> > > > @@ -1269,6 +1339,7 @@ bool zswap_store(struct folio *folio)
-> > > >                         entry->length =3D 0;
-> > > >                         entry->value =3D value;
-> > > >                         atomic_inc(&zswap_same_filled_pages);
-> > > > +                       zswap_pool_put(pool);
-> > > >                         goto insert_entry;
-> > > >                 }
-> > > >                 kunmap_atomic(src);
-> > > > @@ -1278,9 +1349,15 @@ bool zswap_store(struct folio *folio)
-> > > >                 goto freepage;
-> > > >
-> > > >         /* if entry is successfully added, it keeps the reference *=
-/
-> > > > -       entry->pool =3D zswap_pool_current_get();
-> > > > -       if (!entry->pool)
-> > > > -               goto freepage;
-> > > > +       entry->pool =3D pool;
-> > > > +       if (objcg) {
-> > > > +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> > > > +               lru_alloc_ret =3D memcg_list_lru_alloc(memcg, &pool=
-->list_lru, GFP_KERNEL);
-> > > > +               mem_cgroup_put(memcg);
-> > > > +
-> > > > +               if (lru_alloc_ret)
-> > > > +                       goto freepage;
-> > > > +       }
-> > > >
-> > > >         /* compress */
-> > > >         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> > > > @@ -1358,9 +1435,8 @@ bool zswap_store(struct folio *folio)
-> > > >                 zswap_invalidate_entry(tree, dupentry);
-> > > >         }
-> > > >         if (entry->length) {
-> > > > -               spin_lock(&entry->pool->lru_lock);
-> > > > -               list_add(&entry->lru, &entry->pool->lru);
-> > > > -               spin_unlock(&entry->pool->lru_lock);
-> > > > +               INIT_LIST_HEAD(&entry->lru);
-> > > > +               zswap_lru_add(&pool->list_lru, entry);
-> > > >         }
-> > > >         spin_unlock(&tree->lock);
-> > > >
-> > > > @@ -1373,8 +1449,8 @@ bool zswap_store(struct folio *folio)
-> > > >
-> > > >  put_dstmem:
-> > > >         mutex_unlock(acomp_ctx->mutex);
-> > > > -       zswap_pool_put(entry->pool);
-> > > >  freepage:
-> > > > +       zswap_pool_put(entry->pool);
-> > > >         zswap_entry_cache_free(entry);
-> > > >  reject:
-> > > >         if (objcg)
-> > > > @@ -1467,9 +1543,8 @@ bool zswap_load(struct folio *folio)
-> > > >                 zswap_invalidate_entry(tree, entry);
-> > > >                 folio_mark_dirty(folio);
-> > > >         } else if (entry->length) {
-> > > > -               spin_lock(&entry->pool->lru_lock);
-> > > > -               list_move(&entry->lru, &entry->pool->lru);
-> > > > -               spin_unlock(&entry->pool->lru_lock);
-> > > > +               zswap_lru_del(&entry->pool->list_lru, entry);
-> > > > +               zswap_lru_add(&entry->pool->list_lru, entry);
-> > > >         }
-> > > >         zswap_entry_put(tree, entry);
-> > > >         spin_unlock(&tree->lock);
-> > > > --
-> > > > 2.34.1
+Fortunately, this issue has since been fixed by the patch that kills
+frontswap:
+
+"42c06a0e8ebe mm: kill frontswap"
+
+which performs zswap_swapon() unconditionally, i.e always initializing
+the zswap tree.
+
+This test add a sanity check that ensure zswap storing works as
+intended.
+
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ tools/testing/selftests/cgroup/test_zswap.c | 48 +++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+index 49def87a909b..c99d2adaca3f 100644
+--- a/tools/testing/selftests/cgroup/test_zswap.c
++++ b/tools/testing/selftests/cgroup/test_zswap.c
+@@ -55,6 +55,11 @@ static int get_zswap_written_back_pages(size_t *value)
+ 	return read_int("/sys/kernel/debug/zswap/written_back_pages", value);
+ }
+ 
++static long get_zswpout(const char *cgroup)
++{
++	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
++}
++
+ static int allocate_bytes(const char *cgroup, void *arg)
+ {
+ 	size_t size = (size_t)arg;
+@@ -68,6 +73,48 @@ static int allocate_bytes(const char *cgroup, void *arg)
+ 	return 0;
+ }
+ 
++/*
++ * Sanity test to check that pages are written into zswap.
++ */
++static int test_zswap_usage(const char *root)
++{
++	long zswpout_before, zswpout_after;
++	int ret = KSFT_FAIL;
++	char *test_group;
++
++	/* Set up */
++	test_group = cg_name(root, "no_shrink_test");
++	if (!test_group)
++		goto out;
++	if (cg_create(test_group))
++		goto out;
++	if (cg_write(test_group, "memory.max", "1M"))
++		goto out;
++
++	zswpout_before = get_zswpout(test_group);
++	if (zswpout_before < 0) {
++		ksft_print_msg("Failed to get zswpout\n");
++		goto out;
++	}
++
++	/* Allocate more than memory.max to push memory into zswap */
++	if (cg_run(test_group, allocate_bytes, (void *)MB(4)))
++		goto out;
++
++	/* Verify that pages come into zswap */
++	zswpout_after = get_zswpout(test_group);
++	if (zswpout_after <= zswpout_before) {
++		ksft_print_msg("zswpout does not increase after test program\n");
++		goto out;
++	}
++	ret = KSFT_PASS;
++
++out:
++	cg_destroy(test_group);
++	free(test_group);
++	return ret;
++}
++
+ /*
+  * When trying to store a memcg page in zswap, if the memcg hits its memory
+  * limit in zswap, writeback should not be triggered.
+@@ -235,6 +282,7 @@ struct zswap_test {
+ 	int (*fn)(const char *root);
+ 	const char *name;
+ } tests[] = {
++	T(test_zswap_usage),
+ 	T(test_no_kmem_bypass),
+ 	T(test_no_invasive_cgroup_shrink),
+ };
+-- 
+2.34.1
+
