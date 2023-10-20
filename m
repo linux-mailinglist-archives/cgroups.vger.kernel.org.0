@@ -2,56 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A12647D0738
-	for <lists+cgroups@lfdr.de>; Fri, 20 Oct 2023 05:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE737D07A3
+	for <lists+cgroups@lfdr.de>; Fri, 20 Oct 2023 07:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376325AbjJTDwA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Oct 2023 23:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
+        id S233505AbjJTFdj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Oct 2023 01:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376355AbjJTDvz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Oct 2023 23:51:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CBD10D4
-        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 20:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697773908; x=1729309908;
-  h=date:from:to:cc:subject:message-id;
-  bh=0yu2cnybjH3YBqFtGykkmHixSHTGpUh9Agjhfm4XiZs=;
-  b=iDeoYzjaHHhj6r1W5c7cJ3AyuC2ftzkEnNN9AK3IIA7Uz/FnyUmd3RtK
-   3QSZp3GjRZn1R/rgVhzOlyEXLzYzx9JilPiNmUgDdTUEHeYnUUDn3u+3j
-   /PSQDQn5FeklY5lKhN1COOk5wxkiH/B7qH58C19+ttf8Gd1gooRP1Z/ni
-   HD4cjYzvzP5/JAkvpkkUpWomy74bMS6w6FsYVFskz14Z61adwpT/7WKKV
-   bqund/uGTlfmZsKaXujbtppBfk7M94BWmuFi0I/CN4/gc4salxQ5rM6D+
-   P0nm1QEY2CWy18akah5nRXdOt7IAzCMW38viQh62c6uvc0Jle3csXMoSQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="385301311"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="385301311"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 20:51:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="707113284"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="707113284"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 19 Oct 2023 20:51:46 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtgY3-0002xW-2G;
-        Fri, 20 Oct 2023 03:51:43 +0000
-Date:   Fri, 20 Oct 2023 11:51:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- b9a477034b11be3aedf402de9c7668ac9048d277
-Message-ID: <202310201107.jeTlzL5B-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        with ESMTP id S233471AbjJTFdi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Oct 2023 01:33:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8836A119;
+        Thu, 19 Oct 2023 22:33:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F50D21842;
+        Fri, 20 Oct 2023 05:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697780014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PyJ/wzDi6i48iVYJkqxkfxMlKHMIM7+DIbHS1YWntQA=;
+        b=FcD3e3il7pO1iMz9Uisi8xhSglA1naMreeVOep+yyOgCE/cf3RW/9ahNz8F0dtYmx+r1op
+        yip2TC0SZ/Ep0ogz/M89H9TFl7c6AYi2ktfhT3zqRdbwdnuC4iJXp01YPrVrsoT2rChRjG
+        ARk0mCYhxOJYhcuhuvOmWO3KMJiJxEc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697780014;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PyJ/wzDi6i48iVYJkqxkfxMlKHMIM7+DIbHS1YWntQA=;
+        b=5h+O0a0IBCPO5f430xj/w4BMFK+OzoLtiycyRI5cZLMXlr0zhMNftsRBGLuaPXFzEbEREi
+        m5h9XE6FmFS7rwBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB1021348D;
+        Fri, 20 Oct 2023 05:33:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VufKNC0RMmXyXgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 20 Oct 2023 05:33:33 +0000
+Message-ID: <69ad0c7c-9e34-9eb6-835d-ac40a5023d91@suse.cz>
+Date:   Fri, 20 Oct 2023 07:33:33 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 2/6] mm: kmem: add direct objcg pointer to task_struct
+Content-Language: en-US
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20231019225346.1822282-1-roman.gushchin@linux.dev>
+ <20231019225346.1822282-3-roman.gushchin@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231019225346.1822282-3-roman.gushchin@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -8.26
+X-Spamd-Result: default: False [-8.26 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.16)[69.18%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,151 +103,44 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: b9a477034b11be3aedf402de9c7668ac9048d277  Merge branch 'for-6.7' into for-next
+On 10/20/23 00:53, Roman Gushchin wrote:
+> To charge a freshly allocated kernel object to a memory cgroup, the
+> kernel needs to obtain an objcg pointer. Currently it does it
+> indirectly by obtaining the memcg pointer first and then calling to
+> __get_obj_cgroup_from_memcg().
+> 
+> Usually tasks spend their entire life belonging to the same object
+> cgroup. So it makes sense to save the objcg pointer on task_struct
+> directly, so it can be obtained faster. It requires some work on fork,
+> exit and cgroup migrate paths, but these paths are way colder.
+> 
+> To avoid any costly synchronization the following rules are applied:
+> 1) A task sets it's objcg pointer itself.
+> 
+> 2) If a task is being migrated to another cgroup, the least
+>    significant bit of the objcg pointer is set atomically.
+> 
+> 3) On the allocation path the objcg pointer is obtained locklessly
+>    using the READ_ONCE() macro and the least significant bit is
+>    checked. If it's set, the following procedure is used to update
+>    it locklessly:
+>        - task->objcg is zeroed using cmpxcg
+>        - new objcg pointer is obtained
+>        - task->objcg is updated using try_cmpxchg
+>        - operation is repeated if try_cmpxcg fails
+>    It guarantees that no updates will be lost if task migration
+>    is racing against objcg pointer update. It also allows to keep
+>    both read and write paths fully lockless.
+> 
+> Because the task is keeping a reference to the objcg, it can't go away
+> while the task is alive.
+> 
+> This commit doesn't change the way the remote memcg charging works.
+> 
+> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-elapsed time: 2470m
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-configs tested: 132
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231018   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231019   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231019   gcc  
-i386         buildonly-randconfig-002-20231019   gcc  
-i386         buildonly-randconfig-003-20231019   gcc  
-i386         buildonly-randconfig-004-20231019   gcc  
-i386         buildonly-randconfig-005-20231019   gcc  
-i386         buildonly-randconfig-006-20231019   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231019   gcc  
-i386                  randconfig-002-20231019   gcc  
-i386                  randconfig-003-20231019   gcc  
-i386                  randconfig-004-20231019   gcc  
-i386                  randconfig-005-20231019   gcc  
-i386                  randconfig-006-20231019   gcc  
-i386                  randconfig-011-20231019   gcc  
-i386                  randconfig-012-20231019   gcc  
-i386                  randconfig-013-20231019   gcc  
-i386                  randconfig-014-20231019   gcc  
-i386                  randconfig-015-20231019   gcc  
-i386                  randconfig-016-20231019   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231018   gcc  
-loongarch             randconfig-001-20231019   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231018   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231018   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231018   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231019   gcc  
-x86_64       buildonly-randconfig-002-20231019   gcc  
-x86_64       buildonly-randconfig-003-20231019   gcc  
-x86_64       buildonly-randconfig-004-20231019   gcc  
-x86_64       buildonly-randconfig-005-20231019   gcc  
-x86_64       buildonly-randconfig-006-20231019   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231018   gcc  
-x86_64                randconfig-002-20231018   gcc  
-x86_64                randconfig-003-20231018   gcc  
-x86_64                randconfig-004-20231018   gcc  
-x86_64                randconfig-005-20231018   gcc  
-x86_64                randconfig-006-20231018   gcc  
-x86_64                randconfig-011-20231019   gcc  
-x86_64                randconfig-012-20231019   gcc  
-x86_64                randconfig-013-20231019   gcc  
-x86_64                randconfig-014-20231019   gcc  
-x86_64                randconfig-015-20231019   gcc  
-x86_64                randconfig-016-20231019   gcc  
-x86_64                randconfig-071-20231019   gcc  
-x86_64                randconfig-072-20231019   gcc  
-x86_64                randconfig-073-20231019   gcc  
-x86_64                randconfig-074-20231019   gcc  
-x86_64                randconfig-075-20231019   gcc  
-x86_64                randconfig-076-20231019   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
