@@ -2,101 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8E17D07B6
-	for <lists+cgroups@lfdr.de>; Fri, 20 Oct 2023 07:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1EA7D0881
+	for <lists+cgroups@lfdr.de>; Fri, 20 Oct 2023 08:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235599AbjJTFl3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Oct 2023 01:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
+        id S1346958AbjJTGbm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Oct 2023 02:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233505AbjJTFl2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Oct 2023 01:41:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EAC1A6;
-        Thu, 19 Oct 2023 22:41:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 433941F38C;
-        Fri, 20 Oct 2023 05:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697780483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qC1EtdiL0sWOeG47S5yhpa8vuKjnIigBgj1W4A3nuyE=;
-        b=tryR/mSKMBjG7XlRO/HjlizgTYSK0eFn6i2PODMFwegv2RThJ858mBN8mKggBmkebRTdG0
-        M7gHH8ISFPLmt67XYpBM/7L9YrGDEWD8urTvrgM55M3mqAI9wIfi2JYeMyaDxbakEunfu8
-        I8UFDfBlduYxDue3+63ajsUrnYYv0t0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697780483;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qC1EtdiL0sWOeG47S5yhpa8vuKjnIigBgj1W4A3nuyE=;
-        b=beh7P0tZIIwhrLrnpjy27hvv36M90OppuYB7IgsmOJS6BllqqpcqggLjsJMoIau97w92I3
-        i0D77SybuqCq8BCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12B231348D;
-        Fri, 20 Oct 2023 05:41:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lHnWAwMTMmWYYQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 20 Oct 2023 05:41:23 +0000
-Message-ID: <9a5a8167-488b-3819-8aa5-ddd5bd5bacc2@suse.cz>
-Date:   Fri, 20 Oct 2023 07:41:22 +0200
+        with ESMTP id S1345092AbjJTGbl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Oct 2023 02:31:41 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193EACF
+        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 23:31:40 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9c145bb5bso82725ad.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Oct 2023 23:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697783499; x=1698388299; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5qeeYz5V48ireqFEi+ywjuz8ashXtpLODjwuWX4lfJE=;
+        b=03J+BQwkg76Nw8fMdnvZxph3okcpcJ8vnKpmjMp6mHuplAUCGGdCoXYkW39/W3NCqU
+         KIvpooeuFhmLB3YMuayuU2r6HMz0W9CjFCTGLJmjyaWyjt/mr/yBzA/OA86cSg1qKpHw
+         r6vZMUwaa+oQYsrNQ0qpMuJmwx636lBcG3c2a2VKi2ag5agW5FzfjejyOOFtxD/Yjb4a
+         Ph61fXnqNVfnUnjVQx5B94BNibctOFmVkE1Uj08LPVdUYAAYgOUOZgdXnfm3Y/AyII1p
+         Av07J+vRsmXcLirwghmeVGAVMo7V7MtFcEH5KWGajRqcKQcfjeJ7L/8PEZ/k625xTNjk
+         zQrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697783499; x=1698388299;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5qeeYz5V48ireqFEi+ywjuz8ashXtpLODjwuWX4lfJE=;
+        b=rW0jU9FLUAM7XwCQgNHjd7FYvDKksL1n8+Yl8/dlpSSI4aj7QhcmY6xv1WvgzS9MXz
+         /FdKRCSAXmsxvLJFyONhqpxS4n4qhRGExcEUGSa2URDxSvm7oE3oYY6nG5jwv92iN0dY
+         Fw3d1z03mF9xLcTjrpbmX2AXQibbw3Aoe5njF6zUSTgcG0Z5b1LFGUIgnhdEZOMMGwWd
+         Nsdq18nV225rUGt603jxJsR0pEok/OgaNycY5gh1WKayIu3ReWlmVZFvt9qucF9WIAEk
+         dlRHQ+T3i7O+VwvCS/tkQVfhNIWjGWq6qU3EMHA45l3AgYhoIC0NMdOCmQiWASK2OFQ5
+         1yWA==
+X-Gm-Message-State: AOJu0YyuVCoNa79XlYtf0n/ep9x2nPEd1XMzYo9MqpXk8x6mZfDphQ0r
+        WioFnYHT0yRj+5Vk9IuAeJez1nlF4h19VsjJYZvv6A==
+X-Google-Smtp-Source: AGHT+IEV87PSEZnNQs7z3oFbyuV1txN/MwORzwAyr5f2vLqQcxrpEiA3daUgZkoV+qaBa67byOF4TwXuDZEG8DKfJoE=
+X-Received: by 2002:a17:903:8c4:b0:1c9:e53b:4099 with SMTP id
+ lk4-20020a17090308c400b001c9e53b4099mr147617plb.8.1697783495364; Thu, 19 Oct
+ 2023 23:31:35 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 6/6] mm: kmem: reimplement
- get_obj_cgroup_from_current()
-Content-Language: en-US
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+References: <20231019225346.1822282-1-roman.gushchin@linux.dev> <20231019225346.1822282-7-roman.gushchin@linux.dev>
+In-Reply-To: <20231019225346.1822282-7-roman.gushchin@linux.dev>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 19 Oct 2023 23:31:23 -0700
+Message-ID: <CALvZod4EWoH7HGMWU+f6svP9gjDUh==GUS3GuD7CxhnB+mq9wA@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] mm: kmem: reimplement get_obj_cgroup_from_current()
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
         Muchun Song <muchun.song@linux.dev>,
         Dennis Zhou <dennis@kernel.org>,
         David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
         Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <20231019225346.1822282-1-roman.gushchin@linux.dev>
- <20231019225346.1822282-7-roman.gushchin@linux.dev>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231019225346.1822282-7-roman.gushchin@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.45
-X-Spamd-Result: default: False [-8.45 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-0.35)[76.41%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,19 +76,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/20/23 00:53, Roman Gushchin wrote:
+On Thu, Oct 19, 2023 at 3:54=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
+>
 > Reimplement get_obj_cgroup_from_current() using current_obj_cgroup().
 > get_obj_cgroup_from_current() and current_obj_cgroup() share 80% of
 > the code, so the new implementation is almost trivial.
-
-Great.
-
+>
 > get_obj_cgroup_from_current() is a convenient function used by the
 > bpf subsystem, so there is no reason to get rid of it completely.
-> 
+>
 > Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
 
-Reviwed-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks!
-
+Acked-by: Shakeel Butt <shakeelb@google.com>
