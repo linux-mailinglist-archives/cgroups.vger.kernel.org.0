@@ -2,72 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AE97D19F7
-	for <lists+cgroups@lfdr.de>; Sat, 21 Oct 2023 02:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDA27D225C
+	for <lists+cgroups@lfdr.de>; Sun, 22 Oct 2023 11:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbjJUAit (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Oct 2023 20:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
+        id S229500AbjJVJdW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 22 Oct 2023 05:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbjJUAis (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Oct 2023 20:38:48 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB28D72
-        for <cgroups@vger.kernel.org>; Fri, 20 Oct 2023 17:38:46 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6c61dd1c229so250499a34.0
-        for <cgroups@vger.kernel.org>; Fri, 20 Oct 2023 17:38:46 -0700 (PDT)
+        with ESMTP id S229472AbjJVJdW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 22 Oct 2023 05:33:22 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DFB93;
+        Sun, 22 Oct 2023 02:33:20 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7788f727dd7so139942385a.1;
+        Sun, 22 Oct 2023 02:33:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697848725; x=1698453525; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697967200; x=1698572000; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=423X7bf3mKdV2TfpiLpGt3onIWyjL6GRNCUQJNzFbJY=;
-        b=GCPt+Mr41cq8TzswR0amE3zshzM9Nlas9+I4pUIA+1qBSHqfuoyG8qdeSePaM70SK+
-         ga/J4yau0grKFwXeCIfUfUpRnAcJ3AKKgxJIoFgbuWbyOGKOUm4/kwOO9h1s4fIsRsDz
-         ajY3TGF7x4n64DypEAndW86jd3361xl12mf9uXaUxbaNXaxsbztkOkbHA7XvoWh8L8V7
-         oF8wv35OlpUcoQemrvBfBEOxhMLX/csUHhXXKYQj2pFgHwAPEkQ8Vb1OVVE4hR+AfJrm
-         JSU8EgTs9ZLSTnDBkFtsG5DwOp+RyUrXZDAQ2fZ89xp3hfinEkuSJxTr+63XAEVS9cD4
-         CMzQ==
+        bh=JU1qseP4EfX8zx4vZ7JMnjfTVYuZaNIDuUmyb2QENVM=;
+        b=m5gWwvDuxfds7/AhiA3iY0U0R3TPlcH0PeaIrZ31l+WcY63/XKwr4wQp2x6s7FFj7I
+         2tcxviYBvMDTRjVZKzxki0boqYNY0xLbnnmCAw2aBLTE+E0G2lw78cNoq2CiK76AGKry
+         Rr9BBCCymSgpFvhi51tYGOfNu8unYaQ1nqFlkbx30WXZZSD8yv5nEnR4w/4Zmvi2HJYW
+         vLGRYMKUWH74N/QHRmeBtBAGbx6JOzvisNJIGoLNmNIfwIGNomvGTkBDgaFVfMeI1IA+
+         FyZgwYkTPQZdPwrafyUb7PhGuXb2Q2ifMvfjP5r9xYSP75MJvTs3APTma5TXmdSohvBN
+         8ukA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697848725; x=1698453525;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697967200; x=1698572000;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=423X7bf3mKdV2TfpiLpGt3onIWyjL6GRNCUQJNzFbJY=;
-        b=XUv22SqcHLIAaFHz2oSGvYT0i2tfJrQ5BC+TdS7rLjTctQFzu9orNRIaJrsy4KLrIM
-         B+c4YWa2NeHcXLMPZtEp6kPljry9/GxXCfcgUQudE43uQBSq7Iux8G5bxv+ww9WYQXG+
-         rIWr3jWnZMCZiYLOMhTCxBD3zkF8ZZa0lbzKZC3gHsXXO8W+v95QH9EyHd9QTBMJiNBf
-         2JZC8yUtuyrJt972DSbqQsMRayfck0fb8D1NWtr/qwgkwsbUTw1FI1+QIL85JlUwyh2e
-         1YsQ+xJ2AN2Bxx8g7mg3fl86ljylTxfJyLFl66Br+GL5wGzJ9MAJu/mBnJ8TqnzPjcLY
-         P/sw==
-X-Gm-Message-State: AOJu0YxKeDOkpfNvXDSJLP0KZrO+v1+MDzzVItdjXmVi7J2Vmctdtrt/
-        pJsdMEPYo/HwinkB8HQTA67CP5ioO8IxMxdD8LZjLw==
-X-Google-Smtp-Source: AGHT+IGdv9UkTnlXLx/5ijBTQR2xHsaXZ87/AXJ/nw5vxj4PW5/dpIBr4LcagbwlUR9FnNBJNYtfhg==
-X-Received: by 2002:a9d:51d2:0:b0:6bf:500f:b570 with SMTP id d18-20020a9d51d2000000b006bf500fb570mr3774295oth.3.1697848725192;
-        Fri, 20 Oct 2023 17:38:45 -0700 (PDT)
-Received: from [127.0.0.1] ([2600:380:984c:2fe2:e7f8:bd24:713c:c8fb])
-        by smtp.gmail.com with ESMTPSA id h6-20020a9d61c6000000b006cd33d6fd5csm520636otk.11.2023.10.20.17.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 17:38:44 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Khazhismel Kumykov <khazhy@chromium.org>
-Cc:     Yu Kuai <yukuai3@huawei.com>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        oleg@redhat.com, linan122@huawei.com,
-        Khazhismel Kumykov <khazhy@google.com>
-In-Reply-To: <20231020223617.2739774-1-khazhy@google.com>
-References: <20231020223617.2739774-1-khazhy@google.com>
-Subject: Re: [PATCH] blk-throttle: check for overflow in
- calculate_bytes_allowed
-Message-Id: <169784872374.3020638.17698696801548218359.b4-ty@kernel.dk>
-Date:   Fri, 20 Oct 2023 18:38:43 -0600
+        bh=JU1qseP4EfX8zx4vZ7JMnjfTVYuZaNIDuUmyb2QENVM=;
+        b=GYGDfpJ392KBzV8tphkUJlSJfNgRJnJWjoqrHxe5oRblL0UmO8/WbHqGSnQU1SjXaq
+         hf/PKBFmUzTlTSRcWfM8i0ZUkeYe/GSLAfKo6cUiJGA3881tQfTLLnxbwasVWA4sV6EC
+         T22F0ofuCMAs4hKOdag4LfF3pO52ngdH27n8SIru8JjAVL1+UQdcIaJfCA4hdCZKc2Va
+         iYBwnpzUGkSto5O8APxEhPib9geF0zsW+ocPARUyGW4A6FHe6k6aM+jr+A3lnYE2/5jh
+         FQ38zyOg5luayvcp6xeEz5oLByZtIlIj2UJtQAZhgcTCUBbNpa/GOBJsvOuo3NG2DzsB
+         UGww==
+X-Gm-Message-State: AOJu0YzvEUr1L7VBeUKCnOzxWfFg6Mz28DSBP4F+tOyspe6nikUCazlb
+        YoYR/C+r+PzlFCFQ4YCoHxvdF7R6HxA2YiWMusQ=
+X-Google-Smtp-Source: AGHT+IE8XDs81Ed55IcmyiA+YvourVcN1oua+zQ0npm4I82d6RewypOBG90Cg/gIkHC/2Sp5mEzsBZgSssnFCfgG+nk=
+X-Received: by 2002:a05:6214:5298:b0:66d:13b5:9283 with SMTP id
+ kj24-20020a056214529800b0066d13b59283mr7726003qvb.29.1697967199660; Sun, 22
+ Oct 2023 02:33:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-26615
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-2-laoar.shao@gmail.com>
+ <ZS-m3t-_daPzEsJL@slm.duckdns.org> <CALOAHbAd2S--=72c2267Lrcj_czkitdG9j97pai2zGqdAskvQQ@mail.gmail.com>
+ <ZTF-nOb4HDvjTSca@slm.duckdns.org> <09ff4166-bcc2-989b-97ce-a6574120eea7@redhat.com>
+ <CALOAHbDO=gzkn=7e+6LMJNwKUPxexJfg=L1J+KZG9a9Zk9LZUg@mail.gmail.com> <ZTK-CI9juS31kMSX@slm.duckdns.org>
+In-Reply-To: <ZTK-CI9juS31kMSX@slm.duckdns.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 22 Oct 2023 17:32:43 +0800
+Message-ID: <CALOAHbDiLBqse11ZJpNXdvCw8baCzRQMe+BhbtOEV3C=bZhXjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup
+ root_list RCU safe
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        yosryahmed@google.com, mkoutny@suse.com, sinquersw@gmail.com,
+        cgroups@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,25 +77,44 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Sat, Oct 21, 2023 at 1:51=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Fri, Oct 20, 2023 at 05:36:57PM +0800, Yafang Shao wrote:
+> > On Fri, Oct 20, 2023 at 3:43=E2=80=AFAM Waiman Long <longman@redhat.com=
+> wrote:
+> > >
+> > > On 10/19/23 15:08, Tejun Heo wrote:
+> > > > On Thu, Oct 19, 2023 at 02:38:52PM +0800, Yafang Shao wrote:
+> > > >>>> -     BUG_ON(!res_cgroup);
+> > > >>>> +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex)=
+);
+> > > >>> This doesn't work. lockdep_is_held() is always true if !PROVE_LOC=
+KING.
+> > > >> will use mutex_is_locked() instead.
+> > > > But then, someone else can hold the lock and trigger the condition
+> > > > spuriously. The kernel doesn't track who's holding the lock unless =
+lockdep
+> > > > is enabled.
+> > >
+> > > It is actually possible to detect if the current process is the owner=
+ of
+> > > a mutex since there is a owner field in the mutex structure. However,
+> > > the owner field also contains additional information which need to be
+> > > masked off before comparing with "current". If such a functionality i=
+s
+> > > really needed, we will have to add a helper function mutex_is_held(),
+> > > for example, to kernel/locking/mutex.c.
+> > =E3=80=81
+> > Agreed. We should first introduce mutex_is_held(). Thanks for your sugg=
+estion.
+>
+> I'm not sure this is the right occassion to add such thing. It's just a
+> warn_on, we can either pass in the necessary condition from the callers o=
+r
+> just drop the warning.
 
-On Fri, 20 Oct 2023 15:36:17 -0700, Khazhismel Kumykov wrote:
-> Inexact, we may reject some not-overflowing values incorrectly, but
-> they'll be on the order of exabytes allowed anyways.
-> 
-> This fixes divide error crash on x86 if bps_limit is not configured or
-> is set too high in the rare case that jiffy_elapsed is greater than HZ.
-> 
-> 
-> [...]
+OK. will just drop the warning.
 
-Applied, thanks!
-
-[1/1] blk-throttle: check for overflow in calculate_bytes_allowed
-      commit: 2dd710d476f2f1f6eaca884f625f69ef4389ed40
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+--=20
+Regards
+Yafang
