@@ -1,347 +1,231 @@
-Return-Path: <cgroups+bounces-9-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE8087D47CD
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 08:57:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C527D4834
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 09:15:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D9101F21562
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 06:57:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A79F81C20B5C
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 07:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAC712B80;
-	Tue, 24 Oct 2023 06:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED85A14277;
+	Tue, 24 Oct 2023 07:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OPR4zGXi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FX7fo0zW"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551166FCB
-	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:56:54 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF69FD;
-	Mon, 23 Oct 2023 23:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698130612; x=1729666612;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=XjUA7FOIZbX4F51s7cPA++WLh9WTaMTngI/3uRtcjP0=;
-  b=OPR4zGXiUsRo5qvqkkGmyOYKv88iikv0xGyq5R+CdnBfsXAD6e+p2s4N
-   sw8/fhCcezHdLEA/gB5nhdBC2RTyWpvLSDZT8TSpEmdLlv7wnPAtciTpD
-   iVullzCk9uLPKVww4rqNvbkPyzKCXDQgzbMOgkmK7UZw6FfGE+oBCmHbN
-   rK0bHggwz5YiLG/uhDsVQwIDaln2iWfN1FDizSyIg3M62Vtloq5/ve3Hn
-   6Drw4npBs7x4GbkSC2vh6zxEGWUSYBP+cSG9X29rBwVNWLgcC5XFiazF6
-   n5m6l3x/wqt/jQZmwdaQKOAq2UXS1qEIg0A9uN1yAfszkaU/R1cMRJOZJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="367227455"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="367227455"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 23:56:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="751901424"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="751901424"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Oct 2023 23:56:51 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 23 Oct 2023 23:56:50 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 23 Oct 2023 23:56:50 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 23 Oct 2023 23:56:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NUkrXuuJYwFQ7Oil36Nr9IlsGaqXoC8OY4o2G2UZfpxSAEQuyuZWBbEZFC+NukvTYLIGmbj39n6oECmFyfGAkwN9hphFXKBMGsCzKISpquiydZ07rr5UsdxaaGLfntC7hOOl4VkcLGeSIjVwVGMYkcW6iVn+hdMKBoYjObDTD3w0Q+98FtgV6NJubC1NSBZ2jRpXVUID5bc4m+QnT52cxIDqJ8/lqqEvJv3Q1+6+5RTeC2m0FR2zfGof+lwT8VUVza+zAijJ/aafrKLISY+iYQfBZGvV6LCGQB6H/euos8isr3l9iknGAMbCV7bAvcCUSlWnT2uHL5K50QxqMrQz0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KBoIgowfT276QZ2omitJoFtm9bJBLWP5o4MoqPgdk10=;
- b=nS8RfF7BxmrMsama2bmmcjyiwT7LfL27B6aTeJwxDp6GXRtWxIHkPOKIKkQXhkL385SvDA7F5uRHFmvF5+OHsXDiDkFNgLeX4NAFuotHca28UTCa27jsnApsw1H8OSRK0KSLfcIv5OoELP6C+DIRR989iTTQNXLiuQVMgAY6UrvZ/puX0Qs/VdTHVMeSRSz5SSAgD7MU5r1TDfqpehYKhz2ZTj43Tq06XkBpT7PHO8TDkrUlaXZ0ZWiKIKrTd89xiKz7I2LwKJHIBz3xgnB24/o7RrHiL3ilxeeORXSToUktzoRYBUYyDLVfj79Zs8D2+SivrVPcr6G9KR8V/UhCFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by CY5PR11MB6091.namprd11.prod.outlook.com (2603:10b6:930:2d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Tue, 24 Oct
- 2023 06:56:49 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::29f0:3f0f:2591:d1f6]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::29f0:3f0f:2591:d1f6%3]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
- 06:56:49 +0000
-Date: Tue, 24 Oct 2023 14:56:37 +0800
-From: Oliver Sang <oliver.sang@intel.com>
-To: Yosry Ahmed <yosryahmed@google.com>
-CC: Feng Tang <feng.tang@intel.com>, Shakeel Butt <shakeelb@google.com>,
-	"oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>, lkp <lkp@intel.com>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-mm@kvack.org"
-	<linux-mm@kvack.org>, "Huang, Ying" <ying.huang@intel.com>, "Yin, Fengwei"
-	<fengwei.yin@intel.com>, Andrew Morton <akpm@linux-foundation.org>, "Johannes
- Weiner" <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, Roman
- Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>,
-	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, Michal
- =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, Waiman Long
-	<longman@redhat.com>, "kernel-team@cloudflare.com"
-	<kernel-team@cloudflare.com>, Wei Xu <weixugc@google.com>, Greg Thelen
-	<gthelen@google.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-Message-ID: <ZTdqpcDFVHhFwWMc@xsang-OptiPlex-9020>
-References: <20231010032117.1577496-4-yosryahmed@google.com>
- <202310202303.c68e7639-oliver.sang@intel.com>
- <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
- <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
- <ZTXLeAAI1chMamkU@feng-clx>
- <CAJD7tka5UnHBz=eX1LtynAjJ+O_oredMKBBL3kFNfG7PHjuMCw@mail.gmail.com>
- <CAJD7tkYXJ3vcGvteNH98tB_C7OTo718XSxL=mFsUa7kO8vzFzA@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkYXJ3vcGvteNH98tB_C7OTo718XSxL=mFsUa7kO8vzFzA@mail.gmail.com>
-X-ClientProxiedBy: KL1PR0401CA0032.apcprd04.prod.outlook.com
- (2603:1096:820:e::19) To PH8PR11MB6779.namprd11.prod.outlook.com
- (2603:10b6:510:1ca::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B3F12B92
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 07:15:28 +0000 (UTC)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2974710E3
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 00:15:22 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54041e33845so3152925a12.3
+        for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 00:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698131721; x=1698736521; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4XKdmsnPQl3dHhgnXly1nlogFG+nLP27ca7G/hp5Wc=;
+        b=FX7fo0zW89JxzUSsdFEkd2IEJuJ2Xo17Z6GACP/dG1XOzb+bt/yIuGaaLkTYZvg3NF
+         ro0+8FLLeJqIKIgfhrN55ZTirbjcZEibtaEsr4bwfaEkB7YsS5oNIG6Jp2mVRHpcJdEH
+         rlpdE/iiT18VU4FKBHH98TyTKgcspm59t1R67mjYUTa5Nc1PVGD57gA9Ja0tyztW1vnX
+         zbJmF8IOVD1p3EqZPu1LkhbeRzUsPy7OMD9yxSzhog1wKeYVkv9Ne8PpVaIxjkV23kQc
+         sxz6BZONgfeVHPwaKGG44lxTy/OA1JzwVvFPgrgqA+ncDoAl5gxlo0OdQgTVEiSEZcXJ
+         dPjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698131721; x=1698736521;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4XKdmsnPQl3dHhgnXly1nlogFG+nLP27ca7G/hp5Wc=;
+        b=WumshbsmR2tBfxJ9TFrmI6+65+nMJWkO8W0LpvSpigB5pdtaiohtMpzJy4pbn6SZ+s
+         WAmYDGkUo/rDNceiLdCl3/Ar9Lh/JXrFIkD9WCm/QQBDeM7Sc5mFzCiALkiFdwSvTGuf
+         kO2Zwqd8wtSV+dR2CwATkTCYNXATY9VLE2GE/Uarhk9FbrKajNLK+RjJGl9aGfxbxZ1j
+         WrysVsbXiO7QCUB2QquWtWTKFER12djHD7TLUK+DVikggxawqmxwNxm6quTVJ6IEUT9v
+         NvPiwh6sDd3x1CWEDwWDxAmRL/nDUpgHsrtaw4Q0IketmUv6swQ7DpG2gKM9d2by8Zxt
+         QH1g==
+X-Gm-Message-State: AOJu0YzibwXw/EYrvoinDRaqLr1E9FT14j8uEqhlMlXH6G49Y3FnJVs6
+	TX2CWH/DkjtLCtLB9iVu87+MSxznHaOXqrmubaSDUg==
+X-Google-Smtp-Source: AGHT+IHeCDSmlx/q4j4BChR9UnNp99IWrBQlgv+NK948E/DuFKXsYw2qlrWTat2PzFNNjs06XC9lNfRLyYZNIKakjpk=
+X-Received: by 2002:a17:907:7f8f:b0:9be:2469:bdf5 with SMTP id
+ qk15-20020a1709077f8f00b009be2469bdf5mr11438912ejc.15.1698131720868; Tue, 24
+ Oct 2023 00:15:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|CY5PR11MB6091:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67964464-cedd-4126-c81d-08dbd45e64a9
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 24ejq4G8EOgIqeRL6YTUT2m0HKeU0UVZa4V6bHaRqo8cBtMLDm6sfRwZtcNnOaCQmc9G+vqLFRoJcLjZgBf4TJRj+NdJYNWEjqS74VaDX2Sk8pOzMGsH1TuCeR0I1ykKgssGLxG5meNbuMbhsFl+YUvKiy3FfH6IhC8Rv+AiaTjN7H85xwFSUT6bAzwxk3cKtQSvqp0KZ7nY+2NY1h+ZxLyZNP/+tJrT/wyNjlGKLyNGyHYyIOKb9F9wI8CkafrD0MZK6w4bjjrWrG6XnOOLA0/hF5kgVm3H0wrg3elzbh2HqvBahVqIuaayor27myzk53w2uy0e3H51OZEpj0/1tw3CgWwGqA+pqb6QGbeCSKOVpTx0I/8GEPs80aGKlfZsdol+1CZ7jEL7Iq+egv6pU+y5o3GUF7mbPOWga4U7SJ/Qe9jbp6oA307gf+/BV5vBz+E/NVRukJA/coydO6wCv5dzslgkNJUHhudCo3nQJueEEYxs+qGEsfCKjOjhXFQB5bqapf/SbHfgwiFy/u3ov3kpT6VivMIAcj2122Ap07ZGFrNxj6InyargccXVhF55
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(396003)(366004)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(6512007)(7416002)(2906002)(5660300002)(9686003)(44832011)(4326008)(6666004)(8676002)(33716001)(41300700001)(54906003)(6916009)(66556008)(66476007)(478600001)(66946007)(38100700002)(6486002)(8936002)(83380400001)(6506007)(316002)(107886003)(82960400001)(26005)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?v51oYAur7FFQn1Kf+WHgoFPykBSNwH8+u5jry3HCcbe1GxfYcUK/wbEg4T5d?=
- =?us-ascii?Q?+6JJ6sa+i1AJLvuiisayAwHjZIp8KXajqNQMuenp8Az9dfouMPBqdN8nM0JT?=
- =?us-ascii?Q?w7YDI/qwtfuRir+JpIQkR1SxSFgBTTKxoUUAWm5wErFnqsPbEFYDjISgED32?=
- =?us-ascii?Q?lLKWmSk4AxUzTxbo9tEXk/4UGPJteRHWsRw9Dy1G/Iiz/xDmO/SaMEZk/Iv5?=
- =?us-ascii?Q?9OXcyhNg6+n1zLWQEFeJBHReiIOCM/YZHY0cgzVwuTvlCeKeLV/RDR+Pvw3e?=
- =?us-ascii?Q?CPCIskX1WRus4aCOGusvmHJBFDaqEEeAM8y80nehHsl36/AdxATStLSZkA5l?=
- =?us-ascii?Q?uSbQzF2FcagxewieVwKBP1TApTlK1K+L4fPzyR5Eh7IoXZOPNNg9qFxy8Ros?=
- =?us-ascii?Q?vQtHBTEMt/CDKSoRYQHO21L5yLUZZPvaCJcXdcx91DivIGzg6q3Au3erDRpf?=
- =?us-ascii?Q?60oZ5pBteHWVDgNRBi9YR2qrZRe9zbev+Qq5mjeRlWawcf/ezPMtBAnuGmON?=
- =?us-ascii?Q?K3UzXt/SKtzTXUFIU6LzcVzaPy0noKonuM05Poms9CX9Sp1KYNwgJh10Juke?=
- =?us-ascii?Q?jKUhsmntBHO4MMhjXAD85hu1/He/2VFgLotMRkKWY3b46Ybb7aFtvDZ8XqWS?=
- =?us-ascii?Q?6pj7m+J7zLXP/09CT65X06W7vBz2wNOJv3yJ9jXjzxzr1Ywh5CQoagFSAL0w?=
- =?us-ascii?Q?J+m+Ze7rtE05GUigSXwZYe2qOixesnfO8oBJFkUIp6PPNKYpKKDyr8Cn0TyI?=
- =?us-ascii?Q?7CtDlb1L6oZ/6yOqGFS+i8MMoSjVpcfnwvIZ6cukb9Um1mGBtLKrecgHYbMQ?=
- =?us-ascii?Q?Hlo/fQ1Oh+1ibVb7JqHh6JrDcqLTkkOKa511TC0eU1m039ikmiThnhIM90gf?=
- =?us-ascii?Q?J+tSmkhWEdYthQh4QxKF2XINCyLj2Ge30O5DkWrTl8mbgpaiDaQs2G7a9J7V?=
- =?us-ascii?Q?IDgxjQ6IlB5TgARQ+N3E+5hMxFAw07IOWGNi3XbUuV+9VxYY+im//Lu2rw2X?=
- =?us-ascii?Q?7TUx/SjmGCRyJu5qUYUemS/NdPlV8UhXO+LZKmthhBxZWZRuCSA193idY3Jl?=
- =?us-ascii?Q?9GzaxFFVToffT0KmBPbtIgE6gIttZU5FJ2rP2X+Uh+XleNLKfn2dtCwAT1Yg?=
- =?us-ascii?Q?YpbOw6HNGP8UdYkvmAAD/G2e7YCwbSs2WRsMYrO0STfQ3DtK4uS1FNwhEwWz?=
- =?us-ascii?Q?RkGJGhbHHRlN3ptOTyau/H/3TIgXUFoW5Hlxzd/bXbLq61wyrRzlB3s5ETpP?=
- =?us-ascii?Q?XKL0rNAY6KNaRDAag8ggz/zj8IuEQ6rBmuiAniDo5eZNFarBGDeJbyrR4PxL?=
- =?us-ascii?Q?kItfwAQxix7KVUzyqI5lvnNDkceuv+6oH+q2w3cRQ38aWkuaUQts9sU5COxn?=
- =?us-ascii?Q?ZgWJsVabNwXxXA16Cq6rMac38wj4r1Qd6FzVOCAAoM67qckxEaipUPQcY21E?=
- =?us-ascii?Q?yQuyU+/Fv5yDvYqKz0hZ5jDQ2rcBKFdte8QJ44hWvyiIhUEEiygzOEJ2z4Ru?=
- =?us-ascii?Q?JifB4nwe1mDrp3xXiLifkU2g+b70h9XgWhe7ufAn17c1aH/RzQ9Jw8QlXKXR?=
- =?us-ascii?Q?pobt1OtDLN2JNYuBWhzddmZ1VKGDI68HK829Wpkt?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67964464-cedd-4126-c81d-08dbd45e64a9
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 06:56:49.0166
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sHhDdeDRc/etKMUwyAOp44mt1k6W13y+WNKrHD8ABFnlDkH3RdcY4vDgg+l9TcKK+VHOdFiOYcdkwX7tIdhGWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6091
-X-OriginatorOrg: intel.com
+References: <20231010032117.1577496-4-yosryahmed@google.com>
+ <202310202303.c68e7639-oliver.sang@intel.com> <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
+ <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
+ <ZTXLeAAI1chMamkU@feng-clx> <CAJD7tka5UnHBz=eX1LtynAjJ+O_oredMKBBL3kFNfG7PHjuMCw@mail.gmail.com>
+ <CAJD7tkYXJ3vcGvteNH98tB_C7OTo718XSxL=mFsUa7kO8vzFzA@mail.gmail.com> <ZTdqpcDFVHhFwWMc@xsang-OptiPlex-9020>
+In-Reply-To: <ZTdqpcDFVHhFwWMc@xsang-OptiPlex-9020>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 24 Oct 2023 00:14:42 -0700
+Message-ID: <CAJD7tka7hmOD6KPmJBJa+TscbYEMmTjS+Jh2utPfTbKkfvwD9A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: Feng Tang <feng.tang@intel.com>, Shakeel Butt <shakeelb@google.com>, 
+	"oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>, lkp <lkp@intel.com>, 
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, "Yin, Fengwei" <fengwei.yin@intel.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Waiman Long <longman@redhat.com>, 
+	"kernel-team@cloudflare.com" <kernel-team@cloudflare.com>, Wei Xu <weixugc@google.com>, 
+	Greg Thelen <gthelen@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000000212ee0608711aa1"
 
-hi, Yosry Ahmed,
+--0000000000000212ee0608711aa1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 23, 2023 at 07:13:50PM -0700, Yosry Ahmed wrote:
+On Mon, Oct 23, 2023 at 11:56=E2=80=AFPM Oliver Sang <oliver.sang@intel.com=
+> wrote:
+>
+> hi, Yosry Ahmed,
+>
+> On Mon, Oct 23, 2023 at 07:13:50PM -0700, Yosry Ahmed wrote:
+>
+> ...
+>
+> >
+> > I still could not run the benchmark, but I used a version of
+> > fallocate1.c that does 1 million iterations. I ran 100 in parallel.
+> > This showed ~13% regression with the patch, so not the same as the
+> > will-it-scale version, but it could be an indicator.
+> >
+> > With that, I did not see any improvement with the fixlet above or
+> > ___cacheline_aligned_in_smp. So you can scratch that.
+> >
+> > I did, however, see some improvement with reducing the indirection
+> > layers by moving stats_updates directly into struct mem_cgroup. The
+> > regression in my manual testing went down to 9%. Still not great, but
+> > I am wondering how this reflects on the benchmark. If you're able to
+> > test it that would be great, the diff is below. Meanwhile I am still
+> > looking for other improvements that can be made.
+>
+> we applied previous patch-set as below:
+>
+> c5f50d8b23c79 (linux-review/Yosry-Ahmed/mm-memcg-change-flush_next_time-t=
+o-flush_last_time/20231010-112257) mm: memcg: restore subtree stats flushin=
+g
+> ac8a48ba9e1ca mm: workingset: move the stats flush into workingset_test_r=
+ecent()
+> 51d74c18a9c61 mm: memcg: make stats flushing threshold per-memcg
+> 130617edc1cd1 mm: memcg: move vmstats structs definition above flushing c=
+ode
+> 26d0ee342efc6 mm: memcg: change flush_next_time to flush_last_time
+> 25478183883e6 Merge branch 'mm-nonmm-unstable' into mm-everything   <----=
+ the base our tool picked for the patch set
+>
+> I tried to apply below patch to either 51d74c18a9c61 or c5f50d8b23c79,
+> but failed. could you guide how to apply this patch?
+> Thanks
+>
 
-...
+Thanks for looking into this. I rebased the diff on top of
+c5f50d8b23c79. Please find it attached.
 
-> 
-> I still could not run the benchmark, but I used a version of
-> fallocate1.c that does 1 million iterations. I ran 100 in parallel.
-> This showed ~13% regression with the patch, so not the same as the
-> will-it-scale version, but it could be an indicator.
-> 
-> With that, I did not see any improvement with the fixlet above or
-> ___cacheline_aligned_in_smp. So you can scratch that.
-> 
-> I did, however, see some improvement with reducing the indirection
-> layers by moving stats_updates directly into struct mem_cgroup. The
-> regression in my manual testing went down to 9%. Still not great, but
-> I am wondering how this reflects on the benchmark. If you're able to
-> test it that would be great, the diff is below. Meanwhile I am still
-> looking for other improvements that can be made.
+--0000000000000212ee0608711aa1
+Content-Type: application/octet-stream; 
+	name="0001-memcg-move-stats_updates-to-struct-mem_cgroup.patch"
+Content-Disposition: attachment; 
+	filename="0001-memcg-move-stats_updates-to-struct-mem_cgroup.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lo3zpp7k0>
+X-Attachment-Id: f_lo3zpp7k0
 
-we applied previous patch-set as below:
-
-c5f50d8b23c79 (linux-review/Yosry-Ahmed/mm-memcg-change-flush_next_time-to-flush_last_time/20231010-112257) mm: memcg: restore subtree stats flushing
-ac8a48ba9e1ca mm: workingset: move the stats flush into workingset_test_recent()
-51d74c18a9c61 mm: memcg: make stats flushing threshold per-memcg
-130617edc1cd1 mm: memcg: move vmstats structs definition above flushing code
-26d0ee342efc6 mm: memcg: change flush_next_time to flush_last_time
-25478183883e6 Merge branch 'mm-nonmm-unstable' into mm-everything   <---- the base our tool picked for the patch set
-
-I tried to apply below patch to either 51d74c18a9c61 or c5f50d8b23c79,
-but failed. could you guide how to apply this patch?
-Thanks
-
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index f64ac140083e..b4dfcd8b9cc1 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -270,6 +270,9 @@ struct mem_cgroup {
-> 
->         CACHELINE_PADDING(_pad1_);
-> 
-> +       /* Stats updates since the last flush */
-> +       atomic64_t              stats_updates;
-> +
->         /* memory.stat */
->         struct memcg_vmstats    *vmstats;
-> 
-> @@ -309,6 +312,7 @@ struct mem_cgroup {
->         atomic_t                moving_account;
->         struct task_struct      *move_lock_task;
-> 
-> +       unsigned int __percpu *stats_updates_percpu;
->         struct memcg_vmstats_percpu __percpu *vmstats_percpu;
-> 
->  #ifdef CONFIG_CGROUP_WRITEBACK
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7cbc7d94eb65..e5d2f3d4d874 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -627,9 +627,6 @@ struct memcg_vmstats_percpu {
->         /* Cgroup1: threshold notifications & softlimit tree updates */
->         unsigned long           nr_page_events;
->         unsigned long           targets[MEM_CGROUP_NTARGETS];
-> -
-> -       /* Stats updates since the last flush */
-> -       unsigned int            stats_updates;
->  };
-> 
->  struct memcg_vmstats {
-> @@ -644,9 +641,6 @@ struct memcg_vmstats {
->         /* Pending child counts during tree propagation */
->         long                    state_pending[MEMCG_NR_STAT];
->         unsigned long           events_pending[NR_MEMCG_EVENTS];
-> -
-> -       /* Stats updates since the last flush */
-> -       atomic64_t              stats_updates;
->  };
-> 
->  /*
-> @@ -695,14 +689,14 @@ static void memcg_stats_unlock(void)
-> 
->  static bool memcg_should_flush_stats(struct mem_cgroup *memcg)
->  {
-> -       return atomic64_read(&memcg->vmstats->stats_updates) >
-> +       return atomic64_read(&memcg->stats_updates) >
->                 MEMCG_CHARGE_BATCH * num_online_cpus();
->  }
-> 
->  static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  {
->         int cpu = smp_processor_id();
-> -       unsigned int x;
-> +       unsigned int *stats_updates_percpu;
-> 
->         if (!val)
->                 return;
-> @@ -710,10 +704,10 @@ static inline void memcg_rstat_updated(struct
-> mem_cgroup *memcg, int val)
->         cgroup_rstat_updated(memcg->css.cgroup, cpu);
-> 
->         for (; memcg; memcg = parent_mem_cgroup(memcg)) {
-> -               x = __this_cpu_add_return(memcg->vmstats_percpu->stats_updates,
-> -                                         abs(val));
-> +               stats_updates_percpu =
-> this_cpu_ptr(memcg->stats_updates_percpu);
-> 
-> -               if (x < MEMCG_CHARGE_BATCH)
-> +               *stats_updates_percpu += abs(val);
-> +               if (*stats_updates_percpu < MEMCG_CHARGE_BATCH)
->                         continue;
-> 
->                 /*
-> @@ -721,8 +715,8 @@ static inline void memcg_rstat_updated(struct
-> mem_cgroup *memcg, int val)
->                  * redundant. Avoid the overhead of the atomic update.
->                  */
->                 if (!memcg_should_flush_stats(memcg))
-> -                       atomic64_add(x, &memcg->vmstats->stats_updates);
-> -               __this_cpu_write(memcg->vmstats_percpu->stats_updates, 0);
-> +                       atomic64_add(*stats_updates_percpu,
-> &memcg->stats_updates);
-> +               *stats_updates_percpu = 0;
->         }
->  }
-> 
-> @@ -5467,6 +5461,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
->                 free_mem_cgroup_per_node_info(memcg, node);
->         kfree(memcg->vmstats);
->         free_percpu(memcg->vmstats_percpu);
-> +       free_percpu(memcg->stats_updates_percpu);
->         kfree(memcg);
->  }
-> 
-> @@ -5504,6 +5499,11 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
->         if (!memcg->vmstats_percpu)
->                 goto fail;
-> 
-> +       memcg->stats_updates_percpu = alloc_percpu_gfp(unsigned int,
-> +                                                      GFP_KERNEL_ACCOUNT);
-> +       if (!memcg->stats_updates_percpu)
-> +               goto fail;
-> +
->         for_each_node(node)
->                 if (alloc_mem_cgroup_per_node_info(memcg, node))
->                         goto fail;
-> @@ -5735,10 +5735,12 @@ static void mem_cgroup_css_rstat_flush(struct
-> cgroup_subsys_state *css, int cpu)
->         struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->         struct mem_cgroup *parent = parent_mem_cgroup(memcg);
->         struct memcg_vmstats_percpu *statc;
-> +       int *stats_updates_percpu;
->         long delta, delta_cpu, v;
->         int i, nid;
-> 
->         statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
-> +       stats_updates_percpu = per_cpu_ptr(memcg->stats_updates_percpu, cpu);
-> 
->         for (i = 0; i < MEMCG_NR_STAT; i++) {
->                 /*
-> @@ -5826,10 +5828,10 @@ static void mem_cgroup_css_rstat_flush(struct
-> cgroup_subsys_state *css, int cpu)
->                         }
->                 }
->         }
-> -       statc->stats_updates = 0;
-> +       *stats_updates_percpu = 0;
->         /* We are in a per-cpu loop here, only do the atomic write once */
-> -       if (atomic64_read(&memcg->vmstats->stats_updates))
-> -               atomic64_set(&memcg->vmstats->stats_updates, 0);
-> +       if (atomic64_read(&memcg->stats_updates))
-> +               atomic64_set(&memcg->stats_updates, 0);
->  }
-> 
->  #ifdef CONFIG_MMU
-> 
+RnJvbSAwYjBkZmZkZmUxOTIzODJhM2FhY2ZhMzEzYmVlZTY4YjMzYmY3ZDg2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBZb3NyeSBBaG1lZCA8eW9zcnlhaG1lZEBnb29nbGUuY29tPgpE
+YXRlOiBUdWUsIDI0IE9jdCAyMDIzIDA3OjAyOjAyICswMDAwClN1YmplY3Q6IFtQQVRDSF0gbWVt
+Y2c6IG1vdmUgc3RhdHNfdXBkYXRlcyB0byBzdHJ1Y3QgbWVtX2Nncm91cAoKLS0tCiBpbmNsdWRl
+L2xpbnV4L21lbWNvbnRyb2wuaCB8ICA0ICsrKysKIG1tL21lbWNvbnRyb2wuYyAgICAgICAgICAg
+IHwgMzMgKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5nZWQs
+IDIyIGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUv
+bGludXgvbWVtY29udHJvbC5oIGIvaW5jbHVkZS9saW51eC9tZW1jb250cm9sLmgKaW5kZXggZjY0
+YWMxNDAwODNlZS4uYjRkZmNkOGI5Y2MxYyAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9tZW1j
+b250cm9sLmgKKysrIGIvaW5jbHVkZS9saW51eC9tZW1jb250cm9sLmgKQEAgLTI3MCw2ICsyNzAs
+OSBAQCBzdHJ1Y3QgbWVtX2Nncm91cCB7CiAKIAlDQUNIRUxJTkVfUEFERElORyhfcGFkMV8pOwog
+CisJLyogU3RhdHMgdXBkYXRlcyBzaW5jZSB0aGUgbGFzdCBmbHVzaCAqLworCWF0b21pYzY0X3QJ
+CXN0YXRzX3VwZGF0ZXM7CisKIAkvKiBtZW1vcnkuc3RhdCAqLwogCXN0cnVjdCBtZW1jZ192bXN0
+YXRzCSp2bXN0YXRzOwogCkBAIC0zMDksNiArMzEyLDcgQEAgc3RydWN0IG1lbV9jZ3JvdXAgewog
+CWF0b21pY190CQltb3ZpbmdfYWNjb3VudDsKIAlzdHJ1Y3QgdGFza19zdHJ1Y3QJKm1vdmVfbG9j
+a190YXNrOwogCisJdW5zaWduZWQgaW50IF9fcGVyY3B1ICpzdGF0c191cGRhdGVzX3BlcmNwdTsK
+IAlzdHJ1Y3QgbWVtY2dfdm1zdGF0c19wZXJjcHUgX19wZXJjcHUgKnZtc3RhdHNfcGVyY3B1Owog
+CiAjaWZkZWYgQ09ORklHX0NHUk9VUF9XUklURUJBQ0sKZGlmZiAtLWdpdCBhL21tL21lbWNvbnRy
+b2wuYyBiL21tL21lbWNvbnRyb2wuYwppbmRleCAxODJiNGYyMTVmYzY0Li5lNWQyZjNkNGQ4NzQ3
+IDEwMDY0NAotLS0gYS9tbS9tZW1jb250cm9sLmMKKysrIGIvbW0vbWVtY29udHJvbC5jCkBAIC02
+MjcsOSArNjI3LDYgQEAgc3RydWN0IG1lbWNnX3Ztc3RhdHNfcGVyY3B1IHsKIAkvKiBDZ3JvdXAx
+OiB0aHJlc2hvbGQgbm90aWZpY2F0aW9ucyAmIHNvZnRsaW1pdCB0cmVlIHVwZGF0ZXMgKi8KIAl1
+bnNpZ25lZCBsb25nCQlucl9wYWdlX2V2ZW50czsKIAl1bnNpZ25lZCBsb25nCQl0YXJnZXRzW01F
+TV9DR1JPVVBfTlRBUkdFVFNdOwotCi0JLyogU3RhdHMgdXBkYXRlcyBzaW5jZSB0aGUgbGFzdCBm
+bHVzaCAqLwotCXVuc2lnbmVkIGludAkJc3RhdHNfdXBkYXRlczsKIH07CiAKIHN0cnVjdCBtZW1j
+Z192bXN0YXRzIHsKQEAgLTY0NCw5ICs2NDEsNiBAQCBzdHJ1Y3QgbWVtY2dfdm1zdGF0cyB7CiAJ
+LyogUGVuZGluZyBjaGlsZCBjb3VudHMgZHVyaW5nIHRyZWUgcHJvcGFnYXRpb24gKi8KIAlsb25n
+CQkJc3RhdGVfcGVuZGluZ1tNRU1DR19OUl9TVEFUXTsKIAl1bnNpZ25lZCBsb25nCQlldmVudHNf
+cGVuZGluZ1tOUl9NRU1DR19FVkVOVFNdOwotCi0JLyogU3RhdHMgdXBkYXRlcyBzaW5jZSB0aGUg
+bGFzdCBmbHVzaCAqLwotCWF0b21pYzY0X3QJCXN0YXRzX3VwZGF0ZXM7CiB9OwogCiAvKgpAQCAt
+Njk1LDE0ICs2ODksMTQgQEAgc3RhdGljIHZvaWQgbWVtY2dfc3RhdHNfdW5sb2NrKHZvaWQpCiAK
+IHN0YXRpYyBib29sIG1lbWNnX3Nob3VsZF9mbHVzaF9zdGF0cyhzdHJ1Y3QgbWVtX2Nncm91cCAq
+bWVtY2cpCiB7Ci0JcmV0dXJuIGF0b21pYzY0X3JlYWQoJm1lbWNnLT52bXN0YXRzLT5zdGF0c191
+cGRhdGVzKSA+CisJcmV0dXJuIGF0b21pYzY0X3JlYWQoJm1lbWNnLT5zdGF0c191cGRhdGVzKSA+
+CiAJCU1FTUNHX0NIQVJHRV9CQVRDSCAqIG51bV9vbmxpbmVfY3B1cygpOwogfQogCiBzdGF0aWMg
+aW5saW5lIHZvaWQgbWVtY2dfcnN0YXRfdXBkYXRlZChzdHJ1Y3QgbWVtX2Nncm91cCAqbWVtY2cs
+IGludCB2YWwpCiB7CiAJaW50IGNwdSA9IHNtcF9wcm9jZXNzb3JfaWQoKTsKLQl1bnNpZ25lZCBp
+bnQgeDsKKwl1bnNpZ25lZCBpbnQgKnN0YXRzX3VwZGF0ZXNfcGVyY3B1OwogCiAJaWYgKCF2YWwp
+CiAJCXJldHVybjsKQEAgLTcxMCwxMCArNzA0LDEwIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBtZW1j
+Z19yc3RhdF91cGRhdGVkKHN0cnVjdCBtZW1fY2dyb3VwICptZW1jZywgaW50IHZhbCkKIAljZ3Jv
+dXBfcnN0YXRfdXBkYXRlZChtZW1jZy0+Y3NzLmNncm91cCwgY3B1KTsKIAogCWZvciAoOyBtZW1j
+ZzsgbWVtY2cgPSBwYXJlbnRfbWVtX2Nncm91cChtZW1jZykpIHsKLQkJeCA9IF9fdGhpc19jcHVf
+YWRkX3JldHVybihtZW1jZy0+dm1zdGF0c19wZXJjcHUtPnN0YXRzX3VwZGF0ZXMsCi0JCQkJCSAg
+YWJzKHZhbCkpOworCQlzdGF0c191cGRhdGVzX3BlcmNwdSA9IHRoaXNfY3B1X3B0cihtZW1jZy0+
+c3RhdHNfdXBkYXRlc19wZXJjcHUpOwogCi0JCWlmICh4IDwgTUVNQ0dfQ0hBUkdFX0JBVENIKQor
+CQkqc3RhdHNfdXBkYXRlc19wZXJjcHUgKz0gYWJzKHZhbCk7CisJCWlmICgqc3RhdHNfdXBkYXRl
+c19wZXJjcHUgPCBNRU1DR19DSEFSR0VfQkFUQ0gpCiAJCQljb250aW51ZTsKIAogCQkvKgpAQCAt
+NzIxLDggKzcxNSw4IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBtZW1jZ19yc3RhdF91cGRhdGVkKHN0
+cnVjdCBtZW1fY2dyb3VwICptZW1jZywgaW50IHZhbCkKIAkJICogcmVkdW5kYW50LiBBdm9pZCB0
+aGUgb3ZlcmhlYWQgb2YgdGhlIGF0b21pYyB1cGRhdGUuCiAJCSAqLwogCQlpZiAoIW1lbWNnX3No
+b3VsZF9mbHVzaF9zdGF0cyhtZW1jZykpCi0JCQlhdG9taWM2NF9hZGQoeCwgJm1lbWNnLT52bXN0
+YXRzLT5zdGF0c191cGRhdGVzKTsKLQkJX190aGlzX2NwdV93cml0ZShtZW1jZy0+dm1zdGF0c19w
+ZXJjcHUtPnN0YXRzX3VwZGF0ZXMsIDApOworCQkJYXRvbWljNjRfYWRkKCpzdGF0c191cGRhdGVz
+X3BlcmNwdSwgJm1lbWNnLT5zdGF0c191cGRhdGVzKTsKKwkJKnN0YXRzX3VwZGF0ZXNfcGVyY3B1
+ID0gMDsKIAl9CiB9CiAKQEAgLTU0NjcsNiArNTQ2MSw3IEBAIHN0YXRpYyB2b2lkIF9fbWVtX2Nn
+cm91cF9mcmVlKHN0cnVjdCBtZW1fY2dyb3VwICptZW1jZykKIAkJZnJlZV9tZW1fY2dyb3VwX3Bl
+cl9ub2RlX2luZm8obWVtY2csIG5vZGUpOwogCWtmcmVlKG1lbWNnLT52bXN0YXRzKTsKIAlmcmVl
+X3BlcmNwdShtZW1jZy0+dm1zdGF0c19wZXJjcHUpOworCWZyZWVfcGVyY3B1KG1lbWNnLT5zdGF0
+c191cGRhdGVzX3BlcmNwdSk7CiAJa2ZyZWUobWVtY2cpOwogfQogCkBAIC01NTA0LDYgKzU0OTks
+MTEgQEAgc3RhdGljIHN0cnVjdCBtZW1fY2dyb3VwICptZW1fY2dyb3VwX2FsbG9jKHZvaWQpCiAJ
+aWYgKCFtZW1jZy0+dm1zdGF0c19wZXJjcHUpCiAJCWdvdG8gZmFpbDsKIAorCW1lbWNnLT5zdGF0
+c191cGRhdGVzX3BlcmNwdSA9IGFsbG9jX3BlcmNwdV9nZnAodW5zaWduZWQgaW50LAorCQkJCQkJ
+ICAgICAgIEdGUF9LRVJORUxfQUNDT1VOVCk7CisJaWYgKCFtZW1jZy0+c3RhdHNfdXBkYXRlc19w
+ZXJjcHUpCisJCWdvdG8gZmFpbDsKKwogCWZvcl9lYWNoX25vZGUobm9kZSkKIAkJaWYgKGFsbG9j
+X21lbV9jZ3JvdXBfcGVyX25vZGVfaW5mbyhtZW1jZywgbm9kZSkpCiAJCQlnb3RvIGZhaWw7CkBA
+IC01NzM1LDEwICs1NzM1LDEyIEBAIHN0YXRpYyB2b2lkIG1lbV9jZ3JvdXBfY3NzX3JzdGF0X2Zs
+dXNoKHN0cnVjdCBjZ3JvdXBfc3Vic3lzX3N0YXRlICpjc3MsIGludCBjcHUpCiAJc3RydWN0IG1l
+bV9jZ3JvdXAgKm1lbWNnID0gbWVtX2Nncm91cF9mcm9tX2Nzcyhjc3MpOwogCXN0cnVjdCBtZW1f
+Y2dyb3VwICpwYXJlbnQgPSBwYXJlbnRfbWVtX2Nncm91cChtZW1jZyk7CiAJc3RydWN0IG1lbWNn
+X3Ztc3RhdHNfcGVyY3B1ICpzdGF0YzsKKwlpbnQgKnN0YXRzX3VwZGF0ZXNfcGVyY3B1OwogCWxv
+bmcgZGVsdGEsIGRlbHRhX2NwdSwgdjsKIAlpbnQgaSwgbmlkOwogCiAJc3RhdGMgPSBwZXJfY3B1
+X3B0cihtZW1jZy0+dm1zdGF0c19wZXJjcHUsIGNwdSk7CisJc3RhdHNfdXBkYXRlc19wZXJjcHUg
+PSBwZXJfY3B1X3B0cihtZW1jZy0+c3RhdHNfdXBkYXRlc19wZXJjcHUsIGNwdSk7CiAKIAlmb3Ig
+KGkgPSAwOyBpIDwgTUVNQ0dfTlJfU1RBVDsgaSsrKSB7CiAJCS8qCkBAIC01ODI2LDkgKzU4Mjgs
+MTAgQEAgc3RhdGljIHZvaWQgbWVtX2Nncm91cF9jc3NfcnN0YXRfZmx1c2goc3RydWN0IGNncm91
+cF9zdWJzeXNfc3RhdGUgKmNzcywgaW50IGNwdSkKIAkJCX0KIAkJfQogCX0KKwkqc3RhdHNfdXBk
+YXRlc19wZXJjcHUgPSAwOwogCS8qIFdlIGFyZSBpbiBhIHBlci1jcHUgbG9vcCBoZXJlLCBvbmx5
+IGRvIHRoZSBhdG9taWMgd3JpdGUgb25jZSAqLwotCWlmIChhdG9taWM2NF9yZWFkKCZtZW1jZy0+
+dm1zdGF0cy0+c3RhdHNfdXBkYXRlcykpCi0JCWF0b21pYzY0X3NldCgmbWVtY2ctPnZtc3RhdHMt
+PnN0YXRzX3VwZGF0ZXMsIDApOworCWlmIChhdG9taWM2NF9yZWFkKCZtZW1jZy0+c3RhdHNfdXBk
+YXRlcykpCisJCWF0b21pYzY0X3NldCgmbWVtY2ctPnN0YXRzX3VwZGF0ZXMsIDApOwogfQogCiAj
+aWZkZWYgQ09ORklHX01NVQotLSAKMi40Mi4wLjc1OC5nYWVkMDM2OGUwZS1nb29nCgo=
+--0000000000000212ee0608711aa1--
 
