@@ -1,181 +1,200 @@
-Return-Path: <cgroups+bounces-62-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-63-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B9F17D57B5
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 18:14:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BF77D59B3
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 19:26:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C52A1C20C0E
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 16:14:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F8EBB20FA3
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 17:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7743993E;
-	Tue, 24 Oct 2023 16:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7752B3A29A;
+	Tue, 24 Oct 2023 17:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TOKvoMev"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KYydULxM"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19B0200CC
-	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 16:13:54 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672A310C2;
-	Tue, 24 Oct 2023 09:13:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 136262188C;
-	Tue, 24 Oct 2023 16:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1698164031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=65G5ZNQWiDjqZVlLnnNnzZnK3gIH0P1VMKPcZjBriZw=;
-	b=TOKvoMevPK9ep1x5Y2CeGPRRLW0DAGWpE6ozaK8R+CC/sxs3PwbkaAoHUQqKadsBI7W5CT
-	8medDQxT17HuuX36Ew6x5AEaX+tYoYm9IGay5lKwvgK5sx5/PyJlXgrZ+S25XTGRmaLrxl
-	tUF+0blB2NJIJsdSqHNta8nTaylXRN4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C98321391C;
-	Tue, 24 Oct 2023 16:13:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id qXU6MD7tN2UIZAAAMHmgww
-	(envelope-from <mkoutny@suse.com>); Tue, 24 Oct 2023 16:13:50 +0000
-Date: Tue, 24 Oct 2023 18:13:49 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Christian Brauner <brauner@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Giuseppe Scrivano <gscrivan@redhat.com>
-Subject: Re: [PATCH v8 0/7] cgroup/cpuset: Support remote partitions
-Message-ID: <agjgbmdi2yqegjk7p7m52yb3wxmr64ivohbra5wapcd3lwynpw@jjmx6dsboo53>
-References: <20230905133243.91107-1-longman@redhat.com>
- <ahevhcy2aa7k3plmfvlepjehs6u3fun3j4oyskdz7axkhftlyi@zr3j473rciwi>
- <f75859e0-04d4-3da2-8df0-eb8841623a7c@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C1327EDD
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 17:25:50 +0000 (UTC)
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED16133;
+	Tue, 24 Oct 2023 10:25:48 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35164833a21so12835ab.0;
+        Tue, 24 Oct 2023 10:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698168348; x=1698773148; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KyAmYbhNKRNC1zfPKtixIDHsRNfxwdhaIa0uB8FXo00=;
+        b=KYydULxMlhttsvQV9616jUKOCxbsqaGDAQExlroKeJdJfT5Rcv8WurOD1mKIa4Jw3w
+         g0Q/drWhsAxoJWMJEA7TzKNaHeuMUnycR5lOy0VfBuicLi5F5cPzRQKkpdPB3eIykJFW
+         yFTQMDe2O9zgWU+pXApMUwl0LVGJqNBp89CqCJZHXyk4kT/GH6C5tHK/hRQk3rYkblv/
+         G5WfpPTeoqpLZSXemYh1Bg+7BpD5uQYeSfVesjBg7ODSzXRNahZdfG75VZaGKce+15Zf
+         SbXZXWl7IkQkFzbkGH2E5QI6zWmBW5UcwZOGRMkitmtURjx1h2BHMuDpsDCbLA+6wuOk
+         fWmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698168348; x=1698773148;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KyAmYbhNKRNC1zfPKtixIDHsRNfxwdhaIa0uB8FXo00=;
+        b=jma2Nehlfcr62HJHOckI8hMT8P0Vc8ssdDbiImTb4GQSf7rVsVcxoy+DlglG3/5Yws
+         XmzPoawVHlnpwh3khQ1iLUOqLph/L2qFx1DXb2fQeH8zqJ3flIAi4AoG9zH9z8vmimgt
+         mbsGAY8917bFNMDu5PV/pw0hDE1Y2Lzs1eTIw6TPLXkYTei8KZoWepe1r7McmcRDu2ZG
+         t8G799HrS9RTtGx4L22fnExrJnl5tz8XyINKlGF3fD8duWIXEzfZVnVQvARrm3ChW2qd
+         h9Jta+XLZ1rpuKp6xjhTtSbhHAVfW2JjSavKaNmn/xqv0SdO8AWPjBAE2bqn6zSXP9IZ
+         n2qw==
+X-Gm-Message-State: AOJu0YweVjrrDVeQP6CJv7vU1JBP4rGj46kOtHPaotTq5aw2oWdfJ7hi
+	cFtAbGv/u2Sgx1w0x8tLpHjEeqaVENhxEsIVwJ0=
+X-Google-Smtp-Source: AGHT+IF+vxgskghZCA0NCHWlB1Q/r7kYFUjVNizx9+ZIXXSVzrK87LmX/ZotrdYY5apYuQ4vhLBKRTVkLEEBq2bzI6E=
+X-Received: by 2002:a05:6e02:20e2:b0:34f:20d9:74a9 with SMTP id
+ q2-20020a056e0220e200b0034f20d974a9mr17350245ilv.11.1698168347662; Tue, 24
+ Oct 2023 10:25:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f75859e0-04d4-3da2-8df0-eb8841623a7c@redhat.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -6.60
-X-Spamd-Result: default: False [-6.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-3.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-1.00)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+References: <20231024000702.1387130-1-nphamcs@gmail.com> <20231024160904.GA1971738@cmpxchg.org>
+In-Reply-To: <20231024160904.GA1971738@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 24 Oct 2023 10:25:36 -0700
+Message-ID: <CAKEwX=PrLaJU2py+nqkSObBx8kafdbNYn0GZVLPkSixDAEb1GA@mail.gmail.com>
+Subject: Re: [PATCH] zswap: export more zswap store failure stats
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com, 
+	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
+	vitaly.wool@konsulko.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeelb@google.com, muchun.song@linux.dev, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 13, 2023 at 12:03:18PM -0400, Waiman Long <longman@redhat.com> wrote:
-> > [chain]
-> >    root
-> >    |                           \
-> >    mid1a                        mid1b
-> >     cpuset.cpus=0-1              cpuset.cpus=2-15
-> >     cpuset.cpus.partition=root
-> >    |
-> >    mid2
-> >     cpuset.cpus=0-1
-> >     cpuset.cpus.partition=root
-> >    |
-> >    cont
-> >     cpuset.cpus=0-1
-> >     cpuset.cpus.partition=root
-> In this case, the effective CPUs of both mid1a and mid2 will be empty. IOW,
-> you can't have any task in these 2 cpusets.
+On Tue, Oct 24, 2023 at 9:09=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Mon, Oct 23, 2023 at 05:07:02PM -0700, Nhat Pham wrote:
+> > Since:
+> >
+> > "42c06a0e8ebe mm: kill frontswap"
+> >
+> > we no longer have a counter to tracks the number of zswap store
+> > failures. This makes it hard to investigate and monitor for zswap
+> > issues.
+> >
+> > This patch adds a global and a per-cgroup zswap store failure counter,
+> > as well as a dedicated debugfs counter for compression algorithm failur=
+e
+> > (which can happen for e.g when random data are passed to zswap).
+> >
+> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+>
+> I agree this is an issue.
+>
+> > ---
+> >  include/linux/vm_event_item.h |  1 +
+> >  mm/memcontrol.c               |  1 +
+> >  mm/vmstat.c                   |  1 +
+> >  mm/zswap.c                    | 18 ++++++++++++++----
+> >  4 files changed, 17 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_ite=
+m.h
+> > index 8abfa1240040..7b2b117b193d 100644
+> > --- a/include/linux/vm_event_item.h
+> > +++ b/include/linux/vm_event_item.h
+> > @@ -145,6 +145,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPO=
+UT,
+> >  #ifdef CONFIG_ZSWAP
+> >               ZSWPIN,
+> >               ZSWPOUT,
+> > +             ZSWPOUT_FAIL,
+>
+> Would the writeback stat be sufficient to determine this?
+>
+> Hear me out. We already have pswpout that shows when we're hitting
+> disk swap. Right now we can't tell if this is because of a rejection
+> or because of writeback. With a writeback counter we could.
 
-I see, that is relevant to a threaded subtree only where the admin / app
-can know how to distribute CPUs and place threads to internal nodes.
+Oh I see! It's a bit of an extra step, but I supposed (pswpout - writeback)
+could give us the number of zswap store failures.
 
-> For the remote case, you can have intermediate tasks in both mid1a and mid2
-> as long as cpuset.cpus contains more CPUs than cpuset.cpus.exclusive.
+>
+> And I think we want the writeback counter anyway going forward in
+> order to monitor and understand the dynamic shrinker's performance.
 
-It's obvious that cpuset.cpus.exclusive should be exclusive among
-siblings.
-Should it also be so along the vertical path?
+Domenico and I were talking about this, and we both agree the writeback
+counter is absolutely necessary - if anything, to make sure that the
+shrinker is not a) completely not working or b) going overboard.
 
-  root
-  |                           
-  mid1a                       
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=0    
-  |
-  mid2
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=1
-  |
-  cont
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=2
-   cpuset.cpus.partition=root
+So it is coming as part of the shrinker regardless of this.
+I just didn't realize that it also solves this issue we're having too!
 
-IIUC, this should be a valid config regardless of cpuset.cpus.partition
-setting on mid1a and mid2.
-Whereas
+>
+> Either way we go, one of the metrics needs to be derived from the
+> other(s). But I think subtle and not so subtle shrinker issues are
+> more concerning than outright configuration problems where zswap
+> doesn't work at all. The latter is easier to catch before or during
+> early deployment with simple functionality tests.
+>
+> Plus, rejections should be rare. They are now, and they should become
+> even more rare or cease to exist going forward. Because every time
+> they happen at scale, they represent problematic LRU inversions.  We
+> have patched, have pending patches, or discussed changes to reduce
+> every single one of them:
+>
+>         /* Store failed due to a reclaim failure after pool limit was rea=
+ched */
+>         static u64 zswap_reject_reclaim_fail;
+>
+> With the shrinker this becomes less relevant. There was also the
+> proposal to disable the bypass to swap and just keep the page.
 
-  root
-  |                           
-  mid1a                       
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=0    
-  |
-  mid2
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=1-2
-   cpuset.cpus.partition=root
-  |
-  cont
-   cpuset.cpus=1-2
-   cpuset.cpus.exclusive=1-2
-   cpuset.cpus.partition=root
+The shrinker and that proposal sound like good ideas ;)
 
-Here, I'm hesitating, will mid2 have any exclusively owned cpus?
+>
+>         /* Compressed page was too big for the allocator to (optimally) s=
+tore */
+>         static u64 zswap_reject_compress_poor;
+>
+> You were working on eradicating this (with zsmalloc at least).
+>
+>         /* Store failed because underlying allocator could not get memory=
+ */
+>         static u64 zswap_reject_alloc_fail;
+>         /* Store failed because the entry metadata could not be allocated=
+ (rare) */
+>         static u64 zswap_reject_kmemcache_fail;
+>
+> These shouldn't happen at all due to PF_MEMALLOC.
+>
+> IOW, the fail counter is expected to stay zero in healthy,
+> well-configured systems. Rather than an MM event that needs counting,
+> this strikes me as something that could be a WARN down the line...
+>
 
-(I have flashes of understading cpus.exclusive as being a more
-expressive mechanism than partitions. OTOH, it seems non-intuitive when
-both are combined, thus I'm asking to internalize it better.
-Should partitions be deprecated for simplicty? They're still good to
-provide the notification mechanism of invalidation.
-cpuset.cpus.exclusive.effective don't have that.)
+Yup, I agree that it should (mostly) be at 0. It being non-zero (especially
+at a higher ratio w.r.t total number of zswap store counts) is an indicatio=
+n
+of something wrong - either a bug, misconfiguration, or a very
+ill-compressible workload (or again a bug with the compression algorithm).
 
-> They will be ready eventually. This requirement of remote partition actually
-> came from our OpenShift team as the use of just local partition did not meet
-> their need. They don't need access to exclusive CPUs in the parent cgroup
-> layer for their management daemons. They do need to activate isolated
-> partition in selected child cgroups to support our Telco customers to run
-> workloads like DPDK.
-> 
-> So they will add the support to upstream Kubernetes.
+A WARN might be good too, but if it's just an ill-compressible workload
+that might be too many WARNS :)
 
-Is it worth implementing anything touching (ancestral)
-cpuset.cpus.partition then?
+But we can always just monitor pswpout - writeback (both globally,
+and on a cgroup-basis, I assume?).
 
-Thanks,
-Michal
+> I agree with adding the debugfs counter though.
 
+Then I'll send a new patch that focuses on the debugfs counter
+(for the compression failure).
+
+Thanks for the feedback, Johannes.
 
