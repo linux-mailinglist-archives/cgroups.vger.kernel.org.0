@@ -1,60 +1,60 @@
-Return-Path: <cgroups+bounces-15-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8693E7D5241
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 15:47:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B587D524A
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 15:47:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6D641C20BFC
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 13:47:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44378B212A5
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 13:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C72C2B761;
-	Tue, 24 Oct 2023 13:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB762B76A;
+	Tue, 24 Oct 2023 13:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jqnwgpl+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mdQU02L1"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25F72B5CD
-	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 13:46:53 +0000 (UTC)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997EA10DE
-	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:51 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ce4e0e2bdso2342170276.3
-        for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655462B74A
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 13:46:55 +0000 (UTC)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B65D7A
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:53 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7d261a84bso61822327b3.3
+        for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698155210; x=1698760010; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698155212; x=1698760012; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=griUcA7GUXZ/C94ijw+khTWkXdhOo9/SkZ3zjzjerBg=;
-        b=Jqnwgpl+iQgBXPyzwBt0Y9Y8w3zvUht2600ZNQUwsUvGgtC5+FTtNIYPEd0CTsQKi1
-         k5rzT4QjzP+sGrlMTVBJdcf2MlS7wm0dRhvz7KMmLgKKLED3QqZTQhJaRxOnRIzdhuJ0
-         Pz6IqSMaKj66GjRXDUUzPuO0/S3KH7tCKtLAFYVTnSrD7Dj/O0JGspre3I9wUFlICaH/
-         D9Llcg1gxL/kpuP5Cf9pEv0t00foYmiEvsdUi456IyngEl+AI6pOmIo5BU4yGsCJVryI
-         WhpiVIWQkegWWs2eCR9huOjYJC5Cjrz1nGoo7LW1qCRFneuvE7GwF4ffuk5p0W+n/xTw
-         3ZOQ==
+        bh=r9ZaCKU38kmyhI7VEwX4KjtHXLgRMjapTHFgQ9SG6t0=;
+        b=mdQU02L1CvfERziAV1S4IWGZDX7irUzrH657u0xJG/54by6a1PhBxsUviX5Pwjua/T
+         tyX9oRC7TJS1/NjrQVkH2nEgsfpx1CADvuBwn9rmhdGH32e419ZbVLElz2vF7W3PzB/0
+         wGACZwKxOG0lbxY6tgKksbxYI5qC4gKYNecyeBklDKUcA5HA0g5v9hWgSXg2KtLeQm7n
+         vRt2tiqzDBTxDPdAhfQ0TO87X+AvbN61YbzpDPWOBQCokVInUWM4EbBMbG0vl1CUfoOG
+         Ph4KI8dy0JXLh6ycauQ1HOyH+AF3xuT/aVX18YoM0St6IHTjmP0OR/HnLbDMkTt2f40p
+         auRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698155210; x=1698760010;
+        d=1e100.net; s=20230601; t=1698155212; x=1698760012;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=griUcA7GUXZ/C94ijw+khTWkXdhOo9/SkZ3zjzjerBg=;
-        b=mNBlLhOZ5vcaYsofBQbRxIG5wAGhE1ifkSwBf2D4cOIynHa8+QnPaBZFEDtyY9zpY6
-         Lx4nLIIB74alTFg8Hv3ulWlhRBp6xUolNNPdm0UO3qcFf744Z6J6t/5L6w3zpaZR63vA
-         iGEFaAEi0FcOnmvesNrxRnDedQopPMWCFTrCb5V0R1rnGfoWWJR3s5Jb/MYBjghDcPQ8
-         /7ESCk5xhYYVDynrph7gC2Sc/Y/3lnYeLO+dv5sdSXqrObUMfU3mI9mB971TG83zS/MD
-         H/yKVjk90Ce4Ny8hTCKENCpymWY7yyEIY6My/YgsrIBOjke6UPfe0ZrDEB5Av8XqNMDI
-         WA/w==
-X-Gm-Message-State: AOJu0YzdbuUOZDs+4Mymbr58khFjyFSRDV5duL6PbzMW+UcpLgzyjXsr
-	H/LaWkySXOcvFb5khwHJqweiE3Aj5ww=
-X-Google-Smtp-Source: AGHT+IEpwWcHxe3pWwBFpCZZha+IjIrDrruma7abx61pSV1ETO4xUZC89g08mISvSSxLbel6DAK32ekX/R8=
+        bh=r9ZaCKU38kmyhI7VEwX4KjtHXLgRMjapTHFgQ9SG6t0=;
+        b=ULZ6DND3dAimd6ItdecyG3t3dOu1TReJobwWWRnOlG9WQQcpnXvsSNq88Oa0yPXtZk
+         r9NHbYjorTXDZntP+cJKbffWT3S/OfMSefFxJlet4ImcVvA77LI8toMwilBGv3jDvhQ7
+         4EHL925P100TppLzZkBgissnZuO5N6y/g83/1EDKL/+KsYGdTchg6YIOua4iGy2Kr43v
+         cebOPhR79PviUt1FhjNqrgnLHddNEB9W0u2kioTs0bXMGouERJTgV7SOZrp9pmLANL4+
+         9uZ8px+grvZYGeBb+1Xk1GdcBNxmOOyOEvK5xOtnMCwYp2znY7vmlQ9JOX0/jDdqYBQ1
+         BDsQ==
+X-Gm-Message-State: AOJu0YzhklmswzZ0sRvhgdeJmQ1LE4pGLRHXS4D71KTA3VTVNRVBmcyp
+	WxR0F1hS+cufFSi8zjGc1lAtfCTO11A=
+X-Google-Smtp-Source: AGHT+IFUpFLBsDMNDQVhWCjHvEp+oEK06bmA8hZB4NpLCdYe9bJ3XL90v8R51rmnjDRHAZifNxDo+IuLmGU=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:45ba:3318:d7a5:336a])
- (user=surenb job=sendgmr) by 2002:a25:7485:0:b0:d9a:cbf9:1c8d with SMTP id
- p127-20020a257485000000b00d9acbf91c8dmr216225ybc.12.1698155210387; Tue, 24
- Oct 2023 06:46:50 -0700 (PDT)
-Date: Tue, 24 Oct 2023 06:46:01 -0700
+ (user=surenb job=sendgmr) by 2002:a0d:dfd0:0:b0:5a7:ad67:b4b6 with SMTP id
+ i199-20020a0ddfd0000000b005a7ad67b4b6mr254303ywe.2.1698155212529; Tue, 24 Oct
+ 2023 06:46:52 -0700 (PDT)
+Date: Tue, 24 Oct 2023 06:46:02 -0700
 In-Reply-To: <20231024134637.3120277-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -64,8 +64,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231024134637.3120277-1-surenb@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231024134637.3120277-5-surenb@google.com>
-Subject: [PATCH v2 04/39] nodemask: Split out include/linux/nodemask_types.h
+Message-ID: <20231024134637.3120277-6-surenb@google.com>
+Subject: [PATCH v2 05/39] prandom: Remove unused include
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -97,69 +97,26 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Kent Overstreet <kent.overstreet@linux.dev>
 
-sched.h, which defines task_struct, needs nodemask_t - but sched.h is a
-frequently used header and ideally shouldn't be pulling in any more code
-that it needs to.
-
-This splits out nodemask_types.h which has the definition sched.h needs,
-which will avoid a circular header dependency in the alloc tagging patch
-series, and as a bonus should speed up kernel build times.
+prandom.h doesn't use percpu.h - this fixes some circular header issues.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
 ---
- include/linux/nodemask.h       | 2 +-
- include/linux/nodemask_types.h | 9 +++++++++
- include/linux/sched.h          | 2 +-
- 3 files changed, 11 insertions(+), 2 deletions(-)
- create mode 100644 include/linux/nodemask_types.h
+ include/linux/prandom.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index 8d07116caaf1..b61438313a73 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -93,10 +93,10 @@
- #include <linux/threads.h>
- #include <linux/bitmap.h>
- #include <linux/minmax.h>
-+#include <linux/nodemask_types.h>
- #include <linux/numa.h>
+diff --git a/include/linux/prandom.h b/include/linux/prandom.h
+index f2ed5b72b3d6..f7f1e5251c67 100644
+--- a/include/linux/prandom.h
++++ b/include/linux/prandom.h
+@@ -10,7 +10,6 @@
+ 
+ #include <linux/types.h>
+ #include <linux/once.h>
+-#include <linux/percpu.h>
  #include <linux/random.h>
  
--typedef struct { DECLARE_BITMAP(bits, MAX_NUMNODES); } nodemask_t;
- extern nodemask_t _unused_nodemask_arg_;
- 
- /**
-diff --git a/include/linux/nodemask_types.h b/include/linux/nodemask_types.h
-new file mode 100644
-index 000000000000..84c2f47c4237
---- /dev/null
-+++ b/include/linux/nodemask_types.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __LINUX_NODEMASK_TYPES_H
-+#define __LINUX_NODEMASK_TYPES_H
-+
-+#include <linux/numa.h>
-+
-+typedef struct { DECLARE_BITMAP(bits, MAX_NUMNODES); } nodemask_t;
-+
-+#endif /* __LINUX_NODEMASK_TYPES_H */
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 77f01ac385f7..12a2554a3164 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -20,7 +20,7 @@
- #include <linux/hrtimer.h>
- #include <linux/irqflags.h>
- #include <linux/seccomp.h>
--#include <linux/nodemask.h>
-+#include <linux/nodemask_types.h>
- #include <linux/rcupdate.h>
- #include <linux/refcount.h>
- #include <linux/resource.h>
+ struct rnd_state {
 -- 
 2.42.0.758.gaed0368e0e-goog
 
