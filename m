@@ -1,204 +1,208 @@
-Return-Path: <cgroups+bounces-3-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68F27D3F39
-	for <lists+cgroups@lfdr.de>; Mon, 23 Oct 2023 20:26:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C786C7D4394
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 02:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 605D02815D7
-	for <lists+cgroups@lfdr.de>; Mon, 23 Oct 2023 18:26:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BB73B20D43
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 00:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48B3219E4;
-	Mon, 23 Oct 2023 18:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C9F636;
+	Tue, 24 Oct 2023 00:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c685XqEl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+JSA04S"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22DB921105
-	for <cgroups@vger.kernel.org>; Mon, 23 Oct 2023 18:26:39 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A32C9B
-	for <cgroups@vger.kernel.org>; Mon, 23 Oct 2023 11:26:37 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9be7e3fa1daso542206866b.3
-        for <cgroups@vger.kernel.org>; Mon, 23 Oct 2023 11:26:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EA1161
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 00:07:06 +0000 (UTC)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684D010A;
+	Mon, 23 Oct 2023 17:07:04 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9b1e3a809so24365695ad.2;
+        Mon, 23 Oct 2023 17:07:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698085595; x=1698690395; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oE+REpypGDMAev/H3GE245B5o6iKa1zk/siXumc4sBI=;
-        b=c685XqElf1b4xplslUsYHl7JeCJibrdFsEGeYXa6IH+068FS7S4RYyet3jwViv6mH9
-         RL523QRttm2KM5YppqkviU0DokVh0cgKMpjKnLIK+5ourSbTw7lyKi/a2qocUvxAHA/c
-         BTEuZd5ECdcawGk3sTmftB8bb9SrNDzzbX4VbpZUqF0h9PetmTd+nmTkeouUnv8bBdrO
-         sr7/9qJhpG5qUz1iq3GK9/isellkzSvR9QRa6P8y1xqfpEJ+DRbBRzCTwazvPFuk2RXu
-         v4Nr35vQG9G64Thajw+aMxNB5uHfoWIb21cH6Ja4PqpSYxSAxAxU27H9OGLxzswBeswd
-         THWg==
+        d=gmail.com; s=20230601; t=1698106024; x=1698710824; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FVGJ5sudlybAUoU4/L69TVsLsQEiCat6/Z6vYWRvA+k=;
+        b=Y+JSA04Sf/kqSiWkNzN0Xtq16jXeaD95NvJKpPq8oYpg15id/7Ndd1C3MXPI/l78dh
+         aOpape3vrcSuitp6tXktXrozpbhBgxvwA3fgEiXdlptL1rX+76wcRcMzqCim/M4f6qT/
+         4ihbPaMIXOGvZZwLn5o3n4X9CgFILxlCZCVqj4IzVMnAxbVFxiV305Wa/yOSWJmF2is3
+         PxPKkKdLVc8wpCfGPRK0nckIOotnDkYqn5CMvW94e7h6V9u1R6ssmIIe3jy8Fril7HX/
+         zLyajVYr5kNeBm0ZTX6p6pKKr8Sy4Sz6NbOB7AknxUqJmjeYVr0hVEB3xc0nXMFI9fwY
+         3eMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698085595; x=1698690395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oE+REpypGDMAev/H3GE245B5o6iKa1zk/siXumc4sBI=;
-        b=jd4vnxf269ArXmmPPyaF5DqEuTdEbmpJhWvrtwlsja5EsmMw1KWvWr8kjM/m0xYZRu
-         6QziwCBJn5Iwu3lVlkJf+RZ0RQSesFUpuAmeWlemmpsS5fve5y3fQ/BGhxGODa9nR5v7
-         k1AVjlMgvSo2rh1OthKPYKMvzhiHQq6rdIsOQ4b2Mx9/Vu7AI/wbki0hCplFXSIBgn65
-         0IQQTbjVevY+OQpv3tzJgSyAey8tzlXDHrMT7T++f6UM4aoguTQq24RjJ1Ab8hRRtBTq
-         si0dky+KFchfcOnq0pV6tbhThYeIvR76t/kq9wL26Iec2FpJEe1lIyMAgtsRZ0QYsWy5
-         T9OQ==
-X-Gm-Message-State: AOJu0YxZbOuhQmLR1RfCZHdLvFMw+C1BxhaNgSP1o9p4zz35AxgYyb7v
-	D1HABHWEJqK0hh9nDx9U8A4d2eRCJwZtcuoVMge2mg==
-X-Google-Smtp-Source: AGHT+IG9GvP+J6p+a0G+WPAQIu946WVihLIDsq32dpZ9WN0/LYIVUoqcHZK5j4U7bjqT28mUlI/UmNUtjdVKdyLr1mU=
-X-Received: by 2002:a17:907:7295:b0:9bf:30e8:5bf9 with SMTP id
- dt21-20020a170907729500b009bf30e85bf9mr8656842ejc.4.1698085595352; Mon, 23
- Oct 2023 11:26:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698106024; x=1698710824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FVGJ5sudlybAUoU4/L69TVsLsQEiCat6/Z6vYWRvA+k=;
+        b=LW5iIFky0R6jzG9nitlv97r0p5baxpaD1aSXZ9f5LDxbjhnMiVbj48ZCeyx5vnN8E2
+         awm+I/DGloFqFiqCHV5pgLBxOa91uJ3GTRDuzCo2ZBxpQUBQJ/E5pbnrWweDpo/8QxB7
+         2NlWI9wS6YfnTGEjQ6OSaeZduAfMQjoxsKYiWjMoyVbNSU9DvIjVwhXqZ6GH/gumb+/o
+         A+aWtKUxAVvAcMEQG0l85lQpG59PMKo/IM8L4CgUgCQw/Jw6tMTfrTeHnmE+OqwMRLo0
+         pRvcWRofMF3lhn+ZmVrAl6CIoKrfrU4b7qoSWIPCtotwP9iZNI9IqKRdK9GHMrNxUqkr
+         +kSA==
+X-Gm-Message-State: AOJu0YxoPqB9S5N1AT8NZpzeKkKD/oDvyoj/B5ApOsxzyOoSMmMXYNwj
+	Juk1NQZl/Ga1bpdxlef7Lqw=
+X-Google-Smtp-Source: AGHT+IE7EC9NzWgKAl37wbTsKByqXoQg4bH181CdHJEGVy0sZwB5krK0Q6/inRU8TgnzAMx4IqTjzQ==
+X-Received: by 2002:a17:902:ea09:b0:1c8:9d32:339e with SMTP id s9-20020a170902ea0900b001c89d32339emr8958779plg.50.1698106023659;
+        Mon, 23 Oct 2023 17:07:03 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-008.fbsv.net. [2a03:2880:ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001bc2831e1a8sm6438314plf.80.2023.10.23.17.07.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 17:07:03 -0700 (PDT)
+From: Nhat Pham <nphamcs@gmail.com>
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org,
+	cerasuolodomenico@gmail.com,
+	yosryahmed@google.com,
+	sjenning@redhat.com,
+	ddstreet@ieee.org,
+	vitaly.wool@konsulko.com,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeelb@google.com,
+	muchun.song@linux.dev,
+	linux-mm@kvack.org,
+	kernel-team@meta.com,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: [PATCH] zswap: export more zswap store failure stats
+Date: Mon, 23 Oct 2023 17:07:02 -0700
+Message-Id: <20231024000702.1387130-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231010032117.1577496-4-yosryahmed@google.com>
- <202310202303.c68e7639-oliver.sang@intel.com> <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
- <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com> <ZTXLeAAI1chMamkU@feng-clx>
-In-Reply-To: <ZTXLeAAI1chMamkU@feng-clx>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 23 Oct 2023 11:25:55 -0700
-Message-ID: <CAJD7tka5UnHBz=eX1LtynAjJ+O_oredMKBBL3kFNfG7PHjuMCw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To: Feng Tang <feng.tang@intel.com>
-Cc: Shakeel Butt <shakeelb@google.com>, "Sang, Oliver" <oliver.sang@intel.com>, 
-	"oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>, lkp <lkp@intel.com>, 
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"Huang, Ying" <ying.huang@intel.com>, "Yin, Fengwei" <fengwei.yin@intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Waiman Long <longman@redhat.com>, 
-	"kernel-team@cloudflare.com" <kernel-team@cloudflare.com>, Wei Xu <weixugc@google.com>, 
-	Greg Thelen <gthelen@google.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Oct 22, 2023 at 6:34=E2=80=AFPM Feng Tang <feng.tang@intel.com> wro=
-te:
->
-> On Sat, Oct 21, 2023 at 01:42:58AM +0800, Yosry Ahmed wrote:
-> > On Fri, Oct 20, 2023 at 10:23=E2=80=AFAM Shakeel Butt <shakeelb@google.=
-com> wrote:
-> > >
-> > > On Fri, Oct 20, 2023 at 9:18=E2=80=AFAM kernel test robot <oliver.san=
-g@intel.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > Hello,
-> > > >
-> > > > kernel test robot noticed a -25.8% regression of will-it-scale.per_=
-thread_ops on:
-> > > >
-> > > >
-> > > > commit: 51d74c18a9c61e7ee33bc90b522dd7f6e5b80bb5 ("[PATCH v2 3/5] m=
-m: memcg: make stats flushing threshold per-memcg")
-> > > > url: https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-=
-memcg-change-flush_next_time-to-flush_last_time/20231010-112257
-> > > > base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-e=
-verything
-> > > > patch link: https://lore.kernel.org/all/20231010032117.1577496-4-yo=
-sryahmed@google.com/
-> > > > patch subject: [PATCH v2 3/5] mm: memcg: make stats flushing thresh=
-old per-memcg
-> > > >
-> > > > testcase: will-it-scale
-> > > > test machine: 104 threads 2 sockets (Skylake) with 192G memory
-> > > > parameters:
-> > > >
-> > > >         nr_task: 100%
-> > > >         mode: thread
-> > > >         test: fallocate1
-> > > >         cpufreq_governor: performance
-> > > >
-> > > >
-> > > > In addition to that, the commit also has significant impact on the =
-following tests:
-> > > >
-> > > > +------------------+-----------------------------------------------=
-----------------+
-> > > > | testcase: change | will-it-scale: will-it-scale.per_thread_ops -3=
-0.0% regression |
-> > > > | test machine     | 104 threads 2 sockets (Skylake) with 192G memo=
-ry              |
-> > > > | test parameters  | cpufreq_governor=3Dperformance                =
-                  |
-> > > > |                  | mode=3Dthread                                 =
-                  |
-> > > > |                  | nr_task=3D50%                                 =
-                  |
-> > > > |                  | test=3Dfallocate1                             =
-                  |
-> > > > +------------------+-----------------------------------------------=
-----------------+
-> > > >
-> > >
-> > > Yosry, I don't think 25% to 30% regression can be ignored. Unless
-> > > there is a quick fix, IMO this series should be skipped for the
-> > > upcoming kernel open window.
-> >
-> > I am currently looking into it. It's reasonable to skip the next merge
-> > window if a quick fix isn't found soon.
-> >
-> > I am surprised by the size of the regression given the following:
-> >       1.12 =C4=85  5%      +1.4        2.50 =C4=85  2%
-> > perf-profile.self.cycles-pp.__mod_memcg_lruvec_state
-> >
-> > IIUC we are only spending 1% more time in __mod_memcg_lruvec_state().
->
-> Yes, this is kind of confusing. And we have seen similar cases before,
-> espcially for micro benchmark like will-it-scale, stressng, netperf
-> etc, the change to those functions in hot path was greatly amplified
-> in the final benchmark score.
->
-> In a netperf case, https://lore.kernel.org/lkml/20220619150456.GB34471@xs=
-ang-OptiPlex-9020/
-> the affected functions have around 10% change in perf's cpu-cycles,
-> and trigger 69% regression. IIRC, micro benchmarks are very sensitive
-> to those statistics update, like memcg's and vmstat.
->
+Since:
 
-Thanks for clarifying. I am still trying to reproduce locally but I am
-running into some quirks with tooling. I may have to run a modified
-version of the fallocate test manually. Meanwhile, I noticed that the
-patch was tested without the fixlet that I posted [1] for it,
-understandably. Would it be possible to get some numbers with that
-fixlet? It should reduce the total number of contended atomic
-operations, so it may help.
+"42c06a0e8ebe mm: kill frontswap"
 
-[1]https://lore.kernel.org/lkml/CAJD7tkZDarDn_38ntFg5bK2fAmFdSe+Rt6DKOZA7Sg=
-s_kERoVA@mail.gmail.com/
+we no longer have a counter to tracks the number of zswap store
+failures. This makes it hard to investigate and monitor for zswap
+issues.
 
-I am also wondering if aligning the stats_updates atomic will help.
-Right now it may share a cacheline with some items of the
-events_pending array. The latter may be dirtied during a flush and
-unnecessarily dirty the former, but the chances are slim to be honest.
-If it's easy to test such a diff, that would be nice, but I don't
-expect a lot of difference:
+This patch adds a global and a per-cgroup zswap store failure counter,
+as well as a dedicated debugfs counter for compression algorithm failure
+(which can happen for e.g when random data are passed to zswap).
 
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ include/linux/vm_event_item.h |  1 +
+ mm/memcontrol.c               |  1 +
+ mm/vmstat.c                   |  1 +
+ mm/zswap.c                    | 18 ++++++++++++++----
+ 4 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+index 8abfa1240040..7b2b117b193d 100644
+--- a/include/linux/vm_event_item.h
++++ b/include/linux/vm_event_item.h
+@@ -145,6 +145,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+ #ifdef CONFIG_ZSWAP
+ 		ZSWPIN,
+ 		ZSWPOUT,
++		ZSWPOUT_FAIL,
+ #endif
+ #ifdef CONFIG_X86
+ 		DIRECT_MAP_LEVEL2_SPLIT,
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7cbc7d94eb65..a35fce653262 100644
+index 61c0c46c2d62..0e247e72a379 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -646,7 +646,7 @@ struct memcg_vmstats {
-        unsigned long           events_pending[NR_MEMCG_EVENTS];
+@@ -593,6 +593,7 @@ static const unsigned int memcg_vm_event_stat[] = {
+ #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+ 	ZSWPIN,
+ 	ZSWPOUT,
++	ZSWPOUT_FAIL,
+ #endif
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	THP_FAULT_ALLOC,
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 359460deb377..85cc79449355 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1401,6 +1401,7 @@ const char * const vmstat_text[] = {
+ #ifdef CONFIG_ZSWAP
+ 	"zswpin",
+ 	"zswpout",
++	"zswpout_fail",
+ #endif
+ #ifdef CONFIG_X86
+ 	"direct_map_level2_splits",
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 37d2b1cb2ecb..38e6620f8b58 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -61,6 +61,8 @@ static u64 zswap_pool_limit_hit;
+ static u64 zswap_written_back_pages;
+ /* Store failed due to a reclaim failure after pool limit was reached */
+ static u64 zswap_reject_reclaim_fail;
++/* Store failed due to compression algorithm failure */
++static u64 zswap_reject_compress_fail;
+ /* Compressed page was too big for the allocator to (optimally) store */
+ static u64 zswap_reject_compress_poor;
+ /* Store failed because underlying allocator could not get memory */
+@@ -1213,10 +1215,10 @@ bool zswap_store(struct folio *folio)
+ 
+ 	/* Large folios aren't supported */
+ 	if (folio_test_large(folio))
+-		return false;
++		goto out_reject;
+ 
+ 	if (!zswap_enabled || !tree)
+-		return false;
++		goto out_reject;
+ 
+ 	/*
+ 	 * If this is a duplicate, it must be removed before attempting to store
+@@ -1309,8 +1311,10 @@ bool zswap_store(struct folio *folio)
+ 	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
+ 	dlen = acomp_ctx->req->dlen;
+ 
+-	if (ret)
++	if (ret) {
++		zswap_reject_compress_fail++;
+ 		goto put_dstmem;
++	}
+ 
+ 	/* store */
+ 	zpool = zswap_find_zpool(entry);
+@@ -1377,8 +1381,12 @@ bool zswap_store(struct folio *folio)
+ freepage:
+ 	zswap_entry_cache_free(entry);
+ reject:
+-	if (objcg)
++	if (objcg) {
++		count_objcg_event(objcg, ZSWPOUT_FAIL);
+ 		obj_cgroup_put(objcg);
++	}
++out_reject:
++	count_vm_event(ZSWPOUT_FAIL);
+ 	return false;
+ 
+ shrink:
+@@ -1550,6 +1558,8 @@ static int zswap_debugfs_init(void)
+ 			   zswap_debugfs_root, &zswap_reject_alloc_fail);
+ 	debugfs_create_u64("reject_kmemcache_fail", 0444,
+ 			   zswap_debugfs_root, &zswap_reject_kmemcache_fail);
++	debugfs_create_u64("reject_compress_fail", 0444,
++			   zswap_debugfs_root, &zswap_reject_compress_fail);
+ 	debugfs_create_u64("reject_compress_poor", 0444,
+ 			   zswap_debugfs_root, &zswap_reject_compress_poor);
+ 	debugfs_create_u64("written_back_pages", 0444,
+-- 
+2.34.1
 
-        /* Stats updates since the last flush */
--       atomic64_t              stats_updates;
-+       atomic64_t              stats_updates ____cacheline_aligned_in_smp;
- };
-
- /*
 
