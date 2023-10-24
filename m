@@ -1,60 +1,60 @@
-Return-Path: <cgroups+bounces-14-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 053FC7D5242
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 15:47:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FC7D7D5235
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 15:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74FE2B21236
-	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 13:47:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58F39281339
+	for <lists+cgroups@lfdr.de>; Tue, 24 Oct 2023 13:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216CB2B75B;
-	Tue, 24 Oct 2023 13:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742382B5C8;
+	Tue, 24 Oct 2023 13:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fvFNewWr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1XFbROdL"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924822B5EB
-	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 13:46:52 +0000 (UTC)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CB4129
-	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:47 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9cad450d5fso5174016276.1
-        for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D55D2AB46
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 13:46:51 +0000 (UTC)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F36E10CE
+	for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:49 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5a3f2d4fso5146674276.3
+        for <cgroups@vger.kernel.org>; Tue, 24 Oct 2023 06:46:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698155206; x=1698760006; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698155208; x=1698760008; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fObhDXE+DfK48fbfXMStFHtHAmn90M4M91A2l4CxzLM=;
-        b=fvFNewWrJ6myhtkKXKjtJz8cIzAVhMdqhSo1R8XR3dG9lbaEcu40daF7zkrLWvYyQC
-         Q2mL5UdAfr3rTWRWlr7tfdubTPhnHuVlp5zfkMCb4p6DfWKYLDBpBxDlbioDo5ZTgZRX
-         euVcheUfciQ/xmzBww2SzGQeOg/W9/euwxB82yYhQc374RWE0GnNoLePR3bCXEmQF965
-         czbTs9HHTypXYJ2KkiNNw3L6nBcF2t1cFnXO3xI713cVEfoux04p9ykMWFJOpeasDkxe
-         oENd442Qp97odp3mOJiUNzAJ2X+NUsAxZWMiaMCRtwsD93S0RYHH/4mfaXmqRw/S4P2K
-         tOnw==
+        bh=MWOhaEKA8zMI+Iz0e6SkNPW5Kz551oWdhyAlPdtU984=;
+        b=1XFbROdLiVVoN5uydLx7JI2SMR4wMa5dO4rGWCS3ucWQUgp7xD3Uzyga3UuvTJbPjm
+         Fb+47YRq/bMpaN3E/eB5AwNie/G70xGjaCjNyWrqPmTvDb2rkdtqc3uQf9aQ1gnWUCjE
+         QKxrw0Y/wn10DXzumW7IxBG4cDEADZzN9KbaQ2FIv5UWBdI2dOrlwWecw0OGsFRf5QxF
+         jeq5BqGdkGUNO4rLanTanR8I/vNGHzjj8gUjKziIlqqh5dw4TEW7wdaqzxfbAp8TzWnI
+         UHPJiV1xnBqRqC5VWZUmCosAbA2hlohjCCpOUUSjvso+AnyYb/QCZBMR7VbscOR7liFR
+         qgYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698155206; x=1698760006;
+        d=1e100.net; s=20230601; t=1698155208; x=1698760008;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fObhDXE+DfK48fbfXMStFHtHAmn90M4M91A2l4CxzLM=;
-        b=bnViePUxovMSytI1zU9FirmoEOq3InBqKUrmNozZXUxy15IGYC6CVC2llI0Sx3g3FI
-         CgAHtjoK0momOYQdsMa5cldtyBel94NbnhWXI4kZSpes6Yz0Byl8efLOT8dDO9uFp/Yy
-         Jc4nGDmO3uB7Dzc1x4SO36qqeh27ArQhpDZ6kQillhXjGqK6cHyA6zpntY+fRHt95xgq
-         ucGDpY0D8hKupAqsgcDvQqc9zf0qV9SMzMWnoMymJbp6mwvXi6MwnjXYytoqqAnj523n
-         T3YhlVTI9dlHqFiOqSbKK8mnqArYCdAlcN6bEdMLWUv33e/1EuNlcF5Dy5X4U+Kj3g+j
-         dl/g==
-X-Gm-Message-State: AOJu0Yz/Q8lqnysufmdKFysM/4Qn8Htbc7ZDA9ub1Bnx1PUn07Buwh1D
-	P0LKhQaQqI18np7AXQn3fbxPNkap7H0=
-X-Google-Smtp-Source: AGHT+IGzqDmmVKWAX0qOLCG4zSSOu2XUUgzUKaIXDvA8+3j+t9o+p5RCbsfa+aQ1r6gMSAIrcYIsUr6/0f0=
+        bh=MWOhaEKA8zMI+Iz0e6SkNPW5Kz551oWdhyAlPdtU984=;
+        b=XXwVLAsL1nCRH5Voxp3FfWIiPfGLC2jKwzhL3CpL8+0vOY0aGLxwYzUT8Aow1GGmxO
+         7fadgmUvtkP3lu63RNmxa0iTWqmjwVgjmOeWtzI61/lLcQIFwQywukS80QF9I3ytMDpl
+         GLTcfwWIXkdelXlyvJYaw3GhjYPREcikHRn2h72uOzWHEiOagftWbxAVIGQQfVhkDNI9
+         3UB+4Ysx0WwzjQ+y3uus1GJdSoBzFeYLp8guSmNDou+1ncu6eEcXtAn4H12O0YbWqauv
+         iW269jHTLK/UG+fYJmKLuffPzNAfHkuYhUdbu4ASft6xt9PKQjJiwYb7rZe4Iue8XABU
+         ehFw==
+X-Gm-Message-State: AOJu0YzlCma+DP6SDSMpipzTtJU8qtx8hi5cLyAUtA59+x3bgvugCtq9
+	a/p04mh9b12xB4BPtXZ2k5+hLmtvhqs=
+X-Google-Smtp-Source: AGHT+IGS8NlUfJRUa0CiIFG8N+DG1BCVzQogfv9Ui1pQm5p1SwS7Eeeej+mjL+3fA2TwJ+bOdBMbqGXulW0=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:45ba:3318:d7a5:336a])
- (user=surenb job=sendgmr) by 2002:a25:5008:0:b0:da0:2b01:7215 with SMTP id
- e8-20020a255008000000b00da02b017215mr55818ybb.10.1698155205957; Tue, 24 Oct
- 2023 06:46:45 -0700 (PDT)
-Date: Tue, 24 Oct 2023 06:45:59 -0700
+ (user=surenb job=sendgmr) by 2002:a25:b951:0:b0:da0:1ba4:6fa2 with SMTP id
+ s17-20020a25b951000000b00da01ba46fa2mr82321ybm.4.1698155208197; Tue, 24 Oct
+ 2023 06:46:48 -0700 (PDT)
+Date: Tue, 24 Oct 2023 06:46:00 -0700
 In-Reply-To: <20231024134637.3120277-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -64,8 +64,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231024134637.3120277-1-surenb@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231024134637.3120277-3-surenb@google.com>
-Subject: [PATCH v2 02/39] scripts/kallysms: Always include __start and __stop symbols
+Message-ID: <20231024134637.3120277-4-surenb@google.com>
+Subject: [PATCH v2 03/39] fs: Convert alloc_inode_sb() to a macro
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -92,52 +92,39 @@ Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
 	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
 	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 
 From: Kent Overstreet <kent.overstreet@linux.dev>
 
-These symbols are used to denote section boundaries: by always including
-them we can unify loading sections from modules with loading built-in
-sections, which leads to some significant cleanup.
+We're introducing alloc tagging, which tracks memory allocations by
+callsite. Converting alloc_inode_sb() to a macro means allocations will
+be tracked by its caller, which is a bit more useful.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 ---
- scripts/kallsyms.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/linux/fs.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 653b92f6d4c8..47978efe4797 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -204,6 +204,11 @@ static int symbol_in_range(const struct sym_entry *s,
- 	return 0;
- }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4a40823c3c67..c545b1839e96 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2862,11 +2862,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
+  * This must be used for allocating filesystems specific inodes to set
+  * up the inode reclaim context correctly.
+  */
+-static inline void *
+-alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
+-{
+-	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
+-}
++#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache, &_sb->s_inode_lru, _gfp)
  
-+static bool string_starts_with(const char *s, const char *prefix)
-+{
-+	return strncmp(s, prefix, strlen(prefix)) == 0;
-+}
-+
- static int symbol_valid(const struct sym_entry *s)
- {
- 	const char *name = sym_name(s);
-@@ -211,6 +216,14 @@ static int symbol_valid(const struct sym_entry *s)
- 	/* if --all-symbols is not specified, then symbols outside the text
- 	 * and inittext sections are discarded */
- 	if (!all_symbols) {
-+		/*
-+		 * Symbols starting with __start and __stop are used to denote
-+		 * section boundaries, and should always be included:
-+		 */
-+		if (string_starts_with(name, "__start_") ||
-+		    string_starts_with(name, "__stop_"))
-+			return 1;
-+
- 		if (symbol_in_range(s, text_ranges,
- 				    ARRAY_SIZE(text_ranges)) == 0)
- 			return 0;
+ extern void __insert_inode_hash(struct inode *, unsigned long hashval);
+ static inline void insert_inode_hash(struct inode *inode)
 -- 
 2.42.0.758.gaed0368e0e-goog
 
