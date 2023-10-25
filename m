@@ -1,171 +1,153 @@
-Return-Path: <cgroups+bounces-88-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-89-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A2E7D7346
-	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 20:30:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 463427D7358
+	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 20:37:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2351BB21092
-	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 18:30:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED61F281D46
+	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 18:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB8C2869A;
-	Wed, 25 Oct 2023 18:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19821CAB2;
+	Wed, 25 Oct 2023 18:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2PahOBpt"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HZUDCNyW"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E70C31A6D
-	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 18:30:11 +0000 (UTC)
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975BB123
-	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:30:09 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7ad24b3aaso212887b3.2
-        for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:30:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A290F9DC
+	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 18:36:56 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB06B116
+	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:36:54 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so13739366b.1
+        for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698258609; x=1698863409; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698259013; x=1698863813; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4AGjug/ZalpYwbhEtdGvaPRgrhAGa7Qdg/UkHWx2EjA=;
-        b=2PahOBpt5r8XtdfOczonOo0iDQcHQAaBSdD8lsgOjiIOZhrwq6xsuy23g8/lKAkzDs
-         3U2bUd6m/vfsUw6+aHQOwNC+Yj9juIZfCyCE7FFa6r/AX9uAjGbLEmfRULPNkXMKba2+
-         BFRLR/Sm9Cf3nRu1dQNfysB6UMH5dM/wGZDm8wCOaXWFje5rjhmo1sywLp4ASynqaQvR
-         nvoegQmlj6iorNu3R2vxbMa4B2NZbY5eWhp/ncfneR2hA8/CpaGA0pluarYRHlO0CQ3N
-         Sa+JKUK2ddLejnMB8xuakisjsec8iJg0YsJTSzRJbEXY0sOYwBVDVZkm/mZbuH1iTsMe
-         wxAA==
+        bh=2e92O8wEWD/53OKXUltaj6IOD/TJFtp9v92hFMtfX+0=;
+        b=HZUDCNyWfmVGsQvYptxE2H5bp/TtofRCTOocZ+RBHWLyryaezilnDrb/MzrfogOWdp
+         +DgOnlBW/XHxVKrIRjqb9K9+2uOyM8p0iHryEfbWWxKwv643z3Jdl5um+CxPeGQ+5pAG
+         I2405qN/sR/CmHZ8RZbvDJSQpPIo+G5uMdQyDHqXlJ8UynGCYES3iL47Rks0xEghww7l
+         DlxaAghKgRKsQMzC0+yq9KAzzxcLmuv+I97df0DhiC28+5i4iyKiBjid0wDExEXxf5cL
+         2piE8YMRLN7pvWIjoMKXU2c9uZ+dW5In6wdX7LL3GRAqgMvAURLahG1NMFaSfjlpv4wB
+         97/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698258609; x=1698863409;
+        d=1e100.net; s=20230601; t=1698259013; x=1698863813;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4AGjug/ZalpYwbhEtdGvaPRgrhAGa7Qdg/UkHWx2EjA=;
-        b=oKfOzD9u0i+Ga3LpEarcEVklF7/ch/KQvcCcLychFpZ1Xdp7PoADbv9z79Phv3xVz6
-         gqWntyLMgpCpOkLudmN0ZyVRzltx0Hv2qc2vEIxzcPtX1FCCl9zL/IrhK0gmsIkpNmuP
-         fX+eheWCiIZEijx+J7n9anF8sUF2LMvFG0ZsSvlQsPu6qClo9xIDYqEUHlRJ7+Fl+++l
-         PAhzGar82imTiG4AHoVVcwiC3g5dbGLpsHpzUOnIbtq/lo9b0Vlz2ydufY7UqClw7SaY
-         vDK2ADtIwtefJBByG4QDuDj1GBC/kje4GTxrYf3+aVU/haSctmg2EpsQ3vpHuo36BC7k
-         ZCOw==
-X-Gm-Message-State: AOJu0YxkMdcG+kQqGfrEtf4cXbAjhdhQ6s+EV11jzLJenvcPN4umjtNs
-	3887qcw2W8yaxZ2FgMLJYHNg+Hfsas75BhDT9B1v2g==
-X-Google-Smtp-Source: AGHT+IF1njPPY9rAPCmgfI2NOxL//O1EtFpROeDZSqmbwsOKTlCKA18GCZaedk8YEGovXb6mtcrU0GW/bGzYZ5+vnwY=
-X-Received: by 2002:a05:690c:16:b0:5a8:d92b:fbf3 with SMTP id
- bc22-20020a05690c001600b005a8d92bfbf3mr17811712ywb.38.1698258608533; Wed, 25
- Oct 2023 11:30:08 -0700 (PDT)
+        bh=2e92O8wEWD/53OKXUltaj6IOD/TJFtp9v92hFMtfX+0=;
+        b=rhtMkf8cegsbnTOV+r5o4K460FY9OjmP0Me3BiI6vPPG3glUzj1xau9DIJA791biCo
+         GWLVDMMUD74/9cE6dT2+ZPAlS12HYkPsS/0rYEa4VHSnYBJs86fUG+7N1DPi+ybxquJr
+         bo1mbx86yy/UFQqm9lBF/UsHO5pMcpkwka8LVOf8GBu38H4GxBrlpfWw06aIZ/uB8vIx
+         uaFJ/gSGZ9z94wtMWwEcES6YxCm953ORMDNq+Jw1zeuKqkvIbKTYM5Ak7gBbeGqqIrGW
+         uQhQTMX3t7CDd6dCTyBim1P6rUrYjsaZFKn94uJ3I6YAU9F7hftffalpjxDzNHtqBQWR
+         FdyQ==
+X-Gm-Message-State: AOJu0Yx50b6DB/E7701UauOrbWgccLpdVoF2DANy7q1/z3kUpnqRH8nJ
+	T8a9RZ5fTmZAcdOj6mpHQeHUK41ftpT3Gsx0qyLB6A==
+X-Google-Smtp-Source: AGHT+IFOrNXjGlGRWcmGJFHDoHQlFO4oVM3n0QNoccBm8uXU8YVkyo7zdGNfYE0da5c1OHviWCGusZmXqEZmjkytLeo=
+X-Received: by 2002:a17:907:70b:b0:9c6:724:fa16 with SMTP id
+ xb11-20020a170907070b00b009c60724fa16mr12368133ejb.59.1698259012860; Wed, 25
+ Oct 2023 11:36:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
- <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
- <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
- <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
- <s2xtlyyyxu4rbv7gjyl7jbi5tt7lrz7qyr3axfeahsij443ahx@me6wx5gvyqni>
- <CABdmKX0Aiu7Run9YCYXVAX4o3-eP6nKcnzyWh_yuhVKVXTPQkA@mail.gmail.com>
- <CABdmKX1O4gFpALG03+Fna0fHgMgKjZyUamNcgSh-Dr+64zfyRg@mail.gmail.com>
- <CABdmKX2jJZiTwM0FgQctqBisp3h0ryX8=2dyAgbPOM8+NugM6Q@mail.gmail.com> <5quz2zmnv4ivte6phrduxrqqrcwanp45lnrxzesk4ykze52gx7@iwfkmy4shdok>
-In-Reply-To: <5quz2zmnv4ivte6phrduxrqqrcwanp45lnrxzesk4ykze52gx7@iwfkmy4shdok>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 25 Oct 2023 11:29:56 -0700
-Message-ID: <CABdmKX0h6oi7VE=rzSAvCFGPHhG6jWh+7k1_p6SwV5dYGcUPDQ@mail.gmail.com>
-Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Suren Baghdasaryan <surenb@google.com>
+References: <20231010032117.1577496-4-yosryahmed@google.com>
+ <202310202303.c68e7639-oliver.sang@intel.com> <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
+ <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
+ <ZTXLeAAI1chMamkU@feng-clx> <CAJD7tka5UnHBz=eX1LtynAjJ+O_oredMKBBL3kFNfG7PHjuMCw@mail.gmail.com>
+ <CAJD7tkYXJ3vcGvteNH98tB_C7OTo718XSxL=mFsUa7kO8vzFzA@mail.gmail.com>
+ <ZTdqpcDFVHhFwWMc@xsang-OptiPlex-9020> <CAJD7tka7hmOD6KPmJBJa+TscbYEMmTjS+Jh2utPfTbKkfvwD9A@mail.gmail.com>
+ <ZTiw/iIb0SbvN7vh@xsang-OptiPlex-9020> <CAJD7tkaBnSwarz8yHu9RL_3DtaLRfjrcZ7m0YZZgHJsJdtHaZw@mail.gmail.com>
+ <CALvZod5V-Ag5avAewE2nFp8__J6b_WqHuQw5=F70OPQrGNjfVw@mail.gmail.com>
+In-Reply-To: <CALvZod5V-Ag5avAewE2nFp8__J6b_WqHuQw5=F70OPQrGNjfVw@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 25 Oct 2023 11:36:13 -0700
+Message-ID: <CAJD7tkaw1bFDgC1dfbuuCkyLToXRO2T2T7OuMt2fbfEKisP_4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To: Shakeel Butt <shakeelb@google.com>
+Cc: Oliver Sang <oliver.sang@intel.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Feng Tang <feng.tang@intel.com>, "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>, lkp <lkp@intel.com>, 
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, "Yin, Fengwei" <fengwei.yin@intel.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Waiman Long <longman@redhat.com>, 
+	"kernel-team@cloudflare.com" <kernel-team@cloudflare.com>, Wei Xu <weixugc@google.com>, 
+	Greg Thelen <gthelen@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	Domenico Cerasuolo <cerasuolodomenico@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 25, 2023 at 6:30=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
+On Wed, Oct 25, 2023 at 10:06=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
+ wrote:
 >
-> Hi.
->
-> On Tue, Oct 24, 2023 at 04:10:32PM -0700, "T.J. Mercier" <tjmercier@googl=
-e.com> wrote:
-> > Back on this and pretty sure I discovered what's happening. For
-> > processes with multiple threads where each thread has reached
-> > atomic_dec_and_test(&tsk->signal->live) in do_exit (but not all have
-> > reached cgroup_exit yet), subsequent reads of cgroup.procs will skip
-> > over the process with not-yet-fully-exited thread group members
-> > because the read of task->signal->live evaluates to 0 here in
-> > css_task_iter_advance:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/kernel/cgroup/cgroup.c?h=3Dv6.5#n4869
->
-> Well done! It sounds plausible, the task->signal->live is not synced
-> via css_set_lock.
->
+> On Tue, Oct 24, 2023 at 11:23=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
 > >
-> > But the cgroup is not removable yet because cgroup_exit hasn't been
-> > called for all tasks.
+> [...]
 > >
-> > Since all tasks have been signaled in this case and we're just waiting
-> > for the exits to complete, I think it should be possible to turn the
-> > cgroup into a zombie on rmdir with the current behavior of
-> > cgroup.procs.
->
-> In this case it could be removed but it would make the check in
-> cgroup_destroy_locked() way too complicated (if I understand your idea).
->
-I was thinking to remove it from sysfs and prevent migrations / forks,
-but keep the cgroup and csets around in a dead state until all tasks
-complete their exits. Similar to how with memcg any pages charged to
-the memcg keep it alive in the background even after a successful
-rmdir. Except in this case we're guaranteed to make progress towards
-releasing the cgroup (without any dependency on reclaim or charge
-transfer) because all tasks have already begun the process of exiting.
-We're just waiting on the scheduler to give enough time to the tasks.
-
-The cgroup_is_populated check in cgroup_destroy_locked is what's
-currently blocking the removal, and in the case where
-nr_populated_csets is not 0 I think we'd need to iterate through all
-csets and ensure that each task has been signaled for a SIGKILL. Or
-just ensure there are only dying tasks and the thread group leader has
-0 for task->signal->live since that's when cgroup.procs stops showing
-the process?
-
+> > Thanks Oliver for running the numbers. If I understand correctly the
+> > will-it-scale.fallocate1 microbenchmark is the only one showing
+> > significant regression here, is this correct?
 > >
-> > Or if we change cgroup.procs to continue showing the thread group
-> > leader until all threads have finished exiting, we'd still probably
-> > have to change our userspace to accommodate the longer kill times
-> > exceeding our timeouts.
+> > In my runs, other more representative microbenchmarks benchmarks like
+> > netperf and will-it-scale.page_fault* show minimal regression. I would
+> > expect practical workloads to have high concurrency of page faults or
+> > networking, but maybe not fallocate/ftruncate.
+> >
+> > Oliver, in your experience, how often does such a regression in such a
+> > microbenchmark translate to a real regression that people care about?
+> > (or how often do people dismiss it?)
+> >
+> > I tried optimizing this further for the fallocate/ftruncate case but
+> > without luck. I even tried moving stats_updates into cgroup core
+> > (struct cgroup_rstat_cpu) to reuse the existing loop in
+> > cgroup_rstat_updated() -- but it somehow made it worse.
+> >
+> > On the other hand, we do have some machines in production running this
+> > series together with a previous optimization for non-hierarchical
+> > stats [1] on an older kernel, and we do see significant reduction in
+> > cpu time spent on reading the stats. Domenico did a similar experiment
+> > with only this series and reported similar results [2].
+> >
+> > Shakeel, Johannes, (and other memcg folks), I personally think the
+> > benefits here outweigh a regression in this particular benchmark, but
+> > I am obviously biased. What do you think?
+> >
+> > [1]https://lore.kernel.org/lkml/20230726153223.821757-2-yosryahmed@goog=
+le.com/
+> > [2]https://lore.kernel.org/lkml/CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0d=
+PYEL7nK77e2A@mail.gmail.com/
 >
-> Provided this is the cause, you could get this more (timewise) precise
-> info from cgroup.threads already? (PR [1] has a reproducer and its fix
-> describes exactly opposite listings (confusing) but I think that fix
-> actually works because it checks cgroup.threads additionally.)
->
-Yes, I just tried this out and if we check both cgroup.procs and
-cgroup.threads then we wait long enough to be sure that we can rmdir
-successfully. Unfortunately that duration exceeds our current timeouts
-in the environment where I can reproduce this, so we eventually give
-up waiting and don't actually attempt the rmdir. But I'll fix that
-with the change to use the populated notification.
+> I still am not convinced of the benefits outweighing the regression
+> but I would not block this. So, let's do this, skip this open window,
+> get the patch series reviewed and hopefully we can work together on
+> fixing that regression and we can make an informed decision of
+> accepting the regression for this series for the next cycle.
 
-> > So I'm going to change our userspace anyway as suggested by Tejun. But
-> > I'd be interested to hear what folks think about the potential kernel
-> > solutions as well.
->
-> Despite that, I'd stick with the notifications since they use rely on
-> proper synchronization of cgroup-info.
->
-> HTT,
-> Michal
->
-> [1] https://github.com/systemd/systemd/pull/23561
+Skipping this open window sounds okay to me.
 
-Interesting case, and in the same part of the code. If one of the exit
-functions takes a long time in the leader I could see how this might
-happen, but I think a lot of those (mm for example) should be shared
-among the group members so not sure exactly what would be the cause.
-Maybe it's just that all the threads get scheduled before the leader.
+FWIW, I think with this patch series we can keep the old behavior
+(roughly) and hide the changes behind a tunable (config option or
+sysfs file). I think the only changes that need to be done to the code
+to approximate the previous behavior are:
+- Use root when updating the pending stats in memcg_rstat_updated()
+instead of the passed memcg.
+- Use root in mem_cgroup_flush_stats() instead of the passed memcg.
+- Use mutex_trylock() instead of mutex_lock() in mem_cgroup_flush_stats().
 
-Thanks!
--T.J.
+So I think it should be doable to hide most changes behind a tunable,
+but let's not do this unless necessary.
 
