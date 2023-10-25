@@ -1,584 +1,171 @@
-Return-Path: <cgroups+bounces-87-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-88-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 978D67D7335
-	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 20:26:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A2E7D7346
+	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 20:30:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA290B211AD
-	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 18:26:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2351BB21092
+	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 18:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B5D31A6C;
-	Wed, 25 Oct 2023 18:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB8C2869A;
+	Wed, 25 Oct 2023 18:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TEXuIzSo"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2PahOBpt"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC37331A77
-	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 18:26:12 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F72118C
-	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698258369;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pRorZ8hcoh1pEKuW43vQwucWeoNUJtoP08aWtDwrATU=;
-	b=TEXuIzSoK2FJxwKk3+kPQlq8LMxcDHzcw2Zo6OuoegpLLWdzp9gvvX7eEwVMxbcK9K9cjM
-	FcjirjDFbAznK8eUZvbPjFzZgzXe8kFNjQHVVVTmz8m4JblC0fJ496SRd/LqXjC5sQ+Gmq
-	+k6SfgWXnObACAP/ssXESkUQDE+9SlI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-542-XC9aC5veMSyYxf35JkLWJQ-1; Wed, 25 Oct 2023 14:26:05 -0400
-X-MC-Unique: XC9aC5veMSyYxf35JkLWJQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 536AD101A550;
-	Wed, 25 Oct 2023 18:26:04 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.140])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id A246E492BFA;
-	Wed, 25 Oct 2023 18:26:03 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Peter Hunt <pehunt@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 4/4] cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
-Date: Wed, 25 Oct 2023 14:25:55 -0400
-Message-Id: <20231025182555.4155614-5-longman@redhat.com>
-In-Reply-To: <20231025182555.4155614-1-longman@redhat.com>
-References: <20231025182555.4155614-1-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E70C31A6D
+	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 18:30:11 +0000 (UTC)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975BB123
+	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:30:09 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7ad24b3aaso212887b3.2
+        for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 11:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698258609; x=1698863409; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4AGjug/ZalpYwbhEtdGvaPRgrhAGa7Qdg/UkHWx2EjA=;
+        b=2PahOBpt5r8XtdfOczonOo0iDQcHQAaBSdD8lsgOjiIOZhrwq6xsuy23g8/lKAkzDs
+         3U2bUd6m/vfsUw6+aHQOwNC+Yj9juIZfCyCE7FFa6r/AX9uAjGbLEmfRULPNkXMKba2+
+         BFRLR/Sm9Cf3nRu1dQNfysB6UMH5dM/wGZDm8wCOaXWFje5rjhmo1sywLp4ASynqaQvR
+         nvoegQmlj6iorNu3R2vxbMa4B2NZbY5eWhp/ncfneR2hA8/CpaGA0pluarYRHlO0CQ3N
+         Sa+JKUK2ddLejnMB8xuakisjsec8iJg0YsJTSzRJbEXY0sOYwBVDVZkm/mZbuH1iTsMe
+         wxAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698258609; x=1698863409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4AGjug/ZalpYwbhEtdGvaPRgrhAGa7Qdg/UkHWx2EjA=;
+        b=oKfOzD9u0i+Ga3LpEarcEVklF7/ch/KQvcCcLychFpZ1Xdp7PoADbv9z79Phv3xVz6
+         gqWntyLMgpCpOkLudmN0ZyVRzltx0Hv2qc2vEIxzcPtX1FCCl9zL/IrhK0gmsIkpNmuP
+         fX+eheWCiIZEijx+J7n9anF8sUF2LMvFG0ZsSvlQsPu6qClo9xIDYqEUHlRJ7+Fl+++l
+         PAhzGar82imTiG4AHoVVcwiC3g5dbGLpsHpzUOnIbtq/lo9b0Vlz2ydufY7UqClw7SaY
+         vDK2ADtIwtefJBByG4QDuDj1GBC/kje4GTxrYf3+aVU/haSctmg2EpsQ3vpHuo36BC7k
+         ZCOw==
+X-Gm-Message-State: AOJu0YxkMdcG+kQqGfrEtf4cXbAjhdhQ6s+EV11jzLJenvcPN4umjtNs
+	3887qcw2W8yaxZ2FgMLJYHNg+Hfsas75BhDT9B1v2g==
+X-Google-Smtp-Source: AGHT+IF1njPPY9rAPCmgfI2NOxL//O1EtFpROeDZSqmbwsOKTlCKA18GCZaedk8YEGovXb6mtcrU0GW/bGzYZ5+vnwY=
+X-Received: by 2002:a05:690c:16:b0:5a8:d92b:fbf3 with SMTP id
+ bc22-20020a05690c001600b005a8d92bfbf3mr17811712ywb.38.1698258608533; Wed, 25
+ Oct 2023 11:30:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <CABdmKX3SOXpcK85a7cx3iXrwUj=i1yXqEz9i9zNkx8mB=ZXQ8A@mail.gmail.com>
+ <CABdmKX0Grgp4F5GUjf76=ZhK+UxJwKaL2v-pM=phpdyrot+dNg@mail.gmail.com>
+ <sgbmcjroeoi7ltt7432ajxj3nl6de4owm7gcg7d2dr2hsuncfi@r6tln7crkzyf>
+ <CABdmKX3NQKB3h_CuYUYJahabj9fq+TSN=NAGdTaZqyd7r_A+yA@mail.gmail.com>
+ <s2xtlyyyxu4rbv7gjyl7jbi5tt7lrz7qyr3axfeahsij443ahx@me6wx5gvyqni>
+ <CABdmKX0Aiu7Run9YCYXVAX4o3-eP6nKcnzyWh_yuhVKVXTPQkA@mail.gmail.com>
+ <CABdmKX1O4gFpALG03+Fna0fHgMgKjZyUamNcgSh-Dr+64zfyRg@mail.gmail.com>
+ <CABdmKX2jJZiTwM0FgQctqBisp3h0ryX8=2dyAgbPOM8+NugM6Q@mail.gmail.com> <5quz2zmnv4ivte6phrduxrqqrcwanp45lnrxzesk4ykze52gx7@iwfkmy4shdok>
+In-Reply-To: <5quz2zmnv4ivte6phrduxrqqrcwanp45lnrxzesk4ykze52gx7@iwfkmy4shdok>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 25 Oct 2023 11:29:56 -0700
+Message-ID: <CABdmKX0h6oi7VE=rzSAvCFGPHhG6jWh+7k1_p6SwV5dYGcUPDQ@mail.gmail.com>
+Subject: Re: [Bug Report] EBUSY for cgroup rmdir after cgroup.procs empty
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Suren Baghdasaryan <surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-To make CPUs in isolated cpuset partition closer in isolation to
-the boot time isolated CPUs specified in the "isolcpus" boot command
-line option, we need to take those CPUs out of the workqueue unbound
-cpumask so that work functions from the unbound workqueues won't run
-on those CPUs.  Otherwise, they will interfere the user tasks running
-on those isolated CPUs.
+On Wed, Oct 25, 2023 at 6:30=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> Hi.
+>
+> On Tue, Oct 24, 2023 at 04:10:32PM -0700, "T.J. Mercier" <tjmercier@googl=
+e.com> wrote:
+> > Back on this and pretty sure I discovered what's happening. For
+> > processes with multiple threads where each thread has reached
+> > atomic_dec_and_test(&tsk->signal->live) in do_exit (but not all have
+> > reached cgroup_exit yet), subsequent reads of cgroup.procs will skip
+> > over the process with not-yet-fully-exited thread group members
+> > because the read of task->signal->live evaluates to 0 here in
+> > css_task_iter_advance:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/kernel/cgroup/cgroup.c?h=3Dv6.5#n4869
+>
+> Well done! It sounds plausible, the task->signal->live is not synced
+> via css_set_lock.
+>
+> >
+> > But the cgroup is not removable yet because cgroup_exit hasn't been
+> > called for all tasks.
+> >
+> > Since all tasks have been signaled in this case and we're just waiting
+> > for the exits to complete, I think it should be possible to turn the
+> > cgroup into a zombie on rmdir with the current behavior of
+> > cgroup.procs.
+>
+> In this case it could be removed but it would make the check in
+> cgroup_destroy_locked() way too complicated (if I understand your idea).
+>
+I was thinking to remove it from sysfs and prevent migrations / forks,
+but keep the cgroup and csets around in a dead state until all tasks
+complete their exits. Similar to how with memcg any pages charged to
+the memcg keep it alive in the background even after a successful
+rmdir. Except in this case we're guaranteed to make progress towards
+releasing the cgroup (without any dependency on reclaim or charge
+transfer) because all tasks have already begun the process of exiting.
+We're just waiting on the scheduler to give enough time to the tasks.
 
-With the introduction of the workqueue_unbound_exclude_cpumask() helper
-function in an earlier commit, those isolated CPUs can now be taken
-out from the workqueue unbound cpumask.
+The cgroup_is_populated check in cgroup_destroy_locked is what's
+currently blocking the removal, and in the case where
+nr_populated_csets is not 0 I think we'd need to iterate through all
+csets and ensure that each task has been signaled for a SIGKILL. Or
+just ensure there are only dying tasks and the thread group leader has
+0 for task->signal->live since that's when cgroup.procs stops showing
+the process?
 
-This patch also updates cgroup-v2.rst to mention that isolated
-CPUs will be excluded from unbound workqueue cpumask as well as
-updating test_cpuset_prs.sh to verify the correctness of the new
-*cpuset.cpus.isolated file, if available via cgroup_debug option.
+> >
+> > Or if we change cgroup.procs to continue showing the thread group
+> > leader until all threads have finished exiting, we'd still probably
+> > have to change our userspace to accommodate the longer kill times
+> > exceeding our timeouts.
+>
+> Provided this is the cause, you could get this more (timewise) precise
+> info from cgroup.threads already? (PR [1] has a reproducer and its fix
+> describes exactly opposite listings (confusing) but I think that fix
+> actually works because it checks cgroup.threads additionally.)
+>
+Yes, I just tried this out and if we check both cgroup.procs and
+cgroup.threads then we wait long enough to be sure that we can rmdir
+successfully. Unfortunately that duration exceeds our current timeouts
+in the environment where I can reproduce this, so we eventually give
+up waiting and don't actually attempt the rmdir. But I'll fix that
+with the change to use the populated notification.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/admin-guide/cgroup-v2.rst       |  10 +-
- kernel/cgroup/cpuset.c                        | 116 +++++++++++++++---
- .../selftests/cgroup/test_cpuset_prs.sh       |  74 +++++++++--
- 3 files changed, 166 insertions(+), 34 deletions(-)
+> > So I'm going to change our userspace anyway as suggested by Tejun. But
+> > I'd be interested to hear what folks think about the potential kernel
+> > solutions as well.
+>
+> Despite that, I'd stick with the notifications since they use rely on
+> proper synchronization of cgroup-info.
+>
+> HTT,
+> Michal
+>
+> [1] https://github.com/systemd/systemd/pull/23561
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index e440aee4fe94..9db311448a21 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2318,11 +2318,11 @@ Cpuset Interface Files
- 	partition or scheduling domain.  The set of exclusive CPUs is
- 	determined by the value of its "cpuset.cpus.exclusive.effective".
- 
--	When set to "isolated", the CPUs in that partition will
--	be in an isolated state without any load balancing from the
--	scheduler.  Tasks placed in such a partition with multiple
--	CPUs should be carefully distributed and bound to each of the
--	individual CPUs for optimal performance.
-+	When set to "isolated", the CPUs in that partition will be in
-+	an isolated state without any load balancing from the scheduler
-+	and excluded from the unbound workqueues.  Tasks placed in such
-+	a partition with multiple CPUs should be carefully distributed
-+	and bound to each of the individual CPUs for optimal performance.
- 
- 	A partition root ("root" or "isolated") can be in one of the
- 	two possible states - valid or invalid.  An invalid partition
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 19c8779798fd..1bad4007ff4b 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -25,6 +25,7 @@
- #include <linux/cpu.h>
- #include <linux/cpumask.h>
- #include <linux/cpuset.h>
-+#include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
-@@ -43,6 +44,7 @@
- #include <linux/sched/isolation.h>
- #include <linux/cgroup.h>
- #include <linux/wait.h>
-+#include <linux/workqueue.h>
- 
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-@@ -1444,25 +1446,31 @@ static void partition_xcpus_newstate(int old_prs, int new_prs, struct cpumask *x
-  * @new_prs: new partition_root_state
-  * @parent: parent cpuset
-  * @xcpus: exclusive CPUs to be added
-+ * Return: true if isolated_cpus modified, false otherwise
-  *
-  * Remote partition if parent == NULL
-  */
--static void partition_xcpus_add(int new_prs, struct cpuset *parent,
-+static bool partition_xcpus_add(int new_prs, struct cpuset *parent,
- 				struct cpumask *xcpus)
- {
-+	bool isolcpus_updated;
-+
- 	WARN_ON_ONCE(new_prs < 0);
- 	lockdep_assert_held(&callback_lock);
- 	if (!parent)
- 		parent = &top_cpuset;
- 
-+
- 	if (parent == &top_cpuset)
- 		cpumask_or(subpartitions_cpus, subpartitions_cpus, xcpus);
- 
--	if (new_prs != parent->partition_root_state)
-+	isolcpus_updated = (new_prs != parent->partition_root_state);
-+	if (isolcpus_updated)
- 		partition_xcpus_newstate(parent->partition_root_state, new_prs,
- 					 xcpus);
- 
- 	cpumask_andnot(parent->effective_cpus, parent->effective_cpus, xcpus);
-+	return isolcpus_updated;
- }
- 
- /*
-@@ -1470,12 +1478,15 @@ static void partition_xcpus_add(int new_prs, struct cpuset *parent,
-  * @old_prs: old partition_root_state
-  * @parent: parent cpuset
-  * @xcpus: exclusive CPUs to be removed
-+ * Return: true if isolated_cpus modified, false otherwise
-  *
-  * Remote partition if parent == NULL
-  */
--static void partition_xcpus_del(int old_prs, struct cpuset *parent,
-+static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
- 				struct cpumask *xcpus)
- {
-+	bool isolcpus_updated;
-+
- 	WARN_ON_ONCE(old_prs < 0);
- 	lockdep_assert_held(&callback_lock);
- 	if (!parent)
-@@ -1484,12 +1495,27 @@ static void partition_xcpus_del(int old_prs, struct cpuset *parent,
- 	if (parent == &top_cpuset)
- 		cpumask_andnot(subpartitions_cpus, subpartitions_cpus, xcpus);
- 
--	if (old_prs != parent->partition_root_state)
-+	isolcpus_updated = (old_prs != parent->partition_root_state);
-+	if (isolcpus_updated)
- 		partition_xcpus_newstate(old_prs, parent->partition_root_state,
- 					 xcpus);
- 
- 	cpumask_and(xcpus, xcpus, cpu_active_mask);
- 	cpumask_or(parent->effective_cpus, parent->effective_cpus, xcpus);
-+	return isolcpus_updated;
-+}
-+
-+static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
-+{
-+	int ret;
-+
-+	lockdep_assert_cpus_held();
-+
-+	if (!isolcpus_updated)
-+		return;
-+
-+	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
-+	WARN_ON_ONCE(ret < 0);
- }
- 
- /*
-@@ -1540,6 +1566,8 @@ static inline bool is_local_partition(struct cpuset *cs)
- static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 				   struct tmpmasks *tmp)
- {
-+	bool isolcpus_updated;
-+
- 	/*
- 	 * The user must have sysadmin privilege.
- 	 */
-@@ -1561,7 +1589,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 		return 0;
- 
- 	spin_lock_irq(&callback_lock);
--	partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
-+	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
- 	list_add(&cs->remote_sibling, &remote_children);
- 	if (cs->use_parent_ecpus) {
- 		struct cpuset *parent = parent_cs(cs);
-@@ -1570,13 +1598,13 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 		parent->child_ecpus_count--;
- 	}
- 	spin_unlock_irq(&callback_lock);
-+	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
- 	/*
- 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
- 	 */
- 	update_tasks_cpumask(&top_cpuset, tmp->new_cpus);
- 	update_sibling_cpumasks(&top_cpuset, NULL, tmp);
--
- 	return 1;
- }
- 
-@@ -1591,18 +1619,22 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
-  */
- static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- {
-+	bool isolcpus_updated;
-+
- 	compute_effective_exclusive_cpumask(cs, tmp->new_cpus);
- 	WARN_ON_ONCE(!is_remote_partition(cs));
- 	WARN_ON_ONCE(!cpumask_subset(tmp->new_cpus, subpartitions_cpus));
- 
- 	spin_lock_irq(&callback_lock);
- 	list_del_init(&cs->remote_sibling);
--	partition_xcpus_del(cs->partition_root_state, NULL, tmp->new_cpus);
-+	isolcpus_updated = partition_xcpus_del(cs->partition_root_state,
-+					       NULL, tmp->new_cpus);
- 	cs->partition_root_state = -cs->partition_root_state;
- 	if (!cs->prs_err)
- 		cs->prs_err = PERR_INVCPUS;
- 	reset_partition_data(cs);
- 	spin_unlock_irq(&callback_lock);
-+	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
- 	/*
- 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
-@@ -1625,6 +1657,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *newmask,
- {
- 	bool adding, deleting;
- 	int prs = cs->partition_root_state;
-+	int isolcpus_updated = 0;
- 
- 	if (WARN_ON_ONCE(!is_remote_partition(cs)))
- 		return;
-@@ -1649,10 +1682,11 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *newmask,
- 
- 	spin_lock_irq(&callback_lock);
- 	if (adding)
--		partition_xcpus_add(prs, NULL, tmp->addmask);
-+		isolcpus_updated += partition_xcpus_add(prs, NULL, tmp->addmask);
- 	if (deleting)
--		partition_xcpus_del(prs, NULL, tmp->delmask);
-+		isolcpus_updated += partition_xcpus_del(prs, NULL, tmp->delmask);
- 	spin_unlock_irq(&callback_lock);
-+	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
- 	/*
- 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
-@@ -1774,6 +1808,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 	int part_error = PERR_NONE;	/* Partition error? */
- 	int subparts_delta = 0;
- 	struct cpumask *xcpus;		/* cs effective_xcpus */
-+	int isolcpus_updated = 0;
- 	bool nocpu;
- 
- 	lockdep_assert_held(&cpuset_mutex);
-@@ -2010,15 +2045,18 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 	 * and vice versa.
- 	 */
- 	if (adding)
--		partition_xcpus_del(old_prs, parent, tmp->addmask);
-+		isolcpus_updated += partition_xcpus_del(old_prs, parent,
-+							tmp->addmask);
- 	if (deleting)
--		partition_xcpus_add(new_prs, parent, tmp->delmask);
-+		isolcpus_updated += partition_xcpus_add(new_prs, parent,
-+							tmp->delmask);
- 
- 	if (is_partition_valid(parent)) {
- 		parent->nr_subparts += subparts_delta;
- 		WARN_ON_ONCE(parent->nr_subparts < 0);
- 	}
- 	spin_unlock_irq(&callback_lock);
-+	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
- 	if ((old_prs != new_prs) && (cmd == partcmd_update))
- 		update_partition_exclusive(cs, new_prs);
-@@ -3082,6 +3120,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 	else if (new_xcpus_state)
- 		partition_xcpus_newstate(old_prs, new_prs, cs->effective_xcpus);
- 	spin_unlock_irq(&callback_lock);
-+	update_unbound_workqueue_cpumask(new_xcpus_state);
- 
- 	/* Force update if switching back to member */
- 	update_cpumasks_hier(cs, &tmpmask, !new_prs ? HIER_CHECKALL : 0);
-@@ -4370,6 +4409,30 @@ void cpuset_force_rebuild(void)
- 	force_rebuild = true;
- }
- 
-+/*
-+ * Attempt to acquire a cpus_read_lock while a hotplug operation may be in
-+ * progress.
-+ * Return: true if successful, false otherwise
-+ *
-+ * To avoid circular lock dependency between cpuset_mutex and cpus_read_lock,
-+ * cpus_read_trylock() is used here to acquire the lock.
-+ */
-+static bool cpuset_hotplug_cpus_read_trylock(void)
-+{
-+	int retries = 0;
-+
-+	while (!cpus_read_trylock()) {
-+		/*
-+		 * CPU hotplug still in progress. Retry 5 times
-+		 * with a 10ms wait before bailing out.
-+		 */
-+		if (++retries > 5)
-+			return false;
-+		msleep(10);
-+	}
-+	return true;
-+}
-+
- /**
-  * cpuset_hotplug_update_tasks - update tasks in a cpuset for hotunplug
-  * @cs: cpuset in interest
-@@ -4386,6 +4449,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	bool cpus_updated;
- 	bool mems_updated;
- 	bool remote;
-+	int partcmd = -1;
- 	struct cpuset *parent;
- retry:
- 	wait_event(cpuset_attach_wq, cs->attach_in_progress == 0);
-@@ -4417,11 +4481,13 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 		compute_partition_effective_cpumask(cs, &new_cpus);
- 
- 	if (remote && cpumask_empty(&new_cpus) &&
--	    partition_is_populated(cs, NULL)) {
-+	    partition_is_populated(cs, NULL) &&
-+	    cpuset_hotplug_cpus_read_trylock()) {
- 		remote_partition_disable(cs, tmp);
- 		compute_effective_cpumask(&new_cpus, cs, parent);
- 		remote = false;
- 		cpuset_force_rebuild();
-+		cpus_read_unlock();
- 	}
- 
- 	/*
-@@ -4432,18 +4498,28 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	 *    partitions.
- 	 */
- 	if (is_local_partition(cs) && (!is_partition_valid(parent) ||
--				tasks_nocpu_error(parent, cs, &new_cpus))) {
--		update_parent_effective_cpumask(cs, partcmd_invalidate, NULL, tmp);
--		compute_effective_cpumask(&new_cpus, cs, parent);
--		cpuset_force_rebuild();
--	}
-+				tasks_nocpu_error(parent, cs, &new_cpus)))
-+		partcmd = partcmd_invalidate;
- 	/*
- 	 * On the other hand, an invalid partition root may be transitioned
- 	 * back to a regular one.
- 	 */
--	else if (is_partition_valid(parent) && is_partition_invalid(cs)) {
--		update_parent_effective_cpumask(cs, partcmd_update, NULL, tmp);
--		if (is_partition_valid(cs)) {
-+	else if (is_partition_valid(parent) && is_partition_invalid(cs))
-+		partcmd = partcmd_update;
-+
-+	/*
-+	 * cpus_read_lock needs to be held before calling
-+	 * update_parent_effective_cpumask(). To avoid circular lock
-+	 * dependency between cpuset_mutex and cpus_read_lock,
-+	 * cpus_read_trylock() is used here to acquire the lock.
-+	 */
-+	if (partcmd >= 0) {
-+		if (!cpuset_hotplug_cpus_read_trylock())
-+			goto update_tasks;
-+
-+		update_parent_effective_cpumask(cs, partcmd, NULL, tmp);
-+		cpus_read_unlock();
-+		if ((partcmd == partcmd_invalidate) || is_partition_valid(cs)) {
- 			compute_partition_effective_cpumask(cs, &new_cpus);
- 			cpuset_force_rebuild();
- 		}
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index 2b825019f806..7b7c4c2b6d85 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -232,11 +232,11 @@ TEST_MATRIX=(
- 	" C0-3:S+ C1-3:S+ C2-3   C4-5   X2-3  X2-3:P1   P2     P1    0 A1:0-1,A2:,A3:2-3,B1:4-5 \
- 								       A1:P0,A2:P1,A3:P2,B1:P1 2-3"
- 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3  X2-3:P1   P2     P1    0 A1:0-1,A2:,A3:2-3,B1:4 \
--								       A1:P0,A2:P1,A3:P2,B1:P1 2-4"
-+								       A1:P0,A2:P1,A3:P2,B1:P1 2-4,2-3"
- 	" C0-3:S+ C1-3:S+  C3     C4    X2-3  X2-3:P1   P2     P1    0 A1:0-1,A2:2,A3:3,B1:4 \
--								       A1:P0,A2:P1,A3:P2,B1:P1 2-4"
-+								       A1:P0,A2:P1,A3:P2,B1:P1 2-4,3"
- 	" C0-4:S+ C1-4:S+ C2-4     .    X2-4  X2-4:P2  X4:P1    .    0 A1:0-1,A2:2-3,A3:4 \
--								       A1:P0,A2:P2,A3:P1 2-4"
-+								       A1:P0,A2:P2,A3:P1 2-4,2-3"
- 	" C0-4:X2-4:S+ C1-4:X2-4:S+:P2 C2-4:X4:P1 \
- 				   .      .      X5      .      .    0 A1:0-4,A2:1-4,A3:2-4 \
- 								       A1:P0,A2:P-2,A3:P-1"
-@@ -248,7 +248,7 @@ TEST_MATRIX=(
- 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:O2=0 .   0 A1:0-1,A2:1,A3:3 A1:P0,A3:P2 2-3"
- 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:O2=0 O2=1 0 A1:0-1,A2:1,A3:2-3 A1:P0,A3:P2 2-3"
- 	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3    P2:O3=0   .   0 A1:0-2,A2:1-2,A3: A1:P0,A3:P2 3"
--	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3   T:P2:O3=0  .   0 A1:0-2,A2:1-2,A3:1-2 A1:P0,A3:P-2 3"
-+	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3   T:P2:O3=0  .   0 A1:0-2,A2:1-2,A3:1-2 A1:P0,A3:P-2 3,"
- 
- 	# An invalidated remote partition cannot self-recover from hotplug
- 	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3,A2:1-3,A3:2 A1:P0,A3:P-2"
-@@ -376,7 +376,7 @@ write_cpu_online()
- 		}
- 	fi
- 	echo $VAL > $CPUFILE
--	pause 0.01
-+	pause 0.05
- }
- 
- #
-@@ -508,12 +508,14 @@ dump_states()
- 		XECPUS=$DIR/cpuset.cpus.exclusive.effective
- 		PRS=$DIR/cpuset.cpus.partition
- 		PCPUS=$DIR/.__DEBUG__.cpuset.cpus.subpartitions
-+		ISCPUS=$DIR/.__DEBUG__.cpuset.cpus.isolated
- 		[[ -e $CPUS   ]] && echo "$CPUS: $(cat $CPUS)"
- 		[[ -e $XCPUS  ]] && echo "$XCPUS: $(cat $XCPUS)"
- 		[[ -e $ECPUS  ]] && echo "$ECPUS: $(cat $ECPUS)"
- 		[[ -e $XECPUS ]] && echo "$XECPUS: $(cat $XECPUS)"
- 		[[ -e $PRS    ]] && echo "$PRS: $(cat $PRS)"
- 		[[ -e $PCPUS  ]] && echo "$PCPUS: $(cat $PCPUS)"
-+		[[ -e $ISCPUS ]] && echo "$ISCPUS: $(cat $ISCPUS)"
- 	done
- }
- 
-@@ -591,11 +593,17 @@ check_cgroup_states()
- 
- #
- # Get isolated (including offline) CPUs by looking at
--# /sys/kernel/debug/sched/domains and compare that with the expected value.
-+# /sys/kernel/debug/sched/domains and *cpuset.cpus.isolated control file,
-+# if available, and compare that with the expected value.
- #
--# Note that a sched domain of just 1 CPU will be considered isolated.
-+# Note that isolated CPUs from the sched/domains context include offline
-+# CPUs as well as CPUs in non-isolated 1-CPU partition. Those CPUs may
-+# not be included in the *cpuset.cpus.isolated control file which contains
-+# only CPUs in isolated partitions.
- #
--# $1 - expected isolated cpu list
-+# $1 - expected isolated cpu list(s) <isolcpus1>{,<isolcpus2>}
-+# <isolcpus1> - expected sched/domains value
-+# <isolcpus2> - *cpuset.cpus.isolated value = <isolcpus1> if not defined
- #
- check_isolcpus()
- {
-@@ -603,8 +611,38 @@ check_isolcpus()
- 	ISOLCPUS=
- 	LASTISOLCPU=
- 	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
-+	ISCPUS=${CGROUP2}/.__DEBUG__.cpuset.cpus.isolated
-+	if [[ $EXPECT_VAL = . ]]
-+	then
-+		EXPECT_VAL=
-+		EXPECT_VAL2=
-+	elif [[ $(expr $EXPECT_VAL : ".*,.*") > 0 ]]
-+	then
-+		set -- $(echo $EXPECT_VAL | sed -e "s/,/ /g")
-+		EXPECT_VAL=$1
-+		EXPECT_VAL2=$2
-+	else
-+		EXPECT_VAL2=$EXPECT_VAL
-+	fi
-+
-+	#
-+	# Check the debug isolated cpumask, if present
-+	#
-+	[[ -f $ISCPUS ]] && {
-+		ISOLCPUS=$(cat $ISCPUS)
-+		[[ "$EXPECT_VAL2" != "$ISOLCPUS" ]] && {
-+			# Take a 50ms pause and try again
-+			pause 0.05
-+			ISOLCPUS=$(cat $ISCPUS)
-+		}
-+		[[ "$EXPECT_VAL2" != "$ISOLCPUS" ]] && return 1
-+		ISOLCPUS=
-+	}
-+
-+	#
-+	# Use the sched domain in debugfs to check isolated CPUs, if available
-+	#
- 	[[ -d $SCHED_DOMAINS ]] || return 0
--	[[ $EXPECT_VAL = . ]] && EXPECT_VAL=
- 
- 	for ((CPU=0; CPU < $NR_CPUS; CPU++))
- 	do
-@@ -648,6 +686,22 @@ test_fail()
- 	exit 1
- }
- 
-+#
-+# Check to see if there are unexpected isolated CPUs left
-+#
-+null_isolcpus_check()
-+{
-+	[[ $VERBOSE -gt 0 ]] || return 0
-+	pause 0.02
-+	check_isolcpus "."
-+	if [[ $? -ne 0 ]]
-+	then
-+		echo "Unexpected isolated CPUs: $ISOLCPUS"
-+		dump_states
-+		exit 1
-+	fi
-+}
-+
- #
- # Run cpuset state transition test
- #  $1 - test matrix name
-@@ -733,6 +787,7 @@ run_state_test()
- 			echo "Effective cpus changed to $NEWLIST after test $I!"
- 			exit 1
- 		}
-+		null_isolcpus_check
- 		[[ $VERBOSE -gt 0 ]] && echo "Test $I done."
- 		((I++))
- 	done
-@@ -802,6 +857,7 @@ test_isolated()
- 	console_msg "Cleaning up"
- 	echo $$ > $CGROUP2/cgroup.procs
- 	[[ -d A1 ]] && rmdir A1
-+	null_isolcpus_check
- }
- 
- #
--- 
-2.39.3
+Interesting case, and in the same part of the code. If one of the exit
+functions takes a long time in the leader I could see how this might
+happen, but I think a lot of those (mm for example) should be shared
+among the group members so not sure exactly what would be the cause.
+Maybe it's just that all the threads get scheduled before the leader.
 
+Thanks!
+-T.J.
 
