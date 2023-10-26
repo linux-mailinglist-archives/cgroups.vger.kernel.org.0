@@ -1,96 +1,94 @@
-Return-Path: <cgroups+bounces-92-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-93-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BD77D770C
-	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 23:48:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAFE7D7D49
+	for <lists+cgroups@lfdr.de>; Thu, 26 Oct 2023 09:06:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 521112812F2
-	for <lists+cgroups@lfdr.de>; Wed, 25 Oct 2023 21:48:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1926BB2127D
+	for <lists+cgroups@lfdr.de>; Thu, 26 Oct 2023 07:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBADC347AE;
-	Wed, 25 Oct 2023 21:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809AF8BFE;
+	Thu, 26 Oct 2023 07:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EGcnm8qa"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ixD/WJ73"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2AD1401F
-	for <cgroups@vger.kernel.org>; Wed, 25 Oct 2023 21:48:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C10C433C7;
-	Wed, 25 Oct 2023 21:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1698270487;
-	bh=FivMY2UZEjYxUUisKcHog0hj9YelNqxTfva3B6Fv7W8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EGcnm8qaNwuS8KZJm/tL05RTzbs4uEVOWgI7qv8c8ygV5VynW6dZye1e0s/0KealV
-	 Xy0muOhCQ7qq2dN3Jh6wi5eazMXItrFhT+YHNc0QAfgBg3e6kjyDndOZve78/PeTzr
-	 sm4kR8kKiFdOE+BdDBcJ2czXWYpZ1tC12xV1EVI8=
-Date: Wed, 25 Oct 2023 14:48:06 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Haifeng Xu <haifeng.xu@shopee.com>
-Cc: Michal Hocko <mhocko@suse.com>, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, shakeelb@google.com, cgroups@vger.kernel.org,
- linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] memcg, oom: unmark under_oom after the oom killer
- is done
-Message-Id: <20231025144806.a10f34be15e564871861f698@linux-foundation.org>
-In-Reply-To: <1a8ee686-e416-466b-4f6d-1dd26212b360@shopee.com>
-References: <20230922070529.362202-1-haifeng.xu@shopee.com>
-	<ZRE9fAf1dId2U4cu@dhcp22.suse.cz>
-	<6b7af68c-2cfb-b789-4239-204be7c8ad7e@shopee.com>
-	<ZRFxLuJp1xqvp4EH@dhcp22.suse.cz>
-	<94b7ed1d-9ca8-7d34-a0f4-c46bc995a3d2@shopee.com>
-	<ZRF/CTk4MGPZY6Tc@dhcp22.suse.cz>
-	<fe80b246-3f92-2a83-6e50-3b923edce27c@shopee.com>
-	<ZRQv+E1plKLj8Xe3@dhcp22.suse.cz>
-	<9b463e7e-4a89-f218-ec5c-7f6c16b685ea@shopee.com>
-	<ZRvH2UzJ+VlP/12q@dhcp22.suse.cz>
-	<1a8ee686-e416-466b-4f6d-1dd26212b360@shopee.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97EC399
+	for <cgroups@vger.kernel.org>; Thu, 26 Oct 2023 07:06:46 +0000 (UTC)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CF218D
+	for <cgroups@vger.kernel.org>; Thu, 26 Oct 2023 00:06:45 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1ca72f8ff3aso4430675ad.0
+        for <cgroups@vger.kernel.org>; Thu, 26 Oct 2023 00:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698304005; x=1698908805; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wMNJftQVf2QXKCuFxZZxgj6EiiH5We62gPsWdhpccM8=;
+        b=ixD/WJ73VL6PzyLB/IeIZWO1I9/G+Noqw7o0qSb8dcA0Nt3efnXSui475gBT0UvSc2
+         gPcSUfClpcbfvc0BD8ulupLMsglO3uf7mG8Y/19c09D7YnO3GGrGgWqZD5+oH/0SL1yO
+         tVhcv6pe3gFAFHquCtVcNL/bagRgHUnAsjWPs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698304005; x=1698908805;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wMNJftQVf2QXKCuFxZZxgj6EiiH5We62gPsWdhpccM8=;
+        b=Fk/s2Ue3NX4H4sM32pSy13EaSYrzdOBdxUXQy1NLABLPyJh4NmT7JTeswifBak7FsN
+         lFDG0jl3QumitQzmTQ//VrLO6nLdRPVCu7YN3FsINYhyHgEY0JlJNHNEjRc+8Wspqeoe
+         qkF0jbjb0fgqWh4akL+SfoT7qVI2m6dpKpqPBI1FpmNsrpGdf6vOaJTWLQ+uABYXzUvY
+         A5VvBq4xugNrMGYZX66kUyUQYzZHYiiMHbHqF3Qq3ObRbwbpoMKHLrP0v1Dm0lWK2VLH
+         lep1YmmS4UwmW/rew5xCpmmf7yMzjz/SpOFhSY09xpbqpM8vkjiN8/t13K7sh9C/j8hp
+         c3pw==
+X-Gm-Message-State: AOJu0Yz5ivo7G/WVzauNiV0qduYx6EAj28eCCZk+InHLQ4sYEX4bVf6b
+	5zmpioyWfK7g9Cr+vc+MGAgB2A==
+X-Google-Smtp-Source: AGHT+IGHuqs6cJxAO05b4OtnwLDo1D2gymVrsLExkse7C+G6Afwt0vVL7asDisJo5osA7Lk44ixdag==
+X-Received: by 2002:a17:903:110d:b0:1c9:e508:ad43 with SMTP id n13-20020a170903110d00b001c9e508ad43mr17082989plh.8.1698304004990;
+        Thu, 26 Oct 2023 00:06:44 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:f228:3a07:1e7f:b38f])
+        by smtp.gmail.com with ESMTPSA id f11-20020a170902ce8b00b001c5076ae6absm10295706plg.126.2023.10.26.00.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 00:06:44 -0700 (PDT)
+Date: Thu, 26 Oct 2023 16:06:39 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org,
+	cerasuolodomenico@gmail.com, yosryahmed@google.com,
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] zswap: export compression failure stats
+Message-ID: <20231026070639.GB15694@google.com>
+References: <20231024234509.2680539-1-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024234509.2680539-1-nphamcs@gmail.com>
 
-On Wed, 11 Oct 2023 09:59:25 +0800 Haifeng Xu <haifeng.xu@shopee.com> wrote:
-
+On (23/10/24 16:45), Nhat Pham wrote:
 > 
+> During a zswap store attempt, the compression algorithm could fail (for
+> e.g due to the page containing incompressible random data). This is not
+> tracked in any of existing zswap counters, making it hard to monitor for
+> and investigate. We have run into this problem several times in our
+> internal investigations on zswap store failures.
 > 
-> On 2023/10/3 15:50, Michal Hocko wrote:
-> > On Thu 28-09-23 11:03:23, Haifeng Xu wrote:
-> > [...]
-> >>>> for example, we want to run processes in the group but those parametes related to 
-> >>>> memory allocation is hard to decide, so use the notifications to inform us that we
-> >>>> need to adjust the paramters automatically and we don't need to create the new processes
-> >>>> manually.
-> >>>
-> >>> I do understand that but OOM is just way too late to tune anything
-> >>> upon. Cgroup v2 has a notion of high limit which can throttle memory
-> >>> allocations way before the hard limit is set and this along with PSI
-> >>> metrics could give you a much better insight on the memory pressure
-> >>> in a memcg.
-> >>>
-> >>
-> >> Thank you for your suggestion. We will try to use memory.high instead.
-> > 
-> > OK, is the patch still required? 
-> Yes
-> As I've said I am not strongly opposed,
+> This patch adds a dedicated debugfs counter for compression algorithm
+> failures.
+> 
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-I'm confused.  You (Haifeng Xu) are looking at using memory.high for
-your requirement, yet you believe that this patch is still required? 
-This seems contradictory.
-
-Oh well.  I think I'll drop this patch for now.  If you believe that
-kernel changes are still required, please propose something for
-6.7-rcX.
-
+FWIW,
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
