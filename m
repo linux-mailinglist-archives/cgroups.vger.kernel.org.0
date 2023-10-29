@@ -1,63 +1,63 @@
-Return-Path: <cgroups+bounces-113-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-114-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3C57DAB22
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 07:15:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 235697DAB24
+	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 07:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04336B21688
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 06:15:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4C821F21B9B
+	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 06:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56F7944C;
-	Sun, 29 Oct 2023 06:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1ED63A7;
+	Sun, 29 Oct 2023 06:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hj42s4Df"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bx/2qO8f"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049DA8F60;
-	Sun, 29 Oct 2023 06:15:04 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7CED3;
-	Sat, 28 Oct 2023 23:15:03 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso3207597b3a.1;
-        Sat, 28 Oct 2023 23:15:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252328F78;
+	Sun, 29 Oct 2023 06:15:07 +0000 (UTC)
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6CED9;
+	Sat, 28 Oct 2023 23:15:05 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2e44c7941so2432874b6e.2;
+        Sat, 28 Oct 2023 23:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698560103; x=1699164903; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698560105; x=1699164905; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sa07Z9Tnf6gPzoCSdY0mE9Qwjplz9eHiRUctPRFvz3A=;
-        b=hj42s4DflsqbcUzB5arhulJaGqjIKybrpY6DRvZkqYtZepvTU8dn9KxNFkOgwGeMe6
-         DjT5/0fFZlcUWSPmD+osFFWCHTfjnMISftRNSPhm/vPFVWmFJ8G8XjmJBGISnRL6WUVG
-         ecLx6JRPNeOE9YynX/VNIkiCP6gI7r7SHv3aqz5uRm64kAbP4M5By5RnvAYgGHYGdgz+
-         6NeW+uKbfkkzkVQTQeTrS8uRQC97+gC1DkT1+ukQCv2nAHwlqG/PX/goLEK13bOz9rNR
-         RwZBygusFy6ECIIWExQa385d1HypvL6mJhOFkUwW53a0OWdgW7uZfiJNcqwosWsAmuKG
-         /7CA==
+        bh=X+y5IvZGTJVNsINeBbqs6/CPtfFJoedZnxRZu6VJyjA=;
+        b=Bx/2qO8f0EcsZOk2rNn4bT+ZOjtODoYRAUdn12LwOjZRDiGJ4Y23FQaXqWZlQAkxnt
+         WdIueM1Nk5VWo61/nkkwlnkqUPn9l0mSo5tz7ggZB1fBhJWc79RZZahNw8T5qVL+obEF
+         RPGf0QOhkZXwWOlJxgzO48AUaGZxLVS/OdgcKZp5ZEq42MAFa6zZR26pAb2+Mn2vYIUW
+         MGGMTmMUm4kRGIiEGgKAd8q1fuXzF061S95bjmuar7NXa1csKO+dEDyeWv8tl2BHxYrE
+         /UEyThaKyQLcw2QEzrvo/je+jCQPjWuQhv9aXC+IPOD2ow6Ydc6409dv/bHJ6/FClww1
+         vMLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698560103; x=1699164903;
+        d=1e100.net; s=20230601; t=1698560105; x=1699164905;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sa07Z9Tnf6gPzoCSdY0mE9Qwjplz9eHiRUctPRFvz3A=;
-        b=kcod7RPWunKvXSvykCNWcUNiKKZXiDNp7i/7+Bdiy1VCVNCOn4EEybm4nF3JwfUpOp
-         ViNfh+WxJFsSCvxypSODLHbOhOQbL8yDltmwxWvuYIC53tIZVQX6FSxkDkkuvJOXXJO4
-         0a/G+fQDEjbMsP215vjjpXjO+0aThGKz2vw04HTiXCi1maLeewfO4T95j2u6VIiBS5q5
-         5t2VQ/b8E3im7DkVEToZYK+DPdT3PAYIPb+saVAfLpB07v7vaeKk7vzdh9WlXrK0Gs57
-         RSmObU4acfKGw0e+BSzIt0ZC3Ne5ic0Td/MlB3kqn5SK9+ROrc/91r9uqLLaJTrF3P/e
-         NuQg==
-X-Gm-Message-State: AOJu0YxzbfgUz2P3Wlu1Z5Iq2k8qVC3wa7tkHle8XxRtpd77LwQaXS4f
-	WeinKBv16VHqk08oMC/lHpk=
-X-Google-Smtp-Source: AGHT+IGjaDJASCPUTLvbci15ulVbGCl/dqqbojUBn6MEr8alcSorg0sHR4dy08CSeg9Zaia2lSOzIg==
-X-Received: by 2002:a05:6a21:a583:b0:161:aef5:6395 with SMTP id gd3-20020a056a21a58300b00161aef56395mr9055218pzc.24.1698560102960;
-        Sat, 28 Oct 2023 23:15:02 -0700 (PDT)
+        bh=X+y5IvZGTJVNsINeBbqs6/CPtfFJoedZnxRZu6VJyjA=;
+        b=h5xz4AGfepHLM6+a5k1w2oMsk9CycyEY3pFjpPxPGM0KZVgVqj2PzxNIpSGX/qn+nQ
+         kbuoILFfjMhkkIsJ8zK0njHOhdME+Cmaz38omoEzXAZ6M2YwWZgWIFP/K3IpEimGLujA
+         yyToh+SknBdgtE5a0GG7iqbpUk9xUCrNRJ7Epj7aEE3MeYNYHO7Aq99+/wjX25r3aEbc
+         T8AhakwK3FnAy2mzHmgM/RIlGMwpeqZHdzxFN2xBNUPDzBakbzMvO/z3R7wrAq95R/gG
+         iUeY8zQXN6O6xgu/HCFszP02ZtSZcifD0i/WXfrjx1Oeel9I6HGoAMj7m+BMuTE2JV3i
+         a1sw==
+X-Gm-Message-State: AOJu0Yx77CuWhD7H7t8I6yuLN/jiShFiPLxVZRJf2/uKHrFDx3KZm+vx
+	Rn9lyxUDFlX9L70ZLvNNAJ8=
+X-Google-Smtp-Source: AGHT+IEL/zFegIBdXR5fcscjYR4WrvXL+mrGreh3egZnEoN+g71G0TvRDGrDqJL6UgaUuHlcWdwLFw==
+X-Received: by 2002:a05:6808:13d6:b0:3b2:ef9a:4339 with SMTP id d22-20020a05680813d600b003b2ef9a4339mr8876787oiw.49.1698560104727;
+        Sat, 28 Oct 2023 23:15:04 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:2b5:5400:4ff:fea0:d066])
-        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.15.01
+        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.15.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 23:15:02 -0700 (PDT)
+        Sat, 28 Oct 2023 23:15:04 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -81,9 +81,9 @@ Cc: cgroups@vger.kernel.org,
 	bpf@vger.kernel.org,
 	oliver.sang@intel.com,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v3 bpf-next 10/11] selftests/bpf: Add a new cgroup helper get_cgroup_hierarchy_id()
-Date: Sun, 29 Oct 2023 06:14:37 +0000
-Message-Id: <20231029061438.4215-11-laoar.shao@gmail.com>
+Subject: [PATCH v3 bpf-next 11/11] selftests/bpf: Add selftests for cgroup1 hierarchy
+Date: Sun, 29 Oct 2023 06:14:38 +0000
+Message-Id: <20231029061438.4215-12-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231029061438.4215-1-laoar.shao@gmail.com>
 References: <20231029061438.4215-1-laoar.shao@gmail.com>
@@ -95,86 +95,290 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A new cgroup helper function, get_cgroup1_hierarchy_id(), has been
-introduced to obtain the ID of a cgroup1 hierarchy based on the provided
-cgroup name. This cgroup name can be obtained from the /proc/self/cgroup
-file.
+Add selftests for cgroup1 hierarchy.
+The result as follows,
+
+  $ tools/testing/selftests/bpf/test_progs --name=cgroup1_hierarchy
+  #36/1    cgroup1_hierarchy/test_cgroup1_hierarchy:OK
+  #36/2    cgroup1_hierarchy/test_root_cgid:OK
+  #36/3    cgroup1_hierarchy/test_invalid_level:OK
+  #36/4    cgroup1_hierarchy/test_invalid_cgid:OK
+  #36/5    cgroup1_hierarchy/test_invalid_hid:OK
+  #36/6    cgroup1_hierarchy/test_invalid_cgrp_name:OK
+  #36/7    cgroup1_hierarchy/test_invalid_cgrp_name2:OK
+  #36/8    cgroup1_hierarchy/test_sleepable_prog:OK
+  #36      cgroup1_hierarchy:OK
+  Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
+
+Besides, I also did some stress test similar to the patch #2 in this
+series, as follows (with CONFIG_PROVE_RCU_LIST enabled):
+
+- Continuously mounting and unmounting named cgroups in some tasks,
+  for example:
+
+  cgrp_name=$1
+  while true
+  do
+      mount -t cgroup -o none,name=$cgrp_name none /$cgrp_name
+      umount /$cgrp_name
+  done
+
+- Continuously run this selftest concurrently,
+  while true; do ./test_progs --name=cgroup1_hierarchy; done
+
+They can ran successfully without any RCU warnings in dmesg.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/testing/selftests/bpf/cgroup_helpers.c | 49 ++++++++++++++++++++++++++++
- tools/testing/selftests/bpf/cgroup_helpers.h |  1 +
- 2 files changed, 50 insertions(+)
+ .../selftests/bpf/prog_tests/cgroup1_hierarchy.c   | 159 +++++++++++++++++++++
+ .../selftests/bpf/progs/test_cgroup1_hierarchy.c   |  72 ++++++++++
+ 2 files changed, 231 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
 
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index 63bfa72..d75bb87 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -637,3 +637,52 @@ unsigned long long get_classid_cgroup_id(void)
- 	format_classid_path(cgroup_workdir);
- 	return get_cgroup_id_from_path(cgroup_workdir);
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c b/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
+new file mode 100644
+index 0000000..4aafbc9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
+@@ -0,0 +1,159 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
 +
-+/**
-+ * get_cgroup1_hierarchy_id - Retrieves the ID of a cgroup1 hierarchy from the cgroup1 name
-+ * @cgrp_name: The cgroup1 name, which can be retrieved from /proc/self/cgroup.
-+ */
-+int get_cgroup1_hierarchy_id(const char *cgrp_name)
++#include <sys/types.h>
++#include <unistd.h>
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++#include "test_cgroup1_hierarchy.skel.h"
++
++static void bpf_cgroup1(struct test_cgroup1_hierarchy *skel)
 +{
-+	char *c, *c2, *c3, *c4;
-+	bool found = false;
-+	char line[1024];
-+	FILE *file;
-+	int i, id;
++	int err;
 +
-+	if (!cgrp_name)
-+		return -1;
++	/* Attach LSM prog first */
++	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
++	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
++		return;
 +
-+	file = fopen("/proc/self/cgroup", "r");
-+	if (!file) {
-+		log_err("fopen /proc/self/cgroup");
-+		return -1;
-+	}
++	/* LSM prog will be triggered when attaching fentry */
++	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
++	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
 +
-+	while (fgets(line, 1024, file)) {
-+		i = 0;
-+		for (c = strtok_r(line, ":", &c2); c && i < 2; c = strtok_r(NULL, ":", &c2)) {
-+			if (i == 0) {
-+				id = strtol(c, NULL, 10);
-+			} else if (i == 1) {
-+				if (!strcmp(c, cgrp_name)) {
-+					found = true;
-+					break;
-+				}
-+
-+				/* Multiple subsystems may share one single mount point */
-+				for (c3 = strtok_r(c, ",", &c4); c3;
-+				     c3 = strtok_r(NULL, ",", &c4)) {
-+					if (!strcmp(c, cgrp_name)) {
-+						found = true;
-+						break;
-+					}
-+				}
-+			}
-+			i++;
-+		}
-+		if (found)
-+			break;
-+	}
-+	return found ? id : -1;
++	err = bpf_link__destroy(skel->links.lsm_run);
++	ASSERT_OK(err, "destroy_lsm");
++	skel->links.lsm_run = NULL;
 +}
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
-index e71da4e..a80c417 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.h
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.h
-@@ -20,6 +20,7 @@ int write_cgroup_file_parent(const char *relative_path, const char *file,
- int create_and_get_cgroup(const char *relative_path);
- void remove_cgroup(const char *relative_path);
- unsigned long long get_cgroup_id(const char *relative_path);
-+int get_cgroup1_hierarchy_id(const char *cgrp_name);
- 
- int join_cgroup(const char *relative_path);
- int join_root_cgroup(void);
++
++static void bpf_cgroup1_sleepable(struct test_cgroup1_hierarchy *skel)
++{
++	int err;
++
++	/* Attach LSM prog first */
++	skel->links.lsm_s_run = bpf_program__attach_lsm(skel->progs.lsm_s_run);
++	if (!ASSERT_OK_PTR(skel->links.lsm_s_run, "lsm_attach"))
++		return;
++
++	/* LSM prog will be triggered when attaching fentry */
++	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
++	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
++
++	err = bpf_link__destroy(skel->links.lsm_s_run);
++	ASSERT_OK(err, "destroy_lsm");
++	skel->links.lsm_s_run = NULL;
++}
++
++static void bpf_cgroup1_invalid_id(struct test_cgroup1_hierarchy *skel)
++{
++	int err;
++
++	/* Attach LSM prog first */
++	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
++	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
++		return;
++
++	/* LSM prog will be triggered when attaching fentry */
++	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
++	if (!ASSERT_OK_PTR(skel->links.fentry_run, "fentry_attach_success"))
++		goto cleanup;
++
++	err = bpf_link__destroy(skel->links.lsm_run);
++	ASSERT_OK(err, "destroy_lsm");
++	skel->links.lsm_run = NULL;
++
++cleanup:
++	err = bpf_link__destroy(skel->links.fentry_run);
++	ASSERT_OK(err, "destroy_fentry");
++	skel->links.fentry_run = NULL;
++}
++
++void test_cgroup1_hierarchy(void)
++{
++	struct test_cgroup1_hierarchy *skel;
++	__u64 current_cgid;
++	int hid, err;
++
++	skel = test_cgroup1_hierarchy__open();
++	if (!ASSERT_OK_PTR(skel, "open"))
++		return;
++
++	skel->bss->target_pid = getpid();
++
++	err = bpf_program__set_attach_target(skel->progs.fentry_run, 0, "bpf_fentry_test1");
++	if (!ASSERT_OK(err, "fentry_set_target"))
++		goto destroy;
++
++	err = test_cgroup1_hierarchy__load(skel);
++	if (!ASSERT_OK(err, "load"))
++		goto destroy;
++
++	/* Setup cgroup1 hierarchy */
++	err = setup_classid_environment();
++	if (!ASSERT_OK(err, "setup_classid_environment"))
++		goto destroy;
++
++	err = join_classid();
++	if (!ASSERT_OK(err, "join_cgroup1"))
++		goto cleanup;
++
++	current_cgid = get_classid_cgroup_id();
++	if (!ASSERT_GE(current_cgid, 0, "cgroup1 id"))
++		goto cleanup;
++
++	hid = get_cgroup1_hierarchy_id("net_cls");
++	if (!ASSERT_GE(hid, 0, "cgroup1 id"))
++		goto cleanup;
++	skel->bss->target_hid = hid;
++
++	if (test__start_subtest("test_cgroup1_hierarchy")) {
++		skel->bss->target_ancestor_cgid = current_cgid;
++		bpf_cgroup1(skel);
++	}
++
++	if (test__start_subtest("test_root_cgid")) {
++		skel->bss->target_ancestor_cgid = 1;
++		skel->bss->target_ancestor_level = 0;
++		bpf_cgroup1(skel);
++	}
++
++	if (test__start_subtest("test_invalid_level")) {
++		skel->bss->target_ancestor_cgid = 1;
++		skel->bss->target_ancestor_level = 1;
++		bpf_cgroup1_invalid_id(skel);
++	}
++
++	if (test__start_subtest("test_invalid_cgid")) {
++		skel->bss->target_ancestor_cgid = 0;
++		bpf_cgroup1_invalid_id(skel);
++	}
++
++	if (test__start_subtest("test_invalid_hid")) {
++		skel->bss->target_ancestor_cgid = 1;
++		skel->bss->target_ancestor_level = 0;
++		skel->bss->target_hid = -1;
++		bpf_cgroup1_invalid_id(skel);
++	}
++
++	if (test__start_subtest("test_invalid_cgrp_name")) {
++		skel->bss->target_hid = get_cgroup1_hierarchy_id("net_cl");
++		skel->bss->target_ancestor_cgid = current_cgid;
++		bpf_cgroup1_invalid_id(skel);
++	}
++
++	if (test__start_subtest("test_invalid_cgrp_name2")) {
++		skel->bss->target_hid = get_cgroup1_hierarchy_id("net_cls,");
++		skel->bss->target_ancestor_cgid = current_cgid;
++		bpf_cgroup1_invalid_id(skel);
++	}
++
++	if (test__start_subtest("test_sleepable_prog")) {
++		skel->bss->target_hid = hid;
++		skel->bss->target_ancestor_cgid = current_cgid;
++		bpf_cgroup1_sleepable(skel);
++	}
++
++cleanup:
++	cleanup_classid_environment();
++destroy:
++	test_cgroup1_hierarchy__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
+new file mode 100644
+index 0000000..979ff4e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0
++//#endif
++/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++
++__u32 target_ancestor_level;
++__u64 target_ancestor_cgid;
++int target_pid, target_hid;
++
++struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
++struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level) __ksym;
++void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
++
++static int bpf_link_create_verify(int cmd)
++{
++	struct cgroup *cgrp, *ancestor;
++	struct task_struct *task;
++	int ret = 0;
++
++	if (cmd != BPF_LINK_CREATE)
++		return 0;
++
++	task = bpf_get_current_task_btf();
++
++	/* Then it can run in parallel with others */
++	if (task->pid != target_pid)
++		return 0;
++
++	cgrp = bpf_task_get_cgroup1(task, target_hid);
++	if (!cgrp)
++		return 0;
++
++	/* Refuse it if its cgid or its ancestor's cgid is the target cgid */
++	if (cgrp->kn->id == target_ancestor_cgid)
++		ret = -1;
++
++	ancestor = bpf_cgroup_ancestor(cgrp, target_ancestor_level);
++	if (!ancestor)
++		goto out;
++
++	if (ancestor->kn->id == target_ancestor_cgid)
++		ret = -1;
++	bpf_cgroup_release(ancestor);
++
++out:
++	bpf_cgroup_release(cgrp);
++	return ret;
++}
++
++SEC("lsm/bpf")
++int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
++{
++	return bpf_link_create_verify(cmd);
++}
++
++SEC("lsm.s/bpf")
++int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size)
++{
++	return bpf_link_create_verify(cmd);
++}
++
++SEC("fentry")
++int BPF_PROG(fentry_run)
++{
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 1.8.3.1
 
