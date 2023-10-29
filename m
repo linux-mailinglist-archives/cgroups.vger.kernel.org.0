@@ -1,63 +1,63 @@
-Return-Path: <cgroups+bounces-110-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-111-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDCE7DAB1C
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 07:15:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E8897DAB1D
+	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 07:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBE982817CD
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 06:15:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C87042817CF
+	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 06:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFEF5665;
-	Sun, 29 Oct 2023 06:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656126108;
+	Sun, 29 Oct 2023 06:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQxW/IEB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="miYtJ1lr"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EB78C19;
-	Sun, 29 Oct 2023 06:14:59 +0000 (UTC)
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EE6CC;
-	Sat, 28 Oct 2023 23:14:58 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2e22a4004so2437898b6e.3;
-        Sat, 28 Oct 2023 23:14:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B12B8F60;
+	Sun, 29 Oct 2023 06:15:01 +0000 (UTC)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE22D3;
+	Sat, 28 Oct 2023 23:15:00 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b5e6301a19so3422930b3a.0;
+        Sat, 28 Oct 2023 23:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698560098; x=1699164898; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698560099; x=1699164899; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yBmbTwV/SCzHF6Ex+v7R9Tm3nCh0Ha6QemKh6sWeBKo=;
-        b=bQxW/IEBLqyfhnEamEK0dIJ7KO3ZdkJREX09hT6NoQviYobRqBUhUMcx82f/AXoD2V
-         N9kq5VTM54QSkhFZah9mLSdFe/DfvfNkK1jN0ig8fHy1TWNjGhO95/0Xmvtl9fZTbdzn
-         d1vA5tU4hTEbcs8Mw8E7AzKjGczfjIM0Iv3w4sMSW8We3B3qy8N6jZOLWQIrUJsORo1L
-         jcfPnl8f/6X+sDt7NC6D35num+ujjNQwb+qvQS4j5bOzZ8L5wf1gRW31HU4ojrpTxH5V
-         ipJb2m68Jh5dOJ1X5yPy1Ka0UX6r57jPLSOh0BfM8vYxyYgwTmiKFPKumlujCyJpogWe
-         2BJg==
+        bh=+WGPpwvnjBN7lnD2fLR5fUdnGAqoZjDwFnJqTNXRdHE=;
+        b=miYtJ1lr2EwiNR6HZnqsgKm6jDSke7XxX/744VYSS1x1PAVLSO7QDoKsyjZOIDoQwW
+         4A9KyRiyic5PJWSZhnz5c9dtGiA8MXqD5tpDogconBnLC0xHVTIdfzuJIBfa5OZK5Amy
+         LqFK0Ciq8gt6El8x0VXzvAA/vKcavIgvx5yAaMAuGQ0b8yf434/B9ZWIVb08voMp9vkQ
+         fxZvo7KLJUP6jtjAxv32Eaq0HfBg6fJqMmCqoX4SmdQVhl73IPkAa4TuaUK+cJPJ/yPv
+         uvgi+F/kBh8oWbCWQNkR8xLEbHfAr1FR4wv/qovkcBzVl++EX2Y0W20fbmN3528R8e7H
+         q6/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698560098; x=1699164898;
+        d=1e100.net; s=20230601; t=1698560099; x=1699164899;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yBmbTwV/SCzHF6Ex+v7R9Tm3nCh0Ha6QemKh6sWeBKo=;
-        b=mVvoosrDN8ThE77rkwV7xRzIlu9RgC584wNfXzyZq8iWVyGzkHi3RBI1fNpqb3D4ex
-         NxHgNLlqXs6ZCzE4PycyiSSG0cuuzdYHiw1n4qljVtRgL6bSHDqvPCIGPJwO+AnRx/0a
-         gwobb9ZWcTzVgGJ2fk9xIiBebN1LnchiBE+qtXhyoGSQPVY9RQ0tXe0Bv2SqRHdrQDef
-         PoemZCZ4AABEw0z3L0V+nyN3cBr+HmeuyYOhSkxqCwEl7G3kMShqQi+doNaY0v9Wc3Ir
-         +wBQOOXab5OeI3GDYfnCWRtD9detB/EdH1rR0/A+GqaU0rwHIAgiQV/IJcyJqI61CdvS
-         rPKQ==
-X-Gm-Message-State: AOJu0Yye9CdRd93U0nHWp+eEXCB4lMKa8t+61ljeqvxBMLZK8grOROZF
-	rSa/rXpT1YQL9BHIbN5sCXk=
-X-Google-Smtp-Source: AGHT+IGVnXoQqAnMqSaErKSKkEc/768WtOCUQNP5tNBS9BwmfnBafvZocKuIYi5V/5RnQFedOzqp6g==
-X-Received: by 2002:aca:1909:0:b0:3b2:df82:812e with SMTP id l9-20020aca1909000000b003b2df82812emr7689811oii.32.1698560097914;
-        Sat, 28 Oct 2023 23:14:57 -0700 (PDT)
+        bh=+WGPpwvnjBN7lnD2fLR5fUdnGAqoZjDwFnJqTNXRdHE=;
+        b=rLvlcpQRYteMxZSUbFyPuzry/kGNSSwgb99XrGTd/DwKpzturCiHT0i/lmRPwxvxSV
+         f3pqSNP70xO+0R7G1o0qgjAD6rXCy8RjxgbUewWatRs13iasB8DWFKgNGNA7lV+2LEek
+         XvsHO4ACgXfYL1R+9ntShUXyhgD28h3l76QeURm7q1fRBUv59IfGhWOgcPON+F50gDYH
+         6Mef6v/KXpPDPxwmC2HSZvirN/4i8vk0qHOu7mXKhbfRXUVwkCzW0I+AJPe8nDUJw0IX
+         iLTCi8pNK9H4kNjv0LXAjMCv6Bf93YXZVT7rxXshdeqjA8vo467e7oO1Shi0K+Y+yGOR
+         aFBw==
+X-Gm-Message-State: AOJu0YyyDj8ovTov5PNfGBIlV/vqZ6UQtObJt2KHZpCj2p8MUHgNCuOn
+	kLzEOGdEmRE9G/5dP+a9dF4=
+X-Google-Smtp-Source: AGHT+IFcHD54lCioxi35XUAefYmbg48pl0iYFvjsVywudDNbnRraEoFm73JMX0cwBjueGpkmZ0A9ig==
+X-Received: by 2002:a05:6300:8088:b0:17f:fef8:1f3f with SMTP id ap8-20020a056300808800b0017ffef81f3fmr3467702pzc.4.1698560099531;
+        Sat, 28 Oct 2023 23:14:59 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:2b5:5400:4ff:fea0:d066])
-        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.14.56
+        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.14.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 23:14:57 -0700 (PDT)
+        Sat, 28 Oct 2023 23:14:59 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -81,9 +81,9 @@ Cc: cgroups@vger.kernel.org,
 	bpf@vger.kernel.org,
 	oliver.sang@intel.com,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v3 bpf-next 07/11] selftests/bpf: Fix issues in setup_classid_environment()
-Date: Sun, 29 Oct 2023 06:14:34 +0000
-Message-Id: <20231029061438.4215-8-laoar.shao@gmail.com>
+Subject: [PATCH v3 bpf-next 08/11] selftests/bpf: Add parallel support for classid
+Date: Sun, 29 Oct 2023 06:14:35 +0000
+Message-Id: <20231029061438.4215-9-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231029061438.4215-1-laoar.shao@gmail.com>
 References: <20231029061438.4215-1-laoar.shao@gmail.com>
@@ -95,76 +95,93 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the net_cls subsystem is already mounted, attempting to mount it again
-in setup_classid_environment() will result in a failure with the error code
-EBUSY. Despite this, tmpfs will have been successfully mounted at
-/sys/fs/cgroup/net_cls. Consequently, the /sys/fs/cgroup/net_cls directory
-will be empty, causing subsequent setup operations to fail.
-
-Here's an error log excerpt illustrating the issue when net_cls has already
-been mounted at /sys/fs/cgroup/net_cls prior to running
-setup_classid_environment():
-
-- Before that change
-
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  test_cgroup_v1v2:PASS:client_fd 0 nsec
-  test_cgroup_v1v2:PASS:cgroup_fd 0 nsec
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  test_cgroup_v1v2:PASS:cgroup-v2-only 0 nsec
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
-  (cgroup_helpers.c:540: errno: No such file or directory) Opening cgroup classid: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/net_cls.classid
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/cgroup.procs
-  run_test:FAIL:join_classid unexpected error: 1 (errno 2)
-  test_cgroup_v1v2:FAIL:cgroup-v1v2 unexpected error: -1 (errno 2)
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
-  #44      cgroup_v1v2:FAIL
-  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-
-- After that change
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
-  #44      cgroup_v1v2:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Include the current pid in the classid cgroup path. This way, different
+testers relying on classid-based configurations will have distinct classid
+cgroup directories, enabling them to run concurrently. Additionally, we
+leverage the current pid as the classid, ensuring unique identification.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/testing/selftests/bpf/cgroup_helpers.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/cgroup_helpers.c         | 18 +++++++++++-------
+ tools/testing/selftests/bpf/cgroup_helpers.h         |  2 +-
+ tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c |  2 +-
+ 3 files changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index 5b1da2a..10b5f42 100644
+index 10b5f42..f18649a 100644
 --- a/tools/testing/selftests/bpf/cgroup_helpers.c
 +++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -523,10 +523,20 @@ int setup_classid_environment(void)
+@@ -45,9 +45,12 @@
+ #define format_parent_cgroup_path(buf, path) \
+ 	format_cgroup_path_pid(buf, path, getppid())
+ 
+-#define format_classid_path(buf)				\
+-	snprintf(buf, sizeof(buf), "%s%s", NETCLS_MOUNT_PATH,	\
+-		 CGROUP_WORK_DIR)
++#define format_classid_path_pid(buf, pid)				\
++	snprintf(buf, sizeof(buf), "%s%s%d", NETCLS_MOUNT_PATH,	\
++		 CGROUP_WORK_DIR, pid)
++
++#define format_classid_path(buf)	\
++	format_classid_path_pid(buf, getpid())
+ 
+ static __thread bool cgroup_workdir_mounted;
+ 
+@@ -551,15 +554,16 @@ int setup_classid_environment(void)
+ 
+ /**
+  * set_classid() - Set a cgroupv1 net_cls classid
+- * @id: the numeric classid
+  *
+- * Writes the passed classid into the cgroup work dir's net_cls.classid
++ * Writes the classid into the cgroup work dir's net_cls.classid
+  * file in order to later on trigger socket tagging.
+  *
++ * We leverage the current pid as the classid, ensuring unique identification.
++ *
+  * On success, it returns 0, otherwise on failure it returns 1. If there
+  * is a failure, it prints the error to stderr.
+  */
+-int set_classid(unsigned int id)
++int set_classid(void)
+ {
+ 	char cgroup_workdir[PATH_MAX - 42];
+ 	char cgroup_classid_path[PATH_MAX + 1];
+@@ -575,7 +579,7 @@ int set_classid(unsigned int id)
  		return 1;
  	}
  
--	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls") &&
--	    errno != EBUSY) {
--		log_err("mount cgroup net_cls");
--		return 1;
-+	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls")) {
-+		if (errno != EBUSY) {
-+			log_err("mount cgroup net_cls");
-+			return 1;
-+		}
-+
-+		if (rmdir(NETCLS_MOUNT_PATH)) {
-+			log_err("rmdir cgroup net_cls");
-+			return 1;
-+		}
-+		if (umount(CGROUP_MOUNT_DFLT)) {
-+			log_err("umount cgroup base");
-+			return 1;
-+		}
+-	if (dprintf(fd, "%u\n", id) < 0) {
++	if (dprintf(fd, "%u\n", getpid()) < 0) {
+ 		log_err("Setting cgroup classid");
+ 		rc = 1;
  	}
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
+index 5c2cb9c..92fc41d 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.h
++++ b/tools/testing/selftests/bpf/cgroup_helpers.h
+@@ -29,7 +29,7 @@ int write_cgroup_file_parent(const char *relative_path, const char *file,
+ void cleanup_cgroup_environment(void);
  
+ /* cgroupv1 related */
+-int set_classid(unsigned int id);
++int set_classid(void);
+ int join_classid(void);
+ 
+ int setup_classid_environment(void);
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c b/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
+index 9026b42..addf720 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
+@@ -71,7 +71,7 @@ void test_cgroup_v1v2(void)
+ 	}
+ 	ASSERT_OK(run_test(cgroup_fd, server_fd, false), "cgroup-v2-only");
+ 	setup_classid_environment();
+-	set_classid(42);
++	set_classid();
+ 	ASSERT_OK(run_test(cgroup_fd, server_fd, true), "cgroup-v1v2");
  	cleanup_classid_environment();
+ 	close(server_fd);
 -- 
 1.8.3.1
 
