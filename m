@@ -1,63 +1,63 @@
-Return-Path: <cgroups+bounces-109-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-110-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D067DAB1B
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 07:15:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDCE7DAB1C
+	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 07:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8357FB21409
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 06:15:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBE982817CD
+	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 06:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B416F53A4;
-	Sun, 29 Oct 2023 06:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFEF5665;
+	Sun, 29 Oct 2023 06:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IgHVozCH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQxW/IEB"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E8C7494;
-	Sun, 29 Oct 2023 06:14:58 +0000 (UTC)
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B06D3;
-	Sat, 28 Oct 2023 23:14:57 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b3f6dd612cso2272249b6e.3;
-        Sat, 28 Oct 2023 23:14:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EB78C19;
+	Sun, 29 Oct 2023 06:14:59 +0000 (UTC)
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EE6CC;
+	Sat, 28 Oct 2023 23:14:58 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2e22a4004so2437898b6e.3;
+        Sat, 28 Oct 2023 23:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698560096; x=1699164896; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698560098; x=1699164898; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t+813JukxzL+6wkyiKgmo5W2H4NKk3atr6arbVRyW+U=;
-        b=IgHVozCH57atnvOPhX+3cWa66l0hLxJpu6rmjZ9JcXqS2MjUtnCVHiAvFzcFVt0Go6
-         uq+kTHtZrYHDGAkXS1AtWPouYyMzqPMkO48oB9n04IAyczN+Dxk1WPPHOuMPW494xMdS
-         8IozPCC0Hw3EC2jHIALcAPxe56s3LZqXZ1hkDURsGrnZe2Mxxem1GbdsawRN4HWmgRqH
-         MmpUFOVq3jJj1Kwro4lFU6nUUVbIYOXz1vPU1c/MgWtH+OfzToaFgucpnkWuz6cSZtCT
-         FHneKE4/iyMYIu2qHIvF8I2VChSA0wbL0Y3Hq3yj+8FTcBlIJe6arapYoCZUwFsDtaQl
-         FddA==
+        bh=yBmbTwV/SCzHF6Ex+v7R9Tm3nCh0Ha6QemKh6sWeBKo=;
+        b=bQxW/IEBLqyfhnEamEK0dIJ7KO3ZdkJREX09hT6NoQviYobRqBUhUMcx82f/AXoD2V
+         N9kq5VTM54QSkhFZah9mLSdFe/DfvfNkK1jN0ig8fHy1TWNjGhO95/0Xmvtl9fZTbdzn
+         d1vA5tU4hTEbcs8Mw8E7AzKjGczfjIM0Iv3w4sMSW8We3B3qy8N6jZOLWQIrUJsORo1L
+         jcfPnl8f/6X+sDt7NC6D35num+ujjNQwb+qvQS4j5bOzZ8L5wf1gRW31HU4ojrpTxH5V
+         ipJb2m68Jh5dOJ1X5yPy1Ka0UX6r57jPLSOh0BfM8vYxyYgwTmiKFPKumlujCyJpogWe
+         2BJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698560096; x=1699164896;
+        d=1e100.net; s=20230601; t=1698560098; x=1699164898;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t+813JukxzL+6wkyiKgmo5W2H4NKk3atr6arbVRyW+U=;
-        b=KyHJIPs/fz372NpV1soNAw5wBqHY7PVWiP5ZwW2NaKcBoWsMjXpAoqpwtrQ2z3yynh
-         eJy/rgycE9TkljKewfLfWOpNxIaJod2ToK3Ggy+M//VIpdsFy6qXjQcAFr0BX8mi+h53
-         igo4iK/J1rGZyEFzGUAf5ErKiyKGQs/VsQG+zdLzizFV5fZhDOEQC4AfcEz3xlKi2B3b
-         TBzDBTLnWsQyTTkPUt6vu94Bf4S/moDjgfdy6npWQ1LT/5TjFHrF5F6g5k4rDgz7LkQN
-         pMl8bdhcVNqP7HlmD9ZmioIH7/zJEd3TRwdcKMd6trRToYsoqLRB8YdrGAAOtEF/Ri//
-         U3kQ==
-X-Gm-Message-State: AOJu0YwXgqfmxLWe5eNmRIvXIHxGyYo24TGnPFAp5sjTxKh3qbvck/3j
-	Pz6xgvEokGscZTy/tvWT5bM=
-X-Google-Smtp-Source: AGHT+IEqGHX/nd0eOkGIV3mum7IyRHIYm3fEGFoFZe1TEGey7bK9yTLipeCRTWQzXmmxxQymdArURA==
-X-Received: by 2002:a05:6808:1a13:b0:3b2:ea7c:c402 with SMTP id bk19-20020a0568081a1300b003b2ea7cc402mr9026932oib.25.1698560096250;
-        Sat, 28 Oct 2023 23:14:56 -0700 (PDT)
+        bh=yBmbTwV/SCzHF6Ex+v7R9Tm3nCh0Ha6QemKh6sWeBKo=;
+        b=mVvoosrDN8ThE77rkwV7xRzIlu9RgC584wNfXzyZq8iWVyGzkHi3RBI1fNpqb3D4ex
+         NxHgNLlqXs6ZCzE4PycyiSSG0cuuzdYHiw1n4qljVtRgL6bSHDqvPCIGPJwO+AnRx/0a
+         gwobb9ZWcTzVgGJ2fk9xIiBebN1LnchiBE+qtXhyoGSQPVY9RQ0tXe0Bv2SqRHdrQDef
+         PoemZCZ4AABEw0z3L0V+nyN3cBr+HmeuyYOhSkxqCwEl7G3kMShqQi+doNaY0v9Wc3Ir
+         +wBQOOXab5OeI3GDYfnCWRtD9detB/EdH1rR0/A+GqaU0rwHIAgiQV/IJcyJqI61CdvS
+         rPKQ==
+X-Gm-Message-State: AOJu0Yye9CdRd93U0nHWp+eEXCB4lMKa8t+61ljeqvxBMLZK8grOROZF
+	rSa/rXpT1YQL9BHIbN5sCXk=
+X-Google-Smtp-Source: AGHT+IGVnXoQqAnMqSaErKSKkEc/768WtOCUQNP5tNBS9BwmfnBafvZocKuIYi5V/5RnQFedOzqp6g==
+X-Received: by 2002:aca:1909:0:b0:3b2:df82:812e with SMTP id l9-20020aca1909000000b003b2df82812emr7689811oii.32.1698560097914;
+        Sat, 28 Oct 2023 23:14:57 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:2b5:5400:4ff:fea0:d066])
-        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.14.54
+        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.14.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 23:14:55 -0700 (PDT)
+        Sat, 28 Oct 2023 23:14:57 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -81,9 +81,9 @@ Cc: cgroups@vger.kernel.org,
 	bpf@vger.kernel.org,
 	oliver.sang@intel.com,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
-Date: Sun, 29 Oct 2023 06:14:33 +0000
-Message-Id: <20231029061438.4215-7-laoar.shao@gmail.com>
+Subject: [PATCH v3 bpf-next 07/11] selftests/bpf: Fix issues in setup_classid_environment()
+Date: Sun, 29 Oct 2023 06:14:34 +0000
+Message-Id: <20231029061438.4215-8-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231029061438.4215-1-laoar.shao@gmail.com>
 References: <20231029061438.4215-1-laoar.shao@gmail.com>
@@ -95,59 +95,76 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A new kfunc is added to acquire cgroup1 of a task:
+If the net_cls subsystem is already mounted, attempting to mount it again
+in setup_classid_environment() will result in a failure with the error code
+EBUSY. Despite this, tmpfs will have been successfully mounted at
+/sys/fs/cgroup/net_cls. Consequently, the /sys/fs/cgroup/net_cls directory
+will be empty, causing subsequent setup operations to fail.
 
-- bpf_task_get_cgroup1
-  Acquires the associated cgroup of a task whithin a specific cgroup1
-  hierarchy. The cgroup1 hierarchy is identified by its hierarchy ID.
+Here's an error log excerpt illustrating the issue when net_cls has already
+been mounted at /sys/fs/cgroup/net_cls prior to running
+setup_classid_environment():
 
-This new kfunc enables the tracing of tasks within a designated
-container or cgroup directory in BPF programs.
+- Before that change
 
-Suggested-by: Tejun Heo <tj@kernel.org>
+  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
+  test_cgroup_v1v2:PASS:server_fd 0 nsec
+  test_cgroup_v1v2:PASS:client_fd 0 nsec
+  test_cgroup_v1v2:PASS:cgroup_fd 0 nsec
+  test_cgroup_v1v2:PASS:server_fd 0 nsec
+  run_test:PASS:skel_open 0 nsec
+  run_test:PASS:prog_attach 0 nsec
+  test_cgroup_v1v2:PASS:cgroup-v2-only 0 nsec
+  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
+  (cgroup_helpers.c:540: errno: No such file or directory) Opening cgroup classid: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/net_cls.classid
+  run_test:PASS:skel_open 0 nsec
+  run_test:PASS:prog_attach 0 nsec
+  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/cgroup.procs
+  run_test:FAIL:join_classid unexpected error: 1 (errno 2)
+  test_cgroup_v1v2:FAIL:cgroup-v1v2 unexpected error: -1 (errno 2)
+  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
+  #44      cgroup_v1v2:FAIL
+  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+- After that change
+  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
+  #44      cgroup_v1v2:OK
+  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/helpers.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ tools/testing/selftests/bpf/cgroup_helpers.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 61f51de..f4cdeae 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2222,6 +2222,25 @@ __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
- 	rcu_read_unlock();
- 	return ret;
- }
-+
-+/**
-+ * bpf_task_get_cgroup1 - Acquires the associated cgroup of a task within a
-+ * specific cgroup1 hierarchy. The cgroup1 hierarchy is identified by its
-+ * hierarchy ID.
-+ * @task: The target task
-+ * @hierarchy_id: The ID of a cgroup1 hierarchy
-+ *
-+ * On success, the cgroup is returen. On failure, NULL is returned.
-+ */
-+__bpf_kfunc struct cgroup *
-+bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
-+{
-+	struct cgroup *cgrp = task_get_cgroup1(task, hierarchy_id);
-+
-+	if (IS_ERR(cgrp))
-+		return NULL;
-+	return cgrp;
-+}
- #endif /* CONFIG_CGROUPS */
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index 5b1da2a..10b5f42 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -523,10 +523,20 @@ int setup_classid_environment(void)
+ 		return 1;
+ 	}
  
- /**
-@@ -2528,6 +2547,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
- BTF_ID_FLAGS(func, bpf_cgroup_ancestor, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_under_cgroup, KF_RCU)
-+BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- #endif
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_throw)
+-	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls") &&
+-	    errno != EBUSY) {
+-		log_err("mount cgroup net_cls");
+-		return 1;
++	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls")) {
++		if (errno != EBUSY) {
++			log_err("mount cgroup net_cls");
++			return 1;
++		}
++
++		if (rmdir(NETCLS_MOUNT_PATH)) {
++			log_err("rmdir cgroup net_cls");
++			return 1;
++		}
++		if (umount(CGROUP_MOUNT_DFLT)) {
++			log_err("umount cgroup base");
++			return 1;
++		}
+ 	}
+ 
+ 	cleanup_classid_environment();
 -- 
 1.8.3.1
 
