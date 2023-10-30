@@ -1,163 +1,228 @@
-Return-Path: <cgroups+bounces-115-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-116-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E44A67DAE81
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 22:23:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F306A7DB596
+	for <lists+cgroups@lfdr.de>; Mon, 30 Oct 2023 10:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A130828147E
-	for <lists+cgroups@lfdr.de>; Sun, 29 Oct 2023 21:23:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A22B6281562
+	for <lists+cgroups@lfdr.de>; Mon, 30 Oct 2023 09:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B4C11C8B;
-	Sun, 29 Oct 2023 21:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC8AAD5F;
+	Mon, 30 Oct 2023 09:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="e6FVjIVa"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rnw4ECiF"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBF533C7
-	for <cgroups@vger.kernel.org>; Sun, 29 Oct 2023 21:23:39 +0000 (UTC)
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2058.outbound.protection.outlook.com [40.92.75.58])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F13197;
-	Sun, 29 Oct 2023 14:23:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JwBUCHu3Xg/cmieRr8RM3bIqXlJzMtkJ5CXUQrXvn1kt/dzP5mCoTDCJwyHh9h8kNUS52cIhvSQByRDVZ/dkuvmlxfODdnlpmXqIQ37MRcneikN4/tcdt9bPIQ29+gPdyDIp7BGQw0uh0mPmczp/B8k4LUCK9V8LZWasAwfAGDM4985nHOu8Q46kYd9LPVdVammrmsS++7Fqqxt7ZyXQzzZ891oy3VgNSgfeedA3h3MYkgj9rdyS1Thmp3SZoM3Ov2Jv9M8GdYnpcCgN4nZcI83x5JZP5n/k3cfXzohXQ4W30iGJWuSVBnSYbV1CScbb+vsP+zqyVxn2/pCWMiufqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6M0B9NbUlgDJsAPGo584eNpJCi4+0ld3rxL+zjZdXFI=;
- b=JhV+WnxQmzSwrRKNcwR+AcpcbwKTO/CHgUD6Qbs8mnUTcoxJfj9m7XipoVVAFm+cz1y6yPZ/1NW/MWmHo4mKxbXQruond4InvpboI5PKkJbv8N1H8kaK1rLtpan8hC2ZYfskel/01bILnudzzR4L+Fe/0HA9hWBur0ChrQojgg+09kCQR0HtlD5RI+Tvcqacp+PwrVkfNEWxRPQ2ZlRi+vgy9fqC2Ql8+3TsAo1tOfVEdhm0ahUKHA5N27vEN9/CFU5qnwbCKw/SvlU60txEGACUlKir17zUz3WCJD8zP5STCfloGngtn7MI7C3OcvrH6DbVN7kI0yEoLK/d7ci3wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6M0B9NbUlgDJsAPGo584eNpJCi4+0ld3rxL+zjZdXFI=;
- b=e6FVjIVacPzOb624JMFzfESIvfwGGKlZDJcEhl5pXVcDC5ll0/qTV2Qf90RP4eTVWujG8wbPunpNFrVoJI/FlSLgBJ9+wqFgpNc3hutn+Pideha5XwQSH/ycwPjGYv8UkCKAOB5loITsQtKAuS58A+Fw4tRwIz6TLBBuB5ymAUTd/IgBO5pv19fEVhURmwLa7Fu0jpvw3HgAdFWV221fcO2c74hM/ZYov5fUizz7z1BW/gQG88hQIG+17GoMHdhY+GssoLCBfpmdf/cJ8eX7Z1MM9jRyn3b2ZZizolEsYOeSalNFKLoL6lqEqg2G6UZOucQ6PMjrwfYh3GnuLD5zjQ==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by DB9P193MB1931.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:24e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.27; Sun, 29 Oct
- 2023 21:23:35 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::2db3:2c11:bb43:c6e]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::2db3:2c11:bb43:c6e%5]) with mapi id 15.20.6933.027; Sun, 29 Oct 2023
- 21:23:35 +0000
-Message-ID:
- <VI1P193MB0752CD67E1432A1CDE48F86D99A2A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-Date: Mon, 30 Oct 2023 05:23:34 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/cgroup: Fix awk usage in test_cpuset_prs.sh
- that may cause error
-To: Waiman Long <longman@redhat.com>, lizefan.x@bytedance.com, tj@kernel.org,
- hannes@cmpxchg.org, shuah@kernel.org
-Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
-References: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
- <ed2993f2-4bdc-19c5-5a0f-1e96da44fb24@redhat.com>
-From: Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <ed2993f2-4bdc-19c5-5a0f-1e96da44fb24@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [zdfF4qpzxzr+6SiiYHdzaUZF2YASsHQ+]
-X-ClientProxiedBy: CWLP123CA0111.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:401:5f::27) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID:
- <d6daf8c0-c827-400f-87d8-5b69eae09e62@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6541AD2F8;
+	Mon, 30 Oct 2023 09:01:00 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E3AB6;
+	Mon, 30 Oct 2023 02:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698656458; x=1730192458;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/eDxoYHBVeJPhJBhS4WxJcUZkYiHOSLIxpmzrDruSis=;
+  b=Rnw4ECiFP4QQe52tUI6rjtXbNBOTBih0K35dmQqRsT1ETMUvKRywR0KB
+   +WcnovwYeodlrLLN6+ip64gadDSOdPLXZTssVK7VrXbW3FxPR11Bokud7
+   GLnGgTsM43Jz3gdcJSkmZtyQVH4jEH6MWXYn5wj4GDII0v+zFryCcMHLk
+   Q4+dp7jNiCcKsKzPHLHFRCCUFW/cBckU5nHYz5Q1WHVXf5YlBPqV2hay9
+   TMLwbyUyUS6ampCd6R0B04XCpuorOEPMTOytGZIXWHiUUDSIow7QUhKBc
+   STchsxVwXvelKXYqMZB+qvirudDT7OpqMn95CwPrzU9qY0YpXNgi6ekqq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="373088601"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="373088601"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:00:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="1461987"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 30 Oct 2023 02:00:52 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qxO8g-000D99-0Y;
+	Mon, 30 Oct 2023 09:00:50 +0000
+Date: Mon, 30 Oct 2023 17:00:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+	sinquersw@gmail.com, longman@redhat.com
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, oliver.sang@intel.com,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1
+ hierarchy
+Message-ID: <202310301605.CGFI0aSW-lkp@intel.com>
+References: <20231029061438.4215-7-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|DB9P193MB1931:EE_
-X-MS-Office365-Filtering-Correlation-Id: a36c9e27-601f-4d41-6a56-08dbd8c54f37
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	27CvvH7Z26NIY5nxCE8+eLM+zNYGonPlm5/329EfLOM0aMfZugofsKKL5BAnStSGipZJWNCM04CszHvQ2pFsujnl7e/MirMBW5aPFxVZLyjXxm6UDJMC8zIGSw0Sf7oDiGEkNsjLf9pqswOgB1eHIPr4xXyuXqKE4R6jF7Wgg4FzA3mwFkVhrgL67KjEul4p+BtcREd90t5ccyXnldUXi24cZt5endn0wq/4423NS3jKCw7ywGnQ8Gi9sTTVig+YMnJyE1c5cn+xRbuz7cM7HXU2mWMFfPp/cugdSc2YhMYAubrX4wDwaO9DJBm3Ty7RxZwiMOYLzdnCazE+/d6SoVcKH4xDExHEjYUuy3hoHcEKGaLoC7gN7NiA/nGamlVPIPaisfC/QL+49JMsnJEGBlsqkpmwfnuq56oDGnfydxuK7vVXm7STU34LdShEOiSZauTvKOO5eHYJwrYUTMu7dqmSaNXhFhFOTGCFMaug0o4xTMhMRvZj14KY0mVzARU/LXFoKx+xvEz4ODgYD9UrCpSfoAQXh2KXCeNP0ypiyaYcnxZeOJC0ugaLrKkls2W8
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bmlhMkhWd2N2MHVla0hNTWI1b2xuR0NjcTBXRFNTQ2FmOTBhVjY3Z1NtL2Zj?=
- =?utf-8?B?QXIweVF4cVFvdHJJM3dTUkUxR2EzajVxSGZRUTZWVEd5MElUaUVOQ3kvOUZS?=
- =?utf-8?B?elhqbGswMnZqTTR0UU8yQWNzREhXczhkRzJrZlRvcE5VQUFVTTJNUmVTTmVo?=
- =?utf-8?B?WGlzN2wzUjZJZjBldHlGSUNLZUZQczRJSHl3RFhlK3drdVRIRTdYcElOTmM0?=
- =?utf-8?B?ZU5XejN4OFFodjBxVG44TUIvUmVESFBENUcydmpaQkhwSWd0OUFEbjdYNnhK?=
- =?utf-8?B?dkdQaUFDSVYrMHFtTGZTL3VMVldlcTE5clZ2bWlINXZEYTRlK3BXQ2krVVJk?=
- =?utf-8?B?N3hGZ29YNTBLbkwwWUFobjYvQ2ZhZi9USjBkb29FbzNEb3RpVklEVWhQNGUy?=
- =?utf-8?B?OU9oUy9XWmw4eEtOdVZ0emlLc2JWZHM2V2hpbGZSamUzQkJ4TUR0WjJhNkZS?=
- =?utf-8?B?Zk5YTy83MDVuWEVaRDNkc084NE1PM0VCdVFVL1g2cG1xM1ErZWJqa3R4MnlC?=
- =?utf-8?B?L29TQ3RMdXJidTR0eWhUbFR5bkRyaXNOMDBKb1BVZGZabzVrUEZ1V2VIYmlL?=
- =?utf-8?B?U0prVFJsYVdNaW1Hckk3SFBGa1NvN2ZNUnE5cXJFNnVtc1BsL1BDTWVzRmZu?=
- =?utf-8?B?ZVpwM3J4WmdjMnl5bTVJcGVDR1VLWC9OMVdxWXh0eFRTbHd3b3AyUHJNeUpr?=
- =?utf-8?B?dXJHSXFsWXVySkQ2WWNTNmdBQXVDSlgwaENlMDVOblE3QXd6T3FlaHEvcHkz?=
- =?utf-8?B?cytqU3A3TzY5Z3BRSWtZMGFaTGZxQ1pPQ1I0THNQVVFINWpueWZIaHZ5Sjc3?=
- =?utf-8?B?cHJ2R1p5K2Rvc2lGWkplYXVlWDVMdmJXclNvRk9DS1FzL0xxMVZrWXR6NGx5?=
- =?utf-8?B?SGtJcDhOSDlOZDdXRmwwQ2U4SUI4cWZzYzNkbldJK1FYWU9zSUtiMWFRemRC?=
- =?utf-8?B?a21VTkRLYVNCeGZYV0ZHaTJBc09qcXppaVdZNVZEVFkzWVFnRThNY1J0Tll0?=
- =?utf-8?B?bk9qRVhRNHZWVldyMzhWeVRVTUNIbEJlbzhmK1JuWEFCR1Zrc3E0SlhPWmxL?=
- =?utf-8?B?TEZXN1F0ZEZSdGdKb0lRV29RaFhpKzhhTzEzWWxWdjByR3NSeDdGaUlhaExl?=
- =?utf-8?B?c3J5RGdIRnVINVlmbDNZc2xiNmtYRzdHMWlnYU9xMUhiZStQbXBMTStYbTI2?=
- =?utf-8?B?Mkxxb0pCaWdNdDI0MTdVb0pQbExSTGZET0kxS1FabEdzbU81aTN4MWsxdjZm?=
- =?utf-8?B?Z2tlajdTZFFJV3ZBWWxRTCtBc25FWU55a2llSkMxN2Z4WjZOU0xIMnVlem10?=
- =?utf-8?B?bG5UOG5rQnRmT283U3JldFdpWUVMcTI1Yk9NTDM5OHBXZE1IUkpHekgxckZX?=
- =?utf-8?B?Z2VHZzIvUDByNDhOR0FRbkNlT0RsaDdReGZxbTdJREF3RW52YzJzbDBSczY3?=
- =?utf-8?B?U3JOVllCMWdKazRtbC9JL3kvK2JGSjQvb2ZhUldtSjZKUzNVeXhBb2RHMEEr?=
- =?utf-8?B?V3BvV0RQTzlqWlM3RjlQTEJFUWM3VUJHMHAzZjlWdGtERk9HbGxEWjd4T0xk?=
- =?utf-8?B?S3djS0VBb1V3YmFjd3E4eHk3Zyt4Ny9WV0pyUHZ2Mko2bTNXM2ZrSzMzVG9p?=
- =?utf-8?Q?F/ZOhMeutXh5GCw9T/Fzr6vWR8y1WTK0IPkZ6TqzDg2s=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a36c9e27-601f-4d41-6a56-08dbd8c54f37
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2023 21:23:35.4898
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P193MB1931
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231029061438.4215-7-laoar.shao@gmail.com>
 
-On 2023/9/26 20:18, Waiman Long wrote:
-> On 9/25/23 15:38, Juntong Deng wrote:
->> According to the awk manual, the -e option does not need to be specified
->> in front of 'program' (unless you need to mix program-file).
->>
->> The redundant -e option can cause error when users use awk tools other
->> than gawk (for example, mawk does not support the -e option).
->>
->> Error Example:
->> awk: not an option: -e
->> Cgroup v2 mount point not found!
->>
->> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
->> ---
->>   tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh 
->> b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> index 4afb132e4e4f..6820653e8432 100755
->> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> @@ -20,7 +20,7 @@ skip_test() {
->>   WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
->>   # Find cgroup v2 mount point
->> -CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
->> +CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
->>   [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
->>   CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
-> 
-> Yes, the -e option is redundant. Thanks for catching that.
-> 
-> Acked-by: Waiman Long <longman@redhat.com>
-> 
+Hi Yafang,
 
-Hi Shuah, this patch has been acked but does not seem to have been
-applied yet.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/cgroup-Remove-unnecessary-list_empty/20231029-143457
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231029061438.4215-7-laoar.shao%40gmail.com
+patch subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
+config: i386-randconfig-013-20231030 (https://download.01.org/0day-ci/archive/20231030/202310301605.CGFI0aSW-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231030/202310301605.CGFI0aSW-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310301605.CGFI0aSW-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/helpers.c:1893:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1907:19: warning: no previous declaration for 'bpf_percpu_obj_new_impl' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1941:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1949:18: warning: no previous declaration for 'bpf_percpu_obj_drop_impl' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1955:19: warning: no previous declaration for 'bpf_refcount_acquire_impl' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2000:17: warning: no previous declaration for 'bpf_list_push_front_impl' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2010:17: warning: no previous declaration for 'bpf_list_push_back_impl' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2043:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2048:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2053:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2109:17: warning: no previous declaration for 'bpf_rbtree_add_impl' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
+                    ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2119:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2132:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
+    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2143:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_task_release(struct task_struct *p)
+                     ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2155:28: warning: no previous declaration for 'bpf_cgroup_acquire' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2167:18: warning: no previous declaration for 'bpf_cgroup_release' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2179:28: warning: no previous declaration for 'bpf_cgroup_ancestor' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
+                               ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2199:28: warning: no previous declaration for 'bpf_cgroup_from_id' [-Wmissing-declarations]
+    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2219:18: warning: no previous declaration for 'bpf_task_under_cgroup' [-Wmissing-declarations]
+    __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
+                     ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/helpers.c:2240:1: warning: no previous declaration for 'bpf_task_get_cgroup1' [-Wmissing-declarations]
+    bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
+    ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2256:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
+    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2297:19: warning: no previous declaration for 'bpf_dynptr_slice' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2381:19: warning: no previous declaration for 'bpf_dynptr_slice_rdwr' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2412:17: warning: no previous declaration for 'bpf_dynptr_adjust' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
+                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2430:18: warning: no previous declaration for 'bpf_dynptr_is_null' [-Wmissing-declarations]
+    __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2435:18: warning: no previous declaration for 'bpf_dynptr_is_rdonly' [-Wmissing-declarations]
+    __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+                     ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2443:19: warning: no previous declaration for 'bpf_dynptr_size' [-Wmissing-declarations]
+    __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2451:17: warning: no previous declaration for 'bpf_dynptr_clone' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
+                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2464:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+                      ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2469:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
+    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2474:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_rcu_read_lock(void)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2479:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_rcu_read_unlock(void)
+                     ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2508:18: warning: no previous declaration for 'bpf_throw' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_throw(u64 cookie)
+                     ^~~~~~~~~
+
+
+vim +/bpf_task_get_cgroup1 +2240 kernel/bpf/helpers.c
+
+  2229	
+  2230	/**
+  2231	 * bpf_task_get_cgroup1 - Acquires the associated cgroup of a task within a
+  2232	 * specific cgroup1 hierarchy. The cgroup1 hierarchy is identified by its
+  2233	 * hierarchy ID.
+  2234	 * @task: The target task
+  2235	 * @hierarchy_id: The ID of a cgroup1 hierarchy
+  2236	 *
+  2237	 * On success, the cgroup is returen. On failure, NULL is returned.
+  2238	 */
+  2239	__bpf_kfunc struct cgroup *
+> 2240	bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
+  2241	{
+  2242		struct cgroup *cgrp = task_get_cgroup1(task, hierarchy_id);
+  2243	
+  2244		if (IS_ERR(cgrp))
+  2245			return NULL;
+  2246		return cgrp;
+  2247	}
+  2248	#endif /* CONFIG_CGROUPS */
+  2249	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
