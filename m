@@ -1,108 +1,177 @@
-Return-Path: <cgroups+bounces-150-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-151-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B157DE5B4
-	for <lists+cgroups@lfdr.de>; Wed,  1 Nov 2023 19:00:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B6F07DE5B7
+	for <lists+cgroups@lfdr.de>; Wed,  1 Nov 2023 19:01:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50A3EB21001
-	for <lists+cgroups@lfdr.de>; Wed,  1 Nov 2023 18:00:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D461C20DFA
+	for <lists+cgroups@lfdr.de>; Wed,  1 Nov 2023 18:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048031804F;
-	Wed,  1 Nov 2023 18:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753C91862A;
+	Wed,  1 Nov 2023 18:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LrEHkbST"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="qM2zxQN2"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE9823BE
-	for <cgroups@vger.kernel.org>; Wed,  1 Nov 2023 17:59:58 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B256DB
-	for <cgroups@vger.kernel.org>; Wed,  1 Nov 2023 10:59:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698861596;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KYk0tSjsrn4HcNFkcNV6IhBOk/uVrvqmA+02iLrYOnk=;
-	b=LrEHkbSTRCCZ4tfH/nXdJAsl0h8R/1df0gImq3Jmj6kr2GiuMpcZfwQAtcpZq1L3tgIXO7
-	AP8X7Mgt3Sickb7ZGwtdShtYJ97GcCq5ySf88I+Mjp0GukpJdE6dxwkjWxQRRPHNw16v3B
-	wpIBhOGnSxGMoTmXX/TgzpIh5YEdaFA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-222-O4ouqYOsNNaYX_05FZqvKQ-1; Wed, 01 Nov 2023 13:59:50 -0400
-X-MC-Unique: O4ouqYOsNNaYX_05FZqvKQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DAC107B5;
+	Wed,  1 Nov 2023 18:01:07 +0000 (UTC)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5F5DB;
+	Wed,  1 Nov 2023 11:01:02 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 75CDA10002E;
+	Wed,  1 Nov 2023 21:01:01 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 75CDA10002E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1698861661;
+	bh=jIzkCOAsxzsZyUPpf4PMSJ8DkN9Rq4L3fIcg/MsOg3Y=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=qM2zxQN2FLLGqFwiWnPfrF/q3ja3mR4ffQ8rzrqYq0YWzs3doh17zKfPYrcABdyPz
+	 4FBuaWUGqwQb4qbLQ1nY0s5s4XzOjVO5A/vn3b+x/w2pUzk33AG1mdfySd1Fgcwoee
+	 ysqf8hcb6ySLsohlYnd6Ira0PFBT/CeaXoah7lBzGI+cdKA48lE29ulAE1pkVV9npC
+	 kQq8xvsSQWqFjfmPrs7ckgxdnlKBX0U5ers4vAggtxOKkOj40L5bsQP2/P18+bQFq8
+	 4fYztD9uM5NIKu6GyJzcbL3Mxm8o0VwMR+AepjZzCWTH9Y38wnwp9NeZuLrbUiBsKA
+	 ZhQ1Uybi+Er0Q==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22A57101A529;
-	Wed,  1 Nov 2023 17:59:49 +0000 (UTC)
-Received: from [10.22.33.245] (unknown [10.22.33.245])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E15DA1A099;
-	Wed,  1 Nov 2023 17:59:47 +0000 (UTC)
-Message-ID: <8e1b5497-d4ca-50a0-7cb1-ffa098e0a1c2@redhat.com>
-Date: Wed, 1 Nov 2023 13:59:47 -0400
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed,  1 Nov 2023 21:01:00 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
+ 2023 21:01:00 +0300
+Date: Wed, 1 Nov 2023 21:00:54 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+	<muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+	<kernel@sberdevices.ru>, <rockosov@gmail.com>, <cgroups@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] mm: memcg: print out cgroup name in the memcg
+ tracepoints
+Message-ID: <20231101180054.ihczece7upxla77u@CAB-WSD-L081021>
+References: <20231101102837.25205-1-ddrokosov@salutedevices.com>
+ <20231101102837.25205-2-ddrokosov@salutedevices.com>
+ <CAEf4BzZ0p-k15XLf2QdHNN6TodjRBtRKk2mvsttCj=GUi4Or3A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
- value
-Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
- Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Xia Fukun <xiafukun@huawei.com>
-References: <20231024141834.4073262-1-longman@redhat.com>
- <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+In-Reply-To: <CAEf4BzZ0p-k15XLf2QdHNN6TodjRBtRKk2mvsttCj=GUi4Or3A@mail.gmail.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181058 [Nov 01 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 15:56:00 #22380151
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On 11/1/23 12:34, Michal Koutný wrote:
-> On Tue, Oct 24, 2023 at 10:18:34AM -0400, Waiman Long <longman@redhat.com> wrote:
->> The nr_deadline_tasks field in cpuset structure was introduced by
->> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
->> in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
->> cpuset_mutex, nr_deadline_tasks can be updated under two different
->> locks - cpuset_mutex in most cases or css_set_lock in cgroup_exit(). As
->> a result, data races can happen leading to incorrect nr_deadline_tasks
->> value.
-> The effect is that dl_update_tasks_root_domain() processes tasks
-> unnecessarily or that it incorrectly skips dl_add_task_root_domain()?
-The effect is that dl_update_tasks_root_domain() may return incorrectly 
-or it is doing unnecessary work. Will update the commit log to reflect that.
->
->> Since it is not practical to somehow take cpuset_mutex in cgroup_exit(),
->> the easy way out to avoid this possible race condition is by making
->> nr_deadline_tasks an atomic_t value.
-> If css_set_lock is useless for this fields and it's going to be atomic,
-> could you please add (presumably) a cleanup that moves dec_dl_tasks_cs()
-> from under css_set_lock in cgroup_exit() to a (new but specific)
-> cpuset_cgrp_subsys.exit() handler?
+Hello Andrii!
 
-But css_set_lock is needed for updating other css data. It is true that 
-we can move dec_dl_tasks_cs() outside of the lock. I can do that in the 
-next version.
+Thank you for quick feedback!
 
-Cheers,
-Longman
+On Wed, Nov 01, 2023 at 10:08:34AM -0700, Andrii Nakryiko wrote:
+> On Wed, Nov 1, 2023 at 3:29 AM Dmitry Rokosov
+> <ddrokosov@salutedevices.com> wrote:
+> >
+> > Sometimes it is necessary to understand in which memcg tracepoint event
+> > occurred. The function cgroup_name() is a useful tool for this purpose.
+> > To integrate cgroup_name() into the existing memcg tracepoints, this
+> > patch introduces a new tracepoint template for the begin() and end()
+> > events, utilizing static __array() to store the cgroup name.
+> >
+> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > ---
+> >  include/trace/events/vmscan.h | 77 +++++++++++++++++++++++++++++------
+> >  mm/vmscan.c                   |  8 ++--
+> >  2 files changed, 69 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
+> > index d2123dd960d5..124bc22866c8 100644
+> > --- a/include/trace/events/vmscan.h
+> > +++ b/include/trace/events/vmscan.h
+> > @@ -141,19 +141,47 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_direct_reclaim_b
+> >  );
+> >
+> >  #ifdef CONFIG_MEMCG
+> > -DEFINE_EVENT(mm_vmscan_direct_reclaim_begin_template, mm_vmscan_memcg_reclaim_begin,
+> >
+> > -       TP_PROTO(int order, gfp_t gfp_flags),
+> > +DECLARE_EVENT_CLASS(mm_vmscan_memcg_reclaim_begin_template,
+> >
+> > -       TP_ARGS(order, gfp_flags)
+> > +       TP_PROTO(const struct mem_cgroup *memcg, int order, gfp_t gfp_flags),
+> > +
+> > +       TP_ARGS(memcg, order, gfp_flags),
+> 
+> By adding memcg in front of existing tracepoint arguments, you
+> unnecessarily break everyone who currently has some scripts based on
+> this tracepoint. Given there is no reason why memcg has to be the very
+> first argument, it would be nice if you can just append it at the end
+> to make it nicely backwards compatible. Same for other tracepoints
+> below.
+> 
+> Tracepoints are not an ABI, but there is also no point in arbitrarily
+> breaking all current scripts for such a trivial reason.
+> 
 
+You are absolutely correct. I didn't consider the scripts that rely on
+these tracepoints, because tracepoints are not an ABI, as you mentioned.
+Additionally, I added the memcg parameter as the first argument based on
+my personal programming patterns, where the context object should always
+come first :)
+
+I apologize for that and will prepare new version.
+
+> > +
+> > +       TP_STRUCT__entry(
+> > +               __field(int, order)
+> > +               __field(unsigned long, gfp_flags)
+> > +               __array(char, name, NAME_MAX + 1)
+> > +       ),
+> > +
+> > +       TP_fast_assign(
+> > +               __entry->order = order;
+> > +               __entry->gfp_flags = (__force unsigned long)gfp_flags;
+> > +               cgroup_name(memcg->css.cgroup,
+> > +                       __entry->name,
+> > +                       sizeof(__entry->name));
+> > +       ),
+> > +
+> > +       TP_printk("memcg=%s order=%d gfp_flags=%s",
+> > +               __entry->name,
+> > +               __entry->order,
+> > +               show_gfp_flags(__entry->gfp_flags))
+> >  );
+> 
+> [...]
+
+-- 
+Thank you,
+Dmitry
 
