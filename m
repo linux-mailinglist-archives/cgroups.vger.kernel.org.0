@@ -1,303 +1,149 @@
-Return-Path: <cgroups+bounces-165-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-166-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C02477DFFD4
-	for <lists+cgroups@lfdr.de>; Fri,  3 Nov 2023 09:50:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 308027E04AE
+	for <lists+cgroups@lfdr.de>; Fri,  3 Nov 2023 15:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3A6AB21360
-	for <lists+cgroups@lfdr.de>; Fri,  3 Nov 2023 08:50:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5202B2135A
+	for <lists+cgroups@lfdr.de>; Fri,  3 Nov 2023 14:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BC58826;
-	Fri,  3 Nov 2023 08:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D719219BD9;
+	Fri,  3 Nov 2023 14:29:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KxjIYueu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QlJfoEno"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058B82D604;
-	Fri,  3 Nov 2023 08:50:18 +0000 (UTC)
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295CFD65;
-	Fri,  3 Nov 2023 01:50:13 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7fb84f6ceso22004687b3.1;
-        Fri, 03 Nov 2023 01:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699001412; x=1699606212; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hsLmB2JI4tHI9bgr0LXKs68cueMThNaONQwvT92FNE8=;
-        b=KxjIYueu/JPayokm3yVd6Fpkt7/FFc3UNh1ePOedTbWR9k9od173SWzItDqizE05i6
-         c64So8EB8nImu/WS2BGFS0UuzvJpldN46OIWYzkmbrDwdzUwaZ9AgsBwVZ3aLAEtutE2
-         RR2joS3agyA4cCjR2q1zwRGN2yo4da79J+Lt5SEX52y63wwsUdZGD4PWfsi9UzWhqBtE
-         O2r025bFHSjaKaY/2uJQLblxF9VKxDKPnIBFhFXk8NLq9qZU1gye9n9+NSL/TNIfdPWk
-         9Kzu5hAQc9fQOM720UGOGimytvLA7AQMEkutuSAzStzpHSXnXl21+5ZyBhQNnL/pmv2k
-         7gVA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D149168AB
+	for <cgroups@vger.kernel.org>; Fri,  3 Nov 2023 14:29:21 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29DED4D
+	for <cgroups@vger.kernel.org>; Fri,  3 Nov 2023 07:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699021758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TFrz1T06ZV9wRLR/AaSeQ5njOC3A6YG14M3hWOUp/Z8=;
+	b=QlJfoEnoUZVG1AX5L8M6CZJWF88gaJjqiKmjK+8L7HPZ7tYP491mYCv1lf91WichQqc8np
+	eQSM/EoqWuM9W1w679G5QOFsTrlxt93QlGbWvISKSNazcCTkgq9jONC3uVp0gvZf9w7D1W
+	wLCQug4ceTE0hmUDPv7EzpXvkOA/bdM=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-467-GTJ4Z7spPHGmWFW1JvoliA-1; Fri, 03 Nov 2023 10:29:17 -0400
+X-MC-Unique: GTJ4Z7spPHGmWFW1JvoliA-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66fbd3bc8ebso23761456d6.1
+        for <cgroups@vger.kernel.org>; Fri, 03 Nov 2023 07:29:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699001412; x=1699606212;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hsLmB2JI4tHI9bgr0LXKs68cueMThNaONQwvT92FNE8=;
-        b=J9dtiF54Qzk5QtWWzTfnmf/X+BRvioIc378Byb9Vy80u0GodMRFIIfPhidr4jsKz8c
-         oPNYX++c0sbvjyLRLH5+fUt+5atj2Iu2XIIYsghfx9i+2aK3LJ9zD0b2/cGBBkY7fb/a
-         FJ7ytm2gqNbkr4VS/Ms7C127aDk+aPB1UQqC9jnyQ0NREXrh6Vqy8ac0hPzrJFpPoIJT
-         DdhjvDXep/P6hb6rLkfukX4eiOE5g1mScrf6IVWQuntVLS3a6FkKUKrHBumo5xsbZr5w
-         0tWhxJ8SdjxlTLxDx9I0kl6aUY7NO403GlvhFwgC+PVfNOH8kqVsub5SJemmu6/FWo3K
-         u5iw==
-X-Gm-Message-State: AOJu0YyuHaMUazfZatu7ExWVDyBUh76+IzlkwOXBHh2CBAeAtrzzWKt9
-	fh4m/3H1oXiXkpJ7a3VS+bhGlgX/wZm251HJJCU=
-X-Google-Smtp-Source: AGHT+IGlPuM2lrFrnQg6JhE9/qyLVG+sSgkWU9jV3Fh6wEWhnukLHvKRV39p9Gex9SnvxMmYVDmzO0YHRYgBQsn5k2c=
-X-Received: by 2002:a05:690c:fd0:b0:5a7:ab4c:c7bf with SMTP id
- dg16-20020a05690c0fd000b005a7ab4cc7bfmr2137594ywb.0.1699001412179; Fri, 03
- Nov 2023 01:50:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1699021757; x=1699626557;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TFrz1T06ZV9wRLR/AaSeQ5njOC3A6YG14M3hWOUp/Z8=;
+        b=awA649j7x0jUe04K70yESX2e2GklPaFUaHt4qkbl3GmH+WxP/B9WNYFUM1BwuA6OgR
+         6/LNkhmmV2G/X+n7flSkSWB3qp9LW7PJeO72Ac8cqyOcv7k7PvLVmJh+/bzjcUXcEc+p
+         FgRnqWfic3VygEdLDo/SS96HX6KLoq+OxuLJP1WnN/XAd9PE+sU/GEmMWnlXMxaR2HEn
+         jY7dGdMjtuiCBELzqThu9MmCChTRCwzr+Aaw2b8UaTk6viDbUpuTyCTdCaop780fQtsF
+         ESRDIsL4ftgsBOJyWX/I3Le01v1b8pzKKjqaFTNwt3UD61jmvzFVvSU5zD98das5/kG7
+         oIwg==
+X-Gm-Message-State: AOJu0YxDpUSMsbXBpEPIJFj8oN1fXNwtvNOKWGSVRJ27gUbj5TBJ7n2J
+	rVim/roMPv/Hg3xMJ06Mhmf387q1j5P74a8Q4+NX+P92WoyoQZ5M6hDlWzlI33Be1lLWkr2gWx5
+	MbokQC1kBh7tdsz3BAw==
+X-Received: by 2002:ad4:5c62:0:b0:66d:8184:dd8c with SMTP id i2-20020ad45c62000000b0066d8184dd8cmr26898762qvh.54.1699021757279;
+        Fri, 03 Nov 2023 07:29:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnf6nWK8JYc1GZzpLOlS0paMCKupoCJR7jKRm8P63Ly0yon6nTC76VZNwvH/JsM2gH3J4Sxg==
+X-Received: by 2002:ad4:5c62:0:b0:66d:8184:dd8c with SMTP id i2-20020ad45c62000000b0066d8184dd8cmr26898743qvh.54.1699021757003;
+        Fri, 03 Nov 2023 07:29:17 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.128.41])
+        by smtp.gmail.com with ESMTPSA id ne18-20020a056214425200b0066cf4fa7b47sm792703qvb.4.2023.11.03.07.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 07:29:16 -0700 (PDT)
+Date: Fri, 3 Nov 2023 15:29:10 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Qais Yousef <qyousef@layalina.io>,
+	Hao Luo <haoluo@google.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Xia Fukun <xiafukun@huawei.com>
+Subject: Re: [PATCH v2] cgroup/cpuset: Change nr_deadline_tasks to an
+ atomic_t value
+Message-ID: <ZUUDtm4+OO+DQHX5@localhost.localdomain>
+References: <20231024141834.4073262-1-longman@redhat.com>
+ <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
+ <8e1b5497-d4ca-50a0-7cb1-ffa098e0a1c2@redhat.com>
+ <ZUN5XyOs3pWcJBo2@localhost.localdomain>
+ <63726aac-2a9b-11f2-6c24-9f33ced68706@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231029061438.4215-7-laoar.shao@gmail.com> <202311031651.A7crZEur-lkp@intel.com>
-In-Reply-To: <202311031651.A7crZEur-lkp@intel.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 3 Nov 2023 16:49:35 +0800
-Message-ID: <CALOAHbB7df7amW++bNqqncETYE8AL=o0UPd43L3XvCiqkXJSVg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
-To: kernel test robot <lkp@intel.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
-	sinquersw@gmail.com, longman@redhat.com, oe-kbuild-all@lists.linux.dev, 
-	cgroups@vger.kernel.org, bpf@vger.kernel.org, oliver.sang@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63726aac-2a9b-11f2-6c24-9f33ced68706@redhat.com>
 
-On Fri, Nov 3, 2023 at 4:19=E2=80=AFPM kernel test robot <lkp@intel.com> wr=
-ote:
->
-> Hi Yafang,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on bpf-next/master]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/cgroup=
--Remove-unnecessary-list_empty/20231029-143457
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
-master
-> patch link:    https://lore.kernel.org/r/20231029061438.4215-7-laoar.shao=
-%40gmail.com
-> patch subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1=
- hierarchy
-> config: x86_64-randconfig-004-20231103 (https://download.01.org/0day-ci/a=
-rchive/20231103/202311031651.A7crZEur-lkp@intel.com/config)
-> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+On 02/11/23 09:01, Waiman Long wrote:
+> 
+> On 11/2/23 06:26, Juri Lelli wrote:
+> > Hi Waiman,
+> > 
+> > On 01/11/23 13:59, Waiman Long wrote:
+> > > On 11/1/23 12:34, Michal Koutný wrote:
+> > > > On Tue, Oct 24, 2023 at 10:18:34AM -0400, Waiman Long <longman@redhat.com> wrote:
+> > > > > The nr_deadline_tasks field in cpuset structure was introduced by
+> > > > > commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
+> > > > > in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
+> > > > > cpuset_mutex, nr_deadline_tasks can be updated under two different
+> > > > > locks - cpuset_mutex in most cases or css_set_lock in cgroup_exit(). As
+> > > > > a result, data races can happen leading to incorrect nr_deadline_tasks
+> > > > > value.
+> > > > The effect is that dl_update_tasks_root_domain() processes tasks
+> > > > unnecessarily or that it incorrectly skips dl_add_task_root_domain()?
+> > > The effect is that dl_update_tasks_root_domain() may return incorrectly or
+> > > it is doing unnecessary work. Will update the commit log to reflect that.
+> > > > > Since it is not practical to somehow take cpuset_mutex in cgroup_exit(),
+> > > > > the easy way out to avoid this possible race condition is by making
+> > > > > nr_deadline_tasks an atomic_t value.
+> > > > If css_set_lock is useless for this fields and it's going to be atomic,
+> > > > could you please add (presumably) a cleanup that moves dec_dl_tasks_cs()
+> > > > from under css_set_lock in cgroup_exit() to a (new but specific)
+> > > > cpuset_cgrp_subsys.exit() handler?
+> > > But css_set_lock is needed for updating other css data. It is true that we
+> > > can move dec_dl_tasks_cs() outside of the lock. I can do that in the next
+> > > version.
+> > Not sure if you had a chance to check my last question/comment on your
+> > previous posting?
+> > 
+> > https://lore.kernel.org/lkml/ZSjfBWgZf15TchA5@localhost.localdomain/
+> 
+> Thanks for the reminder. I look at your comment again. Even though
+> dl_rebuild_rd_accounting() operates on css(es) via css_task_iter_start() and
+> css_task_iter_next(), the css_set_lock is released at the end of it. So it
+> is still possible that a task can call cgroup_exit() after
+> css_task_iter_next() and is being processed by dl_add_task_root_domain(). Is
+> there a helper in the do_exit() path to nullify the dl_task() check. Or
+> maybe we can also check for PF_EXITING in dl_add_task_root_domain() under
+> the pi_lock and do the dl_task() check the under pi_lock to synchronize with
+> dl_add_task_root_domain(). What do you think?
+> 
+> I still believe that it doesn't really matter if we call dec_dl_tasks_cs()
+> inside or outside the css_set_lock.
 
-__diag_ignore_all() is supported for gcc >=3D 8.0.0.
-It seems that we should also support it for older gcc ?
+Hummm, what if we move dec_dl_tasks_cs outside css_set_lock guard in
+cgroup_exit and we grab cpuset_mutex (for dl_tasks) before doing the
+decrement in there?
 
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20231103/202311031651.A7crZEur-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->    kernel/bpf/helpers.c:1893:19: warning: no previous prototype for 'bpf_=
-obj_new_impl' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__=
-ign)
->                       ^~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:1907:19: warning: no previous prototype for 'bpf_=
-percpu_obj_new_impl' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void =
-*meta__ign)
->                       ^~~~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:1941:18: warning: no previous prototype for 'bpf_=
-obj_drop_impl' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
->                      ^~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:1949:18: warning: no previous prototype for 'bpf_=
-percpu_obj_drop_impl' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta_=
-_ign)
->                      ^~~~~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:1955:19: warning: no previous prototype for 'bpf_=
-refcount_acquire_impl' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr,=
- void *meta__ign)
->                       ^~~~~~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2000:17: warning: no previous prototype for 'bpf_=
-list_push_front_impl' [-Wmissing-prototypes]
->     __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
->                     ^~~~~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2010:17: warning: no previous prototype for 'bpf_=
-list_push_back_impl' [-Wmissing-prototypes]
->     __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
->                     ^~~~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2043:35: warning: no previous prototype for 'bpf_=
-list_pop_front' [-Wmissing-prototypes]
->     __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_=
-head *head)
->                                       ^~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2048:35: warning: no previous prototype for 'bpf_=
-list_pop_back' [-Wmissing-prototypes]
->     __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_h=
-ead *head)
->                                       ^~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2053:33: warning: no previous prototype for 'bpf_=
-rbtree_remove' [-Wmissing-prototypes]
->     __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root =
-*root,
->                                     ^~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2109:17: warning: no previous prototype for 'bpf_=
-rbtree_add_impl' [-Wmissing-prototypes]
->     __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct =
-bpf_rb_node *node,
->                     ^~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2119:33: warning: no previous prototype for 'bpf_=
-rbtree_first' [-Wmissing-prototypes]
->     __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *=
-root)
->                                     ^~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2132:33: warning: no previous prototype for 'bpf_=
-task_acquire' [-Wmissing-prototypes]
->     __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *=
-p)
->                                     ^~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2143:18: warning: no previous prototype for 'bpf_=
-task_release' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_task_release(struct task_struct *p)
->                      ^~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2155:28: warning: no previous prototype for 'bpf_=
-cgroup_acquire' [-Wmissing-prototypes]
->     __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
->                                ^~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2167:18: warning: no previous prototype for 'bpf_=
-cgroup_release' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
->                      ^~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2179:28: warning: no previous prototype for 'bpf_=
-cgroup_ancestor' [-Wmissing-prototypes]
->     __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, i=
-nt level)
->                                ^~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2199:28: warning: no previous prototype for 'bpf_=
-cgroup_from_id' [-Wmissing-prototypes]
->     __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
->                                ^~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2219:18: warning: no previous prototype for 'bpf_=
-task_under_cgroup' [-Wmissing-prototypes]
->     __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
->                      ^~~~~~~~~~~~~~~~~~~~~
-> >> kernel/bpf/helpers.c:2240:1: warning: no previous prototype for 'bpf_t=
-ask_get_cgroup1' [-Wmissing-prototypes]
->     bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
->     ^~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2256:33: warning: no previous prototype for 'bpf_=
-task_from_pid' [-Wmissing-prototypes]
->     __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
->                                     ^~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2297:19: warning: no previous prototype for 'bpf_=
-dynptr_slice' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr,=
- u32 offset,
->                       ^~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2381:19: warning: no previous prototype for 'bpf_=
-dynptr_slice_rdwr' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern =
-*ptr, u32 offset,
->                       ^~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2412:17: warning: no previous prototype for 'bpf_=
-dynptr_adjust' [-Wmissing-prototypes]
->     __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 st=
-art, u32 end)
->                     ^~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2430:18: warning: no previous prototype for 'bpf_=
-dynptr_is_null' [-Wmissing-prototypes]
->     __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
->                      ^~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2435:18: warning: no previous prototype for 'bpf_=
-dynptr_is_rdonly' [-Wmissing-prototypes]
->     __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
->                      ^~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2443:19: warning: no previous prototype for 'bpf_=
-dynptr_size' [-Wmissing-prototypes]
->     __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
->                       ^~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2451:17: warning: no previous prototype for 'bpf_=
-dynptr_clone' [-Wmissing-prototypes]
->     __bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
->                     ^~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2464:19: warning: no previous prototype for 'bpf_=
-cast_to_kern_ctx' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
->                       ^~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2469:19: warning: no previous prototype for 'bpf_=
-rdonly_cast' [-Wmissing-prototypes]
->     __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
->                       ^~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2474:18: warning: no previous prototype for 'bpf_=
-rcu_read_lock' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_rcu_read_lock(void)
->                      ^~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2479:18: warning: no previous prototype for 'bpf_=
-rcu_read_unlock' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_rcu_read_unlock(void)
->                      ^~~~~~~~~~~~~~~~~~~
->    kernel/bpf/helpers.c:2508:18: warning: no previous prototype for 'bpf_=
-throw' [-Wmissing-prototypes]
->     __bpf_kfunc void bpf_throw(u64 cookie)
->                      ^~~~~~~~~
->    cc1: warning: unrecognized command line option '-Wno-attribute-alias'
->
->
-> vim +/bpf_task_get_cgroup1 +2240 kernel/bpf/helpers.c
->
->   2229
->   2230  /**
->   2231   * bpf_task_get_cgroup1 - Acquires the associated cgroup of a tas=
-k within a
->   2232   * specific cgroup1 hierarchy. The cgroup1 hierarchy is identifie=
-d by its
->   2233   * hierarchy ID.
->   2234   * @task: The target task
->   2235   * @hierarchy_id: The ID of a cgroup1 hierarchy
->   2236   *
->   2237   * On success, the cgroup is returen. On failure, NULL is returne=
-d.
->   2238   */
->   2239  __bpf_kfunc struct cgroup *
-> > 2240  bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
->   2241  {
->   2242          struct cgroup *cgrp =3D task_get_cgroup1(task, hierarchy_=
-id);
->   2243
->   2244          if (IS_ERR(cgrp))
->   2245                  return NULL;
->   2246          return cgrp;
->   2247  }
->   2248  #endif /* CONFIG_CGROUPS */
->   2249
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-
-
-
---=20
-Regards
-Yafang
 
