@@ -1,181 +1,230 @@
-Return-Path: <cgroups+bounces-163-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-164-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB4D77DFAAD
-	for <lists+cgroups@lfdr.de>; Thu,  2 Nov 2023 20:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1AF57DFFAF
+	for <lists+cgroups@lfdr.de>; Fri,  3 Nov 2023 09:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0ECCB20E5A
-	for <lists+cgroups@lfdr.de>; Thu,  2 Nov 2023 19:07:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 831D0B21313
+	for <lists+cgroups@lfdr.de>; Fri,  3 Nov 2023 08:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F5021353;
-	Thu,  2 Nov 2023 19:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511CC8470;
+	Fri,  3 Nov 2023 08:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cg8eLvku"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWyU66Zk"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B939C200D4
-	for <cgroups@vger.kernel.org>; Thu,  2 Nov 2023 19:07:25 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EC9192
-	for <cgroups@vger.kernel.org>; Thu,  2 Nov 2023 12:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698952041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z3K3OmvqH5lzaH4yBBJivGjTa0UMweaOBbHusKFdRvM=;
-	b=cg8eLvkuMY+AL/emCsWYjHa6ENOY/cLDuHQFD4eyiPt1K5ToKFBWwDhkpJ3yFQ3/E+0CDL
-	1GURV9e9D6Ze/6a2lO36rLhjnjmYE7HjmZ2O+wjlLZMfuzcc/mu9kh/H2l2/KmPfepyD09
-	mKjSs9cSIsdburDCnWmRv95njMXlxts=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-1-nZ-r8DN8NEyonLN5Q80LVQ-1; Thu,
- 02 Nov 2023 15:07:15 -0400
-X-MC-Unique: nZ-r8DN8NEyonLN5Q80LVQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 19CAB2801A4A;
-	Thu,  2 Nov 2023 19:07:15 +0000 (UTC)
-Received: from [10.22.17.8] (unknown [10.22.17.8])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 543B02026D4C;
-	Thu,  2 Nov 2023 19:07:14 +0000 (UTC)
-Message-ID: <19251b0c-a6b6-ba5b-3b7b-620416165121@redhat.com>
-Date: Thu, 2 Nov 2023 15:07:14 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B258460;
+	Fri,  3 Nov 2023 08:19:55 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6D1123;
+	Fri,  3 Nov 2023 01:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698999588; x=1730535588;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7x+HLMrPHU1vmeH3n+XslylsbnDpCawoU8xBczXjVn0=;
+  b=kWyU66Zk9+EcbYS+0sdQqQaiRtZlFFLCvr1LJsWnO/fMFOubPFjacDxf
+   AZVfztTN5X8LINvYehX4fGmebWnjvQ1Bga4n8HXBp8guCx9K05i5/qzeI
+   4LyHNwMyhgljp7VRzUqYdKXl3AGOxVbGm8YjdABAy4Ykoacmy/0opIIW6
+   hZFwkBiiKZvTgNRcOnAbFFzZgqFl1QCOT/PrE7m3NrUoCZAK9BsYIYvM9
+   Wlhf5YEeC3d2i9TDcwUGgpVK5A57Y/2RxmltDxYQ3PZ2RfmxSOgFVH7uK
+   wcmAG1kiRdA8qPEw8GdU2VnkxgknljyZ+2UxGa9QssYrWHuIcltDKybLy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="475141063"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="475141063"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 01:19:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="827416501"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="827416501"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Nov 2023 01:19:43 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qypP2-0002Me-1y;
+	Fri, 03 Nov 2023 08:19:40 +0000
+Date: Fri, 3 Nov 2023 16:18:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+	sinquersw@gmail.com, longman@redhat.com
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, oliver.sang@intel.com,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1
+ hierarchy
+Message-ID: <202311031651.A7crZEur-lkp@intel.com>
+References: <20231029061438.4215-7-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] cgroup/rstat: Reduce cpu_lock hold time in
- cgroup_rstat_flush_locked()
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
- Sebastian Jug <sejug@redhat.com>
-References: <20231102005310.439588-1-longman@redhat.com>
- <CAJD7tkZLKiKJQRgJ6MexFwt2_iDHeBzyDxuT3ZWtL0yjN+7pHg@mail.gmail.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <CAJD7tkZLKiKJQRgJ6MexFwt2_iDHeBzyDxuT3ZWtL0yjN+7pHg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231029061438.4215-7-laoar.shao@gmail.com>
+
+Hi Yafang,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/cgroup-Remove-unnecessary-list_empty/20231029-143457
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231029061438.4215-7-laoar.shao%40gmail.com
+patch subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
+config: x86_64-randconfig-004-20231103 (https://download.01.org/0day-ci/archive/20231103/202311031651.A7crZEur-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311031651.A7crZEur-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/helpers.c:1893:19: warning: no previous prototype for 'bpf_obj_new_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1907:19: warning: no previous prototype for 'bpf_percpu_obj_new_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1941:18: warning: no previous prototype for 'bpf_obj_drop_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1949:18: warning: no previous prototype for 'bpf_percpu_obj_drop_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1955:19: warning: no previous prototype for 'bpf_refcount_acquire_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2000:17: warning: no previous prototype for 'bpf_list_push_front_impl' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2010:17: warning: no previous prototype for 'bpf_list_push_back_impl' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2043:35: warning: no previous prototype for 'bpf_list_pop_front' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2048:35: warning: no previous prototype for 'bpf_list_pop_back' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2053:33: warning: no previous prototype for 'bpf_rbtree_remove' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2109:17: warning: no previous prototype for 'bpf_rbtree_add_impl' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
+                    ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2119:33: warning: no previous prototype for 'bpf_rbtree_first' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2132:33: warning: no previous prototype for 'bpf_task_acquire' [-Wmissing-prototypes]
+    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2143:18: warning: no previous prototype for 'bpf_task_release' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_task_release(struct task_struct *p)
+                     ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2155:28: warning: no previous prototype for 'bpf_cgroup_acquire' [-Wmissing-prototypes]
+    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2167:18: warning: no previous prototype for 'bpf_cgroup_release' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2179:28: warning: no previous prototype for 'bpf_cgroup_ancestor' [-Wmissing-prototypes]
+    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
+                               ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2199:28: warning: no previous prototype for 'bpf_cgroup_from_id' [-Wmissing-prototypes]
+    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2219:18: warning: no previous prototype for 'bpf_task_under_cgroup' [-Wmissing-prototypes]
+    __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
+                     ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/helpers.c:2240:1: warning: no previous prototype for 'bpf_task_get_cgroup1' [-Wmissing-prototypes]
+    bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
+    ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2256:33: warning: no previous prototype for 'bpf_task_from_pid' [-Wmissing-prototypes]
+    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2297:19: warning: no previous prototype for 'bpf_dynptr_slice' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2381:19: warning: no previous prototype for 'bpf_dynptr_slice_rdwr' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2412:17: warning: no previous prototype for 'bpf_dynptr_adjust' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
+                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2430:18: warning: no previous prototype for 'bpf_dynptr_is_null' [-Wmissing-prototypes]
+    __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2435:18: warning: no previous prototype for 'bpf_dynptr_is_rdonly' [-Wmissing-prototypes]
+    __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+                     ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2443:19: warning: no previous prototype for 'bpf_dynptr_size' [-Wmissing-prototypes]
+    __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2451:17: warning: no previous prototype for 'bpf_dynptr_clone' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
+                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2464:19: warning: no previous prototype for 'bpf_cast_to_kern_ctx' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+                      ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2469:19: warning: no previous prototype for 'bpf_rdonly_cast' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2474:18: warning: no previous prototype for 'bpf_rcu_read_lock' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_rcu_read_lock(void)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2479:18: warning: no previous prototype for 'bpf_rcu_read_unlock' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_rcu_read_unlock(void)
+                     ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2508:18: warning: no previous prototype for 'bpf_throw' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_throw(u64 cookie)
+                     ^~~~~~~~~
+   cc1: warning: unrecognized command line option '-Wno-attribute-alias'
 
 
-On 11/2/23 00:35, Yosry Ahmed wrote:
-> On Wed, Nov 1, 2023 at 5:53 PM Waiman Long <longman@redhat.com> wrote:
->> When cgroup_rstat_updated() isn't being called concurrently with
->> cgroup_rstat_flush_locked(), its run time is pretty short. When
->> both are called concurrently, the cgroup_rstat_updated() run time
->> can spike to a pretty high value due to high cpu_lock hold time in
->> cgroup_rstat_flush_locked(). This can be problematic if the task calling
->> cgroup_rstat_updated() is a realtime task running on an isolated CPU
->> with a strict latency requirement. The cgroup_rstat_updated() call can
->> happens when there is a page fault even though the task is running in
-> s/happens/happen
->
->> user space most of the time.
->>
->> The percpu cpu_lock is used to protect the update tree -
->> updated_next and updated_children. This protection is only needed
->> when cgroup_rstat_cpu_pop_updated() is being called. The subsequent
->> flushing operation which can take a much longer time does not need
->> that protection.
-> nit: add: as it is already protected by cgroup_rstat_lock.
->
->> To reduce the cpu_lock hold time, we need to perform all the
->> cgroup_rstat_cpu_pop_updated() calls up front with the lock
->> released afterward before doing any flushing. This patch adds a new
->> cgroup_rstat_updated_list() function to return a singly linked list of
->> cgroups to be flushed.
->>
->> By adding some instrumentation code to measure the maximum elapsed times
->> of the new cgroup_rstat_updated_list() function and each cpu iteration of
->> cgroup_rstat_updated_locked() around the old cpu_lock lock/unlock pair
->> on a 2-socket x86-64 server running parallel kernel build, the maximum
->> elapsed times are 27us and 88us respectively. The maximum cpu_lock hold
->> time is now reduced to about 30% of the original.
->>
->> Below were the run time distribution of cgroup_rstat_updated_list()
->> during the same period:
->>
->>        Run time             Count
->>        --------             -----
->>           t <= 1us       12,574,302
->>     1us < t <= 5us        2,127,482
->>     5us < t <= 10us           8,445
->>    10us < t <= 20us           6,425
->>    20us < t <= 30us              50
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> LGTM with some nits.
->
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
->
->> ---
->>   include/linux/cgroup-defs.h |  6 +++++
->>   kernel/cgroup/rstat.c       | 45 ++++++++++++++++++++++++-------------
->>   2 files changed, 36 insertions(+), 15 deletions(-)
->>
->> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
->> index 265da00a1a8b..daaf6d4eb8b6 100644
->> --- a/include/linux/cgroup-defs.h
->> +++ b/include/linux/cgroup-defs.h
->> @@ -491,6 +491,12 @@ struct cgroup {
->>          struct cgroup_rstat_cpu __percpu *rstat_cpu;
->>          struct list_head rstat_css_list;
->>
->> +       /*
->> +        * A singly-linked list of cgroup structures to be rstat flushed.
->> +        * Protected by cgroup_rstat_lock.
-> Do you think we should mention that this is a scratch area for
-> cgroup_rstat_flush_locked()? IOW, this field will be invalid or may
-> contain garbage otherwise.
-I can certainly add that into the comment.
->
-> It might be also useful to mention that the scope of usage for this is
-> for each percpu flushing iteration. The cgroup_rstat_lock can be
-> dropped between percpu flushing iterations, so different flushers can
-> reuse this field safely because it is re-initialized in every
-> iteration and only used there.
->
->> +        */
->> +       struct cgroup   *rstat_flush_next;
->> +
->>          /* cgroup basic resource statistics */
->>          struct cgroup_base_stat last_bstat;
->>          struct cgroup_base_stat bstat;
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index d80d7a608141..a86d40ed8bda 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
->> @@ -145,6 +145,34 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
->>          return pos;
->>   }
->>
->> +/*
->> + * Return a list of updated cgroups to be flushed
->> + */
-> Why not just on a single line?
-> /* Return a list of updated cgroups to be flushed */
+vim +/bpf_task_get_cgroup1 +2240 kernel/bpf/helpers.c
 
-Yes, it can be compressed into a one liner.
+  2229	
+  2230	/**
+  2231	 * bpf_task_get_cgroup1 - Acquires the associated cgroup of a task within a
+  2232	 * specific cgroup1 hierarchy. The cgroup1 hierarchy is identified by its
+  2233	 * hierarchy ID.
+  2234	 * @task: The target task
+  2235	 * @hierarchy_id: The ID of a cgroup1 hierarchy
+  2236	 *
+  2237	 * On success, the cgroup is returen. On failure, NULL is returned.
+  2238	 */
+  2239	__bpf_kfunc struct cgroup *
+> 2240	bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
+  2241	{
+  2242		struct cgroup *cgrp = task_get_cgroup1(task, hierarchy_id);
+  2243	
+  2244		if (IS_ERR(cgrp))
+  2245			return NULL;
+  2246		return cgrp;
+  2247	}
+  2248	#endif /* CONFIG_CGROUPS */
+  2249	
 
-Thanks for the review and suggestion.
-
-Cheers,
-Longman
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
