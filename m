@@ -1,639 +1,237 @@
-Return-Path: <cgroups+bounces-193-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-194-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AE1C7E2C8A
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 20:00:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 942F07E2DA5
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 21:08:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48FB028163E
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 19:00:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2B71C2037C
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 20:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9E328E26;
-	Mon,  6 Nov 2023 19:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFB228E17;
+	Mon,  6 Nov 2023 20:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SDFx6a66"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SvbvWSwP"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F59FDDBB
-	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 19:00:02 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F77A2;
-	Mon,  6 Nov 2023 10:59:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699297199; x=1730833199;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=fMypXWW57+wS4eTIiTkq2O5mctUODXUoOkqQrceHLH8=;
-  b=SDFx6a66rAOrQTVwSmmJ6PgLj5jGqQNjWWU8m7Mk3iZ4Pz3wHB/ZLPlv
-   3wEhDKM2NDn/HA6958Q/Yo1CmDds3bKR+ADrAK2G+9OgP1I2ByNCfcCE+
-   dk7fpGBoNYMBivAUzsaoEfP7GAH45GXrT6UOoK9OkeX1TUFNoD/P21ci8
-   A3DlEjJRbCMhrzDOykzEsYiBvZNLFo/c4YooemnOUzMlHcLxuXB2KWfNC
-   LoCSMTuMC4k6aq18xLYyd6NBeN2k4m7fcJRVcvIVrFca5BOAqLclx98hj
-   RkVx1yIua956I9ukQ5fsQWyxbkfmvd5cw427Zcs4lmXxaWFIOV4s8azBx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="7980508"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="7980508"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 10:59:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="832813815"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="832813815"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.93.50.175])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 06 Nov 2023 10:59:54 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "Christopherson,, Sean" <seanjc@google.com>, "Zhang, Bo"
- <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>,
- "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Li,
- Zhiquan1" <zhiquan1.li@intel.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>
-Subject: Re: [PATCH v6 04/12] x86/sgx: Implement basic EPC misc cgroup
- functionality
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-5-haitao.huang@linux.intel.com>
- <ad7aafb88e45e5176d15eedea60695e104d24751.camel@intel.com>
-Date: Mon, 06 Nov 2023 12:59:55 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724F2EAF6
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 20:08:09 +0000 (UTC)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C1A1BF
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 12:08:07 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9d8d3b65a67so726275766b.2
+        for <cgroups@vger.kernel.org>; Mon, 06 Nov 2023 12:08:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699301286; x=1699906086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=09Ycq6QceCfDIGqp40OHeAUWRg3JtEhQcvVgFOP1Ygw=;
+        b=SvbvWSwPzec733l8eG9hUxfEJnsN6JQQSZrWJCYlcpLW82FcJIc3CvHAT6nIMiyENu
+         t6I5EKI7beLOZamWvnGl2ziaC/F0j+rMq4WX6FHPPUP+wTurPe1xWDhGWU9DAii+XdSX
+         xuav4iZG9vWonAB3mokqXGXnqXgcyp66/pugcOpWM18YV0FPTbn489BpXLM85PJN9VjR
+         tgtfOv1D3m2BYDgM1LpNv52iiZHx9arp0TAeBAiiIQx0J/+6LH+u6y+eAA6/HKAb4r5F
+         er98Nf+G+zf5X1z/pYA8UhDwAvuZnTyQ3GZx3+2BoyWXG/pQBjPsGThgoSfEda/rTVwp
+         YuJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699301286; x=1699906086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=09Ycq6QceCfDIGqp40OHeAUWRg3JtEhQcvVgFOP1Ygw=;
+        b=oRRYw9l+1njppTh8qFUroPcM3kI6QUjH4HtudnGEEp+XRowT3YdXiw8uR4vdaWRj73
+         oHkrazUhKCAWPhPsDHDqxcDQ0yPHMQml8fQ0GyAgyHvBEkgmUyEhN3C1pBoD9sDvoMmM
+         s3nmdOtni87rFH1iELFF3+CJ5k4DEHXg3NyjumvsOgUp/J9AdHuQitoODxOuB9zYS6OE
+         z2oDbwc3MU1/eMbl9aWmwbaeqGbM8RBapmW9fJAefVJqnpVVArlLWPSe1bRopmRNVzkz
+         CEkjVyNN1z8SauZ4tngRJKXVRHLLC/+ca2eu37I5K/7bIJRSv74cN/ocN/zNLjryGveY
+         XipQ==
+X-Gm-Message-State: AOJu0YzUroYBeg+HjnRz31FiJvDL/TU/n5VSF1/iNlmxZ4xg30/HkfJk
+	BEqySyYa05lp0etj02Dq2ayMQ6YpRffXerh6N4aVuGbOYFeAbNtQ+0r45S+D
+X-Google-Smtp-Source: AGHT+IFexG6Clo60Zn1DpTyGm9x80WuahtrZB3M10KOYvZroB4rjoIZncJjLNNDSmxdjjUmC0/ySdT6ZIb7KJLM1fc4=
+X-Received: by 2002:a17:907:6016:b0:9df:3463:8ae with SMTP id
+ fs22-20020a170907601600b009df346308aemr3740013ejc.40.1699301285900; Mon, 06
+ Nov 2023 12:08:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2dz4d5b2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <ad7aafb88e45e5176d15eedea60695e104d24751.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20231104031303.592879-1-longman@redhat.com> <20231104031303.592879-3-longman@redhat.com>
+In-Reply-To: <20231104031303.592879-3-longman@redhat.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 6 Nov 2023 12:07:26 -0800
+Message-ID: <CAJD7tkZirDce=Zq9bm_b_R=yXkj1OaqCe2ObRXzV-BtDc3X9VQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Joe Mario <jmario@redhat.com>, Sebastian Jug <sejug@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 06 Nov 2023 06:09:45 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On Fri, Nov 3, 2023 at 8:13=E2=80=AFPM Waiman Long <longman@redhat.com> wro=
+te:
+>
+> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
+> the updated tree in a way to pop out the leaf nodes first before
+> their parents. This can cause traversal of multiple nodes before a
+> leaf node can be found and popped out. IOW, a given node in the tree
+> can be visited multiple times before the whole operation is done. So
+> it is not very efficient and the code can be hard to read.
+>
+> With the introduction of cgroup_rstat_updated_list() to build a list
+> of cgroups to be flushed first before any flushing operation is being
+> done, we can optimize the way the updated tree nodes are being popped
+> by pushing the parents first to the tail end of the list before their
+> children. In this way, most updated tree nodes will be visited only
+> once with the exception of the subtree root as we still need to go
+> back to its parent and popped it out of its updated_children list.
+> This also makes the code easier to read.
+>
+> A parallel kernel build on a 2-socket x86-64 server is used as the
+> benchmarking tool for measuring the lock hold time. Below were the lock
+> hold time frequency distribution before and after the patch:
+>
+>      Hold time        Before patch       After patch
+>      ---------        ------------       -----------
+>        0-01 us        13,738,708         14,594,545
+>       01-05 us         1,177,194            439,926
+>       05-10 us             4,984              5,960
+>       10-15 us             3,562              3,543
+>       15-20 us             1,314              1,397
+>       20-25 us                18                 25
+>       25-30 us                12                 12
+>
+> It can be seen that the patch pushes the lock hold time towards the
+> lower end.
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
 
-> On Mon, 2023-10-30 at 11:20 -0700, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> Implement support for cgroup control of SGX Enclave Page Cache (EPC)
->> memory using the misc cgroup controller. EPC memory is independent
->> from normal system memory, e.g. must be reserved at boot from RAM and
->> cannot be converted between EPC and normal memory while the system is
->> running. EPC is managed by the SGX subsystem and is not accounted by
->> the memory controller.
->>
->> Much like normal system memory, EPC memory can be overcommitted via
->> virtual memory techniques and pages can be swapped out of the EPC to
->> their backing store (normal system memory, e.g. shmem).  The SGX EPC
->> subsystem is analogous to the memory subsystem and the SGX EPC  
->> controller
->> is in turn analogous to the memory controller; it implements limit and
->> protection models for EPC memory.
->
-> Nit:
->
-> The above two paragraphs talk about what is EPC and EPC resource control  
-> needs
-> to be done separately, etc, but IMHO it lacks some background about  
-> "why" EPC
-> resource control is needed, e.g, from use case's perspective.
->
->>
->> The misc controller provides a mechanism to set a hard limit of EPC
->> usage via the "sgx_epc" resource in "misc.max". The total EPC memory
->> available on the system is reported via the "sgx_epc" resource in
->> "misc.capacity".
->
-> Please separate what the current misc cgroup provides, and how this  
-> patch is
-> going to utilize.
->
-> Please describe the changes in imperative mood. E.g, "report total EPC  
-> memory
-> via ...", instead of "... is reported via ...".
->
+I don't know why git decided to show this diff in the most confusing
+way possible.
 
-Will update
+>  kernel/cgroup/rstat.c | 132 ++++++++++++++++++++++--------------------
+>  1 file changed, 70 insertions(+), 62 deletions(-)
+>
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index 1f300bf4dc40..d2b709cfeb2a 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -74,64 +74,90 @@ __bpf_kfunc void cgroup_rstat_updated(struct cgroup *=
+cgrp, int cpu)
+>  }
+>
+>  /**
+> - * cgroup_rstat_cpu_pop_updated - iterate and dismantle rstat_cpu update=
+d tree
+> - * @pos: current position
+> - * @root: root of the tree to traversal
+> + * cgroup_rstat_push_children - push children cgroups into the given lis=
+t
+> + * @head: current head of the list (=3D parent cgroup)
+> + * @prstatc: cgroup_rstat_cpu of the parent cgroup
+>   * @cpu: target cpu
+> + * Return: A new singly linked list of cgroups to be flush
+>   *
+> - * Walks the updated rstat_cpu tree on @cpu from @root.  %NULL @pos star=
+ts
+> - * the traversal and %NULL return indicates the end.  During traversal,
+> - * each returned cgroup is unlinked from the tree.  Must be called with =
+the
+> - * matching cgroup_rstat_cpu_lock held.
+> + * Recursively traverse down the cgroup_rstat_cpu updated tree and push
+> + * parent first before its children. The parent is pushed by the caller.
 
->>
->> This patch was modified from the previous version to only add basic EPC
->> cgroup structure, accounting allocations for cgroup usage
->> (charge/uncharge), setup misc cgroup callbacks, set total EPC capacity.
->
-> This isn't changelog material.  Please focus on describing the high  
-> level design
-> and why you chose such design.
->
->>
->> For now, the EPC cgroup simply blocks additional EPC allocation in
->> sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
->> still tracked in the global active list, only reclaimed by the global
->> reclaimer when the total free page count is lower than a threshold.
->>
->> Later patches will reorganize the tracking and reclamation code in the
->> globale reclaimer and implement per-cgroup tracking and reclaiming.
->>
->> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V6:
->> - Split the original large patch"Limit process EPC usage with misc
->> cgroup controller"  and restructure it (Kai)
->> ---
->>  arch/x86/Kconfig                     |  13 ++++
->>  arch/x86/kernel/cpu/sgx/Makefile     |   1 +
->>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 103 +++++++++++++++++++++++++++
->>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  36 ++++++++++
->>  arch/x86/kernel/cpu/sgx/main.c       |  28 ++++++++
->>  arch/x86/kernel/cpu/sgx/sgx.h        |   3 +
->>  6 files changed, 184 insertions(+)
->>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
->>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
->>
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 66bfabae8814..e17c5dc3aea4 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -1921,6 +1921,19 @@ config X86_SGX
->>
->>  	  If unsure, say N.
->>
->> +config CGROUP_SGX_EPC
->> +	bool "Miscellaneous Cgroup Controller for Enclave Page Cache (EPC)  
->> for Intel SGX"
->> +	depends on X86_SGX && CGROUP_MISC
->> +	help
->> +	  Provides control over the EPC footprint of tasks in a cgroup via
->> +	  the Miscellaneous cgroup controller.
->> +
->> +	  EPC is a subset of regular memory that is usable only by SGX
->> +	  enclaves and is very limited in quantity, e.g. less than 1%
->> +	  of total DRAM.
->> +
->> +	  Say N if unsure.
->> +
->>  config X86_USER_SHADOW_STACK
->>  	bool "X86 userspace shadow stack"
->>  	depends on AS_WRUSS
->> diff --git a/arch/x86/kernel/cpu/sgx/Makefile  
->> b/arch/x86/kernel/cpu/sgx/Makefile
->> index 9c1656779b2a..12901a488da7 100644
->> --- a/arch/x86/kernel/cpu/sgx/Makefile
->> +++ b/arch/x86/kernel/cpu/sgx/Makefile
->> @@ -4,3 +4,4 @@ obj-y += \
->>  	ioctl.o \
->>  	main.o
->>  obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
->> +obj-$(CONFIG_CGROUP_SGX_EPC)	       += epc_cgroup.o
->> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c  
->> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
->> new file mode 100644
->> index 000000000000..500627d0563f
->> --- /dev/null
->> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
->> @@ -0,0 +1,103 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +// Copyright(c) 2022 Intel Corporation.
->> +
->> +#include <linux/atomic.h>
->> +#include <linux/kernel.h>
->> +#include "epc_cgroup.h"
->> +
->> +static inline struct sgx_epc_cgroup  
->> *sgx_epc_cgroup_from_misc_cg(struct misc_cg *cg)
->> +{
->> +	return (struct sgx_epc_cgroup *)(cg->res[MISC_CG_RES_SGX_EPC].priv);
->> +}
->> +
->> +static inline bool sgx_epc_cgroup_disabled(void)
->> +{
->> +	return !cgroup_subsys_enabled(misc_cgrp_subsys);
->
-> From below, the root EPC cgroup is dynamically allocated.  Shouldn't it  
-> also
-> check whether the root EPC cgroup is valid?
->
+I think it might be useful here (and elsewhere in the patch) where
+"push" is being used to elaborate that we push to the beginning in a
+stack-like fashion.
 
-Good point. I think I'll go with the static instance approach below.
+> + * The recursion depth is the depth of the current updated tree.
+> + */
+> +static struct cgroup *cgroup_rstat_push_children(struct cgroup *head,
+> +                               struct cgroup_rstat_cpu *prstatc, int cpu=
+)
+> +{
+> +       struct cgroup *child, *parent;
+> +       struct cgroup_rstat_cpu *crstatc;
+> +
+> +       parent =3D head;
+> +       child =3D prstatc->updated_children;
+> +       prstatc->updated_children =3D parent;
+> +
+> +       /* updated_next is parent cgroup terminated */
+> +       while (child !=3D parent) {
+> +               child->rstat_flush_next =3D head;
+> +               head =3D child;
+> +               crstatc =3D cgroup_rstat_cpu(child, cpu);
+> +               if (crstatc->updated_children !=3D parent)
 
->> +}
->> +
->> +/**
->> + * sgx_epc_cgroup_try_charge() - hierarchically try to charge a single  
->> EPC page
->> + *
->> + * Returns EPC cgroup or NULL on success, -errno on failure.
->> + */
->> +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void)
->> +{
->> +	struct sgx_epc_cgroup *epc_cg;
->> +	int ret;
->> +
->> +	if (sgx_epc_cgroup_disabled())
->> +		return NULL;
->> +
->> +	epc_cg = sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
->> +	ret = misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
->> +
->> +	if (!ret) {
->> +		/* No epc_cg returned, release ref from get_current_misc_cg() */
->> +		put_misc_cg(epc_cg->cg);
->> +		return ERR_PTR(-ENOMEM);
->
-> misc_cg_try_charge() returns 0 when successfully charged, no?
+I think cgroup->updated_children is set to the cgroup itself if it's
+empty, right? Shouldn't this be crstatc->updated_children !=3D child?
 
-Right. I really made some mess in rebasing :-(
+> +                       head =3D cgroup_rstat_push_children(head, crstatc=
+, cpu);
+> +               child =3D crstatc->updated_next;
+> +               crstatc->updated_next =3D NULL;
+> +       }
+> +       return head;
+> +}
+> +
+> +/**
+> + * cgroup_rstat_updated_list - return a list of updated cgroups to be fl=
+ushed
+> + * @root: root of the cgroup subtree to traverse
+> + * @cpu: target cpu
+> + * Return: A singly linked list of cgroups to be flushed
+> + *
+> + * Walks the updated rstat_cpu tree on @cpu from @root.  During traversa=
+l,
+> + * each returned cgroup is unlinked from the updated tree.  Must be call=
+ed
+> + * with the matching cgroup_rstat_cpu_lock held.
 
->
->> +	}
->> +
->> +	/* Ref released in sgx_epc_cgroup_uncharge() */
->> +	return epc_cg;
->> +}
->
-> IMHO the above _try_charge() returning a pointer of EPC cgroup is a  
-> little bit
-> odd, because it doesn't match the existing misc_cg_try_charge() which  
-> returns
-> whether the charge is successful or not.  sev_misc_cg_try_charge()  
-> matches
-> misc_cg_try_charge() too.
->
-> I think it's better to split "getting EPC cgroup" part out as a separate  
-> helper,
-> and make this _try_charge() match existing pattern:
->
-> 	struct sgx_epc_cgroup *sgx_get_current_epc_cg(void)
-> 	{
-> 		if (sgx_epc_cgroup_disabled())
-> 			return NULL;
-> 	
-> 		return sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
-> 	}
->
-> 	int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
-> 	{
-> 		if (!epc_cg)
-> 			return -EINVAL;
-> 	
-> 		return misc_cg_try_charge(epc_cg->cg);
-> 	}
->
-> Having sgx_get_current_epc_cg() also makes the caller easier to read,  
-> because we
-> can immediately know we are going to charge the *current* EPC cgroup,  
-> but not
-> some cgroup hidden within sgx_epc_cgroup_try_charge().
->
+This function takes care of holding the lock actually. I think that
+sentence should be applied to cgroup_rstat_push_children() above?
 
-Actually, unlike other misc controllers, we need charge and get the epc_cg  
-reference at the same time. That's why it was returning the pointer. How  
-about rename them sgx_{charge_and_get, uncharge_and_put}_epc_cg()? In  
-final version, there is a __sgx_epc_cgroup_try_charge() that wraps  
-misc_cg_try_charge().
+>   *
+>   * The only ordering guarantee is that, for a parent and a child pair
+> - * covered by a given traversal, if a child is visited, its parent is
+> - * guaranteed to be visited afterwards.
+> + * covered by a given traversal, the child is before its parent in
+> + * the list.
+> + *
+> + * Note that updated_children is self terminated while updated_next is
+> + * parent cgroup terminated except the cgroup root which can be self
+> + * terminated.
 
->> +
->> +/**
->> + * sgx_epc_cgroup_uncharge() - hierarchically uncharge EPC pages
->> + * @epc_cg:	the charged epc cgroup
->> + */
->> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg)
->> +{
->> +	if (sgx_epc_cgroup_disabled())
->> +		return;
->
-> If with above change, check !epc_cg instead.
->
->> +
->> +	misc_cg_uncharge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
->> +
->> +	/* Ref got from sgx_epc_cgroup_try_charge() */
->> +	put_misc_cg(epc_cg->cg);
->> +}
->> 	
->> +
->> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
->> +{
->> +	struct sgx_epc_cgroup *epc_cg;
->> +
->> +	epc_cg = sgx_epc_cgroup_from_misc_cg(cg);
->> +	if (!epc_cg)
->> +		return;
->> +
->> +	kfree(epc_cg);
->> +}
->> +
->> +static int sgx_epc_cgroup_alloc(struct misc_cg *cg);
->> +
->> +const struct misc_operations_struct sgx_epc_cgroup_ops = {
->> +	.alloc = sgx_epc_cgroup_alloc,
->> +	.free = sgx_epc_cgroup_free,
->> +};
->> +
->> +static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
->> +{
->> +	struct sgx_epc_cgroup *epc_cg;
->> +
->> +	epc_cg = kzalloc(sizeof(*epc_cg), GFP_KERNEL);
->> +	if (!epc_cg)
->> +		return -ENOMEM;
->> +
->> +	cg->res[MISC_CG_RES_SGX_EPC].misc_ops = &sgx_epc_cgroup_ops;
->> +	cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
->> +	epc_cg->cg = cg;
->> +	return 0;
->> +}
->> +
->> +static int __init sgx_epc_cgroup_init(void)
->> +{
->> +	struct misc_cg *cg;
->> +
->> +	if (!boot_cpu_has(X86_FEATURE_SGX))
->> +		return 0;
->> +
->> +	cg = misc_cg_root();
->> +	BUG_ON(!cg);
->
-> BUG_ON() will catch some eyeball, but it cannot be NULL in practice IIUC.
->
-> I am not sure whether you can just make misc @root_cg visible (instead  
-> of having
-> the misc_cg_root() helper) and directly use @root_cg here to avoid using  
-> the
-> BUG().  No opinion here.
->
-I can remove BUG_ON(). It should never happen anyways.
+IIUC updated_children and updated_next is the same list.
+updated_children is the head, and updated_next is how the list items
+are linked. This comment makes it seem like they are two different
+lists.
 
->> +
->> +	return sgx_epc_cgroup_alloc(cg);
->
-> As mentioned above the memory allocation can fail, in which case EPC  
-> cgroup is
-> effectively disabled IIUC?
->
-> One way is to manually check whether root EPC cgroup is valid in
-> sgx_epc_cgroup_disabled().  Alternatively, you can have a static root  
-> EPC cgroup
-> here:
->
-> 	static struct sgx_epc_cgroup root_epc_cg;
->
-> In this way you can have a sgx_epc_cgroup_init(&epc_cg), and call it from
-> sgx_epc_cgroup_alloc().
->
+I am actually wondering if it's worth using the singly linked list
+here. We are saving 8 bytes percpu, but the semantics are fairly
+confusing. Wouldn't this be easier to reason about if you just use
+list_head?
 
-Yeah, I think that is reasonable.
+updated_children would be replaced with LIST_HEAD (or similar), and
+the list would be NULL terminated instead of terminated by self/parent
+cgroup. IIUC the reason it's not NULL-terminated now is because we use
+cgroup->updated_next to check quickly if a cgroup is on the list or
+not. If we use list_heads, we can just use list_emtpy() IIUC.
 
->> +}
->> +subsys_initcall(sgx_epc_cgroup_init);
->> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h  
->> b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
->> new file mode 100644
->> index 000000000000..c3abfe82be15
->> --- /dev/null
->> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
->> @@ -0,0 +1,36 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/* Copyright(c) 2022 Intel Corporation. */
->> +#ifndef _INTEL_SGX_EPC_CGROUP_H_
->> +#define _INTEL_SGX_EPC_CGROUP_H_
->> +
->> +#include <asm/sgx.h>
->> +#include <linux/cgroup.h>
->> +#include <linux/list.h>
->> +#include <linux/misc_cgroup.h>
->> +#include <linux/page_counter.h>
->> +#include <linux/workqueue.h>
->> +
->> +#include "sgx.h"
->> +
->> +#ifndef CONFIG_CGROUP_SGX_EPC
->> +#define MISC_CG_RES_SGX_EPC MISC_CG_RES_TYPES
->
-> Do you need this macro?
+We can also simplify the semantics of unlinking @root from the updated
+tree below, it would just be list_del() IIUC, which is actually more
+performant as well. It seems like overall we would simplify a lot of
+things. When forming the updated_list, we can just walk the tree and
+splice the lists in the correct order.
 
-I remember I got some compiling error without it but I don't see why it  
-should be needed. I'll double check next round. thanks.
-
->
->> +struct sgx_epc_cgroup;
->> +
->> +static inline struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void)
->> +{
->> +	return NULL;
->> +}
->> +
->> +static inline void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup  
->> *epc_cg) { }
->> +#else
->> +struct sgx_epc_cgroup {
->> +	struct misc_cg *cg;
->> +};
->> +
->> +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void);
->> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg);
->> +bool sgx_epc_cgroup_lru_empty(struct misc_cg *root);
->
-> Why do you need sgx_epc_cgroup_lru_empty() here?
->
-
-leftover from rebasing. Will remove.
-
->> +
->> +#endif
->> +
->> +#endif /* _INTEL_SGX_EPC_CGROUP_H_ */
->> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
->> b/arch/x86/kernel/cpu/sgx/main.c
->> index 166692f2d501..07606f391540 100644
->> --- a/arch/x86/kernel/cpu/sgx/main.c
->> +++ b/arch/x86/kernel/cpu/sgx/main.c
->> @@ -6,6 +6,7 @@
->>  #include <linux/highmem.h>
->>  #include <linux/kthread.h>
->>  #include <linux/miscdevice.h>
->> +#include <linux/misc_cgroup.h>
->>  #include <linux/node.h>
->>  #include <linux/pagemap.h>
->>  #include <linux/ratelimit.h>
->> @@ -17,6 +18,7 @@
->>  #include "driver.h"
->>  #include "encl.h"
->>  #include "encls.h"
->> +#include "epc_cgroup.h"
->>
->>  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
->>  static int sgx_nr_epc_sections;
->> @@ -559,6 +561,11 @@ int sgx_unmark_page_reclaimable(struct  
->> sgx_epc_page *page)
->>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
->>  {
->>  	struct sgx_epc_page *page;
->> +	struct sgx_epc_cgroup *epc_cg;
->> +
->> +	epc_cg = sgx_epc_cgroup_try_charge();
->> +	if (IS_ERR(epc_cg))
->> +		return ERR_CAST(epc_cg);
->>
->>  	for ( ; ; ) {
->>  		page = __sgx_alloc_epc_page();
->> @@ -580,10 +587,21 @@ struct sgx_epc_page *sgx_alloc_epc_page(void  
->> *owner, bool reclaim)
->>  			break;
->>  		}
->>
->> +		/*
->> +		 * Need to do a global reclamation if cgroup was not full but free
->> +		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
->> +		 */
->>  		sgx_reclaim_pages();
->
-> What's the final behaviour?  IIUC it should be reclaiming from the  
-> *current* EPC
-> cgroup?  If so shouldn't we just pass the @epc_cg to it here?
->
-> I think we can make this patch as "structure" patch w/o actually having  
-> EPC
-> cgroup enabled, i.e., sgx_get_current_epc_cg() always return NULL.
->
-> And we can have one patch to change sgx_reclaim_pages() to take the  
-> 'struct
-> sgx_epc_lru_list *' as argument:
->
-> 	void sgx_reclaim_pages_lru(struct sgx_epc_lru_list * lru)
-> 	{
-> 		...
-> 	}
->
-> Then here we can have something like:
->
-> 	void sgx_reclaim_pages(struct sgx_epc_cg *epc_cg)
-> 	{
-> 		struct sgx_epc_lru_list *lru =			epc_cg ? &epc_cg->lru :  
-> &sgx_global_lru;
->
-> 		sgx_reclaim_pages_lru(lru);
-> 	}
->
-> Makes sense?
->
-
-This is purely global reclamation. No cgroup involved. You can see it  
-later in changes in patch 10/12. For now I just make a comment there but  
-no real changes. Cgroup reclamation will be done as part of _try_charge  
-call.
-
->>  		cond_resched();
->>  	}
->>
->> +	if (!IS_ERR(page)) {
->> +		WARN_ON_ONCE(page->epc_cg);
->> +		page->epc_cg = epc_cg;
->> +	} else {
->> +		sgx_epc_cgroup_uncharge(epc_cg);
->> +	}
->> +
->>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
->>  		wake_up(&ksgxd_waitq);
->>
->> @@ -604,6 +622,11 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
->>  	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
->>  	struct sgx_numa_node *node = section->node;
->>
->> +	if (page->epc_cg) {
->> +		sgx_epc_cgroup_uncharge(page->epc_cg);
->> +		page->epc_cg = NULL;
->> +	}
->> +
->>  	spin_lock(&node->lock);
->>
->>  	page->owner = NULL;
->> @@ -643,6 +666,7 @@ static bool __init sgx_setup_epc_section(u64  
->> phys_addr, u64 size,
->>  		section->pages[i].flags = 0;
->>  		section->pages[i].owner = NULL;
->>  		section->pages[i].poison = 0;
->> +		section->pages[i].epc_cg = NULL;
->>  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
->>  	}
->>
->> @@ -787,6 +811,7 @@ static void __init arch_update_sysfs_visibility(int  
->> nid) {}
->>  static bool __init sgx_page_cache_init(void)
->>  {
->>  	u32 eax, ebx, ecx, edx, type;
->> +	u64 capacity = 0;
->>  	u64 pa, size;
->>  	int nid;
->>  	int i;
->> @@ -837,6 +862,7 @@ static bool __init sgx_page_cache_init(void)
->>
->>  		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
->>  		sgx_numa_nodes[nid].size += size;
->> +		capacity += size;
->>
->>  		sgx_nr_epc_sections++;
->>  	}
->> @@ -846,6 +872,8 @@ static bool __init sgx_page_cache_init(void)
->>  		return false;
->>  	}
->>
->> +	misc_cg_set_capacity(MISC_CG_RES_SGX_EPC, capacity);
->> +
->>  	return true;
->>  }
->
-> I would separate setting up capacity as a separate patch.
-
-I thought about that, but again it was only 3-4 lines all in this function  
-and it's also necessary part of basic setup for misc controller...
-
->
->>
->> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h  
->> b/arch/x86/kernel/cpu/sgx/sgx.h
->> index d2dad21259a8..b1786774b8d2 100644
->> --- a/arch/x86/kernel/cpu/sgx/sgx.h
->> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
->> @@ -29,12 +29,15 @@
->>  /* Pages on free list */
->>  #define SGX_EPC_PAGE_IS_FREE		BIT(1)
->>
->> +struct sgx_epc_cgroup;
->> +
->>  struct sgx_epc_page {
->>  	unsigned int section;
->>  	u16 flags;
->>  	u16 poison;
->>  	struct sgx_encl_page *owner;
->>  	struct list_head list;
->> +	struct sgx_epc_cgroup *epc_cg;
->>  };
->>
->
-> Adding @epc_cg unconditionally means even with !CONFIG_CGROUP_SGX_EPC  
-> the memory
-> is still occupied.  IMHO that would bring non-trivial memory waste as  
-> it's 8-
-> bytes for each EPC page.
->
-
-Ok, I'll add ifdef
+It seems to me that saving 8 bytes percpu is not worth the complexity
+of the custom list semantics here. Am I missing something here?
 
