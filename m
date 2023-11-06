@@ -1,152 +1,117 @@
-Return-Path: <cgroups+bounces-198-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-199-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE597E2E7F
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 21:58:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 396A17E2E97
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 22:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D76AB20A90
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 20:58:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CED3280CF3
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 21:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B38C2E62C;
-	Mon,  6 Nov 2023 20:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC36B2E635;
+	Mon,  6 Nov 2023 21:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HopfvrxU"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C1c4WKfJ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03352DF7D
-	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 20:58:23 +0000 (UTC)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA065F3
-	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 12:58:21 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c773ac9b15so737866466b.2
-        for <cgroups@vger.kernel.org>; Mon, 06 Nov 2023 12:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699304300; x=1699909100; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKl8aQiZoT5/Gc1O1HhE3ZzebbwHEfVwbiUJglhZ9UY=;
-        b=HopfvrxUiCnKmh2fP7nl/m5Qjja2uu99EeINNRlzIMJd6oD0+P/rwjX7Zlx/gt7up0
-         mV/2blsThcByk50uDc1/Uzr1zSaih7FS66WBE2OZvMIeuGJXdRMW0vjBVfv9UDQxzhnv
-         229//6BJatA6JpTCoWIFm1J7iJ3Ulh/ArZwAumKpJCxK4lswmJwnEOC5hMq9u6zKsJrw
-         02n7qfpy5nrVkzjPr1Dyy5aGOYp8+wPin0RpxLEIGx+1eBsHpJMOE52N7DQl2gyUQRUY
-         PSPIUsizmdyVQCf4tmpwch7+fovEdo3v9xWqqMFWmqQcLC4LRuX+54wEbhajGxF5tHV+
-         9omg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699304300; x=1699909100;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZKl8aQiZoT5/Gc1O1HhE3ZzebbwHEfVwbiUJglhZ9UY=;
-        b=tq8PSckyl2nDR615r14wd+7odgYeU/mHZcsMs2oOCqPkF98TXITdYpXiRJgCJiihsh
-         991kG2Ob1r66+OlxRCJEqTY4iB5ovptkgHpflisC4NNbRN6XvikpEX8fWsqjCYoxAFrV
-         1YAF9Qa8nFMOOVG/qM775jDnBx+sARKbE5ef1h5S+74UsyAxfd6Ev+3QFcRGygeFUt7m
-         U76xzIAMvQnNJprMxcTe/9u7okgHl1TfxNotkzTF1L27kTb+bBJDHK1MUNs1XC9dib/l
-         1FKP9YCJcIKaaBIWS0vx76aJNMQk8orRW0BwXMEIWqAxSgEZ86SqAKHY32DqkvIJyTt1
-         5bGw==
-X-Gm-Message-State: AOJu0Yzf3tepoqVv83Mm6ZhoLidqjQLmfAn7AghyvgqC/JmXu4zyjBdi
-	2fNI6vF+53yGX+AD25t6yG30dRdwlJ1/OEkAEzoqxQ==
-X-Google-Smtp-Source: AGHT+IFrCXffedtA3mNIcSD9CL5cZrq9gg6yV7X2n90hA137Lzb005Ix2ogp4oXgiw+o+Nq7W19r1UCfCcsA5LCR+3Y=
-X-Received: by 2002:a17:906:da87:b0:9b7:37de:601a with SMTP id
- xh7-20020a170906da8700b009b737de601amr15301903ejb.49.1699304299984; Mon, 06
- Nov 2023 12:58:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F4F2D7B5
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 21:06:13 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AC0103
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 13:06:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699304772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fDzh3FgfUkl/3BLHn8M411t2HQbwpS8nOyL0RAE9yFE=;
+	b=C1c4WKfJFrhO0tpj/T8XI0zkzvVrUPfEuXrJT/RFZC+aNFuAwWvp6Be26j1vFFE2LOZqwO
+	9a7dFYqjw4oNswk/1sK7LNcejLplBoMYIkZUmTQwDK+AYTWzWeNAC5VNqMdOBckZSwfYBg
+	YbmachbzZHbVd+RJG1rW5QLgikLei9k=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-497-KrxYVvIKPj6AvtaaQyCZWw-1; Mon,
+ 06 Nov 2023 16:06:08 -0500
+X-MC-Unique: KrxYVvIKPj6AvtaaQyCZWw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F5CB3C1AF48;
+	Mon,  6 Nov 2023 21:06:08 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.168])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8EBEBC1596F;
+	Mon,  6 Nov 2023 21:06:07 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Joe Mario <jmario@redhat.com>,
+	Sebastian Jug <sejug@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/3] cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+Date: Mon,  6 Nov 2023 16:05:40 -0500
+Message-Id: <20231106210543.717486-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231106183159.3562879-1-nphamcs@gmail.com> <20231106183159.3562879-4-nphamcs@gmail.com>
- <CAJD7tkYcEc03d+6kwkXu8M_fd9ZDzh6B5G+VjmFXx+H09mhfmg@mail.gmail.com> <CAKEwX=PU3z7CseAZHE6v-q_yKQn0PtZqtfsfyKy5KOJpnNiE9Q@mail.gmail.com>
-In-Reply-To: <CAKEwX=PU3z7CseAZHE6v-q_yKQn0PtZqtfsfyKy5KOJpnNiE9Q@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 6 Nov 2023 12:57:44 -0800
-Message-ID: <CAJD7tkY+qdYytVKUjdgPypZthWA57gVKuEtjowuVPMpcOmpdLQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] zswap: make shrinking memcg-aware
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, cerasuolodomenico@gmail.com, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com, 
-	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-> >
-> > This lock is only needed to synchronize updating pool->next_shrink,
-> > right? Can we just use atomic operations instead? (e.g. cmpxchg()).
->
-> I'm not entirely sure. I think in the pool destroy path, we have to also
-> put the next_shrink memcg, so there's that.
+ v4:
+  - Update patch 2 to fix a minor bug and update some of the comments.
 
-We can use xchg() to replace it with NULL, then put the memcg ref, no?
+ v3:
+  - Minor comment twisting as suggested by Yosry.
+  - Add patches 2 and 3 to further reduce lock hold time
 
-We can also just hold zswap_pools_lock while shrinking the memcg
-perhaps? It's not a contended lock anyway. It just feels weird to add
-a spinlock to protect one pointer.
+The purpose of this patch series is to reduce of the cpu_lock hold time
+in cgroup_rstat_flush_locked() so as to reduce the latency impact when
+cgroup_rstat_updated() is called as they may contend with each other
+on the cpu_lock.
 
->
-> >
-> > > +               if (pool->next_shrink == memcg)
-> > > +                       pool->next_shrink =
-> > > +                               mem_cgroup_iter(NULL, pool->next_shrink, NULL, true);
-> > > +               spin_unlock(&pool->next_shrink_lock);
-> > > +       }
-> > > +       spin_unlock(&zswap_pools_lock);
-> > > +}
-> > > +
-> > >  /*********************************
-> > >  * zswap entry functions
-> > >  **********************************/
-> > >  static struct kmem_cache *zswap_entry_cache;
-> > >
-> > > -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
-> > > +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
-> > >  {
-> > >         struct zswap_entry *entry;
-> > > -       entry = kmem_cache_alloc(zswap_entry_cache, gfp);
-> > > +       entry = kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
-> > >         if (!entry)
-> > >                 return NULL;
-> > >         entry->refcount = 1;
-> > [..]
-> > > @@ -1233,15 +1369,15 @@ bool zswap_store(struct folio *folio)
-> > >                 zswap_invalidate_entry(tree, dupentry);
-> > >         }
-> > >         spin_unlock(&tree->lock);
-> > > -
-> > > -       /*
-> > > -        * XXX: zswap reclaim does not work with cgroups yet. Without a
-> > > -        * cgroup-aware entry LRU, we will push out entries system-wide based on
-> > > -        * local cgroup limits.
-> > > -        */
-> > >         objcg = get_obj_cgroup_from_folio(folio);
-> > > -       if (objcg && !obj_cgroup_may_zswap(objcg))
-> > > -               goto reject;
-> > > +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> > > +               memcg = get_mem_cgroup_from_objcg(objcg);
-> > > +               if (shrink_memcg(memcg)) {
-> > > +                       mem_cgroup_put(memcg);
-> > > +                       goto reject;
-> > > +               }
-> > > +               mem_cgroup_put(memcg);
-> >
-> > Can we just use RCU here as well? (same around memcg_list_lru_alloc()
-> > call below).
->
-> For memcg_list_lru_alloc(): there's potentially sleeping in that piece of
-> code I believe? I believe at the very least we'll have to use this gfp_t
-> flag for it to be rcu-safe:
->
-> GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
-> not sure the
->
-> Same go for this particular place IIRC - there's some sleeping done
-> in zswap_writeback_entry(), correct?
+A parallel kernel build on a 2-socket x86-64 server is used as the
+benchmarking tool for measuring the lock hold time. Below were the lock
+hold time frequency distribution before and after applying different
+number of patches:
 
-Ah right, I missed this. My bad.
+  Hold time   Before patch   Patch 1   Patches 1-2  Patches 1-3
+  ---------   ------------   -------   -----------  -----------
+    0-01 us      804,139   13,738,708   14,594,545   15,484,707
+   01-05 us    9,772,767    1,177,194      439,926      207,382
+   05-10 us    4,595,028        4,984        5,960        3,174
+   10-15 us      303,481        3,562        3,543        3,006
+   15-20 us       78,971        1,314        1,397        1,066
+   20-25 us       24,583           18           25           15
+   25-30 us        6,908           12           12           10
+   30-40 us        8,015
+   40-50 us        2,192
+   50-60 us          316
+   60-70 us           43
+   70-80 us            7
+   80-90 us            2
+     >90 us            3
+
+Waiman Long (3):
+  cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+  cgroup/rstat: Optimize cgroup_rstat_updated_list()
+  cgroup: Avoid false cacheline sharing of read mostly rstat_cpu
+
+ include/linux/cgroup-defs.h |  14 ++++
+ kernel/cgroup/rstat.c       | 131 +++++++++++++++++++++---------------
+ 2 files changed, 91 insertions(+), 54 deletions(-)
+
+-- 
+2.39.3
+
 
