@@ -1,575 +1,639 @@
-Return-Path: <cgroups+bounces-192-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-193-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0003C7E2C07
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 19:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE1C7E2C8A
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 20:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A79F328185A
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 18:32:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48FB028163E
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 19:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AA52D05E;
-	Mon,  6 Nov 2023 18:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9E328E26;
+	Mon,  6 Nov 2023 19:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dOEjEJd5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SDFx6a66"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3872D04E;
-	Mon,  6 Nov 2023 18:32:10 +0000 (UTC)
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5880694;
-	Mon,  6 Nov 2023 10:32:07 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso3780541b3a.1;
-        Mon, 06 Nov 2023 10:32:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699295527; x=1699900327; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N8ph0qQQ5H5bJLHYkI6jb4RvQ0Lcli/vqoPRF5tf8vc=;
-        b=dOEjEJd5cK3eSyIiQo5rV68cM8y+rTXDI0exDf+wPkX9oALr44CL/f9BenZ4X7Ro92
-         ieQE2R79UnRXNm7qPJ+hcyJtGeN9YivxJgaIpiBiQv4u9Wec7tF9XSX0b/tGMycSIN7l
-         mo/Xft8YXuOVS5WPzbKA3UQp372pZzifwiEK0WvgvlRiSI9EWWoz8AEcBZwYFAAqjEqq
-         KC714X5ReOWmMglumvyMCdjt9IPwSXf0ek9tyoiD3jbwZRT1pvioEOyDMUdYkFB3ypsU
-         6NcZ4DcJ3JXPWdyKvOSWz5+GXP4fHDHuwoIJKzLTZB2mchwiKM+V0EEk06A0xMOqvNWc
-         nOzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699295527; x=1699900327;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N8ph0qQQ5H5bJLHYkI6jb4RvQ0Lcli/vqoPRF5tf8vc=;
-        b=e+0atJmIxz/ReGfwz/dUNsT3OwuR586Lanf0Tj7zdHnr77fxI42d/hdV5abs1RzJT8
-         /VDCJtczmfUk3xeP0qiRLcfFnN2+wBYCw/dH2lMj7D3dguMSVsYn83fWWgHRXNFMm1D9
-         Ni9Ef2nOIrGIIutV31m7o9LXjqnXpsrzAonXyrf/xDxEoNEWjVKX1SKEkhslC3cu5Ebd
-         ueWOvaDFCvZqgKhWsYD9yHvWK06AQukFb573uopyGlkkhuLbqv+zBT+OGIuB148Ni7Lv
-         haiPNC2Hy5Nmd5olAhbewV9g+u2N3B+aQ7Oz2ohao3y5CnmBztP7nUgSByhEBRpCdvoT
-         yCQg==
-X-Gm-Message-State: AOJu0YwQcVn54e0sXOKO76Hd38UlKf9HNexJtNYp7Gc9ScUT6BuVMfsF
-	t3Z4jWC1BD39TPmKbT9osFY=
-X-Google-Smtp-Source: AGHT+IH2T1QbVRMdMtauNrsjzt3Q4b+qJkYfrV6f0fnZ1Hn1uZuzo56kDPFZIEaY+sGMiHJuYXoV1w==
-X-Received: by 2002:a05:6a20:4406:b0:151:35ad:f331 with SMTP id ce6-20020a056a20440600b0015135adf331mr324995pzb.14.1699295526484;
-        Mon, 06 Nov 2023 10:32:06 -0800 (PST)
-Received: from localhost (fwdproxy-prn-016.fbsv.net. [2a03:2880:ff:10::face:b00c])
-        by smtp.gmail.com with ESMTPSA id m11-20020a62f20b000000b006887be16675sm5829072pfh.205.2023.11.06.10.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 10:32:06 -0800 (PST)
-From: Nhat Pham <nphamcs@gmail.com>
-To: akpm@linux-foundation.org
-Cc: hannes@cmpxchg.org,
-	cerasuolodomenico@gmail.com,
-	yosryahmed@google.com,
-	sjenning@redhat.com,
-	ddstreet@ieee.org,
-	vitaly.wool@konsulko.com,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeelb@google.com,
-	muchun.song@linux.dev,
-	chrisl@kernel.org,
-	linux-mm@kvack.org,
-	kernel-team@meta.com,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	shuah@kernel.org
-Subject: [PATCH v5 6/6] zswap: shrinks zswap pool based on memory pressure
-Date: Mon,  6 Nov 2023 10:31:59 -0800
-Message-Id: <20231106183159.3562879-7-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231106183159.3562879-1-nphamcs@gmail.com>
-References: <20231106183159.3562879-1-nphamcs@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F59FDDBB
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 19:00:02 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F77A2;
+	Mon,  6 Nov 2023 10:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699297199; x=1730833199;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=fMypXWW57+wS4eTIiTkq2O5mctUODXUoOkqQrceHLH8=;
+  b=SDFx6a66rAOrQTVwSmmJ6PgLj5jGqQNjWWU8m7Mk3iZ4Pz3wHB/ZLPlv
+   3wEhDKM2NDn/HA6958Q/Yo1CmDds3bKR+ADrAK2G+9OgP1I2ByNCfcCE+
+   dk7fpGBoNYMBivAUzsaoEfP7GAH45GXrT6UOoK9OkeX1TUFNoD/P21ci8
+   A3DlEjJRbCMhrzDOykzEsYiBvZNLFo/c4YooemnOUzMlHcLxuXB2KWfNC
+   LoCSMTuMC4k6aq18xLYyd6NBeN2k4m7fcJRVcvIVrFca5BOAqLclx98hj
+   RkVx1yIua956I9ukQ5fsQWyxbkfmvd5cw427Zcs4lmXxaWFIOV4s8azBx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="7980508"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="7980508"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 10:59:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="832813815"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="832813815"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.93.50.175])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 06 Nov 2023 10:59:54 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "Christopherson,, Sean" <seanjc@google.com>, "Zhang, Bo"
+ <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Li,
+ Zhiquan1" <zhiquan1.li@intel.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>
+Subject: Re: [PATCH v6 04/12] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-5-haitao.huang@linux.intel.com>
+ <ad7aafb88e45e5176d15eedea60695e104d24751.camel@intel.com>
+Date: Mon, 06 Nov 2023 12:59:55 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2dz4d5b2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <ad7aafb88e45e5176d15eedea60695e104d24751.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Currently, we only shrink the zswap pool when the user-defined limit is
-hit. This means that if we set the limit too high, cold data that are
-unlikely to be used again will reside in the pool, wasting precious
-memory. It is hard to predict how much zswap space will be needed ahead
-of time, as this depends on the workload (specifically, on factors such
-as memory access patterns and compressibility of the memory pages).
+On Mon, 06 Nov 2023 06:09:45 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-This patch implements a memcg- and NUMA-aware shrinker for zswap, that
-is initiated when there is memory pressure. The shrinker does not
-have any parameter that must be tuned by the user, and can be opted in
-or out on a per-memcg basis.
+> On Mon, 2023-10-30 at 11:20 -0700, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> Implement support for cgroup control of SGX Enclave Page Cache (EPC)
+>> memory using the misc cgroup controller. EPC memory is independent
+>> from normal system memory, e.g. must be reserved at boot from RAM and
+>> cannot be converted between EPC and normal memory while the system is
+>> running. EPC is managed by the SGX subsystem and is not accounted by
+>> the memory controller.
+>>
+>> Much like normal system memory, EPC memory can be overcommitted via
+>> virtual memory techniques and pages can be swapped out of the EPC to
+>> their backing store (normal system memory, e.g. shmem).  The SGX EPC
+>> subsystem is analogous to the memory subsystem and the SGX EPC  
+>> controller
+>> is in turn analogous to the memory controller; it implements limit and
+>> protection models for EPC memory.
+>
+> Nit:
+>
+> The above two paragraphs talk about what is EPC and EPC resource control  
+> needs
+> to be done separately, etc, but IMHO it lacks some background about  
+> "why" EPC
+> resource control is needed, e.g, from use case's perspective.
+>
+>>
+>> The misc controller provides a mechanism to set a hard limit of EPC
+>> usage via the "sgx_epc" resource in "misc.max". The total EPC memory
+>> available on the system is reported via the "sgx_epc" resource in
+>> "misc.capacity".
+>
+> Please separate what the current misc cgroup provides, and how this  
+> patch is
+> going to utilize.
+>
+> Please describe the changes in imperative mood. E.g, "report total EPC  
+> memory
+> via ...", instead of "... is reported via ...".
+>
 
-Furthermore, to make it more robust for many workloads and prevent
-overshrinking (i.e evicting warm pages that might be refaulted into
-memory), we build in the following heuristics:
+Will update
 
-* Estimate the number of warm pages residing in zswap, and attempt to
-  protect this region of the zswap LRU.
-* Scale the number of freeable objects by an estimate of the memory
-  saving factor. The better zswap compresses the data, the fewer pages
-  we will evict to swap (as we will otherwise incur IO for relatively
-  small memory saving).
-* During reclaim, if the shrinker encounters a page that is also being
-  brought into memory, the shrinker will cautiously terminate its
-  shrinking action, as this is a sign that it is touching the warmer
-  region of the zswap LRU.
+>>
+>> This patch was modified from the previous version to only add basic EPC
+>> cgroup structure, accounting allocations for cgroup usage
+>> (charge/uncharge), setup misc cgroup callbacks, set total EPC capacity.
+>
+> This isn't changelog material.  Please focus on describing the high  
+> level design
+> and why you chose such design.
+>
+>>
+>> For now, the EPC cgroup simply blocks additional EPC allocation in
+>> sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
+>> still tracked in the global active list, only reclaimed by the global
+>> reclaimer when the total free page count is lower than a threshold.
+>>
+>> Later patches will reorganize the tracking and reclamation code in the
+>> globale reclaimer and implement per-cgroup tracking and reclaiming.
+>>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> ---
+>> V6:
+>> - Split the original large patch"Limit process EPC usage with misc
+>> cgroup controller"  and restructure it (Kai)
+>> ---
+>>  arch/x86/Kconfig                     |  13 ++++
+>>  arch/x86/kernel/cpu/sgx/Makefile     |   1 +
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 103 +++++++++++++++++++++++++++
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  36 ++++++++++
+>>  arch/x86/kernel/cpu/sgx/main.c       |  28 ++++++++
+>>  arch/x86/kernel/cpu/sgx/sgx.h        |   3 +
+>>  6 files changed, 184 insertions(+)
+>>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>>
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 66bfabae8814..e17c5dc3aea4 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -1921,6 +1921,19 @@ config X86_SGX
+>>
+>>  	  If unsure, say N.
+>>
+>> +config CGROUP_SGX_EPC
+>> +	bool "Miscellaneous Cgroup Controller for Enclave Page Cache (EPC)  
+>> for Intel SGX"
+>> +	depends on X86_SGX && CGROUP_MISC
+>> +	help
+>> +	  Provides control over the EPC footprint of tasks in a cgroup via
+>> +	  the Miscellaneous cgroup controller.
+>> +
+>> +	  EPC is a subset of regular memory that is usable only by SGX
+>> +	  enclaves and is very limited in quantity, e.g. less than 1%
+>> +	  of total DRAM.
+>> +
+>> +	  Say N if unsure.
+>> +
+>>  config X86_USER_SHADOW_STACK
+>>  	bool "X86 userspace shadow stack"
+>>  	depends on AS_WRUSS
+>> diff --git a/arch/x86/kernel/cpu/sgx/Makefile  
+>> b/arch/x86/kernel/cpu/sgx/Makefile
+>> index 9c1656779b2a..12901a488da7 100644
+>> --- a/arch/x86/kernel/cpu/sgx/Makefile
+>> +++ b/arch/x86/kernel/cpu/sgx/Makefile
+>> @@ -4,3 +4,4 @@ obj-y += \
+>>  	ioctl.o \
+>>  	main.o
+>>  obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
+>> +obj-$(CONFIG_CGROUP_SGX_EPC)	       += epc_cgroup.o
+>> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c  
+>> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> new file mode 100644
+>> index 000000000000..500627d0563f
+>> --- /dev/null
+>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> @@ -0,0 +1,103 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +// Copyright(c) 2022 Intel Corporation.
+>> +
+>> +#include <linux/atomic.h>
+>> +#include <linux/kernel.h>
+>> +#include "epc_cgroup.h"
+>> +
+>> +static inline struct sgx_epc_cgroup  
+>> *sgx_epc_cgroup_from_misc_cg(struct misc_cg *cg)
+>> +{
+>> +	return (struct sgx_epc_cgroup *)(cg->res[MISC_CG_RES_SGX_EPC].priv);
+>> +}
+>> +
+>> +static inline bool sgx_epc_cgroup_disabled(void)
+>> +{
+>> +	return !cgroup_subsys_enabled(misc_cgrp_subsys);
+>
+> From below, the root EPC cgroup is dynamically allocated.  Shouldn't it  
+> also
+> check whether the root EPC cgroup is valid?
+>
 
-As a proof of concept, we ran the following synthetic benchmark:
-build the linux kernel in a memory-limited cgroup, and allocate some
-cold data in tmpfs to see if the shrinker could write them out and
-improved the overall performance. Depending on the amount of cold data
-generated, we observe from 14% to 35% reduction in kernel CPU time used
-in the kernel builds.
+Good point. I think I'll go with the static instance approach below.
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- Documentation/admin-guide/mm/zswap.rst |   7 +
- include/linux/mmzone.h                 |   2 +
- include/linux/zswap.h                  |  25 +++-
- mm/mmzone.c                            |   1 +
- mm/swap_state.c                        |   2 +
- mm/zswap.c                             | 177 ++++++++++++++++++++++++-
- 6 files changed, 208 insertions(+), 6 deletions(-)
+>> +}
+>> +
+>> +/**
+>> + * sgx_epc_cgroup_try_charge() - hierarchically try to charge a single  
+>> EPC page
+>> + *
+>> + * Returns EPC cgroup or NULL on success, -errno on failure.
+>> + */
+>> +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +	int ret;
+>> +
+>> +	if (sgx_epc_cgroup_disabled())
+>> +		return NULL;
+>> +
+>> +	epc_cg = sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
+>> +	ret = misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
+>> +
+>> +	if (!ret) {
+>> +		/* No epc_cg returned, release ref from get_current_misc_cg() */
+>> +		put_misc_cg(epc_cg->cg);
+>> +		return ERR_PTR(-ENOMEM);
+>
+> misc_cg_try_charge() returns 0 when successfully charged, no?
 
-diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
-index 45b98390e938..522ae22ccb84 100644
---- a/Documentation/admin-guide/mm/zswap.rst
-+++ b/Documentation/admin-guide/mm/zswap.rst
-@@ -153,6 +153,13 @@ attribute, e. g.::
- 
- Setting this parameter to 100 will disable the hysteresis.
- 
-+When there is a sizable amount of cold memory residing in the zswap pool, it
-+can be advantageous to proactively write these cold pages to swap and reclaim
-+the memory for other use cases. By default, the zswap shrinker is disabled.
-+User can enable it as follows:
-+
-+  echo Y > /sys/module/zswap/parameters/shrinker_enabled
-+
- A debugfs interface is provided for various statistic about pool size, number
- of pages stored, same-value filled pages and various counters for the reasons
- pages are rejected.
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 12f31633be05..633afdb96c40 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -22,6 +22,7 @@
- #include <linux/mm_types.h>
- #include <linux/page-flags.h>
- #include <linux/local_lock.h>
-+#include <linux/zswap.h>
- #include <asm/page.h>
- 
- /* Free memory management - zoned buddy allocator.  */
-@@ -637,6 +638,7 @@ struct lruvec {
- #ifdef CONFIG_MEMCG
- 	struct pglist_data *pgdat;
- #endif
-+	struct zswap_lruvec_state zswap_lruvec_state;
- };
- 
- /* Isolate for asynchronous migration */
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index e571e393669b..cbd373ba88d2 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -5,20 +5,40 @@
- #include <linux/types.h>
- #include <linux/mm_types.h>
- 
-+struct lruvec;
-+
- extern u64 zswap_pool_total_size;
- extern atomic_t zswap_stored_pages;
- 
- #ifdef CONFIG_ZSWAP
- 
-+struct zswap_lruvec_state {
-+	/*
-+	 * Number of pages in zswap that should be protected from the shrinker.
-+	 * This number is an estimate of the following counts:
-+	 *
-+	 * a) Recent page faults.
-+	 * b) Recent insertion to the zswap LRU. This includes new zswap stores,
-+	 *    as well as recent zswap LRU rotations.
-+	 *
-+	 * These pages are likely to be warm, and might incur IO if the are written
-+	 * to swap.
-+	 */
-+	atomic_long_t nr_zswap_protected;
-+};
-+
- bool zswap_store(struct folio *folio);
- bool zswap_load(struct folio *folio);
- void zswap_invalidate(int type, pgoff_t offset);
- void zswap_swapon(int type);
- void zswap_swapoff(int type);
- void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
--
-+void zswap_lruvec_state_init(struct lruvec *lruvec);
-+void zswap_lruvec_swapin(struct page *page);
- #else
- 
-+struct zswap_lruvec_state {};
-+
- static inline bool zswap_store(struct folio *folio)
- {
- 	return false;
-@@ -33,7 +53,8 @@ static inline void zswap_invalidate(int type, pgoff_t offset) {}
- static inline void zswap_swapon(int type) {}
- static inline void zswap_swapoff(int type) {}
- static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
--
-+static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
-+static inline void zswap_lruvec_swapin(struct page *page) {}
- #endif
- 
- #endif /* _LINUX_ZSWAP_H */
-diff --git a/mm/mmzone.c b/mm/mmzone.c
-index b594d3f268fe..c01896eca736 100644
---- a/mm/mmzone.c
-+++ b/mm/mmzone.c
-@@ -78,6 +78,7 @@ void lruvec_init(struct lruvec *lruvec)
- 
- 	memset(lruvec, 0, sizeof(struct lruvec));
- 	spin_lock_init(&lruvec->lru_lock);
-+	zswap_lruvec_state_init(lruvec);
- 
- 	for_each_lru(lru)
- 		INIT_LIST_HEAD(&lruvec->lists[lru]);
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 6c84236382f3..94ed2d508db0 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -687,6 +687,7 @@ struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 					&page_allocated, false);
- 	if (unlikely(page_allocated))
- 		swap_readpage(page, false, NULL);
-+	zswap_lruvec_swapin(page);
- 	return page;
- }
- 
-@@ -862,6 +863,7 @@ static struct page *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
- 					&page_allocated, false);
- 	if (unlikely(page_allocated))
- 		swap_readpage(page, false, NULL);
-+	zswap_lruvec_swapin(page);
- 	return page;
- }
- 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 03ee41a8b884..260e01180ee0 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -146,6 +146,10 @@ module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, bool, 0644);
- /* Number of zpools in zswap_pool (empirically determined for scalability) */
- #define ZSWAP_NR_ZPOOLS 32
- 
-+/* Enable/disable memory pressure-based shrinker. */
-+static bool zswap_shrinker_enabled;
-+module_param_named(shrinker_enabled, zswap_shrinker_enabled, bool, 0644);
-+
- /*********************************
- * data structures
- **********************************/
-@@ -176,6 +180,8 @@ struct zswap_pool {
- 	struct list_lru list_lru;
- 	spinlock_t next_shrink_lock;
- 	struct mem_cgroup *next_shrink;
-+	struct shrinker *shrinker;
-+	atomic_t nr_stored;
- };
- 
- /*
-@@ -274,17 +280,26 @@ static bool zswap_can_accept(void)
- 			DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
- }
- 
-+static u64 get_zswap_pool_size(struct zswap_pool *pool)
-+{
-+	u64 pool_size = 0;
-+	int i;
-+
-+	for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
-+		pool_size += zpool_get_total_size(pool->zpools[i]);
-+
-+	return pool_size;
-+}
-+
- static void zswap_update_total_size(void)
- {
- 	struct zswap_pool *pool;
- 	u64 total = 0;
--	int i;
- 
- 	rcu_read_lock();
- 
- 	list_for_each_entry_rcu(pool, &zswap_pools, list)
--		for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
--			total += zpool_get_total_size(pool->zpools[i]);
-+		total += get_zswap_pool_size(pool);
- 
- 	rcu_read_unlock();
- 
-@@ -339,13 +354,34 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
- 	kmem_cache_free(zswap_entry_cache, entry);
- }
- 
-+/*********************************
-+* zswap lruvec functions
-+**********************************/
-+void zswap_lruvec_state_init(struct lruvec *lruvec)
-+{
-+	atomic_long_set(&lruvec->zswap_lruvec_state.nr_zswap_protected, 0);
-+}
-+
-+void zswap_lruvec_swapin(struct page *page)
-+{
-+	struct lruvec *lruvec;
-+
-+	if (page) {
-+		lruvec = folio_lruvec(page_folio(page));
-+		atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
-+	}
-+}
-+
- /*********************************
- * lru functions
- **********************************/
- static void zswap_lru_add(struct list_lru *list_lru, struct zswap_entry *entry)
- {
-+	atomic_long_t *nr_zswap_protected;
-+	unsigned long lru_size, old, new;
- 	int nid = entry_to_nid(entry);
- 	struct mem_cgroup *memcg;
-+	struct lruvec *lruvec;
- 
- 	/*
- 	 * Note that it is safe to use rcu_read_lock() here, even in the face of
-@@ -363,6 +399,19 @@ static void zswap_lru_add(struct list_lru *list_lru, struct zswap_entry *entry)
- 	memcg = get_mem_cgroup_from_entry(entry);
- 	/* will always succeed */
- 	list_lru_add(list_lru, &entry->lru, nid, memcg);
-+
-+	/* Update the protection area */
-+	lru_size = list_lru_count_one(list_lru, nid, memcg);
-+	lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
-+	nr_zswap_protected = &lruvec->zswap_lruvec_state.nr_zswap_protected;
-+	old = atomic_long_inc_return(nr_zswap_protected);
-+	/*
-+	 * Decay to avoid overflow and adapt to changing workloads.
-+	 * This is based on LRU reclaim cost decaying heuristics.
-+	 */
-+	do {
-+		new = old > lru_size / 4 ? old / 2 : old;
-+	} while (!atomic_long_try_cmpxchg(nr_zswap_protected, &old, new));
- 	rcu_read_unlock();
- }
- 
-@@ -384,6 +433,7 @@ static void zswap_lru_putback(struct list_lru *list_lru,
- 	int nid = entry_to_nid(entry);
- 	spinlock_t *lock = &list_lru->node[nid].lock;
- 	struct mem_cgroup *memcg;
-+	struct lruvec *lruvec;
- 
- 	rcu_read_lock();
- 	memcg = get_mem_cgroup_from_entry(entry);
-@@ -391,6 +441,10 @@ static void zswap_lru_putback(struct list_lru *list_lru,
- 	/* we cannot use list_lru_add here, because it increments node's lru count */
- 	list_lru_putback(list_lru, &entry->lru, nid, memcg);
- 	spin_unlock(lock);
-+
-+	lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(entry_to_nid(entry)));
-+	/* increment the protection area to account for the LRU rotation. */
-+	atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
- 	rcu_read_unlock();
- }
- 
-@@ -480,6 +534,7 @@ static void zswap_free_entry(struct zswap_entry *entry)
- 	else {
- 		zswap_lru_del(&entry->pool->list_lru, entry);
- 		zpool_free(zswap_find_zpool(entry), entry->handle);
-+		atomic_dec(&entry->pool->nr_stored);
- 		zswap_pool_put(entry->pool);
- 	}
- 	zswap_entry_cache_free(entry);
-@@ -521,6 +576,95 @@ static struct zswap_entry *zswap_entry_find_get(struct rb_root *root,
- 	return entry;
- }
- 
-+/*********************************
-+* shrinker functions
-+**********************************/
-+static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_one *l,
-+				       spinlock_t *lock, void *arg);
-+
-+static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
-+		struct shrink_control *sc)
-+{
-+	struct lruvec *lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
-+	unsigned long shrink_ret, nr_protected, lru_size;
-+	struct zswap_pool *pool = shrinker->private_data;
-+	bool encountered_page_in_swapcache = false;
-+
-+	nr_protected =
-+		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
-+	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
-+
-+	/*
-+	 * Abort if the shrinker is disabled or if we are shrinking into the
-+	 * protected region.
-+	 */
-+	if (!zswap_shrinker_enabled || nr_protected >= lru_size - sc->nr_to_scan) {
-+		sc->nr_scanned = 0;
-+		return SHRINK_STOP;
-+	}
-+
-+	shrink_ret = list_lru_shrink_walk(&pool->list_lru, sc, &shrink_memcg_cb,
-+		&encountered_page_in_swapcache);
-+
-+	if (encountered_page_in_swapcache)
-+		return SHRINK_STOP;
-+
-+	return shrink_ret ? shrink_ret : SHRINK_STOP;
-+}
-+
-+static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
-+		struct shrink_control *sc)
-+{
-+	struct zswap_pool *pool = shrinker->private_data;
-+	struct mem_cgroup *memcg = sc->memcg;
-+	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
-+	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
-+
-+#ifdef CONFIG_MEMCG_KMEM
-+	cgroup_rstat_flush(memcg->css.cgroup);
-+	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-+	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
-+#else
-+	/* use pool stats instead of memcg stats */
-+	nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
-+	nr_stored = atomic_read(&pool->nr_stored);
-+#endif
-+
-+	if (!zswap_shrinker_enabled || !nr_stored)
-+		return 0;
-+
-+	nr_protected =
-+		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
-+	nr_freeable = list_lru_shrink_count(&pool->list_lru, sc);
-+	/*
-+	 * Subtract the lru size by an estimate of the number of pages
-+	 * that should be protected.
-+	 */
-+	nr_freeable = nr_freeable > nr_protected ? nr_freeable - nr_protected : 0;
-+
-+	/*
-+	 * Scale the number of freeable pages by the memory saving factor.
-+	 * This ensures that the better zswap compresses memory, the fewer
-+	 * pages we will evict to swap (as it will otherwise incur IO for
-+	 * relatively small memory saving).
-+	 */
-+	return mult_frac(nr_freeable, nr_backing, nr_stored);
-+}
-+
-+static void zswap_alloc_shrinker(struct zswap_pool *pool)
-+{
-+	pool->shrinker =
-+		shrinker_alloc(SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE, "mm-zswap");
-+	if (!pool->shrinker)
-+		return;
-+
-+	pool->shrinker->private_data = pool;
-+	pool->shrinker->scan_objects = zswap_shrinker_scan;
-+	pool->shrinker->count_objects = zswap_shrinker_count;
-+	pool->shrinker->batch = 0;
-+	pool->shrinker->seeks = DEFAULT_SEEKS;
-+}
-+
- /*********************************
- * per-cpu code
- **********************************/
-@@ -716,6 +860,7 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 				       spinlock_t *lock, void *arg)
- {
- 	struct zswap_entry *entry = container_of(item, struct zswap_entry, lru);
-+	bool *encountered_page_in_swapcache = (bool *)arg;
- 	struct zswap_tree *tree;
- 	pgoff_t swpoffset;
- 	enum lru_status ret = LRU_REMOVED_RETRY;
-@@ -751,6 +896,17 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 		zswap_reject_reclaim_fail++;
- 		zswap_lru_putback(&entry->pool->list_lru, entry);
- 		ret = LRU_RETRY;
-+
-+		/*
-+		 * Encountering a page already in swap cache is a sign that we are shrinking
-+		 * into the warmer region. We should terminate shrinking (if we're in the dynamic
-+		 * shrinker context).
-+		 */
-+		if (writeback_result == -EEXIST && encountered_page_in_swapcache) {
-+			ret = LRU_SKIP;
-+			*encountered_page_in_swapcache = true;
-+		}
-+
- 		goto put_unlock;
- 	}
- 	zswap_written_back_pages++;
-@@ -890,6 +1046,11 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- 				       &pool->node);
- 	if (ret)
- 		goto error;
-+
-+	zswap_alloc_shrinker(pool);
-+	if (!pool->shrinker)
-+		goto error;
-+
- 	pr_debug("using %s compressor\n", pool->tfm_name);
- 
- 	/* being the current pool takes 1 ref; this func expects the
-@@ -897,14 +1058,20 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- 	 */
- 	kref_init(&pool->kref);
- 	INIT_LIST_HEAD(&pool->list);
--	list_lru_init_memcg(&pool->list_lru, NULL);
-+	if (list_lru_init_memcg(&pool->list_lru, pool->shrinker))
-+		goto lru_fail;
-+	shrinker_register(pool->shrinker);
- 	INIT_WORK(&pool->shrink_work, shrink_worker);
-+	atomic_set(&pool->nr_stored, 0);
- 
- 	zswap_pool_debug("created", pool);
- 	spin_lock_init(&pool->next_shrink_lock);
- 
- 	return pool;
- 
-+lru_fail:
-+	list_lru_destroy(&pool->list_lru);
-+	shrinker_free(pool->shrinker);
- error:
- 	if (pool->acomp_ctx)
- 		free_percpu(pool->acomp_ctx);
-@@ -962,6 +1129,7 @@ static void zswap_pool_destroy(struct zswap_pool *pool)
- 
- 	zswap_pool_debug("destroying", pool);
- 
-+	shrinker_free(pool->shrinker);
- 	cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->node);
- 	free_percpu(pool->acomp_ctx);
- 	list_lru_destroy(&pool->list_lru);
-@@ -1511,6 +1679,7 @@ bool zswap_store(struct folio *folio)
- 	if (entry->length) {
- 		INIT_LIST_HEAD(&entry->lru);
- 		zswap_lru_add(&entry->pool->list_lru, entry);
-+		atomic_inc(&entry->pool->nr_stored);
- 	}
- 	spin_unlock(&tree->lock);
- 
--- 
-2.34.1
+Right. I really made some mess in rebasing :-(
+
+>
+>> +	}
+>> +
+>> +	/* Ref released in sgx_epc_cgroup_uncharge() */
+>> +	return epc_cg;
+>> +}
+>
+> IMHO the above _try_charge() returning a pointer of EPC cgroup is a  
+> little bit
+> odd, because it doesn't match the existing misc_cg_try_charge() which  
+> returns
+> whether the charge is successful or not.  sev_misc_cg_try_charge()  
+> matches
+> misc_cg_try_charge() too.
+>
+> I think it's better to split "getting EPC cgroup" part out as a separate  
+> helper,
+> and make this _try_charge() match existing pattern:
+>
+> 	struct sgx_epc_cgroup *sgx_get_current_epc_cg(void)
+> 	{
+> 		if (sgx_epc_cgroup_disabled())
+> 			return NULL;
+> 	
+> 		return sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
+> 	}
+>
+> 	int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+> 	{
+> 		if (!epc_cg)
+> 			return -EINVAL;
+> 	
+> 		return misc_cg_try_charge(epc_cg->cg);
+> 	}
+>
+> Having sgx_get_current_epc_cg() also makes the caller easier to read,  
+> because we
+> can immediately know we are going to charge the *current* EPC cgroup,  
+> but not
+> some cgroup hidden within sgx_epc_cgroup_try_charge().
+>
+
+Actually, unlike other misc controllers, we need charge and get the epc_cg  
+reference at the same time. That's why it was returning the pointer. How  
+about rename them sgx_{charge_and_get, uncharge_and_put}_epc_cg()? In  
+final version, there is a __sgx_epc_cgroup_try_charge() that wraps  
+misc_cg_try_charge().
+
+>> +
+>> +/**
+>> + * sgx_epc_cgroup_uncharge() - hierarchically uncharge EPC pages
+>> + * @epc_cg:	the charged epc cgroup
+>> + */
+>> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg)
+>> +{
+>> +	if (sgx_epc_cgroup_disabled())
+>> +		return;
+>
+> If with above change, check !epc_cg instead.
+>
+>> +
+>> +	misc_cg_uncharge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
+>> +
+>> +	/* Ref got from sgx_epc_cgroup_try_charge() */
+>> +	put_misc_cg(epc_cg->cg);
+>> +}
+>> 	
+>> +
+>> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg = sgx_epc_cgroup_from_misc_cg(cg);
+>> +	if (!epc_cg)
+>> +		return;
+>> +
+>> +	kfree(epc_cg);
+>> +}
+>> +
+>> +static int sgx_epc_cgroup_alloc(struct misc_cg *cg);
+>> +
+>> +const struct misc_operations_struct sgx_epc_cgroup_ops = {
+>> +	.alloc = sgx_epc_cgroup_alloc,
+>> +	.free = sgx_epc_cgroup_free,
+>> +};
+>> +
+>> +static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg = kzalloc(sizeof(*epc_cg), GFP_KERNEL);
+>> +	if (!epc_cg)
+>> +		return -ENOMEM;
+>> +
+>> +	cg->res[MISC_CG_RES_SGX_EPC].misc_ops = &sgx_epc_cgroup_ops;
+>> +	cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
+>> +	epc_cg->cg = cg;
+>> +	return 0;
+>> +}
+>> +
+>> +static int __init sgx_epc_cgroup_init(void)
+>> +{
+>> +	struct misc_cg *cg;
+>> +
+>> +	if (!boot_cpu_has(X86_FEATURE_SGX))
+>> +		return 0;
+>> +
+>> +	cg = misc_cg_root();
+>> +	BUG_ON(!cg);
+>
+> BUG_ON() will catch some eyeball, but it cannot be NULL in practice IIUC.
+>
+> I am not sure whether you can just make misc @root_cg visible (instead  
+> of having
+> the misc_cg_root() helper) and directly use @root_cg here to avoid using  
+> the
+> BUG().  No opinion here.
+>
+I can remove BUG_ON(). It should never happen anyways.
+
+>> +
+>> +	return sgx_epc_cgroup_alloc(cg);
+>
+> As mentioned above the memory allocation can fail, in which case EPC  
+> cgroup is
+> effectively disabled IIUC?
+>
+> One way is to manually check whether root EPC cgroup is valid in
+> sgx_epc_cgroup_disabled().  Alternatively, you can have a static root  
+> EPC cgroup
+> here:
+>
+> 	static struct sgx_epc_cgroup root_epc_cg;
+>
+> In this way you can have a sgx_epc_cgroup_init(&epc_cg), and call it from
+> sgx_epc_cgroup_alloc().
+>
+
+Yeah, I think that is reasonable.
+
+>> +}
+>> +subsys_initcall(sgx_epc_cgroup_init);
+>> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h  
+>> b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>> new file mode 100644
+>> index 000000000000..c3abfe82be15
+>> --- /dev/null
+>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>> @@ -0,0 +1,36 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright(c) 2022 Intel Corporation. */
+>> +#ifndef _INTEL_SGX_EPC_CGROUP_H_
+>> +#define _INTEL_SGX_EPC_CGROUP_H_
+>> +
+>> +#include <asm/sgx.h>
+>> +#include <linux/cgroup.h>
+>> +#include <linux/list.h>
+>> +#include <linux/misc_cgroup.h>
+>> +#include <linux/page_counter.h>
+>> +#include <linux/workqueue.h>
+>> +
+>> +#include "sgx.h"
+>> +
+>> +#ifndef CONFIG_CGROUP_SGX_EPC
+>> +#define MISC_CG_RES_SGX_EPC MISC_CG_RES_TYPES
+>
+> Do you need this macro?
+
+I remember I got some compiling error without it but I don't see why it  
+should be needed. I'll double check next round. thanks.
+
+>
+>> +struct sgx_epc_cgroup;
+>> +
+>> +static inline struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void)
+>> +{
+>> +	return NULL;
+>> +}
+>> +
+>> +static inline void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup  
+>> *epc_cg) { }
+>> +#else
+>> +struct sgx_epc_cgroup {
+>> +	struct misc_cg *cg;
+>> +};
+>> +
+>> +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void);
+>> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg);
+>> +bool sgx_epc_cgroup_lru_empty(struct misc_cg *root);
+>
+> Why do you need sgx_epc_cgroup_lru_empty() here?
+>
+
+leftover from rebasing. Will remove.
+
+>> +
+>> +#endif
+>> +
+>> +#endif /* _INTEL_SGX_EPC_CGROUP_H_ */
+>> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
+>> b/arch/x86/kernel/cpu/sgx/main.c
+>> index 166692f2d501..07606f391540 100644
+>> --- a/arch/x86/kernel/cpu/sgx/main.c
+>> +++ b/arch/x86/kernel/cpu/sgx/main.c
+>> @@ -6,6 +6,7 @@
+>>  #include <linux/highmem.h>
+>>  #include <linux/kthread.h>
+>>  #include <linux/miscdevice.h>
+>> +#include <linux/misc_cgroup.h>
+>>  #include <linux/node.h>
+>>  #include <linux/pagemap.h>
+>>  #include <linux/ratelimit.h>
+>> @@ -17,6 +18,7 @@
+>>  #include "driver.h"
+>>  #include "encl.h"
+>>  #include "encls.h"
+>> +#include "epc_cgroup.h"
+>>
+>>  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+>>  static int sgx_nr_epc_sections;
+>> @@ -559,6 +561,11 @@ int sgx_unmark_page_reclaimable(struct  
+>> sgx_epc_page *page)
+>>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+>>  {
+>>  	struct sgx_epc_page *page;
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +
+>> +	epc_cg = sgx_epc_cgroup_try_charge();
+>> +	if (IS_ERR(epc_cg))
+>> +		return ERR_CAST(epc_cg);
+>>
+>>  	for ( ; ; ) {
+>>  		page = __sgx_alloc_epc_page();
+>> @@ -580,10 +587,21 @@ struct sgx_epc_page *sgx_alloc_epc_page(void  
+>> *owner, bool reclaim)
+>>  			break;
+>>  		}
+>>
+>> +		/*
+>> +		 * Need to do a global reclamation if cgroup was not full but free
+>> +		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
+>> +		 */
+>>  		sgx_reclaim_pages();
+>
+> What's the final behaviour?  IIUC it should be reclaiming from the  
+> *current* EPC
+> cgroup?  If so shouldn't we just pass the @epc_cg to it here?
+>
+> I think we can make this patch as "structure" patch w/o actually having  
+> EPC
+> cgroup enabled, i.e., sgx_get_current_epc_cg() always return NULL.
+>
+> And we can have one patch to change sgx_reclaim_pages() to take the  
+> 'struct
+> sgx_epc_lru_list *' as argument:
+>
+> 	void sgx_reclaim_pages_lru(struct sgx_epc_lru_list * lru)
+> 	{
+> 		...
+> 	}
+>
+> Then here we can have something like:
+>
+> 	void sgx_reclaim_pages(struct sgx_epc_cg *epc_cg)
+> 	{
+> 		struct sgx_epc_lru_list *lru =			epc_cg ? &epc_cg->lru :  
+> &sgx_global_lru;
+>
+> 		sgx_reclaim_pages_lru(lru);
+> 	}
+>
+> Makes sense?
+>
+
+This is purely global reclamation. No cgroup involved. You can see it  
+later in changes in patch 10/12. For now I just make a comment there but  
+no real changes. Cgroup reclamation will be done as part of _try_charge  
+call.
+
+>>  		cond_resched();
+>>  	}
+>>
+>> +	if (!IS_ERR(page)) {
+>> +		WARN_ON_ONCE(page->epc_cg);
+>> +		page->epc_cg = epc_cg;
+>> +	} else {
+>> +		sgx_epc_cgroup_uncharge(epc_cg);
+>> +	}
+>> +
+>>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+>>  		wake_up(&ksgxd_waitq);
+>>
+>> @@ -604,6 +622,11 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
+>>  	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
+>>  	struct sgx_numa_node *node = section->node;
+>>
+>> +	if (page->epc_cg) {
+>> +		sgx_epc_cgroup_uncharge(page->epc_cg);
+>> +		page->epc_cg = NULL;
+>> +	}
+>> +
+>>  	spin_lock(&node->lock);
+>>
+>>  	page->owner = NULL;
+>> @@ -643,6 +666,7 @@ static bool __init sgx_setup_epc_section(u64  
+>> phys_addr, u64 size,
+>>  		section->pages[i].flags = 0;
+>>  		section->pages[i].owner = NULL;
+>>  		section->pages[i].poison = 0;
+>> +		section->pages[i].epc_cg = NULL;
+>>  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+>>  	}
+>>
+>> @@ -787,6 +811,7 @@ static void __init arch_update_sysfs_visibility(int  
+>> nid) {}
+>>  static bool __init sgx_page_cache_init(void)
+>>  {
+>>  	u32 eax, ebx, ecx, edx, type;
+>> +	u64 capacity = 0;
+>>  	u64 pa, size;
+>>  	int nid;
+>>  	int i;
+>> @@ -837,6 +862,7 @@ static bool __init sgx_page_cache_init(void)
+>>
+>>  		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
+>>  		sgx_numa_nodes[nid].size += size;
+>> +		capacity += size;
+>>
+>>  		sgx_nr_epc_sections++;
+>>  	}
+>> @@ -846,6 +872,8 @@ static bool __init sgx_page_cache_init(void)
+>>  		return false;
+>>  	}
+>>
+>> +	misc_cg_set_capacity(MISC_CG_RES_SGX_EPC, capacity);
+>> +
+>>  	return true;
+>>  }
+>
+> I would separate setting up capacity as a separate patch.
+
+I thought about that, but again it was only 3-4 lines all in this function  
+and it's also necessary part of basic setup for misc controller...
+
+>
+>>
+>> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h  
+>> b/arch/x86/kernel/cpu/sgx/sgx.h
+>> index d2dad21259a8..b1786774b8d2 100644
+>> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+>> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+>> @@ -29,12 +29,15 @@
+>>  /* Pages on free list */
+>>  #define SGX_EPC_PAGE_IS_FREE		BIT(1)
+>>
+>> +struct sgx_epc_cgroup;
+>> +
+>>  struct sgx_epc_page {
+>>  	unsigned int section;
+>>  	u16 flags;
+>>  	u16 poison;
+>>  	struct sgx_encl_page *owner;
+>>  	struct list_head list;
+>> +	struct sgx_epc_cgroup *epc_cg;
+>>  };
+>>
+>
+> Adding @epc_cg unconditionally means even with !CONFIG_CGROUP_SGX_EPC  
+> the memory
+> is still occupied.  IMHO that would bring non-trivial memory waste as  
+> it's 8-
+> bytes for each EPC page.
+>
+
+Ok, I'll add ifdef
 
