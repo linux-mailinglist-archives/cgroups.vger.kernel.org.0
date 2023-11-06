@@ -1,289 +1,238 @@
-Return-Path: <cgroups+bounces-195-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-196-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F16A7E2E26
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 21:26:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29BEA7E2E44
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 21:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14E73B209FA
-	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 20:26:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C4631C20840
+	for <lists+cgroups@lfdr.de>; Mon,  6 Nov 2023 20:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5981B2E631;
-	Mon,  6 Nov 2023 20:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B6028DC6;
+	Mon,  6 Nov 2023 20:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JWFOBx5L"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I6B2VWxz"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963202E62B
-	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 20:26:14 +0000 (UTC)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63588D76
-	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 12:26:11 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9dd6dc9c00cso467448066b.3
-        for <cgroups@vger.kernel.org>; Mon, 06 Nov 2023 12:26:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699302370; x=1699907170; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S5TYX6lEuKCahV5efuUP6jLDN7dIzcQfoIdtrIEy2yE=;
-        b=JWFOBx5LE6U+yKxQgaLz8qQhRYG7kQeSU2749JDJXc9bJuc+akMVtJoULQXgF5wdGI
-         qKAdCjLBemx+LLwIg4D2VWiaTpPnvvb5sQK/7b/MfX8w0fUfCno798BvYzp92czuMw0U
-         T89WUcQgIOiLeRSxo+NzNxb9QO8ibNdLU1HVacqiYBqyivQ+U77HMyZLWB6IOyIU01Gn
-         mtndT2vytrhuc+A7gPXmaKYW3izgOtLAK/nhfxsRxynr2tkMdKl/2tDolmmUNJ6+TxS3
-         n9T8zP/r0kWtrJTqfOG8yb7ZvehBS/E44pZ+cICaAJ6j4ZHaltZjBISsSMRbNqPlG2Fy
-         Y9mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699302370; x=1699907170;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S5TYX6lEuKCahV5efuUP6jLDN7dIzcQfoIdtrIEy2yE=;
-        b=NmWVZ6EmXF94w/qmjkTgPdd9IJHJexxsZhavAQfa7wk7f668lpHIWM3WWCX9NKm7ku
-         kvhaX/BmqM7U4lncH8a7n0Wb/SKPinFsYIKkWiawCJ5QTR1Kb8M7thjnpobrOQT6qu7q
-         zRaI9OJw/jimV2mNmgQBlRZThRY+vDwDb88KqFnuGceNM2VqH0xkdcfFsPMIxqZwoOuZ
-         +XSA2HAKeYpx9QFeqSip7/G1EzYy1uSdeMK4gJDGfdPpo0m8CP7W5d5K0v11KixUr/gv
-         fWZC6Io9tavat2L9zoJiGLlXr9wjfWsYA9Ti/xO+yp0MHqMyYrG3K25ZDuPinL1Gy+yV
-         Sgjg==
-X-Gm-Message-State: AOJu0Ywm0mwFiO+nEhiI5ngk6DYw9OAHpCus1cnjyF2dVHNGADWbiKsG
-	LqgCizH8n142bdpx3KGDdQAqHNFazMnFO+EnGDC3fQ==
-X-Google-Smtp-Source: AGHT+IE/P/U+nspRnmXie0ihSzjkMxQma5uYY9b94Sf1X7ObMkz1sGnPPXsA59befGpud1esC1lLX+/xCb8XugZ3QVg=
-X-Received: by 2002:a17:907:26c9:b0:9e0:dcf:17d5 with SMTP id
- bp9-20020a17090726c900b009e00dcf17d5mr3945353ejc.43.1699302369549; Mon, 06
- Nov 2023 12:26:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C62FBEC
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 20:37:23 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6B8C0
+	for <cgroups@vger.kernel.org>; Mon,  6 Nov 2023 12:37:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699303040;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OlKBq5ACwOl3HsoTA4bZWBOpaJXjxysreGnsxwW1EII=;
+	b=I6B2VWxzSZ2/UfZxWSvkGrvwX12Gmzc6qMuCxOvhZK/DtLbdboFS8kSH/2RPTRqEINQRhO
+	1QhFFmSUTwXVPTAg4q0jEb9NHdaYMSTvAX0OHBM6hnqyzBS/HSoZNHamhjd84Z9gvvy9Ya
+	PY//79qftXOTg+xKXwQtR8bkTIRE8c0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-100-eB4IiIG9MXSNphzwsxPHpg-1; Mon, 06 Nov 2023 15:37:18 -0500
+X-MC-Unique: eB4IiIG9MXSNphzwsxPHpg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 73918811E7E;
+	Mon,  6 Nov 2023 20:37:17 +0000 (UTC)
+Received: from [10.22.17.168] (unknown [10.22.17.168])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BE01B492A;
+	Mon,  6 Nov 2023 20:37:16 +0000 (UTC)
+Message-ID: <2212f172-def9-3ec7-b3d7-732c2b2c365e@redhat.com>
+Date: Mon, 6 Nov 2023 15:37:16 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231106183159.3562879-1-nphamcs@gmail.com> <20231106183159.3562879-4-nphamcs@gmail.com>
-In-Reply-To: <20231106183159.3562879-4-nphamcs@gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 6 Nov 2023 12:25:33 -0800
-Message-ID: <CAJD7tkYcEc03d+6kwkXu8M_fd9ZDzh6B5G+VjmFXx+H09mhfmg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] zswap: make shrinking memcg-aware
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, cerasuolodomenico@gmail.com, 
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com, 
-	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+ Sebastian Jug <sejug@redhat.com>
+References: <20231104031303.592879-1-longman@redhat.com>
+ <20231104031303.592879-3-longman@redhat.com>
+ <CAJD7tkZirDce=Zq9bm_b_R=yXkj1OaqCe2ObRXzV-BtDc3X9VQ@mail.gmail.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <CAJD7tkZirDce=Zq9bm_b_R=yXkj1OaqCe2ObRXzV-BtDc3X9VQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Mon, Nov 6, 2023 at 10:32=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
-:
+On 11/6/23 15:07, Yosry Ahmed wrote:
+> On Fri, Nov 3, 2023 at 8:13 PM Waiman Long <longman@redhat.com> wrote:
+>> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
+>> the updated tree in a way to pop out the leaf nodes first before
+>> their parents. This can cause traversal of multiple nodes before a
+>> leaf node can be found and popped out. IOW, a given node in the tree
+>> can be visited multiple times before the whole operation is done. So
+>> it is not very efficient and the code can be hard to read.
+>>
+>> With the introduction of cgroup_rstat_updated_list() to build a list
+>> of cgroups to be flushed first before any flushing operation is being
+>> done, we can optimize the way the updated tree nodes are being popped
+>> by pushing the parents first to the tail end of the list before their
+>> children. In this way, most updated tree nodes will be visited only
+>> once with the exception of the subtree root as we still need to go
+>> back to its parent and popped it out of its updated_children list.
+>> This also makes the code easier to read.
+>>
+>> A parallel kernel build on a 2-socket x86-64 server is used as the
+>> benchmarking tool for measuring the lock hold time. Below were the lock
+>> hold time frequency distribution before and after the patch:
+>>
+>>       Hold time        Before patch       After patch
+>>       ---------        ------------       -----------
+>>         0-01 us        13,738,708         14,594,545
+>>        01-05 us         1,177,194            439,926
+>>        05-10 us             4,984              5,960
+>>        10-15 us             3,562              3,543
+>>        15-20 us             1,314              1,397
+>>        20-25 us                18                 25
+>>        25-30 us                12                 12
+>>
+>> It can be seen that the patch pushes the lock hold time towards the
+>> lower end.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+> I don't know why git decided to show this diff in the most confusing
+> way possible.
+I agree. The diff is really hard to look at. It will be easier to apply 
+the patch & looks at the actual rstat.c file.
 >
-> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>>   kernel/cgroup/rstat.c | 132 ++++++++++++++++++++++--------------------
+>>   1 file changed, 70 insertions(+), 62 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+>> index 1f300bf4dc40..d2b709cfeb2a 100644
+>> --- a/kernel/cgroup/rstat.c
+>> +++ b/kernel/cgroup/rstat.c
+>> @@ -74,64 +74,90 @@ __bpf_kfunc void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
+>>   }
+>>
+>>   /**
+>> - * cgroup_rstat_cpu_pop_updated - iterate and dismantle rstat_cpu updated tree
+>> - * @pos: current position
+>> - * @root: root of the tree to traversal
+>> + * cgroup_rstat_push_children - push children cgroups into the given list
+>> + * @head: current head of the list (= parent cgroup)
+>> + * @prstatc: cgroup_rstat_cpu of the parent cgroup
+>>    * @cpu: target cpu
+>> + * Return: A new singly linked list of cgroups to be flush
+>>    *
+>> - * Walks the updated rstat_cpu tree on @cpu from @root.  %NULL @pos starts
+>> - * the traversal and %NULL return indicates the end.  During traversal,
+>> - * each returned cgroup is unlinked from the tree.  Must be called with the
+>> - * matching cgroup_rstat_cpu_lock held.
+>> + * Recursively traverse down the cgroup_rstat_cpu updated tree and push
+>> + * parent first before its children. The parent is pushed by the caller.
+> I think it might be useful here (and elsewhere in the patch) where
+> "push" is being used to elaborate that we push to the beginning in a
+> stack-like fashion.
+Right, I am thinking about a stack when I use the word "push". I will 
+clarify that in the comment.
 >
-> Currently, we only have a single global LRU for zswap. This makes it
-> impossible to perform worload-specific shrinking - an memcg cannot
-> determine which pages in the pool it owns, and often ends up writing
-> pages from other memcgs. This issue has been previously observed in
-> practice and mitigated by simply disabling memcg-initiated shrinking:
+>> + * The recursion depth is the depth of the current updated tree.
+>> + */
+>> +static struct cgroup *cgroup_rstat_push_children(struct cgroup *head,
+>> +                               struct cgroup_rstat_cpu *prstatc, int cpu)
+>> +{
+>> +       struct cgroup *child, *parent;
+>> +       struct cgroup_rstat_cpu *crstatc;
+>> +
+>> +       parent = head;
+>> +       child = prstatc->updated_children;
+>> +       prstatc->updated_children = parent;
+>> +
+>> +       /* updated_next is parent cgroup terminated */
+>> +       while (child != parent) {
+>> +               child->rstat_flush_next = head;
+>> +               head = child;
+>> +               crstatc = cgroup_rstat_cpu(child, cpu);
+>> +               if (crstatc->updated_children != parent)
+> I think cgroup->updated_children is set to the cgroup itself if it's
+> empty, right? Shouldn't this be crstatc->updated_children != child?
+My mistake. Will fix it in the next version.
 >
-> https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/=
-#u
+>> +                       head = cgroup_rstat_push_children(head, crstatc, cpu);
+>> +               child = crstatc->updated_next;
+>> +               crstatc->updated_next = NULL;
+>> +       }
+>> +       return head;
+>> +}
+>> +
+>> +/**
+>> + * cgroup_rstat_updated_list - return a list of updated cgroups to be flushed
+>> + * @root: root of the cgroup subtree to traverse
+>> + * @cpu: target cpu
+>> + * Return: A singly linked list of cgroups to be flushed
+>> + *
+>> + * Walks the updated rstat_cpu tree on @cpu from @root.  During traversal,
+>> + * each returned cgroup is unlinked from the updated tree.  Must be called
+>> + * with the matching cgroup_rstat_cpu_lock held.
+> This function takes care of holding the lock actually. I think that
+> sentence should be applied to cgroup_rstat_push_children() above?
+It is left over from before this patch. Will remove that.
 >
-> This patch fully resolves the issue by replacing the global zswap LRU
-> with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+>>    *
+>>    * The only ordering guarantee is that, for a parent and a child pair
+>> - * covered by a given traversal, if a child is visited, its parent is
+>> - * guaranteed to be visited afterwards.
+>> + * covered by a given traversal, the child is before its parent in
+>> + * the list.
+>> + *
+>> + * Note that updated_children is self terminated while updated_next is
+>> + * parent cgroup terminated except the cgroup root which can be self
+>> + * terminated.
+> IIUC updated_children and updated_next is the same list.
+> updated_children is the head, and updated_next is how the list items
+> are linked. This comment makes it seem like they are two different
+> lists.
+Thanks for the comment. I will rework the comment to clarify that a bit 
+more.
 >
-> a) When a store attempt hits an memcg limit, it now triggers a
->    synchronous reclaim attempt that, if successful, allows the new
->    hotter page to be accepted by zswap.
-> b) If the store attempt instead hits the global zswap limit, it will
->    trigger an asynchronous reclaim attempt, in which an memcg is
->    selected for reclaim in a round-robin-like fashion.
+> I am actually wondering if it's worth using the singly linked list
+> here. We are saving 8 bytes percpu, but the semantics are fairly
+> confusing. Wouldn't this be easier to reason about if you just use
+> list_head?
 >
-> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> Co-developed-by: Nhat Pham <nphamcs@gmail.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  include/linux/memcontrol.h |   5 +
->  include/linux/zswap.h      |   2 +
->  mm/memcontrol.c            |   2 +
->  mm/swap.h                  |   3 +-
->  mm/swap_state.c            |  24 +++-
->  mm/zswap.c                 | 252 +++++++++++++++++++++++++++++--------
->  6 files changed, 227 insertions(+), 61 deletions(-)
+> updated_children would be replaced with LIST_HEAD (or similar), and
+> the list would be NULL terminated instead of terminated by self/parent
+> cgroup. IIUC the reason it's not NULL-terminated now is because we use
+> cgroup->updated_next to check quickly if a cgroup is on the list or
+> not. If we use list_heads, we can just use list_emtpy() IIUC.
 >
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 55c85f952afd..95f6c9e60ed1 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1187,6 +1187,11 @@ static inline struct mem_cgroup *page_memcg_check(=
-struct page *page)
->         return NULL;
->  }
+> We can also simplify the semantics of unlinking @root from the updated
+> tree below, it would just be list_del() IIUC, which is actually more
+> performant as well. It seems like overall we would simplify a lot of
+> things. When forming the updated_list, we can just walk the tree and
+> splice the lists in the correct order.
 >
-> +static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cg=
-roup *objcg)
-> +{
-> +       return NULL;
-> +}
-> +
->  static inline bool folio_memcg_kmem(struct folio *folio)
->  {
->         return false;
-> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-> index 2a60ce39cfde..e571e393669b 100644
-> --- a/include/linux/zswap.h
-> +++ b/include/linux/zswap.h
-> @@ -15,6 +15,7 @@ bool zswap_load(struct folio *folio);
->  void zswap_invalidate(int type, pgoff_t offset);
->  void zswap_swapon(int type);
->  void zswap_swapoff(int type);
-> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
->
->  #else
->
-> @@ -31,6 +32,7 @@ static inline bool zswap_load(struct folio *folio)
->  static inline void zswap_invalidate(int type, pgoff_t offset) {}
->  static inline void zswap_swapon(int type) {}
->  static inline void zswap_swapoff(int type) {}
-> +static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)=
- {}
->
->  #endif
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6f7fc0101252..2ef49b471a16 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5640,6 +5640,8 @@ static void mem_cgroup_css_offline(struct cgroup_su=
-bsys_state *css)
->         page_counter_set_min(&memcg->memory, 0);
->         page_counter_set_low(&memcg->memory, 0);
->
-> +       zswap_memcg_offline_cleanup(memcg);
+> It seems to me that saving 8 bytes percpu is not worth the complexity
+> of the custom list semantics here. Am I missing something here?
 
-I think the "_cleanup" suffix is unnecessary. I guess most calls made
-here are cleanup calls anyway.
+It will cost an additional 16 bytes of percpu memory if converted to 
+list_heads. Like other lists, there will be sibling and children 
+list_heads. There are also 2 pointers to update instead of one. Anyway, 
+I don't have an objection to convert them to list_heads if agreed by Tejun.
 
-> +
->         memcg_offline_kmem(memcg);
->         reparent_shrinker_deferred(memcg);
->         wb_memcg_offline(memcg);
-> diff --git a/mm/swap.h b/mm/swap.h
-> index 73c332ee4d91..c0dc73e10e91 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
+Cheers,
+Longman
 
-> @@ -289,15 +291,42 @@ static void zswap_update_total_size(void)
->         zswap_pool_total_size =3D total;
->  }
->
-> +/* should be called under RCU */
-> +static inline struct mem_cgroup *get_mem_cgroup_from_entry(struct zswap_=
-entry *entry)
 
-Do not use "get" in the name if we are not actually taking a ref here.
-mem_cgroup_from_entry()?
-
-> +{
-> +       return entry->objcg ? obj_cgroup_memcg(entry->objcg) : NULL;
-> +}
-> +
-> +static inline int entry_to_nid(struct zswap_entry *entry)
-> +{
-> +       return page_to_nid(virt_to_page(entry));
-> +}
-> +
-> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
-> +{
-> +       struct zswap_pool *pool;
-> +
-> +       /* lock out zswap pools list modification */
-> +       spin_lock(&zswap_pools_lock);
-> +       list_for_each_entry(pool, &zswap_pools, list) {
-> +               spin_lock(&pool->next_shrink_lock);
-
-This lock is only needed to synchronize updating pool->next_shrink,
-right? Can we just use atomic operations instead? (e.g. cmpxchg()).
-
-> +               if (pool->next_shrink =3D=3D memcg)
-> +                       pool->next_shrink =3D
-> +                               mem_cgroup_iter(NULL, pool->next_shrink, =
-NULL, true);
-> +               spin_unlock(&pool->next_shrink_lock);
-> +       }
-> +       spin_unlock(&zswap_pools_lock);
-> +}
-> +
->  /*********************************
->  * zswap entry functions
->  **********************************/
->  static struct kmem_cache *zswap_entry_cache;
->
-> -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
-> +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
->  {
->         struct zswap_entry *entry;
-> -       entry =3D kmem_cache_alloc(zswap_entry_cache, gfp);
-> +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
->         if (!entry)
->                 return NULL;
->         entry->refcount =3D 1;
-[..]
-> @@ -1233,15 +1369,15 @@ bool zswap_store(struct folio *folio)
->                 zswap_invalidate_entry(tree, dupentry);
->         }
->         spin_unlock(&tree->lock);
-> -
-> -       /*
-> -        * XXX: zswap reclaim does not work with cgroups yet. Without a
-> -        * cgroup-aware entry LRU, we will push out entries system-wide b=
-ased on
-> -        * local cgroup limits.
-> -        */
->         objcg =3D get_obj_cgroup_from_folio(folio);
-> -       if (objcg && !obj_cgroup_may_zswap(objcg))
-> -               goto reject;
-> +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> +               if (shrink_memcg(memcg)) {
-> +                       mem_cgroup_put(memcg);
-> +                       goto reject;
-> +               }
-> +               mem_cgroup_put(memcg);
-
-Can we just use RCU here as well? (same around memcg_list_lru_alloc()
-call below).
-
-> +       }
->
->         /* reclaim space if needed */
->         if (zswap_is_full()) {
-> @@ -1258,7 +1394,7 @@ bool zswap_store(struct folio *folio)
->         }
->
->         /* allocate entry */
-> -       entry =3D zswap_entry_cache_alloc(GFP_KERNEL);
-> +       entry =3D zswap_entry_cache_alloc(GFP_KERNEL, page_to_nid(page));
->         if (!entry) {
->                 zswap_reject_kmemcache_fail++;
->                 goto reject;
-> @@ -1285,6 +1421,15 @@ bool zswap_store(struct folio *folio)
->         if (!entry->pool)
->                 goto freepage;
->
-> +       if (objcg) {
-> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> +               if (memcg_list_lru_alloc(memcg, &entry->pool->list_lru, G=
-FP_KERNEL)) {
-> +                       mem_cgroup_put(memcg);
-> +                       goto put_pool;
-> +               }
-> +               mem_cgroup_put(memcg);
-> +       }
-> +
->         /* compress */
->         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
->
 
