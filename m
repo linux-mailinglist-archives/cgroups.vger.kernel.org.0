@@ -1,270 +1,263 @@
-Return-Path: <cgroups+bounces-228-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-229-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCA2F7E4E54
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 02:00:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0A9A7E50AD
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 07:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07B0E1C20A68
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 01:00:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4F86B2096A
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 06:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1FC650;
-	Wed,  8 Nov 2023 01:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA9F440C;
+	Wed,  8 Nov 2023 06:59:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tr74MxQI"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="XMUbasmo"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71FE645
-	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 01:00:19 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4786B101;
-	Tue,  7 Nov 2023 17:00:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699405219; x=1730941219;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=vY5cz0drbFjLng1cG2unbr7apIO102YI4LT0lDPyvDA=;
-  b=Tr74MxQIdNjlyqD15s+5MLCOutfkg8T43hWeol2/Tyc84J4wTNzvxB8V
-   y/WZjY7NeUyBKjkxqch1lTRlOvjgjHlfcYSLV+AKSTV7BujWf5ANKDqnM
-   txM7kRyf7AJgVLFRQP53PDMo7pUhPPf2mjAv8nwGPxpn9UNpme3xMOQ6q
-   vAHb4g76k9I36VhXk1gK6dW/rgTkPhk1Uee0Vgwn5+MYoaYF1sYZi7QS5
-   1HuiuYvaNS8mTFtg7E3G1cTzcRQImBAt2vQMEwjuif9h6clfQk2wO6Pn1
-   rZ0lH3mDXwlBwKJYyqMzzVRpqME7Dd1Hiu8KO/hnqgN3X39bWjElcpn4Z
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="380063058"
-X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
-   d="scan'208";a="380063058"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 17:00:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
-   d="scan'208";a="11019257"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.93.64.106])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 07 Nov 2023 17:00:16 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>,
- "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-Subject: Re: [PATCH v6 00/12] Add Cgroup support for SGX EPC memory
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <b4581a686daf943a4c9a24373db0dfd58b7fecd7.camel@kernel.org>
- <op.2dzvirvlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Date: Tue, 07 Nov 2023 19:00:12 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F72CA61;
+	Wed,  8 Nov 2023 06:59:15 +0000 (UTC)
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2116.outbound.protection.outlook.com [40.107.255.116])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A04D40;
+	Tue,  7 Nov 2023 22:59:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IP4SwawffZYx0ULPPdlk5r9J4MPkMU5w32/fvdtxLoiIDOcwQgOjDfo1twpYwJHV7cNNmZqClRXaIrN3tbdX529dYD2cBD9BUoti9IA/GsJCo05JHAbR9a+PQkMwXmh2bycDKVXmiknePq67bXlnBOn5yFdKnyUjxxh3ZQeRrOimo/2kcMSVu6ETGKdm23/DmlOjpW2o9pJ4c+pqV7uQcNlsXtEiQ+LD2qj9HEEmpoVuhnCV3iKdsgazmY9qguyT9QLZAGkD0a4KCI0UrsSWoB8fVpa0J9Y6cvprb8nQLxroonHm7SC2jP/pqc8luVB+WbySc0nZLH658nuJL8oMtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EJwHBvKSRB1qLVBlu4jz1SWZbwHrtI5njMrqpET2i+0=;
+ b=jZbefsMWX0q7n1lXgwzUTr1A+H0N+r8k+abc5ujKpapMibU72hWG/LQctdB1eTbDPNRgVYpUO6LwrfeLdQljY+sAdTfcDHBa3eMErTyNXUuvulxp9F2+RW3iwTvLtti6qEEo8+6l5zvgAejArQ/fnJBewDQiptHUDafbX1jZIXgD32qjnR6um4l0nVjInePVO75P8EZyuoZiODcaba4nPfNa5XQhpOeACunUBt75vZM3qOezlMeMlIA97lsh2tZPjiJOGpvknIgpfRampF3seZ/pilZ6wu0ZZnhp/rF/hJn8MYbj4djKHhSDnqbihFTQMTcv48UjsVKLPARXRDiBIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EJwHBvKSRB1qLVBlu4jz1SWZbwHrtI5njMrqpET2i+0=;
+ b=XMUbasmo47WFPOJw++0kAMg2sUs7xZuGcj9P/yPnyeOoNhIvVWtd3zYd1wt5AfG4rri8upxMy9cYtLKKDs1K5s/47xsHqiPEvLhGhebrGUrPXmnCWVdETpqyy+PLZfcehdqRHrhA1IRF5l2w4vCucM0taQMcAZrnEdLPVi6fL9dDxzLHuAX4OwIcFQpAIC87rhC2dgL5vBMhZv/sCzoeZrw+IkxWBttpSTC/JQ9MdtwicXNL0FLj1Hvovo+g4Qk5Mk+PCI/Kx0lzfGQfzxUHxdxebA+thFWWSo8rCzT38RXJ39oYIYsQwRPn0RTZBeEuJ1dgthR9DyEe+/kPqgoniw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by TYZPR06MB3983.apcprd06.prod.outlook.com (2603:1096:400:2a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.31; Wed, 8 Nov
+ 2023 06:59:09 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Wed, 8 Nov 2023
+ 06:59:09 +0000
+From: Huan Yang <link@vivo.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Peter Xu <peterx@redhat.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Liu Shixin <liushixin2@huawei.com>,
+	Hugh Dickins <hughd@google.com>,
+	cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: opensource.kernel@vivo.com,
+	Huan Yang <link@vivo.com>
+Subject: [RFC 0/4] Introduce unbalance proactive reclaim
+Date: Wed,  8 Nov 2023 14:58:11 +0800
+Message-Id: <20231108065818.19932-1-link@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR04CA0187.apcprd04.prod.outlook.com
+ (2603:1096:4:14::25) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2d2fqmpswjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2dzvirvlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYZPR06MB3983:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a78337a-4ed9-4b85-d066-08dbe02834ca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	AcDJ2+BNryLM9yibQTLXMhygNCh1US+C8tYqLOybfFxl9Fa4k8efUbFW4soBfow6f3SHrul/V62JXKFbSgbbVUPeEqTiY+MBB6fcZgUqUUI7BkZ4qsSsLcWjlKaNFkCUVoAhkBHL2yr8lECP7cNPHFNEEFg32QZfdPL9Db18djtxNWKzfAM0GN9oXUkBXmYOFTbi2ssRivrCvieejN4l3DqwLxcPtWDaDcliYAfo9sVJUzQ/q4sIR4oa3ok9rL61cMmVP+8r1jV7O2d7WQt8kyn84i30rPPir5odjoq5orZcbIqR8wFiuJvsPPf/kUfATLuP5yFUG5UWuN2ADf9UBK05Ue96NbBeauDvl0tBHRnQRp4/wWqCW2bMinQvOLifSmYZtbWTHLhaPxRPkLT3yINJYWPhBLQuVdvDJqD0FLRyjU+01kJoKhl4YnDSYJm5iPOScCaXd5//lwKyltwKS8k2nezylI5p8+Gz/ZxALmVMX3jm4zGMp5ZxaV1WaUo+pdm4nnJQfR2CIkeeOp0LuCBcrOulBadCLMhZgw6cBPzF+XOGq48XVfTvnYpUNLpkuwhw1NrCnwJT1qpFfssYJCrd9d6LQ33EhED+NtxE3M9q7YoaR8ZlqxdGmr2F7TqCrAmJnXD37SbGy1mWcF9xMg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(396003)(39850400004)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(6486002)(6512007)(5660300002)(6506007)(478600001)(52116002)(6666004)(83380400001)(8936002)(8676002)(4326008)(7416002)(316002)(2906002)(26005)(110136005)(66556008)(66476007)(66946007)(86362001)(41300700001)(38100700002)(2616005)(107886003)(1076003)(38350700005)(921008)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?3jw5ZiC7AK/T6AYy3lwjCIg0CflrHoqdBJQoOIYFePcfG07tAs4toWm+CNkk?=
+ =?us-ascii?Q?g2iuNJnIFbrCVEvnZuH/afWj9A/sFf1Rt0d0m+N9+oh5ca64EXfZVNyjWTAj?=
+ =?us-ascii?Q?9h2AGjfpP+4gse2pV55thh9jeGOE+dzAdmipQXah/g3+Osy4wvrLhvsvEU/g?=
+ =?us-ascii?Q?gPheuoJqY4NzEVThGFE+jjAhglw3BpnBs0Vuxb9JrQlf48M7x3vIZcmfAbpF?=
+ =?us-ascii?Q?V+lwnTyEVo+YQrdBSLjxtDDWGIAXMQCEbARww7/k8UKJLUDa4r4mX2x9VPG0?=
+ =?us-ascii?Q?Y3Gfv4MSdlNMWs+spJIwQKLSGhuZZQ7hmyx0iPE1vylGxf3Xf00QI+DQHHsu?=
+ =?us-ascii?Q?PdK71y7vthXZIsfC2aw9GCGp4tZ/gVXSbHjSlzVrY101cuLiJJHAlTNxWc3c?=
+ =?us-ascii?Q?uc9uEYn/8r8ZOM/Wi5elan3DOVV1xCPFroz+ON8KaZnSN/lDmQZ/l0mMIkon?=
+ =?us-ascii?Q?CVLsp/IVZPIGLYveR58hk5ys5iiO9zKeeY+d24OUyU3oiLcFf9/r7t0FzI8f?=
+ =?us-ascii?Q?Omak5VUe+KalDGGX0AwdAbNTK8cPwtTQ591NyF5IM/uerHy8TvYHe3eIZQtW?=
+ =?us-ascii?Q?A0Qx+8olz/zSJvvy6pwNhZrvMBBrQxKP5G8nPIF6lU1maUE3FA1ViquPSFst?=
+ =?us-ascii?Q?JB8kR24aFSEyffQXQiDwFJqvJWvcaLBvQ767Y4XPjfT22kTgXFpAV+B5w0bl?=
+ =?us-ascii?Q?4pLH8USGR5CI8o4XAkTl0bILqD4fD9l/BT24y2aHEJ+r4Onb+D8xUZzyGjSh?=
+ =?us-ascii?Q?+cNY9LW8Ep4a+8/RI4vV0s79iT04NlAiiy/3He5FaMTQP1FwcAWz9GaDps5l?=
+ =?us-ascii?Q?ptKRNMNw31kyaRJQPtwRE+sG7qmYHchAfPTeQNb19W5Qm7tA3dndpOBAlkiV?=
+ =?us-ascii?Q?mblmuOH3aZg6TYFSJXiUgJY5ETnR6OXQjQRaAmMxoCeFtJVjvgtTTcua8QHS?=
+ =?us-ascii?Q?rshVUOTI8Ezlb19IVku3+tXqBu7ds8y15UD7B4N07fqN+GwsX8m5AWpmc2sC?=
+ =?us-ascii?Q?wvtkNju/rPWCe6U/dinXOJlQoKyW3dOA+t4TWppsiu+D3wStm+pe6/WpdRQI?=
+ =?us-ascii?Q?+VQgpUe29CMYDaPKQrtUyg94Nirj9ey5s+UPlXjcjmt12Ml6Pv3FgzvlFYUJ?=
+ =?us-ascii?Q?4DpK3CC2o3Nkyw7YL4keNLTaFy8rCvTA9iccZt+bTa8h3M7l/SClD+Wn2BV6?=
+ =?us-ascii?Q?r+/yVUDN39l0AK4esDsMrh7xkIOgrHUMGTIRKNwyQAkW43Qjl9KrFCLJWYLK?=
+ =?us-ascii?Q?GB573iJoqWHavJq+wJyIyp/TUAu9K8j740Zw0xcHp1RpVUK16O9TfxjGEBrb?=
+ =?us-ascii?Q?L44Ycc1R4roAlqKEl18tAthN5bl1Nvhz8app1symmVKQh3eOqpBSkVNk4QbJ?=
+ =?us-ascii?Q?eHiHz1r9WW1GnGSzQHPinphZ9eoLketit+DwyeGO2+7+6G8YWYcQN3t/Cxof?=
+ =?us-ascii?Q?lMUf+cxub557TB3CS5l0h9L9FONE/vNA4BjMxnj2H0KF2WGI7rfDYu+q/hen?=
+ =?us-ascii?Q?gkSgtIAM9LnUADX06WMqRdVcQ6G0EAuXArT/Uvgc6lbcNFaEjf0ETTXypCwp?=
+ =?us-ascii?Q?1Ok2uYZQbij+XVAPD0jmlGjcc+h/PJj3fGdxVSri?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a78337a-4ed9-4b85-d066-08dbe02834ca
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 06:59:09.3956
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HJkSgmpAWTASaVKRmesjeUOBOD8Cnet2AL2Io9MBhb5krXHg+BiGZ7wsnZQ8vviyUyJH8yqTO7wc+MDANvGGAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB3983
 
-On Mon, 06 Nov 2023 09:48:36 -0600, Haitao Huang  
-<haitao.huang@linux.intel.com> wrote:
+In some cases, we need to selectively reclaim file pages or anonymous
+pages in an unbalanced manner.
 
-> On Sun, 05 Nov 2023 21:26:44 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-> wrote:
->
->> On Mon, 2023-10-30 at 11:20 -0700, Haitao Huang wrote:
->>> SGX Enclave Page Cache (EPC) memory allocations are separate from  
->>> normal RAM allocations, and
->>> are managed solely by the SGX subsystem. The existing cgroup memory  
->>> controller cannot be used
->>> to limit or account for SGX EPC memory, which is a desirable feature  
->>> in some environments,
->>> e.g., support for pod level control in a Kubernates cluster on a VM or  
->>> baremetal host [1,2].
->>>  This patchset implements the support for sgx_epc memory within the  
->>> misc cgroup controller. The
->>> user can use the misc cgroup controller to set and enforce a max limit  
->>> on total EPC usage per
->>> cgroup. The implementation reports current usage and events of  
->>> reaching the limit per cgroup as
->>> well as the total system capacity.
->>>  With the EPC misc controller enabled, every EPC page allocation is  
->>> accounted for a cgroup's
->>> usage, reflected in the 'sgx_epc' entry in the 'misc.current'  
->>> interface file of the cgroup.
->>> Much like normal system memory, EPC memory can be overcommitted via  
->>> virtual memory techniques
->>> and pages can be swapped out of the EPC to their backing store (normal  
->>> system memory allocated
->>> via shmem, accounted by the memory controller). When the EPC usage of  
->>> a cgroup reaches its hard
->>> limit ('sgx_epc' entry in the 'misc.max' file), the cgroup starts a  
->>> reclamation process to swap
->>> out some EPC pages within the same cgroup and its descendant to their  
->>> backing store. Although
->>> the SGX architecture supports swapping for all pages, to avoid extra  
->>> complexities, this
->>> implementation does not support swapping for certain page types, e.g.   
->>> Version Array(VA) pages,
->>> and treat them as unreclaimable pages.  When the limit is reached but  
->>> nothing left in the
->>> cgroup for reclamation, i.e., only unreclaimable pages left, any new  
->>> EPC allocation in the
->>> cgroup will result in an ENOMEM error.
->>>
->>> The EPC pages allocated for guest VMs by the virtual EPC driver are  
->>> not reclaimable by the host
->>> kernel [5]. Therefore they are also treated as unreclaimable from  
->>> cgroup's point of view.  And
->>> the virtual EPC driver translates an ENOMEM error resulted from an EPC  
->>> allocation request into
->>> a SIGBUS to the user process.
->>>
->>> This work was originally authored by Sean Christopherson a few years  
->>> ago, and previously
->>> modified by Kristen C. Accardi to utilize the misc cgroup controller  
->>> rather than a custom
->>> controller. I have been updating the patches based on review comments  
->>> since V2 [3, 4, 10],
->>> simplified the implementation/design and fixed some stability issues  
->>> found from testing.
->>>  The patches are organized as following:
->>> - Patches 1-3 are prerequisite misc cgroup changes for adding new  
->>> APIs, structs, resource
->>>   types.
->>> - Patch 4 implements basic misc controller for EPC without reclamation.
->>> - Patches 5-9 prepare for per-cgroup reclamation.
->>>     * Separate out the existing infrastructure of tracking reclaimable  
->>> pages
->>>       from the global reclaimer(ksgxd) to a newly created LRU list  
->>> struct.
->>>     * Separate out reusable top-level functions for reclamation.
->>> - Patch 10 adds support for per-cgroup reclamation.
->>> - Patch 11 adds documentation for the EPC cgroup.
->>> - Patch 12 adds test scripts.
->>>
->>> I appreciate your review and providing tags if appropriate.
->>>
->>> ---
->>> V6:
->>> - Dropped OOM killing path, only implement non-preemptive enforcement  
->>> of max limit (Dave, Michal)
->>> - Simplified reclamation flow by taking out sgx_epc_reclaim_control,  
->>> forced reclamation by
->>>   ignoring 'age".
->>> - Restructured patches: split misc API + resource types patch and the  
->>> big EPC cgroup patch
->>>   (Kai, Michal)
->>> - Dropped some Tested-by/Reviewed-by tags due to significant changes
->>> - Added more selftests
->>>
->>> v5:
->>> - Replace the manual test script with a selftest script.
->>> - Restore the "From" tag for some patches to Sean (Kai)
->>> - Style fixes (Jarkko)
->>>
->>> v4:
->>> - Collected "Tested-by" from Mikko. I kept it for now as no functional  
->>> changes in v4.
->>> - Rebased on to v6.6_rc1 and reordered patches as described above.
->>> - Separated out the bug fixes [7,8,9]. This series depend on those  
->>> patches. (Dave, Jarkko)
->>> - Added comments in commit message to give more preview what's to come  
->>> next. (Jarkko)
->>> - Fixed some documentation error, gap, style (Mikko, Randy)
->>> - Fixed some comments, typo, style in code (Mikko, Kai)
->>> - Patch format and background for reclaimable vs unreclaimable (Kai,  
->>> Jarkko)
->>> - Fixed typo (Pavel)
->>> - Exclude the previous fixes/enhancements for self-tests. Patch 18 now  
->>> depends on series [6]
->>> - Use the same to list for cover and all patches. (Solo)
->>>  v3:
->>>  - Added EPC states to replace flags in sgx_epc_page struct. (Jarkko)
->>> - Unrolled wrappers for cond_resched, list (Dave)
->>> - Separate patches for adding reclaimable and unreclaimable lists.  
->>> (Dave)
->>> - Other improvements on patch flow, commit messages, styles. (Dave,  
->>> Jarkko)
->>> - Simplified the cgroup tree walking with plain
->>>   css_for_each_descendant_pre.
->>> - Fixed race conditions and crashes.
->>> - OOM killer to wait for the victim enclave pages being reclaimed.
->>> - Unblock the user by handling misc_max_write callback asynchronously.
->>> - Rebased onto 6.4 and no longer base this series on the MCA patchset.
->>> - Fix an overflow in misc_try_charge.
->>> - Fix a NULL pointer in SGX PF handler.
->>> - Updated and included the SGX selftest patches previously reviewed.  
->>> Those
->>>   patches fix issues triggered in high EPC pressure required for cgroup
->>>   testing.
->>> - Added test scripts to help setup and test SGX EPC cgroups.
->>>   
->>> [1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6PR21MB1177.namprd21.prod.outlook.com/
->>> [2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
->>> [3]https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.intel.com/
->>> [4]https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@linux.intel.com/
->>> [5]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
->>> [6]https://lore.kernel.org/linux-sgx/20220905020411.17290-1-jarkko@kernel.org/
->>> [7]https://lore.kernel.org/linux-sgx/ZLcXmvDKheCRYOjG@slm.duckdns.org/
->>> [8]https://lore.kernel.org/linux-sgx/20230721120231.13916-1-haitao.huang@linux.intel.com/
->>> [9]https://lore.kernel.org/linux-sgx/20230728051024.33063-1-haitao.huang@linux.intel.com/
->>> [10]https://lore.kernel.org/all/20230923030657.16148-1-haitao.huang@linux.intel.com/
->>>
->>> Haitao Huang (2):
->>>   x86/sgx: Introduce EPC page states
->>>   selftests/sgx: Add scripts for EPC cgroup testing
->>>
->>> Kristen Carlson Accardi (5):
->>>   cgroup/misc: Add per resource callbacks for CSS events
->>>   cgroup/misc: Export APIs for SGX driver
->>>   cgroup/misc: Add SGX EPC resource type
->>>   x86/sgx: Implement basic EPC misc cgroup functionality
->>>   x86/sgx: Implement EPC reclamation for cgroup
->>>
->>> Sean Christopherson (5):
->>>   x86/sgx: Add sgx_epc_lru_list to encapsulate LRU list
->>>   x86/sgx: Use sgx_epc_lru_list for existing active page list
->>>   x86/sgx: Use a list to track to-be-reclaimed pages
->>>   x86/sgx: Restructure top-level EPC reclaim function
->>>   Docs/x86/sgx: Add description for cgroup support
->>>
->>>  Documentation/arch/x86/sgx.rst                |  74 ++++
->>>  arch/x86/Kconfig                              |  13 +
->>>  arch/x86/kernel/cpu/sgx/Makefile              |   1 +
->>>  arch/x86/kernel/cpu/sgx/encl.c                |   2 +-
->>>  arch/x86/kernel/cpu/sgx/epc_cgroup.c          | 319 ++++++++++++++++++
->>>  arch/x86/kernel/cpu/sgx/epc_cgroup.h          |  49 +++
->>>  arch/x86/kernel/cpu/sgx/main.c                | 245 +++++++++-----
->>>  arch/x86/kernel/cpu/sgx/sgx.h                 |  88 ++++-
->>>  include/linux/misc_cgroup.h                   |  42 +++
->>>  kernel/cgroup/misc.c                          |  52 ++-
->>>  .../selftests/sgx/run_epc_cg_selftests.sh     | 196 +++++++++++
->>>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
->>>  12 files changed, 996 insertions(+), 98 deletions(-)
->>>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
->>>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
->>>  create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->>>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
->>>
->>
->> Is this expected to work on NUC7?
->>
->> Planning to test this next week (no time this week).
->>
->> BR, Jarkko
->
-> I don't see a reason why it would not be working on a NUC. I'll try to  
-> get access to one and test it too.
+For example, when an application is pushed to the background and frozen,
+it may not be opened for a long time, and we can safely reclaim the
+application's anonymous pages, but we do not want to touch the file pages.
 
-Tried on a NUC with about 90M EPC. The selftests worked fine.
-BR
-Haitao
+This patchset extends the proactive reclaim interface to achieve
+unbalanced reclamation. Users can control the reclamation tendency by
+inputting swappiness under the original interface. Specifically, users
+can input special values to extremely reclaim specific pages.
+
+Example:
+  	echo "1G" 200 > memory.reclaim (only reclaim anon)
+	  echo "1G" 0  > memory.reclaim (only reclaim file)
+	  echo "1G" 1  > memory.reclaim (only reclaim file)
+
+Note that when performing unbalanced reclamation, the cgroup swappiness
+will be temporarily adjusted dynamically to the input value. Therefore,
+if the cgroup swappiness is further modified during runtime, there may
+be some errors.
+
+However, this is acceptable because the interface is dynamically called
+by the user and the timing should be controlled by the user.
+
+This patchset did not implement the type-based reclamation as expected
+in the documentation.(anon or file) Because in addition to extreme unbalanced
+reclamation, this patchset can also adapt to the reclamation tendency
+allocated according to swappiness, which is more flexible.
+
+Self test
+========
+After applying the following patches and myself debug patch, my self-test
+results are as follows:
+
+1. LRU test
+===========
+  a. Anon unbalance reclaim
+  ```
+  cat memory.stat | grep anon
+    inactive_anon 7634944
+    active_anon 7741440
+
+  echo "200M" 200 > memory.reclaim
+
+  cat memory.stat | grep anon
+    inactive_anon 0
+    active_anon 0
+
+  cat memory.reclaim_stat_summary(self debug interface)
+    [22368]sh total reclaimed 0 file, 3754 anon, covered item=0
+  ```
+
+  b. File unbalance reclaim
+  ```
+  cat memory.stat | grep file
+    inactive_file 82862080
+    active_file 48664576
+
+  echo "100M" 0 > memory.reclaim
+  cat memory.stat | grep file
+    inactive_file 34164736
+    active_file 18370560
+
+  cat memory.reclaim_stat_summary(self debug interface)
+    [22368]sh total reclaimed 13732 file, 0 anon, covered item=0
+  ```
+
+2. MGLRU test
+============
+a. Anon unbalance reclaim
+```
+echo y > /sys/kernel/mm/lru_gen/enabled
+cat /sys/kernel/mm/lru_gen/enabled
+  0x0003
+
+cat memory.stat | grep anon
+  inactive_anon 17653760
+  active_anon 1740800
+
+echo "100M" 200 > memory.reclaim
+
+cat memory.reclaim_stat_summary
+  [8251]sh total reclaimed 0 file, 5393 anon, covered item=0
+```
+
+b. File unbalance reclaim
+```
+cat memory.stat | grep file
+  inactive_file 17858560
+  active_file 5943296
+
+echo "100M" 0 > memory.reclaim
+
+cat memory.stat | grep file
+  inactive_file 491520
+  active_file 2764800
+cat memory.reclaim_stat_summary
+  [8251]sh total reclaimed 5230 file, 0 anon, covered item=0
+```
+
+Patch 1-3 implement the functionality described above.
+Patch 4 aims to implement proactive reclamation to the cgroupv1 interface
+for use on Android.
+
+Huan Yang (4):
+  mm: vmscan: LRU unbalance cgroup reclaim
+  mm: multi-gen LRU: MGLRU unbalance reclaim
+  mm: memcg: implement unbalance proactive reclaim
+  mm: memcg: apply proactive reclaim into cgroupv1
+
+ .../admin-guide/cgroup-v1/memory.rst          |  38 +++++-
+ Documentation/admin-guide/cgroup-v2.rst       |  16 ++-
+ include/linux/swap.h                          |   1 +
+ mm/memcontrol.c                               | 126 ++++++++++++------
+ mm/vmscan.c                                   |  38 +++++-
+ 5 files changed, 169 insertions(+), 50 deletions(-)
+
+-- 
+2.34.1
+
 
