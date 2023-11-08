@@ -1,72 +1,107 @@
-Return-Path: <cgroups+bounces-248-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-249-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BC137E5AE8
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 17:14:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B2077E5BCF
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 17:58:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F34792815DA
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 16:14:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 166F728157B
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 16:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D708A30D08;
-	Wed,  8 Nov 2023 16:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4F018C3A;
+	Wed,  8 Nov 2023 16:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Whrwu6GI"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="G3gO+HkE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529A53064B;
-	Wed,  8 Nov 2023 16:14:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7C6C433C7;
-	Wed,  8 Nov 2023 16:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1699460061;
-	bh=qYaMUn5duRraHp6jr8ZuuZE1fl2gs0KU/LKQTez8o9k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Whrwu6GIg7SpMw2mJOf96NBOwMy7GL3oSYCWku834BMQQcIPlQ10b2+HTcu9rEVyJ
-	 defOtH86G8m6qmQ3/CBDHcfF23pf8xJ0+euljpncO6exp+kIJxzHvn3tV7j+fy/E4k
-	 460UFKjuVzm+Wz3jaa1LWlb9kfB6vzZ9URKq41tI=
-Date: Wed, 8 Nov 2023 08:14:19 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Huan Yang <link@vivo.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
- Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, Michal Hocko
- <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, Shakeel
- Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, David
- Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>, Huang
- Ying <ying.huang@intel.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
- Peter Xu <peterx@redhat.com>, "Vishal Moola (Oracle)"
- <vishal.moola@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Liu Shixin
- <liushixin2@huawei.com>, Hugh Dickins <hughd@google.com>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- opensource.kernel@vivo.com
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-Message-Id: <20231108081419.1c31f74de8e7fce24f85c967@linux-foundation.org>
-In-Reply-To: <20231108065818.19932-1-link@vivo.com>
-References: <20231108065818.19932-1-link@vivo.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C5130FAE;
+	Wed,  8 Nov 2023 16:57:54 +0000 (UTC)
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254E41FF5;
+	Wed,  8 Nov 2023 08:57:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=3XaTS4l1jOlE5Hfu1CA/WGPIdOF+9JexWwbCk7Slwbc=; b=G3gO+HkEZkgK1i5XsUMRPc9HMW
+	TRrdOuilZugvNOCn5bjpjqeDBUWqcAx95RiGs3QByqff+x+IByCOwwxpp1cLKrK0R310/huIICnK8
+	mKNNBiv1IZyArrZxo/r4KywNlScnrgWNZjLtmp+OlEW53U+90ei0CVMunHxMVfvC3x+8Z4AkMinEU
+	LEbe2fQu4FpUmSL6NNCuCR1P3QdA5QVTuwaPrfgjxFGx2eGiih8z7ynw2+bSSS24CY2tz/mlzsXhw
+	mowi6vgI7wE9LQPETfWuEdmyX14udJneWhiWFzKW5AZ069zC99+tz9LGFVcxkKHn5E2/zvbtg74ut
+	aRBYsY6w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r0lsD-00D7Mu-0D;
+	Wed, 08 Nov 2023 16:57:49 +0000
+Date: Wed, 8 Nov 2023 16:57:49 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Haitao Huang <haitao.huang@linux.intel.com>,
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [RFC 4/6] misc cgroup: introduce an fd counter
+Message-ID: <20231108165749.GY1957730@ZenIV>
+References: <20231108002647.73784-1-tycho@tycho.pizza>
+ <20231108002647.73784-5-tycho@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108002647.73784-5-tycho@tycho.pizza>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Wed,  8 Nov 2023 14:58:11 +0800 Huan Yang <link@vivo.com> wrote:
+On Tue, Nov 07, 2023 at 05:26:45PM -0700, Tycho Andersen wrote:
 
-> For example, when an application is pushed to the background and frozen,
-> it may not be opened for a long time, and we can safely reclaim the
-> application's anonymous pages, but we do not want to touch the file pages.
+> +	if (!charge_current_fds(newf, count_open_files(new_fdt)))
+> +		return newf;
 
-This paragraph is key to the entire patchset and it would benefit from
-some expanding upon.
+Are you sure that on configs that are not cgroup-infested compiler
+will figure out that count_open_files() would have no side effects
+and doesn't need to be evaluated?
 
-If the application is dormant, why on earth would we want to evict its
-text but keep its data around?
+Incidentally, since you are adding your charge/uncharge stuff on each
+allocation/freeing, why not simply maintain an accurate counter, cgroup or
+no cgroup?  IDGI...  Make it an inlined helper right there in fs/file.c,
+doing increment/decrement and, conditional upon config, calling
+the cgroup side of things.  No need to look at fdt, etc. outside
+of fs/file.c either - the counter can be picked right from the
+files_struct...
+
+>  static void __put_unused_fd(struct files_struct *files, unsigned int fd)
+>  {
+>  	struct fdtable *fdt = files_fdtable(files);
+> +	if (test_bit(fd, fdt->open_fds))
+> +		uncharge_current_fds(files, 1);
+
+Umm...  Just where do we call it without the bit in ->open_fds set?
+Any such caller would be a serious bug; suppose you are trying to
+call __put_unused_fd(files, N) while N is not in open_fds.  Just before
+your call another thread grabs a descriptor and picks N.  Resulting
+state won't be pretty, especially if right *after* your call the
+third thread also asks for a descriptor - and also gets N.
+
+Sure, you have an exclusion on ->file_lock, but AFAICS all callers
+are under it and in all callers except for put_unused_fd() we
+have just observed a non-NULL file reference in ->fd[N]; that
+would *definitely* be a hard constraint violation if it ever
+happened with N not in ->open_fds at that moment.
+
+So the only possibility would be a broken caller of put_unused_fd(),
+and any such would be a serious bug.
+
+Details, please - have you ever observed that?
+
+BTW, what about the locking hierarchy?  In the current tree ->files_lock
+nests inside of everything; what happens with your patches in place?
 
