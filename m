@@ -1,60 +1,45 @@
-Return-Path: <cgroups+bounces-254-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-255-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99F307E5FD2
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 22:15:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C20127E60E5
+	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 00:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB372811B1
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 21:15:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F34001C20B15
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 23:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC5437179;
-	Wed,  8 Nov 2023 21:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B10137173;
+	Wed,  8 Nov 2023 23:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDkvEOjT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GhEUATI6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A893D7F;
-	Wed,  8 Nov 2023 21:15:29 +0000 (UTC)
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822192102;
-	Wed,  8 Nov 2023 13:15:29 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-3594149e3a1so735555ab.1;
-        Wed, 08 Nov 2023 13:15:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699478129; x=1700082929; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RNB5xgB/4KCWfHCIWPGT/LuL6VAHs2IvczalgrNNVZI=;
-        b=iDkvEOjT5P1p3MCN332t4zdsmsTozZi/G7NQ6TGxCNHtpCczdCj4nQPuQ7+4BF/yzZ
-         IDGpShe27AEpCfZoaAEkmMqnWZ7MLkNRMXy/EAUUVUB5F3oF8ZUWT/b8rr8ST76Kr3Hu
-         2+QbBdsp3eulhNqa8ImcOb+87GnkGaBj8byD93t20ysMEC3sslX7B2DeTBQ8qN91K9Zm
-         eJaDlcx1StsARklsFqCRDVEC7CeJi6kouK0A98OVKmXQYOiGY0mX8nCyERsb0OA55fZ6
-         nSWcQ/VNxVh2EKdBGEd08RRxM+k2N6yjK7fM5PQtluvZAl77i0GWHnvOp1H/1Q82djdV
-         UEAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699478129; x=1700082929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RNB5xgB/4KCWfHCIWPGT/LuL6VAHs2IvczalgrNNVZI=;
-        b=Na29tbbtqO7LkWuz7A7AZ0L0ZxBXyF8x0K2pKgM3WW89uVb0TxQTAVbohfll7mvHxa
-         /TNoYXJ/AWF3fC5aDriXlVq86OIdBayV/i83gRjpJCbXzt3eLsjrNH8183e6qWIkWG1q
-         p862n7XuL41LMz8WTbj+is9grygTp10Sn0XB0I4uThy7+ZWbZDeoe0b/3e8EEhUdmGPS
-         qg+HmK17S1iKlV2clgNrTP8oyNGCCMdEtd+0tS3FxGoXcpzVvI9qAL75Je+ulc1QOpP4
-         7wh0If6+/U0QMmNDpnBD2/9dIkUf+i21NrapphmRAfZdxHVDeZa7dtk3FkUI5z16CcwQ
-         7LRQ==
-X-Gm-Message-State: AOJu0YzUGfvYewu3y3WwU7J4bNNne47P85MYb53RNWSIP6inocVSBWqI
-	5mnxTxz/PpB5rRLlAenxUsj9nGaFwATE2lVp3x8=
-X-Google-Smtp-Source: AGHT+IHe/1lyuB2mxHD2Axz/XufuKF2H5f0zlaOMzfp6dlNa22DkngFGfB5vfPFkwUkqgFrltkCFDbnnmgolFmmYxjo=
-X-Received: by 2002:a05:6e02:12e6:b0:359:50c2:62b6 with SMTP id
- l6-20020a056e0212e600b0035950c262b6mr3329153iln.12.1699478128763; Wed, 08 Nov
- 2023 13:15:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1933716C
+	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 23:12:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84511C433B9
+	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 23:12:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699485176;
+	bh=XVBBiYvFcflt3RBN3rGd9qpfbzxVloqDfLv4DULg6ok=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GhEUATI6mZs1fF6smM1OF1+SECjnJXs8PTbY8lZlXnwUzfrIaMjVcZrna4tyfEssS
+	 MvGlJnycjYJACcUMvu25sl5LhY0BU6ev9+T2BDMC2URKAOJMBfb7nsl3dq4dFrDqaY
+	 X/HaXRuMCbaH4+k6CzGCidmqxStSSbTkgY54qUJ9GS/aq4bQe50tzUSp/SzQ2govLx
+	 pDgv0xsqdjqqQkJ4t9vx7+31QS9SI3mT6XwaztXOr2IJCO/29AvnjwYogapTP0s0Nq
+	 Ok2g9gBp2XnLp3GlK5mFynSBAbjX0JkPLH6IwcRVIfujHgnpbPDDnEbFsm3ibR4FJU
+	 hnJJ39niADs1w==
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28023eadc70so176259a91.2
+        for <cgroups@vger.kernel.org>; Wed, 08 Nov 2023 15:12:56 -0800 (PST)
+X-Gm-Message-State: AOJu0YwJMck8rhvqvOpwM7pdF0rKczh2Lg3LWb7MGR9fCYc3TZpqtwzu
+	kkUxzpOuwfpRtNG9Tx1+0YhjHJfkhm7OMtqGIiydSQ==
+X-Google-Smtp-Source: AGHT+IG7AbhTVdHwxHa1Gbw/9I7xiut+l21ol4va4G64SojHtO9SqVeRdBniOkqWY5kzkdi8uhNp/WPljLmSit11Y9w=
+X-Received: by 2002:a17:90b:350b:b0:27d:20ca:1156 with SMTP id
+ ls11-20020a17090b350b00b0027d20ca1156mr2355pjb.34.1699485175679; Wed, 08 Nov
+ 2023 15:12:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,12 +47,14 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231106183159.3562879-1-nphamcs@gmail.com> <CAF8kJuMsXUm9=kiL8qPNVfYPzfyq-JWYSH3KraZadjF+myW-2A@mail.gmail.com>
-In-Reply-To: <CAF8kJuMsXUm9=kiL8qPNVfYPzfyq-JWYSH3KraZadjF+myW-2A@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 8 Nov 2023 13:15:17 -0800
-Message-ID: <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
+ <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
+In-Reply-To: <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Wed, 8 Nov 2023 15:12:44 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com>
+Message-ID: <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com>
 Subject: Re: [PATCH v5 0/6] workload-specific and memory pressure-driven zswap writeback
-To: Chris Li <chrisl@kernel.org>
+To: Nhat Pham <nphamcs@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, 
 	Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>, 
@@ -79,163 +66,57 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.o
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 8, 2023 at 11:46=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
->
-> Hi Nhat,
->
-> Sorry for being late to the party. I want to take a look at your patches =
-series.
-> However I wasn't able to "git am" your patches series cleanly on current
-> mm-stable, mm-unstable or linux tip.
->
-> $ git am patches/v5_20231106_nphamcs_workload_specific_and_memory_pressur=
-e_driven_zswap_writeback.mbx
-> Applying: list_lru: allows explicit memcg and NUMA node selection
-> Applying: memcontrol: allows mem_cgroup_iter() to check for onlineness
-> Applying: zswap: make shrinking memcg-aware (fix)
-> error: patch failed: mm/zswap.c:174
-> error: mm/zswap.c: patch does not apply
-> Patch failed at 0003 zswap: make shrinking memcg-aware (fix)
+Hi Nhat,
 
-Ah that was meant to be a fixlet - so that on top of the original
-"zswap: make shrinking memcg-aware" patch. The intention was
-to eventually squash it...
+On Wed, Nov 8, 2023 at 1:15=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> Ah that was meant to be a fixlet - so that on top of the original
+> "zswap: make shrinking memcg-aware" patch. The intention was
+> to eventually squash it...
+>
+> But this is getting a bit annoyingly confusing, I admit. I just rebased t=
+o
+> mm-unstable + squashed it all again, then sent one single replacement
+> patch:
+>
+> [PATCH v5 3/6 REPLACE] zswap: make shrinking memcg-aware
 
-But this is getting a bit annoyingly confusing, I admit. I just rebased to
-mm-unstable + squashed it all again, then sent one single replacement
-patch:
+Thank you for the quick response.
 
-[PATCH v5 3/6 REPLACE] zswap: make shrinking memcg-aware
+Yes, I am able to download your replacement version of patch 3.
+Just FYI, I am using "git mailsplit" to split up the mbox into 6
+separate patch files.
+On mm-unstable, I am able to apply your replacement patch 3 cleanly.
+I also need some help on the patch 0005, it does not apply cleanly either.
 
-Let me know if this still fails to apply. If not, I'll send the whole thing
-again as v6! My sincerest apologies for the troubles and confusion :(
-
+$ git mailsplit -ozswap-pool-lru
+v5_20231106_nphamcs_workload_specific_and_memory_pressure_driven_zswap_writ=
+eback.mbx
+$ git am patches/zswap-pool-lru/0001
+Applying: list_lru: allows explicit memcg and NUMA node selection
+$ git am patches/zswap-pool-lru/0002
+Applying: memcontrol: allows mem_cgroup_iter() to check for onlineness
+$ git am patches/zswap-pool-lru/3.replace
+Applying: zswap: make shrinking memcg-aware
+$ git am patches/zswap-pool-lru/0004
+Applying: mm: memcg: add per-memcg zswap writeback stat
+$ git am patches/zswap-pool-lru/0005
+Applying: selftests: cgroup: update per-memcg zswap writeback selftest
+error: patch failed: tools/testing/selftests/cgroup/test_zswap.c:50
+error: tools/testing/selftests/cgroup/test_zswap.c: patch does not apply
+Patch failed at 0001 selftests: cgroup: update per-memcg zswap
+writeback selftest
+hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
 >
-> What is the base of your patches? A git hash or a branch I can pull
-> from would be
-> nice.
->
-> Thanks
->
-> Chris
->
-> On Mon, Nov 6, 2023 at 10:32=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> >
-> > Changelog:
-> > v5:
-> >    * Replace reference getting with an rcu_read_lock() section for
-> >      zswap lru modifications (suggested by Yosry)
-> >    * Add a new prep patch that allows mem_cgroup_iter() to return
-> >      online cgroup.
-> >    * Add a callback that updates pool->next_shrink when the cgroup is
-> >      offlined (suggested by Yosry Ahmed, Johannes Weiner)
-> > v4:
-> >    * Rename list_lru_add to list_lru_add_obj and __list_lru_add to
-> >      list_lru_add (patch 1) (suggested by Johannes Weiner and
-> >          Yosry Ahmed)
-> >    * Some cleanups on the memcg aware LRU patch (patch 2)
-> >      (suggested by Yosry Ahmed)
-> >    * Use event interface for the new per-cgroup writeback counters.
-> >      (patch 3) (suggested by Yosry Ahmed)
-> >    * Abstract zswap's lruvec states and handling into
-> >      zswap_lruvec_state (patch 5) (suggested by Yosry Ahmed)
-> > v3:
-> >    * Add a patch to export per-cgroup zswap writeback counters
-> >    * Add a patch to update zswap's kselftest
-> >    * Separate the new list_lru functions into its own prep patch
-> >    * Do not start from the top of the hierarchy when encounter a memcg
-> >      that is not online for the global limit zswap writeback (patch 2)
-> >      (suggested by Yosry Ahmed)
-> >    * Do not remove the swap entry from list_lru in
-> >      __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
-> >    * Removed a redundant zswap pool getting (patch 2)
-> >      (reported by Ryan Roberts)
-> >    * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
-> >      (patch 5) (suggested by Yosry Ahmed)
-> >    * Remove the per-cgroup zswap shrinker knob (patch 5)
-> >      (suggested by Yosry Ahmed)
-> > v2:
-> >    * Fix loongarch compiler errors
-> >    * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
-> >
-> > There are currently several issues with zswap writeback:
-> >
-> > 1. There is only a single global LRU for zswap, making it impossible to
-> >    perform worload-specific shrinking - an memcg under memory pressure
-> >    cannot determine which pages in the pool it owns, and often ends up
-> >    writing pages from other memcgs. This issue has been previously
-> >    observed in practice and mitigated by simply disabling
-> >    memcg-initiated shrinking:
-> >
-> >    https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.c=
-om/T/#u
-> >
-> >    But this solution leaves a lot to be desired, as we still do not
-> >    have an avenue for an memcg to free up its own memory locked up in
-> >    the zswap pool.
-> >
-> > 2. We only shrink the zswap pool when the user-defined limit is hit.
-> >    This means that if we set the limit too high, cold data that are
-> >    unlikely to be used again will reside in the pool, wasting precious
-> >    memory. It is hard to predict how much zswap space will be needed
-> >    ahead of time, as this depends on the workload (specifically, on
-> >    factors such as memory access patterns and compressibility of the
-> >    memory pages).
-> >
-> > This patch series solves these issues by separating the global zswap
-> > LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
-> > (i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
-> > new shrinker does not have any parameter that must be tuned by the
-> > user, and can be opted in or out on a per-memcg basis.
-> >
-> > As a proof of concept, we ran the following synthetic benchmark:
-> > build the linux kernel in a memory-limited cgroup, and allocate some
-> > cold data in tmpfs to see if the shrinker could write them out and
-> > improved the overall performance. Depending on the amount of cold data
-> > generated, we observe from 14% to 35% reduction in kernel CPU time used
-> > in the kernel builds.
-> >
-> > Domenico Cerasuolo (3):
-> >   zswap: make shrinking memcg-aware
-> >   mm: memcg: add per-memcg zswap writeback stat
-> >   selftests: cgroup: update per-memcg zswap writeback selftest
-> >
-> > Nhat Pham (3):
-> >   list_lru: allows explicit memcg and NUMA node selection
-> >   memcontrol: allows mem_cgroup_iter() to check for onlineness
-> >   zswap: shrinks zswap pool based on memory pressure
-> >
-> >  Documentation/admin-guide/mm/zswap.rst      |   7 +
-> >  drivers/android/binder_alloc.c              |   5 +-
-> >  fs/dcache.c                                 |   8 +-
-> >  fs/gfs2/quota.c                             |   6 +-
-> >  fs/inode.c                                  |   4 +-
-> >  fs/nfs/nfs42xattr.c                         |   8 +-
-> >  fs/nfsd/filecache.c                         |   4 +-
-> >  fs/xfs/xfs_buf.c                            |   6 +-
-> >  fs/xfs/xfs_dquot.c                          |   2 +-
-> >  fs/xfs/xfs_qm.c                             |   2 +-
-> >  include/linux/list_lru.h                    |  46 ++-
-> >  include/linux/memcontrol.h                  |   9 +-
-> >  include/linux/mmzone.h                      |   2 +
-> >  include/linux/vm_event_item.h               |   1 +
-> >  include/linux/zswap.h                       |  27 +-
-> >  mm/list_lru.c                               |  48 ++-
-> >  mm/memcontrol.c                             |  20 +-
-> >  mm/mmzone.c                                 |   1 +
-> >  mm/shrinker.c                               |   4 +-
-> >  mm/swap.h                                   |   3 +-
-> >  mm/swap_state.c                             |  26 +-
-> >  mm/vmscan.c                                 |  26 +-
-> >  mm/vmstat.c                                 |   1 +
-> >  mm/workingset.c                             |   4 +-
-> >  mm/zswap.c                                  | 430 +++++++++++++++++---
-> >  tools/testing/selftests/cgroup/test_zswap.c |  74 ++--
-> >  26 files changed, 625 insertions(+), 149 deletions(-)
-> >
-> > --
-> > 2.34.1
-> >
+> Let me know if this still fails to apply. If not, I'll send the whole thi=
+ng
+> again as v6! My sincerest apologies for the troubles and confusion :(
+
+No problem at all. Thanks for your help on patch 3.
+
+Chris
 
