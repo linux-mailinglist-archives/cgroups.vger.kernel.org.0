@@ -1,131 +1,154 @@
-Return-Path: <cgroups+bounces-236-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-237-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352CC7E5190
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 09:01:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E488B7E51B5
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 09:11:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B246EB20F68
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 08:01:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B687281416
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 08:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1AE2D51D;
-	Wed,  8 Nov 2023 08:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68674D52F;
+	Wed,  8 Nov 2023 08:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gcATRfuZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKYQz0Mc"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A54D531
-	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 08:01:21 +0000 (UTC)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D59199
-	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 00:01:20 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so11266236a12.0
-        for <cgroups@vger.kernel.org>; Wed, 08 Nov 2023 00:01:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699430479; x=1700035279; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HNi4fClCOjk3xdFXZ5yiVbLFHsXzEYt3ZKrZiBMxjyw=;
-        b=gcATRfuZwPQuaMDXVN2zDuOrndRmF2UiI+D7rRbBhUXsxpmla4rBOKmW9ptzlL+lhm
-         79Jkv8o7dWQyn6g4osleydpNdMRyHBQer3YuWS28GXp/LvcQu1vSrgPyru6MrltpsRGZ
-         ZdwFsKiAZiQA6u90NCjLLnTSVa2Y4qV+LRzveJ0KKyowkR6qK4L2K3T/rNymhBL0C5+h
-         NoQKsDr73A//t+hTx0O/77sCl081ZGSDOR1R+uEtNLpGssPZn54gorRJpelNFDzKevex
-         gA7TAhYg24TK0p2+FfQIsk+ek3tKti2gmaoMsGiUovoUH9U6Oz/zFPVxSz7EbninUnE8
-         Dw5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699430479; x=1700035279;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HNi4fClCOjk3xdFXZ5yiVbLFHsXzEYt3ZKrZiBMxjyw=;
-        b=VOYR650oOgaTM9bNa95LD7fX0wkXoaL6dwFoTtgrTT3HoKzuCFC5oP5fGev8coEhzh
-         8P8FzzppInHCBd1d2nUoKsuNp+kPabDqDNE2HMIRT6u0sfXv7C7vdYnn5nJodCE01k2N
-         3TZ4E/GznKqf7gPXqBNfjrFtiRS/SrR6uoRS1izNYGr5I4hVofb3SMjdiYex1Y9oTWks
-         9i4akekjx38OiDQRZXjm20Mtj0Z4IQA8FD8rZIqTjqVG1uEOVwiZD8KH0ojL8Jx0A7FU
-         wmusjlwV0wJMUZ8QEbxIz/9AjsfC3qGM7Cjw++jHe/QJfwHjwxIuLl78rGvOhxuLh2I0
-         RZRA==
-X-Gm-Message-State: AOJu0YzPLMsb4xJDbrjIb1GoeE2Kud1S89I4TQp/zIMc7ofvy6ytFx/Q
-	TSK0RAUOprHEv/7HcJdiRSJQFwlbw4GnkO8zisb91w==
-X-Google-Smtp-Source: AGHT+IF9zLVkQKgYnQFEJtbLFMGxGUHm/ggdeeQ390qH4xEE1KzKzMRdaKCiHY6k9DQcMexREYD80V4ZtE1hNp9Thbc=
-X-Received: by 2002:a17:907:60d4:b0:9ad:e298:a5d with SMTP id
- hv20-20020a17090760d400b009ade2980a5dmr789580ejc.19.1699430478750; Wed, 08
- Nov 2023 00:01:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F77D520;
+	Wed,  8 Nov 2023 08:11:37 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB03C1A6;
+	Wed,  8 Nov 2023 00:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699431096; x=1730967096;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=t39GUkIid9dZJeh3529U2jVJKYEbEiVsy5OvbtMLGXA=;
+  b=iKYQz0McCqcMyj9r2TGFj4YhqdAN/WadSy4tURLq4yuODWJwOeoSDXn5
+   RmzXNcsmWu78TdFe/uXBkVukrnUDoHVDusT/SBv4O8q6rsejXTX8XcfzF
+   DiG5kHdiSYp9u/8eG3K7xEGPH70FKdN376gX/qqqO+UC7aOMSf7YnELm7
+   3p/O/yzfyAiqv3ghpFj+neGe4SVq+znd9K0WMuifiorkEqWnirI/o4hHV
+   WqXNPbkIC280rVYDwmYOxA2OP4OoQgovSUaqMf6Wo1ICBkUY3ObCN3F5i
+   SCeP7Xj8cnnaXdCLrEglZb7ibYFd2qeFZWbCQfW98re9fPB8e5RyaGQ4F
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="389523284"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="389523284"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 00:11:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="936438382"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="936438382"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 00:11:31 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Huan Yang <link@vivo.com>
+Cc: Tejun Heo <tj@kernel.org>,  Zefan Li <lizefan.x@bytedance.com>,
+  "Johannes Weiner" <hannes@cmpxchg.org>,  Jonathan Corbet
+ <corbet@lwn.net>,  Michal Hocko <mhocko@kernel.org>,  Roman Gushchin
+ <roman.gushchin@linux.dev>,  Shakeel Butt <shakeelb@google.com>,  Muchun
+ Song <muchun.song@linux.dev>,  Andrew Morton <akpm@linux-foundation.org>,
+  David Hildenbrand <david@redhat.com>,  "Matthew Wilcox"
+ <willy@infradead.org>,  Kefeng Wang <wangkefeng.wang@huawei.com>,  Peter
+ Xu <peterx@redhat.com>,  "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+  Yosry Ahmed <yosryahmed@google.com>,  Liu Shixin <liushixin2@huawei.com>,
+  Hugh Dickins <hughd@google.com>,  <cgroups@vger.kernel.org>,
+  <linux-doc@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
+  <linux-mm@kvack.org>,  <opensource.kernel@vivo.com>
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+In-Reply-To: <d3d2f43f-0733-4205-a649-0a42ea88f377@vivo.com> (Huan Yang's
+	message of "Wed, 8 Nov 2023 15:53:16 +0800")
+References: <20231108065818.19932-1-link@vivo.com>
+	<87v8ack889.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<d3d2f43f-0733-4205-a649-0a42ea88f377@vivo.com>
+Date: Wed, 08 Nov 2023 16:09:29 +0800
+Message-ID: <87r0l0k6o6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231108065818.19932-1-link@vivo.com>
-In-Reply-To: <20231108065818.19932-1-link@vivo.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 8 Nov 2023 00:00:39 -0800
-Message-ID: <CAJD7tkYVtaX=W5XWhn-Y+d==mbHs5AZG-7sAaYmo7FDONpoQ7g@mail.gmail.com>
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-To: Huan Yang <link@vivo.com>, Wei Xu <weixugc@google.com>, 
-	David Rientjes <rientjes@google.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	Huang Ying <ying.huang@intel.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
-	Peter Xu <peterx@redhat.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
-	Liu Shixin <liushixin2@huawei.com>, Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-+Wei Xu +David Rientjes
+Huan Yang <link@vivo.com> writes:
 
-On Tue, Nov 7, 2023 at 10:59=E2=80=AFPM Huan Yang <link@vivo.com> wrote:
+> HI Huang, Ying
 >
-> In some cases, we need to selectively reclaim file pages or anonymous
-> pages in an unbalanced manner.
+> Thanks for reply.
 >
-> For example, when an application is pushed to the background and frozen,
-> it may not be opened for a long time, and we can safely reclaim the
-> application's anonymous pages, but we do not want to touch the file pages=
-.
+> =E5=9C=A8 2023/11/8 15:35, Huang, Ying =E5=86=99=E9=81=93:
+>> Huan Yang <link@vivo.com> writes:
+>>
+>>> In some cases, we need to selectively reclaim file pages or anonymous
+>>> pages in an unbalanced manner.
+>>>
+>>> For example, when an application is pushed to the background and frozen,
+>>> it may not be opened for a long time, and we can safely reclaim the
+>>> application's anonymous pages, but we do not want to touch the file pag=
+es.
+>>>
+>>> This patchset extends the proactive reclaim interface to achieve
+>>> unbalanced reclamation. Users can control the reclamation tendency by
+>>> inputting swappiness under the original interface. Specifically, users
+>>> can input special values to extremely reclaim specific pages.
+>>  From mem_cgroup_swappiness(), cgroupv2 doesn't have per-cgroup
+>> swappiness.  So you need to add that firstly?
+> Sorry for this mistake, we always work on cgroupv1, so, not notice
+> this commit 4550c4e, thank your for point that.
 >
-> This patchset extends the proactive reclaim interface to achieve
-> unbalanced reclamation. Users can control the reclamation tendency by
-> inputting swappiness under the original interface. Specifically, users
-> can input special values to extremely reclaim specific pages.
-
-I proposed this a while back:
-
-https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yK=
-SNgD7aGdg@mail.gmail.com/
-
-The takeaway from the discussion was that swappiness is not the right
-way to do this. We can add separate arguments to specify types of
-memory to reclaim, as Roman suggested in that thread. I had some
-patches lying around to do that at some point, I can dig them up if
-that's helpful, but they are probably based on a very old kernel now,
-and before MGLRU landed. IIRC it wasn't very difficult, I think I
-added anon/file/shrinkers bits to struct scan_control and then plumbed
-them through to memory.reclaim.
-
+> I see this commit comment that `that's a different discussion`, but,
+> to implements this, I will try add.
 >
-> Example:
->         echo "1G" 200 > memory.reclaim (only reclaim anon)
->           echo "1G" 0  > memory.reclaim (only reclaim file)
->           echo "1G" 1  > memory.reclaim (only reclaim file)
+>>
+>>> Example:
+>>>    	echo "1G" 200 > memory.reclaim (only reclaim anon)
+>>> 	  echo "1G" 0  > memory.reclaim (only reclaim file)
+>>> 	  echo "1G" 1  > memory.reclaim (only reclaim file)
+>>>
+>>> Note that when performing unbalanced reclamation, the cgroup swappiness
+>>> will be temporarily adjusted dynamically to the input value. Therefore,
+>>> if the cgroup swappiness is further modified during runtime, there may
+>>> be some errors.
+>> If cgroup swappiness will be adjusted temporarily, why not just change
+>> it via a script before/after proactive reclaiming?
+> IMO, this unbalance reclaim only takes effect for a single command,
+> so if it is pre-set using a script, the judgment of the reclamation tende=
+ncy
+> may become complicated.
 
-The type of interface here is nested-keyed, so if we add arguments
-they need to be in key=3Dvalue format. Example:
+If swappiness =3D=3D 0, then we will only reclaim file pages.  If swappiness
+=3D=3D 200, then we may still reclaim file pages.  So you need a way to
+reclaim only anon pages?
 
-echo 1G swappiness=3D200 > memory.reclaim
+If so, can we use some special swappiness value to specify that?  I
+don't know whether use 200 will cause regression.  If so, we may need
+some other value, e.g. >=3D 65536.
 
-As I mentioned above though, I don't think swappiness is the right way
-of doing this. Also, without swappiness, I don't think there's a v1 vs
-v2 dilemma here. memory.reclaim can work as-is in cgroup v1, it just
-needs to be exposed there.
+> So, do you mean avoid use cgroup swappiness, just type anon or file to
+> control
+> this extreme unbalanced reclamation?
+>
+>>
+>>> However, this is acceptable because the interface is dynamically called
+>>> by the user and the timing should be controlled by the user.
+>>>
+>>> This patchset did not implement the type-based reclamation as expected
+>>> in the documentation.(anon or file) Because in addition to extreme unba=
+lanced
+>>> reclamation, this patchset can also adapt to the reclamation tendency
+>>> allocated according to swappiness, which is more flexible.
+>>>
+
+--
+Best Regards,
+Huang, Ying
 
