@@ -1,64 +1,81 @@
-Return-Path: <cgroups+bounces-245-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-246-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 598AB7E5372
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 11:33:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA0E7E565E
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 13:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F70CB20DFF
-	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 10:33:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8DD62812FA
+	for <lists+cgroups@lfdr.de>; Wed,  8 Nov 2023 12:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D478D26F;
-	Wed,  8 Nov 2023 10:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21FB17982;
+	Wed,  8 Nov 2023 12:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VRI/frVL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RLUAajSf"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03FB12E47
-	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 10:33:08 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350DC10D5
-	for <cgroups@vger.kernel.org>; Wed,  8 Nov 2023 02:33:08 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C0E6E21961;
-	Wed,  8 Nov 2023 10:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1699439586; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hFiAcviVraABnczS1H4QUx4zyBJCX/dllj1tUj43EaM=;
-	b=VRI/frVL4f+SKT0AVB4Pn17hcROGjrr/+ZShJ4WUA8vYk+1aL4Go82MAd5xxulXjT78kpc
-	wDSp9gSAx3i0wbkx++PiITKFVHxyDBnUvYd41V0yb3s4f/XXA6Cj466rwFi3Ocnjgyulyx
-	KyOTknSnpLJyF6AQg/ENNFFXJREMBPI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 999A4133F5;
-	Wed,  8 Nov 2023 10:33:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id jLZxIuJjS2UecQAAMHmgww
-	(envelope-from <mhocko@suse.com>); Wed, 08 Nov 2023 10:33:06 +0000
-Date: Wed, 8 Nov 2023 11:33:05 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Christoph Lameter <cl@linux.com>, Matthew Wilcox <willy@infradead.org>, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Subject: Re: cgroups: warning for metadata allocation with GFP_NOFAIL (was
- Re: folio_alloc_buffers() doing allocations > order 1 with GFP_NOFAIL)
-Message-ID: <t4vlvq3f5owdqr76ut3f5yk35jwyy76pvq4ji7zze5aimgh3uu@c2b5mmr4eytv>
-References: <6b42243e-f197-600a-5d22-56bd728a5ad8@gentwo.org>
- <ZUIHk+PzpOLIKJZN@casper.infradead.org>
- <8f6d3d89-3632-01a8-80b8-6a788a4ba7a8@linux.com>
- <ZUp8ZFGxwmCx4ZFr@P9FQF9L96D.corp.robot.car>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED091C11;
+	Wed,  8 Nov 2023 12:35:37 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF76F1BF2;
+	Wed,  8 Nov 2023 04:35:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699446935; x=1730982935;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Oh/p14wVpiK4vO4Z0TdtqDDkwu7eO/RsM3cVxkN0aNU=;
+  b=RLUAajSfldQSdipsNswpZXsqZdt7RkizHRXANaCFQq57PsV+bUPPTRMK
+   e2EK+QORXT/B1aWIeHiRLtBNXF/Sm1Kd30g5uNm995U2QmvENl0Dr5TVG
+   upWpGEuTEDUTGYbx43H7pjoZXlEQAANFcIiLDsX946qnIvlj0rXDFYtjP
+   rmXTKlKa3+hLzvSLFIyRAJtvNCVlGldkS38w72poY3jCGZp8AcV5HteeF
+   Lim9Aa8CWK9St6ywobsWPxpssr+oa/34oHsfrcU1olp4qlvfUS74pLS9G
+   kv5DY5YWROfhO+zTPPtG2wpSGQyIxZzgk+YZgbWvewJDUFcqKRTPH3ccP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="392622808"
+X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
+   d="scan'208";a="392622808"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 04:35:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
+   d="scan'208";a="4174110"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 08 Nov 2023 04:35:30 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r0hmH-0007vc-2R;
+	Wed, 08 Nov 2023 12:35:25 +0000
+Date: Wed, 8 Nov 2023 20:34:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: Huan Yang <link@vivo.com>, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Peter Xu <peterx@redhat.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Liu Shixin <liushixin2@huawei.com>, Yue Zhao <findns94@gmail.com>,
+	Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
+Subject: Re: [PATCH 2/4] mm: multi-gen LRU: MGLRU unbalance reclaim
+Message-ID: <202311082048.zacOzITP-lkp@intel.com>
+References: <20231108065818.19932-3-link@vivo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -67,76 +84,96 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZUp8ZFGxwmCx4ZFr@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <20231108065818.19932-3-link@vivo.com>
 
-On Tue 07-11-23 10:05:24, Roman Gushchin wrote:
-> On Mon, Nov 06, 2023 at 06:57:05PM -0800, Christoph Lameter wrote:
-> > Right.. Well lets add the cgoup folks to this.
-> 
-> Hello!
-> 
-> I think it's the best thing we can do now. Thoughts?
-> 
-> >From 5ed3e88f4f052b6ce8dbec0545dfc80eb7534a1a Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <roman.gushchin@linux.dev>
-> Date: Tue, 7 Nov 2023 09:18:02 -0800
-> Subject: [PATCH] mm: kmem: drop __GFP_NOFAIL when allocating objcg vectors
-> 
-> Objcg vectors attached to slab pages to store slab object ownership
-> information are allocated using gfp flags for the original slab
-> allocation. Depending on slab page order and the size of slab objects,
-> objcg vector can take several pages.
-> 
-> If the original allocation was done with the __GFP_NOFAIL flag, it
-> triggered a warning in the page allocation code. Indeed, order > 1
-> pages should not been allocated with the __GFP_NOFAIL flag.
-> 
-> Fix this by simple dropping the __GFP_NOFAIL flag when allocating
-> the objcg vector. It effectively allows to skip the accounting of a
-> single slab object under a heavy memory pressure.
+Hi Huan,
 
-It would be really good to describe what happens if the memcg metadata
-allocation fails. AFAICS both callers of memcg_alloc_slab_cgroups -
-memcg_slab_post_alloc_hook and account_slab will simply skip the
-accounting which is rather curious but probably tolerable (does this
-allow to runaway from memcg limits). If that is intended then it should
-be documented so that new users do not get it wrong. We do not want to
-error ever propagate down to the allocator caller which doesn't expect
-it.
+kernel test robot noticed the following build warnings:
 
-Btw. if the large allocation is really necessary, which hasn't been
-explained so far AFAIK, would vmalloc fallback be an option?
- 
-> An alternative would be to implement the mechanism to fallback to
-> order-0 allocations for accounting metadata, which is also not perfect
-> because it will increase performance penalty and memory footprint
-> of the kernel memory accounting under memory pressure.
-> 
-> Reported-by: Christoph Lameter <cl@linux.com>
-> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> ---
->  mm/memcontrol.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 774bd6e21e27..1c1061df9cd1 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2936,7 +2936,8 @@ void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
->   * Moreover, it should not come from DMA buffer and is not readily
->   * reclaimable. So those GFP bits should be masked off.
->   */
-> -#define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
-> +#define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | \
-> +				 __GFP_ACCOUNT | __GFP_NOFAIL)
->  
->  /*
->   * mod_objcg_mlstate() may be called with irq enabled, so
-> -- 
-> 2.42.0
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on tj-cgroup/for-next linus/master v6.6 next-20231108]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Huan-Yang/mm-vmscan-LRU-unbalance-cgroup-reclaim/20231108-151757
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231108065818.19932-3-link%40vivo.com
+patch subject: [PATCH 2/4] mm: multi-gen LRU: MGLRU unbalance reclaim
+config: x86_64-randconfig-011-20231108 (https://download.01.org/0day-ci/archive/20231108/202311082048.zacOzITP-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311082048.zacOzITP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311082048.zacOzITP-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   mm/vmscan.c: In function 'isolate_folios':
+>> mm/vmscan.c:4518:29: warning: 'unbalance' is used uninitialized [-Wuninitialized]
+    4518 |                 if (scanned || unbalance)
+         |                     ~~~~~~~~^~~~~~~~~~~~
+   mm/vmscan.c:4488:14: note: 'unbalance' was declared here
+    4488 |         bool unbalance;
+         |              ^~~~~~~~~
+
+
+vim +/unbalance +4518 mm/vmscan.c
+
+  4480	
+  4481	static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int swappiness,
+  4482				  int *type_scanned, struct list_head *list)
+  4483	{
+  4484		int i;
+  4485		int type;
+  4486		int scanned;
+  4487		int tier = -1;
+  4488		bool unbalance;
+  4489		DEFINE_MIN_SEQ(lruvec);
+  4490	
+  4491		/*
+  4492		 * Try to make the obvious choice first. When anon and file are both
+  4493		 * available from the same generation, interpret swappiness 1 as file
+  4494		 * first and 200 as anon first.
+  4495		 */
+  4496		if (unlikely(unbalance_file_reclaim(sc, swappiness))) {
+  4497			unbalance = true;
+  4498			type = LRU_GEN_FILE;
+  4499		} else if (unlikely(unbalance_anon_reclaim(sc, swappiness))) {
+  4500			unbalance = true;
+  4501			type = LRU_GEN_ANON;
+  4502		} else if (!swappiness)
+  4503			type = LRU_GEN_FILE;
+  4504		else if (min_seq[LRU_GEN_ANON] < min_seq[LRU_GEN_FILE])
+  4505			type = LRU_GEN_ANON;
+  4506		else if (swappiness == 1)
+  4507			type = LRU_GEN_FILE;
+  4508		else if (swappiness == 200)
+  4509			type = LRU_GEN_ANON;
+  4510		else
+  4511			type = get_type_to_scan(lruvec, swappiness, &tier);
+  4512	
+  4513		for (i = !swappiness; i < ANON_AND_FILE; i++) {
+  4514			if (tier < 0)
+  4515				tier = get_tier_idx(lruvec, type);
+  4516	
+  4517			scanned = scan_folios(lruvec, sc, type, tier, list);
+> 4518			if (scanned || unbalance)
+  4519				break;
+  4520	
+  4521			type = !type;
+  4522			tier = -1;
+  4523		}
+  4524	
+  4525		*type_scanned = type;
+  4526	
+  4527		return scanned;
+  4528	}
+  4529	
 
 -- 
-Michal Hocko
-SUSE Labs
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
