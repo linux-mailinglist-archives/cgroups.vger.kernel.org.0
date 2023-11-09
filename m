@@ -1,63 +1,63 @@
-Return-Path: <cgroups+bounces-257-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-258-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EE07E615B
-	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 01:25:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59ADC7E615D
+	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 01:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E7492812DF
-	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 00:25:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C4821C20B64
+	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 00:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AEA7E4;
-	Thu,  9 Nov 2023 00:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D651809;
+	Thu,  9 Nov 2023 00:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DMtTE/fx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQWf7Pw9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F48383;
-	Thu,  9 Nov 2023 00:25:28 +0000 (UTC)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65622268D;
-	Wed,  8 Nov 2023 16:25:28 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 41be03b00d2f7-5bdc185c449so219684a12.0;
-        Wed, 08 Nov 2023 16:25:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B9F7FC;
+	Thu,  9 Nov 2023 00:25:32 +0000 (UTC)
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B211A268D;
+	Wed,  8 Nov 2023 16:25:31 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-5b9a7357553so252156a12.0;
+        Wed, 08 Nov 2023 16:25:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699489528; x=1700094328; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699489531; x=1700094331; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x+vLMcQqPa9/uA9h+Ooe3B/NT+SKXukU8inBObWmrPM=;
-        b=DMtTE/fxZKcO0Pu4KdZbzOyX4CRAGb7abzyRvRYcIS2rhep/xGRNBVn10foSlKfPOC
-         g2Z2vcQ8WOuZLVzknRhmP10XPPrf3ARuHeF3zFOjq36ZlukrT4eOBxwWA0ujx86yRfsr
-         cpD1f5kH+/yzkGFQHRHPaoqQ/NPpYLd+wfcwF0vvDRO1n7ZBx8CW4gNUlxSlSvdjKnWn
-         fxX3/tASSkkap531Gx4TxVTeSommGgZJttLtCIUylNqXJT6aYBgvPg5GB6cSRqj5CgfN
-         rtRLb4oOc/ssnpRf9ErrRtTdZ6mcN3lUuRrZkX7jgtXetx4Z95o5vGuJYgSha6DCcGr1
-         obIQ==
+        bh=Of70rUTdf0QdbQCNfJN7g62PDHTFajfmsuYYkD/l5Bw=;
+        b=WQWf7Pw9JwFJf774rZF45x/Vdl/cXxILHNIcKpk28BcACAAMrHkSQnDXCkhz07z5o0
+         wi/bRLe1j8SkjGP3I0sJRFaw/hYiYCocbOarQ6foMsUzM0EB81EkxVvT7wsRIrjmnewe
+         oDy0gg86aYCAw0gN1Alhe18ZI3DVbXYpk9rKmyZusSM7U1iHcQID29FnGC0WDFLc7Kdx
+         Ualvry6J8LGU1I2xVBJb1cKP+rbmtjsz+rFNs/pC9Ey8MdYyu5clMGI9eu78qyBYE4J9
+         oekXTyWot+RTts+rDJwHu3dUJr19RUjPcjtgdGDcyRDF7e5x9Uz/7VQpHxdJc2aNvSZc
+         Zxew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699489528; x=1700094328;
+        d=1e100.net; s=20230601; t=1699489531; x=1700094331;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x+vLMcQqPa9/uA9h+Ooe3B/NT+SKXukU8inBObWmrPM=;
-        b=DaulEHck6Sljv37jBF4U4VDdydWg7AtuwwO9ZKl+kxJl8m/52gQ/yw5wQneNvEPfVh
-         M7rLjoYIdTLFWVvR/PAqOTQ12C1i0kJQE8lPLZaYgSE7Z1s0uJvD8fWXQRyEKj9NSGeA
-         3i+eJp7Jp8H2fC8DpWqNNkfK6pfkGBJ/tQNrUyhQUEFQzG0k0eZnaslVC4tpHqIMrj0D
-         boLPG4v9anBceZ7J26WPWMqwKkBciKesrs2B4OgB8OQU7/iSNeuU0D+4hiWdvQMygw52
-         2vl0cvHzUjj3gfbKI/KtVxvPrK33Nu1vXaE+MJKuu3v2goQoU+oSD1CVQtwxIa38m9vk
-         kLvQ==
-X-Gm-Message-State: AOJu0YxViwmZlFPYwwjYLzzv1BOcq0JCu7tlufZUIY8bK50rr7jsCi+C
-	QhTZtMc07E/l24Ic2EW/5qdNUgQU+lJl
-X-Google-Smtp-Source: AGHT+IFJa3XqHfr7w43VvBJ++JO55x37+essItDkdmOarWpBCb4W6tU0UNUrxGBma9nAsrqSWjotag==
-X-Received: by 2002:a05:6a20:7f93:b0:180:f0ed:2992 with SMTP id d19-20020a056a207f9300b00180f0ed2992mr2006580pzj.51.1699489527665;
-        Wed, 08 Nov 2023 16:25:27 -0800 (PST)
+        bh=Of70rUTdf0QdbQCNfJN7g62PDHTFajfmsuYYkD/l5Bw=;
+        b=q0HKKolO9Y4z7SEaFQpqEyxsPFMDHN0kc2yr2IepSbeCOn+f5y5bcRUqWp4/k8EmsY
+         h41ALRtDoGpAZMwtyU3s2m0PHI/K+rJSfw7VOGFHJJ3l5Xvx1HvAf5G/CdnOlhJdnnkP
+         D5vLs+vOYXqAS57aUXWcbhf8NHnQMyxjxvXbPOLjEYEdUOrIqj/l8a0AfgSOqtd3Y2qt
+         q4I28zBD0PhUrOOo+39Fz83xn8M5DTjkvaONwUR4/uBsodvh+WbOEDccWZrOTwQGDTaq
+         e4zOibWIvxysWiNZous519isLUai/Bc9iTHYnms6K39f5ZXSGqr6Zx+JBwBHDqqrw/7+
+         0h9A==
+X-Gm-Message-State: AOJu0Yx790v4VXMRoi481g8zBF72S7NRM0iBYB2yiEBHUXO1/1uBktmF
+	/M+WOXXKixhPbvOgTfqNHjNCmiAaitep
+X-Google-Smtp-Source: AGHT+IHbwFVdwphwt7gr3UzzhUHfqfxDv14F7XVPq9KZV1yJ2tp1Uqm1Do7o8FIgS8mNhqzO/PmdGQ==
+X-Received: by 2002:a05:6a21:7985:b0:180:d17a:7677 with SMTP id bh5-20020a056a21798500b00180d17a7677mr3646043pzc.36.1699489531028;
+        Wed, 08 Nov 2023 16:25:31 -0800 (PST)
 Received: from fedora.mshome.net (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id b10-20020a170902a9ca00b001bc21222e34sm2219073plr.285.2023.11.08.16.25.25
+        by smtp.gmail.com with ESMTPSA id b10-20020a170902a9ca00b001bc21222e34sm2219073plr.285.2023.11.08.16.25.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 16:25:27 -0800 (PST)
+        Wed, 08 Nov 2023 16:25:30 -0800 (PST)
 From: Gregory Price <gourry.memverge@gmail.com>
 X-Google-Original-From: Gregory Price <gregory.price@memverge.com>
 To: linux-kernel@vger.kernel.org
@@ -76,9 +76,9 @@ Cc: linux-cxl@vger.kernel.org,
 	shakeelb@google.com,
 	muchun.song@linux.dev,
 	Gregory Price <gregory.price@memverge.com>
-Subject: [RFC PATCH v4 1/3] mm/memcontrol: implement memcg.interleave_weights
-Date: Wed,  8 Nov 2023 19:25:15 -0500
-Message-Id: <20231109002517.106829-2-gregory.price@memverge.com>
+Subject: [RFC PATCH v4 2/3] mm/mempolicy: implement weighted interleave
+Date: Wed,  8 Nov 2023 19:25:16 -0500
+Message-Id: <20231109002517.106829-3-gregory.price@memverge.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20231109002517.106829-1-gregory.price@memverge.com>
 References: <20231109002517.106829-1-gregory.price@memverge.com>
@@ -90,301 +90,278 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Create an RCU-protected array of unsigned char[MAX_NUMNODES] where
-interleave weights can be stored.  The intent of these weights are
-to be used by mempolicy to implement weighted interleave for
-bandwidth optimization.
+Implements interleave weighting for bandwidth optimization.
 
-Node weights assigned via cgroup/memory.interleave_weights
+The mempolicy MPOL_INTERLEAVE utilizes the node weights to implement
+weighted interleave.
 
-Example: Set a 3:1 weighting ratio for nodes 0 and 1 respectively.
-  echo 0:3 > cgroup/memory.interleave_weights
-  echo 1:1 > cgroup/memory.interleave_weights
+There are 3 integration points:
 
-Example output:
-  cat cgroup/memory.interleave_weights
-  0:3,1:1
+interleave_nodes:
+  Counts the number of allocations as they occur, and applies the
+  weight for the current node.  When the weight reaches 0, switch
+  to the next node.
 
-Child cgroups inherit parent interleave weights and may override them.
+offset_il_node:
+  Gets the total weight of the nodemask as well as each individual
+  node weight, then calculates the node based on the given index n.
 
-To revert weights to inheriting from the parent, write "-1:0"
+bulk_array_interleave:
+  Gets the total weight of the nodemask as well as each individual
+  node weight, then calculates the number of "interleave rounds" as
+  well as any delta ("partial round").  Calculates the number of
+  pages for each node and allocates them.
 
-Example:
-  echo -1:0 > cgroup/memory.interleave_weights
+  If a node was scheduled for interleave via interleave_nodes, the
+  current weight (pol->cur_weight) will be allocated first, before
+  the remaining bulk calculation is done. This simplifies the
+  calculation at the cost of an additional allocation call.
+
+The functions mempolicy_get_il_weight and mempolicy_get_il_weights
+were added so that should mempolicy be extended in the future to
+include local mempolicy weights, there is a clear integration point.
 
 Signed-off-by: Gregory Price <gregory.price@memverge.com>
 ---
- include/linux/memcontrol.h |  31 +++++++
- mm/memcontrol.c            | 172 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 203 insertions(+)
+ include/linux/mempolicy.h |   3 +
+ mm/mempolicy.c            | 153 +++++++++++++++++++++++++++++++-------
+ 2 files changed, 128 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index e4e24da16d2c..338a9dcda446 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -21,6 +21,8 @@
- #include <linux/vmstat.h>
- #include <linux/writeback.h>
- #include <linux/page-flags.h>
-+#include <linux/numa.h>
-+#include <linux/nodemask.h>
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index d232de7cdc56..b1ca63077fc4 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -48,6 +48,9 @@ struct mempolicy {
+ 	nodemask_t nodes;	/* interleave/bind/perfer */
+ 	int home_node;		/* Home node to use for MPOL_BIND and MPOL_PREFERRED_MANY */
  
- struct mem_cgroup;
- struct obj_cgroup;
-@@ -167,6 +169,15 @@ struct mem_cgroup_thresholds {
- 	struct mem_cgroup_threshold_ary *spare;
- };
++	unsigned char cur_weight;  /* weight of current il node */
++	unsigned char il_weights[MAX_NUMNODES]; /* used during allocation */
++
+ 	union {
+ 		nodemask_t cpuset_mems_allowed;	/* relative to these nodes */
+ 		nodemask_t user_nodemask;	/* nodemask passed by user */
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 29ebf1e7898c..231b9bbd391a 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -300,6 +300,7 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
+ 	policy->mode = mode;
+ 	policy->flags = flags;
+ 	policy->home_node = NUMA_NO_NODE;
++	policy->cur_weight = 0;
  
-+/* For mempolicy information */
-+struct mem_cgroup_mempolicy {
-+	/*
-+	 * When interleaving is applied, do allocations on each node by the
-+	 * weight value.  Size is always MAX_NUMNODES. Protected by RCU.
-+	 */
-+	unsigned char *il_weights;
-+};
-+
- /*
-  * Remember four most recent foreign writebacks with dirty pages in this
-  * cgroup.  Inode sharing is expected to be uncommon and, even if we miss
-@@ -265,6 +276,12 @@ struct mem_cgroup {
- 	/* thresholds for mem+swap usage. RCU-protected */
- 	struct mem_cgroup_thresholds memsw_thresholds;
- 
-+	/* protect the mempolicy settings */
-+	struct mutex mempolicy_lock;
-+
-+	/* mempolicy defaults for tasks */
-+	struct mem_cgroup_mempolicy mempolicy;
-+
- 	/* For oom notifier event fd */
- 	struct list_head oom_notify;
- 
-@@ -1159,6 +1176,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- 						gfp_t gfp_mask,
- 						unsigned long *total_scanned);
- 
-+
-+unsigned char mem_cgroup_get_il_weight(unsigned int nid);
-+
-+unsigned int mem_cgroup_get_il_weights(nodemask_t *nodes,
-+				       unsigned char *weights);
-+
- #else /* CONFIG_MEMCG */
- 
- #define MEM_CGROUP_ID_SHIFT	0
-@@ -1591,6 +1614,14 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- {
- 	return 0;
+ 	return policy;
  }
-+
-+static unsigned char mem_cgroup_get_il_weight(unsigned int nid) { return 0; }
-+
-+static unsigned int mem_cgroup_get_il_weights(nodemask_t *nodes,
-+					      unsigned char *weights)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_MEMCG */
+@@ -334,6 +335,7 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
+ 		tmp = *nodes;
  
- static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 5b009b233ab8..67e8c1767471 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5319,6 +5319,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- 	INIT_WORK(&memcg->high_work, high_work_func);
- 	INIT_LIST_HEAD(&memcg->oom_notify);
- 	mutex_init(&memcg->thresholds_lock);
-+	mutex_init(&memcg->mempolicy_lock);
- 	spin_lock_init(&memcg->move_lock);
- 	vmpressure_init(&memcg->vmpressure);
- 	INIT_LIST_HEAD(&memcg->event_list);
-@@ -7896,6 +7897,176 @@ static struct cftype zswap_files[] = {
- };
- #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
+ 	pol->nodes = tmp;
++	pol->cur_weight = 0;
+ }
  
-+unsigned char mem_cgroup_get_il_weight(unsigned int nid)
-+{
-+	struct mem_cgroup *memcg;
-+	unsigned char weight = 0;
-+	unsigned char *weights;
-+
-+	rcu_read_lock();
-+	memcg = mem_cgroup_from_task(current);
-+	while (!mem_cgroup_is_root(memcg)) {
-+		weights = rcu_dereference(memcg->mempolicy.il_weights);
-+		if (weights) {
-+			weight = weights[nid];
-+			break;
-+		}
-+		memcg = parent_mem_cgroup(memcg);
+ static void mpol_rebind_preferred(struct mempolicy *pol,
+@@ -881,8 +883,10 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+ 
+ 	old = current->mempolicy;
+ 	current->mempolicy = new;
+-	if (new && new->mode == MPOL_INTERLEAVE)
++	if (new && new->mode == MPOL_INTERLEAVE) {
+ 		current->il_prev = MAX_NUMNODES-1;
++		new->cur_weight = 0;
 +	}
-+	rcu_read_unlock();
+ 	task_unlock(current);
+ 	mpol_put(old);
+ 	ret = 0;
+@@ -1900,15 +1904,50 @@ static int policy_node(gfp_t gfp, struct mempolicy *policy, int nd)
+ 	return nd;
+ }
+ 
++static unsigned char mempolicy_get_il_weight(struct mempolicy *policy,
++					     unsigned int nid)
++{
++	int weight = mem_cgroup_get_il_weight(nid);
 +
-+	return weight;
++	return weight ? weight : 1;
 +}
 +
-+unsigned int mem_cgroup_get_il_weights(nodemask_t *nodes,
-+				       unsigned char *weights)
++static unsigned int mempolicy_get_il_weights(struct mempolicy *policy,
++					     nodemask_t *nodes,
++					     unsigned char *weights)
 +{
-+	struct mem_cgroup *memcg;
-+	unsigned char *memcg_weights;
-+	unsigned int nid;
 +	unsigned int total = 0;
-+	unsigned char weight;
++	unsigned int nid;
 +
-+	rcu_read_lock();
-+	memcg = mem_cgroup_from_task(current);
-+	while (memcg && !mem_cgroup_is_root(memcg)) {
-+		memcg_weights = rcu_dereference(memcg->mempolicy.il_weights);
-+		if (!memcg_weights) {
-+			memcg = parent_mem_cgroup(memcg);
-+			continue;
-+		}
++	total = mem_cgroup_get_il_weights(nodes, weights);
++	if (total)
++		return total;
 +
-+		for_each_node_mask(nid, *nodes) {
-+			weight = memcg_weights[nid];
-+			weights[nid] = weight ? weight : 1;
-+			total += weights[nid];
-+		}
-+		break;
++	for_each_node_mask(nid, *nodes) {
++		weights[nid] = 1;
++		total += 1;
 +	}
-+	rcu_read_unlock();
-+
 +	return total;
 +}
 +
-+static int mpol_ilw_show(struct seq_file *m, void *v)
-+{
-+	struct mem_cgroup *memcg;
-+	unsigned char *weights;
-+	unsigned int nid;
-+	unsigned int count = 0;
-+
-+	rcu_read_lock();
-+	memcg = mem_cgroup_from_seq(m);
-+
-+	while (memcg && !mem_cgroup_is_root(memcg)) {
-+		weights = rcu_dereference(memcg->mempolicy.il_weights);
-+		if (weights)
-+			break;
-+		memcg = parent_mem_cgroup(memcg);
+ /* Do dynamic interleaving for a process */
+ static unsigned interleave_nodes(struct mempolicy *policy)
+ {
+ 	unsigned next;
++	unsigned char next_weight;
+ 	struct task_struct *me = current;
+ 
+ 	next = next_node_in(me->il_prev, policy->nodes);
+-	if (next < MAX_NUMNODES)
++	if (!policy->cur_weight) {
++		/* If the node is set, at least 1 allocation is required */
++		next_weight = mempolicy_get_il_weight(policy, next);
++		policy->cur_weight = next_weight ? next_weight : 1;
 +	}
-+	for_each_node(nid) {
-+		seq_printf(m, "%s%d:%d", (count++ ? "," : ""), nid,
-+			   weights ? weights[nid] : 1);
-+	}
-+	seq_putc(m, '\n');
-+	rcu_read_unlock();
 +
-+	return 0;
-+}
++	policy->cur_weight--;
++	if (next < MAX_NUMNODES && !policy->cur_weight)
+ 		me->il_prev = next;
 +
-+static ssize_t mpol_ilw_write(struct kernfs_open_file *of, char *buf,
-+			      size_t nbytes, loff_t off)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	struct mem_cgroup *pmcg;
-+	unsigned char *new_weights = NULL, *old_weights = NULL;
-+	int node;
+ 	return next;
+ }
+ 
+@@ -1967,8 +2006,8 @@ unsigned int mempolicy_slab_node(void)
+ static unsigned offset_il_node(struct mempolicy *pol, unsigned long n)
+ {
+ 	nodemask_t nodemask = pol->nodes;
+-	unsigned int target, nnodes;
+-	int i;
++	unsigned int target, nnodes, il_weight;
 +	unsigned char weight;
-+	ssize_t ret;
-+	char *sep = memchr(buf, ':', nbytes);
-+	bool parent_weights = false;
+ 	int nid;
+ 	/*
+ 	 * The barrier will stabilize the nodemask in a register or on
+@@ -1982,10 +2021,18 @@ static unsigned offset_il_node(struct mempolicy *pol, unsigned long n)
+ 	nnodes = nodes_weight(nodemask);
+ 	if (!nnodes)
+ 		return numa_node_id();
+-	target = (unsigned int)n % nnodes;
 +
-+	if (!sep || sep == buf || sep == (buf + nbytes - 1))
-+		return -EINVAL;
-+	*sep = '\0';
++	il_weight = mempolicy_get_il_weights(pol, &nodemask, pol->il_weights);
++	target = (unsigned int)n % il_weight;
+ 	nid = first_node(nodemask);
+-	for (i = 0; i < target; i++)
+-		nid = next_node(nid, nodemask);
 +
-+	ret = kstrtoint(buf, 10, &node);
-+	if (ret)
-+		return ret;
++	while (target) {
++		weight = pol->il_weights[nid];
++		if (target < weight)
++			break;
++		target -= weight;
++		nid = next_node_in(nid, nodemask);
++	}
+ 	return nid;
+ }
+ 
+@@ -2319,32 +2366,82 @@ static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
+ 		struct mempolicy *pol, unsigned long nr_pages,
+ 		struct page **page_array)
+ {
+-	int nodes;
+-	unsigned long nr_pages_per_node;
+-	int delta;
+-	int i;
+-	unsigned long nr_allocated;
++	struct task_struct *me = current;
+ 	unsigned long total_allocated = 0;
++	unsigned long nr_allocated;
++	unsigned long rounds;
++	unsigned long node_pages, delta;
++	unsigned char weight;
++	unsigned long il_weight;
++	unsigned long req_pages = nr_pages;
++	int nnodes, node, prev_node;
++	int i;
+ 
+-	nodes = nodes_weight(pol->nodes);
+-	nr_pages_per_node = nr_pages / nodes;
+-	delta = nr_pages - nodes * nr_pages_per_node;
+-
+-	for (i = 0; i < nodes; i++) {
+-		if (delta) {
+-			nr_allocated = __alloc_pages_bulk(gfp,
+-					interleave_nodes(pol), NULL,
+-					nr_pages_per_node + 1, NULL,
+-					page_array);
+-			delta--;
+-		} else {
+-			nr_allocated = __alloc_pages_bulk(gfp,
+-					interleave_nodes(pol), NULL,
+-					nr_pages_per_node, NULL, page_array);
++	prev_node = me->il_prev;
++	nnodes = nodes_weight(pol->nodes);
++	/* Continue allocating from most recent node */
++	if (pol->cur_weight) {
++		node = next_node_in(prev_node, pol->nodes);
++		node_pages = pol->cur_weight;
++		if (node_pages > nr_pages)
++			node_pages = nr_pages;
++		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
++						  NULL, page_array);
++		page_array += nr_allocated;
++		total_allocated += nr_allocated;
++		/* if that's all the pages, no need to interleave */
++		if (req_pages <= pol->cur_weight) {
++			pol->cur_weight -= req_pages;
++			return total_allocated;
+ 		}
+-
++		/* Otherwise we adjust req_pages down, and continue from there */
++		req_pages -= pol->cur_weight;
++		pol->cur_weight = 0;
++		prev_node = node;
++	}
 +
-+	ret = kstrtou8(sep + 1, 10, &weight);
-+	if (ret)
-+		return ret;
++	il_weight = mempolicy_get_il_weights(pol, &pol->nodes,
++					     pol->il_weights);
++	rounds = req_pages / il_weight;
++	delta = req_pages % il_weight;
++	for (i = 0; i < nnodes; i++) {
++		node = next_node_in(prev_node, pol->nodes);
++		weight = pol->il_weights[node];
++		node_pages = weight * rounds;
++		if (delta > weight) {
++			node_pages += weight;
++			delta -= weight;
++		} else if (delta) {
++			node_pages += delta;
++			delta = 0;
++		}
++		/* The number of requested pages may not hit every node */
++		if (!node_pages)
++			break;
++		/* If an over-allocation would occur, floor it */
++		if (node_pages + total_allocated > nr_pages) {
++			node_pages = nr_pages - total_allocated;
++			delta = 0;
++		}
++		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
++						  NULL, page_array);
+ 		page_array += nr_allocated;
+ 		total_allocated += nr_allocated;
++		prev_node = node;
++	}
 +
 +	/*
-+	 * if value is -1:0, clear weights and set pointer to NULL
-+	 * this allows the parent cgroup settings to take over
++	 * Finally, we need to update me->il_prev and pol->cur_weight
++	 * If the last node allocated on has un-used weight, apply
++	 * the remainder as the cur_weight, otherwise proceed to next node
 +	 */
-+	if (node == -1 && weight == 0)
-+		goto set_weights;
-+	else if (node < 0)
-+		return -EINVAL;
-+	else if (node >= MAX_NUMNODES || weight == 0)
-+		return -EINVAL;
-+
-+	new_weights = kzalloc(sizeof(unsigned char)*MAX_NUMNODES, GFP_KERNEL);
-+	if (!new_weights)
-+		return -ENOMEM;
-+set_weights:
-+	/* acquire mutex and readlock so we can read from parents if needed */
-+	mutex_lock(&memcg->mempolicy_lock);
-+	rcu_read_lock();
-+	old_weights = rcu_dereference(memcg->mempolicy.il_weights);
-+
-+	/* If we're clearing the weights, don't bother looking at old ones */
-+	if (!new_weights)
-+		goto swap_weights;
-+
-+	/* Check for parent weights to inherit */
-+	pmcg = memcg;
-+	while (!old_weights) {
-+		pmcg = parent_mem_cgroup(pmcg);
-+
-+		if (!pmcg || mem_cgroup_is_root(pmcg))
-+			break;
-+		old_weights = rcu_dereference(pmcg->mempolicy.il_weights);
-+		parent_weights = true;
-+	}
-+
-+	/* Copy the old weights or default all nodes to 1 */
-+	if (old_weights)
-+		memcpy(new_weights, old_weights,
-+		       sizeof(unsigned char)*MAX_NUMNODES);
-+	else
-+		memset(new_weights, 1,
-+		       sizeof(unsigned char)*MAX_NUMNODES);
-+	new_weights[node] = weight;
-+
-+swap_weights:
-+	rcu_assign_pointer(memcg->mempolicy.il_weights, new_weights);
-+
-+	rcu_read_unlock();
-+	synchronize_rcu();
-+
-+	/* If we are inheriting weights from the parent, do not free */
-+	if (old_weights && !parent_weights)
-+		kfree(old_weights);
-+
-+	mutex_unlock(&memcg->mempolicy_lock);
-+
-+	return nbytes;
-+}
-+
-+static struct cftype mempolicy_files[] = {
-+	{
-+		.name = "interleave_weights",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = mpol_ilw_show,
-+		.write = mpol_ilw_write,
-+	},
-+	{ }	/* terminate */
-+};
-+
- static int __init mem_cgroup_swap_init(void)
- {
- 	if (mem_cgroup_disabled())
-@@ -7906,6 +8077,7 @@ static int __init mem_cgroup_swap_init(void)
- #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
- 	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, zswap_files));
- #endif
-+	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, mempolicy_files));
- 	return 0;
- }
- subsys_initcall(mem_cgroup_swap_init);
++	if (node_pages) {
++		me->il_prev = prev_node;
++		node_pages %= weight;
++		pol->cur_weight = weight - node_pages;
++	} else {
++		me->il_prev = node;
++		pol->cur_weight = 0;
+ 	}
+ 
+ 	return total_allocated;
 -- 
 2.39.1
 
