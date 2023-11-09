@@ -1,107 +1,108 @@
-Return-Path: <cgroups+bounces-296-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-297-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53DA7E73A8
-	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 22:36:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63CEB7E748C
+	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 23:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42646B20F21
-	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 21:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D14328174D
+	for <lists+cgroups@lfdr.de>; Thu,  9 Nov 2023 22:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB8BA38DE6;
-	Thu,  9 Nov 2023 21:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C44830CE4;
+	Thu,  9 Nov 2023 22:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OqMAEtXx"
+	dkim=pass (1024-bit key) header.d=jagalactic.com header.i=@jagalactic.com header.b="cZ/ibDnC";
+	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="EsAaX7IC"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4887738DDE;
-	Thu,  9 Nov 2023 21:36:27 +0000 (UTC)
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BA83C30;
-	Thu,  9 Nov 2023 13:36:26 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6be0277c05bso1313175b3a.0;
-        Thu, 09 Nov 2023 13:36:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699565786; x=1700170586; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HvWGeAzGUIZytQg+FG+y9b06sq8rOCVnBwaDbkRKajQ=;
-        b=OqMAEtXxQN2t1RJq4kJyDzFspCS8UyUowVk4uCdXDGepO5LvqoLjHcCgTQKNqI2a2r
-         5Grf1BP3+P/qPGcKe+ZgiEougdNbphcpO342QGnfHGPKJ5OqWeVM8+lXi8CgcNfdKoFw
-         AXOx7Er84k8YhChJiJLZIYFGqAPoC2m5dgdnCs0kWllMwprJ7MNWSj2iCVJK6t9091IQ
-         RUKuggAaStSQeJv86WhPccqbyme8UebsSq3x2BARlwtur53wHET+YRKSXsDo4qeizLgZ
-         7UPaBbF1obfZno5wPDBNroZygTT2gNefmwL3gVdpNinyn+6BczciD/cbq1AQz5un6jhI
-         hO2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699565786; x=1700170586;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HvWGeAzGUIZytQg+FG+y9b06sq8rOCVnBwaDbkRKajQ=;
-        b=gCKn6j26uTMh+RhQGast4/r1hzH7Tzkputnoginy2v1zdkYiPQDeSWlhb9GQh3Hha1
-         xbFYscOsHwReqEnWoodvHqg8LJARbK7sVUULR3JR8Gfkmu2FtPkGHDCEueJO9BWbm+fu
-         CPTWdUBk4GmT4x5TEMFsWLCQKGpK/F6qO2fwG7CSvX72r2NSlkoP5ncSxtgBy1GOQbVj
-         4e3KvLeBDlDTiYNksjp8DypSOzN5ACtmynQPAvJevSIZiRyHq5y77lMn5BkmdWyea71Q
-         PlmSGPlwZ7RsCBPRi1tYAgn+fJx6SsZk5LEVlKDm3JzYJinIo5x5oFfS38XQFiTBw7rs
-         IaPA==
-X-Gm-Message-State: AOJu0YzXxFbS7U8zVfvB33UMhF1qYhiK41JhvcUMOzY9vxe6a6UpeilG
-	WHrtF3bYfp06xMEDx45niKIbUhbXrE0=
-X-Google-Smtp-Source: AGHT+IFnNtLJyHcVB4yZ7UgwomkMbSJZ3E9d/YfEwgLH3dH9O3tN0hWa7aMej1XbeQHL1FyALqByjg==
-X-Received: by 2002:a05:6a00:2395:b0:6c2:cb9a:885a with SMTP id f21-20020a056a00239500b006c2cb9a885amr6171072pfc.27.1699565786062;
-        Thu, 09 Nov 2023 13:36:26 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:7384])
-        by smtp.gmail.com with ESMTPSA id v4-20020aa78084000000b006be7d407a11sm11543131pff.178.2023.11.09.13.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 13:36:25 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 9 Nov 2023 11:36:24 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
-	sinquersw@gmail.com, longman@redhat.com, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org, oliver.sang@intel.com
-Subject: Re: [PATCH v3 bpf-next 00/11] bpf, cgroup: Add BPF support for
- cgroup1 hierarchy
-Message-ID: <ZU1Q2CEGwbGNxJNy@slm.duckdns.org>
-References: <20231029061438.4215-1-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF58A1DFD2;
+	Thu,  9 Nov 2023 22:48:58 +0000 (UTC)
+Received: from a11-78.smtp-out.amazonses.com (a11-78.smtp-out.amazonses.com [54.240.11.78])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B100270B;
+	Thu,  9 Nov 2023 14:48:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=rjayupzefgi7e6fmzxcxe4cv4arrjs35; d=jagalactic.com; t=1699570137;
+	h=Subject:From:To:Cc:Date:Mime-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References:Message-Id;
+	bh=DNowovoqUNyWgLnq9TXYc0zwtLagxb8oRoqdHwSh+pY=;
+	b=cZ/ibDnCX+StsikroCheBC1n/eOgWRIHC8pXdYkfbcWrzTKF53R+KZ1uw2V73wl/
+	G3j1vuSo/F/6pMAMmk0G0zHWC7A77uvQsFGWP6UxjtJURH63VhAxWU5dM0aeg2voSrg
+	h4KRNw3rAAceh6usv5KUGW1Qhc3Negqe3SPz8Jgg=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1699570137;
+	h=Subject:From:To:Cc:Date:Mime-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References:Message-Id:Feedback-ID;
+	bh=DNowovoqUNyWgLnq9TXYc0zwtLagxb8oRoqdHwSh+pY=;
+	b=EsAaX7ICLKVu1kM4o2uHclVGJcN15o4scv9IbAIJP+9WfAJPpfmemlOC0AaLxvVp
+	Xm2oDFqiIwNnoJZpNTjP+UZspdlQp/IE6lcd/krk9bbd5poMiGfHiIdMsIP9Pv06s/e
+	jZ1LxHgubNUELcTFpDl18lIsmmJwUmP9KP0HZaSw=
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+From: =?UTF-8?Q?John_Groves?= <john@jagalactic.com>
+To: =?UTF-8?Q?Gregory_Price?= <gourry.memverge@gmail.com>
+Cc: 
+	=?UTF-8?Q?linux-kernel=40vger=2Ekernel=2Eorg?= <linux-kernel@vger.kernel.org>, 
+	=?UTF-8?Q?linux-cxl=40vger=2Ekernel=2E?= =?UTF-8?Q?org?= <linux-cxl@vger.kernel.org>, 
+	=?UTF-8?Q?linux-mm=40kvack=2E?= =?UTF-8?Q?org?= <linux-mm@kvack.org>, 
+	=?UTF-8?Q?cgroups=40vger=2Ekernel=2E?= =?UTF-8?Q?org?= <cgroups@vger.kernel.org>, 
+	=?UTF-8?Q?linux-doc=40vger=2Ek?= =?UTF-8?Q?ernel=2Eorg?= <linux-doc@vger.kernel.org>, 
+	=?UTF-8?Q?ying=2Ehuang=40intel=2Ecom?= <ying.huang@intel.com>, 
+	=?UTF-8?Q?akpm=40linux-foundation=2Eorg?= <akpm@linux-foundation.org>, 
+	=?UTF-8?Q?mhocko=40kernel=2Eorg?= <mhocko@kernel.org>, 
+	=?UTF-8?Q?tj=40kernel=2Eorg?= <tj@kernel.org>, 
+	=?UTF-8?Q?lizefan=2Ex=40by?= =?UTF-8?Q?tedance=2Ecom?= <lizefan.x@bytedance.com>, 
+	=?UTF-8?Q?hannes=40cmpxchg=2Eorg?= <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?corbet=40lwn=2Enet?= <corbet@lwn.net>, 
+	=?UTF-8?Q?roman=2Egushch?= =?UTF-8?Q?in=40linux=2Edev?= <roman.gushchin@linux.dev>, 
+	=?UTF-8?Q?shakeelb=40google=2Ecom?= <shakeelb@google.com>, 
+	=?UTF-8?Q?muchun=2Esong=40linux=2Edev?= <muchun.song@linux.dev>, 
+	=?UTF-8?Q?Gregory_Price?= <gregory.price@memverge.com>, 
+	=?UTF-8?Q?jgroves=40micron=2Ecom?= <jgroves@micron.com>
+Date: Thu, 9 Nov 2023 22:48:56 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231029061438.4215-1-laoar.shao@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20231109002517.106829-1-gregory.price@memverge.com>
+References: <20231109002517.106829-1-gregory.price@memverge.com> 
+ <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
+X-Mailer: Amazon WorkMail
+Thread-Index: AQHaEqNA+ibc3vlFQhCfYQcHLvgUcQAu6sWO
+Thread-Topic: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+X-Wm-Sent-Timestamp: 1699570135
+Message-ID: <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
+Feedback-ID: 1.us-east-1.LF00NED762KFuBsfzrtoqw+Brn/qlF9OYdxWukAhsl8=:AmazonSES
+X-SES-Outgoing: 2023.11.09-54.240.11.78
 
-Hello,
+On 23/11/08 07:25PM, Gregory Price wrote:
+> This patchset implements weighted interleave and adds a new cgroup
+> sysfs entry: cgroup/memory.interleave_weights (excluded from root).
+ 
+<snip>
 
-On Sun, Oct 29, 2023 at 06:14:27AM +0000, Yafang Shao wrote:
-> - [bpf_]task_get_cgroup1
->   Acquires the associated cgroup of a task within a specific cgroup1
->   hierarchy. The cgroup1 hierarchy is identified by its hierarchy ID.
-> 
-> This new kfunc enables the tracing of tasks within a designated container
-> or its ancestor cgroup directory in BPF programs. Additionally, it is
-> capable of operating on named cgroups, providing valuable utility for
-> hybrid cgroup mode scenarios.
+We at Micron think this capability is really important, and moving it into
+cgroups introduces important flexibility that was missing from prior versions
+of the patchset.
 
-Sans minor nits, the whole series looks good to me. I can take the cgroup
-prep patches through cgroup tree but it's also fine to route them through
-the bpf tree with the rest of the series. Please let me know how folks want
-to route the series once the minor issues are addressed.
+To me this mainly represents the antidote to having system bios programming
+the memory map to be heterogeneously interleaved - which I expect will be
+an option, and some customers seem to want it. But that approach will affect
+all apps (and also the kernel), and will hide at least the interleaved
+numa nodes from Linux' view of the topology. There is a lot not to like
+about that approach...
 
-Thanks.
+This approach checks all the important boxes: it only applies to apps where
+it's enabled, the weighting can vary from one app to another, the
+kernel is not affected, and the numa topology is not buried.
 
--- 
-tejun
+I see Michal's comment about cpuset vs. memory, and have no opinion there.
+
+Thumbs up!
+John Groves at Micron
+
 
