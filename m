@@ -1,140 +1,130 @@
-Return-Path: <cgroups+bounces-314-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-315-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311D37E79D9
-	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 08:48:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A59FF7E7A07
+	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 09:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0C8B2816C2
-	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 07:48:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A46DB20F8B
+	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 08:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392AD6FCF;
-	Fri, 10 Nov 2023 07:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D12CA76;
+	Fri, 10 Nov 2023 08:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nT7U2WSn"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="UY7Y5Wk4"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FB97475;
-	Fri, 10 Nov 2023 07:48:45 +0000 (UTC)
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510B686B5;
-	Thu,  9 Nov 2023 23:48:44 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77784edc2edso111737385a.1;
-        Thu, 09 Nov 2023 23:48:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699602523; x=1700207323; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XBs5XjzxU2sBS4BsqeDFs9m90FmLyMBVXgRR9cjPdGc=;
-        b=nT7U2WSn2tzru0Wc5UyyOr0s3ff/5xnVDxhTNFDpYvNgZIJ7teX8NFVF01RoXZ/e7P
-         6zMJHr5oVBmpZ+7WZ5rdgrSaTVTSGhuOE9TU5tM+DColzu7+AZ23Y1npUGRnUkYJUYT+
-         Z7alvFKg4NtKtZuhk3d6GWKeMqpZU4fy7lQZ07aHJsLsnp8MIFUjB+g3299VpGo7phpI
-         jqXfPlSiz/mvPNhmrp8Y2jFreN7T2NLbqRTvPuGMb5mN0+fnVRPBewSt0TtdqbW5VZQE
-         o7kMv0vsxB5hvoXl+24oRA5FweB4n9cjjur4jj88TLhnQuEGBh22mB0LKLfu1pAGNfFG
-         Hmqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699602523; x=1700207323;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XBs5XjzxU2sBS4BsqeDFs9m90FmLyMBVXgRR9cjPdGc=;
-        b=bfbUtbtIoS1caAnyTI1t8rsIiuQlViv/cFayVuzWDiBnudybSs8MFBY1jcdkxyQka3
-         QQJXLNCgfbte/QZKs+/Wmw+OJS89nn+TOKBF6x+m0WPbG6PmTpRvrQTMHf9zpVTs2ATj
-         GfwUbdkK9BcykUfu+VpnNunQf/lAe0wjVLln5vYald54e3/ut8+wdWKj2R7oQNqc9Hve
-         c0gmeH6IUQ2crNIDCE1CrigtxOhtlV8S/g+TRjCQh8QFxRk6wnVq+4ftPW6FeDuEqTF1
-         gQ+oNBNz0mzoaEZOczCYrvcyQciCbrzpp0dGkslFHR+6mLR1PQKoPNMNH7DrvwQFUte2
-         6EmA==
-X-Gm-Message-State: AOJu0YxWVaRqbQF5ty1keRyP04aUM7L8wHKGI7HHg1I2ZkXS++kDCICH
-	cLxJMU1vMDIPX0hSIBsXbPBGsAhJ2D8TrWAc+vg=
-X-Google-Smtp-Source: AGHT+IEOrSo4jUkkbutzn8ChlRAscLYR8uTnBFs2NBoHAKPKV/5D3Qijj4V/8zCCdxsQSMxSi6kq3sUkPjhdq2x9dGk=
-X-Received: by 2002:a05:6214:d0d:b0:66f:b89e:71de with SMTP id
- 13-20020a0562140d0d00b0066fb89e71demr7409106qvh.36.1699602523394; Thu, 09 Nov
- 2023 23:48:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891A179FF;
+	Fri, 10 Nov 2023 08:20:57 +0000 (UTC)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5397393E6;
+	Fri, 10 Nov 2023 00:20:55 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id C72DF10003B;
+	Fri, 10 Nov 2023 11:20:52 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C72DF10003B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1699604452;
+	bh=Oweu6l6Z4jWuzzNHij8vYKz5YVa1JDBrSEKBFwN/6S4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=UY7Y5Wk4GHCGcEQUUQE2WdmhIHDPom2duH05o1m+Q7gyoFHBfHkREhNqCnSQHHQtk
+	 p6cLxKvF2S/BcojkkX1fxTXRImVQnIUDDlkf8Hmgf/EM8DTPWvEkZ9NHLqIc85z6pJ
+	 2QHsGajmLacooJhKDsYwO7sAfuojvxRhfsfXMRy45VAduZZdnhdzOhKe9XGNDRhGja
+	 Y+V4rbLywmPcFnzQYZw4AjVkAtd2hO0eBA2yw2AImmlGpLZQYbk7eom0ubrDsFhjHS
+	 xyiqtRsqHUH/eL3EO46hcS5wGhffvmRJagpU/ff/D64FqK8Ar3UEOpV1GeFAXTWhDs
+	 HXAqreeP411KQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri, 10 Nov 2023 11:20:52 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 10 Nov 2023 11:20:52 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+	<shakeelb@google.com>, <muchun.song@linux.dev>, <akpm@linux-foundation.org>
+CC: <kernel@sberdevices.ru>, <rockosov@gmail.com>, <cgroups@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v2 0/3] samples: introduce cgroup events listeners
+Date: Fri, 10 Nov 2023 11:20:42 +0300
+Message-ID: <20231110082045.19407-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202311031651.A7crZEur-lkp@intel.com> <20231106031802.4188-1-laoar.shao@gmail.com>
- <CAADnVQLDOEPmDyipHOH0E6QSg4aJtcHcfghoAQmQtROAMd=imQ@mail.gmail.com> <98fe8917-9054-4a46-a777-613d8c640d36@app.fastmail.com>
-In-Reply-To: <98fe8917-9054-4a46-a777-613d8c640d36@app.fastmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 10 Nov 2023 15:48:07 +0800
-Message-ID: <CALOAHbBFE85shrceCtXDu_isOFNHfcP_2eoHVXct3RwOdfrVbA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] compiler-gcc: Suppress -Wmissing-prototypes
- warning for all supported GCC
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, kernel test robot <lkp@intel.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Waiman Long <longman@redhat.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	oe-kbuild-all@lists.linux.dev, kernel test robot <oliver.sang@intel.com>, 
-	Stanislav Fomichev <sdf@google.com>, Kui-Feng Lee <sinquersw@gmail.com>, Song Liu <song@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	Yosry Ahmed <yosryahmed@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181265 [Nov 10 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/10 06:25:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/10 06:25:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/10 05:52:00 #22426579
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Fri, Nov 10, 2023 at 2:35=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
-:
->
-> On Thu, Nov 9, 2023, at 19:23, Alexei Starovoitov wrote:
-> > On Sun, Nov 5, 2023 at 7:18=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
-m> wrote:
-> >> In the future, if you wish to suppress warnings that are only supporte=
-d on
-> >> higher GCC versions, it is advisable to explicitly use "__diag_ignore"=
- to
-> >> specify the GCC version you are targeting.
-> >>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lk=
-p@intel.com/
-> >> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> >> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> >> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> >> Cc: Arnd Bergmann <arnd@arndb.de>
-> >> ---
-> >>  include/linux/compiler-gcc.h | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc=
-.h
-> >> index 7af9e34..80918bd 100644
-> >> --- a/include/linux/compiler-gcc.h
-> >> +++ b/include/linux/compiler-gcc.h
-> >> @@ -138,7 +138,7 @@
-> >>  #endif
-> >>
-> >>  #define __diag_ignore_all(option, comment) \
-> >> -       __diag_GCC(8, ignore, option)
-> >> +       __diag(__diag_GCC_ignore option)
-> >
-> > Arnd,
-> > does this look good to you?
->
-> Yes, this is good. We could do the same thing for
-> clang already, but it doesn't make a huge difference.
+To begin with, this patch series relocates the cgroup example code to
+the samples/cgroup directory, which is the appropriate location for such
+code snippets.
 
-The Minimum Clang version is 11.0.0, so I think we don't have to
-change compiler-clang.h.
+Furthermore, a new cgroup v2 events listener is introduced. This
+listener is a simple yet effective tool for monitoring memory events and
+managing counter changes during runtime.
 
->
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+Additionally, as per Andrew Morton's suggestion, a helpful reminder
+comment is included in the memcontrol implementation. This comment
+serves to ensure that the samples code is updated whenever new events
+are added.
 
-Thanks for your review.
+Changes v2 since v1 at [1]:
+    - create new samples subdir - cgroup
+    - move cgroup_event_listener for cgroup v1 to samples/cgroup
+    - add a reminder comment to memcontrol implementation
 
---=20
-Regards
-Yafang
+Links:
+    [1] - https://lore.kernel.org/all/20231013184107.28734-1-ddrokosov@salutedevices.com/
+
+Dmitry Rokosov (3):
+  samples: introduce new samples subdir for cgroup
+  samples/cgroup: introduce cgroup v2 memory.events listener
+  mm: memcg: add reminder comment for the memcg v2 events
+
+ MAINTAINERS                                   |   1 +
+ mm/memcontrol.c                               |   4 +
+ samples/Kconfig                               |   6 +
+ samples/Makefile                              |   1 +
+ samples/cgroup/Makefile                       |   5 +
+ .../cgroup/cgroup_event_listener.c            |   0
+ samples/cgroup/cgroup_v2_event_listener.c     | 330 ++++++++++++++++++
+ tools/cgroup/Makefile                         |  11 -
+ 8 files changed, 347 insertions(+), 11 deletions(-)
+ create mode 100644 samples/cgroup/Makefile
+ rename {tools => samples}/cgroup/cgroup_event_listener.c (100%)
+ create mode 100644 samples/cgroup/cgroup_v2_event_listener.c
+ delete mode 100644 tools/cgroup/Makefile
+
+-- 
+2.36.0
+
 
