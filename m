@@ -1,168 +1,163 @@
-Return-Path: <cgroups+bounces-303-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-304-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D0A7E7676
-	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 02:21:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEBC07E7683
+	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 02:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3179BB20B89
-	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 01:21:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761471F20A9D
+	for <lists+cgroups@lfdr.de>; Fri, 10 Nov 2023 01:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C9A7F1;
-	Fri, 10 Nov 2023 01:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FAF643;
+	Fri, 10 Nov 2023 01:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a1SpVoq9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ni7ai99x"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096847E6;
-	Fri, 10 Nov 2023 01:21:10 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2CA4228;
-	Thu,  9 Nov 2023 17:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699579270; x=1731115270;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=oSLgzdqqUi7SDhMmhRVGvgJyNjx+NqyiNkbZfvYhL7w=;
-  b=a1SpVoq9PGXDVS8WxW6cFdUwYTPuusuIEB4TkT1hFrakA+0Gb8H9KDWk
-   Q8/qBYiHEVEoebYiP9QCuOSEkeUalXdyoleAJfI475EMzdc98HloQpKJz
-   k6lTChnBFt91wJsD6iI+OKs2qnVMlfQcJdzcquI9bSqiOFtHyN69CrT7H
-   28monfGGSj1yJUUYwqumJvgDXASHv7K5cO1W84kA9q+/mUUNxp9Dj3Nlg
-   KvuNvRpbJMyeK7xeulJFpMFkwBIAD3r2nf3J8H0aC/seWnNrahra7vwvr
-   Izj07sZj+phlVlsOftBthg9gQ/SvD20mYSQzRW29pB0arK4MBXd+S6sZz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="476339535"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="476339535"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:21:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="763611091"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="763611091"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:21:03 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Huan Yang <link@vivo.com>
-Cc: Michal Hocko <mhocko@suse.com>,  Tejun Heo <tj@kernel.org>,  Zefan Li
- <lizefan.x@bytedance.com>,  Johannes Weiner <hannes@cmpxchg.org>,
-  "Jonathan Corbet" <corbet@lwn.net>,  Roman Gushchin
- <roman.gushchin@linux.dev>,  "Shakeel Butt" <shakeelb@google.com>,  Muchun
- Song <muchun.song@linux.dev>,  "Andrew Morton"
- <akpm@linux-foundation.org>,  David Hildenbrand <david@redhat.com>,
-  Matthew Wilcox <willy@infradead.org>,  Kefeng Wang
- <wangkefeng.wang@huawei.com>,  Peter Xu <peterx@redhat.com>,  "Vishal
- Moola (Oracle)" <vishal.moola@gmail.com>,  Yosry Ahmed
- <yosryahmed@google.com>,  "Liu Shixin" <liushixin2@huawei.com>,  Hugh
- Dickins <hughd@google.com>,  <cgroups@vger.kernel.org>,
-  <linux-doc@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
-  <linux-mm@kvack.org>,  <opensource.kernel@vivo.com>
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-In-Reply-To: <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com> (Huan Yang's
-	message of "Thu, 9 Nov 2023 18:50:36 +0800")
-References: <20231108065818.19932-1-link@vivo.com>
-	<ZUuV9xOZ5k7Ia_V2@tiehlicka>
-	<ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
-	<87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com>
-	<ZUytB5lSwxeKkBW8@tiehlicka>
-	<6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
-	<ZUy2-vrqDq7URzb6@tiehlicka>
-	<e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
-Date: Fri, 10 Nov 2023 09:19:02 +0800
-Message-ID: <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788F1A4E
+	for <cgroups@vger.kernel.org>; Fri, 10 Nov 2023 01:25:04 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E459A44B9
+	for <cgroups@vger.kernel.org>; Thu,  9 Nov 2023 17:25:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699579503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VOeaU4ehAGD9H3QjwT3Yo8UQTF0ixUxWvh3B6xsGYO0=;
+	b=Ni7ai99xsXHiCv38jWyjk/sBlOLfyCP8YZXm6CwTdTZxbf8euNtcnNqo3DY4GkuCmm/0se
+	8sTfT0e4f2d7pZFL2WZhKBP4rm5tPSbjxBP7p957nQMbSV5BBWVL6d+Vw/9MKejJSmd3IS
+	ep5MUVFrHNyAw+8sODsUJHvKOICUY10=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-lbsk-TDLMKGmNmB1vvx0GQ-1; Thu, 09 Nov 2023 20:24:56 -0500
+X-MC-Unique: lbsk-TDLMKGmNmB1vvx0GQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D7FB185A780;
+	Fri, 10 Nov 2023 01:24:55 +0000 (UTC)
+Received: from [10.22.10.178] (unknown [10.22.10.178])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5F3362166B26;
+	Fri, 10 Nov 2023 01:24:54 +0000 (UTC)
+Message-ID: <21ebd168-8b3f-0efc-20f1-89173e79eaed@redhat.com>
+Date: Thu, 9 Nov 2023 20:24:54 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 0/4] cgroup/cpuset: Improve CPU isolation in isolated
+ partitions
+Content-Language: en-US
+To: "Zhang, Rui" <rui.zhang@intel.com>, "shuah@kernel.org"
+ <shuah@kernel.org>, "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+ "hannes@cmpxchg.org" <hannes@cmpxchg.org>, "tj@kernel.org" <tj@kernel.org>,
+ "corbet@lwn.net" <corbet@lwn.net>,
+ "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
+Cc: "pehunt@redhat.com" <pehunt@redhat.com>,
+ "frederic@kernel.org" <frederic@kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20231025182555.4155614-1-longman@redhat.com>
+ <98bea19ca5eb5c19ef0ea55f5167237cc841fe9b.camel@intel.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <98bea19ca5eb5c19ef0ea55f5167237cc841fe9b.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Huan Yang <link@vivo.com> writes:
+On 11/9/23 04:02, Zhang, Rui wrote:
+> Hi, Waiman,
+>
+> May I know which kernel this patch series is based on?
+>
+> I'd like to test this feature, but cannot apply it cleanly on top of
+> v6.6.
 
-> =E5=9C=A8 2023/11/9 18:39, Michal Hocko =E5=86=99=E9=81=93:
->> [Some people who received this message don't often get email from mhocko=
-@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderId=
-entification ]
+It was originally based on the cgroup/for-6.7 branch. It should be 
+applicable to v6.7 kernel now.
+
+Cheers,
+Longman
+
+> thanks,
+> rui
+>
+> On Wed, 2023-10-25 at 14:25 -0400, Waiman Long wrote:
+>> v2:
+>>   - Add 2 read-only workqueue sysfs files to expose the user requested
+>>     cpumask as well as the isolated CPUs to be excluded from
+>>     wq_unbound_cpumask.
+>>   - Ensure that caller of the new workqueue_unbound_exclude_cpumask()
+>>     hold cpus_read_lock.
+>>   - Update the cpuset code to make sure the cpus_read_lock is held
+>>     whenever workqueue_unbound_exclude_cpumask() may be called.
 >>
->> On Thu 09-11-23 18:29:03, Huan Yang wrote:
->>> HI Michal Hocko,
->>>
->>> Thanks for your suggestion.
->>>
->>> =E5=9C=A8 2023/11/9 17:57, Michal Hocko =E5=86=99=E9=81=93:
->>>> [Some people who received this message don't often get email from mhoc=
-ko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSender=
-Identification ]
->>>>
->>>> On Thu 09-11-23 11:38:56, Huan Yang wrote:
->>>> [...]
->>>>>> If so, is it better only to reclaim private anonymous pages explicit=
-ly?
->>>>> Yes, in practice, we only proactively compress anonymous pages and do=
- not
->>>>> want to touch file pages.
->>>> If that is the case and this is mostly application centric (which you
->>>> seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
->>>> instead.
->>> Madvise  may not be applicable in this scenario.(IMO)
->>>
->>> This feature is aimed at a core goal, which is to compress the anonymous
->>> pages
->>> of frozen applications.
->>>
->>> How to detect that an application is frozen and determine which pages c=
-an be
->>> safely reclaimed is the responsibility of the policy part.
->>>
->>> Setting madvise for an application is an active behavior, while the abo=
-ve
->>> policy
->>> is a passive approach.(If I misunderstood, please let me know if there =
-is a
->>> better
->>> way to set madvise.)
->> You are proposing an extension to the pro-active reclaim interface so
->> this is an active behavior pretty much by definition. So I am really not
->> following you here. Your agent can simply scan the address space of the
->> application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOUT)
->> on the private memory is that is really what you want/need.
-> There is a key point here. We want to use the grouping policy of memcg
-> to perform
-> proactive reclamation with certain tendencies. Your suggestion is to
-> reclaim memory
-> by scanning the task process space. However, in the mobile field,
-> memory is usually
-> viewed at the granularity of an APP.
->
-> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
-> according
-> to the pre-grouped APP processes.
->
-> Of course, as you suggested, madvise can also achieve this, but
-> implementing it in
-> the agent may be more complex.(In terms of achieving the same goal,
-> using memcg
-> to group all the processes of an APP and perform proactive reclamation
-> is simpler
-> than using madvise and scanning multiple processes of an application
-> using an agent?)
+>> Isolated cpuset partition can currently be created to contain an
+>> exclusive set of CPUs not used in other cgroups and with load
+>> balancing
+>> disabled to reduce interference from the scheduler.
+>>
+>> The main purpose of this isolated partition type is to dynamically
+>> emulate what can be done via the "isolcpus" boot command line option,
+>> specifically the default domain flag. One effect of the "isolcpus"
+>> option
+>> is to remove the isolated CPUs from the cpumasks of unbound
+>> workqueues
+>> since running work functions in an isolated CPU can be a major source
+>> of interference. Changing the unbound workqueue cpumasks can be done
+>> at
+>> run time by writing an appropriate cpumask without the isolated CPUs
+>> to
+>> /sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+>> cpuset partition and then write to the cpumask sysfs file to achieve
+>> similar level of CPU isolation. However, this manual process can be
+>> error prone.
+>>
+>> This patch series implements automatic exclusion of isolated CPUs
+>> from
+>> unbound workqueue cpumasks when an isolated cpuset partition is
+>> created
+>> and then adds those CPUs back when the isolated partition is
+>> destroyed.
+>>
+>> There are also other places in the kernel that look at the
+>> HK_FLAG_DOMAIN
+>> cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs
+>> from
+>> certain actions to further reduce interference. CPUs in an isolated
+>> cpuset partition will not be able to avoid those interferences yet.
+>> That
+>> may change in the future as the need arises.
+>>
+>> Waiman Long (4):
+>>    workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+>>      from wq_unbound_cpumask
+>>    selftests/cgroup: Minor code cleanup and reorganization of
+>>      test_cpuset_prs.sh
+>>    cgroup/cpuset: Keep track of CPUs in isolated partitions
+>>    cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
+>>
+>>   Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+>>   include/linux/workqueue.h                     |   2 +-
+>>   kernel/cgroup/cpuset.c                        | 286 +++++++++++++---
+>> --
+>>   kernel/workqueue.c                            |  91 +++++-
+>>   .../selftests/cgroup/test_cpuset_prs.sh       | 216 ++++++++-----
+>>   5 files changed, 438 insertions(+), 167 deletions(-)
+>>
 
-I still think that it's not too complex to use process_madvise() to do
-this.  For each process of the application, the agent can read
-/proc/PID/maps to get all anonymous address ranges, then call
-process_madvise(MADV_PAGEOUT) to reclaim pages.  This can even filter
-out shared anonymous pages.  Does this work for you?
-
---
-Best Regards,
-Huang, Ying
 
