@@ -1,87 +1,98 @@
-Return-Path: <cgroups+bounces-350-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-351-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04DD77E97A0
-	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 09:26:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDE1E7E97BD
+	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 09:32:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23E3E1C208C2
-	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 08:26:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE7DF1C20895
+	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 08:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B5F15AE3;
-	Mon, 13 Nov 2023 08:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BA515AE1;
+	Mon, 13 Nov 2023 08:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="FcrBDDGD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BibegijC"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB20125DE;
-	Mon, 13 Nov 2023 08:26:14 +0000 (UTC)
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2099.outbound.protection.outlook.com [40.107.215.99])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425CA10F0;
-	Mon, 13 Nov 2023 00:26:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6CB1799A;
+	Mon, 13 Nov 2023 08:31:57 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C7510F5;
+	Mon, 13 Nov 2023 00:31:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699864313; x=1731400313;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hZzR1pT7d3GB/JdxyWr/kwp/ZwUZ5OQN+RNJJgrimIU=;
+  b=BibegijCD11Wo4UY55fO6V+YFs75oS4SkkKOHwasQoh3Ta6/oTjm6OFG
+   XQWPRJpyWQsSix7pxFnNyh1s8LvjVjMxKxcnHpQR5iQXGK7288Q6QF9+4
+   5FCduB9y3kxmsyyJYz+6xnyBUiSzdwla7iuthNz5RQRHmcOPMK5NS9GiQ
+   6x4/NPRjJ5ykfXMGwhldPtMdqcEdzqkmMVc+QBomLmvZElf26kfB2LCAV
+   sx8gGoO8aUrinJnL+99P6dtfawtP8u0usUrp3hj+SD0zkbRsGu6bnVaiP
+   OWRjbqV70JGa4s5ML2Klq+A+CSfEgOl4ECux5lL99+dk/M7mFjHUvmt59
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="394295942"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="394295942"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:31:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="764273849"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="764273849"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Nov 2023 00:31:49 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 13 Nov 2023 00:31:48 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 13 Nov 2023 00:31:48 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 13 Nov 2023 00:31:48 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YYLZCEVGxIdtb8s1S5JJNmmWXa7ErpUfGGnWZpgJW3nLmqRpDG4y0IfOrfwjdI7uaCsKwgQy4NfE4yPy7ia2SZqXGcxhTmIcXJzJYg4yelcloW8ZtV20sn3v9nHTyWJKhhSsGwovJMt8gh7XZ/o5xGAoWUea9Q2j6Gf4iUN0sq6Zk8JRisb0YKE6y65152cwL378/yVDut/6Vcpto83TW8mEfMXMND6xXPy5KEhMo3zhAE88CBGV8OI4PvHIjTYBAAuFD4Fc7GFMPOPJdQ+QNwP/D0C42s55qHQENweOZib+oaAOGP5qM4KtO+rNYVLkErBoMBdcZFQyApTLmhR9sQ==
+ b=IvG4U1FCd3wfsbaqMYjxxlSHivHtu+DXFsrdnttcI5kCPy5KwJWiVEEHFcmXhh/idlKMQrG8OOgISY8t6vrHp3Q8i5wa6YO0WY8GKpkIm5bB+4vWjzCYKXhxNyK/2goahnMw5TEXv1uaQqf8s8vH42fPCejATKpOX23oZcyvyE9TAToGmBniC5ScTVMmsP5482koQONYsj3JwAxFIdAarEhAGHR6p4aUZqYXYHxT75fXa7aSERx3HGMHRcfNf8L800/Mn1ASKOeFsXmJ3PdOMuawC6ujr9u4AKO5c3S13lK5kHcJ19qLMZ2V8daB41nvgvdRI7XJnkmcUaP2vSBFoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B+ocdH2h34/lEJQHaQ6iBb11BLAxuWRG/Cb2ORL93FQ=;
- b=YyF/ymAihCua8FLeHTXi7pE+YMQ/7Xhx+9vclBIVYCPyMJTzptAGH/xFR96yc0PqGj3IaHMKiVF6uXmsFyKPZPaA8Cy0wM5GF5JKnPHUECKZvsRtwM9b/9Z0wLPvBi1y1uD9n2BJ1E9ls6L2pTRxQbkQAT0+yUfRhxJBUgsPvAmRFnr2krO6uzFzz+6bpYdsYg4xVxb9LEwWe4rISsv4PpsTkDlHHdfzG3zX3n+gi3GiTuE+jFXdEZYRRc83JCh/LmKpOW/zYzrAKsM7cTbuydW+7XNS1aDGW7LCcgHpzyJxN3T8mqF/HXmagSMlkunRVPkfifibDmKoQfv9zg1xwA==
+ bh=oRnVoMsj22my0+ZwhRQo1DLM2E2MjT47XKA4UjkPFDA=;
+ b=oENVTAcfYTg1qktnywELrcS40whls6cUTyFeXAJbI+nCqflaaO6XbVl96Dj+j88Jq3eMEOy/tJJ58S+soY1VHM92TWduamyAWyjPNEQ/e6hzHvxaNP8k1D0TmD+m7jnUplHN2ye6OwPvjbRhp4dr1coXK9ja+Sau2dc1i/pXZ4aCNcNPFTLlh1BvkkNarF6G+dmxrI35RDrL0Ze5+WaN3klvdRP5JoRsEo82fpK4Qui8EO4jft79/qiM/AczVM3R7GV7oC6mV5+FXHy6eAKVFTFUerd33EapwvrtlFLdB4nGtGljCBrGJUIE4H4zi3U4yz8BHb7d5QaJlYVerLmKEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B+ocdH2h34/lEJQHaQ6iBb11BLAxuWRG/Cb2ORL93FQ=;
- b=FcrBDDGDRbfoEg3xLQKciiAMcADVrvDeyELaCYnIH4C9D+j+j7qtnzt9ynl5kLtdh5pAT0RJfUttxpppnaJ+Fb38Ps3A87nOmruSSZNIiscQ4Wtb5bCB414RKJMvVbwaYjnADKR008giMLeR9KuJnUK9gwV5Fcv4wR3VcOV4FIbp/lYNCNObw9tOdCxbE/lEIKbIOszLer5YmD91/pFyNvqslmLizsCBWMLrx5jkur/SevOVQjZcvRepdPgZ9dUVK6FA0hYKSB3BQ3Xi2g6k8Q9xnU5BGcWVPjD1IbyKW8QECCKDjzKMKB7FLCtVe0NruHngQiQwD7O1RltsaEThQQ==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by TYUPR06MB6217.apcprd06.prod.outlook.com (2603:1096:400:358::7) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
+ by PH7PR11MB6907.namprd11.prod.outlook.com (2603:10b6:510:203::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 13 Nov
- 2023 08:26:07 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Mon, 13 Nov 2023
- 08:26:07 +0000
-Message-ID: <97a3dbb3-9e73-4dcc-877d-f491ff47363b@vivo.com>
-Date: Mon, 13 Nov 2023 16:26:00 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Peter Xu <peterx@redhat.com>,
- "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
- Yosry Ahmed <yosryahmed@google.com>, Liu Shixin <liushixin2@huawei.com>,
- Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- opensource.kernel@vivo.com
-References: <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com> <ZUytB5lSwxeKkBW8@tiehlicka>
- <6b539e16-c835-49ff-9fae-a65960567657@vivo.com> <ZUy2-vrqDq7URzb6@tiehlicka>
- <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com> <ZUzTVgK_i05uiHiB@tiehlicka>
- <e07c977f-8c73-4772-b069-527c6ac0ae4f@vivo.com> <ZUziy-6QPdTIDJlm@tiehlicka>
- <f46de374-82a2-467c-8d32-a15b518bff17@vivo.com> <ZU4g9XZvi9mRQD27@tiehlicka>
- <b4694fbf-92df-4067-878e-6035df46582f@vivo.com>
- <87edgufakm.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <a09e21a6-6a1e-44ec-9187-600a0a969a45@vivo.com>
- <87a5rif58s.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Huan Yang <link@vivo.com>
-In-Reply-To: <87a5rif58s.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0182.apcprd04.prod.outlook.com
- (2603:1096:4:14::20) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.28; Mon, 13 Nov
+ 2023 08:31:46 +0000
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::b8:30e8:1502:b2a7]) by PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::b8:30e8:1502:b2a7%4]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
+ 08:31:46 +0000
+Date: Mon, 13 Nov 2023 16:31:38 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Alexey Gladkov <legion@kernel.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+	<cgroups@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: [legion:patchset/meminfo/v2.1] [proc]  8dade3a353:
+ WARNING:suspicious_RCU_usage
+Message-ID: <202311131653.14708bb6-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SI2PR02CA0014.apcprd02.prod.outlook.com
+ (2603:1096:4:194::19) To PH8PR11MB6779.namprd11.prod.outlook.com
+ (2603:10b6:510:1ca::17)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,166 +100,198 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYUPR06MB6217:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7806f315-3d06-41de-5fc2-08dbe4222e9e
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH7PR11MB6907:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b566bb2-6030-4757-0640-08dbe422f8e0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fWvy8nLttpu1N2wPfmCyLD01++XJ0FXelCiBygeMPmBAuKaOLxY0fS5SToTE9iFjrj2KP8Lc+OveLT3T69/egMZUb7U97Jb7b2B82YMtsHu4CMSXFQ1fkAgL4mWMKuG6auT9On1kTY49gj5jSLHm/mtKDnn2L7jlNhLjVKA+NdDgXLiJwn0nxFnLFcSv1WDm/by4TKz4fdCB2O6apmlze9G8B8lp/7fnSaDfP1b2sX28RtXLV/BHewWqwvOIQpxn9VtaSsulZ3LO/6UwyejhGbUZf9rdAxKlKzBEY75ekYiNLFBaUUOT0hdThOUv4ZqX59I+bEdVUKfC2NzsxYsgAy/oZgqqyakCg45K2eqoXAetOwXLNeQspbAXvy7tSReAPKth3jVivSyrzDrBkBgXczFuQGw4kzOeyJykb5a6jRRKrdsBH3u8IE0T88laq5GJOpNm5Ivh1p6SVsCya4X7sT25YzMbClp4+ERJIc29Pj9AmqZFXtHFIqlzBr6tMHTjrLZQO+XksqiFPG0sbpzBxLOhQpUCjw9y0REFqzC5uoPlncTZbWYXyoOs9bKm82SgwCIDdySjZvon563ATD2zZ4WFo/oJ/AgcSj4VhUcqsOG4bZ0Wa2eKLskXlHqQtJ/giiaqGlyd9ruthW9mmV6FxTPGpSUUL/cbG+0RTGnsg5J9l7S0y1sN7hEn74Z6vcx9
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(136003)(376002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(5660300002)(7416002)(38100700002)(8676002)(4326008)(8936002)(31696002)(86362001)(41300700001)(2906002)(107886003)(6506007)(6512007)(52116002)(6666004)(83380400001)(26005)(31686004)(38350700005)(36756003)(2616005)(54906003)(316002)(66476007)(66556008)(6916009)(478600001)(6486002)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: RsQgq5PiG1vAOzQiaEP+gR2pU+sveZbFihEgMZI+hBQFswrTSr1poSIhidpWpxqevQRQAZwjSELC/I0i8hYCGr2e39JCtznaefEkPDYRo06W2jAe4jjcCvGciOTkYeHOmJ9JIKjQzwybDq1X3986aT0ytssy2Th0pkjNJ3EwiTeh6GGGo2OUtQq/aMFn5Dt9FI+Yg/ijXAGIHxyJvU6MI9uujuRnwMMOHxJ+eukUjnkwWe/MW1zbS2MzylxazmoEGgMUGUilD2PQP1Z3UaPcu9ri2nTlAvWj1NR4nbOLhTMZ+6gKM4NHVkvDjLunaDTrIQr4u9U2GC8qI97AHa6rN9TXvWdy/xIAxo2Xksj0nyOYgBGk814DWtYwFX9mmqZkniSYyiDB11cqiigHZ2lmXZS9vCoqYzS7pIlHXgWHrC3ig4KRCQTsWgUpOxsGz9bhU8hO6rR3aBHQruM3uzUBHTOqwfuSLApXQJqafVDfeRBIQLBRq+SanAoDQw+cmlKV4DcbJ7ZPyTxKLdex4aNwQTMlZ308cp15gowZatGdDkH3Zm6UwszKxQN45+Q0EVyG3sb08f4/zLJ0+VVl5asVt3Wk27wUpAnrAAcLtO8UGlygUuWafxH4LKsUnNA9z/8u1brmOf50nKVhH9DhTkqqhvjqsLDtme+sOh00PM5n0xL7GhhtkTasBgJnRvOeB2wZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(376002)(39860400002)(396003)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(1800799009)(451199024)(38100700002)(2616005)(107886003)(1076003)(8676002)(8936002)(4326008)(6512007)(6506007)(83380400001)(26005)(82960400001)(6666004)(6486002)(966005)(478600001)(316002)(66946007)(6916009)(66556008)(66476007)(36756003)(41300700001)(2906002)(5660300002)(86362001)(505234007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ellrTENpYVB2MFFTelZOWVNkK0ZZbjlUbFRrMWhZM2Q4bEZXZEpUREdhVUVi?=
- =?utf-8?B?N1JDdUdLTnJWODltQ0RPRytaZktlcDM0dHdZa2ZyQjVudnBUSys5bVJValV6?=
- =?utf-8?B?Z0UvaUpCaHVCTUJ2RURNcTlzM2xwYU5uTkJtMHpRbUNncVRSZjUwZFVvdFlv?=
- =?utf-8?B?VzQwdjhIUnQxdndzSm11UEU5ZWg3TXFpRVBUZlVSWURWdUhHYjNIRlNJRmxQ?=
- =?utf-8?B?MlJQczBKb2FuM2o3c096aURFWkxLdjczNUhpVjVCalZqN29QV0V5V29oenhh?=
- =?utf-8?B?TTZRc2o0WVhjSUJVWkVhSHZQeFI5d3pnQW5sS1R5U09uQUZhSTNEMXNuRUlj?=
- =?utf-8?B?TU5qOHdmVEJmV0pTSEowVjBRMDYzMGNjLzBlc0FpMkZna1pTVXJCMWJYczND?=
- =?utf-8?B?UjhnWUgxU0ZBU0dxNTRMTzc3eXhSRjl1QmFDOWhUaDhPczdVZ1VXd1IwajdW?=
- =?utf-8?B?RU5kTFk2QVR2NnlzeEdnSU82ZGdOcnhqRTcyamtGc1YzWXozRjRkc1NFZkJp?=
- =?utf-8?B?dWRpaWRKRG9ZUTJJaHdkdDFWK2ZuTlRYdDg5bkEycEs2L1NEbU5jMFYwK1Va?=
- =?utf-8?B?QkI0ZnduR2RYNklncmJpZWtUQnJhWmZ4MWhaRW91WG5FUzIweEQrTGpFOUpx?=
- =?utf-8?B?cnJ6V1h5Tmd5blBiakRnTHZTaisvZWorbjcwUnFoOHI1aDFEUHcwOHkyOVVr?=
- =?utf-8?B?amVQamJRRm4xNFlTb3pGVGtXSFUzanJ1a1BxVmJJOTlmbEtYQXk2SEtyRnh5?=
- =?utf-8?B?TFZvSVZHL1NCZlVoK05ZSWpiL1cyb2M1V3J4M09WQmNQRGJXaGhoMFE5eGhj?=
- =?utf-8?B?a1BPS20yb2J1RGxSaGVIcVhYS1VHeDVHV0hhUlQ3R1ptMHJvT1JLWHJBaFFE?=
- =?utf-8?B?Q3dGcEpmSU5PWXhnbUloY25jazM2cW9sWjdkZDJWcEhnZDVwM0owMWVtcUVP?=
- =?utf-8?B?SDE3alpBTzhuN2lEbjhXVWRtZmQ1NkRiN0gxVGFvYVZHZGVKNWFPSlFvcmNC?=
- =?utf-8?B?QlMxeGpZVE56b3NmYjQ5M01qMm1tTmRoSUJrTEVOd2oxanRCRG9RM0ZIcThi?=
- =?utf-8?B?S205TXJLenkvVXJ6ekpDVlRVUlcvY013S2NZTDdNdGNPRjF2U3FBMXZ2anVa?=
- =?utf-8?B?RFFuNVdLWFVCNTBubFlmc2Z6UURSSGxndkJsYW83cXlTUVREWWdHY01zbGFU?=
- =?utf-8?B?Z0t5ZVF3dUxMdDNhekdOZkVDc3lkZWhiSDYxb0c5UXZDdHBXQWRnaDNUY0hN?=
- =?utf-8?B?Nyt3RGYrYXQ5cUF0Z1hDRnNaYjJ6RmgrRmZXVFgrWG45WUxTOUp6MTdJU1lW?=
- =?utf-8?B?TWJoNHUrZmQyb05GaHM4WFlKSWZBaGlaWjRhbXQ4emNidVZiS3JrZkE1d2ht?=
- =?utf-8?B?em85d2xvL3RDTXBVd05QeEdHMmJ1SnM4QXBwbWZHOGYrSTNxUlhsMVBtay9C?=
- =?utf-8?B?STVpUkhMaldHNWJ2MG1ZV3M2aUNCNCtta29OVlpkN1BSYVAvVUhJamFuTHhx?=
- =?utf-8?B?VjhJTk14TFhralZBRklmWXpDOUtWLzh3eHZRdGtmS3QvSjhOenoyTVF4amFn?=
- =?utf-8?B?emppdDg4OEhQRktrbTI0L05iOEpHWnRvbjZxdzJ5RFVMQ2RuNjMxWHBhMzcz?=
- =?utf-8?B?SXRHRnVHclpmeVN6bTFjd01MaHRvTFBPZWU5UkpnOVIxdnVJSEtoTVRPd09w?=
- =?utf-8?B?N2lEMFRKM0tpUFl2Mlp4SlhqVk55b0h4ajk3bkswalRuM0QyclZWc2JDaXVK?=
- =?utf-8?B?Q3BQUUNsSFVoNWMwKzBGYjZhaWpFamhBUmJYTEk1cThoRWNGUExyaTh6R2Ny?=
- =?utf-8?B?UDJDVHZSb3VnN2FOMnFLUk52ekxQSE9VYWNUK3N0azhmS2RhNVBsdmpESnFa?=
- =?utf-8?B?aTBoT21ub041b21CSkkvTWZIOFZJUjJpdXVNamtUMGFWTUpZTVNIM0MwUFMy?=
- =?utf-8?B?aGR0R3ovZStVbU1lOVJiZ3ByT1lJRWhGbXcyV0pXUUQxWVNyQWVqNjN0RkFM?=
- =?utf-8?B?ZGJwd2Z2U1Z0VldoUGhxemtib3kwOENrYnV0blZmT0w5amUvUSt2R1J2enpX?=
- =?utf-8?B?emxNcm1XR1dPYlZCdWxXUVVDeGJxTWZ5MXB0dU1hOHJPQy9HVmFMU0M2bEh5?=
- =?utf-8?Q?mXaTKPi7VpytO92VbjChNYKED?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7806f315-3d06-41de-5fc2-08dbe4222e9e
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ekZeHa/ow196J86/K0lAfFJlgUdCve24yYXtJHmW1a/iVJMkw5wQKQ9cl5G3?=
+ =?us-ascii?Q?6gnSpSiyKG3YkQf1CkdGnRl1eZ7eBmpV8wtD8zVK1+e+lr+Vk0bjhTJQOBMM?=
+ =?us-ascii?Q?G4YcVVi/ToAJO4puwLHI8FN0aUVFEA11ttlUnSd815KuuLCprgfrOBX8cYEs?=
+ =?us-ascii?Q?MSN+cBOdGCliLfjhdSCEFWBywhV8Wwe3eQN1pyDa55a2z331iG2eny7tsBtX?=
+ =?us-ascii?Q?msSSNER5UDDQAgNOZKFmMmpiq7Cv/NYNokjZP6X/ATBZSVIbsYnCKalE17hj?=
+ =?us-ascii?Q?LoOQf/X9Uu18qv1Rb2q+5YVTwYu++NhWSvoqndk02dV45V5McfICtSDNsZtB?=
+ =?us-ascii?Q?JQVygXHBQWVg9CCua77qc5u94CJcK7eU/Z+uviE2LMaL1e3TCREWt23rNqUb?=
+ =?us-ascii?Q?ZF2SpWf99D2/cw+0+OGtxrD1ajgeuHhR2RswIqQoS27otmXPG15BzCZvjcRT?=
+ =?us-ascii?Q?HCQsb1OLq/e90p9hDkhN0Ebmdwe8kkmS7G3aj94dXFyc4scc8tqJRYIaK1kk?=
+ =?us-ascii?Q?I+CCQtzKEooJ+IQUdaFkhqYVV5jZcrHYeY/cSPTpb81y+p4WRS9t3nuGTH3x?=
+ =?us-ascii?Q?hiZsYXXs3j8CgTRz8KpwhxrbdX/JIHKpZj4Dterhv70j4Il7sqwKHz32QJGu?=
+ =?us-ascii?Q?NEzoqxRnnWxmpNUVdmFx5SfKLFmIKkTVIA+4Ur05di9er4a+elEmizWz367n?=
+ =?us-ascii?Q?uxZqXCZNzXwgE5mbYQbDMFB4ab+RqtPaFnqzMRejVJEDGa1Qpq63BgKzTk60?=
+ =?us-ascii?Q?4zQ1Q+MLUoEodxfBUU8/SAQDUvEGZg7gCq/SKmJzlSQ5KhdFuAFrFfKJNp/6?=
+ =?us-ascii?Q?VBWtoPH/xNOoxe32iqJQZyo8zaBWHefPBtB4CW/tECYmXCJ5xSRRM7AvNItp?=
+ =?us-ascii?Q?aMxGYjr+NINozW5G/nZb1opdorMYs08ntHV5yEWsCsaDZpwDIzKYsiPI8swT?=
+ =?us-ascii?Q?DMbUQj4WW1MicBEvDEelxMTaczDwIzZiW0TPAZC6SkwHAX3VakSaYPpe1wKZ?=
+ =?us-ascii?Q?KmrhmEX7ErBymQOHeqQN5+AGZvblxfmouqwMcODozlltnF5QNhVVvgDg/bZZ?=
+ =?us-ascii?Q?/TuYDZwcXQW637uu0d5do8XXSTn6lvPqYmtpBBtFDY7mzeeBDlrjoOBbbkxY?=
+ =?us-ascii?Q?G5nVPStKH0TFf1G25iOmpDSslDHEsDQd4TZACgBkbxOgzuPFwZQtIRCmR2Un?=
+ =?us-ascii?Q?plzMy+8ud8yOwl4q8569/3W9R88sDsFDqeRjixoa/Y3OYRUp1nF1JH2RbGt+?=
+ =?us-ascii?Q?4hxuUECrBd3EGsayQ0+H3ik9+TTEdJV8TzYTBuzrx++JUtsGqXWdlaC/LCDq?=
+ =?us-ascii?Q?Ty81zAV4SE8QHx+K6nX71NDzf582eDqs/LleVsCp7o6YsTuvgljunY355Csb?=
+ =?us-ascii?Q?cnY9yej0303J5NVbJQzm/iOZ5ksf1fslaE5oKzr35pwmRet3e5nMnOgTc2La?=
+ =?us-ascii?Q?o+g75BalTS3cc9c7OIAFSh6So0wnXMxEXHSiOwMWf1KFeOpH/7ABONUoEEwe?=
+ =?us-ascii?Q?EYlnPE3TJ+SsDJ1dvayCDDFXSlKxWwEsNCVuiZeZGeiP1GOrP+jxU6KvvvXl?=
+ =?us-ascii?Q?fGKw9xMGuiPPeR9OIDKfSsd30M8uBAcuL7ZmZAksXVqS4dRkvsH8zSt+0Js/?=
+ =?us-ascii?Q?gQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b566bb2-6030-4757-0640-08dbe422f8e0
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 08:26:06.8496
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 08:31:46.1365
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BufY2CvpG5ttSllCKUW433OfUfZ768iqtExa0F59RWj+rZcJmkOTprd3zNXqtUFuhXC0lk/yon4zzVxXNUoWzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYUPR06MB6217
+X-MS-Exchange-CrossTenant-UserPrincipalName: syiPG5mTggH1bPevReiHKEO7Z5gdL/8aQ1boA2KO0XQeTqK+ezq1j8J78L6MzbKNWHehVmXue/D1GLp7RMni1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6907
+X-OriginatorOrg: intel.com
 
 
-在 2023/11/13 16:05, Huang, Ying 写道:
-> Huan Yang <link@vivo.com> writes:
->
->> 在 2023/11/13 14:10, Huang, Ying 写道:
->>> Huan Yang <link@vivo.com> writes:
->>>
->>>> 在 2023/11/10 20:24, Michal Hocko 写道:
->>>>> On Fri 10-11-23 11:48:49, Huan Yang wrote:
->>>>> [...]
->>>>>> Also, When the application enters the foreground, the startup speed
->>>>>> may be slower. Also trace show that here are a lot of block I/O.
->>>>>> (usually 1000+ IO count and 200+ms IO Time) We usually observe very
->>>>>> little block I/O caused by zram refault.(read: 1698.39MB/s, write:
->>>>>> 995.109MB/s), usually, it is faster than random disk reads.(read:
->>>>>> 48.1907MB/s write: 49.1654MB/s). This test by zram-perf and I change a
->>>>>> little to test UFS.
->>>>>>
->>>>>> Therefore, if the proactive reclamation encounters many file pages,
->>>>>> the application may become slow when it is opened.
->>>>> OK, this is an interesting information. From the above it seems that
->>>>> storage based IO refaults are order of magnitude more expensive than
->>>>> swap (zram in this case). That means that the memory reclaim should
->>>>> _in general_ prefer anonymous memory reclaim over refaulted page cache,
->>>>> right? Or is there any reason why "frozen" applications are any
->>>>> different in this case?
->>>> Frozen applications mean that the application process is no longer active,
->>>> so once its private anonymous page data is swapped out, the anonymous
->>>> pages will not be refaulted until the application becomes active again.
->>>>
->>>> On the contrary, page caches are usually shared. Even if the
->>>> application that
->>>> first read the file is no longer active, other processes may still
->>>> read the file.
->>>> Therefore, it is not reasonable to use the proactive reclamation
->>>> interface to
->>>> reclaim page caches without considering memory pressure.
->>> No.  Not all page caches are shared.  For example, the page caches used
->>> for use-once streaming IO.  And, they should be reclaimed firstly.
->> Yes, but this part is done very well in MGLRU and does not require our
->> intervention.
->> Moreover, the reclaim speed of clean files is very fast, but compared to it,
->> the reclaim speed of anonymous pages is a bit slower.
->>> So, your solution may work good for your specific use cases, but it's
->> Yes, this approach is not universal.
->>> not a general solution.  Per my understanding, you want to reclaim only
->>> private pages to avoid impact the performance of other applications.
->>> Privately mapped anonymous pages is easy to be identified (And I suggest
->>> that you can find a way to avoid reclaim shared mapped anonymous pages).
->> Yes, it is not good to reclaim shared anonymous pages, and it needs to be
->> identified. In the future, we will consider how to filter them.
->> Thanks.
->>> There's some heuristics to identify use-once page caches in reclaiming
->>> code.  Why doesn't it work for your situation?
->> As mentioned above, the default reclaim algorithm is suitable for recycling
->> file pages, but we do not need to intervene in it.
->> Direct reclaim or kswapd of these use-once file pages is very fast and will
->> not cause lag or other effects.
->> Our overall goal is to actively and reasonably compress unused anonymous
->> pages based on certain strategies, in order to increase available memory to
->> a certain extent, avoid lag, and prevent applications from being killed.
->> Therefore, using the proactive reclaim interface, combined with LRU
->> algorithm
->> and reclaim tendencies, is a good way to achieve our goal.
-> If so, why can't you just use the proactive reclaim with some large
-> enough swappiness?  That will reclaim use-once page caches and compress
-This works very well for proactive memory reclaim that is only executed 
-once.
-However, considering that we need to perform proactive reclaim in batches,
-suppose that only 5% of the use-once page cache in this memcg can be 
-reclaimed,
-but we need to call proactive memory reclaim step by step, such as 5%, 
-10%, 15% ... 100%.
-Then, the page cache may be reclaimed due to the balancing adjustment of 
-reclamation,
-even if the 5% of use-once pages are reclaimed. We may still touch on 
-shared file pages.
-(If I misunderstood anything, please correct me.)
 
-We previously used the two values of modifying swappiness to 200 and 0 
-to adjust reclaim
-tendencies. However, the debug interface showed that some file pages 
-were reclaimed,
-and after being actively reclaimed, some applications and the reopened 
-applications that were
-reclaimed had some block IO and startup lag.
+Hello,
 
-This way of having incomplete control over the process maybe is not 
-suitable for proactive memory
-reclaim. Instead, with an proactive reclaim interface with tendencies, 
-we can issue a
-5% page cache trim once and then gradually reclaim anonymous pages.
-> anonymous pages.  So, more applications can be kept in memory before
-> passive reclaiming or killing background applications?
->
-> --
-> Best Regards,
-> Huang, Ying
+kernel test robot noticed "WARNING:suspicious_RCU_usage" on:
+
+commit: 8dade3a353290abfbfd3c38279c29c3c4ecd7356 ("proc: Implement /proc/self/meminfo")
+https://git.kernel.org/cgit/linux/kernel/git/legion/linux.git patchset/meminfo/v2.1
+
+in testcase: trinity
+version: trinity-i386-abe9de86-1_20230429
+with following parameters:
+
+	runtime: 600s
+
+test-description: Trinity is a linux system call fuzz tester.
+test-url: http://codemonkey.org.uk/projects/trinity/
+
+
+compiler: gcc-12
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202311131653.14708bb6-oliver.sang@intel.com
+
+
+the issue doesn't always happen, as below, we observed it 21 times out of 50
+runs, but keeps clean on parent.
+
+        v6.6-rc7 8dade3a353290abfbfd3c38279c
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+           :50          42%          21:50    dmesg.WARNING:suspicious_RCU_usage
+           :50          42%          21:50    dmesg.include/linux/cgroup.h:#suspicious_rcu_dereference_check()usage
+
+
+
+[  366.327498][ T3447] WARNING: suspicious RCU usage
+[  366.328145][ T3447] 6.6.0-rc7-00001-g8dade3a35329 #1 Not tainted
+[  366.329177][ T3447] -----------------------------
+[  366.329833][ T3447] include/linux/cgroup.h:436 suspicious rcu_dereference_check() usage!
+[  366.330891][ T3447]
+[  366.330891][ T3447] other info that might help us debug this:
+[  366.330891][ T3447]
+[  366.332203][ T3447]
+[  366.332203][ T3447] rcu_scheduler_active = 2, debug_locks = 1
+[  366.333484][ T3447] 2 locks held by trinity-c5/3447:
+[ 366.334175][ T3447] #0: ffff88814ee10858 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos (fs/file.c:1066) 
+[ 366.335356][ T3447] #1: ffff88814f3836c0 (&p->lock){+.+.}-{3:3}, at: seq_read_iter (fs/seq_file.c:188) 
+[  366.336736][ T3447]
+[  366.336736][ T3447] stack backtrace:
+[  366.337562][ T3447] CPU: 1 PID: 3447 Comm: trinity-c5 Not tainted 6.6.0-rc7-00001-g8dade3a35329 #1 10f1bfacea84478d84947570355f5fbda1b33451
+[  366.339032][ T3447] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  366.340233][ T3447] Call Trace:
+[  366.340701][ T3447]  <TASK>
+[ 366.341175][ T3447] dump_stack_lvl (lib/dump_stack.c:107) 
+[ 366.341814][ T3447] lockdep_rcu_suspicious (include/linux/context_tracking.h:153 kernel/locking/lockdep.c:6712) 
+[ 366.342512][ T3447] mem_fill_meminfo (include/linux/cgroup.h:436 mm/memcontrol.c:4133) 
+[ 366.343143][ T3447] proc_meminfo_show (fs/proc/meminfo.c:202) 
+[ 366.343745][ T3447] ? meminfo_proc_show (fs/proc/meminfo.c:197) 
+[ 366.344423][ T3447] ? get_pid_task (include/linux/rcupdate.h:308 include/linux/rcupdate.h:782 kernel/pid.c:458) 
+[ 366.345071][ T3447] proc_single_show (include/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:400 include/linux/refcount.h:272 include/linux/refcount.h:315 include/linux/refcount.h:333 include/linux/sched/task.h:125 fs/proc/base.c:779) 
+[ 366.345750][ T3447] seq_read_iter (fs/seq_file.c:230) 
+[ 366.346411][ T3447] seq_read (fs/seq_file.c:163) 
+[ 366.346973][ T3447] ? seq_read_iter (fs/seq_file.c:152) 
+[ 366.347621][ T3447] ? seq_read_iter (fs/seq_file.c:152) 
+[ 366.348247][ T3447] do_loop_readv_writev+0x130/0x440 
+[ 366.349039][ T3447] do_iter_read (fs/read_write.c:748 fs/read_write.c:797) 
+[ 366.349683][ T3447] vfs_readv (fs/read_write.c:916) 
+[ 366.350285][ T3447] ? vfs_iter_read (fs/read_write.c:907) 
+[ 366.350879][ T3447] ? __fdget_pos (fs/file.c:1066) 
+[ 366.351470][ T3447] ? mutex_lock_io_nested (kernel/locking/mutex.c:746) 
+[ 366.352216][ T3447] ? preempt_count_sub (kernel/sched/core.c:5863 kernel/sched/core.c:5859 kernel/sched/core.c:5881) 
+[ 366.352916][ T3447] do_readv (fs/read_write.c:952) 
+[ 366.356628][ T3447] ? vfs_readv (fs/read_write.c:942) 
+[ 366.357285][ T3447] __do_fast_syscall_32 (arch/x86/entry/common.c:112 arch/x86/entry/common.c:178) 
+[ 366.357972][ T3447] do_fast_syscall_32 (arch/x86/entry/common.c:203) 
+[ 366.358626][ T3447] entry_SYSENTER_compat_after_hwframe (arch/x86/entry/entry_64_compat.S:122) 
+[  366.359427][ T3447] RIP: 0023:0xf7f2a579
+[ 366.360000][ T3447] Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 cc 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+All code
+========
+   0:	b8 01 10 06 03       	mov    $0x3061001,%eax
+   5:	74 b4                	je     0xffffffffffffffbb
+   7:	01 10                	add    %edx,(%rax)
+   9:	07                   	(bad)
+   a:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   e:	10 08                	adc    %cl,(%rax)
+  10:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+	...
+  20:	00 51 52             	add    %dl,0x52(%rcx)
+  23:	55                   	push   %rbp
+  24:*	89 e5                	mov    %esp,%ebp		<-- trapping instruction
+  26:	0f 34                	sysenter
+  28:	cd 80                	int    $0x80
+  2a:	5d                   	pop    %rbp
+  2b:	5a                   	pop    %rdx
+  2c:	59                   	pop    %rcx
+  2d:	c3                   	ret
+  2e:	cc                   	int3
+  2f:	90                   	nop
+  30:	90                   	nop
+  31:	90                   	nop
+  32:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  39:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+Code starting with the faulting instruction
+===========================================
+   0:	5d                   	pop    %rbp
+   1:	5a                   	pop    %rdx
+   2:	59                   	pop    %rcx
+   3:	c3                   	ret
+   4:	cc                   	int3
+   5:	90                   	nop
+   6:	90                   	nop
+   7:	90                   	nop
+   8:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+   f:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+[  366.362302][ T3447] RSP: 002b:00000000ffa75f8c EFLAGS: 00000296 ORIG_RAX: 0000000000000091
+[  366.363394][ T3447] RAX: ffffffffffffffda RBX: 00000000000000f7 RCX: 00000000580da6e0
+[  366.364419][ T3447] RDX: 000000000000005c RSI: 00000000710d3b51 RDI: 00000000ffffffff
+[  366.365453][ T3447] RBP: 00000000ffff0100 R08: 0000000000000000 R09: 0000000000000000
+[  366.366492][ T3447] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[  366.367518][ T3447] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[  366.368584][ T3447]  </TASK>
+[  382.029705][ T3448] trinity-c6 (3448): attempted to duplicate a private mapping with mremap.  This is not supported.
+[  393.577743][ T3063] [main] 10786 iterations. [F:8083 S:2663 HI:1623]
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20231113/202311131653.14708bb6-oliver.sang@intel.com
+
+
 
 -- 
-Thanks,
-Huan Yang
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
