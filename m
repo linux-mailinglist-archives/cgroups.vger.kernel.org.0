@@ -1,134 +1,120 @@
-Return-Path: <cgroups+bounces-341-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-342-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE82E7E93D4
-	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 01:59:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C81507E941E
+	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 02:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59C2F1F20EC3
-	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 00:59:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C2C51C20909
+	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 01:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6A93D82;
-	Mon, 13 Nov 2023 00:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC4F469D;
+	Mon, 13 Nov 2023 01:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CwEno6n0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jgqo5b9U"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00A94409
-	for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 00:59:35 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E1A19A3
-	for <cgroups@vger.kernel.org>; Sun, 12 Nov 2023 16:59:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2B54684;
+	Mon, 13 Nov 2023 01:33:14 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5CF1BFF;
+	Sun, 12 Nov 2023 17:33:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699837174; x=1731373174;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=KilVdjgP2U+qwF5RSNjMC/7Ktu+O+2bwC5Ws5g7++EA=;
-  b=CwEno6n0yF5TIgwECyTj5wLGBjUnsDa7g601DMlRvuNDEVn23H3R6jbK
-   ydk8zftejFddXBI2q70Dt9+70p5LuNURCwEqJ0RUXY0c7Qa/y7/JhD2P3
-   smCLGmLcjb7++A1XnQeA/pEGE+yYJ5oQtS586wcPbLZLK0YYYrJKxhroB
-   lYs9K/bkHt+CYXolLogfO7Zgnd73VuIQpnniTn45/R2BEiLIMJgLw3w6y
-   mBgwfUC5J4hxbVJVphMns3Oe9sATP2fm0zNZOSgguIKSrX9V7DR4OqwbB
-   Yx4fpS2k6U6UhZ2hJvkN6w7//iuPP9cpvkOvhqH4FdaXrj9tT1QVzh0Gl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="454663749"
+  t=1699839192; x=1731375192;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=6s0Zq5kC1eUCJkylNpmwGs+kVYT+CkdgpvKFUIcNZk0=;
+  b=jgqo5b9Uzu4FdV44tnGXWgh5sppys3uLgR+A7nP3I9sgtQoLJgp7ckk2
+   i2S39zNA2aGOss9hWQ14GNI5OAsi2CPbaBW+jsvI3IjJ2u4SSH2xdPW1n
+   9LhFruVTKYifXuaVizAEh+rBuRQKmZ2uXWGU0LKQFOFZksMB1pW31BEEU
+   EAWX5dKfdCAo/D6mqFKGSRiQEHYg0BSvrWpn5CCBxgdsErE3S0OhyiaaH
+   R9U/5WTeXgU0ZFPo/mNy0d7bCLdgMZuP8JO1wX079nKW0APbmTeWVzzpb
+   wh919ZGz1YztJRFbWgn8HJn2oSEdV8L6tgiJFERd2x/ifM6bFEVVjFAFX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="3451167"
 X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="454663749"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 16:59:34 -0800
+   d="scan'208";a="3451167"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 17:33:12 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="830105364"
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="854834930"
 X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="830105364"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Nov 2023 16:59:32 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r2LIY-000Bf8-13;
-	Mon, 13 Nov 2023 00:59:30 +0000
-Date: Mon, 13 Nov 2023 08:58:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Waiman Long <longman@redhat.com>
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>
-Subject: [tj-cgroup:for-next 7/11] kernel/workqueue.c:5848:12: warning:
- 'workqueue_set_unbound_cpumask' defined but not used
-Message-ID: <202311130831.uh0AoCd1-lkp@intel.com>
+   d="scan'208";a="854834930"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 17:33:08 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,
+  <linux-kernel@vger.kernel.org>,  <linux-cxl@vger.kernel.org>,
+  <linux-mm@kvack.org>,  <cgroups@vger.kernel.org>,
+  <linux-doc@vger.kernel.org>,  <akpm@linux-foundation.org>,
+  <mhocko@kernel.org>,  <tj@kernel.org>,  <lizefan.x@bytedance.com>,
+  <hannes@cmpxchg.org>,  <corbet@lwn.net>,  <roman.gushchin@linux.dev>,
+  <shakeelb@google.com>,  <muchun.song@linux.dev>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+In-Reply-To: <ZU6KiRv7iy/cUY7N@memverge.com> (Gregory Price's message of "Fri,
+	10 Nov 2023 14:54:49 -0500")
+References: <20231109002517.106829-1-gregory.price@memverge.com>
+	<87zfzmf80q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZU6KiRv7iy/cUY7N@memverge.com>
+Date: Mon, 13 Nov 2023 09:31:07 +0800
+Message-ID: <87v8a6fnhg.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=ascii
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-head:   e76d28bdf9ba5388b8c4835a5199dc427b603188
-commit: fe28f631fa941fba583d1c4f25895284b90af671 [7/11] workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs from wq_unbound_cpumask
-config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20231113/202311130831.uh0AoCd1-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231113/202311130831.uh0AoCd1-lkp@intel.com/reproduce)
+Gregory Price <gregory.price@memverge.com> writes:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311130831.uh0AoCd1-lkp@intel.com/
+> On Fri, Nov 10, 2023 at 02:16:05PM +0800, Huang, Ying wrote:
+>> Gregory Price <gourry.memverge@gmail.com> writes:
+>> 
+>> > This patchset implements weighted interleave and adds a new cgroup
+>> > sysfs entry: cgroup/memory.interleave_weights (excluded from root).
+>> >
+>> > The il_weight of a node is used by mempolicy to implement weighted
+>> > interleave when `numactl --interleave=...` is invoked.  By default
+>> > il_weight for a node is always 1, which preserves the default round
+>> > robin interleave behavior.
+>> 
+>> IIUC, this makes it almost impossible to set the default weight of a
+>> node from the node memory bandwidth information.  This will make the
+>> life of users a little harder.
+>> 
+>> If so, how about use a new memory policy mode, for example
+>> MPOL_WEIGHTED_INTERLEAVE, etc.
+>>
+>
+> weights are also inherited from parent cgroups, so if you set them in
+> parent slices you can automatically set update system settings.
+>
+> by default the parent slice weights will always be 1 until set
+> otherwise.  Once they're set, children inherit naturally.
+>
+> Maybe there's an argument here for including interleave_weights in the
+> root cgroup.
 
-All warnings (new ones prefixed by >>):
+Even if the interleave_weights is introduced in root cgroup, the initial
+default weight need to be 1 to be back-compatible with the original
+MPOL_INTERLEAVE.
 
->> kernel/workqueue.c:5848:12: warning: 'workqueue_set_unbound_cpumask' defined but not used [-Wunused-function]
-    5848 | static int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If we don't reuse MPOL_INTERLEAVE, but use a new memory policy mode (say
+MPOL_WEIGHTED_INTERLEAVE).  The default values of the interleave weight
+in root cgroup needn't to be 1.  So, we can provide a more helpful
+default interleave weight based on the node memory bandwidth information
+(e.g., from HMAT, CDAT, etc).  That will make users life much easier.
+Do you agree?
 
-
-vim +/workqueue_set_unbound_cpumask +5848 kernel/workqueue.c
-
-  5835	
-  5836	/**
-  5837	 *  workqueue_set_unbound_cpumask - Set the low-level unbound cpumask
-  5838	 *  @cpumask: the cpumask to set
-  5839	 *
-  5840	 *  The low-level workqueues cpumask is a global cpumask that limits
-  5841	 *  the affinity of all unbound workqueues.  This function check the @cpumask
-  5842	 *  and apply it to all unbound workqueues and updates all pwqs of them.
-  5843	 *
-  5844	 *  Return:	0	- Success
-  5845	 *  		-EINVAL	- Invalid @cpumask
-  5846	 *  		-ENOMEM	- Failed to allocate memory for attrs or pwqs.
-  5847	 */
-> 5848	static int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
-  5849	{
-  5850		int ret = -EINVAL;
-  5851	
-  5852		/*
-  5853		 * Not excluding isolated cpus on purpose.
-  5854		 * If the user wishes to include them, we allow that.
-  5855		 */
-  5856		cpumask_and(cpumask, cpumask, cpu_possible_mask);
-  5857		if (!cpumask_empty(cpumask)) {
-  5858			apply_wqattrs_lock();
-  5859			cpumask_copy(wq_requested_unbound_cpumask, cpumask);
-  5860			if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
-  5861				ret = 0;
-  5862				goto out_unlock;
-  5863			}
-  5864	
-  5865			ret = workqueue_apply_unbound_cpumask(cpumask);
-  5866	
-  5867	out_unlock:
-  5868			apply_wqattrs_unlock();
-  5869		}
-  5870	
-  5871		return ret;
-  5872	}
-  5873	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+Best Regards,
+Huang, Ying
 
