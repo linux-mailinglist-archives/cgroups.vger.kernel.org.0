@@ -1,274 +1,173 @@
-Return-Path: <cgroups+bounces-352-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-353-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F357E9AD0
-	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 12:12:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A818A7EA376
+	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 20:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FCA5B20A64
-	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 11:12:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C6A9280EE0
+	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 19:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C60E1CA88;
-	Mon, 13 Nov 2023 11:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9226C22F1E;
+	Mon, 13 Nov 2023 19:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KpcJz4jw"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iXl/C1dL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ikh9Erxs"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03D01C699
-	for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 11:12:48 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98E8D51
-	for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 03:12:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699873966; x=1731409966;
-  h=date:from:to:cc:subject:message-id;
-  bh=j4QgeMVsGbG/zQEGt6bArNShhAaRcYDknWtF7302E/8=;
-  b=KpcJz4jwqab7ZeXDK/za7sdYXP1bh1Z1IIuE1y7JneA7wxOPMTM/h/T+
-   vOzxTsBnP5IqnNZVLPPdTYO74EKCyhHrsXpXc6Ug5BCkaO+qN/C2Wi29h
-   YegreII07z8jAny39vq9tv7VQUB+0rAYLSZWO3iMo2uId6TIKdme4qwPU
-   z2bVEBPD0cj90PZGfLkwQUfqKlojymCTeGPPEG31xkIjSfXoLZRNWYEHu
-   6jU92ifiDRphiC0him81DUhFCEfz1LEU2UsxeSWYWa1bEapUFWnjRxtV1
-   50NPJZHzMDlh51RLDSe7FSll4mIZluuVgnFO6woPrPhanMV20HUUtQjeI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="394315542"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="394315542"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 03:12:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="12436849"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 13 Nov 2023 03:12:45 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r2Ury-000C3a-2U;
-	Mon, 13 Nov 2023 11:12:42 +0000
-Date: Mon, 13 Nov 2023 19:12:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD REGRESSION
- e76d28bdf9ba5388b8c4835a5199dc427b603188
-Message-ID: <202311131910.pxATTnsK-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22F923743
+	for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 19:14:13 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E043A10D0;
+	Mon, 13 Nov 2023 11:14:10 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 52E101F854;
+	Mon, 13 Nov 2023 19:14:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1699902849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W7QXmIFPtyA621azrDtsOPQFV81EzYubbdba9PHLL0k=;
+	b=iXl/C1dLeuvhEZYdxXFS8vwa/6hEZvHeAoLkv2y/Pro4x9I1NfIFHF2xNy7zR7td3VisoW
+	Jnoiv+QP+KnaD4LKz8bKRn+0+X5xXp6/UocGU+oqFckvf21ODPPjfWDwXmMXhvvHR3ezLP
+	1DNFp4UMCfYxY5dZmgfqtz6ZRI1eavE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1699902849;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W7QXmIFPtyA621azrDtsOPQFV81EzYubbdba9PHLL0k=;
+	b=Ikh9Erxsl7uTaSvib65hNgBM28up4uw5lXTZ9xrfbHBQKHYYrw70te4lLGFSuD6hgqGEqZ
+	0ISNDKspXXt91rAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2EE313398;
+	Mon, 13 Nov 2023 19:14:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id Us6jOoB1UmVFOgAAMHmgww
+	(envelope-from <vbabka@suse.cz>); Mon, 13 Nov 2023 19:14:08 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+To: David Rientjes <rientjes@google.com>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Marco Elver <elver@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Kees Cook <keescook@chromium.org>,
+	kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org,
+	Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH 00/20] remove the SLAB allocator
+Date: Mon, 13 Nov 2023 20:13:41 +0100
+Message-ID: <20231113191340.17482-22-vbabka@suse.cz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: e76d28bdf9ba5388b8c4835a5199dc427b603188  cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+The SLAB allocator has been deprecated since 6.5 and nobody has objected
+so far. As we agreed at LSF/MM, we should wait with the removal until
+the next LTS kernel is released. AFAIK that version hasn't been
+announced yet, but assuming it would be 6.7, we can aim for 6.8 and
+start exposing the removal to linux-next during the 6.7 cycle.
 
-Error/Warning reports:
+To keep the series reasonably sized and not pull in people from other
+subsystems than mm and closely related ones, I didn't attempt to remove
+every trace of unnecessary reference to dead config options in external
+areas, nor in the defconfigs. Such cleanups can be sent to and handled
+by respective maintainers after this is merged.
 
-https://lore.kernel.org/oe-kbuild-all/202311130831.uh0AoCd1-lkp@intel.com
+Instead I have added some patches aimed to reap some immediate benefits
+of the removal, mainly by not having to split some fastpath code between
+slab_common.c and slub.c anymore. But that is also not an exhaustive
+effort and I expect more cleanups and optimizations will follow later.
 
-Error/Warning: (recently discovered and may have been fixed)
+Patch 08 updates CREDITS for the removed mm/slab.c. Please point out if
+I missed someone not yet credited.
 
-kernel/workqueue.c:5848:12: warning: 'workqueue_set_unbound_cpumask' defined but not used [-Wunused-function]
+Git version: https://git.kernel.org/vbabka/l/slab-remove-slab-v1r4
 
-Error/Warning ids grouped by kconfigs:
+Vlastimil Babka (20):
+  mm/slab: remove CONFIG_SLAB from all Kconfig and Makefile
+  KASAN: remove code paths guarded by CONFIG_SLAB
+  KFENCE: cleanup kfence_guarded_alloc() after CONFIG_SLAB removal
+  mm/memcontrol: remove CONFIG_SLAB #ifdef guards
+  cpu/hotplug: remove CPUHP_SLAB_PREPARE hooks
+  mm/slab: remove CONFIG_SLAB code from slab common code
+  mm/mempool/dmapool: remove CONFIG_DEBUG_SLAB ifdefs
+  mm/slab: remove mm/slab.c and slab_def.h
+  mm/slab: move struct kmem_cache_cpu declaration to slub.c
+  mm/slab: move the rest of slub_def.h to mm/slab.h
+  mm/slab: consolidate includes in the internal mm/slab.h
+  mm/slab: move pre/post-alloc hooks from slab.h to slub.c
+  mm/slab: move memcg related functions from slab.h to slub.c
+  mm/slab: move struct kmem_cache_node from slab.h to slub.c
+  mm/slab: move kfree() from slab_common.c to slub.c
+  mm/slab: move kmalloc_slab() to mm/slab.h
+  mm/slab: move kmalloc() functions from slab_common.c to slub.c
+  mm/slub: remove slab_alloc() and __kmem_cache_alloc_lru() wrappers
+  mm/slub: optimize alloc fastpath code layout
+  mm/slub: optimize free fast path code layout
 
-gcc_recent_errors
-|-- i386-tinyconfig
-|   `-- kernel-workqueue.c:warning:workqueue_set_unbound_cpumask-defined-but-not-used
-`-- x86_64-rhel-8.3-bpf
-    |-- diff-u-tools-arch-arm64-include-uapi-asm-kvm.h-arch-arm64-include-uapi-asm-kvm.h
-    |-- diff-u-tools-include-uapi-linux-vhost.h-include-uapi-linux-vhost.h
-    |-- include-test_util.h:warning:format-d-expects-a-matching-int-argument
-    |-- mremap_test.c:warning:format-d-expects-argument-of-type-int-but-argument-has-type-long-long-unsigned-int
-    |-- pagemap_ioctl.c:warning:format-ld-expects-argument-of-type-long-int-but-argument-has-type-int
-    |-- pagemap_ioctl.c:warning:format-s-expects-a-matching-char-argument
-    |-- xskxceiver.c:error:format-d-expects-argument-of-type-int-but-argument-has-type-__u64-aka-long-long-unsigned-int
-    |-- xskxceiver.c:error:format-llx-expects-argument-of-type-long-long-unsigned-int-but-argument-has-type-u64-aka-long-unsigned-int
-    `-- xskxceiver.c:error:format-u-expects-argument-of-type-unsigned-int-but-argument-has-type-__u64-aka-long-long-unsigned-int
-
-elapsed time: 788m
-
-configs tested: 169
-configs skipped: 2
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231113   gcc  
-arc                   randconfig-002-20231113   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm                                 defconfig   clang
-arm                                 defconfig   gcc  
-arm                        multi_v5_defconfig   clang
-arm                   randconfig-001-20231113   gcc  
-arm                   randconfig-002-20231113   gcc  
-arm                   randconfig-003-20231113   gcc  
-arm                   randconfig-004-20231113   gcc  
-arm                    vt8500_v6_v7_defconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                 randconfig-001-20231113   gcc  
-arm64                 randconfig-002-20231113   gcc  
-arm64                 randconfig-003-20231113   gcc  
-arm64                 randconfig-004-20231113   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231113   gcc  
-csky                  randconfig-002-20231113   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231113   gcc  
-i386         buildonly-randconfig-002-20231113   gcc  
-i386         buildonly-randconfig-003-20231113   gcc  
-i386         buildonly-randconfig-004-20231113   gcc  
-i386         buildonly-randconfig-005-20231113   gcc  
-i386         buildonly-randconfig-006-20231113   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231113   gcc  
-i386                  randconfig-002-20231113   gcc  
-i386                  randconfig-003-20231113   gcc  
-i386                  randconfig-004-20231113   gcc  
-i386                  randconfig-005-20231113   gcc  
-i386                  randconfig-006-20231113   gcc  
-i386                  randconfig-011-20231113   gcc  
-i386                  randconfig-012-20231113   gcc  
-i386                  randconfig-013-20231113   gcc  
-i386                  randconfig-014-20231113   gcc  
-i386                  randconfig-015-20231113   gcc  
-i386                  randconfig-016-20231113   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231113   gcc  
-loongarch             randconfig-002-20231113   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath25_defconfig   clang
-mips                          ath79_defconfig   clang
-mips                         cobalt_defconfig   gcc  
-mips                     cu1000-neo_defconfig   clang
-mips                        vocore2_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231113   gcc  
-nios2                 randconfig-002-20231113   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231113   gcc  
-parisc                randconfig-002-20231113   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                  mpc885_ads_defconfig   clang
-powerpc               randconfig-001-20231113   gcc  
-powerpc               randconfig-002-20231113   gcc  
-powerpc               randconfig-003-20231113   gcc  
-powerpc                     tqm8548_defconfig   gcc  
-powerpc64             randconfig-001-20231113   gcc  
-powerpc64             randconfig-002-20231113   gcc  
-powerpc64             randconfig-003-20231113   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231113   gcc  
-riscv                 randconfig-002-20231113   gcc  
-riscv                          rv32_defconfig   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231113   gcc  
-s390                  randconfig-002-20231113   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                    randconfig-001-20231113   gcc  
-sh                    randconfig-002-20231113   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231113   gcc  
-sparc                 randconfig-002-20231113   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231113   gcc  
-sparc64               randconfig-002-20231113   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231113   gcc  
-um                    randconfig-002-20231113   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231113   gcc  
-x86_64                randconfig-002-20231113   gcc  
-x86_64                randconfig-003-20231113   gcc  
-x86_64                randconfig-004-20231113   gcc  
-x86_64                randconfig-005-20231113   gcc  
-x86_64                randconfig-006-20231113   gcc  
-x86_64                randconfig-011-20231113   gcc  
-x86_64                randconfig-012-20231113   gcc  
-x86_64                randconfig-013-20231113   gcc  
-x86_64                randconfig-014-20231113   gcc  
-x86_64                randconfig-015-20231113   gcc  
-x86_64                randconfig-016-20231113   gcc  
-x86_64                randconfig-071-20231113   gcc  
-x86_64                randconfig-072-20231113   gcc  
-x86_64                randconfig-073-20231113   gcc  
-x86_64                randconfig-074-20231113   gcc  
-x86_64                randconfig-076-20231113   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                randconfig-001-20231113   gcc  
-xtensa                randconfig-002-20231113   gcc  
+ CREDITS                  |   12 +-
+ arch/arm64/Kconfig       |    2 +-
+ arch/s390/Kconfig        |    2 +-
+ arch/x86/Kconfig         |    2 +-
+ include/linux/slab.h     |   21 +-
+ include/linux/slab_def.h |  124 --
+ include/linux/slub_def.h |  204 --
+ kernel/cpu.c             |    5 -
+ lib/Kconfig.debug        |    1 -
+ lib/Kconfig.kasan        |   11 +-
+ lib/Kconfig.kfence       |    2 +-
+ lib/Kconfig.kmsan        |    2 +-
+ mm/Kconfig               |   50 +-
+ mm/Kconfig.debug         |   16 +-
+ mm/Makefile              |    6 +-
+ mm/dmapool.c             |    2 +-
+ mm/kasan/common.c        |   13 +-
+ mm/kasan/kasan.h         |    3 +-
+ mm/kasan/quarantine.c    |    7 -
+ mm/kasan/report.c        |    1 +
+ mm/kfence/core.c         |    4 -
+ mm/memcontrol.c          |    6 +-
+ mm/mempool.c             |    6 +-
+ mm/slab.c                | 4026 --------------------------------------
+ mm/slab.h                |  550 ++----
+ mm/slab_common.c         |  231 +--
+ mm/slub.c                |  597 +++++-
+ 27 files changed, 784 insertions(+), 5122 deletions(-)
+ delete mode 100644 include/linux/slab_def.h
+ delete mode 100644 include/linux/slub_def.h
+ delete mode 100644 mm/slab.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.1
+
 
