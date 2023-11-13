@@ -1,62 +1,62 @@
-Return-Path: <cgroups+bounces-367-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-365-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CEED7EA38B
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E71C27EA38D
 	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 20:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9DB3280F07
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B72CB20AF9
 	for <lists+cgroups@lfdr.de>; Mon, 13 Nov 2023 19:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7529E2375B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E58F2376E;
 	Mon, 13 Nov 2023 19:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="olZFTzZ/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zDLN/9n/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oIHlLgRj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yC6gI2Oa"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4E923775
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85E523778
 	for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 19:14:18 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B6B172D;
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C3C1731;
 	Mon, 13 Nov 2023 11:14:16 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9EC4921923;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E153B1F88E;
 	Mon, 13 Nov 2023 19:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1699902854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DXDFbKsOpifG8/vsvvlxkFBAPHyr1llZIqV93eRLOYA=;
-	b=olZFTzZ/5Ps8QKyaocdiK69NiScVYAFfLitfcf3tciIng8f/eJUsk+7TdiSTEjSKOipVkV
-	OMx8ieBdAUEwkOr1HjfTmuuDP4C1MsjfY0h10/LQHxmibB+io9RuxuTZ+OPZZBwcpY+Jz+
-	3AXm3III4/0hk2ePVwyVCcJBkF/hrG4=
+	bh=AvYULxpvTpi0KZyzNL3YX1bvF9SuuOz0+MetYRBUoJQ=;
+	b=oIHlLgRjvw7JPEbJGFmSOpsKrINW0f9XdqQWVeRsISFOABjZ4DK8pmw1yqPCX9sGOBppD7
+	/2PaS3UjA8toXgHPERa2WAt2ew9Q/P4mq1rIHw9O8CtTaonrLfZW/F/b1AC8WVMaSEimF7
+	oFMsRG1N0wxBUjIAKDrXoROaTC6D8HQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1699902854;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DXDFbKsOpifG8/vsvvlxkFBAPHyr1llZIqV93eRLOYA=;
-	b=zDLN/9n/veB8vAzvY657LXWB2WULYF78tgVtB/1Im/Vy/330Jw/E161reEqQ4eBR0ap3o/
-	QXfAFQftD8MjuPAA==
+	bh=AvYULxpvTpi0KZyzNL3YX1bvF9SuuOz0+MetYRBUoJQ=;
+	b=yC6gI2OaZlpEgEV5qLkZwNfRnz195znLfF6b/XZpYlw9m0kJIbvR1gOmpqfTy7c7Hdbuie
+	qkHrE5YZ8HMzm4Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4424113907;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CF6613398;
 	Mon, 13 Nov 2023 19:14:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id EGvoD4Z1UmVFOgAAMHmgww
+	id sLfCJYZ1UmVFOgAAMHmgww
 	(envelope-from <vbabka@suse.cz>); Mon, 13 Nov 2023 19:14:14 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
 To: David Rientjes <rientjes@google.com>,
@@ -83,9 +83,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org,
 	Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 15/20] mm/slab: move kfree() from slab_common.c to slub.c
-Date: Mon, 13 Nov 2023 20:13:56 +0100
-Message-ID: <20231113191340.17482-37-vbabka@suse.cz>
+Subject: [PATCH 16/20] mm/slab: move kmalloc_slab() to mm/slab.h
+Date: Mon, 13 Nov 2023 20:13:57 +0100
+Message-ID: <20231113191340.17482-38-vbabka@suse.cz>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231113191340.17482-22-vbabka@suse.cz>
 References: <20231113191340.17482-22-vbabka@suse.cz>
@@ -97,176 +97,154 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This should result in better code. Currently kfree() makes a function
-call between compilation units to __kmem_cache_free() which does its own
-virt_to_slab(), throwing away the struct slab pointer we already had in
-kfree(). Now it can be reused. Additionally kfree() can now inline the
-whole SLUB freeing fastpath.
+In preparation for the next patch, move the kmalloc_slab() function to
+the header, as it will have callers from two files, and make it inline.
+To avoid unnecessary bloat, remove all size checks/warnings from
+kmalloc_slab() as they just duplicate those in callers, especially after
+recent changes to kmalloc_size_roundup(). We just need to adjust handling
+of zero size in __do_kmalloc_node(). Also we can stop handling NULL
+result from kmalloc_slab() there as that now cannot happen (unless
+called too early during boot).
 
-Also move over free_large_kmalloc() as the only callsites are now in
-slub.c, and make it static.
+The size_index array becomes visible so rename it to a more specific
+kmalloc_size_index.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slab.h        |  4 ----
- mm/slab_common.c | 45 ------------------------------------------
- mm/slub.c        | 51 +++++++++++++++++++++++++++++++++++++++++++-----
- 3 files changed, 46 insertions(+), 54 deletions(-)
+ mm/slab.h        | 28 ++++++++++++++++++++++++++--
+ mm/slab_common.c | 43 ++++++++-----------------------------------
+ 2 files changed, 34 insertions(+), 37 deletions(-)
 
 diff --git a/mm/slab.h b/mm/slab.h
-index 1b09fd1b4b04..179467e8aacc 100644
+index 179467e8aacc..744384efa7be 100644
 --- a/mm/slab.h
 +++ b/mm/slab.h
-@@ -394,8 +394,6 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
+@@ -388,8 +388,32 @@ extern const struct kmalloc_info_struct {
+ void setup_kmalloc_cache_index_table(void);
+ void create_kmalloc_caches(slab_flags_t);
+ 
+-/* Find the kmalloc slab corresponding for a certain size */
+-struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
++extern u8 kmalloc_size_index[24];
++
++static inline unsigned int size_index_elem(unsigned int bytes)
++{
++	return (bytes - 1) / 8;
++}
++
++/*
++ * Find the kmem_cache structure that serves a given size of
++ * allocation
++ *
++ * This assumes size is larger than zero and not larger than
++ * KMALLOC_MAX_CACHE_SIZE and the caller must check that.
++ */
++static inline struct kmem_cache *
++kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
++{
++	unsigned int index;
++
++	if (size <= 192)
++		index = kmalloc_size_index[size_index_elem(size)];
++	else
++		index = fls(size - 1);
++
++	return kmalloc_caches[kmalloc_type(flags, caller)][index];
++}
+ 
  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
  			      int node, size_t orig_size,
- 			      unsigned long caller);
--void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller);
--
- gfp_t kmalloc_fix_flags(gfp_t flags);
- 
- /* Functions provided by the slab allocators */
-@@ -558,8 +556,6 @@ static inline int memcg_alloc_slab_cgroups(struct slab *slab,
- }
- #endif /* CONFIG_MEMCG_KMEM */
- 
--void free_large_kmalloc(struct folio *folio, void *object);
--
- size_t __ksize(const void *objp);
- 
- static inline size_t slab_ksize(const struct kmem_cache *s)
 diff --git a/mm/slab_common.c b/mm/slab_common.c
-index bbc2e3f061f1..f4f275613d2a 100644
+index f4f275613d2a..31ade17a7ad9 100644
 --- a/mm/slab_common.c
 +++ b/mm/slab_common.c
-@@ -963,22 +963,6 @@ void __init create_kmalloc_caches(slab_flags_t flags)
- 	slab_state = UP;
- }
+@@ -665,7 +665,7 @@ EXPORT_SYMBOL(random_kmalloc_seed);
+  * of two cache sizes there. The size of larger slabs can be determined using
+  * fls.
+  */
+-static u8 size_index[24] __ro_after_init = {
++u8 kmalloc_size_index[24] __ro_after_init = {
+ 	3,	/* 8 */
+ 	4,	/* 16 */
+ 	5,	/* 24 */
+@@ -692,33 +692,6 @@ static u8 size_index[24] __ro_after_init = {
+ 	2	/* 192 */
+ };
  
--void free_large_kmalloc(struct folio *folio, void *object)
+-static inline unsigned int size_index_elem(unsigned int bytes)
 -{
--	unsigned int order = folio_order(folio);
--
--	if (WARN_ON_ONCE(order == 0))
--		pr_warn_once("object pointer: 0x%p\n", object);
--
--	kmemleak_free(object);
--	kasan_kfree_large(object);
--	kmsan_kfree_large(object);
--
--	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
--			      -(PAGE_SIZE << order));
--	__free_pages(folio_page(folio, 0), order);
+-	return (bytes - 1) / 8;
 -}
 -
- static void *__kmalloc_large_node(size_t size, gfp_t flags, int node);
- static __always_inline
- void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
-@@ -1023,35 +1007,6 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
- }
- EXPORT_SYMBOL(__kmalloc_node_track_caller);
- 
--/**
-- * kfree - free previously allocated memory
-- * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-- *
-- * If @object is NULL, no operation is performed.
+-/*
+- * Find the kmem_cache structure that serves a given size of
+- * allocation
 - */
--void kfree(const void *object)
+-struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
 -{
--	struct folio *folio;
--	struct slab *slab;
--	struct kmem_cache *s;
+-	unsigned int index;
 -
--	trace_kfree(_RET_IP_, object);
+-	if (size <= 192) {
+-		if (!size)
+-			return ZERO_SIZE_PTR;
 -
--	if (unlikely(ZERO_OR_NULL_PTR(object)))
--		return;
--
--	folio = virt_to_folio(object);
--	if (unlikely(!folio_test_slab(folio))) {
--		free_large_kmalloc(folio, (void *)object);
--		return;
+-		index = size_index[size_index_elem(size)];
+-	} else {
+-		if (WARN_ON_ONCE(size > KMALLOC_MAX_CACHE_SIZE))
+-			return NULL;
+-		index = fls(size - 1);
 -	}
 -
--	slab = folio_slab(folio);
--	s = slab->slab_cache;
--	__kmem_cache_free(s, (void *)object, _RET_IP_);
--}
--EXPORT_SYMBOL(kfree);
--
- /**
-  * __ksize -- Report full size of underlying allocation
-  * @object: pointer to the object
-diff --git a/mm/slub.c b/mm/slub.c
-index 0dbb966e28a7..52e2a65b1b11 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4184,11 +4184,6 @@ static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
- 	return cachep;
- }
- 
--void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
--{
--	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
+-	return kmalloc_caches[kmalloc_type(flags, caller)][index];
 -}
 -
- void kmem_cache_free(struct kmem_cache *s, void *x)
+ size_t kmalloc_size_roundup(size_t size)
  {
- 	s = cache_from_obj(s, x);
-@@ -4199,6 +4194,52 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
- }
- EXPORT_SYMBOL(kmem_cache_free);
+ 	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
+@@ -843,9 +816,9 @@ void __init setup_kmalloc_cache_index_table(void)
+ 	for (i = 8; i < KMALLOC_MIN_SIZE; i += 8) {
+ 		unsigned int elem = size_index_elem(i);
  
-+static void free_large_kmalloc(struct folio *folio, void *object)
-+{
-+	unsigned int order = folio_order(folio);
-+
-+	if (WARN_ON_ONCE(order == 0))
-+		pr_warn_once("object pointer: 0x%p\n", object);
-+
-+	kmemleak_free(object);
-+	kasan_kfree_large(object);
-+	kmsan_kfree_large(object);
-+
-+	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
-+			      -(PAGE_SIZE << order));
-+	__free_pages(folio_page(folio, 0), order);
-+}
-+
-+/**
-+ * kfree - free previously allocated memory
-+ * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-+ *
-+ * If @object is NULL, no operation is performed.
-+ */
-+void kfree(const void *object)
-+{
-+	struct folio *folio;
-+	struct slab *slab;
-+	struct kmem_cache *s;
-+	void *x = (void *)object;
-+
-+	trace_kfree(_RET_IP_, object);
-+
-+	if (unlikely(ZERO_OR_NULL_PTR(object)))
-+		return;
-+
-+	folio = virt_to_folio(object);
-+	if (unlikely(!folio_test_slab(folio))) {
-+		free_large_kmalloc(folio, (void *)object);
-+		return;
-+	}
-+
-+	slab = folio_slab(folio);
-+	s = slab->slab_cache;
-+	slab_free(s, slab, x, NULL, &x, 1, _RET_IP_);
-+}
-+EXPORT_SYMBOL(kfree);
-+
- struct detached_freelist {
- 	struct slab *slab;
- 	void *tail;
+-		if (elem >= ARRAY_SIZE(size_index))
++		if (elem >= ARRAY_SIZE(kmalloc_size_index))
+ 			break;
+-		size_index[elem] = KMALLOC_SHIFT_LOW;
++		kmalloc_size_index[elem] = KMALLOC_SHIFT_LOW;
+ 	}
+ 
+ 	if (KMALLOC_MIN_SIZE >= 64) {
+@@ -854,7 +827,7 @@ void __init setup_kmalloc_cache_index_table(void)
+ 		 * is 64 byte.
+ 		 */
+ 		for (i = 64 + 8; i <= 96; i += 8)
+-			size_index[size_index_elem(i)] = 7;
++			kmalloc_size_index[size_index_elem(i)] = 7;
+ 
+ 	}
+ 
+@@ -865,7 +838,7 @@ void __init setup_kmalloc_cache_index_table(void)
+ 		 * instead.
+ 		 */
+ 		for (i = 128 + 8; i <= 192; i += 8)
+-			size_index[size_index_elem(i)] = 8;
++			kmalloc_size_index[size_index_elem(i)] = 8;
+ 	}
+ }
+ 
+@@ -977,10 +950,10 @@ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller
+ 		return ret;
+ 	}
+ 
+-	s = kmalloc_slab(size, flags, caller);
++	if (unlikely(!size))
++		return ZERO_SIZE_PTR;
+ 
+-	if (unlikely(ZERO_OR_NULL_PTR(s)))
+-		return s;
++	s = kmalloc_slab(size, flags, caller);
+ 
+ 	ret = __kmem_cache_alloc_node(s, flags, node, size, caller);
+ 	ret = kasan_kmalloc(s, ret, size, flags);
 -- 
 2.42.1
 
