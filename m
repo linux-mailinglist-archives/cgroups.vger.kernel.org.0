@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-402-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-403-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC4D87EAEAC
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 12:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97A137EAEB1
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 12:15:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C2E5B20AA0
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 11:14:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2875EB20A86
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 11:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA51A224D4;
-	Tue, 14 Nov 2023 11:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D360224E1;
+	Tue, 14 Nov 2023 11:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mFbVnbw1"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bKiv6KUs"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549EF224D3
-	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 11:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EC618C34
+	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 11:15:30 +0000 (UTC)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6493212C;
-	Tue, 14 Nov 2023 03:14:38 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B83189;
+	Tue, 14 Nov 2023 03:15:29 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 134DD21898;
-	Tue, 14 Nov 2023 11:14:37 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 227F92189A;
+	Tue, 14 Nov 2023 11:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1699960477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1699960528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XDqzWLx2K+JvK/ZPpwmsrJYyQOBFyyUyoFsG3is7Iq8=;
-	b=mFbVnbw19yBLSGNX3rYmkMYGhAiCndHWSWr7B5HTniuoNjZSaTzjaKQqYG4c1XCEVXFCS0
-	vjAkEPCobTE0w89xorZjRJk6yNd9lc2/TtQASS++HnibQxY0g6sRgGsU9eCfFS0h3+sMmP
-	Af7AEkldSerwYs4dAk0WuFYxiiodvNM=
+	bh=WjY0lOqg9mh8mWBYE0KXFzU0LNPphr/5FnE4BKt9JW4=;
+	b=bKiv6KUsSKLQfqpR7pUGkZAseyth42wfBKtAz4L7ZqOvpDYFCktIRrGBjGUc+6VfBCA7oB
+	Z7G5FL0w0d8CrOpt+o12WigsyXQ7QgrC7ok0XI3JbVtSN5Tn/QQad24gzHTSnVn1ROyG49
+	PcUJPaVe7H/BrHhpoNcTqKks6GL0RRA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D79A813460;
-	Tue, 14 Nov 2023 11:14:36 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0101813460;
+	Tue, 14 Nov 2023 11:15:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id sEGsMZxWU2UERQAAMHmgww
-	(envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 11:14:36 +0000
-Date: Tue, 14 Nov 2023 12:14:36 +0100
+	id baPYOM9WU2VzRQAAMHmgww
+	(envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 11:15:27 +0000
+Date: Tue, 14 Nov 2023 12:15:27 +0100
 From: Michal Hocko <mhocko@suse.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
@@ -68,10 +68,11 @@ Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
 	Muchun Song <muchun.song@linux.dev>,
 	Kees Cook <keescook@chromium.org>, kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org
-Subject: Re: [PATCH 04/20] mm/memcontrol: remove CONFIG_SLAB #ifdef guards
-Message-ID: <ZVNWnPYHXpQjCDZ3@tiehlicka>
+Subject: Re: [PATCH 13/20] mm/slab: move memcg related functions from slab.h
+ to slub.c
+Message-ID: <ZVNWz4lYwnRVhRtl@tiehlicka>
 References: <20231113191340.17482-22-vbabka@suse.cz>
- <20231113191340.17482-26-vbabka@suse.cz>
+ <20231113191340.17482-35-vbabka@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -80,12 +81,12 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231113191340.17482-26-vbabka@suse.cz>
+In-Reply-To: <20231113191340.17482-35-vbabka@suse.cz>
 Authentication-Results: smtp-out1.suse.de;
 	none
 X-Spam-Level: 
-X-Spam-Score: -1.97
-X-Spamd-Result: default: False [-1.97 / 50.00];
+X-Spam-Score: -4.63
+X-Spamd-Result: default: False [-4.63 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 RCVD_TLS_ALL(0.00)[];
@@ -95,8 +96,8 @@ X-Spamd-Result: default: False [-1.97 / 50.00];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 TAGGED_RCPT(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_SPAM(0.13)[63.14%];
 	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 BAYES_HAM(-2.53)[97.87%];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	 NEURAL_HAM_SHORT(-1.00)[-1.000];
 	 RCPT_COUNT_TWELVE(0.00)[23];
@@ -107,43 +108,13 @@ X-Spamd-Result: default: False [-1.97 / 50.00];
 	 RCVD_COUNT_TWO(0.00)[2];
 	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Mon 13-11-23 20:13:45, Vlastimil Babka wrote:
-> With SLAB removed, these are never true anymore so we can clean up.
+On Mon 13-11-23 20:13:54, Vlastimil Babka wrote:
+> We don't share those between SLAB and SLUB anymore, so most memcg
+> related functions can be moved to slub.c proper.
 > 
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
 Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  mm/memcontrol.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 774bd6e21e27..947fb50eba31 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5149,7 +5149,7 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
->  	return ret;
->  }
->  
-> -#if defined(CONFIG_MEMCG_KMEM) && (defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
-> +#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_SLUB_DEBUG)
->  static int mem_cgroup_slab_show(struct seq_file *m, void *p)
->  {
->  	/*
-> @@ -5258,8 +5258,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
->  		.write = mem_cgroup_reset,
->  		.read_u64 = mem_cgroup_read_u64,
->  	},
-> -#if defined(CONFIG_MEMCG_KMEM) && \
-> -	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
-> +#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_SLUB_DEBUG)
->  	{
->  		.name = "kmem.slabinfo",
->  		.seq_show = mem_cgroup_slab_show,
-> -- 
-> 2.42.1
-
 -- 
 Michal Hocko
 SUSE Labs
