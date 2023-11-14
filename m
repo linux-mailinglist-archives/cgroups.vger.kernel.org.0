@@ -1,99 +1,132 @@
-Return-Path: <cgroups+bounces-396-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-397-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1897EAB52
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 09:06:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE3F7EAD30
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 10:43:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54FA4B20AE1
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 08:06:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54EEF281139
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 09:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C3912B86;
-	Tue, 14 Nov 2023 08:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B9F168CE;
+	Tue, 14 Nov 2023 09:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IiRdUCYQ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NNhnrtvL"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EBC134B7
-	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 08:06:39 +0000 (UTC)
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841041A7
-	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 00:06:38 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7b6cd2afaf2so2154306241.0
-        for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 00:06:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699949197; x=1700553997; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7LGBUC9KsVeG0zIgCHu5xE4QSpLiIpSfaSXOL0b9rF8=;
-        b=IiRdUCYQbFjr9/sDs8KQqqCO7B89W/F35GafT+ceeahygeU2k1rtibLo8VFlGItvza
-         7WPGYcsLL7FFCGNuYbgD+0QgJRNC8hsR6zqym+9nISZPW+W1rhAvaoM5k4fyNEsx8KUl
-         nG8TeEfzmnbSg1J4j7GOP8+39QCf57Fqe4qhX9iSJrNwXqjrRuzJ5BUGn3wW2CkmEwY6
-         09WASEZQG6qam3P+ZxY8JeBRIFP/stwyMrPG1Fuu8xeuSoo/3dORugqFgPBBrbdBLU0r
-         0UFwRtMkjCHOzGMGzg2W+WdeAw2vljA06mOuL2PJvD+aeftZ3JTu/UKFbyOr4qWwSWvF
-         mfOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699949197; x=1700553997;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7LGBUC9KsVeG0zIgCHu5xE4QSpLiIpSfaSXOL0b9rF8=;
-        b=D1Tx1SeFnSsH8cvS00/+f1UhHbtKuH5MvUB9qBGc7FlTTh/5jVUJ2pFiAJdOM2e1Dn
-         jHB4GXUF3z1+toZXQ0/aJgcwE4BOlSf4udwEJYeL8xzO1qBv4ooE63nlaD/YW+PhSCH7
-         FmzZ3/WBiFRWrIGU59Bj00jaS/O7HUFj2dI+eiyrO72TwyaLhXPa5t0YvKxUhv6M06QZ
-         eeX0BuxTteVzd+ad1QaP6xM9+xh+pyYuxAm53NAJbdpSeZylH/W3IW7dw7YfRWQT1v0z
-         9jAS0lfqJ2Px1L2mBH2v4eugVTJSKQKcUxyjuj2PSDZE+uj29AhE1cbzPLwBK3njJbzW
-         ZvFQ==
-X-Gm-Message-State: AOJu0Yxs8scvDuYvja891mEmy0Kx/WHz+ZIEWTyrQyPX9mWcEMg/LkQn
-	RsC2kYnbw8dKQD3t2FmNNE6O4dbxYjcDTcFxOHNtbQ==
-X-Google-Smtp-Source: AGHT+IHRIIJ2otFiB28Ipx0WgE1WaXBMqJrx1/oRb4fjPk7Cj1iPewjxrE+pVnHo7BMp6gIpNsFRoZRKbs2enis0SEY=
-X-Received: by 2002:a05:6102:474e:b0:452:6178:642c with SMTP id
- ej14-20020a056102474e00b004526178642cmr8315473vsb.1.1699949197540; Tue, 14
- Nov 2023 00:06:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E893C134BE;
+	Tue, 14 Nov 2023 09:43:18 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB61194;
+	Tue, 14 Nov 2023 01:43:17 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E139721898;
+	Tue, 14 Nov 2023 09:43:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1699954994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mgQsT0odT754L8z+3U8Ly6+wQgAtpd/CnwwQT/eWbGI=;
+	b=NNhnrtvLg8PfB8mUbc7N/HdOLXsPh/5OQiu6/44DHFXkC0f2rDOShtPI6i8AmkRnyQkfkf
+	f/FD25+V3Qbkqh+Rngko70mZD/q5bcV7E8Z+PLl24rZAadbP5r4k3qo3OaXj7tnRDRRtQU
+	OSy2FoNjadPlXc0Mxlo3tWXRjXaEQfg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A731313416;
+	Tue, 14 Nov 2023 09:43:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id mqVVJzJBU2UgGAAAMHmgww
+	(envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 09:43:14 +0000
+Date: Tue, 14 Nov 2023 10:43:13 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: "tj@kernel.org" <tj@kernel.org>, John Groves <john@jagalactic.com>,
+	Gregory Price <gourry.memverge@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"ying.huang@intel.com" <ying.huang@intel.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+	"shakeelb@google.com" <shakeelb@google.com>,
+	"muchun.song@linux.dev" <muchun.song@linux.dev>,
+	"jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZVNBMW8iJIGDyp0y@tiehlicka>
+References: <20231109002517.106829-1-gregory.price@memverge.com>
+ <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
+ <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
+ <ZU6pR46kiuzPricM@slm.duckdns.org>
+ <ZU6uxSrj75EiXise@memverge.com>
+ <ZU7vjsSkGbRLza-K@slm.duckdns.org>
+ <ZU74L9oxWOoTTfpM@memverge.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231113191340.17482-22-vbabka@suse.cz> <20231113191340.17482-30-vbabka@suse.cz>
-In-Reply-To: <20231113191340.17482-30-vbabka@suse.cz>
-From: Marco Elver <elver@google.com>
-Date: Tue, 14 Nov 2023 09:06:01 +0100
-Message-ID: <CANpmjNNkojcku+2-Lh=LX=_TXq3+x0M0twYQG2dBWA0Aeqr=Xw@mail.gmail.com>
-Subject: Re: [PATCH 08/20] mm/slab: remove mm/slab.c and slab_def.h
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>, 
-	Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
-	Mark Hemment <markhe@nextd.demon.co.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZU74L9oxWOoTTfpM@memverge.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.86
+X-Spamd-Result: default: False [-3.86 / 50.00];
+	 ARC_NA(0.00)[];
+	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 CLAM_VIRUS_FAIL(0.00)[failed to scan and retransmits exceed];
+	 BAYES_HAM(-1.76)[93.55%];
+	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,jagalactic.com,gmail.com,vger.kernel.org,kvack.org,intel.com,linux-foundation.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,google.com,micron.com];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Mon, 13 Nov 2023 at 20:14, Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> Remove the SLAB implementation. Update CREDITS (also sort the SLOB entry
-> properly).
->
-> RIP SLAB allocator (1996 - 2024)
->
-> Cc: Mark Hemment <markhe@nextd.demon.co.uk>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  CREDITS                  |   12 +-
->  include/linux/slab_def.h |  124 --
->  mm/slab.c                | 4026 --------------------------------------
+On Fri 10-11-23 22:42:39, Gregory Price wrote:
+[...]
+> If I can ask, do you think it would be out of line to propose a major
+> refactor to mempolicy to enable external task's the ability to change a
+> running task's mempolicy *as well as* a cgroup-wide mempolicy component?
 
-There are still some references to it left (git grep mm/slab.c). It
-breaks documentation in Documentation/core-api/mm-api.rst
+No, I actually think this is a reasonable idea. pidfd_setmempolicy is a
+generally useful extension. The mempolicy code is heavily current task
+based and there might be some challenges but I believe this will a)
+improve the code base and b) allow more usecases.
+
+That being said, I still believe that a cgroup based interface is a much
+better choice over a global one. Cpusets seem to be a good fit as the
+controller does control memory placement wrt NUMA interfaces.
+-- 
+Michal Hocko
+SUSE Labs
 
