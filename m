@@ -1,72 +1,82 @@
-Return-Path: <cgroups+bounces-409-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-410-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076297EB479
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 17:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C0D7EB539
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 18:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2206D1C20A02
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 16:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BB251C20B03
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 17:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9512541A8F;
-	Tue, 14 Nov 2023 16:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616014121F;
+	Tue, 14 Nov 2023 17:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M/D2i1NN"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vymp8y4N"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FED4177C
-	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 16:08:21 +0000 (UTC)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2709413D
-	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 08:08:17 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b709048d8eso5144356b3a.2
-        for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 08:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699978096; x=1700582896; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oRY/n4hzMG96K6ti5fJKDmZ79xgR3kVdqHaH6UD7r9k=;
-        b=M/D2i1NNjakgUfAu6iiIs1jgFzTctDXSpqS34AOWVeOknum5x6I0YC3BGbpsptDIJQ
-         qmL2BgTPM7vZXMcWiBxMzy1kvp/bXHA+ASo3P2OT+4c5tMim7BdO9clwW7+pW7ns2Nhr
-         pAFtH3u7JLbmx5pO3dJhl8U+ICaPB7gL7FEpw0w90uai7rpnxYu4wopn2N9s0IjOgDSo
-         MUX1Mo+EKn0TA3HyvZpw+4+8DP9fxFRsG6Dfv27GKRd7j8DqL1BMyKILYb0drA/45c16
-         IE2E20tCtI0VDOQrFIizRRQEIQbQm3pcnkoOETbM6Jzs87lZ+V+6XVfOkLeyeJZ6XygR
-         MgqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699978096; x=1700582896;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oRY/n4hzMG96K6ti5fJKDmZ79xgR3kVdqHaH6UD7r9k=;
-        b=wGoJVLKMdcJHOkT5HUADX2c5TrNF3+q4laCGGnEItPHxYwrp0fK9jOcL+uD5CzrlZE
-         XmVJy4VOmbxMqpmbWfUnvaVZmwHmgA46ZGT6N2T09oeHar3aOU6rLEA8k4ZNJWhKudpz
-         JSGumKxiAcEzjG1Al90vWZREN/aGvbsWkjB5+n00i+zhZ3I8HNArb3hJS+cHf5ksHcq5
-         13U7uI9yE6rCUtMT7VEJfiTJuszqR9IqIZa0HKuN9aw7YPxdFAVg/4lUTvSDcpTGqdKe
-         k4J9yx6tCy+/9TGT/VKnigUE06z8WwUUjTjAsTNnyYGZxMEMMQcDrzM6hp8CTCwdDKwP
-         61eg==
-X-Gm-Message-State: AOJu0YwkxnP9fGk8v+Be4aqAUXyJMfRy+24bkrW0BuNsCq6PlGrg51Ub
-	kpX+svXRl13Zm5XdETua2o8=
-X-Google-Smtp-Source: AGHT+IEkK972CS9pzizdXfIYPWa+S6AHbSONE2KWS5E24UpeYFVdNsFAdaXxkYFzYh3o+OIOgOBagg==
-X-Received: by 2002:a05:6a00:8c05:b0:6c3:402a:d53d with SMTP id ih5-20020a056a008c0500b006c3402ad53dmr8519243pfb.2.1699978096521;
-        Tue, 14 Nov 2023 08:08:16 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id t8-20020a62ea08000000b006c34274f66asm1315982pfh.102.2023.11.14.08.08.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 08:08:16 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 14 Nov 2023 06:08:14 -1000
-From: Tejun Heo <tj@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: Re: [tj-cgroup:for-next] BUILD REGRESSION
- e76d28bdf9ba5388b8c4835a5199dc427b603188
-Message-ID: <ZVObbkEVn8-fnzZ3@slm.duckdns.org>
-References: <202311131910.pxATTnsK-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942922AF09;
+	Tue, 14 Nov 2023 17:01:17 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2781B11D;
+	Tue, 14 Nov 2023 09:01:16 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E1B720466;
+	Tue, 14 Nov 2023 17:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1699981274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pp5MU1mHRjsqLkYt40/eJ62sb2ubZSHcqYSme/SFRAA=;
+	b=Vymp8y4Np6RqKAUi4obDcB2t1u06UfNJq6yFum9ob2d3yda1xJJIZ4eNApAbtaokGGZN1t
+	httMG8yhPmIA1hjxQ68V6+WkIV9rkPYueMR2yUzOffG1gi6RST9Il1nIzWxofc49KEO6l7
+	oMU3b6ciIU2QAH8IVRv/MS1pqDMpkuQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2362513416;
+	Tue, 14 Nov 2023 17:01:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id P9GsBdqnU2XYAwAAMHmgww
+	(envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 17:01:14 +0000
+Date: Tue, 14 Nov 2023 18:01:13 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: "tj@kernel.org" <tj@kernel.org>, John Groves <john@jagalactic.com>,
+	Gregory Price <gourry.memverge@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"ying.huang@intel.com" <ying.huang@intel.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+	"shakeelb@google.com" <shakeelb@google.com>,
+	"muchun.song@linux.dev" <muchun.song@linux.dev>,
+	"jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZVOn2T_Qg_NTKlB2@tiehlicka>
+References: <20231109002517.106829-1-gregory.price@memverge.com>
+ <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
+ <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
+ <ZU6pR46kiuzPricM@slm.duckdns.org>
+ <ZU6uxSrj75EiXise@memverge.com>
+ <ZU7vjsSkGbRLza-K@slm.duckdns.org>
+ <ZU74L9oxWOoTTfpM@memverge.com>
+ <ZVNBMW8iJIGDyp0y@tiehlicka>
+ <ZVOXWx8XNJJNC23A@memverge.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -75,33 +85,54 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202311131910.pxATTnsK-lkp@intel.com>
+In-Reply-To: <ZVOXWx8XNJJNC23A@memverge.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -7.33
+X-Spamd-Result: default: False [-7.33 / 50.00];
+	 ARC_NA(0.00)[];
+	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 BAYES_HAM(-1.23)[89.42%];
+	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,jagalactic.com,gmail.com,vger.kernel.org,kvack.org,intel.com,linux-foundation.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,google.com,micron.com];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Mon, Nov 13, 2023 at 07:12:12PM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-> branch HEAD: e76d28bdf9ba5388b8c4835a5199dc427b603188  cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+On Tue 14-11-23 10:50:51, Gregory Price wrote:
+> On Tue, Nov 14, 2023 at 10:43:13AM +0100, Michal Hocko wrote:
+[...]
+> > That being said, I still believe that a cgroup based interface is a much
+> > better choice over a global one. Cpusets seem to be a good fit as the
+> > controller does control memory placement wrt NUMA interfaces.
 > 
-> Error/Warning reports:
+> I think cpusets is a non-starter due to the global spinlock required when
+> reading informaiton from it:
 > 
-> https://lore.kernel.org/oe-kbuild-all/202311130831.uh0AoCd1-lkp@intel.com
-> 
-> Error/Warning: (recently discovered and may have been fixed)
-> 
-> kernel/workqueue.c:5848:12: warning: 'workqueue_set_unbound_cpumask' defined but not used [-Wunused-function]
-> 
-> Error/Warning ids grouped by kconfigs:
-> 
-> gcc_recent_errors
-> |-- i386-tinyconfig
-> |   `-- kernel-workqueue.c:warning:workqueue_set_unbound_cpumask-defined-but-not-used
+> https://elixir.bootlin.com/linux/latest/source/kernel/cgroup/cpuset.c#L391
 
-The function is going to be used by a follow-up patch that Waiman is
-currently updating, so I'm going to leave it as-is for now. Looks like we'll
-need CONFIG_SYSFS || CONFIG_CPUSETS guarding it no matter what tho. Waiman,
-can you please add that to the rest of your series?
-
-Thanks.
-
+Right, our current cpuset implementation indeed requires callback lock
+from the page allocator. But that is an implementation detail. I do not
+remember bug reports about the lock being a bottle neck though. If
+anything cpusets lock optimizations would be win also for users who do
+not want to use weighted interleave interface.
 -- 
-tejun
+Michal Hocko
+SUSE Labs
 
