@@ -1,72 +1,71 @@
-Return-Path: <cgroups+bounces-395-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-396-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D88FC7EAB0B
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 08:46:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1897EAB52
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 09:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90BEA1F21E33
-	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 07:46:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54FA4B20AE1
+	for <lists+cgroups@lfdr.de>; Tue, 14 Nov 2023 08:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CBCD11CAD;
-	Tue, 14 Nov 2023 07:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C3912B86;
+	Tue, 14 Nov 2023 08:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="saCOkZvi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IiRdUCYQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E08E6FA9
-	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 07:46:44 +0000 (UTC)
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94771AC
-	for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 23:46:41 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-4ac89e8e964so2278763e0c.3
-        for <cgroups@vger.kernel.org>; Mon, 13 Nov 2023 23:46:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EBC134B7
+	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 08:06:39 +0000 (UTC)
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841041A7
+	for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 00:06:38 -0800 (PST)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7b6cd2afaf2so2154306241.0
+        for <cgroups@vger.kernel.org>; Tue, 14 Nov 2023 00:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699948001; x=1700552801; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699949197; x=1700553997; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sX2ZDi+R3Ev6T5LlvMfvdN7qFs7PkFHPelflvttGDD4=;
-        b=saCOkZviF7qV44inxihxL/LyQ8WpG4Ax9CQwREQIlchvqKCKVg+I7eBXPkjJ7mlme6
-         rGzC0LJ7yFQ+anMCwRbaQhmlYRb0xilb6AsiD7qE3MDwna6aDhYJQ7icc/BDeOqMgtzH
-         0FL8uhOBtorhv6g6aSlzGNI3/JPPVTc1AnYNpNLuhJSiqKszlRF3JwBqLbA1lI5w7MG7
-         XnErTCY8jdWXxQenTzD6/npOyRzn6SzIksztlFiAxyrCoX7JAPJ9NnRelami6DBgLwiP
-         yMjsWczq9yz2TSlwejV8CJ4qlRiFHT6RfL2F+zvGykBrrVMQehI5eoV1WHT7Fu6JeVJO
-         +JhQ==
+        bh=7LGBUC9KsVeG0zIgCHu5xE4QSpLiIpSfaSXOL0b9rF8=;
+        b=IiRdUCYQbFjr9/sDs8KQqqCO7B89W/F35GafT+ceeahygeU2k1rtibLo8VFlGItvza
+         7WPGYcsLL7FFCGNuYbgD+0QgJRNC8hsR6zqym+9nISZPW+W1rhAvaoM5k4fyNEsx8KUl
+         nG8TeEfzmnbSg1J4j7GOP8+39QCf57Fqe4qhX9iSJrNwXqjrRuzJ5BUGn3wW2CkmEwY6
+         09WASEZQG6qam3P+ZxY8JeBRIFP/stwyMrPG1Fuu8xeuSoo/3dORugqFgPBBrbdBLU0r
+         0UFwRtMkjCHOzGMGzg2W+WdeAw2vljA06mOuL2PJvD+aeftZ3JTu/UKFbyOr4qWwSWvF
+         mfOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699948001; x=1700552801;
+        d=1e100.net; s=20230601; t=1699949197; x=1700553997;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sX2ZDi+R3Ev6T5LlvMfvdN7qFs7PkFHPelflvttGDD4=;
-        b=ogsqqBniTVVAN9OIgfk6724J3ilTNthLjm5tCoemyKav3/SUgQnKxjYg2DPvpfOSRb
-         0JbojbaU9kCREuo1T/NtkALyBWjqVJEuuF7bMNUWdoKmGVGxejVQogQFcivFGVam89I5
-         wVHHw2VhAxlNpOZsFJRKDbadGZQXj87zzH1yZSyOm62pKHp/vcw0xA6ViEB0UvYHHOsd
-         8OV9bA5QawgU0p5zYwRlBwLa0mWrbCjWjeFtuN4UNUBaZXlpVa5070peuD6I8DMzBcQb
-         jR+HtdNw1ckU6DcNTJ3+W+7OaRrqV3y6SseSEvjH4mMnjU3gkFJbdbhdc0bIsHgUFmO8
-         +hUg==
-X-Gm-Message-State: AOJu0YyhaAGN3pJ/NODQ9O5ynXh1ZbRVwR4efR9gntDnjo7VUsMpR8dE
-	9a8CgnAFgD1mQjQQQmXpQYRyt7rS/iMkEeTIrYxc5g==
-X-Google-Smtp-Source: AGHT+IEkx9qpi9PxginlouXMsLXjDm4AhflR5GKJMwuObn7dBWpabAiTtV5tdjgAPRBqG6d0RnyHF3wv2N9uz3bxx2o=
-X-Received: by 2002:a05:6102:2908:b0:460:621c:d14b with SMTP id
- cz8-20020a056102290800b00460621cd14bmr9815342vsb.20.1699948000802; Mon, 13
- Nov 2023 23:46:40 -0800 (PST)
+        bh=7LGBUC9KsVeG0zIgCHu5xE4QSpLiIpSfaSXOL0b9rF8=;
+        b=D1Tx1SeFnSsH8cvS00/+f1UhHbtKuH5MvUB9qBGc7FlTTh/5jVUJ2pFiAJdOM2e1Dn
+         jHB4GXUF3z1+toZXQ0/aJgcwE4BOlSf4udwEJYeL8xzO1qBv4ooE63nlaD/YW+PhSCH7
+         FmzZ3/WBiFRWrIGU59Bj00jaS/O7HUFj2dI+eiyrO72TwyaLhXPa5t0YvKxUhv6M06QZ
+         eeX0BuxTteVzd+ad1QaP6xM9+xh+pyYuxAm53NAJbdpSeZylH/W3IW7dw7YfRWQT1v0z
+         9jAS0lfqJ2Px1L2mBH2v4eugVTJSKQKcUxyjuj2PSDZE+uj29AhE1cbzPLwBK3njJbzW
+         ZvFQ==
+X-Gm-Message-State: AOJu0Yxs8scvDuYvja891mEmy0Kx/WHz+ZIEWTyrQyPX9mWcEMg/LkQn
+	RsC2kYnbw8dKQD3t2FmNNE6O4dbxYjcDTcFxOHNtbQ==
+X-Google-Smtp-Source: AGHT+IHRIIJ2otFiB28Ipx0WgE1WaXBMqJrx1/oRb4fjPk7Cj1iPewjxrE+pVnHo7BMp6gIpNsFRoZRKbs2enis0SEY=
+X-Received: by 2002:a05:6102:474e:b0:452:6178:642c with SMTP id
+ ej14-20020a056102474e00b004526178642cmr8315473vsb.1.1699949197540; Tue, 14
+ Nov 2023 00:06:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231113191340.17482-22-vbabka@suse.cz> <20231113191340.17482-25-vbabka@suse.cz>
-In-Reply-To: <20231113191340.17482-25-vbabka@suse.cz>
+References: <20231113191340.17482-22-vbabka@suse.cz> <20231113191340.17482-30-vbabka@suse.cz>
+In-Reply-To: <20231113191340.17482-30-vbabka@suse.cz>
 From: Marco Elver <elver@google.com>
-Date: Tue, 14 Nov 2023 08:46:04 +0100
-Message-ID: <CANpmjNOrA_nfMsu1eaTqauVfc53p5xHxO7TZAueVXyi5Qf9wAg@mail.gmail.com>
-Subject: Re: [PATCH 03/20] KFENCE: cleanup kfence_guarded_alloc() after
- CONFIG_SLAB removal
+Date: Tue, 14 Nov 2023 09:06:01 +0100
+Message-ID: <CANpmjNNkojcku+2-Lh=LX=_TXq3+x0M0twYQG2dBWA0Aeqr=Xw@mail.gmail.com>
+Subject: Re: [PATCH 08/20] mm/slab: remove mm/slab.c and slab_def.h
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
 	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
@@ -77,39 +76,24 @@ Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekk
 	Vincenzo Frascino <vincenzo.frascino@arm.com>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
 	Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
+	Mark Hemment <markhe@nextd.demon.co.uk>
 Content-Type: text/plain; charset="UTF-8"
 
 On Mon, 13 Nov 2023 at 20:14, Vlastimil Babka <vbabka@suse.cz> wrote:
 >
-> Some struct slab fields are initialized differently for SLAB and SLUB so
-> we can simplify with SLUB being the only remaining allocator.
+> Remove the SLAB implementation. Update CREDITS (also sort the SLOB entry
+> properly).
 >
+> RIP SLAB allocator (1996 - 2024)
+>
+> Cc: Mark Hemment <markhe@nextd.demon.co.uk>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-
-Reviewed-by: Marco Elver <elver@google.com>
-
 > ---
->  mm/kfence/core.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index 3872528d0963..8350f5c06f2e 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -463,11 +463,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->         /* Set required slab fields. */
->         slab = virt_to_slab((void *)meta->addr);
->         slab->slab_cache = cache;
-> -#if defined(CONFIG_SLUB)
->         slab->objects = 1;
-> -#elif defined(CONFIG_SLAB)
-> -       slab->s_mem = addr;
-> -#endif
->
->         /* Memory initialization. */
->         set_canary(meta);
-> --
-> 2.42.1
->
+>  CREDITS                  |   12 +-
+>  include/linux/slab_def.h |  124 --
+>  mm/slab.c                | 4026 --------------------------------------
+
+There are still some references to it left (git grep mm/slab.c). It
+breaks documentation in Documentation/core-api/mm-api.rst
 
