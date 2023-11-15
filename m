@@ -1,134 +1,89 @@
-Return-Path: <cgroups+bounces-437-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-438-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 509CC7ED5E4
-	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 22:18:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3752C7ED5F3
+	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 22:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823C41C208D8
-	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 21:18:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD9D1C20966
+	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 21:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCD6381A5;
-	Wed, 15 Nov 2023 21:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D193A8DF;
+	Wed, 15 Nov 2023 21:22:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ftgLBid2"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vo+JG/GA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E375B127
-	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 13:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1700083088;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F+AAJRoNFb+NoS3KMWG2rvbhxYwWgV66EeFRyHv0H4g=;
-	b=ftgLBid28JQRPq1c4ji0Md/PI2GqDHKn0yJ0c669IPw1vaC61YWoAyVYkyAP3k8qF3MSwW
-	L53cxIkjBxubpykmwHa2mBDYKob4ICvLScoxjbPyXF6UN4mZHu0TkwC9VF2JBr2/GgiccQ
-	o2gXbuKnxkOjhPCy560eo2nTjHtMLwE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-618-8rha03oRNsqcXim3L5cd9Q-1; Wed, 15 Nov 2023 16:18:03 -0500
-X-MC-Unique: 8rha03oRNsqcXim3L5cd9Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DB46085CBE1;
-	Wed, 15 Nov 2023 21:18:01 +0000 (UTC)
-Received: from [10.22.9.184] (unknown [10.22.9.184])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 24A9B40C6EB9;
-	Wed, 15 Nov 2023 21:18:01 +0000 (UTC)
-Message-ID: <6c4ac1fb-f53a-496b-bab6-07e70c2197c7@redhat.com>
-Date: Wed, 15 Nov 2023 16:18:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C8292;
+	Wed, 15 Nov 2023 13:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700083338; x=1731619338;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=FT7PreuJ3lVSxdZI3Kl8HWil/xrTD5aZhsrselUmF1M=;
+  b=Vo+JG/GA9YN1ktsxqjLakemjqQEe+wFJvXY39OLSrO+cD5noQWzfJH55
+   2QLUBXlS5zskBsJydDrg2euawxvSzMIrCSPr8vmIfmn+Ots/LII9cskm9
+   NHi0mAcVpwjZv/WcadjU3B62nwvgJ4zyvRyNJzFGIPlE/zl5pWfp9NZAA
+   /Up+/+AAvzCXfjjsaR16GoGMRTbSYv6wWxDP+P3hQENjPIUW4/bSLIYgF
+   7It6TC3HdJij3iyj8BxYc3I8EPJKBt7hTJC2KCg+aJ1GRro2lz0hlj1s/
+   d5EcKmVvGF2tWLSLQzXEXDT0+4Nh9FL56muNQNfY7Co3sVclOgKrqYQv8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="9598794"
+X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
+   d="scan'208";a="9598794"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 13:22:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="831050068"
+X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
+   d="scan'208";a="831050068"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.93.50.236])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 15 Nov 2023 13:22:15 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com
+Subject: Re: [PATCH v6 12/12] selftests/sgx: Add scripts for EPC cgroup
+ testing
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-13-haitao.huang@linux.intel.com>
+ <CWZOSGQ2RYRX.2T0TCXOL4991P@kernel.org>
+Date: Wed, 15 Nov 2023 15:22:13 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/5] workqueue: Make workqueue_set_unbound_cpumask()
- static
-To: kernel test robot <lkp@intel.com>, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Jonathan Corbet <corbet@lwn.net>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Peter Hunt <pehunt@redhat.com>,
- Frederic Weisbecker <frederic@kernel.org>
-References: <20231115170359.163299-2-longman@redhat.com>
- <202311160353.FAdfQwO3-lkp@intel.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <202311160353.FAdfQwO3-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2egyzbzxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CWZOSGQ2RYRX.2T0TCXOL4991P@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
 
-On 11/15/23 14:12, kernel test robot wrote:
-> Hi Waiman,
+>> +CG_ROOT=/sys/fs/cgroup
+>> +if [ ! -d "/sys/fs/cgroup/misc" ]; then
+>> +    echo "# cgroup V2 is in use."
+>> +else
+>> +    echo "# cgroup V1 is in use."
+>> +    CG_ROOT=/sys/fs/cgroup/misc
+>> +fi
 >
-> kernel test robot noticed the following build warnings:
+> Does the test need to support v1 cgroups?
 >
-> [auto build test WARNING on shuah-kselftest/next]
-> [also build test WARNING on shuah-kselftest/fixes linus/master v6.7-rc1]
-> [cannot apply to tj-cgroup/for-next tj-wq/for-next next-20231115]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/workqueue-Make-workqueue_set_unbound_cpumask-static/20231116-010940
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-> patch link:    https://lore.kernel.org/r/20231115170359.163299-2-longman%40redhat.com
-> patch subject: [PATCH v3 1/5] workqueue: Make workqueue_set_unbound_cpumask() static
-> config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20231116/202311160353.FAdfQwO3-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160353.FAdfQwO3-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311160353.FAdfQwO3-lkp@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->>> kernel/workqueue.c:4421:13: warning: 'apply_wqattrs_unlock' defined but not used [-Wunused-function]
->      4421 | static void apply_wqattrs_unlock(void)
->           |             ^~~~~~~~~~~~~~~~~~~~
->>> kernel/workqueue.c:4414:13: warning: 'apply_wqattrs_lock' defined but not used [-Wunused-function]
->      4414 | static void apply_wqattrs_lock(void)
->           |             ^~~~~~~~~~~~~~~~~~
->
->
-> vim +/apply_wqattrs_unlock +4421 kernel/workqueue.c
->
-> 8864b4e59f7945 Tejun Heo                 2013-03-12  4413
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19 @4414  static void apply_wqattrs_lock(void)
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4415  {
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4416  	/* CPUs should stay stable across pwq creations and installations */
-> ffd8bea81fbb5a Sebastian Andrzej Siewior 2021-08-03  4417  	cpus_read_lock();
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4418  	mutex_lock(&wq_pool_mutex);
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4419  }
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4420
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19 @4421  static void apply_wqattrs_unlock(void)
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4422  {
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4423  	mutex_unlock(&wq_pool_mutex);
-> ffd8bea81fbb5a Sebastian Andrzej Siewior 2021-08-03  4424  	cpus_read_unlock();
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4425  }
-> a0111cf6710bd1 Lai Jiangshan             2015-05-19  4426
->
-OK, there are more functions that are CONFIG_SYSFS specific and need to 
-be moved as well.
+I thought some distro may still only support V1. I do my most work on  
+Ubuntu22.04 which by default is v1 so it's convenient for me to test. But  
+not strong opinions.
 
-Will post another version to fix that :-(
-
-Regards,
-Longman
-
+Thanks
+Haitao
 
