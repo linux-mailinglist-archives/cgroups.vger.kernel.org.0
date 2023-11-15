@@ -1,71 +1,68 @@
-Return-Path: <cgroups+bounces-424-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-428-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5ABB7EC864
-	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 17:21:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 731457EC942
+	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 18:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85AE8B20B3D
-	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 16:21:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3BE81C20B4D
+	for <lists+cgroups@lfdr.de>; Wed, 15 Nov 2023 17:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6EC381C4;
-	Wed, 15 Nov 2023 16:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8323FE58;
+	Wed, 15 Nov 2023 17:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="E3OXM9Is"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IvyEDXD9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85933381C1
-	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 16:21:03 +0000 (UTC)
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D5A196
-	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 08:21:00 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-359974f4c7eso26794965ab.1
-        for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 08:21:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700065260; x=1700670060; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VTFJnUE02Fl/erP4woMg7FCRUhqR44wUotjmE1ijPSg=;
-        b=E3OXM9IscpCbdG0whh1LM+tDmt9fJlxiGMSJXfrGUPZk//C0vc/o7Noe+uY6NHW40q
-         ltxQ0ZJBfuOCLWeZs3cs1YCfFvnI/FApGQoyXT6YvonCKuZ5Y8386X1CzDawAApBbLGn
-         dMYsemcdeO63NIcKS83GXHvreEys9e9fTUMgQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700065260; x=1700670060;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VTFJnUE02Fl/erP4woMg7FCRUhqR44wUotjmE1ijPSg=;
-        b=J5edRRpwJ56qcgrX9mIaaLbWfsqVzwpXYThH3ee/pHHCaxRjb6ZODsd7vS/4LnTUZC
-         UzkThb4t+ko6oUfgNfamPDjRcqZgGodrpLh7i6cERZn2ll7Jf/YX21O72G0oKjo5hskx
-         pEtUrT1cVv+ltX/18SWpobIBuXrKzWm2/vOKhhLJBMMnato8vj2NupLzZ3dAMyIbPMOP
-         hugOygXLUEUAfCG8Mxecr8CbT6SIYaEatXKEAfXFo9oSs98c9YQurWit1AO74dTS3gk+
-         QdQ9j2NsH2wGy/hTfa5eKY3McQXrBEJh+Px4mZXogcScT+B/LfkthjDly8xsYGNikWve
-         Q2Og==
-X-Gm-Message-State: AOJu0Yw3ieHxAVg2jswA8BMBpYdwGTTWxKCXs/Vw6BMbcrrgEbRpaz8S
-	BrJleI4Zyeg3Zb43ol7NOgaAow==
-X-Google-Smtp-Source: AGHT+IEQfGCSbzgsXlVEtw+4pIN/s1f2VziN8iZBz3Kt/hFHx8nWNO7LKYqHriHT3La4Y7GhbMaaPw==
-X-Received: by 2002:a92:c24a:0:b0:35a:b0a5:23ab with SMTP id k10-20020a92c24a000000b0035ab0a523abmr13217526ilo.21.1700065260120;
-        Wed, 15 Nov 2023 08:21:00 -0800 (PST)
-Received: from timvp-p620-9115096.bld.corp.google.com ([2620:15c:183:200:31f9:945d:f7f2:bd55])
-        by smtp.gmail.com with ESMTPSA id r1-20020a92c501000000b003574cad1598sm1215050ilg.33.2023.11.15.08.20.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 08:20:59 -0800 (PST)
-From: Tim Van Patten <timvp@chromium.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: markhas@google.com,
-	Tim Van Patten <timvp@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Tejun Heo <tj@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 628123FE44
+	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 17:04:25 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28A6D44
+	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 09:04:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1700067861;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HRYEQpHqs33qVvt7P3DiUUYjLjVK3AoO1/pzgTrkPNE=;
+	b=IvyEDXD9WNvacrVYx/ifR7l5aV1DbGUjaEfBEyvC/GF850n8Jmnm+msKFUV4HpAoQAjPxH
+	fVpst/mVlq+KEtYhvT/YMp/XiWibtBUkkt/4lsraV3oUCL9J5ve0USx1+/E8SqoluxbCCa
+	GJPAtq3JhmxnsjKa9C1OlTNBy8ChjMk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-550-YnyQKZPYPzuYztDmQCgvtQ-1; Wed,
+ 15 Nov 2023 12:04:15 -0500
+X-MC-Unique: YnyQKZPYPzuYztDmQCgvtQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 537583C2364B;
+	Wed, 15 Nov 2023 17:04:14 +0000 (UTC)
+Received: from llong.com (unknown [10.22.9.37])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id B1ED81121306;
+	Wed, 15 Nov 2023 17:04:13 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
 	Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org
-Subject: [PATCH] cgroup_freezer: cgroup_freezing: Check if not frozen
-Date: Wed, 15 Nov 2023 09:20:43 -0700
-Message-ID: <20231115162054.2896748-1-timvp@chromium.org>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Peter Hunt <pehunt@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/5] cgroup/cpuset: Improve CPU isolation in isolated partitions
+Date: Wed, 15 Nov 2023 12:03:54 -0500
+Message-Id: <20231115170359.163299-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -73,61 +70,66 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-From: Tim Van Patten <timvp@google.com>
+v3:
+ - Break out a separate patch to make workqueue_set_unbound_cpumask()
+   static and move it down to the CONFIG_SYSFS section.
+ - Remove the "__DEBUG__." prefix and the CFTYPE_DEBUG flag from the
+   new root only cpuset.cpus.isolated control files and update the
+   test accordingly.
 
-__thaw_task() was recently updated to warn if the task being thawed was
-part of a freezer cgroup that is still currently freezing:
+v2:
+ - Add 2 read-only workqueue sysfs files to expose the user requested
+   cpumask as well as the isolated CPUs to be excluded from
+   wq_unbound_cpumask.
+ - Ensure that caller of the new workqueue_unbound_exclude_cpumask()
+   hold cpus_read_lock.
+ - Update the cpuset code to make sure the cpus_read_lock is held
+   whenever workqueue_unbound_exclude_cpumask() may be called.
 
-	void __thaw_task(struct task_struct *p)
-	{
-	...
-		if (WARN_ON_ONCE(freezing(p)))
-			goto unlock;
+Isolated cpuset partition can currently be created to contain an
+exclusive set of CPUs not used in other cgroups and with load balancing
+disabled to reduce interference from the scheduler.
 
-This has exposed a bug in cgroup1 freezing where when CGROUP_FROZEN is
-asserted, the CGROUP_FREEZING bits are not also cleared at the same
-time. Meaning, when a cgroup is marked FROZEN it continues to be marked
-FREEZING as well. This causes the WARNING to trigger, because
-cgroup_freezing() thinks the cgroup is still freezing.
+The main purpose of this isolated partition type is to dynamically
+emulate what can be done via the "isolcpus" boot command line option,
+specifically the default domain flag. One effect of the "isolcpus" option
+is to remove the isolated CPUs from the cpumasks of unbound workqueues
+since running work functions in an isolated CPU can be a major source
+of interference. Changing the unbound workqueue cpumasks can be done at
+run time by writing an appropriate cpumask without the isolated CPUs to
+/sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+cpuset partition and then write to the cpumask sysfs file to achieve
+similar level of CPU isolation. However, this manual process can be
+error prone.
 
-There are two ways to fix this:
+This patch series implements automatic exclusion of isolated CPUs from
+unbound workqueue cpumasks when an isolated cpuset partition is created
+and then adds those CPUs back when the isolated partition is destroyed.
 
-1. Whenever FROZEN is set, clear FREEZING for the cgroup and all
-children cgroups.
-2. Update cgroup_freezing() to also verify that FROZEN is not set.
+There are also other places in the kernel that look at the HK_FLAG_DOMAIN
+cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs from
+certain actions to further reduce interference. CPUs in an isolated
+cpuset partition will not be able to avoid those interferences yet. That
+may change in the future as the need arises.
+Waiman Long (5):
+  workqueue: Make workqueue_set_unbound_cpumask() static
+  workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+    from wq_unbound_cpumask
+  selftests/cgroup: Minor code cleanup and reorganization of
+    test_cpuset_prs.sh
+  cgroup/cpuset: Keep track of CPUs in isolated partitions
+  cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
 
-This patch implements option (2), since it's smaller and more
-straightforward.
+ Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+ include/linux/workqueue.h                     |   2 +-
+ kernel/cgroup/cpuset.c                        | 286 +++++++++++++-----
+ kernel/workqueue.c                            | 139 +++++++--
+ .../selftests/cgroup/test_cpuset_prs.sh       | 216 ++++++++-----
+ 5 files changed, 462 insertions(+), 191 deletions(-)
 
-Signed-off-by: Tim Van Patten <timvp@google.com>
----
-
- kernel/cgroup/legacy_freezer.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
-index 122dacb3a443..66d1708042a7 100644
---- a/kernel/cgroup/legacy_freezer.c
-+++ b/kernel/cgroup/legacy_freezer.c
-@@ -66,9 +66,15 @@ static struct freezer *parent_freezer(struct freezer *freezer)
- bool cgroup_freezing(struct task_struct *task)
- {
- 	bool ret;
-+	unsigned int state;
- 
- 	rcu_read_lock();
--	ret = task_freezer(task)->state & CGROUP_FREEZING;
-+	/* Check if the cgroup is still FREEZING, but not FROZEN. The extra
-+	 * !FROZEN check is required, because the FREEZING bit is not cleared
-+	 * when the state FROZEN is reached.
-+	 */
-+	state = task_freezer(task)->state;
-+	ret = (state & CGROUP_FREEZING) && !(state & CGROUP_FROZEN);
- 	rcu_read_unlock();
- 
- 	return ret;
 -- 
-2.43.0.rc0.421.g78406f8d94-goog
+2.39.3
 
 
