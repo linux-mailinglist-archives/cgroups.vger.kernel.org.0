@@ -1,126 +1,119 @@
-Return-Path: <cgroups+bounces-455-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-458-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218777EE52F
-	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 17:30:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A687EE765
+	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 20:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02CBC1F2117B
-	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 16:30:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F7782811C3
+	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 19:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE3930F93;
-	Thu, 16 Nov 2023 16:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41824652D;
+	Thu, 16 Nov 2023 19:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e//oMVnh"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="k+gERTjO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98EE19B
-	for <cgroups@vger.kernel.org>; Thu, 16 Nov 2023 08:30:04 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40a426872c6so91885e9.0
-        for <cgroups@vger.kernel.org>; Thu, 16 Nov 2023 08:30:04 -0800 (PST)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D043D5C
+	for <cgroups@vger.kernel.org>; Thu, 16 Nov 2023 11:21:30 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc3216b2a1so10798135ad.2
+        for <cgroups@vger.kernel.org>; Thu, 16 Nov 2023 11:21:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700152203; x=1700757003; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F38ipVUNvi48KLUDF7UtMFc73Zu13fPzsb7BsE5kJSc=;
-        b=e//oMVnhugdxZVRTiLqPYA3eLopxTxbjUr9MetKr0aqj4vesYAxgpODZf5PWm/2gtl
-         eb0ZN1YTDM1/2/DnwYayPSn+qiLJTSAB+JYEGBy5IZ67940Ohb+lG1bkusSs+SzUi826
-         jbZFxK/atYbzkLP4yAsHUUJB1fBoLIyxYD4urkUbZt8X4my6ZE72b9qCQEqwVZUhe+h7
-         Afx0zlQcAoWwvHpcvXtIOld/nuEJySji/8oUBE3k5mpEWfymBT3eIByofGgddzXJ/xz8
-         Nd9MGpP4p5T+0cbwXQ/DPIslB1obr7TeRd9ehk+g062m9jVlwUfWe79u6i9CIpp4EZt5
-         jNTg==
+        d=chromium.org; s=google; t=1700162490; x=1700767290; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YzF2ALYUXgtOOWHICjx/9sp3ZlXGizxmY7whZwnkVqs=;
+        b=k+gERTjO6F93q1lS3m32rhR1J28d3mpm2fohBNlGcICYiGp+WYLpMxD8T7g/NwYvkq
+         TnISjy6v2HHl9uLVBPS8As3+3N6VKqEA9rJCcxc1hfXLgupG0st4Nw0XKCMTajq+7gAC
+         fZ1sQBFKSupkE3fCKaYxdMbwZ3O33arR2wFwM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700152203; x=1700757003;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1700162490; x=1700767290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=F38ipVUNvi48KLUDF7UtMFc73Zu13fPzsb7BsE5kJSc=;
-        b=ClS3643CP+DBWvZSuFHOsHefkj2IR8WBSMAcOmFCrCuIwyjOrqruFuWnmR2lvCRQlv
-         ip4dZMiLejBoWJVu1xr0YxzGugSY1v5QMdJaXaVkx0zDl80tbWChY0JHD3ndRXKH2D6/
-         a7u7gbAUYI2XRavmD3WGqq9Hr10AKUfVPtYmwElT8P+sd+C6tmzrt5aeF64DdfjhfpLV
-         NAvVKwJ91GEAW/44a+Ne7bmJjcODgLnt6By1kx0PvHGcvCClQ6kpcEiBvXI0EJJNAt0R
-         LXeGn2lzI/VYGt0Y8B+9FatkKn6C4BL4EgYqFkIdJIoNxDAITrkp8HoGW93cibpEU5ey
-         gjPw==
-X-Gm-Message-State: AOJu0Ywi0noYsTueOTzT3ozcRkiFfDbTAGcO3CK4TJ0xk19MLzvB3HVS
-	pcA9zmZ2btCP19a39St8492wPkJCKgWCmpNbRMwf4tD3JrAw7+3nooQ7kw==
-X-Google-Smtp-Source: AGHT+IHTSAO3ZZWQEDfwlIxcr2RQHkWHxU1lY0UMFAqrwEicgTwTY4mkmAJXdjESEXa6UsOxY2NYQCZ4aKF8v3hJKeM=
-X-Received: by 2002:a05:600c:3f8b:b0:3f4:fb7:48d4 with SMTP id
- fs11-20020a05600c3f8b00b003f40fb748d4mr142802wmb.3.1700152203066; Thu, 16 Nov
- 2023 08:30:03 -0800 (PST)
+        bh=YzF2ALYUXgtOOWHICjx/9sp3ZlXGizxmY7whZwnkVqs=;
+        b=X2ZAI/0bgJCjSDIQ+wLt/2TqQ4nh7YV4wpTwz6UZSqrBOhcqlQjGdoGb0jR/5rYvPz
+         Ku12AIQ/Cxw6q1hI+2NjCZmXeMNrFwFdT6o0reRXtM1LashfbfZE+dc0qu6IvybZxum4
+         zOqVoGJ9cfjTPIo/nmDbyLIrsS+ekK+V8WX40rjp5NSo2SPkNuo+uHuiEUi99EsT/pkA
+         ZxK/HVl1VXXYrqRek1KL8KlMSS2TMk3SfDkAsD/pcLDuoTZbYNkrWJMhDdGxamLuTQHR
+         P4ddhHS+Z7MqCGEL82JB+EehzhTWhEK3jC6emWddhyRb0DMwtc2nft8uyTZraXDMF8z7
+         noDg==
+X-Gm-Message-State: AOJu0Yyvr79CCeiLrqxxI7iHVOfcYqpi2/gtuMdlBHst79zYYC2UvXoj
+	TJIYkrLH4qYkG6AYjouboyohDQ==
+X-Google-Smtp-Source: AGHT+IFOsmNi6M20q2mMZfgvvs7Ny35X8FWHOzyId2w5LMV8GyUNADT9qbMocFM5IvDg5rKoPH1waA==
+X-Received: by 2002:a17:902:f54f:b0:1cc:4eb1:edaa with SMTP id h15-20020a170902f54f00b001cc4eb1edaamr11388254plf.51.1700162489866;
+        Thu, 16 Nov 2023 11:21:29 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1709028c9800b001c9bfd20d0csm17388plo.124.2023.11.16.11.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 11:21:28 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Tejun Heo <tj@kernel.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH 0/3] kernfs: Convert from strlcpy() to strscpy()
+Date: Thu, 16 Nov 2023 11:21:22 -0800
+Message-Id: <20231116191718.work.246-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231115162054.2896748-1-timvp@chromium.org>
-In-Reply-To: <20231115162054.2896748-1-timvp@chromium.org>
-From: Mark Hasemeyer <markhas@google.com>
-Date: Thu, 16 Nov 2023 09:29:51 -0700
-Message-ID: <CAP0ea-s2QwQhKpu81b+n5Fcq7dscbwTxoFf2tpV926RXw3ca1g@mail.gmail.com>
-Subject: Re: [PATCH] cgroup_freezer: cgroup_freezing: Check if not frozen
-To: Tim Van Patten <timvp@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Tim Van Patten <timvp@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=805; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=w0GAtTzgRNL9znjaphz3FN4VQ24pFDHc0eBL30sFkpg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlVmu11zVyAR1N094pTJIYi2lpml53vIr/7Zkfb
+ zgMf4lRuPCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZVZrtQAKCRCJcvTf3G3A
+ JqcUEACow96whY2PXsoj9tPefpjj3UIwlfJ3ut/35CSfyT8UK7/zYhv7KEZrBeHK/qxMRJ9+xBe
+ Pc7j5tIqc68ExBPJVWjYfDJ37dsg28n4AbifgDfF4Tfr+XD/B/7zBYlbqa+YfKIoqNsie3TuEmb
+ Jo5TNLzmJ+iHwLZQBg52HuTJ8IypsNdhdPUDt+GSVayHbFP8sOaZMzSgNzkWGE0EZPJVbhJkBhG
+ dgaf1he3KcoFhM6lOXcJzNfLL4wP3gW0wQvCa7n53dwozdUYLAN8vAo99ju0ONbxHC5gaRy2hV1
+ m8LYlDrVzBTldqKUPCwLlfworllGmywSzRyIvViY2SKCuLTEJMhrfrRT7eIc9F/TyhwKXjfWGox
+ Q4MGthWvVnHSVXW26aJPBCdBexdQe0UNHIe1e9GtdPVv6/DSkPteLizTSuVXO/m6gY1q3uCYF9G
+ RsrfA76ykmz8PiMZ1HwiSOUivMyMCZYd9dgBIcnKAxJdRmYQm6zmTcEY6iUR4P/ay56A0T7/tW+
+ SIqHoC9vLAMJk2kagkrDUu4Q7FIjW4MKeI+Ul2jrc9WW0ggDCMFFYhz9oXzEcrakU5x04mo7l07
+ mIs0IZlQmu6Y6/xTB1XcYB+9kCsQ0kxxgVUzqWsljvkctWg0ATuQ6HYRvZxRPR3AoAIvMha9INk
+ Mb18F4pb gdKumXw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
->
-> From: Tim Van Patten <timvp@google.com>
->
-> __thaw_task() was recently updated to warn if the task being thawed was
-> part of a freezer cgroup that is still currently freezing:
->
->         void __thaw_task(struct task_struct *p)
->         {
->         ...
->                 if (WARN_ON_ONCE(freezing(p)))
->                         goto unlock;
->
-> This has exposed a bug in cgroup1 freezing where when CGROUP_FROZEN is
-> asserted, the CGROUP_FREEZING bits are not also cleared at the same
-> time. Meaning, when a cgroup is marked FROZEN it continues to be marked
-> FREEZING as well. This causes the WARNING to trigger, because
-> cgroup_freezing() thinks the cgroup is still freezing.
->
-> There are two ways to fix this:
->
-> 1. Whenever FROZEN is set, clear FREEZING for the cgroup and all
-> children cgroups.
-> 2. Update cgroup_freezing() to also verify that FROZEN is not set.
->
-> This patch implements option (2), since it's smaller and more
-> straightforward.
->
-> Signed-off-by: Tim Van Patten <timvp@google.com>
-> ---
->
->  kernel/cgroup/legacy_freezer.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
-> index 122dacb3a443..66d1708042a7 100644
-> --- a/kernel/cgroup/legacy_freezer.c
-> +++ b/kernel/cgroup/legacy_freezer.c
-> @@ -66,9 +66,15 @@ static struct freezer *parent_freezer(struct freezer *freezer)
->  bool cgroup_freezing(struct task_struct *task)
->  {
->         bool ret;
-> +       unsigned int state;
->
->         rcu_read_lock();
-> -       ret = task_freezer(task)->state & CGROUP_FREEZING;
-> +       /* Check if the cgroup is still FREEZING, but not FROZEN. The extra
-> +        * !FROZEN check is required, because the FREEZING bit is not cleared
-> +        * when the state FROZEN is reached.
-> +        */
-> +       state = task_freezer(task)->state;
-> +       ret = (state & CGROUP_FREEZING) && !(state & CGROUP_FROZEN);
->         rcu_read_unlock();
->
->         return ret;
-> --
-Tested-by: Mark Hasemeyer <markhas@chromium.org>
+Hi,
+
+One of the last users of strlcpy() is kernfs, which has some complex
+calling hierarchies that needed to be carefully examined. This series
+refactors the strlcpy() calls into strscpy() calls, and bubbles up all
+changes in return value checking for callers.
+
+-Kees
+
+Kees Cook (3):
+  kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
+    strscpy()
+
+ fs/kernfs/dir.c             | 53 ++++++++++++++++++++-----------------
+ kernel/cgroup/cgroup-v1.c   |  2 +-
+ kernel/cgroup/cgroup.c      |  4 +--
+ kernel/cgroup/cpuset.c      |  2 +-
+ kernel/trace/trace_uprobe.c |  2 +-
+ 5 files changed, 33 insertions(+), 30 deletions(-)
+
+-- 
+2.34.1
+
 
