@@ -1,55 +1,55 @@
-Return-Path: <cgroups+bounces-440-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-441-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061687ED94C
-	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 03:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1CE7ED950
+	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 03:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B51D2280F48
-	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 02:24:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 659B6280F8C
+	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 02:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A64A63D8;
-	Thu, 16 Nov 2023 02:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CD61873;
+	Thu, 16 Nov 2023 02:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xe5MtW0w"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SSq1gjJG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56F91A4
-	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 18:24:16 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a541b720aso424688276.0
-        for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 18:24:16 -0800 (PST)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6638E
+	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 18:24:18 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5aecf6e30e9so4618967b3.1
+        for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 18:24:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700101456; x=1700706256; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700101458; x=1700706258; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BcE9vJD0hOv2TBpe3ivca8OUmRQ1FOEoUuzJXTFrwQU=;
-        b=xe5MtW0wJjFy8d59ZlUsqx91/pLiIvBH1MJeyaAasPiwtQqJCd6jwX49qQ1h70vghI
-         3WCKs5vPHO9p3WE74yGqXixldwo7ea3GX2j/zYG63t8sgV4D8TCM41oN1ILr5opRDq05
-         A2r2XGny+xev5ka+WgAXc4fyD4cCDVXkRzly3bMvHTmaQWfKTxOMRWbWoBZAbmeljHrK
-         tsGAx4oLV/mEj0u5BGWis4ET1stjBpfvgpUIxFqm5JdjEe+d+glwpLcHgosogA9yVU8/
-         bHDwB4H58NI2/8xBxNYoOzjZEkLVLApzAnk2NzeqtC9RpE5oCQom99LKC68s/eVGDwS0
-         7JIw==
+        bh=CsQgPePmMbwkmYg1tT46kxvFflY+DocB+A/S3VGDzrg=;
+        b=SSq1gjJGYKByfSc1ezcEZl5ZLzu+0Gp49FDvhZLXMmMAZiEzYmtiwWHY9lp5sxFhfN
+         ED2X1gOJrbfkbLJpx8GZv/6TfkAOaCaxPdiLOWOzdsyL/YMcCovMr1MS6xWLMuUWgjZ0
+         fwtN68iG7IfCfdUGyMD04z+JM8GRrdmSiqE5ajmCC68UCqbQU3MmWQ8r3KgmZjzy+MUL
+         AWu40HmAP3acYhQ8bRvC3JvcDGnTTyepgs5en4aSS1s9g62t7PbCqtGp+S7CN1UJ41kg
+         WapT3sabVpYTmaQOPOmrrt/m+sFQlvKV1Dar6DQ7H+mzaZoF3Q8TWR/PSDYwFW2NlZW0
+         /agg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700101456; x=1700706256;
+        d=1e100.net; s=20230601; t=1700101458; x=1700706258;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BcE9vJD0hOv2TBpe3ivca8OUmRQ1FOEoUuzJXTFrwQU=;
-        b=AsJd2a8T9o8QPNuoXVUyAdH8/dfDNQ5t2t0q7NQYZIuBbkwXKevwwlR/Vphm/PdKKq
-         IXIQwx0Tdo3wOwnvYjlXbNta1muHb5uj+mEYrLGbIwYTRbhM04oUfnwvWmdbwridUWos
-         zo7KFRk0GMz35raUd2gd9DVf3JP/fxL3ygxUAzxVroTdk01iaaO94cVeSCRjMjap4bYF
-         vYAxJ7o19ZfNjVwsOdgbB20SIls9v+9EhLO98MIb6eOEsh/05jv1tWYCuFr6HSUPsMGx
-         cYsvTz6/j6H68Ac2J1U1mWIC4GKGUfLoNiR1XySJc3YANHn0gEAs+TTURCtIxXy99ZGH
-         jDJw==
-X-Gm-Message-State: AOJu0YwqkRSYaCihFL/vEnjNaVBnF3yMx2EelwGFhm1Qbt5QQNPjupde
-	ZKurOziABpqDBpYmQ7tNZ62M4NpPLMwrZ6NA
-X-Google-Smtp-Source: AGHT+IFy97x2nQDJgIiWGH9dEF3svZisBvzaosL7zloYt6xMQ4EjhERYd/7GmdSfHzW6U7mYn8R6aavP5vLCYx6D
+        bh=CsQgPePmMbwkmYg1tT46kxvFflY+DocB+A/S3VGDzrg=;
+        b=sLURDPfywFEvHM47dyjANjmv4Z5F69m/MBm/WJbe7Spq/QpnliKFgWAivORQdxGQof
+         qgZizZYcbW7LZxyOH4vPNwt+c6igMaTWvkkqPByygzaITCgqXBfhtv4ab8REKOX7coKX
+         vTxnrkyikiSJxh/ybXdejaQ1ZEoW5lBxlTyB7LOgy1Yo2LI0DJlAlbG7usCDbedj9Mcs
+         leRSc5lwKquYmgGhNSVW2kaiSb2i9TYjgGpZBGn4ncwdutQWuf++DSvWsy29303uqNil
+         2RQvIsmdinHkyIZjRBKQaCv6H/yc+Pr/gVSQWfE5x7it7iFTijZ5UGVPsNkdgi2e0AtH
+         KmHw==
+X-Gm-Message-State: AOJu0Yw3BeNrTI02H4b/P0JunmOSnBkbEbdVlf+aw6mDlh2pe8AgNtLJ
+	cv/cjQTZ9TZGYJqSF9IdaRZKMbdyFnM64oVP
+X-Google-Smtp-Source: AGHT+IFLy40NOoa1rb6dZOa2HGVCBZYSVTkHt6esqpaY9lO76idIWli3bPfPKtfXVxgT/7MwnEla17Q3y28TlYUG
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:285:b0:d9a:d272:ee58 with SMTP
- id v5-20020a056902028500b00d9ad272ee58mr402081ybh.9.1700101456166; Wed, 15
- Nov 2023 18:24:16 -0800 (PST)
-Date: Thu, 16 Nov 2023 02:24:06 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a0d:d747:0:b0:5a7:a929:5b1d with SMTP
+ id z68-20020a0dd747000000b005a7a9295b1dmr375983ywd.4.1700101457790; Wed, 15
+ Nov 2023 18:24:17 -0800 (PST)
+Date: Thu, 16 Nov 2023 02:24:07 +0000
 In-Reply-To: <20231116022411.2250072-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -59,8 +59,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231116022411.2250072-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-Message-ID: <20231116022411.2250072-2-yosryahmed@google.com>
-Subject: [PATCH v3 1/5] mm: memcg: change flush_next_time to flush_last_time
+Message-ID: <20231116022411.2250072-3-yosryahmed@google.com>
+Subject: [PATCH v3 2/5] mm: memcg: move vmstats structs definition above
+ flushing code
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
@@ -72,55 +73,182 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
 	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-flush_next_time is an inaccurate name. It's not the next time that
-periodic flushing will happen, it's rather the next time that
-ratelimited flushing can happen if the periodic flusher is late.
-
-Simplify its semantics by just storing the timestamp of the last flush
-instead, flush_last_time. Move the 2*FLUSH_TIME addition to
-mem_cgroup_flush_stats_ratelimited(), and add a comment explaining it.
-This way, all the ratelimiting semantics live in one place.
+The following patch will make use of those structs in the flushing code,
+so move their definitions (and a few other dependencies) a little bit up
+to reduce the diff noise in the following patch.
 
 No functional change intended.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 Tested-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
 ---
- mm/memcontrol.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/memcontrol.c | 146 ++++++++++++++++++++++++------------------------
+ 1 file changed, 73 insertions(+), 73 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 774bd6e21e278..18931d82f108f 100644
+index 18931d82f108f..5ae2a8f04be45 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -593,7 +593,7 @@ static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
- static DEFINE_PER_CPU(unsigned int, stats_updates);
- static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
- static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
--static u64 flush_next_time;
-+static u64 flush_last_time;
- 
- #define FLUSH_TIME (2UL*HZ)
- 
-@@ -653,7 +653,7 @@ static void do_flush_stats(void)
- 	    atomic_xchg(&stats_flush_ongoing, 1))
- 		return;
- 
--	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
-+	WRITE_ONCE(flush_last_time, jiffies_64);
- 
- 	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
- 
-@@ -669,7 +669,8 @@ void mem_cgroup_flush_stats(void)
- 
- void mem_cgroup_flush_stats_ratelimited(void)
- {
--	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
-+	/* Only flush if the periodic flusher is one full cycle late */
-+	if (time_after64(jiffies_64, READ_ONCE(flush_last_time) + 2*FLUSH_TIME))
- 		mem_cgroup_flush_stats();
+@@ -573,6 +573,79 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+ 	return mz;
  }
  
++/* Subset of vm_event_item to report for memcg event stats */
++static const unsigned int memcg_vm_event_stat[] = {
++	PGPGIN,
++	PGPGOUT,
++	PGSCAN_KSWAPD,
++	PGSCAN_DIRECT,
++	PGSCAN_KHUGEPAGED,
++	PGSTEAL_KSWAPD,
++	PGSTEAL_DIRECT,
++	PGSTEAL_KHUGEPAGED,
++	PGFAULT,
++	PGMAJFAULT,
++	PGREFILL,
++	PGACTIVATE,
++	PGDEACTIVATE,
++	PGLAZYFREE,
++	PGLAZYFREED,
++#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
++	ZSWPIN,
++	ZSWPOUT,
++#endif
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	THP_FAULT_ALLOC,
++	THP_COLLAPSE_ALLOC,
++	THP_SWPOUT,
++	THP_SWPOUT_FALLBACK,
++#endif
++};
++
++#define NR_MEMCG_EVENTS ARRAY_SIZE(memcg_vm_event_stat)
++static int mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
++
++static void init_memcg_events(void)
++{
++	int i;
++
++	for (i = 0; i < NR_MEMCG_EVENTS; ++i)
++		mem_cgroup_events_index[memcg_vm_event_stat[i]] = i + 1;
++}
++
++static inline int memcg_events_index(enum vm_event_item idx)
++{
++	return mem_cgroup_events_index[idx] - 1;
++}
++
++struct memcg_vmstats_percpu {
++	/* Local (CPU and cgroup) page state & events */
++	long			state[MEMCG_NR_STAT];
++	unsigned long		events[NR_MEMCG_EVENTS];
++
++	/* Delta calculation for lockless upward propagation */
++	long			state_prev[MEMCG_NR_STAT];
++	unsigned long		events_prev[NR_MEMCG_EVENTS];
++
++	/* Cgroup1: threshold notifications & softlimit tree updates */
++	unsigned long		nr_page_events;
++	unsigned long		targets[MEM_CGROUP_NTARGETS];
++};
++
++struct memcg_vmstats {
++	/* Aggregated (CPU and subtree) page state & events */
++	long			state[MEMCG_NR_STAT];
++	unsigned long		events[NR_MEMCG_EVENTS];
++
++	/* Non-hierarchical (CPU aggregated) page state & events */
++	long			state_local[MEMCG_NR_STAT];
++	unsigned long		events_local[NR_MEMCG_EVENTS];
++
++	/* Pending child counts during tree propagation */
++	long			state_pending[MEMCG_NR_STAT];
++	unsigned long		events_pending[NR_MEMCG_EVENTS];
++};
++
+ /*
+  * memcg and lruvec stats flushing
+  *
+@@ -684,79 +757,6 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
+ 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
+ }
+ 
+-/* Subset of vm_event_item to report for memcg event stats */
+-static const unsigned int memcg_vm_event_stat[] = {
+-	PGPGIN,
+-	PGPGOUT,
+-	PGSCAN_KSWAPD,
+-	PGSCAN_DIRECT,
+-	PGSCAN_KHUGEPAGED,
+-	PGSTEAL_KSWAPD,
+-	PGSTEAL_DIRECT,
+-	PGSTEAL_KHUGEPAGED,
+-	PGFAULT,
+-	PGMAJFAULT,
+-	PGREFILL,
+-	PGACTIVATE,
+-	PGDEACTIVATE,
+-	PGLAZYFREE,
+-	PGLAZYFREED,
+-#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+-	ZSWPIN,
+-	ZSWPOUT,
+-#endif
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	THP_FAULT_ALLOC,
+-	THP_COLLAPSE_ALLOC,
+-	THP_SWPOUT,
+-	THP_SWPOUT_FALLBACK,
+-#endif
+-};
+-
+-#define NR_MEMCG_EVENTS ARRAY_SIZE(memcg_vm_event_stat)
+-static int mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
+-
+-static void init_memcg_events(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < NR_MEMCG_EVENTS; ++i)
+-		mem_cgroup_events_index[memcg_vm_event_stat[i]] = i + 1;
+-}
+-
+-static inline int memcg_events_index(enum vm_event_item idx)
+-{
+-	return mem_cgroup_events_index[idx] - 1;
+-}
+-
+-struct memcg_vmstats_percpu {
+-	/* Local (CPU and cgroup) page state & events */
+-	long			state[MEMCG_NR_STAT];
+-	unsigned long		events[NR_MEMCG_EVENTS];
+-
+-	/* Delta calculation for lockless upward propagation */
+-	long			state_prev[MEMCG_NR_STAT];
+-	unsigned long		events_prev[NR_MEMCG_EVENTS];
+-
+-	/* Cgroup1: threshold notifications & softlimit tree updates */
+-	unsigned long		nr_page_events;
+-	unsigned long		targets[MEM_CGROUP_NTARGETS];
+-};
+-
+-struct memcg_vmstats {
+-	/* Aggregated (CPU and subtree) page state & events */
+-	long			state[MEMCG_NR_STAT];
+-	unsigned long		events[NR_MEMCG_EVENTS];
+-
+-	/* Non-hierarchical (CPU aggregated) page state & events */
+-	long			state_local[MEMCG_NR_STAT];
+-	unsigned long		events_local[NR_MEMCG_EVENTS];
+-
+-	/* Pending child counts during tree propagation */
+-	long			state_pending[MEMCG_NR_STAT];
+-	unsigned long		events_pending[NR_MEMCG_EVENTS];
+-};
+-
+ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+ {
+ 	long x = READ_ONCE(memcg->vmstats->state[idx]);
 -- 
 2.43.0.rc0.421.g78406f8d94-goog
 
