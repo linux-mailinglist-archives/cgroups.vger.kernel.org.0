@@ -1,388 +1,135 @@
-Return-Path: <cgroups+bounces-444-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-445-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4694D7ED953
-	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 03:24:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C137EDA4B
+	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 04:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0A10280F32
-	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 02:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF6C628103A
+	for <lists+cgroups@lfdr.de>; Thu, 16 Nov 2023 03:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DA34596A;
-	Thu, 16 Nov 2023 02:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1E28F56;
+	Thu, 16 Nov 2023 03:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OlIExH1n"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QoZUEGrI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8BC1BE
-	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 18:24:23 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da31ec03186so275821276.1
-        for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 18:24:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700101462; x=1700706262; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYfIbMCcjOcaMk8XkEVZkKdIKTJOO/34lFccln3zlF4=;
-        b=OlIExH1nKH4VI7fecpvuE+ivYyrVPXnXjLPWBMQtZ+jIheEIFSgr7GIrFWMccyUMLP
-         nUhCW8tJ24OI7fDg9/6b3iCZrP5jsiWqU8kjCYyMB2OIOQjMDDdmczuZajV/p/WnWeb/
-         aiJOeyd1bRRgz87l6/HEgGgoQlagK8u/kgvDG26KCcHS4af06cFj4O9EsJ+V6CHi3ukC
-         NpteF49/ckJObAhW5TOKcBnBCCxZ9Bepn2wQD9C8kZUekDLnY1UTScypKEhp3C7OZaFv
-         MkG/+kxo4jMi9a+J2fAoOlkqd8nsXpIobUzaES+9lV7oce7oLPN2D0fGurH/3B1cxfYu
-         jdZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700101462; x=1700706262;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYfIbMCcjOcaMk8XkEVZkKdIKTJOO/34lFccln3zlF4=;
-        b=sMDUNLjWSQusrMIm7snRjtVXnRP8x79FaHqTduuvjKXp29W9x+Tfn0Wf3fRKzPFYQ9
-         +M+fT5glX5ejUB4WEgP3P/s3feoaxYdH8M2KuZtIL0QBX9TE1T94s9FV5wi0jtK1AGAr
-         SH1VYKpNgfBOEz5Cdxy0QSDbv6LJwIh9lXOwO7ISr/KC+AawVMkvLtI/e3oY/4k5cvr/
-         EEct/K4eCJPVuE3YFUoY6LU8ssJY3I+OG3zgS6jzDqN1vBvnzYIAy15NLKFP7g+1lhzO
-         ULeGP20fzlJqrgMLbb/K/Nacdk3xd8ySqmj/CKcz+BiVcnyyYUt0JT34vToFgTSbsLwy
-         UXYA==
-X-Gm-Message-State: AOJu0Ywxpsqj3PMXA/YnJ/F7JwfnA5E+SK3GEOJaKEYqEzwFDTY5o2n1
-	Bo6gJSAde1ED5KwMwGEu9FRn7K9kiVpAUx35
-X-Google-Smtp-Source: AGHT+IHOmB/fbH5s+WhrMo6La77w650Dx8voIzjIjTB3e9zO2veYErgpI8gmC3H0bM7gCxpZ7clqVyysog00UpE/
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:ac9b:0:b0:d9a:4cc1:b59a with SMTP
- id x27-20020a25ac9b000000b00d9a4cc1b59amr11173ybi.1.1700101462675; Wed, 15
- Nov 2023 18:24:22 -0800 (PST)
-Date: Thu, 16 Nov 2023 02:24:10 +0000
-In-Reply-To: <20231116022411.2250072-1-yosryahmed@google.com>
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB331A7
+	for <cgroups@vger.kernel.org>; Wed, 15 Nov 2023 19:34:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1700105676;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Fh6sr5djueJxvg69Qt1Q1YfFiPMkWzsCiD40QbSJilw=;
+	b=QoZUEGrIDxsJ+NzuKh5uGu3wR7CL105gOjZUNiGcK315mQuO1k/1AI3FeDW04e9Tm1sfIW
+	0ZkVsBPlUUdQ5NTyY+t7nh/41c4IG/j39Q2pclLwVhPC9TxPFbV2W7/WJtgTvhJzLkJYZ3
+	y2z16kIVseF4qEunzb1UoTK+xZ5hXmM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-508-LVbmSX7jPZ2g5WfQ6uex4g-1; Wed,
+ 15 Nov 2023 22:34:34 -0500
+X-MC-Unique: LVbmSX7jPZ2g5WfQ6uex4g-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 061C91C04344;
+	Thu, 16 Nov 2023 03:34:34 +0000 (UTC)
+Received: from llong.com (unknown [10.22.8.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 241AF492BFD;
+	Thu, 16 Nov 2023 03:34:33 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Peter Hunt <pehunt@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/5] cgroup/cpuset: Improve CPU isolation in isolated partitions
+Date: Wed, 15 Nov 2023 22:34:00 -0500
+Message-Id: <20231116033405.185166-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231116022411.2250072-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-Message-ID: <20231116022411.2250072-6-yosryahmed@google.com>
-Subject: [PATCH v3 5/5] mm: memcg: restore subtree stats flushing
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
-	"=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
-	Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>, 
-	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Stats flushing for memcg currently follows the following rules:
-- Always flush the entire memcg hierarchy (i.e. flush the root).
-- Only one flusher is allowed at a time. If someone else tries to flush
-  concurrently, they skip and return immediately.
-- A periodic flusher flushes all the stats every 2 seconds.
+v4:
+ - Update patch 1 to move apply_wqattrs_lock() and apply_wqattrs_unlock()
+   down into CONFIG_SYSFS block to avoid compilation warnings.
 
-The reason this approach is followed is because all flushes are
-serialized by a global rstat spinlock. On the memcg side, flushing is
-invoked from userspace reads as well as in-kernel flushers (e.g.
-reclaim, refault, etc). This approach aims to avoid serializing all
-flushers on the global lock, which can cause a significant performance
-hit under high concurrency.
+v3:
+ - Break out a separate patch to make workqueue_set_unbound_cpumask()
+   static and move it down to the CONFIG_SYSFS section.
+ - Remove the "__DEBUG__." prefix and the CFTYPE_DEBUG flag from the
+   new root only cpuset.cpus.isolated control files and update the
+   test accordingly.
 
-This approach has the following problems:
-- Occasionally a userspace read of the stats of a non-root cgroup will
-  be too expensive as it has to flush the entire hierarchy [1].
-- Sometimes the stats accuracy are compromised if there is an ongoing
-  flush, and we skip and return before the subtree of interest is
-  actually flushed, yielding stale stats (by up to 2s due to periodic
-  flushing). This is more visible when reading stats from userspace,
-  but can also affect in-kernel flushers.
+v2:
+ - Add 2 read-only workqueue sysfs files to expose the user requested
+   cpumask as well as the isolated CPUs to be excluded from
+   wq_unbound_cpumask.
+ - Ensure that caller of the new workqueue_unbound_exclude_cpumask()
+   hold cpus_read_lock.
+ - Update the cpuset code to make sure the cpus_read_lock is held
+   whenever workqueue_unbound_exclude_cpumask() may be called.
 
-The latter problem is particulary a concern when userspace reads stats
-after an event occurs, but gets stats from before the event. Examples:
-- When memory usage / pressure spikes, a userspace OOM handler may look
-  at the stats of different memcgs to select a victim based on various
-  heuristics (e.g. how much private memory will be freed by killing
-  this). Reading stale stats from before the usage spike in this case
-  may cause a wrongful OOM kill.
-- A proactive reclaimer may read the stats after writing to
-  memory.reclaim to measure the success of the reclaim operation. Stale
-  stats from before reclaim may give a false negative.
-- Reading the stats of a parent and a child memcg may be inconsistent
-  (child larger than parent), if the flush doesn't happen when the
-  parent is read, but happens when the child is read.
+Isolated cpuset partition can currently be created to contain an
+exclusive set of CPUs not used in other cgroups and with load balancing
+disabled to reduce interference from the scheduler.
 
-As for in-kernel flushers, they will occasionally get stale stats. No
-regressions are currently known from this, but if there are regressions,
-they would be very difficult to debug and link to the source of the
-problem.
+The main purpose of this isolated partition type is to dynamically
+emulate what can be done via the "isolcpus" boot command line option,
+specifically the default domain flag. One effect of the "isolcpus" option
+is to remove the isolated CPUs from the cpumasks of unbound workqueues
+since running work functions in an isolated CPU can be a major source
+of interference. Changing the unbound workqueue cpumasks can be done at
+run time by writing an appropriate cpumask without the isolated CPUs to
+/sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+cpuset partition and then write to the cpumask sysfs file to achieve
+similar level of CPU isolation. However, this manual process can be
+error prone.
 
-This patch aims to fix these problems by restoring subtree flushing,
-and removing the unified/coalesced flushing logic that skips flushing if
-there is an ongoing flush. This change would introduce a significant
-regression with global stats flushing thresholds. With per-memcg stats
-flushing thresholds, this seems to perform really well. The thresholds
-protect the underlying lock from unnecessary contention.
+This patch series implements automatic exclusion of isolated CPUs from
+unbound workqueue cpumasks when an isolated cpuset partition is created
+and then adds those CPUs back when the isolated partition is destroyed.
 
-Add a mutex to protect the underlying rstat lock from excessive memcg
-flushing. The thresholds are re-checked after the mutex is grabbed to
-make sure that a concurrent flush did not already get the subtree we are
-trying to flush. A call to cgroup_rstat_flush() is not cheap, even if
-there are no pending updates.
+There are also other places in the kernel that look at the HK_FLAG_DOMAIN
+cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs from
+certain actions to further reduce interference. CPUs in an isolated
+cpuset partition will not be able to avoid those interferences yet. That
+may change in the future as the need arises.
 
-This patch was tested in two ways to ensure the latency of flushing is
-up to bar, on a machine with 384 cpus:
-- A synthetic test with 5000 concurrent workers in 500 cgroups doing
-  allocations and reclaim, as well as 1000 readers for memory.stat
-  (variation of [2]). No regressions were noticed in the total runtime.
-  Note that significant regressions in this test are observed with
-  global stats thresholds, but not with per-memcg thresholds.
+Waiman Long (5):
+  workqueue: Make workqueue_set_unbound_cpumask() static
+  workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+    from wq_unbound_cpumask
+  selftests/cgroup: Minor code cleanup and reorganization of
+    test_cpuset_prs.sh
+  cgroup/cpuset: Keep track of CPUs in isolated partitions
+  cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
 
-- A synthetic stress test for concurrently reading memcg stats while
-  memory allocation/freeing workers are running in the background,
-  provided by Wei Xu [3]. With 250k threads reading the stats every
-  100ms in 50k cgroups, 99.9% of reads take <= 50us. Less than 0.01%
-  of reads take more than 1ms, and no reads take more than 100ms.
+ Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+ include/linux/workqueue.h                     |   2 +-
+ kernel/cgroup/cpuset.c                        | 286 +++++++++++++-----
+ kernel/workqueue.c                            | 165 +++++++---
+ .../selftests/cgroup/test_cpuset_prs.sh       | 216 ++++++++-----
+ 5 files changed, 475 insertions(+), 204 deletions(-)
 
-[1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
-[2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
-[3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Tested-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
----
- include/linux/memcontrol.h |  8 ++--
- mm/memcontrol.c            | 75 +++++++++++++++++++++++---------------
- mm/vmscan.c                |  2 +-
- mm/workingset.c            | 10 +++--
- 4 files changed, 58 insertions(+), 37 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 7bdcf3020d7a3..6edd3ec4d8d54 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1046,8 +1046,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return x;
- }
- 
--void mem_cgroup_flush_stats(void);
--void mem_cgroup_flush_stats_ratelimited(void);
-+void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
-+void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
- 
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			      int val);
-@@ -1548,11 +1548,11 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return node_page_state(lruvec_pgdat(lruvec), idx);
- }
- 
--static inline void mem_cgroup_flush_stats(void)
-+static inline void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
- {
- }
- 
--static inline void mem_cgroup_flush_stats_ratelimited(void)
-+static inline void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
- {
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 74db05237775d..2baa9349d1590 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -669,7 +669,6 @@ struct memcg_vmstats {
-  */
- static void flush_memcg_stats_dwork(struct work_struct *w);
- static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
--static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
- static u64 flush_last_time;
- 
- #define FLUSH_TIME (2UL*HZ)
-@@ -730,35 +729,47 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
- }
- 
--static void do_flush_stats(void)
-+static void do_flush_stats(struct mem_cgroup *memcg)
- {
--	/*
--	 * We always flush the entire tree, so concurrent flushers can just
--	 * skip. This avoids a thundering herd problem on the rstat global lock
--	 * from memcg flushers (e.g. reclaim, refault, etc).
--	 */
--	if (atomic_read(&stats_flush_ongoing) ||
--	    atomic_xchg(&stats_flush_ongoing, 1))
--		return;
--
--	WRITE_ONCE(flush_last_time, jiffies_64);
--
--	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+	if (mem_cgroup_is_root(memcg))
-+		WRITE_ONCE(flush_last_time, jiffies_64);
- 
--	atomic_set(&stats_flush_ongoing, 0);
-+	cgroup_rstat_flush(memcg->css.cgroup);
- }
- 
--void mem_cgroup_flush_stats(void)
-+/*
-+ * mem_cgroup_flush_stats - flush the stats of a memory cgroup subtree
-+ * @memcg: root of the subtree to flush
-+ *
-+ * Flushing is serialized by the underlying global rstat lock. There is also a
-+ * minimum amount of work to be done even if there are no stat updates to flush.
-+ * Hence, we only flush the stats if the updates delta exceeds a threshold. This
-+ * avoids unnecessary work and contention on the underlying lock.
-+ */
-+void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
- {
--	if (memcg_should_flush_stats(root_mem_cgroup))
--		do_flush_stats();
-+	static DEFINE_MUTEX(memcg_stats_flush_mutex);
-+
-+	if (mem_cgroup_disabled())
-+		return;
-+
-+	if (!memcg)
-+		memcg = root_mem_cgroup;
-+
-+	if (memcg_should_flush_stats(memcg)) {
-+		mutex_lock(&memcg_stats_flush_mutex);
-+		/* Check again after locking, another flush may have occurred */
-+		if (memcg_should_flush_stats(memcg))
-+			do_flush_stats(memcg);
-+		mutex_unlock(&memcg_stats_flush_mutex);
-+	}
- }
- 
--void mem_cgroup_flush_stats_ratelimited(void)
-+void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
- {
- 	/* Only flush if the periodic flusher is one full cycle late */
- 	if (time_after64(jiffies_64, READ_ONCE(flush_last_time) + 2*FLUSH_TIME))
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats(memcg);
- }
- 
- static void flush_memcg_stats_dwork(struct work_struct *w)
-@@ -767,7 +778,7 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
- 	 * Deliberately ignore memcg_should_flush_stats() here so that flushing
- 	 * in latency-sensitive paths is as cheap as possible.
- 	 */
--	do_flush_stats();
-+	do_flush_stats(root_mem_cgroup);
- 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
- }
- 
-@@ -1642,7 +1653,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	 *
- 	 * Current memory state:
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
-@@ -4191,7 +4202,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	int nid;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
- 		seq_printf(m, "%s=%lu", stat->name,
-@@ -4272,7 +4283,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -4768,7 +4779,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
- 	struct mem_cgroup *parent;
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
- 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
-@@ -6857,7 +6868,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 	int i;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		int nid;
-@@ -8088,7 +8099,11 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- 			break;
- 		}
- 
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		/*
-+		 * mem_cgroup_flush_stats() ignores small changes. Use
-+		 * do_flush_stats() directly to get accurate stats for charging.
-+		 */
-+		do_flush_stats(memcg);
- 		pages = memcg_page_state(memcg, MEMCG_ZSWAP_B) / PAGE_SIZE;
- 		if (pages < max)
- 			continue;
-@@ -8153,8 +8168,10 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
- {
--	cgroup_rstat_flush(css->cgroup);
--	return memcg_page_state(mem_cgroup_from_css(css), MEMCG_ZSWAP_B);
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-+
-+	mem_cgroup_flush_stats(memcg);
-+	return memcg_page_state(memcg, MEMCG_ZSWAP_B);
- }
- 
- static int zswap_max_show(struct seq_file *m, void *v)
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 506f8220c5fe5..f93c989d7b387 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2222,7 +2222,7 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
- 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
- 	 * lruvec stats for heuristics.
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(sc->target_mem_cgroup);
- 
- 	/*
- 	 * Determine the scan balance between anon and file LRUs.
-diff --git a/mm/workingset.c b/mm/workingset.c
-index a573be6c59fd9..11045febc3838 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -464,8 +464,12 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset)
- 
- 	rcu_read_unlock();
- 
--	/* Flush stats (and potentially sleep) outside the RCU read section */
--	mem_cgroup_flush_stats_ratelimited();
-+	/*
-+	 * Flush stats (and potentially sleep) outside the RCU read section.
-+	 * XXX: With per-memcg flushing and thresholding, is ratelimiting
-+	 * still needed here?
-+	 */
-+	mem_cgroup_flush_stats_ratelimited(eviction_memcg);
- 
- 	eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
- 	refault = atomic_long_read(&eviction_lruvec->nonresident_age);
-@@ -676,7 +680,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
- 		struct lruvec *lruvec;
- 		int i;
- 
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats(sc->memcg);
- 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
- 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
- 			pages += lruvec_page_state_local(lruvec,
 -- 
-2.43.0.rc0.421.g78406f8d94-goog
+2.39.3
 
 
