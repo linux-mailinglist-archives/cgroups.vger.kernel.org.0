@@ -1,82 +1,127 @@
-Return-Path: <cgroups+bounces-461-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-462-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B60C7EEAAB
-	for <lists+cgroups@lfdr.de>; Fri, 17 Nov 2023 02:25:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F4897EF3D1
+	for <lists+cgroups@lfdr.de>; Fri, 17 Nov 2023 14:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD04E1C20829
-	for <lists+cgroups@lfdr.de>; Fri, 17 Nov 2023 01:25:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD7E3281411
+	for <lists+cgroups@lfdr.de>; Fri, 17 Nov 2023 13:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC555137E;
-	Fri, 17 Nov 2023 01:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC794328D1;
+	Fri, 17 Nov 2023 13:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091A0129
-	for <cgroups@vger.kernel.org>; Thu, 16 Nov 2023 17:25:06 -0800 (PST)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1ce5d31e709so3857955ad.3
-        for <cgroups@vger.kernel.org>; Thu, 16 Nov 2023 17:25:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700184305; x=1700789105;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJo6nMVJndBB899kUvGypW1akG0rhdJo5ej1y6RnVs8=;
-        b=rzGGeT0pVBxgHoCavI2dDdWbk6hdpschqjvRE41yXjJSeEizmqzNj1zXPsVzMiVtd2
-         ZzlN5/4Ypjweu7ixXl/8V7tAtDuGnCFaOX61HiPcV3/IxS8kXu4yDMydYdM69rl03Ymd
-         d2vatzaK0m/qblEwvK5y5dXIkiS72UHY7FQ7mqETNBpjk1e4AgcmsmO1XevjI2Ux5x7y
-         c0xsRR/lENmZU2A5b1zDjhEDP54JusSPVDNblqtcno6y4GZB2DIb+K4jH2e6eKBYc5zr
-         olFYCk9w3dp1nBKl3UnD4YCvamYdxdkaAj/a/RuiYMUrKCHbP4rD6TaggfUICIBmyw5U
-         lhlA==
-X-Gm-Message-State: AOJu0YzN+iMjsvLHi4VBXptuo6CrPnDXs2V8G0T7gyfP3SFe7ZsFxzP7
-	kY4HT9e0K5EFcM/pXDvVmguGZzzRN3hEde7UzKnIoRfl+Pu8
-X-Google-Smtp-Source: AGHT+IEZQ7oXyxiWxmK+3mMIwuVi6kepyoGWFMrMJQaY2uJPqBt2+V4JzH085Nym1mQ8E5BzfIOpvnSSsyjKyBqYg+qJJuLDlN0A
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDBC31593;
+	Fri, 17 Nov 2023 13:48:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5A0EC433C7;
+	Fri, 17 Nov 2023 13:47:59 +0000 (UTC)
+Date: Fri, 17 Nov 2023 08:47:57 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo
+ <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner
+ <hannes@cmpxchg.org>, Waiman Long <longman@redhat.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, cgroups@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Azeem Shaikh <azeemshaikh38@gmail.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 3/3] kernfs: Convert kernfs_path_from_node_locked() from
+ strlcpy() to strscpy()
+Message-ID: <20231117084757.150724ed@rorschach.local.home>
+In-Reply-To: <20231116192127.1558276-3-keescook@chromium.org>
+References: <20231116191718.work.246-kees@kernel.org>
+	<20231116192127.1558276-3-keescook@chromium.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2681:b0:1ce:1892:2fb1 with SMTP id
- jf1-20020a170903268100b001ce18922fb1mr2611444plb.0.1700184305580; Thu, 16 Nov
- 2023 17:25:05 -0800 (PST)
-Date: Thu, 16 Nov 2023 17:25:05 -0800
-In-Reply-To: <000000000000f5b0d0060a430995@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009642b4060a4f017f@google.com>
-Subject: Re: [syzbot] [cgroups?] possible deadlock in cgroup_free
-From: syzbot <syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com>
-To: boqun.feng@gmail.com, brauner@kernel.org, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, lizefan.x@bytedance.com, 
-	longman@redhat.com, michael.christie@oracle.com, mingo@redhat.com, 
-	mst@redhat.com, oleg@redhat.com, peterz@infradead.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org, wander@redhat.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-syzbot has bisected this issue to:
+On Thu, 16 Nov 2023 11:21:25 -0800
+Kees Cook <keescook@chromium.org> wrote:
 
-commit 2d25a889601d2fbc87ec79b30ea315820f874b78
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Sun Sep 17 11:24:21 2023 +0000
+> One of the last remaining users of strlcpy() in the kernel is
+> kernfs_path_from_node_locked(), which passes back the problematic "length
+> we _would_ have copied" return value to indicate truncation.  Convert the
+> chain of all callers to use the negative return value (some of which
+> already doing this explicitly). All callers were already also checking
+> for negative return values, so the risk to missed checks looks very low.
+> 
+> In this analysis, it was found that cgroup1_release_agent() actually
+> didn't handle the "too large" condition, so this is technically also a
+> bug fix. :)
+> 
+> Here's the chain of callers, and resolution identifying each one as now
+> handling the correct return value:
+> 
+> kernfs_path_from_node_locked()
+>         kernfs_path_from_node()
+>                 pr_cont_kernfs_path()
+>                         returns void
+>                 kernfs_path()
+>                         sysfs_warn_dup()
+>                                 return value ignored
+>                         cgroup_path()
+>                                 blkg_path()
+>                                         bfq_bic_update_cgroup()
+>                                                 return value ignored
+>                                 TRACE_IOCG_PATH()
+>                                         return value ignored
+>                                 TRACE_CGROUP_PATH()
+>                                         return value ignored
+>                                 perf_event_cgroup()
+>                                         return value ignored
+>                                 task_group_path()
+>                                         return value ignored
+>                                 damon_sysfs_memcg_path_eq()
+>                                         return value ignored
+>                                 get_mm_memcg_path()
+>                                         return value ignored
+>                                 lru_gen_seq_show()
+>                                         return value ignored
+>                         cgroup_path_from_kernfs_id()
+>                                 return value ignored
+>                 cgroup_show_path()
+>                         already converted "too large" error to negative value
+>                 cgroup_path_ns_locked()
+>                         cgroup_path_ns()
+>                                 bpf_iter_cgroup_show_fdinfo()
+>                                         return value ignored
+>                                 cgroup1_release_agent()
+>                                         wasn't checking "too large" error
+>                         proc_cgroup_show()
+>                                 already converted "too large" to negative value
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-trace-kernel@vger.kernel.org
+> Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  fs/kernfs/dir.c             | 37 ++++++++++++++++++++-----------------
+>  kernel/cgroup/cgroup-v1.c   |  2 +-
+>  kernel/cgroup/cgroup.c      |  4 ++--
+>  kernel/cgroup/cpuset.c      |  2 +-
+>  kernel/trace/trace_uprobe.c |  2 +-
 
-    ptrace: Convert ptrace_attach() to use lock guards
+trace_uprobe.c seems out of scope for this patch.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=130edb3f680000
-start commit:   f31817cbcf48 Add linux-next specific files for 20231116
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=108edb3f680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=170edb3f680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f59345f1d0a928c
-dashboard link: https://syzkaller.appspot.com/bug?extid=cef555184e66963dabc2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13fd7920e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d80920e80000
-
-Reported-by: syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com
-Fixes: 2d25a889601d ("ptrace: Convert ptrace_attach() to use lock guards")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- Steve
 
