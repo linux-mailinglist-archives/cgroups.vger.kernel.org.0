@@ -1,74 +1,63 @@
-Return-Path: <cgroups+bounces-472-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-473-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD8E7F0727
-	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 16:24:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A810F7F0734
+	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 16:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DA461C2086A
-	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 15:24:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 638D7280D34
+	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 15:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726DE134A4;
-	Sun, 19 Nov 2023 15:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6B911CB1;
+	Sun, 19 Nov 2023 15:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XeQbKLfM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="du/5B9fx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146B083;
-	Sun, 19 Nov 2023 07:23:59 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1ce3084c2d1so30669725ad.3;
-        Sun, 19 Nov 2023 07:23:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700407438; x=1701012238; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tv0VTetN2szhDW0NFHpW4LPgqRp7VF2ULeCrw/emRPA=;
-        b=XeQbKLfMSUQKK9wlczxl6DD5Tkgv6s1ykn0QpaSI5/D34vtuVtqaZiHRHIs3TtNnF5
-         IJFE7Z+YfM4WyrLl2zlOeldhsxTgJ1RtbZeKyNKdLCe42A//8kAMwOIMJ+K4PHbV+Pzh
-         axuQ4hVTykQax+0kWABv3gs/TxhSiiJD0iwnOLODpJRjZw2yPQVtblteJJ36tRIO97bm
-         MmmIeFHntmtquyFKy165mKLZnVMhXBOZOOI9kvNzpOPLWtNlngG33jgTE7k145wlRfYK
-         IT4mWPSj78gqpqne2TSH4nqEHo4VuvS0AGMKz9R1SswCvV7hEei/55Z6oyMH03ASFEtG
-         XnSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700407438; x=1701012238;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tv0VTetN2szhDW0NFHpW4LPgqRp7VF2ULeCrw/emRPA=;
-        b=ODSF1uGkumB1ISUbIZylo6R2SjDQILMJUIpshTQIwYGqy1WkrXlEitkX/JayLLbJ6S
-         RrK8uIMxzzz50+FVhnLWhpdK/YGHFRrm7qnp/2pxQZ5BTsWC3OnpDGpQHvm1BX1MPqsh
-         zDG5v5f5nBZC3ogG5uIvFXe9L7e/fxWZrxgjLxwoiVfNVeXX55VgQDtVae0i5BsP0Sx1
-         +i80alRCqEhzlbZvddD5toLhZH2wjrL1f7dHrUlW1piryW2Xkrw3Q9x2O7oraS/A+hUW
-         WbN0FmkUG4aWzqZCynwOv0OQddmVzZdFBvmT12jwQxCmPKjLcMiorb6sQNQC0NZcBFvF
-         jfLg==
-X-Gm-Message-State: AOJu0YymZtfbnn6DVNxcTx3IIrU+1R0J5gAyfcv1FpoFSw3GzZfwOzG3
-	8Wg3sa1e+lbkAvcRYj9O0+Y=
-X-Google-Smtp-Source: AGHT+IExcv92wwInt1GmYQ8oG/8BC7LdnS0mPL/DN8lWJXybR2jk67h/NQWBkjHlzOO/50DevV90QA==
-X-Received: by 2002:a17:903:1108:b0:1cc:3bd3:73d8 with SMTP id n8-20020a170903110800b001cc3bd373d8mr5563344plh.59.1700407437484;
-        Sun, 19 Nov 2023 07:23:57 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id p7-20020a1709026b8700b001cf57467ad2sm1604403plk.91.2023.11.19.07.23.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 07:23:57 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sun, 19 Nov 2023 05:23:56 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Peter Hunt <pehunt@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v4 0/5] cgroup/cpuset: Improve CPU isolation in isolated
- partitions
-Message-ID: <ZVoojBi4ZoVR2mOt@slm.duckdns.org>
-References: <20231116033405.185166-1-longman@redhat.com>
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6592C83
+	for <cgroups@vger.kernel.org>; Sun, 19 Nov 2023 07:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1700407900;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VJDSDW6Pnxgedb2WwvdXdi3IPWir2LFj6HcK4uMq+TE=;
+	b=du/5B9fxVrHgKSxRMRUs5pXvgSTGlRRglcwIXxRXmdgYldXZUWAUss6PhkGn9tFueic6I1
+	uW4X1d7y1Id33q1pPIbhOqnJYWdy41EODNqaIr9xrVGY6M5hrWKIyBDldx4uAoJyJTyjAt
+	f1wkPgwB95U3+AkkmY0e3ho1PlexdTc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-517-aaxRoKxrNoKaooQ-KTCq4A-1; Sun, 19 Nov 2023 10:31:39 -0500
+X-MC-Unique: aaxRoKxrNoKaooQ-KTCq4A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 910D7185A782;
+	Sun, 19 Nov 2023 15:31:38 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.31])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 5F08D2026D4C;
+	Sun, 19 Nov 2023 15:31:34 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sun, 19 Nov 2023 16:30:33 +0100 (CET)
+Date: Sun, 19 Nov 2023 16:30:28 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: syzbot <syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com>,
+	boqun.feng@gmail.com, brauner@kernel.org, cgroups@vger.kernel.org,
+	hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+	lizefan.x@bytedance.com, longman@redhat.com,
+	michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com,
+	peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+	wander@redhat.com, will@kernel.org
+Subject: Re: [syzbot] [cgroups?] possible deadlock in cgroup_free
+Message-ID: <20231119153028.GB29401@redhat.com>
+References: <000000000000f5b0d0060a430995@google.com>
+ <0000000000009642b4060a4f017f@google.com>
+ <ZVolxA8RHsY11CnE@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,18 +66,29 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231116033405.185166-1-longman@redhat.com>
+In-Reply-To: <ZVolxA8RHsY11CnE@slm.duckdns.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Wed, Nov 15, 2023 at 10:34:00PM -0500, Waiman Long wrote:
-> v4:
->  - Update patch 1 to move apply_wqattrs_lock() and apply_wqattrs_unlock()
->    down into CONFIG_SYSFS block to avoid compilation warnings.
+On 11/19, Tejun Heo wrote:
+>
+> On Thu, Nov 16, 2023 at 05:25:05PM -0800, syzbot wrote:
+> > syzbot has bisected this issue to:
+> >
+> > commit 2d25a889601d2fbc87ec79b30ea315820f874b78
+> > Author: Peter Zijlstra <peterz@infradead.org>
+> > Date:   Sun Sep 17 11:24:21 2023 +0000
+> >
+> >     ptrace: Convert ptrace_attach() to use lock guards
+>
+> Looks like the tasklist_lock conversion in ptrace_attach() forgot _irq.
+> Peter, Oleg?
 
-I already applied v3 to cgroup/for-6.8. Can you please send the fix up patch
-against that branch?
+Yes, please see
 
-Thanks.
+	Re: [syzbot] [kernel?] inconsistent lock state in ptrace_attach
+	https://lore.kernel.org/all/20231117094531.GN8262@noisy.programming.kicks-ass.net/
 
--- 
-tejun
+Oleg.
+
 
