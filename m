@@ -1,72 +1,74 @@
-Return-Path: <cgroups+bounces-471-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-472-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61BC7F0711
-	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 16:12:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BD8E7F0727
+	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 16:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49C9CB208A8
-	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 15:12:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DA461C2086A
+	for <lists+cgroups@lfdr.de>; Sun, 19 Nov 2023 15:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D196134C8;
-	Sun, 19 Nov 2023 15:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726DE134A4;
+	Sun, 19 Nov 2023 15:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dmtFKq+j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XeQbKLfM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD0DE1;
-	Sun, 19 Nov 2023 07:12:07 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso240163b3a.2;
-        Sun, 19 Nov 2023 07:12:07 -0800 (PST)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146B083;
+	Sun, 19 Nov 2023 07:23:59 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1ce3084c2d1so30669725ad.3;
+        Sun, 19 Nov 2023 07:23:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700406726; x=1701011526; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700407438; x=1701012238; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8EfKg+k4QXRL17tUiAU7LC5pyd3fy5K8isFLVnQcD7w=;
-        b=dmtFKq+jZcJpnPfkSe1PXQ0ugDsFqnUZxwQx+4ekEOr1qD3gLZ9Vr9rGbiHGAtVH8X
-         C090A1Cp0HAwNsSh7nAarA2TTsRYGk3F6GJvKdTr/nL06lRngWzZ4Ig+C6z0OP8gGuf2
-         1VphekuV/hZFKyslv1Czd06LDRE7YfqFtG3L+HcqZu+OxI/2UuIEYBUzzgCMvYbB7aov
-         d0n/Y/owHq79zShE/K18fPitRgDR+fOZ44GXuZ/6lWxnmYFqFKV9w/lgZuH/IHhyoH5p
-         qo8pAUbeCdELHbWxBfqka9MQqn5sHCEAo0wCk2bAhYzofwzYcxoBYrL2RoKAeVIFoNen
-         jR/w==
+        bh=tv0VTetN2szhDW0NFHpW4LPgqRp7VF2ULeCrw/emRPA=;
+        b=XeQbKLfMSUQKK9wlczxl6DD5Tkgv6s1ykn0QpaSI5/D34vtuVtqaZiHRHIs3TtNnF5
+         IJFE7Z+YfM4WyrLl2zlOeldhsxTgJ1RtbZeKyNKdLCe42A//8kAMwOIMJ+K4PHbV+Pzh
+         axuQ4hVTykQax+0kWABv3gs/TxhSiiJD0iwnOLODpJRjZw2yPQVtblteJJ36tRIO97bm
+         MmmIeFHntmtquyFKy165mKLZnVMhXBOZOOI9kvNzpOPLWtNlngG33jgTE7k145wlRfYK
+         IT4mWPSj78gqpqne2TSH4nqEHo4VuvS0AGMKz9R1SswCvV7hEei/55Z6oyMH03ASFEtG
+         XnSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700406726; x=1701011526;
+        d=1e100.net; s=20230601; t=1700407438; x=1701012238;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8EfKg+k4QXRL17tUiAU7LC5pyd3fy5K8isFLVnQcD7w=;
-        b=Zcmge/JaETPw74VQ0OsmlhmqM6D/eq+d82ZW//CdT0sabBd4J7pKEZ/+O/V+GP54ZH
-         oLgsawne6M9JIX84bygsvpynv1DHBwJgqPrYU64H9Q/1Y5bZQODblNS7U+rdvGPbbE80
-         CxeXQmYFPeGggpK43nGMJjZMrfRb2RafZZuLzqOf/xmptEqkTrhVhay7pTj4dinnRaDL
-         ofIueT1QyJGr5HIBUauE3KYv1PKCxDj4P59l3PFoMOZ9RJAk5FbZYuJ41PWG0bkbo7KI
-         5S04a/vuIMEueuzxRuPMcuaWX2cE+cgPrxv020MkKiguT3S4CTWVjPN2LgFbLeu5Bbny
-         yd/Q==
-X-Gm-Message-State: AOJu0Yxe/jacuppVha4cjGQ/GneI6xSC6elEsizYzvL+NsyuuEeGXsHK
-	SO1dw5HaK+QbTl/1Dt7kaP4=
-X-Google-Smtp-Source: AGHT+IGh5ysb2zBhFrgP4U+InFADY6GOsfaeTyqut6gkNtKaowLrmsgaAc4wNSKRcUjW5I0K14W/NA==
-X-Received: by 2002:a05:6a20:6a0b:b0:187:b2a7:c6cd with SMTP id p11-20020a056a206a0b00b00187b2a7c6cdmr3685940pzk.57.1700406726359;
-        Sun, 19 Nov 2023 07:12:06 -0800 (PST)
+        bh=tv0VTetN2szhDW0NFHpW4LPgqRp7VF2ULeCrw/emRPA=;
+        b=ODSF1uGkumB1ISUbIZylo6R2SjDQILMJUIpshTQIwYGqy1WkrXlEitkX/JayLLbJ6S
+         RrK8uIMxzzz50+FVhnLWhpdK/YGHFRrm7qnp/2pxQZ5BTsWC3OnpDGpQHvm1BX1MPqsh
+         zDG5v5f5nBZC3ogG5uIvFXe9L7e/fxWZrxgjLxwoiVfNVeXX55VgQDtVae0i5BsP0Sx1
+         +i80alRCqEhzlbZvddD5toLhZH2wjrL1f7dHrUlW1piryW2Xkrw3Q9x2O7oraS/A+hUW
+         WbN0FmkUG4aWzqZCynwOv0OQddmVzZdFBvmT12jwQxCmPKjLcMiorb6sQNQC0NZcBFvF
+         jfLg==
+X-Gm-Message-State: AOJu0YymZtfbnn6DVNxcTx3IIrU+1R0J5gAyfcv1FpoFSw3GzZfwOzG3
+	8Wg3sa1e+lbkAvcRYj9O0+Y=
+X-Google-Smtp-Source: AGHT+IExcv92wwInt1GmYQ8oG/8BC7LdnS0mPL/DN8lWJXybR2jk67h/NQWBkjHlzOO/50DevV90QA==
+X-Received: by 2002:a17:903:1108:b0:1cc:3bd3:73d8 with SMTP id n8-20020a170903110800b001cc3bd373d8mr5563344plh.59.1700407437484;
+        Sun, 19 Nov 2023 07:23:57 -0800 (PST)
 Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id x19-20020a62fb13000000b006870ed427b2sm4532387pfm.94.2023.11.19.07.12.05
+        by smtp.gmail.com with ESMTPSA id p7-20020a1709026b8700b001cf57467ad2sm1604403plk.91.2023.11.19.07.23.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 07:12:05 -0800 (PST)
+        Sun, 19 Nov 2023 07:23:57 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Sun, 19 Nov 2023 05:12:04 -1000
+Date: Sun, 19 Nov 2023 05:23:56 -1000
 From: Tejun Heo <tj@kernel.org>
-To: syzbot <syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com>
-Cc: boqun.feng@gmail.com, brauner@kernel.org, cgroups@vger.kernel.org,
-	hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-	lizefan.x@bytedance.com, longman@redhat.com,
-	michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com,
-	oleg@redhat.com, peterz@infradead.org,
-	syzkaller-bugs@googlegroups.com, wander@redhat.com, will@kernel.org
-Subject: Re: [syzbot] [cgroups?] possible deadlock in cgroup_free
-Message-ID: <ZVolxA8RHsY11CnE@slm.duckdns.org>
-References: <000000000000f5b0d0060a430995@google.com>
- <0000000000009642b4060a4f017f@google.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Peter Hunt <pehunt@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v4 0/5] cgroup/cpuset: Improve CPU isolation in isolated
+ partitions
+Message-ID: <ZVoojBi4ZoVR2mOt@slm.duckdns.org>
+References: <20231116033405.185166-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -75,19 +77,15 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000009642b4060a4f017f@google.com>
+In-Reply-To: <20231116033405.185166-1-longman@redhat.com>
 
-On Thu, Nov 16, 2023 at 05:25:05PM -0800, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 2d25a889601d2fbc87ec79b30ea315820f874b78
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Sun Sep 17 11:24:21 2023 +0000
-> 
->     ptrace: Convert ptrace_attach() to use lock guards
+On Wed, Nov 15, 2023 at 10:34:00PM -0500, Waiman Long wrote:
+> v4:
+>  - Update patch 1 to move apply_wqattrs_lock() and apply_wqattrs_unlock()
+>    down into CONFIG_SYSFS block to avoid compilation warnings.
 
-Looks like the tasklist_lock conversion in ptrace_attach() forgot _irq.
-Peter, Oleg?
+I already applied v3 to cgroup/for-6.8. Can you please send the fix up patch
+against that branch?
 
 Thanks.
 
