@@ -1,62 +1,62 @@
-Return-Path: <cgroups+bounces-491-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-492-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 649E17F1CA3
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:35:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 841087F1CA5
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:35:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E754DB219AE
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:35:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A17D2827B7
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B1034CFB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BD734CF7;
 	Mon, 20 Nov 2023 18:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TukUKNES";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SR+5CH/H"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GurbnCGj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2KGJL7ZA"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB1C10F;
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA37A10C;
 	Mon, 20 Nov 2023 10:34:45 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EC4921F8B5;
-	Mon, 20 Nov 2023 18:34:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 34F561F8C0;
+	Mon, 20 Nov 2023 18:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1700505283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YBNKkmC9oRR4moRDCZJShxotomqe2hJVkCMX0lOWDT0=;
-	b=TukUKNESscidwt/2HBbv9/QdKcUrR+ZMvZ2dwKNTRUvpZLKBrUzw54CbiQf8E5vRUaPkQW
-	1rRAQ63ZurVmskb+XqiXgO2mLhOF5Fzy64zH68A0TEvAwYSNZzPzL52VYwtVwY3fpCvib1
-	HIug0uwGaklIeMI279eHJYFU+XGOlz0=
+	bh=0dd/IArvjIRWfQN3Q+n8Y43IiuEYmqtBXkwN7diMKwU=;
+	b=GurbnCGj79cofMqZNPG5ggQmlEGil9xl2Qc9QDrDU876ARGhNDVN6UHUcgTrd/RgAiAp6q
+	wq48EYqN9pInZujNhWLyDFmzJ3B8jZC+++PZaNdFghIMT84xO9p0za0gTakob1u3XyyZPG
+	8xvARXzCWa9lZ3irelYfoUecZM6zhnQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1700505283;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YBNKkmC9oRR4moRDCZJShxotomqe2hJVkCMX0lOWDT0=;
-	b=SR+5CH/H44O/VS9uuX9x6H111+uuPIaCWhUer0Ci8w7b+LNUfw2Va5lgqrYu34tElKTvOE
-	d2CZZcN/Hnj3BeBA==
+	bh=0dd/IArvjIRWfQN3Q+n8Y43IiuEYmqtBXkwN7diMKwU=;
+	b=2KGJL7ZAkrwa/Tpv3q3xTY10kiRMrlQOQHqsN8kMGpf3r3mzdtqg/dSVXVYujQtdsvMJEg
+	YhrpXfvL6XTCEDDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BAB8F13912;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F1FA313499;
 	Mon, 20 Nov 2023 18:34:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id eEMcLcKmW2UUMgAAMHmgww
+	id QEOSOsKmW2UUMgAAMHmgww
 	(envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:42 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 20 Nov 2023 19:34:26 +0100
-Subject: [PATCH v2 15/21] mm/slab: move struct kmem_cache_node from slab.h
- to slub.c
+Date: Mon, 20 Nov 2023 19:34:27 +0100
+Subject: [PATCH v2 16/21] mm/slab: move kfree() from slab_common.c to
+ slub.c
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-slab-remove-slab-v2-15-9c9c70177183@suse.cz>
+Message-Id: <20231120-slab-remove-slab-v2-16-9c9c70177183@suse.cz>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 To: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, 
@@ -87,8 +87,8 @@ X-Mailer: b4 0.12.4
 Authentication-Results: smtp-out2.suse.de;
 	none
 X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
+X-Spam-Score: -6.79
+X-Spamd-Result: default: False [-6.79 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 RCVD_TLS_ALL(0.00)[];
@@ -102,9 +102,9 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
 	 MID_RHS_MATCH_FROM(0.00)[];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 R_RATELIMIT(0.00)[to_ip_from(RL563rtnmcmc9sawm86hmgtctc)];
-	 BAYES_SPAM(0.00)[16.07%];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 BAYES_HAM(-2.99)[99.94%];
 	 RCPT_COUNT_TWELVE(0.00)[24];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
@@ -113,94 +113,177 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
 	 RCVD_COUNT_TWO(0.00)[2];
 	 SUSPICIOUS_RECIPS(1.50)[]
 
-The declaration and associated helpers are not used anywhere else
-anymore.
+This should result in better code. Currently kfree() makes a function
+call between compilation units to __kmem_cache_free() which does its own
+virt_to_slab(), throwing away the struct slab pointer we already had in
+kfree(). Now it can be reused. Additionally kfree() can now inline the
+whole SLUB freeing fastpath.
+
+Also move over free_large_kmalloc() as the only callsites are now in
+slub.c, and make it static.
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slab.h | 29 -----------------------------
- mm/slub.c | 27 +++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+), 29 deletions(-)
+ mm/slab.h        |  4 ----
+ mm/slab_common.c | 45 ---------------------------------------------
+ mm/slub.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 46 insertions(+), 54 deletions(-)
 
 diff --git a/mm/slab.h b/mm/slab.h
-index a81ef7c9282d..5ae6a978e9c2 100644
+index 5ae6a978e9c2..35a55c4a407d 100644
 --- a/mm/slab.h
 +++ b/mm/slab.h
-@@ -588,35 +588,6 @@ static inline size_t slab_ksize(const struct kmem_cache *s)
- 	return s->size;
+@@ -395,8 +395,6 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
+ void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+ 			      int node, size_t orig_size,
+ 			      unsigned long caller);
+-void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller);
+-
+ gfp_t kmalloc_fix_flags(gfp_t flags);
+ 
+ /* Functions provided by the slab allocators */
+@@ -559,8 +557,6 @@ static inline int memcg_alloc_slab_cgroups(struct slab *slab,
+ }
+ #endif /* CONFIG_MEMCG_KMEM */
+ 
+-void free_large_kmalloc(struct folio *folio, void *object);
+-
+ size_t __ksize(const void *objp);
+ 
+ static inline size_t slab_ksize(const struct kmem_cache *s)
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index bbc2e3f061f1..f4f275613d2a 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -963,22 +963,6 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+ 	slab_state = UP;
  }
  
--
--/*
-- * The slab lists for all objects.
-- */
--struct kmem_cache_node {
--	spinlock_t list_lock;
--	unsigned long nr_partial;
--	struct list_head partial;
--#ifdef CONFIG_SLUB_DEBUG
--	atomic_long_t nr_slabs;
--	atomic_long_t total_objects;
--	struct list_head full;
--#endif
--};
--
--static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
+-void free_large_kmalloc(struct folio *folio, void *object)
 -{
--	return s->node[node];
+-	unsigned int order = folio_order(folio);
+-
+-	if (WARN_ON_ONCE(order == 0))
+-		pr_warn_once("object pointer: 0x%p\n", object);
+-
+-	kmemleak_free(object);
+-	kasan_kfree_large(object);
+-	kmsan_kfree_large(object);
+-
+-	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
+-			      -(PAGE_SIZE << order));
+-	__free_pages(folio_page(folio, 0), order);
 -}
 -
--/*
-- * Iterator over all nodes. The body will be executed for each node that has
-- * a kmem_cache_node structure allocated (which is true for all online nodes)
+ static void *__kmalloc_large_node(size_t size, gfp_t flags, int node);
+ static __always_inline
+ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
+@@ -1023,35 +1007,6 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
+ }
+ EXPORT_SYMBOL(__kmalloc_node_track_caller);
+ 
+-/**
+- * kfree - free previously allocated memory
+- * @object: pointer returned by kmalloc() or kmem_cache_alloc()
+- *
+- * If @object is NULL, no operation is performed.
 - */
--#define for_each_kmem_cache_node(__s, __node, __n) \
--	for (__node = 0; __node < nr_node_ids; __node++) \
--		 if ((__n = get_node(__s, __node)))
+-void kfree(const void *object)
+-{
+-	struct folio *folio;
+-	struct slab *slab;
+-	struct kmem_cache *s;
 -
+-	trace_kfree(_RET_IP_, object);
 -
- #ifdef CONFIG_SLUB_DEBUG
- void dump_unreclaimable_slab(void);
- #else
+-	if (unlikely(ZERO_OR_NULL_PTR(object)))
+-		return;
+-
+-	folio = virt_to_folio(object);
+-	if (unlikely(!folio_test_slab(folio))) {
+-		free_large_kmalloc(folio, (void *)object);
+-		return;
+-	}
+-
+-	slab = folio_slab(folio);
+-	s = slab->slab_cache;
+-	__kmem_cache_free(s, (void *)object, _RET_IP_);
+-}
+-EXPORT_SYMBOL(kfree);
+-
+ /**
+  * __ksize -- Report full size of underlying allocation
+  * @object: pointer to the object
 diff --git a/mm/slub.c b/mm/slub.c
-index 844e0beb84ee..cc801f8258fe 100644
+index cc801f8258fe..2baa9e94d9df 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -396,6 +396,33 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
- #endif
+@@ -4197,11 +4197,6 @@ static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+ 	return cachep;
  }
  
-+/*
-+ * The slab lists for all objects.
-+ */
-+struct kmem_cache_node {
-+	spinlock_t list_lock;
-+	unsigned long nr_partial;
-+	struct list_head partial;
-+#ifdef CONFIG_SLUB_DEBUG
-+	atomic_long_t nr_slabs;
-+	atomic_long_t total_objects;
-+	struct list_head full;
-+#endif
-+};
-+
-+static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
+-void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
+-{
+-	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
+-}
+-
+ /**
+  * kmem_cache_free - Deallocate an object
+  * @s: The cache the allocation was from.
+@@ -4220,6 +4215,52 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
+ }
+ EXPORT_SYMBOL(kmem_cache_free);
+ 
++static void free_large_kmalloc(struct folio *folio, void *object)
 +{
-+	return s->node[node];
++	unsigned int order = folio_order(folio);
++
++	if (WARN_ON_ONCE(order == 0))
++		pr_warn_once("object pointer: 0x%p\n", object);
++
++	kmemleak_free(object);
++	kasan_kfree_large(object);
++	kmsan_kfree_large(object);
++
++	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
++			      -(PAGE_SIZE << order));
++	__free_pages(folio_page(folio, 0), order);
 +}
 +
-+/*
-+ * Iterator over all nodes. The body will be executed for each node that has
-+ * a kmem_cache_node structure allocated (which is true for all online nodes)
++/**
++ * kfree - free previously allocated memory
++ * @object: pointer returned by kmalloc() or kmem_cache_alloc()
++ *
++ * If @object is NULL, no operation is performed.
 + */
-+#define for_each_kmem_cache_node(__s, __node, __n) \
-+	for (__node = 0; __node < nr_node_ids; __node++) \
-+		 if ((__n = get_node(__s, __node)))
++void kfree(const void *object)
++{
++	struct folio *folio;
++	struct slab *slab;
++	struct kmem_cache *s;
++	void *x = (void *)object;
 +
- /*
-  * Tracks for which NUMA nodes we have kmem_cache_nodes allocated.
-  * Corresponds to node_state[N_NORMAL_MEMORY], but can temporarily
++	trace_kfree(_RET_IP_, object);
++
++	if (unlikely(ZERO_OR_NULL_PTR(object)))
++		return;
++
++	folio = virt_to_folio(object);
++	if (unlikely(!folio_test_slab(folio))) {
++		free_large_kmalloc(folio, (void *)object);
++		return;
++	}
++
++	slab = folio_slab(folio);
++	s = slab->slab_cache;
++	slab_free(s, slab, x, NULL, &x, 1, _RET_IP_);
++}
++EXPORT_SYMBOL(kfree);
++
+ struct detached_freelist {
+ 	struct slab *slab;
+ 	void *tail;
 
 -- 
 2.42.1
