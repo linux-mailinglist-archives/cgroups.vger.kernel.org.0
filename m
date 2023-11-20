@@ -1,61 +1,61 @@
-Return-Path: <cgroups+bounces-479-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-482-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A4D47F1C8D
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:34:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796F57F1C94
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:34:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15E5528290A
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:34:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9DA01C218DD
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45052315AB;
-	Mon, 20 Nov 2023 18:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5996830FBA;
+	Mon, 20 Nov 2023 18:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iabcfhh4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SMcA0x+L"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lskh8+Nj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JQZpJQ9Q"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45948CD;
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDC5D8;
 	Mon, 20 Nov 2023 10:34:42 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B1C1A1F8A3;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E9DB51F8A6;
 	Mon, 20 Nov 2023 18:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700505280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1700505281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Dcjx3iROX6mBTSjg5k3H+GZh2kSdjDYPdKkv3u7xaxo=;
-	b=iabcfhh4odsQc6zDp2olm7PNY882amRs2jeidFM7m3QwHQ/lclc8hPOI8NZPfJ2P+ToeBE
-	PXQMUqHf+8eqYd7nfwjwnm2wITFUjMhh/dVvGCHse6uE/410teLT/H1dAhXnZ+HTIgbR5n
-	pjS68hEbUfPFiGClGTyR1lOMfg83uCM=
+	bh=Nuh5DWhwaSyo20acRrWx07FPXsn5IPuIhuzYTBlJYws=;
+	b=lskh8+NjK84cZG7SqKSCZ3eO/1MD4vKkfHBAshUThScOC2oN+kMYJ8x9sYozYLNmkzrd3A
+	LxQPABh9kQLuS0d+9TV0Q2NyivMyMU8lu39fMN/UrdjCZBe7zgHDJuSxiIyEYpyEqEHic4
+	Bw8gBimBBkAowKVXEpP+Gc+OyuPIHg4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700505280;
+	s=susede2_ed25519; t=1700505281;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Dcjx3iROX6mBTSjg5k3H+GZh2kSdjDYPdKkv3u7xaxo=;
-	b=SMcA0x+Lw5Iwm1vNhrKZm+v49MtqmN+3hHoDk9+aQwO5+YsZIntAsbZVfn8zMp2CCbp4YN
-	fz+vWcUOGgpTo+Dg==
+	bh=Nuh5DWhwaSyo20acRrWx07FPXsn5IPuIhuzYTBlJYws=;
+	b=JQZpJQ9QP2ykM79Wrgq2dvV7Adexjb5rfIKIGaG+WP3EYoAutlKPhZK2HTY7mb4eToR1YJ
+	af8qGS6UtGLnEjDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77EF713499;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B55FE13912;
 	Mon, 20 Nov 2023 18:34:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id oCHMHMCmW2UUMgAAMHmgww
+	id UAbTK8CmW2UUMgAAMHmgww
 	(envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:40 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 20 Nov 2023 19:34:16 +0100
-Subject: [PATCH v2 05/21] mm/memcontrol: remove CONFIG_SLAB #ifdef guards
+Date: Mon, 20 Nov 2023 19:34:17 +0100
+Subject: [PATCH v2 06/21] cpu/hotplug: remove CPUHP_SLAB_PREPARE hooks
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-slab-remove-slab-v2-5-9c9c70177183@suse.cz>
+Message-Id: <20231120-slab-remove-slab-v2-6-9c9c70177183@suse.cz>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 To: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, 
@@ -81,8 +81,7 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>, 
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
  kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
- linux-hardening@vger.kernel.org, Michal Hocko <mhocko@suse.com>, 
- Vlastimil Babka <vbabka@suse.cz>
+ linux-hardening@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.12.4
 Authentication-Results: smtp-out2.suse.de;
 	none
@@ -104,47 +103,70 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
 	 R_RATELIMIT(0.00)[to_ip_from(RL563rtnmcmc9sawm86hmgtctc)];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 BAYES_HAM(-0.00)[42.60%];
-	 RCPT_COUNT_TWELVE(0.00)[25];
+	 BAYES_HAM(-0.00)[15.84%];
+	 RCPT_COUNT_TWELVE(0.00)[24];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,linux.dev,google.com,arm.com,cmpxchg.org,kernel.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com,suse.com,suse.cz];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,linux.dev,google.com,arm.com,cmpxchg.org,kernel.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com,suse.cz];
 	 RCVD_COUNT_TWO(0.00)[2];
 	 SUSPICIOUS_RECIPS(1.50)[]
 
-With SLAB removed, these are never true anymore so we can clean up.
+The CPUHP_SLAB_PREPARE hooks are only used by SLAB which is removed.
+SLUB defines them as NULL, so we can remove those altogether.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Michal Hocko <mhocko@suse.com>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/memcontrol.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ include/linux/cpuhotplug.h | 1 -
+ include/linux/slab.h       | 8 --------
+ kernel/cpu.c               | 5 -----
+ 3 files changed, 14 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 774bd6e21e27..947fb50eba31 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5149,7 +5149,7 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 	return ret;
- }
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index d305db70674b..07cb8f7030b6 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -108,7 +108,6 @@ enum cpuhp_state {
+ 	CPUHP_X2APIC_PREPARE,
+ 	CPUHP_SMPCFD_PREPARE,
+ 	CPUHP_RELAY_PREPARE,
+-	CPUHP_SLAB_PREPARE,
+ 	CPUHP_MD_RAID5_PREPARE,
+ 	CPUHP_RCUTREE_PREP,
+ 	CPUHP_CPUIDLE_COUPLED_PREPARE,
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index d6d6ffeeb9a2..34e43cddc520 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -788,12 +788,4 @@ size_t kmalloc_size_roundup(size_t size);
  
--#if defined(CONFIG_MEMCG_KMEM) && (defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
-+#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_SLUB_DEBUG)
- static int mem_cgroup_slab_show(struct seq_file *m, void *p)
- {
- 	/*
-@@ -5258,8 +5258,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
- 		.write = mem_cgroup_reset,
- 		.read_u64 = mem_cgroup_read_u64,
+ void __init kmem_cache_init_late(void);
+ 
+-#if defined(CONFIG_SMP) && defined(CONFIG_SLAB)
+-int slab_prepare_cpu(unsigned int cpu);
+-int slab_dead_cpu(unsigned int cpu);
+-#else
+-#define slab_prepare_cpu	NULL
+-#define slab_dead_cpu		NULL
+-#endif
+-
+ #endif	/* _LINUX_SLAB_H */
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 9e4c6780adde..530b026d95a1 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2125,11 +2125,6 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 		.startup.single		= relay_prepare_cpu,
+ 		.teardown.single	= NULL,
  	},
--#if defined(CONFIG_MEMCG_KMEM) && \
--	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
-+#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_SLUB_DEBUG)
- 	{
- 		.name = "kmem.slabinfo",
- 		.seq_show = mem_cgroup_slab_show,
+-	[CPUHP_SLAB_PREPARE] = {
+-		.name			= "slab:prepare",
+-		.startup.single		= slab_prepare_cpu,
+-		.teardown.single	= slab_dead_cpu,
+-	},
+ 	[CPUHP_RCUTREE_PREP] = {
+ 		.name			= "RCU/tree:prepare",
+ 		.startup.single		= rcutree_prepare_cpu,
 
 -- 
 2.42.1
