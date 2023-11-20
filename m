@@ -1,62 +1,61 @@
-Return-Path: <cgroups+bounces-484-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-488-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD247F1C99
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:35:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652257F1C9E
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:35:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6975B21A12
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:35:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AF17282968
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B89328DF;
-	Mon, 20 Nov 2023 18:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D0634541;
+	Mon, 20 Nov 2023 18:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Xi8x2Mai";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NeSKI17U"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OPvbGApq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hHfEJiIX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4EDE8;
-	Mon, 20 Nov 2023 10:34:43 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F2DF4;
+	Mon, 20 Nov 2023 10:34:44 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E026321923;
-	Mon, 20 Nov 2023 18:34:41 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 126E71F8AE;
+	Mon, 20 Nov 2023 18:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700505281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1700505282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aVfRs6M7+9kPCQWxAD8DsCdbOnhN2KBENiJIM8UzvaI=;
-	b=Xi8x2Maic8BjPE4QHWuEuFpKZYbztsF04CB2NiqgaH23dD2MT4Ro0RlgXo8XkV19JMRS3M
-	kLV2BIpu8F2tbfaO+Npd2ISJJ1FcIHw/6VDU8pGbFyTEWNVHIGUaGvA4oI2mg4K6CscX/F
-	ufXvVdah3n+0pyOxq5cjF/9GgLrgbz0=
+	bh=W55q0OyvkcE8yjYUFiHdbA7mtkQVxDvl8PeQMRev8+4=;
+	b=OPvbGApqH6vL+H6a+7rZFgs5m0dBd4Z4cyOSEQehojTuC6sUdylqEYLYaHnRfQmhea9GBw
+	+Dwd+sQ4HiXRdV1RzXx6CXaN57LP5JQU2B1MdW2kvW+NsLdrVVCWt7raqgWeG7jDCgi34g
+	o7iH1JY0UQ9TavwcGJHW7XPx8u2bu8c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700505281;
+	s=susede2_ed25519; t=1700505282;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aVfRs6M7+9kPCQWxAD8DsCdbOnhN2KBENiJIM8UzvaI=;
-	b=NeSKI17UTjYFXjEdataz5u2wDntJlUIz5yfeaVqFzraVs+oCBTjWRv8IIO/zRECp8Uk9nN
-	2wRn3emISn9DplCQ==
+	bh=W55q0OyvkcE8yjYUFiHdbA7mtkQVxDvl8PeQMRev8+4=;
+	b=hHfEJiIXn/vUPJO2vMxUyAJddv/lecOFFiY4FeAuaj8e0ISZ2pTEsfwJKBDkmyZtJYU0KW
+	HvHoSEiQAsLCYRAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F8C013912;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5D6C139E9;
 	Mon, 20 Nov 2023 18:34:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id KDB8JsGmW2UUMgAAMHmgww
+	id 6AnBM8GmW2UUMgAAMHmgww
 	(envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:41 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 20 Nov 2023 19:34:21 +0100
-Subject: [PATCH v2 10/21] mm/slab: move struct kmem_cache_cpu declaration
- to slub.c
+Date: Mon, 20 Nov 2023 19:34:22 +0100
+Subject: [PATCH v2 11/21] mm/slab: move the rest of slub_def.h to mm/slab.h
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,7 +64,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-slab-remove-slab-v2-10-9c9c70177183@suse.cz>
+Message-Id: <20231120-slab-remove-slab-v2-11-9c9c70177183@suse.cz>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 To: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, 
@@ -84,7 +83,7 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
  linux-hardening@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.12.4
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
 	none
 X-Spam-Score: 1.30
 X-Spamd-Result: default: False [1.30 / 50.00];
@@ -98,6 +97,7 @@ X-Spamd-Result: default: False [1.30 / 50.00];
 	 TAGGED_RCPT(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 REPLY(-4.00)[];
+	 CLAM_VIRUS_FAIL(0.00)[failed to scan and retransmits exceed];
 	 MID_RHS_MATCH_FROM(0.00)[];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 R_RATELIMIT(0.00)[to_ip_from(RL563rtnmcmc9sawm86hmgtctc)];
@@ -112,147 +112,324 @@ X-Spamd-Result: default: False [1.30 / 50.00];
 	 RCVD_COUNT_TWO(0.00)[2];
 	 SUSPICIOUS_RECIPS(1.50)[]
 
-Nothing outside SLUB itself accesses the struct kmem_cache_cpu fields so
-it does not need to be declared in slub_def.h. This allows also to move
-enum stat_item.
+mm/slab.h is the only place to include include/linux/slub_def.h which
+has allowed switching between SLAB and SLUB. Now we can simply move the
+contents over and remove slub_def.h.
+
+Use this opportunity to fix up some whitespace (alignment) issues.
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/slub_def.h | 54 ------------------------------------------------
- mm/slub.c                | 54 ++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 54 insertions(+), 54 deletions(-)
+ include/linux/slub_def.h | 150 -----------------------------------------------
+ mm/slab.h                | 138 ++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 137 insertions(+), 151 deletions(-)
 
 diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index deb90cf4bffb..a0229ea42977 100644
+deleted file mode 100644
+index a0229ea42977..000000000000
 --- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -12,60 +12,6 @@
- #include <linux/reciprocal_div.h>
- #include <linux/local_lock.h>
- 
--enum stat_item {
--	ALLOC_FASTPATH,		/* Allocation from cpu slab */
--	ALLOC_SLOWPATH,		/* Allocation by getting a new cpu slab */
--	FREE_FASTPATH,		/* Free to cpu slab */
--	FREE_SLOWPATH,		/* Freeing not to cpu slab */
--	FREE_FROZEN,		/* Freeing to frozen slab */
--	FREE_ADD_PARTIAL,	/* Freeing moves slab to partial list */
--	FREE_REMOVE_PARTIAL,	/* Freeing removes last object */
--	ALLOC_FROM_PARTIAL,	/* Cpu slab acquired from node partial list */
--	ALLOC_SLAB,		/* Cpu slab acquired from page allocator */
--	ALLOC_REFILL,		/* Refill cpu slab from slab freelist */
--	ALLOC_NODE_MISMATCH,	/* Switching cpu slab */
--	FREE_SLAB,		/* Slab freed to the page allocator */
--	CPUSLAB_FLUSH,		/* Abandoning of the cpu slab */
--	DEACTIVATE_FULL,	/* Cpu slab was full when deactivated */
--	DEACTIVATE_EMPTY,	/* Cpu slab was empty when deactivated */
--	DEACTIVATE_TO_HEAD,	/* Cpu slab was moved to the head of partials */
--	DEACTIVATE_TO_TAIL,	/* Cpu slab was moved to the tail of partials */
--	DEACTIVATE_REMOTE_FREES,/* Slab contained remotely freed objects */
--	DEACTIVATE_BYPASS,	/* Implicit deactivation */
--	ORDER_FALLBACK,		/* Number of times fallback was necessary */
--	CMPXCHG_DOUBLE_CPU_FAIL,/* Failure of this_cpu_cmpxchg_double */
--	CMPXCHG_DOUBLE_FAIL,	/* Number of times that cmpxchg double did not match */
--	CPU_PARTIAL_ALLOC,	/* Used cpu partial on alloc */
--	CPU_PARTIAL_FREE,	/* Refill cpu partial on free */
--	CPU_PARTIAL_NODE,	/* Refill cpu partial from node partial */
--	CPU_PARTIAL_DRAIN,	/* Drain cpu partial to node partial */
--	NR_SLUB_STAT_ITEMS
--};
++++ /dev/null
+@@ -1,150 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _LINUX_SLUB_DEF_H
+-#define _LINUX_SLUB_DEF_H
 -
--#ifndef CONFIG_SLUB_TINY
 -/*
-- * When changing the layout, make sure freelist and tid are still compatible
-- * with this_cpu_cmpxchg_double() alignment requirements.
+- * SLUB : A Slab allocator without object queues.
+- *
+- * (C) 2007 SGI, Christoph Lameter
 - */
--struct kmem_cache_cpu {
--	union {
--		struct {
--			void **freelist;	/* Pointer to next available object */
--			unsigned long tid;	/* Globally unique transaction id */
--		};
--		freelist_aba_t freelist_tid;
--	};
--	struct slab *slab;	/* The slab from which we are allocating */
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--	struct slab *partial;	/* Partially allocated frozen slabs */
--#endif
--	local_lock_t lock;	/* Protects the fields above */
--#ifdef CONFIG_SLUB_STATS
--	unsigned stat[NR_SLUB_STAT_ITEMS];
--#endif
--};
--#endif /* CONFIG_SLUB_TINY */
+-#include <linux/kfence.h>
+-#include <linux/kobject.h>
+-#include <linux/reciprocal_div.h>
+-#include <linux/local_lock.h>
 -
- #ifdef CONFIG_SLUB_CPU_PARTIAL
- #define slub_percpu_partial(c)		((c)->partial)
+-#ifdef CONFIG_SLUB_CPU_PARTIAL
+-#define slub_percpu_partial(c)		((c)->partial)
+-
+-#define slub_set_percpu_partial(c, p)		\
+-({						\
+-	slub_percpu_partial(c) = (p)->next;	\
+-})
+-
+-#define slub_percpu_partial_read_once(c)     READ_ONCE(slub_percpu_partial(c))
+-#else
+-#define slub_percpu_partial(c)			NULL
+-
+-#define slub_set_percpu_partial(c, p)
+-
+-#define slub_percpu_partial_read_once(c)	NULL
+-#endif // CONFIG_SLUB_CPU_PARTIAL
+-
+-/*
+- * Word size structure that can be atomically updated or read and that
+- * contains both the order and the number of objects that a slab of the
+- * given order would contain.
+- */
+-struct kmem_cache_order_objects {
+-	unsigned int x;
+-};
+-
+-/*
+- * Slab cache management.
+- */
+-struct kmem_cache {
+-#ifndef CONFIG_SLUB_TINY
+-	struct kmem_cache_cpu __percpu *cpu_slab;
+-#endif
+-	/* Used for retrieving partial slabs, etc. */
+-	slab_flags_t flags;
+-	unsigned long min_partial;
+-	unsigned int size;	/* The size of an object including metadata */
+-	unsigned int object_size;/* The size of an object without metadata */
+-	struct reciprocal_value reciprocal_size;
+-	unsigned int offset;	/* Free pointer offset */
+-#ifdef CONFIG_SLUB_CPU_PARTIAL
+-	/* Number of per cpu partial objects to keep around */
+-	unsigned int cpu_partial;
+-	/* Number of per cpu partial slabs to keep around */
+-	unsigned int cpu_partial_slabs;
+-#endif
+-	struct kmem_cache_order_objects oo;
+-
+-	/* Allocation and freeing of slabs */
+-	struct kmem_cache_order_objects min;
+-	gfp_t allocflags;	/* gfp flags to use on each alloc */
+-	int refcount;		/* Refcount for slab cache destroy */
+-	void (*ctor)(void *);
+-	unsigned int inuse;		/* Offset to metadata */
+-	unsigned int align;		/* Alignment */
+-	unsigned int red_left_pad;	/* Left redzone padding size */
+-	const char *name;	/* Name (only for display!) */
+-	struct list_head list;	/* List of slab caches */
+-#ifdef CONFIG_SYSFS
+-	struct kobject kobj;	/* For sysfs */
+-#endif
+-#ifdef CONFIG_SLAB_FREELIST_HARDENED
+-	unsigned long random;
+-#endif
+-
+-#ifdef CONFIG_NUMA
+-	/*
+-	 * Defragmentation by allocating from a remote node.
+-	 */
+-	unsigned int remote_node_defrag_ratio;
+-#endif
+-
+-#ifdef CONFIG_SLAB_FREELIST_RANDOM
+-	unsigned int *random_seq;
+-#endif
+-
+-#ifdef CONFIG_KASAN_GENERIC
+-	struct kasan_cache kasan_info;
+-#endif
+-
+-#ifdef CONFIG_HARDENED_USERCOPY
+-	unsigned int useroffset;	/* Usercopy region offset */
+-	unsigned int usersize;		/* Usercopy region size */
+-#endif
+-
+-	struct kmem_cache_node *node[MAX_NUMNODES];
+-};
+-
+-#if defined(CONFIG_SYSFS) && !defined(CONFIG_SLUB_TINY)
+-#define SLAB_SUPPORTS_SYSFS
+-void sysfs_slab_unlink(struct kmem_cache *);
+-void sysfs_slab_release(struct kmem_cache *);
+-#else
+-static inline void sysfs_slab_unlink(struct kmem_cache *s)
+-{
+-}
+-static inline void sysfs_slab_release(struct kmem_cache *s)
+-{
+-}
+-#endif
+-
+-void *fixup_red_left(struct kmem_cache *s, void *p);
+-
+-static inline void *nearest_obj(struct kmem_cache *cache, const struct slab *slab,
+-				void *x) {
+-	void *object = x - (x - slab_address(slab)) % cache->size;
+-	void *last_object = slab_address(slab) +
+-		(slab->objects - 1) * cache->size;
+-	void *result = (unlikely(object > last_object)) ? last_object : object;
+-
+-	result = fixup_red_left(cache, result);
+-	return result;
+-}
+-
+-/* Determine object index from a given position */
+-static inline unsigned int __obj_to_index(const struct kmem_cache *cache,
+-					  void *addr, void *obj)
+-{
+-	return reciprocal_divide(kasan_reset_tag(obj) - addr,
+-				 cache->reciprocal_size);
+-}
+-
+-static inline unsigned int obj_to_index(const struct kmem_cache *cache,
+-					const struct slab *slab, void *obj)
+-{
+-	if (is_kfence_address(obj))
+-		return 0;
+-	return __obj_to_index(cache, slab_address(slab), obj);
+-}
+-
+-static inline int objs_per_slab(const struct kmem_cache *cache,
+-				     const struct slab *slab)
+-{
+-	return slab->objects;
+-}
+-#endif /* _LINUX_SLUB_DEF_H */
+diff --git a/mm/slab.h b/mm/slab.h
+index 014c36ea51fa..3a8d13c099fa 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -209,7 +209,143 @@ static inline size_t slab_size(const struct slab *slab)
+ 	return PAGE_SIZE << slab_order(slab);
+ }
  
-diff --git a/mm/slub.c b/mm/slub.c
-index 3e01731783df..979932d046fd 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -330,6 +330,60 @@ static void debugfs_slab_add(struct kmem_cache *);
- static inline void debugfs_slab_add(struct kmem_cache *s) { }
- #endif
- 
-+enum stat_item {
-+	ALLOC_FASTPATH,		/* Allocation from cpu slab */
-+	ALLOC_SLOWPATH,		/* Allocation by getting a new cpu slab */
-+	FREE_FASTPATH,		/* Free to cpu slab */
-+	FREE_SLOWPATH,		/* Freeing not to cpu slab */
-+	FREE_FROZEN,		/* Freeing to frozen slab */
-+	FREE_ADD_PARTIAL,	/* Freeing moves slab to partial list */
-+	FREE_REMOVE_PARTIAL,	/* Freeing removes last object */
-+	ALLOC_FROM_PARTIAL,	/* Cpu slab acquired from node partial list */
-+	ALLOC_SLAB,		/* Cpu slab acquired from page allocator */
-+	ALLOC_REFILL,		/* Refill cpu slab from slab freelist */
-+	ALLOC_NODE_MISMATCH,	/* Switching cpu slab */
-+	FREE_SLAB,		/* Slab freed to the page allocator */
-+	CPUSLAB_FLUSH,		/* Abandoning of the cpu slab */
-+	DEACTIVATE_FULL,	/* Cpu slab was full when deactivated */
-+	DEACTIVATE_EMPTY,	/* Cpu slab was empty when deactivated */
-+	DEACTIVATE_TO_HEAD,	/* Cpu slab was moved to the head of partials */
-+	DEACTIVATE_TO_TAIL,	/* Cpu slab was moved to the tail of partials */
-+	DEACTIVATE_REMOTE_FREES,/* Slab contained remotely freed objects */
-+	DEACTIVATE_BYPASS,	/* Implicit deactivation */
-+	ORDER_FALLBACK,		/* Number of times fallback was necessary */
-+	CMPXCHG_DOUBLE_CPU_FAIL,/* Failures of this_cpu_cmpxchg_double */
-+	CMPXCHG_DOUBLE_FAIL,	/* Failures of slab freelist update */
-+	CPU_PARTIAL_ALLOC,	/* Used cpu partial on alloc */
-+	CPU_PARTIAL_FREE,	/* Refill cpu partial on free */
-+	CPU_PARTIAL_NODE,	/* Refill cpu partial from node partial */
-+	CPU_PARTIAL_DRAIN,	/* Drain cpu partial to node partial */
-+	NR_SLUB_STAT_ITEMS
-+};
+-#include <linux/slub_def.h>
++#include <linux/kfence.h>
++#include <linux/kobject.h>
++#include <linux/reciprocal_div.h>
++#include <linux/local_lock.h>
 +
-+#ifndef CONFIG_SLUB_TINY
-+/*
-+ * When changing the layout, make sure freelist and tid are still compatible
-+ * with this_cpu_cmpxchg_double() alignment requirements.
-+ */
-+struct kmem_cache_cpu {
-+	union {
-+		struct {
-+			void **freelist;	/* Pointer to next available object */
-+			unsigned long tid;	/* Globally unique transaction id */
-+		};
-+		freelist_aba_t freelist_tid;
-+	};
-+	struct slab *slab;	/* The slab from which we are allocating */
 +#ifdef CONFIG_SLUB_CPU_PARTIAL
-+	struct slab *partial;	/* Partially allocated frozen slabs */
-+#endif
-+	local_lock_t lock;	/* Protects the fields above */
-+#ifdef CONFIG_SLUB_STATS
-+	unsigned int stat[NR_SLUB_STAT_ITEMS];
-+#endif
-+};
-+#endif /* CONFIG_SLUB_TINY */
++#define slub_percpu_partial(c)			((c)->partial)
 +
- static inline void stat(const struct kmem_cache *s, enum stat_item si)
- {
- #ifdef CONFIG_SLUB_STATS
++#define slub_set_percpu_partial(c, p)		\
++({						\
++	slub_percpu_partial(c) = (p)->next;	\
++})
++
++#define slub_percpu_partial_read_once(c)	READ_ONCE(slub_percpu_partial(c))
++#else
++#define slub_percpu_partial(c)			NULL
++
++#define slub_set_percpu_partial(c, p)
++
++#define slub_percpu_partial_read_once(c)	NULL
++#endif // CONFIG_SLUB_CPU_PARTIAL
++
++/*
++ * Word size structure that can be atomically updated or read and that
++ * contains both the order and the number of objects that a slab of the
++ * given order would contain.
++ */
++struct kmem_cache_order_objects {
++	unsigned int x;
++};
++
++/*
++ * Slab cache management.
++ */
++struct kmem_cache {
++#ifndef CONFIG_SLUB_TINY
++	struct kmem_cache_cpu __percpu *cpu_slab;
++#endif
++	/* Used for retrieving partial slabs, etc. */
++	slab_flags_t flags;
++	unsigned long min_partial;
++	unsigned int size;		/* Object size including metadata */
++	unsigned int object_size;	/* Object size without metadata */
++	struct reciprocal_value reciprocal_size;
++	unsigned int offset;		/* Free pointer offset */
++#ifdef CONFIG_SLUB_CPU_PARTIAL
++	/* Number of per cpu partial objects to keep around */
++	unsigned int cpu_partial;
++	/* Number of per cpu partial slabs to keep around */
++	unsigned int cpu_partial_slabs;
++#endif
++	struct kmem_cache_order_objects oo;
++
++	/* Allocation and freeing of slabs */
++	struct kmem_cache_order_objects min;
++	gfp_t allocflags;		/* gfp flags to use on each alloc */
++	int refcount;			/* Refcount for slab cache destroy */
++	void (*ctor)(void *object);	/* Object constructor */
++	unsigned int inuse;		/* Offset to metadata */
++	unsigned int align;		/* Alignment */
++	unsigned int red_left_pad;	/* Left redzone padding size */
++	const char *name;		/* Name (only for display!) */
++	struct list_head list;		/* List of slab caches */
++#ifdef CONFIG_SYSFS
++	struct kobject kobj;		/* For sysfs */
++#endif
++#ifdef CONFIG_SLAB_FREELIST_HARDENED
++	unsigned long random;
++#endif
++
++#ifdef CONFIG_NUMA
++	/*
++	 * Defragmentation by allocating from a remote node.
++	 */
++	unsigned int remote_node_defrag_ratio;
++#endif
++
++#ifdef CONFIG_SLAB_FREELIST_RANDOM
++	unsigned int *random_seq;
++#endif
++
++#ifdef CONFIG_KASAN_GENERIC
++	struct kasan_cache kasan_info;
++#endif
++
++#ifdef CONFIG_HARDENED_USERCOPY
++	unsigned int useroffset;	/* Usercopy region offset */
++	unsigned int usersize;		/* Usercopy region size */
++#endif
++
++	struct kmem_cache_node *node[MAX_NUMNODES];
++};
++
++#if defined(CONFIG_SYSFS) && !defined(CONFIG_SLUB_TINY)
++#define SLAB_SUPPORTS_SYSFS
++void sysfs_slab_unlink(struct kmem_cache *s);
++void sysfs_slab_release(struct kmem_cache *s);
++#else
++static inline void sysfs_slab_unlink(struct kmem_cache *s) { }
++static inline void sysfs_slab_release(struct kmem_cache *s) { }
++#endif
++
++void *fixup_red_left(struct kmem_cache *s, void *p);
++
++static inline void *nearest_obj(struct kmem_cache *cache,
++				const struct slab *slab, void *x)
++{
++	void *object = x - (x - slab_address(slab)) % cache->size;
++	void *last_object = slab_address(slab) +
++		(slab->objects - 1) * cache->size;
++	void *result = (unlikely(object > last_object)) ? last_object : object;
++
++	result = fixup_red_left(cache, result);
++	return result;
++}
++
++/* Determine object index from a given position */
++static inline unsigned int __obj_to_index(const struct kmem_cache *cache,
++					  void *addr, void *obj)
++{
++	return reciprocal_divide(kasan_reset_tag(obj) - addr,
++				 cache->reciprocal_size);
++}
++
++static inline unsigned int obj_to_index(const struct kmem_cache *cache,
++					const struct slab *slab, void *obj)
++{
++	if (is_kfence_address(obj))
++		return 0;
++	return __obj_to_index(cache, slab_address(slab), obj);
++}
++
++static inline int objs_per_slab(const struct kmem_cache *cache,
++				const struct slab *slab)
++{
++	return slab->objects;
++}
+ 
+ #include <linux/memcontrol.h>
+ #include <linux/fault-inject.h>
 
 -- 
 2.42.1
