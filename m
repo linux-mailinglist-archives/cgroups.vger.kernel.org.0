@@ -1,62 +1,61 @@
-Return-Path: <cgroups+bounces-493-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-497-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A707F1CA8
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:35:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5947F1CAC
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 19:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C2EF1F25A68
-	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:35:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88E0EB21BCE
+	for <lists+cgroups@lfdr.de>; Mon, 20 Nov 2023 18:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE21136AF5;
-	Mon, 20 Nov 2023 18:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2EA34CFF;
+	Mon, 20 Nov 2023 18:34:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lMWFwPye";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2WYXGeth"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hwuFRol6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YfZzeD4+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCB9110;
-	Mon, 20 Nov 2023 10:34:45 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA84112;
+	Mon, 20 Nov 2023 10:34:46 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 150A71F8AB;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 62AEA1F8B3;
 	Mon, 20 Nov 2023 18:34:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1700505284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=66Fcft8CxLuyGHKa/ns5P/AtbVP/SvETjQ6dsoMJ/dY=;
-	b=lMWFwPyefenNyh7/clvx/qk+stHQQ5N7hb9zBmCMeupxTPI+D6dGU/TADQ1u5M32UH+IBC
-	fbQGY+u8lJJ8xR7VIM1PukvUBJEbUUw6tEAIWsnx+w1U5RfwCcRoqU/FIRxofF8z90UkRm
-	3dW6SMf1sSFeVNgXgr0JhhA3Fozsnbk=
+	bh=mirY2Hk97uPg9xiXuUhtPBwRnD0yXek2uhM+MkvFe9M=;
+	b=hwuFRol6oXcEWzuDdHFpAqjOeTYFxJUj4nJ61iKgOMub5bOZmoLsewrjU4j1fuVJ1OSXDm
+	CegBQ+7CW2HYU4fz4wV32EXvIfYNs3hsn6UnGU+jOyDE3WHEm3VUHEeqEbsI4YTrjUFbv5
+	+o9i6vFUMX5QJg7Us70hJbpp7UGaE/s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1700505284;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=66Fcft8CxLuyGHKa/ns5P/AtbVP/SvETjQ6dsoMJ/dY=;
-	b=2WYXGethB6aGSlwwFVtp6ZCxtnU8BDR7TlSKHnTc/eY0M0e5JG5Si0/T6HS0tBqTGGaxCU
-	vUR3uQ9DA9xC1JCA==
+	bh=mirY2Hk97uPg9xiXuUhtPBwRnD0yXek2uhM+MkvFe9M=;
+	b=YfZzeD4+Rgm0cLt0ciF30u+ZuqPIvKG5rXL0BoDGzTctb5xvenFwHMkVqTBMDVZX+z8ZmD
+	z3n7hRGVcqZj3xBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8DFC13912;
-	Mon, 20 Nov 2023 18:34:43 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1AE0B13499;
+	Mon, 20 Nov 2023 18:34:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ULBvMMOmW2UUMgAAMHmgww
-	(envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:43 +0000
+	id 6JftBcSmW2UUMgAAMHmgww
+	(envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:44 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 20 Nov 2023 19:34:30 +0100
-Subject: [PATCH v2 19/21] mm/slub: remove slab_alloc() and
- __kmem_cache_alloc_lru() wrappers
+Date: Mon, 20 Nov 2023 19:34:31 +0100
+Subject: [PATCH v2 20/21] mm/slub: optimize alloc fastpath code layout
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,7 +64,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-slab-remove-slab-v2-19-9c9c70177183@suse.cz>
+Message-Id: <20231120-slab-remove-slab-v2-20-9c9c70177183@suse.cz>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 To: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, 
@@ -112,68 +111,216 @@ X-Spamd-Result: default: False [1.30 / 50.00];
 	 RCVD_COUNT_TWO(0.00)[2];
 	 SUSPICIOUS_RECIPS(1.50)[]
 
-slab_alloc() is a thin wrapper around slab_alloc_node() with only one
-caller.  Replace with direct call of slab_alloc_node().
-__kmem_cache_alloc_lru() itself is a thin wrapper with two callers,
-so replace it with direct calls of slab_alloc_node() and
-trace_kmem_cache_alloc().
+With allocation fastpaths no longer divided between two .c files, we
+have better inlining, however checking the disassembly of
+kmem_cache_alloc() reveals we can do better to make the fastpaths
+smaller and move the less common situations out of line or to separate
+functions, to reduce instruction cache pressure.
 
-This also makes sure _RET_IP_ has always the expected value and not
-depending on inlining decisions.
+- split memcg pre/post alloc hooks to inlined checks that use likely()
+  to assume there will be no objcg handling necessary, and non-inline
+  functions doing the actual handling
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+- add some more likely/unlikely() to pre/post alloc hooks to indicate
+  which scenarios should be out of line
+
+- change gfp_allowed_mask handling in slab_post_alloc_hook() so the
+  code can be optimized away when kasan/kmsan/kmemleak is configured out
+
+bloat-o-meter shows:
+add/remove: 4/2 grow/shrink: 1/8 up/down: 521/-2924 (-2403)
+Function                                     old     new   delta
+__memcg_slab_post_alloc_hook                   -     461    +461
+kmem_cache_alloc_bulk                        775     791     +16
+__pfx_should_failslab.constprop                -      16     +16
+__pfx___memcg_slab_post_alloc_hook             -      16     +16
+should_failslab.constprop                      -      12     +12
+__pfx_memcg_slab_post_alloc_hook              16       -     -16
+kmem_cache_alloc_lru                        1295    1023    -272
+kmem_cache_alloc_node                       1118     817    -301
+kmem_cache_alloc                            1076     772    -304
+kmalloc_node_trace                          1149     838    -311
+kmalloc_trace                               1102     789    -313
+__kmalloc_node_track_caller                 1393    1080    -313
+__kmalloc_node                              1397    1082    -315
+__kmalloc                                   1374    1059    -315
+memcg_slab_post_alloc_hook                   464       -    -464
+
+Note that gcc still decided to inline __memcg_pre_alloc_hook(), but the
+code is out of line. Forcing noinline did not improve the results. As a
+result the fastpaths are shorter and overal code size is reduced.
+
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
+ mm/slub.c | 89 ++++++++++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 54 insertions(+), 35 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index d6bc15929d22..5683f1d02e4f 100644
+index 5683f1d02e4f..77d259f3d592 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -3821,33 +3821,26 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
- 	return object;
- }
- 
--static __fastpath_inline void *slab_alloc(struct kmem_cache *s, struct list_lru *lru,
--		gfp_t gfpflags, unsigned long addr, size_t orig_size)
--{
--	return slab_alloc_node(s, lru, gfpflags, NUMA_NO_NODE, addr, orig_size);
--}
--
--static __fastpath_inline
--void *__kmem_cache_alloc_lru(struct kmem_cache *s, struct list_lru *lru,
--			     gfp_t gfpflags)
-+void *kmem_cache_alloc(struct kmem_cache *s, gfp_t gfpflags)
+@@ -1866,25 +1866,17 @@ static inline size_t obj_full_size(struct kmem_cache *s)
+ /*
+  * Returns false if the allocation should fail.
+  */
+-static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+-					     struct list_lru *lru,
+-					     struct obj_cgroup **objcgp,
+-					     size_t objects, gfp_t flags)
++static bool __memcg_slab_pre_alloc_hook(struct kmem_cache *s,
++					struct list_lru *lru,
++					struct obj_cgroup **objcgp,
++					size_t objects, gfp_t flags)
  {
--	void *ret = slab_alloc(s, lru, gfpflags, _RET_IP_, s->object_size);
-+	void *ret = slab_alloc_node(s, NULL, gfpflags, NUMA_NO_NODE, _RET_IP_,
-+				    s->object_size);
- 
- 	trace_kmem_cache_alloc(_RET_IP_, ret, s, gfpflags, NUMA_NO_NODE);
- 
- 	return ret;
- }
+-	struct obj_cgroup *objcg;
 -
--void *kmem_cache_alloc(struct kmem_cache *s, gfp_t gfpflags)
--{
--	return __kmem_cache_alloc_lru(s, NULL, gfpflags);
--}
- EXPORT_SYMBOL(kmem_cache_alloc);
+-	if (!memcg_kmem_online())
+-		return true;
+-
+-	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
+-		return true;
+-
+ 	/*
+ 	 * The obtained objcg pointer is safe to use within the current scope,
+ 	 * defined by current task or set_active_memcg() pair.
+ 	 * obj_cgroup_get() is used to get a permanent reference.
+ 	 */
+-	objcg = current_obj_cgroup();
++	struct obj_cgroup *objcg = current_obj_cgroup();
+ 	if (!objcg)
+ 		return true;
  
- void *kmem_cache_alloc_lru(struct kmem_cache *s, struct list_lru *lru,
- 			   gfp_t gfpflags)
- {
--	return __kmem_cache_alloc_lru(s, lru, gfpflags);
-+	void *ret = slab_alloc_node(s, lru, gfpflags, NUMA_NO_NODE, _RET_IP_,
-+				    s->object_size);
-+
-+	trace_kmem_cache_alloc(_RET_IP_, ret, s, gfpflags, NUMA_NO_NODE);
-+
-+	return ret;
+@@ -1907,17 +1899,34 @@ static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+ 	return true;
  }
- EXPORT_SYMBOL(kmem_cache_alloc_lru);
  
+-static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+-					      struct obj_cgroup *objcg,
+-					      gfp_t flags, size_t size,
+-					      void **p)
++/*
++ * Returns false if the allocation should fail.
++ */
++static __fastpath_inline
++bool memcg_slab_pre_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
++			       struct obj_cgroup **objcgp, size_t objects,
++			       gfp_t flags)
++{
++	if (!memcg_kmem_online())
++		return true;
++
++	if (likely(!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT)))
++		return true;
++
++	return likely(__memcg_slab_pre_alloc_hook(s, lru, objcgp, objects,
++						  flags));
++}
++
++static void __memcg_slab_post_alloc_hook(struct kmem_cache *s,
++					 struct obj_cgroup *objcg,
++					 gfp_t flags, size_t size,
++					 void **p)
+ {
+ 	struct slab *slab;
+ 	unsigned long off;
+ 	size_t i;
+ 
+-	if (!memcg_kmem_online() || !objcg)
+-		return;
++	flags &= gfp_allowed_mask;
+ 
+ 	for (i = 0; i < size; i++) {
+ 		if (likely(p[i])) {
+@@ -1940,6 +1949,16 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 	}
+ }
+ 
++static __fastpath_inline
++void memcg_slab_post_alloc_hook(struct kmem_cache *s, struct obj_cgroup *objcg,
++				gfp_t flags, size_t size, void **p)
++{
++	if (likely(!memcg_kmem_online() || !objcg))
++		return;
++
++	return __memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
++}
++
+ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+ 					void **p, int objects)
+ {
+@@ -3709,34 +3728,34 @@ noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ }
+ ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
+ 
+-static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+-						     struct list_lru *lru,
+-						     struct obj_cgroup **objcgp,
+-						     size_t size, gfp_t flags)
++static __fastpath_inline
++struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
++				       struct list_lru *lru,
++				       struct obj_cgroup **objcgp,
++				       size_t size, gfp_t flags)
+ {
+ 	flags &= gfp_allowed_mask;
+ 
+ 	might_alloc(flags);
+ 
+-	if (should_failslab(s, flags))
++	if (unlikely(should_failslab(s, flags)))
+ 		return NULL;
+ 
+-	if (!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags))
++	if (unlikely(!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags)))
+ 		return NULL;
+ 
+ 	return s;
+ }
+ 
+-static inline void slab_post_alloc_hook(struct kmem_cache *s,
+-					struct obj_cgroup *objcg, gfp_t flags,
+-					size_t size, void **p, bool init,
+-					unsigned int orig_size)
++static __fastpath_inline
++void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
++			  gfp_t flags, size_t size, void **p, bool init,
++			  unsigned int orig_size)
+ {
+ 	unsigned int zero_size = s->object_size;
+ 	bool kasan_init = init;
+ 	size_t i;
+-
+-	flags &= gfp_allowed_mask;
++	gfp_t init_flags = flags & gfp_allowed_mask;
+ 
+ 	/*
+ 	 * For kmalloc object, the allocated memory size(object_size) is likely
+@@ -3769,13 +3788,13 @@ static inline void slab_post_alloc_hook(struct kmem_cache *s,
+ 	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
+ 	 */
+ 	for (i = 0; i < size; i++) {
+-		p[i] = kasan_slab_alloc(s, p[i], flags, kasan_init);
++		p[i] = kasan_slab_alloc(s, p[i], init_flags, kasan_init);
+ 		if (p[i] && init && (!kasan_init ||
+ 				     !kasan_has_integrated_init()))
+ 			memset(p[i], 0, zero_size);
+ 		kmemleak_alloc_recursive(p[i], s->object_size, 1,
+-					 s->flags, flags);
+-		kmsan_slab_alloc(s, p[i], flags);
++					 s->flags, init_flags);
++		kmsan_slab_alloc(s, p[i], init_flags);
+ 	}
+ 
+ 	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+@@ -3799,7 +3818,7 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 	bool init = false;
+ 
+ 	s = slab_pre_alloc_hook(s, lru, &objcg, 1, gfpflags);
+-	if (!s)
++	if (unlikely(!s))
+ 		return NULL;
+ 
+ 	object = kfence_alloc(s, orig_size, gfpflags);
 
 -- 
 2.42.1
