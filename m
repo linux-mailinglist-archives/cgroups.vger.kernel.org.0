@@ -1,220 +1,129 @@
-Return-Path: <cgroups+bounces-499-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-500-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60BC27F23C4
-	for <lists+cgroups@lfdr.de>; Tue, 21 Nov 2023 03:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB4E7F2763
+	for <lists+cgroups@lfdr.de>; Tue, 21 Nov 2023 09:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C71E282336
-	for <lists+cgroups@lfdr.de>; Tue, 21 Nov 2023 02:19:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E6E28288C
+	for <lists+cgroups@lfdr.de>; Tue, 21 Nov 2023 08:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C8914AA4;
-	Tue, 21 Nov 2023 02:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FDE3AC16;
+	Tue, 21 Nov 2023 08:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eONjVomh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G/g5h1CB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21663C8
-	for <cgroups@vger.kernel.org>; Mon, 20 Nov 2023 18:19:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1700533143;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=nedYr642nEg/r1pmego4Hp5PjxqjOd5QuDOx28RV/Z4=;
-	b=eONjVomhyR6i7726RIwSPwn3crZYkd4N5r5yPpjpJcPODT33KNDCtqAU+8cj2QS1a1fQYN
-	Ld8+aI2xxSmFtH6vVdtjg1hyC6/2XIq4HYuYSzXBOx9ocMfJdP/bHzpoe/owA3iUCotWy9
-	btJjJeplLJ+q2JHmdKpY2uBucqz0tM8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586-iYHo0YeKP32831Ej1aXyEg-1; Mon, 20 Nov 2023 21:19:00 -0500
-X-MC-Unique: iYHo0YeKP32831Ej1aXyEg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D36485A58C;
-	Tue, 21 Nov 2023 02:18:59 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.109])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 26E9E1C060B0;
-	Tue, 21 Nov 2023 02:18:59 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Waiman Long <longman@redhat.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH-cgroup] workqueue: Move workqueue_set_unbound_cpumask() and its helpers inside CONFIG_SYSFS
-Date: Mon, 20 Nov 2023 21:18:40 -0500
-Message-Id: <20231121021840.10937-1-longman@redhat.com>
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6B6CB;
+	Tue, 21 Nov 2023 00:23:29 -0800 (PST)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-45d9689b65dso1817043137.0;
+        Tue, 21 Nov 2023 00:23:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700555008; x=1701159808; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VTTlQmptyhl28YwEosbclj7OWg+yV7E5QNOLel4gX6s=;
+        b=G/g5h1CBMMbuDOL2blUuQrW38gjO9h01pWI7iXmf+9iKbRbvJGq9DkWXhZibq6OHUm
+         PrbU4coZha45G+MOXJoplvgJaFGIQeszf+Df5tGxXMywGyQbdkYW8h5fpwxAp7Mn7sZb
+         EgKRsDUO7GqzY53FhluHZqHlBRyjQcMoxuYLbs82jEE9Oh13rng7ATN2XvL5tugnWeNR
+         dyKd/1mLMK2+cX57ckQ2/PZlp0UKmfARa7pFaEKFDBEry0AzYS2C3wws3Kr9cZ7THGsX
+         cqwMEG9J/z6G9zx2SXkkW4HCHm6H83B5thcbU4/SWzKZwsbfdkY8fT69B6VHtMbZVgz4
+         kyHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700555008; x=1701159808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VTTlQmptyhl28YwEosbclj7OWg+yV7E5QNOLel4gX6s=;
+        b=PZA2gd+Zgmd5aOyKELJtF3PaX0ZrxzqykMsYK5e6wiYc2yOxijL7So7oAO+GHkwnTd
+         HWgLVKun5yYj3YYHgk8wBuAk5wNQNHNgeLhArl8znjEQoFbxuIlknkU5qvJZmYzjeVpE
+         tKazgSlohY6psJmjZtad0SHWnDUEKkYRsDCskb1PLAwNexA491G1PidiguYFVDdcLlby
+         XNYaryAYMfyTeIDkSB+Atp0/DXyOTq2h/bZCh75GneOANHvlYCIA+BeXjDvfB6jPmlvl
+         gdg1hEfxWuIXlI0Oy5sieR6Wndc6jHnlCWVr0NpfA20kclKsxbUFR6OlrU1IQFIaXGKD
+         KgCQ==
+X-Gm-Message-State: AOJu0YzO+tHtZrcl45vWaWo7nJyZwMG+ZqjU7Ymrkix+I/M5/pwTDlvp
+	yyT5Cj2cC/idm8DaBLjcJGeUNbVQ3KsK3frqBa0=
+X-Google-Smtp-Source: AGHT+IGwoESgCljT9hI9a75uzFfG37Ho+LK4Kg8xt7bZRLz8mCB39XUmvj78Wr1gcUkuJvu0WD01EZ6+itnbfBvZNTg=
+X-Received: by 2002:a67:fbcc:0:b0:45d:a89f:e1f4 with SMTP id
+ o12-20020a67fbcc000000b0045da89fe1f4mr4547806vsr.9.1700555008189; Tue, 21 Nov
+ 2023 00:23:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz> <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz>
+In-Reply-To: <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz>
+From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date: Tue, 21 Nov 2023 17:23:17 +0900
+Message-ID: <CAB=+i9R+307rFa8d6evMFMZwPrrCXmafGrZavMhupBYph6tSAg@mail.gmail.com>
+Subject: Re: [PATCH v2 03/21] KASAN: remove code paths guarded by CONFIG_SLAB
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+	Marco Elver <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit fe28f631fa94 ("workqueue: Add workqueue_unbound_exclude_cpumask()
-to exclude CPUs from wq_unbound_cpumask") makes
-workqueue_set_unbound_cpumask() static as it is not used elsewhere in
-the kernel. However, this triggers a kernel test robot warning about
-'workqueue_set_unbound_cpumask' defined but not used when CONFIG_SYS
-isn't defined. It happens that workqueue_set_unbound_cpumask() is only
-called when CONFIG_SYS is defined.
+On Tue, Nov 21, 2023 at 3:34=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> With SLAB removed and SLUB the only remaining allocator, we can clean up
+> some code that was depending on the choice.
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
 
-Move workqueue_set_unbound_cpumask() and its helpers inside the
-CONFIG_SYSFS compilation block to avoid the warning. There is no
-functional change.
+[...]
 
-Fixes: fe28f631fa94 ("workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs from wq_unbound_cpumask")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311130831.uh0AoCd1-lkp@intel.com/
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/workqueue.c | 102 ++++++++++++++++++++++-----------------------
- 1 file changed, 51 insertions(+), 51 deletions(-)
+> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> index ca4529156735..138c57b836f2 100644
+> --- a/mm/kasan/quarantine.c
+> +++ b/mm/kasan/quarantine.c
+> @@ -144,10 +144,6 @@ static void qlink_free(struct qlist_node *qlink, str=
+uct kmem_cache *cache)
+>  {
+>         void *object =3D qlink_to_object(qlink, cache);
+>         struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, objec=
+t);
+> -       unsigned long flags;
+> -
+> -       if (IS_ENABLED(CONFIG_SLAB))
+> -               local_irq_save(flags);
+>
+>         /*
+>          * If init_on_free is enabled and KASAN's free metadata is stored=
+ in
+> @@ -166,9 +162,6 @@ static void qlink_free(struct qlist_node *qlink, stru=
+ct kmem_cache *cache)
+>         *(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
+>
+>         ___cache_free(cache, object, _THIS_IP_);
+> -
+> -       if (IS_ENABLED(CONFIG_SLAB))
+> -               local_irq_restore(flags);
+>  }
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index bd9d34eacd78..2fc585d3d6ca 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4417,19 +4417,6 @@ static void apply_wqattrs_commit(struct apply_wqattrs_ctx *ctx)
- 	mutex_unlock(&ctx->wq->mutex);
- }
- 
--static void apply_wqattrs_lock(void)
--{
--	/* CPUs should stay stable across pwq creations and installations */
--	cpus_read_lock();
--	mutex_lock(&wq_pool_mutex);
--}
--
--static void apply_wqattrs_unlock(void)
--{
--	mutex_unlock(&wq_pool_mutex);
--	cpus_read_unlock();
--}
--
- static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
- 					const struct workqueue_attrs *attrs)
- {
-@@ -5833,44 +5820,6 @@ static int workqueue_apply_unbound_cpumask(const cpumask_var_t unbound_cpumask)
- 	return ret;
- }
- 
--/**
-- *  workqueue_set_unbound_cpumask - Set the low-level unbound cpumask
-- *  @cpumask: the cpumask to set
-- *
-- *  The low-level workqueues cpumask is a global cpumask that limits
-- *  the affinity of all unbound workqueues.  This function check the @cpumask
-- *  and apply it to all unbound workqueues and updates all pwqs of them.
-- *
-- *  Return:	0	- Success
-- *  		-EINVAL	- Invalid @cpumask
-- *  		-ENOMEM	- Failed to allocate memory for attrs or pwqs.
-- */
--static int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
--{
--	int ret = -EINVAL;
--
--	/*
--	 * Not excluding isolated cpus on purpose.
--	 * If the user wishes to include them, we allow that.
--	 */
--	cpumask_and(cpumask, cpumask, cpu_possible_mask);
--	if (!cpumask_empty(cpumask)) {
--		apply_wqattrs_lock();
--		cpumask_copy(wq_requested_unbound_cpumask, cpumask);
--		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
--			ret = 0;
--			goto out_unlock;
--		}
--
--		ret = workqueue_apply_unbound_cpumask(cpumask);
--
--out_unlock:
--		apply_wqattrs_unlock();
--	}
--
--	return ret;
--}
--
- /**
-  * workqueue_unbound_exclude_cpumask - Exclude given CPUs from unbound cpumask
-  * @exclude_cpumask: the cpumask to be excluded from wq_unbound_cpumask
-@@ -6027,6 +5976,19 @@ static struct attribute *wq_sysfs_attrs[] = {
- };
- ATTRIBUTE_GROUPS(wq_sysfs);
- 
-+static void apply_wqattrs_lock(void)
-+{
-+	/* CPUs should stay stable across pwq creations and installations */
-+	cpus_read_lock();
-+	mutex_lock(&wq_pool_mutex);
-+}
-+
-+static void apply_wqattrs_unlock(void)
-+{
-+	mutex_unlock(&wq_pool_mutex);
-+	cpus_read_unlock();
-+}
-+
- static ssize_t wq_nice_show(struct device *dev, struct device_attribute *attr,
- 			    char *buf)
- {
-@@ -6203,6 +6165,44 @@ static struct bus_type wq_subsys = {
- 	.dev_groups			= wq_sysfs_groups,
- };
- 
-+/**
-+ *  workqueue_set_unbound_cpumask - Set the low-level unbound cpumask
-+ *  @cpumask: the cpumask to set
-+ *
-+ *  The low-level workqueues cpumask is a global cpumask that limits
-+ *  the affinity of all unbound workqueues.  This function check the @cpumask
-+ *  and apply it to all unbound workqueues and updates all pwqs of them.
-+ *
-+ *  Return:	0	- Success
-+ *		-EINVAL	- Invalid @cpumask
-+ *		-ENOMEM	- Failed to allocate memory for attrs or pwqs.
-+ */
-+static int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
-+{
-+	int ret = -EINVAL;
-+
-+	/*
-+	 * Not excluding isolated cpus on purpose.
-+	 * If the user wishes to include them, we allow that.
-+	 */
-+	cpumask_and(cpumask, cpumask, cpu_possible_mask);
-+	if (!cpumask_empty(cpumask)) {
-+		apply_wqattrs_lock();
-+		cpumask_copy(wq_requested_unbound_cpumask, cpumask);
-+		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
-+			ret = 0;
-+			goto out_unlock;
-+		}
-+
-+		ret = workqueue_apply_unbound_cpumask(cpumask);
-+
-+out_unlock:
-+		apply_wqattrs_unlock();
-+	}
-+
-+	return ret;
-+}
-+
- static ssize_t __wq_cpumask_show(struct device *dev,
- 		struct device_attribute *attr, char *buf, cpumask_var_t mask)
- {
--- 
-2.39.3
+FYI there's a slight conflict (easy to resolve, though) when I tried
+to merge this on top of linux-next,
+due to a recent change in KASAN:
 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/=
+?id=3D0e8b630f3053f0ff84b7c3ab8ff98a7393863824
+
+Thanks,
+Hyeonggon
 
