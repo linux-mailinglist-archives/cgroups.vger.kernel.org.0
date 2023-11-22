@@ -1,227 +1,133 @@
-Return-Path: <cgroups+bounces-514-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-515-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566EA7F46E7
-	for <lists+cgroups@lfdr.de>; Wed, 22 Nov 2023 13:50:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE1F7F47C3
+	for <lists+cgroups@lfdr.de>; Wed, 22 Nov 2023 14:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 796AE1C20AAF
-	for <lists+cgroups@lfdr.de>; Wed, 22 Nov 2023 12:50:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EDC0B20CE2
+	for <lists+cgroups@lfdr.de>; Wed, 22 Nov 2023 13:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05E74C638;
-	Wed, 22 Nov 2023 12:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F388254BF0;
+	Wed, 22 Nov 2023 13:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fcF4pxKR"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NviMH3lP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CE5199;
+	Wed, 22 Nov 2023 05:25:02 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D2B495FB;
-	Wed, 22 Nov 2023 12:50:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 467BDC433CB;
-	Wed, 22 Nov 2023 12:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700657408;
-	bh=aU2J72Xp3JKGs0IOk/3BX7BmnbVjjSktFzc5W0fL98s=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=fcF4pxKRziGSAF2FOqxImPOzC2PEVz+iXrlHdDaPyM6/v6o+f16jjdAN+lC2pUX0Z
-	 c6Vj4pEReJ7qSGBsgd/Etcb/Bx/NFbs8vsXFZDe0htqh1OD5+o81eDXmshIPtuoyBK
-	 lUfl8SFejNcIDe347vDzewRE22FCt1MWsk2CM4stuQE/3LK9tJj9skrI0zg5sl10Ot
-	 aC+S7ghlxwZ2rYR03/mACnTcLYZ3VnGDGFga1iJsrVdoW+9CIorT0HYAGwO2anWZen
-	 uIJ0oJqCh8DfwGg5lQlRhQShmsIUNUkRjdY2uwh1ov0dsfb3jgNLqtI1PY54/gVbLF
-	 del/29joBTz5A==
-From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 22 Nov 2023 13:48:25 +0100
-Subject: [PATCH v2 4/4] eventfd: make eventfd_signal{_mask}() void
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BA6D421963;
+	Wed, 22 Nov 2023 13:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1700659500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mnil+ohrFFTHGaSkTl3Q2cN64Y8ppTuLrZctm6+XJ04=;
+	b=NviMH3lPaz796NW0GanNc2oVdUjsEpgwAS1bgTsNOE1S3r1SeXrEcclqbbdKOyx1fnusqF
+	VyWcZqiqbbNuU49VvWRezdfO5MjuI0+1oqkznB4vxRlgRNMntMZKAUfkjkm9GLCW0qUDxI
+	WXKB+sr5IyNeb+NoCv5cHyJGnYLg6GU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8628C13467;
+	Wed, 22 Nov 2023 13:25:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id ajEaHSwBXmVjaQAAMHmgww
+	(envelope-from <mhocko@suse.com>); Wed, 22 Nov 2023 13:25:00 +0000
+Date: Wed, 22 Nov 2023 14:24:59 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZV4BK0wbUAZBIhmA@tiehlicka>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-vfs-eventfd-signal-v2-4-bd549b14ce0c@kernel.org>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-To: linux-fsdevel@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, 
- Vitaly Kuznetsov <vkuznets@redhat.com>, 
- Sean Christopherson <seanjc@google.com>, 
- Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
- David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>, 
- Oded Gabbay <ogabbay@kernel.org>, Wu Hao <hao.wu@intel.com>, 
- Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>, 
- Xu Yilun <yilun.xu@intel.com>, Zhenyu Wang <zhenyuw@linux.intel.com>, 
- Zhi Wang <zhi.a.wang@intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, 
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
- Rodrigo Vivi <rodrigo.vivi@intel.com>, 
- Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
- Frederic Barrat <fbarrat@linux.ibm.com>, 
- Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Eric Farman <farman@linux.ibm.com>, Matthew Rosato <mjrosato@linux.ibm.com>, 
- Halil Pasic <pasic@linux.ibm.com>, Vineeth Vijayan <vneethv@linux.ibm.com>, 
- Peter Oberparleiter <oberpar@linux.ibm.com>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Tony Krowiak <akrowiak@linux.ibm.com>, 
- Jason Herne <jjherne@linux.ibm.com>, 
- Harald Freudenberger <freude@linux.ibm.com>, 
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
- Diana Craciun <diana.craciun@oss.nxp.com>, 
- Alex Williamson <alex.williamson@redhat.com>, 
- Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>, 
- Benjamin LaHaise <bcrl@kvack.org>, Christian Brauner <brauner@kernel.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
- Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org, 
- intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-usb@vger.kernel.org, virtualization@lists.linux-foundation.org, 
- netdev@vger.kernel.org, linux-aio@kvack.org, cgroups@vger.kernel.org, 
- linux-mm@kvack.org, Jens Axboe <axboe@kernel.dk>, 
- Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-X-Mailer: b4 0.13-dev-26615
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3854; i=brauner@kernel.org;
- h=from:subject:message-id; bh=aU2J72Xp3JKGs0IOk/3BX7BmnbVjjSktFzc5W0fL98s=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTG/lj73/5dRNiNYIfwQ9VnNb8kSHjtMQlc94/11mwNB
- qlLZUUiHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABP5zcjwh+t1UN76vf945tSW
- T/rxjCHQpq4w94r2Zqm/ATIn/7GqSjMyvH01XYi3/rDPbk7Hf182bChuXbCzsfD2+Wr+47+PXN/
- CxAMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -7.80
+X-Spamd-Result: default: False [-7.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[]
 
-No caller care about the return value.
+On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
+> Hello Michal,
+> 
+> Thank you for the quick review!
+> 
+> On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
+> > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
+> > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > Currently, it is not possible to trace this point from non-direct
+> > > reclaim paths.
+> > 
+> > Is this really true? AFAICS we have
+> > mm_vmscan_lru_isolate
+> > mm_vmscan_lru_shrink_active
+> > mm_vmscan_lru_shrink_inactive
+> > 
+> > which are in the vry core of the memory reclaim. Sure post processing
+> > those is some work.
+> 
+> Sure, you are absolutely right. In the usual scenario, the memcg
+> shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
+> tracepoints you mentioned and analyze them. However, there is one
+> potential issue. Enabling these tracepoints will trigger the reclaim
+> events show for all pages. Although we can filter them per pid, we
+> cannot filter them per cgroup. Nevertheless, there are times when it
+> would be extremely beneficial to comprehend the effectiveness of the
+> reclaim process within the relevant cgroup. For this reason, I am adding
+> the cgroup name to the memcg tracepoints and implementing a cumulative
+> tracepoint for memcg shrink (LRU + slab)."
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- fs/eventfd.c            | 40 +++++++++++++++-------------------------
- include/linux/eventfd.h | 16 +++++++---------
- 2 files changed, 22 insertions(+), 34 deletions(-)
-
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index a9a6de920fb4..13be2fb7fc96 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -43,10 +43,19 @@ struct eventfd_ctx {
- 	int id;
- };
- 
--__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
-+/**
-+ * eventfd_signal - Adds @n to the eventfd counter.
-+ * @ctx: [in] Pointer to the eventfd context.
-+ * @mask: [in] poll mask
-+ *
-+ * This function is supposed to be called by the kernel in paths that do not
-+ * allow sleeping. In this function we allow the counter to reach the ULLONG_MAX
-+ * value, and we signal this as overflow condition by returning a EPOLLERR
-+ * to poll(2).
-+ */
-+void eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
- {
- 	unsigned long flags;
--	__u64 n = 1;
- 
- 	/*
- 	 * Deadlock or stack overflow issues can happen if we recurse here
-@@ -57,37 +66,18 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
- 	 * safe context.
- 	 */
- 	if (WARN_ON_ONCE(current->in_eventfd))
--		return 0;
-+		return;
- 
- 	spin_lock_irqsave(&ctx->wqh.lock, flags);
- 	current->in_eventfd = 1;
--	if (ULLONG_MAX - ctx->count < n)
--		n = ULLONG_MAX - ctx->count;
--	ctx->count += n;
-+	if (ctx->count < ULLONG_MAX)
-+		ctx->count++;
- 	if (waitqueue_active(&ctx->wqh))
- 		wake_up_locked_poll(&ctx->wqh, EPOLLIN | mask);
- 	current->in_eventfd = 0;
- 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
--
--	return n == 1;
--}
--
--/**
-- * eventfd_signal - Adds @n to the eventfd counter.
-- * @ctx: [in] Pointer to the eventfd context.
-- *
-- * This function is supposed to be called by the kernel in paths that do not
-- * allow sleeping. In this function we allow the counter to reach the ULLONG_MAX
-- * value, and we signal this as overflow condition by returning a EPOLLERR
-- * to poll(2).
-- *
-- * Returns the amount by which the counter was incremented.
-- */
--__u64 eventfd_signal(struct eventfd_ctx *ctx)
--{
--	return eventfd_signal_mask(ctx, 0);
- }
--EXPORT_SYMBOL_GPL(eventfd_signal);
-+EXPORT_SYMBOL_GPL(eventfd_signal_mask);
- 
- static void eventfd_free_ctx(struct eventfd_ctx *ctx)
- {
-diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-index 4f8aac7eb62a..fea7c4eb01d6 100644
---- a/include/linux/eventfd.h
-+++ b/include/linux/eventfd.h
-@@ -35,8 +35,7 @@ void eventfd_ctx_put(struct eventfd_ctx *ctx);
- struct file *eventfd_fget(int fd);
- struct eventfd_ctx *eventfd_ctx_fdget(int fd);
- struct eventfd_ctx *eventfd_ctx_fileget(struct file *file);
--__u64 eventfd_signal(struct eventfd_ctx *ctx);
--__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask);
-+void eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask);
- int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *wait,
- 				  __u64 *cnt);
- void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
-@@ -58,14 +57,8 @@ static inline struct eventfd_ctx *eventfd_ctx_fdget(int fd)
- 	return ERR_PTR(-ENOSYS);
- }
- 
--static inline int eventfd_signal(struct eventfd_ctx *ctx)
-+static inline void eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
- {
--	return -ENOSYS;
--}
--
--static inline int eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
--{
--	return -ENOSYS;
- }
- 
- static inline void eventfd_ctx_put(struct eventfd_ctx *ctx)
-@@ -91,5 +84,10 @@ static inline void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt)
- 
- #endif
- 
-+static inline void eventfd_signal(struct eventfd_ctx *ctx)
-+{
-+	eventfd_signal_mask(ctx, 0);
-+}
-+
- #endif /* _LINUX_EVENTFD_H */
- 
-
+I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
+easier to postprocess per memcg reclaim. But you could do that just by
+adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
+does this matter for kswapd and other global reclaim contexts? 
 -- 
-2.42.0
-
+Michal Hocko
+SUSE Labs
 
