@@ -1,63 +1,63 @@
-Return-Path: <cgroups+bounces-535-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-536-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314DD7F5DAF
-	for <lists+cgroups@lfdr.de>; Thu, 23 Nov 2023 12:21:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29C37F5DC5
+	for <lists+cgroups@lfdr.de>; Thu, 23 Nov 2023 12:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C3D0B212E4
-	for <lists+cgroups@lfdr.de>; Thu, 23 Nov 2023 11:21:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 527F6281B80
+	for <lists+cgroups@lfdr.de>; Thu, 23 Nov 2023 11:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E637A22F16;
-	Thu, 23 Nov 2023 11:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA4722F17;
+	Thu, 23 Nov 2023 11:26:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="gCrG99tM"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="cEDyq9OY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9943D6C;
-	Thu, 23 Nov 2023 03:21:40 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 5DABC120003;
-	Thu, 23 Nov 2023 14:21:37 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5DABC120003
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D335AA3;
+	Thu, 23 Nov 2023 03:26:36 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 59A74100008;
+	Thu, 23 Nov 2023 14:26:35 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 59A74100008
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1700738497;
-	bh=Vn+apVzXsEM6pqvtCgpqeXfkP+wK1W/P560NUnnIQWw=;
+	s=mail; t=1700738795;
+	bh=bOO7CqfbeqtPu+OvgUpTnWR1nT+4YgvDziG8YR8E+zI=;
 	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=gCrG99tMe19Ma2XQZX1ZrXApT9lHM0RmaeJnK+ikOirwkyOLHbdW0T3SCq4RMakMz
-	 YTjh901E2O56zBcccytdOogebIZZqVtHZPxHkhRKLCvgje7gCky0Pqv6kQsx3EAH1s
-	 i9E2aCGP59MEwj5lNDzIa2EO+u6owlAOoJwSdCLtMJYYpWpTxXWY0a8euMGMBhXef1
-	 J36qV8oONQzlLFd9wHo/LD0kE9Jq1hCZl/OsauD24GposE5t0uaLW63ymrd+4uSICA
-	 cb/DJ8cq2SQlYYC/rtV1cUh/iJTvPZ9PUwq6X8lppbaqf++BEh/B8pccZKKrYDkj9t
-	 lKyWHhsrXpC8Q==
+	b=cEDyq9OYl745EnFlXfacIqCYjLi1H8hvHNG2CVYAnSZ9OFzEldRj5Glk3hqlJWUlf
+	 Gc2repLUHUA8qt5aslnitk9JVq0j+Xm711idaOyICzj7+39w3U1jm+NRvlmztPQ0fk
+	 qrX6UKpc9ZdWHUlyWSki1m9RReZgvIq4H8O0vWgcb823End1mA8feWWdyamFr++ndv
+	 +5mlbdyauF/g8tYivDT/D9/U4EIpsLbxnwlkZP9jeKrkHLOEcAtc4FQZ7LNpB8jgoE
+	 f/xmEAbTA2mhpYf/deqxAMojE1Cum+WEFaootu+PVPROy/5nAU4xaFE3W5eRNbMULP
+	 UJVpCLrVAxlLw==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 23 Nov 2023 14:21:37 +0300 (MSK)
+	Thu, 23 Nov 2023 14:26:35 +0300 (MSK)
 Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
  (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
- 2023 14:21:37 +0300
-Date: Thu, 23 Nov 2023 14:21:36 +0300
+ 2023 14:26:34 +0300
+Date: Thu, 23 Nov 2023 14:26:29 +0300
 From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Shakeel Butt <shakeelb@google.com>
+To: Michal Hocko <mhocko@suse.com>, <shakeelb@google.com>
 CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
-	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
+	<roman.gushchin@linux.dev>, <shakeelb@google.com>, <muchun.song@linux.dev>,
 	<akpm@linux-foundation.org>, <kernel@sberdevices.ru>, <rockosov@gmail.com>,
 	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
 	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] mm: memcg: print out cgroup name in the memcg
- tracepoints
-Message-ID: <20231123112136.n7qgkevgrracuk7m@CAB-WSD-L081021>
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
 References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
- <20231122100156.6568-2-ddrokosov@salutedevices.com>
- <20231123072126.jpukmc6rqmzckdw2@google.com>
- <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
- <20231123081547.7fbxd4ts3qohrioq@google.com>
- <20231123084510.wwnkjyrrbp5vltkg@CAB-WSD-L081021>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+ <ZV4BK0wbUAZBIhmA@tiehlicka>
+ <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231123084510.wwnkjyrrbp5vltkg@CAB-WSD-L081021>
+In-Reply-To: <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
 User-Agent: NeoMutt/20220415
 X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
@@ -79,7 +79,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -87,42 +87,72 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 09:18:00 #22508170
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-Shakeel,
+Michal, Shakeel,
 
-On Thu, Nov 23, 2023 at 11:45:10AM +0300, Dmitry Rokosov wrote:
-> On Thu, Nov 23, 2023 at 08:15:47AM +0000, Shakeel Butt wrote:
-> > On Thu, Nov 23, 2023 at 11:03:34AM +0300, Dmitry Rokosov wrote:
-> > [...]
-> > > > > +		cgroup_name(memcg->css.cgroup,
-> > > > > +			__entry->name,
-> > > > > +			sizeof(__entry->name));
+Sorry for pinging you here, but I don't quite understand your decision
+on this patchset.
+
+Is it a NAK or not? If it's not, should I consider redesigning
+something? For instance, introducing stub functions to
+remove ifdefs from shrink_node_memcgs().
+
+Thank you for taking the time to look into this!
+
+On Wed, Nov 22, 2023 at 09:57:27PM +0300, Dmitry Rokosov wrote:
+> On Wed, Nov 22, 2023 at 02:24:59PM +0100, Michal Hocko wrote:
+> > On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
+> > > Hello Michal,
+> > > 
+> > > Thank you for the quick review!
+> > > 
+> > > On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
+> > > > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
+> > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > > Currently, it is not possible to trace this point from non-direct
+> > > > > reclaim paths.
 > > > > 
-> > > > Any reason not to use cgroup_ino? cgroup_name may conflict and be
-> > > > ambiguous.
+> > > > Is this really true? AFAICS we have
+> > > > mm_vmscan_lru_isolate
+> > > > mm_vmscan_lru_shrink_active
+> > > > mm_vmscan_lru_shrink_inactive
+> > > > 
+> > > > which are in the vry core of the memory reclaim. Sure post processing
+> > > > those is some work.
 > > > 
-> > > I actually didn't consider it, as the cgroup name serves as a clear tag
-> > > for filtering the appropriate cgroup in the entire trace file. However,
-> > > you are correct that there might be conflicts with cgroup names.
-> > > Therefore, it might be better to display both tags: ino and name. What
-> > > do you think on this?
-> > > 
+> > > Sure, you are absolutely right. In the usual scenario, the memcg
+> > > shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
+> > > tracepoints you mentioned and analyze them. However, there is one
+> > > potential issue. Enabling these tracepoints will trigger the reclaim
+> > > events show for all pages. Although we can filter them per pid, we
+> > > cannot filter them per cgroup. Nevertheless, there are times when it
+> > > would be extremely beneficial to comprehend the effectiveness of the
+> > > reclaim process within the relevant cgroup. For this reason, I am adding
+> > > the cgroup name to the memcg tracepoints and implementing a cumulative
+> > > tracepoint for memcg shrink (LRU + slab)."
 > > 
-> > I can see putting cgroup name can avoid pre or post processing, so
-> > putting both are fine. Though keep in mind that cgroup_name acquires a
-> > lock which may impact the applications running on the system.
+> > I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
+> > easier to postprocess per memcg reclaim. But you could do that just by
+> > adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
+> > does this matter for kswapd and other global reclaim contexts? 
 > 
-> Are you talking about kernfs_rename_lock? Yes, it's acquired each
-> time... Unfortunatelly, I don't know a way to save cgroup_name one time
-> somehow...
-
-I delved deeper and realized that kernfs_rename_lock is a read-write
-lock, but it's a global one. While it's true that we only enable
-tracepoints during specific periods of the host's lifetime, the trace
-system is still a fast way to debug things. So, you're absolutely right,
-we shouldn't slow down the system unnecessarily.
-
-Therefore, today I will prepare a new version with only the cgroup ino.
-Thank you for pointing that out to me!
+> From my point of view, kswapd and other non-direct reclaim paths are
+> important for memcg analysis because they also influence the memcg
+> reclaim statistics.
+> 
+> The tracepoint mm_vmscan_memcg_reclaim_{begin, end} is called from the
+> direct memcg reclaim flow, such as:
+>     - a direct write to the 'reclaim' node
+>     - changing 'max' and 'high' thresholds
+>     - raising the 'force_empty' mechanism
+>     - the charge path
+>     - etc.
+> 
+> However, it doesn't cover global reclaim contexts, so it doesn't provide
+> us with the full memcg reclaim statistics.
+> 
+> -- 
+> Thank you,
+> Dmitry
 
 -- 
 Thank you,
