@@ -1,153 +1,259 @@
-Return-Path: <cgroups+bounces-547-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-548-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B8EC7F7001
-	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 10:35:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DE227F84BF
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 20:37:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCAD7B20A30
-	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 09:35:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE9E81C273FB
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 19:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6F916420;
-	Fri, 24 Nov 2023 09:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B19938DE8;
+	Fri, 24 Nov 2023 19:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wi7zjCRT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0W5OjFqN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bE54jALy"
 X-Original-To: cgroups@vger.kernel.org
-X-Greylist: delayed 510 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 01:35:07 PST
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB26FD54;
-	Fri, 24 Nov 2023 01:35:07 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 05E2E21CC1;
-	Fri, 24 Nov 2023 09:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700817996; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9LgMMddRm1Z0VKUmKvdY8oWuzJ6UIJ2B5WVeljH1gzY=;
-	b=wi7zjCRTJoJFYmrOSrFq1Fu/59T4P6MokqaDJsIPGxE68UXGgkFGQUmtbemkvLqIBDUosD
-	6dbZDPN8N2wtenWqevFy2J+IbBFPl8h6rN6B6dHYWvVhjUR97kDZI9KJ+AaQyUQUgNRW28
-	PQNluc8R7uZOseUGFVzaemA8aiyqifg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700817996;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9LgMMddRm1Z0VKUmKvdY8oWuzJ6UIJ2B5WVeljH1gzY=;
-	b=0W5OjFqNGkfGKKXJaWmpdCXySuZEq4uZZiDFlis8GjNTJepSeVMo/29CF/7SB4OGNMiPS+
-	xd3ALVU+Ukwt5XCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB51D13A98;
-	Fri, 24 Nov 2023 09:26:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 739GMUtsYGVxZQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 24 Nov 2023 09:26:35 +0000
-Message-ID: <2d0626b2-793c-315f-dc93-af021bd5cb85@suse.cz>
-Date: Fri, 24 Nov 2023 10:26:35 +0100
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808F126AE
+	for <cgroups@vger.kernel.org>; Fri, 24 Nov 2023 11:31:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700854294; x=1732390294;
+  h=date:from:to:cc:subject:message-id;
+  bh=szrCK8w4EUMr8poMbTgtEfu0h5T2H//oBIh8M3oOtFQ=;
+  b=bE54jALyo9S83NBvMwWSkkl4yjiBVK8BuYnvhCtM90x4UyCoI/MhpF6q
+   ygFyx6IRHlDSaCG1q3SDA1XbVSSUUm5A/ga0aPLkodCPSB5RecNOfrLI9
+   fT2gjjHgiFB4Y58Ttie1fJ+iEQRwPc6Eywy8irxsbCoXjmEeY+92TOzwV
+   g3vfyiqxJk/sABlmmzUptFWsIvEQ0Tj4wKnvNQnF/lQd6VVDgIStTOEX2
+   mUTp95+qGs9KELBvkLHVytC6uJoNROn89jGmPYCkzBKeNCvpOt1ygifAC
+   BRe7v1pTgMvCh/WxRWpaTxip5CqsXgUMNe64y5D0ERiIsKjGWiNfo54WY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="14020501"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="14020501"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 11:31:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="891133105"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="891133105"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2023 11:31:30 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r6btg-0003Da-03;
+	Fri, 24 Nov 2023 19:31:28 +0000
+Date: Sat, 25 Nov 2023 03:31:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 42d2580377e0234d7277c7803d58d5a40caf6112
+Message-ID: <202311250313.Wxcxa8eh-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 00/21] remove the SLAB allocator
-Content-Language: en-US
-To: David Rientjes <rientjes@google.com>
-Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>, Marco Elver
- <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
- Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
- linux-hardening@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <b4d53ec4-482d-23ec-b73f-dfbc58ccc149@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <b4d53ec4-482d-23ec-b73f-dfbc58ccc149@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Score: 0.20
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_SPAM(0.00)[35.47%];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[24];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.com,kernel.org,lge.com,linux-foundation.org,gmail.com,linux.dev,google.com,arm.com,cmpxchg.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
 
-On 11/24/23 01:45, David Rientjes wrote:
-> On Mon, 20 Nov 2023, Vlastimil Babka wrote:
-> 
->> Changes from v1:
->> - Added new Patch 01 to fix up kernel docs build (thanks Marco Elver)
->> - Additional changes to Kconfig user visible texts in Patch 02 (thanks Kees
->>   Cook)
->> - Whitespace fixes and other fixups (thanks Kees)
->> 
->> The SLAB allocator has been deprecated since 6.5 and nobody has objected
->> so far. As we agreed at LSF/MM, we should wait with the removal until
->> the next LTS kernel is released. This is now determined to be 6.6, and
->> we just missed 6.7, so now we can aim for 6.8 and start exposing the
->> removal to linux-next during the 6.7 cycle. If nothing substantial pops
->> up, will start including this in slab-next later this week.
->> 
-> 
-> I agree with the decision to remove the SLAB allocator, same as at LSF/MM.  
-> Thanks for doing this, Vlastimil!
-> 
-> And thanks for deferring this until the next LTS kernel, it will give any 
-> last minute hold outs a full year to raise any issues in their switch to 
-> SLUB if they only only upgrade to LTS kernels at which point we'll have 
-> done our due diligence to make people aware of SLAB's deprecation in 6.6.
-> 
-> I've completed testing on v1 of the series, so feel free to add
-> 
-> Acked-by: David Rientjes <rientjes@google.com>
-> Tested-by: David Rientjes <rientjes@google.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 42d2580377e0234d7277c7803d58d5a40caf6112  Merge branch 'for-6.8' into for-next
 
-Thanks! And others too.
+elapsed time: 1454m
 
-I've now pushed this series to slab/for-6.8/slab-removal and slab/for-next
+configs tested: 181
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                   randconfig-001-20231124   gcc  
+arc                   randconfig-002-20231124   gcc  
+arc                    vdk_hs38_smp_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                           imxrt_defconfig   gcc  
+arm                      integrator_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231124   gcc  
+csky                  randconfig-002-20231124   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386                                defconfig   gcc  
+i386                  randconfig-011-20231124   gcc  
+i386                  randconfig-011-20231125   clang
+i386                  randconfig-012-20231124   gcc  
+i386                  randconfig-012-20231125   clang
+i386                  randconfig-013-20231124   gcc  
+i386                  randconfig-013-20231125   clang
+i386                  randconfig-014-20231124   gcc  
+i386                  randconfig-014-20231125   clang
+i386                  randconfig-015-20231124   gcc  
+i386                  randconfig-015-20231125   clang
+i386                  randconfig-016-20231124   gcc  
+i386                  randconfig-016-20231125   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231124   gcc  
+loongarch             randconfig-002-20231124   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                          amiga_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                        m5272c3_defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+m68k                            mac_defconfig   gcc  
+m68k                          sun3x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                        bcm47xx_defconfig   gcc  
+mips                         cobalt_defconfig   gcc  
+mips                            gpr_defconfig   gcc  
+mips                           jazz_defconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+mips                      maltasmvp_defconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+mips                          rb532_defconfig   gcc  
+nios2                            alldefconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231124   gcc  
+nios2                 randconfig-002-20231124   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-64bit_defconfig   gcc  
+parisc                randconfig-001-20231124   gcc  
+parisc                randconfig-002-20231124   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        cell_defconfig   gcc  
+powerpc                      makalu_defconfig   gcc  
+powerpc                       maple_defconfig   gcc  
+powerpc                      ppc40x_defconfig   gcc  
+powerpc                         ps3_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231124   gcc  
+s390                  randconfig-002-20231124   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                 kfr2r09-romimage_defconfig   gcc  
+sh                    randconfig-001-20231124   gcc  
+sh                    randconfig-002-20231124   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                           se7206_defconfig   gcc  
+sh                           se7343_defconfig   gcc  
+sh                           se7705_defconfig   gcc  
+sh                           se7712_defconfig   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sh                            shmin_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231124   gcc  
+sparc64               randconfig-002-20231124   gcc  
+um                               alldefconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231124   clang
+x86_64       buildonly-randconfig-002-20231124   clang
+x86_64       buildonly-randconfig-003-20231124   clang
+x86_64       buildonly-randconfig-004-20231124   clang
+x86_64       buildonly-randconfig-005-20231124   clang
+x86_64       buildonly-randconfig-006-20231124   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20231124   clang
+x86_64                randconfig-012-20231124   clang
+x86_64                randconfig-013-20231124   clang
+x86_64                randconfig-014-20231124   clang
+x86_64                randconfig-015-20231124   clang
+x86_64                randconfig-016-20231124   clang
+x86_64                randconfig-071-20231124   clang
+x86_64                randconfig-072-20231124   clang
+x86_64                randconfig-073-20231124   clang
+x86_64                randconfig-074-20231124   clang
+x86_64                randconfig-075-20231124   clang
+x86_64                randconfig-076-20231124   clang
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                generic_kc705_defconfig   gcc  
+xtensa                          iss_defconfig   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
+xtensa                randconfig-001-20231124   gcc  
+xtensa                randconfig-002-20231124   gcc  
+xtensa                    smp_lx200_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
