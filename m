@@ -1,57 +1,57 @@
-Return-Path: <cgroups+bounces-548-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-549-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE227F84BF
-	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 20:37:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C63597F84C3
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 20:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE9E81C273FB
-	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 19:37:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8B371C27231
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 19:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B19938DE8;
-	Fri, 24 Nov 2023 19:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8E83A8DD;
+	Fri, 24 Nov 2023 19:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bE54jALy"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mc/Urbrl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808F126AE
-	for <cgroups@vger.kernel.org>; Fri, 24 Nov 2023 11:31:34 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F46C1AB
+	for <cgroups@vger.kernel.org>; Fri, 24 Nov 2023 11:35:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700854294; x=1732390294;
+  t=1700854510; x=1732390510;
   h=date:from:to:cc:subject:message-id;
-  bh=szrCK8w4EUMr8poMbTgtEfu0h5T2H//oBIh8M3oOtFQ=;
-  b=bE54jALyo9S83NBvMwWSkkl4yjiBVK8BuYnvhCtM90x4UyCoI/MhpF6q
-   ygFyx6IRHlDSaCG1q3SDA1XbVSSUUm5A/ga0aPLkodCPSB5RecNOfrLI9
-   fT2gjjHgiFB4Y58Ttie1fJ+iEQRwPc6Eywy8irxsbCoXjmEeY+92TOzwV
-   g3vfyiqxJk/sABlmmzUptFWsIvEQ0Tj4wKnvNQnF/lQd6VVDgIStTOEX2
-   mUTp95+qGs9KELBvkLHVytC6uJoNROn89jGmPYCkzBKeNCvpOt1ygifAC
-   BRe7v1pTgMvCh/WxRWpaTxip5CqsXgUMNe64y5D0ERiIsKjGWiNfo54WY
+  bh=T2f6wdV8vbjbXNXGtidkhBAsuMqxCFS1500hBfhhlvI=;
+  b=Mc/Urbrlj2PDsHmI5BZkyZRwKi57IjcVlm7FnFALF29pfoXsGUeuCRKw
+   XYX+nAmTcVOj1MUKVg2ZjYDCjbRmNTyHfGHidlxnHAoIRWJuHbBwSHS6t
+   hQu/CIwnloqyx0BoUQ9J68983tuLoBvMp+Jgupa3awGLb2Q1sTbGMIkGK
+   sPCApI4iNcsE7/kKg+PmHOr4550/O5ymG8zAiLqKMAGtSzxm7WDlqO9yD
+   93qMCLlNBv2EEy3IE1OAn99XuqNermsQvUwPPzDK3EZaYE2HYt3xU2/0Q
+   IlhKdzuXRqZMLNXGFuHtTjwqzY+rcQzAY27+og0YxslzOg7M1NK9PHiQI
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="14020501"
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="382862489"
 X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="14020501"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 11:31:32 -0800
+   d="scan'208";a="382862489"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 11:32:37 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="891133105"
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="1099172125"
 X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
-   d="scan'208";a="891133105"
+   d="scan'208";a="1099172125"
 Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2023 11:31:30 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2023 11:32:35 -0800
 Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1r6btg-0003Da-03;
-	Fri, 24 Nov 2023 19:31:28 +0000
-Date: Sat, 25 Nov 2023 03:31:17 +0800
+	id 1r6buj-0003Dr-1t;
+	Fri, 24 Nov 2023 19:32:33 +0000
+Date: Sat, 25 Nov 2023 03:31:37 +0800
 From: kernel test robot <lkp@intel.com>
 To: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 42d2580377e0234d7277c7803d58d5a40caf6112
-Message-ID: <202311250313.Wxcxa8eh-lkp@intel.com>
+Subject: [tj-cgroup:for-6.8] BUILD SUCCESS
+ 202595663905384c4c629afd7b897af63a1563b5
+Message-ID: <202311250335.EqaYQsle-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -59,10 +59,10 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 42d2580377e0234d7277c7803d58d5a40caf6112  Merge branch 'for-6.8' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.8
+branch HEAD: 202595663905384c4c629afd7b897af63a1563b5  Merge branch 'for-6.7-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq into for-6.8
 
-elapsed time: 1454m
+elapsed time: 1455m
 
 configs tested: 181
 configs skipped: 2
