@@ -1,142 +1,198 @@
-Return-Path: <cgroups+bounces-542-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-543-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040457F67B8
-	for <lists+cgroups@lfdr.de>; Thu, 23 Nov 2023 20:43:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEAE7F69EB
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 01:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9864C281B00
-	for <lists+cgroups@lfdr.de>; Thu, 23 Nov 2023 19:43:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9328B1C20A9F
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 00:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F83A24B57;
-	Thu, 23 Nov 2023 19:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8C463E;
+	Fri, 24 Nov 2023 00:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="dp3Pv+Rb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bc9Tqz5H"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8211D5A
-	for <cgroups@vger.kernel.org>; Thu, 23 Nov 2023 11:43:30 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6bd20c30831so204682b3a.1
-        for <cgroups@vger.kernel.org>; Thu, 23 Nov 2023 11:43:30 -0800 (PST)
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A9ED73
+	for <cgroups@vger.kernel.org>; Thu, 23 Nov 2023 16:45:13 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35938a7d050so135025ab.0
+        for <cgroups@vger.kernel.org>; Thu, 23 Nov 2023 16:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1700768610; x=1701373410; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WpkzZHg09ad7VkHOnG/quo/T41ONjJ1411UTG4haLXU=;
-        b=dp3Pv+RbN7GZ2lrzjUffbQSF0LOT7BAeVxL6NUaQWXL7BGCA8WDsDwdIv1vBi/bJh+
-         x+kueLLHCLnZJPbC862Wr+FeUwslFH4KsQDxtO27+z0Knohfoc1/nZaiTZIc1t1+Rm5F
-         bvX5ONi4yF1JFQpbP3Y8QFG7vPyFuxrLoF8RUWAS0rpopJh1ZZOocP0Uy5U4Mbs71JTW
-         VqkNsfgKvCuwd0Zp3UY9OofwAtmwZAmjrrLLpSdFn8xdFL18Apgz7eraE8iP8965BEqc
-         m07TYmEVY2jR+/GcdHXejKJSgc79oFbqpKjLmiJQ2p1a0vrTf4zkItE1lOEdMbMyzUCQ
-         ca8Q==
+        d=google.com; s=20230601; t=1700786713; x=1701391513; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RjvlNJZCYVj3BK/c/qbMtW/UyhsFITEp4fF0Uz8Mao8=;
+        b=Bc9Tqz5H3ZS23EAjFw7671QpKqrxMT/wpxfMezDyGzdGCgtc4qq7ZyWgdRb6RHGP9f
+         3qlXskG63nF0mNdqMS3LCs3JUTEfNAgnB+I6mB8gyXsH0tcvrfeKvwM2SomFAgIeRExf
+         9pvfgus404w1uMAUqsjfjSIC2bvPM0EBNONYnaTfMyIOaHNTdylYGp7z77/RczfcnFHr
+         kPUS9GG/SJSg5h6370Ie0ataKwsNkIc3Lf2zoj+ZB99Yr69IGi1q0FKhhAQQPBo6VEOk
+         Wr6NnuHJY+XWlPFWCDSzo984MJuiD2XCng0UlWkcjva/dtHFrAZWcZVZIWTDYkleHuhr
+         +5vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700768610; x=1701373410;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpkzZHg09ad7VkHOnG/quo/T41ONjJ1411UTG4haLXU=;
-        b=hlPFPc6qjuUs8MahTOmHu6eWf5JFeqqH3dHq0L56XwBxpYUgAKyLU1T8JBXmTyzRos
-         nQQ5a5gSGjLxWk7OnstaauUnrUseBAQTRxOZ3I9MzHnlaBzvrqyWk8vv2dnuh6BcAMdl
-         UYyp4qxnY+pkVCOs/dvyPlswz6LCGU/ac/8E6oU4GDNMPJdRkfS9oiDOgCqoh5hCRCUp
-         BS6G63JWVv+RaVsh8lEDkh/EfwvrONuCDhq2hwS+03uADC2YDumQI3qNjURT1odLfwhT
-         HFtf96Xgn8xke36715KDcpHsMGK9ls0i0HJmcl31o1kVr4w5GU2Z+YDrWCpLmtHfwS3K
-         7BJw==
-X-Gm-Message-State: AOJu0YziVIvn3PWHkrv8q7Snjvv6ddQL6FjHpOcomTidwNZ3M2Q+TEUP
-	JUulGaOcLm3st+g7wrwZq/O6dA==
-X-Google-Smtp-Source: AGHT+IEPG4J941SLrpY4uC/ri/G2ja2akCNdtY4pHEKeo+HpcNnwpEYC41wSse9D2H40uEI86qohgw==
-X-Received: by 2002:a05:6a00:9381:b0:6bc:ff89:a2fc with SMTP id ka1-20020a056a00938100b006bcff89a2fcmr544106pfb.2.1700768610318;
-        Thu, 23 Nov 2023 11:43:30 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id n17-20020a056a0007d100b006cb65cfde6dsm1567524pfu.200.2023.11.23.11.43.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 11:43:29 -0800 (PST)
-Message-ID: <cb41cf91-1c75-4edc-b00f-59763344b15c@kernel.dk>
-Date: Thu, 23 Nov 2023 12:43:23 -0700
+        d=1e100.net; s=20230601; t=1700786713; x=1701391513;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RjvlNJZCYVj3BK/c/qbMtW/UyhsFITEp4fF0Uz8Mao8=;
+        b=uoEyEKid4lMVAYBV5IIn/4nDA4l394dd1H19Cob/Giuov7/n7NjE1D+X3JFiYffHJg
+         xUR4ybOIroy7acMt+uO4hu4yYEo4DXVHHDPu7CGo8R2K96CNkrEEnEACllKYR+ZuCHhn
+         2FgbacfUM8cJT4lJsW+5/9rYbOkn5S3jUU9gOVzt7QDM2YLkIGTCkO8aIDQelAUBWFrj
+         4/aRkUub/sY57s72HhB55YDhySgtYfcfikSj425okWmt0/4fWQ5cQlGphIUttdy25+yA
+         A4zMupIPncjcd1BiZH8OvcBsVNCWKFP0fl4T4+O4/Xb67uYLtK+n5o1TqOCluyCZqvQY
+         tCjA==
+X-Gm-Message-State: AOJu0Yx48nwu4bXUzD/N+8yUZYJMVXtkBL4JizJSUFdq4Vq0k67CjTpp
+	WLMM+8Erw3e/K5tR7GrgWVpQfQ==
+X-Google-Smtp-Source: AGHT+IFp5Vt0r4dxgxouGwH8qybG/NW6TxiUxTw6TyLOqXsKdt6ktNcxwvwHx0LVMlBIFEYNytErDQ==
+X-Received: by 2002:a05:6e02:1687:b0:357:4335:77fe with SMTP id f7-20020a056e02168700b00357433577femr452960ila.27.1700786713087;
+        Thu, 23 Nov 2023 16:45:13 -0800 (PST)
+Received: from [2620:0:1008:15:ab09:50a5:ec6d:7b5c] ([2620:0:1008:15:ab09:50a5:ec6d:7b5c])
+        by smtp.gmail.com with ESMTPSA id q4-20020a631f44000000b005acd5d7e11bsm1919194pgm.35.2023.11.23.16.45.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Nov 2023 16:45:11 -0800 (PST)
+Date: Thu, 23 Nov 2023 16:45:06 -0800 (PST)
+From: David Rientjes <rientjes@google.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+    Alexander Potapenko <glider@google.com>, 
+    Andrey Konovalov <andreyknvl@gmail.com>, 
+    Dmitry Vyukov <dvyukov@google.com>, 
+    Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+    Marco Elver <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+    Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
+    Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>, 
+    linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+    kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
+    linux-hardening@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 00/21] remove the SLAB allocator
+In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+Message-ID: <b4d53ec4-482d-23ec-b73f-dfbc58ccc149@google.com>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] eventfd: simplify signal helpers
-Content-Language: en-US
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
- Vitaly Kuznetsov <vkuznets@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>,
- Oded Gabbay <ogabbay@kernel.org>, Wu Hao <hao.wu@intel.com>,
- Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
- Xu Yilun <yilun.xu@intel.com>, Zhenyu Wang <zhenyuw@linux.intel.com>,
- Zhi Wang <zhi.a.wang@intel.com>, Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Frederic Barrat <fbarrat@linux.ibm.com>, Andrew Donnellan
- <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Eric Farman <farman@linux.ibm.com>, Matthew Rosato <mjrosato@linux.ibm.com>,
- Halil Pasic <pasic@linux.ibm.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
- Peter Oberparleiter <oberpar@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Tony Krowiak <akrowiak@linux.ibm.com>,
- Jason Herne <jjherne@linux.ibm.com>,
- Harald Freudenberger <freude@linux.ibm.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Diana Craciun <diana.craciun@oss.nxp.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
- Benjamin LaHaise <bcrl@kvack.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>,
- Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
- intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-usb@vger.kernel.org, virtualization@lists.linux-foundation.org,
- netdev@vger.kernel.org, linux-aio@kvack.org, cgroups@vger.kernel.org,
- linux-mm@kvack.org, Pavel Begunkov <asml.silence@gmail.com>,
- io-uring@vger.kernel.org
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 11/22/23 5:48 AM, Christian Brauner wrote:
-> Hey everyone,
+On Mon, 20 Nov 2023, Vlastimil Babka wrote:
+
+> Changes from v1:
+> - Added new Patch 01 to fix up kernel docs build (thanks Marco Elver)
+> - Additional changes to Kconfig user visible texts in Patch 02 (thanks Kees
+>   Cook)
+> - Whitespace fixes and other fixups (thanks Kees)
 > 
-> This simplifies the eventfd_signal() and eventfd_signal_mask() helpers
-> significantly. They can be made void and not take any unnecessary
-> arguments.
+> The SLAB allocator has been deprecated since 6.5 and nobody has objected
+> so far. As we agreed at LSF/MM, we should wait with the removal until
+> the next LTS kernel is released. This is now determined to be 6.6, and
+> we just missed 6.7, so now we can aim for 6.8 and start exposing the
+> removal to linux-next during the 6.7 cycle. If nothing substantial pops
+> up, will start including this in slab-next later this week.
 > 
-> I've added a few more simplifications based on Sean's suggestion.
+
+I agree with the decision to remove the SLAB allocator, same as at LSF/MM.  
+Thanks for doing this, Vlastimil!
+
+And thanks for deferring this until the next LTS kernel, it will give any 
+last minute hold outs a full year to raise any issues in their switch to 
+SLUB if they only only upgrade to LTS kernels at which point we'll have 
+done our due diligence to make people aware of SLAB's deprecation in 6.6.
+
+I've completed testing on v1 of the series, so feel free to add
+
+Acked-by: David Rientjes <rientjes@google.com>
+Tested-by: David Rientjes <rientjes@google.com>
+
+to each patch so I don't spam the list unnecessarily.  I'll respond to 
+individual changes that were not in v1.
+
+Thanks again!
+
+> To keep the series reasonably sized and not pull in people from other
+> subsystems than mm and closely related ones, I didn't attempt to remove
+> every trace of unnecessary reference to dead config options in external
+> areas, nor in the defconfigs. Such cleanups can be sent to and handled
+> by respective maintainers after this is merged.
 > 
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> Instead I have added some patches aimed to reap some immediate benefits
+> of the removal, mainly by not having to split some fastpath code between
+> slab_common.c and slub.c anymore. But that is also not an exhaustive
+> effort and I expect more cleanups and optimizations will follow later.
 > 
-> Changes in v2:
-> - further simplify helpers
-> - Link to v1: https://lore.kernel.org/r/20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org
-
-Only oddity I spotted was the kerneldoc, which someone else already
-brought up.
-
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-
--- 
-Jens Axboe
-
+> Patch 09 updates CREDITS for the removed mm/slab.c. Please point out if
+> I missed someone not yet credited.
+> 
+> Git version: https://git.kernel.org/vbabka/l/slab-remove-slab-v2r1
+> 
+> ---
+> Vlastimil Babka (21):
+>       mm/slab, docs: switch mm-api docs generation from slab.c to slub.c
+>       mm/slab: remove CONFIG_SLAB from all Kconfig and Makefile
+>       KASAN: remove code paths guarded by CONFIG_SLAB
+>       KFENCE: cleanup kfence_guarded_alloc() after CONFIG_SLAB removal
+>       mm/memcontrol: remove CONFIG_SLAB #ifdef guards
+>       cpu/hotplug: remove CPUHP_SLAB_PREPARE hooks
+>       mm/slab: remove CONFIG_SLAB code from slab common code
+>       mm/mempool/dmapool: remove CONFIG_DEBUG_SLAB ifdefs
+>       mm/slab: remove mm/slab.c and slab_def.h
+>       mm/slab: move struct kmem_cache_cpu declaration to slub.c
+>       mm/slab: move the rest of slub_def.h to mm/slab.h
+>       mm/slab: consolidate includes in the internal mm/slab.h
+>       mm/slab: move pre/post-alloc hooks from slab.h to slub.c
+>       mm/slab: move memcg related functions from slab.h to slub.c
+>       mm/slab: move struct kmem_cache_node from slab.h to slub.c
+>       mm/slab: move kfree() from slab_common.c to slub.c
+>       mm/slab: move kmalloc_slab() to mm/slab.h
+>       mm/slab: move kmalloc() functions from slab_common.c to slub.c
+>       mm/slub: remove slab_alloc() and __kmem_cache_alloc_lru() wrappers
+>       mm/slub: optimize alloc fastpath code layout
+>       mm/slub: optimize free fast path code layout
+> 
+>  CREDITS                           |   12 +-
+>  Documentation/core-api/mm-api.rst |    2 +-
+>  arch/arm64/Kconfig                |    2 +-
+>  arch/s390/Kconfig                 |    2 +-
+>  arch/x86/Kconfig                  |    2 +-
+>  include/linux/cpuhotplug.h        |    1 -
+>  include/linux/slab.h              |   22 +-
+>  include/linux/slab_def.h          |  124 --
+>  include/linux/slub_def.h          |  204 --
+>  kernel/cpu.c                      |    5 -
+>  lib/Kconfig.debug                 |    1 -
+>  lib/Kconfig.kasan                 |   11 +-
+>  lib/Kconfig.kfence                |    2 +-
+>  lib/Kconfig.kmsan                 |    2 +-
+>  mm/Kconfig                        |   68 +-
+>  mm/Kconfig.debug                  |   16 +-
+>  mm/Makefile                       |    6 +-
+>  mm/dmapool.c                      |    2 +-
+>  mm/kasan/common.c                 |   13 +-
+>  mm/kasan/kasan.h                  |    3 +-
+>  mm/kasan/quarantine.c             |    7 -
+>  mm/kasan/report.c                 |    1 +
+>  mm/kfence/core.c                  |    4 -
+>  mm/memcontrol.c                   |    6 +-
+>  mm/mempool.c                      |    6 +-
+>  mm/slab.c                         | 4026 -------------------------------------
+>  mm/slab.h                         |  551 ++---
+>  mm/slab_common.c                  |  231 +--
+>  mm/slub.c                         |  617 +++++-
+>  29 files changed, 815 insertions(+), 5134 deletions(-)
+> ---
+> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+> change-id: 20231120-slab-remove-slab-a76ec668d8c6
+> 
+> Best regards,
+> -- 
+> Vlastimil Babka <vbabka@suse.cz>
+> 
+> 
 
