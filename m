@@ -1,165 +1,153 @@
-Return-Path: <cgroups+bounces-546-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-547-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2285A7F6D23
-	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 08:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B8EC7F7001
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 10:35:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFD19B211C2
-	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 07:48:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCAD7B20A30
+	for <lists+cgroups@lfdr.de>; Fri, 24 Nov 2023 09:35:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3B78F5C;
-	Fri, 24 Nov 2023 07:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6F916420;
+	Fri, 24 Nov 2023 09:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cgJMC0Yj"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wi7zjCRT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0W5OjFqN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+X-Greylist: delayed 510 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 01:35:07 PST
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB26FD54;
+	Fri, 24 Nov 2023 01:35:07 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A108C18;
-	Fri, 24 Nov 2023 07:48:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96C4BC433C7;
-	Fri, 24 Nov 2023 07:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700812116;
-	bh=wuXwn6H3IYOQTJYurH/LAKoS23w/GwU7ryzU1+Vs8b4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cgJMC0Yj3JRcUDF8O8XpdEdYA/5STjclZLwUWXfVMJwJnFCmcyrJDVup7Rscs2p84
-	 1lIevByzmjhiYL9n/DPGwW0r1qVsQ45xdWW1cCKjcoubJ/Np/IRSX/dXnPPAZi1lyB
-	 ETOprEE5xY+akdxk7DWnyVkIziLf3Nu7PWCfTmFB985JDwr0PPgc9yJ4BLOQhlh8Nx
-	 7J3VH6h2rRYlPJhbqQ9tIol8mM/LtKts+YBDNQd03tji9lqn5ZFKRzSp7zz5eJxPSA
-	 m4YJmobEWMvUVEr6S2NJRsz4v9jSzMIYOHwn/4yZmgFOE0FpvuIzzDTt4O8YISu59u
-	 jwN2CAG1O1gvw==
-From: Christian Brauner <brauner@kernel.org>
-To: linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Jan Kara <jack@suse.cz>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	Paul Durrant <paul@xen.org>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhi Wang <zhi.a.wang@intel.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Frederic Barrat <fbarrat@linux.ibm.com>,
-	Andrew Donnellan <ajd@linux.ibm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Eric Farman <farman@linux.ibm.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	Peter Oberparleiter <oberpar@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Tony Krowiak <akrowiak@linux.ibm.com>,
-	Jason Herne <jjherne@linux.ibm.com>,
-	Harald Freudenberger <freude@linux.ibm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Diana Craciun <diana.craciun@oss.nxp.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Fei Li <fei1.li@intel.com>,
-	Benjamin LaHaise <bcrl@kvack.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kirti Wankhede <kwankhede@nvidia.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-fpga@vger.kernel.org,
-	intel-gvt-dev@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	linux-rdma@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	netdev@vger.kernel.org,
-	linux-aio@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	io-uring@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] eventfd: simplify signal helpers
-Date: Fri, 24 Nov 2023 08:47:57 +0100
-Message-ID: <20231124-traurig-halunken-6defdd66e8f2@brauner>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 05E2E21CC1;
+	Fri, 24 Nov 2023 09:26:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1700817996; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9LgMMddRm1Z0VKUmKvdY8oWuzJ6UIJ2B5WVeljH1gzY=;
+	b=wi7zjCRTJoJFYmrOSrFq1Fu/59T4P6MokqaDJsIPGxE68UXGgkFGQUmtbemkvLqIBDUosD
+	6dbZDPN8N2wtenWqevFy2J+IbBFPl8h6rN6B6dHYWvVhjUR97kDZI9KJ+AaQyUQUgNRW28
+	PQNluc8R7uZOseUGFVzaemA8aiyqifg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1700817996;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9LgMMddRm1Z0VKUmKvdY8oWuzJ6UIJ2B5WVeljH1gzY=;
+	b=0W5OjFqNGkfGKKXJaWmpdCXySuZEq4uZZiDFlis8GjNTJepSeVMo/29CF/7SB4OGNMiPS+
+	xd3ALVU+Ukwt5XCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB51D13A98;
+	Fri, 24 Nov 2023 09:26:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 739GMUtsYGVxZQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 24 Nov 2023 09:26:35 +0000
+Message-ID: <2d0626b2-793c-315f-dc93-af021bd5cb85@suse.cz>
+Date: Fri, 24 Nov 2023 10:26:35 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1378; i=brauner@kernel.org; h=from:subject:message-id; bh=wuXwn6H3IYOQTJYurH/LAKoS23w/GwU7ryzU1+Vs8b4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQmhOr8Nb88ObVn73mvUyobyi/8m/y5yi2fL80o6/sb9 3cTN/yd21HKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCR7iBGhq1L7YSDDTVSee+x X1xccNDei/91c9MuqdqsiYtj7lg17WdkWCP3faH/qkmK79OnL3ut4/Vo+e0nB564XJ5mY6ruNdX 4JgMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 00/21] remove the SLAB allocator
+Content-Language: en-US
+To: David Rientjes <rientjes@google.com>
+Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Marco Elver
+ <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+ Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <b4d53ec4-482d-23ec-b73f-dfbc58ccc149@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <b4d53ec4-482d-23ec-b73f-dfbc58ccc149@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: 0.20
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_SPAM(0.00)[35.47%];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[24];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.com,kernel.org,lge.com,linux-foundation.org,gmail.com,linux.dev,google.com,arm.com,cmpxchg.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Wed, 22 Nov 2023 13:48:21 +0100, Christian Brauner wrote:
-> Hey everyone,
+On 11/24/23 01:45, David Rientjes wrote:
+> On Mon, 20 Nov 2023, Vlastimil Babka wrote:
 > 
-> This simplifies the eventfd_signal() and eventfd_signal_mask() helpers
-> significantly. They can be made void and not take any unnecessary
-> arguments.
+>> Changes from v1:
+>> - Added new Patch 01 to fix up kernel docs build (thanks Marco Elver)
+>> - Additional changes to Kconfig user visible texts in Patch 02 (thanks Kees
+>>   Cook)
+>> - Whitespace fixes and other fixups (thanks Kees)
+>> 
+>> The SLAB allocator has been deprecated since 6.5 and nobody has objected
+>> so far. As we agreed at LSF/MM, we should wait with the removal until
+>> the next LTS kernel is released. This is now determined to be 6.6, and
+>> we just missed 6.7, so now we can aim for 6.8 and start exposing the
+>> removal to linux-next during the 6.7 cycle. If nothing substantial pops
+>> up, will start including this in slab-next later this week.
+>> 
 > 
-> I've added a few more simplifications based on Sean's suggestion.
+> I agree with the decision to remove the SLAB allocator, same as at LSF/MM.  
+> Thanks for doing this, Vlastimil!
 > 
-> [...]
+> And thanks for deferring this until the next LTS kernel, it will give any 
+> last minute hold outs a full year to raise any issues in their switch to 
+> SLUB if they only only upgrade to LTS kernels at which point we'll have 
+> done our due diligence to make people aware of SLAB's deprecation in 6.6.
+> 
+> I've completed testing on v1 of the series, so feel free to add
+> 
+> Acked-by: David Rientjes <rientjes@google.com>
+> Tested-by: David Rientjes <rientjes@google.com>
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+Thanks! And others too.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+I've now pushed this series to slab/for-6.8/slab-removal and slab/for-next
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/4] i915: make inject_virtual_interrupt() void
-      https://git.kernel.org/vfs/vfs/c/858848719210
-[2/4] eventfd: simplify eventfd_signal()
-      https://git.kernel.org/vfs/vfs/c/ded0f31f825f
-[3/4] eventfd: simplify eventfd_signal_mask()
-      https://git.kernel.org/vfs/vfs/c/45ee1c990e88
-[4/4] eventfd: make eventfd_signal{_mask}() void
-      https://git.kernel.org/vfs/vfs/c/37d5d473e749
 
