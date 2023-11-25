@@ -1,124 +1,103 @@
-Return-Path: <cgroups+bounces-555-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-556-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E464E7F88FA
-	for <lists+cgroups@lfdr.de>; Sat, 25 Nov 2023 09:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9D3D7F8CDA
+	for <lists+cgroups@lfdr.de>; Sat, 25 Nov 2023 18:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 972A528174A
-	for <lists+cgroups@lfdr.de>; Sat, 25 Nov 2023 08:07:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6565C2815DD
+	for <lists+cgroups@lfdr.de>; Sat, 25 Nov 2023 17:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1178F6B;
-	Sat, 25 Nov 2023 08:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FC02D02B;
+	Sat, 25 Nov 2023 17:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Rdqj6MRD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Sb4za/p9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09369B7;
-	Sat, 25 Nov 2023 00:07:23 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 772FF10001E;
-	Sat, 25 Nov 2023 11:07:21 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 772FF10001E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1700899641;
-	bh=K7fr0lZtqmONXfZHNs6nAmOycaDMnGOOKILgnfl+LIQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=Rdqj6MRDCKN2d8lc2syBteEBMtCQzrlDYW1KBbOPAp2s2tKlmV7KiOjHS9Neuvewn
-	 fnOOkbNxnP5WMHD4M5jcgpHPxZVfBN76FrhWwFI30da+XEY4W3/vf36jTJI2PuM3Q+
-	 49VPziGMV9x5OuXaBS6+syprhr0oAXnCg/ZhQpEVScT2/SZOzTXAJXD9VUcxcJABIb
-	 KFBOUhr9GFdmWSjwTy6oVwJmLwkvGynMvjkWYLXn6wPxwF4RNoVKYwGq42VXgeUUr8
-	 9jDtwNXUTTZYb4uk+aSzz6foNiREai7FXC7jFS5aN8xiuy8cUDzzheBXBO5Zd1P8gW
-	 svF/Z1UB/R/Cw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sat, 25 Nov 2023 11:07:21 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 25 Nov
- 2023 11:07:21 +0300
-Date: Sat, 25 Nov 2023 11:07:20 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-	<shakeelb@google.com>, <muchun.song@linux.dev>, <kernel@sberdevices.ru>,
-	<rockosov@gmail.com>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] samples: introduce cgroup events listeners
-Message-ID: <20231125080720.h7kbdzumlsi6ltrj@CAB-WSD-L081021>
-References: <20231123071945.25811-1-ddrokosov@salutedevices.com>
- <20231124114230.22ed97e85058dc339947f13f@linux-foundation.org>
- <20231124200633.scnct5f7auawsjn2@CAB-WSD-L081021>
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE93AD5
+	for <cgroups@vger.kernel.org>; Sat, 25 Nov 2023 09:38:04 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5cb6271b225so39753037b3.1
+        for <cgroups@vger.kernel.org>; Sat, 25 Nov 2023 09:38:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700933884; x=1701538684; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/OjN2yjM4lGF+xoZzPeOmLggYv6X6PaCmv884vExzhQ=;
+        b=Sb4za/p9PvTD0oIEk6DlS068u8izzt+Sbq6UOPQjqx4DXCVv3RzHfPPtGJvLBf9rEY
+         gx3iWBUNixvRIlAXWhsJqAEWH/lDvJto9kE+a6x9TJTskmY5EDfzR2IFfD3egqbZ8WWY
+         9vZKRKCQWjUxR2eOC4eKFtWqyYFL6QcpZwKE8lVHFIuhFyboHHyGXplhidwIClLPfVqB
+         DVNX4I/6qtjEZsFqaCERd12IM72HcJxqdb05CIp1TkG5vxAGsXeQT/XWRRrKRAWBpddK
+         hXY29g905eyC4DjR98qVwDL/n+f4BRWMcS840qldcg6y0MGMW2ZlBTuRJLUf/X6SIiwT
+         Gbmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700933884; x=1701538684;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/OjN2yjM4lGF+xoZzPeOmLggYv6X6PaCmv884vExzhQ=;
+        b=cCGoBYWma1Rz5S0/jLqsVPaSDy2xi5VI+p5fsFb/guM9WMeO5pr8DwmEbwT0W/z6x7
+         fdoG7L1/Zbsj03o61E+PxlnbuFRsfKUj9WNCt7nQI2hOjDjSI9pBHyp7CIE3ONo+GVxQ
+         tzgWkQvuQjw6fFkW/FQQ1D8AAQtSKe3LdnNcKUrF6bW6GGRkAP2sATPQcxPMa+rrJGer
+         cnoVRl45ArS7KIvp5y72SLLoDsjBMLOekVhha2Ed0rGiauvO1JSGff2otsTjuZ8RhYSQ
+         xuUznzGgZve4MYY/qlKh3ms2JDWx/vraYdHnouyChgmS2nXNf0nnDSZkrzR6mAYSubT5
+         eb3w==
+X-Gm-Message-State: AOJu0YxfOu/Awenb6nX8yB6PzfNWy0Dt6HtqHsfyR7jWE4QonJLZsyUV
+	L/xuYa0JWzLq8fLsnJXHoJNIt6GNDv352A==
+X-Google-Smtp-Source: AGHT+IHnGysxB/944b9w0n+byMEk08BlMdz921PvjzprbIkgHG0uwA4pdEh20uVwBEuI1Q+ppKReG75nHOmEVQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a25:3d44:0:b0:da0:567d:f819 with SMTP id
+ k65-20020a253d44000000b00da0567df819mr220022yba.10.1700933884073; Sat, 25 Nov
+ 2023 09:38:04 -0800 (PST)
+Date: Sat, 25 Nov 2023 17:38:02 +0000
+In-Reply-To: <20231125080137.2fhmi4374yxqjyix@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com> <20231125063616.dex3kh3ea43ceyu3@google.com>
+ <20231125080137.2fhmi4374yxqjyix@CAB-WSD-L081021>
+Message-ID: <20231125173802.pfhalf27kxk3wavy@google.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace shrink_memcg
+From: Shakeel Butt <shakeelb@google.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev, 
+	mhocko@suse.com, akpm@linux-foundation.org, kernel@sberdevices.ru, 
+	rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231124200633.scnct5f7auawsjn2@CAB-WSD-L081021>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181592 [Nov 25 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/25 05:15:00 #22531701
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-Andrew,
-
-On Fri, Nov 24, 2023 at 11:06:33PM +0300, Dmitry Rokosov wrote:
-> On Fri, Nov 24, 2023 at 11:42:30AM -0800, Andrew Morton wrote:
-> > On Thu, 23 Nov 2023 10:19:42 +0300 Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
+On Sat, Nov 25, 2023 at 11:01:37AM +0300, Dmitry Rokosov wrote:
+[...]
+> > > +		trace_mm_vmscan_memcg_shrink_begin(sc->order,
+> > > +						   sc->gfp_mask,
+> > > +						   memcg);
+> > > +
 > > 
-> > > To begin with, this patch series relocates the cgroup example code to
-> > > the samples/cgroup directory, which is the appropriate location for such
-> > > code snippets.
+> > If you place the start of the trace here, you may have only the begin
+> > trace for memcgs whose usage are below their min or low limits. Is that
+> > fine? Otherwise you can put it just before shrink_lruvec() call.
 > > 
-> > butbut.  Didn't we decide to do s/cgroup/memcg/ throughout?
 > 
-> I believe the samples directory should be named "samples/cgroup" instead
-> of "memcg" because the cgroup v1 event listener cannot be renamed to
-> "memcg" due to the common naming of cgroup v1 event_control (this sample
-> uses that control to access eventfd).
+> From my point of view, it's fine. For situations like the one you
+> described, when we only see the begin() tracepoint raised without the
+> end(), we understand that reclaim requests are being made but cannot be
+> satisfied due to certain conditions within memcg (such as limits).
 > 
-> Additionally, I think it would be a good idea to add the new samples for
-> cgroup helpers in that directory.
+> There may be some spam tracepoints in the trace pipe, which is a disadvantage
+> of this approach.
 > 
-> That's why I have only renamed the new memcg listener.
+> How important do you think it is to understand such situations? Or do
+> you suggest moving the begin() tracepoint after the memcg limits checks
+> and don't care about it?
+> 
 
-I looked into this more deeply. And yes, the old cgroup.event_control
-has the common name, but it's used in the memcg implementation only.
-
-So, if we plan to introduce new samples for cgroup, I suggest we use the
-following naming convention:
-
-1) Directory: samples/cgroup
-2) V1 sample: memcg_v1_event_listener
-3) V2 sample: memcg_v2_event_listener
-
-Please let me know what you think about this. If it's okay with you, I
-will prepare the v4 version with the above changes. I would appreciate
-any feedback on that!"
-
--- 
-Thank you,
-Dmitry
+I was mainly wondering if that is intentional. It seems like you as
+first user of this trace has a need to know that a reclaim for a given
+memcg was triggered but due to min/low limits no reclaim was done. This
+is a totally reasonable use-case.
 
