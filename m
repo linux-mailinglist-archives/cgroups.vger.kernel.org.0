@@ -1,186 +1,121 @@
-Return-Path: <cgroups+bounces-582-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-583-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896E37FAC21
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 22:01:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 921A77FAC6D
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 22:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D78A281455
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 21:01:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF75AB2131D
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 21:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D743EA9D;
-	Mon, 27 Nov 2023 21:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F6545C0B;
+	Mon, 27 Nov 2023 21:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="yzDbR+kT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dHSIUL4r"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D812031735;
-	Mon, 27 Nov 2023 21:00:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E8DC433C9;
-	Mon, 27 Nov 2023 21:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1701118857;
-	bh=d0FagZci1PXFMezi/BonwyYv+7yV34Dht6vxRLQOKK8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=yzDbR+kT8L1Ms6G8xL0TrV5ITh7u9pHV2Tf3NB55xhtilyqokg+gTeQDHkcIheVm8
-	 DFA9Di1naDUQ7+V1qm6//jzz5SoG4oQI202ZHvMMcRWO/D2v+XJx6r6wBn7BU8ic6i
-	 nNpDcKvEsu+FmI1qaMNFFOqckiGwHehyfX1VN2tA=
-Date: Mon, 27 Nov 2023 13:00:55 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: hannes@cmpxchg.org, cerasuolodomenico@gmail.com, yosryahmed@google.com,
- sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
- muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
- kernel-team@meta.com, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v6 6/6] zswap: shrinks zswap pool based on memory
- pressure
-Message-Id: <20231127130055.30c455906d912e09dcb7e79b@linux-foundation.org>
-In-Reply-To: <20231127193703.1980089-7-nphamcs@gmail.com>
-References: <20231127193703.1980089-1-nphamcs@gmail.com>
-	<20231127193703.1980089-7-nphamcs@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2A81A2
+	for <cgroups@vger.kernel.org>; Mon, 27 Nov 2023 13:14:22 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so678275166b.3
+        for <cgroups@vger.kernel.org>; Mon, 27 Nov 2023 13:14:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701119661; x=1701724461; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lHlTCHe4/wBQkktFnIHXqkfvwqIEOSM2fmKEpfUC8HU=;
+        b=dHSIUL4rRZ6f19icYJRQNs51qpzdk3wy2c0iYfBTxg66Ap7w0M6ZYosnXJ4NnN0I9O
+         /7MP54+NYoFkBapHyc4rY+1w1NT37A0tYLG8lDV8K4VuDVREbPyPghhUKgFpJNMhiQn0
+         wFpcJ6JyZ10aQ9tQbcigTBLljk8bSn7joHW+E124pxPeldsjV4whny2kqiE4Pk8Abr/o
+         gXvHb8Dg70kHD4n7cNjlBE6mxiOUym51CYQnYvs/ei3qCTvmBJYvyyd5OPM+WWN46AgG
+         T/UcxPhscFL745cjEW3iI2LEAnI67K70VQSu5q54h5RNyrXaC+TCX7bT5JPF/3pbRbxD
+         vYug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701119661; x=1701724461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lHlTCHe4/wBQkktFnIHXqkfvwqIEOSM2fmKEpfUC8HU=;
+        b=RzRZaRWISksiZ7lIsNRBdNLrmUwlGQlPIVYaupqj2UOFgXWdkYnY2VafH6Wr8xMQ8W
+         l3U8v0ZJY6DUuUpQH6aQ81p9COA1LsUcqL1IUh79htckWAuXhrimDXNT9he8I+nEfO+9
+         ROXzIWaCnQwDHsD8Be7XxKHIqjU+qip4WDmgaTN35rviYBE15YoW0mNNGqP0Z/sJ+Siu
+         aYq2ixLhVfMGDaBSSfIm4PqD/2aqDNkUmrwN3VHQOajVU1f9OBp9u+FGJ7UtMOGKVCbs
+         AcOlKWxPT3ZfE0rhVhNXnQ6i7QLXyikbT5hVfdvfy9m/Vbf6aKOtEIKlVlwmTaK5Lajh
+         ntRw==
+X-Gm-Message-State: AOJu0YwgWUK3YbOA84+4vFVJHdT9YaJqLgXGVe2SDf308B4T09kaeLpc
+	kC/xH2XCnk+PO+zXDqsZUGhjWKoplofJEfS3RL8ndw==
+X-Google-Smtp-Source: AGHT+IGYi8xwqFfFpe0niiToCpHsvm1q+RbChDCT3xccMv3sRc/JIp2SCfG7mrEYNfGO5KtCN7bAv2jFI4lPCGF/kbg=
+X-Received: by 2002:a17:906:2088:b0:a12:72eb:8f64 with SMTP id
+ 8-20020a170906208800b00a1272eb8f64mr544654ejq.30.1701119660661; Mon, 27 Nov
+ 2023 13:14:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20231116022411.2250072-4-yosryahmed@google.com> <202311221542.973f16ad-oliver.sang@intel.com>
+In-Reply-To: <202311221542.973f16ad-oliver.sang@intel.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 27 Nov 2023 13:13:44 -0800
+Message-ID: <CAJD7tkYnn6CxSJdo0QJ1hc6cFY_qWLuJ0=S6g_Pm=GBV+Ss-jw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mm: memcg: make stats flushing threshold per-memcg
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, 
+	Johannes Weiner <hannes@cmpxchg.org>, Domenico Cerasuolo <cerasuolodomenico@gmail.com>, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, ying.huang@intel.com, 
+	feng.tang@intel.com, fengwei.yin@intel.com, 
+	Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
+	Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 27 Nov 2023 11:37:03 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
-
-> Currently, we only shrink the zswap pool when the user-defined limit is
-> hit. This means that if we set the limit too high, cold data that are
-> unlikely to be used again will reside in the pool, wasting precious
-> memory. It is hard to predict how much zswap space will be needed ahead
-> of time, as this depends on the workload (specifically, on factors such
-> as memory access patterns and compressibility of the memory pages).
-> 
-> This patch implements a memcg- and NUMA-aware shrinker for zswap, that
-> is initiated when there is memory pressure. The shrinker does not
-> have any parameter that must be tuned by the user, and can be opted in
-> or out on a per-memcg basis.
-> 
-> Furthermore, to make it more robust for many workloads and prevent
-> overshrinking (i.e evicting warm pages that might be refaulted into
-> memory), we build in the following heuristics:
-> 
-> * Estimate the number of warm pages residing in zswap, and attempt to
->   protect this region of the zswap LRU.
-> * Scale the number of freeable objects by an estimate of the memory
->   saving factor. The better zswap compresses the data, the fewer pages
->   we will evict to swap (as we will otherwise incur IO for relatively
->   small memory saving).
-> * During reclaim, if the shrinker encounters a page that is also being
->   brought into memory, the shrinker will cautiously terminate its
->   shrinking action, as this is a sign that it is touching the warmer
->   region of the zswap LRU.
-> 
-> As a proof of concept, we ran the following synthetic benchmark:
-> build the linux kernel in a memory-limited cgroup, and allocate some
-> cold data in tmpfs to see if the shrinker could write them out and
-> improved the overall performance. Depending on the amount of cold data
-> generated, we observe from 14% to 35% reduction in kernel CPU time used
-> in the kernel builds.
-> 
-> ...
+On Wed, Nov 22, 2023 at 5:54=E2=80=AFAM kernel test robot <oliver.sang@inte=
+l.com> wrote:
 >
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -22,6 +22,7 @@
->  #include <linux/mm_types.h>
->  #include <linux/page-flags.h>
->  #include <linux/local_lock.h>
-> +#include <linux/zswap.h>
->  #include <asm/page.h>
->  
->  /* Free memory management - zoned buddy allocator.  */
-> @@ -641,6 +642,7 @@ struct lruvec {
->  #ifdef CONFIG_MEMCG
->  	struct pglist_data *pgdat;
->  #endif
-> +	struct zswap_lruvec_state zswap_lruvec_state;
+>
+>
+> Hello,
+>
+> kernel test robot noticed a -30.2% regression of will-it-scale.per_thread=
+_ops on:
+>
+>
+> commit: c7fbfc7b4e089c4a9b292b1973a42a5761c1342f ("[PATCH v3 3/5] mm: mem=
+cg: make stats flushing threshold per-memcg")
+> url: https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-=
+change-flush_next_time-to-flush_last_time/20231116-103300
+> base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everyth=
+ing
+> patch link: https://lore.kernel.org/all/20231116022411.2250072-4-yosryahm=
+ed@google.com/
+> patch subject: [PATCH v3 3/5] mm: memcg: make stats flushing threshold pe=
+r-memcg
+>
+> testcase: will-it-scale
+> test machine: 104 threads 2 sockets (Skylake) with 192G memory
+> parameters:
+>
+>         nr_task: 50%
+>         mode: thread
+>         test: fallocate2
+>         cpufreq_governor: performance
+>
+>
 
-Normally we'd put this in #ifdef CONFIG_ZSWAP.
+This regression was also reported in v2, and I explicitly mention it
+in the cover letter here:
+https://lore.kernel.org/lkml/20231116022411.2250072-1-yosryahmed@google.com=
+/
 
-> --- a/include/linux/zswap.h
-> +++ b/include/linux/zswap.h
-> @@ -5,20 +5,40 @@
->  #include <linux/types.h>
->  #include <linux/mm_types.h>
->  
-> +struct lruvec;
-> +
->  extern u64 zswap_pool_total_size;
->  extern atomic_t zswap_stored_pages;
->  
->  #ifdef CONFIG_ZSWAP
->  
-> +struct zswap_lruvec_state {
-> +	/*
-> +	 * Number of pages in zswap that should be protected from the shrinker.
-> +	 * This number is an estimate of the following counts:
-> +	 *
-> +	 * a) Recent page faults.
-> +	 * b) Recent insertion to the zswap LRU. This includes new zswap stores,
-> +	 *    as well as recent zswap LRU rotations.
-> +	 *
-> +	 * These pages are likely to be warm, and might incur IO if the are written
-> +	 * to swap.
-> +	 */
-> +	atomic_long_t nr_zswap_protected;
-> +};
-> +
->  bool zswap_store(struct folio *folio);
->  bool zswap_load(struct folio *folio);
->  void zswap_invalidate(int type, pgoff_t offset);
->  void zswap_swapon(int type);
->  void zswap_swapoff(int type);
->  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
-> -
-> +void zswap_lruvec_state_init(struct lruvec *lruvec);
-> +void zswap_lruvec_swapin(struct page *page);
->  #else
->  
-> +struct zswap_lruvec_state {};
-
-But instead you made it an empty struct in this case.
-
-That's a bit funky, but I guess OK.  It does send a careful reader of
-struct lruvec over to look at the zswap_lruvec_state definition to
-understand what's going on.
-
->  static inline bool zswap_store(struct folio *folio)
->  {
->  	return false;
-> @@ -33,7 +53,8 @@ static inline void zswap_invalidate(int type, pgoff_t offset) {}
->  static inline void zswap_swapon(int type) {}
->  static inline void zswap_swapoff(int type) {}
->  static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
-> -
-> +static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
-> +static inline void zswap_lruvec_swapin(struct page *page) {}
-
-Needed this build fix:
-
---- a/include/linux/zswap.h~zswap-shrinks-zswap-pool-based-on-memory-pressure-fix
-+++ a/include/linux/zswap.h
-@@ -54,6 +54,7 @@ static inline void zswap_swapon(int type
- static inline void zswap_swapoff(int type) {}
- static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
- static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
-+static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
- static inline void zswap_lruvec_swapin(struct page *page) {}
- #endif
- 
-_
-
+In a nutshell, I think this microbenchmark regression does not
+represent real workloads. On the other hand, there are demonstrated
+benefits on real workloads from this series in terms of stats reading
+time.
 
