@@ -1,121 +1,119 @@
-Return-Path: <cgroups+bounces-583-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-584-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921A77FAC6D
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 22:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF04A7FACB9
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 22:43:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF75AB2131D
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 21:14:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8ED8AB213F6
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 21:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F6545C0B;
-	Mon, 27 Nov 2023 21:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E26E46536;
+	Mon, 27 Nov 2023 21:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dHSIUL4r"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RERa00m1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2A81A2
-	for <cgroups@vger.kernel.org>; Mon, 27 Nov 2023 13:14:22 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so678275166b.3
-        for <cgroups@vger.kernel.org>; Mon, 27 Nov 2023 13:14:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701119661; x=1701724461; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lHlTCHe4/wBQkktFnIHXqkfvwqIEOSM2fmKEpfUC8HU=;
-        b=dHSIUL4rRZ6f19icYJRQNs51qpzdk3wy2c0iYfBTxg66Ap7w0M6ZYosnXJ4NnN0I9O
-         /7MP54+NYoFkBapHyc4rY+1w1NT37A0tYLG8lDV8K4VuDVREbPyPghhUKgFpJNMhiQn0
-         wFpcJ6JyZ10aQ9tQbcigTBLljk8bSn7joHW+E124pxPeldsjV4whny2kqiE4Pk8Abr/o
-         gXvHb8Dg70kHD4n7cNjlBE6mxiOUym51CYQnYvs/ei3qCTvmBJYvyyd5OPM+WWN46AgG
-         T/UcxPhscFL745cjEW3iI2LEAnI67K70VQSu5q54h5RNyrXaC+TCX7bT5JPF/3pbRbxD
-         vYug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701119661; x=1701724461;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lHlTCHe4/wBQkktFnIHXqkfvwqIEOSM2fmKEpfUC8HU=;
-        b=RzRZaRWISksiZ7lIsNRBdNLrmUwlGQlPIVYaupqj2UOFgXWdkYnY2VafH6Wr8xMQ8W
-         l3U8v0ZJY6DUuUpQH6aQ81p9COA1LsUcqL1IUh79htckWAuXhrimDXNT9he8I+nEfO+9
-         ROXzIWaCnQwDHsD8Be7XxKHIqjU+qip4WDmgaTN35rviYBE15YoW0mNNGqP0Z/sJ+Siu
-         aYq2ixLhVfMGDaBSSfIm4PqD/2aqDNkUmrwN3VHQOajVU1f9OBp9u+FGJ7UtMOGKVCbs
-         AcOlKWxPT3ZfE0rhVhNXnQ6i7QLXyikbT5hVfdvfy9m/Vbf6aKOtEIKlVlwmTaK5Lajh
-         ntRw==
-X-Gm-Message-State: AOJu0YwgWUK3YbOA84+4vFVJHdT9YaJqLgXGVe2SDf308B4T09kaeLpc
-	kC/xH2XCnk+PO+zXDqsZUGhjWKoplofJEfS3RL8ndw==
-X-Google-Smtp-Source: AGHT+IGYi8xwqFfFpe0niiToCpHsvm1q+RbChDCT3xccMv3sRc/JIp2SCfG7mrEYNfGO5KtCN7bAv2jFI4lPCGF/kbg=
-X-Received: by 2002:a17:906:2088:b0:a12:72eb:8f64 with SMTP id
- 8-20020a170906208800b00a1272eb8f64mr544654ejq.30.1701119660661; Mon, 27 Nov
- 2023 13:14:20 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A252F51;
+	Mon, 27 Nov 2023 21:43:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A920C433C7;
+	Mon, 27 Nov 2023 21:43:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1701121380;
+	bh=CoO2w1Aaayjts+dtvAb8Eh6H5/dRtPDx1TPM+uYjYAI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RERa00m1APTZ4nW8M04Rfr5i0iygE8BDQ0e6DmhSMgrHZ7Jw8YuA+xtP69/WxezsS
+	 rJMo7RPAVGmSaP6y2uf2uCKw0+eW38cOjgSScmhCD+QpioQ4N661eUERXRrVP0Lsvr
+	 wLF7BGf+jgv/d4EqPdkzSwHborOYqRliIGg2SYhE=
+Date: Mon, 27 Nov 2023 13:42:59 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: hannes@cmpxchg.org, cerasuolodomenico@gmail.com, yosryahmed@google.com,
+ sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+ mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+ muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+ kernel-team@meta.com, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: Re: [PATCH v6 2/6] memcontrol: allows mem_cgroup_iter() to check
+ for onlineness
+Message-Id: <20231127134259.67b69ab47f4f88c9751e5222@linux-foundation.org>
+In-Reply-To: <20231127193703.1980089-3-nphamcs@gmail.com>
+References: <20231127193703.1980089-1-nphamcs@gmail.com>
+	<20231127193703.1980089-3-nphamcs@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231116022411.2250072-4-yosryahmed@google.com> <202311221542.973f16ad-oliver.sang@intel.com>
-In-Reply-To: <202311221542.973f16ad-oliver.sang@intel.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 27 Nov 2023 13:13:44 -0800
-Message-ID: <CAJD7tkYnn6CxSJdo0QJ1hc6cFY_qWLuJ0=S6g_Pm=GBV+Ss-jw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] mm: memcg: make stats flushing threshold per-memcg
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, 
-	Johannes Weiner <hannes@cmpxchg.org>, Domenico Cerasuolo <cerasuolodomenico@gmail.com>, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, ying.huang@intel.com, 
-	feng.tang@intel.com, fengwei.yin@intel.com, 
-	Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
-	Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 22, 2023 at 5:54=E2=80=AFAM kernel test robot <oliver.sang@inte=
-l.com> wrote:
->
->
->
-> Hello,
->
-> kernel test robot noticed a -30.2% regression of will-it-scale.per_thread=
-_ops on:
->
->
-> commit: c7fbfc7b4e089c4a9b292b1973a42a5761c1342f ("[PATCH v3 3/5] mm: mem=
-cg: make stats flushing threshold per-memcg")
-> url: https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-=
-change-flush_next_time-to-flush_last_time/20231116-103300
-> base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everyth=
-ing
-> patch link: https://lore.kernel.org/all/20231116022411.2250072-4-yosryahm=
-ed@google.com/
-> patch subject: [PATCH v3 3/5] mm: memcg: make stats flushing threshold pe=
-r-memcg
->
-> testcase: will-it-scale
-> test machine: 104 threads 2 sockets (Skylake) with 192G memory
-> parameters:
->
->         nr_task: 50%
->         mode: thread
->         test: fallocate2
->         cpufreq_governor: performance
->
->
+On Mon, 27 Nov 2023 11:36:59 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
 
-This regression was also reported in v2, and I explicitly mention it
-in the cover letter here:
-https://lore.kernel.org/lkml/20231116022411.2250072-1-yosryahmed@google.com=
-/
+> The new zswap writeback scheme requires an online-only memcg hierarchy
+> traversal. Add a new parameter to mem_cgroup_iter() to check for
+> onlineness before returning.
 
-In a nutshell, I think this microbenchmark regression does not
-represent real workloads. On the other hand, there are demonstrated
-benefits on real workloads from this series in terms of stats reading
-time.
+I get a few build errors, perhaps because of patch timing issues...
+
+mm/shrinker_debug.c: In function 'shrinker_debugfs_count_show':
+mm/shrinker_debug.c:64:17: error: too few arguments to function 'mem_cgroup_iter'
+   64 |         memcg = mem_cgroup_iter(NULL, NULL, NULL);
+      |                 ^~~~~~~~~~~~~~~
+In file included from mm/shrinker_debug.c:7:
+./include/linux/memcontrol.h:833:20: note: declared here
+  833 | struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *,
+      |                    ^~~~~~~~~~~~~~~
+mm/shrinker_debug.c:89:27: error: too few arguments to function 'mem_cgroup_iter'
+   89 |         } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+      |                           ^~~~~~~~~~~~~~~
+./include/linux/memcontrol.h:833:20: note: declared here
+  833 | struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *,
+      |                    ^~~~~~~~~~~~~~~
+mm/damon/sysfs-schemes.c: In function 'damon_sysfs_memcg_path_to_id':
+mm/damon/sysfs-schemes.c:1594:22: error: too few arguments to function 'mem_cgroup_iter'
+ 1594 |         for (memcg = mem_cgroup_iter(NULL, NULL, NULL); memcg;
+      |                      ^~~~~~~~~~~~~~~
+In file included from ./include/linux/damon.h:11,
+                 from mm/damon/sysfs-common.h:8,
+                 from mm/damon/sysfs-schemes.c:10:
+./include/linux/memcontrol.h:833:20: note: declared here
+  833 | struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *,
+      |                    ^~~~~~~~~~~~~~~
+mm/damon/sysfs-schemes.c:1595:33: error: too few arguments to function 'mem_cgroup_iter'
+ 1595 |                         memcg = mem_cgroup_iter(NULL, memcg, NULL)) {
+      |                                 ^~~~~~~~~~~~~~~
+./include/linux/memcontrol.h:833:20: note: declared here
+  833 | struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *,
+      |                    ^~~~~~~~~~~~~~~
+
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -832,7 +832,7 @@ static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+>  
+>  struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *,
+>  				   struct mem_cgroup *,
+> -				   struct mem_cgroup_reclaim_cookie *);
+> +				   struct mem_cgroup_reclaim_cookie *, bool online);
+
+How many callsites do we expect to utilize the new `online' argument? 
+Few, I suspect.
+
+How about we fix the above and simplify the patch by adding a new
+mem_cgroup_iter_online() and make mem_cgroup_iter() a one-line wrapper
+which calls that and adds the online=false argument?
+
+I also saw this, didn't investigate.
+
+drivers/android/binder_alloc.c: In function 'binder_update_page_range':
+drivers/android/binder_alloc.c:237:34: error: too few arguments to function 'list_lru_del'
+  237 |                         on_lru = list_lru_del(&binder_alloc_lru, &page->lru);
+
 
