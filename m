@@ -1,201 +1,115 @@
-Return-Path: <cgroups+bounces-562-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-564-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8147F9835
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 05:20:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5221A7F9C8D
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 10:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6B38280DB4
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 04:20:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA3D2811D6
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 09:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF23253A0;
-	Mon, 27 Nov 2023 04:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431EC14F6B;
+	Mon, 27 Nov 2023 09:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bSfbnK6w"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WzRoQ47j"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7642A12D
-	for <cgroups@vger.kernel.org>; Sun, 26 Nov 2023 20:20:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701058840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pKVtOlZpPOEAj5lNTi1dWbItOap9Z0LKbf6VYUUDvbg=;
-	b=bSfbnK6wNLeInzjgr0xfgYNehx/k0/kxwyRs/1WcDwEG4t288q/Eqbnjeu942DyqyTrfGW
-	pD3wWvI9C/Nt8bRBz1kA2chaS4ZL63eWCQNzG2rokTNtrifjcHr8e5hYAH6V541QszLou8
-	6R+RfqcGlbQszbGEORVbKRsBCUru4Ys=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-435-j3AE3EJcPLitu_hjDmnbBg-1; Sun, 26 Nov 2023 23:20:36 -0500
-X-MC-Unique: j3AE3EJcPLitu_hjDmnbBg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ED4CB;
+	Mon, 27 Nov 2023 01:25:18 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 28C3981D8A1;
-	Mon, 27 Nov 2023 04:20:36 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.84])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8543410EA1;
-	Mon, 27 Nov 2023 04:20:35 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>,
-	Peter Hunt <pehunt@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs in cpu_is_isolated() check
-Date: Sun, 26 Nov 2023 23:19:56 -0500
-Message-Id: <20231127041956.266026-3-longman@redhat.com>
-In-Reply-To: <20231127041956.266026-1-longman@redhat.com>
-References: <20231127041956.266026-1-longman@redhat.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 75EB521A3B;
+	Mon, 27 Nov 2023 09:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701077116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=61MSObp9Cm4wJIwhaJPM5k6K8AWumSd2PvI/OJBZ1Zw=;
+	b=WzRoQ47ji2nH27LMWlYI8uNllDtvtpliKYrjoYVIItVlTYdNLSsmL9q355E4bOd2wQfZss
+	y0aP9NlHbzulOWxZUzu2dkt6euwiC49Ok0pox/0Vb4MoQWii2CUBbL4atvBaSmybN03Q0e
+	QXTlKz5EwpIE+ijj/T2YNQIlV84Ht3Y=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 696281367B;
+	Mon, 27 Nov 2023 09:25:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RsU0GXxgZGXpPQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 09:25:16 +0000
+Date: Mon, 27 Nov 2023 10:25:12 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: shakeelb@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, muchun.song@linux.dev,
+	akpm@linux-foundation.org, kernel@sberdevices.ru,
+	rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWRgeAMxQ580-Fgd@tiehlicka>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+ <ZV4BK0wbUAZBIhmA@tiehlicka>
+ <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
+ <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Score: -0.99
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.99 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[google.com,goodmis.org,kernel.org,cmpxchg.org,linux.dev,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.19)[70.78%]
 
-Currently, the cpu_is_isolated() function checks only the statically
-isolated CPUs specified via the "isolcpus" and "nohz_full" kernel
-command line options. This function is used by vmstat and memcg to
-reduce interference with isolated CPUs by not doing stat flushing
-or scheduling works on those CPUs.
+On Thu 23-11-23 14:26:29, Dmitry Rokosov wrote:
+> Michal, Shakeel,
+> 
+> Sorry for pinging you here, but I don't quite understand your decision
+> on this patchset.
+> 
+> Is it a NAK or not? If it's not, should I consider redesigning
+> something? For instance, introducing stub functions to
+> remove ifdefs from shrink_node_memcgs().
+> 
+> Thank you for taking the time to look into this!
 
-Workloads running on isolated CPUs within isolated cpuset
-partitions should receive the same treatment to reduce unnecessary
-interference. This patch introduces a new cpuset_cpu_is_isolated()
-function to be called by cpu_is_isolated() so that the set of dynamically
-created cpuset isolated CPUs will be included in the check.
+Sorry for a late reply. I have noticed you have posted a new version.
+Let me have a look and comment there.
 
-To minimize overhead of calling cpuset_cpu_is_isolated(), a seqcount
-is used to protect read access of the isolated cpumask without taking
-the cpuset_mutex or callback_lock.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/cpuset.h          |  6 ++++++
- include/linux/sched/isolation.h |  4 +++-
- kernel/cgroup/cpuset.c          | 25 +++++++++++++++++++++++++
- 3 files changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index d629094fac6e..875d12598bd2 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -77,6 +77,7 @@ extern void cpuset_lock(void);
- extern void cpuset_unlock(void);
- extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
- extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
-+extern bool cpuset_cpu_is_isolated(int cpu);
- extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
- #define cpuset_current_mems_allowed (current->mems_allowed)
- void cpuset_init_current_mems_allowed(void);
-@@ -207,6 +208,11 @@ static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
- 	return false;
- }
- 
-+static inline bool cpuset_cpu_is_isolated(int cpu)
-+{
-+	return false;
-+}
-+
- static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
- {
- 	return node_possible_map;
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index fe1a46f30d24..2b461129d1fa 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -2,6 +2,7 @@
- #define _LINUX_SCHED_ISOLATION_H
- 
- #include <linux/cpumask.h>
-+#include <linux/cpuset.h>
- #include <linux/init.h>
- #include <linux/tick.h>
- 
-@@ -67,7 +68,8 @@ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
- static inline bool cpu_is_isolated(int cpu)
- {
- 	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
--		 !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
-+	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
-+	       cpuset_cpu_is_isolated(cpu);
- }
- 
- #endif /* _LINUX_SCHED_ISOLATION_H */
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index e34bbb0e2f24..4adb6d2209ca 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -208,8 +208,13 @@ static cpumask_var_t	subpartitions_cpus;
- 
- /*
-  * Exclusive CPUs in isolated partitions
-+ *
-+ * The isolcpus_seq is used to protect read access to isolated_cpus without
-+ * taking callback_lock or cpuset_mutex while write access requires taking
-+ * both cpuset_mutex and callback_lock.
-  */
- static cpumask_var_t	isolated_cpus;
-+static seqcount_t isolcpus_seq = SEQCNT_ZERO(isolcpus_seq);
- 
- /* List of remote partition root children */
- static struct list_head remote_children;
-@@ -1435,10 +1440,12 @@ static void reset_partition_data(struct cpuset *cs)
- static void partition_xcpus_newstate(int old_prs, int new_prs, struct cpumask *xcpus)
- {
- 	WARN_ON_ONCE(old_prs == new_prs);
-+	write_seqcount_begin(&isolcpus_seq);
- 	if (new_prs == PRS_ISOLATED)
- 		cpumask_or(isolated_cpus, isolated_cpus, xcpus);
- 	else
- 		cpumask_andnot(isolated_cpus, isolated_cpus, xcpus);
-+	write_seqcount_end(&isolcpus_seq);
- }
- 
- /*
-@@ -1518,6 +1525,24 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
- 	WARN_ON_ONCE(ret < 0);
- }
- 
-+/**
-+ * cpuset_cpu_is_isolated - Check if the given CPU is isolated
-+ * @cpu: the CPU number to be checked
-+ * Return: true if CPU is used in an isolated partition, false otherwise
-+ */
-+bool cpuset_cpu_is_isolated(int cpu)
-+{
-+	unsigned int seq;
-+	bool ret;
-+
-+	do {
-+		seq = read_seqcount_begin(&isolcpus_seq);
-+		ret = cpumask_test_cpu(cpu, isolated_cpus);
-+	} while (read_seqcount_retry(&isolcpus_seq, seq));
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
-+
- /*
-  * compute_effective_exclusive_cpumask - compute effective exclusive CPUs
-  * @cs: cpuset
 -- 
-2.39.3
-
+Michal Hocko
+SUSE Labs
 
