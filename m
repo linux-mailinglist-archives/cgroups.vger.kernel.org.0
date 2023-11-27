@@ -1,54 +1,49 @@
-Return-Path: <cgroups+bounces-569-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-570-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E87AD7FA000
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 13:50:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75097FA18A
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 14:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DD5C1C20CA4
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 12:50:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A1A2B21246
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 13:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52198208A0;
-	Mon, 27 Nov 2023 12:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8965330644;
+	Mon, 27 Nov 2023 13:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lpc9evsT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CA9AA;
-	Mon, 27 Nov 2023 04:50:24 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D68A720329;
-	Mon, 27 Nov 2023 12:50:22 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9A661367B;
-	Mon, 27 Nov 2023 12:50:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mmA2MY6QZGWIBgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 12:50:22 +0000
-Date: Mon, 27 Nov 2023 13:50:22 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
-	roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, akpm@linux-foundation.org,
-	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <ZWSQji7UDSYa1m5M@tiehlicka>
-References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
- <20231123193937.11628-3-ddrokosov@salutedevices.com>
- <ZWRifQgRR0570oDY@tiehlicka>
- <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D983033D;
+	Mon, 27 Nov 2023 13:54:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA89C433CB;
+	Mon, 27 Nov 2023 13:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1701093271;
+	bh=x8+axdfJnWcUTrYe+z6TxMAlJf7WBymVwQzRmWFuviE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lpc9evsTNarsDVwG4URGVbx2z9JD2xuyvsua8/jM3OgZTRRjECZeoefY/rz77RNH8
+	 tVkw8sFInsRrwrs6uIx4TohZExMunko97zDk3OXyb/DvUxGLQRu93OutVCak6vFsoa
+	 afSruwfshNiGdQSdoAY5WOCtrpInZob9S5FGS6Tc=
+Date: Mon, 27 Nov 2023 13:43:57 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Tejun Heo <tj@kernel.org>, Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/3] kernfs: Convert from strlcpy() to strscpy()
+Message-ID: <2023112751-cozy-dangle-3f5a@gregkh>
+References: <20231116191718.work.246-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,96 +52,22 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
-X-Spamd-Bar: +++++++++++++++
-X-Spam-Score: 15.72
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none;
-	spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
-	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
-X-Rspamd-Queue-Id: D68A720329
-X-Spamd-Result: default: False [15.72 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_SPF_FAIL(1.00)[-all];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-	 NEURAL_SPAM_SHORT(0.72)[0.239];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam: Yes
+In-Reply-To: <20231116191718.work.246-kees@kernel.org>
 
-On Mon 27-11-23 14:36:44, Dmitry Rokosov wrote:
-> On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
-> > On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
-> > > The shrink_memcg flow plays a crucial role in memcg reclamation.
-> > > Currently, it is not possible to trace this point from non-direct
-> > > reclaim paths. However, direct reclaim has its own tracepoint, so there
-> > > is no issue there. In certain cases, when debugging memcg pressure,
-> > > developers may need to identify all potential requests for memcg
-> > > reclamation including kswapd(). The patchset introduces the tracepoints
-> > > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
-> > > 
-> > > Example of output in the kswapd context (non-direct reclaim):
-> > >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
-> > >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
-> > >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
-> > >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
-> > >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
-> > >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
-> > 
-> > In the previous version I have asked why do we need this specific
-> > tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
-> > which already give you a very good insight. That includes the number of
-> > reclaimed pages but also more. I do see that we do not include memcg id
-> > of the reclaimed LRU, but that shouldn't be a big problem to add, no?
+On Thu, Nov 16, 2023 at 11:21:22AM -0800, Kees Cook wrote:
+> Hi,
 > 
-> >From my point of view, memcg reclaim includes two points: LRU shrink and
-> slab shrink, as mentioned in the vmscan.c file.
-> 
-> 
-> static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-> ...
-> 		reclaimed = sc->nr_reclaimed;
-> 		scanned = sc->nr_scanned;
-> 
-> 		shrink_lruvec(lruvec, sc);
-> 
-> 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
-> 			    sc->priority);
-> ...
-> 
-> So, both of these operations are important for understanding whether
-> memcg reclaiming was successful or not, as well as its effectiveness. I
-> believe it would be beneficial to summarize them, which is why I have
-> created new tracepoints.
+> One of the last users of strlcpy() is kernfs, which has some complex
+> calling hierarchies that needed to be carefully examined. This series
+> refactors the strlcpy() calls into strscpy() calls, and bubbles up all
+> changes in return value checking for callers.
 
-This sounds like nice to have rather than must. Put it differently. If
-you make existing reclaim trace points memcg aware (print memcg id) then
-what prevents you from making analysis you need?
--- 
-Michal Hocko
-SUSE Labs
+Why not work instead to convert kernfs (and by proxy cgroups) to use the
+"safe" string functions based on seq_file?  This should be a simpler
+patch series to review, and implement on a per-function basis, and then
+we would not have any string functions in kernfs anymore.
+
+thanks,
+
+greg k-h
 
