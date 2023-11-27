@@ -1,60 +1,65 @@
-Return-Path: <cgroups+bounces-567-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-568-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233C27F9EBA
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 12:37:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547097F9EBD
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 12:37:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7EA0B21041
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 11:37:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F63A28159F
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 11:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697441A5AD;
-	Mon, 27 Nov 2023 11:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8AD31A5B4;
+	Mon, 27 Nov 2023 11:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="TQydFY5S"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Iivz9lHn"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B860C10A;
-	Mon, 27 Nov 2023 03:36:48 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC73B8;
+	Mon, 27 Nov 2023 03:37:41 -0800 (PST)
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id C3DFE12001E;
-	Mon, 27 Nov 2023 14:36:45 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C3DFE12001E
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 431C112001E;
+	Mon, 27 Nov 2023 14:37:40 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 431C112001E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1701085005;
-	bh=QaLTeIQVEwYQhvGyG6jhlWGJJeRoWATq9TIXQyCWaCI=;
+	s=mail; t=1701085060;
+	bh=ngPthKNSbqBvX4ng8JZc0JixK0jI2zKMbqB/abEZ/Dw=;
 	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=TQydFY5Sw2HqL9MDgIEcgs2poKVNcq+vZCGvu4yX+xfyFiFz14r2BhCa7tyrw4TNJ
-	 UFWkk/4Ml6s4NoDiV/U3REUz3+HtRDuFnAFTu3UJMW+g4OHp/R7JFEfBLrCP7ZrPvJ
-	 451ahAt9uj6T+iMs/OEHpAKUkcyvkNaN0QZwOK8/Klx/2ZfhHF5ews+8D73Xwcps0c
-	 0oVscbkN7QnMB4Qe890uXCGIkYpoUEoSEhAMwvdGHnOOtFAxqpoIV/81QHmxEByxM0
-	 coPlhmiAgo0YDY79tX17ExZVo4RhoFpA8HuIYIaaoOfAjFEdqZijF5e6OOBo/RDbWq
-	 6nxcHTvtuulbw==
+	b=Iivz9lHnTMGoUYPpuaaH+uCenvSk6ZN7gGLPHlEfsNNTD9i4jG3Cf9DvOrx7rPnR7
+	 yho9zRRXiavy62iqJJAfLYqZv75wmeaSTGApDPshJLzsqoYccKdI4hwzbLHdswwle8
+	 mlEdOXPNg2E7ScsXJMCosaOFVtsIj4sukfa9OmwH6lZiLR5dVMrI1dDHj6QvQUioqc
+	 DUl4Qog8CDbfp2bjCypesUlDUOrsWTOBl5J+Q04ofy7SbMVPWTo1yDMaWnBtDlM/4Y
+	 sOqoeu0yQI7zeSSbMkNngUMEoABArZV8uITDSG7QuUTxGN6aBGWTTFN4tlPEm4o6gI
+	 VpwoYaeOCIQ+g==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 27 Nov 2023 14:36:44 +0300 (MSK)
+	Mon, 27 Nov 2023 14:37:40 +0300 (MSK)
 Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
  (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 14:36:44 +0300
-Date: Mon, 27 Nov 2023 14:36:44 +0300
+ 2023 14:37:39 +0300
+Date: Mon, 27 Nov 2023 14:37:39 +0300
 From: Dmitry Rokosov <ddrokosov@salutedevices.com>
 To: Michal Hocko <mhocko@suse.com>
-CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
-	<roman.gushchin@linux.dev>, <shakeelb@google.com>, <muchun.song@linux.dev>,
+CC: <shakeelb@google.com>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<hannes@cmpxchg.org>, <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
 	<akpm@linux-foundation.org>, <kernel@sberdevices.ru>, <rockosov@gmail.com>,
 	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
 	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
  shrink_memcg
-Message-ID: <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
-References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
- <20231123193937.11628-3-ddrokosov@salutedevices.com>
- <ZWRifQgRR0570oDY@tiehlicka>
+Message-ID: <20231127113739.djqzy2p2ofstjmm3@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+ <ZV4BK0wbUAZBIhmA@tiehlicka>
+ <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
+ <20231123112629.2rwxr7gtmbyirwua@CAB-WSD-L081021>
+ <ZWRgeAMxQ580-Fgd@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,9 +68,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <ZWRifQgRR0570oDY@tiehlicka>
+In-Reply-To: <ZWRgeAMxQ580-Fgd@tiehlicka>
 User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
 X-KSMG-Rule-ID: 10
 X-KSMG-Message-Action: clean
@@ -84,55 +89,26 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/27 09:57:00 #22553179
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
-> On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
-> > The shrink_memcg flow plays a crucial role in memcg reclamation.
-> > Currently, it is not possible to trace this point from non-direct
-> > reclaim paths. However, direct reclaim has its own tracepoint, so there
-> > is no issue there. In certain cases, when debugging memcg pressure,
-> > developers may need to identify all potential requests for memcg
-> > reclamation including kswapd(). The patchset introduces the tracepoints
-> > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
+Michal,
+
+On Mon, Nov 27, 2023 at 10:25:12AM +0100, Michal Hocko wrote:
+> On Thu 23-11-23 14:26:29, Dmitry Rokosov wrote:
+> > Michal, Shakeel,
 > > 
-> > Example of output in the kswapd context (non-direct reclaim):
-> >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
-> >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
-> >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
-> >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
-> >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
-> >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
+> > Sorry for pinging you here, but I don't quite understand your decision
+> > on this patchset.
+> > 
+> > Is it a NAK or not? If it's not, should I consider redesigning
+> > something? For instance, introducing stub functions to
+> > remove ifdefs from shrink_node_memcgs().
+> > 
+> > Thank you for taking the time to look into this!
 > 
-> In the previous version I have asked why do we need this specific
-> tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
-> which already give you a very good insight. That includes the number of
-> reclaimed pages but also more. I do see that we do not include memcg id
-> of the reclaimed LRU, but that shouldn't be a big problem to add, no?
+> Sorry for a late reply. I have noticed you have posted a new version.
+> Let me have a look and comment there.
 
-From my point of view, memcg reclaim includes two points: LRU shrink and
-slab shrink, as mentioned in the vmscan.c file.
-
-
-static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-...
-		reclaimed = sc->nr_reclaimed;
-		scanned = sc->nr_scanned;
-
-		shrink_lruvec(lruvec, sc);
-
-		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
-			    sc->priority);
-...
-
-So, both of these operations are important for understanding whether
-memcg reclaiming was successful or not, as well as its effectiveness. I
-believe it would be beneficial to summarize them, which is why I have
-created new tracepoints.
+No problem! Thanks a lot for your time and attention! Let's continue in
+the next version thread.
 
 -- 
 Thank you,
