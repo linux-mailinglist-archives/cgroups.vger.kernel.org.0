@@ -1,200 +1,186 @@
-Return-Path: <cgroups+bounces-581-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-582-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0166C7FAA9F
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 20:51:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 896E37FAC21
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 22:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CDCBB20F3F
-	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 19:51:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D78A281455
+	for <lists+cgroups@lfdr.de>; Mon, 27 Nov 2023 21:01:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C925B45959;
-	Mon, 27 Nov 2023 19:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D743EA9D;
+	Mon, 27 Nov 2023 21:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BCkxOV1d"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="yzDbR+kT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEBDD60
-	for <cgroups@vger.kernel.org>; Mon, 27 Nov 2023 11:51:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701114677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=yetQtQw07rU4YZ4FG3ra/SKREh1x+pvvLVJIVKSvN98=;
-	b=BCkxOV1desifHDX+UhQFWsWazYyEvBM8C/IngvftiyPMJNbj2PqIf7qn2WOC+uRxvLn6Is
-	jmnZIdPgo1DpKQjdd4Yhib0ftxHQQ1LeAc80hnebL3+iGmWo5gfER5g/xJ/O2qfB9nxemF
-	7fXg/lAoXndN162BsBGrwyFDn0VE3to=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-68-8QI2V3YVMdKdlmPH0cmaFA-1; Mon, 27 Nov 2023 14:51:13 -0500
-X-MC-Unique: 8QI2V3YVMdKdlmPH0cmaFA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A75F6185A780;
-	Mon, 27 Nov 2023 19:51:12 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.93])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 0D435492BE9;
-	Mon, 27 Nov 2023 19:51:12 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] cgroup/cpuset: Expose cpuset.cpus.isolated
-Date: Mon, 27 Nov 2023 14:51:05 -0500
-Message-Id: <20231127195105.290402-1-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D812031735;
+	Mon, 27 Nov 2023 21:00:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E8DC433C9;
+	Mon, 27 Nov 2023 21:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1701118857;
+	bh=d0FagZci1PXFMezi/BonwyYv+7yV34Dht6vxRLQOKK8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=yzDbR+kT8L1Ms6G8xL0TrV5ITh7u9pHV2Tf3NB55xhtilyqokg+gTeQDHkcIheVm8
+	 DFA9Di1naDUQ7+V1qm6//jzz5SoG4oQI202ZHvMMcRWO/D2v+XJx6r6wBn7BU8ic6i
+	 nNpDcKvEsu+FmI1qaMNFFOqckiGwHehyfX1VN2tA=
+Date: Mon, 27 Nov 2023 13:00:55 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: hannes@cmpxchg.org, cerasuolodomenico@gmail.com, yosryahmed@google.com,
+ sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+ mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+ muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+ kernel-team@meta.com, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: Re: [PATCH v6 6/6] zswap: shrinks zswap pool based on memory
+ pressure
+Message-Id: <20231127130055.30c455906d912e09dcb7e79b@linux-foundation.org>
+In-Reply-To: <20231127193703.1980089-7-nphamcs@gmail.com>
+References: <20231127193703.1980089-1-nphamcs@gmail.com>
+	<20231127193703.1980089-7-nphamcs@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The root-only cpuset.cpus.isolated control file shows the current set
-of isolated CPUs in isolated partitions. This control file is currently
-exposed only with the cgroup_debug boot command line option which also
-adds the ".__DEBUG__." prefix. This is actually a useful control file if
-users want to find out which CPUs are currently in an isolated state by
-the cpuset controller. Remove CFTYPE_DEBUG flag for this control file and
-make it available by default without any prefix.
+On Mon, 27 Nov 2023 11:37:03 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
 
-The test_cpuset_prs.sh test script and the cgroup-v2.rst documentation
-file are also updated accordingly. Minor code change is also made in
-test_cpuset_prs.sh to avoid false test failure when running on debug
-kernel.
+> Currently, we only shrink the zswap pool when the user-defined limit is
+> hit. This means that if we set the limit too high, cold data that are
+> unlikely to be used again will reside in the pool, wasting precious
+> memory. It is hard to predict how much zswap space will be needed ahead
+> of time, as this depends on the workload (specifically, on factors such
+> as memory access patterns and compressibility of the memory pages).
+> 
+> This patch implements a memcg- and NUMA-aware shrinker for zswap, that
+> is initiated when there is memory pressure. The shrinker does not
+> have any parameter that must be tuned by the user, and can be opted in
+> or out on a per-memcg basis.
+> 
+> Furthermore, to make it more robust for many workloads and prevent
+> overshrinking (i.e evicting warm pages that might be refaulted into
+> memory), we build in the following heuristics:
+> 
+> * Estimate the number of warm pages residing in zswap, and attempt to
+>   protect this region of the zswap LRU.
+> * Scale the number of freeable objects by an estimate of the memory
+>   saving factor. The better zswap compresses the data, the fewer pages
+>   we will evict to swap (as we will otherwise incur IO for relatively
+>   small memory saving).
+> * During reclaim, if the shrinker encounters a page that is also being
+>   brought into memory, the shrinker will cautiously terminate its
+>   shrinking action, as this is a sign that it is touching the warmer
+>   region of the zswap LRU.
+> 
+> As a proof of concept, we ran the following synthetic benchmark:
+> build the linux kernel in a memory-limited cgroup, and allocate some
+> cold data in tmpfs to see if the shrinker could write them out and
+> improved the overall performance. Depending on the amount of cold data
+> generated, we observe from 14% to 35% reduction in kernel CPU time used
+> in the kernel builds.
+> 
+> ...
+>
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -22,6 +22,7 @@
+>  #include <linux/mm_types.h>
+>  #include <linux/page-flags.h>
+>  #include <linux/local_lock.h>
+> +#include <linux/zswap.h>
+>  #include <asm/page.h>
+>  
+>  /* Free memory management - zoned buddy allocator.  */
+> @@ -641,6 +642,7 @@ struct lruvec {
+>  #ifdef CONFIG_MEMCG
+>  	struct pglist_data *pgdat;
+>  #endif
+> +	struct zswap_lruvec_state zswap_lruvec_state;
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/admin-guide/cgroup-v2.rst       |  7 ++++
- kernel/cgroup/cpuset.c                        |  2 +-
- .../selftests/cgroup/test_cpuset_prs.sh       | 32 +++++++++++--------
- 3 files changed, 26 insertions(+), 15 deletions(-)
+Normally we'd put this in #ifdef CONFIG_ZSWAP.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index cf5651a11df8..30f6ff2eba47 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2316,6 +2316,13 @@ Cpuset Interface Files
- 	treated to have an implicit value of "cpuset.cpus" in the
- 	formation of local partition.
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -5,20 +5,40 @@
+>  #include <linux/types.h>
+>  #include <linux/mm_types.h>
+>  
+> +struct lruvec;
+> +
+>  extern u64 zswap_pool_total_size;
+>  extern atomic_t zswap_stored_pages;
+>  
+>  #ifdef CONFIG_ZSWAP
+>  
+> +struct zswap_lruvec_state {
+> +	/*
+> +	 * Number of pages in zswap that should be protected from the shrinker.
+> +	 * This number is an estimate of the following counts:
+> +	 *
+> +	 * a) Recent page faults.
+> +	 * b) Recent insertion to the zswap LRU. This includes new zswap stores,
+> +	 *    as well as recent zswap LRU rotations.
+> +	 *
+> +	 * These pages are likely to be warm, and might incur IO if the are written
+> +	 * to swap.
+> +	 */
+> +	atomic_long_t nr_zswap_protected;
+> +};
+> +
+>  bool zswap_store(struct folio *folio);
+>  bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(int type, pgoff_t offset);
+>  void zswap_swapon(int type);
+>  void zswap_swapoff(int type);
+>  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+> -
+> +void zswap_lruvec_state_init(struct lruvec *lruvec);
+> +void zswap_lruvec_swapin(struct page *page);
+>  #else
+>  
+> +struct zswap_lruvec_state {};
+
+But instead you made it an empty struct in this case.
+
+That's a bit funky, but I guess OK.  It does send a careful reader of
+struct lruvec over to look at the zswap_lruvec_state definition to
+understand what's going on.
+
+>  static inline bool zswap_store(struct folio *folio)
+>  {
+>  	return false;
+> @@ -33,7 +53,8 @@ static inline void zswap_invalidate(int type, pgoff_t offset) {}
+>  static inline void zswap_swapon(int type) {}
+>  static inline void zswap_swapoff(int type) {}
+>  static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+> -
+> +static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
+> +static inline void zswap_lruvec_swapin(struct page *page) {}
+
+Needed this build fix:
+
+--- a/include/linux/zswap.h~zswap-shrinks-zswap-pool-based-on-memory-pressure-fix
++++ a/include/linux/zswap.h
+@@ -54,6 +54,7 @@ static inline void zswap_swapon(int type
+ static inline void zswap_swapoff(int type) {}
+ static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+ static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
++static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
+ static inline void zswap_lruvec_swapin(struct page *page) {}
+ #endif
  
-+  cpuset.cpus.isolated
-+	A read-only and root cgroup only multiple values file.
-+
-+	This file shows the set of all isolated CPUs used in existing
-+	isolated partitions. It will be empty if no isolated partition
-+	is created.
-+
-   cpuset.cpus.partition
- 	A read-write single value file which exists on non-root
- 	cpuset-enabled cgroups.  This flag is owned by the parent cgroup
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 1bad4007ff4b..2a16df86c55c 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -3974,7 +3974,7 @@ static struct cftype dfl_files[] = {
- 		.name = "cpus.isolated",
- 		.seq_show = cpuset_common_seq_show,
- 		.private = FILE_ISOLATED_CPULIST,
--		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
-+		.flags = CFTYPE_ONLY_ON_ROOT,
- 	},
- 
- 	{ }	/* terminate */
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index 7b7c4c2b6d85..b5eb1be2248c 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -508,7 +508,7 @@ dump_states()
- 		XECPUS=$DIR/cpuset.cpus.exclusive.effective
- 		PRS=$DIR/cpuset.cpus.partition
- 		PCPUS=$DIR/.__DEBUG__.cpuset.cpus.subpartitions
--		ISCPUS=$DIR/.__DEBUG__.cpuset.cpus.isolated
-+		ISCPUS=$DIR/cpuset.cpus.isolated
- 		[[ -e $CPUS   ]] && echo "$CPUS: $(cat $CPUS)"
- 		[[ -e $XCPUS  ]] && echo "$XCPUS: $(cat $XCPUS)"
- 		[[ -e $ECPUS  ]] && echo "$ECPUS: $(cat $ECPUS)"
-@@ -593,17 +593,17 @@ check_cgroup_states()
- 
- #
- # Get isolated (including offline) CPUs by looking at
--# /sys/kernel/debug/sched/domains and *cpuset.cpus.isolated control file,
-+# /sys/kernel/debug/sched/domains and cpuset.cpus.isolated control file,
- # if available, and compare that with the expected value.
- #
- # Note that isolated CPUs from the sched/domains context include offline
- # CPUs as well as CPUs in non-isolated 1-CPU partition. Those CPUs may
--# not be included in the *cpuset.cpus.isolated control file which contains
-+# not be included in the cpuset.cpus.isolated control file which contains
- # only CPUs in isolated partitions.
- #
- # $1 - expected isolated cpu list(s) <isolcpus1>{,<isolcpus2>}
- # <isolcpus1> - expected sched/domains value
--# <isolcpus2> - *cpuset.cpus.isolated value = <isolcpus1> if not defined
-+# <isolcpus2> - cpuset.cpus.isolated value = <isolcpus1> if not defined
- #
- check_isolcpus()
- {
-@@ -611,7 +611,7 @@ check_isolcpus()
- 	ISOLCPUS=
- 	LASTISOLCPU=
- 	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
--	ISCPUS=${CGROUP2}/.__DEBUG__.cpuset.cpus.isolated
-+	ISCPUS=${CGROUP2}/cpuset.cpus.isolated
- 	if [[ $EXPECT_VAL = . ]]
- 	then
- 		EXPECT_VAL=
-@@ -692,14 +692,18 @@ test_fail()
- null_isolcpus_check()
- {
- 	[[ $VERBOSE -gt 0 ]] || return 0
--	pause 0.02
--	check_isolcpus "."
--	if [[ $? -ne 0 ]]
--	then
--		echo "Unexpected isolated CPUs: $ISOLCPUS"
--		dump_states
--		exit 1
--	fi
-+	# Retry a few times before printing error
-+	RETRY=0
-+	while [[ $RETRY -lt 5 ]]
-+	do
-+		pause 0.01
-+		check_isolcpus "."
-+		[[ $? -eq 0 ]] && return 0
-+		((RETRY++))
-+	done
-+	echo "Unexpected isolated CPUs: $ISOLCPUS"
-+	dump_states
-+	exit 1
- }
- 
- #
-@@ -776,7 +780,7 @@ run_state_test()
- 		#
- 		NEWLIST=$(cat cpuset.cpus.effective)
- 		RETRY=0
--		while [[ $NEWLIST != $CPULIST && $RETRY -lt 5 ]]
-+		while [[ $NEWLIST != $CPULIST && $RETRY -lt 8 ]]
- 		do
- 			# Wait a bit longer & recheck a few times
- 			pause 0.01
--- 
-2.39.3
+_
 
 
