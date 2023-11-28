@@ -1,63 +1,72 @@
-Return-Path: <cgroups+bounces-600-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-601-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C222E7FB5FF
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 10:38:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4E957FBF63
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 17:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A18FB21720
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 09:38:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CFC1C20D7C
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 16:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0C849F8C;
-	Tue, 28 Nov 2023 09:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2916B4D5AD;
+	Tue, 28 Nov 2023 16:43:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cAWK9vir"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Knq0k55b"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABD8A3;
-	Tue, 28 Nov 2023 01:38:42 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2293821989;
-	Tue, 28 Nov 2023 09:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1701164321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+KUlvMVVq0kzWkSg0J1DwGMUzVoldnKYXOLEGIYlAks=;
-	b=cAWK9virywTZ532MDIgO1gy44OyyHrGCDU3wFS4vwwkNsW/vKW1ledm8n6gZv1rRBCK5ny
-	TGnyw24WV2gXW3ycdO9GlCA3lf2XXWbkgTirCzOlLMWXWGyWWHV7V6juL75W9SKAKHOsKJ
-	SjyuFMC7qaohToamRE1g+RCeRp6vxrA=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F25001343E;
-	Tue, 28 Nov 2023 09:38:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 23klOCC1ZWVtYgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 09:38:40 +0000
-Date: Tue, 28 Nov 2023 10:38:40 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org,
-	cerasuolodomenico@gmail.com, yosryahmed@google.com,
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-	roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-	kernel-team@meta.com, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v6 2/6] memcontrol: allows mem_cgroup_iter() to check for
- onlineness
-Message-ID: <ZWW1IG0Mv3r0m4mp@tiehlicka>
-References: <20231127193703.1980089-1-nphamcs@gmail.com>
- <20231127193703.1980089-3-nphamcs@gmail.com>
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DBBD6;
+	Tue, 28 Nov 2023 08:43:41 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cf8e569c35so37395465ad.0;
+        Tue, 28 Nov 2023 08:43:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701189821; x=1701794621; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t1G9rYIEZ34mJXbbwuA3/PHTXFDOWuxrzGTb7P8Akig=;
+        b=Knq0k55bN+diKYC8OTzPLGcLkogD7/+w3N+s1CQTqx23Amwx3SmaaIE2QosSSqZRr+
+         951Q0y7gTQwMR+CsJG2rinb+js3gDzDLkVozFAu1ediF8JJVJqifwHyrzQcHlW9fImks
+         YCbvXv7gDQnEHk4e5pRHnYtz8JeKnYoco6lALft/Ft47XmDKsUrHOvWYCuruBMXtFp7k
+         5x16746SqkUrhjaYpuhRWZPcqwLKWhTcP4xYQa8W8AVYaEF/CKCdgoaIBE2TjLlgroHu
+         BYdKm7c28ElmbkCMy6L8+VydJ0ICaqNY2kKc/gmGObGq3v45tiuzyV3sVt2NICtEZKL4
+         OGbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701189821; x=1701794621;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1G9rYIEZ34mJXbbwuA3/PHTXFDOWuxrzGTb7P8Akig=;
+        b=LBUvmr4mJTVa51uyitvov/AYNA6whXTakK4T4n533lMj2S+ETyR5GCInSnLK7XHX/f
+         JWdzEincfyKP+XbqTTvJ5BjDLEoARgagq3ttj6lie8p5aFcQ/Tgoz6L+FW0PHtSojMdY
+         c3IUTguz5BZlhlzQ4k8rYI0WKXhZNgT3mhSZUbDD5thF7Fdb8GbgQWcXqNqIetUSU3GV
+         /csFr2uJik6+9U6Ih+dR+lBBzaYWDVNUM2iZCp7zoM+I5bouEXK/OA4SZ3bO0jCBkGMd
+         6vrsA95Zjoz0xFXEm0tY+QgddP+U4Dc8lUfJSME00fqB+pn+Us3LrNumu7ijNj6jefuY
+         b48A==
+X-Gm-Message-State: AOJu0YwC+TKSqTdppFmVA0sF3DVihfTnD8MtXEC7gRZrw1wjJgwJLCPL
+	IN1L6S8P49l7ygOtNI/9Ot8=
+X-Google-Smtp-Source: AGHT+IGaOXiY5snwKYq8K0A1rJzX5WiJvhSjBS9hO5FOrASiq5XeF3YfPC//rHJ44BHfXGJa51RGUA==
+X-Received: by 2002:a17:902:c10d:b0:1cf:cd2d:e296 with SMTP id 13-20020a170902c10d00b001cfcd2de296mr6915216pli.37.1701189820925;
+        Tue, 28 Nov 2023 08:43:40 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id c6-20020a170902c1c600b001cfd0ed1604sm3930815plc.87.2023.11.28.08.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 08:43:40 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 28 Nov 2023 06:43:38 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+	Sebastian Jug <sejug@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH v4 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
+Message-ID: <ZWYYrJVMUOrl9r2g@slm.duckdns.org>
+References: <20231106210543.717486-1-longman@redhat.com>
+ <20231106210543.717486-3-longman@redhat.com>
+ <a9aa2809-95f5-4f60-b936-0d857c971fea@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,39 +75,44 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127193703.1980089-3-nphamcs@gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.02
-X-Spamd-Result: default: False [-2.02 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,gmail.com,google.com,redhat.com,ieee.org,konsulko.com,linux.dev,kernel.org,kvack.org,meta.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.42)[91.09%]
+In-Reply-To: <a9aa2809-95f5-4f60-b936-0d857c971fea@redhat.com>
 
-On Mon 27-11-23 11:36:59, Nhat Pham wrote:
-> The new zswap writeback scheme requires an online-only memcg hierarchy
-> traversal. Add a new parameter to mem_cgroup_iter() to check for
-> onlineness before returning.
+On Mon, Nov 27, 2023 at 11:01:22PM -0500, Waiman Long wrote:
+...
+> > + * Recursively traverse down the cgroup_rstat_cpu updated tree and push
+> > + * parent first before its children into a singly linked list built from
+> > + * the tail backward like "pushing" cgroups into a stack. The parent is
+> > + * pushed by the caller. The recursion depth is the depth of the current
+> > + * updated subtree.
+> > + */
+> > +static struct cgroup *cgroup_rstat_push_children(struct cgroup *head,
+> > +				struct cgroup_rstat_cpu *prstatc, int cpu)
+> > +{
+> > +	struct cgroup *child, *parent;
+> > +	struct cgroup_rstat_cpu *crstatc;
+> > +
+> > +	parent = head;
+> > +	child = prstatc->updated_children;
+> > +	prstatc->updated_children = parent;
+> > +
+> > +	/* updated_next is parent cgroup terminated */
+> > +	while (child != parent) {
+> > +		child->rstat_flush_next = head;
+> > +		head = child;
+> > +		crstatc = cgroup_rstat_cpu(child, cpu);
+> > +		if (crstatc->updated_children != child)
+> > +			head = cgroup_rstat_push_children(head, crstatc, cpu);
+> > +		child = crstatc->updated_next;
+> > +		crstatc->updated_next = NULL;
+> > +	}
+> > +	return head;
 
-Why is this needed?
+The recursion bothers me. We don't really have a hard limit on nesting
+depth. We might need to add another pointer field but can make this
+iterative, right?
+
+Thanks.
+
 -- 
-Michal Hocko
-SUSE Labs
+tejun
 
