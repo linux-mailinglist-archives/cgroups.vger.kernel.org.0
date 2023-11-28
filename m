@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-626-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-627-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8714B7FC65A
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 21:54:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24CC7FC65F
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 21:54:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19C62B23C1C
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 20:54:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C8FC2862E8
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 20:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B4F61FCE;
-	Tue, 28 Nov 2023 20:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9CE6166D;
+	Tue, 28 Nov 2023 20:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="TWRnXEVX"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="mu35PtE5"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6401FFE
-	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 12:49:56 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67a18556e4aso29143856d6.1
-        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 12:49:56 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCE72112
+	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 12:49:57 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67a35b68c34so18752476d6.3
+        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 12:49:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701204595; x=1701809395; darn=vger.kernel.org;
+        d=soleen.com; s=google; t=1701204596; x=1701809396; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iygGvNb1KE298FiVkmeH8gdBVxeTTuJw4eGKIF/nIuM=;
-        b=TWRnXEVXJruv36LJOKHOhLjpODPbkfmbkFVGiyOwKEshA3y7p2vwRpd/5C7W+qNM23
-         D6nv4XMHyxnItPBrp6yg8UyDYHblV+lzf/h7za7iL8ugRhzV9JfxwzHqKyxe7Xk8Uh/q
-         PfP1iVJT2M4KQ7WfHjfApsQ4nZZ5x/pPJmPNH0lUx2TYkwjM3yON0sY4b8BF3B3MuZSB
-         Qt9E/+FEDDPITVyILclLHYXmH6fhFO7Gd2aA+9IIMCVoLtHGobMgBqUWIWUXm9UbZ2uR
-         3PNpdpfkE6bslU98p/cRIQNaPtkG0vRMRtFyvh7U6nqZ2q0hT6WszqpUe9YACfO1iDi/
-         Dbqg==
+        bh=YSGX0jW3To7/xuABL7QXXsr1KCFhu7Z9tThr0mLMrMc=;
+        b=mu35PtE5c/9BIjstdYyMmHY7Fsp4p47cAFfxKfLsRGnfxku0i2aSW554C1uqlvpsQG
+         7n+YTN7UVvy9Da+sXvjnrRbhflbjotnxSYc46MNpmRLi4IO0BtuqyB4DTLVKFRZBCQT6
+         Gem7H6rBonm0+z37Y3eiO2PmFX83B5wvl1i16H3zAMIqCd+ebFYbcpQsJs88KGdQ3aQo
+         dilQXr6/WXD8tF4AcdIY0AMHMjtiN5cKy4+xcwwc8ETsP9hjskymCjjVw3r727nJcZ4l
+         P7VdPRIIVUXbGZOMRd7My622YMXRlrcltPLBtBUm4FJxlJ4gez9R4x93FrfNE6OSIGVC
+         3cTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701204595; x=1701809395;
+        d=1e100.net; s=20230601; t=1701204596; x=1701809396;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iygGvNb1KE298FiVkmeH8gdBVxeTTuJw4eGKIF/nIuM=;
-        b=FENXiOX+7naRAgQpglobSe7h7uUnHHETHeDUoUNlk1n1jNtnGCvwi+NDAD1dcZzhPd
-         Kt0srjUihgFTchadDbfbxSYfmOLYa6C5kx2nNMwD9li5zA8VnPko6ef2kw6/PbFWPoAh
-         xwcqJtML7wDlqOCH71mAi34vdRy+nf4ioodqep3AwpWTRxffzckQu30oCj4ZIBp4n5nU
-         T5FpwKeA4xIzoTc3lTDv+UAsP7ClEMXYbP5/ru2BVwV82wTsEZ/Pqq7nk6A21dBftx8o
-         e8Q97a75qw0FxTR7PzjRy+sXPNzfjdus4wd8b7P4TBHnfVBM6UXJCHDVIjWKP8/LChja
-         Zo3Q==
-X-Gm-Message-State: AOJu0YwPM9julGfD65sR4yT+PKeOa6DNh+w9tQ+oSHC0zp7WyM6JKb8v
-	2khAuGjJS+LYgmdj/S822KSF3g==
-X-Google-Smtp-Source: AGHT+IE0Jl3QLEggdMt0xv2T8AyvhzkahJgD3VRGmfbhI7sqHJ8Aa/AdHKiYq6E8wbv77IBFZbLYmg==
-X-Received: by 2002:ad4:5dc6:0:b0:67a:21aa:6513 with SMTP id m6-20020ad45dc6000000b0067a21aa6513mr18119809qvh.17.1701204595440;
-        Tue, 28 Nov 2023 12:49:55 -0800 (PST)
+        bh=YSGX0jW3To7/xuABL7QXXsr1KCFhu7Z9tThr0mLMrMc=;
+        b=CMXLSXzOROVcFLNqUrLf1osoHmG0fiLoqpYwgewvem2W/hiqOOuPzSTO3icXn5dlxR
+         m4Emyq7Grbb5aTWzBjc0FSfh04S4KqUS32Cz3yjLLr+okZurGTZptH2IxVHd+G164Q7S
+         GmEA16lrIp1IPFK9INRwykNxfX2eGAEGPZuKiiTcXsQLNB6rzxyhnYhZdmqm330KqdfJ
+         R1wDuylraMrL7934/fl2GW7kKQd38yWJMFFTQllxskf/9nEN8J3m/NugIz7WekW2oWZS
+         T85UYSCfgLIlgFZwGOQcFKCEghvtPzbrjDVIS0qz0djieFD/FBqQOmrEh9bP37SMTp7Y
+         sFbg==
+X-Gm-Message-State: AOJu0YyZvWsSh3ECh4rn/7vnhB9aOES9rjFeAdnVdLDZ9RyoEhXqVGC0
+	Z8GOHDtqhuvwnXXkXzltxYUBpg==
+X-Google-Smtp-Source: AGHT+IH3XyzLx3HqaxxWdryJd33MqMJHkx6z6Xt3swBEGkMdx9JQSLka9GW0WH1FkTVqo27TzFUimQ==
+X-Received: by 2002:a05:6214:246f:b0:67a:4ba1:84d5 with SMTP id im15-20020a056214246f00b0067a4ba184d5mr7928400qvb.16.1701204596396;
+        Tue, 28 Nov 2023 12:49:56 -0800 (PST)
 Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id d11-20020a0cfe8b000000b0067a56b6adfesm1056863qvs.71.2023.11.28.12.49.54
+        by smtp.gmail.com with ESMTPSA id d11-20020a0cfe8b000000b0067a56b6adfesm1056863qvs.71.2023.11.28.12.49.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 12:49:54 -0800 (PST)
+        Tue, 28 Nov 2023 12:49:56 -0800 (PST)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
 To: akpm@linux-foundation.org,
 	alex.williamson@redhat.com,
@@ -106,9 +106,9 @@ To: akpm@linux-foundation.org,
 	wens@csie.org,
 	will@kernel.org,
 	yu-cheng.yu@intel.com
-Subject: [PATCH 15/16] vhost-vdpa: account iommu allocations
-Date: Tue, 28 Nov 2023 20:49:37 +0000
-Message-ID: <20231128204938.1453583-16-pasha.tatashin@soleen.com>
+Subject: [PATCH 16/16] vfio: account iommu allocations
+Date: Tue, 28 Nov 2023 20:49:38 +0000
+Message-ID: <20231128204938.1453583-17-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 In-Reply-To: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
 References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
@@ -125,23 +125,42 @@ monitor and limit the amount of iommu memory.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- drivers/vhost/vdpa.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/vfio/vfio_iommu_type1.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index da7ec77cdaff..a51c69c078d9 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -968,7 +968,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
- 			r = ops->set_map(vdpa, asid, iotlb);
- 	} else {
- 		r = iommu_map(v->domain, iova, pa, size,
--			      perm_to_iommu_flags(perm), GFP_KERNEL);
-+			      perm_to_iommu_flags(perm),
-+			      GFP_KERNEL_ACCOUNT);
- 	}
- 	if (r) {
- 		vhost_iotlb_del_range(iotlb, iova, iova + size - 1);
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index eacd6ec04de5..b2854d7939ce 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -1436,7 +1436,7 @@ static int vfio_iommu_map(struct vfio_iommu *iommu, dma_addr_t iova,
+ 	list_for_each_entry(d, &iommu->domain_list, next) {
+ 		ret = iommu_map(d->domain, iova, (phys_addr_t)pfn << PAGE_SHIFT,
+ 				npage << PAGE_SHIFT, prot | IOMMU_CACHE,
+-				GFP_KERNEL);
++				GFP_KERNEL_ACCOUNT);
+ 		if (ret)
+ 			goto unwind;
+ 
+@@ -1750,7 +1750,8 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+ 			}
+ 
+ 			ret = iommu_map(domain->domain, iova, phys, size,
+-					dma->prot | IOMMU_CACHE, GFP_KERNEL);
++					dma->prot | IOMMU_CACHE,
++					GFP_KERNEL_ACCOUNT);
+ 			if (ret) {
+ 				if (!dma->iommu_mapped) {
+ 					vfio_unpin_pages_remote(dma, iova,
+@@ -1845,7 +1846,8 @@ static void vfio_test_domain_fgsp(struct vfio_domain *domain, struct list_head *
+ 			continue;
+ 
+ 		ret = iommu_map(domain->domain, start, page_to_phys(pages), PAGE_SIZE * 2,
+-				IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE, GFP_KERNEL);
++				IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE,
++				GFP_KERNEL_ACCOUNT);
+ 		if (!ret) {
+ 			size_t unmapped = iommu_unmap(domain->domain, start, PAGE_SIZE);
+ 
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
