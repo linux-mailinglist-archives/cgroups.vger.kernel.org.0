@@ -1,287 +1,161 @@
-Return-Path: <cgroups+bounces-598-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-599-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0324F7FB0C9
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 05:01:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C985A7FB5E1
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 10:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47926B2103E
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 04:01:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B552B217E0
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 09:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9A9DF4C;
-	Tue, 28 Nov 2023 04:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gPD9pyei"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA68E495DE;
+	Tue, 28 Nov 2023 09:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF41AA
-	for <cgroups@vger.kernel.org>; Mon, 27 Nov 2023 20:01:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701144089;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X+0Z92Qj1ldv3a0RYwGcB/SwkAAl78v4xA0NIgpUKoA=;
-	b=gPD9pyei4ngZAJ5mcp1nl5yQoDA7gUcIQKNTRvL8pFscqP9+XVT4AEL6rL2Y5UV4ohkp8W
-	+9b4suC0utoOpjlgfPj1pREDSsx3pEuIxQ+rIR1oCZR3wd2ngjRzNhfV0XMRNsVHClbGUA
-	w2a2uqw9y/O9ytYvFAVDTxTBNaMOe1M=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-452-LCLvOOU1PM-PsDJFrO8yMQ-1; Mon,
- 27 Nov 2023 23:01:24 -0500
-X-MC-Unique: LCLvOOU1PM-PsDJFrO8yMQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71804DE;
+	Tue, 28 Nov 2023 01:32:52 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CC4183806700;
-	Tue, 28 Nov 2023 04:01:23 +0000 (UTC)
-Received: from [10.22.8.93] (unknown [10.22.8.93])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 238301C060B0;
-	Tue, 28 Nov 2023 04:01:23 +0000 (UTC)
-Message-ID: <a9aa2809-95f5-4f60-b936-0d857c971fea@redhat.com>
-Date: Mon, 27 Nov 2023 23:01:22 -0500
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 211EB2198D;
+	Tue, 28 Nov 2023 09:32:51 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED9751343E;
+	Tue, 28 Nov 2023 09:32:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ALBEMsKzZWWUYAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 09:32:50 +0000
+Date: Tue, 28 Nov 2023 10:32:50 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWWzwhWnW1_iX0FP@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Joe Mario <jmario@redhat.com>, Sebastian Jug <sejug@redhat.com>,
- Yosry Ahmed <yosryahmed@google.com>
-References: <20231106210543.717486-1-longman@redhat.com>
- <20231106210543.717486-3-longman@redhat.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20231106210543.717486-3-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 211EB2198D
 
-On 11/6/23 16:05, Waiman Long wrote:
-> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
-> the updated tree in a way to pop out the leaf nodes first before
-> their parents. This can cause traversal of multiple nodes before a
-> leaf node can be found and popped out. IOW, a given node in the tree
-> can be visited multiple times before the whole operation is done. So
-> it is not very efficient and the code can be hard to read.
->
-> With the introduction of cgroup_rstat_updated_list() to build a list
-> of cgroups to be flushed first before any flushing operation is being
-> done, we can optimize the way the updated tree nodes are being popped
-> by pushing the parents first to the tail end of the list before their
-> children. In this way, most updated tree nodes will be visited only
-> once with the exception of the subtree root as we still need to go
-> back to its parent and popped it out of its updated_children list.
-> This also makes the code easier to read.
->
-> A parallel kernel build on a 2-socket x86-64 server is used as the
-> benchmarking tool for measuring the lock hold time. Below were the lock
-> hold time frequency distribution before and after the patch:
->
->       Hold time        Before patch       After patch
->       ---------        ------------       -----------
->         0-01 us        13,738,708         14,594,545
->        01-05 us         1,177,194            439,926
->        05-10 us             4,984              5,960
->        10-15 us             3,562              3,543
->        15-20 us             1,314              1,397
->        20-25 us                18                 25
->        25-30 us                12                 12
->
-> It can be seen that the patch pushes the lock hold time towards the
-> lower end.
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   kernel/cgroup/rstat.c | 134 +++++++++++++++++++++++-------------------
->   1 file changed, 72 insertions(+), 62 deletions(-)
->
-> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> index 1f300bf4dc40..701388fa215f 100644
-> --- a/kernel/cgroup/rstat.c
-> +++ b/kernel/cgroup/rstat.c
-> @@ -74,64 +74,92 @@ __bpf_kfunc void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
->   }
->   
->   /**
-> - * cgroup_rstat_cpu_pop_updated - iterate and dismantle rstat_cpu updated tree
-> - * @pos: current position
-> - * @root: root of the tree to traversal
-> + * cgroup_rstat_push_children - push children cgroups into the given list
-> + * @head: current head of the list (= parent cgroup)
-> + * @prstatc: cgroup_rstat_cpu of the parent cgroup
->    * @cpu: target cpu
-> + * Return: A new singly linked list of cgroups to be flush
->    *
-> - * Walks the updated rstat_cpu tree on @cpu from @root.  %NULL @pos starts
-> - * the traversal and %NULL return indicates the end.  During traversal,
-> - * each returned cgroup is unlinked from the tree.  Must be called with the
-> - * matching cgroup_rstat_cpu_lock held.
-> + * Recursively traverse down the cgroup_rstat_cpu updated tree and push
-> + * parent first before its children into a singly linked list built from
-> + * the tail backward like "pushing" cgroups into a stack. The parent is
-> + * pushed by the caller. The recursion depth is the depth of the current
-> + * updated subtree.
-> + */
-> +static struct cgroup *cgroup_rstat_push_children(struct cgroup *head,
-> +				struct cgroup_rstat_cpu *prstatc, int cpu)
-> +{
-> +	struct cgroup *child, *parent;
-> +	struct cgroup_rstat_cpu *crstatc;
-> +
-> +	parent = head;
-> +	child = prstatc->updated_children;
-> +	prstatc->updated_children = parent;
-> +
-> +	/* updated_next is parent cgroup terminated */
-> +	while (child != parent) {
-> +		child->rstat_flush_next = head;
-> +		head = child;
-> +		crstatc = cgroup_rstat_cpu(child, cpu);
-> +		if (crstatc->updated_children != child)
-> +			head = cgroup_rstat_push_children(head, crstatc, cpu);
-> +		child = crstatc->updated_next;
-> +		crstatc->updated_next = NULL;
-> +	}
-> +	return head;
-> +}
-> +
-> +/**
-> + * cgroup_rstat_updated_list - return a list of updated cgroups to be flushed
-> + * @root: root of the cgroup subtree to traverse
-> + * @cpu: target cpu
-> + * Return: A singly linked list of cgroups to be flushed
-> + *
-> + * Walks the updated rstat_cpu tree on @cpu from @root.  During traversal,
-> + * each returned cgroup is unlinked from the updated tree.
->    *
->    * The only ordering guarantee is that, for a parent and a child pair
-> - * covered by a given traversal, if a child is visited, its parent is
-> - * guaranteed to be visited afterwards.
-> + * covered by a given traversal, the child is before its parent in
-> + * the list.
-> + *
-> + * Note that updated_children is self terminated and points to a list of
-> + * child cgroups if not empty. Whereas updated_next is like a sibling link
-> + * within the children list and terminated by the parent cgroup. An exception
-> + * here is the cgroup root whose updated_next can be self terminated.
->    */
-> -static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
-> -						   struct cgroup *root, int cpu)
-> +static struct cgroup *cgroup_rstat_updated_list(struct cgroup *root, int cpu)
->   {
-> -	struct cgroup_rstat_cpu *rstatc;
-> -	struct cgroup *parent;
-> -
-> -	if (pos == root)
-> -		return NULL;
-> +	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
-> +	struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(root, cpu);
-> +	struct cgroup *head = NULL, *parent;
-> +	unsigned long flags;
->   
->   	/*
-> -	 * We're gonna walk down to the first leaf and visit/remove it.  We
-> -	 * can pick whatever unvisited node as the starting point.
-> +	 * The _irqsave() is needed because cgroup_rstat_lock is
-> +	 * spinlock_t which is a sleeping lock on PREEMPT_RT. Acquiring
-> +	 * this lock with the _irq() suffix only disables interrupts on
-> +	 * a non-PREEMPT_RT kernel. The raw_spinlock_t below disables
-> +	 * interrupts on both configurations. The _irqsave() ensures
-> +	 * that interrupts are always disabled and later restored.
->   	 */
-> -	if (!pos) {
-> -		pos = root;
-> -		/* return NULL if this subtree is not on-list */
-> -		if (!cgroup_rstat_cpu(pos, cpu)->updated_next)
-> -			return NULL;
-> -	} else {
-> -		pos = cgroup_parent(pos);
-> -	}
-> +	raw_spin_lock_irqsave(cpu_lock, flags);
->   
-> -	/* walk down to the first leaf */
-> -	while (true) {
-> -		rstatc = cgroup_rstat_cpu(pos, cpu);
-> -		if (rstatc->updated_children == pos)
-> -			break;
-> -		pos = rstatc->updated_children;
-> -	}
-> +	/* Return NULL if this subtree is not on-list */
-> +	if (!rstatc->updated_next)
-> +		goto unlock_ret;
->   
->   	/*
-> -	 * Unlink @pos from the tree.  As the updated_children list is
-> +	 * Unlink @root from its parent. As the updated_children list is
->   	 * singly linked, we have to walk it to find the removal point.
-> -	 * However, due to the way we traverse, @pos will be the first
-> -	 * child in most cases. The only exception is @root.
->   	 */
-> -	parent = cgroup_parent(pos);
-> +	parent = cgroup_parent(root);
->   	if (parent) {
->   		struct cgroup_rstat_cpu *prstatc;
->   		struct cgroup **nextp;
->   
->   		prstatc = cgroup_rstat_cpu(parent, cpu);
->   		nextp = &prstatc->updated_children;
-> -		while (*nextp != pos) {
-> +		while (*nextp != root) {
->   			struct cgroup_rstat_cpu *nrstatc;
->   
->   			nrstatc = cgroup_rstat_cpu(*nextp, cpu);
-> @@ -142,31 +170,13 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
->   	}
->   
->   	rstatc->updated_next = NULL;
-> -	return pos;
-> -}
-> -
-> -/* Return a list of updated cgroups to be flushed */
-> -static struct cgroup *cgroup_rstat_updated_list(struct cgroup *root, int cpu)
-> -{
-> -	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
-> -	struct cgroup *head, *tail, *next;
-> -	unsigned long flags;
->   
-> -	/*
-> -	 * The _irqsave() is needed because cgroup_rstat_lock is
-> -	 * spinlock_t which is a sleeping lock on PREEMPT_RT. Acquiring
-> -	 * this lock with the _irq() suffix only disables interrupts on
-> -	 * a non-PREEMPT_RT kernel. The raw_spinlock_t below disables
-> -	 * interrupts on both configurations. The _irqsave() ensures
-> -	 * that interrupts are always disabled and later restored.
-> -	 */
-> -	raw_spin_lock_irqsave(cpu_lock, flags);
-> -	head = tail = cgroup_rstat_cpu_pop_updated(NULL, root, cpu);
-> -	while (tail) {
-> -		next = cgroup_rstat_cpu_pop_updated(tail, root, cpu);
-> -		tail->rstat_flush_next = next;
-> -		tail = next;
-> -	}
-> +	/* Push @root to the list first before pushing the children */
-> +	head = root;
-> +	root->rstat_flush_next = NULL;
-> +	if (rstatc->updated_children != root)
-> +		head = cgroup_rstat_push_children(head, rstatc, cpu);
-> +unlock_ret:
->   	raw_spin_unlock_irqrestore(cpu_lock, flags);
->   	return head;
->   }
+On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+> On Mon, Nov 27, 2023 at 01:50:22PM +0100, Michal Hocko wrote:
+> > On Mon 27-11-23 14:36:44, Dmitry Rokosov wrote:
+> > > On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
+> > > > On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
+> > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > > Currently, it is not possible to trace this point from non-direct
+> > > > > reclaim paths. However, direct reclaim has its own tracepoint, so there
+> > > > > is no issue there. In certain cases, when debugging memcg pressure,
+> > > > > developers may need to identify all potential requests for memcg
+> > > > > reclamation including kswapd(). The patchset introduces the tracepoints
+> > > > > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
+> > > > > 
+> > > > > Example of output in the kswapd context (non-direct reclaim):
+> > > > >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
+> > > > 
+> > > > In the previous version I have asked why do we need this specific
+> > > > tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
+> > > > which already give you a very good insight. That includes the number of
+> > > > reclaimed pages but also more. I do see that we do not include memcg id
+> > > > of the reclaimed LRU, but that shouldn't be a big problem to add, no?
+> > > 
+> > > >From my point of view, memcg reclaim includes two points: LRU shrink and
+> > > slab shrink, as mentioned in the vmscan.c file.
+> > > 
+> > > 
+> > > static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+> > > ...
+> > > 		reclaimed = sc->nr_reclaimed;
+> > > 		scanned = sc->nr_scanned;
+> > > 
+> > > 		shrink_lruvec(lruvec, sc);
+> > > 
+> > > 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+> > > 			    sc->priority);
+> > > ...
+> > > 
+> > > So, both of these operations are important for understanding whether
+> > > memcg reclaiming was successful or not, as well as its effectiveness. I
+> > > believe it would be beneficial to summarize them, which is why I have
+> > > created new tracepoints.
+> > 
+> > This sounds like nice to have rather than must. Put it differently. If
+> > you make existing reclaim trace points memcg aware (print memcg id) then
+> > what prevents you from making analysis you need?
+> 
+> You are right, nothing prevents me from making this analysis... but...
+> 
+> This approach does have some disadvantages:
+> 1) It requires more changes to vmscan. At the very least, the memcg
+> object should be forwarded to all subfunctions for LRU and SLAB
+> shrinkers.
 
-Any further comment or suggestion on this patch?
+We should have lruvec or memcg available. lruvec_memcg() could be used
+to get memcg from the lruvec. It might be more places to add the id but
+arguably this would improve them to identify where the memory has been
+scanned/reclaimed from.
+ 
+> 2) With this approach, we will not have the ability to trace a situation
+> where the kernel is requesting reclaim for a specific memcg, but due to
+> limits issues, we are unable to run it.
 
-Thanks,
-Longman
+I do not follow. Could you be more specific please?
 
+> 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> tasks. Additionally, memcg can be disabled in the kernel configuration.
+
+Right. This could be all hidden in the tracing code. You simply do not
+print memcg id when the controller is disabled. Or just simply print 0.
+I do not really see any major problems with that.
+
+I would really prefer to focus on that direction rather than adding
+another begin/end tracepoint which overalaps with existing begin/end
+traces and provides much more limited information because I would bet we
+will have somebody complaining that mere nr_reclaimed is not sufficient.
+-- 
+Michal Hocko
+SUSE Labs
 
