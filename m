@@ -1,99 +1,106 @@
-Return-Path: <cgroups+bounces-604-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-605-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DF77FBFAD
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 17:52:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B739B7FBFBC
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 17:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0F13282A63
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 16:52:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E794A1C20BA3
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 16:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5601657872;
-	Tue, 28 Nov 2023 16:52:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E80558AD2;
+	Tue, 28 Nov 2023 16:54:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NDWmC4MH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c1csWw9Z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFC4D4B;
-	Tue, 28 Nov 2023 08:52:54 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso5667358b3a.2;
-        Tue, 28 Nov 2023 08:52:54 -0800 (PST)
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15033D51;
+	Tue, 28 Nov 2023 08:54:08 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7b389399dfdso133526339f.2;
+        Tue, 28 Nov 2023 08:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701190374; x=1701795174; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C2GFpgF/UShDGrhmadEJvLPiDWgQypGxozPNByeW60o=;
-        b=NDWmC4MH7Mm8z/Z8L8CxHtmHUSKUlUQd86MiCD8Gl4OyMG+oAmYSBxx6QsGn42edpB
-         DhexSvUjC493LFwfH03GUjIv3+b/ZZ9dyh/brIQjWOuSDRG+UouzNF3lRw4/ycPfDjvV
-         l3cpVnHZXnESIVh5BBJUoRUnQrgr4Rbu4wOCz7kP5H3FOTY9x/TZskRBE5yX4E3gIt+D
-         CfCv9jWtcFa5nxd9VqLJaaTJEiozXa9WdOkcQp6aPJyTIzYhLh1Qsp9u9z9UYchos+mp
-         FCSyonoW0ZE4+0C2TKYMZE4P7xW5y7VPDE+SkP1Y51M4cH70Uv3bcZp+iGgjDvDPlQ1k
-         j//A==
+        d=gmail.com; s=20230601; t=1701190447; x=1701795247; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r85ydUJh41VHrUAuuHTOjnQ7J8TNkgJ1y7qjmCMSTu8=;
+        b=c1csWw9ZHwTNRyZ1Cf739uEAA/rE3GFkeHYDXFBlk+AMOgvY+IRBV6q8bb8eSYhwD2
+         RCIQEZf/PcKj/0SdILO4J1eMZqW42d9kDY0P5PP5JgKbVmZm8gq7DIhYS0Iyo1E0SjMY
+         i3pu7ouHtbMyb5C4wvqtkRUEMCRWifL9QAxYQB9gmmCeua1VarKvcjoyo4j4dhhdaLez
+         2PMhFQrAAYjXtAGc+xWAlCQcyyLPCAvRRtNHQ73mbNbjFK+wpi/6oimer+tesQUqsqoD
+         Gi8Fxl6q+u/QZidszp8MeNhY6OZHTt7NXnmISm4n42RB+X4hY4YQ1kltZ0BgCY5/m/bP
+         6m0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701190374; x=1701795174;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701190447; x=1701795247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C2GFpgF/UShDGrhmadEJvLPiDWgQypGxozPNByeW60o=;
-        b=QkTakBxmYNjNIp2Gf9m7jazJHChxAujBBm92bLQwi+dXZHjdOuKxTFjh4ZCteZy7B3
-         5G53irlDVsgHhE/nnVvyhUhvg68Zs1AmnnFeItDc5r6XyIUdLJW73zzoXEQV3CYykz/B
-         PoddfW1gmgOCDk067BEQfoP6LlHOdq5D6lu1y/98sdeLceGjbA614KGpsIm/wiDvn9Xu
-         ITht5wnBt4hXdyukcnJ7gubPw0ag2XyI822h2D5sQpVAK4vMj/odJzT/EeSBKg9+PjM6
-         EQ6Mgqrn2M4x0nhk88s1vJWN0VfCfVUtkKdSn5bN/hz6oVl6zNdmnoolLokaPh3rBfHz
-         OsAQ==
-X-Gm-Message-State: AOJu0YwfOuQIF5qwnlhdsoOhsDGEZQ1lkmBeeCSit7XvJmmEp6NbgpHI
-	w1WWjcdKBQnff++WYspqMm4=
-X-Google-Smtp-Source: AGHT+IESZLkr/1OKBV5n340oK9Jlw1VXrLMt+uC0XUIpwOTG/i3VDKrrFNQVcCHkdDaR5zTGF7B+2A==
-X-Received: by 2002:a05:6a00:1486:b0:68f:bb02:fdf with SMTP id v6-20020a056a00148600b0068fbb020fdfmr20872768pfu.27.1701190374037;
-        Tue, 28 Nov 2023 08:52:54 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id fc14-20020a056a002e0e00b006cd08377a13sm5045838pfb.190.2023.11.28.08.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 08:52:53 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 28 Nov 2023 06:52:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Mark Hasemeyer <markhas@google.com>
-Cc: Tim Van Patten <timvp@chromium.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Tim Van Patten <timvp@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH] cgroup_freezer: cgroup_freezing: Check if not frozen
-Message-ID: <ZWYa5IlXpdus2q3R@slm.duckdns.org>
-References: <20231115162054.2896748-1-timvp@chromium.org>
- <ZVokO6_4o07FU0xP@slm.duckdns.org>
- <CAP0ea-sSvFGdpqz8Axcjrq=UX0watg=j6iBxd1OkNeKHi_pJ=Q@mail.gmail.com>
+        bh=r85ydUJh41VHrUAuuHTOjnQ7J8TNkgJ1y7qjmCMSTu8=;
+        b=VtaD63cLFaC+uZNGdh81O2iDArlzTsQ4Up7lEVA1g8EkNNgbCNzUQcBb7YiMrwkVJM
+         8xn+uvC2bcJFAvfVbqJ12D1HaWRqsoqORwcgbZXdF9sMgnJcKFL1CtJgDDXV4s1I1Oqn
+         MTdSt/cqkLUow/sfEEZORJgpLEnCxyPA0K5fnQsLWwj79J6P42G3eOIv2grUbVMGomqw
+         qXQT4GBTGL6cJdX2HmbiMnl7cEUuUg2Vee9OmPHgGj9C2bFw86pqf/HYIGZa5Q4S3mw5
+         WaKyxduVB6CpxYlbfA4YfGCkiOEu27X53RtganEMOhCBGWBzJ8KTbyTSKrPdut7h1UNm
+         n3Pg==
+X-Gm-Message-State: AOJu0YyajVmdDgAlCd2+XNjTEbEsANaO6WviLqlLjBXDdefFwyMrXoho
+	N/PV/8fgwk+8N23t2LOnKSNu7G8HRc3nocd4PoU=
+X-Google-Smtp-Source: AGHT+IFb7aDwTf03bZeLB0LqchAfMqNlPpSgWV8SqzBEtOOj8il9iQK8ry85o7b804gzWK+PQJN1JfAhCluvV7Dli6w=
+X-Received: by 2002:a6b:3fc3:0:b0:79f:96db:f33d with SMTP id
+ m186-20020a6b3fc3000000b0079f96dbf33dmr12580697ioa.9.1701190447244; Tue, 28
+ Nov 2023 08:54:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP0ea-sSvFGdpqz8Axcjrq=UX0watg=j6iBxd1OkNeKHi_pJ=Q@mail.gmail.com>
+References: <20231127193703.1980089-1-nphamcs@gmail.com> <20231127193703.1980089-3-nphamcs@gmail.com>
+ <ZWW1IG0Mv3r0m4mp@tiehlicka>
+In-Reply-To: <ZWW1IG0Mv3r0m4mp@tiehlicka>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 28 Nov 2023 08:53:56 -0800
+Message-ID: <CAKEwX=OGtkqWys9VM9EBScoCdAjSdfPjEkvoY7_u9udDZBFFpw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/6] memcontrol: allows mem_cgroup_iter() to check for onlineness
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, cerasuolodomenico@gmail.com, 
+	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
+	vitaly.wool@konsulko.com, roman.gushchin@linux.dev, shakeelb@google.com, 
+	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 27, 2023 at 11:19:52AM -0700, Mark Hasemeyer wrote:
-> > Applied to cgroup/for-6.7-fixes.
-> >
-> > Thanks.
-> >
-> > --
-> > tejun
-> 
-> Thanks Tejun!
-> As this hasn't been merged to Linus's tree yet, do you think you could
-> Cc: stable@vger.kernel.org?
+On Tue, Nov 28, 2023 at 1:38=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Mon 27-11-23 11:36:59, Nhat Pham wrote:
+> > The new zswap writeback scheme requires an online-only memcg hierarchy
+> > traversal. Add a new parameter to mem_cgroup_iter() to check for
+> > onlineness before returning.
+>
+> Why is this needed?
 
-Yeah, I can do that. That'd be for v6.1+ and fix f5d39b020809
-("freezer,sched: Rewrite core freezer logic"), right?
+For context, in patch 3 of this series, Domenico and I are adding
+cgroup-aware LRU to zswap, so that we can perform workload-specific
+zswap writeback. When the reclaim happens due to the global zswap
+limit being hit, a cgroup is selected by the mem_cgroup_iter(), and
+the last one selected is saved in the zswap pool (so that the
+iteration can follow from there next time the limit is hit).
 
-Thanks.
+However, one problem with this scheme is we will be pinning the
+reference to that saved memcg until the next global reclaim attempt,
+which could prevent it from being killed for quite some time after it
+has been offlined. Johannes, Yosry, and I discussed a couple of
+approaches for a while, and decided to add a callback that would
+release the reference held by the zswap pool when the memcg is
+offlined, and the zswap pool will obtain the reference to the next
+online memcg in the traversal (or at least one that has not had the
+zswap-memcg-release-callback run on it yet).
 
--- 
-tejun
+> --
+> Michal Hocko
+> SUSE Labs
 
