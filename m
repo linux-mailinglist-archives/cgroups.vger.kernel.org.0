@@ -1,115 +1,146 @@
-Return-Path: <cgroups+bounces-653-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-654-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BE6C7FCAE2
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 00:33:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917D07FCB01
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 00:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA805B2179C
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 23:33:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 366972830A4
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 23:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11105C3C5;
-	Tue, 28 Nov 2023 23:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EDE5C3C8;
+	Tue, 28 Nov 2023 23:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="hAjmDOgU"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="fX+fCASa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FD210D7
-	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 15:32:58 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-423e8145018so737291cf.1
-        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 15:32:58 -0800 (PST)
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E3919A7
+	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 15:50:39 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58cdc801f69so3642419eaf.3
+        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 15:50:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701214377; x=1701819177; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T5E8YxJ+6DFizX8w/tjdr1Q20AjeSOztly1v+T84HO0=;
-        b=hAjmDOgURwcCKRyzsQ2r9G/hrW5XB5oPAgH+truRdM7Ubd9bwhx+SUNOk769wz6aTr
-         VYfsuUmPAUDpDhIramOnNZVkmzbTcE1UjeRmD5rqVTIW9Q/tz+C/MvLNj9eOiZz8qsGp
-         +W6GO2qUsEaJy2fEIylTKL+Xx1ZDQQkwQ0zT405NTPg3borX7TjETTNniEkz183RclQt
-         60Kvw5avLZcFCPd2vHJhiHAi7jNEPvFiNyGXUg6AxM1NyQ95U51usNeoyOM0Xz4qTxwS
-         9F58JT1vDhwM60ZIjXHSSHHZeWT5IrJ4U3G7m2fIhWwODX7PcRzchcRkIZ7xRhpL3pFh
-         TUNw==
+        d=ziepe.ca; s=google; t=1701215438; x=1701820238; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XYTfkI+bm13XmNm4VDm7JNv4il6+T5S3nBbruRBN+40=;
+        b=fX+fCASayAnz9s/y6EySKMP9JlABM2IIm4M5EtIiRXHeKCvQXb/5G/ut27GFa3Oxq2
+         1Sld3F4EfNF9LnNovl2mKaB2MwW8gT/ggwIdpQe8icye6hAABlt/PmsTc+bZwCK2C9Vf
+         J+DKW+a3oeh2L72QAgOSm1x8BgaHS+Acr+UrYKKPaca4NNBo/cMemL71HS6DaH9UPqfy
+         t42Kq8g+UvQngThwZ8zIn8dduNQEczgszqPAnrhaMg6XyDbi73zometA9+u5pgLITdfA
+         ew5dpaEm/NVrgvafpkIsfYrEyD8MK+xkJWQyZlunB503FSY9CBLvySosaqVx9BJqLEma
+         qRkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701214377; x=1701819177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T5E8YxJ+6DFizX8w/tjdr1Q20AjeSOztly1v+T84HO0=;
-        b=CJk8Et9iyUoEyNqIq0CVtRFVZhw0AKNNKFTqiqgnFkQOv1fMiK4Obj1is7OoUxzNv1
-         ThB/Uoc0yxJgDvQ5G+vrFSV1491ycZm90SLJvOhpVNcXPEIHRiOS00sAhifQRKdh+sv/
-         HLb65niGmgjyS3MRAHvKzlf8Mzg+S1FoQn76R8RSWcEH/jdz9hIz+fPZSE1yCufg2IkB
-         YIDOmDQMTrYeY5B9Op3kYRVHag+DLJhPSEHvonnVelRsH9VcQA3ZPc7P5KjXUrkE36I4
-         WUxtdOW/gHeuRc9YUgDBZk+y+SiPicS7QAvd60TK7yV4JJmTaISdut0PWE5hFupw4Z1K
-         PPmw==
-X-Gm-Message-State: AOJu0Yzl++4ZxOfuZTUMM8J7MVRi7aFXfKCaYYEkIlWMI4sGD1/V6Bh6
-	XO1vsGVl0bW1wrAcXHRkkX8QkTuIKRKkHEk/f6c7zg==
-X-Google-Smtp-Source: AGHT+IEOuxWHhR77aLWnHKpzlrX1TcnL7YFPpFLtYSrpaVGNIqLOq9dSsp5P0HO6NZm9ZocGV6nook5EATgkphMBWlk=
-X-Received: by 2002:ac8:5c06:0:b0:419:a2c6:820e with SMTP id
- i6-20020ac85c06000000b00419a2c6820emr19578443qti.12.1701214377257; Tue, 28
- Nov 2023 15:32:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701215438; x=1701820238;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XYTfkI+bm13XmNm4VDm7JNv4il6+T5S3nBbruRBN+40=;
+        b=U4wLrspYrTfnGlt2IN91iAoQagRr+GiwAPvshGkHvajQTGBz11SCj1oY7hcLgXpfft
+         +3eAfUkdpcsHzzUBbDqGg2wkQ79QCj+t9eMsNDKPuZiw7Aruh2QS8wvCQBykKaUqwLo0
+         3/C3eZ/3KYDA1W9eJLkd2f67Z8A+3akQIVFS0b+UyuO2P7qy4BLr/esDPdzcIwZmHF6g
+         OH1V9YSucJiipWO09OKecA4MCgV7qqBXBJFEzIJLy3ofBKtLW9CIfW6fq/y/is+QIaQ5
+         4wUIAd7xuVXzxpchkqGYEw+wHWaSplidbn56LXx5KT8UUjsCdIIN4PRA3Sd5aM9FPxlk
+         absQ==
+X-Gm-Message-State: AOJu0Yz1OfJBPg6bT3yCOv88Jy7ZejQLCF+2xfgMVbW7ruSPL8UpC6ci
+	DeMP4yYF2NLTyqUUVgvav/i0+A==
+X-Google-Smtp-Source: AGHT+IGwgOr6qdtdfdMX4Rg2CnVVZBQ0aH/828IT9FkkN9y3SJG6wbzLt3OY2goWTqPUl1CtrUxcHA==
+X-Received: by 2002:a05:6820:809:b0:58d:a6ed:5601 with SMTP id bg9-20020a056820080900b0058da6ed5601mr6252111oob.1.1701215438416;
+        Tue, 28 Nov 2023 15:50:38 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id b35-20020a4a98e6000000b0058d2ea19475sm1934017ooj.11.2023.11.28.15.50.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 15:50:37 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1r87qf-005jHH-5R;
+	Tue, 28 Nov 2023 19:50:37 -0400
+Date: Tue, 28 Nov 2023 19:50:37 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Robin Murphy <robin.murphy@arm.com>, akpm@linux-foundation.org,
+	alex.williamson@redhat.com, alim.akhtar@samsung.com,
+	alyssa@rosenzweig.io, asahi@lists.linux.dev,
+	baolu.lu@linux.intel.com, bhelgaas@google.com,
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
+	iommu@lists.linux.dev, jasowang@redhat.com,
+	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
+	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
+	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+	marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+	m.szyprowski@samsung.com, netdev@vger.kernel.org,
+	paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+	will@kernel.org, yu-cheng.yu@intel.com
+Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided
+ by iommu-pages.h
+Message-ID: <20231128235037.GC1312390@ziepe.ca>
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-9-pasha.tatashin@soleen.com>
+ <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
+ <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-6-pasha.tatashin@soleen.com> <8e1961c9-0359-4450-82d8-2b2fcb2c5557@arm.com>
- <CA+CK2bDFAi1+397fd4cYetUgmHxqE2hUG4fa2m9Fi3weykQdpA@mail.gmail.com> <6f9ff0aa-7713-4de1-869e-4725828942e4@arm.com>
-In-Reply-To: <6f9ff0aa-7713-4de1-869e-4725828942e4@arm.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 28 Nov 2023 18:32:20 -0500
-Message-ID: <CA+CK2bDKaXqemr2Hp=MRxxMB_=AoRnUK_D2SGm9cDkKa+JaT7A@mail.gmail.com>
-Subject: Re: [PATCH 05/16] iommu/io-pgtable-arm-v7s: use page allocation
- function provided by iommu-pages.h
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: akpm@linux-foundation.org, alex.williamson@redhat.com, 
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
-	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
-	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
-	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com, 
-	jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com, joro@8bytes.org, 
-	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, mst@redhat.com, m.szyprowski@samsung.com, 
-	netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org, 
-	samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
-	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
-	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
 
-On Tue, Nov 28, 2023 at 6:08=E2=80=AFPM Robin Murphy <robin.murphy@arm.com>=
- wrote:
->
-> On 2023-11-28 10:55 pm, Pasha Tatashin wrote:
-> >>>                kmem_cache_free(data->l2_tables, table);
+On Tue, Nov 28, 2023 at 06:00:13PM -0500, Pasha Tatashin wrote:
+> On Tue, Nov 28, 2023 at 5:53 PM Robin Murphy <robin.murphy@arm.com> wrote:
 > >
-> > We only account page allocations, not subpages, however, this is
-> > something I was surprised about this particular architecture of why do
-> > we allocate l2 using kmem ? Are the second level tables on arm v7s
-> > really sub-page in size?
->
-> Yes, L2 tables are 1KB, so the kmem_cache could still quite easily end
-> up consuming significantly more memory than the L1 table, which is
-> usually 16KB (but could potentially be smaller depending on the config,
-> or up to 64KB with the Mediatek hacks).
+> > On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
+> > > Convert iommu/fsl_pamu.c to use the new page allocation functions
+> > > provided in iommu-pages.h.
+> >
+> > Again, this is not a pagetable. This thing doesn't even *have* pagetables.
+> >
+> > Similar to patches #1 and #2 where you're lumping in configuration
+> > tables which belong to the IOMMU driver itself, as opposed to pagetables
+> > which effectively belong to an IOMMU domain's user. But then there are
+> > still drivers where you're *not* accounting similar configuration
+> > structures, so I really struggle to see how this metric is useful when
+> > it's so completely inconsistent in what it's counting :/
+> 
+> The whole IOMMU subsystem allocates a significant amount of kernel
+> locked memory that we want to at least observe. The new field in
+> vmstat does just that: it reports ALL buddy allocator memory that
+> IOMMU allocates. However, for accounting purposes, I agree, we need to
+> do better, and separate at least iommu pagetables from the rest.
+> 
+> We can separate the metric into two:
+> iommu pagetable only
+> iommu everything
+> 
+> or into three:
+> iommu pagetable only
+> iommu dma
+> iommu everything
+> 
+> What do you think?
 
-I am OK removing support for this architecture, or keeping only info
-for L1, I do not think there is a reason to worry about sub-page
-accounting only for v7s.
+I think I said this at LPC - if you want to have fine grained
+accounting of memory by owner you need to go talk to the cgroup people
+and come up with something generic. Adding ever open coded finer
+category breakdowns just for iommu doesn't make alot of sense.
 
-Pasha
+You can make some argument that the pagetable memory should be counted
+because kvm counts it's shadow memory, but I wouldn't go into further
+detail than that with hand coded counters..
 
->
-> Thanks,
-> Robin.
+Jason
 
