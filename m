@@ -1,104 +1,203 @@
-Return-Path: <cgroups+bounces-637-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-638-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B607FC7B1
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 22:11:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E06327FC804
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 22:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F4BA286CFB
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 21:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 955F4283860
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 21:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641B85027D;
-	Tue, 28 Nov 2023 21:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2832744C94;
+	Tue, 28 Nov 2023 21:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZB0kq2Aq"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xMdoy6v8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139BD42A9F;
-	Tue, 28 Nov 2023 21:10:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61AAC433C7;
-	Tue, 28 Nov 2023 21:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701205823;
-	bh=tU9f6DT2W4nxeMj/TXZs4n8BgSihvgJc+kQy9yEDCAY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ZB0kq2Aq2U9v13f/oegVmU4gHNMAuVdUzXMeUFcDK7dKx/T3fjnaFEmYsQILswxf9
-	 s+EPvTiSWTbZogFnbs8ef+RPicZjqQZIVvdZj/sHTF76PloqEjZpMbsFtH8JbrQFm9
-	 BDrcI5C403DHAAuhyy+rcG6ONY+JI2ask3vxwxHyI/H9q/rbljR49+PNCqa52zudrq
-	 58PNRW7V+cZlRiGMkY/CLPmE4NjXv/RQ+VndHaNgyETltllgGxXoYevBkEMXPwYTdK
-	 VqemzSS3Erkpb15ex4AZfS+y4ww3pu37muegZ11nYg6le42nIcKZdb0lafHnOVo9+T
-	 E0/SqWc011lfw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Ming Lei <ming.lei@redhat.com>,
-	Changhui Zhong <czhong@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sasha Levin <sashal@kernel.org>,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 1/7] blk-throttle: fix lockdep warning of "cgroup_mutex or RCU read lock required!"
-Date: Tue, 28 Nov 2023 16:10:11 -0500
-Message-ID: <20231128211018.877548-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392171FC1
+	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 13:34:36 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so821668466b.1
+        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 13:34:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701207274; x=1701812074; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8NXFzGfhAzOfJO06Gf5RsXFoYKrXmtsSvTLzk7MbcCk=;
+        b=xMdoy6v8aONvzbxVZVbvsNHKhhEcVO5ng7K2kXcJRvCiRiwgTT+F/dPw1hDwAA6ZJD
+         n4Wo+FXvn5yepI6+S3O8JR0X5quxazx074nCIA6eRtLJS9w4Od9Wyrq9uvdUwFtCB97X
+         yD56oIcoZQ7UXlZfq6VfJcsTujL/PFoI/xfjXpoKz+7CI1bgMiKCj+KRFvUp9Ut6OFCI
+         kBeE/mjpvW/hhnpm21zuGWcy5uG5Adq2eW2yFUV5qTPjMQbkW9xCYYL7J+laRBUbbFL/
+         n+EbzsH7rpns82J1RJAJ0QS1mU/DOAeesKiZ114pRYCHXkI/dxIKuZdmp7Oob4X8oqhM
+         Pz+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701207274; x=1701812074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8NXFzGfhAzOfJO06Gf5RsXFoYKrXmtsSvTLzk7MbcCk=;
+        b=eJgXPAhJ5Iaf18HS2kabiWlWUttEJ8TohY+IHe1vqtiQLKnWCcZiwWhhDYesUGOMdZ
+         DIp9jnsHQWiwpg5Ix+F4hp+uJMs2kZ8W0A7puN6oHmSCUotGnq7cg5N1dkwSG2sJNpii
+         g2V1/oZNGz8MNRXKoZy6AXUmB7EqGXJEikGKAG4tR0Jmy6to4V4Yvt/MEFSshL0f4/yN
+         xKojBLOp7illD+fWtUZ8YO/ZZRZZPeE5hO5L6ElsikpSQNbnyVEjC1P8pcvp1VysUKdG
+         B3suxPUvudfoRelqzm1Ym6Dja2HCDztZe64P9HIjefmQ1NQsgBR85uRlHv5Fs2cmNHwH
+         jT7w==
+X-Gm-Message-State: AOJu0Yy80ajF3/eKfZZpaaQnAnJhELx+TWS3sjkpZFFk/9h9PM96EktO
+	CvQ78jg6YgybsMRGNMDL7BmX17yXcd+huEVrzyoL1g==
+X-Google-Smtp-Source: AGHT+IFrrdaJl+8CDzGqIseL+lJ7M7KDt9GszVwJUOFBD/DHsSLfgFwP8+NKKfkfsTtyJyGUtnD8OJJylXlFpNkSb5g=
+X-Received: by 2002:a17:906:b248:b0:a04:cc0e:ff3b with SMTP id
+ ce8-20020a170906b24800b00a04cc0eff3bmr12465188ejb.27.1701207274446; Tue, 28
+ Nov 2023 13:34:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.331
-Content-Transfer-Encoding: 8bit
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 28 Nov 2023 13:33:55 -0800
+Message-ID: <CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com>
+Subject: Re: [PATCH 00/16] IOMMU memory observability
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, alex.williamson@redhat.com, 
+	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
+	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
+	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
+	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com, 
+	jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com, joro@8bytes.org, 
+	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, mst@redhat.com, m.szyprowski@samsung.com, 
+	netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org, 
+	robin.murphy@arm.com, samuel@sholland.org, suravee.suthikulpanit@amd.com, 
+	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
+	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, virtualization@lists.linux.dev, 
+	wens@csie.org, will@kernel.org, yu-cheng.yu@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Ming Lei <ming.lei@redhat.com>
+On Tue, Nov 28, 2023 at 12:49=E2=80=AFPM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+> From: Pasha Tatashin <tatashin@google.com>
+>
+> IOMMU subsystem may contain state that is in gigabytes. Majority of that
+> state is iommu page tables. Yet, there is currently, no way to observe
+> how much memory is actually used by the iommu subsystem.
+>
+> This patch series solves this problem by adding both observability to
+> all pages that are allocated by IOMMU, and also accountability, so
+> admins can limit the amount if via cgroups.
+>
+> The system-wide observability is using /proc/meminfo:
+> SecPageTables:    438176 kB
+>
+> Contains IOMMU and KVM memory.
+>
+> Per-node observability:
+> /sys/devices/system/node/nodeN/meminfo
+> Node N SecPageTables:    422204 kB
+>
+> Contains IOMMU and KVM memory memory in the given NUMA node.
+>
+> Per-node IOMMU only observability:
+> /sys/devices/system/node/nodeN/vmstat
+> nr_iommu_pages 105555
+>
+> Contains number of pages IOMMU allocated in the given node.
 
-[ Upstream commit 27b13e209ddca5979847a1b57890e0372c1edcee ]
+Does it make sense to have a KVM-only entry there as well?
 
-Inside blkg_for_each_descendant_pre(), both
-css_for_each_descendant_pre() and blkg_lookup() requires RCU read lock,
-and either cgroup_assert_mutex_or_rcu_locked() or rcu_read_lock_held()
-is called.
+In that case, if SecPageTables in /proc/meminfo is found to be
+suspiciously high, it should be easy to tell which component is
+contributing most usage through vmstat. I understand that users can do
+the subtraction, but we wouldn't want userspace depending on that, in
+case a third class of "secondary" page tables emerges that we want to
+add to SecPageTables. The in-kernel implementation can do the
+subtraction for now if it makes sense though.
 
-Fix the warning by adding rcu read lock.
-
-Reported-by: Changhui Zhong <czhong@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20231117023527.3188627-2-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/blk-throttle.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index fcbbe2e45a2bb..e52a9632993a7 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1391,6 +1391,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		   tg_bps_limit(tg, READ), tg_bps_limit(tg, WRITE),
- 		   tg_iops_limit(tg, READ), tg_iops_limit(tg, WRITE));
- 
-+	rcu_read_lock();
- 	/*
- 	 * Update has_rules[] flags for the updated tg's subtree.  A tg is
- 	 * considered to have rules if either the tg itself or any of its
-@@ -1418,6 +1419,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		this_tg->latency_target = max(this_tg->latency_target,
- 				parent_tg->latency_target);
- 	}
-+	rcu_read_unlock();
- 
- 	/*
- 	 * We're already holding queue_lock and know @tg is valid.  Let's
--- 
-2.42.0
-
+>
+> Accountability: using sec_pagetables cgroup-v2 memory.stat entry.
+>
+> With the change, iova_stress[1] stops as limit is reached:
+>
+> # ./iova_stress
+> iova space:     0T      free memory:   497G
+> iova space:     1T      free memory:   495G
+> iova space:     2T      free memory:   493G
+> iova space:     3T      free memory:   491G
+>
+> stops as limit is reached.
+>
+> This series encorporates suggestions that came from the discussion
+> at LPC [2].
+>
+> [1] https://github.com/soleen/iova_stress
+> [2] https://lpc.events/event/17/contributions/1466
+>
+> Pasha Tatashin (16):
+>   iommu/vt-d: add wrapper functions for page allocations
+>   iommu/amd: use page allocation function provided by iommu-pages.h
+>   iommu/io-pgtable-arm: use page allocation function provided by
+>     iommu-pages.h
+>   iommu/io-pgtable-dart: use page allocation function provided by
+>     iommu-pages.h
+>   iommu/io-pgtable-arm-v7s: use page allocation function provided by
+>     iommu-pages.h
+>   iommu/dma: use page allocation function provided by iommu-pages.h
+>   iommu/exynos: use page allocation function provided by iommu-pages.h
+>   iommu/fsl: use page allocation function provided by iommu-pages.h
+>   iommu/iommufd: use page allocation function provided by iommu-pages.h
+>   iommu/rockchip: use page allocation function provided by iommu-pages.h
+>   iommu/sun50i: use page allocation function provided by iommu-pages.h
+>   iommu/tegra-smmu: use page allocation function provided by
+>     iommu-pages.h
+>   iommu: observability of the IOMMU allocations
+>   iommu: account IOMMU allocated memory
+>   vhost-vdpa: account iommu allocations
+>   vfio: account iommu allocations
+>
+>  Documentation/admin-guide/cgroup-v2.rst |   2 +-
+>  Documentation/filesystems/proc.rst      |   4 +-
+>  drivers/iommu/amd/amd_iommu.h           |   8 -
+>  drivers/iommu/amd/init.c                |  91 +++++-----
+>  drivers/iommu/amd/io_pgtable.c          |  13 +-
+>  drivers/iommu/amd/io_pgtable_v2.c       |  20 +-
+>  drivers/iommu/amd/iommu.c               |  13 +-
+>  drivers/iommu/dma-iommu.c               |   8 +-
+>  drivers/iommu/exynos-iommu.c            |  14 +-
+>  drivers/iommu/fsl_pamu.c                |   5 +-
+>  drivers/iommu/intel/dmar.c              |  10 +-
+>  drivers/iommu/intel/iommu.c             |  47 ++---
+>  drivers/iommu/intel/iommu.h             |   2 -
+>  drivers/iommu/intel/irq_remapping.c     |  10 +-
+>  drivers/iommu/intel/pasid.c             |  12 +-
+>  drivers/iommu/intel/svm.c               |   7 +-
+>  drivers/iommu/io-pgtable-arm-v7s.c      |   9 +-
+>  drivers/iommu/io-pgtable-arm.c          |   7 +-
+>  drivers/iommu/io-pgtable-dart.c         |  37 ++--
+>  drivers/iommu/iommu-pages.h             | 231 ++++++++++++++++++++++++
+>  drivers/iommu/iommufd/iova_bitmap.c     |   6 +-
+>  drivers/iommu/rockchip-iommu.c          |  14 +-
+>  drivers/iommu/sun50i-iommu.c            |   7 +-
+>  drivers/iommu/tegra-smmu.c              |  18 +-
+>  drivers/vfio/vfio_iommu_type1.c         |   8 +-
+>  drivers/vhost/vdpa.c                    |   3 +-
+>  include/linux/mmzone.h                  |   5 +-
+>  mm/vmstat.c                             |   3 +
+>  28 files changed, 415 insertions(+), 199 deletions(-)
+>  create mode 100644 drivers/iommu/iommu-pages.h
+>
+> --
+> 2.43.0.rc2.451.g8631bc7472-goog
+>
+>
 
