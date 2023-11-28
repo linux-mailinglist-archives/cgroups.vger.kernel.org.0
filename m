@@ -1,167 +1,106 @@
-Return-Path: <cgroups+bounces-627-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-628-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E24CC7FC65F
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 21:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6325C7FC6BE
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 22:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C8FC2862E8
-	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 20:54:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C0272854A8
+	for <lists+cgroups@lfdr.de>; Tue, 28 Nov 2023 21:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9CE6166D;
-	Tue, 28 Nov 2023 20:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8AE42A9F;
+	Tue, 28 Nov 2023 21:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="mu35PtE5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="igFjAcK9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCE72112
-	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 12:49:57 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67a35b68c34so18752476d6.3
-        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 12:49:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701204596; x=1701809396; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YSGX0jW3To7/xuABL7QXXsr1KCFhu7Z9tThr0mLMrMc=;
-        b=mu35PtE5c/9BIjstdYyMmHY7Fsp4p47cAFfxKfLsRGnfxku0i2aSW554C1uqlvpsQG
-         7n+YTN7UVvy9Da+sXvjnrRbhflbjotnxSYc46MNpmRLi4IO0BtuqyB4DTLVKFRZBCQT6
-         Gem7H6rBonm0+z37Y3eiO2PmFX83B5wvl1i16H3zAMIqCd+ebFYbcpQsJs88KGdQ3aQo
-         dilQXr6/WXD8tF4AcdIY0AMHMjtiN5cKy4+xcwwc8ETsP9hjskymCjjVw3r727nJcZ4l
-         P7VdPRIIVUXbGZOMRd7My622YMXRlrcltPLBtBUm4FJxlJ4gez9R4x93FrfNE6OSIGVC
-         3cTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701204596; x=1701809396;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YSGX0jW3To7/xuABL7QXXsr1KCFhu7Z9tThr0mLMrMc=;
-        b=CMXLSXzOROVcFLNqUrLf1osoHmG0fiLoqpYwgewvem2W/hiqOOuPzSTO3icXn5dlxR
-         m4Emyq7Grbb5aTWzBjc0FSfh04S4KqUS32Cz3yjLLr+okZurGTZptH2IxVHd+G164Q7S
-         GmEA16lrIp1IPFK9INRwykNxfX2eGAEGPZuKiiTcXsQLNB6rzxyhnYhZdmqm330KqdfJ
-         R1wDuylraMrL7934/fl2GW7kKQd38yWJMFFTQllxskf/9nEN8J3m/NugIz7WekW2oWZS
-         T85UYSCfgLIlgFZwGOQcFKCEghvtPzbrjDVIS0qz0djieFD/FBqQOmrEh9bP37SMTp7Y
-         sFbg==
-X-Gm-Message-State: AOJu0YyZvWsSh3ECh4rn/7vnhB9aOES9rjFeAdnVdLDZ9RyoEhXqVGC0
-	Z8GOHDtqhuvwnXXkXzltxYUBpg==
-X-Google-Smtp-Source: AGHT+IH3XyzLx3HqaxxWdryJd33MqMJHkx6z6Xt3swBEGkMdx9JQSLka9GW0WH1FkTVqo27TzFUimQ==
-X-Received: by 2002:a05:6214:246f:b0:67a:4ba1:84d5 with SMTP id im15-20020a056214246f00b0067a4ba184d5mr7928400qvb.16.1701204596396;
-        Tue, 28 Nov 2023 12:49:56 -0800 (PST)
-Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id d11-20020a0cfe8b000000b0067a56b6adfesm1056863qvs.71.2023.11.28.12.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 12:49:56 -0800 (PST)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: akpm@linux-foundation.org,
-	alex.williamson@redhat.com,
-	alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io,
-	asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com,
-	bhelgaas@google.com,
-	cgroups@vger.kernel.org,
-	corbet@lwn.net,
-	david@redhat.com,
-	dwmw2@infradead.org,
-	hannes@cmpxchg.org,
-	heiko@sntech.de,
-	iommu@lists.linux.dev,
-	jasowang@redhat.com,
-	jernej.skrabec@gmail.com,
-	jgg@ziepe.ca,
-	jonathanh@nvidia.com,
-	joro@8bytes.org,
-	kevin.tian@intel.com,
-	krzysztof.kozlowski@linaro.org,
-	kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	lizefan.x@bytedance.com,
-	marcan@marcan.st,
-	mhiramat@kernel.org,
-	mst@redhat.com,
-	m.szyprowski@samsung.com,
-	netdev@vger.kernel.org,
-	pasha.tatashin@soleen.com,
-	paulmck@kernel.org,
-	rdunlap@infradead.org,
-	robin.murphy@arm.com,
-	samuel@sholland.org,
-	suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev,
-	thierry.reding@gmail.com,
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97E742A99;
+	Tue, 28 Nov 2023 21:06:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57823C433CD;
+	Tue, 28 Nov 2023 21:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701205589;
+	bh=jHQHIXl0xO48jebk8B97gUWZa/J0o18AtfcAttsPF/U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=igFjAcK9jtQjQnibaCpVEgTd5X+X9x7e2Fg66+3navsjU78CJAisPDUI5N7WtdDLL
+	 BsDpxodO/hi1fagToM0bS4fM/XyBZV417P5qmxM0tcoNLNa67rMJgWS2v6qVey+E/c
+	 mrYVdnn544SgwOzOA5lGUcEg2tr9jsi47lMLCYKRma6ja/pzlD3ttZUS1dAAIZk3jN
+	 hjTmcqqrLrJsETlh7uwX4X9PFmxmLFmllboNtjbudGpVNmc2fOLMrsgulhcf0HKSBD
+	 p6P0uUEucqD9EYuQQ5KWY700ZSvF0xr63kbNWh4R3IlnBZ7yIphsWS7wBpmaiMcS6y
+	 QOCkqXmFpfdXg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Ming Lei <ming.lei@redhat.com>,
+	Changhui Zhong <czhong@redhat.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Sasha Levin <sashal@kernel.org>,
 	tj@kernel.org,
-	tomas.mudrunka@gmail.com,
-	vdumpa@nvidia.com,
-	virtualization@lists.linux.dev,
-	wens@csie.org,
-	will@kernel.org,
-	yu-cheng.yu@intel.com
-Subject: [PATCH 16/16] vfio: account iommu allocations
-Date: Tue, 28 Nov 2023 20:49:38 +0000
-Message-ID: <20231128204938.1453583-17-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-In-Reply-To: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+	josef@toxicpanda.com,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 05/40] blk-throttle: fix lockdep warning of "cgroup_mutex or RCU read lock required!"
+Date: Tue, 28 Nov 2023 16:05:11 -0500
+Message-ID: <20231128210615.875085-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
+References: <20231128210615.875085-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.3
 Content-Transfer-Encoding: 8bit
 
-iommu allocations should be accounted in order to allow admins to
-monitor and limit the amount of iommu memory.
+From: Ming Lei <ming.lei@redhat.com>
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+[ Upstream commit 27b13e209ddca5979847a1b57890e0372c1edcee ]
+
+Inside blkg_for_each_descendant_pre(), both
+css_for_each_descendant_pre() and blkg_lookup() requires RCU read lock,
+and either cgroup_assert_mutex_or_rcu_locked() or rcu_read_lock_held()
+is called.
+
+Fix the warning by adding rcu read lock.
+
+Reported-by: Changhui Zhong <czhong@redhat.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20231117023527.3188627-2-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/vfio_iommu_type1.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ block/blk-throttle.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index eacd6ec04de5..b2854d7939ce 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -1436,7 +1436,7 @@ static int vfio_iommu_map(struct vfio_iommu *iommu, dma_addr_t iova,
- 	list_for_each_entry(d, &iommu->domain_list, next) {
- 		ret = iommu_map(d->domain, iova, (phys_addr_t)pfn << PAGE_SHIFT,
- 				npage << PAGE_SHIFT, prot | IOMMU_CACHE,
--				GFP_KERNEL);
-+				GFP_KERNEL_ACCOUNT);
- 		if (ret)
- 			goto unwind;
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 13e4377a8b286..16f5766620a41 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -1320,6 +1320,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+ 		   tg_bps_limit(tg, READ), tg_bps_limit(tg, WRITE),
+ 		   tg_iops_limit(tg, READ), tg_iops_limit(tg, WRITE));
  
-@@ -1750,7 +1750,8 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
- 			}
++	rcu_read_lock();
+ 	/*
+ 	 * Update has_rules[] flags for the updated tg's subtree.  A tg is
+ 	 * considered to have rules if either the tg itself or any of its
+@@ -1347,6 +1348,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+ 		this_tg->latency_target = max(this_tg->latency_target,
+ 				parent_tg->latency_target);
+ 	}
++	rcu_read_unlock();
  
- 			ret = iommu_map(domain->domain, iova, phys, size,
--					dma->prot | IOMMU_CACHE, GFP_KERNEL);
-+					dma->prot | IOMMU_CACHE,
-+					GFP_KERNEL_ACCOUNT);
- 			if (ret) {
- 				if (!dma->iommu_mapped) {
- 					vfio_unpin_pages_remote(dma, iova,
-@@ -1845,7 +1846,8 @@ static void vfio_test_domain_fgsp(struct vfio_domain *domain, struct list_head *
- 			continue;
- 
- 		ret = iommu_map(domain->domain, start, page_to_phys(pages), PAGE_SIZE * 2,
--				IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE, GFP_KERNEL);
-+				IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE,
-+				GFP_KERNEL_ACCOUNT);
- 		if (!ret) {
- 			size_t unmapped = iommu_unmap(domain->domain, start, PAGE_SIZE);
- 
+ 	/*
+ 	 * We're already holding queue_lock and know @tg is valid.  Let's
 -- 
-2.43.0.rc2.451.g8631bc7472-goog
+2.42.0
 
 
