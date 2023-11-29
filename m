@@ -1,128 +1,170 @@
-Return-Path: <cgroups+bounces-676-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-677-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2047FDC20
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 17:01:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD6737FDC31
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 17:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD2CF282742
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 16:01:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D00841C2098B
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 16:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBAE39857;
-	Wed, 29 Nov 2023 16:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GPvIzOjC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AB139879;
+	Wed, 29 Nov 2023 16:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00683BF
-	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 08:01:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701273672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8tNd18nd+bxJ1BZqHDEg4dU9YjfOiYLR5XBMfKbMPiU=;
-	b=GPvIzOjCAuZ/tXt2/skzU+WTeQ+mdCBM8sWxAWfUXUPdrNy8tGLo+5NQUOwBGICfMSzmRK
-	clB8K+5tPtYEDz3U1AzTX0/pYYdbZ+JGD0QlkPaWLto20q3wDYstyPB7zSWmo7Da0FVYyE
-	7sTuLaH3TFaCVKW/S1J7zJQABuNScYU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-344-3O6M-KuyMKW4NpqGVr1ctA-1; Wed,
- 29 Nov 2023 11:01:06 -0500
-X-MC-Unique: 3O6M-KuyMKW4NpqGVr1ctA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47692BF;
+	Wed, 29 Nov 2023 08:06:55 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CCDBA3C0C119;
-	Wed, 29 Nov 2023 16:01:05 +0000 (UTC)
-Received: from [10.22.34.102] (unknown [10.22.34.102])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 145FAC1596F;
-	Wed, 29 Nov 2023 16:01:05 +0000 (UTC)
-Message-ID: <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
-Date: Wed, 29 Nov 2023 11:01:04 -0500
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AB71D1FB40;
+	Wed, 29 Nov 2023 16:06:53 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86CD61388B;
+	Wed, 29 Nov 2023 16:06:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P5KmHZ1hZ2VffAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 16:06:53 +0000
+Date: Wed, 29 Nov 2023 17:06:37 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWdhjYPjbsoUE_mI@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs in
- cpu_is_isolated() check
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@suse.com>,
- Frederic Weisbecker <frederic@kernel.org>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
- Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Peter Hunt <pehunt@redhat.com>
-References: <20231127041956.266026-1-longman@redhat.com>
- <20231127041956.266026-3-longman@redhat.com>
- <ZWYbqNnnt6gQOssK@slm.duckdns.org>
- <8de482b5-1942-4312-8de4-6f54565ab517@redhat.com>
- <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+	spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 MIME_GOOD(-0.10)[text/plain];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: AB71D1FB40
+X-Spam: Yes
 
+On Wed 29-11-23 18:20:57, Dmitry Rokosov wrote:
+> On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> > On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+[...]
+> > > 2) With this approach, we will not have the ability to trace a situation
+> > > where the kernel is requesting reclaim for a specific memcg, but due to
+> > > limits issues, we are unable to run it.
+> > 
+> > I do not follow. Could you be more specific please?
+> > 
+> 
+> I'm referring to a situation where kswapd() or another kernel mm code
+> requests some reclaim pages from memcg, but memcg rejects it due to
+> limits checkers. This occurs in the shrink_node_memcgs() function.
 
-On 11/28/23 17:12, Tejun Heo wrote:
-> Hello,
->
-> On Tue, Nov 28, 2023 at 01:32:53PM -0500, Waiman Long wrote:
->> On 11/28/23 11:56, Tejun Heo wrote:
->>> Hello,
->>>
->>> On Sun, Nov 26, 2023 at 11:19:56PM -0500, Waiman Long wrote:
->>>> +bool cpuset_cpu_is_isolated(int cpu)
->>>> +{
->>>> +	unsigned int seq;
->>>> +	bool ret;
->>>> +
->>>> +	do {
->>>> +		seq = read_seqcount_begin(&isolcpus_seq);
->>>> +		ret = cpumask_test_cpu(cpu, isolated_cpus);
->>>> +	} while (read_seqcount_retry(&isolcpus_seq, seq));
->>>> +	return ret;
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
->>> We're testing a bit in a bitmask. I don't think we need to worry about value
->>> integrity from RMW updates being broken up. ie. We can just test the bit
->>> without seqlock and drop the first patch?
->> My concern is that if we have an isolated partition with a set of isolated
->> CPUs (say 2-4), I don't want any addition, deletion of changes made to
->> another isolated partition affects the test of the pre-existing one. Testing
->> result of the partition being change is fair game.
->>
->> Depending on how the cpumask operators are implemented, we may not have a
->> guarantee that testing CPU 2, for instance, will always return true. That is
-> Can you please elaborate this part a bit? I'm having a difficult time
-> imagining the sequence of operations where this would matter but that could
-> easily be me not being familiar with the details.
+Ohh, you mean reclaim protection
 
-I may be a bit paranoid about incorrect result due to racing as I had 
-been burned before. Just testing a bit in the bitmask may probably be 
-OK. I don't think it will be a problem for x86, but I am less certain 
-about other more exotic architectures like arm64 or PPC which I am less 
-familiar about. I add a seqcount for synchronization just for the peace 
-of mind. I can take the seqcount out if you don't it is necessary.
+> ===
+> 		mem_cgroup_calculate_protection(target_memcg, memcg);
+> 
+> 		if (mem_cgroup_below_min(target_memcg, memcg)) {
+> 			/*
+> 			 * Hard protection.
+> 			 * If there is no reclaimable memory, OOM.
+> 			 */
+> 			continue;
+> 		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+> 			/*
+> 			 * Soft protection.
+> 			 * Respect the protection only as long as
+> 			 * there is an unprotected supply
+> 			 * of reclaimable memory from other cgroups.
+> 			 */
+> 			if (!sc->memcg_low_reclaim) {
+> 				sc->memcg_low_skipped = 1;
+> 				continue;
+> 			}
+> 			memcg_memory_event(memcg, MEMCG_LOW);
+> 		}
+> ===
+> 
+> With separate shrink begin()/end() tracepoints we can detect such
+> problem.
 
-I have also been thinking about an alternative helper that returns the 
-whole isolated cpumask since in both cases where cpu_is_isolated() is 
-used, we will have to iterate all the possible CPUs anyway, it will be 
-more efficient to have the whole cpumask available. In that case, we may 
-want to have a seqcount to avoid returning an intermediate result. 
-Anyway, this is just a thought for now, I am not planning to do that at 
-the moment.
+How? You are only reporting the number of reclaimed pages and no
+reclaimed pages could be not just because of low/min limits but
+generally because of other reasons. You would need to report also the
+number of scanned/isolated pages.
+ 
+> > > 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> > > tasks. Additionally, memcg can be disabled in the kernel configuration.
+> > 
+> > Right. This could be all hidden in the tracing code. You simply do not
+> > print memcg id when the controller is disabled. Or just simply print 0.
+> > I do not really see any major problems with that.
+> > 
+> > I would really prefer to focus on that direction rather than adding
+> > another begin/end tracepoint which overalaps with existing begin/end
+> > traces and provides much more limited information because I would bet we
+> > will have somebody complaining that mere nr_reclaimed is not sufficient.
+> 
+> Okay, I will try to prepare a new patch version with memcg printing from
+> lruvec and slab tracepoints.
+> 
+> Then Andrew should drop the previous patchsets, I suppose. Please advise
+> on the correct workflow steps here.
 
-Cheers,
-Longman
-
+Andrew usually just drops the patch from his tree and it will disappaer
+from the linux-next as well.
+-- 
+Michal Hocko
+SUSE Labs
 
