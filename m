@@ -1,153 +1,130 @@
-Return-Path: <cgroups+bounces-688-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-689-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F2037FE06D
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 20:45:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0AEE7FE0B6
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 21:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 281A1282650
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 19:45:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50336B21472
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 20:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D065EE7C;
-	Wed, 29 Nov 2023 19:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12EA5EE7F;
+	Wed, 29 Nov 2023 20:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="LXdK4D//"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="KlNzTNzv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C967C10C6
-	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 11:45:44 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c871d566cfso2287851fa.3
-        for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 11:45:44 -0800 (PST)
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511D810C2
+	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 12:03:08 -0800 (PST)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1f9decb7446so42080fac.2
+        for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 12:03:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701287143; x=1701891943; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fNNsoM3smwE3RnQXjosvlH5YCUc/qVQE7cVYHj28TpE=;
-        b=LXdK4D//aEMP9BGxDDgf86iGwwP755ud2a5fDDm/H2p6QdLjemMKdW6OURufzQsPsY
-         0eLaXgTBlg6Ro0WFppwNRmOJLM1GDxyvkcB5TIzwaa1UbSsi7lsRSu+qu1QqrpGx2WuC
-         PMdM6kTA5x1LLeGlJbl22YhycJKkzgKrJu76H5g6PWBs4oxqQRSTNqluBFW5+ez9Jziz
-         4aIESjCEFR56CJFlo89lMbSGxS5kd6/vIt4XU6zdtPKVphOyJms1zwcJv0kWIeUQ3+tq
-         DwWxhQoRd48Vb+sQo8NASWDsRlac17f1RpzDbTnO7V3cede7ZgbiDEwo9K3QOihi0Ay/
-         uOvg==
+        d=ziepe.ca; s=google; t=1701288187; x=1701892987; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oFOuz3/DxdhVTy2MXC00IZ5cc+fO6ZXycOtXt73BBek=;
+        b=KlNzTNzvrho3FAS6n7EIxzUiMs/vl/iQeM0QDdJkEjtS4cSXhxLsY19IKKemyE5A8c
+         /pBj/iSWEDglOfunWlf+rdxaJq+x/0XQl2Uyk0fvUDk791ilQsfe3HWXbzEdTcPALQYT
+         g/aVLcaMnYCLRD0rV7sQjULwgL1hR6Mof3bYBxvaj15JF5qBtmWF1oZoLuW6nV61s14i
+         6Vv7dedA5rotbHw71gnDEqtcDlEZHcwb60BySZC5ronuR3Bgo8ZxfPNuWFpbzwzjfrl8
+         4iUwrdOUO0FZwchQlhgUQOM8pS0h/OjsOZO84JlsBH6vV81K0Acx+0eXA8xhOgLX23XK
+         6w2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701287143; x=1701891943;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fNNsoM3smwE3RnQXjosvlH5YCUc/qVQE7cVYHj28TpE=;
-        b=sFVU/WDxTUW3QPzPGiOfkFMx2ir8nkKg1VrC/jlh7+RU/WnvEAmu0Ob5et0oi8ZZSa
-         UasEl/e2yWs68bJpqRXUlFU9YhLb3zHADVeBiaDvidciXucThRZtarIgiDwnzFjzZEKu
-         xzQL20bHM7phLngB4TBIrRbhmX8gEOEzs/9sySr8VgciLyMkLsdC3Eqhxdc0ZPjnPNn2
-         CAf28S7/WP+YgXTCutzGgUeU2G8dsDw5UgjHB7Bk8P+fn8lYli2ye3jZg1JWwfdVCcT/
-         G5xyGU1mhSYIbsxnlb3TwtzFsEQN3bfT//WYPB02jsWDWPmhH77bDRTBJO3t8ZZpJ1fi
-         0v7w==
-X-Gm-Message-State: AOJu0YwyXSJBv7WQcvW5wsZmnvXCrWCSQJgEK7t8GA65zieKCik+z1hM
-	I6xADlmeyZcdn+dBPJ3vgvXIgAd8tA4K/qjXFl4z7g==
-X-Google-Smtp-Source: AGHT+IHo1CBmTuUhAhmoXR/KJsiUOGXe0H72uTjo3bJ8/f4ydzGN+L/1B0mI7eNNH55dLwJ3p7aHezZlyWQqax7aj9w=
-X-Received: by 2002:a2e:9b59:0:b0:2c6:ece6:5b65 with SMTP id
- o25-20020a2e9b59000000b002c6ece65b65mr12569535ljj.10.1701287142874; Wed, 29
- Nov 2023 11:45:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701288187; x=1701892987;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oFOuz3/DxdhVTy2MXC00IZ5cc+fO6ZXycOtXt73BBek=;
+        b=VHjWWh9pg1U3U4NQuK1cWPc/rnkf+4IaZA1a3h0r18fW3zR7pfQAsozAwIsGQTqDDn
+         7+xFnIltFhzrFHm7Bhneo0pGyOMUGGhlfxYFY2MBmIgARDOB5cRfjaynAp4gS/LZBTEa
+         IyGW9gURjJ62x9EPjQyFFktWB3IIpu+L1dsaTcHoatnbH36UAoVywj7eQ7WaFs2CoMkp
+         wn4+v60qei6bbqb3Kt03YZ49dbOP5Gfy3EqfL/8cgxf4Qjfl1j8nrAyfw2VRwfEzbtA1
+         accl+LZPNeU5Bryaa21YpxBoeqqMKyA6R8B9FBMn9Ql9G7bFe/RNk4RTheIWiblHKabu
+         kmUg==
+X-Gm-Message-State: AOJu0YxJAG2JVlp4itbYmcsEm7gN4rYUI9snklPTZnLgRyJuYfUZj5zN
+	hOG1Nj1g8BjncomGgMlFae0RsA==
+X-Google-Smtp-Source: AGHT+IHhptM9jGiKnASdRwicfnuRd8rDMhOAWz7BQW7PJi3eFPiHvWovE7BfQ4zpeMeNVsilXqTyVQ==
+X-Received: by 2002:a05:6870:6c0b:b0:1f9:571e:f80f with SMTP id na11-20020a0568706c0b00b001f9571ef80fmr27454829oab.13.1701288187396;
+        Wed, 29 Nov 2023 12:03:07 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id s12-20020a056830438c00b006ce2f0818d3sm2098526otv.22.2023.11.29.12.03.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 12:03:06 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1r8Qm1-005pNS-Mg;
+	Wed, 29 Nov 2023 16:03:05 -0400
+Date: Wed, 29 Nov 2023 16:03:05 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Robin Murphy <robin.murphy@arm.com>, akpm@linux-foundation.org,
+	alex.williamson@redhat.com, alim.akhtar@samsung.com,
+	alyssa@rosenzweig.io, asahi@lists.linux.dev,
+	baolu.lu@linux.intel.com, bhelgaas@google.com,
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
+	iommu@lists.linux.dev, jasowang@redhat.com,
+	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
+	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
+	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+	marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+	m.szyprowski@samsung.com, netdev@vger.kernel.org,
+	paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+	will@kernel.org, yu-cheng.yu@intel.com
+Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided
+ by iommu-pages.h
+Message-ID: <20231129200305.GI1312390@ziepe.ca>
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-9-pasha.tatashin@soleen.com>
+ <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
+ <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
+ <20231128235037.GC1312390@ziepe.ca>
+ <52de3aca-41b1-471e-8f87-1a77de547510@arm.com>
+ <CA+CK2bCcfS1Fo8RvTeGXj_ejPRX9--sh5Jz8nzhkZnut4juDmg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-9-pasha.tatashin@soleen.com> <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
- <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
- <20231128235037.GC1312390@ziepe.ca> <52de3aca-41b1-471e-8f87-1a77de547510@arm.com>
-In-Reply-To: <52de3aca-41b1-471e-8f87-1a77de547510@arm.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Wed, 29 Nov 2023 14:45:03 -0500
-Message-ID: <CA+CK2bCcfS1Fo8RvTeGXj_ejPRX9--sh5Jz8nzhkZnut4juDmg@mail.gmail.com>
-Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided by iommu-pages.h
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, akpm@linux-foundation.org, alex.williamson@redhat.com, 
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
-	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
-	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
-	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com, 
-	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org, 
-	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, mst@redhat.com, m.szyprowski@samsung.com, 
-	netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org, 
-	samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
-	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
-	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bCcfS1Fo8RvTeGXj_ejPRX9--sh5Jz8nzhkZnut4juDmg@mail.gmail.com>
 
-> >> We can separate the metric into two:
-> >> iommu pagetable only
-> >> iommu everything
-> >>
-> >> or into three:
-> >> iommu pagetable only
-> >> iommu dma
-> >> iommu everything
-> >>
-> >> What do you think?
-> >
-> > I think I said this at LPC - if you want to have fine grained
-> > accounting of memory by owner you need to go talk to the cgroup people
-> > and come up with something generic. Adding ever open coded finer
-> > category breakdowns just for iommu doesn't make alot of sense.
-> >
-> > You can make some argument that the pagetable memory should be counted
-> > because kvm counts it's shadow memory, but I wouldn't go into further
-> > detail than that with hand coded counters..
->
-> Right, pagetable memory is interesting since it's something that any
-> random kernel user can indirectly allocate via iommu_domain_alloc() and
-> iommu_map(), and some of those users may even be doing so on behalf of
-> userspace. I have no objection to accounting and potentially applying
-> limits to *that*.
+On Wed, Nov 29, 2023 at 02:45:03PM -0500, Pasha Tatashin wrote:
 
-Yes, in the next version, I will separate pagetable only from the
-rest, for the limits.
+> > same kind of big systems where IOMMU pagetables would be of any concern.
+> > I believe some of the some of the "serious" NICs can easily run up
+> > hundreds of megabytes if not gigabytes worth of queues, SKB pools, etc.
+> > - would you propose accounting those too?
+> 
+> Yes. Any kind of kernel memory that is proportional to the workload
+> should be accountable. Someone is using those resources compared to
+> the idling system, and that someone should be charged.
 
-> Beyond that, though, there is nothing special about "the IOMMU
-> subsystem". The amount of memory an IOMMU driver needs to allocate for
-> itself in order to function is not of interest beyond curiosity, it just
-> is what it is; limiting it would only break the IOMMU, and if a user
+There is a difference between charged and accounted
 
-Agree about the amount of memory IOMMU allocates for itself, but that
-should be small, if it is not, we have to at least show where the
-memory is used.
+You should be running around adding GFP_KERNEL_ACCOUNT, yes. I already
+did a bunch of that work. Split that out from this series and send it
+to the right maintainers.
 
-> thinks it's "too much", the only actionable thing that might help is to
-> physically remove devices from the system. Similar for DMA buffers; it
-> might be intriguing to account those, but it's not really an actionable
-> metric - in the overwhelming majority of cases you can't simply tell a
-> driver to allocate less than what it needs. And that is of course
-> assuming if we were to account *all* DMA buffers, since whether they
-> happen to have an IOMMU translation or not is irrelevant (we'd have
-> already accounted the pagetables as pagetables if so).
+Adding a counter for allocations and showing in procfs is a very
+different question. IMHO that should not be done in micro, the
+threshold to add a new counter should be high.
 
-DMA mappings should be observable (do not have to be limited). At the
-very least, it can help with explaining the kernel memory overhead
-anomalies on production systems.
+There is definately room for a generic debugging feature to break down
+GFP_KERNEL_ACCOUNT by owernship somehow. Maybe it can already be done
+with BPF. IDK
 
-> I bet "the networking subsystem" also consumes significant memory on the
-
-It does, and GPU drivers also may consume a significant amount of memory.
-
-> same kind of big systems where IOMMU pagetables would be of any concern.
-> I believe some of the some of the "serious" NICs can easily run up
-> hundreds of megabytes if not gigabytes worth of queues, SKB pools, etc.
-> - would you propose accounting those too?
-
-Yes. Any kind of kernel memory that is proportional to the workload
-should be accountable. Someone is using those resources compared to
-the idling system, and that someone should be charged.
-
-Pasha
+Jason
 
