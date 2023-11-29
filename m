@@ -1,120 +1,224 @@
-Return-Path: <cgroups+bounces-672-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-673-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CCE67FDAF5
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 16:17:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B419D7FDB08
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 16:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7451C20BE2
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 15:17:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0560C283057
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 15:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E812374E3;
-	Wed, 29 Nov 2023 15:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680A4374FA;
+	Wed, 29 Nov 2023 15:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="t45yazmd"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="iaQIjz1s"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDB7C9
-	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 07:17:27 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-41cc44736f2so37888881cf.3
-        for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 07:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701271047; x=1701875847; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ki5eAeZpOcI54YbTPSCFwp5UJ2eI9c3pK5uL2lEEtZM=;
-        b=t45yazmdyT7D3V75tVpLMivlCMgeR/JvS/+C/lc7BHmzaprkmFWcankS3PQr7flX5U
-         iro9DZmFQLFpz1giKu33Gx3a0hs2o5P0fXJ3nePPDmHNHJBITL4OvksYckJlpZuq6x/t
-         KXpt4mDsz/Men8Xe0f6AnBNSr+ipGBke/yG6hy5keISNVDeIbmnlj0iDfO6k4wEV9XwL
-         tO4AaMXr1vXUfpzmjVkE5JkVyr0ZdvPfDf38HIbti5rcMxqkXLJsocTDGnQU0Yl0KSu2
-         GyQmwozT25v4QB4gsFDL0PDXLh3atKDMZbJPIKzDVL5prK9VcM1yGRM4LnUwqvYt+3N0
-         wOAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701271047; x=1701875847;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ki5eAeZpOcI54YbTPSCFwp5UJ2eI9c3pK5uL2lEEtZM=;
-        b=WADQSwjawZuF0owN/rMVK3QtMavMGavOgQJfgH+NqOyG5/uLvQ0KDgHHjKmisdwuOK
-         kVjIPttEKEYqDd8uPzdTKiEpmRW1leLSFQAl/qmR/l2pJ2XqAhQV18JROzXcy1efTajs
-         nQFVYcpjy5bBhMpx6f6M2jzmITG3Kcg9Y27PyMLp1s3ZP6/NCkG8PIm/z9MnEHTIZQRn
-         WmvbZU3dCrflqLWH4QjwrnmSLRsOzn45izrFJJvmZkmo6iBkIungQjQCd64iyfeSCmKX
-         nxeggxdsPg33gLDq8t56O8qDPo0QXyUEXyWoD8wZhT4DCr+KfsVWmHbD+Cx26Us5WlMX
-         i10Q==
-X-Gm-Message-State: AOJu0YyLA0tfwLcLXRUhzesYZAwLsLhzfDYfGX1MyMAo9vCV3DAyTTnh
-	KoGNfvDNwX33s5HdyfwS5qIwJw==
-X-Google-Smtp-Source: AGHT+IEZIE1AM5E8zn+REarKZMAnlku7irhSBH7MhlpFKWn2MeAvwTjAn78X+XkDrH28XBpWMoOlEQ==
-X-Received: by 2002:ac8:7d12:0:b0:423:792f:d5ca with SMTP id g18-20020ac87d12000000b00423792fd5camr24998108qtb.63.1701271046994;
-        Wed, 29 Nov 2023 07:17:26 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id ay30-20020a05622a229e00b00423a0d10d4csm4386593qtb.62.2023.11.29.07.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 07:17:26 -0800 (PST)
-Date: Wed, 29 Nov 2023 10:17:21 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-	vitaly.wool@konsulko.com, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-	kernel-team@meta.com, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v7 3/6] zswap: make shrinking memcg-aware
-Message-ID: <20231129151721.GC135852@cmpxchg.org>
-References: <20231127234600.2971029-1-nphamcs@gmail.com>
- <20231127234600.2971029-4-nphamcs@gmail.com>
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0530684;
+	Wed, 29 Nov 2023 07:21:01 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 13064120016;
+	Wed, 29 Nov 2023 18:20:58 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 13064120016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1701271258;
+	bh=rZNqf80+tPAq5WzMbMVT7aFjZ1TyjCVjSeKMawwfUdc=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=iaQIjz1sCvr9NR7Ja89IXTg3//Q+kZnzpnP/zbnSiiJKK7Ddc4lg4SgMkoDjo/Rfx
+	 IiD7Es3kUY7UEY27bTNorAZMWhNqB0T7yYjPC3ipIdYjLNz2fuOzXhcuDc/9Rs2ZiA
+	 AzcsXGhLXO0ORrKc8MTpevumQL79uFdbWGcpjKLocdFcYCP3zdLQ/AKxD/6d4llUzN
+	 sOlj3jWjZSFpe4NZUUGUja1Bb5NJj6IRx3Ev4PZyyYYAjpYJEN58EnbAOo/cgn8IzZ
+	 VfR0sGDdCZ+horUc3zqgLJI0RKt1ggYCdXx5Cp+fSWJYNqPskwxo72XVA8/nyZmeUb
+	 V6RxQfrphxAYQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 29 Nov 2023 18:20:57 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 18:20:57 +0300
+Date: Wed, 29 Nov 2023 18:20:57 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Michal Hocko <mhocko@suse.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<roman.gushchin@linux.dev>, <shakeelb@google.com>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231127234600.2971029-4-nphamcs@gmail.com>
+In-Reply-To: <ZWWzwhWnW1_iX0FP@tiehlicka>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181704 [Nov 29 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/29 12:04:00 #22572143
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Mon, Nov 27, 2023 at 03:45:57PM -0800, Nhat Pham wrote:
->  static void shrink_worker(struct work_struct *w)
->  {
->  	struct zswap_pool *pool = container_of(w, typeof(*pool),
->  						shrink_work);
-> +	struct mem_cgroup *memcg;
->  	int ret, failures = 0;
+On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+> > On Mon, Nov 27, 2023 at 01:50:22PM +0100, Michal Hocko wrote:
+> > > On Mon 27-11-23 14:36:44, Dmitry Rokosov wrote:
+> > > > On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
+> > > > > On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
+> > > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > > > Currently, it is not possible to trace this point from non-direct
+> > > > > > reclaim paths. However, direct reclaim has its own tracepoint, so there
+> > > > > > is no issue there. In certain cases, when debugging memcg pressure,
+> > > > > > developers may need to identify all potential requests for memcg
+> > > > > > reclamation including kswapd(). The patchset introduces the tracepoints
+> > > > > > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
+> > > > > > 
+> > > > > > Example of output in the kswapd context (non-direct reclaim):
+> > > > > >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > > >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
+> > > > > 
+> > > > > In the previous version I have asked why do we need this specific
+> > > > > tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
+> > > > > which already give you a very good insight. That includes the number of
+> > > > > reclaimed pages but also more. I do see that we do not include memcg id
+> > > > > of the reclaimed LRU, but that shouldn't be a big problem to add, no?
+> > > > 
+> > > > >From my point of view, memcg reclaim includes two points: LRU shrink and
+> > > > slab shrink, as mentioned in the vmscan.c file.
+> > > > 
+> > > > 
+> > > > static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+> > > > ...
+> > > > 		reclaimed = sc->nr_reclaimed;
+> > > > 		scanned = sc->nr_scanned;
+> > > > 
+> > > > 		shrink_lruvec(lruvec, sc);
+> > > > 
+> > > > 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+> > > > 			    sc->priority);
+> > > > ...
+> > > > 
+> > > > So, both of these operations are important for understanding whether
+> > > > memcg reclaiming was successful or not, as well as its effectiveness. I
+> > > > believe it would be beneficial to summarize them, which is why I have
+> > > > created new tracepoints.
+> > > 
+> > > This sounds like nice to have rather than must. Put it differently. If
+> > > you make existing reclaim trace points memcg aware (print memcg id) then
+> > > what prevents you from making analysis you need?
+> > 
+> > You are right, nothing prevents me from making this analysis... but...
+> > 
+> > This approach does have some disadvantages:
+> > 1) It requires more changes to vmscan. At the very least, the memcg
+> > object should be forwarded to all subfunctions for LRU and SLAB
+> > shrinkers.
+> 
+> We should have lruvec or memcg available. lruvec_memcg() could be used
+> to get memcg from the lruvec. It might be more places to add the id but
+> arguably this would improve them to identify where the memory has been
+> scanned/reclaimed from.
 >  
-> +	/* global reclaim will select cgroup in a round-robin fashion. */
->  	do {
-> -		ret = zswap_reclaim_entry(pool);
-> -		if (ret) {
-> -			zswap_reject_reclaim_fail++;
-> -			if (ret != -EAGAIN)
-> -				break;
-> +		spin_lock(&zswap_pools_lock);
-> +		memcg = pool->next_shrink =
-> +			mem_cgroup_iter_online(NULL, pool->next_shrink, NULL, true);
-> +
-> +		/* full round trip */
-> +		if (!memcg) {
-> +			spin_unlock(&zswap_pools_lock);
->  			if (++failures == MAX_RECLAIM_RETRIES)
->  				break;
-> +
-> +			goto resched;
->  		}
-> +
-> +		/*
-> +		 * Acquire an extra reference to the iterated memcg in case the
-> +		 * original reference is dropped by the zswap offlining callback.
-> +		 */
-> +		css_get(&memcg->css);
 
-struct mem_cgroup isn't defined when !CONFIG_MEMCG. This needs a
-mem_cgroup_get() wrapper and a dummy function for no-memcg builds.
+Oh, thank you, didn't see this conversion function before...
 
-With that fixed, though, everything else looks good to me:
+> > 2) With this approach, we will not have the ability to trace a situation
+> > where the kernel is requesting reclaim for a specific memcg, but due to
+> > limits issues, we are unable to run it.
+> 
+> I do not follow. Could you be more specific please?
+> 
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+I'm referring to a situation where kswapd() or another kernel mm code
+requests some reclaim pages from memcg, but memcg rejects it due to
+limits checkers. This occurs in the shrink_node_memcgs() function.
+
+===
+		mem_cgroup_calculate_protection(target_memcg, memcg);
+
+		if (mem_cgroup_below_min(target_memcg, memcg)) {
+			/*
+			 * Hard protection.
+			 * If there is no reclaimable memory, OOM.
+			 */
+			continue;
+		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+			/*
+			 * Soft protection.
+			 * Respect the protection only as long as
+			 * there is an unprotected supply
+			 * of reclaimable memory from other cgroups.
+			 */
+			if (!sc->memcg_low_reclaim) {
+				sc->memcg_low_skipped = 1;
+				continue;
+			}
+			memcg_memory_event(memcg, MEMCG_LOW);
+		}
+===
+
+With separate shrink begin()/end() tracepoints we can detect such
+problem.
+
+
+> > 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> > tasks. Additionally, memcg can be disabled in the kernel configuration.
+> 
+> Right. This could be all hidden in the tracing code. You simply do not
+> print memcg id when the controller is disabled. Or just simply print 0.
+> I do not really see any major problems with that.
+> 
+> I would really prefer to focus on that direction rather than adding
+> another begin/end tracepoint which overalaps with existing begin/end
+> traces and provides much more limited information because I would bet we
+> will have somebody complaining that mere nr_reclaimed is not sufficient.
+
+Okay, I will try to prepare a new patch version with memcg printing from
+lruvec and slab tracepoints.
+
+Then Andrew should drop the previous patchsets, I suppose. Please advise
+on the correct workflow steps here.
+
+-- 
+Thank you,
+Dmitry
 
