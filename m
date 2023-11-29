@@ -1,187 +1,137 @@
-Return-Path: <cgroups+bounces-678-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-679-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E25C7FDCE4
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 17:22:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C547FDD95
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 17:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F9A91C20A3C
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 16:22:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3822C282631
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 16:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A730C3AC14;
-	Wed, 29 Nov 2023 16:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="oczT/7yN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E533B2BD;
+	Wed, 29 Nov 2023 16:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E8410C6
-	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 08:21:56 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-67a34fbaf12so23929196d6.3
-        for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 08:21:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701274916; x=1701879716; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hYHLv9CSAfTThewWoacMTkgj93sBj76qjRtYqdHw6QM=;
-        b=oczT/7yNyh2rO2+7Z2ZVrnrrRD6hoAnih2ZVATXEbWprimOauqiUxqBSSikHAUTivz
-         qNzZEic2KGFZmNoMXcNva4w1+GHOGVpTsihm5aOpN2xls3bhXDn2c4IlEm2UzuLMzVlF
-         /X4VkDvU0oXFoeFNdYCsnxllbNUy79mj/O1p8QW7RzNSnvJ6TA8Hndix9jm8lmYhrE2o
-         +lz2X2SCA9qvQuO8xUHF2Epm1wgGHMB1b9t1rHD3+iuQ+sC6mTRTm94Y5dMxl4B8BzUY
-         QVdab3hzh0OfMkziuJTW74gffSal0jYV5unfwo++rkSmKFcB1tssNiihW24TIpnPJJUw
-         GbGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701274916; x=1701879716;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hYHLv9CSAfTThewWoacMTkgj93sBj76qjRtYqdHw6QM=;
-        b=Noe+hUMk95/OD4gOH372aqPtOaqZG7UmLN+TQDP4KNp2xfSAujuSBICKlNND0CL3Sz
-         giTZhLRtWC7PBE3EeOOV1dkD3Xf2fLXGhyS6ZECHjMGLsNy+LRfom/GvIDW7fffMKeL8
-         1a68mep1F8K4AWSRukjzNiYgu+3WdjZGiRbf4d9NdDfL+sYYX+mEQkuq4KDze5DKWo0c
-         ymOem4S7hfwBAD1GjhCns+5SPgEmM0ro0NzhNQpWNg754B1Je97IuG/fhHU09is1SVf1
-         kadfqlpDVl2Wyshqy9hrK3FTDAvcVnDyJRx24EqYwCiHNzIm8k7SXPcOhL/6aGEUWe6q
-         B2VQ==
-X-Gm-Message-State: AOJu0YyQiP6L5mxVATW9FLN6JzunAaoKRJ2q1A2arzr36EGKzVzzidd4
-	mP7czouplzVNNWaEQr8pWP0Q6pAEWkKHWBGFQb0=
-X-Google-Smtp-Source: AGHT+IExE8UXik9bRCJxcJyoMa34oV6Hn3YLIHwRECfowsGDeobteC5UhV2ag8pFjY+6iqyHgOuSyg==
-X-Received: by 2002:a05:6214:86:b0:67a:2b0b:c591 with SMTP id n6-20020a056214008600b0067a2b0bc591mr16240106qvr.25.1701274915900;
-        Wed, 29 Nov 2023 08:21:55 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id k14-20020ad4450e000000b0067a26d7ce6fsm4550774qvu.55.2023.11.29.08.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 08:21:55 -0800 (PST)
-Date: Wed, 29 Nov 2023 11:21:50 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-	vitaly.wool@konsulko.com, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-	kernel-team@meta.com, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v7 6/6] zswap: shrinks zswap pool based on memory pressure
-Message-ID: <20231129162150.GE135852@cmpxchg.org>
-References: <20231127234600.2971029-1-nphamcs@gmail.com>
- <20231127234600.2971029-7-nphamcs@gmail.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id E02CAB0;
+	Wed, 29 Nov 2023 08:48:53 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96AD0C15;
+	Wed, 29 Nov 2023 08:49:40 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69D1A3F73F;
+	Wed, 29 Nov 2023 08:48:47 -0800 (PST)
+Message-ID: <52de3aca-41b1-471e-8f87-1a77de547510@arm.com>
+Date: Wed, 29 Nov 2023 16:48:43 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127234600.2971029-7-nphamcs@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided by
+ iommu-pages.h
+Content-Language: en-GB
+To: Jason Gunthorpe <jgg@ziepe.ca>, Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, alex.williamson@redhat.com,
+ alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev,
+ baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org,
+ corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+ heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+ jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
+ kevin.tian@intel.com, krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st,
+ mhiramat@kernel.org, mst@redhat.com, m.szyprowski@samsung.com,
+ netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org,
+ samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+ thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+ vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+ will@kernel.org, yu-cheng.yu@intel.com
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-9-pasha.tatashin@soleen.com>
+ <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
+ <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
+ <20231128235037.GC1312390@ziepe.ca>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231128235037.GC1312390@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 27, 2023 at 03:46:00PM -0800, Nhat Pham wrote:
-> Currently, we only shrink the zswap pool when the user-defined limit is
-> hit. This means that if we set the limit too high, cold data that are
-> unlikely to be used again will reside in the pool, wasting precious
-> memory. It is hard to predict how much zswap space will be needed ahead
-> of time, as this depends on the workload (specifically, on factors such
-> as memory access patterns and compressibility of the memory pages).
+On 28/11/2023 11:50 pm, Jason Gunthorpe wrote:
+> On Tue, Nov 28, 2023 at 06:00:13PM -0500, Pasha Tatashin wrote:
+>> On Tue, Nov 28, 2023 at 5:53 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>>>
+>>> On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
+>>>> Convert iommu/fsl_pamu.c to use the new page allocation functions
+>>>> provided in iommu-pages.h.
+>>>
+>>> Again, this is not a pagetable. This thing doesn't even *have* pagetables.
+>>>
+>>> Similar to patches #1 and #2 where you're lumping in configuration
+>>> tables which belong to the IOMMU driver itself, as opposed to pagetables
+>>> which effectively belong to an IOMMU domain's user. But then there are
+>>> still drivers where you're *not* accounting similar configuration
+>>> structures, so I really struggle to see how this metric is useful when
+>>> it's so completely inconsistent in what it's counting :/
+>>
+>> The whole IOMMU subsystem allocates a significant amount of kernel
+>> locked memory that we want to at least observe. The new field in
+>> vmstat does just that: it reports ALL buddy allocator memory that
+>> IOMMU allocates. However, for accounting purposes, I agree, we need to
+>> do better, and separate at least iommu pagetables from the rest.
+>>
+>> We can separate the metric into two:
+>> iommu pagetable only
+>> iommu everything
+>>
+>> or into three:
+>> iommu pagetable only
+>> iommu dma
+>> iommu everything
+>>
+>> What do you think?
 > 
-> This patch implements a memcg- and NUMA-aware shrinker for zswap, that
-> is initiated when there is memory pressure. The shrinker does not
-> have any parameter that must be tuned by the user, and can be opted in
-> or out on a per-memcg basis.
+> I think I said this at LPC - if you want to have fine grained
+> accounting of memory by owner you need to go talk to the cgroup people
+> and come up with something generic. Adding ever open coded finer
+> category breakdowns just for iommu doesn't make alot of sense.
 > 
-> Furthermore, to make it more robust for many workloads and prevent
-> overshrinking (i.e evicting warm pages that might be refaulted into
-> memory), we build in the following heuristics:
-> 
-> * Estimate the number of warm pages residing in zswap, and attempt to
->   protect this region of the zswap LRU.
-> * Scale the number of freeable objects by an estimate of the memory
->   saving factor. The better zswap compresses the data, the fewer pages
->   we will evict to swap (as we will otherwise incur IO for relatively
->   small memory saving).
-> * During reclaim, if the shrinker encounters a page that is also being
->   brought into memory, the shrinker will cautiously terminate its
->   shrinking action, as this is a sign that it is touching the warmer
->   region of the zswap LRU.
-> 
-> As a proof of concept, we ran the following synthetic benchmark:
-> build the linux kernel in a memory-limited cgroup, and allocate some
-> cold data in tmpfs to see if the shrinker could write them out and
-> improved the overall performance. Depending on the amount of cold data
-> generated, we observe from 14% to 35% reduction in kernel CPU time used
-> in the kernel builds.
+> You can make some argument that the pagetable memory should be counted
+> because kvm counts it's shadow memory, but I wouldn't go into further
+> detail than that with hand coded counters..
 
-I think this is a really important piece of functionality for zswap.
+Right, pagetable memory is interesting since it's something that any 
+random kernel user can indirectly allocate via iommu_domain_alloc() and 
+iommu_map(), and some of those users may even be doing so on behalf of 
+userspace. I have no objection to accounting and potentially applying 
+limits to *that*.
 
-Memory compression has been around and in use for a long time, but the
-question of zswap vs swap sizing has been in the room since the hybrid
-mode was first proposed. Because depending on the reuse patterns,
-putting zswap with a static size limit in front of an existing swap
-file can be a net negative for performance as it consumes more memory.
+Beyond that, though, there is nothing special about "the IOMMU 
+subsystem". The amount of memory an IOMMU driver needs to allocate for 
+itself in order to function is not of interest beyond curiosity, it just 
+is what it is; limiting it would only break the IOMMU, and if a user 
+thinks it's "too much", the only actionable thing that might help is to 
+physically remove devices from the system. Similar for DMA buffers; it 
+might be intriguing to account those, but it's not really an actionable 
+metric - in the overwhelming majority of cases you can't simply tell a 
+driver to allocate less than what it needs. And that is of course 
+assuming if we were to account *all* DMA buffers, since whether they 
+happen to have an IOMMU translation or not is irrelevant (we'd have 
+already accounted the pagetables as pagetables if so).
 
-It's great to finally see a solution to this which makes zswap *much*
-more general purpose. And something that distributions might want to
-turn on per default when swap is configured.
+I bet "the networking subsystem" also consumes significant memory on the 
+same kind of big systems where IOMMU pagetables would be of any concern. 
+I believe some of the some of the "serious" NICs can easily run up 
+hundreds of megabytes if not gigabytes worth of queues, SKB pools, etc. 
+- would you propose accounting those too?
 
-Actually to the point where I think there should be a config option to
-enable the shrinker per default. Maybe not right away, but in a few
-releases when this feature has racked up some more production time.
-
-> @@ -687,6 +687,7 @@ struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
->  					&page_allocated, false);
->  	if (unlikely(page_allocated))
->  		swap_readpage(page, false, NULL);
-> +	zswap_lruvec_swapin(page);
-
-The "lruvec" in the name vs the page parameter is a bit odd.
-zswap_page_swapin() would be slightly better, but it still also sounds
-like it would cause an actual swapin of some sort.
-
-zswap_record_swapin()?
-
-> @@ -520,6 +575,95 @@ static struct zswap_entry *zswap_entry_find_get(struct rb_root *root,
->  	return entry;
->  }
->  
-> +/*********************************
-> +* shrinker functions
-> +**********************************/
-> +static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_one *l,
-> +				       spinlock_t *lock, void *arg);
-> +
-> +static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
-> +		struct shrink_control *sc)
-> +{
-> +	struct lruvec *lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
-> +	unsigned long shrink_ret, nr_protected, lru_size;
-> +	struct zswap_pool *pool = shrinker->private_data;
-> +	bool encountered_page_in_swapcache = false;
-> +
-> +	nr_protected =
-> +		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
-> +	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
-> +
-> +	/*
-> +	 * Abort if the shrinker is disabled or if we are shrinking into the
-> +	 * protected region.
-> +	 */
-> +	if (!zswap_shrinker_enabled || nr_protected >= lru_size - sc->nr_to_scan) {
-> +		sc->nr_scanned = 0;
-> +		return SHRINK_STOP;
-> +	}
-
-I'm scratching my head at the protection check. zswap_shrinker_count()
-already factors protection into account, so sc->nr_to_scan should only
-be what is left on the list after excluding the protected area.
-
-Do we even get here if the whole list is protected? Is this to protect
-against concurrent shrinking of the list through multiple shrinkers or
-swapins? If so, a comment would be nice :)
-
-Otherwise, this looks great to me!
-
-Just nitpicks, no show stoppers:
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Thanks,
+Robin.
 
