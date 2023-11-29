@@ -1,135 +1,197 @@
-Return-Path: <cgroups+bounces-690-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-691-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B714F7FE14D
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 21:45:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 506C67FE1BA
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 22:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 732B928269C
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 20:45:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0468E282012
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 21:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB5C60EE0;
-	Wed, 29 Nov 2023 20:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE1361686;
+	Wed, 29 Nov 2023 21:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="FdbZffxY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DjNEs9Cv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B2C10CB
-	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 12:45:02 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50bbfad8758so331692e87.3
-        for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 12:45:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701290700; x=1701895500; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tlZYiStM5KCC7J/v+177rjHqt9KWJCfJWFMkelab9t4=;
-        b=FdbZffxY5wQE+/0cxXCbRI/zPDDidiVXjjUtYaRCjcBeQNV8h6tZEhOFNmoiYL7FiG
-         h1K6pRO8QjrrRpKLtVPO4KusIRh7cFjdTbXZrtnRwsrN9zOW761HtsD0DnDQGZcBO4B4
-         zZlRZaXN56UCW9RjgD3piveQC/RlmHoA707iaWD4ZKMsSGCKKX0wS590lk9hL1bOd4IZ
-         7f3rTyKVruPGPNdmdliTvnn9TTnMX3gBAn3rgBg3AHi7tU6xptVxJXv22YHnauF+xp/J
-         vi7OWlea2BYfXpETx4UFSoOwGVhEA35lLfaJJPqVDZIFT4A3eDZKoi2IYAMKrMsVwmSJ
-         8bzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701290700; x=1701895500;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tlZYiStM5KCC7J/v+177rjHqt9KWJCfJWFMkelab9t4=;
-        b=RCICdt3GV4WFSq8GeibJuFrweSgxc0Zz9r7Bjxr69e4xc3Z/JoJVF2jugr7BBCv7AB
-         W8oKQfN6iPptItiJQdDfNTvEps+2qPZ55aMumUm8PDfvLzr9Hsdvigj3soSGYPP814R1
-         MaOcDDjBlLcIFK/MUyDPOEB6/p7LoFioPWM48UU8zf90Cu5MLOT3GNrWN6ZD/3t9lsNR
-         bmrz2JpyDP1+bX7FXsX7BwU925Zku7KVtugZz1V2N6W8+zxSFebPAV8WCy9nxHmmTH54
-         ih1qij+jXPQ1ZM1FbRC0xj7gE5Iyoexj8dUIQpEIpLy+Mf8XK8AwX/GyUkcrjJoOh5ja
-         RvNA==
-X-Gm-Message-State: AOJu0Yza0kORB5OadIKvByJ7tcxCMjoCgGF87DTPrPFDS+yOWOMlP5hs
-	IUk5SnnbO7sIhyzKQsClhLs9VU33W9aAcJQYy9h2AQ==
-X-Google-Smtp-Source: AGHT+IGMB2fUN71OTthlqnqBV10GCXDIRhuYgMFmlKYXWcCU4XgzYTup+BcRc5IJEjmMB4Fgw8Ibq0j5FX6Di+vVaiM=
-X-Received: by 2002:ac2:4a6f:0:b0:50b:cb50:401 with SMTP id
- q15-20020ac24a6f000000b0050bcb500401mr153882lfp.34.1701290700342; Wed, 29 Nov
- 2023 12:45:00 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049FDD66
+	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 13:22:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701292934; x=1732828934;
+  h=date:from:to:cc:subject:message-id;
+  bh=2f3RO2dzIc/1sH3PKSwjzxfm8gukE+sgcmPXnHuqCXA=;
+  b=DjNEs9CvvuO6xHJ57zWC2NQeQRvHeLHYv2ueeTJ4t0S076Zg9i1aTu4e
+   v6kdozcrc4+UwtdpcI0atso3iu2nD4BcBjVKpm9ZjYbhoo7FR8DWmWehr
+   3ZWhakzE9nr1dMATtjYZ191GNYUzC2nSX8FinlmQGXYgFAqG3XWfkZ0LI
+   4rFS4SrLI1CBY4xnKlsYnWO+S7Edsds9dwCMQ4efW5z5+zU9xlmwMGbhQ
+   w+Z9LiYz+Cod6Z2Oy6khpWmGkNNMBqYUTPnvDnAjKuMXRN8OTeUkE5idu
+   bBaF+PKm8kBxyYuJC2a72TZ8ja994tvZK6hx9D/y5x/hiiCo0iyn5SVDV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="396036511"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="396036511"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 13:22:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="912972444"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="912972444"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Nov 2023 13:22:12 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r8S0X-0000nq-2a;
+	Wed, 29 Nov 2023 21:22:09 +0000
+Date: Thu, 30 Nov 2023 05:21:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 357564d50da386e66ab41b6abe2b0811437b55ee
+Message-ID: <202311300552.DI1CLhlN-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-9-pasha.tatashin@soleen.com> <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
- <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
- <20231128235037.GC1312390@ziepe.ca> <52de3aca-41b1-471e-8f87-1a77de547510@arm.com>
- <CA+CK2bCcfS1Fo8RvTeGXj_ejPRX9--sh5Jz8nzhkZnut4juDmg@mail.gmail.com> <20231129200305.GI1312390@ziepe.ca>
-In-Reply-To: <20231129200305.GI1312390@ziepe.ca>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Wed, 29 Nov 2023 15:44:21 -0500
-Message-ID: <CA+CK2bA05Bh+H4qsP7ZM6ZcnBXu64frEfpCDYZuLOQ4UxJC4EA@mail.gmail.com>
-Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided by iommu-pages.h
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Robin Murphy <robin.murphy@arm.com>, akpm@linux-foundation.org, 
-	alex.williamson@redhat.com, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jasowang@redhat.com, jernej.skrabec@gmail.com, 
-	jonathanh@nvidia.com, joro@8bytes.org, kevin.tian@intel.com, 
-	krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, mst@redhat.com, m.szyprowski@samsung.com, 
-	netdev@vger.kernel.org, paulmck@kernel.org, rdunlap@infradead.org, 
-	samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
-	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
-	vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 3:03=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Wed, Nov 29, 2023 at 02:45:03PM -0500, Pasha Tatashin wrote:
->
-> > > same kind of big systems where IOMMU pagetables would be of any conce=
-rn.
-> > > I believe some of the some of the "serious" NICs can easily run up
-> > > hundreds of megabytes if not gigabytes worth of queues, SKB pools, et=
-c.
-> > > - would you propose accounting those too?
-> >
-> > Yes. Any kind of kernel memory that is proportional to the workload
-> > should be accountable. Someone is using those resources compared to
-> > the idling system, and that someone should be charged.
->
-> There is a difference between charged and accounted
->
-> You should be running around adding GFP_KERNEL_ACCOUNT, yes. I already
-> did a bunch of that work. Split that out from this series and send it
-> to the right maintainers.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 357564d50da386e66ab41b6abe2b0811437b55ee  Merge branch 'for-6.8' into for-next
 
-I will do that.
+elapsed time: 1544m
 
->
-> Adding a counter for allocations and showing in procfs is a very
-> different question. IMHO that should not be done in micro, the
-> threshold to add a new counter should be high.
+configs tested: 119
+configs skipped: 2
 
-I agree, /proc/meminfo, should not include everything, however overall
-network consumption that includes memory allocated by network driver
-would be useful to have, may be it should be exported by device
-drivers and added to the protocol memory. We already have network
-protocol memory consumption in procfs:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-# awk '{printf "%-10s %s\n", $1, $4}' /proc/net/protocols | grep  -v '\-1'
-protocol   memory
-UDPv6      22673
-TCPv6      16961
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                                 defconfig   clang
+arm                        realview_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386                                defconfig   gcc  
+i386                  randconfig-011-20231130   clang
+i386                  randconfig-012-20231130   clang
+i386                  randconfig-013-20231130   clang
+i386                  randconfig-014-20231130   clang
+i386                  randconfig-015-20231130   clang
+i386                  randconfig-016-20231130   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5407c3_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     ep8248e_defconfig   gcc  
+powerpc                    klondike_defconfig   gcc  
+powerpc                     mpc83xx_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231130   gcc  
+x86_64       buildonly-randconfig-002-20231130   gcc  
+x86_64       buildonly-randconfig-003-20231130   gcc  
+x86_64       buildonly-randconfig-004-20231130   gcc  
+x86_64       buildonly-randconfig-005-20231130   gcc  
+x86_64       buildonly-randconfig-006-20231130   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20231130   gcc  
+x86_64                randconfig-012-20231130   gcc  
+x86_64                randconfig-013-20231130   gcc  
+x86_64                randconfig-014-20231130   gcc  
+x86_64                randconfig-015-20231130   gcc  
+x86_64                randconfig-016-20231130   gcc  
+x86_64                randconfig-071-20231130   gcc  
+x86_64                randconfig-072-20231130   gcc  
+x86_64                randconfig-073-20231130   gcc  
+x86_64                randconfig-074-20231130   gcc  
+x86_64                randconfig-075-20231130   gcc  
+x86_64                randconfig-076-20231130   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
 
-> There is definately room for a generic debugging feature to break down
-> GFP_KERNEL_ACCOUNT by owernship somehow. Maybe it can already be done
-> with BPF. IDK
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
