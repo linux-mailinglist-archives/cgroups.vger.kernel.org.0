@@ -1,145 +1,131 @@
-Return-Path: <cgroups+bounces-661-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-662-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E6927FCC16
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 01:55:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C19447FCD65
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 04:22:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEF7AB21753
-	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 00:55:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5286B2833F6
+	for <lists+cgroups@lfdr.de>; Wed, 29 Nov 2023 03:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B7E1FB2;
-	Wed, 29 Nov 2023 00:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD08B5662;
+	Wed, 29 Nov 2023 03:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="NBZBGb/8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sL5L5PZv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE9419B1
-	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 16:54:52 -0800 (PST)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1efb9571b13so3675548fac.2
-        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 16:54:52 -0800 (PST)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4B81AD
+	for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 19:22:01 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d12853cb89so34215357b3.3
+        for <cgroups@vger.kernel.org>; Tue, 28 Nov 2023 19:22:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701219291; x=1701824091; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KD7A1Mi78WcdpTbacYeqydWRhhJC6MIZ9wADFHK3ceE=;
-        b=NBZBGb/8+4eEITunAzUMzigxc8uz6j8Dg75wyZQthgQUON4ZqrN+peLBlg8XoqnyxL
-         VzfbbSiO2lV6MNm9UL5EY3n8AZSt0kSidXdfjXdCir/k5UuGgrvCx6BJzGmE0WpMrqAg
-         scj6RRezMFx8SkhZqpj/Zz8ZGtyuCss6g3c/ywM4zwBSg1maf2tINNcQJOgAz7bA2zXp
-         KgKhrCTKmkjAsmCBk96zKknUm3+Q3dRWHkyW9UO5fKyYTAfTmbkzkWCTNEbDyVa8Y2HG
-         451mq05zv3EOdmPVl+h/+cRaKbiHjyXaeZgbzOMoKFUqItjWAfFRqXT0AUSxxcAymGRF
-         7SPw==
+        d=google.com; s=20230601; t=1701228121; x=1701832921; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ky2REY4MxzMO+RxmPId6O0x4sdb+oIV13EhP53U4pHw=;
+        b=sL5L5PZvd4xwqyCkpJqWaIUcaB7q8DD1oraoEiYuNedWYrqGfEGZ6UeQP974N/CUAm
+         yJyw2TIyhnmQmeMGcfsFtlbjJqPxU3qkL/xUo7kt+suL2/x8j9RoYQ1rUXcziNJ1iXhL
+         i0nNCDtfD2zYTxVveP7mOm3LOhNdmt4/yHGGRA1E8ldLU0MXYlD39cZFiCEl9rLrYen7
+         6OnelRY0AUs8z9RuCBcDJtTYkbvNn4lHNor9J/KsEri3kXENxCpoCWr0Nql1p+iFJ2LQ
+         Aabk5+55jG0msA/OjQTJ5YQEMLQC87f8Ih2bJiBTlyyrCuppffQRwMQZ61+e/ibyUrEM
+         bdeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701219291; x=1701824091;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KD7A1Mi78WcdpTbacYeqydWRhhJC6MIZ9wADFHK3ceE=;
-        b=jKNWXoWS4XxFoOeCMho1klmXj2P012VHiMLeXV31DK8GGulS6RWO+5AYBrrjP2H9GB
-         ry96Ee9eXsnQx09pNUrgaoTBVAueB0Kg87rPJY9DSTnf+P9y196nIOGi3KodDisxXx7i
-         cf1OKqXqjpnHERHePbnePaUS4fMzD310muAt5gSM/rFLQ7IIRn0vOmyu5/tu6bWtIeid
-         RTKy83/iyXXjVRFoMcXZ4qA3qF20doEE0oDpGtAAgXO4nrD/v6yzLefywpR01jZN30gT
-         HBEKciw7iVzbJC6Y7P9stoHdE+6VK80ggYLER0BQFLKym8qD6f/CnMMGrFxW3a66xeV9
-         livw==
-X-Gm-Message-State: AOJu0Yz0mdlIKYl3gECy3z19/7nJ63BT3GCMlVCGPm/uEfj8kr4QPH9D
-	6jO3yqC/9dkj6jzTGCIPmKoSGw==
-X-Google-Smtp-Source: AGHT+IGKiwEuykqxh29J1y1VqvKSA4pC1uEUHtE7SoQBvdHo0iXpRqPiFg8DX/ZmKtSwphh/2Jx77g==
-X-Received: by 2002:a05:6870:c690:b0:1fa:2f8:c734 with SMTP id cv16-20020a056870c69000b001fa02f8c734mr16951479oab.5.1701219291679;
-        Tue, 28 Nov 2023 16:54:51 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id b1-20020a056830344100b006d81e704023sm945291otu.2.2023.11.28.16.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 16:54:51 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1r88qo-005kIY-2m;
-	Tue, 28 Nov 2023 20:54:50 -0400
-Date: Tue, 28 Nov 2023 20:54:50 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, akpm@linux-foundation.org,
-	alex.williamson@redhat.com, alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io, asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com, bhelgaas@google.com,
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
-	iommu@lists.linux.dev, jasowang@redhat.com,
-	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
-	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
-	m.szyprowski@samsung.com, netdev@vger.kernel.org,
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-	samuel@sholland.org, suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
-	virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
-	yu-cheng.yu@intel.com
-Subject: Re: [PATCH 00/16] IOMMU memory observability
-Message-ID: <20231129005450.GH1312390@ziepe.ca>
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com>
- <CA+CK2bB3nHfu1Z6_6fqN3YTAzKXMiJ12MOWpbs8JY7rQo4Fq0g@mail.gmail.com>
- <CAJD7tkZZNhf4KGV+7N+z8NFpJrvyeNudXU-WdVeE8Rm9pobfgQ@mail.gmail.com>
- <20231128235214.GD1312390@ziepe.ca>
- <CAJD7tkbbq6bHtPn7yE3wSS693OSthh1eBDvF-_MWZfDMXDYPKw@mail.gmail.com>
- <20231129002826.GG1312390@ziepe.ca>
- <CAJD7tkbxhK7XFcf7h+XE2poNuOsFBQFrxZyeFr=9DoEG_acssA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1701228121; x=1701832921;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ky2REY4MxzMO+RxmPId6O0x4sdb+oIV13EhP53U4pHw=;
+        b=YEQlteuWsdNGzLV/2yeWJiILusZi+EAat2uMYonLH70Fs42V0BPLh1ElxU12Z3Vw5O
+         Q80xWXB80KyC6SjmDVrr0xRaFh2zyVCn8pYQyddLN8YpMXNnj79gWnh4YQE9OBSXZsyr
+         Ud7/yvxXAD4uHhU0VIuCE/bOkJ1Sdr2Fmf4t9Y583tNV+V+6uT46xMPu5p8LPe27e14D
+         SfEH+YVwU5A438lfqMH48M/LNk0yl+k6kiOVG9GfVK35XWA6CLfn/niLegPrPJwwmaz0
+         C5QrhLpSb1p8CoOEZ2uB6Fi/ojtEKJKURQdY3uEipmyBDestXosDf7YJLsf19XBr1fE7
+         uKCQ==
+X-Gm-Message-State: AOJu0YyyhVUYp25hI5NV1WsWjV4iquyVbGpNblCR5a/IUAFtWkR2Uvfq
+	3xs3o7boPAUuichv21HHMUN47durUteuFnG7
+X-Google-Smtp-Source: AGHT+IGouOmFvlCqrx0oX4pFpmBSxSf6/wqNiY3Cuy+K3AoX5MxSxr91W70yChZlk6piYooZGVVAx0PEPE6lQeE2
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:690c:2e10:b0:5cd:c47d:d89f with
+ SMTP id et16-20020a05690c2e1000b005cdc47dd89fmr499535ywb.5.1701228121058;
+ Tue, 28 Nov 2023 19:22:01 -0800 (PST)
+Date: Wed, 29 Nov 2023 03:21:48 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbxhK7XFcf7h+XE2poNuOsFBQFrxZyeFr=9DoEG_acssA@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Message-ID: <20231129032154.3710765-1-yosryahmed@google.com>
+Subject: [mm-unstable v4 0/5] mm: memcg: subtree stats flushing and thresholds
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
+	"=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
+	Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>, 
+	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Nov 28, 2023 at 04:30:27PM -0800, Yosry Ahmed wrote:
-> On Tue, Nov 28, 2023 at 4:28 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Tue, Nov 28, 2023 at 04:25:03PM -0800, Yosry Ahmed wrote:
-> >
-> > > > > Right, but as I mention above, if userspace starts depending on this
-> > > > > equation, we won't be able to add any more classes of "secondary" page
-> > > > > tables to SecPageTables. I'd like to avoid that if possible. We can do
-> > > > > the subtraction in the kernel.
-> > > >
-> > > > What Sean had suggested was that SecPageTables was always intended to
-> > > > account all the non-primary mmu memory used by page tables. If this is
-> > > > the case we shouldn't be trying to break it apart into finer
-> > > > counters. These are big picture counters, not detailed allocation by
-> > > > owner counters.
-> > >
-> > > Right, I agree with that, but if SecPageTables includes page tables
-> > > from multiple sources, and it is observed to be suspiciously high, the
-> > > logical next step is to try to find the culprit, right?
-> >
-> > You can make that case already, if it is high wouldn't you want to
-> > find the exact VMM process that was making it high?
-> >
-> > It is a sign of fire, not a detailed debug tool.
-> 
-> Fair enough. We can always add separate counters later if needed,
-> potentially under KVM stats to get more fine-grained details as you
-> mentioned.
-> 
-> I am only worried about users subtracting the iommu-only counter to
-> get a KVM counter. We should at least document that  SecPageTables may
-> be expanded to include other sources later to avoid that.
+This series attempts to address shortages in today's approach for memcg
+stats flushing, namely occasionally stale or expensive stat reads. The
+series does so by changing the threshold that we use to decide whether
+to trigger a flush to be per memcg instead of global (patch 3), and then
+changing flushing to be per memcg (i.e. subtree flushes) instead of
+global (patch 5).
 
-Well, we just broke it already, anyone thinking it was only kvm
-counters is going to be sad now :) As I understand it was already
-described to be more general that kvm so probably nothing to do really
+Patch 3 & 5 are the core of the series, and they include more details
+and testing results. The rest are either cleanups or prep work.
 
-Jason
+This series replaces the "memcg: more sophisticated stats flushing"
+series [1], which also replaces another series, in a long list of
+attempts to improve memcg stats flushing. It is not a new version of
+the same patchset as it is a completely different approach. This is
+based on collected feedback from discussions on lkml in all previous
+attempts. Hopefully, this is the final attempt.
+
+There was a reported regression in v2 [2] for will-it-scale::fallocate
+benchmark. I believe this regression should not affect production
+workloads. This specific benchmark is allocating and freeing memory
+(using fallocate/ftruncate) at a rate that is much faster to make actual
+use of the memory. Testing this series on 100+ machines running
+production workloads did not show any practical regressions in page
+fault latency or allocation latency, but it showed great improvements in
+stats read time. I do not have numbers about the exact improvements for
+this series, but combined with another optimization for cgroup v1 [3] we
+see 5-10x improvements. A significant chunk of that is coming from the
+cgroup v1 optimization, but this series also made an improvement as
+reported by Domenico [4].
+
+v3 -> v4:
+- Rebased on top of mm-unstable + "workload-specific and memory
+  pressure-driven zswap writeback" series to fix conflicts [5].
+
+v3: https://lore.kernel.org/all/20231116022411.2250072-1-yosryahmed@google.com/
+
+[1]https://lore.kernel.org/lkml/20230913073846.1528938-1-yosryahmed@google.com/
+[2]https://lore.kernel.org/lkml/202310202303.c68e7639-oliver.sang@intel.com/
+[3]https://lore.kernel.org/lkml/20230803185046.1385770-1-yosryahmed@google.com/
+[4]https://lore.kernel.org/lkml/CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0dPYEL7nK77e2A@mail.gmail.com/
+[5]https://lore.kernel.org/all/20231127234600.2971029-1-nphamcs@gmail.com/
+
+Yosry Ahmed (5):
+  mm: memcg: change flush_next_time to flush_last_time
+  mm: memcg: move vmstats structs definition above flushing code
+  mm: memcg: make stats flushing threshold per-memcg
+  mm: workingset: move the stats flush into workingset_test_recent()
+  mm: memcg: restore subtree stats flushing
+
+ include/linux/memcontrol.h |   8 +-
+ mm/memcontrol.c            | 272 +++++++++++++++++++++----------------
+ mm/vmscan.c                |   2 +-
+ mm/workingset.c            |  42 ++++--
+ 4 files changed, 188 insertions(+), 136 deletions(-)
+
+-- 
+2.43.0.rc1.413.gea7ed67945-goog
+
 
