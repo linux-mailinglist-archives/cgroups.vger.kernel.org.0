@@ -1,129 +1,132 @@
-Return-Path: <cgroups+bounces-697-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-698-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9DB37FE476
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 01:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A81517FE4C6
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 01:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C6D9B21393
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 00:03:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B2B2B21008
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 00:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CAC17F8;
-	Thu, 30 Nov 2023 00:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177C6387;
+	Thu, 30 Nov 2023 00:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="iOzGNPoh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nM/jMiOM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC5910CE
-	for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 16:03:01 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1fa4e47f6c0so697744fac.0
-        for <cgroups@vger.kernel.org>; Wed, 29 Nov 2023 16:03:01 -0800 (PST)
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086D21A3;
+	Wed, 29 Nov 2023 16:21:38 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7b35d846f36so7132539f.0;
+        Wed, 29 Nov 2023 16:21:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701302581; x=1701907381; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=iqaBGyfV5ntKwlfmxQAMawFx8i861c6WUBXKE0OU9B4=;
-        b=iOzGNPohtJhV5ZKZto6OPi9ScC3+3i49b+LcVuxDq9mtzkWFxOvciaUfeoR4sw7MAj
-         QkroWu54eoGEksnarJc5KLNbJjo2b9/mRbC+ARswRHSJSyHf6r8cA77yjWE15tnQlLyz
-         LBW/x9VdJrPUIKxS84g8k0Qs9ndFvOUUMlXB7Nqmt7sEcoM/fPyFN2BUh3cbS5mvHdg0
-         VdkVOj4Kg/Qxda/ukbmSUzOpmMJI+XXCavYOg10/lBhhL0UvytuwbmpE/8guWJYyiZ+X
-         V6X2LIvossUNdgs1k1Z5XJ0azlmaKkohR5dD+1WWKcXd1aFqIkEqAhpHzDOqblxLktkC
-         OKmw==
+        d=gmail.com; s=20230601; t=1701303697; x=1701908497; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8sEYAfmnmUKDzXdKzmpSP1T6NxdrFel4xsutg1ntZcg=;
+        b=nM/jMiOM/X7yEyya+qb4zJZ2Rc/yGKBWae5hbSJUOmxi66a2zB6oS6qtpAtRF1G+ek
+         mfDaZXX3wwQpMWuj5tDUqAoeL1iGUvfkUUFd2s1fbGGiku7s7VIPX+nzJx95CWdxfgTE
+         1uB5yG6eRhpQWnBo957cKAqCR59B8uFpfAWcRzIWPXSXSlk0D+JlafDTVvhKPizbTlMN
+         gaxAQKgxHO5CJW4Ae8bhqJPHHOGuJfbz1rUpi/rd9qwRdm9qHSgT5OMMXCdhkOJLxOjH
+         kceAbVvR/Ezt8HhTlUzlu1E/uNTWc1XmFNmOkLXGmH2P33u7BHXgIMYvSyuhGKQB+d+i
+         k/sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701302581; x=1701907381;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iqaBGyfV5ntKwlfmxQAMawFx8i861c6WUBXKE0OU9B4=;
-        b=CTtGK/8Zf9cxznPjt/gR2S4DImy0SPoxQ4b8Ya7se1mmURidjWLSiIqyXziiHFKHwe
-         6Fw6FhlHNpLlW1ZnaCu07D2yfmQiTqYTLCzjtBQ5h/2AJoGxfCESVBWe5i5tCuqahZc+
-         2C5pic5+Qzo5G6fQ3XCcAVAIh6+0eC2WGZHPSq3+EeDUijmrTVKW7J9afyro0+0EhyiH
-         QW68XBBDZZGah1byjm58XmzYhh2GHBg3S60w52cj4jDHjMlo61MJ+gwfFECp6du1hA17
-         FVIxZEBmRM+5F/cEp/EF4HBHYlMmQ0sIVrbhul3BNizt7eYNivI0RDdfnkqSXEzbf0lF
-         VyLg==
-X-Gm-Message-State: AOJu0Yz/H3T/DNflkGsI9LpFXNUyRZs87z3KlcXIbG6mROFOcHkZullV
-	3r2MjGGp8y3WGGu31GBuSJ5hwQ==
-X-Google-Smtp-Source: AGHT+IH9mJrgeBca3QDmdqlZSO64E6UWuuZZMjhMVoz9rZsKA5pWXiF1aXxzzo/4HFbYhkfRvbso7A==
-X-Received: by 2002:a05:6870:1603:b0:1f9:eb7e:6621 with SMTP id b3-20020a056870160300b001f9eb7e6621mr10166623oae.18.1701302580971;
-        Wed, 29 Nov 2023 16:03:00 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id ry4-20020a056871208400b001efa3446d4esm3609159oab.43.2023.11.29.16.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 16:03:00 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1r8UWB-005qQQ-Hz;
-	Wed, 29 Nov 2023 20:02:59 -0400
-Date: Wed, 29 Nov 2023 20:02:59 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alex.williamson@redhat.com,
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-	heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
-	kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
-	m.szyprowski@samsung.com, netdev@vger.kernel.org,
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-	samuel@sholland.org, suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
-	virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
-	yu-cheng.yu@intel.com
-Subject: Re: [PATCH 09/16] iommu/iommufd: use page allocation function
- provided by iommu-pages.h
-Message-ID: <20231130000259.GS1312390@ziepe.ca>
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-10-pasha.tatashin@soleen.com>
- <20231128235254.GE1312390@ziepe.ca>
- <CA+CK2bC=vMU54wXz1GSzpOcLFCuX5vuE6tD49JF8cMbz4tis-g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1701303697; x=1701908497;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8sEYAfmnmUKDzXdKzmpSP1T6NxdrFel4xsutg1ntZcg=;
+        b=E7ucRgCYIapB0OY5VCh/D4G+idueKTGU2U4HjJyT3GDnoYfiFpLERW644VXP2bE+kM
+         hSGXMHG+CStLZMdhkKJPPZxVUn64Ot2SvqAyVMi01PTDgerpyhrAfyz21BxL9HNvHFr0
+         LG4Mr7k2G4hQpdrtn8u30dDMaO6BvMdE751b/f+BojOq5q/ssO2TrlwAWRTc+tHTeE3r
+         JDi9bCjoggAf3Iinv6k6k/IjRm5CCG5HfT38C0O1aToqIHF6LmlkHxX2CjAQLpRKEFNd
+         +JsKEjjoncgPpnJvHq+q92xp/JA/9eviKrchXod+/GKFc7XYBv7zZnj8eHmdA5gMF13w
+         /5/g==
+X-Gm-Message-State: AOJu0YwOMmrnzTHMVhsZbXjzvqnLxdXr30sfgTqOL6S/kExFEt/9F/Qb
+	JbUzYuFnkwwvIktNZmY/gyT1blqK+8LRazROnWA=
+X-Google-Smtp-Source: AGHT+IFnjon5ckFouO3ILdmOgn+ew1aPuvqBrEyBZkvxwT6MjHsyijlRuwmCEMmG8avlJLyEGPgvzflmo9ozXUtwHyo=
+X-Received: by 2002:a6b:e602:0:b0:79f:d04d:ce5a with SMTP id
+ g2-20020a6be602000000b0079fd04dce5amr17455738ioh.2.1701303697230; Wed, 29 Nov
+ 2023 16:21:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+CK2bC=vMU54wXz1GSzpOcLFCuX5vuE6tD49JF8cMbz4tis-g@mail.gmail.com>
+References: <20231127234600.2971029-1-nphamcs@gmail.com> <20231127234600.2971029-4-nphamcs@gmail.com>
+ <20231129151721.GC135852@cmpxchg.org>
+In-Reply-To: <20231129151721.GC135852@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 29 Nov 2023 16:21:26 -0800
+Message-ID: <CAKEwX=M=iFGS6PQyF7FiV2JDhN0uLzSiJ3TK30nGiV1mM1wZ+A@mail.gmail.com>
+Subject: Re: [PATCH v7 3/6] zswap: make shrinking memcg-aware
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com, 
+	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
+	vitaly.wool@konsulko.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeelb@google.com, muchun.song@linux.dev, chrisl@kernel.org, 
+	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 04:59:43PM -0500, Pasha Tatashin wrote:
-> On Tue, Nov 28, 2023 at 6:52 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Wed, Nov 29, 2023 at 7:17=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Mon, Nov 27, 2023 at 03:45:57PM -0800, Nhat Pham wrote:
+> >  static void shrink_worker(struct work_struct *w)
+> >  {
+> >       struct zswap_pool *pool =3D container_of(w, typeof(*pool),
+> >                                               shrink_work);
+> > +     struct mem_cgroup *memcg;
+> >       int ret, failures =3D 0;
 > >
-> > On Tue, Nov 28, 2023 at 08:49:31PM +0000, Pasha Tatashin wrote:
-> > > Convert iommu/iommufd/* files to use the new page allocation functions
-> > > provided in iommu-pages.h.
-> > >
-> > > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > > ---
-> > >  drivers/iommu/iommufd/iova_bitmap.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > This is a short term allocation, it should not be counted, that is why
-> > it is already not using GFP_KERNEL_ACCOUNT.
-> 
-> I made this change for completeness. I changed all calls to
-> get_free_page/alloc_page etc under driver/iommu to use the
-> iommu_alloc_* variants, this also helps future developers in this area
-> to use the right allocation functions.
-> The accounting is implemented using cheap per-cpu counters, so should
-> not affect the performance, I think it is OK to keep them here.
+> > +     /* global reclaim will select cgroup in a round-robin fashion. */
+> >       do {
+> > -             ret =3D zswap_reclaim_entry(pool);
+> > -             if (ret) {
+> > -                     zswap_reject_reclaim_fail++;
+> > -                     if (ret !=3D -EAGAIN)
+> > -                             break;
+> > +             spin_lock(&zswap_pools_lock);
+> > +             memcg =3D pool->next_shrink =3D
+> > +                     mem_cgroup_iter_online(NULL, pool->next_shrink, N=
+ULL, true);
+> > +
+> > +             /* full round trip */
+> > +             if (!memcg) {
+> > +                     spin_unlock(&zswap_pools_lock);
+> >                       if (++failures =3D=3D MAX_RECLAIM_RETRIES)
+> >                               break;
+> > +
+> > +                     goto resched;
+> >               }
+> > +
+> > +             /*
+> > +              * Acquire an extra reference to the iterated memcg in ca=
+se the
+> > +              * original reference is dropped by the zswap offlining c=
+allback.
+> > +              */
+> > +             css_get(&memcg->css);
+>
+> struct mem_cgroup isn't defined when !CONFIG_MEMCG. This needs a
+> mem_cgroup_get() wrapper and a dummy function for no-memcg builds.
 
-Except it is a mis use of an API that should only be used for page
-table memory :(
+I got this exact same issue a couple of versions ago, but it was
+hidden behind another helper function which can be implemented as a
+no-op in the case of !CONFIG_MEMCG, so I forgot about it until now. It
+always strikes me a bit weird that we have mem_cgroup_put() but not an
+equivalent get - let me correct that.
 
-Jason
+>
+> With that fixed, though, everything else looks good to me:
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Thanks for the review, Johannes!
 
