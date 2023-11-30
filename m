@@ -1,116 +1,113 @@
-Return-Path: <cgroups+bounces-749-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-750-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE0317FFDFF
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 22:52:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62BFF7FFFB1
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 00:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 819FD1F20F73
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 21:52:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02523B21035
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 23:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E83A5B5A8;
-	Thu, 30 Nov 2023 21:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9DC95952C;
+	Thu, 30 Nov 2023 23:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0tepH5Wb"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="UtanHwiH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC94C10F8
-	for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 13:52:38 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cc79f73e58so17525ad.1
-        for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 13:52:38 -0800 (PST)
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132DD10E4
+	for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 15:46:37 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35cfd975a53so1362005ab.1
+        for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 15:46:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701381158; x=1701985958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sfe9+yUHQWvFF1MBxcyQEWLBB5xhP4R/v24MyHrer70=;
-        b=0tepH5WbTQDmSBXXhFxxics+9wndxDVEo7hFze81ihmWMaiRmp5254VIEOZUvOB2wy
-         63Qz9piC+Lk2GItfcKvudo3r8eRj/CzXqt8K9Bk6YQ0RML4NkmI1AQkplvtJPgklBcRq
-         7bygYxKAHNltIvNwgTw4FbmO9w4OBnv30ciCcl+Ebin1e9u+XaLmOB+rsUtPWfP/IpA5
-         KMO2KVrbWJY41zRN39DEthXOHRp1HyBD1jTFnbCrOL//YsRXNnejbq3Rz8Rw5JQYm1Ap
-         AW7V/g7UvGAeGTm6zPCqE1aMbQl1mTHDiCRmHQ3gKSeM1EX0nLOAkKSmvHeY6v/8yTKB
-         EpDQ==
+        d=linuxfoundation.org; s=google; t=1701387996; x=1701992796; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zh250x7hPWKm3cEtn7H0ENDaWoHwP+xH2vXQISgMTVI=;
+        b=UtanHwiHwk/u9K+5iJi35mi1S9WgSFOIWaGjJQH9uFkppBKHdAIpfNJiNes6hJa28t
+         Xhe7GAl6IPdW0WTIeaAJi+uOg6rh1nCndzazcB/tRtoofn4Kkxr8fGtNOxTRcbN56IUw
+         bFkubbkM0y6cSzvw2R0KVRVsTcteXnkZSpa6M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701381158; x=1701985958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sfe9+yUHQWvFF1MBxcyQEWLBB5xhP4R/v24MyHrer70=;
-        b=g6v2QyhO3UkMpUBPS7AUETzyScxK/k2Yi3dUVnyPS2Gg1w+vOk2YMI5pKCZmhTwJsT
-         31KnQEsEu8GQpmR/eYOFibIsSwlpMVcyPd9TgnUezVHSAeRxozoMFLnRXu2itJOPtsNu
-         HcrJCW0SJ4Mrho40/kkSym5eeerAXg80DeacGzeDG6hUZHOo6cqRaL1C1dCYdsPTmjbo
-         sS9c3hZwIHNXqBF7rqlBCyJ4ryFBkrsSEIkCE4qP+C1QxgYC/BZ8PnsH1WdhV3GwKFoj
-         RPT9qJfr6ZOJx0NZBVwj8vxArLLCqfjlHt6JOF5Z+mp5k+DNNaLwALOVMV3Xt1blfsTE
-         j8ag==
-X-Gm-Message-State: AOJu0YxFWgAw7V+QzDp/TFlci/Aj13gcffAoll1XlDI2004Qouqeiaub
-	bqEoJdPxGZ5ZWDY/fQVeMaEgfmfdaHDeQ/NIlpn0Vw==
-X-Google-Smtp-Source: AGHT+IEScePdJsCv50KSaFJEK6pXwpZ9MhWwQ6fW0VE537kDsUCVBfYIWXio57IpD3sjKnP6BGpD7VHJg69DMzuDouE=
-X-Received: by 2002:a17:902:b684:b0:1cf:b218:25c7 with SMTP id
- c4-20020a170902b68400b001cfb21825c7mr39731pls.0.1701381157613; Thu, 30 Nov
- 2023 13:52:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701387996; x=1701992796;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zh250x7hPWKm3cEtn7H0ENDaWoHwP+xH2vXQISgMTVI=;
+        b=kZgRNVx339ThTn+JbQcjXOBHeWASHLI4QyueN4PDsBjC1ENXQzE/x1HgsNGFix1tqd
+         J0sdVCtg6m6rGfNJFZJy7QPrex/if1HuVhKq07Ujh5nxpelylHPMO8efVWTWmkA7PAuA
+         YL8omc+AD+7bdUSwJK8kgyLLhwDuHnZOfwW0qk/alrLSLxQNvZmGNpEFDAi3nZtTEkep
+         YTPn7Ervq67JWDkv9wBAhVBT+cJ6GQHu1PbStOwX9ybTgi1nlH2w7yCor4DpqNIX8nZ7
+         omQ0P53KRLu881l5QxG7JPCtL6msFqvLodq6IQTUrL1IsFOwfi4ywYipJO1EmIiUo4OR
+         rKaQ==
+X-Gm-Message-State: AOJu0YxQg1kUfdjsbopCqG5aUQqu8SZgjO3MYPbUedPOdk3dj6qHP7oB
+	H8mWGki2ggoGgHum3ep00fizEw==
+X-Google-Smtp-Source: AGHT+IHZwDGqqHcfAVap/vf6pHAy9YoCKCV0f7Ge3jlcZnLyFIzigfI+bN6GjaopeCQk+k0HXwJOJg==
+X-Received: by 2002:a5d:8b98:0:b0:790:958e:a667 with SMTP id p24-20020a5d8b98000000b00790958ea667mr25499298iol.2.1701387996280;
+        Thu, 30 Nov 2023 15:46:36 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id h5-20020a056638062500b004562646b66bsm579254jar.12.2023.11.30.15.46.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 15:46:36 -0800 (PST)
+Message-ID: <e13a07f6-d251-4510-aa3a-3a90583bd404@linuxfoundation.org>
+Date: Thu, 30 Nov 2023 16:46:35 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <ZWiw9cEsDap1Qm5h@tiehlicka> <20231130165642.GA386439@cmpxchg.org>
- <ZWjm3zRfJhN+dK4p@dschatzberg-fedora-PF3DHTBV> <CALvZod5dkpnF5h3u3cfdD4L8SExPZCXaPpt4fvpeVRiHPS8ySA@mail.gmail.com>
- <ZWkAiZ+Wx6VwRAPu@dschatzberg-fedora-PF3DHTBV>
-In-Reply-To: <ZWkAiZ+Wx6VwRAPu@dschatzberg-fedora-PF3DHTBV>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Thu, 30 Nov 2023 13:52:26 -0800
-Message-ID: <CALvZod7Buc1TPXFDA2fE8+apE9VJDA=uAYB1u00kyZy9oLbmgA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Yosry Ahmed <yosryahmed@google.com>, 
-	Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Peter Xu <peterx@redhat.com>, 
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Yue Zhao <findns94@gmail.com>, 
-	Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] selftests: cgroup: Fixes code style errors
+Content-Language: en-US
+To: Atul Kumar Pant <atulpant.linux@gmail.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, shuah@kernel.org
+Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20231106181144.117188-1-atulpant.linux@gmail.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231106181144.117188-1-atulpant.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Nov 30, 2023 at 1:37=E2=80=AFPM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
->
-> On Thu, Nov 30, 2023 at 12:30:27PM -0800, Shakeel Butt wrote:
-> > On Thu, Nov 30, 2023 at 11:47=E2=80=AFAM Dan Schatzberg
-> > <schatzberg.dan@gmail.com> wrote:
-> > >
-> > > On Thu, Nov 30, 2023 at 11:56:42AM -0500, Johannes Weiner wrote:
-> > > > [...]
-> > > > So I wouldn't say it's merely a reclaim hint. It controls a very
-> > > > concrete and influential factor in VM decision making. And since th=
-e
-> > > > global swappiness is long-established ABI, I don't expect its meani=
-ng
-> > > > to change significantly any time soon.
-> > >
-> > > I want to add to this last point. While swappiness does not have
-> > > terribly well-defined semantics - it is the (only?) existing mechanis=
-m
-> > > to control balance between anon and file reclaim. I'm merely
-> > > advocating for the ability to adjust swappiness during proactive
-> > > reclaim separately from reactive reclaim. To what degree the behavior
-> > > and semantics of swappiness change is a bit orthogonal here.
-> >
-> > Let me ask my question in this chain as it might have been missed:
-> >
-> > Whatever the semantics of swappiness are (including the edge cases
-> > like no swap, file_is_tiny, trim cache), should the reclaim code treat
-> > the global swappiness and user-provided swappiness differently?
->
-> I can't think of any reason why we would want swappiness interpreted
-> differently if it's provided at proactive reclaim time vs
-> globally. Did you have something in mind here?
+On 11/6/23 11:11, Atul Kumar Pant wrote:
+> Fixes following checkpatch.pl issues:
+> ERROR: do not use assignment in if condition
+> ERROR: Macros starting with if should be enclosed by a do - while
+> 
+> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> ---
+>   tools/testing/selftests/cgroup/cgroup_util.c | 14 ++++++++------
+>   tools/testing/selftests/cgroup/test_core.c   |  3 ++-
+>   2 files changed, 10 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
+> index 0340d4ca8f51..e165c4a703a6 100644
+> --- a/tools/testing/selftests/cgroup/cgroup_util.c
+> +++ b/tools/testing/selftests/cgroup/cgroup_util.c
+> @@ -411,12 +411,14 @@ int dirfd_open_opath(const char *dir)
+>   	return open(dir, O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW | O_PATH);
+>   }
+>   
+> -#define close_prot_errno(fd)                                                   \
+> -	if (fd >= 0) {                                                         \
+> -		int _e_ = errno;                                               \
+> -		close(fd);                                                     \
+> -		errno = _e_;                                                   \
+> -	}
+> +#define close_prot_errno(fd)				\
+> +	do {						\
+> +		if (fd >= 0) {                          \
+> +			int _e_ = errno;                \
+> +			close(fd);                      \
+> +			errno = _e_;                    \
+> +		}					\
+> +	} while (0);
 
-Nah just wanted to know what you are aiming for.
+Did you run checkpatch on this patch? You are fixing
+checkpatch errors - :)
+
+thanks,
+-- Shuah
 
