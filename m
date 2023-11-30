@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-732-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-730-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDE17FFC36
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 21:15:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D759C7FFC2D
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 21:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0931C2114B
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 20:15:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CB2A281A96
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 20:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92BE5EE7E;
-	Thu, 30 Nov 2023 20:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925245A0FF;
+	Thu, 30 Nov 2023 20:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="QfgvyeFp"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="ldSfYzld"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F731725
-	for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 12:15:12 -0800 (PST)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1fa289a35e7so685505fac.1
-        for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 12:15:12 -0800 (PST)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81089172D
+	for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 12:15:13 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-679dd3055faso7238546d6.0
+        for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 12:15:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701375311; x=1701980111; darn=vger.kernel.org;
+        d=soleen.com; s=google; t=1701375312; x=1701980112; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yfTdzFG6SHCh2UHnxot++MviNj2L80bFYdKeG3yhIm0=;
-        b=QfgvyeFp1CeiZ4e57mb8EOPAemBVt07ijtdGx6DQjzOhGgJaJKu4iGmhRW07CrttVJ
-         sTOqTjr9pZRSDsJh7C8qB3MQ+VLQS3pJwDvT8vzd2AAt6DnPLfxpTw2ilx2xFTuwBTKn
-         UONhLq9NWEksAr5eaCXmSrwPdMSsU1RZ7bCjcHiOzNi25jzsA3fNwGFgjf01ffpfYw4V
-         o5IBinJC1y2D5EZ3J5duApCuqaTIovT4bhy25qLFT+HC4XNjbbK6m4eq4QPm0fcMdCOS
-         aKtXxrD9+wZdwIlQUW6w1oQbKjHJfc1nFzLTmKDWTc7/6nr2IjWMg+AmsZT1m93S4jsu
-         XxBA==
+        bh=jRGmXGqyJzQ9dzCxzy8J7vcwlH74KXpuX5+P/ckDUHQ=;
+        b=ldSfYzldNZeeFRfd6WqclZ7cz8U/LZqMc8MlZSEdzA/tkcRw0K87Pz9aOqUllFGjU0
+         DfTC661dc5RXXFDmuFvyoOLfHUKInF0b3P2nyJ48WBX97wyuaU5qU6w+CI/7s3z47OTf
+         MqpQhsR6X6sBbtIFFII8Eeoh3aLZAddjGC28enTsVM38svDlowQQlRYE3aTRbnGN8zQz
+         QT7vARL2lJMJ3g+Qh9CEhy1iUnbNnjfLa+uK7yvQSeInUpI+8HmN399R8BxWbxd5Fyzv
+         Cd03EkbWyNT7XToZwcAm3pt1v2V0MEub0btvEzMCjC3US9HZ2bv2OukHerp98uhXNoLu
+         7AcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701375311; x=1701980111;
+        d=1e100.net; s=20230601; t=1701375312; x=1701980112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yfTdzFG6SHCh2UHnxot++MviNj2L80bFYdKeG3yhIm0=;
-        b=Ni6QCRLYRHoo+S6j+iLJCBS5A5sjsMJXxgxMl2I1Xu/++kXgr5bViM+7mLlV5gisZD
-         Zs38agl2M8xZLQVQeH/+nXUfjTYRfnZ7vqD2M/EAr05uLymWNVjzdXzpw2WBJwnql93D
-         W5FWvevGCFDFn8K2pcEgpJSxLVAMa46lCBAaEJzj9TNvKen81Sz5FhPv8oIrhmVEXnD9
-         Nr0AZNwA3427j24opoL5gwiAXHEqq+ORMO/4KvJUwK9euLY2GvLre1N/oNfFN9QnXvy2
-         W84kQ5DRj6DC7551B+zEcKadEKF3L/MZv6l3yzwTjqGW6rGs6oP/UutIaYg7gYcDgKZv
-         GWgg==
-X-Gm-Message-State: AOJu0YxGE8Tv+XNoEtGRdgZltyv8/vkX2bMKLAGnINlC3mgnGNXfccM1
-	1Z3sggkDaylaXSrnBFRFc9Creg==
-X-Google-Smtp-Source: AGHT+IFMEwE+ifBtQCWWH8W7nWxbE36GDcNl4TH5XHATcaDXANsvzTlHeJN6S0z8EPAHXXipNQHPnA==
-X-Received: by 2002:a05:6870:41cd:b0:1fa:c97:220a with SMTP id z13-20020a05687041cd00b001fa0c97220amr24204427oac.10.1701375311601;
-        Thu, 30 Nov 2023 12:15:11 -0800 (PST)
+        bh=jRGmXGqyJzQ9dzCxzy8J7vcwlH74KXpuX5+P/ckDUHQ=;
+        b=dCgsohKLRrzCznHuUGCSE5jTfwjQv7bb29cVJ9nd1nG/7rZGDXJ2/rUutL5ztA6sp/
+         jW3Z9uD4wqkmtjGohsCogpO0ZJlRJCBDHsZkp5gKXNRNlRHBwXtQAqAEIVKvoj3tmG/j
+         sJvqodDMiG317PdkBZCbZZgDBf9swQMgQOsKRg+vsLg5kscRRkUk/Yqac8L6fNN/Rhxi
+         +MUzjfwfm1Q+wMj5BN7bu6REyAKlgPaBFFAszhhTeJml395grJr3uL63YTjwT3W1zSWB
+         u5PlvGY+lm5x0u9HmZLvBHND1ZPMFW67ESuTZB7ZiQHZU3P1mBXUC9y6KIyV9UL7mk9o
+         kJEw==
+X-Gm-Message-State: AOJu0YwOrgK1jJv/7SfKjmGq438ijaBdlqHSt2liPROuvFLYwmoQb8jQ
+	jj2w8qe8r9iiUQyA/PzUkcjOIg==
+X-Google-Smtp-Source: AGHT+IGcwSJfMg7Wvu1IirdGyJp85Q7AXnz+gps4Wsq6RDzrMQCHyomSRCyLZSC9k8WgNjE2V5K0wQ==
+X-Received: by 2002:a05:6214:2e11:b0:67a:93fa:b331 with SMTP id mx17-20020a0562142e1100b0067a93fab331mr288846qvb.6.1701375312521;
+        Thu, 30 Nov 2023 12:15:12 -0800 (PST)
 Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id e1-20020a0cb441000000b0067a35608186sm795252qvf.28.2023.11.30.12.15.10
+        by smtp.gmail.com with ESMTPSA id e1-20020a0cb441000000b0067a35608186sm795252qvf.28.2023.11.30.12.15.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 12:15:11 -0800 (PST)
+        Thu, 30 Nov 2023 12:15:12 -0800 (PST)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
 To: akpm@linux-foundation.org,
 	alim.akhtar@samsung.com,
@@ -97,9 +97,9 @@ To: akpm@linux-foundation.org,
 	wens@csie.org,
 	will@kernel.org,
 	yu-cheng.yu@intel.com
-Subject: [PATCH v2 04/10] iommu/io-pgtable-dart: use page allocation function provided by iommu-pages.h
-Date: Thu, 30 Nov 2023 20:14:58 +0000
-Message-ID: <20231130201504.2322355-5-pasha.tatashin@soleen.com>
+Subject: [PATCH v2 05/10] iommu/exynos: use page allocation function provided by iommu-pages.h
+Date: Thu, 30 Nov 2023 20:14:59 +0000
+Message-ID: <20231130201504.2322355-6-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 In-Reply-To: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
 References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
@@ -111,115 +111,64 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert iommu/io-pgtable-dart.c to use the new page allocation functions
+Convert iommu/exynos-iommu.c to use the new page allocation functions
 provided in iommu-pages.h.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Janne Grunau <j@jannau.net>
 ---
- drivers/iommu/io-pgtable-dart.c | 37 +++++++++++++--------------------
- 1 file changed, 14 insertions(+), 23 deletions(-)
+ drivers/iommu/exynos-iommu.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/io-pgtable-dart.c b/drivers/iommu/io-pgtable-dart.c
-index 74b1ef2b96be..ad28031e1e93 100644
---- a/drivers/iommu/io-pgtable-dart.c
-+++ b/drivers/iommu/io-pgtable-dart.c
-@@ -23,6 +23,7 @@
- #include <linux/types.h>
+diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
+index 2c6e9094f1e9..3eab0ae65a4f 100644
+--- a/drivers/iommu/exynos-iommu.c
++++ b/drivers/iommu/exynos-iommu.c
+@@ -22,6 +22,8 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
  
- #include <asm/barrier.h>
 +#include "iommu-pages.h"
++
+ typedef u32 sysmmu_iova_t;
+ typedef u32 sysmmu_pte_t;
+ static struct iommu_domain exynos_identity_domain;
+@@ -900,11 +902,11 @@ static struct iommu_domain *exynos_iommu_domain_alloc_paging(struct device *dev)
+ 	if (!domain)
+ 		return NULL;
  
- #define DART1_MAX_ADDR_BITS	36
+-	domain->pgtable = (sysmmu_pte_t *)__get_free_pages(GFP_KERNEL, 2);
++	domain->pgtable = iommu_alloc_pages(GFP_KERNEL, 2);
+ 	if (!domain->pgtable)
+ 		goto err_pgtable;
  
-@@ -106,18 +107,12 @@ static phys_addr_t iopte_to_paddr(dart_iopte pte,
- 	return paddr;
- }
+-	domain->lv2entcnt = (short *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 1);
++	domain->lv2entcnt = iommu_alloc_pages(GFP_KERNEL, 1);
+ 	if (!domain->lv2entcnt)
+ 		goto err_counter;
  
--static void *__dart_alloc_pages(size_t size, gfp_t gfp,
--				    struct io_pgtable_cfg *cfg)
-+static void *__dart_alloc_pages(size_t size, gfp_t gfp)
- {
- 	int order = get_order(size);
--	struct page *p;
+@@ -930,9 +932,9 @@ static struct iommu_domain *exynos_iommu_domain_alloc_paging(struct device *dev)
+ 	return &domain->domain;
  
- 	VM_BUG_ON((gfp & __GFP_HIGHMEM));
--	p = alloc_pages(gfp | __GFP_ZERO, order);
--	if (!p)
--		return NULL;
--
--	return page_address(p);
-+	return iommu_alloc_pages(gfp, order);
- }
- 
- static int dart_init_pte(struct dart_io_pgtable *data,
-@@ -262,13 +257,13 @@ static int dart_map_pages(struct io_pgtable_ops *ops, unsigned long iova,
- 
- 	/* no L2 table present */
- 	if (!pte) {
--		cptep = __dart_alloc_pages(tblsz, gfp, cfg);
-+		cptep = __dart_alloc_pages(tblsz, gfp);
- 		if (!cptep)
- 			return -ENOMEM;
- 
- 		pte = dart_install_table(cptep, ptep, 0, data);
- 		if (pte)
--			free_pages((unsigned long)cptep, get_order(tblsz));
-+			iommu_free_pages(cptep, get_order(tblsz));
- 
- 		/* L2 table is present (now) */
- 		pte = READ_ONCE(*ptep);
-@@ -419,8 +414,7 @@ apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
- 	cfg->apple_dart_cfg.n_ttbrs = 1 << data->tbl_bits;
- 
- 	for (i = 0; i < cfg->apple_dart_cfg.n_ttbrs; ++i) {
--		data->pgd[i] = __dart_alloc_pages(DART_GRANULE(data), GFP_KERNEL,
--					   cfg);
-+		data->pgd[i] = __dart_alloc_pages(DART_GRANULE(data), GFP_KERNEL);
- 		if (!data->pgd[i])
- 			goto out_free_data;
- 		cfg->apple_dart_cfg.ttbr[i] = virt_to_phys(data->pgd[i]);
-@@ -429,9 +423,10 @@ apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
- 	return &data->iop;
- 
- out_free_data:
--	while (--i >= 0)
--		free_pages((unsigned long)data->pgd[i],
--			   get_order(DART_GRANULE(data)));
-+	while (--i >= 0) {
-+		iommu_free_pages(data->pgd[i],
-+				 get_order(DART_GRANULE(data)));
-+	}
- 	kfree(data);
+ err_lv2ent:
+-	free_pages((unsigned long)domain->lv2entcnt, 1);
++	iommu_free_pages(domain->lv2entcnt, 1);
+ err_counter:
+-	free_pages((unsigned long)domain->pgtable, 2);
++	iommu_free_pages(domain->pgtable, 2);
+ err_pgtable:
+ 	kfree(domain);
  	return NULL;
- }
-@@ -439,6 +434,7 @@ apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
- static void apple_dart_free_pgtable(struct io_pgtable *iop)
- {
- 	struct dart_io_pgtable *data = io_pgtable_to_data(iop);
-+	int order = get_order(DART_GRANULE(data));
- 	dart_iopte *ptep, *end;
- 	int i;
- 
-@@ -449,15 +445,10 @@ static void apple_dart_free_pgtable(struct io_pgtable *iop)
- 		while (ptep != end) {
- 			dart_iopte pte = *ptep++;
- 
--			if (pte) {
--				unsigned long page =
--					(unsigned long)iopte_deref(pte, data);
--
--				free_pages(page, get_order(DART_GRANULE(data)));
--			}
-+			if (pte)
-+				iommu_free_pages(iopte_deref(pte, data), order);
+@@ -973,8 +975,8 @@ static void exynos_iommu_domain_free(struct iommu_domain *iommu_domain)
+ 					phys_to_virt(base));
  		}
--		free_pages((unsigned long)data->pgd[i],
--			   get_order(DART_GRANULE(data)));
-+		iommu_free_pages(data->pgd[i], order);
- 	}
  
- 	kfree(data);
+-	free_pages((unsigned long)domain->pgtable, 2);
+-	free_pages((unsigned long)domain->lv2entcnt, 1);
++	iommu_free_pages(domain->pgtable, 2);
++	iommu_free_pages(domain->lv2entcnt, 1);
+ 	kfree(domain);
+ }
+ 
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
