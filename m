@@ -1,142 +1,170 @@
-Return-Path: <cgroups+bounces-702-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-703-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7167FF122
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 15:05:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8267FF3BA
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 16:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118C61C20E07
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 14:05:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA4FC1F20D46
+	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 15:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B66C487BE;
-	Thu, 30 Nov 2023 14:05:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D30B524D4;
+	Thu, 30 Nov 2023 15:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="avlGWeL7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dOuj9+RS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCFE10D0;
-	Thu, 30 Nov 2023 06:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701353098; x=1732889098;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xqtTZvY053veljR4ETMpWFPpHyKU0+OBKnIK2FZ1Hl0=;
-  b=avlGWeL7GR+bfL4sLs8D28WpOgVx3rntBWjjPBJdKGaYjItkV057D1h2
-   KOMi7hYeHo8KWjIxpO48etDu3gzRVLOK+DyZ9xuI1jhqvQ+Nkua7GL0Dn
-   IJlPSXhbEBn7THFH8C90SnkLy7IIrkeaZfnQZgVEGt/pXL291otCBF3jH
-   dxwFI85OuM2xLn/6Fo8uOp2ErW9TnNjE8J/LWkuJfrkHHS7gJFmC8slrK
-   ZPvJk9lgsOEmFdHxjceNmeS67A3UIFaWUEzdM/rkOGjdtNXr4xmj8jCky
-   sZFXw+s3VllVS7etz+dm0bDt4xrcgg+SSMumLp8cPOMra2AqZJgRCYqja
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="226591"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="226591"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:04:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="1016636131"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="1016636131"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Nov 2023 06:03:57 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r8hdz-00025l-1H;
-	Thu, 30 Nov 2023 14:03:55 +0000
-Date: Thu, 30 Nov 2023 22:03:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>, akpm@linux-foundation.org,
-	alex.williamson@redhat.com, alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io, asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com, bhelgaas@google.com,
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
-	iommu@lists.linux.dev, jasowang@redhat.com,
-	jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
-	joro@8bytes.org, kevin.tian@intel.com,
-	krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 13/16] iommu: observability of the IOMMU allocations
-Message-ID: <202311302108.WERv9oSO-lkp@intel.com>
-References: <20231128204938.1453583-14-pasha.tatashin@soleen.com>
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146B710DF;
+	Thu, 30 Nov 2023 07:38:15 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77d708e4916so48385285a.3;
+        Thu, 30 Nov 2023 07:38:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701358694; x=1701963494; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iHt5GWpmh8+9rwkGRbQdmAOL6TBISUyjYNzzHw7DKOw=;
+        b=dOuj9+RSpq9WraSpu5bJ234WW3s6vfaOPQKzEMhTDaH71NXQXVwJ13UDh5qSW9wNwZ
+         KVkS3R9JmsdIVGyuMkcH0i4NanhNjhBSfkZQS/7vYKsmHZ71IXsKSHuh3XKSaZHFdbNL
+         MLxTJYwvRCf5CWF8OvvxZdBKDG2015kAcj7Sf0lK1vv/RULLUKg62vV3UOmfiPDlax/l
+         UDl6KESb4pSzxsx0XAiFLwVGTNHzHgmoa2IB5sq3T1p+Uq8xPsgIP7RvZ5xagsIdsZ0D
+         lurj30nPCJjW8s1YnzpE8VvdHZewJ7Gqi96zdWCPD+3W2lGmGd4QToCyLUW41OWBwpwz
+         nVbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701358694; x=1701963494;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iHt5GWpmh8+9rwkGRbQdmAOL6TBISUyjYNzzHw7DKOw=;
+        b=qYZ28o2gDXbaJ796rhD9Bl9fpr4sGad+swi8bl3ztUxhJpSYuXA8uUBKq+6gVO2peS
+         qDXdQ7oJoBUerdL+L93wj0eDna//YjXTqjW/2ZrGeYs9kMq1TU+qZfBJkV6XH9g7/uzP
+         SUgYJ9bAImJrmlaPwtVnM95tP5dWmcBxNIkWfvnqjYSlQVJRHRbHuf6xcgNIhGEhMla+
+         VXBeKPg8fR7qVK8GlczSNWMXnOJX8418MRQv9NioQid1S8dP/jPpHshtjGlXTz1rVh3u
+         WSbbJIcSI1r5bUNj5bzWWZ8wIINFd/vqYEW2Hr37yZUTj1XzyHxicGpVDN9tmyhyq1uG
+         sL8w==
+X-Gm-Message-State: AOJu0YyJ96bTy2Z1kmPo2kA4foXTUDxkTMCPc5T6nE/QMInR4UeoZ6WH
+	g2ulwuHpmrpBFPsv/WbnxPg=
+X-Google-Smtp-Source: AGHT+IG+YeVQU9bOA8JsYBiNqgPoYpCg7li0RkAm6JM0YUNx3+QG1A+NWtwQO9eyBgDbPmFnHT4o8g==
+X-Received: by 2002:a05:620a:3913:b0:77d:8659:ee65 with SMTP id qr19-20020a05620a391300b0077d8659ee65mr25383275qkn.67.1701358693897;
+        Thu, 30 Nov 2023 07:38:13 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::4:edc5])
+        by smtp.gmail.com with ESMTPSA id bi32-20020a05620a31a000b0077d9f83e691sm593708qkb.35.2023.11.30.07.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 07:38:13 -0800 (PST)
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+To: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Huan Yang <link@vivo.com>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Peter Xu <peterx@redhat.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Yue Zhao <findns94@gmail.com>,
+	Hugh Dickins <hughd@google.com>
+Subject: [PATCH 0/1] Add swappiness argument to memory.reclaim
+Date: Thu, 30 Nov 2023 07:36:53 -0800
+Message-Id: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128204938.1453583-14-pasha.tatashin@soleen.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Pasha,
+(Sorry for the resend - forgot to cc the mailing lists)
 
-kernel test robot noticed the following build errors:
+This patch proposes augmenting the memory.reclaim interface with a
+swappiness=<val> argument that overrides the swappiness value for that instance
+of proactive reclaim.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on awilliam-vfio/for-linus linus/master v6.7-rc3]
-[cannot apply to joro-iommu/next awilliam-vfio/next next-20231130]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Userspace proactive reclaimers use the memory.reclaim interface to trigger
+reclaim. The memory.reclaim interface does not allow for any way to effect the
+balance of file vs anon during proactive reclaim. The only approach is to adjust
+the vm.swappiness setting. However, there are a few reasons we look to control
+the balance of file vs anon during proactive reclaim, separately from reactive
+reclaim:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Pasha-Tatashin/iommu-vt-d-add-wrapper-functions-for-page-allocations/20231129-054908
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231128204938.1453583-14-pasha.tatashin%40soleen.com
-patch subject: [PATCH 13/16] iommu: observability of the IOMMU allocations
-config: sparc64-randconfig-r054-20231130 (https://download.01.org/0day-ci/archive/20231130/202311302108.WERv9oSO-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302108.WERv9oSO-lkp@intel.com/reproduce)
+* Swapout should be limited to manage SSD write endurance. In near-OOM
+  situations we are fine with lots of swap-out to avoid OOMs. As these are
+  typically rare events, they have relatively little impact on write endurance.
+  However, proactive reclaim runs continuously and so its impact on SSD write
+  endurance is more significant. Therefore it is desireable to control swap-out
+  for proactive reclaim separately from reactive reclaim
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311302108.WERv9oSO-lkp@intel.com/
+* Some userspace OOM killers like systemd-oomd[1] support OOM killing on swap
+  exhaustion. This makes sense if the swap exhaustion is triggered due to
+  reactive reclaim but less so if it is triggered due to proactive reclaim (e.g.
+  one could see OOMs when free memory is ample but anon is just particularly
+  cold). Therefore, it's desireable to have proactive reclaim reduce or stop
+  swap-out before the threshold at which OOM killing occurs.
 
-All errors (new ones prefixed by >>):
+In the case of Meta's Senpai proactive reclaimer, we adjust vm.swappiness before
+writes to memory.reclaim[2]. This has been in production for nearly two years
+and has addressed our needs to control proactive vs reactive reclaim behavior
+but is still not ideal for a number of reasons:
 
-   In file included from drivers/iommu/iommufd/iova_bitmap.c:11:
-   drivers/iommu/iommufd/../iommu-pages.h: In function '__iommu_alloc_account':
->> drivers/iommu/iommufd/../iommu-pages.h:29:48: error: 'NR_IOMMU_PAGES' undeclared (first use in this function)
-      29 |         mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, pgcnt);
-         |                                                ^~~~~~~~~~~~~~
-   drivers/iommu/iommufd/../iommu-pages.h:29:48: note: each undeclared identifier is reported only once for each function it appears in
-   drivers/iommu/iommufd/../iommu-pages.h: In function '__iommu_free_account':
-   drivers/iommu/iommufd/../iommu-pages.h:41:48: error: 'NR_IOMMU_PAGES' undeclared (first use in this function)
-      41 |         mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, -pgcnt);
-         |                                                ^~~~~~~~~~~~~~
+* vm.swappiness is a global setting, adjusting it can race/interfere with other
+  system administration that wishes to control vm.swappiness. In our case, we
+  need to disable Senpai before adjusting vm.swappiness.
 
+* vm.swappiness is stateful - so a crash or restart of Senpai can leave a
+  misconfigured setting. This requires some additional management to record the
+  "desired" setting and ensure Senpai always adjusts to it.
 
-vim +/NR_IOMMU_PAGES +29 drivers/iommu/iommufd/../iommu-pages.h
+With this patch, we avoid these downsides of adjusting vm.swappiness globally.
 
-    13	
-    14	/*
-    15	 * All page allocation that are performed in the IOMMU subsystem must use one of
-    16	 * the functions below.  This is necessary for the proper accounting as IOMMU
-    17	 * state can be rather large, i.e. multiple gigabytes in size.
-    18	 */
-    19	
-    20	/**
-    21	 * __iommu_alloc_account - account for newly allocated page.
-    22	 * @pages: head struct page of the page.
-    23	 * @order: order of the page
-    24	 */
-    25	static inline void __iommu_alloc_account(struct page *pages, int order)
-    26	{
-    27		const long pgcnt = 1l << order;
-    28	
-  > 29		mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, pgcnt);
-    30	}
-    31	
+Previously, this exact interface addition was proposed by Yosry[3]. In response,
+Roman proposed instead an interface to specify precise file/anon/slab reclaim
+amounts[4]. More recently Huan also proposed this as well[5] and others
+similarly questioned if this was the proper interface.
+
+Previous proposals sought to use this to allow proactive reclaimers to
+effectively perform a custom reclaim algorithm by issuing proactive reclaim with
+different settings to control file vs anon reclaim (e.g. to only reclaim anon
+from some applications). Responses argued that adjusting swappiness is a poor
+interface for custom reclaim.
+
+In contrast, I argue in favor of a swappiness setting not as a way to implement
+custom reclaim algorithms but rather to bias the balance of anon vs file due to
+differences of proactive vs reactive reclaim. In this context, swappiness is the
+existing interface for controlling this balance and this patch simply allows for
+it to be configured differently for proactive vs reactive reclaim.
+
+Specifying explicit amounts of anon vs file pages to reclaim feels inappropriate
+for this prupose. Proactive reclaimers are un-aware of the relative age of file
+vs anon for a cgroup which makes it difficult to manage proactive reclaim of
+different memory pools. A proactive reclaimer would need some amount of anon
+reclaim attempts separate from the amount of file reclaim attempts which seems
+brittle given that it's difficult to observe the impact.
+
+[1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+[2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
+[3]https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
+[4]https://lore.kernel.org/linux-mm/YoPHtHXzpK51F%2F1Z@carbon/
+[5]https://lore.kernel.org/lkml/20231108065818.19932-1-link@vivo.com/
+
+Dan Schatzberg (1):
+  mm: add swapiness= arg to memory.reclaim
+
+ include/linux/swap.h |  3 ++-
+ mm/memcontrol.c      | 55 +++++++++++++++++++++++++++++++++++---------
+ mm/vmscan.c          | 13 +++++++++--
+ 3 files changed, 57 insertions(+), 14 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
