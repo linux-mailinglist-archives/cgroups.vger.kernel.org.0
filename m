@@ -1,144 +1,124 @@
-Return-Path: <cgroups+bounces-756-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-757-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 401E880034A
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 06:49:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A418800715
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 10:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D23F6B210F4
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 05:49:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF813B210A8
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 09:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009448BFD;
-	Fri,  1 Dec 2023 05:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PXnoOuFB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF6D1CFAF;
+	Fri,  1 Dec 2023 09:33:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE85C1734;
-	Thu, 30 Nov 2023 21:48:57 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1d03bcf27e9so1682745ad.0;
-        Thu, 30 Nov 2023 21:48:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701409737; x=1702014537; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TZbnJURuf0YnsoB4uScWxuFhK6jg2U0wRIA3IoSThz8=;
-        b=PXnoOuFB3awpRWChL3Jgs+16RjqeshglPwp+iNSuCgPSivP7rslQ8FnXWyu7Gu6p2Q
-         NR3HbyaWJKebGrP9WlQJroqCQ5B0aPJK7LJGgBBnCm3DM5LI7hcwHdBtB+ygIbhWc/+V
-         X7yK1RcFZHTcIfUk3x3PTFsf+13uKK6JZEHwfBedpYmDgAGBbnBNfIWez4MuDCg+/Zmt
-         yeImHzppCKLZ5BJXTPztEUIBFh409w1LN3i3H+R7P7FjHaK9CfqoraGFeEDDlNznKRVO
-         uN4zpgJLx4uhAEhCmJTth7x+MZ96IxsPVcC8cmDIChwsF2oH1nXYFT8yT1v2NK0GrpK/
-         gfBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701409737; x=1702014537;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TZbnJURuf0YnsoB4uScWxuFhK6jg2U0wRIA3IoSThz8=;
-        b=ubPdTGZij0I7uw2LfUdaijIfdK0+W+3+tIyrrJb31pC9eVyHKcaF05C27JT4ZP9t8s
-         lAw3yCOMTX/IaqWFVZC4Dsv7uczKtZ4opO+mTDweZNIAlsksZWagY6fzFc87tNCtH8DK
-         +7Be6uVUqcyqQe3zCID+HQbhY8PfTsx4LjrELTUViPxSfUeGNor+FKHJ8YRgDiOR50fQ
-         rUDe/2v+GHHLPBjfJMjDCY2EY5WOUdkK2ip44TtnWQwuAfLXP6bfPpXUE52CfCyQHc4B
-         pZGY7bo2d6AxwWr0PwtzQKBJFuHkGohILsM+CO884YGJZP7r/r7I+yOmE8lTfyppxAgB
-         yLzA==
-X-Gm-Message-State: AOJu0Yxa0meDDuHWG/jIt+/qBdUWJufvLKE5jTx0OIw3HZiDBTxJQJbZ
-	I4Ji6CUmSUkHKP3c7Pst88Q=
-X-Google-Smtp-Source: AGHT+IGZqlD0EmL3ZVck683sJvma02d++2s3GfxmJHMjTUkw5O7CYkyRj5MofR4ZpGBrs++rk2ndkg==
-X-Received: by 2002:a17:90a:a407:b0:286:5811:2571 with SMTP id y7-20020a17090aa40700b0028658112571mr1018948pjp.0.1701409736984;
-        Thu, 30 Nov 2023 21:48:56 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id p7-20020a17090a348700b00280c285f878sm2508465pjb.55.2023.11.30.21.48.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 21:48:55 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 0CFE6100823C0; Fri,  1 Dec 2023 12:48:50 +0700 (WIB)
-Date: Fri, 1 Dec 2023 12:48:50 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Josh Don <joshdon@google.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: Linux CGroups <cgroups@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Attreyee M <tintinm2017@gmail.com>
-Subject: Re: [PATCH] cgroup: Fix documentation for cpu.idle
-Message-ID: <ZWlzwnO7PcOWQ2q_@archie.me>
-References: <20231201005203.309873-1-joshdon@google.com>
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CD0324D;
+	Fri,  1 Dec 2023 01:33:04 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CDD221FD63;
+	Fri,  1 Dec 2023 09:33:02 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B4CA1369E;
+	Fri,  1 Dec 2023 09:33:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XBWZIU6oaWWRUQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 09:33:02 +0000
+Date: Fri, 1 Dec 2023 10:33:01 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Peter Xu <peterx@redhat.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
+Message-ID: <ZWmoTa7MlD7h9FYm@tiehlicka>
+References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+ <ZWiw9cEsDap1Qm5h@tiehlicka>
+ <20231130165642.GA386439@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CCIfMmdnUlJnGiMR"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201005203.309873-1-joshdon@google.com>
+In-Reply-To: <20231130165642.GA386439@cmpxchg.org>
+X-Spamd-Bar: +++++++++++++++
+X-Spam-Score: 15.00
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
+X-Rspamd-Queue-Id: CDD221FD63
+X-Spamd-Result: default: False [15.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.05)[-0.266];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[gmail.com,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,linux-foundation.org,redhat.com,infradead.org,intel.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam: Yes
 
+On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
+[...]
+> So I wouldn't say it's merely a reclaim hint. It controls a very
+> concrete and influential factor in VM decision making. And since the
+> global swappiness is long-established ABI, I don't expect its meaning
+> to change significantly any time soon.
 
---CCIfMmdnUlJnGiMR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As I've said I am more worried about potential future changes which
+would modify existing, reduce or add more corner cases which would be
+seen as a change of behavior from the user space POV. That means that we
+would have to be really explicit about the fact that the reclaim is free
+to override the swappiness provided by user. So essentially a best
+effort interface without any actual guarantees. That surely makes it
+harder to use. Is it still useable?
 
-On Thu, Nov 30, 2023 at 04:52:03PM -0800, Josh Don wrote:
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 3f85254f3cef..9debf02bcb39 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1093,7 +1093,11 @@ All time durations are in microseconds.
->  	A read-write single value file which exists on non-root
->  	cgroups.  The default is "100".
-> =20
-> -	The weight in the range [1, 10000].
-> +	For non idle groups (cpu.idle =3D 0), the weight is in the
-> +	range [1, 10000].
-> +
-> +	If the cgroup has been configured to be SCHED_IDLE (cpu.idle =3D 1),
-> +	then the weight will show as a 0.
+Btw. IIRC these concerns were part of the reason why memcg v2 doesn't
+have swappiness interface. If we decide to export swappiness via
+memory.reclaim interface does it mean we will do so on per-memcg level
+as well?
 
-This one LGTM.
-
-> =20
->    cpu.weight.nice
->  	A read-write single value file which exists on non-root
-> @@ -1157,6 +1161,16 @@ All time durations are in microseconds.
->          values similar to the sched_setattr(2). This maximum utilization
->          value is used to clamp the task specific maximum utilization cla=
-mp.
-> =20
-> +  cpu.idle
-> +	A read-write single value file which exists on non-root cgroups.
-> +	The default is 0.
-> +
-> +	This is the cgroup analog of the per-task SCHED_IDLE sched policy.
-"... cgroup analogy to ..."
-> +	Setting this value to a 1 will make the scheduling policy of the
-> +	cgroup SCHED_IDLE. The threads inside the cgroup will retain their
-> +	own relative priorities, but the cgroup itself will be treated as
-> +	very low priority relative to its peers.
-> +
-> =20
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---CCIfMmdnUlJnGiMR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWlzvwAKCRD2uYlJVVFO
-o/DQAP0bPgK2LiPMvZkW1bC1ur0ZYQb6pysH6EF0VG3CEwC6zwEAxtHE0k2WmUk3
-XESJyv4hqDUe0jLIYGDVjuLeDf59JAU=
-=TNFj
------END PGP SIGNATURE-----
-
---CCIfMmdnUlJnGiMR--
+-- 
+Michal Hocko
+SUSE Labs
 
