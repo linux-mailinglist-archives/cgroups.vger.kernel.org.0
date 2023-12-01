@@ -1,113 +1,116 @@
-Return-Path: <cgroups+bounces-750-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-751-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62BFF7FFFB1
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 00:46:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB8C2800091
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 01:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02523B21035
-	for <lists+cgroups@lfdr.de>; Thu, 30 Nov 2023 23:46:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17786B20FBB
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 00:52:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9DC95952C;
-	Thu, 30 Nov 2023 23:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C52010E6;
+	Fri,  1 Dec 2023 00:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="UtanHwiH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WLHN/zDn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132DD10E4
-	for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 15:46:37 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35cfd975a53so1362005ab.1
-        for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 15:46:37 -0800 (PST)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3A210D9
+	for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 16:52:08 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5cf4696e202so26570307b3.2
+        for <cgroups@vger.kernel.org>; Thu, 30 Nov 2023 16:52:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701387996; x=1701992796; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zh250x7hPWKm3cEtn7H0ENDaWoHwP+xH2vXQISgMTVI=;
-        b=UtanHwiHwk/u9K+5iJi35mi1S9WgSFOIWaGjJQH9uFkppBKHdAIpfNJiNes6hJa28t
-         Xhe7GAl6IPdW0WTIeaAJi+uOg6rh1nCndzazcB/tRtoofn4Kkxr8fGtNOxTRcbN56IUw
-         bFkubbkM0y6cSzvw2R0KVRVsTcteXnkZSpa6M=
+        d=google.com; s=20230601; t=1701391928; x=1701996728; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=D7rrSw0NQO055D8S8vjtnTn1EUTQ7K87+88fh2pqZsE=;
+        b=WLHN/zDnudw72XGN7U34kCKpO9lItXRoXISxGG274BqlzUxYGE/vC8koDz324GYsvN
+         TYFPJTlR+An7MSdXAmSV9aCshp/RtFPa86q7rrUFcSc5pKz8HcSq8hdlFGDWCBG6eM7J
+         y9hGA+vJT9Ic2+29/gpVikI0kD1er6/+l32/amIKIg4oqELjW4AwqKGLdAEUw2UYE5Nb
+         e5bVuiN1vTEJ2CAQGM8hBbqr8lFYfypzgKm8xBfr1OmuJ0F0deFNy2hmhGkHxrmNzGJI
+         WPc4O8+spOEdwXZ3H9I5vvTHlEPzxxyuwmjcy5Cozz76ertBFfaj3ikaBjUjzSivZ1OO
+         ihUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701387996; x=1701992796;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zh250x7hPWKm3cEtn7H0ENDaWoHwP+xH2vXQISgMTVI=;
-        b=kZgRNVx339ThTn+JbQcjXOBHeWASHLI4QyueN4PDsBjC1ENXQzE/x1HgsNGFix1tqd
-         J0sdVCtg6m6rGfNJFZJy7QPrex/if1HuVhKq07Ujh5nxpelylHPMO8efVWTWmkA7PAuA
-         YL8omc+AD+7bdUSwJK8kgyLLhwDuHnZOfwW0qk/alrLSLxQNvZmGNpEFDAi3nZtTEkep
-         YTPn7Ervq67JWDkv9wBAhVBT+cJ6GQHu1PbStOwX9ybTgi1nlH2w7yCor4DpqNIX8nZ7
-         omQ0P53KRLu881l5QxG7JPCtL6msFqvLodq6IQTUrL1IsFOwfi4ywYipJO1EmIiUo4OR
-         rKaQ==
-X-Gm-Message-State: AOJu0YxQg1kUfdjsbopCqG5aUQqu8SZgjO3MYPbUedPOdk3dj6qHP7oB
-	H8mWGki2ggoGgHum3ep00fizEw==
-X-Google-Smtp-Source: AGHT+IHZwDGqqHcfAVap/vf6pHAy9YoCKCV0f7Ge3jlcZnLyFIzigfI+bN6GjaopeCQk+k0HXwJOJg==
-X-Received: by 2002:a5d:8b98:0:b0:790:958e:a667 with SMTP id p24-20020a5d8b98000000b00790958ea667mr25499298iol.2.1701387996280;
-        Thu, 30 Nov 2023 15:46:36 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id h5-20020a056638062500b004562646b66bsm579254jar.12.2023.11.30.15.46.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 15:46:36 -0800 (PST)
-Message-ID: <e13a07f6-d251-4510-aa3a-3a90583bd404@linuxfoundation.org>
-Date: Thu, 30 Nov 2023 16:46:35 -0700
+        d=1e100.net; s=20230601; t=1701391928; x=1701996728;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D7rrSw0NQO055D8S8vjtnTn1EUTQ7K87+88fh2pqZsE=;
+        b=Mr0vW9hnplm6BSUCtFglXhwWTFliKXzbjfnXmVl30m13h2jlwfLaww6nq41fzs+gtZ
+         prYlwuKca2EVwbgMVmr7Q6/Yk3+FAcoYRW5mHGT9T9aU1GUtoN8Ra5ZCV4dUEGpEz3bi
+         TkW9G0SzzTHmFHmOjXqpGuCfFnRKaJ60ONxFxPQ7yxpjhRuNBs9mOiX/Es8quhvfTFVP
+         1KEOegk+6iLtc6v27MV9MHPr6tcVGsxWNYdcMctycpJAaDgrvN/qSvNrqbeKk3BBIVmi
+         cqwYYE0IscnKSIKNpouPsvYrhMW4oVw7e9OFqWilo9D7dXnaNECp0DE+AoQT8pMIKarx
+         wq6A==
+X-Gm-Message-State: AOJu0YxoLCdsLQa54aNgWXPQU73LnI+21owkjkDpBIuOxOwFWuAL6PAS
+	mPODQNXq5BiM/SCA/6tLspN6Cr3SvhTM
+X-Google-Smtp-Source: AGHT+IFKvXNXIfoRHM0m0qB8MFcGuh4xxwA7sFtdSp36gULSAH59l3Gw6b036WI6Aep1yW9tQy/2NEcFOKdL
+X-Received: from joshdon-desktop.svl.corp.google.com ([2620:15c:2a3:200:6088:f608:a3e0:af40])
+ (user=joshdon job=sendgmr) by 2002:a05:690c:845:b0:5a8:205e:1f27 with SMTP id
+ bz5-20020a05690c084500b005a8205e1f27mr755718ywb.6.1701391928055; Thu, 30 Nov
+ 2023 16:52:08 -0800 (PST)
+Date: Thu, 30 Nov 2023 16:52:03 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] selftests: cgroup: Fixes code style errors
-Content-Language: en-US
-To: Atul Kumar Pant <atulpant.linux@gmail.com>, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, shuah@kernel.org
-Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20231106181144.117188-1-atulpant.linux@gmail.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231106181144.117188-1-atulpant.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231201005203.309873-1-joshdon@google.com>
+Subject: [PATCH] cgroup: Fix documentation for cpu.idle
+From: Josh Don <joshdon@google.com>
+To: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 11/6/23 11:11, Atul Kumar Pant wrote:
-> Fixes following checkpatch.pl issues:
-> ERROR: do not use assignment in if condition
-> ERROR: Macros starting with if should be enclosed by a do - while
-> 
-> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
-> ---
->   tools/testing/selftests/cgroup/cgroup_util.c | 14 ++++++++------
->   tools/testing/selftests/cgroup/test_core.c   |  3 ++-
->   2 files changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-> index 0340d4ca8f51..e165c4a703a6 100644
-> --- a/tools/testing/selftests/cgroup/cgroup_util.c
-> +++ b/tools/testing/selftests/cgroup/cgroup_util.c
-> @@ -411,12 +411,14 @@ int dirfd_open_opath(const char *dir)
->   	return open(dir, O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW | O_PATH);
->   }
->   
-> -#define close_prot_errno(fd)                                                   \
-> -	if (fd >= 0) {                                                         \
-> -		int _e_ = errno;                                               \
-> -		close(fd);                                                     \
-> -		errno = _e_;                                                   \
-> -	}
-> +#define close_prot_errno(fd)				\
-> +	do {						\
-> +		if (fd >= 0) {                          \
-> +			int _e_ = errno;                \
-> +			close(fd);                      \
-> +			errno = _e_;                    \
-> +		}					\
-> +	} while (0);
+Two problems:
+	- cpu.idle cgroups show up with 0 weight, correct the
+	  documentation to indicate this.
+	- cpu.idle has no entry describing it.
 
-Did you run checkpatch on this patch? You are fixing
-checkpatch errors - :)
+Signed-off-by: Josh Don <joshdon@google.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-thanks,
--- Shuah
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 3f85254f3cef..9debf02bcb39 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1093,7 +1093,11 @@ All time durations are in microseconds.
+ 	A read-write single value file which exists on non-root
+ 	cgroups.  The default is "100".
+ 
+-	The weight in the range [1, 10000].
++	For non idle groups (cpu.idle = 0), the weight is in the
++	range [1, 10000].
++
++	If the cgroup has been configured to be SCHED_IDLE (cpu.idle = 1),
++	then the weight will show as a 0.
+ 
+   cpu.weight.nice
+ 	A read-write single value file which exists on non-root
+@@ -1157,6 +1161,16 @@ All time durations are in microseconds.
+         values similar to the sched_setattr(2). This maximum utilization
+         value is used to clamp the task specific maximum utilization clamp.
+ 
++  cpu.idle
++	A read-write single value file which exists on non-root cgroups.
++	The default is 0.
++
++	This is the cgroup analog of the per-task SCHED_IDLE sched policy.
++	Setting this value to a 1 will make the scheduling policy of the
++	cgroup SCHED_IDLE. The threads inside the cgroup will retain their
++	own relative priorities, but the cgroup itself will be treated as
++	very low priority relative to its peers.
++
+ 
+ 
+ Memory
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
+
 
