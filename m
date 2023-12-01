@@ -1,80 +1,72 @@
-Return-Path: <cgroups+bounces-765-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-766-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F848010BC
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 18:10:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFF088011D5
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 18:37:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDAF5281B8C
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 17:10:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14DD1C20AC2
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 17:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87FBF4D59B;
-	Fri,  1 Dec 2023 17:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436F14E1CE;
+	Fri,  1 Dec 2023 17:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nCVmDprT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BWrsDN6b"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79A2133
-	for <cgroups@vger.kernel.org>; Fri,  1 Dec 2023 09:09:57 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67a9be1407aso3235096d6.0
-        for <cgroups@vger.kernel.org>; Fri, 01 Dec 2023 09:09:57 -0800 (PST)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF06EFE;
+	Fri,  1 Dec 2023 09:37:51 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ce015fd299so787611b3a.2;
+        Fri, 01 Dec 2023 09:37:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701450597; x=1702055397; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701452271; x=1702057071; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UHSBlrWKXm1wAl594fX7qblvpqL30ZdbgTyCgGt+Df8=;
-        b=nCVmDprTxS0ZF+WtC5Pq/FiUtgi4HPiOKYuOq2vWTzMYbvdNkl4JEHP7OtLBdPXo7T
-         iilMMPXDJLV8dsPsIDuI42FKpzZ56yq1Kagf9BurUQhXV1WnXkCXp2rDqGPAZMihvSNF
-         DuEAYAcKdtP0+nqyVOlQ+zYeiFmudCDUkZQd6Ohm0t0NG3OnXX+DOvKhe/Htq61GHj14
-         OiJK38WTkXvCcJMhBVYRte4rN1kcvcRGnzRaEqgIwck4Vjg+OIzV2OU5pNOG2WO3vO9y
-         rhl76JxPT9wpyUzVzZDN3SYnqLg3qM15F4YMGlGzatq7EwNCwfAd66z+i3pJkBdFK8sO
-         eKrw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h1vqngejylljTl8aS0wEyCo9hvaRqIL121iZk7bSTek=;
+        b=BWrsDN6bFv6dEdWNbX2GjqRojrgzaLAnTM84pTfad/jJBGwDaB9pMTdb6xm4iuynR6
+         Ki3kPHZdHhgyk6dZWIuKBMOIUUMFKRNhlzFs+kHv8cgrMS6DM4vtCJOQyx7VGk4RDQai
+         6zFy+hZV8kWc7frhzCGmAD/SaqLNh7dq4OilINsQaZsi1Ja8pVMYNGJIDqoBpQnRkBPh
+         H7MKk+In6in1vDVrlPLH51M0ybdUInLiXMG8ls13eh83IIuMtA+UHq/e5Ql0NhSX8/jF
+         dKCjmRldX5OuOqEJ0nB3peICZp/jPGbxAXXCz75SqUvgvk/HezYHccw1gh1KmziX/IuP
+         lmsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701450597; x=1702055397;
+        d=1e100.net; s=20230601; t=1701452271; x=1702057071;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UHSBlrWKXm1wAl594fX7qblvpqL30ZdbgTyCgGt+Df8=;
-        b=oc7nyKSUDGffAQnz/CyiiC3STDl1j30JNV/xymiABRAFEhJnquICFvCSNOwr1Vid3r
-         oedUEgdT2bQYBqib3Ou0xIuPX2iMGa0YfDdZMuQi21BFTuHN4zlWlUd2bVKu42dwgy4l
-         5jn83gGYA/s1zOl8JGdTkUuk52THxJJ7W45EOgbLhAtlkRicokDBboHPJrnT9kQSbG2u
-         lCgkngE4cHDz2CmP89/ELjWt4Q+NE/mMRaSc6s77aLjLpMn6NwTMzki1gBwrGc20UGYM
-         utr7DBm6PaRQI1MjieDS384R5DoE+XWEpyIXmUv6dfgrbwMMH7PzLYCgKCRU3z/jp8x6
-         nnOQ==
-X-Gm-Message-State: AOJu0YyJ1f922yuXL3Jd/NY27Q4sdSEy0dIXpWlOEY6DSuIHK0MpFqsg
-	2G4FBBt7jrHIn5PLiNSHFtT38g==
-X-Google-Smtp-Source: AGHT+IHqQfbSInVj9aP1pUXmAYQeii4YG2nj7kgSlMdhi5m0/8lKOirnLYXwBxYrgyzVTwed0GPvbA==
-X-Received: by 2002:a0c:e90e:0:b0:67a:fd5:24a9 with SMTP id a14-20020a0ce90e000000b0067a0fd524a9mr30266352qvo.19.1701450596905;
-        Fri, 01 Dec 2023 09:09:56 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id du5-20020a05621409a500b0067aa28ac616sm255221qvb.113.2023.12.01.09.09.56
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h1vqngejylljTl8aS0wEyCo9hvaRqIL121iZk7bSTek=;
+        b=aPlJBh0ewahY/3M99Q5aG4KeDepU/FMh55jHEWWMYewXKRpPaWnaDEVW2fR4VJWeG0
+         24QhFEoy/9q+//nQ67O0KmpsfXDP7bi4N1xP4O/pxpQOGCkVmGeFGKFRiw0rDTdaOD+e
+         2QHFAlQT8Emc0zowvf9BccDlqPTB3tRfQPPy+rGyehHEmYJRsgO4zomoGw16jDne/yuR
+         bx0+GWn7c2522+EWcPe6HlixsCSdBziwMg9yS9J2I4FXZAZbaa6TCj6jyDZrVu5jWy4O
+         gZowecFZTWILkwx1eOPKZOlPA+kmX7QjclfA0efL1YLtmeK2GGfpx3kzyAyce1tMYC3/
+         ElwA==
+X-Gm-Message-State: AOJu0YxcHxQZ7q3TsE82JzL5Gd4HB4vh0FGIUcBCPSye8SKoSZU1rpOn
+	X/0N3usnfRiVaBrjxNlKPLw=
+X-Google-Smtp-Source: AGHT+IFAt0LiS7l0sn2Vw/b/IlTmAaaNeqgD2j10o5eTcjXrQnLBJ5810dswT4esP2xu+ZTLejLRGA==
+X-Received: by 2002:a05:6a20:914a:b0:18c:651:c40e with SMTP id x10-20020a056a20914a00b0018c0651c40emr28205199pzc.50.1701452271350;
+        Fri, 01 Dec 2023 09:37:51 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:27ef])
+        by smtp.gmail.com with ESMTPSA id gx21-20020a056a001e1500b006930db1e6cfsm3255376pfb.62.2023.12.01.09.37.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 09:09:56 -0800 (PST)
-Date: Fri, 1 Dec 2023 12:09:55 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Dan Schatzberg <schatzberg.dan@gmail.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Huang Ying <ying.huang@intel.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Peter Xu <peterx@redhat.com>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
-Message-ID: <20231201170955.GA694615@cmpxchg.org>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <ZWiw9cEsDap1Qm5h@tiehlicka>
- <20231130165642.GA386439@cmpxchg.org>
- <ZWmoTa7MlD7h9FYm@tiehlicka>
+        Fri, 01 Dec 2023 09:37:50 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 1 Dec 2023 07:37:49 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+	Sebastian Jug <sejug@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH-cgroup v5 1/2] cgroup/rstat: Optimize
+ cgroup_rstat_updated_list()
+Message-ID: <ZWoZ7U8f5NNwimej@slm.duckdns.org>
+References: <20231130204327.494249-1-longman@redhat.com>
+ <20231130204327.494249-2-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,61 +75,40 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWmoTa7MlD7h9FYm@tiehlicka>
+In-Reply-To: <20231130204327.494249-2-longman@redhat.com>
 
-On Fri, Dec 01, 2023 at 10:33:01AM +0100, Michal Hocko wrote:
-> On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
-> [...]
-> > So I wouldn't say it's merely a reclaim hint. It controls a very
-> > concrete and influential factor in VM decision making. And since the
-> > global swappiness is long-established ABI, I don't expect its meaning
-> > to change significantly any time soon.
+On Thu, Nov 30, 2023 at 03:43:26PM -0500, Waiman Long wrote:
+> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
+> the updated tree in a way to pop out the leaf nodes first before
+> their parents. This can cause traversal of multiple nodes before a
+> leaf node can be found and popped out. IOW, a given node in the tree
+> can be visited multiple times before the whole operation is done. So
+> it is not very efficient and the code can be hard to read.
 > 
-> As I've said I am more worried about potential future changes which
-> would modify existing, reduce or add more corner cases which would be
-> seen as a change of behavior from the user space POV. That means that we
-> would have to be really explicit about the fact that the reclaim is free
-> to override the swappiness provided by user. So essentially a best
-> effort interface without any actual guarantees. That surely makes it
-> harder to use. Is it still useable?
+> With the introduction of cgroup_rstat_updated_list() to build a list
+> of cgroups to be flushed first before any flushing operation is being
+> done, we can optimize the way the updated tree nodes are being popped
+> by pushing the parents first to the tail end of the list before their
+> children. In this way, most updated tree nodes will be visited only
+> once with the exception of the subtree root as we still need to go
+> back to its parent and popped it out of its updated_children list.
+> This also makes the code easier to read.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-But it's not free to override the setting as it pleases. I wrote a
-detailed list of the current exceptions, and why the user wouldn't
-have strong expectations of swappiness being respected in those
-cases. Having reasonable limitations is not the same as everything
-being up for grabs.
+Applied to cgroup/for-6.8 with a small comment edit.
 
-Again, the swappiness setting is ABI, and people would definitely
-complain if we ignored their request in an unexpected situation and
-regressed their workloads.
+...
+> + * Iteratively traverse down the cgroup_rstat_cpu updated tree level by
+> + * level and push all the parents first before their next level children
+> + * into a singly linked list built from the tail backward like "pushing"
+> + * cgroups into a stack. The parent is by the caller.
 
-I'm not against documenting the exceptions and limitations. Not just
-for proactive reclaim, but for swappiness in general. But I don't
-think it's fair to say that there are NO rules and NO userspace
-contract around this parameter (and I'm the one who wrote most of the
-balancing code that implements the swappiness control).
+I found the last sentence a bit difficult to understand and changed it to
+"The root is pushed by the caller." That's what you meant, right?
 
-So considering what swappiness DOES provide, and the definition and
-behavior to which we're tied by ABI rules, yes I do think it's useful
-to control this from the proactive reclaim context. In fact, we know
-it's useful, because we've been doing it for a while in production now
-- just in a hacky way, and this patch is merely making it less hacky.
+Thanks.
 
-> Btw. IIRC these concerns were part of the reason why memcg v2 doesn't
-> have swappiness interface. If we decide to export swappiness via
-> memory.reclaim interface does it mean we will do so on per-memcg level
-> as well?
-
-Well I'm the person who wrote the initial cgroup2 memory interface,
-and I left it out because there was no clear usecase for why you'd
-want to tweak it on a per-container basis.
-
-But Dan did bring up a new and very concrete usecase: controlling for
-write endurance. And it's not just a theoretical one, but a proven
-real world application.
-
-As far as adding a static memory.swappiness goes, I wouldn't add it
-just because, but wait for a concrete usecase for that specifically. I
-don't think Dan's rationale extends to it. But if a usecase comes up
-and is convincing, I wouldn't be opposed to it.
+-- 
+tejun
 
