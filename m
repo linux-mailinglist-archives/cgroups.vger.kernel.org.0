@@ -1,168 +1,76 @@
-Return-Path: <cgroups+bounces-759-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-760-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD057800B50
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 13:56:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E6CB800E39
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 16:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E29D31C20E54
-	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 12:56:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F62F1C20FED
+	for <lists+cgroups@lfdr.de>; Fri,  1 Dec 2023 15:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940EE25551;
-	Fri,  1 Dec 2023 12:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B79C4A996;
+	Fri,  1 Dec 2023 15:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Sqp22FzJ"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="gQ+7/zk5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD0B10E2
-	for <cgroups@vger.kernel.org>; Fri,  1 Dec 2023 04:56:42 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a00ac0101d9so306132066b.0
-        for <cgroups@vger.kernel.org>; Fri, 01 Dec 2023 04:56:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1701435401; x=1702040201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m/7cKv0n7i+Sfh7Y0nPTpy9YYoZvft9zpO431GTslYc=;
-        b=Sqp22FzJfmhNI6Q2Zfl0v1ry9N0axJeymXMA3hPbkA5vzLnZjTsLu0F7yCVplD78Q7
-         4iv9Hfj4J9lkSDLAr8NMRDsautipaBxQVGe+OQ/twCxKFXwrOMNOEXHDWeBxjEYlMoRH
-         99sdHSHC2lf2qY11J+ilWpIc4lokjq6IKaNRxqFcoj7hdsHZaflY+Zd6rJCiUzvojzLH
-         Os2R55bG0/Y14M3lblcGohQ9ggSjoD70D9V2AkvZl/66jt/94lH+LlgF1U8+CfsxIzYQ
-         ju5CSG9g7y3IuOln85EGl+L2fzCBQ/rPzFRN3o4+PduRo3NBf0Ky2CRRPCObLa+DGmUN
-         PPsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701435401; x=1702040201;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m/7cKv0n7i+Sfh7Y0nPTpy9YYoZvft9zpO431GTslYc=;
-        b=MOT4UdFML6ss0q8NC9Di34DoGYfGlXKbNLl/d95MtcjdPbXxavyNNBICa4b3KhaynQ
-         4L/ayT7cjcXpacuF7bt1DdZTp/jPNxyG8qRmzVWG3CYEUurEMBQqIkBjZHd46D+e92+r
-         QpE9OKOaniM7Bb+fj5esqh7Cvvw0z5k8hExmAESpNDOjYQ8eUawbnr2yybQVu+w2d4nf
-         CtgYxW6X6jWGXkIE778KG59V1uI8zcRC3/wuG7eyXTSyULUfCy93vXwrH07U/MjVh1Z+
-         1tNq7SmoTtj5JQXjhFnHgq+VUTOa3Dq2ESvmS0iN/mj9jiaQBrLEHepYabG8lqThjLer
-         sncA==
-X-Gm-Message-State: AOJu0Yy7kAMmyJbTZvvbZGZ59Xoqrwu5kOCRoVCl0ZEl/89jWRtNMO2G
-	MXlT0c2diwRDuRo7BFcSJKDFtgQ3a9mcyROWwp4=
-X-Google-Smtp-Source: AGHT+IGgOZj2vsG0FvospNFbNTiB5LEdWj+C+Mi7rKGrBqM61c5npMqSzZynFXX3C26pm5L2fBYQ4g==
-X-Received: by 2002:a17:906:6955:b0:a00:893f:58cf with SMTP id c21-20020a170906695500b00a00893f58cfmr798081ejs.54.1701435401138;
-        Fri, 01 Dec 2023 04:56:41 -0800 (PST)
-Received: from heron.intern.cm-ag (p200300dc6f0b6500529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f0b:6500:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170906a00a00b00a0be4fec1b4sm1870231ejy.138.2023.12.01.04.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 04:56:40 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] kernel/cgroup: use kernfs_create_dir_ns()
-Date: Fri,  1 Dec 2023 13:56:37 +0100
-Message-Id: <20231201125638.1699026-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F97194;
+	Fri,  1 Dec 2023 07:14:29 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 89C3D2C5;
+	Fri,  1 Dec 2023 15:14:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 89C3D2C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1701443668; bh=WgqQVcNyNmSbLfTjiMUoVBz8fOQdTqP7Vk/w7Mq97Tg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=gQ+7/zk53MU65Q9BhQu3PiDAnHWkABz5ecDkMlvhBbFkILB5tLGpdKe0F/2wFZfbY
+	 eqVlMjd5Sq7jRfIJ7Z/n6kz645qpoGi/8nHpNY/iHu5Obdy09Rd8UmX0Q51OV4MaBa
+	 j/B5A+w4ukQq4tY88nds+bRNqz+vIpmsMHSZruIGCEg/v1nTWG7c13Erbc9boSZqUi
+	 lCSqF/zRv5lahYRGnYaEByQIeGIGAL8mQ4nQYm/a90f+rFKOpc76ISBEKeTztCuN14
+	 XNXPUNTG9e8k0WZVcc366Pw3zvovx/XkmrqimTJ9x0YKsvPBY5Ax6oZUzabns6lrwU
+	 HVEDgX8RUJwsg==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, Josh Don <joshdon@google.com>,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
+ Weiner <hannes@cmpxchg.org>
+Cc: Linux CGroups <cgroups@vger.kernel.org>, Linux Documentation
+ <linux-doc@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Attreyee M <tintinm2017@gmail.com>
+Subject: Re: [PATCH] cgroup: Fix documentation for cpu.idle
+In-Reply-To: <ZWlzwnO7PcOWQ2q_@archie.me>
+References: <20231201005203.309873-1-joshdon@google.com>
+ <ZWlzwnO7PcOWQ2q_@archie.me>
+Date: Fri, 01 Dec 2023 08:14:27 -0700
+Message-ID: <87fs0meyzw.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-By passing the fsugid to kernfs_create_dir_ns(), we don't need
-cgroup_kn_set_ugid() any longer.  That function was added for exactly
-this purpose by commit 49957f8e2a ("cgroup: newly created dirs and
-files should be owned by the creator").
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-Eliminating this piece of duplicate code means we benefit from future
-improvements to kernfs_create_dir_ns(); for example, both are lacking
-S_ISGID support currently, which my next patch will add to
-kernfs_create_dir_ns().  It cannot (easily) be added to
-cgroup_kn_set_ugid() because we can't dereference struct kernfs_iattrs
-from there.
+> On Thu, Nov 30, 2023 at 04:52:03PM -0800, Josh Don wrote:
+>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>> index 3f85254f3cef..9debf02bcb39 100644
+>> --- a/Documentation/admin-guide/cgroup-v2.rst
+>> +++ b/Documentation/admin-guide/cgroup-v2.rst
+>> +  cpu.idle
+>> +	A read-write single value file which exists on non-root cgroups.
+>> +	The default is 0.
+>> +
+>> +	This is the cgroup analog of the per-task SCHED_IDLE sched policy.
+> "... cgroup analogy to ..."
+>> +	Setting this value to a 1 will make the scheduling policy of the
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- kernel/cgroup/cgroup.c | 31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
+Bagas, please stop this (again).  The original wording is better than
+your suggested "improvement".
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4b9ff41ca603..a844b421fd83 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4169,20 +4169,6 @@ static struct kernfs_ops cgroup_kf_ops = {
- 	.seq_show		= cgroup_seqfile_show,
- };
- 
--/* set uid and gid of cgroup dirs and files to that of the creator */
--static int cgroup_kn_set_ugid(struct kernfs_node *kn)
--{
--	struct iattr iattr = { .ia_valid = ATTR_UID | ATTR_GID,
--			       .ia_uid = current_fsuid(),
--			       .ia_gid = current_fsgid(), };
--
--	if (uid_eq(iattr.ia_uid, GLOBAL_ROOT_UID) &&
--	    gid_eq(iattr.ia_gid, GLOBAL_ROOT_GID))
--		return 0;
--
--	return kernfs_setattr(kn, &iattr);
--}
--
- static void cgroup_file_notify_timer(struct timer_list *timer)
- {
- 	cgroup_file_notify(container_of(timer, struct cgroup_file,
-@@ -4195,25 +4181,18 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
- 	char name[CGROUP_FILE_NAME_MAX];
- 	struct kernfs_node *kn;
- 	struct lock_class_key *key = NULL;
--	int ret;
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	key = &cft->lockdep_key;
- #endif
- 	kn = __kernfs_create_file(cgrp->kn, cgroup_file_name(cgrp, cft, name),
- 				  cgroup_file_mode(cft),
--				  GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
-+				  current_fsuid(), current_fsgid(),
- 				  0, cft->kf_ops, cft,
- 				  NULL, key);
- 	if (IS_ERR(kn))
- 		return PTR_ERR(kn);
- 
--	ret = cgroup_kn_set_ugid(kn);
--	if (ret) {
--		kernfs_remove(kn);
--		return ret;
--	}
--
- 	if (cft->file_offset) {
- 		struct cgroup_file *cfile = (void *)css + cft->file_offset;
- 
-@@ -5616,7 +5595,9 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
- 		goto out_cancel_ref;
- 
- 	/* create the directory */
--	kn = kernfs_create_dir(parent->kn, name, mode, cgrp);
-+	kn = kernfs_create_dir_ns(parent->kn, name, mode,
-+				  current_fsuid(), current_fsgid(),
-+				  cgrp, NULL);
- 	if (IS_ERR(kn)) {
- 		ret = PTR_ERR(kn);
- 		goto out_stat_exit;
-@@ -5761,10 +5742,6 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
- 	 */
- 	kernfs_get(cgrp->kn);
- 
--	ret = cgroup_kn_set_ugid(cgrp->kn);
--	if (ret)
--		goto out_destroy;
--
- 	ret = css_populate_dir(&cgrp->self);
- 	if (ret)
- 		goto out_destroy;
--- 
-2.39.2
-
+jon
 
