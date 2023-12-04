@@ -1,54 +1,55 @@
-Return-Path: <cgroups+bounces-788-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-789-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBD37803EC9
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 20:52:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB35D803F12
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 21:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 088E51C20ABC
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 19:52:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E0161F211D9
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 20:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E133307D;
-	Mon,  4 Dec 2023 19:52:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7AD33CE6;
+	Mon,  4 Dec 2023 20:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bBCB65ta"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LbmNSRC3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684CDD2
-	for <cgroups@vger.kernel.org>; Mon,  4 Dec 2023 11:52:07 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so6236855a12.3
-        for <cgroups@vger.kernel.org>; Mon, 04 Dec 2023 11:52:07 -0800 (PST)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE0CF0
+	for <cgroups@vger.kernel.org>; Mon,  4 Dec 2023 12:13:04 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c9f559b82cso24023231fa.0
+        for <cgroups@vger.kernel.org>; Mon, 04 Dec 2023 12:13:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701719526; x=1702324326; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eYidRuFuyjgtGaepFNp4s5KekmZ8R0Vv2VOTsdlcvvk=;
-        b=bBCB65tagxMbJm06o9N432XeCR4VFyR9V1b1/flkMi76CJewjryEFwrNwis8LdAway
-         xBGd7K+a5+beoo5qj5238UhxJqhuGHR39kCM548IyOsgRhTSJQcf9WYqH7UmW9l2h2e1
-         zfVBu/b1Pp5AB5k/52q3MO2ENFRjuTWWdeD2Z1AHmTttlJi8CQn/HL+5q7AsZiOmub02
-         F6d0U8Ps5HqtAHDXPOOOkRVULiPIGqqB4+4ugBoKedUnnyJfNYJn/aYojZhHCQEmsFqI
-         /KOdQIY8iDqW8cRBSPmY4evBCUhgVa5OucGoa1JpQ1OTdxYjI8PPR6rGf4Xiem+l4zp+
-         G/Cg==
+        d=google.com; s=20230601; t=1701720782; x=1702325582; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EG2n1RagWpJyioFCtKEQGNRIi6T2whr4+NS0jQsnqJc=;
+        b=LbmNSRC3pKCuJDLGJ1XvjqON7WRsUw/WxQRwsRCTFTX1GU5HHIbhEtKUzW2OkIcdEc
+         Vxu/WtcT2oScSIl9cqfTNSh+kZUnp03wTRnt4SgViF+Brzt9B4BNnOjGiG4kEdq+BOuy
+         NyXq93+m7svRiRSsKoxHPSDSMk4cixiZ2woezxPVJ1MJUpOjk2JibFK8m3my77OKqMHx
+         WlG0DgNhKabuhcANCuQPY0EM3gFotMWyGXVwUIntsGYLsMVdbMw2zy9e/cFQVVtPoQTt
+         PRbq0GyX8YQMEHoX5YQ6mzdWBcGFere4JC2/j3saUGZUUbeb4jfJ9THN+PKR46lcfFF5
+         QB4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701719526; x=1702324326;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eYidRuFuyjgtGaepFNp4s5KekmZ8R0Vv2VOTsdlcvvk=;
-        b=cV78oygdCwCui2otGlDXqiLrcdF6DgrR0ul/K6F6fqfii5Mlmp7QHw/hk7Ih/TtXH8
-         5jZqLBuIKxfXaEC624nco+bkfopD8COalisODKeUp3grCd1MlRzy3Pe8k9Mb95O5pv04
-         kSv9WOK5UWphOIhNQfcDxJPdXJjAo+ZUB3Z6ydPatzVhV1x+iObkii/vMpXeMKVBubHD
-         o3u3EuVzKJbmlgbGeUGCEFZJ0r7hXYj+O6V+uCgEVfsx+zo9BAYqTtxwIig/9vhahSiH
-         qD/O0raCA/5goSW48L+V043oTaYqBkYi4pC71jKl1neAlAhBmMGQPnGlASxHAyDgzq/i
-         g2TQ==
-X-Gm-Message-State: AOJu0Yz/hW8XI9Ip6JIaPNkFtP8sUMN3FxzT98klAi2zWoQcEOiprQ3R
-	Z7wUOHXufPu2bdMzzZj6Z32a5McBtrgA/OndC6Yodw==
-X-Google-Smtp-Source: AGHT+IFlwZwLSTjml6GJX9pmadhYbMF7fdFHsa20v/3WIXVEPDjbDlUP+SUIT8iByELIZI3zCmeFa5ieAkvSDn1t5m8=
-X-Received: by 2002:a17:906:2207:b0:a16:37ce:f81a with SMTP id
- s7-20020a170906220700b00a1637cef81amr3789708ejs.8.1701719525571; Mon, 04 Dec
- 2023 11:52:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701720782; x=1702325582;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EG2n1RagWpJyioFCtKEQGNRIi6T2whr4+NS0jQsnqJc=;
+        b=wd7wxe8unHcrveRK/WuiIHacQLzE6aqaPD9a/C0nacEvI0i+CVtQRh3AL9j+DwZXpN
+         VQUckZHy2URxacO9trVa55zWZduU9RcNP3qePShEGFitiUhe5HfxknNu7JaP9r2PeUST
+         bIPxb4n/3NSl3cXiXdsFNBpmTno0Z4L1Adp0rsEUF+N+nZ3frxIVYkJv+Ryml/T8A3b9
+         N4fdF3SDZYVy1mHOXghYOtCgDIId3i98oMWuTogAbXFvMnHOdCZqCK4Ad+1qNd9QzuFx
+         xq2UU9pHg7hrYqAl39bl1Njb3jpGSU5xlWnIe6yMeFltRM4Z9iK8N9PeIpBICyoh8l2R
+         plPg==
+X-Gm-Message-State: AOJu0YzeDskw1Q8Q1GeRTVnypSZJYDVlKuRwNVWf0G/RUQ+6rRAJGf6Z
+	Gz2+aTNNJCq9tSqeKDwZGmSwzuSmOQ/u/ZsiTfT71A==
+X-Google-Smtp-Source: AGHT+IEAqW8tj2cjKzLL1LEqxk6D1GCavzEx5M1oQoWziuX/KyNNqhq2NyR/1wV/bzk3AHA7UVHZ98keWs1mbybvl0w=
+X-Received: by 2002:a2e:9a87:0:b0:2c9:efa3:e1e8 with SMTP id
+ p7-20020a2e9a87000000b002c9efa3e1e8mr1610758lji.33.1701720782130; Mon, 04 Dec
+ 2023 12:13:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -56,84 +57,89 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231129032154.3710765-1-yosryahmed@google.com>
- <20231129032154.3710765-6-yosryahmed@google.com> <ZWqPBHCXz4nBIQFN@archie.me>
-In-Reply-To: <ZWqPBHCXz4nBIQFN@archie.me>
+ <20231129032154.3710765-6-yosryahmed@google.com> <20231202083129.3pmds2cddy765szr@google.com>
+In-Reply-To: <20231202083129.3pmds2cddy765szr@google.com>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 4 Dec 2023 11:51:29 -0800
-Message-ID: <CAJD7tkbk=AUfjuq+6HiPwNeoUi===h99rbJ2RkhN6dCk2E2xdg@mail.gmail.com>
+Date: Mon, 4 Dec 2023 12:12:25 -0800
+Message-ID: <CAJD7tkZPcBbvcK+Xj0edevemB+801wRvvcFDJEjk4ZcjNVoV_w@mail.gmail.com>
 Subject: Re: [mm-unstable v4 5/5] mm: memcg: restore subtree stats flushing
-To: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Shakeel Butt <shakeelb@google.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Muchun Song <muchun.song@linux.dev>, Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
 	Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
 	Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>, 
-	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, Attreyee M <tintinm2017@gmail.com>, 
-	Linux Memory Management List <linux-mm@kvack.org>, Linux CGroups <cgroups@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[..]
-> > diff --git a/mm/workingset.c b/mm/workingset.c
-> > index dce41577a49d2..7d3dacab8451a 100644
-> > --- a/mm/workingset.c
-> > +++ b/mm/workingset.c
-> > @@ -464,8 +464,12 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset)
-> >
-> >       rcu_read_unlock();
-> >
-> > -     /* Flush stats (and potentially sleep) outside the RCU read section */
-> > -     mem_cgroup_flush_stats_ratelimited();
-> > +     /*
-> > +      * Flush stats (and potentially sleep) outside the RCU read section.
-> > +      * XXX: With per-memcg flushing and thresholding, is ratelimiting
-> > +      * still needed here?
-> > +      */
-> > +     mem_cgroup_flush_stats_ratelimited(eviction_memcg);
+On Sat, Dec 2, 2023 at 12:31=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
+wrote:
 >
-> What if flushing is not rate-limited (e.g. above line is commented)?
+> On Wed, Nov 29, 2023 at 03:21:53AM +0000, Yosry Ahmed wrote:
+> [...]
+> > +void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+> >  {
+> > -     if (memcg_should_flush_stats(root_mem_cgroup))
+> > -             do_flush_stats();
+> > +     static DEFINE_MUTEX(memcg_stats_flush_mutex);
+> > +
+> > +     if (mem_cgroup_disabled())
+> > +             return;
+> > +
+> > +     if (!memcg)
+> > +             memcg =3D root_mem_cgroup;
+> > +
+> > +     if (memcg_should_flush_stats(memcg)) {
+> > +             mutex_lock(&memcg_stats_flush_mutex);
 >
+> What's the point of this mutex now? What is it providing? I understand
+> we can not try_lock here due to targeted flushing. Why not just let the
+> global rstat serialize the flushes? Actually this mutex can cause
+> latency hiccups as the mutex owner can get resched during flush and then
+> no one can flush for a potentially long time.
 
-Hmm I think I might be misunderstanding the question. The call to
-mem_cgroup_flush_stats_ratelimited() does not ratelimit other
-flushers, it is rather a flush call that is itself ratelimited. IOW,
-it may or may not flush based on when was the last time someone else
-flushed.
+I was hoping this was clear from the commit message and code comments,
+but apparently I was wrong, sorry. Let me give more context.
 
-This was introduced because flushing in the fault path was expensive
-in some cases, so we wanted to avoid flushing if someone else recently
-did a flush, as we don't expect a lot of pending changes in this case.
-However, that was when flushing was always on the root level. Now that
-we are flushing on the memcg level, it may no longer be needed as:
-- The flush is more scoped, there should be less work to do.
-- There is a per-memcg threshold now such that we only flush when
-there are pending updates in this memcg.
+In previous versions and/or series, the mutex was only used with
+flushes from userspace to guard in-kernel flushers against high
+contention from userspace. Later on, I kept the mutex for all memcg
+flushers for the following reasons:
 
-This is why I added a comment that the ratelimited flush here may no
-longer be needed. I didn't want to investigate this as part of this
-series, especially that I do not have a reproducer for the fault
-latency introduced by the flush before ratelimiting. Hence, I am
-leaving the comment such that people know that this ratelimiting may
-no longer be needed with this patch.
+(a) Allow waiters to sleep:
+Unlike other flushers, the memcg flushing path can see a lot of
+concurrency. The mutex avoids having a lot of CPUs spinning (e.g.
+concurrent reclaimers) by allowing waiters to sleep.
 
-> >
-> >       eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
-> >       refault = atomic_long_read(&eviction_lruvec->nonresident_age);
-> > @@ -676,7 +680,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
-> >               struct lruvec *lruvec;
-> >               int i;
-> >
-> > -             mem_cgroup_flush_stats();
-> > +             mem_cgroup_flush_stats(sc->memcg);
-> >               lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
-> >               for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
-> >                       pages += lruvec_page_state_local(lruvec,
->
-> Confused...
+(b) Check the threshold under lock but before calling cgroup_rstat_flush():
+The calls to cgroup_rstat_flush() are not very cheap even if there's
+nothing to flush, as we still need to iterate all CPUs. If flushers
+contend directly on the rstat lock, overlapping flushes will
+unnecessarily do the percpu iteration once they hold the lock. With
+the mutex, they will check the threshold again once they hold the
+mutex.
 
-Which part is confusing? The call to mem_cgroup_flush_stats() now
-receives a memcg argument as flushing is scoped to that memcg only to
-avoid doing unnecessary work to flush other memcgs with global
-flushing.
+(c) Protect non-memcg flushers from contention from memcg flushers.
+This is not as strong of an argument as protecting in-kernel flushers
+from userspace flushers.
+
+There has been discussions before about changing the rstat lock itself
+to be a mutex, which would resolve (a), but there are concerns about
+priority inversions if a low priority task holds the mutex and gets
+preempted, as well as the amount of time the rstat lock holder keeps
+the lock for:
+https://lore.kernel.org/lkml/ZO48h7c9qwQxEPPA@slm.duckdns.org/
+
+I agree about possible hiccups due to the inner lock being dropped
+while the mutex is held. Running a synthetic test with high
+concurrency between reclaimers (in-kernel flushers) and stats readers
+show no material performance difference with or without the mutex.
+Maybe things cancel out, or don't really matter in practice.
+
+I would prefer to keep the current code as I think (a) and (b) could
+cause problems in the future, and the current form of the code (with
+the mutex) has already seen mileage with production workloads.
 
