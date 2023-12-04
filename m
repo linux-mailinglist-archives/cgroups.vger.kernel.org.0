@@ -1,244 +1,340 @@
-Return-Path: <cgroups+bounces-786-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-787-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FE4803C5D
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 19:07:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5B6803EAD
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 20:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743A31C20A2A
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 18:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5F3281134
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 19:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEDE2F858;
-	Mon,  4 Dec 2023 18:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4133B33073;
+	Mon,  4 Dec 2023 19:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sbzk/cJa"
+	dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b="NHgEfg51"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816DD129;
-	Mon,  4 Dec 2023 10:07:10 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ce46470647so821732b3a.1;
-        Mon, 04 Dec 2023 10:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701713230; x=1702318030; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
-        b=Sbzk/cJarJS+HKABhyq9ZXjIKHReZXRZD2BmG6K1tjWjkQP6qWn2M1Hej+A0irmaku
-         MiQQibihKqnyE5TVi9uvaP+TQXi4717965Cj5SWoxsFXT08rL/dq7gcQha9HMJ+iJ6E4
-         BVSsykoGX1GtN128YVvHFOLoVXyY9pSvbwxF1qFD/Yff8eCGgX7GFA1jKFa07niVVpY4
-         d9OCXuF3WhLpOcz+yEjCxARi6Zebpvmf8U8x8xjf+1Jj/H4bG5JnvtbOkN1l+9J9gmEl
-         oiEG7ELXzD08vZaeO7QyUcVFM2Rqj1v3KKn+P22m3559f6bBVfzqLvxbIyP1mZuhfgJK
-         shBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701713230; x=1702318030;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
-        b=AYyMCAiofwW1w8/LKfRAUteUMOKs3IGWzjKZ81HOLm4Qog7YCel+I5tMBELYkYd3Ic
-         C4T4qpkFlGZeeXP+bncCihQfhjeGD3TsJFVqGBXi/XIjoPO4B2kA2Qlk2CwoPwhDujan
-         +NNUBj2hdZwzJF+J3y4w2hEVmDWduaQnATolFiBBR9nrKzAorPwLhVN5eBryUxtqzHrX
-         V+Fk7vGMXsTDRx7WiPSB9OD38PTNnbefsY008s69lgAXGCZSuKzQm1is49s8RxAW7uOj
-         fmc91cbZIRseHKFcBH1ZvFv+pbAs/b98BwWxq9xVaO3s3RAhfCBsGBSyGFZhNwjbcZOo
-         v/lw==
-X-Gm-Message-State: AOJu0YygE6uwIjeYYcpP+0PeLWzLwNjgGit6simtM/p2Q2tE1GHwtNrK
-	68fyZnN9/CqU4w30ZC6sDjE=
-X-Google-Smtp-Source: AGHT+IGDIGeeBa7UWPj4E4w2SIGHBjZgGz8oxGqwAWzNb+KD7mpnEvIno4bt3NIHORxil3wMtNwC4w==
-X-Received: by 2002:a05:6a20:1448:b0:18c:374c:6e64 with SMTP id a8-20020a056a20144800b0018c374c6e64mr27716780pzi.36.1701713229690;
-        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id u2-20020a056a00158200b006cdd507ca2esm7943470pfk.167.2023.12.04.10.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 4 Dec 2023 08:07:07 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"coreteam@netfilter.org" <coreteam@netfilter.org>,
-	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"gfs2@lists.linux.dev" <gfs2@lists.linux.dev>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-	"nbd@other.debian.org" <nbd@other.debian.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"ntb@lists.linux.dev" <ntb@lists.linux.dev>,
-	"open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
-	"oss-drivers@corigine.com" <oss-drivers@corigine.com>,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-	"target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-	"wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>
-Subject: Re: Performance drop due to alloc_workqueue() misuse and recent
- change
-Message-ID: <ZW4VS3Z0auYCjg-W@slm.duckdns.org>
-References: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+X-Greylist: delayed 301 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 11:47:02 PST
+Received: from m47-110.mailgun.net (m47-110.mailgun.net [69.72.47.110])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C45CCE
+	for <cgroups@vger.kernel.org>; Mon,  4 Dec 2023 11:47:02 -0800 (PST)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=relay.vimeo.com;
+ q=dns/txt; s=mailo; t=1701719221; x=1701726421; h=Content-Transfer-Encoding:
+ MIME-Version: Message-Id: Date: Subject: Subject: Cc: To: To: From: From:
+ Sender: Sender; bh=HmhFXlBPh7ZkC6JgQKrUP2LiSRCDQOnp19qvKKGJsfA=;
+ b=NHgEfg51RKw/MG5pAirr/+PBnG0z82tlYNwZZ760UL6+gBYT3Yw8qG9fIPtjn1u5Q0U9YYSSzX5PYXFe6hlA1kORLIY+9gGWy1yDuhgQK3ADa8sUuZ1w6H7L6PuD+c8SaCChh4g5rtgrBu6XioqItxFs1ANwTurKxtiMdDmjx8M=
+X-Mailgun-Sending-Ip: 69.72.47.110
+X-Mailgun-Sid: WyIzY2RlYyIsImNncm91cHNAdmdlci5rZXJuZWwub3JnIiwiOWQyYTFjIl0=
+Received: from smtp.vimeo.com (215.71.185.35.bc.googleusercontent.com [35.185.71.215])
+ by fd7bfb80eee6 with SMTP id 656e2b88156c2f103906eded (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Dec 2023 19:42:00 GMT
+Sender: davidf=vimeo.com@relay.vimeo.com
+Received: from nutau (gke-sre-us-east1-main-c45160e0-u25i.c.vimeo-core.internal [10.56.27.31])
+	by smtp.vimeo.com (Postfix) with ESMTP id 55BD44DD;
+	Mon,  4 Dec 2023 19:42:00 +0000 (UTC)
+Received: by nutau (Postfix, from userid 1001)
+	id 2E15AB422EE; Mon,  4 Dec 2023 14:42:00 -0500 (EST)
+From: David Finkel <davidf@vimeo.com>
+To: Muchun Song <muchun.song@linux.dev>
+Cc: core-services@vimeo.com,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	David Finkel <davidf@vimeo.com>
+Subject: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+Date: Mon,  4 Dec 2023 14:41:56 -0500
+Message-Id: <20231204194156.2411672-1-davidf@vimeo.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Other mechanisms for querying the peak memory usage of either a process
+or v1 memory cgroup allow for resetting the high watermark. Restore
+parity with those mechanisms.
 
-On Mon, Dec 04, 2023 at 04:03:47PM +0000, Naohiro Aota wrote:
-> Recently, commit 636b927eba5b ("workqueue: Make unbound workqueues to use
-> per-cpu pool_workqueues") changed WQ_UNBOUND workqueue's behavior. It
-> changed the meaning of alloc_workqueue()'s max_active from an upper limit
-> imposed per NUMA node to a limit per CPU. As a result, massive number of
-> workers can be running at the same time, especially if the workqueue user
-> thinks the max_active is a global limit.
-> 
-> Actually, it is already written it is per-CPU limit in the documentation
-> before the commit. However, several callers seem to misuse max_active,
-> maybe thinking it is a global limit. It is an unexpected behavior change
-> for them.
+For example:
+ - Any write to memory.max_usage_in_bytes in a cgroup v1 mount resets
+   the high watermark.
+ - writing "5" to the clear_refs pseudo-file in a processes's proc
+   directory resets the peak RSS.
 
-Right, and the behavior has been like that for a very long time and there
-was no other way to achieve reasonable level of concurrency, so the current
-situation is expected.
+This change copies the cgroup v1 behavior so any write to the
+memory.peak and memory.swap.peak pseudo-files reset the high watermark
+to the current usage.
 
-> For example, these callers set max_active = num_online_cpus(), which is a
-> suspicious limit applying to per-CPU. This config means we can have nr_cpu
-> * nr_cpu active tasks working at the same time.
+This behavior is particularly useful for work scheduling systems that
+need to track memory usage of worker processes/cgroups per-work-item.
+Since memory can't be squeezed like CPU can (the OOM-killer has
+opinions), these systems need to track the peak memory usage to compute
+system/container fullness when binpacking workitems.
 
-Yeah, that sounds like a good indicator.
+Signed-off-by: David Finkel <davidf@vimeo.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst       | 20 +++---
+ mm/memcontrol.c                               | 23 ++++++
+ .../selftests/cgroup/test_memcontrol.c        | 72 ++++++++++++++++---
+ 3 files changed, 99 insertions(+), 16 deletions(-)
 
-> fs/f2fs/data.c: sbi->post_read_wq = alloc_workqueue("f2fs_post_read_wq",
-> fs/f2fs/data.c-                                          WQ_UNBOUND | WQ_HIGHPRI,
-> fs/f2fs/data.c-                                          num_online_cpus());
-> 
-> fs/crypto/crypto.c:     fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
-> fs/crypto/crypto.c-                                              WQ_UNBOUND | WQ_HIGHPRI,
-> fs/crypto/crypto.c-                                              num_online_cpus());
-> 
-> fs/verity/verify.c:     fsverity_read_workqueue = alloc_workqueue("fsverity_read_queue",
-> fs/verity/verify.c-                                               WQ_HIGHPRI,
-> fs/verity/verify.c-                                               num_online_cpus());
-> 
-> drivers/crypto/hisilicon/qm.c:  qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_MEM_RECLAIM |
-> drivers/crypto/hisilicon/qm.c-                           WQ_UNBOUND, num_online_cpus(),
-> drivers/crypto/hisilicon/qm.c-                           pci_name(qm->pdev));
-> 
-> block/blk-crypto-fallback.c:    blk_crypto_wq = alloc_workqueue("blk_crypto_wq",
-> block/blk-crypto-fallback.c-                                    WQ_UNBOUND | WQ_HIGHPRI |
-> block/blk-crypto-fallback.c-                                    WQ_MEM_RECLAIM, num_online_cpus());
-> 
-> drivers/md/dm-crypt.c:          cc->crypt_queue = alloc_workqueue("kcryptd/%s",
-> drivers/md/dm-crypt.c-                                            WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND,
-> drivers/md/dm-crypt.c-                                            num_online_cpus(), devname);
-
-Most of these work items are CPU bound but not completley so. e.g.
-kcrypt_crypt_write_continue() does wait_for_completion(), so setting
-max_active to 1 likely isn't what they want either. They mostly want some
-reasonable system-wide concurrency limit w.r.t. the CPU count while keeping
-some level of flexibility in terms of task placement.
-
-The previous max_active wasn't great for this because its meaning changed
-depending on the number of nodes. Now, the meaning doesn't change but it's
-not really useful for the above purpose. It's only useful for avoiding
-melting the system completely.
-
-One way to go about it is to declare that concurrency level management for
-unbound workqueue is on users but that seems not ideal given many use cases
-would want it anyway.
-
-Let me think it over but I think the right way to go about it is going the
-other direction - ie. making max_active apply to the whole system regardless
-of the number of nodes / ccx's / whatever.
-
-> Furthermore, the change affects performance in a certain case.
-> 
-> Btrfs creates several WQ_UNBOUND workqueues with a default max_active =
-> min(NRCPUS + 2, 8). As my machine has 96 CPUs with NUMA disabled, this
-> max_active config allows running over 700 active works. Before the commit,
-> it is limited to 8 if NUMA is disabled or limited to 16 if NUMA nodes is 2.
-> 
-> I reverted the workqueue code back to before the commit, and I ran the
-> following fio command on RAID0 btrfs on 6 SSDs.
-> 
-> fio --group_reporting --eta=always --eta-interval=30s --eta-newline=30s \
->     --rw=write --fallocate=none \
->     --direct=1 --ioengine=libaio --iodepth=32 \
->     --filesize=100G \
->     --blocksize=64k \
->     --time_based --runtime=300s \
->     --end_fsync=1 \
->     --directory=${MNT} \
->     --name=writer --numjobs=32
-> 
-> By changing workqueue's max_active, the result varies.
-> 
-> - wq max_active=8   (intended limit by btrfs?)
->   WRITE: bw=2495MiB/s (2616MB/s), 2495MiB/s-2495MiB/s (2616MB/s-2616MB/s), io=753GiB (808GB), run=308953-308953msec
-> - wq max_active=16  (actual limit on 2 NUMA nodes setup)
->   WRITE: bw=1736MiB/s (1820MB/s), 1736MiB/s-1736MiB/s (1820MB/s-1820MB/s), io=670GiB (720GB), run=395532-395532msec
-> - wq max_active=768 (simulating current limit)
->   WRITE: bw=1276MiB/s (1338MB/s), 1276MiB/s-1276MiB/s (1338MB/s-1338MB/s), io=375GiB (403GB), run=300984-300984msec
-> 
-> The current performance is slower than the previous limit (max_active=16)
-> by 27%, or it is 50% slower than the intended limit.  The performance drop
-> might be due to contention of the btrfs-endio-write works. There are over
-> 700 kworker instances were created and 100 works are on the 'D' state
-> competing for a lock.
-> 
-> More specifically, I tested the same workload on the commit.
-> 
-> - At commit 636b927eba5b ("workqueue: Make unbound workqueues to use per-cpu pool_workqueues")
->   WRITE: bw=1191MiB/s (1249MB/s), 1191MiB/s-1191MiB/s (1249MB/s-1249MB/s), io=350GiB (376GB), run=300714-300714msec
-> - At the previous commit = 4cbfd3de73 ("workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug")
->   WRITE: bw=1747MiB/s (1832MB/s), 1747MiB/s-1747MiB/s (1832MB/s-1832MB/s), io=748GiB (803GB), run=438134-438134msec
-> 
-> So, it is -31.8% performance down with the commit.
-> 
-> In summary, we misuse max_active, considering it is a global limit. And,
-> the recent commit introduced a huge performance drop in some cases.  We
-> need to review alloc_workqueue() usage to check if its max_active setting
-> is proper or not.
-
-Thanks a lot for the report. I think it's a lot more reasonable to assume
-that max_active is global for unbound workqueues. The current workqueue
-behavior is not very intuitive or useful. I'll try to find something more
-reasonable. Thanks for the report and analysis. Much appreciated.
-
-Thanks.
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 3f85254f3cef..95af0628dc44 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1305,11 +1305,13 @@ PAGE_SIZE multiple when read back.
+ 	reclaim induced by memory.reclaim.
+ 
+   memory.peak
+-	A read-only single value file which exists on non-root
+-	cgroups.
++	A read-write single value file which exists on non-root cgroups.
++
++	The max memory usage recorded for the cgroup and its descendants since
++	either the creation of the cgroup or the most recent reset.
+ 
+-	The max memory usage recorded for the cgroup and its
+-	descendants since the creation of the cgroup.
++	Any non-empty write to this file resets it to the current memory usage.
++	All content written is completely ignored.
+ 
+   memory.oom.group
+ 	A read-write single value file which exists on non-root
+@@ -1626,11 +1628,13 @@ PAGE_SIZE multiple when read back.
+ 	Healthy workloads are not expected to reach this limit.
+ 
+   memory.swap.peak
+-	A read-only single value file which exists on non-root
+-	cgroups.
++	A read-write single value file which exists on non-root cgroups.
++
++	The max swap usage recorded for the cgroup and its descendants since
++	the creation of the cgroup or the most recent reset.
+ 
+-	The max swap usage recorded for the cgroup and its
+-	descendants since the creation of the cgroup.
++	Any non-empty write to this file resets it to the current swap usage.
++	All content written is completely ignored.
+ 
+   memory.swap.max
+ 	A read-write single value file which exists on non-root
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 1c1061df9cd1..b04af158922d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -25,6 +25,7 @@
+  * Copyright (C) 2020 Alibaba, Inc, Alex Shi
+  */
+ 
++#include <linux/cgroup-defs.h>
+ #include <linux/page_counter.h>
+ #include <linux/memcontrol.h>
+ #include <linux/cgroup.h>
+@@ -6635,6 +6636,16 @@ static u64 memory_peak_read(struct cgroup_subsys_state *css,
+ 	return (u64)memcg->memory.watermark * PAGE_SIZE;
+ }
+ 
++static ssize_t memory_peak_write(struct kernfs_open_file *of,
++				 char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++
++	page_counter_reset_watermark(&memcg->memory);
++
++	return nbytes;
++}
++
+ static int memory_min_show(struct seq_file *m, void *v)
+ {
+ 	return seq_puts_memcg_tunable(m,
+@@ -6947,6 +6958,7 @@ static struct cftype memory_files[] = {
+ 		.name = "peak",
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.read_u64 = memory_peak_read,
++		.write = memory_peak_write,
+ 	},
+ 	{
+ 		.name = "min",
+@@ -7917,6 +7929,16 @@ static u64 swap_peak_read(struct cgroup_subsys_state *css,
+ 	return (u64)memcg->swap.watermark * PAGE_SIZE;
+ }
+ 
++static ssize_t swap_peak_write(struct kernfs_open_file *of,
++				 char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++
++	page_counter_reset_watermark(&memcg->swap);
++
++	return nbytes;
++}
++
+ static int swap_high_show(struct seq_file *m, void *v)
+ {
+ 	return seq_puts_memcg_tunable(m,
+@@ -7999,6 +8021,7 @@ static struct cftype swap_files[] = {
+ 		.name = "swap.peak",
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.read_u64 = swap_peak_read,
++		.write = swap_peak_write,
+ 	},
+ 	{
+ 		.name = "swap.events",
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+index c7c9572003a8..0326c317f1f2 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -161,12 +161,12 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
+ /*
+  * This test create a memory cgroup, allocates
+  * some anonymous memory and some pagecache
+- * and check memory.current and some memory.stat values.
++ * and checks memory.current, memory.peak, and some memory.stat values.
+  */
+-static int test_memcg_current(const char *root)
++static int test_memcg_current_peak(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+-	long current;
++	long current, peak, peak_reset;
+ 	char *memcg;
+ 
+ 	memcg = cg_name(root, "memcg_test");
+@@ -180,12 +180,32 @@ static int test_memcg_current(const char *root)
+ 	if (current != 0)
+ 		goto cleanup;
+ 
++	peak = cg_read_long(memcg, "memory.peak");
++	if (peak != 0)
++		goto cleanup;
++
+ 	if (cg_run(memcg, alloc_anon_50M_check, NULL))
+ 		goto cleanup;
+ 
++	peak = cg_read_long(memcg, "memory.peak");
++	if (peak < MB(50))
++		goto cleanup;
++
++	peak_reset = cg_write(memcg, "memory.peak", "\n");
++	if (peak_reset != 0)
++		goto cleanup;
++
++	peak = cg_read_long(memcg, "memory.peak");
++	if (peak > MB(30))
++		goto cleanup;
++
+ 	if (cg_run(memcg, alloc_pagecache_50M_check, NULL))
+ 		goto cleanup;
+ 
++	peak = cg_read_long(memcg, "memory.peak");
++	if (peak < MB(50))
++		goto cleanup;
++
+ 	ret = KSFT_PASS;
+ 
+ cleanup:
+@@ -815,13 +835,14 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
+ 
+ /*
+  * This test checks that memory.swap.max limits the amount of
+- * anonymous memory which can be swapped out.
++ * anonymous memory which can be swapped out. Additionally, it verifies that
++ * memory.swap.peak reflects the high watermark and can be reset.
+  */
+-static int test_memcg_swap_max(const char *root)
++static int test_memcg_swap_max_peak(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+ 	char *memcg;
+-	long max;
++	long max, peak;
+ 
+ 	if (!is_swap_enabled())
+ 		return KSFT_SKIP;
+@@ -838,6 +859,12 @@ static int test_memcg_swap_max(const char *root)
+ 		goto cleanup;
+ 	}
+ 
++	if (cg_read_long(memcg, "memory.swap.peak"))
++		goto cleanup;
++
++	if (cg_read_long(memcg, "memory.peak"))
++		goto cleanup;
++
+ 	if (cg_read_strcmp(memcg, "memory.max", "max\n"))
+ 		goto cleanup;
+ 
+@@ -860,6 +887,27 @@ static int test_memcg_swap_max(const char *root)
+ 	if (cg_read_key_long(memcg, "memory.events", "oom_kill ") != 1)
+ 		goto cleanup;
+ 
++	peak = cg_read_long(memcg, "memory.peak");
++	if (peak < MB(29))
++		goto cleanup;
++
++	peak = cg_read_long(memcg, "memory.swap.peak");
++	if (peak < MB(29))
++		goto cleanup;
++
++	if (cg_write(memcg, "memory.swap.peak", "\n"))
++		goto cleanup;
++
++	if (cg_read_long(memcg, "memory.swap.peak") > MB(10))
++		goto cleanup;
++
++
++	if (cg_write(memcg, "memory.peak", "\n"))
++		goto cleanup;
++
++	if (cg_read_long(memcg, "memory.peak"))
++		goto cleanup;
++
+ 	if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
+ 		goto cleanup;
+ 
+@@ -867,6 +915,14 @@ static int test_memcg_swap_max(const char *root)
+ 	if (max <= 0)
+ 		goto cleanup;
+ 
++	peak = cg_read_long(memcg, "memory.peak");
++	if (peak < MB(29))
++		goto cleanup;
++
++	peak = cg_read_long(memcg, "memory.swap.peak");
++	if (peak < MB(19))
++		goto cleanup;
++
+ 	ret = KSFT_PASS;
+ 
+ cleanup:
+@@ -1293,7 +1349,7 @@ struct memcg_test {
+ 	const char *name;
+ } tests[] = {
+ 	T(test_memcg_subtree_control),
+-	T(test_memcg_current),
++	T(test_memcg_current_peak),
+ 	T(test_memcg_min),
+ 	T(test_memcg_low),
+ 	T(test_memcg_high),
+@@ -1301,7 +1357,7 @@ struct memcg_test {
+ 	T(test_memcg_max),
+ 	T(test_memcg_reclaim),
+ 	T(test_memcg_oom_events),
+-	T(test_memcg_swap_max),
++	T(test_memcg_swap_max_peak),
+ 	T(test_memcg_sock),
+ 	T(test_memcg_oom_group_leaf_events),
+ 	T(test_memcg_oom_group_parent_events),
 -- 
-tejun
+2.39.2
+
 
