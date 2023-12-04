@@ -1,340 +1,139 @@
-Return-Path: <cgroups+bounces-787-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-788-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D5B6803EAD
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 20:47:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD37803EC9
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 20:52:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5F3281134
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 19:47:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 088E51C20ABC
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 19:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4133B33073;
-	Mon,  4 Dec 2023 19:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E133307D;
+	Mon,  4 Dec 2023 19:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b="NHgEfg51"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bBCB65ta"
 X-Original-To: cgroups@vger.kernel.org
-X-Greylist: delayed 301 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 11:47:02 PST
-Received: from m47-110.mailgun.net (m47-110.mailgun.net [69.72.47.110])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C45CCE
-	for <cgroups@vger.kernel.org>; Mon,  4 Dec 2023 11:47:02 -0800 (PST)
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=relay.vimeo.com;
- q=dns/txt; s=mailo; t=1701719221; x=1701726421; h=Content-Transfer-Encoding:
- MIME-Version: Message-Id: Date: Subject: Subject: Cc: To: To: From: From:
- Sender: Sender; bh=HmhFXlBPh7ZkC6JgQKrUP2LiSRCDQOnp19qvKKGJsfA=;
- b=NHgEfg51RKw/MG5pAirr/+PBnG0z82tlYNwZZ760UL6+gBYT3Yw8qG9fIPtjn1u5Q0U9YYSSzX5PYXFe6hlA1kORLIY+9gGWy1yDuhgQK3ADa8sUuZ1w6H7L6PuD+c8SaCChh4g5rtgrBu6XioqItxFs1ANwTurKxtiMdDmjx8M=
-X-Mailgun-Sending-Ip: 69.72.47.110
-X-Mailgun-Sid: WyIzY2RlYyIsImNncm91cHNAdmdlci5rZXJuZWwub3JnIiwiOWQyYTFjIl0=
-Received: from smtp.vimeo.com (215.71.185.35.bc.googleusercontent.com [35.185.71.215])
- by fd7bfb80eee6 with SMTP id 656e2b88156c2f103906eded (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Dec 2023 19:42:00 GMT
-Sender: davidf=vimeo.com@relay.vimeo.com
-Received: from nutau (gke-sre-us-east1-main-c45160e0-u25i.c.vimeo-core.internal [10.56.27.31])
-	by smtp.vimeo.com (Postfix) with ESMTP id 55BD44DD;
-	Mon,  4 Dec 2023 19:42:00 +0000 (UTC)
-Received: by nutau (Postfix, from userid 1001)
-	id 2E15AB422EE; Mon,  4 Dec 2023 14:42:00 -0500 (EST)
-From: David Finkel <davidf@vimeo.com>
-To: Muchun Song <muchun.song@linux.dev>
-Cc: core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	David Finkel <davidf@vimeo.com>
-Subject: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-Date: Mon,  4 Dec 2023 14:41:56 -0500
-Message-Id: <20231204194156.2411672-1-davidf@vimeo.com>
-X-Mailer: git-send-email 2.39.2
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684CDD2
+	for <cgroups@vger.kernel.org>; Mon,  4 Dec 2023 11:52:07 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so6236855a12.3
+        for <cgroups@vger.kernel.org>; Mon, 04 Dec 2023 11:52:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701719526; x=1702324326; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eYidRuFuyjgtGaepFNp4s5KekmZ8R0Vv2VOTsdlcvvk=;
+        b=bBCB65tagxMbJm06o9N432XeCR4VFyR9V1b1/flkMi76CJewjryEFwrNwis8LdAway
+         xBGd7K+a5+beoo5qj5238UhxJqhuGHR39kCM548IyOsgRhTSJQcf9WYqH7UmW9l2h2e1
+         zfVBu/b1Pp5AB5k/52q3MO2ENFRjuTWWdeD2Z1AHmTttlJi8CQn/HL+5q7AsZiOmub02
+         F6d0U8Ps5HqtAHDXPOOOkRVULiPIGqqB4+4ugBoKedUnnyJfNYJn/aYojZhHCQEmsFqI
+         /KOdQIY8iDqW8cRBSPmY4evBCUhgVa5OucGoa1JpQ1OTdxYjI8PPR6rGf4Xiem+l4zp+
+         G/Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701719526; x=1702324326;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eYidRuFuyjgtGaepFNp4s5KekmZ8R0Vv2VOTsdlcvvk=;
+        b=cV78oygdCwCui2otGlDXqiLrcdF6DgrR0ul/K6F6fqfii5Mlmp7QHw/hk7Ih/TtXH8
+         5jZqLBuIKxfXaEC624nco+bkfopD8COalisODKeUp3grCd1MlRzy3Pe8k9Mb95O5pv04
+         kSv9WOK5UWphOIhNQfcDxJPdXJjAo+ZUB3Z6ydPatzVhV1x+iObkii/vMpXeMKVBubHD
+         o3u3EuVzKJbmlgbGeUGCEFZJ0r7hXYj+O6V+uCgEVfsx+zo9BAYqTtxwIig/9vhahSiH
+         qD/O0raCA/5goSW48L+V043oTaYqBkYi4pC71jKl1neAlAhBmMGQPnGlASxHAyDgzq/i
+         g2TQ==
+X-Gm-Message-State: AOJu0Yz/hW8XI9Ip6JIaPNkFtP8sUMN3FxzT98klAi2zWoQcEOiprQ3R
+	Z7wUOHXufPu2bdMzzZj6Z32a5McBtrgA/OndC6Yodw==
+X-Google-Smtp-Source: AGHT+IFlwZwLSTjml6GJX9pmadhYbMF7fdFHsa20v/3WIXVEPDjbDlUP+SUIT8iByELIZI3zCmeFa5ieAkvSDn1t5m8=
+X-Received: by 2002:a17:906:2207:b0:a16:37ce:f81a with SMTP id
+ s7-20020a170906220700b00a1637cef81amr3789708ejs.8.1701719525571; Mon, 04 Dec
+ 2023 11:52:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231129032154.3710765-1-yosryahmed@google.com>
+ <20231129032154.3710765-6-yosryahmed@google.com> <ZWqPBHCXz4nBIQFN@archie.me>
+In-Reply-To: <ZWqPBHCXz4nBIQFN@archie.me>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 4 Dec 2023 11:51:29 -0800
+Message-ID: <CAJD7tkbk=AUfjuq+6HiPwNeoUi===h99rbJ2RkhN6dCk2E2xdg@mail.gmail.com>
+Subject: Re: [mm-unstable v4 5/5] mm: memcg: restore subtree stats flushing
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
+	Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>, 
+	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, Attreyee M <tintinm2017@gmail.com>, 
+	Linux Memory Management List <linux-mm@kvack.org>, Linux CGroups <cgroups@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Other mechanisms for querying the peak memory usage of either a process
-or v1 memory cgroup allow for resetting the high watermark. Restore
-parity with those mechanisms.
+[..]
+> > diff --git a/mm/workingset.c b/mm/workingset.c
+> > index dce41577a49d2..7d3dacab8451a 100644
+> > --- a/mm/workingset.c
+> > +++ b/mm/workingset.c
+> > @@ -464,8 +464,12 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset)
+> >
+> >       rcu_read_unlock();
+> >
+> > -     /* Flush stats (and potentially sleep) outside the RCU read section */
+> > -     mem_cgroup_flush_stats_ratelimited();
+> > +     /*
+> > +      * Flush stats (and potentially sleep) outside the RCU read section.
+> > +      * XXX: With per-memcg flushing and thresholding, is ratelimiting
+> > +      * still needed here?
+> > +      */
+> > +     mem_cgroup_flush_stats_ratelimited(eviction_memcg);
+>
+> What if flushing is not rate-limited (e.g. above line is commented)?
+>
 
-For example:
- - Any write to memory.max_usage_in_bytes in a cgroup v1 mount resets
-   the high watermark.
- - writing "5" to the clear_refs pseudo-file in a processes's proc
-   directory resets the peak RSS.
+Hmm I think I might be misunderstanding the question. The call to
+mem_cgroup_flush_stats_ratelimited() does not ratelimit other
+flushers, it is rather a flush call that is itself ratelimited. IOW,
+it may or may not flush based on when was the last time someone else
+flushed.
 
-This change copies the cgroup v1 behavior so any write to the
-memory.peak and memory.swap.peak pseudo-files reset the high watermark
-to the current usage.
+This was introduced because flushing in the fault path was expensive
+in some cases, so we wanted to avoid flushing if someone else recently
+did a flush, as we don't expect a lot of pending changes in this case.
+However, that was when flushing was always on the root level. Now that
+we are flushing on the memcg level, it may no longer be needed as:
+- The flush is more scoped, there should be less work to do.
+- There is a per-memcg threshold now such that we only flush when
+there are pending updates in this memcg.
 
-This behavior is particularly useful for work scheduling systems that
-need to track memory usage of worker processes/cgroups per-work-item.
-Since memory can't be squeezed like CPU can (the OOM-killer has
-opinions), these systems need to track the peak memory usage to compute
-system/container fullness when binpacking workitems.
+This is why I added a comment that the ratelimited flush here may no
+longer be needed. I didn't want to investigate this as part of this
+series, especially that I do not have a reproducer for the fault
+latency introduced by the flush before ratelimiting. Hence, I am
+leaving the comment such that people know that this ratelimiting may
+no longer be needed with this patch.
 
-Signed-off-by: David Finkel <davidf@vimeo.com>
----
- Documentation/admin-guide/cgroup-v2.rst       | 20 +++---
- mm/memcontrol.c                               | 23 ++++++
- .../selftests/cgroup/test_memcontrol.c        | 72 ++++++++++++++++---
- 3 files changed, 99 insertions(+), 16 deletions(-)
+> >
+> >       eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
+> >       refault = atomic_long_read(&eviction_lruvec->nonresident_age);
+> > @@ -676,7 +680,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+> >               struct lruvec *lruvec;
+> >               int i;
+> >
+> > -             mem_cgroup_flush_stats();
+> > +             mem_cgroup_flush_stats(sc->memcg);
+> >               lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+> >               for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+> >                       pages += lruvec_page_state_local(lruvec,
+>
+> Confused...
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..95af0628dc44 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1305,11 +1305,13 @@ PAGE_SIZE multiple when read back.
- 	reclaim induced by memory.reclaim.
- 
-   memory.peak
--	A read-only single value file which exists on non-root
--	cgroups.
-+	A read-write single value file which exists on non-root cgroups.
-+
-+	The max memory usage recorded for the cgroup and its descendants since
-+	either the creation of the cgroup or the most recent reset.
- 
--	The max memory usage recorded for the cgroup and its
--	descendants since the creation of the cgroup.
-+	Any non-empty write to this file resets it to the current memory usage.
-+	All content written is completely ignored.
- 
-   memory.oom.group
- 	A read-write single value file which exists on non-root
-@@ -1626,11 +1628,13 @@ PAGE_SIZE multiple when read back.
- 	Healthy workloads are not expected to reach this limit.
- 
-   memory.swap.peak
--	A read-only single value file which exists on non-root
--	cgroups.
-+	A read-write single value file which exists on non-root cgroups.
-+
-+	The max swap usage recorded for the cgroup and its descendants since
-+	the creation of the cgroup or the most recent reset.
- 
--	The max swap usage recorded for the cgroup and its
--	descendants since the creation of the cgroup.
-+	Any non-empty write to this file resets it to the current swap usage.
-+	All content written is completely ignored.
- 
-   memory.swap.max
- 	A read-write single value file which exists on non-root
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1c1061df9cd1..b04af158922d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -25,6 +25,7 @@
-  * Copyright (C) 2020 Alibaba, Inc, Alex Shi
-  */
- 
-+#include <linux/cgroup-defs.h>
- #include <linux/page_counter.h>
- #include <linux/memcontrol.h>
- #include <linux/cgroup.h>
-@@ -6635,6 +6636,16 @@ static u64 memory_peak_read(struct cgroup_subsys_state *css,
- 	return (u64)memcg->memory.watermark * PAGE_SIZE;
- }
- 
-+static ssize_t memory_peak_write(struct kernfs_open_file *of,
-+				 char *buf, size_t nbytes, loff_t off)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+
-+	page_counter_reset_watermark(&memcg->memory);
-+
-+	return nbytes;
-+}
-+
- static int memory_min_show(struct seq_file *m, void *v)
- {
- 	return seq_puts_memcg_tunable(m,
-@@ -6947,6 +6958,7 @@ static struct cftype memory_files[] = {
- 		.name = "peak",
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 		.read_u64 = memory_peak_read,
-+		.write = memory_peak_write,
- 	},
- 	{
- 		.name = "min",
-@@ -7917,6 +7929,16 @@ static u64 swap_peak_read(struct cgroup_subsys_state *css,
- 	return (u64)memcg->swap.watermark * PAGE_SIZE;
- }
- 
-+static ssize_t swap_peak_write(struct kernfs_open_file *of,
-+				 char *buf, size_t nbytes, loff_t off)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+
-+	page_counter_reset_watermark(&memcg->swap);
-+
-+	return nbytes;
-+}
-+
- static int swap_high_show(struct seq_file *m, void *v)
- {
- 	return seq_puts_memcg_tunable(m,
-@@ -7999,6 +8021,7 @@ static struct cftype swap_files[] = {
- 		.name = "swap.peak",
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 		.read_u64 = swap_peak_read,
-+		.write = swap_peak_write,
- 	},
- 	{
- 		.name = "swap.events",
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index c7c9572003a8..0326c317f1f2 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -161,12 +161,12 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
- /*
-  * This test create a memory cgroup, allocates
-  * some anonymous memory and some pagecache
-- * and check memory.current and some memory.stat values.
-+ * and checks memory.current, memory.peak, and some memory.stat values.
-  */
--static int test_memcg_current(const char *root)
-+static int test_memcg_current_peak(const char *root)
- {
- 	int ret = KSFT_FAIL;
--	long current;
-+	long current, peak, peak_reset;
- 	char *memcg;
- 
- 	memcg = cg_name(root, "memcg_test");
-@@ -180,12 +180,32 @@ static int test_memcg_current(const char *root)
- 	if (current != 0)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak != 0)
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_anon_50M_check, NULL))
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	peak_reset = cg_write(memcg, "memory.peak", "\n");
-+	if (peak_reset != 0)
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak > MB(30))
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_pagecache_50M_check, NULL))
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
- 	ret = KSFT_PASS;
- 
- cleanup:
-@@ -815,13 +835,14 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- 
- /*
-  * This test checks that memory.swap.max limits the amount of
-- * anonymous memory which can be swapped out.
-+ * anonymous memory which can be swapped out. Additionally, it verifies that
-+ * memory.swap.peak reflects the high watermark and can be reset.
-  */
--static int test_memcg_swap_max(const char *root)
-+static int test_memcg_swap_max_peak(const char *root)
- {
- 	int ret = KSFT_FAIL;
- 	char *memcg;
--	long max;
-+	long max, peak;
- 
- 	if (!is_swap_enabled())
- 		return KSFT_SKIP;
-@@ -838,6 +859,12 @@ static int test_memcg_swap_max(const char *root)
- 		goto cleanup;
- 	}
- 
-+	if (cg_read_long(memcg, "memory.swap.peak"))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.peak"))
-+		goto cleanup;
-+
- 	if (cg_read_strcmp(memcg, "memory.max", "max\n"))
- 		goto cleanup;
- 
-@@ -860,6 +887,27 @@ static int test_memcg_swap_max(const char *root)
- 	if (cg_read_key_long(memcg, "memory.events", "oom_kill ") != 1)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.swap.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	if (cg_write(memcg, "memory.swap.peak", "\n"))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.swap.peak") > MB(10))
-+		goto cleanup;
-+
-+
-+	if (cg_write(memcg, "memory.peak", "\n"))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.peak"))
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
- 		goto cleanup;
- 
-@@ -867,6 +915,14 @@ static int test_memcg_swap_max(const char *root)
- 	if (max <= 0)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.swap.peak");
-+	if (peak < MB(19))
-+		goto cleanup;
-+
- 	ret = KSFT_PASS;
- 
- cleanup:
-@@ -1293,7 +1349,7 @@ struct memcg_test {
- 	const char *name;
- } tests[] = {
- 	T(test_memcg_subtree_control),
--	T(test_memcg_current),
-+	T(test_memcg_current_peak),
- 	T(test_memcg_min),
- 	T(test_memcg_low),
- 	T(test_memcg_high),
-@@ -1301,7 +1357,7 @@ struct memcg_test {
- 	T(test_memcg_max),
- 	T(test_memcg_reclaim),
- 	T(test_memcg_oom_events),
--	T(test_memcg_swap_max),
-+	T(test_memcg_swap_max_peak),
- 	T(test_memcg_sock),
- 	T(test_memcg_oom_group_leaf_events),
- 	T(test_memcg_oom_group_parent_events),
--- 
-2.39.2
-
+Which part is confusing? The call to mem_cgroup_flush_stats() now
+receives a memcg argument as flushing is scoped to that memcg only to
+avoid doing unnecessary work to flush other memcgs with global
+flushing.
 
