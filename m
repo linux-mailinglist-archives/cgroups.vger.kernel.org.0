@@ -1,185 +1,244 @@
-Return-Path: <cgroups+bounces-785-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-786-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA1C803BF8
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 18:49:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48FE4803C5D
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 19:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 195171F2120F
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 17:49:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743A31C20A2A
+	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 18:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391CD2E85D;
-	Mon,  4 Dec 2023 17:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEDE2F858;
+	Mon,  4 Dec 2023 18:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzqq2MCm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sbzk/cJa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD22125;
-	Mon,  4 Dec 2023 09:49:04 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7b06844971dso145861439f.2;
-        Mon, 04 Dec 2023 09:49:04 -0800 (PST)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816DD129;
+	Mon,  4 Dec 2023 10:07:10 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ce46470647so821732b3a.1;
+        Mon, 04 Dec 2023 10:07:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701712144; x=1702316944; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q67gi0sVaKsqnMZLHzOOPDUWGyW46YeGeCa+WMG6ae8=;
-        b=lzqq2MCmo16dQevrm3H5gbkgCmsNMRLuNKrKgeZWktFoT5H6Sh4goh2QbdR8mdz94K
-         74V4a52TE+zxhUDb3KEK35uqOtWM8/xr6jWySHq2lAC3Sq8ObwQO0l3jnT2goSEVvuPh
-         gIFSq3LW5uak0ewh2gAa78Vm9xSUDWqyea0qr7UJMuQ4jP0QRzg6xip5Jkpvbs9COV/v
-         IVDkpmHL4/cl4WCgqoJjrpG6tkpoFcDiP8eOO8RYxUxeaMYPIoU19kVgbWWZCEh80E7I
-         +/OVXyQs3oUO5iNL7oy2Ca9nQY9CVgrC6RnFiCCeNA6w6tdfeItApyAjr6jVAQK4ehm8
-         ZG5Q==
+        d=gmail.com; s=20230601; t=1701713230; x=1702318030; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
+        b=Sbzk/cJarJS+HKABhyq9ZXjIKHReZXRZD2BmG6K1tjWjkQP6qWn2M1Hej+A0irmaku
+         MiQQibihKqnyE5TVi9uvaP+TQXi4717965Cj5SWoxsFXT08rL/dq7gcQha9HMJ+iJ6E4
+         BVSsykoGX1GtN128YVvHFOLoVXyY9pSvbwxF1qFD/Yff8eCGgX7GFA1jKFa07niVVpY4
+         d9OCXuF3WhLpOcz+yEjCxARi6Zebpvmf8U8x8xjf+1Jj/H4bG5JnvtbOkN1l+9J9gmEl
+         oiEG7ELXzD08vZaeO7QyUcVFM2Rqj1v3KKn+P22m3559f6bBVfzqLvxbIyP1mZuhfgJK
+         shBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701712144; x=1702316944;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701713230; x=1702318030;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q67gi0sVaKsqnMZLHzOOPDUWGyW46YeGeCa+WMG6ae8=;
-        b=wV/sGW9vt5qfoozMvRzPsMBQq4V517YKqE5GmtkxDANWRDitCZTuxernCW4NtJzw1g
-         lkIQro6/oHFoASCY4nxoBZw+aiVdlfKnuqvKf6APtZXlDKIfLWOKieYMWk7l8wAfT2zA
-         eHtapq5qjCQEBq6MjC/PPgrby2EEeT4700xIKJ7rKiGZn3qrwht/bLPabGg6aMwh0/1v
-         QgQTiBe7O96bqcC4XXRDqWw4UuQlGj0sfbuypl/BDIZ1uwHSjTHbPv6CEO+MXHuoTE0E
-         QJoK17ED0a01V1+UonfaUWunlLCeU8prG2qXaELjcdjuStWV7q6maXrvNSEfyGbo862K
-         VcaA==
-X-Gm-Message-State: AOJu0YxDvHv6EscVSQYbDdgIv5lxqdZdeXXIFgLYxn9eDZfwHLQRhJVB
-	a0c65yIWVDRjtCWVPQxMhBw7xYSn8f6is0byjow=
-X-Google-Smtp-Source: AGHT+IFt8GSzYZxVi1Z4SafwJMjDfy5IZvFf41ASLqOjmQPOc+b/WfHB3rutmq2iGSn8FSt0XVivG4D4QRvU+UeeVQg=
-X-Received: by 2002:a6b:c408:0:b0:7b4:2af4:479e with SMTP id
- y8-20020a6bc408000000b007b42af4479emr2378483ioa.24.1701712143938; Mon, 04 Dec
- 2023 09:49:03 -0800 (PST)
+        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
+        b=AYyMCAiofwW1w8/LKfRAUteUMOKs3IGWzjKZ81HOLm4Qog7YCel+I5tMBELYkYd3Ic
+         C4T4qpkFlGZeeXP+bncCihQfhjeGD3TsJFVqGBXi/XIjoPO4B2kA2Qlk2CwoPwhDujan
+         +NNUBj2hdZwzJF+J3y4w2hEVmDWduaQnATolFiBBR9nrKzAorPwLhVN5eBryUxtqzHrX
+         V+Fk7vGMXsTDRx7WiPSB9OD38PTNnbefsY008s69lgAXGCZSuKzQm1is49s8RxAW7uOj
+         fmc91cbZIRseHKFcBH1ZvFv+pbAs/b98BwWxq9xVaO3s3RAhfCBsGBSyGFZhNwjbcZOo
+         v/lw==
+X-Gm-Message-State: AOJu0YygE6uwIjeYYcpP+0PeLWzLwNjgGit6simtM/p2Q2tE1GHwtNrK
+	68fyZnN9/CqU4w30ZC6sDjE=
+X-Google-Smtp-Source: AGHT+IGDIGeeBa7UWPj4E4w2SIGHBjZgGz8oxGqwAWzNb+KD7mpnEvIno4bt3NIHORxil3wMtNwC4w==
+X-Received: by 2002:a05:6a20:1448:b0:18c:374c:6e64 with SMTP id a8-20020a056a20144800b0018c374c6e64mr27716780pzi.36.1701713229690;
+        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:27ef])
+        by smtp.gmail.com with ESMTPSA id u2-20020a056a00158200b006cdd507ca2esm7943470pfk.167.2023.12.04.10.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 4 Dec 2023 08:07:07 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"coreteam@netfilter.org" <coreteam@netfilter.org>,
+	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"gfs2@lists.linux.dev" <gfs2@lists.linux.dev>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
+	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
+	"linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+	"nbd@other.debian.org" <nbd@other.debian.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"ntb@lists.linux.dev" <ntb@lists.linux.dev>,
+	"open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
+	"oss-drivers@corigine.com" <oss-drivers@corigine.com>,
+	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
+	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+	"target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+	"wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>
+Subject: Re: Performance drop due to alloc_workqueue() misuse and recent
+ change
+Message-ID: <ZW4VS3Z0auYCjg-W@slm.duckdns.org>
+References: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-2-nphamcs@gmail.com>
- <ZWjpNr3ZzvU4TDC8@casper.infradead.org> <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
- <20231130203522.GC543908@cmpxchg.org> <e3e319f5-9bcd-4c35-92e6-6fdb33eaa080@linux.dev>
-In-Reply-To: <e3e319f5-9bcd-4c35-92e6-6fdb33eaa080@linux.dev>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 4 Dec 2023 09:48:52 -0800
-Message-ID: <CAKEwX=OBHe12R6fTbRn_dNGrz+T4ekE4MSo5w+7i_NNoprmnkw@mail.gmail.com>
-Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node selection
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org, 
-	cerasuolodomenico@gmail.com, yosryahmed@google.com, sjenning@redhat.com, 
-	ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, shakeelb@google.com, muchun.song@linux.dev, 
-	chrisl@kernel.org, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
 
-On Mon, Dec 4, 2023 at 12:30=E2=80=AFAM Chengming Zhou <chengming.zhou@linu=
-x.dev> wrote:
->
-> On 2023/12/1 04:35, Johannes Weiner wrote:
-> > On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
-> >> On Thu, Nov 30, 2023 at 11:57=E2=80=AFAM Matthew Wilcox <willy@infrade=
-ad.org> wrote:
-> >>>
-> >>> On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
-> >>>> This patch changes list_lru interface so that the caller must explic=
-itly
-> >>>> specify numa node and memcg when adding and removing objects. The ol=
-d
-> >>>> list_lru_add() and list_lru_del() are renamed to list_lru_add_obj() =
-and
-> >>>> list_lru_del_obj(), respectively.
-> >>>
-> >>> Wouldn't it be better to add list_lru_add_memcg() and
-> >>> list_lru_del_memcg() and have:
-> >>>
-> >>> +bool list_lru_del(struct list_lru *lru, struct list_head *item)
-> >>> +{
-> >>> +       int nid =3D page_to_nid(virt_to_page(item));
-> >>> +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
-> >>> +               mem_cgroup_from_slab_obj(item) : NULL;
-> >>> +
-> >>> +       return list_lru_del_memcg(lru, item, nid, memcg);
-> >>> +}
-> >>>
-> >>> Seems like _most_ callers will want the original versions and only
-> >>> a few will want the explicit memcg/nid versions.  No?
-> >>>
-> >>
-> >> I actually did something along that line in earlier iterations of this
-> >> patch series (albeit with poorer naming - __list_lru_add() instead of
-> >> list_lru_add_memcg()). The consensus after some back and forth was
-> >> that the original list_lru_add() was not a very good design (the
-> >> better one was this new version that allows for explicit numa/memcg
-> >> selection). So I agreed to fix it everywhere as a prep patch.
-> >>
-> >> I don't have strong opinions here to be completely honest, but I do
-> >> think this new API makes more sense (at the cost of quite a bit of
-> >> elbow grease to fix every callsites and extra reviewing).
-> >
-> > Maybe I can shed some light since I was pushing for doing it this way.
-> >
-> > The quiet assumption that 'struct list_head *item' is (embedded in) a
-> > slab object that is also charged to a cgroup is a bit much, given that
-> > nothing in the name or documentation of the function points to that.
-> >
-> > It bit us in the THP shrinker where that list head is embedded in a
-> > tailpage (virt_to_page(page) is fun to debug). And it caused some
-> > confusion in this case as well, where the zswap entry is a slab object
-> > but not charged (the entry descriptor is not attractive for cgroup
-> > accounting, only the backing memory it points to.)
->
-> Hi,
->
-> I have a question, maybe I missed something since I haven't read all
-> the earlier versions.
->
-> IIUC, the problem here is that "zswap_entry" has different memcg and node
-> than the "page", so I wonder if we can just charge "zswap_entry" to the
-> same memcg of the "page".
->
-> Like we can do these when allocating the "zswap_entry":
->
->         old_memcg =3D set_active_memcg(memcg)
->         kmem_cache_alloc_lru(zswap_entry_cache, lru, gfp)
->         set_active_memcg(old_memcg)
->
-> The good points are:
->
-> 1. "zswap_entry" is charged to the memcg of "page", which is more sensibl=
-e?
->
-> 2. We can reuse the kmem_cache_alloc_lru() interface, which makes code si=
-mpler
->    since we don't need to manage list_lru_memcg by ourselves.
->
-> 3. Maybe the new list_lru_add() and list_lru_del() are not needed anymore=
-?
->    Since the "zswap_entry" is of the same memcg and node with the "page".
->    But don't know if THP shrinker still need it.
->
-> Thanks!
+Hello,
 
-That idea was considered in earlier iterations/discussions of the
-patch series as well. Charging things is not free - there is an
-overhead associated with it, which is why we are usually selective
-about whether to charge something. We were not super keen to do this
-for zswap_entry just to plumb around the list_lru's restriction. Might
-as well pay the price of extending the list_lru interface now.
+On Mon, Dec 04, 2023 at 04:03:47PM +0000, Naohiro Aota wrote:
+> Recently, commit 636b927eba5b ("workqueue: Make unbound workqueues to use
+> per-cpu pool_workqueues") changed WQ_UNBOUND workqueue's behavior. It
+> changed the meaning of alloc_workqueue()'s max_active from an upper limit
+> imposed per NUMA node to a limit per CPU. As a result, massive number of
+> workers can be running at the same time, especially if the workqueue user
+> thinks the max_active is a global limit.
+> 
+> Actually, it is already written it is per-CPU limit in the documentation
+> before the commit. However, several callers seem to misuse max_active,
+> maybe thinking it is a global limit. It is an unexpected behavior change
+> for them.
 
-If in the future, not charging the zswap entry causes a separate
-isolation issue, we could revisit this decision and charge it.
-Otherwise, IMHO we should just stick with this for now.
+Right, and the behavior has been like that for a very long time and there
+was no other way to achieve reasonable level of concurrency, so the current
+situation is expected.
 
->
-> >
-> > Yes, for most users - at least right now - the current assumption is
-> > accurate. The thinking was just that if we do have to differentiate
-> > callers now anyway, we might as well make the interface a bit more
-> > self-documenting and harder to misuse going forward, even if it's a
-> > bit more churn now.
-> >
-> >
+> For example, these callers set max_active = num_online_cpus(), which is a
+> suspicious limit applying to per-CPU. This config means we can have nr_cpu
+> * nr_cpu active tasks working at the same time.
+
+Yeah, that sounds like a good indicator.
+
+> fs/f2fs/data.c: sbi->post_read_wq = alloc_workqueue("f2fs_post_read_wq",
+> fs/f2fs/data.c-                                          WQ_UNBOUND | WQ_HIGHPRI,
+> fs/f2fs/data.c-                                          num_online_cpus());
+> 
+> fs/crypto/crypto.c:     fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
+> fs/crypto/crypto.c-                                              WQ_UNBOUND | WQ_HIGHPRI,
+> fs/crypto/crypto.c-                                              num_online_cpus());
+> 
+> fs/verity/verify.c:     fsverity_read_workqueue = alloc_workqueue("fsverity_read_queue",
+> fs/verity/verify.c-                                               WQ_HIGHPRI,
+> fs/verity/verify.c-                                               num_online_cpus());
+> 
+> drivers/crypto/hisilicon/qm.c:  qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_MEM_RECLAIM |
+> drivers/crypto/hisilicon/qm.c-                           WQ_UNBOUND, num_online_cpus(),
+> drivers/crypto/hisilicon/qm.c-                           pci_name(qm->pdev));
+> 
+> block/blk-crypto-fallback.c:    blk_crypto_wq = alloc_workqueue("blk_crypto_wq",
+> block/blk-crypto-fallback.c-                                    WQ_UNBOUND | WQ_HIGHPRI |
+> block/blk-crypto-fallback.c-                                    WQ_MEM_RECLAIM, num_online_cpus());
+> 
+> drivers/md/dm-crypt.c:          cc->crypt_queue = alloc_workqueue("kcryptd/%s",
+> drivers/md/dm-crypt.c-                                            WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND,
+> drivers/md/dm-crypt.c-                                            num_online_cpus(), devname);
+
+Most of these work items are CPU bound but not completley so. e.g.
+kcrypt_crypt_write_continue() does wait_for_completion(), so setting
+max_active to 1 likely isn't what they want either. They mostly want some
+reasonable system-wide concurrency limit w.r.t. the CPU count while keeping
+some level of flexibility in terms of task placement.
+
+The previous max_active wasn't great for this because its meaning changed
+depending on the number of nodes. Now, the meaning doesn't change but it's
+not really useful for the above purpose. It's only useful for avoiding
+melting the system completely.
+
+One way to go about it is to declare that concurrency level management for
+unbound workqueue is on users but that seems not ideal given many use cases
+would want it anyway.
+
+Let me think it over but I think the right way to go about it is going the
+other direction - ie. making max_active apply to the whole system regardless
+of the number of nodes / ccx's / whatever.
+
+> Furthermore, the change affects performance in a certain case.
+> 
+> Btrfs creates several WQ_UNBOUND workqueues with a default max_active =
+> min(NRCPUS + 2, 8). As my machine has 96 CPUs with NUMA disabled, this
+> max_active config allows running over 700 active works. Before the commit,
+> it is limited to 8 if NUMA is disabled or limited to 16 if NUMA nodes is 2.
+> 
+> I reverted the workqueue code back to before the commit, and I ran the
+> following fio command on RAID0 btrfs on 6 SSDs.
+> 
+> fio --group_reporting --eta=always --eta-interval=30s --eta-newline=30s \
+>     --rw=write --fallocate=none \
+>     --direct=1 --ioengine=libaio --iodepth=32 \
+>     --filesize=100G \
+>     --blocksize=64k \
+>     --time_based --runtime=300s \
+>     --end_fsync=1 \
+>     --directory=${MNT} \
+>     --name=writer --numjobs=32
+> 
+> By changing workqueue's max_active, the result varies.
+> 
+> - wq max_active=8   (intended limit by btrfs?)
+>   WRITE: bw=2495MiB/s (2616MB/s), 2495MiB/s-2495MiB/s (2616MB/s-2616MB/s), io=753GiB (808GB), run=308953-308953msec
+> - wq max_active=16  (actual limit on 2 NUMA nodes setup)
+>   WRITE: bw=1736MiB/s (1820MB/s), 1736MiB/s-1736MiB/s (1820MB/s-1820MB/s), io=670GiB (720GB), run=395532-395532msec
+> - wq max_active=768 (simulating current limit)
+>   WRITE: bw=1276MiB/s (1338MB/s), 1276MiB/s-1276MiB/s (1338MB/s-1338MB/s), io=375GiB (403GB), run=300984-300984msec
+> 
+> The current performance is slower than the previous limit (max_active=16)
+> by 27%, or it is 50% slower than the intended limit.  The performance drop
+> might be due to contention of the btrfs-endio-write works. There are over
+> 700 kworker instances were created and 100 works are on the 'D' state
+> competing for a lock.
+> 
+> More specifically, I tested the same workload on the commit.
+> 
+> - At commit 636b927eba5b ("workqueue: Make unbound workqueues to use per-cpu pool_workqueues")
+>   WRITE: bw=1191MiB/s (1249MB/s), 1191MiB/s-1191MiB/s (1249MB/s-1249MB/s), io=350GiB (376GB), run=300714-300714msec
+> - At the previous commit = 4cbfd3de73 ("workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug")
+>   WRITE: bw=1747MiB/s (1832MB/s), 1747MiB/s-1747MiB/s (1832MB/s-1832MB/s), io=748GiB (803GB), run=438134-438134msec
+> 
+> So, it is -31.8% performance down with the commit.
+> 
+> In summary, we misuse max_active, considering it is a global limit. And,
+> the recent commit introduced a huge performance drop in some cases.  We
+> need to review alloc_workqueue() usage to check if its max_active setting
+> is proper or not.
+
+Thanks a lot for the report. I think it's a lot more reasonable to assume
+that max_active is global for unbound workqueues. The current workqueue
+behavior is not very intuitive or useful. I'll try to find something more
+reasonable. Thanks for the report and analysis. Much appreciated.
+
+Thanks.
+
+-- 
+tejun
 
