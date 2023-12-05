@@ -1,204 +1,138 @@
-Return-Path: <cgroups+bounces-804-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-805-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4E478048C2
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 05:48:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27540804D24
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 10:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C45528157A
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 04:48:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6DF1F214E4
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 09:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7ED6117;
-	Tue,  5 Dec 2023 04:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEF43D977;
+	Tue,  5 Dec 2023 09:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NkCp/7ns"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VrH0qrnA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDA6C3;
-	Mon,  4 Dec 2023 20:48:19 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c59ac49f12so1640355241.1;
-        Mon, 04 Dec 2023 20:48:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701751698; x=1702356498; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l6U7HYB+MMDXs4im/MnwOh3wT6+xRnbqGtkbQLiIJbE=;
-        b=NkCp/7ns32k2qkHc2tAWEEGEk4EYBXlUlVXG5Y5LTzzGG8dgXuy0LxjAhhyhPkuynO
-         A8/M1EA4NP+VACv5tTXUM2pUJ6DL9fzkEExHhnaOHJnLFgJHjc8Yz8QbtTrfr7xlqLS7
-         7xmzYNvqyk4li1rmX5agcGXzVdW1Af/YcsuFX0tEypuXFl85RCLAd0YO0Xhmmuneb6g0
-         MP6tmGXMn9QIv1HbZXx4wojrks20qnxkSMMUGJTr7VpCHY3pChzJ9ALltQ2/BfQkIU6h
-         BelxxYy06rNx3rl9Ec6Cpdrcj3EzZEtpvB/b6Xg/vwhlYuW8F8NICE8Gn/+imwagksRz
-         w6Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701751698; x=1702356498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l6U7HYB+MMDXs4im/MnwOh3wT6+xRnbqGtkbQLiIJbE=;
-        b=hpMN6rK0O2R2/vtGGQrqVWYOpy9yYlJHARslctbWR3zdwkUWbrdFsnE2C+2foizLm3
-         IB/vehAzh+uTv6B0kAeQIMVAJvda35ibtO6G3OS1jLyOtDzp+kQh2oY+acQPRiFjo1a5
-         FgMiJ9XCdE2TuKA8N4p5jS9liOCSkDMMGd/hvNVppvOUYtoOQa+XjXNu73/mshfYE0al
-         Nf1ux0lQkA1lz+rQk7M5gpPBUB7oVXL+zB0QyTXondaRIKdIBqzu1oB+9XfGM/rnHfCt
-         4T+PY/AMosJ8KfaWerlTSJSmuvkTslnnrpd72vaXsPJfwjw06N7PpUh6jcG8C6AU3e4I
-         RCQA==
-X-Gm-Message-State: AOJu0YzSoeRYidf27rgOeYMNUplsgSChFdz10dLWBQdmTKmiHKzQ5TTg
-	ReEIuQ+98y86RddGDyJnj0lUEHHAft+/SbUboHM=
-X-Google-Smtp-Source: AGHT+IHhiPX7qYso93UYGFEAvtKnVFmjurUEPV8H0b76lJVRAkF5m5mLg9HHSDTrpxGGrM2rareCQf4N1EafMBxIQN0=
-X-Received: by 2002:a05:6102:2dc:b0:464:77f1:f34e with SMTP id
- h28-20020a05610202dc00b0046477f1f34emr651042vsh.28.1701751698506; Mon, 04 Dec
- 2023 20:48:18 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2482120;
+	Tue,  5 Dec 2023 01:04:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701767052; x=1733303052;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=0Xoq+rJyY1UIp1LJiIIxaTDxo/bpE9rs+1q3pFVff/c=;
+  b=VrH0qrnAymaYUoJak9mBiYADAvf3zZhqm4NDohcUL0hcofCeVkqfm4QA
+   ghEgkru2MInK75g/01a423bam7zLDP50mQ3ZO1tofgusBkDR5pEs1/6Fg
+   6Ih5FUTDB09Vh49Oz0v23MrIZDxMl3SKShXVn9X86xP5rPf+mTez6hzhx
+   1S/s7Z7YRqS3hbupzfRO1nuktwYafuzvCViZ2CblUmSQvHmJURG+v+KIf
+   AEKifhR+OILzzLRczX0H9hepheF2iqC4jagvUVpzAq92BCYJ8WpkN4Hnq
+   RxYvC40jsbEpkFrYELs5BkHiSMEliB6AYWSeKz3YzeKk9HaaU+EYo806W
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="708162"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="708162"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:03:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="914730523"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="914730523"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:03:51 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Michal Hocko <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,  "John
+ Groves" <john@jagalactic.com>,  Gregory Price <gourry.memverge@gmail.com>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+  "linux-mm@kvack.org" <linux-mm@kvack.org>,  "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>,  "linux-doc@vger.kernel.org"
+ <linux-doc@vger.kernel.org>,  "akpm@linux-foundation.org"
+ <akpm@linux-foundation.org>,  "lizefan.x@bytedance.com"
+ <lizefan.x@bytedance.com>,  "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+  "corbet@lwn.net" <corbet@lwn.net>,  "roman.gushchin@linux.dev"
+ <roman.gushchin@linux.dev>,  "shakeelb@google.com" <shakeelb@google.com>,
+  "muchun.song@linux.dev" <muchun.song@linux.dev>,  "jgroves@micron.com"
+ <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+In-Reply-To: <ZW3ZFDeTs7xotImL@memverge.com> (Gregory Price's message of "Mon,
+	4 Dec 2023 08:50:12 -0500")
+References: <ZU6uxSrj75EiXise@memverge.com> <ZU7vjsSkGbRLza-K@slm.duckdns.org>
+	<ZU74L9oxWOoTTfpM@memverge.com> <ZVNBMW8iJIGDyp0y@tiehlicka>
+	<ZVOXWx8XNJJNC23A@memverge.com> <ZVOn2T_Qg_NTKlB2@tiehlicka>
+	<ZVOzMEtDYB4l8qFy@memverge.com>
+	<87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZW1IdPI11nhKcdZl@memverge.com>
+	<87sf4i2xe1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZW3ZFDeTs7xotImL@memverge.com>
+Date: Tue, 05 Dec 2023 17:01:51 +0800
+Message-ID: <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz> <ZW6mjFlmm0ME18OQ@localhost.localdomain>
-In-Reply-To: <ZW6mjFlmm0ME18OQ@localhost.localdomain>
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date: Tue, 5 Dec 2023 13:48:07 +0900
-Message-ID: <CAB=+i9R+zZo-AGuEAYDzEZV7f=YSC9fdczARQijk-WPZUr0iDA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/21] KASAN: remove code paths guarded by CONFIG_SLAB
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
-	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	Marco Elver <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-On Tue, Dec 5, 2023 at 1:27=E2=80=AFPM Hyeonggon Yoo <42.hyeyoo@gmail.com> =
-wrote:
->
-> On Mon, Nov 20, 2023 at 07:34:14PM +0100, Vlastimil Babka wrote:
-> > With SLAB removed and SLUB the only remaining allocator, we can clean u=
-p
-> > some code that was depending on the choice.
-> >
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Reviewed-by: Marco Elver <elver@google.com>
-> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> > ---
-> >  mm/kasan/common.c     | 13 ++-----------
-> >  mm/kasan/kasan.h      |  3 +--
-> >  mm/kasan/quarantine.c |  7 -------
-> >  3 files changed, 3 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> > index 256930da578a..5d95219e69d7 100644
-> > --- a/mm/kasan/common.c
-> > +++ b/mm/kasan/common.c
-> > @@ -153,10 +153,6 @@ void __kasan_poison_object_data(struct kmem_cache =
-*cache, void *object)
-> >   * 2. A cache might be SLAB_TYPESAFE_BY_RCU, which means objects can b=
-e
-> >   *    accessed after being freed. We preassign tags for objects in the=
-se
-> >   *    caches as well.
-> > - * 3. For SLAB allocator we can't preassign tags randomly since the fr=
-eelist
-> > - *    is stored as an array of indexes instead of a linked list. Assig=
-n tags
-> > - *    based on objects indexes, so that objects that are next to each =
-other
-> > - *    get different tags.
-> >   */
-> >  static inline u8 assign_tag(struct kmem_cache *cache,
-> >                                       const void *object, bool init)
-> > @@ -171,17 +167,12 @@ static inline u8 assign_tag(struct kmem_cache *ca=
-che,
-> >       if (!cache->ctor && !(cache->flags & SLAB_TYPESAFE_BY_RCU))
-> >               return init ? KASAN_TAG_KERNEL : kasan_random_tag();
-> >
-> > -     /* For caches that either have a constructor or SLAB_TYPESAFE_BY_=
-RCU: */
-> > -#ifdef CONFIG_SLAB
-> > -     /* For SLAB assign tags based on the object index in the freelist=
-. */
-> > -     return (u8)obj_to_index(cache, virt_to_slab(object), (void *)obje=
-ct);
-> > -#else
-> >       /*
-> > -      * For SLUB assign a random tag during slab creation, otherwise r=
-euse
-> > +      * For caches that either have a constructor or SLAB_TYPESAFE_BY_=
-RCU,
-> > +      * assign a random tag during slab creation, otherwise reuse
-> >        * the already assigned tag.
-> >        */
-> >       return init ? kasan_random_tag() : get_tag(object);
-> > -#endif
-> >  }
-> >
-> >  void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
-> > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> > index 8b06bab5c406..eef50233640a 100644
-> > --- a/mm/kasan/kasan.h
-> > +++ b/mm/kasan/kasan.h
-> > @@ -373,8 +373,7 @@ void kasan_set_track(struct kasan_track *track, gfp=
-_t flags);
-> >  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp=
-_t flags);
-> >  void kasan_save_free_info(struct kmem_cache *cache, void *object);
-> >
-> > -#if defined(CONFIG_KASAN_GENERIC) && \
-> > -     (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
-> > +#ifdef CONFIG_KASAN_GENERIC
-> >  bool kasan_quarantine_put(struct kmem_cache *cache, void *object);
-> >  void kasan_quarantine_reduce(void);
-> >  void kasan_quarantine_remove_cache(struct kmem_cache *cache);
-> > diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-> > index ca4529156735..138c57b836f2 100644
-> > --- a/mm/kasan/quarantine.c
-> > +++ b/mm/kasan/quarantine.c
-> > @@ -144,10 +144,6 @@ static void qlink_free(struct qlist_node *qlink, s=
-truct kmem_cache *cache)
-> >  {
-> >       void *object =3D qlink_to_object(qlink, cache);
-> >       struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, objec=
-t);
-> > -     unsigned long flags;
-> > -
-> > -     if (IS_ENABLED(CONFIG_SLAB))
-> > -             local_irq_save(flags);
-> >
-> >       /*
-> >        * If init_on_free is enabled and KASAN's free metadata is stored=
- in
-> > @@ -166,9 +162,6 @@ static void qlink_free(struct qlist_node *qlink, st=
-ruct kmem_cache *cache)
-> >       *(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
-> >
-> >       ___cache_free(cache, object, _THIS_IP_);
-> > -
-> > -     if (IS_ENABLED(CONFIG_SLAB))
-> > -             local_irq_restore(flags);
-> >  }
-> >
-> >  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *ca=
-che)
->
-> Looks good to me,
-> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Gregory Price <gregory.price@memverge.com> writes:
 
-nit: Some KASAN tests depends on SLUB, but as now it's the only allocator
-      KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB); in
-      mm/kasan/kasan_test.c can be removed
-
+> On Mon, Dec 04, 2023 at 04:19:02PM +0800, Huang, Ying wrote:
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> > If the structure is built as a matrix of (cpu_node,mem_nodes),
+>> > the you can also optimize based on the node the task is running on.
+>> 
+>> The matrix stuff makes the situation complex.  If people do need
+>> something like that, they can just use set_memorypolicy2() with user
+>> specified weights.  I still believe that "make simple stuff simple, and
+>> complex stuff possible".
+>> 
 >
-> >
-> > --
-> > 2.42.1
-> >
-> >
+> I don't think it's particularly complex, since we already have a
+> distance matrix for numa nodes:
+>
+> available: 2 nodes (0-1)
+> ... snip ...
+> node distances:
+> node   0   1
+>   0:  10  21
+>   1:  21  10
+>
+> This would follow the same thing, just adjustable for bandwidth.
+
+We add complexity for requirement. Not there's something similar
+already.
+
+> I personally find the (src,dst) matrix very important for flexibility.
+
+With set_memorypolicy2(), I think we have the needed flexibility for
+users needs the complexity.
+
+> But if there is particular pushback against it, having a one dimensional
+> array is better than not having it, so I will take what I can get.
+
+TBH, I don't think that we really need that.  Especially given we will
+have set_memorypolicy2().
+
+>> > That feels very intuitive, deals with many race condition issues, and
+>> > the global setting can actually be implemented without the need for
+>> > set_mempolicy2 at all - which is certainly a bonus.
+>> >
+>> > Would love more thoughts here.  Will have a new RFC with set_mempolicy2,
+>> > mbind2, and MPOL_WEIGHTED_INTERLEAVE soon that demonstrate the above.
+>> 
+>> Thanks for doing all these!
+>> 
+>
+> Someone's got to :]
+>
+
+--
+Best Regards,
+Huang, Ying
 
