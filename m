@@ -1,629 +1,224 @@
-Return-Path: <cgroups+bounces-812-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-813-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D4BB80577C
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 15:37:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 169198057BA
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 15:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941BC1F21675
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 14:37:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2F85B2100C
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 14:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F6865ED3;
-	Tue,  5 Dec 2023 14:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FE965EC1;
+	Tue,  5 Dec 2023 14:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a83sCJQL"
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="xwAyo+S3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81165129;
-	Tue,  5 Dec 2023 06:37:40 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d06d42a58aso30676605ad.0;
-        Tue, 05 Dec 2023 06:37:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701787060; x=1702391860; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jLNlcnn6IIodVjt3HMRzPbHdYWplCsrOQ7VtLRR6mVg=;
-        b=a83sCJQLHpQ1uzVTa8lZrurtu0L1sq3glO37l+i+5wE2PdhwZpGV3UPaZL98gRBSAl
-         HsVBdbP93qaHqFzjyW0R5TPhdiuackioqcWAN1QGTsbBZCuW1Ml29Yz0mVOZ/YC01078
-         KzuMRg81f7tHyQhtAOpD7M6czLygIdkVNl0gIr/soeFtLT3YD/LQTfLMgA1cq0Ezla1A
-         wP7alv2L/9uUyRJ1fKA+t9BZnkJYzEMd5+3rJm0kzA1MEHSAoEUgZAS9vni5Z/w3KA/U
-         wdEMy4bXq2JXyOAUluOOG9wZLQJvdDr7meXgs+q3ORR5vltAW8XHe52FVz2F2NluTgf7
-         wdCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701787060; x=1702391860;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jLNlcnn6IIodVjt3HMRzPbHdYWplCsrOQ7VtLRR6mVg=;
-        b=clfUvZ2klsSHUtT3T3nr/IpcqZxh5lpSkCbCZ4JJXdxDz+X+9k3UKRQSmHqlIyUXDe
-         w0cFl8yrUEoLddA12NaqoTTN+cnNyXvdTwMJqFN5n46yT5Jy4TJiuVnq+fhEjH9F04YP
-         mxV2F3NXXMHSm49wtXI0prfe7wtymlHT94mwzBbKnzfq+9hpiiNTdwWvHBMV6kyo7Axw
-         AW1rHgf8Nb9Ei9TOIFoTDdh1igL/F7KTX6EgLsM9+qkp1Nv9RDVlqzkhQQtPzjaFCUTG
-         jU3Z3BdQoNay7yP8aAot7BcudzxJ8mDhFHJNjCmPBOKXXYn4Tdur6bQnO+ltkVFdT7Bj
-         X+pw==
-X-Gm-Message-State: AOJu0YyuiqHDm4RaECFaNt3CqBWw4we+4tqL20fby5nbaDfuNZllc40N
-	Ja/vtMs6sctBVYOVpN80WV0=
-X-Google-Smtp-Source: AGHT+IGmbEHmldbToIktb5FJ3SQRRwB1TrI9XPo1StGNNewhXokPfTo4pg2XGVmQK73kxUCQOzVu/w==
-X-Received: by 2002:a17:902:a603:b0:1d0:6ffd:e2eb with SMTP id u3-20020a170902a60300b001d06ffde2ebmr5057080plq.133.1701787059874;
-        Tue, 05 Dec 2023 06:37:39 -0800 (PST)
-Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id g9-20020a1709026b4900b001a9b29b6759sm10286502plt.183.2023.12.05.06.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 06:37:39 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tj@kernel.org
-Cc: bpf@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 3/3] selftests/bpf: Add selftests for cgroup1 local storage
-Date: Tue,  5 Dec 2023 14:37:25 +0000
-Message-Id: <20231205143725.4224-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231205143725.4224-1-laoar.shao@gmail.com>
-References: <20231205143725.4224-1-laoar.shao@gmail.com>
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2052.outbound.protection.outlook.com [40.107.102.52])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D783CA;
+	Tue,  5 Dec 2023 06:48:07 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xh4s+N7XtBu9s2fLd/uEkFhOF7LAxGqjDkLtaHu037PMe+pqWWqUIi4rkRcS0EeUertRMATjG7P/nDb7oFvjFONcaYWL2fn/LyhUdHIAqZ+b9G8rVjIyhjDfWk11/YX4lsh1wYKFB+hpdLez07k+9gfVzqLidgnH7jhVCTrJEfE5XzARhgwK71BeMtnYYTVfd1OLS5Q/H5FRMiqqxcb6QtOYjDDzdwvluKL5tfiV4uY9DftoGMsbTfEczgR1K6y2fcYCxSIYwI/kNeaW9CPENBFFXk0tAqmeokza4LRPHz1RlgkRmfhvglHPSnQ0e6mSOxyCPSVSfokShZSUcfqSOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1CGWv/WudBoNeUlGM0tsKTwHDmH/kQnUGxqZapCt5WQ=;
+ b=V3m4gElxznZdyGs1O4RjFWA7zkvccnwo39xDvB2SXrcIqC2jVW5JRMxGkteP8X2Bj7e2LNRk9TIqvbxhnoLT1ZioU7HCEJuYJBrCJLFh35SdPFjcXYPBH/3OgKhXLQvrk7DWHD/ibFoCyEJOZvXd3yv0zcg48Iy5ZHX9sXB90iaj2DnA1aLzqfPYO+amYOoCciCCx5ynPIA4+KtSbzw+ucsimXufm0cePv2JpEV1HAkmQBPmeaL8tXGmyAMTAKRgkyhP/FyJJ9jsZLvjq+IX904T5/4qiLWTszgt+zKb2rdvWawoG4HGdmVlSKgwcYwd1l1rI7OYYGjomceTk/cLQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1CGWv/WudBoNeUlGM0tsKTwHDmH/kQnUGxqZapCt5WQ=;
+ b=xwAyo+S3GduO3VE6dYyio0FOVl48hL0yQwpDTGbdlxQYuVhXaWvDdLKJnjbx5cd/ilNSzhFiKD6HfvbS+6m2h13iEKg5J89xfsu3loCXH13gAFwWvhzoa1uNngHEMZMZ+iPxyRsfuno5EWMyXvT3azLKDOaz/0Mjc77tmBYZwyI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by DM4PR17MB5873.namprd17.prod.outlook.com (2603:10b6:8:41::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.24; Tue, 5 Dec 2023 14:48:01 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7068.022; Tue, 5 Dec 2023
+ 14:48:01 +0000
+Date: Tue, 5 Dec 2023 09:47:51 -0500
+From: Gregory Price <gregory.price@memverge.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>, "tj@kernel.org" <tj@kernel.org>,
+	John Groves <john@jagalactic.com>,
+	Gregory Price <gourry.memverge@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+	"shakeelb@google.com" <shakeelb@google.com>,
+	"muchun.song@linux.dev" <muchun.song@linux.dev>,
+	"jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZW84F5PUB/0yPW9d@memverge.com>
+References: <ZU74L9oxWOoTTfpM@memverge.com>
+ <ZVNBMW8iJIGDyp0y@tiehlicka>
+ <ZVOXWx8XNJJNC23A@memverge.com>
+ <ZVOn2T_Qg_NTKlB2@tiehlicka>
+ <ZVOzMEtDYB4l8qFy@memverge.com>
+ <87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW1IdPI11nhKcdZl@memverge.com>
+ <87sf4i2xe1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW3ZFDeTs7xotImL@memverge.com>
+ <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0PR03CA0171.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::26) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|DM4PR17MB5873:EE_
+X-MS-Office365-Filtering-Correlation-Id: b129dae2-e394-424d-650c-08dbf5a12dc0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	R3RcwVnuzLfPGKMve0jsEyis6E+94HvsNBUa+hCm+jGv3JeLKX48fn4keN65whD2snslszvtOZ+8Fr8XZAXTGjVrmpzLWnjxmSRoNo3LY9yndK7At71ldluLArj5EOf/JyeuHRn4Q2aE8bm2wUZlgUQ+4F5uIJKe908ml/ZBG8AGR5GvUMgjnHnU4HsViSR3tRjzOTDvgqtZuBbzJJ4SeE2C0CqaSwoO9oVEo6bNGBKz9xxz2qmOLSA4ddmjXTzUBCSAYztXgC/jp/mqHTOj+/kcJYdzBnXJ7F4GR+Lpcgt7PzQtLT+EnmWxbfvKtPW/y+exrI49jPTZbIahJXKJpkeLj6QCerd0S0gKIbP9UiGOvdeomK8w96ka+wjw1OzGR3WNJ0dBJCig5DWA5KEpPrndgIv+M1uQk9ySSty7U13lqKkDJzHw1cA1zeEqAcn4uk8tIY5FilFpt1kT0I0p4AMCAvGvjfGyZ3BzVmOmUTN3xjqyc+IwF/ED7EyLd2pYoLBgKA8D9OhbRYNaw+zv1zLqQetzcnZ9jjSIhw9GL9TDiERMihDZNmE/cKeUCrwoE3SunazEpqF1kKuGosxrGlnqcAVx/Qm58xKfrAkJG9l512L9NqzxO20sNH+Q1Z5/G/H8d8HbBHSZ3RakYK8xacnM2e1J1uGSYi9afViAZkg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(396003)(366004)(39850400004)(230922051799003)(230173577357003)(230273577357003)(64100799003)(1800799012)(451199024)(186009)(38100700002)(7416002)(2906002)(5660300002)(83380400001)(6512007)(2616005)(6506007)(6666004)(26005)(478600001)(6486002)(41300700001)(36756003)(44832011)(6916009)(54906003)(66476007)(66556008)(66946007)(316002)(8676002)(8936002)(4326008)(86362001)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?mrOHwdJqJtOaczQklQ9wozP9Rxcjvl6gANjtkuH/X0r67fxD9PomQWy8EnvK?=
+ =?us-ascii?Q?n72TjxZXuSiTdNtAiavYD4R8y4yK4BgccI+UxSDn0tPC4Gqd+wm442sxykyP?=
+ =?us-ascii?Q?aQeoD3Cin8pehTgtFf+BzcNhSdjMH8hrjOEoWA3o28/fd54yJDo/UZxEzxW5?=
+ =?us-ascii?Q?3/z/IBxtqhc0nwQUK6Bh+DeQdr9azzz3/zhldk/qLTwwwGKgsM8hdH7c0RGD?=
+ =?us-ascii?Q?dQvhopB0a83cTQGGFumO1AyVzUOShKvusJlxuGoAsOWUMp/FsSY51KpyiH0E?=
+ =?us-ascii?Q?EAoGUZUtfyJ1cKaKe/9FhKkhjQBb4IP+2UnH00dZ7ilsjC34ToL39CgEuWjT?=
+ =?us-ascii?Q?B5fFgn5DoT54K8/IO5ax1XlmpjgT+kFCOg0+UyJ3hEMFjLoEgvh/wXpteOXv?=
+ =?us-ascii?Q?TOHNtS3Rik2p4QMCumWvJxoAdLO4t8zm2ugEzwEh4hU/07/cxgur4w8sVVr0?=
+ =?us-ascii?Q?/AP1X7iecEQGq7I+JvNtCsxYcdfbTdnIMNvU0ud5OV5WTftb1gLLJ+bbJqjY?=
+ =?us-ascii?Q?N4VorwlgxCfnjvML94RM57BtuEqI+RkALpHc0UtlPhXDuJQ3+soXO+jdAPgV?=
+ =?us-ascii?Q?QlDLfkDuYRvwK6SK/Il/9kqYkv5muZM5DDR11983Pwc4Em+eKo7ENJZ2iJz6?=
+ =?us-ascii?Q?yiBvHq1tbSK8Mloxhj4zpt7n0TccEvfwYvmb4Lfqnr+lle8K2Hbfw9SeXmfX?=
+ =?us-ascii?Q?9gFLwGqyzZpzRMjLu7xHZgON6VZKgHFslBhFMxuD8MAHYb8viVp6dVzANBdO?=
+ =?us-ascii?Q?PBEtYmXNVdqXzAGlleT8nmhIupCmdmq34kuqOPzgEChj6BqD9TJLj6sLhVv4?=
+ =?us-ascii?Q?0V8cFl4EOlmMekq2HVOgjTwrOsA6oQdE8Gm7MV38EnvFj+3f2WB65kNClMSW?=
+ =?us-ascii?Q?QOQpqMgBI7ofKBKGpnq5TWGOb9Rj3dR23zYeZEW6qAcldGp06qA6mW8dCNH0?=
+ =?us-ascii?Q?/sNSlVqrwBfbeI5t+9PTYLpSF25AI1OPdLnb0kB5P4MhiED5Fy4CZwkS+8U2?=
+ =?us-ascii?Q?6aIb/j0WnnDYoGAPgmlHspsRF8glOKoOg6KoC4Qtiyo5BVc4tjXNSVLZcX12?=
+ =?us-ascii?Q?eDOxpCe5DRKVWhq4YfIzmX0ZhsDDBYZfTAjrbuAekfYWmWhGlge9zN26cCc2?=
+ =?us-ascii?Q?gbHR/UVa6vYcASli3fJiAyfIcd2PmLcdI23PkIE9GPmib6CQpkSSqPuPGKe/?=
+ =?us-ascii?Q?gcy4/+OeAtocKsjmE2X7sKZ7uMFLbmt4KWqIMyHsypSkiIbgxc/Nq21aZfe8?=
+ =?us-ascii?Q?P37ql+CCRNRxn1AYVjBXCQwNbTCIFNkE0RTBqISV7n/XraIejPqoYMKqKaez?=
+ =?us-ascii?Q?7AhbcfsSFqq4NDzzParA+GOZYqiIMa9WhFnQCKhmOFQySRy/s6KoU8oE9zcA?=
+ =?us-ascii?Q?MRGRK0w5Hi+whSAqmpk7u5rS6irWGfKkOpHV2skPvxfYhmOE8qv60O8O9y0Q?=
+ =?us-ascii?Q?m/zJcPca3DkWHowur1jEOMapmQMzcHQdKyGEv3ORsRGYFnN4HLNnEbbrcLGP?=
+ =?us-ascii?Q?ukqnZeTpwzof8MFkwx8oYGfkt68x9uThPXtaj6570tFpgufIUhXoGKCJWOZv?=
+ =?us-ascii?Q?12zGtwp0FGbMzZ6+KMgNS2dFzYZCE0DqWO2ZXBr8d2T6iOBHS9DDHbyUzaOB?=
+ =?us-ascii?Q?lA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b129dae2-e394-424d-650c-08dbf5a12dc0
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 14:48:01.1462
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TH1K+qmAD0Hr/W1uUa15Z6E9IqmE9j6KT+ca0TYuNPGYVS6wG1VyRMl1hjD9eJmW7EkjcIvQP/Bg4mWyK9OAVQ5LoQTohj9jx0tc6s/wCQw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR17MB5873
 
-Expanding the test coverage from cgroup2 to include cgroup1. The result
-as follows,
+On Tue, Dec 05, 2023 at 05:01:51PM +0800, Huang, Ying wrote:
+> Gregory Price <gregory.price@memverge.com> writes:
+> 
+> > On Mon, Dec 04, 2023 at 04:19:02PM +0800, Huang, Ying wrote:
+> >> Gregory Price <gregory.price@memverge.com> writes:
+> >> 
+> >> > If the structure is built as a matrix of (cpu_node,mem_nodes),
+> >> > the you can also optimize based on the node the task is running on.
+> >> 
+> >> The matrix stuff makes the situation complex.  If people do need
+> >> something like that, they can just use set_memorypolicy2() with user
+> >> specified weights.  I still believe that "make simple stuff simple, and
+> >> complex stuff possible".
+> >> 
+> >
+> > I don't think it's particularly complex, since we already have a
+> > distance matrix for numa nodes:
+> >
+> > available: 2 nodes (0-1)
+> > ... snip ...
+> > node distances:
+> > node   0   1
+> >   0:  10  21
+> >   1:  21  10
+> >
+> > This would follow the same thing, just adjustable for bandwidth.
+> 
+> We add complexity for requirement. Not there's something similar
+> already.
+> 
+> > I personally find the (src,dst) matrix very important for flexibility.
+> 
+> With set_memorypolicy2(), I think we have the needed flexibility for
+> users needs the complexity.
+> 
+> > But if there is particular pushback against it, having a one dimensional
+> > array is better than not having it, so I will take what I can get.
+> 
+> TBH, I don't think that we really need that.  Especially given we will
+> have set_memorypolicy2().
+>
 
-Already existing test cases for cgroup2:
-  #48/1    cgrp_local_storage/tp_btf:OK
-  #48/2    cgrp_local_storage/attach_cgroup:OK
-  #48/3    cgrp_local_storage/recursion:OK
-  #48/4    cgrp_local_storage/negative:OK
-  #48/5    cgrp_local_storage/cgroup_iter_sleepable:OK
-  #48/6    cgrp_local_storage/yes_rcu_lock:OK
-  #48/7    cgrp_local_storage/no_rcu_lock:OK
+From a complexity standpoint, it is exactly as complex as the hardware
+configuration itself:  each socket has a different view of the memory
+topology. If you have a non-homogeneous memory configuration (e.g. a 
+different number of CXL expanders on one socket thant he other), a flat
+array of weights has no way of capturing this hardware configuration.
 
-Expanded test cases for cgroup1:
-  #48/8    cgrp_local_storage/cgrp1_tp_btf:OK
-  #48/9    cgrp_local_storage/cgrp1_recursion:OK
-  #48/10   cgrp_local_storage/cgrp1_negative:OK
-  #48/11   cgrp_local_storage/cgrp1_iter_sleepable:OK
-  #48/12   cgrp_local_storage/cgrp1_yes_rcu_lock:OK
-  #48/13   cgrp_local_storage/cgrp1_no_rcu_lock:OK
+That makes the feature significantly less useful. In fact, it makes the
+feature equivalent to set_mempolicy2 - except that weights could be
+changed at runtime from outside a process.
 
-Summary:
-  #48      cgrp_local_storage:OK
-  Summary: 1/13 PASSED, 0 SKIPPED, 0 FAILED
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- .../bpf/prog_tests/cgrp_local_storage.c       | 92 ++++++++++++++++++-
- .../selftests/bpf/progs/cgrp_ls_recursion.c   | 84 +++++++++++++----
- .../selftests/bpf/progs/cgrp_ls_sleepable.c   | 67 ++++++++++++--
- .../selftests/bpf/progs/cgrp_ls_tp_btf.c      | 82 ++++++++++++-----
- 4 files changed, 278 insertions(+), 47 deletions(-)
+A matrix resolves one very specific use case: task migration
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-index 63e776f4176e..9524cde4cbf6 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-@@ -19,6 +19,9 @@ struct socket_cookie {
- 	__u64 cookie_value;
- };
- 
-+bool is_cgroup1;
-+int target_hid;
-+
- static void test_tp_btf(int cgroup_fd)
- {
- 	struct cgrp_ls_tp_btf *skel;
-@@ -29,6 +32,9 @@ static void test_tp_btf(int cgroup_fd)
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
- 		return;
- 
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+	skel->bss->target_hid = target_hid;
-+
- 	/* populate a value in map_b */
- 	err = bpf_map_update_elem(bpf_map__fd(skel->maps.map_b), &cgroup_fd, &val1, BPF_ANY);
- 	if (!ASSERT_OK(err, "map_update_elem"))
-@@ -130,6 +136,9 @@ static void test_recursion(int cgroup_fd)
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
- 	err = cgrp_ls_recursion__attach(skel);
- 	if (!ASSERT_OK(err, "skel_attach"))
- 		goto out;
-@@ -165,6 +174,9 @@ static void test_cgroup_iter_sleepable(int cgroup_fd, __u64 cgroup_id)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
- 	bpf_program__set_autoload(skel->progs.cgroup_iter, true);
- 	err = cgrp_ls_sleepable__load(skel);
- 	if (!ASSERT_OK(err, "skel_load"))
-@@ -202,6 +214,8 @@ static void test_yes_rcu_lock(__u64 cgroup_id)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
- 	skel->bss->target_pid = syscall(SYS_gettid);
- 
- 	bpf_program__set_autoload(skel->progs.yes_rcu_lock, true);
-@@ -229,6 +243,9 @@ static void test_no_rcu_lock(void)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
- 	bpf_program__set_autoload(skel->progs.no_rcu_lock, true);
- 	err = cgrp_ls_sleepable__load(skel);
- 	ASSERT_ERR(err, "skel_load");
-@@ -236,7 +253,26 @@ static void test_no_rcu_lock(void)
- 	cgrp_ls_sleepable__destroy(skel);
- }
- 
--void test_cgrp_local_storage(void)
-+static void test_cgrp1_no_rcu_lock(void)
-+{
-+	struct cgrp_ls_sleepable *skel;
-+	int err;
-+
-+	skel = cgrp_ls_sleepable__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
-+	bpf_program__set_autoload(skel->progs.cgrp1_no_rcu_lock, true);
-+	err = cgrp_ls_sleepable__load(skel);
-+	ASSERT_OK(err, "skel_load");
-+
-+	cgrp_ls_sleepable__destroy(skel);
-+}
-+
-+void cgrp2_local_storage(void)
- {
- 	__u64 cgroup_id;
- 	int cgroup_fd;
-@@ -245,6 +281,8 @@ void test_cgrp_local_storage(void)
- 	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /cgrp_local_storage"))
- 		return;
- 
-+	is_cgroup1 = 0;
-+	target_hid = -1;
- 	cgroup_id = get_cgroup_id("/cgrp_local_storage");
- 	if (test__start_subtest("tp_btf"))
- 		test_tp_btf(cgroup_fd);
-@@ -263,3 +301,55 @@ void test_cgrp_local_storage(void)
- 
- 	close(cgroup_fd);
- }
-+
-+void cgrp1_local_storage(void)
-+{
-+	int cgrp1_fd, cgrp1_hid, cgrp1_id, err;
-+
-+	/* Setup cgroup1 hierarchy */
-+	err = setup_classid_environment();
-+	if (!ASSERT_OK(err, "setup_classid_environment"))
-+		return;
-+
-+	err = join_classid();
-+	if (!ASSERT_OK(err, "join_cgroup1"))
-+		goto cleanup;
-+
-+	cgrp1_fd = open_classid();
-+	if (!ASSERT_GE(cgrp1_fd, 0, "cgroup1 fd"))
-+		goto cleanup;
-+
-+	cgrp1_id = get_classid_cgroup_id();
-+	if (!ASSERT_GE(cgrp1_id, 0, "cgroup1 id"))
-+		goto close_fd;
-+
-+	cgrp1_hid = get_cgroup1_hierarchy_id("net_cls");
-+	if (!ASSERT_GE(cgrp1_hid, 0, "cgroup1 hid"))
-+		goto close_fd;
-+	target_hid = cgrp1_hid;
-+	is_cgroup1 = 1;
-+
-+	if (test__start_subtest("cgrp1_tp_btf"))
-+		test_tp_btf(cgrp1_fd);
-+	if (test__start_subtest("cgrp1_recursion"))
-+		test_recursion(cgrp1_fd);
-+	if (test__start_subtest("cgrp1_negative"))
-+		test_negative();
-+	if (test__start_subtest("cgrp1_iter_sleepable"))
-+		test_cgroup_iter_sleepable(cgrp1_fd, cgrp1_id);
-+	if (test__start_subtest("cgrp1_yes_rcu_lock"))
-+		test_yes_rcu_lock(cgrp1_id);
-+	if (test__start_subtest("cgrp1_no_rcu_lock"))
-+		test_cgrp1_no_rcu_lock();
-+
-+close_fd:
-+	close(cgrp1_fd);
-+cleanup:
-+	cleanup_classid_environment();
-+}
-+
-+void test_cgrp_local_storage(void)
-+{
-+	cgrp2_local_storage();
-+	cgrp1_local_storage();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-index a043d8fefdac..610c2427fd93 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-@@ -21,50 +21,100 @@ struct {
- 	__type(value, long);
- } map_b SEC(".maps");
- 
-+int target_hid = 0;
-+bool is_cgroup1 = 0;
-+
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-+
-+static void __on_lookup(struct cgroup *cgrp)
-+{
-+	bpf_cgrp_storage_delete(&map_a, cgrp);
-+	bpf_cgrp_storage_delete(&map_b, cgrp);
-+}
-+
- SEC("fentry/bpf_local_storage_lookup")
- int BPF_PROG(on_lookup)
- {
- 	struct task_struct *task = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
- 
--	bpf_cgrp_storage_delete(&map_a, task->cgroups->dfl_cgrp);
--	bpf_cgrp_storage_delete(&map_b, task->cgroups->dfl_cgrp);
-+		__on_lookup(cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_lookup(task->cgroups->dfl_cgrp);
- 	return 0;
- }
- 
--SEC("fentry/bpf_local_storage_update")
--int BPF_PROG(on_update)
-+static void __on_update(struct cgroup *cgrp)
- {
--	struct task_struct *task = bpf_get_current_task_btf();
- 	long *ptr;
- 
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr += 1;
- 
--	ptr = bpf_cgrp_storage_get(&map_b, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_b, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr += 1;
-+}
- 
-+SEC("fentry/bpf_local_storage_update")
-+int BPF_PROG(on_update)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_update(cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_update(task->cgroups->dfl_cgrp);
- 	return 0;
- }
- 
--SEC("tp_btf/sys_enter")
--int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+static void __on_enter(struct pt_regs *regs, long id, struct cgroup *cgrp)
- {
--	struct task_struct *task;
- 	long *ptr;
- 
--	task = bpf_get_current_task_btf();
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr = 200;
- 
--	ptr = bpf_cgrp_storage_get(&map_b, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_b, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr = 100;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_enter(regs, id, cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_enter(regs, id, task->cgroups->dfl_cgrp);
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-index 4c7844e1dbfa..985ff419249c 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-@@ -17,7 +17,11 @@ struct {
- 
- __u32 target_pid;
- __u64 cgroup_id;
-+int target_hid;
-+bool is_cgroup1;
- 
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
- void bpf_rcu_read_lock(void) __ksym;
- void bpf_rcu_read_unlock(void) __ksym;
- 
-@@ -37,23 +41,56 @@ int cgroup_iter(struct bpf_iter__cgroup *ctx)
- 	return 0;
- }
- 
-+static void __no_rcu_lock(struct cgroup *cgrp)
-+{
-+	long *ptr;
-+
-+	/* Note that trace rcu is held in sleepable prog, so we can use
-+	 * bpf_cgrp_storage_get() in sleepable prog.
-+	 */
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		cgroup_id = cgrp->kn->id;
-+}
-+
- SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
--int no_rcu_lock(void *ctx)
-+int cgrp1_no_rcu_lock(void *ctx)
- {
- 	struct task_struct *task;
- 	struct cgroup *cgrp;
--	long *ptr;
-+
-+	if (!is_cgroup1)
-+		return 0;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	/* bpf_task_get_cgroup1 can work in sleepable prog */
-+	cgrp = bpf_task_get_cgroup1(task, target_hid);
-+	if (!cgrp)
-+		return 0;
-+
-+	__no_rcu_lock(cgrp);
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int no_rcu_lock(void *ctx)
-+{
-+	struct task_struct *task;
-+
-+	if (is_cgroup1)
-+		return 0;
- 
- 	task = bpf_get_current_task_btf();
- 	if (task->pid != target_pid)
- 		return 0;
- 
- 	/* task->cgroups is untrusted in sleepable prog outside of RCU CS */
--	cgrp = task->cgroups->dfl_cgrp;
--	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
--	if (ptr)
--		cgroup_id = cgrp->kn->id;
-+	__no_rcu_lock(task->cgroups->dfl_cgrp);
- 	return 0;
- }
- 
-@@ -68,6 +105,22 @@ int yes_rcu_lock(void *ctx)
- 	if (task->pid != target_pid)
- 		return 0;
- 
-+	if (is_cgroup1) {
-+		bpf_rcu_read_lock();
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp) {
-+			bpf_rcu_read_unlock();
-+			return 0;
-+		}
-+
-+		ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
-+		if (ptr)
-+			cgroup_id = cgrp->kn->id;
-+		bpf_cgroup_release(cgrp);
-+		bpf_rcu_read_unlock();
-+		return 0;
-+	}
-+
- 	bpf_rcu_read_lock();
- 	cgrp = task->cgroups->dfl_cgrp;
- 	/* cgrp is trusted under RCU CS */
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c b/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
-index 9ebb8e2fe541..1c348f000f38 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
-@@ -27,62 +27,100 @@ pid_t target_pid = 0;
- int mismatch_cnt = 0;
- int enter_cnt = 0;
- int exit_cnt = 0;
-+int target_hid = 0;
-+bool is_cgroup1 = 0;
- 
--SEC("tp_btf/sys_enter")
--int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-+
-+static void __on_enter(struct pt_regs *regs, long id, struct cgroup *cgrp)
- {
--	struct task_struct *task;
- 	long *ptr;
- 	int err;
- 
--	task = bpf_get_current_task_btf();
--	if (task->pid != target_pid)
--		return 0;
--
- 	/* populate value 0 */
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
- 				   BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!ptr)
--		return 0;
-+		return;
- 
- 	/* delete value 0 */
--	err = bpf_cgrp_storage_delete(&map_a, task->cgroups->dfl_cgrp);
-+	err = bpf_cgrp_storage_delete(&map_a, cgrp);
- 	if (err)
--		return 0;
-+		return;
- 
- 	/* value is not available */
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0, 0);
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, 0);
- 	if (ptr)
--		return 0;
-+		return;
- 
- 	/* re-populate the value */
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
- 				   BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!ptr)
--		return 0;
-+		return;
- 	__sync_fetch_and_add(&enter_cnt, 1);
- 	*ptr = MAGIC_VALUE + enter_cnt;
--
--	return 0;
- }
- 
--SEC("tp_btf/sys_exit")
--int BPF_PROG(on_exit, struct pt_regs *regs, long id)
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
- {
- 	struct task_struct *task;
--	long *ptr;
-+	struct cgroup *cgrp;
- 
- 	task = bpf_get_current_task_btf();
- 	if (task->pid != target_pid)
- 		return 0;
- 
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_enter(regs, id, cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_enter(regs, id, task->cgroups->dfl_cgrp);
-+	return 0;
-+}
-+
-+static void __on_exit(struct pt_regs *regs, long id, struct cgroup *cgrp)
-+{
-+	long *ptr;
-+
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
- 				   BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!ptr)
--		return 0;
-+		return;
- 
- 	__sync_fetch_and_add(&exit_cnt, 1);
- 	if (*ptr != MAGIC_VALUE + exit_cnt)
- 		__sync_fetch_and_add(&mismatch_cnt, 1);
-+}
-+
-+SEC("tp_btf/sys_exit")
-+int BPF_PROG(on_exit, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	struct cgroup *cgrp;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_exit(regs, id, cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_exit(regs, id, task->cgroups->dfl_cgrp);
- 	return 0;
- }
--- 
-2.30.1 (Apple Git-130)
 
+set_mempolicy2 is not sufficient to solve this.  There is presently no
+way for an external task to change the mempolicy of an existing task.
+That means a task must become "migration aware" to use weighting in the
+context of containers where migrations are likely.
+
+Two things to consider: A task...
+   a) has no way of knowing a migration occured
+   b) may not have visibility of numa nodes outside its cpusets prior to
+      a migration - making it unlikely/not possible for them to set
+      weights correctly in the event a migration occurs.
+
+If a server with 2 sockets is set up non-homogeneously (different amount
+of CXL memory expanders on each socket), then the effective bandwidth
+distribution between sockets will be different.
+
+If a container is migrated between sockets in this situation, then tasks
+with manually set weights, or if global weights are a single array, will
+have poor memory distributions in relation to the new view of the system.
+
+Requiring the global settings to be an array basically requires global
+weights to be sub-optimal for any use cases that is not explicitly a
+single workload that consumes all the cores on the system.
+
+If the system provides a matrix, then the global settings can be optimal
+and re-weighting in response to migration happens cleanly and transparently.
+
+~Gregory
 
