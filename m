@@ -1,275 +1,204 @@
-Return-Path: <cgroups+bounces-803-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-804-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D1AB8048AF
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 05:38:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4E478048C2
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 05:48:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9088E1C20E15
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 04:38:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C45528157A
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 04:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0BB4A15;
-	Tue,  5 Dec 2023 04:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7ED6117;
+	Tue,  5 Dec 2023 04:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EEu0ZcSU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NkCp/7ns"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E39BE;
-	Mon,  4 Dec 2023 20:38:40 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce33234fd7so1370827b3a.0;
-        Mon, 04 Dec 2023 20:38:40 -0800 (PST)
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDA6C3;
+	Mon,  4 Dec 2023 20:48:19 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c59ac49f12so1640355241.1;
+        Mon, 04 Dec 2023 20:48:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701751120; x=1702355920; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z8za1LL9JYBxMQqZEFu+Ip+HiV0+LDHs+kobZXAkLSM=;
-        b=EEu0ZcSUm039tbXUSuuiNNOLZZlt2IVkUAAPQeAbDsYw0aq4tO11HM20fS6z/5Jy0f
-         YzBTlVAyND/Z3v05yS0/XWbNgvcdM5zv3g25Ib6YGzIKr3qyH1bIQLgC9XDyFrbcCXf0
-         xgH5gVKAkn7kxL8u7FLNv6eyK7rhviezUpT1wQr//URCf6Kz/e4VZEau9vpyM5zBwShL
-         eI8YKSBoPmTHfwaYkrIMd4axbP51sOhT3CA/ZjhEZW3H9d58rBTxk0rgozqIXnc7OXXm
-         h+XONHcnuwoFP2mqvNiMljs5pn36PytqHOqpfH5fZSwVeK12IhETR6LazzdG0JH3wGra
-         cgvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701751120; x=1702355920;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701751698; x=1702356498; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z8za1LL9JYBxMQqZEFu+Ip+HiV0+LDHs+kobZXAkLSM=;
-        b=OMZrrGdLeGsiYoJ5CFcbIlb/VUFjYr4U+fG7FhGGAvLJclFMpKw8UGnZPwZ/N9fbSg
-         3q0OWDAMfhJfD3oRDrZEZoJM9YC49ms+YPKl6V2UAHOzefmCXzYy5ntfyXTb7kIOqXyX
-         CfXkILbr7tg1gTTzFzCkUjMgeehB0gAG/PgjPluSUS9YGQayipGKeEwG6/JTzAqeNbr2
-         DJklBu1wTCltDi2TF9x/NeVpqj5vM2PoSYSyKXivxdf8YIHK9JSKNEcZIhMGUU3+qAwc
-         CPKcwR80S0KUd8Bj5H+4pk5sbWBoXI0x1YePBvIQefSPhr6XfosxAXPOtxA3OQ3sOvTX
-         e3Lw==
-X-Gm-Message-State: AOJu0Ywd6aXpPdtalg/e+Ih4bvJkKSrvWxZdNuU8R3EKz/9tkeMrWgd5
-	biYkIcOJFzdXAmfdjRg/CGPldo1EDbI=
-X-Google-Smtp-Source: AGHT+IHSG+1Tgf/q/ZSVPAa40DZqAi1IiJXzl6rcBNCixCdC/TwLHWLbumoyWO7hnbLLdrrVcadqwg==
-X-Received: by 2002:a05:6a20:1586:b0:18f:97c:5b84 with SMTP id h6-20020a056a20158600b0018f097c5b84mr2423300pzj.82.1701751119663;
-        Mon, 04 Dec 2023 20:38:39 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170903234d00b001cfcf3dd317sm9212738plh.61.2023.12.04.20.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 20:38:38 -0800 (PST)
-Date: Tue, 5 Dec 2023 13:38:21 +0900
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Marco Elver <elver@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 16/21] mm/slab: move kfree() from slab_common.c to
- slub.c
-Message-ID: <ZW6pPdvjOfaMmWxu@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-16-9c9c70177183@suse.cz>
+        bh=l6U7HYB+MMDXs4im/MnwOh3wT6+xRnbqGtkbQLiIJbE=;
+        b=NkCp/7ns32k2qkHc2tAWEEGEk4EYBXlUlVXG5Y5LTzzGG8dgXuy0LxjAhhyhPkuynO
+         A8/M1EA4NP+VACv5tTXUM2pUJ6DL9fzkEExHhnaOHJnLFgJHjc8Yz8QbtTrfr7xlqLS7
+         7xmzYNvqyk4li1rmX5agcGXzVdW1Af/YcsuFX0tEypuXFl85RCLAd0YO0Xhmmuneb6g0
+         MP6tmGXMn9QIv1HbZXx4wojrks20qnxkSMMUGJTr7VpCHY3pChzJ9ALltQ2/BfQkIU6h
+         BelxxYy06rNx3rl9Ec6Cpdrcj3EzZEtpvB/b6Xg/vwhlYuW8F8NICE8Gn/+imwagksRz
+         w6Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701751698; x=1702356498;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l6U7HYB+MMDXs4im/MnwOh3wT6+xRnbqGtkbQLiIJbE=;
+        b=hpMN6rK0O2R2/vtGGQrqVWYOpy9yYlJHARslctbWR3zdwkUWbrdFsnE2C+2foizLm3
+         IB/vehAzh+uTv6B0kAeQIMVAJvda35ibtO6G3OS1jLyOtDzp+kQh2oY+acQPRiFjo1a5
+         FgMiJ9XCdE2TuKA8N4p5jS9liOCSkDMMGd/hvNVppvOUYtoOQa+XjXNu73/mshfYE0al
+         Nf1ux0lQkA1lz+rQk7M5gpPBUB7oVXL+zB0QyTXondaRIKdIBqzu1oB+9XfGM/rnHfCt
+         4T+PY/AMosJ8KfaWerlTSJSmuvkTslnnrpd72vaXsPJfwjw06N7PpUh6jcG8C6AU3e4I
+         RCQA==
+X-Gm-Message-State: AOJu0YzSoeRYidf27rgOeYMNUplsgSChFdz10dLWBQdmTKmiHKzQ5TTg
+	ReEIuQ+98y86RddGDyJnj0lUEHHAft+/SbUboHM=
+X-Google-Smtp-Source: AGHT+IHhiPX7qYso93UYGFEAvtKnVFmjurUEPV8H0b76lJVRAkF5m5mLg9HHSDTrpxGGrM2rareCQf4N1EafMBxIQN0=
+X-Received: by 2002:a05:6102:2dc:b0:464:77f1:f34e with SMTP id
+ h28-20020a05610202dc00b0046477f1f34emr651042vsh.28.1701751698506; Mon, 04 Dec
+ 2023 20:48:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-16-9c9c70177183@suse.cz>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz> <ZW6mjFlmm0ME18OQ@localhost.localdomain>
+In-Reply-To: <ZW6mjFlmm0ME18OQ@localhost.localdomain>
+From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date: Tue, 5 Dec 2023 13:48:07 +0900
+Message-ID: <CAB=+i9R+zZo-AGuEAYDzEZV7f=YSC9fdczARQijk-WPZUr0iDA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/21] KASAN: remove code paths guarded by CONFIG_SLAB
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+	Marco Elver <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 20, 2023 at 07:34:27PM +0100, Vlastimil Babka wrote:
-> This should result in better code. Currently kfree() makes a function
-> call between compilation units to __kmem_cache_free() which does its own
-> virt_to_slab(), throwing away the struct slab pointer we already had in
-> kfree(). Now it can be reused. Additionally kfree() can now inline the
-> whole SLUB freeing fastpath.
-> 
-> Also move over free_large_kmalloc() as the only callsites are now in
-> slub.c, and make it static.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slab.h        |  4 ----
->  mm/slab_common.c | 45 ---------------------------------------------
->  mm/slub.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++++-----
->  3 files changed, 46 insertions(+), 54 deletions(-)
-> 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 5ae6a978e9c2..35a55c4a407d 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -395,8 +395,6 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
->  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
->  			      int node, size_t orig_size,
->  			      unsigned long caller);
-> -void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller);
-> -
->  gfp_t kmalloc_fix_flags(gfp_t flags);
->  
->  /* Functions provided by the slab allocators */
-> @@ -559,8 +557,6 @@ static inline int memcg_alloc_slab_cgroups(struct slab *slab,
->  }
->  #endif /* CONFIG_MEMCG_KMEM */
->  
-> -void free_large_kmalloc(struct folio *folio, void *object);
-> -
->  size_t __ksize(const void *objp);
->  
->  static inline size_t slab_ksize(const struct kmem_cache *s)
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index bbc2e3f061f1..f4f275613d2a 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -963,22 +963,6 @@ void __init create_kmalloc_caches(slab_flags_t flags)
->  	slab_state = UP;
->  }
->  
-> -void free_large_kmalloc(struct folio *folio, void *object)
-> -{
-> -	unsigned int order = folio_order(folio);
-> -
-> -	if (WARN_ON_ONCE(order == 0))
-> -		pr_warn_once("object pointer: 0x%p\n", object);
-> -
-> -	kmemleak_free(object);
-> -	kasan_kfree_large(object);
-> -	kmsan_kfree_large(object);
-> -
-> -	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
-> -			      -(PAGE_SIZE << order));
-> -	__free_pages(folio_page(folio, 0), order);
-> -}
-> -
->  static void *__kmalloc_large_node(size_t size, gfp_t flags, int node);
->  static __always_inline
->  void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
-> @@ -1023,35 +1007,6 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
->  }
->  EXPORT_SYMBOL(__kmalloc_node_track_caller);
->  
-> -/**
-> - * kfree - free previously allocated memory
-> - * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-> - *
-> - * If @object is NULL, no operation is performed.
-> - */
-> -void kfree(const void *object)
-> -{
-> -	struct folio *folio;
-> -	struct slab *slab;
-> -	struct kmem_cache *s;
-> -
-> -	trace_kfree(_RET_IP_, object);
-> -
-> -	if (unlikely(ZERO_OR_NULL_PTR(object)))
-> -		return;
-> -
-> -	folio = virt_to_folio(object);
-> -	if (unlikely(!folio_test_slab(folio))) {
-> -		free_large_kmalloc(folio, (void *)object);
-> -		return;
-> -	}
-> -
-> -	slab = folio_slab(folio);
-> -	s = slab->slab_cache;
-> -	__kmem_cache_free(s, (void *)object, _RET_IP_);
-> -}
-> -EXPORT_SYMBOL(kfree);
-> -
->  /**
->   * __ksize -- Report full size of underlying allocation
->   * @object: pointer to the object
-> diff --git a/mm/slub.c b/mm/slub.c
-> index cc801f8258fe..2baa9e94d9df 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4197,11 +4197,6 @@ static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
->  	return cachep;
->  }
->  
-> -void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
-> -{
-> -	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
-> -}
-> -
->  /**
->   * kmem_cache_free - Deallocate an object
->   * @s: The cache the allocation was from.
-> @@ -4220,6 +4215,52 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
->  }
->  EXPORT_SYMBOL(kmem_cache_free);
->  
-> +static void free_large_kmalloc(struct folio *folio, void *object)
-> +{
-> +	unsigned int order = folio_order(folio);
-> +
-> +	if (WARN_ON_ONCE(order == 0))
-> +		pr_warn_once("object pointer: 0x%p\n", object);
-> +
-> +	kmemleak_free(object);
-> +	kasan_kfree_large(object);
-> +	kmsan_kfree_large(object);
-> +
-> +	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
-> +			      -(PAGE_SIZE << order));
-> +	__free_pages(folio_page(folio, 0), order);
-> +}
-> +
-> +/**
-> + * kfree - free previously allocated memory
-> + * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-> + *
-> + * If @object is NULL, no operation is performed.
-> + */
-> +void kfree(const void *object)
-> +{
-> +	struct folio *folio;
-> +	struct slab *slab;
-> +	struct kmem_cache *s;
-> +	void *x = (void *)object;
-> +
-> +	trace_kfree(_RET_IP_, object);
-> +
-> +	if (unlikely(ZERO_OR_NULL_PTR(object)))
-> +		return;
-> +
-> +	folio = virt_to_folio(object);
-> +	if (unlikely(!folio_test_slab(folio))) {
-> +		free_large_kmalloc(folio, (void *)object);
-> +		return;
-> +	}
-> +
-> +	slab = folio_slab(folio);
-> +	s = slab->slab_cache;
-> +	slab_free(s, slab, x, NULL, &x, 1, _RET_IP_);
-> +}
-> +EXPORT_SYMBOL(kfree);
-> +
->  struct detached_freelist {
->  	struct slab *slab;
->  	void *tail;
+On Tue, Dec 5, 2023 at 1:27=E2=80=AFPM Hyeonggon Yoo <42.hyeyoo@gmail.com> =
+wrote:
+>
+> On Mon, Nov 20, 2023 at 07:34:14PM +0100, Vlastimil Babka wrote:
+> > With SLAB removed and SLUB the only remaining allocator, we can clean u=
+p
+> > some code that was depending on the choice.
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > ---
+> >  mm/kasan/common.c     | 13 ++-----------
+> >  mm/kasan/kasan.h      |  3 +--
+> >  mm/kasan/quarantine.c |  7 -------
+> >  3 files changed, 3 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> > index 256930da578a..5d95219e69d7 100644
+> > --- a/mm/kasan/common.c
+> > +++ b/mm/kasan/common.c
+> > @@ -153,10 +153,6 @@ void __kasan_poison_object_data(struct kmem_cache =
+*cache, void *object)
+> >   * 2. A cache might be SLAB_TYPESAFE_BY_RCU, which means objects can b=
+e
+> >   *    accessed after being freed. We preassign tags for objects in the=
+se
+> >   *    caches as well.
+> > - * 3. For SLAB allocator we can't preassign tags randomly since the fr=
+eelist
+> > - *    is stored as an array of indexes instead of a linked list. Assig=
+n tags
+> > - *    based on objects indexes, so that objects that are next to each =
+other
+> > - *    get different tags.
+> >   */
+> >  static inline u8 assign_tag(struct kmem_cache *cache,
+> >                                       const void *object, bool init)
+> > @@ -171,17 +167,12 @@ static inline u8 assign_tag(struct kmem_cache *ca=
+che,
+> >       if (!cache->ctor && !(cache->flags & SLAB_TYPESAFE_BY_RCU))
+> >               return init ? KASAN_TAG_KERNEL : kasan_random_tag();
+> >
+> > -     /* For caches that either have a constructor or SLAB_TYPESAFE_BY_=
+RCU: */
+> > -#ifdef CONFIG_SLAB
+> > -     /* For SLAB assign tags based on the object index in the freelist=
+. */
+> > -     return (u8)obj_to_index(cache, virt_to_slab(object), (void *)obje=
+ct);
+> > -#else
+> >       /*
+> > -      * For SLUB assign a random tag during slab creation, otherwise r=
+euse
+> > +      * For caches that either have a constructor or SLAB_TYPESAFE_BY_=
+RCU,
+> > +      * assign a random tag during slab creation, otherwise reuse
+> >        * the already assigned tag.
+> >        */
+> >       return init ? kasan_random_tag() : get_tag(object);
+> > -#endif
+> >  }
+> >
+> >  void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+> > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> > index 8b06bab5c406..eef50233640a 100644
+> > --- a/mm/kasan/kasan.h
+> > +++ b/mm/kasan/kasan.h
+> > @@ -373,8 +373,7 @@ void kasan_set_track(struct kasan_track *track, gfp=
+_t flags);
+> >  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp=
+_t flags);
+> >  void kasan_save_free_info(struct kmem_cache *cache, void *object);
+> >
+> > -#if defined(CONFIG_KASAN_GENERIC) && \
+> > -     (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
+> > +#ifdef CONFIG_KASAN_GENERIC
+> >  bool kasan_quarantine_put(struct kmem_cache *cache, void *object);
+> >  void kasan_quarantine_reduce(void);
+> >  void kasan_quarantine_remove_cache(struct kmem_cache *cache);
+> > diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> > index ca4529156735..138c57b836f2 100644
+> > --- a/mm/kasan/quarantine.c
+> > +++ b/mm/kasan/quarantine.c
+> > @@ -144,10 +144,6 @@ static void qlink_free(struct qlist_node *qlink, s=
+truct kmem_cache *cache)
+> >  {
+> >       void *object =3D qlink_to_object(qlink, cache);
+> >       struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, objec=
+t);
+> > -     unsigned long flags;
+> > -
+> > -     if (IS_ENABLED(CONFIG_SLAB))
+> > -             local_irq_save(flags);
+> >
+> >       /*
+> >        * If init_on_free is enabled and KASAN's free metadata is stored=
+ in
+> > @@ -166,9 +162,6 @@ static void qlink_free(struct qlist_node *qlink, st=
+ruct kmem_cache *cache)
+> >       *(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
+> >
+> >       ___cache_free(cache, object, _THIS_IP_);
+> > -
+> > -     if (IS_ENABLED(CONFIG_SLAB))
+> > -             local_irq_restore(flags);
+> >  }
+> >
+> >  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *ca=
+che)
+>
+> Looks good to me,
+> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+nit: Some KASAN tests depends on SLUB, but as now it's the only allocator
+      KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB); in
+      mm/kasan/kasan_test.c can be removed
 
-nit: mm/kfence/report.c checks if a function name starts with
-"__kmem_cache_free" which is removed by this patch.
-
-> 
-> -- 
-> 2.42.1
-> 
-> 
+>
+> >
+> > --
+> > 2.42.1
+> >
+> >
 
