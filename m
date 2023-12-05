@@ -1,100 +1,156 @@
-Return-Path: <cgroups+bounces-795-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-796-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70698042FC
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 00:59:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574C780436C
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 01:31:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71A212813C7
-	for <lists+cgroups@lfdr.de>; Mon,  4 Dec 2023 23:59:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 858D21C20C25
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 00:30:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36EB3B789;
-	Mon,  4 Dec 2023 23:59:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E254817;
+	Tue,  5 Dec 2023 00:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FLAhgsNe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJ+IzGK1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049BA102
-	for <cgroups@vger.kernel.org>; Mon,  4 Dec 2023 15:58:59 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db7dd9a8bd6so2436819276.1
-        for <cgroups@vger.kernel.org>; Mon, 04 Dec 2023 15:58:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701734338; x=1702339138; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bc3wWZdTIWXynHMDoBBnLgT0pYzNdNHfaXI4uKulM+I=;
-        b=FLAhgsNetn2k0Xo7OHCrDXsmBVkNiGRf/sj8OrCyNH87DQyF7GsvikfhBxabA6cj5P
-         ceHWjEps0QH6FBamV8TRnY5uCO9YmDJrDJI2Ym9xmvTghiFqhhEdAIk85hwwGwo/XBjC
-         HWQFuico5tD0R88HpPgV6WrTsUgh2noPCL44LWW2ff9uzDxS86a5pVIGpgRZOQnBOJn2
-         VTusOSrHttduU9Cmz8H/YwkqInN1VMB/nmUWt/ymvQ+801qEZAEFQWny2TUlGnJOZhMi
-         Jch62C4/I62+EtF7aNMzeMOmUJd8lzBnyo6V+DiFtWPLCFNvPKWuFKVtaSvDZBhjR6ys
-         AJbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701734338; x=1702339138;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bc3wWZdTIWXynHMDoBBnLgT0pYzNdNHfaXI4uKulM+I=;
-        b=TS4wqDxs7iMowII50973h+SAg8xnJmRak+JJzJM8b5pToIbsSXyHwELA19yIs4pPio
-         Z+9onNFFBvO/qtkStuTQpKbECA7OOLTAAxaUDmavsUAaG2udPFrtGtWC4rPCJ1rhlhOs
-         SxvPu8D3YkHSVZVHUh6gYi5fRUaOBAc/ZDYOBGC1oT3q42VCGoVuiMF5A8Zs3DOiS+7Z
-         3Ggk9a9VhnYcAAnea1RJn1YeRBLS+d3v7galszwy5hpP7rPYfmukf+quVynt5XFfFmrt
-         wZGaJm/qPvmMlu3GI99iu32eMLn+NGDrxC35fqvBQ/eckZQ7cR4wKCtZLT22YtbLTSaZ
-         +QCA==
-X-Gm-Message-State: AOJu0YyiN30wZirNwwQ8LrpiKI2NgDMOabacWhvAWGR4ERVjxGbOhw88
-	WmwmWt1T4IKaSznj1HjrN7PujAqEE/4Fnw==
-X-Google-Smtp-Source: AGHT+IFDrcTevAMTdK5aY6ZCZm5tMFx5J7z5a1aKvWzleHwEj72AE5vypmyjwIltbbArECOAHx0hRe9bNnWWtw==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a25:cf51:0:b0:db7:dce9:76d6 with SMTP id
- f78-20020a25cf51000000b00db7dce976d6mr189881ybg.2.1701734338283; Mon, 04 Dec
- 2023 15:58:58 -0800 (PST)
-Date: Mon, 4 Dec 2023 23:58:56 +0000
-In-Reply-To: <CAJD7tkZgP3m-VVPn+fF_YuvXeQYK=tZZjJHj=dzD=CcSSpp2qg@mail.gmail.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C607FD
+	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 00:30:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D2EFC433A9
+	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 00:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701736256;
+	bh=HFxQO9kBLtbTfZYFGSzvwFymTrp7jyUtmcbLo8s+6e0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WJ+IzGK1aNml2oVdUfq8bvf0Kf81D+fxssPMqFr10MZ9QKPzNtifcM9UVCIvIa1Ma
+	 Uiv0HR57XrIqr4UTmrZZ/no94A8v8GK0tdyBOQ/dEDkqRQP8fvhsSsTp46U6glTV2X
+	 25GMvujB3TykTjCaVmm18tF/16hAqzYYhOKrqo9jjhNemvloG5K3JMjzlX7Nq7DD22
+	 D5aVlbiGmZ8Etc/7ryHsPdR+smmUtppbMsTeKpA9NdD3si4sKPWoib+jp4i8AxE3vq
+	 tqEFSi08wQS/6XwaiPcIZsL4sYLYWTDU5V9wv2LSRzGMr8sDBgHSb2EFrkQu564TDQ
+	 8g4kjsuMKO5hA==
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5c206572eedso2937567a12.0
+        for <cgroups@vger.kernel.org>; Mon, 04 Dec 2023 16:30:56 -0800 (PST)
+X-Gm-Message-State: AOJu0YzqWwbjUSRRvLlkV2Awgg6TOXWs22IGynh/cqbz4cwKstE1iDQ8
+	dNCIoaqqDQOyPtueTYsqdNAambI525oZf6Eyc61qMQ==
+X-Google-Smtp-Source: AGHT+IEWYlE+eX9ld2dW3geKjHnQOFvx/IzPfMBaF/e3/gmHwWd6Fy0ErIhUizK7vzYb5rbo3Xc/P8UdfcnvsXFiO0Y=
+X-Received: by 2002:a17:90a:8597:b0:286:6f14:2870 with SMTP id
+ m23-20020a17090a859700b002866f142870mr512560pjn.31.1701736255833; Mon, 04 Dec
+ 2023 16:30:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231129032154.3710765-1-yosryahmed@google.com>
- <20231129032154.3710765-6-yosryahmed@google.com> <20231202083129.3pmds2cddy765szr@google.com>
- <CAJD7tkZPcBbvcK+Xj0edevemB+801wRvvcFDJEjk4ZcjNVoV_w@mail.gmail.com>
- <CAJD7tkY-YTj-4+A6zQT_SjbYyRYyiJHKc9pf1CMqqwU1VRzxvA@mail.gmail.com>
- <CALvZod5rPrFNLyOpUUbmo2T3zxtDjomDqv+Ba3KyFh=eRwNXjg@mail.gmail.com>
- <CAAPL-u-Futq5biNhQKTVi15vzihZxoan-dVORPqpov1saJ99=Q@mail.gmail.com> <CAJD7tkZgP3m-VVPn+fF_YuvXeQYK=tZZjJHj=dzD=CcSSpp2qg@mail.gmail.com>
-Message-ID: <20231204235856.k4izppfsrpg2rng7@google.com>
-Subject: Re: [mm-unstable v4 5/5] mm: memcg: restore subtree stats flushing
-From: Shakeel Butt <shakeelb@google.com>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Wei Xu <weixugc@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, 
-	"Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
-	Greg Thelen <gthelen@google.com>, Domenico Cerasuolo <cerasuolodomenico@gmail.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-2-nphamcs@gmail.com>
+ <ZWjpNr3ZzvU4TDC8@casper.infradead.org> <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
+ <20231130203522.GC543908@cmpxchg.org>
+In-Reply-To: <20231130203522.GC543908@cmpxchg.org>
+From: Chris Li <chrisl@kernel.org>
+Date: Mon, 4 Dec 2023 16:30:44 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
+Message-ID: <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
+Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node selection
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org, 
+	cerasuolodomenico@gmail.com, yosryahmed@google.com, sjenning@redhat.com, 
+	ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeelb@google.com, muchun.song@linux.dev, 
+	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 04, 2023 at 03:49:01PM -0800, Yosry Ahmed wrote:
-[...]
-> 
-> From 19af26e01f93cbf0806d75a234b78e48c1ce9d80 Mon Sep 17 00:00:00 2001
-> From: Yosry Ahmed <yosryahmed@google.com>
-> Date: Mon, 4 Dec 2023 23:43:29 +0000
-> Subject: [PATCH] mm: memcg: remove stats flushing mutex
-> 
-> The mutex was intended to make the waiters sleep instead of spin, and
-> such that we can check the update thresholds again after acquiring the
-> mutex. However, the mutex has a risk of priority inversion, especially
-> since the underlying rstat lock can de dropped while the mutex is held.
-> 
-> Synthetic testing with high concurrency of flushers shows no
-> regressions without the mutex, so remove it.
-> 
-> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Thu, Nov 30, 2023 at 12:35=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.or=
+g> wrote:
+>
+> On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
+> > On Thu, Nov 30, 2023 at 11:57=E2=80=AFAM Matthew Wilcox <willy@infradea=
+d.org> wrote:
+> > >
+> > > On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
+> > > > This patch changes list_lru interface so that the caller must expli=
+citly
+> > > > specify numa node and memcg when adding and removing objects. The o=
+ld
+> > > > list_lru_add() and list_lru_del() are renamed to list_lru_add_obj()=
+ and
+> > > > list_lru_del_obj(), respectively.
+> > >
+> > > Wouldn't it be better to add list_lru_add_memcg() and
+> > > list_lru_del_memcg() and have:
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+That is my first thought as well. If we are having two different
+flavors of LRU add, one has memcg and one without. The list_lru_add()
+vs list_lru_add_memcg() is the common way to do it.
+> > >
+> > > +bool list_lru_del(struct list_lru *lru, struct list_head *item)
+> > > +{
+> > > +       int nid =3D page_to_nid(virt_to_page(item));
+> > > +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
+> > > +               mem_cgroup_from_slab_obj(item) : NULL;
+> > > +
+> > > +       return list_lru_del_memcg(lru, item, nid, memcg);
+> > > +}
+> > >
+> > > Seems like _most_ callers will want the original versions and only
+> > > a few will want the explicit memcg/nid versions.  No?
+> > >
+> >
+> > I actually did something along that line in earlier iterations of this
+> > patch series (albeit with poorer naming - __list_lru_add() instead of
+> > list_lru_add_memcg()). The consensus after some back and forth was
+> > that the original list_lru_add() was not a very good design (the
+> > better one was this new version that allows for explicit numa/memcg
+> > selection). So I agreed to fix it everywhere as a prep patch.
+> >
+> > I don't have strong opinions here to be completely honest, but I do
+> > think this new API makes more sense (at the cost of quite a bit of
+> > elbow grease to fix every callsites and extra reviewing).
+>
+> Maybe I can shed some light since I was pushing for doing it this way.
+>
+> The quiet assumption that 'struct list_head *item' is (embedded in) a
+> slab object that is also charged to a cgroup is a bit much, given that
+> nothing in the name or documentation of the function points to that.
 
+We can add it to the document if that is desirable.
+
+>
+> It bit us in the THP shrinker where that list head is embedded in a
+> tailpage (virt_to_page(page) is fun to debug). And it caused some
+> confusion in this case as well, where the zswap entry is a slab object
+> but not charged (the entry descriptor is not attractive for cgroup
+> accounting, only the backing memory it points to.)
+>
+> Yes, for most users - at least right now - the current assumption is
+> accurate. The thinking was just that if we do have to differentiate
+> callers now anyway, we might as well make the interface a bit more
+> self-documenting and harder to misuse going forward, even if it's a
+> bit more churn now.
+
+It comes down to whether we need to have the non memcg version of API
+going forward. If we don't then change the meaning of list_lru_add()
+to perform the deed of list_lru_add_memcg() makes sense. My assumption
+is that the non memcg version of the API does have legit usage. In
+that case, it seems having the original list_lru_add() and
+list_lur_add_memcg() as Mattew suggested feels more natural. What you
+really want is that every caller of list_lru_add() should seriously
+consider switching to list_lru_add_memcg() unless it has a very good
+reason to stay in the non memcg version. Renaming and changing the
+meaning of list_lru_add() is a bit confusing and has a negative impact
+on the outstanding patch that uses list_lru_add().  The end of the
+day, some developers still need to evaluate the call site one by one,
+renaming the function is not going to help that effort. Just make it
+more obvious.
+
+Just my 2 cents, others please chime in. Just to make it clear, that
+is my preference, it is not a NACK.
+
+Chris
 
