@@ -1,380 +1,172 @@
-Return-Path: <cgroups+bounces-806-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-807-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005FE804D3B
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 10:08:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A730F804FFF
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 11:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B643B20A9B
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 09:07:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD621F21515
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 10:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DA03D991;
-	Tue,  5 Dec 2023 09:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAA24D13B;
+	Tue,  5 Dec 2023 10:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="G2QcMBNa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nKSF9Rgd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F9DD3;
-	Tue,  5 Dec 2023 01:07:45 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4C71996;
+	Tue,  5 Dec 2023 02:14:35 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6258222034;
-	Tue,  5 Dec 2023 09:07:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 735DE1FB8B;
+	Tue,  5 Dec 2023 10:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701771273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bhZrWsCVSRl3/gNFhL1HvzTeirgk1o9QDebzo7iN2f0=;
+	b=G2QcMBNaFbkYiqEoLI+v9gtth7Z6pWGLDRBZlRwY8Tqr6xZH3SiKviMeZY8q2ymKKAwwum
+	7auG/tVfNVG/DUwBagjvYjt2g6DuqroW6FcnxizcNzrD8Y5qHdAcAlvFvMQ0uk/tM+jmCy
+	GUbi8Igs0GYaWRfLq2/KSXc3gKQeo3U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701771273;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bhZrWsCVSRl3/gNFhL1HvzTeirgk1o9QDebzo7iN2f0=;
+	b=nKSF9RgdltsqRjNxDbSwRfjmM8y2M3an5vqZL2UdihBAhYEz94R8/Y9WoVkF5jnvWlHoKA
+	xFwidgwOKf5ZrCAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4648D136CF;
-	Tue,  5 Dec 2023 09:07:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 45C35136CF;
+	Tue,  5 Dec 2023 10:14:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 78bYDl7obmUuSQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 05 Dec 2023 09:07:42 +0000
-Date: Tue, 5 Dec 2023 10:07:41 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: David Finkel <davidf@vimeo.com>
-Cc: Muchun Song <muchun.song@linux.dev>, core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-Message-ID: <ZW7oXalrpQWdWZNJ@tiehlicka>
-References: <20231204194156.2411672-1-davidf@vimeo.com>
+	id tYCWEAn4bmWAZwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 05 Dec 2023 10:14:33 +0000
+Message-ID: <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
+Date: Tue, 5 Dec 2023 11:14:32 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204194156.2411672-1-davidf@vimeo.com>
-X-Spamd-Bar: ++++++++++++++++++
-X-Spam-Score: 18.31
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none;
-	spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
-	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
-X-Rspamd-Queue-Id: 6258222034
-X-Spamd-Result: default: False [18.31 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_SPF_FAIL(1.00)[-all];
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 02/21] mm/slab: remove CONFIG_SLAB from all Kconfig and
+ Makefile
+Content-Language: en-US
+To: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
+ Pekka Enberg <penberg@kernel.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Marco Elver
+ <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+ Muchun Song <muchun.song@linux.dev>, Kees Cook <keescook@chromium.org>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-2-9c9c70177183@suse.cz>
+ <ZW6j6aTpuJF0keS7@localhost.localdomain>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZW6j6aTpuJF0keS7@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.60
+X-Spamd-Result: default: False [-2.60 / 50.00];
 	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[99.99%];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TAGGED_RCPT(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.19)[-0.965];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 FREEMAIL_TO(0.00)[gmail.com];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
 	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[google.com,linux.com,kernel.org,lge.com,linux-foundation.org,linux.dev,gmail.com,arm.com,cmpxchg.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Mon 04-12-23 14:41:56, David Finkel wrote:
-> Other mechanisms for querying the peak memory usage of either a process
-> or v1 memory cgroup allow for resetting the high watermark. Restore
-> parity with those mechanisms.
+On 12/5/23 05:15, Hyeonggon Yoo wrote:
+> On Mon, Nov 20, 2023 at 07:34:13PM +0100, Vlastimil Babka wrote:
 > 
-> For example:
->  - Any write to memory.max_usage_in_bytes in a cgroup v1 mount resets
->    the high watermark.
->  - writing "5" to the clear_refs pseudo-file in a processes's proc
->    directory resets the peak RSS.
+> Looks good to me,
+> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+Thanks.
+
+> Nit:
 > 
-> This change copies the cgroup v1 behavior so any write to the
-> memory.peak and memory.swap.peak pseudo-files reset the high watermark
-> to the current usage.
+> - Some arch configs enables DEBUG_SLAB
+> - Some documentations refers to {DEBUG_,}SLAB config (i.e. "enable
+> DEBUG_SLAB for debugging", or "use SLUB instead of SLAB for reducing OS
+> jitter", ... etc)
+> - fs/orangefs/orangefs-kernel.h uses #if (defined CONFIG_DEBUG_SLAB)
 > 
-> This behavior is particularly useful for work scheduling systems that
-> need to track memory usage of worker processes/cgroups per-work-item.
-> Since memory can't be squeezed like CPU can (the OOM-killer has
-> opinions), these systems need to track the peak memory usage to compute
-> system/container fullness when binpacking workitems.
-
-I do not understand the OOM-killer reference here but I do understand
-that your worker reuses a cgroup and you want a peak memory consumption
-of a single run to better profile/configure the memcg configuration for
-the specific worker type. Correct?
-
-> Signed-off-by: David Finkel <davidf@vimeo.com>
-
-Makes sense to me
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
-> ---
->  Documentation/admin-guide/cgroup-v2.rst       | 20 +++---
->  mm/memcontrol.c                               | 23 ++++++
->  .../selftests/cgroup/test_memcontrol.c        | 72 ++++++++++++++++---
->  3 files changed, 99 insertions(+), 16 deletions(-)
+> $ git grep DEBUG_SLAB arch/
+> arch/arm/configs/ep93xx_defconfig:CONFIG_DEBUG_SLAB=y
+> arch/arm/configs/tegra_defconfig:CONFIG_DEBUG_SLAB=y
+> arch/microblaze/configs/mmu_defconfig:CONFIG_DEBUG_SLAB=y
 > 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 3f85254f3cef..95af0628dc44 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1305,11 +1305,13 @@ PAGE_SIZE multiple when read back.
->  	reclaim induced by memory.reclaim.
->  
->    memory.peak
-> -	A read-only single value file which exists on non-root
-> -	cgroups.
-> +	A read-write single value file which exists on non-root cgroups.
-> +
-> +	The max memory usage recorded for the cgroup and its descendants since
-> +	either the creation of the cgroup or the most recent reset.
->  
-> -	The max memory usage recorded for the cgroup and its
-> -	descendants since the creation of the cgroup.
-> +	Any non-empty write to this file resets it to the current memory usage.
-> +	All content written is completely ignored.
->  
->    memory.oom.group
->  	A read-write single value file which exists on non-root
-> @@ -1626,11 +1628,13 @@ PAGE_SIZE multiple when read back.
->  	Healthy workloads are not expected to reach this limit.
->  
->    memory.swap.peak
-> -	A read-only single value file which exists on non-root
-> -	cgroups.
-> +	A read-write single value file which exists on non-root cgroups.
-> +
-> +	The max swap usage recorded for the cgroup and its descendants since
-> +	the creation of the cgroup or the most recent reset.
->  
-> -	The max swap usage recorded for the cgroup and its
-> -	descendants since the creation of the cgroup.
-> +	Any non-empty write to this file resets it to the current swap usage.
-> +	All content written is completely ignored.
->  
->    memory.swap.max
->  	A read-write single value file which exists on non-root
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1c1061df9cd1..b04af158922d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -25,6 +25,7 @@
->   * Copyright (C) 2020 Alibaba, Inc, Alex Shi
->   */
->  
-> +#include <linux/cgroup-defs.h>
->  #include <linux/page_counter.h>
->  #include <linux/memcontrol.h>
->  #include <linux/cgroup.h>
-> @@ -6635,6 +6636,16 @@ static u64 memory_peak_read(struct cgroup_subsys_state *css,
->  	return (u64)memcg->memory.watermark * PAGE_SIZE;
->  }
->  
-> +static ssize_t memory_peak_write(struct kernfs_open_file *of,
-> +				 char *buf, size_t nbytes, loff_t off)
-> +{
-> +	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> +
-> +	page_counter_reset_watermark(&memcg->memory);
-> +
-> +	return nbytes;
-> +}
-> +
->  static int memory_min_show(struct seq_file *m, void *v)
->  {
->  	return seq_puts_memcg_tunable(m,
-> @@ -6947,6 +6958,7 @@ static struct cftype memory_files[] = {
->  		.name = "peak",
->  		.flags = CFTYPE_NOT_ON_ROOT,
->  		.read_u64 = memory_peak_read,
-> +		.write = memory_peak_write,
->  	},
->  	{
->  		.name = "min",
-> @@ -7917,6 +7929,16 @@ static u64 swap_peak_read(struct cgroup_subsys_state *css,
->  	return (u64)memcg->swap.watermark * PAGE_SIZE;
->  }
->  
-> +static ssize_t swap_peak_write(struct kernfs_open_file *of,
-> +				 char *buf, size_t nbytes, loff_t off)
-> +{
-> +	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> +
-> +	page_counter_reset_watermark(&memcg->swap);
-> +
-> +	return nbytes;
-> +}
-> +
->  static int swap_high_show(struct seq_file *m, void *v)
->  {
->  	return seq_puts_memcg_tunable(m,
-> @@ -7999,6 +8021,7 @@ static struct cftype swap_files[] = {
->  		.name = "swap.peak",
->  		.flags = CFTYPE_NOT_ON_ROOT,
->  		.read_u64 = swap_peak_read,
-> +		.write = swap_peak_write,
->  	},
->  	{
->  		.name = "swap.events",
-> diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-> index c7c9572003a8..0326c317f1f2 100644
-> --- a/tools/testing/selftests/cgroup/test_memcontrol.c
-> +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-> @@ -161,12 +161,12 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
->  /*
->   * This test create a memory cgroup, allocates
->   * some anonymous memory and some pagecache
-> - * and check memory.current and some memory.stat values.
-> + * and checks memory.current, memory.peak, and some memory.stat values.
->   */
-> -static int test_memcg_current(const char *root)
-> +static int test_memcg_current_peak(const char *root)
->  {
->  	int ret = KSFT_FAIL;
-> -	long current;
-> +	long current, peak, peak_reset;
->  	char *memcg;
->  
->  	memcg = cg_name(root, "memcg_test");
-> @@ -180,12 +180,32 @@ static int test_memcg_current(const char *root)
->  	if (current != 0)
->  		goto cleanup;
->  
-> +	peak = cg_read_long(memcg, "memory.peak");
-> +	if (peak != 0)
-> +		goto cleanup;
-> +
->  	if (cg_run(memcg, alloc_anon_50M_check, NULL))
->  		goto cleanup;
->  
-> +	peak = cg_read_long(memcg, "memory.peak");
-> +	if (peak < MB(50))
-> +		goto cleanup;
-> +
-> +	peak_reset = cg_write(memcg, "memory.peak", "\n");
-> +	if (peak_reset != 0)
-> +		goto cleanup;
-> +
-> +	peak = cg_read_long(memcg, "memory.peak");
-> +	if (peak > MB(30))
-> +		goto cleanup;
-> +
->  	if (cg_run(memcg, alloc_pagecache_50M_check, NULL))
->  		goto cleanup;
->  
-> +	peak = cg_read_long(memcg, "memory.peak");
-> +	if (peak < MB(50))
-> +		goto cleanup;
-> +
->  	ret = KSFT_PASS;
->  
->  cleanup:
-> @@ -815,13 +835,14 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
->  
->  /*
->   * This test checks that memory.swap.max limits the amount of
-> - * anonymous memory which can be swapped out.
-> + * anonymous memory which can be swapped out. Additionally, it verifies that
-> + * memory.swap.peak reflects the high watermark and can be reset.
->   */
-> -static int test_memcg_swap_max(const char *root)
-> +static int test_memcg_swap_max_peak(const char *root)
->  {
->  	int ret = KSFT_FAIL;
->  	char *memcg;
-> -	long max;
-> +	long max, peak;
->  
->  	if (!is_swap_enabled())
->  		return KSFT_SKIP;
-> @@ -838,6 +859,12 @@ static int test_memcg_swap_max(const char *root)
->  		goto cleanup;
->  	}
->  
-> +	if (cg_read_long(memcg, "memory.swap.peak"))
-> +		goto cleanup;
-> +
-> +	if (cg_read_long(memcg, "memory.peak"))
-> +		goto cleanup;
-> +
->  	if (cg_read_strcmp(memcg, "memory.max", "max\n"))
->  		goto cleanup;
->  
-> @@ -860,6 +887,27 @@ static int test_memcg_swap_max(const char *root)
->  	if (cg_read_key_long(memcg, "memory.events", "oom_kill ") != 1)
->  		goto cleanup;
->  
-> +	peak = cg_read_long(memcg, "memory.peak");
-> +	if (peak < MB(29))
-> +		goto cleanup;
-> +
-> +	peak = cg_read_long(memcg, "memory.swap.peak");
-> +	if (peak < MB(29))
-> +		goto cleanup;
-> +
-> +	if (cg_write(memcg, "memory.swap.peak", "\n"))
-> +		goto cleanup;
-> +
-> +	if (cg_read_long(memcg, "memory.swap.peak") > MB(10))
-> +		goto cleanup;
-> +
-> +
-> +	if (cg_write(memcg, "memory.peak", "\n"))
-> +		goto cleanup;
-> +
-> +	if (cg_read_long(memcg, "memory.peak"))
-> +		goto cleanup;
-> +
->  	if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
->  		goto cleanup;
->  
-> @@ -867,6 +915,14 @@ static int test_memcg_swap_max(const char *root)
->  	if (max <= 0)
->  		goto cleanup;
->  
-> +	peak = cg_read_long(memcg, "memory.peak");
-> +	if (peak < MB(29))
-> +		goto cleanup;
-> +
-> +	peak = cg_read_long(memcg, "memory.swap.peak");
-> +	if (peak < MB(19))
-> +		goto cleanup;
-> +
->  	ret = KSFT_PASS;
->  
->  cleanup:
-> @@ -1293,7 +1349,7 @@ struct memcg_test {
->  	const char *name;
->  } tests[] = {
->  	T(test_memcg_subtree_control),
-> -	T(test_memcg_current),
-> +	T(test_memcg_current_peak),
->  	T(test_memcg_min),
->  	T(test_memcg_low),
->  	T(test_memcg_high),
-> @@ -1301,7 +1357,7 @@ struct memcg_test {
->  	T(test_memcg_max),
->  	T(test_memcg_reclaim),
->  	T(test_memcg_oom_events),
-> -	T(test_memcg_swap_max),
-> +	T(test_memcg_swap_max_peak),
->  	T(test_memcg_sock),
->  	T(test_memcg_oom_group_leaf_events),
->  	T(test_memcg_oom_group_parent_events),
-> -- 
-> 2.39.2
+> $ git grep SLAB Documentation/
+> 
+> [... some unrelated lines removed ...]
 
--- 
-Michal Hocko
-SUSE Labs
+Yep, I've wrote in the cover letter that to keep the series reasonable and
+limit Ccing other subsystems on some patches, not everything is cleaned up
+thoroughly, and is left for further work (some already started coming in
+from others) that can be submitted to relevant subsystems.
+
+> Documentation/admin-guide/cgroup-v1/cpusets.rst:PFA_SPREAD_SLAB, and appropriately marked slab caches will allocate
+> Documentation/admin-guide/cgroup-v1/memory.rst:  pages allocated by the SLAB or SLUB allocator are tracked. A copy
+> Documentation/admin-guide/kernel-per-CPU-kthreads.rst:          CONFIG_SLAB=y, thus avoiding the slab allocator's periodic
+> Documentation/admin-guide/mm/pagemap.rst:   The page is managed by the SLAB/SLUB kernel memory allocator.
+> Documentation/dev-tools/kasan.rst:For slab, both software KASAN modes support SLUB and SLAB allocators, while
+> Documentation/dev-tools/kfence.rst:of the sample interval, the next allocation through the main allocator (SLAB or
+> Documentation/mm/slub.rst:The basic philosophy of SLUB is very different from SLAB. SLAB
+> Documentation/mm/slub.rst:                      Sorry SLAB legacy issues)
+> Documentation/process/4.Coding.rst: - DEBUG_SLAB can find a variety of memory allocation and use errors; it
+> Documentation/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> Documentation/scsi/ChangeLog.lpfc:        CONFIG_DEBUG_SLAB set).
+> Documentation/translations/it_IT/process/4.Coding.rst: - DEBUG_SLAB può trovare svariati errori di uso e di allocazione di memoria;
+> Documentation/translations/it_IT/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> Documentation/translations/ja_JP/SubmitChecklist:12: CONFIG_PREEMPT, CONFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB,
+> Documentation/translations/zh_CN/dev-tools/kasan.rst:对于slab，两种软件KASAN模式都支持SLUB和SLAB分配器，而基于硬件标签的
+> Documentation/translations/zh_CN/process/4.Coding.rst: - DEBUG_SLAB 可以发现各种内存分配和使用错误；它应该用于大多数开发内核。
+> Documentation/translations/zh_CN/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> Documentation/translations/zh_TW/dev-tools/kasan.rst:對於slab，兩種軟件KASAN模式都支持SLUB和SLAB分配器，而基於硬件標籤的
+> Documentation/translations/zh_TW/process/4.Coding.rst: - DEBUG_SLAB 可以發現各種內存分配和使用錯誤；它應該用於大多數開發內核。
+> Documentation/translations/zh_TW/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> 
+> --
+> Hyeonggon
+
 
