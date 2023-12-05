@@ -1,152 +1,126 @@
-Return-Path: <cgroups+bounces-817-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-818-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AFAF805B00
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 18:17:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2913B805CC8
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 19:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BF3E1C20FAE
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 17:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C996E1F21555
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 18:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0AD692B4;
-	Tue,  5 Dec 2023 17:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91816A34B;
+	Tue,  5 Dec 2023 18:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="voLsq+fF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K4NqijX6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05161D43
-	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 09:17:04 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d8ddcc433fso20261447b3.1
-        for <cgroups@vger.kernel.org>; Tue, 05 Dec 2023 09:17:03 -0800 (PST)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7B51BE
+	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 10:03:04 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c9ee6fed3eso53035521fa.0
+        for <cgroups@vger.kernel.org>; Tue, 05 Dec 2023 10:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701796623; x=1702401423; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+j0Ow1vOCeL95TLnZYt84KH1KzVbnclXd3P1tOJjQK4=;
-        b=voLsq+fFM0MB3HHIIgFRcVbvhzwgrJcXUWcDadr8FVseJxCtPQseEB2OBBTo1KPTfz
-         w5y4Zp1+5XH88Lb2c5N4IiTTPVhuNBA5VeHFFIG9hGcgiUGutAM4CWSeDn7CmF967ke5
-         2TPWGKmmUbD7Gj9lE3Uu/LfkV0tyzEOjuFfOj+xJTcuchfXe8wXaGmywRQxorxThHpGZ
-         UGpUo/ZqloQYSsquH8hm5/Pm5YDBAozRQ9FChNTL18ZapEjtVK5MLcBOIoqMqu6QQBDx
-         U35/F/7KqC3axVQHgAOxLiik9yHZr25lEWfcpJjn5pyVc6dmFN7CLD1Nxo3CdezMIXZk
-         2bxQ==
+        d=google.com; s=20230601; t=1701799383; x=1702404183; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H2joey/D+/Fter5JFQfAZeSyog4t3NYaVzZzIbt4q+Y=;
+        b=K4NqijX6vzRxeN5fCvsWetxzBFw6RHkzrjJOLDgmkOqrYLrnEQ3/IaQLc5h8M3pY5f
+         ecFe6bfGAlf/0KNTUgYgUyfkxEcwKS2JJ+htNv87SnIIFuJVBUtxFm8z5u+sSmn+4mJO
+         HzHcnfWtHdPReGa9Lf/QP4BHM4djMBauSIbj/0om0skuCWZpx5NAgFgnGBQFP5JMNe9b
+         kFHfU8pQln5C/y3zicrHTUKNdj8KSaXOyvXAlPPvPV9r8GpmlzCVqQuijl0bOQRNObZU
+         rIEETgW+gJw1a6+pNiBDHHVrjMWq4661p2eMHl6GBRybFHYu58CZI5gidxJmHp7ZYFgP
+         IcMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701796623; x=1702401423;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+j0Ow1vOCeL95TLnZYt84KH1KzVbnclXd3P1tOJjQK4=;
-        b=MwwFT3UdZ+SrGDCPs3d4NmomkpihiRk18d5si05WzkWuHebgBVVSEPv24vXZgVZmCF
-         nnswU6+c+vCHV0gfxlaJgMudEDbT49bg7KuE4+t8E1g8yhx+Lv+o1m22PpH3Z0JbKzyB
-         Mh83ixXKXNTH+XaLNLOVGp34WIQ9s6y63Kj3IJ4zB9pZVc31uq8IgVJMqiHd5b/BwTWj
-         wVDICOpR3aXtw2r1Qn3vbACZO8kf/F5gfepkmuNa9P/oKVggKg2zZkEAfBzqfRQK68OA
-         15tUaRypeXXpjy/R5IBACcCdda8F2OMhe5g0r104CFMfGXkL4OEks0YcUyVtKI7/QFUm
-         jgNg==
-X-Gm-Message-State: AOJu0YyXP21xDz8uXQ7N75Vi6vgmgALbiceRVXA1ZSANLeDVhpA42tT2
-	kDlEccnwkm2x1svmocmXUey93w==
-X-Google-Smtp-Source: AGHT+IHCOFtbuh+2xx33YQUO2m6y7idmJ/+9D8OhxohxpRR24h/b3yAyf/3HI6xxnibo2qd6edmAOg==
-X-Received: by 2002:a81:52d2:0:b0:5d9:987d:36e1 with SMTP id g201-20020a8152d2000000b005d9987d36e1mr1208999ywb.76.1701796623181;
-        Tue, 05 Dec 2023 09:17:03 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id o4-20020a0ccb04000000b0067a24c354bdsm2691901qvk.20.2023.12.05.09.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 09:17:02 -0800 (PST)
-Date: Tue, 5 Dec 2023 12:17:02 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chris Li <chrisl@kernel.org>
-Cc: Nhat Pham <nphamcs@gmail.com>, Matthew Wilcox <willy@infradead.org>,
-	akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-	vitaly.wool@konsulko.com, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	shuah@kernel.org
-Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node
- selection
-Message-ID: <20231205171702.GB99931@cmpxchg.org>
-References: <20231130194023.4102148-1-nphamcs@gmail.com>
- <20231130194023.4102148-2-nphamcs@gmail.com>
- <ZWjpNr3ZzvU4TDC8@casper.infradead.org>
- <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
- <20231130203522.GC543908@cmpxchg.org>
- <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1701799383; x=1702404183;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H2joey/D+/Fter5JFQfAZeSyog4t3NYaVzZzIbt4q+Y=;
+        b=TvhBGpU0i/AR4KmGqhjAL05gXpW3IOn8H0Dr6Tn0TEUPciR+fbDppX/TdcaTToZ8oF
+         ygv1KbwDGSR6oOM1a5A439S5PGNIWw7k421gLpy6xbhKlQ/mAprnn2NRt0FWZ8uJq6F8
+         U8v4WYfEAG4S+wEpFBKHnCkzY+2uKPvVxtBSCBwfAtw0THRP+3nxfoHZR7qwQelugokL
+         /0HbkEKvBldnRyYO/c9Mi150Gf7igN1JYSqwAmSaJVR0bxhiEr0ElIPA0eUzeYc0Mt12
+         ePo9LSosL/UJch4syu775C5RB6m3Vp6y9pQqzHnA2f9US199L3ZwM02cq/lkc03y0uqn
+         plLA==
+X-Gm-Message-State: AOJu0YzdZBNMpoQgwQum4qn/B6uUpyYOOe2pFLtO1xWJ09QYV3yn3Fb0
+	NXnu+JVDpMhxmzdBKocNtA6WZ/TXUl2EXRnVGPG2gw==
+X-Google-Smtp-Source: AGHT+IEXzOUK5t8bzip+5ZofybxHjbqPtQkvb0sQwnXT+0r4S9PaBhfe3FGVUffgOkL3/lvjFblZ2xbK3YEUDgy6Tw0=
+X-Received: by 2002:a05:651c:1056:b0:2c9:f5ec:40ff with SMTP id
+ x22-20020a05651c105600b002c9f5ec40ffmr2569169ljm.26.1701799382434; Tue, 05
+ Dec 2023 10:03:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-3-nphamcs@gmail.com>
+In-Reply-To: <20231130194023.4102148-3-nphamcs@gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 5 Dec 2023 10:02:23 -0800
+Message-ID: <CAJD7tka+e-RWVN8qkCLv52z8G0KAXNO87CqV3p5Wgkx6BvneLw@mail.gmail.com>
+Subject: Re: [PATCH v8 2/6] memcontrol: implement mem_cgroup_tryget_online()
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, cerasuolodomenico@gmail.com, 
+	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com, 
+	muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 04, 2023 at 04:30:44PM -0800, Chris Li wrote:
-> On Thu, Nov 30, 2023 at 12:35 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
-> > > On Thu, Nov 30, 2023 at 11:57 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
-> > > > > This patch changes list_lru interface so that the caller must explicitly
-> > > > > specify numa node and memcg when adding and removing objects. The old
-> > > > > list_lru_add() and list_lru_del() are renamed to list_lru_add_obj() and
-> > > > > list_lru_del_obj(), respectively.
-> > > >
-> > > > Wouldn't it be better to add list_lru_add_memcg() and
-> > > > list_lru_del_memcg() and have:
-> 
-> That is my first thought as well. If we are having two different
-> flavors of LRU add, one has memcg and one without. The list_lru_add()
-> vs list_lru_add_memcg() is the common way to do it.
-> > > >
-> > > > +bool list_lru_del(struct list_lru *lru, struct list_head *item)
-> > > > +{
-> > > > +       int nid = page_to_nid(virt_to_page(item));
-> > > > +       struct mem_cgroup *memcg = list_lru_memcg_aware(lru) ?
-> > > > +               mem_cgroup_from_slab_obj(item) : NULL;
-> > > > +
-> > > > +       return list_lru_del_memcg(lru, item, nid, memcg);
-> > > > +}
-> > > >
-> > > > Seems like _most_ callers will want the original versions and only
-> > > > a few will want the explicit memcg/nid versions.  No?
-> > > >
-> > >
-> > > I actually did something along that line in earlier iterations of this
-> > > patch series (albeit with poorer naming - __list_lru_add() instead of
-> > > list_lru_add_memcg()). The consensus after some back and forth was
-> > > that the original list_lru_add() was not a very good design (the
-> > > better one was this new version that allows for explicit numa/memcg
-> > > selection). So I agreed to fix it everywhere as a prep patch.
-> > >
-> > > I don't have strong opinions here to be completely honest, but I do
-> > > think this new API makes more sense (at the cost of quite a bit of
-> > > elbow grease to fix every callsites and extra reviewing).
-> >
-> > Maybe I can shed some light since I was pushing for doing it this way.
-> >
-> > The quiet assumption that 'struct list_head *item' is (embedded in) a
-> > slab object that is also charged to a cgroup is a bit much, given that
-> > nothing in the name or documentation of the function points to that.
-> 
-> We can add it to the document if that is desirable.
+On Thu, Nov 30, 2023 at 11:40=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> This patch implements a helper function that try to get a reference to
+> an memcg's css, as well as checking if it is online. This new function
+> is almost exactly the same as the existing mem_cgroup_tryget(), except
+> for the onlineness check. In the !CONFIG_MEMCG case, it always returns
+> true, analogous to mem_cgroup_tryget(). This is useful for e.g to the
+> new zswap writeback scheme, where we need to select the next online
+> memcg as a candidate for the global limit reclaim.
+>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-It would help, but it still violates the "easy to use, hard to misuse"
-principle. And I think it does the API layering backwards.
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
-list_lru_add() is the "default" API function. It makes sense to keep
-that simple and robust, then add add convenience wrappers for
-additional, specialized functionality like memcg lookups for charged
-slab objects - even if that's a common usecase.
-
-It's better for a new user to be paused by the require memcg argument
-in the default function and then go and find list_lru_add_obj(), than
-it is for somebody to quietly pass an invalid object to list_lru_add()
-and have subtle runtime problems and crashes (which has happened twice
-now already).
+> ---
+>  include/linux/memcontrol.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 7bdcf3020d7a..2bd7d14ace78 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -821,6 +821,11 @@ static inline bool mem_cgroup_tryget(struct mem_cgro=
+up *memcg)
+>         return !memcg || css_tryget(&memcg->css);
+>  }
+>
+> +static inline bool mem_cgroup_tryget_online(struct mem_cgroup *memcg)
+> +{
+> +       return !memcg || css_tryget_online(&memcg->css);
+> +}
+> +
+>  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+>  {
+>         if (memcg)
+> @@ -1349,6 +1354,11 @@ static inline bool mem_cgroup_tryget(struct mem_cg=
+roup *memcg)
+>         return true;
+>  }
+>
+> +static inline bool mem_cgroup_tryget_online(struct mem_cgroup *memcg)
+> +{
+> +       return true;
+> +}
+> +
+>  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+>  {
+>  }
+> --
+> 2.34.1
 
