@@ -1,113 +1,165 @@
-Return-Path: <cgroups+bounces-829-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-830-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7897D806187
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 23:16:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A04380619E
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 23:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34F4828209A
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 22:16:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECEF81F21667
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 22:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA876E2BC;
-	Tue,  5 Dec 2023 22:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8846E2D5;
+	Tue,  5 Dec 2023 22:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iLsujGkp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e1IcpWgn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E05137
-	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 14:16:21 -0800 (PST)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC42181
+	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 14:22:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701814581;
+	s=mimecast20190719; t=1701814949;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h2Vem31mI/E1rxmbZRCBYAPkrSR+YjFerajC0+h+2EI=;
-	b=iLsujGkp6DR+gpI8vZpffJztXxPMhDWwQkTQh3sl3lBg66/V4aPAsKAoAPmU1Qz+oUriUP
-	SDLYFE5Q9/8jEnR2ihSV9Uj4C187CnFXxJN12RgbzNYEIp2yHGlkcf1k1Wsux7VpNgipH/
-	rICKTpPGiN1/9wZBJn8PRKkYi0pq0yc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-433-3LYAxG9aN0qe_CfFGknouw-1; Tue,
- 05 Dec 2023 17:16:16 -0500
-X-MC-Unique: 3LYAxG9aN0qe_CfFGknouw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dd8Gk/6yuQhjnMyi4P3XBRZAXca0Ynw9je2fzWn9dCc=;
+	b=e1IcpWgnU34S0oV5wir22Wzz0J2wZe+PfhgKO6B7hhl1VoprUeWzdIbTEhSxDvwc0Pz5ko
+	7PKHC2V4oWB6hjBZUjbiLqy2rb0VjkuXZdqvpDx/9L+38hQRYTK0Ju1dpDFjLIfSVfSlTu
+	F82+3xMMILFu7X7nlhOc2Mse/EBH9/o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-324-T3-aAeCqM9WgxgBvKthgAA-1; Tue, 05 Dec 2023 17:22:26 -0500
+X-MC-Unique: T3-aAeCqM9WgxgBvKthgAA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F03511C0BB41;
-	Tue,  5 Dec 2023 22:16:15 +0000 (UTC)
-Received: from [10.22.8.88] (unknown [10.22.8.88])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DCC8C112131D;
-	Tue,  5 Dec 2023 22:16:14 +0000 (UTC)
-Message-ID: <7284ef19-ba26-46cd-9630-cad18c2e3ce7@redhat.com>
-Date: Tue, 5 Dec 2023 17:16:14 -0500
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1651E102F081;
+	Tue,  5 Dec 2023 22:22:24 +0000 (UTC)
+Received: from llong.com (unknown [10.22.8.88])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 2EE182166B35;
+	Tue,  5 Dec 2023 22:22:23 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>,
+	Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup v2] cgroup/cpuset: Include isolated cpuset CPUs in cpu_is_isolated() check
+Date: Tue,  5 Dec 2023 17:21:14 -0500
+Message-Id: <20231205222114.773446-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs in
- cpu_is_isolated() check
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@suse.com>,
- Frederic Weisbecker <frederic@kernel.org>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
- Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Peter Hunt <pehunt@redhat.com>
-References: <20231127041956.266026-1-longman@redhat.com>
- <20231127041956.266026-3-longman@redhat.com>
- <ZWYbqNnnt6gQOssK@slm.duckdns.org>
- <8de482b5-1942-4312-8de4-6f54565ab517@redhat.com>
- <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
- <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
- <ZWoSrfztmprcdkpO@slm.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZWoSrfztmprcdkpO@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On 12/1/23 12:06, Tejun Heo wrote:
-> Hello,
->
-> On Wed, Nov 29, 2023 at 11:01:04AM -0500, Waiman Long wrote:
-> ...
->>>> Depending on how the cpumask operators are implemented, we may not have a
->>>> guarantee that testing CPU 2, for instance, will always return true. That is
->>> Can you please elaborate this part a bit? I'm having a difficult time
->>> imagining the sequence of operations where this would matter but that could
->>> easily be me not being familiar with the details.
->> I may be a bit paranoid about incorrect result due to racing as I had been
->> burned before. Just testing a bit in the bitmask may probably be OK. I don't
-> Setting and clearing a bit is as atomic as it gets, right?
-Yes, I think so.
->
->> think it will be a problem for x86, but I am less certain about other more
->> exotic architectures like arm64 or PPC which I am less familiar about. I add
->> a seqcount for synchronization just for the peace of mind. I can take the
->> seqcount out if you don't it is necessary.
-> I just can't think of a case where this would be broken. The data being read
-> and written is atomic. There's no way to break a bit operation into multiple
-> pieces. It is possible to write a really bone-headed bitmask operations
-> (like, if you shift the bits into place or sth) to make the bits go through
-> unintended changes but that'd just be a flat-out broken implementation. Even
-> for a bitmask where write accesses are synchronized through a spinlock, we
-> should still be able to use test_bit() without holding the lock. This seems
-> like a pretty basic assumption.
->
-> Adding unnecessary synchronization confuses the readers. If we don't need
-> it, we shouldn't have it.
+Currently, the cpu_is_isolated() function checks only the statically
+isolated CPUs specified via the "isolcpus" and "nohz_full" kernel
+command line options. This function is used by vmstat and memcg to
+reduce interference with isolated CPUs by not doing stat flushing
+or scheduling works on those CPUs.
 
-OK, I will send a simplified v2 patch.
+Workloads running on isolated CPUs within isolated cpuset
+partitions should receive the same treatment to reduce unnecessary
+interference. This patch introduces a new cpuset_cpu_is_isolated()
+function to be called by cpu_is_isolated() so that the set of dynamically
+created cpuset isolated CPUs will be included in the check.
 
-Cheers,
-Longman
+Assuming that testing a bit in a cpumask is atomic, no synchronization
+primitive is currently used to synchronize access to the cpuset's
+isolated_cpus mask.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ include/linux/cpuset.h          |  6 ++++++
+ include/linux/sched/isolation.h |  4 +++-
+ kernel/cgroup/cpuset.c          | 11 +++++++++++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index d629094fac6e..875d12598bd2 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -77,6 +77,7 @@ extern void cpuset_lock(void);
+ extern void cpuset_unlock(void);
+ extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
+ extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
++extern bool cpuset_cpu_is_isolated(int cpu);
+ extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+ #define cpuset_current_mems_allowed (current->mems_allowed)
+ void cpuset_init_current_mems_allowed(void);
+@@ -207,6 +208,11 @@ static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
+ 	return false;
+ }
+ 
++static inline bool cpuset_cpu_is_isolated(int cpu)
++{
++	return false;
++}
++
+ static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
+ {
+ 	return node_possible_map;
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index fe1a46f30d24..2b461129d1fa 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -2,6 +2,7 @@
+ #define _LINUX_SCHED_ISOLATION_H
+ 
+ #include <linux/cpumask.h>
++#include <linux/cpuset.h>
+ #include <linux/init.h>
+ #include <linux/tick.h>
+ 
+@@ -67,7 +68,8 @@ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
+ static inline bool cpu_is_isolated(int cpu)
+ {
+ 	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
+-		 !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
++	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
++	       cpuset_cpu_is_isolated(cpu);
+ }
+ 
+ #endif /* _LINUX_SCHED_ISOLATION_H */
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 2a16df86c55c..dfbb16aca9f4 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1518,6 +1518,17 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
+ 	WARN_ON_ONCE(ret < 0);
+ }
+ 
++/**
++ * cpuset_cpu_is_isolated - Check if the given CPU is isolated
++ * @cpu: the CPU number to be checked
++ * Return: true if CPU is used in an isolated partition, false otherwise
++ */
++bool cpuset_cpu_is_isolated(int cpu)
++{
++	return cpumask_test_cpu(cpu, isolated_cpus);
++}
++EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
++
+ /*
+  * compute_effective_exclusive_cpumask - compute effective exclusive CPUs
+  * @cs: cpuset
+-- 
+2.39.3
 
 
