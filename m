@@ -1,106 +1,152 @@
-Return-Path: <cgroups+bounces-816-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-817-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84429805AF8
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 18:15:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AFAF805B00
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 18:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F89B28141C
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 17:15:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BF3E1C20FAE
+	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 17:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF791692AF;
-	Tue,  5 Dec 2023 17:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0AD692B4;
+	Tue,  5 Dec 2023 17:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QbjHyCdi"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="voLsq+fF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E221A4;
-	Tue,  5 Dec 2023 09:15:50 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2335285a12.0;
-        Tue, 05 Dec 2023 09:15:50 -0800 (PST)
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05161D43
+	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 09:17:04 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d8ddcc433fso20261447b3.1
+        for <cgroups@vger.kernel.org>; Tue, 05 Dec 2023 09:17:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701796549; x=1702401349; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HPp8UMYCoK8OfqAUwejxJ+kPtnbv2SL+QsIRvEkjCew=;
-        b=QbjHyCdifNEaHnI0f54JdByHJVJGTeopHzp/PSZ0DY/ReKxnh9Whn+9PtEOtnaF4z1
-         YI3mEu2j+nhNZHmRnlyjySlw+7vBGO3e7up9AL+aA/GQHs3GKxRtaz7jdmXJjFcnGKCf
-         daAMVsn27J32bnHurVBuHABK7JWp5c6oMwsGaZTmpcI01cwLZImI+oEhSPHn2WCVJMLj
-         waJfTea2GVj9LvC5Ur2n4Xd+Z8/n6zIEHN623wPixiAC19+HTC2RtylGZIAAkjvDPMKk
-         zfBWb712gwsU/2SvYxxDk6wmMKEiAsosSSKoH3blolMpHhrgxT7QX1ianBfeK538NaCD
-         ElSA==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701796623; x=1702401423; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+j0Ow1vOCeL95TLnZYt84KH1KzVbnclXd3P1tOJjQK4=;
+        b=voLsq+fFM0MB3HHIIgFRcVbvhzwgrJcXUWcDadr8FVseJxCtPQseEB2OBBTo1KPTfz
+         w5y4Zp1+5XH88Lb2c5N4IiTTPVhuNBA5VeHFFIG9hGcgiUGutAM4CWSeDn7CmF967ke5
+         2TPWGKmmUbD7Gj9lE3Uu/LfkV0tyzEOjuFfOj+xJTcuchfXe8wXaGmywRQxorxThHpGZ
+         UGpUo/ZqloQYSsquH8hm5/Pm5YDBAozRQ9FChNTL18ZapEjtVK5MLcBOIoqMqu6QQBDx
+         U35/F/7KqC3axVQHgAOxLiik9yHZr25lEWfcpJjn5pyVc6dmFN7CLD1Nxo3CdezMIXZk
+         2bxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701796549; x=1702401349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HPp8UMYCoK8OfqAUwejxJ+kPtnbv2SL+QsIRvEkjCew=;
-        b=voRgE1g8CGs/aikOmnFVL+pYGghbZsVr11NRwA9gZghhevP5FjhOf2cKL/lgazpDK+
-         wav7Ok3DTP1ElGLMShf1v2W/b5FpJPF88spuUxmR6II5/3WjmQ3/wLHpatVTjrxf95JU
-         YbkwYN/flgCFOKu2ZVuB1r+xU/hBPTjV1Bnpme7F4YKw1SJDfl5QfbY3FvE+MYzvHPlg
-         pGYWM8LBscf8rRdfoS4+9YRBcpSRdjHxUcjDwdNFnU3wfyMu4xWYoCV7Ne7wyRmX4wAl
-         bzZPhWUqHQYXURN29PDh9Oa7S2i4vemEPKXvRaBIdLZTUXUKpCkxxInKK2mRmnF1Jdrs
-         fCuA==
-X-Gm-Message-State: AOJu0YwfKjjC0FFiPI0A/5crma/I60NrWbyg2WZsXiMU4D32eqKNAjYo
-	1/bWgul50lziZ0YkLWA+G7g=
-X-Google-Smtp-Source: AGHT+IGK8jkOPUjkiVnT9awlbjaR3p1cXJ709zxt2xafAqFrtx6tS4WepQoB2CTTqCKLPfr2A5Cczg==
-X-Received: by 2002:a17:90b:1e05:b0:286:fbb0:2cf2 with SMTP id pg5-20020a17090b1e0500b00286fbb02cf2mr254778pjb.20.1701796549474;
-        Tue, 05 Dec 2023 09:15:49 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id 13-20020a17090a034d00b0028656e226efsm8811443pjf.1.2023.12.05.09.15.48
+        d=1e100.net; s=20230601; t=1701796623; x=1702401423;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+j0Ow1vOCeL95TLnZYt84KH1KzVbnclXd3P1tOJjQK4=;
+        b=MwwFT3UdZ+SrGDCPs3d4NmomkpihiRk18d5si05WzkWuHebgBVVSEPv24vXZgVZmCF
+         nnswU6+c+vCHV0gfxlaJgMudEDbT49bg7KuE4+t8E1g8yhx+Lv+o1m22PpH3Z0JbKzyB
+         Mh83ixXKXNTH+XaLNLOVGp34WIQ9s6y63Kj3IJ4zB9pZVc31uq8IgVJMqiHd5b/BwTWj
+         wVDICOpR3aXtw2r1Qn3vbACZO8kf/F5gfepkmuNa9P/oKVggKg2zZkEAfBzqfRQK68OA
+         15tUaRypeXXpjy/R5IBACcCdda8F2OMhe5g0r104CFMfGXkL4OEks0YcUyVtKI7/QFUm
+         jgNg==
+X-Gm-Message-State: AOJu0YyXP21xDz8uXQ7N75Vi6vgmgALbiceRVXA1ZSANLeDVhpA42tT2
+	kDlEccnwkm2x1svmocmXUey93w==
+X-Google-Smtp-Source: AGHT+IHCOFtbuh+2xx33YQUO2m6y7idmJ/+9D8OhxohxpRR24h/b3yAyf/3HI6xxnibo2qd6edmAOg==
+X-Received: by 2002:a81:52d2:0:b0:5d9:987d:36e1 with SMTP id g201-20020a8152d2000000b005d9987d36e1mr1208999ywb.76.1701796623181;
+        Tue, 05 Dec 2023 09:17:03 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id o4-20020a0ccb04000000b0067a24c354bdsm2691901qvk.20.2023.12.05.09.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 09:15:49 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 5 Dec 2023 07:15:47 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: Expand bpf_cgrp_storage to support
- cgroup1 non-attach case
-Message-ID: <ZW9aw52vXIQTgq9A@slm.duckdns.org>
-References: <20231205143725.4224-1-laoar.shao@gmail.com>
+        Tue, 05 Dec 2023 09:17:02 -0800 (PST)
+Date: Tue, 5 Dec 2023 12:17:02 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Chris Li <chrisl@kernel.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+	akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
+	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+	vitaly.wool@konsulko.com, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	shuah@kernel.org
+Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node
+ selection
+Message-ID: <20231205171702.GB99931@cmpxchg.org>
+References: <20231130194023.4102148-1-nphamcs@gmail.com>
+ <20231130194023.4102148-2-nphamcs@gmail.com>
+ <ZWjpNr3ZzvU4TDC8@casper.infradead.org>
+ <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
+ <20231130203522.GC543908@cmpxchg.org>
+ <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231205143725.4224-1-laoar.shao@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
 
-On Tue, Dec 05, 2023 at 02:37:22PM +0000, Yafang Shao wrote:
-> In the current cgroup1 environment, associating operations between a cgroup
-> and applications in a BPF program requires storing a mapping of cgroup_id
-> to application either in a hash map or maintaining it in userspace.
-> However, by enabling bpf_cgrp_storage for cgroup1, it becomes possible to
-> conveniently store application-specific information in cgroup-local storage
-> and utilize it within BPF programs. Furthermore, enabling this feature for
-> cgroup1 involves minor modifications for the non-attach case, streamlining
-> the process.
+On Mon, Dec 04, 2023 at 04:30:44PM -0800, Chris Li wrote:
+> On Thu, Nov 30, 2023 at 12:35 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
+> > > On Thu, Nov 30, 2023 at 11:57 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
+> > > > > This patch changes list_lru interface so that the caller must explicitly
+> > > > > specify numa node and memcg when adding and removing objects. The old
+> > > > > list_lru_add() and list_lru_del() are renamed to list_lru_add_obj() and
+> > > > > list_lru_del_obj(), respectively.
+> > > >
+> > > > Wouldn't it be better to add list_lru_add_memcg() and
+> > > > list_lru_del_memcg() and have:
 > 
-> However, when it comes to enabling this functionality for the cgroup1
-> attach case, it presents challenges. Therefore, the decision is to focus on
-> enabling it solely for the cgroup1 non-attach case at present. If
-> attempting to attach to a cgroup1 fd, the operation will simply fail with
-> the error code -EBADF.
+> That is my first thought as well. If we are having two different
+> flavors of LRU add, one has memcg and one without. The list_lru_add()
+> vs list_lru_add_memcg() is the common way to do it.
+> > > >
+> > > > +bool list_lru_del(struct list_lru *lru, struct list_head *item)
+> > > > +{
+> > > > +       int nid = page_to_nid(virt_to_page(item));
+> > > > +       struct mem_cgroup *memcg = list_lru_memcg_aware(lru) ?
+> > > > +               mem_cgroup_from_slab_obj(item) : NULL;
+> > > > +
+> > > > +       return list_lru_del_memcg(lru, item, nid, memcg);
+> > > > +}
+> > > >
+> > > > Seems like _most_ callers will want the original versions and only
+> > > > a few will want the explicit memcg/nid versions.  No?
+> > > >
+> > >
+> > > I actually did something along that line in earlier iterations of this
+> > > patch series (albeit with poorer naming - __list_lru_add() instead of
+> > > list_lru_add_memcg()). The consensus after some back and forth was
+> > > that the original list_lru_add() was not a very good design (the
+> > > better one was this new version that allows for explicit numa/memcg
+> > > selection). So I agreed to fix it everywhere as a prep patch.
+> > >
+> > > I don't have strong opinions here to be completely honest, but I do
+> > > think this new API makes more sense (at the cost of quite a bit of
+> > > elbow grease to fix every callsites and extra reviewing).
+> >
+> > Maybe I can shed some light since I was pushing for doing it this way.
+> >
+> > The quiet assumption that 'struct list_head *item' is (embedded in) a
+> > slab object that is also charged to a cgroup is a bit much, given that
+> > nothing in the name or documentation of the function points to that.
 > 
-> Yafang Shao (3):
->   bpf: Enable bpf_cgrp_storage for cgroup1 non-attach case
->   selftests/bpf: Add a new cgroup helper open_classid()
->   selftests/bpf: Add selftests for cgroup1 local storage
+> We can add it to the document if that is desirable.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+It would help, but it still violates the "easy to use, hard to misuse"
+principle. And I think it does the API layering backwards.
 
-Thanks.
+list_lru_add() is the "default" API function. It makes sense to keep
+that simple and robust, then add add convenience wrappers for
+additional, specialized functionality like memcg lookups for charged
+slab objects - even if that's a common usecase.
 
--- 
-tejun
+It's better for a new user to be paused by the require memcg argument
+in the default function and then go and find list_lru_add_obj(), than
+it is for somebody to quietly pass an invalid object to list_lru_add()
+and have subtle runtime problems and crashes (which has happened twice
+now already).
 
