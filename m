@@ -1,165 +1,176 @@
-Return-Path: <cgroups+bounces-830-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-831-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A04380619E
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 23:22:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BED6806331
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 01:08:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECEF81F21667
-	for <lists+cgroups@lfdr.de>; Tue,  5 Dec 2023 22:22:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A19B2117A
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 00:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8846E2D5;
-	Tue,  5 Dec 2023 22:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2242361;
+	Wed,  6 Dec 2023 00:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e1IcpWgn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LrJybr/C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC42181
-	for <cgroups@vger.kernel.org>; Tue,  5 Dec 2023 14:22:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701814949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=dd8Gk/6yuQhjnMyi4P3XBRZAXca0Ynw9je2fzWn9dCc=;
-	b=e1IcpWgnU34S0oV5wir22Wzz0J2wZe+PfhgKO6B7hhl1VoprUeWzdIbTEhSxDvwc0Pz5ko
-	7PKHC2V4oWB6hjBZUjbiLqy2rb0VjkuXZdqvpDx/9L+38hQRYTK0Ju1dpDFjLIfSVfSlTu
-	F82+3xMMILFu7X7nlhOc2Mse/EBH9/o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-324-T3-aAeCqM9WgxgBvKthgAA-1; Tue, 05 Dec 2023 17:22:26 -0500
-X-MC-Unique: T3-aAeCqM9WgxgBvKthgAA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1651E102F081;
-	Tue,  5 Dec 2023 22:22:24 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.88])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2EE182166B35;
-	Tue,  5 Dec 2023 22:22:23 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>,
-	Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup v2] cgroup/cpuset: Include isolated cpuset CPUs in cpu_is_isolated() check
-Date: Tue,  5 Dec 2023 17:21:14 -0500
-Message-Id: <20231205222114.773446-1-longman@redhat.com>
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE22218F;
+	Tue,  5 Dec 2023 16:08:27 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4b2c0ba26f1so217728e0c.0;
+        Tue, 05 Dec 2023 16:08:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701821307; x=1702426107; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mZmoOpShnlOr1bQVRrl+GknWd+PtQJEUK3TXoeEYCts=;
+        b=LrJybr/CBMhzbHfZld0/dVZM5b0i8Yv1hjr8wNJ48/rdGbwhNSSNscCxDZPWjsLL5S
+         1zrT/Ig/Fx+vPSMqtbb3WXAf9hmWWNuBe5jhG9SYXG6LdM7aV4kd4VmlJk1DeMmnbsgw
+         NlkHas/Ekjq64iwIPCEQYIJfqoZvl/vLXTfBqKu7b/iHjCn/8GPZOESayR1tilvL0DLC
+         +YnkIVmC10bJ9MUY17pzOGnJ2tqaGt5J26OIpCJTmB9MDOxq3EYa0DjJfnWDxfgdP/29
+         YAOHXw1vAz9Cdf8t3U9f5CiHK1Gh6tDMSZgo5YPRBwgQHyNOnfiskG/1BcRKn7uxPRpW
+         j99w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701821307; x=1702426107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mZmoOpShnlOr1bQVRrl+GknWd+PtQJEUK3TXoeEYCts=;
+        b=VFBqNWKIc+YjQDsIxtmtYjZSJQn6YCZXgND32owQ7kS8HwYDDELvbOU/piQEVo825n
+         LKjqtIJPQKZlEFYRehmRWuZ8iVGmFM+XhoIw9dP+u12slnl58g5GykK2wQVhbXlOLkOD
+         4oBJ7yMNwUVsBnQq33xME6gsTmWPD0zD570idHFm+XY+auXb6xk54LKq5hipqrHGtfQ8
+         KohXwfCuA04dhC6yejsqA7ZFxvwByKlb5MXglKQzlV5/2PY6NCicETEWXaCGLs44JzNu
+         Eob5N8/9mx82irqDiS5yq/1IP+GnBuePawGZqNVX+mMUYuEImg61ZqxjX9VVXxRGyEJp
+         LzoA==
+X-Gm-Message-State: AOJu0YySxV6VrkygQfSf0t8SjhaHMJmTiOlD+s9pK0gQZnlrZ1Br3gHT
+	bkNNl417t9wm8H59eGpZTKYgm3/YESeUwrH4TQ0=
+X-Google-Smtp-Source: AGHT+IHe47styOpdF2IwNLQKmxh275Vb5ERuMYIfHI30HlMr+3ER7uJ9XJJ7Bag/XCKqrpbPzhICRkVEtagiFq7m0LE=
+X-Received: by 2002:a05:6122:3187:b0:49d:20fb:c899 with SMTP id
+ ch7-20020a056122318700b0049d20fbc899mr2686639vkb.4.1701821306644; Tue, 05 Dec
+ 2023 16:08:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-2-9c9c70177183@suse.cz> <ZW6j6aTpuJF0keS7@localhost.localdomain>
+ <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
+In-Reply-To: <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
+From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date: Wed, 6 Dec 2023 09:08:16 +0900
+Message-ID: <CAB=+i9Q_FWy3CvJAJPx_ZGncezSOLSST9BX_dZ901=8oemrSUA@mail.gmail.com>
+Subject: Re: [PATCH v2 02/21] mm/slab: remove CONFIG_SLAB from all Kconfig and Makefile
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+	Marco Elver <elver@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently, the cpu_is_isolated() function checks only the statically
-isolated CPUs specified via the "isolcpus" and "nohz_full" kernel
-command line options. This function is used by vmstat and memcg to
-reduce interference with isolated CPUs by not doing stat flushing
-or scheduling works on those CPUs.
+On Tue, Dec 5, 2023 at 7:14=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wro=
+te:
+>
+> On 12/5/23 05:15, Hyeonggon Yoo wrote:
+> > On Mon, Nov 20, 2023 at 07:34:13PM +0100, Vlastimil Babka wrote:
+> >
+> > Looks good to me,
+> > Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>
+> Thanks.
+>
+> > Nit:
+> >
+> > - Some arch configs enables DEBUG_SLAB
+> > - Some documentations refers to {DEBUG_,}SLAB config (i.e. "enable
+> > DEBUG_SLAB for debugging", or "use SLUB instead of SLAB for reducing OS
+> > jitter", ... etc)
+> > - fs/orangefs/orangefs-kernel.h uses #if (defined CONFIG_DEBUG_SLAB)
+> >
+> > $ git grep DEBUG_SLAB arch/
+> > arch/arm/configs/ep93xx_defconfig:CONFIG_DEBUG_SLAB=3Dy
+> > arch/arm/configs/tegra_defconfig:CONFIG_DEBUG_SLAB=3Dy
+> > arch/microblaze/configs/mmu_defconfig:CONFIG_DEBUG_SLAB=3Dy
+> >
+> > $ git grep SLAB Documentation/
+> >
+> > [... some unrelated lines removed ...]
+>
+> Yep, I've wrote in the cover letter that to keep the series reasonable an=
+d
+> limit Ccing other subsystems on some patches, not everything is cleaned u=
+p
+> thoroughly
 
-Workloads running on isolated CPUs within isolated cpuset
-partitions should receive the same treatment to reduce unnecessary
-interference. This patch introduces a new cpuset_cpu_is_isolated()
-function to be called by cpu_is_isolated() so that the set of dynamically
-created cpuset isolated CPUs will be included in the check.
+Ah, I see, Okay.
 
-Assuming that testing a bit in a cpumask is atomic, no synchronization
-primitive is currently used to synchronize access to the cpuset's
-isolated_cpus mask.
+>  and is left for further work (some already started coming in
+> from others) that can be submitted to relevant subsystems.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/cpuset.h          |  6 ++++++
- include/linux/sched/isolation.h |  4 +++-
- kernel/cgroup/cpuset.c          | 11 +++++++++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+I'll focus more on correctness rather than doing further work while reviewi=
+ng.
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index d629094fac6e..875d12598bd2 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -77,6 +77,7 @@ extern void cpuset_lock(void);
- extern void cpuset_unlock(void);
- extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
- extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
-+extern bool cpuset_cpu_is_isolated(int cpu);
- extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
- #define cpuset_current_mems_allowed (current->mems_allowed)
- void cpuset_init_current_mems_allowed(void);
-@@ -207,6 +208,11 @@ static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
- 	return false;
- }
- 
-+static inline bool cpuset_cpu_is_isolated(int cpu)
-+{
-+	return false;
-+}
-+
- static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
- {
- 	return node_possible_map;
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index fe1a46f30d24..2b461129d1fa 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -2,6 +2,7 @@
- #define _LINUX_SCHED_ISOLATION_H
- 
- #include <linux/cpumask.h>
-+#include <linux/cpuset.h>
- #include <linux/init.h>
- #include <linux/tick.h>
- 
-@@ -67,7 +68,8 @@ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
- static inline bool cpu_is_isolated(int cpu)
- {
- 	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
--		 !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
-+	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
-+	       cpuset_cpu_is_isolated(cpu);
- }
- 
- #endif /* _LINUX_SCHED_ISOLATION_H */
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 2a16df86c55c..dfbb16aca9f4 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1518,6 +1518,17 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
- 	WARN_ON_ONCE(ret < 0);
- }
- 
-+/**
-+ * cpuset_cpu_is_isolated - Check if the given CPU is isolated
-+ * @cpu: the CPU number to be checked
-+ * Return: true if CPU is used in an isolated partition, false otherwise
-+ */
-+bool cpuset_cpu_is_isolated(int cpu)
-+{
-+	return cpumask_test_cpu(cpu, isolated_cpus);
-+}
-+EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
-+
- /*
-  * compute_effective_exclusive_cpumask - compute effective exclusive CPUs
-  * @cs: cpuset
--- 
-2.39.3
-
+> > Documentation/admin-guide/cgroup-v1/cpusets.rst:PFA_SPREAD_SLAB, and ap=
+propriately marked slab caches will allocate
+> > Documentation/admin-guide/cgroup-v1/memory.rst:  pages allocated by the=
+ SLAB or SLUB allocator are tracked. A copy
+> > Documentation/admin-guide/kernel-per-CPU-kthreads.rst:          CONFIG_=
+SLAB=3Dy, thus avoiding the slab allocator's periodic
+> > Documentation/admin-guide/mm/pagemap.rst:   The page is managed by the =
+SLAB/SLUB kernel memory allocator.
+> > Documentation/dev-tools/kasan.rst:For slab, both software KASAN modes s=
+upport SLUB and SLAB allocators, while
+> > Documentation/dev-tools/kfence.rst:of the sample interval, the next all=
+ocation through the main allocator (SLAB or
+> > Documentation/mm/slub.rst:The basic philosophy of SLUB is very differen=
+t from SLAB. SLAB
+> > Documentation/mm/slub.rst:                      Sorry SLAB legacy issue=
+s)
+> > Documentation/process/4.Coding.rst: - DEBUG_SLAB can find a variety of =
+memory allocation and use errors; it
+> > Documentation/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, `=
+`CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> > Documentation/scsi/ChangeLog.lpfc:        CONFIG_DEBUG_SLAB set).
+> > Documentation/translations/it_IT/process/4.Coding.rst: - DEBUG_SLAB pu=
+=C3=B2 trovare svariati errori di uso e di allocazione di memoria;
+> > Documentation/translations/it_IT/process/submit-checklist.rst:    ``CON=
+FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> > Documentation/translations/ja_JP/SubmitChecklist:12: CONFIG_PREEMPT, CO=
+NFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB,
+> > Documentation/translations/zh_CN/dev-tools/kasan.rst:=E5=AF=B9=E4=BA=8E=
+slab=EF=BC=8C=E4=B8=A4=E7=A7=8D=E8=BD=AF=E4=BB=B6KASAN=E6=A8=A1=E5=BC=8F=E9=
+=83=BD=E6=94=AF=E6=8C=81SLUB=E5=92=8CSLAB=E5=88=86=E9=85=8D=E5=99=A8=EF=BC=
+=8C=E8=80=8C=E5=9F=BA=E4=BA=8E=E7=A1=AC=E4=BB=B6=E6=A0=87=E7=AD=BE=E7=9A=84
+> > Documentation/translations/zh_CN/process/4.Coding.rst: - DEBUG_SLAB =E5=
+=8F=AF=E4=BB=A5=E5=8F=91=E7=8E=B0=E5=90=84=E7=A7=8D=E5=86=85=E5=AD=98=E5=88=
+=86=E9=85=8D=E5=92=8C=E4=BD=BF=E7=94=A8=E9=94=99=E8=AF=AF=EF=BC=9B=E5=AE=83=
+=E5=BA=94=E8=AF=A5=E7=94=A8=E4=BA=8E=E5=A4=A7=E5=A4=9A=E6=95=B0=E5=BC=80=E5=
+=8F=91=E5=86=85=E6=A0=B8=E3=80=82
+> > Documentation/translations/zh_CN/process/submit-checklist.rst:    ``CON=
+FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> > Documentation/translations/zh_TW/dev-tools/kasan.rst:=E5=B0=8D=E6=96=BC=
+slab=EF=BC=8C=E5=85=A9=E7=A8=AE=E8=BB=9F=E4=BB=B6KASAN=E6=A8=A1=E5=BC=8F=E9=
+=83=BD=E6=94=AF=E6=8C=81SLUB=E5=92=8CSLAB=E5=88=86=E9=85=8D=E5=99=A8=EF=BC=
+=8C=E8=80=8C=E5=9F=BA=E6=96=BC=E7=A1=AC=E4=BB=B6=E6=A8=99=E7=B1=A4=E7=9A=84
+> > Documentation/translations/zh_TW/process/4.Coding.rst: - DEBUG_SLAB =E5=
+=8F=AF=E4=BB=A5=E7=99=BC=E7=8F=BE=E5=90=84=E7=A8=AE=E5=85=A7=E5=AD=98=E5=88=
+=86=E9=85=8D=E5=92=8C=E4=BD=BF=E7=94=A8=E9=8C=AF=E8=AA=A4=EF=BC=9B=E5=AE=83=
+=E6=87=89=E8=A9=B2=E7=94=A8=E6=96=BC=E5=A4=A7=E5=A4=9A=E6=95=B8=E9=96=8B=E7=
+=99=BC=E5=85=A7=E6=A0=B8=E3=80=82
+> > Documentation/translations/zh_TW/process/submit-checklist.rst:    ``CON=
+FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> >
+> > --
+> > Hyeonggon
+>
 
