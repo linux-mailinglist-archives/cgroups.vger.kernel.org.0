@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-857-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-858-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98FDF806AA2
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 10:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62283806AB9
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 10:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 535AF281969
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 09:24:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DAFA2819CF
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 09:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB63241F4;
-	Wed,  6 Dec 2023 09:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C457F1A27C;
+	Wed,  6 Dec 2023 09:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WWBJp247"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OYmJvRAt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F72FD73;
-	Wed,  6 Dec 2023 01:10:20 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5c210e34088so4238403a12.2;
-        Wed, 06 Dec 2023 01:10:20 -0800 (PST)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B412AA4;
+	Wed,  6 Dec 2023 01:31:44 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-286867cac72so2090651a91.2;
+        Wed, 06 Dec 2023 01:31:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701853820; x=1702458620; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701855104; x=1702459904; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D8vZXQBRikGU6sWc2QsfIXjdmr6JSGCqbWWomJu158I=;
-        b=WWBJp2470RCWT95rFLv/VrCiLHZxQxLctM9uLJs9nhanWv3rh6WX2QrRQRJ+FA5faL
-         OZGOJwyKItB3DNEwggUS+zOB0rrVHTkIxSY1YH7OTQRR4gD6AJy7Cq0M1UPoH5cHFDSP
-         rDM+VEHMzddvl9iZ3OwbFP6oDij1pM5PXEzQiNXyi/Wi+S9FKxgASMf/UZHYLkgbwFHU
-         VIZS1kiMA/jx6AwHN4l35mCKE3r2AEdThTTwSIA0pUQdFDf86cX2sbu0vjeqiv31R+af
-         xjgAZEc6Lm4DmIgLoPXLcZkTxjC9KKTfUauj4E2kn+egyEI5Pup7IsWavdGI0wqqAlBp
-         jdNA==
+        bh=2NfF/vadIJxiqQtkbCE9WfDn53uC8FiCtOLYYf2Xy1I=;
+        b=OYmJvRAttszd0DUFROeAGFOcvSG6+iE4FlUAyNo8VGikFaNaYD46eA1QwpdHYBPEZY
+         YY6MC3V5wMYouXJhi+/asjAPh1e9p3pFojx3tjbvmLtJPWInPWxTeKlanE5e97hLrUjq
+         u4M43ahXGHxyzd+O3LRMXDobySVHl5dqqDQWU0R9XdFOPhQKSRnUWdSYpS96MsdCkYcG
+         S5rrOSS9lxYpAKnc28mZ18BkgNz5U5RhGlHAIxvjy5IC1HKXxjblo2O44zTkhxL5DJfG
+         bNfS+YFttaY+ogAQEtQ3rDM5Jqnpx/gqaVfhrsZTZJFj0fk9wcxcMw4Ex4LVXq/bH2Wf
+         iwxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701853820; x=1702458620;
+        d=1e100.net; s=20230601; t=1701855104; x=1702459904;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D8vZXQBRikGU6sWc2QsfIXjdmr6JSGCqbWWomJu158I=;
-        b=XbrpNwk0s3RsNb7TrfuOfUquiiysBEi9t3l5FwO+ZQmSbxrDLrjNyNnmPM0jmNHrkD
-         8iuP5QK9duJIqt66egwhBy5Vixz8EXMgZq4/Gr+CVmleiVQUX2H+LU2yEEOYVEvG+EPp
-         bw5MNaTeDeWKIhRx+HuJFdzCVmJR5yjf56GAIUmfd4dB4ePqe7EeerXK5HOTj474r4Vo
-         16oi4eSugGXlp/xQqsZKlD358zNEExLRH8+ekXSBVN/qAjaqLUu7RzeP30m+fq5s56Uy
-         FaUu4jqlg5Htx7j11mw4QX1Rhf2Go8Wjz0VyYvkjr0CFHzRQR0/0VKs1/IFc5cnVaOHd
-         6+ZQ==
-X-Gm-Message-State: AOJu0YwImHxn13bzj0+Z236z7TeJtALr5h3ydMleTNOkEtqEL3jmdD4+
-	YCuZJroM5J7FlRD6voFR4Fg=
-X-Google-Smtp-Source: AGHT+IFset8/x2y0oFwNGQQRLfyeYkns1iFYfHHalNFN3DxWN75KXchutnoXwKUQTPjMGA8dsmHvzQ==
-X-Received: by 2002:a05:6a21:3102:b0:188:f3d:ea35 with SMTP id yz2-20020a056a21310200b001880f3dea35mr877394pzb.50.1701853819776;
-        Wed, 06 Dec 2023 01:10:19 -0800 (PST)
+        bh=2NfF/vadIJxiqQtkbCE9WfDn53uC8FiCtOLYYf2Xy1I=;
+        b=i4dcVQ70qkueRfJWZbXzpNJZ7Fj/4DOXDgjwoizwKWwmP7UVBH5u6mtvfcjyT0QzeI
+         2czCa/S9IoyBrxjlJEX5kUIRm0rWoO+johDz6QybsDrpwFTnkAfi/ZVSLbNJY6u2Av1t
+         5BwhGmf8W85yh1WpXjlHDRV4UA11kWarbBFsEuZ4z3fggXNiWhUB27IwH9yF9PFKNX+r
+         m7hlKnVouvLjIHvYzEbTAIu4UTenPBstBwSl8UWWFo0HsmFREG6EpD1vvXWX++YWEkd6
+         f/8yFGMCxj9zO8SJskvCCZv3MQ6X8VZ2COb32FGxL1KzL57X4Z81Xod0nzuL/iY+V16s
+         zQFw==
+X-Gm-Message-State: AOJu0YyiXBDktS6qWEXXVLDNyC6PSWH85eJ/3xhltLjypyPMmnIQ75IQ
+	DNdOvCiiaLQi0dpB+VLVHc4=
+X-Google-Smtp-Source: AGHT+IHWZraUS2fL1t578+dOE5+ZAg5+kiBEP0Z2wrhG0oFboAypDmBWWMm9Rea+ExbM5+j4C17AYg==
+X-Received: by 2002:a17:90a:18e:b0:286:a501:26eb with SMTP id 14-20020a17090a018e00b00286a50126ebmr430755pjc.48.1701855103984;
+        Wed, 06 Dec 2023 01:31:43 -0800 (PST)
 Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id u6-20020a170903124600b001d01c970119sm11497348plh.275.2023.12.06.01.10.14
+        by smtp.gmail.com with ESMTPSA id w5-20020a17090aea0500b00286d686b3d9sm2062111pjy.17.2023.12.06.01.31.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 01:10:18 -0800 (PST)
-Date: Wed, 6 Dec 2023 18:10:11 +0900
+        Wed, 06 Dec 2023 01:31:42 -0800 (PST)
+Date: Wed, 6 Dec 2023 18:31:24 +0900
 From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
@@ -73,11 +73,10 @@ Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
 	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 08/21] mm/mempool/dmapool: remove CONFIG_DEBUG_SLAB
- ifdefs
-Message-ID: <ZXA6cwJbnayb6KA/@localhost.localdomain>
+Subject: Re: [PATCH v2 09/21] mm/slab: remove mm/slab.c and slab_def.h
+Message-ID: <ZXA+Ur55OR1EU/5L@localhost.localdomain>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-8-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-9-9c9c70177183@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,67 +85,66 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-8-9c9c70177183@suse.cz>
+In-Reply-To: <20231120-slab-remove-slab-v2-9-9c9c70177183@suse.cz>
 
-On Mon, Nov 20, 2023 at 07:34:19PM +0100, Vlastimil Babka wrote:
-> CONFIG_DEBUG_SLAB is going away with CONFIG_SLAB, so remove dead ifdefs
-> in mempool and dmapool code.
+On Mon, Nov 20, 2023 at 07:34:20PM +0100, Vlastimil Babka wrote:
+> Remove the SLAB implementation. Update CREDITS.
+> Also update and properly sort the SLOB entry there.
+> 
+> RIP SLAB allocator (1996 - 2024)
 > 
 > Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  mm/dmapool.c | 2 +-
->  mm/mempool.c | 6 +++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/dmapool.c b/mm/dmapool.c
-> index a151a21e571b..f0bfc6c490f4 100644
-> --- a/mm/dmapool.c
-> +++ b/mm/dmapool.c
-> @@ -36,7 +36,7 @@
->  #include <linux/types.h>
->  #include <linux/wait.h>
->  
-> -#if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB_DEBUG_ON)
-> +#ifdef CONFIG_SLUB_DEBUG_ON
->  #define DMAPOOL_DEBUG 1
->  #endif
->  
-> diff --git a/mm/mempool.c b/mm/mempool.c
-> index 734bcf5afbb7..4759be0ff9de 100644
-> --- a/mm/mempool.c
-> +++ b/mm/mempool.c
-> @@ -20,7 +20,7 @@
->  #include <linux/writeback.h>
->  #include "slab.h"
->  
-> -#if defined(CONFIG_DEBUG_SLAB) || defined(CONFIG_SLUB_DEBUG_ON)
-> +#ifdef CONFIG_SLUB_DEBUG_ON
->  static void poison_error(mempool_t *pool, void *element, size_t size,
->  			 size_t byte)
->  {
-> @@ -95,14 +95,14 @@ static void poison_element(mempool_t *pool, void *element)
->  		kunmap_atomic(addr);
->  	}
->  }
-> -#else /* CONFIG_DEBUG_SLAB || CONFIG_SLUB_DEBUG_ON */
-> +#else /* CONFIG_SLUB_DEBUG_ON */
->  static inline void check_element(mempool_t *pool, void *element)
->  {
->  }
->  static inline void poison_element(mempool_t *pool, void *element)
->  {
->  }
-> -#endif /* CONFIG_DEBUG_SLAB || CONFIG_SLUB_DEBUG_ON */
-> +#endif /* CONFIG_SLUB_DEBUG_ON */
+>  CREDITS                  |   12 +-
+>  include/linux/slab_def.h |  124 --
+>  mm/slab.c                | 4005 ----------------------------------------------
+>  3 files changed, 8 insertions(+), 4133 deletions(-)
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
+> diff --git a/CREDITS b/CREDITS
+> index f33a33fd2371..943a73e96149 100644
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -9,10 +9,6 @@
+>  			Linus
+>  ----------
 >  
->  static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
->  {
-> 
+> -N: Matt Mackal
+> -E: mpm@selenic.com
+> -D: SLOB slab allocator
+
+by the way I just realized that commit 16e943bf8db
+("MAINTAINERS: SLAB maintainer update") incorrectly put her lastname
+(Mackall is correct), maybe update that too?
+
+>  N: Matti Aarnio
+>  E: mea@nic.funet.fi
+>  D: Alpha systems hacking, IPv6 and other network related stuff
+> @@ -1572,6 +1568,10 @@ S: Ampferstr. 50 / 4
+>  S: 6020 Innsbruck
+>  S: Austria
+>  
+> +N: Mark Hemment
+> +E: markhe@nextd.demon.co.uk
+> +D: SLAB allocator implementation
+> +
+>  N: Richard Henderson
+>  E: rth@twiddle.net
+>  E: rth@cygnus.com
+> @@ -2437,6 +2437,10 @@ D: work on suspend-to-ram/disk, killing duplicates from ioctl32,
+>  D: Altera SoCFPGA and Nokia N900 support.
+>  S: Czech Republic
+>  
+> +N: Olivia Mackal
+> +E: olivia@selenic.com
+> +D: SLOB slab allocator
+> +
+>  N: Paul Mackerras
+>  E: paulus@samba.org
+>  D: PPP driver
+>
 > -- 
 > 2.42.1
 > 
