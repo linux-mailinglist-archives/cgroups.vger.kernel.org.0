@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-864-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-866-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB37806F30
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 12:54:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B1F1806F40
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 12:55:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 081801F21628
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 11:54:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D272E1F21587
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 11:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F94435892;
-	Wed,  6 Dec 2023 11:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3748E3588C;
+	Wed,  6 Dec 2023 11:55:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nZF4Ux4a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VmSKk7RH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC04B1BD4;
-	Wed,  6 Dec 2023 03:53:38 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6d855efb920so4008538a34.1;
-        Wed, 06 Dec 2023 03:53:38 -0800 (PST)
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94041BD7;
+	Wed,  6 Dec 2023 03:53:39 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35d57e88c1dso19129375ab.2;
+        Wed, 06 Dec 2023 03:53:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701863618; x=1702468418; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701863619; x=1702468419; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ea4fx7tf3EdIdbvH8Aap6LzVpgikoR6v5si5mFB5mQA=;
-        b=nZF4Ux4aB4DQ9ay02QeGimqCd9aJWTte2j+eV6fFFMzurSy4mfMb2Tt3r2g+Ftlt/M
-         9DsvuZ9C0p960iyFx/mQBeey2AHBMrCEeEeCuKayeSv7XIKOmuyj+YDyy18j1aN4xsUX
-         B33WdNOGFjsn6ZC5tYaYrTDUGTodjtODPv9OP141zUZ1qp+u2hMZDRXlRVoFOf1alf3X
-         NrgqwonzKDbfJtPeyvgUawWWNxJifO4+aspSXgIYbsthf65CdWTEe1MaTAUL3MExGkq0
-         CQKxwMGR8NZSKNQTpjFv3Yq9JjotYAJlG9dpbcFyYFLTfXKwl5xseBoRRl6fPoWIBIc5
-         KdYg==
+        bh=4xIMBRdh82imgCh973bdcamdD/YLqs+vICvueMisFQc=;
+        b=VmSKk7RHxfAGfx0Yz/gvKA9tjufJMGJhEIftHn2WP3FXTmqzwEb66swj5VPirsLZlb
+         +j+VhUeupyHi7zf2CKPIQUSuODvN23dsst/1Oye36VWr6MA1mcYOxNbcCGhUrPJZhjCM
+         j52X6+0Y5pehWjmZzM0Xh6vJvIvxbQKD9pYPfm38pATQ1KoQ+5CwHdYnLEua0YtYNPUJ
+         fcC7ygogMiPLiObt9x4pNMkkZ7urpI2b2fzrUCAAU4TzkyRyWNBeIlslWFe6kvZ/Whvf
+         ld9LH+FOAiOeYI+0Zdq8xVGK8h+pGXzHBS1352JclLHXdK1cmJGPW6qAfuLw48ZQQoMT
+         ZimQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701863618; x=1702468418;
+        d=1e100.net; s=20230601; t=1701863619; x=1702468419;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ea4fx7tf3EdIdbvH8Aap6LzVpgikoR6v5si5mFB5mQA=;
-        b=perebvSntsxSNJnX+U3aGiE32WxMGHPIiKQMUKyzLXEAP8S9OB/3hdwlqXpgWXrgbN
-         MmL29L8MWDvuBLisYzNJWmgImc5BOACJjQrEQa5dsuKUylkakVKLPK52fkWrQGhzK1Cc
-         TmhBmjURJPUOYBXgwVNj8KWTkO+s32+VAnh2PZdYQOcf2RAtrG+84XO3MtX4vd+VxHOI
-         yq/s01DsfNdsNFkim7yKuV+lG3+8jaP/ivOIg5mrhyZzjsW0e7HpFMhGCmMuhETaij0r
-         YAizwM04B55soOCthgP2kYcKJacg+neDke1CqLvok6ZU9U/DlgkYdPkBrtGqRvQUEj9g
-         ez5g==
-X-Gm-Message-State: AOJu0YxrRs4e6+lZ6Qw/ASS1Ccp2eD9A0aW7BxZQbi9oOAD8kw4wlPr1
-	S3Kj+PEwJW50esRFENWnVj8cPnZCF6dnaEHx
-X-Google-Smtp-Source: AGHT+IFuSrtaxMLQeDaoWZZu5QFiRJJP5r/IgMZgt6tQnsGehWvCOQGz7EfNVBBpLQLoxUxs4mQoJA==
-X-Received: by 2002:a9d:4d88:0:b0:6d8:7820:aaf8 with SMTP id u8-20020a9d4d88000000b006d87820aaf8mr878411otk.21.1701863617853;
-        Wed, 06 Dec 2023 03:53:37 -0800 (PST)
+        bh=4xIMBRdh82imgCh973bdcamdD/YLqs+vICvueMisFQc=;
+        b=jvD7z5Rh4eFpIi0KjWZ1w9k4wuDUTfyzCpdHOOl70SgwXccXYWDaSewQDfcwp9MK2v
+         s0MBTcXmkHgXhRiM2lg95G5h4qb/ohKCER0jP3JclRWrUg9Ru2vL9QBF6GadCcX17bf4
+         qDTk26fShCckK6swTjXSMFtgZqaPA8yAHpahpMdC/GQiar0s2j9E9QLV4Z/vUAMZ+s2y
+         nzloy6ghSPgR7RFYnp7l1tDah2zYsh6sp/ZzvA5B1C7XUTihdp5XCBcOawv8R/fIyE/i
+         BXxZK7qchBXBfD/FKLHspRbhVdJIMiL9U40kbTjPRNewWOSXf5R8sLnEI6OhtLgbm/Mh
+         rPTQ==
+X-Gm-Message-State: AOJu0Yy9LnS8DXTK+lBV5E56LiVl/LrVYC11SzmfKcjtXgzHzUI0BMso
+	41ELSfWhSyZ19q46Re2dDws=
+X-Google-Smtp-Source: AGHT+IFmyUtIFQyTLGY/estMEYNpl0cpZDFzVOq9R39UkG1aP5kdgy5VEaxsAaX//S/i35tj75ak7A==
+X-Received: by 2002:a92:d8c1:0:b0:35c:cc4c:e01f with SMTP id l1-20020a92d8c1000000b0035ccc4ce01fmr786066ilo.6.1701863619221;
+        Wed, 06 Dec 2023 03:53:39 -0800 (PST)
 Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id n15-20020a638f0f000000b005c6801efa0fsm5484665pgd.28.2023.12.06.03.53.36
+        by smtp.gmail.com with ESMTPSA id n15-20020a638f0f000000b005c6801efa0fsm5484665pgd.28.2023.12.06.03.53.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 03:53:37 -0800 (PST)
+        Wed, 06 Dec 2023 03:53:38 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -69,9 +69,9 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 1/3] bpf: Enable bpf_cgrp_storage for cgroup1 non-attach case
-Date: Wed,  6 Dec 2023 11:53:24 +0000
-Message-Id: <20231206115326.4295-2-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 2/3] selftests/bpf: Add a new cgroup helper open_classid()
+Date: Wed,  6 Dec 2023 11:53:25 +0000
+Message-Id: <20231206115326.4295-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231206115326.4295-1-laoar.shao@gmail.com>
 References: <20231206115326.4295-1-laoar.shao@gmail.com>
@@ -83,59 +83,53 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the current cgroup1 environment, associating operations between cgroups
-and applications in a BPF program requires storing a mapping of cgroup_id
-to application either in a hash map or maintaining it in userspace.
-However, by enabling bpf_cgrp_storage for cgroup1, it becomes possible to
-conveniently store application-specific information in cgroup-local storage
-and utilize it within BPF programs. Furthermore, enabling this feature for
-cgroup1 involves minor modifications for the non-attach case, streamlining
-the process.
-
-However, when it comes to enabling this functionality for the cgroup1
-attach case, it presents challenges. Therefore, the decision is to focus on
-enabling it solely for the cgroup1 non-attach case at present. If
-attempting to attach to a cgroup1 fd, the operation will simply fail with
-the error code -EBADF.
+This new helper allows us to obtain the fd of a net_cls cgroup, which will
+be utilized in the subsequent patch.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 Acked-by: Tejun Heo <tj@kernel.org>
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- kernel/bpf/bpf_cgrp_storage.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/cgroup_helpers.c | 16 ++++++++++++++++
+ tools/testing/selftests/bpf/cgroup_helpers.h |  1 +
+ 2 files changed, 17 insertions(+)
 
-diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
-index d44fe8d..28efd0a3 100644
---- a/kernel/bpf/bpf_cgrp_storage.c
-+++ b/kernel/bpf/bpf_cgrp_storage.c
-@@ -82,7 +82,7 @@ static void *bpf_cgrp_storage_lookup_elem(struct bpf_map *map, void *key)
- 	int fd;
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index 5aa133b..19be9c6 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -689,3 +689,19 @@ int get_cgroup1_hierarchy_id(const char *subsys_name)
+ 	fclose(file);
+ 	return found ? id : -1;
+ }
++
++/**
++ * open_classid() - Open a cgroupv1 net_cls classid
++ *
++ * This function expects the cgroup work dir to be already created, as we
++ * open it here.
++ *
++ * On success, it returns the file descriptor. On failure it returns -1.
++ */
++int open_classid(void)
++{
++	char cgroup_workdir[PATH_MAX + 1];
++
++	format_classid_path(cgroup_workdir);
++	return open(cgroup_workdir, O_RDONLY);
++}
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
+index ee05364..5028451 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.h
++++ b/tools/testing/selftests/bpf/cgroup_helpers.h
+@@ -33,6 +33,7 @@ int write_cgroup_file_parent(const char *relative_path, const char *file,
+ int set_classid(void);
+ int join_classid(void);
+ unsigned long long get_classid_cgroup_id(void);
++int open_classid(void);
  
- 	fd = *(int *)key;
--	cgroup = cgroup_get_from_fd(fd);
-+	cgroup = cgroup_v1v2_get_from_fd(fd);
- 	if (IS_ERR(cgroup))
- 		return ERR_CAST(cgroup);
- 
-@@ -101,7 +101,7 @@ static long bpf_cgrp_storage_update_elem(struct bpf_map *map, void *key,
- 	int fd;
- 
- 	fd = *(int *)key;
--	cgroup = cgroup_get_from_fd(fd);
-+	cgroup = cgroup_v1v2_get_from_fd(fd);
- 	if (IS_ERR(cgroup))
- 		return PTR_ERR(cgroup);
- 
-@@ -131,7 +131,7 @@ static long bpf_cgrp_storage_delete_elem(struct bpf_map *map, void *key)
- 	int err, fd;
- 
- 	fd = *(int *)key;
--	cgroup = cgroup_get_from_fd(fd);
-+	cgroup = cgroup_v1v2_get_from_fd(fd);
- 	if (IS_ERR(cgroup))
- 		return PTR_ERR(cgroup);
- 
+ int setup_classid_environment(void);
+ void cleanup_classid_environment(void);
 -- 
 1.8.3.1
 
