@@ -1,419 +1,210 @@
-Return-Path: <cgroups+bounces-861-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-862-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0FB806AFA
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 10:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C75F3806CBB
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 11:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B24451C209A4
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 09:45:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAAAB1C209B4
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 10:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619301C2A8;
-	Wed,  6 Dec 2023 09:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8113034E;
+	Wed,  6 Dec 2023 10:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k4XigeDE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gd5ilIFE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D5BB9;
-	Wed,  6 Dec 2023 01:45:28 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2886579d59fso551854a91.1;
-        Wed, 06 Dec 2023 01:45:28 -0800 (PST)
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF4EA4;
+	Wed,  6 Dec 2023 02:55:13 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4302714a12.3;
+        Wed, 06 Dec 2023 02:55:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701855928; x=1702460728; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701860113; x=1702464913; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cDd5Zi7vCvO2ycBR8Ub2HRlOTkCLIJYdUeR29MHQbio=;
-        b=k4XigeDEBSgvqyVHmm1bmWjTOxzyB+p/cE2p2kLNf5k2EMHos8h1gTjHars0hURNs/
-         RbCmJhkNvQTqKXT2teNq2OZ4Tjk+HH4cC0SsQcT1llQH/+aoTxROhA1E+DAg69e7AuxL
-         WCOOul0SuYvkCJjZ2ADm6agXpFuefzfuwL8wDM7EgBQnOkcwczobDEwrzk+DEwCj6gq1
-         ujVYef7RPJC0BydIDXJiC/9MWqI6o+z2rEgI1bGg7nbKfgiQzqhEkYeOaQKtPOhT1XIu
-         RL1vTgieqs4plIWBgsWcqGBQ5RGE5/RUsFoJSrqoy8C1q6yAuWy1b6PVZcuM4Tssom5O
-         R1CA==
+        bh=RVR7pUQEG31iVUA6cUrPPhiUlLhN1EKerFQpUeOEhog=;
+        b=Gd5ilIFE4uXRWCXECZ+y9gk8maLrBJ0AdVT7ZVwx1VhCSxVjDXYd/STQMo/sP//+jG
+         nXTx1APQtGy8/retsCSItnFgTqQMNFLJp0tul5AYfyhrKI5skEWPJVCHdVcnsIH4Y/ar
+         G7W08bwN0CMSv9c36mWOadsxrTMD6hGGxxJhfpWEL3fI/Ivx6k2nUWtQ4lI/f89BiHzv
+         vqlECT05LT1SmFDapcez2p6nVMCIcggjNfzlCf7gu4t4EwvuSBm2zoYogh84e9DqtRu1
+         W0zqoWM2CcHXhtPWC15ZmmU6ryAxXQTr+5MK+jbsR1aEsm/6AEURh1F+Qbjhe/CNJa9G
+         HgWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701855928; x=1702460728;
+        d=1e100.net; s=20230601; t=1701860113; x=1702464913;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cDd5Zi7vCvO2ycBR8Ub2HRlOTkCLIJYdUeR29MHQbio=;
-        b=H8qsC7ojIl2tKBQbYuORgvQpgjI9oXVOdrYm7LlPGenjEd+/esUrwUCkkAJfuLCRYk
-         zCvt1eOQFly7X/yx3YJzRtR6luvyayytEaBsFpMJGPyxew8PUDDLo0oQfICpP72/QQSX
-         CTxf6Gcs4IvjGvf3QIh4e/RnnOQJCWxpULAECHmysJim8lp48ZNbgJMzxR+H+fiP0Jnk
-         LN8kc36Beq5euvkWBCq9ECgeH60Yx9LauKIoqBOxHDirY4gJDIWtzuDETTLtWVatjt1m
-         SatnYuTSlNG7mNG5+ZgplWVp62c//Bc34BQbRWFoUtI3HA45THirdEKeM7GCI4YY2/iV
-         6sKw==
-X-Gm-Message-State: AOJu0YyJV3kO7EDxlW6NPJfQS3ztClgrjLrFBnADKVd6PafSoLo/ZFyy
-	ZO0YjWI0BZZ3Cp54OXv5U7k=
-X-Google-Smtp-Source: AGHT+IHdaI2N+Uyv0y5U6vvyUM83vZn0QO5kyeyTrfCVEOhHY8wZLirKQdWWbZQYJWf2FlKP8QJrdg==
-X-Received: by 2002:a17:90b:1298:b0:286:6cc0:cac2 with SMTP id fw24-20020a17090b129800b002866cc0cac2mr546651pjb.57.1701855927932;
-        Wed, 06 Dec 2023 01:45:27 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id ms10-20020a17090b234a00b0028679f2ee38sm938188pjb.0.2023.12.06.01.45.22
+        bh=RVR7pUQEG31iVUA6cUrPPhiUlLhN1EKerFQpUeOEhog=;
+        b=c9/kabUzYPtHN2Ccap+vnYZ42GTaPEDH6ot5MlEpUezZ5zobIxGNyp3WnAQTZX6eUh
+         V4B4yNi8ogHs2A1a3bOZUCslOR9SS1kawNqQtQBHSCPc/KVlMVjg1sTTCGSWxBohajc/
+         RBtjUc6s22mpx3Q4N66g4f2WWI7WrqVPrXCMyVJP0cGqNODvde5oDMS3JSvUYxLX1SCL
+         hmAVZPBafBbwtjQBA9PksxmvgA8XR1k61pBfyHOG7wq/0vpcpXHtASlvy5rzIpXqnH/c
+         3AOhQ9wuwpQNhtGnaQKbOkRo1gMKzoETdRMGlb/aKV8YS2vEx7PNSr/G3ImHCExzq92E
+         Y89Q==
+X-Gm-Message-State: AOJu0YyMe8XiVr555xBIPNmoDq/6/XfSgbI7u7n1yD0PBPj9KHUrVQFz
+	E6r1nRorPLSh4NFKSisDsfs=
+X-Google-Smtp-Source: AGHT+IESses2OjCKH8DRICbCXlwOPOIHyhoN8Q/4BmDcufBDXhskt81/WbSakD3Cag1iV+W2ROrNyA==
+X-Received: by 2002:a05:6a21:7891:b0:18f:e3fb:8cf2 with SMTP id bf17-20020a056a21789100b0018fe3fb8cf2mr271957pzc.84.1701860112787;
+        Wed, 06 Dec 2023 02:55:12 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id gx4-20020a056a001e0400b006ce41b1ba8csm6153534pfb.131.2023.12.06.02.55.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 01:45:27 -0800 (PST)
-Date: Wed, 6 Dec 2023 18:45:19 +0900
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Marco Elver <elver@google.com>,
+        Wed, 06 Dec 2023 02:55:11 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 4EA0210418A9B; Wed,  6 Dec 2023 17:55:09 +0700 (WIB)
+Date: Wed, 6 Dec 2023 17:55:09 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 11/21] mm/slab: move the rest of slub_def.h to
- mm/slab.h
-Message-ID: <ZXBCr2n9m/jfXxFw@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-11-9c9c70177183@suse.cz>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Cc: Linux CGroups <cgroups@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>
+Subject: Re: [PATCH-cgroup v2] cgroup/cpuset: Include isolated cpuset CPUs in
+ cpu_is_isolated() check
+Message-ID: <ZXBTDZtbpOZlooea@archie.me>
+References: <20231205222114.773446-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7yiVXI7aBtIVC8K1"
 Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-11-9c9c70177183@suse.cz>
+In-Reply-To: <20231205222114.773446-1-longman@redhat.com>
 
-On Mon, Nov 20, 2023 at 07:34:22PM +0100, Vlastimil Babka wrote:
-> mm/slab.h is the only place to include include/linux/slub_def.h which
-> has allowed switching between SLAB and SLUB. Now we can simply move the
-> contents over and remove slub_def.h.
-> 
-> Use this opportunity to fix up some whitespace (alignment) issues.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+
+--7yiVXI7aBtIVC8K1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Dec 05, 2023 at 05:21:14PM -0500, Waiman Long wrote:
+> Currently, the cpu_is_isolated() function checks only the statically
+> isolated CPUs specified via the "isolcpus" and "nohz_full" kernel
+> command line options. This function is used by vmstat and memcg to
+> reduce interference with isolated CPUs by not doing stat flushing
+> or scheduling works on those CPUs.
+>=20
+> Workloads running on isolated CPUs within isolated cpuset
+> partitions should receive the same treatment to reduce unnecessary
+> interference. This patch introduces a new cpuset_cpu_is_isolated()
+> function to be called by cpu_is_isolated() so that the set of dynamically
+> created cpuset isolated CPUs will be included in the check.
+>=20
+> Assuming that testing a bit in a cpumask is atomic, no synchronization
+> primitive is currently used to synchronize access to the cpuset's
+> isolated_cpus mask.
+>=20
+> Signed-off-by: Waiman Long <longman@redhat.com>
 > ---
->  include/linux/slub_def.h | 150 -----------------------------------------------
->  mm/slab.h                | 138 ++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 137 insertions(+), 151 deletions(-)
-> 
-> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-> deleted file mode 100644
-> index a0229ea42977..000000000000
-> --- a/include/linux/slub_def.h
-> +++ /dev/null
-> @@ -1,150 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef _LINUX_SLUB_DEF_H
-> -#define _LINUX_SLUB_DEF_H
-> -
-> -/*
-> - * SLUB : A Slab allocator without object queues.
-> - *
-> - * (C) 2007 SGI, Christoph Lameter
-> - */
-> -#include <linux/kfence.h>
-> -#include <linux/kobject.h>
-> -#include <linux/reciprocal_div.h>
-> -#include <linux/local_lock.h>
-> -
-> -#ifdef CONFIG_SLUB_CPU_PARTIAL
-> -#define slub_percpu_partial(c)		((c)->partial)
-> -
-> -#define slub_set_percpu_partial(c, p)		\
-> -({						\
-> -	slub_percpu_partial(c) = (p)->next;	\
-> -})
-> -
-> -#define slub_percpu_partial_read_once(c)     READ_ONCE(slub_percpu_partial(c))
-> -#else
-> -#define slub_percpu_partial(c)			NULL
-> -
-> -#define slub_set_percpu_partial(c, p)
-> -
-> -#define slub_percpu_partial_read_once(c)	NULL
-> -#endif // CONFIG_SLUB_CPU_PARTIAL
-> -
-> -/*
-> - * Word size structure that can be atomically updated or read and that
-> - * contains both the order and the number of objects that a slab of the
-> - * given order would contain.
-> - */
-> -struct kmem_cache_order_objects {
-> -	unsigned int x;
-> -};
-> -
-> -/*
-> - * Slab cache management.
-> - */
-> -struct kmem_cache {
-> -#ifndef CONFIG_SLUB_TINY
-> -	struct kmem_cache_cpu __percpu *cpu_slab;
-> -#endif
-> -	/* Used for retrieving partial slabs, etc. */
-> -	slab_flags_t flags;
-> -	unsigned long min_partial;
-> -	unsigned int size;	/* The size of an object including metadata */
-> -	unsigned int object_size;/* The size of an object without metadata */
-> -	struct reciprocal_value reciprocal_size;
-> -	unsigned int offset;	/* Free pointer offset */
-> -#ifdef CONFIG_SLUB_CPU_PARTIAL
-> -	/* Number of per cpu partial objects to keep around */
-> -	unsigned int cpu_partial;
-> -	/* Number of per cpu partial slabs to keep around */
-> -	unsigned int cpu_partial_slabs;
-> -#endif
-> -	struct kmem_cache_order_objects oo;
-> -
-> -	/* Allocation and freeing of slabs */
-> -	struct kmem_cache_order_objects min;
-> -	gfp_t allocflags;	/* gfp flags to use on each alloc */
-> -	int refcount;		/* Refcount for slab cache destroy */
-> -	void (*ctor)(void *);
-> -	unsigned int inuse;		/* Offset to metadata */
-> -	unsigned int align;		/* Alignment */
-> -	unsigned int red_left_pad;	/* Left redzone padding size */
-> -	const char *name;	/* Name (only for display!) */
-> -	struct list_head list;	/* List of slab caches */
-> -#ifdef CONFIG_SYSFS
-> -	struct kobject kobj;	/* For sysfs */
-> -#endif
-> -#ifdef CONFIG_SLAB_FREELIST_HARDENED
-> -	unsigned long random;
-> -#endif
-> -
-> -#ifdef CONFIG_NUMA
-> -	/*
-> -	 * Defragmentation by allocating from a remote node.
-> -	 */
-> -	unsigned int remote_node_defrag_ratio;
-> -#endif
-> -
-> -#ifdef CONFIG_SLAB_FREELIST_RANDOM
-> -	unsigned int *random_seq;
-> -#endif
-> -
-> -#ifdef CONFIG_KASAN_GENERIC
-> -	struct kasan_cache kasan_info;
-> -#endif
-> -
-> -#ifdef CONFIG_HARDENED_USERCOPY
-> -	unsigned int useroffset;	/* Usercopy region offset */
-> -	unsigned int usersize;		/* Usercopy region size */
-> -#endif
-> -
-> -	struct kmem_cache_node *node[MAX_NUMNODES];
-> -};
-> -
-> -#if defined(CONFIG_SYSFS) && !defined(CONFIG_SLUB_TINY)
-> -#define SLAB_SUPPORTS_SYSFS
-> -void sysfs_slab_unlink(struct kmem_cache *);
-> -void sysfs_slab_release(struct kmem_cache *);
-> -#else
-> -static inline void sysfs_slab_unlink(struct kmem_cache *s)
-> -{
-> -}
-> -static inline void sysfs_slab_release(struct kmem_cache *s)
-> -{
-> -}
-> -#endif
-> -
-> -void *fixup_red_left(struct kmem_cache *s, void *p);
-> -
-> -static inline void *nearest_obj(struct kmem_cache *cache, const struct slab *slab,
-> -				void *x) {
-> -	void *object = x - (x - slab_address(slab)) % cache->size;
-> -	void *last_object = slab_address(slab) +
-> -		(slab->objects - 1) * cache->size;
-> -	void *result = (unlikely(object > last_object)) ? last_object : object;
-> -
-> -	result = fixup_red_left(cache, result);
-> -	return result;
-> -}
-> -
-> -/* Determine object index from a given position */
-> -static inline unsigned int __obj_to_index(const struct kmem_cache *cache,
-> -					  void *addr, void *obj)
-> -{
-> -	return reciprocal_divide(kasan_reset_tag(obj) - addr,
-> -				 cache->reciprocal_size);
-> -}
-> -
-> -static inline unsigned int obj_to_index(const struct kmem_cache *cache,
-> -					const struct slab *slab, void *obj)
-> -{
-> -	if (is_kfence_address(obj))
-> -		return 0;
-> -	return __obj_to_index(cache, slab_address(slab), obj);
-> -}
-> -
-> -static inline int objs_per_slab(const struct kmem_cache *cache,
-> -				     const struct slab *slab)
-> -{
-> -	return slab->objects;
-> -}
-> -#endif /* _LINUX_SLUB_DEF_H */
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 014c36ea51fa..3a8d13c099fa 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -209,7 +209,143 @@ static inline size_t slab_size(const struct slab *slab)
->  	return PAGE_SIZE << slab_order(slab);
+>  include/linux/cpuset.h          |  6 ++++++
+>  include/linux/sched/isolation.h |  4 +++-
+>  kernel/cgroup/cpuset.c          | 11 +++++++++++
+>  3 files changed, 20 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index d629094fac6e..875d12598bd2 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -77,6 +77,7 @@ extern void cpuset_lock(void);
+>  extern void cpuset_unlock(void);
+>  extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *m=
+ask);
+>  extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
+> +extern bool cpuset_cpu_is_isolated(int cpu);
+>  extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+>  #define cpuset_current_mems_allowed (current->mems_allowed)
+>  void cpuset_init_current_mems_allowed(void);
+> @@ -207,6 +208,11 @@ static inline bool cpuset_cpus_allowed_fallback(stru=
+ct task_struct *p)
+>  	return false;
 >  }
->  
-> -#include <linux/slub_def.h>
-> +#include <linux/kfence.h>
-> +#include <linux/kobject.h>
-> +#include <linux/reciprocal_div.h>
-> +#include <linux/local_lock.h>
+> =20
+> +static inline bool cpuset_cpu_is_isolated(int cpu)
+> +{
+> +	return false;
+> +}
 > +
-> +#ifdef CONFIG_SLUB_CPU_PARTIAL
-> +#define slub_percpu_partial(c)			((c)->partial)
-> +
-> +#define slub_set_percpu_partial(c, p)		\
-> +({						\
-> +	slub_percpu_partial(c) = (p)->next;	\
-> +})
-> +
-> +#define slub_percpu_partial_read_once(c)	READ_ONCE(slub_percpu_partial(c))
-> +#else
-> +#define slub_percpu_partial(c)			NULL
-> +
-> +#define slub_set_percpu_partial(c, p)
-> +
-> +#define slub_percpu_partial_read_once(c)	NULL
-> +#endif // CONFIG_SLUB_CPU_PARTIAL
-> +
-> +/*
-> + * Word size structure that can be atomically updated or read and that
-> + * contains both the order and the number of objects that a slab of the
-> + * given order would contain.
+>  static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
+>  {
+>  	return node_possible_map;
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolat=
+ion.h
+> index fe1a46f30d24..2b461129d1fa 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -2,6 +2,7 @@
+>  #define _LINUX_SCHED_ISOLATION_H
+> =20
+>  #include <linux/cpumask.h>
+> +#include <linux/cpuset.h>
+>  #include <linux/init.h>
+>  #include <linux/tick.h>
+> =20
+> @@ -67,7 +68,8 @@ static inline bool housekeeping_cpu(int cpu, enum hk_ty=
+pe type)
+>  static inline bool cpu_is_isolated(int cpu)
+>  {
+>  	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
+> -		 !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
+> +	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
+> +	       cpuset_cpu_is_isolated(cpu);
+>  }
+> =20
+>  #endif /* _LINUX_SCHED_ISOLATION_H */
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 2a16df86c55c..dfbb16aca9f4 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1518,6 +1518,17 @@ static void update_unbound_workqueue_cpumask(bool =
+isolcpus_updated)
+>  	WARN_ON_ONCE(ret < 0);
+>  }
+> =20
+> +/**
+> + * cpuset_cpu_is_isolated - Check if the given CPU is isolated
+> + * @cpu: the CPU number to be checked
+> + * Return: true if CPU is used in an isolated partition, false otherwise
 > + */
-> +struct kmem_cache_order_objects {
-> +	unsigned int x;
-> +};
-> +
-> +/*
-> + * Slab cache management.
-> + */
-> +struct kmem_cache {
-> +#ifndef CONFIG_SLUB_TINY
-> +	struct kmem_cache_cpu __percpu *cpu_slab;
-> +#endif
-> +	/* Used for retrieving partial slabs, etc. */
-> +	slab_flags_t flags;
-> +	unsigned long min_partial;
-> +	unsigned int size;		/* Object size including metadata */
-> +	unsigned int object_size;	/* Object size without metadata */
-> +	struct reciprocal_value reciprocal_size;
-> +	unsigned int offset;		/* Free pointer offset */
-> +#ifdef CONFIG_SLUB_CPU_PARTIAL
-> +	/* Number of per cpu partial objects to keep around */
-> +	unsigned int cpu_partial;
-> +	/* Number of per cpu partial slabs to keep around */
-> +	unsigned int cpu_partial_slabs;
-> +#endif
-> +	struct kmem_cache_order_objects oo;
-> +
-> +	/* Allocation and freeing of slabs */
-> +	struct kmem_cache_order_objects min;
-> +	gfp_t allocflags;		/* gfp flags to use on each alloc */
-> +	int refcount;			/* Refcount for slab cache destroy */
-> +	void (*ctor)(void *object);	/* Object constructor */
-> +	unsigned int inuse;		/* Offset to metadata */
-> +	unsigned int align;		/* Alignment */
-> +	unsigned int red_left_pad;	/* Left redzone padding size */
-> +	const char *name;		/* Name (only for display!) */
-> +	struct list_head list;		/* List of slab caches */
-> +#ifdef CONFIG_SYSFS
-> +	struct kobject kobj;		/* For sysfs */
-> +#endif
-> +#ifdef CONFIG_SLAB_FREELIST_HARDENED
-> +	unsigned long random;
-> +#endif
-> +
-> +#ifdef CONFIG_NUMA
-> +	/*
-> +	 * Defragmentation by allocating from a remote node.
-> +	 */
-> +	unsigned int remote_node_defrag_ratio;
-> +#endif
-> +
-> +#ifdef CONFIG_SLAB_FREELIST_RANDOM
-> +	unsigned int *random_seq;
-> +#endif
-> +
-> +#ifdef CONFIG_KASAN_GENERIC
-> +	struct kasan_cache kasan_info;
-> +#endif
-> +
-> +#ifdef CONFIG_HARDENED_USERCOPY
-> +	unsigned int useroffset;	/* Usercopy region offset */
-> +	unsigned int usersize;		/* Usercopy region size */
-> +#endif
-> +
-> +	struct kmem_cache_node *node[MAX_NUMNODES];
-> +};
-> +
-> +#if defined(CONFIG_SYSFS) && !defined(CONFIG_SLUB_TINY)
-> +#define SLAB_SUPPORTS_SYSFS
-> +void sysfs_slab_unlink(struct kmem_cache *s);
-> +void sysfs_slab_release(struct kmem_cache *s);
-> +#else
-> +static inline void sysfs_slab_unlink(struct kmem_cache *s) { }
-> +static inline void sysfs_slab_release(struct kmem_cache *s) { }
-> +#endif
-> +
-> +void *fixup_red_left(struct kmem_cache *s, void *p);
-> +
-> +static inline void *nearest_obj(struct kmem_cache *cache,
-> +				const struct slab *slab, void *x)
+> +bool cpuset_cpu_is_isolated(int cpu)
 > +{
-> +	void *object = x - (x - slab_address(slab)) % cache->size;
-> +	void *last_object = slab_address(slab) +
-> +		(slab->objects - 1) * cache->size;
-> +	void *result = (unlikely(object > last_object)) ? last_object : object;
-> +
-> +	result = fixup_red_left(cache, result);
-> +	return result;
+> +	return cpumask_test_cpu(cpu, isolated_cpus);
 > +}
+> +EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
 > +
-> +/* Determine object index from a given position */
-> +static inline unsigned int __obj_to_index(const struct kmem_cache *cache,
-> +					  void *addr, void *obj)
-> +{
-> +	return reciprocal_divide(kasan_reset_tag(obj) - addr,
-> +				 cache->reciprocal_size);
-> +}
-> +
-> +static inline unsigned int obj_to_index(const struct kmem_cache *cache,
-> +					const struct slab *slab, void *obj)
-> +{
-> +	if (is_kfence_address(obj))
-> +		return 0;
-> +	return __obj_to_index(cache, slab_address(slab), obj);
-> +}
-> +
-> +static inline int objs_per_slab(const struct kmem_cache *cache,
-> +				const struct slab *slab)
-> +{
-> +	return slab->objects;
-> +}
->  
->  #include <linux/memcontrol.h>
->  #include <linux/fault-inject.h>
+>  /*
+>   * compute_effective_exclusive_cpumask - compute effective exclusive CPUs
+>   * @cs: cpuset
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-> 
-> -- 
-> 2.42.1
-> 
-> 
+No regressions when booting the kernel with this patch applied.
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--7yiVXI7aBtIVC8K1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZXBTCQAKCRD2uYlJVVFO
+o0SOAPsGLs57YKlqeW0mamVOu9pFNmDonfvm0YtiCd+JhtIgiAD9HULH9VkRcoiO
+FrFVJ5r7BQXi1aof2ssYAYE2qG3UWgc=
+=+L7D
+-----END PGP SIGNATURE-----
+
+--7yiVXI7aBtIVC8K1--
 
