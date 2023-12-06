@@ -1,134 +1,177 @@
-Return-Path: <cgroups+bounces-833-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-834-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564A280634C
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 01:16:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6658063AC
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 01:52:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB702B2120B
-	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 00:16:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 418561C210F3
+	for <lists+cgroups@lfdr.de>; Wed,  6 Dec 2023 00:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD9B364;
-	Wed,  6 Dec 2023 00:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B7C655;
+	Wed,  6 Dec 2023 00:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cUXTiceL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nEP39hyH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D7719F
-	for <cgroups@vger.kernel.org>; Wed,  6 Dec 2023 00:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80BA3C433AB
-	for <cgroups@vger.kernel.org>; Wed,  6 Dec 2023 00:16:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701821807;
-	bh=KB2h573VWm7p5NE2V/A12yXhGDfVWtxxezLZetMV8EM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cUXTiceLGbO5lenVZeMmlWo7vqYqauEDVukhkO+OIlX+n3D42i2bqWUcnBqozO6XU
-	 7IYf1+ps/u/H1NiaE1OiWxZClyIV0+4Mjt2tGYpp7HDv7XaISi5Bb5HawwLkSr+9oR
-	 mACXKjaqBM/BVenr6cTyV8yRm2/huC+WqGIPZ+tw18vxO00rGeYH+AkfNAMJgghTOP
-	 XVDhFG1NZcX6nmt2DMcc6llm9CyDnGxUxOXs8WKNXyppSxGNsnm+iu5FM9oXPv61SD
-	 JeLXq5kDsXM+mFp7IOElJukd2Lp8AO81UTP/jHUaJxxPa2I9tdKWdf7Ur4JWAC1Dcz
-	 SXhHQ+u/HinLA==
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c664652339so1987869a12.1
-        for <cgroups@vger.kernel.org>; Tue, 05 Dec 2023 16:16:47 -0800 (PST)
-X-Gm-Message-State: AOJu0YyDswyl3UY4gUuSz1JRU0cHPo9DxCYoXg90/BQ52YWshfC1i2Th
-	Cwxqg3baH3Rm89Vi01nFCVSjVj1YHvSuUa9V9FJu6Q==
-X-Google-Smtp-Source: AGHT+IHu5BtCSU0pVaHo7hstQQoCt4LP6AEcx7PGgCpGRGvVdybIR+82gCeElLUDiOxMjsGNu7AQ9eX7JuRo5PsoG5A=
-X-Received: by 2002:a17:90a:19d6:b0:286:f166:679f with SMTP id
- 22-20020a17090a19d600b00286f166679fmr91628pjj.49.1701821806793; Tue, 05 Dec
- 2023 16:16:46 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44887C6;
+	Tue,  5 Dec 2023 16:52:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701823948; x=1733359948;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=80ctbQu0ehO8Eb46q4E7qyIosvMkmzHirGugGzD0fGM=;
+  b=nEP39hyHfvzoRlsdcZVVjm+sRym3O/E5kVOwZZsoCdSZxLB8WvBkrY+9
+   0PJKnxrAVlR/IQ7iwyqbm8vY6A6F5e5/VZ60CR3LOyLcMtqNvXMhn3wwR
+   r4N42KS3X6gqWNGM5czJi4f5jzu0x5x0bFONLzgan+zzAwSb3rt7VKagm
+   D0diNi3uUpKO0fX+vMxnGjpGlgvooll2cNTC+q5b9hZ3HPyPEZR2N2DrL
+   AkEoKI1k1ziPAS8Vd0t5V1sojcHeT8B0bHIM2IvPDehLHt8LaHgYDhj5U
+   hXX2wQILePSXlkhco5RQ/nM781In2Vlo7eJb+lpELSON2ZLlcVv1c/Fqi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="821338"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="821338"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:52:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="861937995"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="861937995"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:52:23 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Michal Hocko <mhocko@suse.com>,  "tj@kernel.org" <tj@kernel.org>,  "John
+ Groves" <john@jagalactic.com>,  Gregory Price <gourry.memverge@gmail.com>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+  "linux-mm@kvack.org" <linux-mm@kvack.org>,  "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>,  "linux-doc@vger.kernel.org"
+ <linux-doc@vger.kernel.org>,  "akpm@linux-foundation.org"
+ <akpm@linux-foundation.org>,  "lizefan.x@bytedance.com"
+ <lizefan.x@bytedance.com>,  "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+  "corbet@lwn.net" <corbet@lwn.net>,  "roman.gushchin@linux.dev"
+ <roman.gushchin@linux.dev>,  "shakeelb@google.com" <shakeelb@google.com>,
+  "muchun.song@linux.dev" <muchun.song@linux.dev>,  "jgroves@micron.com"
+ <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+In-Reply-To: <ZW84F5PUB/0yPW9d@memverge.com> (Gregory Price's message of "Tue,
+	5 Dec 2023 09:47:51 -0500")
+References: <ZU74L9oxWOoTTfpM@memverge.com> <ZVNBMW8iJIGDyp0y@tiehlicka>
+	<ZVOXWx8XNJJNC23A@memverge.com> <ZVOn2T_Qg_NTKlB2@tiehlicka>
+	<ZVOzMEtDYB4l8qFy@memverge.com>
+	<87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZW1IdPI11nhKcdZl@memverge.com>
+	<87sf4i2xe1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZW3ZFDeTs7xotImL@memverge.com>
+	<87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZW84F5PUB/0yPW9d@memverge.com>
+Date: Wed, 06 Dec 2023 08:50:23 +0800
+Message-ID: <875y1c2lyo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-3-nphamcs@gmail.com>
- <CAF8kJuOsaX15w3gF7eUN8u7LAKhC7m2we91simoPH7S=MZJZCg@mail.gmail.com> <CAKEwX=PX0bR5orAsgYtXfOSarRobf1xnkSyXx+z6g_VHFVonQw@mail.gmail.com>
-In-Reply-To: <CAKEwX=PX0bR5orAsgYtXfOSarRobf1xnkSyXx+z6g_VHFVonQw@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 5 Dec 2023 16:16:35 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuO8xmhxpCSzof9cDAqOheZgpz5Z-xyCHUQUGenCmzmdhA@mail.gmail.com>
-Message-ID: <CAF8kJuO8xmhxpCSzof9cDAqOheZgpz5Z-xyCHUQUGenCmzmdhA@mail.gmail.com>
-Subject: Re: [PATCH v8 2/6] memcontrol: implement mem_cgroup_tryget_online()
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, cerasuolodomenico@gmail.com, 
-	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
-	vitaly.wool@konsulko.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeelb@google.com, muchun.song@linux.dev, linux-mm@kvack.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-On Mon, Dec 4, 2023 at 5:39=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+Gregory Price <gregory.price@memverge.com> writes:
+
+> On Tue, Dec 05, 2023 at 05:01:51PM +0800, Huang, Ying wrote:
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> > On Mon, Dec 04, 2023 at 04:19:02PM +0800, Huang, Ying wrote:
+>> >> Gregory Price <gregory.price@memverge.com> writes:
+>> >> 
+>> >> > If the structure is built as a matrix of (cpu_node,mem_nodes),
+>> >> > the you can also optimize based on the node the task is running on.
+>> >> 
+>> >> The matrix stuff makes the situation complex.  If people do need
+>> >> something like that, they can just use set_memorypolicy2() with user
+>> >> specified weights.  I still believe that "make simple stuff simple, and
+>> >> complex stuff possible".
+>> >> 
+>> >
+>> > I don't think it's particularly complex, since we already have a
+>> > distance matrix for numa nodes:
+>> >
+>> > available: 2 nodes (0-1)
+>> > ... snip ...
+>> > node distances:
+>> > node   0   1
+>> >   0:  10  21
+>> >   1:  21  10
+>> >
+>> > This would follow the same thing, just adjustable for bandwidth.
+>> 
+>> We add complexity for requirement. Not there's something similar
+>> already.
+>> 
+>> > I personally find the (src,dst) matrix very important for flexibility.
+>> 
+>> With set_memorypolicy2(), I think we have the needed flexibility for
+>> users needs the complexity.
+>> 
+>> > But if there is particular pushback against it, having a one dimensional
+>> > array is better than not having it, so I will take what I can get.
+>> 
+>> TBH, I don't think that we really need that.  Especially given we will
+>> have set_memorypolicy2().
+>>
 >
-> > > memcg as a candidate for the global limit reclaim.
-> >
-> > Very minor nitpick. This patch can fold with the later patch that uses
-> > it. That makes the review easier, no need to cross reference different
-> > patches. It will also make it harder to introduce API that nobody
-> > uses.
+> From a complexity standpoint, it is exactly as complex as the hardware
+> configuration itself:  each socket has a different view of the memory
+> topology. If you have a non-homogeneous memory configuration (e.g. a 
+> different number of CXL expanders on one socket thant he other), a flat
+> array of weights has no way of capturing this hardware configuration.
+
+One important task of the software is to hide the complexity of hardware
+from the users.  At least it should provide the option.  It only add
+complexity based on real requirements.
+
+> That makes the feature significantly less useful. In fact, it makes the
+> feature equivalent to set_mempolicy2 - except that weights could be
+> changed at runtime from outside a process.
 >
-> I don't have a strong preference one way or the other :) Probably not
-> worth the churn tho.
-
-Squashing a patch is very easy. If you are refreshing a new series, it
-is worthwhile to do it. I notice on the other thread Yosry pointed out
-you did  not use the function "mem_cgroup_tryget_online" in patch 3,
-that is exactly the situation my suggestion is trying to prevent.
-
-If you don't have a strong preference, it sounds like you should squash it.
-
-Chris
-
 >
-> >
-> > Chris
-> >
-> > >
-> > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > > ---
-> > >  include/linux/memcontrol.h | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > >
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index 7bdcf3020d7a..2bd7d14ace78 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -821,6 +821,11 @@ static inline bool mem_cgroup_tryget(struct mem_=
-cgroup *memcg)
-> > >         return !memcg || css_tryget(&memcg->css);
-> > >  }
-> > >
-> > > +static inline bool mem_cgroup_tryget_online(struct mem_cgroup *memcg=
-)
-> > > +{
-> > > +       return !memcg || css_tryget_online(&memcg->css);
-> > > +}
-> > > +
-> > >  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
-> > >  {
-> > >         if (memcg)
-> > > @@ -1349,6 +1354,11 @@ static inline bool mem_cgroup_tryget(struct me=
-m_cgroup *memcg)
-> > >         return true;
-> > >  }
-> > >
-> > > +static inline bool mem_cgroup_tryget_online(struct mem_cgroup *memcg=
-)
-> > > +{
-> > > +       return true;
-> > > +}
-> > > +
-> > >  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
-> > >  {
-> > >  }
-> > > --
-> > > 2.34.1
-> > >
+> A matrix resolves one very specific use case: task migration
 >
+>
+> set_mempolicy2 is not sufficient to solve this.  There is presently no
+> way for an external task to change the mempolicy of an existing task.
+> That means a task must become "migration aware" to use weighting in the
+> context of containers where migrations are likely.
+>
+> Two things to consider: A task...
+>    a) has no way of knowing a migration occured
+>    b) may not have visibility of numa nodes outside its cpusets prior to
+>       a migration - making it unlikely/not possible for them to set
+>       weights correctly in the event a migration occurs.
+>
+> If a server with 2 sockets is set up non-homogeneously (different amount
+> of CXL memory expanders on each socket), then the effective bandwidth
+> distribution between sockets will be different.
+>
+> If a container is migrated between sockets in this situation, then tasks
+> with manually set weights, or if global weights are a single array, will
+> have poor memory distributions in relation to the new view of the system.
+>
+> Requiring the global settings to be an array basically requires global
+> weights to be sub-optimal for any use cases that is not explicitly a
+> single workload that consumes all the cores on the system.
+>
+> If the system provides a matrix, then the global settings can be optimal
+> and re-weighting in response to migration happens cleanly and transparently.
+
+For these complex requirements, we will have process_set_mempolicy2().
+I think that it's even more flexible than the global matrix.
+
+--
+Best Regards,
+Huang, Ying
 
