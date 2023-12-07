@@ -1,127 +1,113 @@
-Return-Path: <cgroups+bounces-885-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-886-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC4C8807EED
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 03:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EB2B807FBF
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 05:38:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE8BA1C21248
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 02:46:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F6AF1C2087B
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 04:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7111847;
-	Thu,  7 Dec 2023 02:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5133417FE;
+	Thu,  7 Dec 2023 04:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WVF7+3/a"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jIEfo0ZR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15994D63;
-	Wed,  6 Dec 2023 18:45:53 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so138797b3a.1;
-        Wed, 06 Dec 2023 18:45:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701917152; x=1702521952; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8eVcl2KDPJ4smMer/60vC6K9DZX/lHwn01b8AXePVZA=;
-        b=WVF7+3/atU2PCmAv7Vc085uceTWQR7gSFRI70XASg0Igv6Pws9M74XKlX2omvLcfy2
-         HJLk2LpLAGrJVPtkLZAGEDn7+4mQRMhLwDoL8hRUvHabaggDCuSObgDu/suYveG2OIER
-         1vyzVTNLt0eolXdtL7VE9bj4yDRnSuRjZGKj+ukiUs6H7Rv3c+5iaeNxYSGUEjD1MckD
-         Ha1g43CEoLnzwcf9QF8e/rMD6nIIP6z8GUk0izGPdWO2x6dD2GMWJvl43DM4i4YM7AIH
-         vxlg4+buEddR5DTJX4o/KKLGpB8bnJrZD08cndQKi7TJ5vihQJH5/UnlKVxiOgJrF3yY
-         C2Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701917152; x=1702521952;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8eVcl2KDPJ4smMer/60vC6K9DZX/lHwn01b8AXePVZA=;
-        b=qMBd+McGDdqViPJh8WCzoxGLHU46kBrJ45Y2BDUqjVuUIAn53HMCrxFD0TwVMw250H
-         LZXlEP3BgxKYrlNQr+EuNhm0gMdbK/b5wZBGwv7HfzJAvCmi17KcuXPcQjDabu8NimKp
-         gZAwcPRdWgF/8xCl0OegVkJXzBnDxAiXVhmz7BdEEh8bImd6Cw6JutNT6So5Wq//Gy9D
-         k6MO+wZznDnU9B6EvRNSGQg/0SkJZnRfUXAB/j45ItsaiCDQnj8tTVugGT26dhLjGIzH
-         /7ZmsRWonmHmycuohmPljDuVyXFupfMS3D72SVTQJTCZFjGWTa7zXBaTgL8XDTEbz33Y
-         62fA==
-X-Gm-Message-State: AOJu0YymiNViM6diiHMaDgyi+CLPJJPNzyBEAXuNPt/RQLn/gauvZaBV
-	QlDFoBO79r12ivOvEIAclQs=
-X-Google-Smtp-Source: AGHT+IH09WqraumX9Od5MBcINZWd36Ny5g3Mp4llOuonrFbnrJCx/jGfRW8jMrVLGD/L56O9ZZS5Qw==
-X-Received: by 2002:a05:6a21:170f:b0:18f:9c4:d33c with SMTP id nv15-20020a056a21170f00b0018f09c4d33cmr4986434pzb.44.1701917152256;
-        Wed, 06 Dec 2023 18:45:52 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id p24-20020a639518000000b005c676beba08sm177028pgd.65.2023.12.06.18.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 18:45:51 -0800 (PST)
-Date: Thu, 7 Dec 2023 11:45:43 +0900
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Marco Elver <elver@google.com>,
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6B3110
+	for <cgroups@vger.kernel.org>; Wed,  6 Dec 2023 20:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1701923887;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=tGYuayIbjuzHLuEu82pkqtgPwJeMuDwkxBYxtZFsrRQ=;
+	b=jIEfo0ZRJcwGhrI5/wQ+Zv9yYCWWUGZd23StJyZ4dvLaNaTJkcB2RseiLVmqv6Vi7IqHm6
+	9MLknV5ExSz21gLTWUeaX9aaG6+8ur2D8n+JkEpP9gN3ZPzCyzWtKbKL8msMlbIo7J148y
+	KKGxRLElywtcwlIAj1N18ovxVh0Zdvc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-442-3EujIB-UPuOPPoDl20n5tQ-1; Wed, 06 Dec 2023 23:38:04 -0500
+X-MC-Unique: 3EujIB-UPuOPPoDl20n5tQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 685FF83BA86;
+	Thu,  7 Dec 2023 04:38:03 +0000 (UTC)
+Received: from llong.com (unknown [10.22.34.92])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7550D8CD0;
+	Thu,  7 Dec 2023 04:38:02 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 00/21] remove the SLAB allocator
-Message-ID: <ZXEx1/p9ejRmkVTS@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+	Yafang Shao <laoar.shao@gmail.com>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup] cgroup: Move rcu_head up near the top of cgroup_root
+Date: Wed,  6 Dec 2023 23:37:53 -0500
+Message-Id: <20231207043753.876437-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Mon, Nov 20, 2023 at 07:34:11PM +0100, Vlastimil Babka wrote:
-> Changes from v1:
-> - Added new Patch 01 to fix up kernel docs build (thanks Marco Elver)
-> - Additional changes to Kconfig user visible texts in Patch 02 (thanks Kees
->   Cook)
-> - Whitespace fixes and other fixups (thanks Kees)
-> 
-> The SLAB allocator has been deprecated since 6.5 and nobody has objected
-> so far. As we agreed at LSF/MM, we should wait with the removal until
-> the next LTS kernel is released. This is now determined to be 6.6, and
-> we just missed 6.7, so now we can aim for 6.8 and start exposing the
-> removal to linux-next during the 6.7 cycle. If nothing substantial pops
-> up, will start including this in slab-next later this week.
+Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
+safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
+for freeing the cgroup_root.
 
-I've been testing this for a few weeks on my testing system,
-It passed a set of mm and slab tests on various SLUB configurations.
+The use of kvfree_rcu(), however, has the limitation that the offset of
+the rcu_head structure within the larger data structure cannot exceed
+4096 or the compilation will fail. By putting rcu_head below the cgroup
+structure, any change to the cgroup structure that makes it larger has
+the risk of build failure. Commit 77070eeb8821 ("cgroup: Avoid false
+cacheline sharing of read mostly rstat_cpu") happens to be the commit
+that breaks it even though it is not its fault. Fix it by moving the
+rcu_head structure up before the cgroup structure.
 
-For the series, feel free to add:
-Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU safe")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ include/linux/cgroup-defs.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 5a97ea95b564..45359969d8cf 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -562,6 +562,10 @@ struct cgroup_root {
+ 	/* Unique id for this hierarchy. */
+ 	int hierarchy_id;
+ 
++	/* A list running through the active hierarchies */
++	struct list_head root_list;
++	struct rcu_head rcu;
++
+ 	/*
+ 	 * The root cgroup. The containing cgroup_root will be destroyed on its
+ 	 * release. cgrp->ancestors[0] will be used overflowing into the
+@@ -575,10 +579,6 @@ struct cgroup_root {
+ 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+ 	atomic_t nr_cgrps;
+ 
+-	/* A list running through the active hierarchies */
+-	struct list_head root_list;
+-	struct rcu_head rcu;
+-
+ 	/* Hierarchy-specific flags */
+ 	unsigned int flags;
+ 
+-- 
+2.39.3
 
-> To keep the series reasonably sized and not pull in people from other
-> subsystems than mm and closely related ones, I didn't attempt to remove
-> every trace of unnecessary reference to dead config options in external
-> areas, nor in the defconfigs. Such cleanups can be sent to and handled
-> by respective maintainers after this is merged.
-> 
-> Instead I have added some patches aimed to reap some immediate benefits
-> of the removal, mainly by not having to split some fastpath code between
-> slab_common.c and slub.c anymore. But that is also not an exhaustive
-> effort and I expect more cleanups and optimizations will follow later.
-> 
-> Patch 09 updates CREDITS for the removed mm/slab.c. Please point out if
-> I missed someone not yet credited.
-> 
-> Git version: https://git.kernel.org/vbabka/l/slab-remove-slab-v2r1
 
