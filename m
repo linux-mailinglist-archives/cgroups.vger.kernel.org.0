@@ -1,101 +1,143 @@
-Return-Path: <cgroups+bounces-895-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-896-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18E8D808F1A
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 18:53:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81E57808F8B
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 19:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DDE81F21130
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 17:53:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 233CCB20BA0
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 18:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179C54B134;
-	Thu,  7 Dec 2023 17:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688294B5D9;
+	Thu,  7 Dec 2023 18:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZPgQg+it"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OJgFe+nK";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OJgFe+nK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E99F12E
-	for <cgroups@vger.kernel.org>; Thu,  7 Dec 2023 09:53:32 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c9f62fca3bso14103241fa.0
-        for <cgroups@vger.kernel.org>; Thu, 07 Dec 2023 09:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701971611; x=1702576411; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ej8XOnCH2VsZ/qShm6gnD6DULhgsDhDu14Fz2jUUZmE=;
-        b=ZPgQg+itvxzN5Vw5a/c662emHmOeBkmMXS1vW3e6UWjkrUKmHz1p8BtKukTJsUp+w3
-         LNL+xUafOLP9JcDbxxbIwiVA+rYrtBNRPq2PjZQoDw5q45u2aa2f1e1XdI2O0FtzZr+w
-         o9Htppcy1HzHCPs1x2+nsOzi6/p5fo3qJvgs6symtiueJ0qIFEoKgiOGScYmJqVjOI3h
-         TVDEFDxv2Npm66IHUs/wAgkuizAEulmOQh8W+1YP0oDjuVKTWcCZiR6Nve9i+n5JN17p
-         CVLlCn29aWm/5MtbD0H7gYpCk2we/FIjdEQtYP6e93fJ5QJupdZr9ieLs9MOCxklvajU
-         8rqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701971611; x=1702576411;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ej8XOnCH2VsZ/qShm6gnD6DULhgsDhDu14Fz2jUUZmE=;
-        b=TPOPwfloCh10zcH28ReJHfH3DvfPvUVbKVkdwaMegN7IeOSH/upxEzOA5nkZo8S/xw
-         PmPXYRRNMZznwp3jQJBj9nOSz4J6jNh6l8YMfmW5YCvZtAo6BLS4n+pPDCZaCVXChYN8
-         PWwLUwT5FgFjEFTFVA8ddzWCqw8OfyMLd9u9wkzmsy9hwnWuJ2PFfsMKddkfj517UzRu
-         rlqSqxVGoVUKAmZ+mhoOsWLlL9FvFVB0MyPgCKyAYQdyotRWdUZCrvcKXBCa5zn+no/q
-         OMhorv3hWG9kVLmsPjLaVZIXJLnmiql/rX8vFZyeWWu/bEMjpSNvplnAvsUoCnS3TaTe
-         +aag==
-X-Gm-Message-State: AOJu0Yy6iP12zzzeT+c6/FIS1mg9RDooEkNKpSwBvDfacUK8lrgGuFqP
-	msJ64XstngPAiq9SCs+fc2/I2L9xWFIQE2a0LKG3MQ==
-X-Google-Smtp-Source: AGHT+IFSp7ZQgdeytewdjCrCAk/6O+2n4Z6XadRtIMNXGzlOiWvtudw1L7uZcT8Tl9dY9nr57EQaBQT3y1WABj45CSI=
-X-Received: by 2002:a2e:98d7:0:b0:2ca:286:4b1c with SMTP id
- s23-20020a2e98d7000000b002ca02864b1cmr1948479ljj.91.1701971610472; Thu, 07
- Dec 2023 09:53:30 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3355F12E;
+	Thu,  7 Dec 2023 10:04:51 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B24491FBAB;
+	Thu,  7 Dec 2023 18:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701972289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SLjVSgLSr+DpQGgWVegzMuPTYBiHHcVlQ4ufqsDcJ/g=;
+	b=OJgFe+nKua0/xlo/z1goVpC2DyPrWMgAegzOVxR2NRz/rTQiMN6yvM31QEb4+WL1vKRuoc
+	MDIC4wO6O8q8zk/e0NcqmuW3J+6jQQYbTjMRIbkt4uBAw23actuIQvY5BwhQdHkoo5GQSr
+	M3dy5a7opaNZYEqTeADtYni5e9/opcU=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701972289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SLjVSgLSr+DpQGgWVegzMuPTYBiHHcVlQ4ufqsDcJ/g=;
+	b=OJgFe+nKua0/xlo/z1goVpC2DyPrWMgAegzOVxR2NRz/rTQiMN6yvM31QEb4+WL1vKRuoc
+	MDIC4wO6O8q8zk/e0NcqmuW3J+6jQQYbTjMRIbkt4uBAw23actuIQvY5BwhQdHkoo5GQSr
+	M3dy5a7opaNZYEqTeADtYni5e9/opcU=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EE1C139E3;
+	Thu,  7 Dec 2023 18:04:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 07E6JkEJcmX5aQAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Thu, 07 Dec 2023 18:04:49 +0000
+Date: Thu, 7 Dec 2023 19:04:48 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH-cgroup v2] cgroup: Move rcu_head up near the top of
+ cgroup_root
+Message-ID: <z7363pa5vy6trlioqe2eczgz2yfww2xqzxf3ocbqvgc4jvb7vk@rubf3ey4ktoh>
+References: <20231207134614.882991-1-longman@redhat.com>
+ <65h3s447i3fkygdtilucda2q6uaygtzfpxb6vsjgwoeybwwgtw@6ahmtj47ggzh>
+ <5c35f648-88cc-4de2-91d7-fb95ceae15b9@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207134614.882991-1-longman@redhat.com>
-In-Reply-To: <20231207134614.882991-1-longman@redhat.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 7 Dec 2023 09:52:54 -0800
-Message-ID: <CAJD7tka2op5wfRKawumoGrScVRA3qD0c2N-WshcmMbPzFBe0wQ@mail.gmail.com>
-Subject: Re: [PATCH-cgroup v2] cgroup: Move rcu_head up near the top of cgroup_root
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x7ko5kwlhvwt5kqj"
+Content-Disposition: inline
+In-Reply-To: <5c35f648-88cc-4de2-91d7-fb95ceae15b9@redhat.com>
+X-Spam-Level: 
+X-Spam-Score: -1.63
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.89
+X-Spamd-Result: default: False [-2.89 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 SIGNED_PGP(-2.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-1.49)[91.64%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,bytedance.com,cmpxchg.org,gmail.com,vger.kernel.org,canb.auug.org.au,google.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
+
+
+--x7ko5kwlhvwt5kqj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 7, 2023 at 5:46=E2=80=AFAM Waiman Long <longman@redhat.com> wro=
-te:
->
-> Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
-> safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
-> for freeing the cgroup_root.
->
-> The current implementation of kvfree_rcu(), however, has the limitation
-> that the offset of the rcu_head structure within the larger data
-> structure must be less than 4096 or the compilation will fail. See the
-> macro definition of __is_kvfree_rcu_offset() in include/linux/rcupdate.h
-> for more information.
->
-> By putting rcu_head below the large cgroup structure, any change to the
-> cgroup structure that makes it larger run the risk of causing build
-> failure under certain configurations. Commit 77070eeb8821 ("cgroup:
-> Avoid false cacheline sharing of read mostly rstat_cpu") happens to be
-> the last straw that breaks it. Fix this problem by moving the rcu_head
-> structure up before the cgroup structure.
->
-> Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU=
- safe")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Closes: https://lore.kernel.org/lkml/20231207143806.114e0a74@canb.auug.or=
-g.au/
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> Acked-by: Yafang Shao <laoar.shao@gmail.com>
+On Thu, Dec 07, 2023 at 12:40:33PM -0500, Waiman Long <longman@redhat.com> =
+wrote:
+> CONFIG_LOCKDEP and some other debug configs are enabled with allmodconfig.
 
- Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+Interesting, I had CONFIG_LOCKDEP=3Dy.
+
+I shared the numbers to rule out you're after something unrelated
+
+> However, I can reproduce the build failure and the patch is=A0 able to
+> fix it.
+
+That is a good proof :-)
+The patch makes sense for future robustness,
+
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+
+--x7ko5kwlhvwt5kqj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZXIJPAAKCRAGvrMr/1gc
+jikeAQDBVBhL2ZmHFJhCrUslotrq1E5GyDUl+G6/YhtK0soS+wEAoU5+JKfzLD3g
+flBe5ZR5rcUuFM0IQuz24EHcyW+WsA0=
+=v72Q
+-----END PGP SIGNATURE-----
+
+--x7ko5kwlhvwt5kqj--
 
