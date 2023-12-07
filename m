@@ -1,55 +1,55 @@
-Return-Path: <cgroups+bounces-887-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-888-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D97C2807FD2
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 05:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D2EA58082D7
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 09:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 164921C208BB
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 04:52:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10DAB1C21A4E
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 08:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E2BD280;
-	Thu,  7 Dec 2023 04:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB9828E04;
+	Thu,  7 Dec 2023 08:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LmmyYr5F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKchBofs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BA610C8
-	for <cgroups@vger.kernel.org>; Wed,  6 Dec 2023 20:52:26 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54cd2281ccbso603115a12.2
-        for <cgroups@vger.kernel.org>; Wed, 06 Dec 2023 20:52:26 -0800 (PST)
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AD1121;
+	Thu,  7 Dec 2023 00:22:23 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67a338dfca7so3919296d6.2;
+        Thu, 07 Dec 2023 00:22:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701924745; x=1702529545; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701937342; x=1702542142; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+W1jLERIf0/mZcB/EwuwKYXs+J1GUC7lw1ozHshVhi8=;
-        b=LmmyYr5FfhKtpMih88oqNC7r4uk1FsJuf40yQpeDkpL5BqCQMh+x+R13Y+I2OUadbU
-         2fXh2iHSDMJrveSJtiknK74OX/5uzGyYU1fvu4pQbVysrkIKdmX+Bxw1qbgTQEIBQgU0
-         OnYIb7F6dgbBnhNvSTMMjRTRrv8bsnLWSxTh0/Od1AMHynHbQtTo1RBjrxgc9+pczAmR
-         MHySSdGG6OjvoOUwiVKGrQlCydV+YgoOX5sM9LiBuL6izR1G+bNi9E9d6UYXR56pN1/g
-         POESlfc6bd5LVoeRKxNEYdtHJdwPQnWQodiGIypHVq9t25zDKxEWrh/B0/Go0ZWBxOgP
-         kmRw==
+        bh=egv6dYd8ESPNnSbaz+0Kszznpa5K+OI/xeewlObj9YM=;
+        b=AKchBofsXZ2u8xbnnDlij3wORpGQA4iMQHmru4SlzB6sew+25aYkqfNcHxnz0Iwv8M
+         SdHbHnWiuiXEiCW4nimf0fn/llUseBWNuwBwiFZJtATuUEq6/WbwI9ydktN5FN76T61Z
+         7RUERAfky8f76Xsk/pTUF69qtTeS3KntTkufzEPJjP4q8Lzzyw/Kxx8jrZqT9szhjv7T
+         xNoTQuMLeMEutJuQFyQP2syU+jbOb5VRrajI962V1CdEiyW8oIOJN6hlL4w5F8rvqs59
+         GgElBe3U3uME/NzO5ePp9aSMeJw1xfkL/fs4OK3n/loeAvHNB5r40XCmsJ1MACotbqJL
+         BbIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701924745; x=1702529545;
+        d=1e100.net; s=20230601; t=1701937342; x=1702542142;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+W1jLERIf0/mZcB/EwuwKYXs+J1GUC7lw1ozHshVhi8=;
-        b=pCDXWDCKC7hiBbd4a5OB461S7MJGfD+ZW3YUcoPfgojEEj1ZoRveQ4Q52b/cBhhWI5
-         YqpEFA3EANOB/jweHzWnMmk/tygH/CQuQ4/TlkOjpyjP024pi4dvANuC27bnftU5IR7Y
-         QE0PJcrgAggZer9xixRb5vcMVOhk/l+gUrwhodbVVUFnzOFKF9IBKOSpCXJXu24UxXQX
-         PGZ4dkzSVx51zCxj2EDeifn2Ae2o8SbccsI3eJ8tCi/5F/P4k8sOg6bZ+XtqhvgM33cH
-         EfmFNIYQX4x4tgmmcZBQorYJXOC1EMLZBjk4uLjcFuglLDhH/vc1lO9SZ8++pFIf3jwI
-         +RkQ==
-X-Gm-Message-State: AOJu0Ywo34bGU20AZbrd8k4gf85kxOYKqN+s66QCfJAzBQLcyJt0Wubx
-	XsJpa5WpRkiJ171TtnPoOKB73/S3eR+eS01884hBj+yh276VmoOo9u8=
-X-Google-Smtp-Source: AGHT+IEcq53OQy6kNgV3fdJ1HSf9E4kSUOmMcn5pXK0gqIExUqSsAN2/a27fT4ucmtcYxNfnFnFYH8BU2l9MNoGZbOs=
-X-Received: by 2002:a17:906:ca50:b0:a02:ad84:3ab3 with SMTP id
- jx16-20020a170906ca5000b00a02ad843ab3mr1044738ejb.44.1701924745165; Wed, 06
- Dec 2023 20:52:25 -0800 (PST)
+        bh=egv6dYd8ESPNnSbaz+0Kszznpa5K+OI/xeewlObj9YM=;
+        b=wVTsR93FWtNcldaqn/C0/sgaKrnzOiw16L8Tb9r7fjDFxKTVAWBdBrDpdv6/4bq2r5
+         V0mJnJIHxlhGrcT/uJHX06ulk59B0qtNhOqEUOERIij+r4UPo+u4opmzABlbnvVhx2GR
+         JhL8PgR91a1+woIc3fM7QqDfuCJIGwPylgUPLLFHbiYG1nZK51tG+xYdVHWWA4gmqovy
+         L0PMxND3e0OejFq3zG9Lc65ReIZBOzXKmu+XZDEEfqVmfzV0NPs6Wh6HHzwNMfofu9hQ
+         gzSZvcDRZ6tohJfhVHPZpjtynuJ24sk0rq1wY6Y6rslG8VHvf2lrRsson9Xa4jh2iO2B
+         rJJA==
+X-Gm-Message-State: AOJu0YyJEFiV9lfS60NZn0aOSlZV8Qx+rIt5q6QYAhERmH2GdTP9oo92
+	eDZ6LRcQUNNjGKlQkjB3rQoxcxTRuYhFctwaBqQ=
+X-Google-Smtp-Source: AGHT+IGb78uQtvQjOtkF5UieuAgn8fipBbuzXR6STd1V7pkRouaiMB4eNwuv9naPB4lCKqfx5wxl4pb6GfuadpgKBvA=
+X-Received: by 2002:a05:6214:43c2:b0:67a:b72c:3ab5 with SMTP id
+ oi2-20020a05621443c200b0067ab72c3ab5mr2965357qvb.62.1701937342424; Thu, 07
+ Dec 2023 00:22:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,19 +58,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231207043753.876437-1-longman@redhat.com>
 In-Reply-To: <20231207043753.876437-1-longman@redhat.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 6 Dec 2023 20:51:46 -0800
-Message-ID: <CAJD7tkZtt8xedBJyRns+6HpdXoBxadLUGuGNG5s1trEbRgb9hA@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 7 Dec 2023 16:21:46 +0800
+Message-ID: <CALOAHbBrj5CTOeYwHJ4q_f092z+1BNAo9kHFfRbRFTCF=_hQfA@mail.gmail.com>
 Subject: Re: [PATCH-cgroup] cgroup: Move rcu_head up near the top of cgroup_root
 To: Waiman Long <longman@redhat.com>
 Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 6, 2023 at 8:38=E2=80=AFPM Waiman Long <longman@redhat.com> wro=
-te:
+On Thu, Dec 7, 2023 at 12:38=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
+ote:
 >
 > Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
 > safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
@@ -88,6 +88,9 @@ te:
 > Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU=
  safe")
 > Signed-off-by: Waiman Long <longman@redhat.com>
+
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
+
 > ---
 >  include/linux/cgroup-defs.h | 8 ++++----
 >  1 file changed, 4 insertions(+), 4 deletions(-)
@@ -104,8 +107,28 @@ te:
 > +       struct list_head root_list;
 > +       struct rcu_head rcu;
 > +
+>         /*
+>          * The root cgroup. The containing cgroup_root will be destroyed =
+on its
+>          * release. cgrp->ancestors[0] will be used overflowing into the
+> @@ -575,10 +579,6 @@ struct cgroup_root {
+>         /* Number of cgroups in the hierarchy, used only for /proc/cgroup=
+s */
+>         atomic_t nr_cgrps;
+>
+> -       /* A list running through the active hierarchies */
+> -       struct list_head root_list;
+> -       struct rcu_head rcu;
+> -
+>         /* Hierarchy-specific flags */
+>         unsigned int flags;
+>
+> --
+> 2.39.3
+>
 
-Perhaps the comment should mention the placement requirements, and
-maybe a pointer to wherever it is specified that the offset of struct
-rcu_head should not exceed 4096?
+
+--=20
+Regards
+Yafang
 
