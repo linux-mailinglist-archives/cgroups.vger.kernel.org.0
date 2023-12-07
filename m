@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-878-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-879-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D104D807DA3
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 02:11:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28ED807DE7
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 02:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D8982824BC
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 01:11:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77D881F21A25
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 01:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AB77F6;
-	Thu,  7 Dec 2023 01:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48947111B;
+	Thu,  7 Dec 2023 01:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mc2XVfQO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYi281FA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F00B10D;
-	Wed,  6 Dec 2023 17:11:19 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5906eac104bso80758eaf.2;
-        Wed, 06 Dec 2023 17:11:19 -0800 (PST)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89812D4B;
+	Wed,  6 Dec 2023 17:28:39 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d06d4d685aso2851625ad.3;
+        Wed, 06 Dec 2023 17:28:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701911478; x=1702516278; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701912519; x=1702517319; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O2iQ4GZaNaP4TLuVf9scG6OMfAEhFr0GcB530VPLhoU=;
-        b=mc2XVfQO1QHhrSD+ppXwi5+S8WGod3W/y74JxPD52WcjvSFjIEZhCG7cnX7qZtVMRM
-         vsHq2uqVAdp4otTfWuS4WFFBkb5kpgMLYJOiV79dHXB0OCyVNBD20fWg9sW6UK9JrQ/A
-         cUCxvqyh7tiSri3UoRKiPhNHXrcPofCU+GKI818g8Eum3zGyMq9BDl2KgUM5zIhA3NgY
-         fshV58sz9U2hfpyPnO9M21AogCdaR4aJUzIDmsu8mHRcldevgKZNVpSXftH4zYyhvXas
-         83NAdbG0YXt6wFahhJBM4hNnwqyEhLh9yPHGZfhS60PaBpS3FmNkZmxamUpk4ugtOyhN
-         ekVw==
+        bh=3u1soC42kxxszJtJ9Fi1B4cg1LFazMYjfirO31EmOoI=;
+        b=GYi281FAObYriOfmCwajya0urcLabMiSyKKz9b6RKZc2M7IA3cnm/nLBmV+m1ohjBX
+         u9u2+TRmBD4syFFUwH3ST41Ar9JsZ0BqGoKOVnb0+JFoiV+gDYwOSoA+wgp/kZmz0Emy
+         D1Cb5eEnkymqa9CTGy+YdY4tCSfuaqOfhQwDyDcK9FmbV8CEpTQtPOyU11pEPjRlhSV+
+         lEZyXcrFdF4P9nCEirJwUTxajAoHIg8iGrSxSkFz+iYIB5pheTzECUHEmEKaa+j3k+pI
+         wW8ZOcrtLF0d6ZYZR60HLD4uFZjqMBrcKx985c8oHsQX99b/O5D7yBsL8pm7i/K3cl2H
+         YA1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911478; x=1702516278;
+        d=1e100.net; s=20230601; t=1701912519; x=1702517319;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O2iQ4GZaNaP4TLuVf9scG6OMfAEhFr0GcB530VPLhoU=;
-        b=rUSanU991ZVB7yammGONyQ5ymVR1/ZWc3arJnnG0n+j7sdAJlkaoaZ/6M605vNf9uP
-         /Hb1x5Me+l1SrfLRwEcKL2ZeMcwx+gslHwgs9yG5S8DrGMhhFSciz14momx9z7Omwpr6
-         gY4+NrilFYQw8jqDqqIvjdT09PuRag4vwQSYKjNFxVVeMNv09gHoev059CpNqAFiwnPs
-         oZeSp2+OF+0tacrhu72qBQXhsVVcLRXfeRSOdgXCa02u+1KDiQEJasWMvkxuWA6URzXG
-         f4/phFkHOzr2/p/EOmmWTLH2ULl7BLh0kJKm7hY4dAxNyeOwxWc9fDGyS8hnELchZeD2
-         Z2Ww==
-X-Gm-Message-State: AOJu0YxNBAL+yeqFm+y6WFpzhJmclgRHFCOikdxliuiXXu3GZfbWWzzf
-	LPwiCL+4G3Bqst66N+PFPK8=
-X-Google-Smtp-Source: AGHT+IGc9dkQ2KVuG2CkWKzx9T1jI0zfnEUmwYynupuHvD497P297MjLlX6Fmpv412ssI2djQI620w==
-X-Received: by 2002:a05:6358:4320:b0:16e:27b5:3b25 with SMTP id r32-20020a056358432000b0016e27b53b25mr1981299rwc.31.1701911478109;
-        Wed, 06 Dec 2023 17:11:18 -0800 (PST)
+        bh=3u1soC42kxxszJtJ9Fi1B4cg1LFazMYjfirO31EmOoI=;
+        b=ApmQjNUojHklXV7toQzjLiRvKcnZUFcasm0AjKX8L/OFfxC7YU1c8/YCr32vicFppO
+         eqni1Vs0OeSPH2q8I9hQ24H2UOZyIB63jMrysfsXohdrF2Xun1drPiOSJqBXTEf5BMo5
+         cguWPqccbUi9g8eoHV9ceTDslhafrEori0I1xnNutEIL8s5REEn3YfA0SYHtgAhDTDzQ
+         TItJRRpuLjyr8wk7n2mfw3Fkr/qlhMiacsSWfF3hHAm3QiVFdB9tWo7CbnTO2FIAFcp3
+         O2FZBK2HSUM6U9Qi0YsH4/bLUBPqTOaq6xq5Vn87NgBx50nKT01wHu5ORmWhIF/k6u1J
+         gwvg==
+X-Gm-Message-State: AOJu0YxvtDhd3z7lp5weOfYmRojwunLBU3b0CwBpE32rncl6PZi815yP
+	mgQBhPk/TUS4YM2y8Wo1n9Y=
+X-Google-Smtp-Source: AGHT+IGx09sA3QjHCBqfxN8uUNcuGoNURkGUfVZC/vkcb6H8V+KrZS46H5LXsWB+131aJ1639Rkiog==
+X-Received: by 2002:a17:902:6bc5:b0:1d0:bfb7:6709 with SMTP id m5-20020a1709026bc500b001d0bfb76709mr1280230plt.24.1701912518601;
+        Wed, 06 Dec 2023 17:28:38 -0800 (PST)
 Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id p2-20020aa78602000000b006be5af77f06sm141705pfn.2.2023.12.06.17.11.12
+        by smtp.gmail.com with ESMTPSA id p14-20020a170902780e00b001bf8779e051sm89840pll.289.2023.12.06.17.28.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 17:11:17 -0800 (PST)
-Date: Thu, 7 Dec 2023 10:11:02 +0900
+        Wed, 06 Dec 2023 17:28:37 -0800 (PST)
+Date: Thu, 7 Dec 2023 10:28:24 +0900
 From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
@@ -73,11 +73,10 @@ Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
 	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 15/21] mm/slab: move struct kmem_cache_node from
- slab.h to slub.c
-Message-ID: <ZXEbpvUpmhOBZvuH@localhost.localdomain>
+Subject: Re: [PATCH v2 17/21] mm/slab: move kmalloc_slab() to mm/slab.h
+Message-ID: <ZXEfuHomAtFw3pKI@localhost.localdomain>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-15-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-17-9c9c70177183@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,97 +85,158 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-15-9c9c70177183@suse.cz>
+In-Reply-To: <20231120-slab-remove-slab-v2-17-9c9c70177183@suse.cz>
 
-On Mon, Nov 20, 2023 at 07:34:26PM +0100, Vlastimil Babka wrote:
-> The declaration and associated helpers are not used anywhere else
-> anymore.
+On Mon, Nov 20, 2023 at 07:34:28PM +0100, Vlastimil Babka wrote:
+> In preparation for the next patch, move the kmalloc_slab() function to
+> the header, as it will have callers from two files, and make it inline.
+> To avoid unnecessary bloat, remove all size checks/warnings from
+> kmalloc_slab() as they just duplicate those in callers, especially after
+> recent changes to kmalloc_size_roundup(). We just need to adjust handling
+> of zero size in __do_kmalloc_node(). Also we can stop handling NULL
+> result from kmalloc_slab() there as that now cannot happen (unless
+> called too early during boot).
+> 
+> The size_index array becomes visible so rename it to a more specific
+> kmalloc_size_index.
 > 
 > Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  mm/slab.h | 29 -----------------------------
->  mm/slub.c | 27 +++++++++++++++++++++++++++
->  2 files changed, 27 insertions(+), 29 deletions(-)
+>  mm/slab.h        | 28 ++++++++++++++++++++++++++--
+>  mm/slab_common.c | 43 ++++++++-----------------------------------
+>  2 files changed, 34 insertions(+), 37 deletions(-)
 > 
 > diff --git a/mm/slab.h b/mm/slab.h
-> index a81ef7c9282d..5ae6a978e9c2 100644
+> index 35a55c4a407d..7d7cc7af614e 100644
 > --- a/mm/slab.h
 > +++ b/mm/slab.h
-> @@ -588,35 +588,6 @@ static inline size_t slab_ksize(const struct kmem_cache *s)
->  	return s->size;
->  }
+> @@ -389,8 +389,32 @@ extern const struct kmalloc_info_struct {
+>  void setup_kmalloc_cache_index_table(void);
+>  void create_kmalloc_caches(slab_flags_t);
 >  
-> -
-> -/*
-> - * The slab lists for all objects.
-> - */
-> -struct kmem_cache_node {
-> -	spinlock_t list_lock;
-> -	unsigned long nr_partial;
-> -	struct list_head partial;
-> -#ifdef CONFIG_SLUB_DEBUG
-> -	atomic_long_t nr_slabs;
-> -	atomic_long_t total_objects;
-> -	struct list_head full;
-> -#endif
-> -};
-> -
-> -static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
-> -{
-> -	return s->node[node];
-> -}
-> -
-> -/*
-> - * Iterator over all nodes. The body will be executed for each node that has
-> - * a kmem_cache_node structure allocated (which is true for all online nodes)
-> - */
-> -#define for_each_kmem_cache_node(__s, __node, __n) \
-> -	for (__node = 0; __node < nr_node_ids; __node++) \
-> -		 if ((__n = get_node(__s, __node)))
-> -
-> -
->  #ifdef CONFIG_SLUB_DEBUG
->  void dump_unreclaimable_slab(void);
->  #else
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 844e0beb84ee..cc801f8258fe 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -396,6 +396,33 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
->  #endif
->  }
->  
-> +/*
-> + * The slab lists for all objects.
-> + */
-> +struct kmem_cache_node {
-> +	spinlock_t list_lock;
-> +	unsigned long nr_partial;
-> +	struct list_head partial;
-> +#ifdef CONFIG_SLUB_DEBUG
-> +	atomic_long_t nr_slabs;
-> +	atomic_long_t total_objects;
-> +	struct list_head full;
-> +#endif
-> +};
+> -/* Find the kmalloc slab corresponding for a certain size */
+> -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
+> +extern u8 kmalloc_size_index[24];
 > +
-> +static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
+> +static inline unsigned int size_index_elem(unsigned int bytes)
 > +{
-> +	return s->node[node];
+> +	return (bytes - 1) / 8;
 > +}
 > +
 > +/*
-> + * Iterator over all nodes. The body will be executed for each node that has
-> + * a kmem_cache_node structure allocated (which is true for all online nodes)
+> + * Find the kmem_cache structure that serves a given size of
+> + * allocation
+> + *
+> + * This assumes size is larger than zero and not larger than
+> + * KMALLOC_MAX_CACHE_SIZE and the caller must check that.
 > + */
-> +#define for_each_kmem_cache_node(__s, __node, __n) \
-> +	for (__node = 0; __node < nr_node_ids; __node++) \
-> +		 if ((__n = get_node(__s, __node)))
+> +static inline struct kmem_cache *
+> +kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
+> +{
+> +	unsigned int index;
 > +
->  /*
->   * Tracks for which NUMA nodes we have kmem_cache_nodes allocated.
->   * Corresponds to node_state[N_NORMAL_MEMORY], but can temporarily
+> +	if (size <= 192)
+> +		index = kmalloc_size_index[size_index_elem(size)];
+> +	else
+> +		index = fls(size - 1);
+> +
+> +	return kmalloc_caches[kmalloc_type(flags, caller)][index];
+> +}
+>  
+>  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+>  			      int node, size_t orig_size,
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index f4f275613d2a..31ade17a7ad9 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -665,7 +665,7 @@ EXPORT_SYMBOL(random_kmalloc_seed);
+>   * of two cache sizes there. The size of larger slabs can be determined using
+>   * fls.
+>   */
+> -static u8 size_index[24] __ro_after_init = {
+> +u8 kmalloc_size_index[24] __ro_after_init = {
+>  	3,	/* 8 */
+>  	4,	/* 16 */
+>  	5,	/* 24 */
+> @@ -692,33 +692,6 @@ static u8 size_index[24] __ro_after_init = {
+>  	2	/* 192 */
+>  };
+>  
+> -static inline unsigned int size_index_elem(unsigned int bytes)
+> -{
+> -	return (bytes - 1) / 8;
+> -}
+> -
+> -/*
+> - * Find the kmem_cache structure that serves a given size of
+> - * allocation
+> - */
+> -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
+> -{
+> -	unsigned int index;
+> -
+> -	if (size <= 192) {
+> -		if (!size)
+> -			return ZERO_SIZE_PTR;
+> -
+> -		index = size_index[size_index_elem(size)];
+> -	} else {
+> -		if (WARN_ON_ONCE(size > KMALLOC_MAX_CACHE_SIZE))
+> -			return NULL;
+> -		index = fls(size - 1);
+> -	}
+> -
+> -	return kmalloc_caches[kmalloc_type(flags, caller)][index];
+> -}
+> -
+>  size_t kmalloc_size_roundup(size_t size)
+>  {
+>  	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
+> @@ -843,9 +816,9 @@ void __init setup_kmalloc_cache_index_table(void)
+>  	for (i = 8; i < KMALLOC_MIN_SIZE; i += 8) {
+>  		unsigned int elem = size_index_elem(i);
+>  
+> -		if (elem >= ARRAY_SIZE(size_index))
+> +		if (elem >= ARRAY_SIZE(kmalloc_size_index))
+>  			break;
+> -		size_index[elem] = KMALLOC_SHIFT_LOW;
+> +		kmalloc_size_index[elem] = KMALLOC_SHIFT_LOW;
+>  	}
+>  
+>  	if (KMALLOC_MIN_SIZE >= 64) {
+> @@ -854,7 +827,7 @@ void __init setup_kmalloc_cache_index_table(void)
+>  		 * is 64 byte.
+>  		 */
+>  		for (i = 64 + 8; i <= 96; i += 8)
+> -			size_index[size_index_elem(i)] = 7;
+> +			kmalloc_size_index[size_index_elem(i)] = 7;
+>  
+>  	}
+>  
+> @@ -865,7 +838,7 @@ void __init setup_kmalloc_cache_index_table(void)
+>  		 * instead.
+>  		 */
+>  		for (i = 128 + 8; i <= 192; i += 8)
+> -			size_index[size_index_elem(i)] = 8;
+> +			kmalloc_size_index[size_index_elem(i)] = 8;
+>  	}
+>  }
+>  
+> @@ -977,10 +950,10 @@ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller
+>  		return ret;
+>  	}
+>  
+> -	s = kmalloc_slab(size, flags, caller);
+> +	if (unlikely(!size))
+> +		return ZERO_SIZE_PTR;
+>  
+> -	if (unlikely(ZERO_OR_NULL_PTR(s)))
+> -		return s;
+> +	s = kmalloc_slab(size, flags, caller);
+>  
+>  	ret = __kmem_cache_alloc_node(s, flags, node, size, caller);
+>  	ret = kasan_kmalloc(s, ret, size, flags);
 > 
 > -- 
 
