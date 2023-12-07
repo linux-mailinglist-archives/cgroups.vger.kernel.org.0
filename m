@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-876-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-877-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAA1C807D61
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 01:43:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 395CC807D7C
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 02:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F1A7B21174
-	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 00:43:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3756E1C211A3
+	for <lists+cgroups@lfdr.de>; Thu,  7 Dec 2023 01:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611CA7F3;
-	Thu,  7 Dec 2023 00:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EDE7F3;
+	Thu,  7 Dec 2023 01:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pj69Ns+x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lINBcacf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD336E0;
-	Wed,  6 Dec 2023 16:43:29 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce94f62806so84980b3a.1;
-        Wed, 06 Dec 2023 16:43:29 -0800 (PST)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8934E12F;
+	Wed,  6 Dec 2023 17:00:04 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so2810175ad.1;
+        Wed, 06 Dec 2023 17:00:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701909809; x=1702514609; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701910804; x=1702515604; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eh9CtMoBA+zmGvG+NMP6SS+GUAPZn7ZW9r8sCwWKZF8=;
-        b=Pj69Ns+x9Mj6nd11Ln5I2lxbsKW32F0sudERQbezDpJJVN2JvbcQEEotU6IFkhPwql
-         U9CRSSaopODLoYRGn0h7oCSmSlDnhFdwJMCuy5d7qudnLeLZ/QtnQ5oNzv8hJWPNIz81
-         5bcKCRSnxycyUVAgmvi1GbCnVIV5rMB+XvNOs09NXve0PVNvv9ZCDBg0yxdtmzj3rF7Z
-         6gry2hbCasNBKtWCOLcT2AtIosl/g98R7LfK1d9wjhmoxbwGCy9Lohhrz5FQf2UxsYUR
-         hk9xe8Q7mu2aKtyERhu3B/XihavSobc4f/vZtOMryOIcdth1+fzK6QIWTmIKy5fhOAnB
-         6D2g==
+        bh=zsGIjCFU5lyJ4K017s44uK87gjwXDiMcgnBYCQQOfWs=;
+        b=lINBcacfxnxuiWvWQXj0W+WxuwWJZcRS4E1pFDRFj9Rp2ffqxOLBhS5qUxFKBHdbaY
+         9eJm5+FsWBIz+vwqFiLl2Ema5HUwgkacopsyYhgiSrB0TYVUxNG8/YdK0UXtyKPp327T
+         HnnBOofRvNIwRYQjstN8JvfEXrOiBtAuORKGvYcDLLvB4rV4oC/x+cxyrfCQ/I2USKgx
+         XWLazA9Koy7dJABRAIllCrTnCuTNxWHBeRJAH2O9FHkGtlZcFvcXxYZ2rPtiwaDg+0W4
+         0LbKcfeBxQNL023NksaQnsrY4FJlpHUK1elsHfWQBPsFxni1SzuJJrGR3bW/vNYlV8ch
+         skNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701909809; x=1702514609;
+        d=1e100.net; s=20230601; t=1701910804; x=1702515604;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eh9CtMoBA+zmGvG+NMP6SS+GUAPZn7ZW9r8sCwWKZF8=;
-        b=kBqJyHFjUfYLW5LL/raL7DgQEVABwOUDNr19XWCjteJWbIbAeVGKpo/VVJGvNk7G/R
-         s58CdP4n23eG+rFS7t8+YB09r8TU03ci4XK+LJxHKqv6sVv1FCSIMOM56VckJG/QckA/
-         iVNZb0JmkOlfmhpvH0EO1K5rzpzroC7tgUgDADBbVhgCVOUV0YltCcNVZboxppdqI3LK
-         IEjTJReudVGSXOinMssj7EQG0DySNHmNsmxg2NYC0YcjNpW4A2zjfBUVeZX0VQJaoExy
-         qi4X6Ktua4qmH6v9BAt6YVSX+M2YK9rHBzu3Szv+V6rpj1NUGyn8wNUfc0W7fr6BTt4K
-         EMDA==
-X-Gm-Message-State: AOJu0YxvitullPMvcZw5MgxgYWFyCPmMLtcN4z1Dh/cw1An2fcLf1LZ4
-	ZUpGZnd1ZO4VfzkHERO1uQg=
-X-Google-Smtp-Source: AGHT+IHVLxtmkCWrQvVjzfGp4Yyi7Sp2zeTFR6kkuCxxzYtmahqouIYzhFcsyiEwLef13SnL50mS0w==
-X-Received: by 2002:a05:6a20:2449:b0:18a:de88:e0d with SMTP id t9-20020a056a20244900b0018ade880e0dmr1780832pzc.15.1701909808906;
-        Wed, 06 Dec 2023 16:43:28 -0800 (PST)
+        bh=zsGIjCFU5lyJ4K017s44uK87gjwXDiMcgnBYCQQOfWs=;
+        b=YSgJKDDHmDpRRjd40RGGjb+giaPvr2dD4e8RSzMb9HDpLqFAIR8lagEj0App4ldmx6
+         aj+c2FL5gtw5dOK/EOFez+EMcvY1dG7puPxAWlUt0NBTUM0iwjUET+F/mM23XtKkQxz8
+         QJlnyqOyGyt1uTcuBbD28+5PxXEAyYpf+2lsYYyBlxaJM8cbf2Q+absFrD4ynu96vSbV
+         weCL1nb0JHkjsgIGydgZ+e6Cj7xWWtK51pCO2d73A56Lm8h7/0r9VKnWEmns/MK6FdZk
+         0attlsLwKveQ9BEaTyzJt9lUHtZ+GOn3vr2ufjQdoNojcc0pS3GWHWi7TmZUof5H8cZ0
+         GSwA==
+X-Gm-Message-State: AOJu0YzfGGrRabTC6QBV+WBK8UQndYrFGpI8Dx97pU/EXp/0tGtKF/Jf
+	2zpsWud+JyLllQ+vMY7PYSw=
+X-Google-Smtp-Source: AGHT+IEYT0meh5v4+cOmVkY4VpOtcJCuZrKmOhAfrzrneCN6WNofRmsINq37W873FAiLxM6nhzFaGw==
+X-Received: by 2002:a17:903:2642:b0:1d0:6ffd:f214 with SMTP id je2-20020a170903264200b001d06ffdf214mr1476793plb.106.1701910803148;
+        Wed, 06 Dec 2023 17:00:03 -0800 (PST)
 Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id p12-20020a170902e74c00b001cf7bd9ade5sm63977plf.3.2023.12.06.16.43.23
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902bd4600b001d0af279a1fsm70671plx.182.2023.12.06.16.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 16:43:28 -0800 (PST)
-Date: Thu, 7 Dec 2023 09:43:04 +0900
+        Wed, 06 Dec 2023 17:00:02 -0800 (PST)
+Date: Thu, 7 Dec 2023 09:59:46 +0900
 From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
@@ -72,12 +72,13 @@ Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
 	Muchun Song <muchun.song@linux.dev>,
 	Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 13/21] mm/slab: move pre/post-alloc hooks from slab.h
- to slub.c
-Message-ID: <ZXEVGNxKTNC6v5NR@localhost.localdomain>
+	cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 14/21] mm/slab: move memcg related functions from
+ slab.h to slub.c
+Message-ID: <ZXEZAnHBJpAi8Sdy@localhost.localdomain>
 References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-13-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-14-9c9c70177183@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,261 +87,488 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-13-9c9c70177183@suse.cz>
+In-Reply-To: <20231120-slab-remove-slab-v2-14-9c9c70177183@suse.cz>
 
-On Mon, Nov 20, 2023 at 07:34:24PM +0100, Vlastimil Babka wrote:
-> We don't share the hooks between two slab implementations anymore so
-> they can be moved away from the header. As part of the move, also move
-> should_failslab() from slab_common.c as the pre_alloc hook uses it.
-> This means slab.h can stop including fault-inject.h and kmemleak.h.
-> Fix up some files that were depending on the includes transitively.
+On Mon, Nov 20, 2023 at 07:34:25PM +0100, Vlastimil Babka wrote:
+> We don't share those between SLAB and SLUB anymore, so most memcg
+> related functions can be moved to slub.c proper.
 > 
 > Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  mm/kasan/report.c |  1 +
->  mm/memcontrol.c   |  1 +
->  mm/slab.h         | 72 -------------------------------------------------
->  mm/slab_common.c  |  8 +-----
->  mm/slub.c         | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 84 insertions(+), 79 deletions(-)
+>  mm/slab.h | 206 --------------------------------------------------------------
+>  mm/slub.c | 205 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 205 insertions(+), 206 deletions(-)
 > 
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index e77facb62900..011f727bfaff 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -23,6 +23,7 @@
->  #include <linux/stacktrace.h>
->  #include <linux/string.h>
->  #include <linux/types.h>
-> +#include <linux/vmalloc.h>
->  #include <linux/kasan.h>
->  #include <linux/module.h>
->  #include <linux/sched/task_stack.h>
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 947fb50eba31..8a0603517065 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -64,6 +64,7 @@
->  #include <linux/psi.h>
->  #include <linux/seq_buf.h>
->  #include <linux/sched/isolation.h>
-> +#include <linux/kmemleak.h>
->  #include "internal.h"
->  #include <net/sock.h>
->  #include <net/ip.h>
 > diff --git a/mm/slab.h b/mm/slab.h
-> index 1ac3a2f8d4c0..65ebf86b3fe9 100644
+> index 65ebf86b3fe9..a81ef7c9282d 100644
 > --- a/mm/slab.h
 > +++ b/mm/slab.h
-> @@ -9,8 +9,6 @@
->  #include <linux/kobject.h>
->  #include <linux/sched/mm.h>
->  #include <linux/memcontrol.h>
-> -#include <linux/fault-inject.h>
-> -#include <linux/kmemleak.h>
->  #include <linux/kfence.h>
->  #include <linux/kasan.h>
+> @@ -486,12 +486,6 @@ void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s);
+>  ssize_t slabinfo_write(struct file *file, const char __user *buffer,
+>  		       size_t count, loff_t *ppos);
 >  
-> @@ -796,76 +794,6 @@ static inline size_t slab_ksize(const struct kmem_cache *s)
->  	return s->size;
->  }
->  
-> -static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-> -						     struct list_lru *lru,
-> -						     struct obj_cgroup **objcgp,
-> -						     size_t size, gfp_t flags)
+> -static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
 > -{
-> -	flags &= gfp_allowed_mask;
-> -
-> -	might_alloc(flags);
-> -
-> -	if (should_failslab(s, flags))
-> -		return NULL;
-> -
-> -	if (!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags))
-> -		return NULL;
-> -
-> -	return s;
+> -	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
+> -		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
 > -}
 > -
-> -static inline void slab_post_alloc_hook(struct kmem_cache *s,
-> -					struct obj_cgroup *objcg, gfp_t flags,
-> -					size_t size, void **p, bool init,
-> -					unsigned int orig_size)
+>  #ifdef CONFIG_SLUB_DEBUG
+>  #ifdef CONFIG_SLUB_DEBUG_ON
+>  DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
+> @@ -551,220 +545,20 @@ int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
+>  				 gfp_t gfp, bool new_slab);
+>  void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		     enum node_stat_item idx, int nr);
+> -
+> -static inline void memcg_free_slab_cgroups(struct slab *slab)
 > -{
-> -	unsigned int zero_size = s->object_size;
-> -	bool kasan_init = init;
-> -	size_t i;
+> -	kfree(slab_objcgs(slab));
+> -	slab->memcg_data = 0;
+> -}
 > -
-> -	flags &= gfp_allowed_mask;
+> -static inline size_t obj_full_size(struct kmem_cache *s)
+> -{
+> -	/*
+> -	 * For each accounted object there is an extra space which is used
+> -	 * to store obj_cgroup membership. Charge it too.
+> -	 */
+> -	return s->size + sizeof(struct obj_cgroup *);
+> -}
+> -
+> -/*
+> - * Returns false if the allocation should fail.
+> - */
+> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> -					     struct list_lru *lru,
+> -					     struct obj_cgroup **objcgp,
+> -					     size_t objects, gfp_t flags)
+> -{
+> -	struct obj_cgroup *objcg;
+> -
+> -	if (!memcg_kmem_online())
+> -		return true;
+> -
+> -	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
+> -		return true;
 > -
 > -	/*
-> -	 * For kmalloc object, the allocated memory size(object_size) is likely
-> -	 * larger than the requested size(orig_size). If redzone check is
-> -	 * enabled for the extra space, don't zero it, as it will be redzoned
-> -	 * soon. The redzone operation for this extra space could be seen as a
-> -	 * replacement of current poisoning under certain debug option, and
-> -	 * won't break other sanity checks.
+> -	 * The obtained objcg pointer is safe to use within the current scope,
+> -	 * defined by current task or set_active_memcg() pair.
+> -	 * obj_cgroup_get() is used to get a permanent reference.
 > -	 */
-> -	if (kmem_cache_debug_flags(s, SLAB_STORE_USER | SLAB_RED_ZONE) &&
-> -	    (s->flags & SLAB_KMALLOC))
-> -		zero_size = orig_size;
+> -	objcg = current_obj_cgroup();
+> -	if (!objcg)
+> -		return true;
 > -
-> -	/*
-> -	 * When slub_debug is enabled, avoid memory initialization integrated
-> -	 * into KASAN and instead zero out the memory via the memset below with
-> -	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
-> -	 * cause false-positive reports. This does not lead to a performance
-> -	 * penalty on production builds, as slub_debug is not intended to be
-> -	 * enabled there.
-> -	 */
-> -	if (__slub_debug_enabled())
-> -		kasan_init = false;
+> -	if (lru) {
+> -		int ret;
+> -		struct mem_cgroup *memcg;
 > -
-> -	/*
-> -	 * As memory initialization might be integrated into KASAN,
-> -	 * kasan_slab_alloc and initialization memset must be
-> -	 * kept together to avoid discrepancies in behavior.
-> -	 *
-> -	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> -	 */
-> -	for (i = 0; i < size; i++) {
-> -		p[i] = kasan_slab_alloc(s, p[i], flags, kasan_init);
-> -		if (p[i] && init && (!kasan_init || !kasan_has_integrated_init()))
-> -			memset(p[i], 0, zero_size);
-> -		kmemleak_alloc_recursive(p[i], s->object_size, 1,
-> -					 s->flags, flags);
-> -		kmsan_slab_alloc(s, p[i], flags);
+> -		memcg = get_mem_cgroup_from_objcg(objcg);
+> -		ret = memcg_list_lru_alloc(memcg, lru, flags);
+> -		css_put(&memcg->css);
+> -
+> -		if (ret)
+> -			return false;
 > -	}
 > -
-> -	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+> -	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
+> -		return false;
+> -
+> -	*objcgp = objcg;
+> -	return true;
 > -}
->  
->  /*
->   * The slab lists for all objects.
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 63b8411db7ce..bbc2e3f061f1 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -21,6 +21,7 @@
->  #include <linux/swiotlb.h>
->  #include <linux/proc_fs.h>
->  #include <linux/debugfs.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/kasan.h>
->  #include <asm/cacheflush.h>
->  #include <asm/tlbflush.h>
-> @@ -1470,10 +1471,3 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
->  EXPORT_TRACEPOINT_SYMBOL(kfree);
->  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
->  
-> -int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+> -
+> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> -					      struct obj_cgroup *objcg,
+> -					      gfp_t flags, size_t size,
+> -					      void **p)
 > -{
-> -	if (__should_failslab(s, gfpflags))
-> -		return -ENOMEM;
-> -	return 0;
+> -	struct slab *slab;
+> -	unsigned long off;
+> -	size_t i;
+> -
+> -	if (!memcg_kmem_online() || !objcg)
+> -		return;
+> -
+> -	for (i = 0; i < size; i++) {
+> -		if (likely(p[i])) {
+> -			slab = virt_to_slab(p[i]);
+> -
+> -			if (!slab_objcgs(slab) &&
+> -			    memcg_alloc_slab_cgroups(slab, s, flags,
+> -							 false)) {
+> -				obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -				continue;
+> -			}
+> -
+> -			off = obj_to_index(s, slab, p[i]);
+> -			obj_cgroup_get(objcg);
+> -			slab_objcgs(slab)[off] = objcg;
+> -			mod_objcg_state(objcg, slab_pgdat(slab),
+> -					cache_vmstat_idx(s), obj_full_size(s));
+> -		} else {
+> -			obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -		}
+> -	}
 > -}
-> -ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 979932d046fd..9eb6508152c2 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -34,6 +34,7 @@
->  #include <linux/memory.h>
->  #include <linux/math64.h>
->  #include <linux/fault-inject.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/stacktrace.h>
->  #include <linux/prefetch.h>
->  #include <linux/memcontrol.h>
-> @@ -3494,6 +3495,86 @@ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
->  			0, sizeof(void *));
+> -
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -					void **p, int objects)
+> -{
+> -	struct obj_cgroup **objcgs;
+> -	int i;
+> -
+> -	if (!memcg_kmem_online())
+> -		return;
+> -
+> -	objcgs = slab_objcgs(slab);
+> -	if (!objcgs)
+> -		return;
+> -
+> -	for (i = 0; i < objects; i++) {
+> -		struct obj_cgroup *objcg;
+> -		unsigned int off;
+> -
+> -		off = obj_to_index(s, slab, p[i]);
+> -		objcg = objcgs[off];
+> -		if (!objcg)
+> -			continue;
+> -
+> -		objcgs[off] = NULL;
+> -		obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
+> -				-obj_full_size(s));
+> -		obj_cgroup_put(objcg);
+> -	}
+> -}
+> -
+>  #else /* CONFIG_MEMCG_KMEM */
+>  static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
+>  {
+>  	return NULL;
 >  }
 >  
-> +noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+> -static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+> -{
+> -	return NULL;
+> -}
+> -
+>  static inline int memcg_alloc_slab_cgroups(struct slab *slab,
+>  					       struct kmem_cache *s, gfp_t gfp,
+>  					       bool new_slab)
+>  {
+>  	return 0;
+>  }
+> -
+> -static inline void memcg_free_slab_cgroups(struct slab *slab)
+> -{
+> -}
+> -
+> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> -					     struct list_lru *lru,
+> -					     struct obj_cgroup **objcgp,
+> -					     size_t objects, gfp_t flags)
+> -{
+> -	return true;
+> -}
+> -
+> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> -					      struct obj_cgroup *objcg,
+> -					      gfp_t flags, size_t size,
+> -					      void **p)
+> -{
+> -}
+> -
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -					void **p, int objects)
+> -{
+> -}
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+> -static inline struct kmem_cache *virt_to_cache(const void *obj)
+> -{
+> -	struct slab *slab;
+> -
+> -	slab = virt_to_slab(obj);
+> -	if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n",
+> -					__func__))
+> -		return NULL;
+> -	return slab->slab_cache;
+> -}
+> -
+> -static __always_inline void account_slab(struct slab *slab, int order,
+> -					 struct kmem_cache *s, gfp_t gfp)
+> -{
+> -	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> -		memcg_alloc_slab_cgroups(slab, s, gfp, true);
+> -
+> -	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> -			    PAGE_SIZE << order);
+> -}
+> -
+> -static __always_inline void unaccount_slab(struct slab *slab, int order,
+> -					   struct kmem_cache *s)
+> -{
+> -	if (memcg_kmem_online())
+> -		memcg_free_slab_cgroups(slab);
+> -
+> -	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> -			    -(PAGE_SIZE << order));
+> -}
+> -
+> -static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> -{
+> -	struct kmem_cache *cachep;
+> -
+> -	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> -	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+> -		return s;
+> -
+> -	cachep = virt_to_cache(x);
+> -	if (WARN(cachep && cachep != s,
+> -		  "%s: Wrong slab cache. %s but object is from %s\n",
+> -		  __func__, s->name, cachep->name))
+> -		print_tracking(cachep, x);
+> -	return cachep;
+> -}
+> -
+>  void free_large_kmalloc(struct folio *folio, void *object);
+>  
+>  size_t __ksize(const void *objp);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 9eb6508152c2..844e0beb84ee 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1814,6 +1814,165 @@ static bool freelist_corrupted(struct kmem_cache *s, struct slab *slab,
+>  #endif
+>  #endif /* CONFIG_SLUB_DEBUG */
+>  
+> +static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
 > +{
-> +	if (__should_failslab(s, gfpflags))
-> +		return -ENOMEM;
-> +	return 0;
+> +	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
+> +		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
 > +}
-> +ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
 > +
-> +static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-> +						     struct list_lru *lru,
-> +						     struct obj_cgroup **objcgp,
-> +						     size_t size, gfp_t flags)
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static inline void memcg_free_slab_cgroups(struct slab *slab)
 > +{
-> +	flags &= gfp_allowed_mask;
-> +
-> +	might_alloc(flags);
-> +
-> +	if (should_failslab(s, flags))
-> +		return NULL;
-> +
-> +	if (!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags))
-> +		return NULL;
-> +
-> +	return s;
+> +	kfree(slab_objcgs(slab));
+> +	slab->memcg_data = 0;
 > +}
 > +
-> +static inline void slab_post_alloc_hook(struct kmem_cache *s,
-> +					struct obj_cgroup *objcg, gfp_t flags,
-> +					size_t size, void **p, bool init,
-> +					unsigned int orig_size)
+> +static inline size_t obj_full_size(struct kmem_cache *s)
 > +{
-> +	unsigned int zero_size = s->object_size;
-> +	bool kasan_init = init;
-> +	size_t i;
+> +	/*
+> +	 * For each accounted object there is an extra space which is used
+> +	 * to store obj_cgroup membership. Charge it too.
+> +	 */
+> +	return s->size + sizeof(struct obj_cgroup *);
+> +}
 > +
-> +	flags &= gfp_allowed_mask;
+> +/*
+> + * Returns false if the allocation should fail.
+> + */
+> +static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> +					     struct list_lru *lru,
+> +					     struct obj_cgroup **objcgp,
+> +					     size_t objects, gfp_t flags)
+> +{
+> +	struct obj_cgroup *objcg;
+> +
+> +	if (!memcg_kmem_online())
+> +		return true;
+> +
+> +	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
+> +		return true;
 > +
 > +	/*
-> +	 * For kmalloc object, the allocated memory size(object_size) is likely
-> +	 * larger than the requested size(orig_size). If redzone check is
-> +	 * enabled for the extra space, don't zero it, as it will be redzoned
-> +	 * soon. The redzone operation for this extra space could be seen as a
-> +	 * replacement of current poisoning under certain debug option, and
-> +	 * won't break other sanity checks.
+> +	 * The obtained objcg pointer is safe to use within the current scope,
+> +	 * defined by current task or set_active_memcg() pair.
+> +	 * obj_cgroup_get() is used to get a permanent reference.
 > +	 */
-> +	if (kmem_cache_debug_flags(s, SLAB_STORE_USER | SLAB_RED_ZONE) &&
-> +	    (s->flags & SLAB_KMALLOC))
-> +		zero_size = orig_size;
+> +	objcg = current_obj_cgroup();
+> +	if (!objcg)
+> +		return true;
 > +
-> +	/*
-> +	 * When slub_debug is enabled, avoid memory initialization integrated
-> +	 * into KASAN and instead zero out the memory via the memset below with
-> +	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
-> +	 * cause false-positive reports. This does not lead to a performance
-> +	 * penalty on production builds, as slub_debug is not intended to be
-> +	 * enabled there.
-> +	 */
-> +	if (__slub_debug_enabled())
-> +		kasan_init = false;
+> +	if (lru) {
+> +		int ret;
+> +		struct mem_cgroup *memcg;
 > +
-> +	/*
-> +	 * As memory initialization might be integrated into KASAN,
-> +	 * kasan_slab_alloc and initialization memset must be
-> +	 * kept together to avoid discrepancies in behavior.
-> +	 *
-> +	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> +	 */
-> +	for (i = 0; i < size; i++) {
-> +		p[i] = kasan_slab_alloc(s, p[i], flags, kasan_init);
-> +		if (p[i] && init && (!kasan_init ||
-> +				     !kasan_has_integrated_init()))
-> +			memset(p[i], 0, zero_size);
-> +		kmemleak_alloc_recursive(p[i], s->object_size, 1,
-> +					 s->flags, flags);
-> +		kmsan_slab_alloc(s, p[i], flags);
+> +		memcg = get_mem_cgroup_from_objcg(objcg);
+> +		ret = memcg_list_lru_alloc(memcg, lru, flags);
+> +		css_put(&memcg->css);
+> +
+> +		if (ret)
+> +			return false;
 > +	}
 > +
-> +	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+> +	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
+> +		return false;
+> +
+> +	*objcgp = objcg;
+> +	return true;
 > +}
 > +
+> +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> +					      struct obj_cgroup *objcg,
+> +					      gfp_t flags, size_t size,
+> +					      void **p)
+> +{
+> +	struct slab *slab;
+> +	unsigned long off;
+> +	size_t i;
+> +
+> +	if (!memcg_kmem_online() || !objcg)
+> +		return;
+> +
+> +	for (i = 0; i < size; i++) {
+> +		if (likely(p[i])) {
+> +			slab = virt_to_slab(p[i]);
+> +
+> +			if (!slab_objcgs(slab) &&
+> +			    memcg_alloc_slab_cgroups(slab, s, flags, false)) {
+> +				obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +				continue;
+> +			}
+> +
+> +			off = obj_to_index(s, slab, p[i]);
+> +			obj_cgroup_get(objcg);
+> +			slab_objcgs(slab)[off] = objcg;
+> +			mod_objcg_state(objcg, slab_pgdat(slab),
+> +					cache_vmstat_idx(s), obj_full_size(s));
+> +		} else {
+> +			obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +		}
+> +	}
+> +}
+> +
+> +static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> +					void **p, int objects)
+> +{
+> +	struct obj_cgroup **objcgs;
+> +	int i;
+> +
+> +	if (!memcg_kmem_online())
+> +		return;
+> +
+> +	objcgs = slab_objcgs(slab);
+> +	if (!objcgs)
+> +		return;
+> +
+> +	for (i = 0; i < objects; i++) {
+> +		struct obj_cgroup *objcg;
+> +		unsigned int off;
+> +
+> +		off = obj_to_index(s, slab, p[i]);
+> +		objcg = objcgs[off];
+> +		if (!objcg)
+> +			continue;
+> +
+> +		objcgs[off] = NULL;
+> +		obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
+> +				-obj_full_size(s));
+> +		obj_cgroup_put(objcg);
+> +	}
+> +}
+> +#else /* CONFIG_MEMCG_KMEM */
+> +static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void memcg_free_slab_cgroups(struct slab *slab)
+> +{
+> +}
+> +
+> +static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> +					     struct list_lru *lru,
+> +					     struct obj_cgroup **objcgp,
+> +					     size_t objects, gfp_t flags)
+> +{
+> +	return true;
+> +}
+> +
+> +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> +					      struct obj_cgroup *objcg,
+> +					      gfp_t flags, size_t size,
+> +					      void **p)
+> +{
+> +}
+> +
+> +static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> +					void **p, int objects)
+> +{
+> +}
+> +#endif /* CONFIG_MEMCG_KMEM */
+> +
 >  /*
->   * Inlined fastpath so that allocation functions (kmalloc, kmem_cache_alloc)
->   * have the fastpath folded into their functions. So no function call
+>   * Hooks for other subsystems that check memory allocations. In a typical
+>   * production configuration these hooks all should produce no code at all.
+> @@ -2048,6 +2207,26 @@ static inline bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
+>  }
+>  #endif /* CONFIG_SLAB_FREELIST_RANDOM */
+>  
+> +static __always_inline void account_slab(struct slab *slab, int order,
+> +					 struct kmem_cache *s, gfp_t gfp)
+> +{
+> +	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> +		memcg_alloc_slab_cgroups(slab, s, gfp, true);
+> +
+> +	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> +			    PAGE_SIZE << order);
+> +}
+> +
+> +static __always_inline void unaccount_slab(struct slab *slab, int order,
+> +					   struct kmem_cache *s)
+> +{
+> +	if (memcg_kmem_online())
+> +		memcg_free_slab_cgroups(slab);
+> +
+> +	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> +			    -(PAGE_SIZE << order));
+> +}
+> +
+>  static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+>  {
+>  	struct slab *slab;
+> @@ -3965,6 +4144,32 @@ void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
+>  }
+>  #endif
+>  
+> +static inline struct kmem_cache *virt_to_cache(const void *obj)
+> +{
+> +	struct slab *slab;
+> +
+> +	slab = virt_to_slab(obj);
+> +	if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n", __func__))
+> +		return NULL;
+> +	return slab->slab_cache;
+> +}
+> +
+> +static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> +{
+> +	struct kmem_cache *cachep;
+> +
+> +	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> +	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+> +		return s;
+> +
+> +	cachep = virt_to_cache(x);
+> +	if (WARN(cachep && cachep != s,
+> +		 "%s: Wrong slab cache. %s but object is from %s\n",
+> +		 __func__, s->name, cachep->name))
+> +		print_tracking(cachep, x);
+> +	return cachep;
+> +}
+> +
+>  void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
+>  {
+>  	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
 > 
 > -- 
 
