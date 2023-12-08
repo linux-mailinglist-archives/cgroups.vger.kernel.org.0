@@ -1,57 +1,58 @@
-Return-Path: <cgroups+bounces-905-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-906-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A82C809F70
-	for <lists+cgroups@lfdr.de>; Fri,  8 Dec 2023 10:33:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C47809F71
+	for <lists+cgroups@lfdr.de>; Fri,  8 Dec 2023 10:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A93571F20FB8
-	for <lists+cgroups@lfdr.de>; Fri,  8 Dec 2023 09:33:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A644BB20BE2
+	for <lists+cgroups@lfdr.de>; Fri,  8 Dec 2023 09:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10E4125CE;
-	Fri,  8 Dec 2023 09:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC91CA4D;
+	Fri,  8 Dec 2023 09:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="JtuRaQ5/"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="QE1yCNi/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FD58E
-	for <cgroups@vger.kernel.org>; Fri,  8 Dec 2023 01:33:14 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54bfd4546fbso2658805a12.1
-        for <cgroups@vger.kernel.org>; Fri, 08 Dec 2023 01:33:14 -0800 (PST)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E967810CF
+	for <cgroups@vger.kernel.org>; Fri,  8 Dec 2023 01:33:15 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9fa2714e828so240779266b.1
+        for <cgroups@vger.kernel.org>; Fri, 08 Dec 2023 01:33:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1702027993; x=1702632793; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L4rZ/GzRY7+TnTS+jdlOOGqRdC+4LjtAOi+pvi/VqV0=;
-        b=JtuRaQ5/qOG7u7fsHo5vA6j7INkvoMJWlC1UGGAfMSrIB7FIC1QukHG4FajC596zsl
-         E1zj8nAleHRCoRTpXiDjrILm+XBC173B2tVZ/hXyw4X0pKJaAHNOTJPaEpTy59Xy4i0B
-         407bVZdzIkVKxG6nY8A/IktYMm9NrRWgwKyZpWkys9KDaJfM3ghOCgrvg+rsgp9THm2b
-         BXA4lQGqmnt0CAaa063gwnxdn6t7vwb4GiASNoMfarZTk6f/hgKum1oJggoXgy5WTHtE
-         wdbN0a3eyOep+cfChbuTdIhzES1l9V+AegXlBk8vKh+E8/6VkJ+bTZ0JH2BTDSxqMuW6
-         /7Qg==
+        d=ionos.com; s=google; t=1702027994; x=1702632794; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ml3aYbEq09uGjduR2N6EJX5pAeyS3QJMe6FIXxf84y8=;
+        b=QE1yCNi/RKufBR/+9V8qBw+gNmJ7H8TD55foVj7sizAM1YtpZkH4NvnxOF5vNd0a7/
+         zP9liIPL+7PKC9TUv36IcDL0LHhXXTZjAHZfYCgqI07ENhRBLh9NvWOAVgRlMgTa97BO
+         7/iJWvHZYS7zsVFOCAoAEgH3PimGntYufZ7+LdMFB+TIcUxcyYlOqeQStJvTpIhFCWlN
+         lKsnrcZcSQ+j33SecPZ98Fg/GEoaEX5XA2/nMsmZwXTWGhwSEmdbTO37wCGD0hdn2LVi
+         8R0Jkgiu39W+7o8D4QgNs5BBzLVAYF2b7LGk3nKuU0SUSXUe0Pwnus+RI1YwhEEaxqfn
+         Rsnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702027993; x=1702632793;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L4rZ/GzRY7+TnTS+jdlOOGqRdC+4LjtAOi+pvi/VqV0=;
-        b=jluCMBgZYk0LwSeqk67lJ+w8w8PqqE1o4MvCmuFv3RbqQFo78KfDqAEg4cGzS84sei
-         y+PoJjptBRIN3JnJV3XR0Ooe7JsX9SfSEAijRsfJ1aLTI4Duq6HbAfMBpsSbw5BZpsRq
-         WyYlH2pN5Kkrjs+gXej7NvT9WKyz7xTOsT1P19iNMOxqHefetSSiuTCiaKAQxY1iT12N
-         29EzkjtLCXKhyuCjR3yaeVsZFecCEvBdsereGRWtUyrwK2ElmU/5UrEvv4BXXFiNpR+i
-         EP+waqYtZvkyWJ9vmCGWD1EAeKPYOxWPonvVUEH2dRByv8X7gFF1jZqESlkRsKY4wsIv
-         ks6Q==
-X-Gm-Message-State: AOJu0YzYkMUzJb2hsGz33+joqQIpc6TpWgr9CfqvXSbdYRXy/kjp9AsY
-	/ljoLJMfPEIHKersD1FENGbxUQ==
-X-Google-Smtp-Source: AGHT+IEDKaDtDXTodMm2fz1ox0C+VP5DwilqtYu0RuTtufQyat/65bCaa/g2n8dCE/SBCfkr5NUY+w==
-X-Received: by 2002:a17:906:10ce:b0:a1e:1da1:73c0 with SMTP id v14-20020a17090610ce00b00a1e1da173c0mr1885941ejv.10.1702027992742;
-        Fri, 08 Dec 2023 01:33:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702027994; x=1702632794;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ml3aYbEq09uGjduR2N6EJX5pAeyS3QJMe6FIXxf84y8=;
+        b=n38ry9jylJa+U6xJJjHlTBY0gvM5ATreImMGEVYBQrJb7tlgE9GVGLZd7aHdRvZsv9
+         ju1o6S8tV/V6GSMeMwK16cdppd5a5jVxr6a6Mt8u4k8m8g7l4QAOtHxTO/Jtqb6L/lOd
+         XwoXfD/x49zMDnuDYm7SH+aGJFPpQ0dbyOVCyIAx5n5mYnTZDjfCE9M0uolrWn58qlJb
+         ztfrcaWjs8Jdit0fzXhVxKTPA9nEV/gMu/Z4M1jfntuxzc5cIy+uUl/gihrAIbyPmbnH
+         uUm3yL5PGuug4BJSfobJTJw0yeAWXWB77t0MiFBLuQSD+thTFZ9ltl1FjXVLpiVKIKWQ
+         aT1Q==
+X-Gm-Message-State: AOJu0Yz5APuWOmsP0dpArZ9Jyv6R166oOumYctq3utQ7/BJq3zkYHMvw
+	H7IBG3/eBkkFfS1upjZLqhfFOuZygs+h5Er1Z9k=
+X-Google-Smtp-Source: AGHT+IEuKQeMuuKkaUhmEtfSrBM5Y2r6Yi4pZc13ZcJTRcSq5BfXk+frg+NXJmtaY+6NBNePrmd0Lg==
+X-Received: by 2002:a17:906:eb57:b0:a19:a19b:55c3 with SMTP id mc23-20020a170906eb5700b00a19a19b55c3mr1992038ejb.83.1702027994303;
+        Fri, 08 Dec 2023 01:33:14 -0800 (PST)
 Received: from heron.intern.cm-ag (p200300dc6f0b6500529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f0b:6500:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id vk5-20020a170907cbc500b00a1ce56f7b16sm774812ejc.71.2023.12.08.01.33.11
+        by smtp.gmail.com with ESMTPSA id vk5-20020a170907cbc500b00a1ce56f7b16sm774812ejc.71.2023.12.08.01.33.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 01:33:12 -0800 (PST)
+        Fri, 08 Dec 2023 01:33:14 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Tejun Heo <tj@kernel.org>,
@@ -60,10 +61,12 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v2 1/2] kernel/cgroup: use kernfs_create_dir_ns()
-Date: Fri,  8 Dec 2023 10:33:09 +0100
-Message-Id: <20231208093310.297233-1-max.kellermann@ionos.com>
+Subject: [PATCH v2 2/2] fs/kernfs/dir: obey S_ISGID
+Date: Fri,  8 Dec 2023 10:33:10 +0100
+Message-Id: <20231208093310.297233-2-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231208093310.297233-1-max.kellermann@ionos.com>
+References: <20231208093310.297233-1-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -72,100 +75,48 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-By passing the fsugid to kernfs_create_dir_ns(), we don't need
-cgroup_kn_set_ugid() any longer.  That function was added for exactly
-this purpose by commit 49957f8e2a43 ("cgroup: newly created dirs and
-files should be owned by the creator").
+Handling of S_ISGID is usually done by inode_init_owner() in all other
+filesystems, but kernfs doesn't use that function.  In kernfs, struct
+kernfs_node is the primary data structure, and struct inode is only
+created from it on demand.  Therefore, inode_init_owner() can't be
+used and we need to imitate its behavior.
 
-Eliminating this piece of duplicate code means we benefit from future
-improvements to kernfs_create_dir_ns(); for example, both are lacking
-S_ISGID support currently, which my next patch will add to
-kernfs_create_dir_ns().  It cannot (easily) be added to
-cgroup_kn_set_ugid() because we can't dereference struct kernfs_iattrs
-from there.
+S_ISGID support is useful for the cgroup filesystem; it allows
+subtrees managed by an unprivileged process to retain a certain owner
+gid, which then enables sharing access to the subtree with another
+unprivileged process.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 Acked-by: Tejun Heo <tj@kernel.org>
 --
-v1 -> v2: 12-digit commit id
+v1 -> v2: minor coding style fix (comment)
 ---
- kernel/cgroup/cgroup.c | 31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
+ fs/kernfs/dir.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4b9ff41ca603..a844b421fd83 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4169,20 +4169,6 @@ static struct kernfs_ops cgroup_kf_ops = {
- 	.seq_show		= cgroup_seqfile_show,
- };
- 
--/* set uid and gid of cgroup dirs and files to that of the creator */
--static int cgroup_kn_set_ugid(struct kernfs_node *kn)
--{
--	struct iattr iattr = { .ia_valid = ATTR_UID | ATTR_GID,
--			       .ia_uid = current_fsuid(),
--			       .ia_gid = current_fsgid(), };
--
--	if (uid_eq(iattr.ia_uid, GLOBAL_ROOT_UID) &&
--	    gid_eq(iattr.ia_gid, GLOBAL_ROOT_GID))
--		return 0;
--
--	return kernfs_setattr(kn, &iattr);
--}
--
- static void cgroup_file_notify_timer(struct timer_list *timer)
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 8b2bd65d70e7..62d39ecf0a46 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -676,6 +676,18 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node *parent,
  {
- 	cgroup_file_notify(container_of(timer, struct cgroup_file,
-@@ -4195,25 +4181,18 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
- 	char name[CGROUP_FILE_NAME_MAX];
  	struct kernfs_node *kn;
- 	struct lock_class_key *key = NULL;
--	int ret;
  
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	key = &cft->lockdep_key;
- #endif
- 	kn = __kernfs_create_file(cgrp->kn, cgroup_file_name(cgrp, cft, name),
- 				  cgroup_file_mode(cft),
--				  GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
-+				  current_fsuid(), current_fsgid(),
- 				  0, cft->kf_ops, cft,
- 				  NULL, key);
- 	if (IS_ERR(kn))
- 		return PTR_ERR(kn);
- 
--	ret = cgroup_kn_set_ugid(kn);
--	if (ret) {
--		kernfs_remove(kn);
--		return ret;
--	}
--
- 	if (cft->file_offset) {
- 		struct cgroup_file *cfile = (void *)css + cft->file_offset;
- 
-@@ -5616,7 +5595,9 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
- 		goto out_cancel_ref;
- 
- 	/* create the directory */
--	kn = kernfs_create_dir(parent->kn, name, mode, cgrp);
-+	kn = kernfs_create_dir_ns(parent->kn, name, mode,
-+				  current_fsuid(), current_fsgid(),
-+				  cgrp, NULL);
- 	if (IS_ERR(kn)) {
- 		ret = PTR_ERR(kn);
- 		goto out_stat_exit;
-@@ -5761,10 +5742,6 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
- 	 */
- 	kernfs_get(cgrp->kn);
- 
--	ret = cgroup_kn_set_ugid(cgrp->kn);
--	if (ret)
--		goto out_destroy;
--
- 	ret = css_populate_dir(&cgrp->self);
- 	if (ret)
- 		goto out_destroy;
++	if (parent->mode & S_ISGID) {
++		/* this code block imitates inode_init_owner() for
++		 * kernfs
++		 */
++
++		if (parent->iattr)
++			gid = parent->iattr->ia_gid;
++
++		if (flags & KERNFS_DIR)
++			mode |= S_ISGID;
++	}
++
+ 	kn = __kernfs_new_node(kernfs_root(parent), parent,
+ 			       name, mode, uid, gid, flags);
+ 	if (kn) {
 -- 
 2.39.2
 
