@@ -1,55 +1,55 @@
-Return-Path: <cgroups+bounces-917-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-918-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0EA880F630
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 20:11:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E6980F80B
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 980F71F21802
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 19:11:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555E3282087
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 20:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB918005B;
-	Tue, 12 Dec 2023 19:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B33464133;
+	Tue, 12 Dec 2023 20:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XwK8wiEl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LFusca8X"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD316AF
-	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 11:11:47 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d34ae77fbaso8495ad.0
-        for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 11:11:47 -0800 (PST)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0ED9B
+	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 12:45:02 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a1ec87a7631so550666566b.0
+        for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 12:45:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702408307; x=1703013107; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702413901; x=1703018701; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LIguWzkvYltOpnG/cXi7wP26kF3E2cDcptp5e/K12Jo=;
-        b=XwK8wiElneYQmXQCEI0uagFXqXTIlXCPeUtQPeaRulax3ajANE6SN0FXuG42DyxADf
-         JYqTdjFPcfFfy3mRXtoCzp25wPc2BgTL+qU6d2O6gUxoSTm3tv+Zdhur1hHVXEDJBldN
-         crPO15PNVePWr79483AfOJlHCGunkos+Uj5p/6F4++YXIK1+Q4xAPZg5Gg+s5RAsSv8O
-         QvhnRRBesVNHPsSusITfD3/GJnm5bRsItDrOp8Xe8I01SU/i58AO6UjsLK8yS8wNGXsC
-         suCZ03qz1Gx2Fr3cF87WR6fOQIwMidtHGMITWJcgImiAPHH7P+hOJVzHIGko04zPMFCY
-         JCZQ==
+        bh=kE8RZVsLlDqV/tHQsV0pBVubgKNBa3FvWZVPRZsHSAs=;
+        b=LFusca8XEG6vrc3V0kseEDVsm0MbUCjDN0LEI/ctRNOu2pVNuRhQOWy3mZHsoa3t+I
+         adrd2ru3IIB+y2uQMG1rHZVp/l1KHFDF5Z++MoHSE81mkunSvf4gENnnlT27Jwpot/RG
+         dEZB3MM63a1laGc0nDLEaUBqKz97rcHNwTYP8ZbidsVeRO1LjOuVLzIO2U6S2fyxRLiR
+         YctSEuzLUuvrJvn64LY/3uKRMNmI72fF7yYRvyL3jDSLbR+6nLjSr3Olat/YtcT7HZtz
+         iXKMU+eBQCN6hq1U3t5cOukwJpQTTz6x73eLXqQD2lnCRsOvjStapkMc8XRPm1mmYqJI
+         1Qgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702408307; x=1703013107;
+        d=1e100.net; s=20230601; t=1702413901; x=1703018701;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LIguWzkvYltOpnG/cXi7wP26kF3E2cDcptp5e/K12Jo=;
-        b=HXYy0ukSJqPrw24AHdKX2CAFQOZ9c8KP2RwHNSpY0hCWer4OvCCE7zg4puU8V1YvBJ
-         iK9dw/M/f8kxN2OKAmwPE6PPNInNDmbdxQaRU/ZSwTj4mo8oK2QQZLW3W+09vJs/2n7f
-         hDdQgi1ELt2uILGAFJzqvva6uTR6heMddJJCK9avpWXdEeDBOWKIoEHugHen4/SbyOlg
-         5mSin505Tee/VbWetRELMUcCb3WdUtPno/Sz2OkwFvlBL9RThOSGL9QxcBTVVIWWvAH2
-         Nz1BgLvTDWY26z+tsHF3NjVL3KNLyZg4GVDVN0YbkDWx4skTBKTfgp1kNiTsCUFDA2+l
-         KWjQ==
-X-Gm-Message-State: AOJu0Yy2CqkKDPFGXj83pblLPNaw4CqlSa8dO54Jb5J9FpYDxImKH3Mb
-	BWHmHpM6zQTNmFMvamAlKwpAGGYkaLfzpsWfmROP0A==
-X-Google-Smtp-Source: AGHT+IHt0Qmog3mUK5T+kUE0Q2Kof6YqrUXeTpM7Ux6Zk+sJp0dumG1J+s5VjauZ8OeIU0gS8MCxg1ZOOAnY4ZGrZCw=
-X-Received: by 2002:a17:902:dacb:b0:1cf:aa8f:56b3 with SMTP id
- q11-20020a170902dacb00b001cfaa8f56b3mr896582plx.24.1702408307029; Tue, 12 Dec
- 2023 11:11:47 -0800 (PST)
+        bh=kE8RZVsLlDqV/tHQsV0pBVubgKNBa3FvWZVPRZsHSAs=;
+        b=nn0wLf1jknYk5R9xiPzulpRnE4iFh4xyQWs9RNlQ/vnDEzpA4gu5kraMukvhl790Md
+         qDFo6xodnLaA9fYzrMRTCNrtX9Me+em60/J42qrWafy1zkKajRqPR30AE8vGT41amwQm
+         +pO4eMGYpf4+s+JweIO89qYJUIaDswyHzwYw/OtKap/kSV83f17DJux9aCBKRGcE3uSM
+         BjAo4xt9pEqqz8ujMNySBgiUuC5eNnzRjhNhZrbwQb7W1nBujIqP44wBgExH8db91brM
+         P6q+DCf+m/rWPQyNSchiFRwsPeIc8u7J84zEQs+A7MDIvRjOQ8K7n407tLj94V/5+e9h
+         /HMg==
+X-Gm-Message-State: AOJu0YwWvP8GIotdUFgxDg2hcO3wVL+Bf1qx/ZGS1xvbmuXExk4Fijb9
+	N4erqs9xRH2kgVgmnwyCRI5l/YPYd/Kfdf61c+byvQ==
+X-Google-Smtp-Source: AGHT+IFAT5lsVwBH0E1qAd8i6cYOV214omt1/uBJz3rz4Sjo68LKbG5FT2JF7Tj9rLm3fl0eLDj2fJFUKGMgaDUislQ=
+X-Received: by 2002:a17:906:5992:b0:9da:ee00:a023 with SMTP id
+ m18-20020a170906599200b009daee00a023mr3752550ejs.30.1702413900702; Tue, 12
+ Dec 2023 12:45:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,12 +65,12 @@ References: <20231129032154.3710765-1-yosryahmed@google.com>
  <CAJD7tkZgP3m-VVPn+fF_YuvXeQYK=tZZjJHj=dzD=CcSSpp2qg@mail.gmail.com>
  <20231204235856.k4izppfsrpg2rng7@google.com> <20231212104355.ba052748471e1e0ce5cc35a0@linux-foundation.org>
 In-Reply-To: <20231212104355.ba052748471e1e0ce5cc35a0@linux-foundation.org>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Tue, 12 Dec 2023 11:11:35 -0800
-Message-ID: <CALvZod6LcJbAQYpV6jnX=tWbJe-4i9guAax1E71gG7Q6OfVoBg@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 12 Dec 2023 12:44:21 -0800
+Message-ID: <CAJD7tkY-+2OzncG7kK=rkw3sAK6oAMHkoZuv8+vnxmt6N3ECgw@mail.gmail.com>
 Subject: Re: [mm-unstable v4 5/5] mm: memcg: restore subtree stats flushing
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Wei Xu <weixugc@google.com>, 
+Cc: Shakeel Butt <shakeelb@google.com>, Wei Xu <weixugc@google.com>, 
 	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
 	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
 	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
@@ -116,5 +116,5 @@ d.
 > I'd like to move this series into mm-stable soon.  Are we all OK with tha=
 t?
 
-OK from me.
+Looking forward to that :)
 
