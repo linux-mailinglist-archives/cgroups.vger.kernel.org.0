@@ -1,120 +1,124 @@
-Return-Path: <cgroups+bounces-918-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-920-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1E6980F80B
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCBBD80F8F9
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555E3282087
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 20:45:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 773A3281F78
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B33464133;
-	Tue, 12 Dec 2023 20:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADAA65A9E;
+	Tue, 12 Dec 2023 21:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LFusca8X"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L4UAFUOZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0ED9B
-	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 12:45:02 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a1ec87a7631so550666566b.0
-        for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 12:45:02 -0800 (PST)
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DC7CF
+	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:17:44 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7b72d574399so254926139f.0
+        for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:17:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702413901; x=1703018701; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kE8RZVsLlDqV/tHQsV0pBVubgKNBa3FvWZVPRZsHSAs=;
-        b=LFusca8XEG6vrc3V0kseEDVsm0MbUCjDN0LEI/ctRNOu2pVNuRhQOWy3mZHsoa3t+I
-         adrd2ru3IIB+y2uQMG1rHZVp/l1KHFDF5Z++MoHSE81mkunSvf4gENnnlT27Jwpot/RG
-         dEZB3MM63a1laGc0nDLEaUBqKz97rcHNwTYP8ZbidsVeRO1LjOuVLzIO2U6S2fyxRLiR
-         YctSEuzLUuvrJvn64LY/3uKRMNmI72fF7yYRvyL3jDSLbR+6nLjSr3Olat/YtcT7HZtz
-         iXKMU+eBQCN6hq1U3t5cOukwJpQTTz6x73eLXqQD2lnCRsOvjStapkMc8XRPm1mmYqJI
-         1Qgg==
+        d=chromium.org; s=google; t=1702415864; x=1703020664; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Zc6KTpAZSdY8QpoD6ndRxHT3SVEvXG+4LeuNbqJOvg=;
+        b=L4UAFUOZAH3mEUJ0dYkraext6N+7dmrPBKQ07Zrkvg0EipGpro+00z8Kf/u6eTav0e
+         ce0D3+DrURn7ueMVVDjugihrDkYrnlD+QKI9UKTbV2XHjM6LOsa7wtRs4TNUKXRf/Ei+
+         Ofe/ZfWwt4z57P1hMbbpm/rviheqp6NahsHM4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702413901; x=1703018701;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kE8RZVsLlDqV/tHQsV0pBVubgKNBa3FvWZVPRZsHSAs=;
-        b=nn0wLf1jknYk5R9xiPzulpRnE4iFh4xyQWs9RNlQ/vnDEzpA4gu5kraMukvhl790Md
-         qDFo6xodnLaA9fYzrMRTCNrtX9Me+em60/J42qrWafy1zkKajRqPR30AE8vGT41amwQm
-         +pO4eMGYpf4+s+JweIO89qYJUIaDswyHzwYw/OtKap/kSV83f17DJux9aCBKRGcE3uSM
-         BjAo4xt9pEqqz8ujMNySBgiUuC5eNnzRjhNhZrbwQb7W1nBujIqP44wBgExH8db91brM
-         P6q+DCf+m/rWPQyNSchiFRwsPeIc8u7J84zEQs+A7MDIvRjOQ8K7n407tLj94V/5+e9h
-         /HMg==
-X-Gm-Message-State: AOJu0YwWvP8GIotdUFgxDg2hcO3wVL+Bf1qx/ZGS1xvbmuXExk4Fijb9
-	N4erqs9xRH2kgVgmnwyCRI5l/YPYd/Kfdf61c+byvQ==
-X-Google-Smtp-Source: AGHT+IFAT5lsVwBH0E1qAd8i6cYOV214omt1/uBJz3rz4Sjo68LKbG5FT2JF7Tj9rLm3fl0eLDj2fJFUKGMgaDUislQ=
-X-Received: by 2002:a17:906:5992:b0:9da:ee00:a023 with SMTP id
- m18-20020a170906599200b009daee00a023mr3752550ejs.30.1702413900702; Tue, 12
- Dec 2023 12:45:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702415864; x=1703020664;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Zc6KTpAZSdY8QpoD6ndRxHT3SVEvXG+4LeuNbqJOvg=;
+        b=iq/YKmtj1PruGLE+OthPh0tRG/NIGiV6BsOQYj6zhPqzdeEgZIxyio8H5nSEUkZJ+G
+         QPmK0/dpX+itziXoGYqMe1ECz8rJnx8RjxWPRzk+qRgJVQiDMB2sdOJP3/1NgXdapOUd
+         APHjNFYCE7h9Yuz6HoIcQSK0JWasTyF9gSR3EJglhXWw+NlocOwpk50lmYrBJvjc+h0a
+         MMYTB8SYGowWXpHQslwyhXN5uIyX0i3AXIo/CHU6AskIydIS7hfrK/zik+ury9q+euJr
+         ogExJuYSC9fFQ3axACESp4E66bz62tqhuyKN6y+dMrxPt0Mj5cgqhMCkSEhdWHxDjNg4
+         h2ww==
+X-Gm-Message-State: AOJu0YzleZhUasECMdttAdjJER2qN6V8TXb65snLIB8urGKbQIYbsK8f
+	oiedBp84Idkf3E7KJU1GjEMg7g==
+X-Google-Smtp-Source: AGHT+IEvDlyQAlbj5kZpcUy0l69R3KnPJJrpfmKzdIY3kCQw6u1d63ztJ2FRYEW2wthGdpMi+t5zWQ==
+X-Received: by 2002:a05:6e02:1526:b0:35d:59a2:2bb with SMTP id i6-20020a056e02152600b0035d59a202bbmr10427390ilu.91.1702415863911;
+        Tue, 12 Dec 2023 13:17:43 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i4-20020a63cd04000000b005c1ce3c960bsm8681954pgg.50.2023.12.12.13.17.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 13:17:41 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Tejun Heo <tj@kernel.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v3 0/3] kernfs: Convert from strlcpy() to strscpy()
+Date: Tue, 12 Dec 2023 13:17:37 -0800
+Message-Id: <20231212211606.make.155-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231129032154.3710765-1-yosryahmed@google.com>
- <20231129032154.3710765-6-yosryahmed@google.com> <20231202083129.3pmds2cddy765szr@google.com>
- <CAJD7tkZPcBbvcK+Xj0edevemB+801wRvvcFDJEjk4ZcjNVoV_w@mail.gmail.com>
- <CAJD7tkY-YTj-4+A6zQT_SjbYyRYyiJHKc9pf1CMqqwU1VRzxvA@mail.gmail.com>
- <CALvZod5rPrFNLyOpUUbmo2T3zxtDjomDqv+Ba3KyFh=eRwNXjg@mail.gmail.com>
- <CAAPL-u-Futq5biNhQKTVi15vzihZxoan-dVORPqpov1saJ99=Q@mail.gmail.com>
- <CAJD7tkZgP3m-VVPn+fF_YuvXeQYK=tZZjJHj=dzD=CcSSpp2qg@mail.gmail.com>
- <20231204235856.k4izppfsrpg2rng7@google.com> <20231212104355.ba052748471e1e0ce5cc35a0@linux-foundation.org>
-In-Reply-To: <20231212104355.ba052748471e1e0ce5cc35a0@linux-foundation.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 12 Dec 2023 12:44:21 -0800
-Message-ID: <CAJD7tkY-+2OzncG7kK=rkw3sAK6oAMHkoZuv8+vnxmt6N3ECgw@mail.gmail.com>
-Subject: Re: [mm-unstable v4 5/5] mm: memcg: restore subtree stats flushing
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shakeel Butt <shakeelb@google.com>, Wei Xu <weixugc@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com, 
-	Greg Thelen <gthelen@google.com>, Domenico Cerasuolo <cerasuolodomenico@gmail.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bagas Sanjaya <bagasdotme@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1166; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=25MytgNAUZhUM008DbLRMGuucWR15FZ+JfVwwxo9GpI=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM3zNEJ6ozMonZeoBQXI8on6XfsVYmsQsgluk
+ o1wQ+Ga48OJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN8wAKCRCJcvTf3G3A
+ JsNPEACp/RHtIqnnV4mPRZIPFgXSZFVF1HvucA+ryrSi+/fpmEwvxufPyzuDwgNvNgXbvTi2AHk
+ SyV/uJMDv/6gbhfFVhyvE60Wb0MqH5vRCJJkLHJjqd5QmFaLOZwMgbdsX0BkMhwE3sgnXH0+x/0
+ rBmVvY+oMp2+nxQqmUeUCHg9v7ohxjEDc7cJUXQw1ohErQHEFgL/I3+etO2/t/XqLDC4b7/iZAW
+ uCV5mIOpBOml+3+QYCaRLL5sIvpTOB8uzkgoELY+dOPfkH9qz0qTf6rW3lq/Hl8O756SsZdAf9s
+ piPFzMgt6R6FoK+gsbWiO9pnRYVYVhXp6ZWdpx3zI4ftuMvbuqrfrrqRhAwt5igfahudw4qarQg
+ npD/uktNC5EBbJc1DBbpHxukXKawE2ANI7oarahhLNx5r5hhSeW24mhApPa/Y4wz/Oo4to/4SqR
+ C9JNMxmVvt3cIVjg1bq+4Z+qCQVzVEa5pJsYt1OvmtJXUonqsX8/8D2GSOFwReXk64SVsPoLIEl
+ 8V5SbrwZWj9Yswt1XA+josJR+CoAiZYQPNx2CbO5yc3xQNJNkg1bnVzy81o0+xQVtI/ZFtTit3n
+ Ra2HxpF7JkjcUUDSwLJMq72OZMpGQ/NaMYcgjfrL+eD8X/C2kAShjRuuqk+UCSbcgiIA/+7ZknX
+ KxURH9O 1QW+s3Sw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 12, 2023 at 10:43=E2=80=AFAM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Mon, 4 Dec 2023 23:58:56 +0000 Shakeel Butt <shakeelb@google.com> wrot=
-e:
->
-> > On Mon, Dec 04, 2023 at 03:49:01PM -0800, Yosry Ahmed wrote:
-> > [...]
-> > >
-> > > From 19af26e01f93cbf0806d75a234b78e48c1ce9d80 Mon Sep 17 00:00:00 200=
-1
-> > > From: Yosry Ahmed <yosryahmed@google.com>
-> > > Date: Mon, 4 Dec 2023 23:43:29 +0000
-> > > Subject: [PATCH] mm: memcg: remove stats flushing mutex
-> > >
-> > > The mutex was intended to make the waiters sleep instead of spin, and
-> > > such that we can check the update thresholds again after acquiring th=
-e
-> > > mutex. However, the mutex has a risk of priority inversion, especiall=
-y
-> > > since the underlying rstat lock can de dropped while the mutex is hel=
-d.
-> > >
-> > > Synthetic testing with high concurrency of flushers shows no
-> > > regressions without the mutex, so remove it.
-> > >
-> > > Suggested-by: Shakeel Butt <shakeelb@google.com>
-> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >
-> > Acked-by: Shakeel Butt <shakeelb@google.com>
-> >
->
-> I'd like to move this series into mm-stable soon.  Are we all OK with tha=
-t?
+Hi,
 
-Looking forward to that :)
+One of the last users of strlcpy() is kernfs, which has some complex
+calling hierarchies that needed to be carefully examined. This series
+refactors the strlcpy() calls into strscpy() calls, and bubbles up all
+changes in return value checking for callers. Future work in kernfs and
+sysfs will see the replacement of open-coded string handling with the
+seq_buf API, but we need to do one thing at a time.
+
+Thanks!
+
+-kees
+
+v3: don't need to account for scnprintf() returning negative (christophe.jaillet)
+v2: https://lore.kernel.org/all/20231130200937.it.424-kees@kernel.org/
+v1: https://lore.kernel.org/linux-hardening/20231116191718.work.246-kees@kernel.org/
+
+Kees Cook (3):
+  kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
+    strscpy()
+
+ fs/kernfs/dir.c           | 50 +++++++++++++++++++--------------------
+ kernel/cgroup/cgroup-v1.c |  2 +-
+ kernel/cgroup/cgroup.c    |  4 ++--
+ kernel/cgroup/cpuset.c    |  2 +-
+ 4 files changed, 29 insertions(+), 29 deletions(-)
+
+-- 
+2.34.1
+
 
